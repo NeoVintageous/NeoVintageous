@@ -112,6 +112,13 @@ class _vi_gq(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
+        def wrap_command():
+            hasWrapPlus = view.settings().get('WrapPlus.include_line_ending')
+            if hasWrapPlus == None:
+                return 'wrap_lines'
+            else:
+                return 'wrap_lines_plus'
+
         def reverse(view, s):
             return R(s.end(), s.begin())
 
@@ -120,12 +127,14 @@ class _vi_gq(ViTextCommandBase):
                 return R(s.a, s.b - 1)
             return s
 
+        wrap_lines = wrap_command()
+
         if mode in (modes.VISUAL, modes.VISUAL_LINE):
             # TODO: ST seems to always reformat whole paragraphs with
             #       'wrap_lines'.
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
-            self.view.run_command('wrap_lines')
+            self.view.run_command(wrap_lines)
             self.enter_normal_mode(mode)
             return
 
@@ -139,7 +148,7 @@ class _vi_gq(ViTextCommandBase):
 
             if self.has_sel_changed():
                 self.save_sel()
-                self.view.run_command('wrap_lines')
+                self.view.run_command(wrap_lines)
                 self.view.sel().clear()
                 self.view.sel().add_all(self.old_sel)
             else:
