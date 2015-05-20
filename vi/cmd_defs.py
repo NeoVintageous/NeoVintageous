@@ -914,40 +914,6 @@ class ViLeftDeleteChar(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.CTRL_W_BIG_L, modes=_MODES_ACTION)
-class ViSendViewToRightPane(ViOperatorDef):
-    """
-    Vim: `<C-W-L>`
-    """
-
-    def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_l'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
-
-
-@keys.assign(seq=seqs.CTRL_W_BIG_H, modes=_MODES_ACTION)
-class ViSendViewToLeftPane(ViOperatorDef):
-    """
-    Vim: `<C-W-H>`
-    """
-
-    def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_h'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
-
-
 @keys.assign(seq=seqs.GT, modes=_MODES_ACTION)
 class ViActivateNextTab(ViOperatorDef):
     """
@@ -982,10 +948,10 @@ class ViActivatePreviousTab(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
-class ViActivatePaneToTheRight(ViOperatorDef):
+@keys.assign(seq=seqs.CTRL_W_BIG_H, modes=_MODES_ACTION)
+class ViSendViewToLeftPane(ViOperatorDef):
     """
-    Vim: `<C-W-l>`
+    Vim: `<C-W-H>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -994,10 +960,25 @@ class ViActivatePaneToTheRight(ViOperatorDef):
 
     def translate(self, state):
         cmd = {}
-        cmd['action'] = '_vi_ctrl_w_l'
+        cmd['action'] = '_vi_ctrl_w_big_h'
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
         return cmd
 
+@keys.assign(seq=seqs.CTRL_W_BIG_L, modes=_MODES_ACTION)
+class ViSendViewToRightPane(ViOperatorDef):
+    """
+    Vim: `<C-W-L>`
+    """
+
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_big_l'
+        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        return cmd
 
 @keys.assign(seq=seqs.CTRL_W_H, modes=_MODES_ACTION)
 class ViActivatePaneToTheLeft(ViOperatorDef):
@@ -1015,11 +996,10 @@ class ViActivatePaneToTheLeft(ViOperatorDef):
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
         return cmd
 
-
-@keys.assign(seq=seqs.CTRL_W_V, modes=_MODES_ACTION)
-class ViSplitVertically(ViOperatorDef):
+@keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
+class ViActivatePaneToTheRight(ViOperatorDef):
     """
-    Vim: `<C-W-v>`
+    Vim: `<C-W-l>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1028,10 +1008,9 @@ class ViSplitVertically(ViOperatorDef):
 
     def translate(self, state):
         cmd = {}
-        cmd['action'] = '_vi_ctrl_w_v'
+        cmd['action'] = '_vi_ctrl_w_l'
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
         return cmd
-
 
 @keys.assign(seq=seqs.CTRL_W_Q, modes=_MODES_ACTION)
 class ViDestroyCurrentPane(ViOperatorDef):
@@ -1046,6 +1025,22 @@ class ViDestroyCurrentPane(ViOperatorDef):
     def translate(self, state):
         cmd = {}
         cmd['action'] = '_vi_ctrl_w_q'
+        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_V, modes=_MODES_ACTION)
+class ViSplitVertically(ViOperatorDef):
+    """
+    Vim: `<C-W-v>`
+    """
+
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_v'
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
         return cmd
 

@@ -2083,37 +2083,15 @@ class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
     def run(self):
         self.window.run_command('goto_definition')
 
-class _vi_ctrl_w_q(IrreversibleTextCommand):
+class _vi_ctrl_w_big_h(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, count=1, mode=None):
-        if self.view.is_dirty():
-            sublime.status_message('Unsaved changes.')
-            return
-
-        self.view.close()
-
-
-class _vi_ctrl_w_v(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, count=1, mode=None):
-        self.window.run_command('ex_vsplit')
-
-
-class _vi_ctrl_w_l(ViWindowCommandBase):
-    # TODO: Should be a window command instead.
-    # TODO: Should focus the group to the right only, not the 'next' group.
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, mode=None, count=None):
+    def run(self, mode=None, count=1):
         current_group = self.window.active_group()
-        if self.window.num_groups() > 1:
-            self.window.focus_group(current_group + 1)
-
+        if current_group > 0:
+            self.window.set_view_index(self.window.active_view(), current_group - 1, 0)
+            self.window.focus_group(current_group - 1)
 
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
@@ -2124,7 +2102,6 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
         if self.window.num_groups() > 1:
             self.window.set_view_index(self.window.active_view(), current_group + 1, 0)
             self.window.focus_group(current_group + 1)
-
 
 class _vi_ctrl_w_h(ViWindowCommandBase):
     # TODO: Should be a window command instead.
@@ -2137,16 +2114,34 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
         if current_group > 0:
             self.window.focus_group(current_group - 1)
 
-
-class _vi_ctrl_w_big_h(ViWindowCommandBase):
+class _vi_ctrl_w_l(ViWindowCommandBase):
+    # TODO: Should be a window command instead.
+    # TODO: Should focus the group to the right only, not the 'next' group.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, mode=None, count=1):
+    def run(self, mode=None, count=None):
         current_group = self.window.active_group()
-        if current_group > 0:
-            self.window.set_view_index(self.window.active_view(), current_group - 1, 0)
-            self.window.focus_group(current_group - 1)
+        if self.window.num_groups() > 1:
+            self.window.focus_group(current_group + 1)
+
+class _vi_ctrl_w_q(IrreversibleTextCommand):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1, mode=None):
+        if self.view.is_dirty():
+            sublime.status_message('Unsaved changes.')
+            return
+
+        self.view.close()
+
+class _vi_ctrl_w_v(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1, mode=None):
+        self.window.run_command('ex_vsplit')
 
 
 # TODO: z<CR> != zt
