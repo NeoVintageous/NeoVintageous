@@ -1866,6 +1866,21 @@ class ViEnterNormalMode(ViOperatorDef):
         return cmd
 
 
+@keys.assign(seq=seqs.CTRL_RIGHT_SQUARE_BRACKET, modes=_MODES_ACTION)
+class ViJumpToDefinition(ViOperatorDef):
+    """
+    Vim: `<C-]>`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_right_square_bracket'
+        cmd['action_args'] = {}
+        return cmd
+
+
 @keys.assign(seq=seqs.A, modes=_MODES_ACTION)
 class ViInsertAfterChar(ViOperatorDef):
     """

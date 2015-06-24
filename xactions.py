@@ -2071,6 +2071,17 @@ class _vi_g_big_t(ViWindowCommandBase):
         self.window.run_command('tab_control', {'command': 'prev'})
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
+# TODO <C-]> should learn visual mode
+# TODO <C-]> should learn to count
+class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/tagsrch.html#CTRL-]
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        self.window.run_command('goto_definition')
 
 class _vi_ctrl_w_q(IrreversibleTextCommand):
     def __init__(self, *args, **kwargs):

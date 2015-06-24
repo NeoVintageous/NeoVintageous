@@ -179,6 +179,7 @@ TESTS_KNOWN_SEQUENCES = (
     seq_test(actual=seqs.CTRL_DOT,             expected='<C-.>'),
     seq_test(actual=seqs.CTRL_SHIFT_DOT,       expected='<C-S-.>'),
     seq_test(actual=seqs.CTRL_LEFT_SQUARE_BRACKET, expected='<C-[>'),
+    seq_test(actual=seqs.CTRL_RIGHT_SQUARE_BRACKET, expected='<C-]>'),
 
     seq_test(actual=seqs.CTRL_W,     expected='<C-w>'),
     seq_test(actual=seqs.CTRL_W_Q,   expected='<C-w>q'),
