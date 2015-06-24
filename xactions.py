@@ -2122,7 +2122,7 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
     def run(self, mode=None, count=1):
         current_group = self.window.active_group()
         if self.window.num_groups() > 1:
-            self.window.set_view_index(self.view, current_group + 1, 0)
+            self.window.set_view_index(self.window.active_view(), current_group + 1, 0)
             self.window.focus_group(current_group + 1)
 
 
@@ -2145,7 +2145,7 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
     def run(self, mode=None, count=1):
         current_group = self.window.active_group()
         if current_group > 0:
-            self.window.set_view_index(self.view, current_group - 1, 0)
+            self.window.set_view_index(self.window.active_view(), current_group - 1, 0)
             self.window.focus_group(current_group - 1)
 
 

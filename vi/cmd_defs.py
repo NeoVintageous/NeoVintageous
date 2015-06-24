@@ -914,7 +914,7 @@ class ViLeftDeleteChar(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_BIG_L, modes=_MODES_ACTION)
 class ViSendViewToRightPane(ViOperatorDef):
     """
     Vim: `<C-W-L>`
@@ -931,7 +931,7 @@ class ViSendViewToRightPane(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.CTRL_W_H, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_BIG_H, modes=_MODES_ACTION)
 class ViSendViewToLeftPane(ViOperatorDef):
     """
     Vim: `<C-W-H>`
