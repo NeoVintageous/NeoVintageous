@@ -39,4 +39,7 @@
     // values are 'debug', 'info', 'error', 'critical'. Most users should
     // not need to modify the default value.
     "vintageous_log_level": "error"
+
+    // If true, the test runner keymaps are enabled
+    "vintageous_test_runner_keymaps": false
 }
