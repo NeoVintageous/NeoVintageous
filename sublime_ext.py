@@ -55,28 +55,26 @@ class SublimeWindowAPI():
 
     def _close_current_view(self, do_not_close_if_last):
         """
-        Close current window.
-
         If {do_not_close_if_last} then this command fails when there
-        is only one view on screen.
-
-        Modified views are not removed, so changes cannot get lost.
+        is only one view on screen. Modified views are not removed,
+        so changes cannot get lost.
         """
-        view = self.window.active_view()
-        if not view:
+
+        current_view = self.window.active_view()
+        if not current_view:
             return
 
         if do_not_close_if_last and len(self.window.views()) < 2:
             return sublime.status_message('Cannot close last view')
 
-        if view.is_dirty():
+        if current_view.is_dirty():
             dirty_buffer_message = 'No write since last change'
-            if view.file_name() != None:
-                dirty_buffer_message += ' for buffer "%s"' % view.file_name()
+            if current_view.file_name() != None:
+                dirty_buffer_message += ' for buffer "%s"' % current_view.file_name()
 
             return sublime.status_message(dirty_buffer_message)
 
-        view.close()
+        current_view.close()
 
     # TODO implement count
     # TODO implement exchange when vertical and horizontal group splits
@@ -85,10 +83,8 @@ class SublimeWindowAPI():
         Without {count}: Exchange current view with the view in the
         next group.  If there is no next group, exchange with the view
         in the previous group.
-
         With {count}: Exchange current view with the view in Nth group
         (first group is 1).  The cursor is put in the other view.
-
         When vertical and horizontal group splits are mixed, the
         exchange is done in the row or column of groups that the
         current view is in.
