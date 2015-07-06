@@ -464,4 +464,5 @@ class SublimeWindowAPI():
         others, if the 'equalalways' option is set and 'eadirection'
         isn't "hor").
         """
-        pass
+        # TODO split new file
+        self.window.run_command('new_file')
