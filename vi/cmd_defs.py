@@ -3203,6 +3203,8 @@ class ViMoveByWords(ViMotionDef):
 
 @keys.assign(seq=seqs.J, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.DOWN, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.CTRL_J, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.CTRL_N, modes=_MODES_MOTION)
 class ViMoveDownByLines(ViMotionDef):
     """
     Vim: `j`
