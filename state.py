@@ -596,18 +596,15 @@ class State(object):
                 (self.action and self.action.scroll_into_view))
 
     def scroll_into_view(self):
-        window = sublime.active_window()
-        view = window.active_view()
-
-        # trying to scroll in a transient view raises an error
-        if window.get_view_index(view)[1] == -1:
-            return
-
-        # TODO(guillermooo): Maybe some commands should show their
-        # surroundings too?
-        # Make sure we show the first caret on the screen, but don't show
-        # its surroundings.
-        view.show(view.sel()[0], False)
+        try:
+            view = sublime.active_window().active_view()
+            # TODO(guillermooo): Maybe some commands should show their
+            # surroundings too?
+            # Make sure we show the first caret on the screen, but don't show
+            # its surroundings.
+            view.show(view.sel()[0], False)
+        except:
+            pass
 
     def reset(self):
         # TODO: Remove this when we've ported all commands. This is here for
