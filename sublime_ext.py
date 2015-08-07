@@ -58,10 +58,18 @@ class SublimeWindowAPI():
         If {do_not_close_if_last} then this command fails when there
         is only one view on screen. Modified views are not removed,
         so changes cannot get lost.
+        If it's not a file on disk and contains only whitespace then
+        it is closed.
         """
 
         current_view = self.window.active_view()
         if not current_view:
+            return
+
+        # If it's not a file on disk and contains only whitespace then close it
+        if not current_view.file_name() and current_view.substr(sublime.Region(0, current_view.size())).strip() == '':
+            current_view.set_scratch(True)
+            current_view.close()
             return
 
         if do_not_close_if_last and len(self.window.views()) < 2:
