@@ -180,8 +180,7 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         # if State(self.view).settings.vi['hlsearch'] == False:
         #     return
 
-        self.view.add_regions('vi_search', regs, 'comment', '',
-                              sublime.DRAW_NO_FILL)
+        self.view.add_regions('vi_search', regs, 'vi_search.comment', '', sublime.DRAW_NO_OUTLINE)
 
 
 # TODO: Test me.
