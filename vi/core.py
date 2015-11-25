@@ -94,6 +94,10 @@ class ViCommandMixin(object):
         state.xpos = xpos
 
     def outline_target(self):
+        prefs = sublime.load_settings('Preferences.sublime-settings')
+        if prefs.get('vintageous_visualyank') is False:
+            return
+
         sels = list(self._view.sel())
         sublime.set_timeout(
                 lambda: self._view.erase_regions('vi_yy_target'), 350)
