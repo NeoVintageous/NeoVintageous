@@ -317,7 +317,9 @@ class _enter_normal_mode(ViTextCommandBase):
             # XXX: The 'not is_view(self.view)' check above seems to be
             #      redundant, since those views should be ignored by
             #      Vintageous altogether.
-            self.view.window().run_command('hide_panel', {'cancel': True})
+            if len(self.view.sel()) < 2:
+                # don't hide panel if multiple cursors
+                self.view.window().run_command('hide_panel', {'cancel': True})
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
