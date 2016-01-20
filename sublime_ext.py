@@ -455,7 +455,12 @@ class SublimeWindowAPI():
         is set, 'eadirection' isn't "hor", and one of the is higher
         than the current or the new view).
         """
-        pass
+        self.window.run_command('create_pane', {'direction': 'down'})
+        self.window.run_command('clone_file_to_pane', {'direction': 'down'})
+
+    def split_current_view_in_two_vertically(self, n=None):
+        self.window.run_command('create_pane', {'direction': 'right'})
+        self.window.run_command('clone_file_to_pane', {'direction': 'right'})
 
     def split_with_new_file(self, n=None):
         """
@@ -465,5 +470,4 @@ class SublimeWindowAPI():
         others, if the 'equalalways' option is set and 'eadirection'
         isn't "hor").
         """
-        # TODO split new file
-        self.window.run_command('new_file')
+        self.window.run_command('create_pane', {'direction': 'down', 'give_focus': True})

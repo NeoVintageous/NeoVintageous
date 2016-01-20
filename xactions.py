@@ -2313,7 +2313,7 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
-        self.window.run_command('ex_vsplit')
+        SublimeWindowAPI(self.window).split_current_view_in_two_vertically(count)
 
 class _vi_ctrl_w_x(ViWindowCommandBase):
     """
