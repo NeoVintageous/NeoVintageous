@@ -2055,6 +2055,17 @@ class _vi_p(ViTextCommandBase):
             self.view.replace(edit, sel, text)
             return sel.begin()
 
+class _vi_ga(ViWindowCommandBase):
+
+    """
+    http://vimdoc.sourceforge.net/htmldoc/various.html#ga
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        self.window.run_command('show_ascii_value_of_character_under_cursor')
 
 class _vi_gt(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):

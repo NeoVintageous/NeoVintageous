@@ -1965,6 +1965,21 @@ class StShowGotoAnything(ViOperatorDef):
         return cmd
 
 
+@keys.assign(seq=seqs.GA, modes=(modes.NORMAL,))
+class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
+    """
+    Vintageous: `<ga>`
+    """
+
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ga'
+        cmd['action_args'] = {}
+        return cmd
+
 @keys.assign(seq=seqs.J, modes=(modes.SELECT,))
 class ViAddSelection(ViOperatorDef):
     """
