@@ -61,6 +61,10 @@ class SublimeWindowAPI():
         If it's not a file on disk and contains only whitespace then
         it is closed.
         """
+        views_in_group = self.window.views_in_group(self.window.active_group())
+        if len(views_in_group) == 0:
+            self.window.run_command('destroy_pane', {'direction': 'self'})
+            return
 
         current_view = self.window.active_view()
         if not current_view:
@@ -70,6 +74,9 @@ class SublimeWindowAPI():
         if not current_view.file_name() and current_view.substr(sublime.Region(0, current_view.size())).strip() == '':
             current_view.set_scratch(True)
             current_view.close()
+            views_in_group = self.window.views_in_group(self.window.active_group())
+            if len(views_in_group) == 0:
+                self.window.run_command('destroy_pane', {'direction': 'self'})
             return
 
         if do_not_close_if_last and len(self.window.views()) < 2:
@@ -83,6 +90,11 @@ class SublimeWindowAPI():
             return sublime.status_message(dirty_buffer_message)
 
         current_view.close()
+
+        views_in_group = self.window.views_in_group(self.window.active_group())
+        if len(views_in_group) == 0:
+            self.window.run_command('destroy_pane', {'direction': 'self'})
+            return
 
     # TODO implement count
     # TODO implement exchange when vertical and horizontal group splits
