@@ -46,6 +46,7 @@ TAG = 4
 WORD = 5
 BIG_WORD = 6
 PARAGRAPH = 7
+INDENT = 8
 
 
 PAIRS = {
@@ -67,6 +68,7 @@ PAIRS = {
     't': (None, TAG),
     'W': (None, BIG_WORD),
     'w': (None, WORD),
+    'i': (None, INDENT),
 }
 
 
@@ -151,6 +153,8 @@ def a_word(view, pt, inclusive=True, count=1):
     assert count > 0
     start = current_word_start(view, pt)
     end = pt
+
+    p = 3
     if inclusive:
         end = units.word_starts(view, start, count=count, internal=True)
 
@@ -316,6 +320,9 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         else:
             return sublime.Region(sentence_start, sentence_end.b)
 
+    if type_ == INDENT:
+        start, end = find_indent_text_object(view, s)
+        return sublime.Region(start, end)
 
     return s
 
@@ -461,6 +468,42 @@ def find_inner_paragraph(view, initial_loc):
     while True:
         line = view.line(p)
         if is_whitespace(line) != iws:
+            break
+        p = line.end() + 1
+        if p >= view.size():
+            break
+    end = p
+
+    return (begin, end)
+
+def find_indent_text_object(view, s):
+    begin = view.line(s)
+    end   = view.line(s)
+
+    start_line = view.line(s)
+    whitespace = re.match("\s*", view.substr(start_line)).group(0)
+    whitespace_length = len(whitespace)
+
+    # Search backward until a line with different indent is found
+    # This will give use the value for begin.
+    p = s.a - 1
+    while True:
+        line = view.line(p)
+        match = re.match("(\s*)[\S\n]", view.substr(line))
+        if match != None and len(match.group(1)) < whitespace_length:
+            break
+        elif line.begin() == 0:
+            p = 0
+            break
+        p = line.begin() - 1
+    begin = p + 1 if p > 0 else p
+
+    # To get the value for end, we do the same thing, this time searching forward.
+    p = s.b + 1
+    while True:
+        line = view.line(p)
+        match = re.match("(\s*)[\S\n]", view.substr(line))
+        if match != None and len(match.group(1)) < whitespace_length:
             break
         p = line.end() + 1
         if p >= view.size():
