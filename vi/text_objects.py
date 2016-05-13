@@ -481,8 +481,13 @@ def find_indent_text_object(view, s):
     end   = view.line(s)
 
     start_line = view.line(s)
-    whitespace = re.match("\s*", view.substr(start_line)).group(0)
+    start_line_content = view.substr(start_line)
+    whitespace = re.match("\s*", start_line_content).group(0)
     whitespace_length = len(whitespace)
+
+    # Do nothing when the line is whitespace-only
+    if re.match("^\s*$", start_line_content):
+        return (s.a, s.b)
 
     # Search backward until a line with different indent is found
     # This will give use the value for begin.
@@ -499,15 +504,29 @@ def find_indent_text_object(view, s):
     begin = p + 1 if p > 0 else p
 
     # To get the value for end, we do the same thing, this time searching forward.
+    previous_line_blank = False
     p = s.b + 1
     while True:
         line = view.line(p)
-        match = re.match("(\s*)[\S\n]", view.substr(line))
+        line_content = view.substr(line)
+        match = re.match("(\s*)[\S\n]", line_content)
         if match != None and len(match.group(1)) < whitespace_length:
             break
         p = line.end() + 1
         if p >= view.size():
             break
+        previous_line_blank = re.match("^\s*$", line_content)
+
+    # Travel back up if the line preceeding the last one is blank
+    if previous_line_blank:
+        p = view.line(p).begin() - 1
+        while True:
+            line = view.line(p)
+            is_blank = re.match("^\s*$", view.substr(line))
+            if not is_blank:
+                break
+            p = line.begin() - 1
+
     end = p
 
     return (begin, end)
