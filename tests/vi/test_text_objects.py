@@ -8,7 +8,6 @@ from Vintageous.tests import ViewTest
 
 from Vintageous.vi.text_objects import find_prev_lone_bracket
 from Vintageous.vi.text_objects import find_next_lone_bracket
-from Vintageous.vi.text_objects import find_indent_text_object
 
 
 test = namedtuple('simple_test', 'content start brackets expected msg')
@@ -39,44 +38,6 @@ TESTS_NEXT_BRACKET = (
     test(content='foo {bar foo bar}', start=16, brackets=('\\{', '\\}'), expected=R(16, 17), msg='should find next bracket at caret position'),
 )
 
-indent_test = namedtuple('simple_test', 'content start expected msg')
-
-TESTS_INDENT = (
-    indent_test(content='''
-# a comment
-def a_ruby_block
-  some_call
-  another_one
-  yerp
-end
-'''.lstrip(), start=R(38, 38), expected=R(29, 62), msg='should find indent'),
-    indent_test(content='''
-# a comment
-def a_ruby_block
-  some_call
-
-  another_one_with(blank_line)
-  yerp
-end
-'''.lstrip(), start=R(38, 38), expected=R(29, 80), msg='should find indent when there\'s a blank line'),
-    indent_test(content='''
-# a python thing
-def a_python_fn:
-  some_call()
-  what()
-
-a_python_fn
-'''.lstrip(), start=R(38, 38), expected=R(34, 56), msg='should work with pyhton-ey functions'),
-    indent_test(content='''
-# a python thing
-def a_python_fn:
-  some_call()
-  what()
-
-a_python_fn
-'''.lstrip(), start=R(57, 57), expected=R(57, 57), msg='should ignore when triggered on a whitespace-only line'),
-)
-
 
 class Test_previous_bracket(ViewTest):
     def clear_selected_regions(self):
@@ -105,21 +66,6 @@ class Test_next_bracket(ViewTest):
 
             actual = find_next_lone_bracket(self.view, data.start,
                                             data.brackets)
-
-            msg = "failed at test index {0}: {1}".format(i, data.msg)
-            self.assertEqual(data.expected, actual, msg)
-
-class Test_indent(ViewTest):
-    def clear_selected_regions(self):
-        self.view.sel().clear()
-
-    def testAll(self):
-        for (i, data) in enumerate(TESTS_INDENT):
-            self.clear_selected_regions()
-            self.write(data.content)
-
-            start, end = find_indent_text_object(self.view, data.start)
-            actual = R(start, end)
 
             msg = "failed at test index {0}: {1}".format(i, data.msg)
             self.assertEqual(data.expected, actual, msg)
