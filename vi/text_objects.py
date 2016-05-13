@@ -47,6 +47,7 @@ WORD = 5
 BIG_WORD = 6
 PARAGRAPH = 7
 INDENT = 8
+LINE = 9
 
 
 PAIRS = {
@@ -69,6 +70,7 @@ PAIRS = {
     'W': (None, BIG_WORD),
     'w': (None, WORD),
     'i': (None, INDENT),
+    'l': (None, LINE),
 }
 
 
@@ -324,6 +326,10 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         start, end = find_indent_text_object(view, s, inclusive)
         return sublime.Region(start, end)
 
+    if type_ == LINE:
+        start, end = find_line_text_object(view, s)
+        return sublime.Region(start, end)
+
     return s
 
 
@@ -559,6 +565,20 @@ def find_indent_text_object(view, s, inclusive=True):
         if p >= view.size():
             break
     end = p - 1
+
+    return (begin, end)
+
+def find_line_text_object(view, s):
+    '''Implements the line object'''
+    line = view.line(s)
+    line_content = view.substr(line)
+
+    begin = line.begin()
+    end = line.end()
+
+    whitespace_match = re.match("\s+", line_content)
+    if whitespace_match:
+        begin = begin + len(whitespace_match.group(0))
 
     return (begin, end)
 
