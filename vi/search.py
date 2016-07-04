@@ -180,8 +180,13 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         # if State(self.view).settings.vi['hlsearch'] == False:
         #     return
 
-        self.view.add_regions('vi_search', regs, 'vi_search.comment', '', sublime.DRAW_NO_OUTLINE)
-
+        self.view.add_regions(
+            'vi_search',
+            regs,
+            'highlight.vi',
+            '',
+            sublime.DRAW_NO_FILL
+        )
 
 # TODO: Test me.
 class ExactWordBufferSearchBase(BufferSearchBase):
