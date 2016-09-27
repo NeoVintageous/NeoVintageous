@@ -3400,6 +3400,8 @@ class ViReverseFindWord(ViMotionDef):
         return cmd
 
 
+@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.BIG_Z, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_K, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_W, modes=_MODES_MOTION)
