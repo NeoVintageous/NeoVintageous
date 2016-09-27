@@ -319,7 +319,9 @@ class _enter_normal_mode(ViTextCommandBase):
             #      Vintageous altogether.
             if len(self.view.sel()) < 2:
                 # don't hide panel if multiple cursors
-                self.view.window().run_command('hide_panel', {'cancel': True})
+                # if not from_init and getattr(self.view, 'settings') is None:
+                if not from_init:
+                    self.view.window().run_command('hide_panel', {'cancel': True})
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
