@@ -9,6 +9,11 @@ I don't ever intend to merge this upstream, because I plan on adding some settin
 
 One major change that isn't a code change is that if you submit PRs, I will review them and likely merge them. **Please help me make Vintageous better!**
 
+#### New stuff
+
+- [@guillermooo's surround.vim plugin for Vintageous](https://github.com/guillermooo/Vintageous_Plugin_Surround) has been integrated and enabled by default behind a setting.
+- Added the ability to enable/disable bindings via a setting. Now you can PR your fancy extra functionality into this repo and have it be easy for users to enable/disable.
+
 #### Fixes some minor bugs
 
 - `c_` and `d_` no longer cause an error
