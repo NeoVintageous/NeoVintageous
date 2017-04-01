@@ -1,12 +1,8 @@
-[![Build Status](https://travis-ci.org/guillermooo/Vintageous.svg?branch=master)](https://travis-ci.org/guillermooo/Vintageous) [![Build status](https://ci.appveyor.com/api/projects/status/pvea8jg8bdoq2rmn/branch/master)](https://ci.appveyor.com/project/guillermooo/vintageous/branch/master)
+## VintageousPlus
 
-## Vintageous
+**VintageousPlus** is a fork of the awesome [Vintageous](https://github.com/guillermooo/Vintageous) plugin for Sublime Text 3. The original author [@guillermooo](https://github.com/guillermooo) doesn't seem to be maintaining it anymore, so this fork steps up to merge outstanding PRs and add some new features.
 
-<a href='http://www.pledgie.com/campaigns/19122'><img alt='Click here to lend your support to: Vintageous and make a donation at www.pledgie.com !' src='http://www.pledgie.com/campaigns/19122.png?skin_name=chrome' border='0' /></a>
-
-
-**Vintageous** is a comprehensive vi/Vim emulation layer for Sublime Text 3.
-
+I don't ever intend to merge this upstream, because I plan on adding some settings and making some changes in the spirit of Atom's [vim-mode-plus](https://github.com/t9md/atom-vim-mode-plus/wiki/YouDontKnowVimModePlus) that deviate from and improve on standard Vim behaviour when it makes sense. It's my understanding that this is contrary to @guillermooo's philosophy. The Github convention for forks that don't plan on merging is to not have it be a fork on Github, hence the fact that this isn't marked as a fork.
 
 ### Installing
 
@@ -14,19 +10,7 @@
 is in the `ignored_packages` list
 in your user preferences.**
 
-You can install Vintageous in multiple ways:
-
-
-##### Using Package Control
-
-Search for 'Vintageous' and install.
-
-
-##### Using a Pre-built Version
-
-1. Download the [current build](https://bitbucket.org/guillermooo/vintageous/downloads/Vintageous.sublime-package)
-2. Copy *Vintageous.sublime-package* to the *Installed Packages* folder located under the data directory.
-
+You can install VintageousPlus in multiple ways:
 
 ##### Building from Source
 
@@ -36,12 +20,6 @@ Search for 'Vintageous' and install.
 
 Refer to the [wiki](https://github.com/guillermooo/Vintageous/wiki) for more information.
 
-
-### Documentation
-
-Refer to the [wiki](https://github.com/guillermooo/Vintageous/wiki).
-
-
 ### Settings
 
-See [Vintageous/Preferences.sublime-settings](https://github.com/guillermooo/Vintageous/blob/master/Preferences.sublime-settings) for a comprehensive list of settings.
+See [VintageousPlus/Preferences.sublime-settings](https://github.com/trishume/VintageousPlus/blob/master/Preferences.sublime-settings) for a comprehensive list of settings.
