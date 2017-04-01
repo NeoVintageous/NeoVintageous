@@ -154,16 +154,32 @@ def regions_transformer_reversed(view, f):
     view.sel().clear()
     view.sel().add_all(new)
 
+PAIRS_DEFAULT_PLAIN = {
+    '(': ('(', ')'),
+    ')': ('( ', ' )'),
+    '[': ('[', ']'),
+    ']': ('[ ', ' ]'),
+    '{': ('{', '}'),
+    '}': ('{ ', ' }'),
+}
+
+PAIRS_DEFAULT_SPACE = {
+    ')': ('(', ')'),
+    '(': ('( ', ' )'),
+    ']': ('[', ']'),
+    '[': ('[ ', ' ]'),
+    '}': ('{', '}'),
+    '{': ('{ ', ' }'),
+}
+
+def get_surround_pairs(view):
+    if view.settings().get("vintageousplus_surround_spaces",False):
+        return PAIRS_DEFAULT_SPACE
+    else:
+        return PAIRS_DEFAULT_PLAIN
+
 # actual command implementation
 class _vi_plug_ys(ViTextCommandBase):
-    PAIRS = {
-        '(': ('(', ')'),
-        ')': ('( ', ' )'),
-        '[': ('[', ']'),
-        ']': ('[ ', ' ]'),
-        '{': ('{', '}'),
-        '}': ('{ ', ' }'),
-    }
     def run(self, edit, mode=None, surround_with='"', count=1, motion=None):
         def f(view, s):
             if mode == modes.INTERNAL_NORMAL:
@@ -188,7 +204,7 @@ class _vi_plug_ys(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
     def surround(self, edit, s, surround_with):
-        open_, close_ = _vi_plug_ys.PAIRS.get(surround_with, (surround_with, surround_with))
+        open_, close_ = get_surround_pairs(self.view).get(surround_with, (surround_with, surround_with))
 
         # Takes <q class="foo"> and produces: <q class="foo">text</q>
         if open_.startswith('<'):
@@ -224,8 +240,9 @@ class _vi_plug_cs(sublime_plugin.TextCommand):
 
     def replace(self, edit, s, replace_what):
         old, new = tuple(replace_what)
-        open_, close_ = _vi_plug_cs.PAIRS.get(old, (old, old))
-        new_open, new_close = _vi_plug_cs.PAIRS.get(new, (new, new))
+        pairs = get_surround_pairs(self.view)
+        open_, close_ = pairs.get(old, (old, old))
+        new_open, new_close = pairs.get(new, (new, new))
 
         if len(open_) == 1 and open_ == 't':
             open_, close_ = ('<.*?>', '</.*?>')
@@ -264,7 +281,7 @@ class _vi_plug_ds(sublime_plugin.TextCommand):
 
     def replace(self, edit, s, replace_what):
         old, new = (replace_what, '')
-        open_, close_ = _vi_plug_cs.PAIRS.get(old, (old, old))
+        open_, close_ = get_surround_pairs(self.view).get(old, (old, old))
 
         if len(open_) == 1 and open_ == 't':
             open_, close_ = ('<.*?>', '</.*?>')
