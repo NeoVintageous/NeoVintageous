@@ -1,17 +1,17 @@
 import unittest
 
-from Vintageous.ex.parser.nodes import RangeNode
-from Vintageous.ex.parser.nodes import CommandLineNode
-from Vintageous.ex.parser.tokens import TokenDot
-from Vintageous.ex.parser.tokens import TokenDigits
-from Vintageous.ex.parser.tokens import TokenSearchForward
-from Vintageous.ex.parser.tokens import TokenSearchBackward
-from Vintageous.ex.parser.tokens import TokenPercent
-from Vintageous.ex.parser.tokens import TokenOffset
-from Vintageous.ex.parser.tokens import TokenMark
-from Vintageous.ex.parser.scanner_command_substitute import TokenCommandSubstitute
+from VintageousPlus.ex.parser.nodes import RangeNode
+from VintageousPlus.ex.parser.nodes import CommandLineNode
+from VintageousPlus.ex.parser.tokens import TokenDot
+from VintageousPlus.ex.parser.tokens import TokenDigits
+from VintageousPlus.ex.parser.tokens import TokenSearchForward
+from VintageousPlus.ex.parser.tokens import TokenSearchBackward
+from VintageousPlus.ex.parser.tokens import TokenPercent
+from VintageousPlus.ex.parser.tokens import TokenOffset
+from VintageousPlus.ex.parser.tokens import TokenMark
+from VintageousPlus.ex.parser.scanner_command_substitute import TokenCommandSubstitute
 
-from Vintageous.tests import ViewTest
+from VintageousPlus.tests import ViewTest
 
 
 class RangeNode_Tests(unittest.TestCase):

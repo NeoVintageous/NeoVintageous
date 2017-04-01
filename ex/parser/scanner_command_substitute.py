@@ -3,7 +3,7 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_SUBSTITUTE
 from .tokens_base import TokenOfCommand
 
-from Vintageous import ex
+from VintageousPlus import ex
 
 
 @ex.command('substitute', 's')

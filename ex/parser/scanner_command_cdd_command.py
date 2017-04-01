@@ -2,7 +2,7 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_CDD_COMMAND
 from .tokens_base import TokenOfCommand
-from Vintageous import ex
+from VintageousPlus import ex
 
 
 @ex.command('cdd', 'cdd')

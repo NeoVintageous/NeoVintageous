@@ -1,10 +1,10 @@
 from collections import namedtuple
 
-from Vintageous.vi.utils import modes
+from VintageousPlus.vi.utils import modes
 
-from Vintageous.tests import first_sel
-from Vintageous.tests import second_sel
-from Vintageous.tests import ViewTest
+from VintageousPlus.tests import first_sel
+from VintageousPlus.tests import second_sel
+from VintageousPlus.tests import ViewTest
 
 
 test_data = namedtuple('test_data', 'initial_text regions cmd_params expected actual_func msg')

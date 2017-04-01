@@ -9,12 +9,12 @@ from sublime import CLASS_LINE_END
 from sublime import CLASS_LINE_START
 from sublime import CLASS_EMPTY_LINE
 
-from Vintageous.vi import search
-from Vintageous.vi import units
-from Vintageous.vi import utils
-from Vintageous.vi.search import find_in_range
-from Vintageous.vi.search import reverse_search_by_pt
-from Vintageous.vi.utils import resolve_insertion_point_at_b
+from VintageousPlus.vi import search
+from VintageousPlus.vi import units
+from VintageousPlus.vi import utils
+from VintageousPlus.vi.search import find_in_range
+from VintageousPlus.vi.search import reverse_search_by_pt
+from VintageousPlus.vi.utils import resolve_insertion_point_at_b
 
 
 RX_ANY_TAG = r'</?([0-9A-Za-z-]+).*?>'

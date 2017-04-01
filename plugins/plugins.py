@@ -1,4 +1,4 @@
-from Vintageous.vi.utils import modes
+from VintageousPlus.vi.utils import modes
 
 
 mappings = {

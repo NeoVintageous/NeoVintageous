@@ -7,13 +7,13 @@ import threading
 import sublime
 import sublime_plugin
 
-from Vintageous.state import _init_vintageous
-from Vintageous.state import State
-from Vintageous.vi import settings
-from Vintageous.vi import cmd_defs
-from Vintageous.vi.dot_file import DotFile
-from Vintageous.vi.utils import modes
-from Vintageous.vi.utils import regions_transformer
+from VintageousPlus.state import _init_vintageous
+from VintageousPlus.state import State
+from VintageousPlus.vi import settings
+from VintageousPlus.vi import cmd_defs
+from VintageousPlus.vi.dot_file import DotFile
+from VintageousPlus.vi.utils import modes
+from VintageousPlus.vi.utils import regions_transformer
 
 
 class _vi_slash_on_parser_done(sublime_plugin.WindowCommand):

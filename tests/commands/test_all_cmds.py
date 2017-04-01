@@ -1,6 +1,6 @@
 import os
 
-from Vintageous.tests.cmd_tester import ViCmdTester
+from VintageousPlus.tests.cmd_tester import ViCmdTester
 
 
 _path_to_test_specs = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))

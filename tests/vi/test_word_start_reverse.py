@@ -1,10 +1,10 @@
 import unittest
 from collections import namedtuple
 
-from Vintageous.vi.text_objects import word_end_reverse
-from Vintageous.vi.utils import modes
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from VintageousPlus.vi.text_objects import word_end_reverse
+from VintageousPlus.vi.utils import modes
+from VintageousPlus.tests import first_sel
+from VintageousPlus.tests import ViewTest
 
 
 test_data = namedtuple('test_data', 'content args expected msg')

@@ -1,6 +1,6 @@
 import sublime
 import sublime_plugin
-from Vintageous.vi.sublime import is_view as sublime_is_view
+from VintageousPlus.vi.sublime import is_view as sublime_is_view
 
 from contextlib import contextmanager
 import re

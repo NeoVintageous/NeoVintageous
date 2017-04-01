@@ -3,7 +3,7 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_MOVE
 from .tokens_base import TokenOfCommand
-from Vintageous import ex
+from VintageousPlus import ex
 
 
 @ex.command('move', 'm')

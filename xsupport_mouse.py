@@ -1,4 +1,4 @@
 import sublime
 import sublime_plugin
 
-from Vintageous.vi.utils import IrreversibleMouseTextCommand
+from VintageousPlus.vi.utils import IrreversibleMouseTextCommand

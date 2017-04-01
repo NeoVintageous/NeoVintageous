@@ -1,7 +1,7 @@
 from collections import namedtuple
 
-from Vintageous.tests import ViewTest
-from Vintageous.vi.utils import modes
+from VintageousPlus.tests import ViewTest
+from VintageousPlus.vi.utils import modes
 
 test_data = namedtuple('test_data', 'text startRegion mode expectedRegion msg')
 

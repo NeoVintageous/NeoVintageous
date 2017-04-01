@@ -1,18 +1,18 @@
-from Vintageous.ex.ex_error import ERR_NO_RANGE_ALLOWED
-from Vintageous.ex.ex_error import VimError
-from Vintageous.ex.parser.tokens import TokenDigits
-from Vintageous.ex.parser.tokens import TokenDollar
-from Vintageous.ex.parser.tokens import TokenDot
-from Vintageous.ex.parser.tokens import TokenMark
-from Vintageous.ex.parser.tokens import TokenOffset
-from Vintageous.ex.parser.tokens import TokenOfSearch
-from Vintageous.ex.parser.tokens import TokenPercent
-from Vintageous.ex.parser.tokens import TokenSearchBackward
-from Vintageous.ex.parser.tokens import TokenSearchForward
-from Vintageous.vi.search import reverse_search_by_pt
-from Vintageous.vi.utils import first_sel
-from Vintageous.vi.utils import R
-from Vintageous.vi.utils import row_at
+from VintageousPlus.ex.ex_error import ERR_NO_RANGE_ALLOWED
+from VintageousPlus.ex.ex_error import VimError
+from VintageousPlus.ex.parser.tokens import TokenDigits
+from VintageousPlus.ex.parser.tokens import TokenDollar
+from VintageousPlus.ex.parser.tokens import TokenDot
+from VintageousPlus.ex.parser.tokens import TokenMark
+from VintageousPlus.ex.parser.tokens import TokenOffset
+from VintageousPlus.ex.parser.tokens import TokenOfSearch
+from VintageousPlus.ex.parser.tokens import TokenPercent
+from VintageousPlus.ex.parser.tokens import TokenSearchBackward
+from VintageousPlus.ex.parser.tokens import TokenSearchForward
+from VintageousPlus.vi.search import reverse_search_by_pt
+from VintageousPlus.vi.utils import first_sel
+from VintageousPlus.vi.utils import R
+from VintageousPlus.vi.utils import row_at
 
 
 class Node(object):

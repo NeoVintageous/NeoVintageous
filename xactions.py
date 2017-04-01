@@ -3,31 +3,31 @@ import re
 
 import sublime
 
-from Vintageous import PluginLogger
-from Vintageous.state import _init_vintageous
-from Vintageous.state import State
-from Vintageous.vi import cmd_base
-from Vintageous.vi import cmd_defs
-from Vintageous.vi import mappings
-from Vintageous.vi import search
-from Vintageous.vi import units
-from Vintageous.vi import utils
-from Vintageous.vi.constants import regions_transformer_reversed
-from Vintageous.vi.core import ViTextCommandBase
-from Vintageous.vi.core import ViWindowCommandBase
-from Vintageous.vi.keys import key_names
-from Vintageous.vi.keys import KeySequenceTokenizer
-from Vintageous.vi.keys import to_bare_command_name
-from Vintageous.vi.mappings import Mappings
-from Vintageous.vi.utils import first_sel
-from Vintageous.vi.utils import gluing_undo_groups
-from Vintageous.vi.utils import IrreversibleTextCommand
-from Vintageous.vi.utils import is_view
-from Vintageous.vi.utils import modes
-from Vintageous.vi.utils import R
-from Vintageous.vi.utils import regions_transformer
-from Vintageous.vi.utils import resolve_insertion_point_at_b
-from Vintageous.vi.utils import restoring_sel
+from VintageousPlus import PluginLogger
+from VintageousPlus.state import _init_vintageous
+from VintageousPlus.state import State
+from VintageousPlus.vi import cmd_base
+from VintageousPlus.vi import cmd_defs
+from VintageousPlus.vi import mappings
+from VintageousPlus.vi import search
+from VintageousPlus.vi import units
+from VintageousPlus.vi import utils
+from VintageousPlus.vi.constants import regions_transformer_reversed
+from VintageousPlus.vi.core import ViTextCommandBase
+from VintageousPlus.vi.core import ViWindowCommandBase
+from VintageousPlus.vi.keys import key_names
+from VintageousPlus.vi.keys import KeySequenceTokenizer
+from VintageousPlus.vi.keys import to_bare_command_name
+from VintageousPlus.vi.mappings import Mappings
+from VintageousPlus.vi.utils import first_sel
+from VintageousPlus.vi.utils import gluing_undo_groups
+from VintageousPlus.vi.utils import IrreversibleTextCommand
+from VintageousPlus.vi.utils import is_view
+from VintageousPlus.vi.utils import modes
+from VintageousPlus.vi.utils import R
+from VintageousPlus.vi.utils import regions_transformer
+from VintageousPlus.vi.utils import resolve_insertion_point_at_b
+from VintageousPlus.vi.utils import restoring_sel
 
 
 _logger = PluginLogger(__name__)

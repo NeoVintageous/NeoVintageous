@@ -6,14 +6,14 @@ from unittest import mock
 from unittest.mock import call
 
 
-from Vintageous import state
-from Vintageous.vi.utils import modes
-from Vintageous.tests import set_text
-from Vintageous.tests import add_sel
-from Vintageous.tests import make_region
-from Vintageous.tests import ViewTest
-from Vintageous.vi.cmd_base import cmd_types
-from Vintageous.vi import cmd_defs
+from VintageousPlus import state
+from VintageousPlus.vi.utils import modes
+from VintageousPlus.tests import set_text
+from VintageousPlus.tests import add_sel
+from VintageousPlus.tests import make_region
+from VintageousPlus.tests import ViewTest
+from VintageousPlus.vi.cmd_base import cmd_types
+from VintageousPlus.vi import cmd_defs
 
 
 class StateTestCase(ViewTest):

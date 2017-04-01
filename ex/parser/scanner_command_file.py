@@ -3,9 +3,9 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_FILE
 from .tokens_base import TokenOfCommand
 
-from Vintageous.ex.ex_error import ERR_TRAILING_CHARS
-from Vintageous.ex.ex_error import VimError
-from Vintageous import ex
+from VintageousPlus.ex.ex_error import ERR_TRAILING_CHARS
+from VintageousPlus.ex.ex_error import VimError
+from VintageousPlus import ex
 
 
 @ex.command('file', 'f')

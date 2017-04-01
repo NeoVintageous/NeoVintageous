@@ -3,23 +3,23 @@ import sublime_plugin
 
 import os
 
-from Vintageous.ex import command_names
-from Vintageous.ex import ex_error
-from Vintageous.ex.completions import iter_paths
-from Vintageous.ex.completions import parse
-from Vintageous.ex.completions import parse_for_setting
-from Vintageous.ex.completions import wants_fs_completions
-from Vintageous.ex.completions import wants_setting_completions
-from Vintageous.ex.ex_error import show_error
-from Vintageous.ex.ex_error import show_not_implemented
-from Vintageous.ex.ex_error import VimError
-from Vintageous.ex.parser.parser import parse_command_line
-from Vintageous.ex.parser.scanner_command_goto import TokenCommandGoto
-from Vintageous.state import State
-from Vintageous.vi.settings import iter_settings
-from Vintageous.vi.sublime import show_ipanel
-from Vintageous.vi.utils import mark_as_widget
-from Vintageous.vi.utils import modes
+from VintageousPlus.ex import command_names
+from VintageousPlus.ex import ex_error
+from VintageousPlus.ex.completions import iter_paths
+from VintageousPlus.ex.completions import parse
+from VintageousPlus.ex.completions import parse_for_setting
+from VintageousPlus.ex.completions import wants_fs_completions
+from VintageousPlus.ex.completions import wants_setting_completions
+from VintageousPlus.ex.ex_error import show_error
+from VintageousPlus.ex.ex_error import show_not_implemented
+from VintageousPlus.ex.ex_error import VimError
+from VintageousPlus.ex.parser.parser import parse_command_line
+from VintageousPlus.ex.parser.scanner_command_goto import TokenCommandGoto
+from VintageousPlus.state import State
+from VintageousPlus.vi.settings import iter_settings
+from VintageousPlus.vi.sublime import show_ipanel
+from VintageousPlus.vi.utils import mark_as_widget
+from VintageousPlus.vi.utils import modes
 
 
 def plugin_loaded():
@@ -78,7 +78,7 @@ class ViColonInput(sublime_plugin.WindowCommand):
                on_done=self.on_done,
                on_change=self.on_change))
 
-        v.set_syntax_file('Packages/Vintageous/VintageousEx Cmdline.tmLanguage')
+        v.set_syntax_file('Packages/VintageousPlus/VintageousEx Cmdline.tmLanguage')
         v.settings().set('gutter', False)
         v.settings().set('rulers', [])
 

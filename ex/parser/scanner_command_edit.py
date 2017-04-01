@@ -3,8 +3,8 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_EDIT
 from .tokens_base import TokenOfCommand
 
-from Vintageous.ex.ex_error import ERR_INVALID_ARGUMENT
-from Vintageous import ex
+from VintageousPlus.ex.ex_error import ERR_INVALID_ARGUMENT
+from VintageousPlus import ex
 
 
 plus_plus_translations = {

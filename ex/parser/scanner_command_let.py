@@ -1,11 +1,11 @@
-from Vintageous.ex.ex_error import ERR_UNDEFINED_VARIABLE
-from Vintageous.ex.ex_error import VimError
+from VintageousPlus.ex.ex_error import ERR_UNDEFINED_VARIABLE
+from VintageousPlus.ex.ex_error import VimError
 
 from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_LET
 from .tokens_base import TokenOfCommand
-from Vintageous import ex
+from VintageousPlus import ex
 
 
 @ex.command('let', 'let')

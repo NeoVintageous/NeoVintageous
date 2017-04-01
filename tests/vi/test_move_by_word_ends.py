@@ -3,10 +3,10 @@ from collections import namedtuple
 
 import sublime
 
-from Vintageous.vi.units import word_ends
-from Vintageous.vi.utils import modes
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from VintageousPlus.vi.units import word_ends
+from VintageousPlus.vi.utils import modes
+from VintageousPlus.tests import first_sel
+from VintageousPlus.tests import ViewTest
 
 
 test_data = namedtuple('test_data', 'content args kwargs expected msg')

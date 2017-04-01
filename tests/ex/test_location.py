@@ -2,13 +2,13 @@ import sublime
 
 import unittest
 
-from Vintageous.ex.ex_location import get_line_nr
-from Vintageous.ex.ex_location import find_eol
-from Vintageous.ex.ex_location import find_bol
-from Vintageous.ex.ex_location import find_line
-from Vintageous.ex.ex_location import search_in_range
-from Vintageous.ex.ex_location import find_last_match
-from Vintageous.ex.ex_location import reverse_search
+from VintageousPlus.ex.ex_location import get_line_nr
+from VintageousPlus.ex.ex_location import find_eol
+from VintageousPlus.ex.ex_location import find_bol
+from VintageousPlus.ex.ex_location import find_line
+from VintageousPlus.ex.ex_location import search_in_range
+from VintageousPlus.ex.ex_location import find_last_match
+from VintageousPlus.ex.ex_location import reverse_search
 
 
 class TestHelpers(unittest.TestCase):

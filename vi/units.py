@@ -9,10 +9,10 @@ from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 
 
-from Vintageous.vi.search import reverse_search_by_pt
-from Vintageous.vi import utils
-from Vintageous.vi.utils import next_non_white_space_char
-from Vintageous.vi.utils import R
+from VintageousPlus.vi.search import reverse_search_by_pt
+from VintageousPlus.vi import utils
+from VintageousPlus.vi.utils import next_non_white_space_char
+from VintageousPlus.vi.utils import R
 
 import re
 
