@@ -46,6 +46,8 @@ TAG = 4
 WORD = 5
 BIG_WORD = 6
 PARAGRAPH = 7
+INDENT = 8
+LINE = 9
 
 
 PAIRS = {
@@ -67,6 +69,8 @@ PAIRS = {
     't': (None, TAG),
     'W': (None, BIG_WORD),
     'w': (None, WORD),
+    'i': (None, INDENT),
+    'l': (None, LINE),
 }
 
 
@@ -151,6 +155,8 @@ def a_word(view, pt, inclusive=True, count=1):
     assert count > 0
     start = current_word_start(view, pt)
     end = pt
+
+    p = 3
     if inclusive:
         end = units.word_starts(view, start, count=count, internal=True)
 
@@ -316,6 +322,13 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         else:
             return sublime.Region(sentence_start, sentence_end.b)
 
+    if type_ == INDENT:
+        start, end = find_indent_text_object(view, s, inclusive)
+        return sublime.Region(start, end)
+
+    if type_ == LINE:
+        start, end = find_line_text_object(view, s)
+        return sublime.Region(start, end)
 
     return s
 
@@ -466,6 +479,106 @@ def find_inner_paragraph(view, initial_loc):
         if p >= view.size():
             break
     end = p
+
+    return (begin, end)
+
+def find_indent_text_object(view, s, inclusive=True):
+    '''Implements the indent text object as specified
+    at http://vim.wikia.com/wiki/Indent_text_object'''
+    begin = view.line(s)
+    end   = view.line(s)
+
+    start_line = view.line(s)
+    start_line_content = view.substr(start_line)
+
+    # Do nothing when the line is whitespace-only
+    if re.match("^\s*$", start_line_content):
+        return (s.a, s.b)
+
+    whitespace = re.match("\s*", start_line_content).group(0)
+    whitespace_length = len(whitespace)
+
+    # From http://vim.wikia.com/wiki/Indent_text_object:
+    if inclusive:
+        # "a"
+        if whitespace_length is 0:
+            # When the cursor is on a line with zero indent,
+            # the selection will be delimited by blank lines
+            # (that may or may not contain whitespaces).
+            pattern = None
+            break_on_empty_lines = True
+        else:
+            # When the cursor is on a line with a non-zero indent,
+            # the selection will be delimited by lines with
+            # an indent that is less than the original line;
+            # blank lines will be SELECTED.
+            pattern = "\s{0,"+str(whitespace_length-1)+"}\S"
+            break_on_empty_lines = False
+    else:
+        # "i"
+        if whitespace_length is 0:
+            # When the cursor is on a line with zero indent,
+            # the selection will be delimited by blank lines
+            # (that may or may not contain whitespaces).
+            pattern = None
+            break_on_empty_lines = True
+        else:
+            # When the cursor is on a line with a non-zero indent,
+            # the selection will be delimited by lines with
+            # an indent that is less than the original line;
+            # blank lines will be IGNORED and thus,
+            # become the delimiter if one is encountered.
+            pattern = "\s{0,"+str(whitespace_length-1)+"}\S"
+            break_on_empty_lines = True
+
+    if pattern:
+        pattern = re.compile(pattern)
+        def should_break_on_line(line_content):
+            if break_on_empty_lines and not line_content.strip():
+                return True
+            return "pattern_match" if pattern.match(line_content) else False
+    else:
+        def should_break_on_line(line_content):
+            return not line_content.strip()
+
+    # Search backward until the pattern is matched
+    p = s.a
+    while True:
+        line = view.line(p)
+        line_content = view.substr(line)
+        if should_break_on_line(line_content):
+            break
+        elif line.begin() == 0:
+            p = 0
+            break
+        p = line.begin() - 1
+    begin = p + 1 if p > 0 else p
+
+    # To get the value for end, we do the same thing, this time searching forward.
+    p = s.b
+    while True:
+        line = view.line(p)
+        line_content = view.substr(line)
+        if should_break_on_line(line_content):
+            break
+        p = line.end() + 1
+        if p >= view.size():
+            break
+    end = p - 1
+
+    return (begin, end)
+
+def find_line_text_object(view, s):
+    '''Implements the line object'''
+    line = view.line(s)
+    line_content = view.substr(line)
+
+    begin = line.begin()
+    end = line.end()
+
+    whitespace_match = re.match("\s+", line_content)
+    if whitespace_match:
+        begin = begin + len(whitespace_match.group(0))
 
     return (begin, end)
 
