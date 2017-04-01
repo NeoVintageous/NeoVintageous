@@ -1389,13 +1389,10 @@ class _vi_underscore(ViMotionCommand):
 
                 # XXX: There may be better ways to communicate between actions
                 # and motions than by inspecting state.
-                try:
-                    # when testing, there'll be no command in some
-                    # cases and this branch will error.
-                    if self.state.action['command'] == '_vi_c':
-                        return R(begin, end)
-                except TypeError:
-                    return R(begin, end + 1)
+                if isinstance(self.state.action,cmd_defs.ViChangeByChars):
+                    return R(begin, end)
+                else:
+                    return R(begin, end+1)
 
             elif mode == modes.VISUAL:
                 bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
