@@ -7,6 +7,8 @@ I don't ever intend to merge this upstream, because I plan on adding some settin
 
 ### Changes from Vintageous
 
+One major change that isn't a code change is that if you submit PRs, I will review them and likely merge them. **Please help me make Vintageous better!**
+
 #### Fixes some minor bugs
 
 - `c_` and `d_` no longer cause an error
