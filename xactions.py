@@ -687,6 +687,7 @@ class ProcessNotation(ViWindowCommandBase):
         if leading_motions:
             if ((len(leading_motions) == len(keys)) and
                 (not state.must_collect_input)):
+                    state.non_interactive = False
                     return
 
             _logger.info('[ProcessNotation] original seq/leading motions: {0}/{1}'
