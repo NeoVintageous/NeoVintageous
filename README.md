@@ -22,6 +22,10 @@ in your user preferences.**
 
 You can install VintageousPlus in multiple ways:
 
+##### Package Control
+
+I'll try and get this on Package Control soon
+
 ##### Building from Source
 
 1. Clone this repository
