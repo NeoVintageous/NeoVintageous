@@ -4,6 +4,16 @@
 
 I don't ever intend to merge this upstream, because I plan on adding some settings and making some changes in the spirit of Atom's [vim-mode-plus](https://github.com/t9md/atom-vim-mode-plus/wiki/YouDontKnowVimModePlus) that deviate from and improve on standard Vim behaviour when it makes sense. It's my understanding that this is contrary to @guillermooo's philosophy. The Github convention for forks that don't plan on merging is to not have it be a fork on Github, hence the fact that this isn't marked as a fork.
 
+### Changes from Vintageous
+
+#### The following outstanding PRs have been merged
+
+- [Add Support for Sublime Wrap Plus](https://github.com/guillermooo/Vintageous/pull/1077)
+- [Fix interactive commands not working after mapped commands](https://github.com/guillermooo/Vintageous/pull/1042)
+- [Fix for P newline pasting](https://github.com/guillermooo/Vintageous/pull/1041)
+- [Settings, Menus, Run tests keymaps](https://github.com/guillermooo/Vintageous/pull/1030)
+- [New text objects](https://github.com/guillermooo/Vintageous/pull/1074)
+
 ### Installing
 
 **Make sure that Vintage
