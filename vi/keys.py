@@ -264,10 +264,14 @@ def seq_to_command(state, seq, mode=None):
     if state.mode in plugins.mappings:
         command = plugins.mappings[mode].get(seq, None)
 
+    # The plugin command might only be enabled under certain conditions
+    if command and hasattr(command,'is_enabled') and (not command.is_enabled(state)):
+        command = None
+
     if not command and state.mode in mappings:
         command = mappings[mode].get(seq, cmd_base.ViMissingCommandDef())
-        return command
-    elif command:
+
+    if command:
         return command
 
     return cmd_base.ViMissingCommandDef()

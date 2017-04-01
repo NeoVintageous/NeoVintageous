@@ -894,7 +894,7 @@ class State(object):
 
         if self.action:
             action_cmd = self.action.translate(self)
-            self.logger.info('[Stage] lone action cmd '.format(action_cmd))
+            self.logger.info('[State] lone action cmd {0}'.format(action_cmd))
             if self.mode == modes.NORMAL:
                 self.logger.info(
                     '[State] switching to internal normal mode')

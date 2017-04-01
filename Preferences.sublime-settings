@@ -41,5 +41,8 @@
 	"vintageous_log_level": "error",
 
 	// If true, the test runner keymaps are enabled
-	"vintageous_test_runner_keymaps": false
+	"vintageous_test_runner_keymaps": false,
+
+	// Enable the surround.vim emulation extra, adds the "cs", "ds" and "ys" actions
+	"vintageousplus_enable_surround": true,
 }
