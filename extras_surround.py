@@ -143,7 +143,16 @@ class ViChangeSurround(ViOperatorDef):
         print(cmd)
         return cmd
 
-
+def regions_transformer_reversed(view, f):
+    sels = reversed(list(view.sel()))
+    new = []
+    for sel in sels:
+        region = f(view, sel)
+        if not isinstance(region, sublime.Region):
+            raise TypeError('sublime.Region required')
+        new.append(region)
+    view.sel().clear()
+    view.sel().add_all(new)
 
 # actual command implementation
 class _vi_plug_ys(ViTextCommandBase):
@@ -174,7 +183,7 @@ class _vi_plug_ys(ViTextCommandBase):
             self.view.run_command(motion['motion'], motion['motion_args'])
 
         if surround_with:
-            regions_transformer(self.view, f)
+            regions_transformer_reversed(self.view, f)
 
         self.enter_normal_mode(mode)
 
@@ -189,8 +198,8 @@ class _vi_plug_ys(ViTextCommandBase):
             self.view.insert(edit, s.a, surround_with)
             return
 
-        self.view.insert(edit, s.b, close_)
-        self.view.insert(edit, s.a, open_)
+        self.view.insert(edit, s.end(), close_)
+        self.view.insert(edit, s.begin(), open_)
 
 
 class _vi_plug_cs(sublime_plugin.TextCommand):

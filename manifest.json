@@ -18,6 +18,7 @@
 			["./tests/vi/*.py", []],
 			["./tests/ex/*.py", []],
 			["./tests/commands/*.py", []],
+			["./tests/extras/*.py", []],
 			["./vi/*.py", []],
 			["./ex/*.py", []],
 			["./ex/parser/*.py", []],
