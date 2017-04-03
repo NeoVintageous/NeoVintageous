@@ -2480,8 +2480,8 @@ class _vi_big_j(ViTextCommandBase):
     def run(self, edit, mode=None, separator=' ', count=1):
 
         # jsodc_join is better when joining comments
-        self.view.run_command('jsdocs_join')
-        return
+        # self.view.run_command('jsdocs_join')
+        # return
 
         sels = self.view.sel()
         s = R(sels[0].a, sels[-1].b)

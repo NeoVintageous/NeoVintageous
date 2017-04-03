@@ -208,6 +208,9 @@ TESTS_KNOWN_SEQUENCES = (
     seq_test(actual=seqs.CTRL_W_X,              expected='<C-w>x'),
 
     seq_test(actual=seqs.CTRL_K,          expected='<C-k>'),
+    seq_test(actual=seqs.CTRL_J,          expected='<C-j>'),
+    seq_test(actual=seqs.CTRL_N,          expected='<C-n>'),
+    seq_test(actual=seqs.GA,              expected='ga'),
     seq_test(actual=seqs.CTRL_K_CTRL_B,   expected='<C-k><C-b>'),
     seq_test(actual=seqs.CTRL_BIG_F,      expected='<C-F>'),
     seq_test(actual=seqs.CTRL_BIG_P,      expected='<C-P>'),
