@@ -1,54 +1,54 @@
 {
-	"name": "Vintageous",
-	"include": {
-		"dev": [
-			["*.*", ["*builder.py",
-					"*build.sh",
-					"*toplist.py",
-					"*.sublime-workspace",
-					"*.sublime-project",
-					"*.JSON-tmLanguage",
-					"*.ps1",
-					"*.hg*",
-					"TODO.txt",
-					"*manifest.json"]
-			],
+    "name": "Vintageous",
+    "include": {
+        "dev": [
+            ["*.*", ["*builder.py",
+                    "*build.sh",
+                    "*toplist.py",
+                    "*.sublime-workspace",
+                    "*.sublime-project",
+                    "*.JSON-tmLanguage",
+                    "*.ps1",
+                    "*.hg*",
+                    "TODO.txt",
+                    "*manifest.json"]
+            ],
 
-			["./tests/*.py", []],
-			["./tests/vi/*.py", []],
-			["./tests/ex/*.py", []],
-			["./tests/commands/*.py", []],
-			["./vi/*.py", []],
-			["./ex/*.py", []],
-			["./ex/parser/*.py", []],
-			["./plugins/*.py", []],
-			["./ex/plat/*.py", []],
+            ["./tests/*.py", []],
+            ["./tests/vi/*.py", []],
+            ["./tests/ex/*.py", []],
+            ["./tests/commands/*.py", []],
+            ["./vi/*.py", []],
+            ["./ex/*.py", []],
+            ["./ex/parser/*.py", []],
+            ["./plugins/*.py", []],
+            ["./ex/plat/*.py", []],
 
-			["./Development/*.*", []]
+            ["./Development/*.*", []]
 
 
-		],
-		"release": [
-			["*.*", ["*builder.py",
-					 "*build.sh",
-					 "*toplist.py",
-					 "*.sublime-workspace",
-					 "*.sublime-project",
-					 "*.JSON-tmLanguage",
-					 "*.ps1",
-					 "*.hg*",
-					 "dev_*.py",
-					 "*manifest.json",
-					 "Default.sublime-commands",
-					 "test_runner.py"]
-			],
+        ],
+        "release": [
+            ["*.*", ["*builder.py",
+                     "*build.sh",
+                     "*toplist.py",
+                     "*.sublime-workspace",
+                     "*.sublime-project",
+                     "*.JSON-tmLanguage",
+                     "*.ps1",
+                     "*.hg*",
+                     "dev_*.py",
+                     "*manifest.json",
+                     "Default.sublime-commands",
+                     "test_runner.py"]
+            ],
 
-			["./vi/*.py", []],
-			["./ex/*.py", []],
-			["./plugins/*.py", []],
-			["./ex/parsers/*.py", []],
-			["./ex/parsers/new/*.py", []],
-			["./ex/plat/*.py", []]
-		]
-	}
+            ["./vi/*.py", []],
+            ["./ex/*.py", []],
+            ["./plugins/*.py", []],
+            ["./ex/parsers/*.py", []],
+            ["./ex/parsers/new/*.py", []],
+            ["./ex/plat/*.py", []]
+        ]
+    }
 }
