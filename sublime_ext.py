@@ -444,7 +444,27 @@ class SublimeWindowAPI():
         their height and windows with 'winfixwidth' set keep their width.
         """
 
-        self.window.run_command('resize_groups_almost_equally')
+        layout = self.window.layout()
+        col_count = len(layout['cols'])
+        row_count = len(layout['rows'])
+
+        def equalise(count):
+            size = round(1.0 / (count - 1), 2)
+            vals = [0.0]
+            for i in range(1, count - 1):
+                vals.append(round(size * i, 2))
+            vals.append(1.0)
+            return vals
+
+        if col_count > 2:
+            layout['cols'] = equalise(col_count)
+
+        if row_count > 2:
+            layout['rows'] = equalise(row_count)
+
+        if col_count > 2 or row_count > 2:
+            self.window.set_layout(layout)
+
 
     def split_current_view_in_two(self, n=None):
         """
