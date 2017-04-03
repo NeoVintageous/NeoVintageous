@@ -16,6 +16,13 @@
                                 }
                             },
                             {
+                                "caption": "CHANGELOG",
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/Vintageous/CHANGELOG.md"
+                                }
+                            },
+                            {
                                 "caption": "-"
                             },
                             {
@@ -36,7 +43,7 @@
                                 "caption": "-"
                             },
                             {
-                                "caption": ".vintageousrc – User",
+                                "caption": "Settings – User .vintageousrc",
                                 "command": "vintageous_open_config_file"
                             },
                             {
@@ -46,7 +53,7 @@
                                 "caption": "LICENSE",
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/Vintageous/LICENSE.txt"
+                                    "file": "${packages}/Vintageous/LICENSE"
                                 }
                             }
                         ]
