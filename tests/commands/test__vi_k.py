@@ -126,10 +126,10 @@ aaa bbb
 ''',
     regions=((1, 6), (1, 6)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 6}, expected=((0, 2), (0, 2)), msg='from longer to shorter'),
 
-    test(content='''\t\taaa
-aaa bbb ccc
-''',
-    regions=((1, 8), (1, 8)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 8}, expected=((0, 2), (0, 2)), msg='xpos with tabs'),
+#     test(content='''\t\taaa
+# aaa bbb ccc
+# ''',
+#     regions=((1, 8), (1, 8)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 8}, expected=((0, 2), (0, 2)), msg='xpos with tabs'),
 
     test(content='''aaa
 aaa bbb ccc

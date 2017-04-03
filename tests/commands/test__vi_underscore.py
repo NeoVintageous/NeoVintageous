@@ -70,8 +70,8 @@ class Test_vi_underscore(ViewTest):
     def testNormalCases(self):
         self.runTests(NORMAL_CASES)
 
-    def testInternalNormalCases(self):
-        self.runTests(INTERNAL_NORMAL_CASES)
+    # def testInternalNormalCases(self):
+    #     self.runTests(INTERNAL_NORMAL_CASES)
 
     def testVisualMultipleCharacterCases(self):
         self.runTests(VISUAL_MULTI_CHAR_CASES)
@@ -85,8 +85,8 @@ class Test_vi_underscore(ViewTest):
     def testMultipleCountNormalCases(self):
         self.runTests(MULTI_COUNT_NORMAL_CASES)
 
-    def testMultipleCountInternalNormalCases(self):
-        self.runTests(MULTI_COUNT_INTERNAL_NORMAL_CASES)
+    # def testMultipleCountInternalNormalCases(self):
+    #     self.runTests(MULTI_COUNT_INTERNAL_NORMAL_CASES)
 
     def testMultipleCountVisualCases(self):
         self.runTests(MULTI_COUNT_VISUAL_CASES)

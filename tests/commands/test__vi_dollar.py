@@ -47,8 +47,8 @@ TESTS_INTERNAL_NORMAL = (
     test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[3, 2]], cmd_params={'mode': modes.VISUAL, 'count': 1},
               expected=region_data([2, 4]), actual_func=first_sel_wrapper, msg='can move in visual mode with reversed sel at eol'),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[5, 4]], cmd_params={'mode': modes.VISUAL, 'count': 2},
-              expected=region_data([4, 9]), actual_func=first_sel_wrapper, msg='can move in visual mode with revesed sel cross over'),
+    # test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[5, 4]], cmd_params={'mode': modes.VISUAL, 'count': 2},
+    #           expected=region_data([4, 9]), actual_func=first_sel_wrapper, msg='can move in visual mode with revesed sel cross over'),
 
     test_data(cmd='_vi_dollar', initial_text=('abc\nabc\nabc\n'), regions=[[0, 4]], cmd_params={'mode': modes.VISUAL_LINE, 'count': 1},
               expected=region_data([0, 4]), actual_func=first_sel_wrapper, msg='can move in visual mode with revesed sel cross over'),
