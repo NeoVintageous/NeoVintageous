@@ -914,40 +914,6 @@ class ViLeftDeleteChar(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
-class ViSendViewToRightPane(ViOperatorDef):
-    """
-    Vim: `<C-W-L>`
-    """
-
-    def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_l'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
-
-
-@keys.assign(seq=seqs.CTRL_W_H, modes=_MODES_ACTION)
-class ViSendViewToLeftPane(ViOperatorDef):
-    """
-    Vim: `<C-W-H>`
-    """
-
-    def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_h'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
-
-
 @keys.assign(seq=seqs.GT, modes=_MODES_ACTION)
 class ViActivateNextTab(ViOperatorDef):
     """
@@ -981,30 +947,131 @@ class ViActivatePreviousTab(ViOperatorDef):
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
         return cmd
 
-
-@keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
-class ViActivatePaneToTheRight(ViOperatorDef):
+@keys.assign(seq=seqs.CTRL_W_B, modes=_MODES_ACTION)
+class ViMoveCursorToBottomRightWindow(ViOperatorDef):
     """
-    Vim: `<C-W-l>`
+    Vim: `<C-w>b`
     """
-
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
         cmd = {}
-        cmd['action'] = '_vi_ctrl_w_l'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        cmd['action'] = '_vi_ctrl_w_b'
+        cmd['action_args'] = {}
         return cmd
 
+@keys.assign(seq=seqs.CTRL_W_BIG_H, modes=_MODES_ACTION)
+class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
+    """
+    Vim: `<C-w>H`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_big_h'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_BIG_J, modes=_MODES_ACTION)
+class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
+    """
+    Vim: `<C-w>J`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_big_j'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_BIG_K, modes=_MODES_ACTION)
+class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
+    """
+    Vim: `<C-w>K`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_big_k'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_BIG_L, modes=_MODES_ACTION)
+class ViMoveCurrentWindowToFarRight(ViOperatorDef):
+    """
+    Vim: `<C-w>L`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_big_l'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_C, modes=_MODES_ACTION)
+class ViCloseTheCurrentWindow(ViOperatorDef):
+    """
+    Vim: `<C-w>c`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_c'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_EQUAL, modes=_MODES_ACTION)
+class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
+    """
+    Vim: `<C-w>=`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_equal'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_GREATER_THAN, modes=_MODES_ACTION)
+class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
+    """
+    Vim: `<C-w>>`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_greater_than'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
 
 @keys.assign(seq=seqs.CTRL_W_H, modes=_MODES_ACTION)
-class ViActivatePaneToTheLeft(ViOperatorDef):
+class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
     """
-    Vim: `<C-W-h>`
+    Vim: `<C-w>h`
     """
-
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
@@ -1012,16 +1079,209 @@ class ViActivatePaneToTheLeft(ViOperatorDef):
     def translate(self, state):
         cmd = {}
         cmd['action'] = '_vi_ctrl_w_h'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        cmd['action_args'] = {'count': state.count}
         return cmd
 
+@keys.assign(seq=seqs.CTRL_W_J, modes=_MODES_ACTION)
+class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
+    """
+    Vim: `<C-w>j`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_j'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_K, modes=_MODES_ACTION)
+class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
+    """
+    Vim: `<C-w>k`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_k'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
+class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
+    """
+    Vim: `<C-w>l`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_l'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_LESS_THAN, modes=_MODES_ACTION)
+class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
+    """
+    Vim: `<C-w><lt>`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_less_than'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_MINUS, modes=_MODES_ACTION)
+class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
+    """
+    Vim: `<C-w>-`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_minus'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_N, modes=_MODES_ACTION)
+class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
+    """
+    Vim: `<C-w>n`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_n'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_O, modes=_MODES_ACTION)
+class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
+    """
+    Vim: `<C-w>o`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_o'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_PIPE, modes=_MODES_ACTION)
+class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
+    """
+    Vim: `<C-w>|`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_pipe'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_PLUS, modes=_MODES_ACTION)
+class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
+    """
+    Vim: `<C-w>+`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_plus'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_Q, modes=_MODES_ACTION)
+class ViQuitTheCurrentWindow(ViOperatorDef):
+    """
+    Vim: `<C-w>q`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_q'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_S, modes=_MODES_ACTION)
+class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
+    """
+    Vim: `<C-w>s`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_s'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_T, modes=_MODES_ACTION)
+class ViMoveCursorToTopLeftWindow(ViOperatorDef):
+    """
+    Vim: `<C-w>t`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_t'
+        cmd['action_args'] = {}
+        return cmd
+
+@keys.assign(seq=seqs.CTRL_W_UNDERSCORE, modes=_MODES_ACTION)
+class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
+    """
+    Vim: `<C-w>_`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_w_underscore'
+        cmd['action_args'] = {'count': state.count}
+        return cmd
 
 @keys.assign(seq=seqs.CTRL_W_V, modes=_MODES_ACTION)
-class ViSplitVertically(ViOperatorDef):
+class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
     """
-    Vim: `<C-W-v>`
+    Vim: `<C-w>v`
     """
-
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
@@ -1032,23 +1292,20 @@ class ViSplitVertically(ViOperatorDef):
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
         return cmd
 
-
-@keys.assign(seq=seqs.CTRL_W_Q, modes=_MODES_ACTION)
-class ViDestroyCurrentPane(ViOperatorDef):
+@keys.assign(seq=seqs.CTRL_W_X, modes=_MODES_ACTION)
+class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
     """
-    Vim: `<C-W-q>`
+    Vim: `<C-w>x`
     """
-
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
         cmd = {}
-        cmd['action'] = '_vi_ctrl_w_q'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        cmd['action'] = '_vi_ctrl_w_x'
+        cmd['action_args'] = {'count': state.count}
         return cmd
-
 
 @keys.assign(seq=seqs.BIG_V, modes=_MODES_ACTION)
 class ViEnterVisualLineMode(ViOperatorDef):
@@ -1708,6 +1965,21 @@ class StShowGotoAnything(ViOperatorDef):
         return cmd
 
 
+@keys.assign(seq=seqs.GA, modes=(modes.NORMAL,))
+class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
+    """
+    Vintageous: `<ga>`
+    """
+
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ga'
+        cmd['action_args'] = {}
+        return cmd
+
 @keys.assign(seq=seqs.J, modes=(modes.SELECT,))
 class ViAddSelection(ViOperatorDef):
     """
@@ -1863,6 +2135,21 @@ class ViEnterNormalMode(ViOperatorDef):
         cmd = {}
         cmd['action'] = '_enter_normal_mode'
         cmd['action_args'] = {'mode': state.mode}
+        return cmd
+
+
+@keys.assign(seq=seqs.CTRL_RIGHT_SQUARE_BRACKET, modes=_MODES_ACTION)
+class ViJumpToDefinition(ViOperatorDef):
+    """
+    Vim: `<C-]>`
+    """
+    def __init__(self, *args, **kwargs):
+        ViOperatorDef.__init__(self, *args, **kwargs)
+
+    def translate(self, state):
+        cmd = {}
+        cmd['action'] = '_vi_ctrl_right_square_bracket'
+        cmd['action_args'] = {}
         return cmd
 
 
@@ -2931,6 +3218,8 @@ class ViMoveByWords(ViMotionDef):
 
 @keys.assign(seq=seqs.J, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.DOWN, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.CTRL_J, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.CTRL_N, modes=_MODES_MOTION)
 class ViMoveDownByLines(ViMotionDef):
     """
     Vim: `j`
@@ -3111,6 +3400,8 @@ class ViReverseFindWord(ViMotionDef):
         return cmd
 
 
+@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.BIG_Z, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_K, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_W, modes=_MODES_MOTION)

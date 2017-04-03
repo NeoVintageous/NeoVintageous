@@ -3,6 +3,7 @@ import sublime_plugin
 
 import os
 
+import Vintageous.tests.test_sublime_window_api
 
 def find_project_path(path):
     while True:
