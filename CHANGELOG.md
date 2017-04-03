@@ -14,7 +14,7 @@
     ctrl-w, H | Move the current window to be at the very top | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_H) | Currently only works in 2-col or 2-row layouts
     ctrl-w, = | Make all views (almost) equally high and wide | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_=) |
     ctrl-w, _ | Set current view height as high as possible | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W__) |
-    ctrl-w, &#124; | Set current view width as wide as possible | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar) |
+    ctrl-w, &vert; | Set current view width as wide as possible | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar) |
     ctrl-w, o | Make the current view the only one on the screen | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_o) |
     ctrl-w, c | Close current view | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_c) |
     ctrl-w, x | Exchange current view with next one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_x) |
