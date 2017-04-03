@@ -1,48 +1,48 @@
-[![Build Status](https://travis-ci.org/guillermooo/Vintageous.svg?branch=master)](https://travis-ci.org/guillermooo/Vintageous) [![Build status](https://ci.appveyor.com/api/projects/status/pvea8jg8bdoq2rmn/branch/master)](https://ci.appveyor.com/project/guillermooo/vintageous/branch/master)
+# WHAT IS &lt;package name&gt;
+
 [![Build Status](https://travis-ci.org/gerardroche/Vintageous.svg?branch=master)](https://travis-ci.org/gerardroche/Vintageous) [![Build status](https://ci.appveyor.com/api/projects/status/pvea8jg8bdoq2rmn/branch/master)](https://ci.appveyor.com/project/guillermooo/vintageous/branch/master)
 
-## Vintageous
+A comprehensive vi/Vim emulation layer for Sublime Text 3.
 
-<a href='http://www.pledgie.com/campaigns/19122'><img alt='Click here to lend your support to: Vintageous and make a donation at www.pledgie.com !' src='http://www.pledgie.com/campaigns/19122.png?skin_name=chrome' border='0' /></a>
+**This is a fork of Vintageous and is currently under active development. It will be re-branded with a name (which has yet to be chosen) and published in the Package Control in the next few weeks. Your ideas for a new name are welcome.**
 
+[![Rick Astley - Never Gonna Give You Up](rickroll.png)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
-**Vintageous** is a comprehensive vi/Vim emulation layer for Sublime Text 3.
+## OVERVIEW
 
+* [Installation](#installation)
+* [Contributing](#contributing)
+* [Changelog](#changelog)
+* [Credits](#credits)
+* [License](#license)
 
-### Installing
+## INSTALLATION
 
-**Make sure that Vintage
-is in the `ignored_packages` list
-in your user preferences.**
+### Package Control installation
 
-You can install Vintageous in multiple ways:
+**Currently not available on Package Control. It will be soon once a new name is settled on.** The preferred method of installation will be [Package Control](https://packagecontrol.io/browse/authors/gerardroche).
 
+### Manual installation
 
-##### Using Package Control
+1. Close Sublime Text.
+2. Download or clone this repository to a directory named **`Vintageous`** in the Sublime Text Packages directory for your platform:
+    * Linux: `git clone https://github.com/gerardroche/Vintageous.git ~/.config/sublime-text-3/Packages/Vintageous`
+    * OS X: `git clone https://github.com/gerardroche/Vintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/Vintageous`
+    * Windows: `git clone https://github.com/gerardroche/Vintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/Vintageous`
+3. Done!
 
-Search for 'Vintageous' and install.
+## CONTRIBUTING
 
+Your issue reports and pull requests are welcome.
 
-##### Using a Pre-built Version
+## CHANGELOG
 
-1. Download the [current build](https://bitbucket.org/guillermooo/vintageous/downloads/Vintageous.sublime-package)
-2. Copy *Vintageous.sublime-package* to the *Installed Packages* folder located under the data directory.
+See [CHANGELOG.md](CHANGELOG.md).
 
+## CREDITS
 
-##### Building from Source
+This project is a fork of [guillermooo/Vintageous](https://github.com/guillermooo/Vintageous).
 
-1. Clone this repository
-2. Optionally, update to a specific tag
-3. Run `./bin/build.sh` (OS X/Linux) or `bin/Publish.ps1` (Windows).
+## LICENSE
 
-Refer to the [wiki](https://github.com/guillermooo/Vintageous/wiki) for more information.
-
-
-### Documentation
-
-Refer to the [wiki](https://github.com/guillermooo/Vintageous/wiki).
-
-
-### Settings
-
-See [Vintageous/Preferences.sublime-settings](https://github.com/guillermooo/Vintageous/blob/master/Preferences.sublime-settings) for a comprehensive list of settings.
+Released under the [MIT License](LICENSE).
