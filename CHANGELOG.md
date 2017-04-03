@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.0.6
+
+* Minor fixes
+
 ## 4.0.5 - 03-04-2017
 
 * Vintageous is discontinued
