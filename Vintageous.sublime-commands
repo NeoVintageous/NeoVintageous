@@ -16,13 +16,5 @@
         "args": {
             "file": "${packages}/User/Preferences.sublime-settings"
         }
-    },
-    {
-        "caption": "Vintageous: Run All Tests",
-        "command": "run_all_tests"
-    },
-    {
-        "caption": "Vintageous: Run Active View Tests",
-        "command": "run_tests_for_active_view"
     }
 ]

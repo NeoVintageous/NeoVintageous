@@ -35,6 +35,10 @@ A comprehensive vi/Vim emulation layer for Sublime Text 3.
 
 Your issue reports and pull requests are welcome.
 
+### Tests
+
+The [UnitTesting](https://github.com/randy3k/UnitTesting) package is used to run the tests. Install it, open the Command Palette, type "UnitTesting", press Enter and input "Vintageous" as the package to test.
+
 ## CHANGELOG
 
 See [CHANGELOG.md](CHANGELOG.md).
