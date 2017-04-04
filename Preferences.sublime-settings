@@ -1,42 +1,35 @@
 {
-    // If true, debug information will be printed to the console.
+    // Enable verbose logging.
     "vintageous_verbose": false,
 
-    // If true, some key bindings prefaced by the CTRL modifier will override default Sublime Text
-    // key bindings.
+    // Enable key bindings prefaced by the CTRL modifier.
     "vintageous_use_ctrl_keys": false,
 
-    // If true, search occurrences will be highlighted in '/', '?', etc.
-    // (Disabled.)
+    // Highlight searches in '/', '?', etc.
     "vintageous_hlsearch": true,
 
-    // If true, search patterns will be applied incrementally as they are typed in.
-    // (Disabled.)
+    // Apply search patterns incrementally as they are typed.
     "vintageous_incsearch": true,
 
-    // If true, ':' and ex commands will be available.
+    // Enable ':' and ex commands.
     "vintageous_enable_cmdline_mode": true,
 
-    // If true, the current mode will be reset to normal mode when a tab gets activated.
+    // Reset to normal mode when a tab is activated.
     "vintageous_reset_mode_when_switching_tabs": true,
 
-    // If true, some commands will take the current indentation level into account.
-    // (Disabled.)
+    // Enable auto indentation.
     "vintageous_autoindent": true,
 
-    // If true, copy actions will always propagate to the system clipboard.
+    // Propagate copy actions to the system clipboard.
     "vintageous_use_sys_clipboard": false,
 
-    // If true, / and ? will use regular expressions.
-    // If false, smart case will be used instead: the pattern will be interpreted literally and, if
-    // it's either all lowercase or all uppercase, case will be ignored too.
+    // Use regular expressions in '/' and '?' otherwise uses smart case,
+    // interpret pattern literally, and ignore case.
     "vintageous_magic": true,
 
-    // If true, /, ?, * and # will always ignore case.
+    // Ignore case in '/', '?', '*', and '#'.
     "vintageous_ignorecase": true,
 
-    // Logging level. Used for diagnostics and troubleshooting. Common valid
-    // values are 'debug', 'info', 'error', 'critical'. Most users should
-    // not need to modify the default value.
+    // Logging level e.g 'debug', 'info', 'error', 'critical'.
     "vintageous_log_level": "error"
 }

@@ -16,6 +16,24 @@ A comprehensive vi/Vim emulation layer for Sublime Text 3.
 * [Credits](#credits)
 * [License](#license)
 
+## CONFIGURATION
+
+Key | Description | Type | Default
+----|-------------|------|--------
+`vintageous_autoindent` | Enable auto indentation. | `boolean` | `true`
+`vintageous_enable_cmdline_mode` | Enable ':' and ex commands. | `boolean` | `true`
+`vintageous_hlsearch` | Highlight searches in '/', '?', etc. | `boolean` | `true`
+`vintageous_ignorecase` | Ignore case in '/', '?', '*', and '#'. | `boolean` | `true`
+`vintageous_incsearch` | Apply search patterns incrementally as they are typed. | `boolean` | `true`
+`vintageous_log_level` | Logging level e.g 'debug', 'info', 'error', 'critical'. | `string` | `error`
+`vintageous_magic` | Use regular expressions in '/' and '?' otherwise uses smart case, interpret pattern literally, and ignore case. | `boolean` | `true`
+`vintageous_reset_mode_when_switching_tabs` | Reset to normal mode when a tab is activated. | `boolean` | `true`
+`vintageous_use_ctrl_keys` | Enable key bindings prefaced by the CTRL modifier. | `boolean` | `false`
+`vintageous_use_sys_clipboard` | Propagate copy actions to the system clipboard. | `boolean` | `false`
+`vintageous_verbose` | Enable verbose logging. | `boolean` | `false`
+`vintageous_visualbell` | Enable visual bell. | `boolean` | `true`
+`vintageous_visualyank` | Enable visual bell when yanking. | `boolean` | `true`
+
 ## INSTALLATION
 
 ### Package Control installation
