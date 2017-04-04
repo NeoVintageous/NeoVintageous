@@ -4,7 +4,7 @@
 
 A comprehensive vi/Vim emulation layer for Sublime Text 3.
 
-**This is a fork of Vintageous and is currently under active development. It will be re-branded with a name (which has yet to be chosen) and published in the Package Control in the next few weeks. Your ideas for a new name are welcome.**
+**This is a fork of Vintageous and is currently under active development. It will be re-branded with a name ([which has yet to be chosen](https://github.com/gerardroche/Vintageous/issues/1)) and published in the Package Control in the next few weeks. [Your ideas for a new name are welcome](https://github.com/gerardroche/Vintageous/issues/1).**
 
 [![Rick Astley - Never Gonna Give You Up](rickroll.png)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
@@ -38,7 +38,7 @@ Key | Description | Type | Default
 
 ### Package Control installation
 
-**Currently not available on Package Control. It will be soon once a new name is settled on.** The preferred method of installation will be [Package Control](https://packagecontrol.io/browse/authors/gerardroche).
+**Currently not available on Package Control. It will be soon [once a new name is settled on](https://github.com/gerardroche/Vintageous/issues/1).** The preferred method of installation will be [Package Control](https://packagecontrol.io/browse/authors/gerardroche).
 
 ### Manual installation
 
