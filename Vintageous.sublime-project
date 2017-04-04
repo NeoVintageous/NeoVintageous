@@ -6,15 +6,14 @@
             "path": "."
         }
     ],
-
     "settings":
     {
-        "ensure_new_line_at_eof_on_save": true,
-        "trim_trailing_white_space_on_save": true,
         "default_line_ending": "unix",
-        "translate_tabs_to_spaces": false
+        "ensure_new_line_at_eof_on_save": true,
+        "tab_size": 4,
+        "translate_tabs_to_spaces": true,
+        "trim_trailing_white_space_on_save": true
     },
-
     "SublimeLinter":
     {
         "@python": 3.4
