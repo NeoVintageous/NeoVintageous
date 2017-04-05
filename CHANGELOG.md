@@ -30,18 +30,18 @@
 * Added: Command palette commands to run test and open preferences
 * Added: vi_search.comment scope to searches for better control of highlighting
 * Added: vintageous_visualyank setting to disable yanking visual bells
-* Added: [@guillermooo's surround.vim plugin for Vintageous](https://github.com/guillermooo/Vintageous_Plugin_Surround) has been integrated and enabled by default behind a setting.
-* Added: [Add Support for Sublime Wrap Plus](https://github.com/guillermooo/Vintageous/pull/1077)
-* Added: Package Control README, CHANGELOG, and LICENSE menus
+* Added: The [surround.vim](https://github.com/guillermooo/Vintageous_Plugin_Surround) plugin by @guillermooo has been integrated and is enabled by default.
+* Added [#1077](https://github.com/guillermooo/Vintageous/pull/1077): Support for Sublime Wrap Plus
+* Added: Package Control menu for README, CHANGELOG, and LICENSE
 * Fixed: CTRL-W_H and CTRL-W-L windowing commands
 * Fixed: Error raised trying to scroll in a transient view
 * Fixed: Don't hide console on Esc if already in normal mode and currently have a multiple selection
-* Fixed: Console auto closes on start
-* Fixed: File permissions
+* Fixed: Console not longer auto closes on start
+* Fixed: Some file permissions
 * Fixed: `c_` and `d_` no longer cause an error
-* Fixed: [Fix for P newline pasting](https://github.com/guillermooo/Vintageous/pull/1041)
-* Fixed: [Fix interactive commands not working after mapped commands](https://github.com/guillermooo/Vintageous/pull/1042)
-* Fixed: [New text objects](https://github.com/guillermooo/Vintageous/pull/1074)
+* Fixed [#1041](https://github.com/guillermooo/Vintageous/pull/1041): Fix for P newline pasting
+* Fixed [#1042](https://github.com/guillermooo/Vintageous/pull/1042): Fix interactive commands not working after mapped commands
+* Fixed [#1074](https://github.com/guillermooo/Vintageous/pull/1074): New text objects
 
 ## 4.0.6
 

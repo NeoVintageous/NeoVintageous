@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/gerardroche/Vintageous.svg?branch=master)](https://travis-ci.org/gerardroche/Vintageous)
 
-A comprehensive vi/Vim emulation layer for Sublime Text 3.
+A Vim emulation layer for Sublime Text.
 
-**This is a fork of Vintageous and is currently under active development. It will be published in the Package Control in the next few or so.**
+**This is a fork of Vintageous and is under active development. It will be published on Package Control in the next week or so.**
 
 [![Rick Astley - Never Gonna Give You Up](rickroll.png)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
