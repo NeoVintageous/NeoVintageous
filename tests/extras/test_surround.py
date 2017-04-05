@@ -1,8 +1,8 @@
 import sublime
 
-from VintageousPlus.tests import ViewTest
-from VintageousPlus.state import State
-from VintageousPlus.vi.utils import modes
+from Vintageous.tests import ViewTest
+from Vintageous.state import State
+from Vintageous.vi.utils import modes
 
 
 TESTS_YS = (

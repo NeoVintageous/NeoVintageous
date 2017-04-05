@@ -6,16 +6,16 @@
 import sublime
 import sublime_plugin
 
-from VintageousPlus.plugins import plugins
-from VintageousPlus.vi import inputs
-from VintageousPlus.vi import utils
-from VintageousPlus.vi.cmd_defs import ViOperatorDef
-from VintageousPlus.vi.core import ViTextCommandBase
-from VintageousPlus.vi.inputs import input_types
-from VintageousPlus.vi.inputs import parser_def
-from VintageousPlus.vi.search import reverse_search
-from VintageousPlus.vi.utils import modes
-from VintageousPlus.vi.utils import regions_transformer
+from Vintageous.plugins import plugins
+from Vintageous.vi import inputs
+from Vintageous.vi import utils
+from Vintageous.vi.cmd_defs import ViOperatorDef
+from Vintageous.vi.core import ViTextCommandBase
+from Vintageous.vi.inputs import input_types
+from Vintageous.vi.inputs import parser_def
+from Vintageous.vi.search import reverse_search
+from Vintageous.vi.utils import modes
+from Vintageous.vi.utils import regions_transformer
 
 import re
 
@@ -48,7 +48,7 @@ class ViSurround(ViOperatorDef):
         return True
 
     def is_enabled(self, state):
-        return state.settings.view['vintageousplus_enable_surround']
+        return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
         cmd = {}
@@ -99,7 +99,7 @@ class ViDeleteSurround(ViOperatorDef):
         return True
 
     def is_enabled(self, state):
-        return state.settings.view['vintageousplus_enable_surround']
+        return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
         cmd = {}
@@ -133,7 +133,7 @@ class ViChangeSurround(ViOperatorDef):
         return True
 
     def is_enabled(self, state):
-        return state.settings.view['vintageousplus_enable_surround']
+        return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
         cmd = {}
@@ -173,7 +173,7 @@ PAIRS_DEFAULT_SPACE = {
 }
 
 def get_surround_pairs(view):
-    if view.settings().get("vintageousplus_surround_spaces",False):
+    if view.settings().get("vintageous_surround_spaces",False):
         return PAIRS_DEFAULT_SPACE
     else:
         return PAIRS_DEFAULT_PLAIN

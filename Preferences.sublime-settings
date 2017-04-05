@@ -44,10 +44,10 @@
 	"vintageous_test_runner_keymaps": false,
 
 	// Enable the surround.vim emulation extra, adds the "cs", "ds" and "ys" actions
-	"vintageousplus_enable_surround": true,
+	"vintageous_enable_surround": true,
 
 	// If true, the surround.vim emulation pair openers have spaces, otherwise the pair
 	// closes have spaces. For example with this false "ysw(" does "(things)" but if it
 	// is true it does "( things )" while "ysw)" does "(things)".
-	"vintageousplus_surround_spaces": false,
+	"vintageous_surround_spaces": false,
 }
