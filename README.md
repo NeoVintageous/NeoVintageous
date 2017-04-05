@@ -1,5 +1,7 @@
 # WHAT IS &lt;package name&gt;
 
+## This repository is superseded by [NeoVintageous](https://github.com/NeoVintageous/NeoVintageous).
+
 [![Build Status](https://travis-ci.org/gerardroche/Vintageous.svg?branch=master)](https://travis-ci.org/gerardroche/Vintageous)
 
 A comprehensive vi/Vim emulation layer for Sublime Text 3.
