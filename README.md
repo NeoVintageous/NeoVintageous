@@ -6,8 +6,6 @@ A Vim emulation layer for Sublime Text.
 
 **This is a fork of Vintageous and is under active development. It will be published on Package Control in the next week or so.**
 
-[![Rick Astley - Never Gonna Give You Up](rickroll.png)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-
 ## OVERVIEW
 
 * [Installation](#installation)
@@ -16,18 +14,24 @@ A Vim emulation layer for Sublime Text.
 * [Credits](#credits)
 * [License](#license)
 
+## DOCUMENTATION
+
+* [Neovim documentation](https://neovim.io/doc/user)
+
 ## CONFIGURATION
 
 Key | Description | Type | Default
 ----|-------------|------|--------
 `vintageous_autoindent` | Enable auto indentation. | `boolean` | `true`
 `vintageous_enable_cmdline_mode` | Enable ':' and ex commands. | `boolean` | `true`
+`vintageous_enable_surround` | Enable surround.vim plugin. Provides mappings to easily delete, change and add such surroundings in pairs e.g. "cs", "ds", and "ys" actions. | `boolean` | `true`
 `vintageous_hlsearch` | Highlight searches in '/', '?', etc. | `boolean` | `true`
 `vintageous_ignorecase` | Ignore case in '/', '?', '*', and '#'. | `boolean` | `true`
 `vintageous_incsearch` | Apply search patterns incrementally as they are typed. | `boolean` | `true`
 `vintageous_log_level` | Logging level e.g 'debug', 'info', 'error', 'critical'. | `string` | `error`
 `vintageous_magic` | Use regular expressions in '/' and '?' otherwise uses smart case, interpret pattern literally, and ignore case. | `boolean` | `true`
 `vintageous_reset_mode_when_switching_tabs` | Reset to normal mode when a tab is activated. | `boolean` | `true`
+`vintageous_surround_spaces` | Enable surround.vim plugin pair opener spaces, otherwise the pair closes have spaces i.e. if true then `ysw(` and `ysw)` -&gt; `( things )` and `(things)`, otherwise if false then `ysw(` and `ysw)` -&gt; `(things) and `( things )` | `boolean` | `false`
 `vintageous_use_ctrl_keys` | Enable key bindings prefaced by the CTRL modifier. | `boolean` | `false`
 `vintageous_use_sys_clipboard` | Propagate copy actions to the system clipboard. | `boolean` | `false`
 `vintageous_verbose` | Enable verbose logging. | `boolean` | `false`
