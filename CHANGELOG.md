@@ -26,7 +26,6 @@
     ctrl-w, n | Create new view below current one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_n) |
     ga | Print the ascii value of the character under the cursor in dec, hex and oct | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/various.html#ga) |
 
-* Added: Setting to disable test runner keymaps `vintageous_test_runner_keymaps`
 * Added: Command palette commands to run test and open preferences
 * Added: vi_search.comment scope to searches for better control of highlighting
 * Added: vintageous_visualyank setting to disable yanking visual bells
@@ -42,6 +41,11 @@
 * Fixed [#1041](https://github.com/guillermooo/Vintageous/pull/1041): Fix for P newline pasting
 * Fixed [#1042](https://github.com/guillermooo/Vintageous/pull/1042): Fix interactive commands not working after mapped commands
 * Fixed [#1074](https://github.com/guillermooo/Vintageous/pull/1074): New text objects
+* Removed: Settings
+
+    Setting | Description | Notes
+    ------- | ----------- | -----
+    `vintageous_test_runner_keymaps` | Enable test runner keymaps | Tests are now run using [UnitTesting](https://github.com/randy3k/UnitTesting)
 
 ## 4.0.6
 
