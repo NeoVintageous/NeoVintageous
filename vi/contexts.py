@@ -1,11 +1,11 @@
 import sublime
 
-# from VintageousPlus.vi.constants import MODE_NORMAL, MODE_NORMAL_INSERT, MODE_INSERT, ACTIONS_EXITING_TO_INSERT_MODE, MODE_VISUAL_LINE, MODE_VISUAL, MODE_SELECT
-# from VintageousPlus.vi.constants import MODE_VISUAL_BLOCK
-from VintageousPlus.vi.utils import modes
-# from VintageousPlus.vi import constants
-from VintageousPlus.vi import utils
-# from VintageousPlus.vi.constants import action_to_namespace
+# from Vintageous.vi.constants import MODE_NORMAL, MODE_NORMAL_INSERT, MODE_INSERT, ACTIONS_EXITING_TO_INSERT_MODE, MODE_VISUAL_LINE, MODE_VISUAL, MODE_SELECT
+# from Vintageous.vi.constants import MODE_VISUAL_BLOCK
+from Vintageous.vi.utils import modes
+# from Vintageous.vi import constants
+from Vintageous.vi import utils
+# from Vintageous.vi.constants import action_to_namespace
 
 
 class KeyContext(object):

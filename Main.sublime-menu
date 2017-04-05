@@ -6,13 +6,13 @@
                 "id": "package-settings",
                 "children": [
                     {
-                        "caption": "VintageousPlus",
+                        "caption": "Vintageous",
                         "children": [
                             {
                                 "caption": "README",
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/VintageousPlus/README.md"
+                                    "file": "${packages}/Vintageous/README.md"
                                 }
                             },
                             {
@@ -22,7 +22,7 @@
                                 "caption": "Settings – Default",
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/VintageousPlus/Preferences.sublime-settings"
+                                    "file": "${packages}/Vintageous/Preferences.sublime-settings"
                                 }
                             },
                             {
@@ -46,7 +46,7 @@
                                 "caption": "LICENSE",
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/VintageousPlus/LICENSE.txt"
+                                    "file": "${packages}/Vintageous/LICENSE.txt"
                                 }
                             }
                         ]

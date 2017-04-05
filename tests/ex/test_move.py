@@ -1,14 +1,14 @@
 import unittest
 
-from VintageousPlus.vi.utils import modes
+from Vintageous.vi.utils import modes
 
-from VintageousPlus.state import State
+from Vintageous.state import State
 
-from VintageousPlus.tests import get_sel
-from VintageousPlus.tests import first_sel
-from VintageousPlus.tests import ViewTest
+from Vintageous.tests import get_sel
+from Vintageous.tests import first_sel
+from Vintageous.tests import ViewTest
 
-from VintageousPlus.ex_commands import CURRENT_LINE_RANGE
+from Vintageous.ex_commands import CURRENT_LINE_RANGE
 
 
 class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTest):

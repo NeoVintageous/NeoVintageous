@@ -2,29 +2,29 @@ from collections import Counter
 
 import sublime
 
-from VintageousPlus import PluginLogger
-from VintageousPlus import NullPluginLogger
-from VintageousPlus.vi import cmd_base
-from VintageousPlus.vi import cmd_defs
-from VintageousPlus.vi import settings
-from VintageousPlus.vi import utils
-from VintageousPlus.vi.contexts import KeyContext
-from VintageousPlus.vi.dot_file import DotFile
-from VintageousPlus.vi.macros import MacroRegisters
-from VintageousPlus.vi.marks import Marks
-from VintageousPlus.vi.registers import Registers
-from VintageousPlus.vi.settings import SettingsManager
-from VintageousPlus.vi.utils import directions
-from VintageousPlus.vi.utils import first_sel
-from VintageousPlus.vi.utils import input_types
-from VintageousPlus.vi.utils import is_ignored
-from VintageousPlus.vi.utils import is_ignored_but_command_mode
-from VintageousPlus.vi.utils import is_view
-from VintageousPlus.vi.utils import modes
-from VintageousPlus.vi.variables import Variables
+from Vintageous import PluginLogger
+from Vintageous import NullPluginLogger
+from Vintageous.vi import cmd_base
+from Vintageous.vi import cmd_defs
+from Vintageous.vi import settings
+from Vintageous.vi import utils
+from Vintageous.vi.contexts import KeyContext
+from Vintageous.vi.dot_file import DotFile
+from Vintageous.vi.macros import MacroRegisters
+from Vintageous.vi.marks import Marks
+from Vintageous.vi.registers import Registers
+from Vintageous.vi.settings import SettingsManager
+from Vintageous.vi.utils import directions
+from Vintageous.vi.utils import first_sel
+from Vintageous.vi.utils import input_types
+from Vintageous.vi.utils import is_ignored
+from Vintageous.vi.utils import is_ignored_but_command_mode
+from Vintageous.vi.utils import is_view
+from Vintageous.vi.utils import modes
+from Vintageous.vi.variables import Variables
 
 # !! Avoid error due to sublime_plugin.py:45 expectations.
-from VintageousPlus.plugins import plugins as user_plugins
+from Vintageous.plugins import plugins as user_plugins
 
 
 _logger = PluginLogger(__name__)

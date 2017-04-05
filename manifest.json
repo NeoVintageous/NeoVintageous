@@ -1,5 +1,5 @@
 {
-	"name": "VintageousPlus",
+	"name": "Vintageous",
 	"include": {
 		"dev": [
 			["*.*", ["*builder.py",

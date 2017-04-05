@@ -3,18 +3,18 @@ from collections import namedtuple
 
 import sublime
 
-from VintageousPlus import state
-from VintageousPlus.vi.utils import modes
-from VintageousPlus.vi.utils import translate_char
-from VintageousPlus.tests import set_text
-from VintageousPlus.tests import add_sel
-from VintageousPlus.tests import make_region
-from VintageousPlus.tests import ViewTest
-from VintageousPlus.tests import ViewTest
-from VintageousPlus.vi.keys import to_bare_command_name
-from VintageousPlus.vi.keys import KeySequenceTokenizer
-from VintageousPlus.vi.keys import seqs
-from VintageousPlus.vi import variables
+from Vintageous import state
+from Vintageous.vi.utils import modes
+from Vintageous.vi.utils import translate_char
+from Vintageous.tests import set_text
+from Vintageous.tests import add_sel
+from Vintageous.tests import make_region
+from Vintageous.tests import ViewTest
+from Vintageous.tests import ViewTest
+from Vintageous.vi.keys import to_bare_command_name
+from Vintageous.vi.keys import KeySequenceTokenizer
+from Vintageous.vi.keys import seqs
+from Vintageous.vi import variables
 
 
 _tests_tokenizer = (

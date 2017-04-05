@@ -1,0 +1,28 @@
+[
+    { "caption": "Vintageous: Reset", "command": "reset_vintageous" },
+    { "caption": "Vintageous: Toggle Vim Ctrl Keys", "command": "vintageous_toggle_ctrl_keys" },
+    { "caption": "Vintageous: Exit from command mode", "command": "force_exit_from_command_mode" },
+    { "caption": "Vintageous: Open .vintageousrc", "command": "vintageous_open_config_file" },
+    {
+        "caption": "Preferences: Vintageous Settings – Default",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/Vintageous/Preferences.sublime-settings"
+        }
+    },
+    {
+        "caption": "Preferences: Vintageous Settings – User",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/User/Preferences.sublime-settings"
+        }
+    },
+    {
+        "caption": "Vintageous: Run All Tests",
+        "command": "run_all_tests"
+    },
+    {
+        "caption": "Vintageous: Run Active View Tests",
+        "command": "run_tests_for_active_view"
+    }
+]

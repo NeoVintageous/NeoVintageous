@@ -4,7 +4,7 @@ os:
 
 env:
     global:
-        - PACKAGE="VintageousPlus"
+        - PACKAGE="Vintageous"
     matrix:
         - SUBLIME_TEXT_VERSION="3"
 

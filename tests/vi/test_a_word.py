@@ -1,13 +1,13 @@
 import unittest
 
-from VintageousPlus.vi.constants import MODE_NORMAL
-from VintageousPlus.vi.constants import _MODE_INTERNAL_NORMAL
+from Vintageous.vi.constants import MODE_NORMAL
+from Vintageous.vi.constants import _MODE_INTERNAL_NORMAL
 
-from VintageousPlus.tests import ViewTest
-from VintageousPlus.tests import set_text
-from VintageousPlus.tests import add_sel
+from Vintageous.tests import ViewTest
+from Vintageous.tests import set_text
+from Vintageous.tests import add_sel
 
-from VintageousPlus.vi.text_objects import a_word
+from Vintageous.vi.text_objects import a_word
 
 
 class Test_a_word_InInternalNormalMode_Inclusive(ViewTest):

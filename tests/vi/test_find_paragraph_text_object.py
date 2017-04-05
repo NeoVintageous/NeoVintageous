@@ -1,7 +1,7 @@
 from collections import namedtuple
 
-from VintageousPlus.tests import ViewTest, region2rowcols
-from VintageousPlus.vi.text_objects import find_paragraph_text_object
+from Vintageous.tests import ViewTest, region2rowcols
+from Vintageous.vi.text_objects import find_paragraph_text_object
 
 
 # Note: trailing spaces are encoded in unicode to prevent automatic traling

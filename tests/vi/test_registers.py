@@ -4,11 +4,11 @@ import builtins
 import sublime
 
 from unittest import mock
-from VintageousPlus.vi import registers
-from VintageousPlus.vi.registers import Registers
-from VintageousPlus.vi.settings import SettingsManager
-from VintageousPlus.state import State
-from VintageousPlus.tests import ViewTest
+from Vintageous.vi import registers
+from Vintageous.vi.registers import Registers
+from Vintageous.vi.settings import SettingsManager
+from Vintageous.state import State
+from Vintageous.tests import ViewTest
 
 
 class TestCaseRegistersConstants(unittest.TestCase):

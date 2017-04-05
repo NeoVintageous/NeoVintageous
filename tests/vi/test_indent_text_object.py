@@ -2,11 +2,11 @@ from collections import namedtuple
 
 from sublime import Region as R
 
-from VintageousPlus.tests import set_text
-from VintageousPlus.tests import add_sel
-from VintageousPlus.tests import ViewTest
+from Vintageous.tests import set_text
+from Vintageous.tests import add_sel
+from Vintageous.tests import ViewTest
 
-from VintageousPlus.vi.text_objects import find_indent_text_object
+from Vintageous.vi.text_objects import find_indent_text_object
 
 test = namedtuple('simple_test', 'content start expected expected_inclusive msg')
 

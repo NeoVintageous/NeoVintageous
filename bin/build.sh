@@ -5,17 +5,17 @@ e=1
 if python "$DIR/builder.py"; then
     case "$(uname)" in
         Linux)
-            cp -f "$DIR/../dist/VintageousPlus.sublime-package"\
+            cp -f "$DIR/../dist/Vintageous.sublime-package"\
                 "${HOME}/.config/sublime-text-3/Installed Packages"
             e=$?
         ;;
         Darwin)
-            cp -f "$DIR/../dist/VintageousPlus.sublime-package"\
+            cp -f "$DIR/../dist/Vintageous.sublime-package"\
                 "${HOME}/Library/Application Support/Sublime Text 3/Installed Packages/"
             e=$?
         ;;
         *)
-            echo "VintageousPlus: no build script for $(uname) :_("
+            echo "Vintageous: no build script for $(uname) :_("
         ;;
     esac
 else

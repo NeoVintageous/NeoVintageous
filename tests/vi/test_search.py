@@ -1,7 +1,7 @@
-from VintageousPlus.tests import first_sel
-from VintageousPlus.tests import ViewTest
+from Vintageous.tests import first_sel
+from Vintageous.tests import ViewTest
 
-from VintageousPlus.vi.search import find_wrapping
+from Vintageous.vi.search import find_wrapping
 
 
 class Test_find_wrapping(ViewTest):

@@ -1,1 +1,1 @@
-from VintageousPlus.plugins.plugins import register
+from Vintageous.plugins.plugins import register

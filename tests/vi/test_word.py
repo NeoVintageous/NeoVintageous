@@ -1,17 +1,17 @@
 import unittest
 
-# from VintageousPlus.vi.constants import _MODE_INTERNAL_NORMAL
-from VintageousPlus.vi.constants import MODE_NORMAL
-# from VintageousPlus.vi.constants import MODE_VISUAL
-# from VintageousPlus.vi.constants import MODE_VISUAL_LINE
+# from Vintageous.vi.constants import _MODE_INTERNAL_NORMAL
+from Vintageous.vi.constants import MODE_NORMAL
+# from Vintageous.vi.constants import MODE_VISUAL
+# from Vintageous.vi.constants import MODE_VISUAL_LINE
 
-from VintageousPlus.tests import ViewTest
-from VintageousPlus.tests import set_text
-from VintageousPlus.tests import add_sel
+from Vintageous.tests import ViewTest
+from Vintageous.tests import set_text
+from Vintageous.tests import add_sel
 
-from VintageousPlus.vi.units import next_word_start
-from VintageousPlus.vi.units import word_starts
-from VintageousPlus.vi.units import CLASS_VI_INTERNAL_WORD_START
+from Vintageous.vi.units import next_word_start
+from Vintageous.vi.units import word_starts
+from Vintageous.vi.units import CLASS_VI_INTERNAL_WORD_START
 
 
 class Test_next_word_start_InNormalMode_FromWhitespace(ViewTest):

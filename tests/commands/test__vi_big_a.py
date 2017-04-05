@@ -2,12 +2,12 @@
 Tests for o motion (visual kind).
 """
 
-from VintageousPlus.vi.utils import modes
+from Vintageous.vi.utils import modes
 
-from VintageousPlus.tests import get_sel
-from VintageousPlus.tests import first_sel
-from VintageousPlus.tests import second_sel
-from VintageousPlus.tests import ViewTest
+from Vintageous.tests import get_sel
+from Vintageous.tests import first_sel
+from Vintageous.tests import second_sel
+from Vintageous.tests import ViewTest
 
 
 class Test_vi_big_a_InNormalMode_SingleSel(ViewTest):

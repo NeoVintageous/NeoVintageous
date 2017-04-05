@@ -7,7 +7,7 @@ import os
 def find_project_path(path):
     while True:
         if not path or os.path.exists(os.path.join(path,
-            'VintageousPlus.sublime-project')):
+            'Vintageous.sublime-project')):
                 return path
 
         path = os.path.dirname(path)

@@ -1,11 +1,11 @@
-from VintageousPlus.ex.ex_error import VimError
-from VintageousPlus.ex.ex_error import ERR_INVALID_ARGUMENT
+from Vintageous.ex.ex_error import VimError
+from Vintageous.ex.ex_error import ERR_INVALID_ARGUMENT
 
 from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_READ_SHELL_OUT
 from .tokens_base import TokenOfCommand
-from VintageousPlus import ex
+from Vintageous import ex
 
 
 plus_plus_translations = {

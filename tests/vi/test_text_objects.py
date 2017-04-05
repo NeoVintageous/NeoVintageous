@@ -2,12 +2,12 @@ from collections import namedtuple
 
 from sublime import Region as R
 
-from VintageousPlus.tests import set_text
-from VintageousPlus.tests import add_sel
-from VintageousPlus.tests import ViewTest
+from Vintageous.tests import set_text
+from Vintageous.tests import add_sel
+from Vintageous.tests import ViewTest
 
-from VintageousPlus.vi.text_objects import find_prev_lone_bracket
-from VintageousPlus.vi.text_objects import find_next_lone_bracket
+from Vintageous.vi.text_objects import find_prev_lone_bracket
+from Vintageous.vi.text_objects import find_next_lone_bracket
 
 
 test = namedtuple('simple_test', 'content start brackets expected msg')

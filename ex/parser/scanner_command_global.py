@@ -3,7 +3,7 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_GLOBAL
 from .tokens_base import TokenOfCommand
 from .parser import parse_command_line
-from VintageousPlus import ex
+from Vintageous import ex
 
 
 @ex.command('global', 'g')

@@ -1,6 +1,6 @@
 # TODO: This module exists solely for retrocompatibility. Delete when possible.
 
-from VintageousPlus.vi.utils import modes
+from Vintageous.vi.utils import modes
 
 MODE_INSERT = modes.INSERT
 MODE_NORMAL = modes.NORMAL

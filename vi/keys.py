@@ -1,10 +1,10 @@
 import re
 
-from VintageousPlus import PluginLogger
-from VintageousPlus.vi.utils import modes
-from VintageousPlus.vi import cmd_base
-from VintageousPlus.plugins import plugins
-from VintageousPlus.vi import variables
+from Vintageous import PluginLogger
+from Vintageous.vi.utils import modes
+from Vintageous.vi import cmd_base
+from Vintageous.plugins import plugins
+from Vintageous.vi import variables
 
 
 _logger = PluginLogger(__name__)

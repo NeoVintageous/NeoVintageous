@@ -4,16 +4,16 @@ Vim commands used internally by Vintageous that also produce ST commands.
 These are the core implementations for all Vim commands.
 """
 
-from VintageousPlus.vi.utils import modes
-from VintageousPlus.vi.inputs import input_types
-from VintageousPlus.vi.inputs import parser_def
-from VintageousPlus.vi import inputs
-from VintageousPlus.vi import utils
-from VintageousPlus.vi.cmd_base import ViOperatorDef
-from VintageousPlus.vi.cmd_base import ViMotionDef
-from VintageousPlus.vi.cmd_base import ViMissingCommandDef
-from VintageousPlus.vi import keys
-from VintageousPlus.vi.keys import seqs
+from Vintageous.vi.utils import modes
+from Vintageous.vi.inputs import input_types
+from Vintageous.vi.inputs import parser_def
+from Vintageous.vi import inputs
+from Vintageous.vi import utils
+from Vintageous.vi.cmd_base import ViOperatorDef
+from Vintageous.vi.cmd_base import ViMotionDef
+from Vintageous.vi.cmd_base import ViMissingCommandDef
+from Vintageous.vi import keys
+from Vintageous.vi.keys import seqs
 
 import sublime_plugin
 

@@ -3,9 +3,9 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_UNVSPLIT
 from .tokens_base import TokenOfCommand
 
-from VintageousPlus.ex.ex_error import ERR_INVALID_ARGUMENT
-from VintageousPlus.ex.ex_error import VimError
-from VintageousPlus import ex
+from Vintageous.ex.ex_error import ERR_INVALID_ARGUMENT
+from Vintageous.ex.ex_error import VimError
+from Vintageous import ex
 
 
 @ex.command('unvsplit', 'unvsplit')

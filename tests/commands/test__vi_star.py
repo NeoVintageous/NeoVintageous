@@ -1,9 +1,9 @@
-from VintageousPlus.vi.utils import modes
+from Vintageous.vi.utils import modes
 
-from VintageousPlus.tests import add_sel
-from VintageousPlus.tests import get_sel
-from VintageousPlus.tests import first_sel
-from VintageousPlus.tests import ViewTest
+from Vintageous.tests import add_sel
+from Vintageous.tests import get_sel
+from Vintageous.tests import first_sel
+from Vintageous.tests import ViewTest
 
 
 class Test_vi_star_InNormalMode(ViewTest):
