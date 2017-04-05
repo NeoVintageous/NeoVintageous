@@ -1,6 +1,4 @@
-# WHAT IS &lt;package name&gt;
-
-## This repository is superseded by [NeoVintageous](https://github.com/NeoVintageous/NeoVintageous).
+# This repository is superseded by [NeoVintageous](https://github.com/NeoVintageous/NeoVintageous).
 
 [![Build Status](https://travis-ci.org/gerardroche/Vintageous.svg?branch=master)](https://travis-ci.org/gerardroche/Vintageous)
 
@@ -35,6 +33,26 @@ Key | Description | Type | Default
 `vintageous_verbose` | Enable verbose logging. | `boolean` | `false`
 `vintageous_visualbell` | Enable visual bell. | `boolean` | `true`
 `vintageous_visualyank` | Enable visual bell when yanking. | `boolean` | `true`
+
+### Use ctrl keys
+
+To enable ctrl modifier keys set it globally: `Preferences > Settings`
+
+```json
+{
+    "vintageous_use_ctrl_keys": true
+}
+```
+
+Or set it per-project: `Project > Edit Project`
+
+```json
+{
+    "settings": {
+        "vintageous_use_ctrl_keys": true
+    }
+}
+```
 
 ## INSTALLATION
 
