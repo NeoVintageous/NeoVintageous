@@ -9,3 +9,4 @@
 /.gitmodules        export-ignore
 /test_helpers.py    export-ignore
 /tests/             export-ignore
+/unittesting.json   export-ignore
