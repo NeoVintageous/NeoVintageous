@@ -1,51 +1,90 @@
-## Vintageous
-[![Build Status](https://travis-ci.org/trishume/VintageousPlus.svg?branch=master)](https://travis-ci.org/trishume/VintageousPlus)
+# NeoVintageous
 
-**Vintageous** is a fork of the awesome [Vintageous](https://github.com/guillermooo/Vintageous) plugin for Sublime Text 3. The original author [@guillermooo](https://github.com/guillermooo) doesn't seem to be maintaining it anymore, so this fork steps up to merge outstanding PRs and add some new features.
+[![Build Status](https://travis-ci.org/gerardroche/Vintageous.svg?branch=master)](https://travis-ci.org/gerardroche/Vintageous)
 
-I don't ever intend to merge this upstream, because I plan on adding some settings and making some changes in the spirit of Atom's [vim-mode-plus](https://github.com/t9md/atom-vim-mode-plus/wiki/YouDontKnowVimModePlus) that deviate from and improve on standard Vim behaviour when it makes sense. It's my understanding that this is contrary to @guillermooo's philosophy. The Github convention for forks that don't plan on merging is to not have it be a fork on Github, hence the fact that this isn't marked as a fork.
+A comprehensive vi/Vim emulation layer for Sublime Text 3.
 
-### Changes from Vintageous
+**This is a fork of Vintageous and is currently under active development. It will be published in the Package Control in the next few or so.**
 
-One major change that isn't a code change is that if you submit PRs, I will review them and likely merge them. **Please help me make Vintageous better!**
+[![Rick Astley - Never Gonna Give You Up](rickroll.png)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
-#### New stuff
+## OVERVIEW
 
-- [@guillermooo's surround.vim plugin for Vintageous](https://github.com/guillermooo/Vintageous_Plugin_Surround) has been integrated and enabled by default behind a setting.
-- Added the ability to enable/disable bindings via a setting. Now you can PR your fancy extra functionality into this repo and have it be easy for users to enable/disable.
+* [Installation](#installation)
+* [Contributing](#contributing)
+* [Changelog](#changelog)
+* [Credits](#credits)
+* [License](#license)
 
-#### Fixes some minor bugs
+## CONFIGURATION
 
-- `c_` and `d_` no longer cause an error
+Key | Description | Type | Default
+----|-------------|------|--------
+`vintageous_autoindent` | Enable auto indentation. | `boolean` | `true`
+`vintageous_enable_cmdline_mode` | Enable ':' and ex commands. | `boolean` | `true`
+`vintageous_hlsearch` | Highlight searches in '/', '?', etc. | `boolean` | `true`
+`vintageous_ignorecase` | Ignore case in '/', '?', '*', and '#'. | `boolean` | `true`
+`vintageous_incsearch` | Apply search patterns incrementally as they are typed. | `boolean` | `true`
+`vintageous_log_level` | Logging level e.g 'debug', 'info', 'error', 'critical'. | `string` | `error`
+`vintageous_magic` | Use regular expressions in '/' and '?' otherwise uses smart case, interpret pattern literally, and ignore case. | `boolean` | `true`
+`vintageous_reset_mode_when_switching_tabs` | Reset to normal mode when a tab is activated. | `boolean` | `true`
+`vintageous_use_ctrl_keys` | Enable key bindings prefaced by the CTRL modifier. | `boolean` | `false`
+`vintageous_use_sys_clipboard` | Propagate copy actions to the system clipboard. | `boolean` | `false`
+`vintageous_verbose` | Enable verbose logging. | `boolean` | `false`
+`vintageous_visualbell` | Enable visual bell. | `boolean` | `true`
+`vintageous_visualyank` | Enable visual bell when yanking. | `boolean` | `true`
 
-#### The following outstanding PRs have been merged
+### Use ctrl keys
 
-- [Add Support for Sublime Wrap Plus](https://github.com/guillermooo/Vintageous/pull/1077)
-- [Fix interactive commands not working after mapped commands](https://github.com/guillermooo/Vintageous/pull/1042)
-- [Fix for P newline pasting](https://github.com/guillermooo/Vintageous/pull/1041)
-- [Settings, Menus, Run tests keymaps](https://github.com/guillermooo/Vintageous/pull/1030)
-- [New text objects](https://github.com/guillermooo/Vintageous/pull/1074)
+To enable ctrl modifier keys set it globally: `Preferences > Settings`
 
-### Installing
+```json
+{
+    "vintageous_use_ctrl_keys": true
+}
+```
 
-**Make sure that Vintage
-is in the `ignored_packages` list
-in your user preferences.**
+Or set it per-project: `Project > Edit Project`
 
-You can install Vintageous in multiple ways:
+```json
+{
+    "settings": {
+        "vintageous_use_ctrl_keys": true
+    }
+}
+```
 
-##### Package Control
+## INSTALLATION
 
-I'll try and get this on Package Control soon
+### Package Control installation
 
-##### Building from Source
+**Currently not available on Package Control. It will be soon.** The preferred method of installation will be [Package Control](https://packagecontrol.io/browse/authors/gerardroche).
 
-1. Clone this repository
-2. Optionally, update to a specific tag
-3. Run `./bin/build.sh` (OS X/Linux) or `bin/Publish.ps1` (Windows).
+### Manual installation
 
-Refer to the [wiki](https://github.com/guillermooo/Vintageous/wiki) for more information.
+1. Close Sublime Text.
+2. Download or clone this repository to a directory named **`Vintageous`** in the Sublime Text Packages directory for your platform:
+    * Linux: `git clone https://github.com/gerardroche/Vintageous.git ~/.config/sublime-text-3/Packages/Vintageous`
+    * OS X: `git clone https://github.com/gerardroche/Vintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/Vintageous`
+    * Windows: `git clone https://github.com/gerardroche/Vintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/Vintageous`
+3. Done!
 
-### Settings
+## CONTRIBUTING
 
-See [Vintageous/Preferences.sublime-settings](https://github.com/trishume/VintageousPlus/blob/master/Preferences.sublime-settings) for a comprehensive list of settings.
+Your issue reports and pull requests are welcome.
+
+### Tests
+
+The [UnitTesting](https://github.com/randy3k/UnitTesting) package is used to run the tests. Install it, open the Command Palette, type "UnitTesting", press Enter and input "Vintageous" as the package to test.
+
+## CHANGELOG
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+## CREDITS
+
+This project is a fork of [guillermooo/Vintageous](https://github.com/guillermooo/Vintageous).
+
+## LICENSE
+
+Released under the [MIT License](LICENSE).

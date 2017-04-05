@@ -196,7 +196,14 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             if state.mode == modes.VISUAL:
                 next_hit = sublime.Region(self.view.sel()[0].a, next_hit.a + 1)
 
-            self.view.add_regions('vi_inc_search', [next_hit], 'comment', '')
+            self.view.add_regions(
+                'vi_inc_search',
+                [next_hit],
+                'highlight.find.vi',
+                '',
+                sublime.DRAW_NO_OUTLINE
+            )
+
             if not self.view.visible_region().contains(next_hit.b):
                 self.view.show(next_hit.b)
 

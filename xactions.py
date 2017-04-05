@@ -28,7 +28,7 @@ from Vintageous.vi.utils import R
 from Vintageous.vi.utils import regions_transformer
 from Vintageous.vi.utils import resolve_insertion_point_at_b
 from Vintageous.vi.utils import restoring_sel
-
+from Vintageous.sublime_ext import SublimeWindowAPI
 
 _logger = PluginLogger(__name__)
 
@@ -326,7 +326,11 @@ class _enter_normal_mode(ViTextCommandBase):
             # XXX: The 'not is_view(self.view)' check above seems to be
             #      redundant, since those views should be ignored by
             #      Vintageous altogether.
-            self.view.window().run_command('hide_panel', {'cancel': True})
+            if len(self.view.sel()) < 2:
+                # don't hide panel if multiple cursors
+                # if not from_init and getattr(self.view, 'settings') is None:
+                if not from_init:
+                    self.view.window().run_command('hide_panel', {'cancel': True})
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
@@ -2045,6 +2049,17 @@ class _vi_p(ViTextCommandBase):
             self.view.replace(edit, sel, text)
             return sel.begin()
 
+class _vi_ga(ViWindowCommandBase):
+
+    """
+    http://vimdoc.sourceforge.net/htmldoc/various.html#ga
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        self.window.run_command('show_ascii_value_of_character_under_cursor')
 
 class _vi_gt(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
@@ -2063,72 +2078,257 @@ class _vi_g_big_t(ViWindowCommandBase):
         self.window.run_command('tab_control', {'command': 'prev'})
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
-
-class _vi_ctrl_w_q(IrreversibleTextCommand):
+# TODO <C-]> should learn visual mode
+# TODO <C-]> should learn to count
+class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/tagsrch.html#CTRL-]
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, count=1, mode=None):
-        if self.view.is_dirty():
-            sublime.status_message('Unsaved changes.')
-            return
+    def run(self):
+        self.window.run_command('goto_definition')
 
-        self.view.close()
-
-
-class _vi_ctrl_w_v(ViWindowCommandBase):
+class _vi_ctrl_w_b(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_b
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, count=1, mode=None):
-        self.window.run_command('ex_vsplit')
-
-
-class _vi_ctrl_w_l(ViWindowCommandBase):
-    # TODO: Should be a window command instead.
-    # TODO: Should focus the group to the right only, not the 'next' group.
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, mode=None, count=None):
-        current_group = self.window.active_group()
-        if self.window.num_groups() > 1:
-            self.window.focus_group(current_group + 1)
-
-
-class _vi_ctrl_w_big_l(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, mode=None, count=1):
-        current_group = self.window.active_group()
-        if self.window.num_groups() > 1:
-            self.window.set_view_index(self.view, current_group + 1, 0)
-            self.window.focus_group(current_group + 1)
-
-
-class _vi_ctrl_w_h(ViWindowCommandBase):
-    # TODO: Should be a window command instead.
-    # TODO: Should focus the group to the left only, not the 'previous' group.
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, mode=None, count=1):
-        current_group = self.window.active_group()
-        if current_group > 0:
-            self.window.focus_group(current_group - 1)
-
+    def run(self):
+        SublimeWindowAPI(self.window).move_group_focus_to_bottom_right()
 
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_h
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, mode=None, count=1):
-        current_group = self.window.active_group()
-        if current_group > 0:
-            self.window.set_view_index(self.view, current_group - 1, 0)
-            self.window.focus_group(current_group - 1)
+    def run(self):
+        SublimeWindowAPI(self.window).move_current_view_to_far_left()
 
+class _vi_ctrl_w_big_j(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_j
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.window).move_current_view_to_very_bottom()
+
+class _vi_ctrl_w_big_k(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_k
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.window).move_current_view_to_very_top()
+
+class _vi_ctrl_w_big_l(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_L
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.window).move_current_view_to_far_right()
+
+class _vi_ctrl_w_c(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_c
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.window).close_current_view()
+
+class _vi_ctrl_w_equal(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_=
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.window).resize_groups_almost_equally()
+
+class _vi_ctrl_w_greater_than(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_>
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).increase_current_group_width_by_n(count)
+
+class _vi_ctrl_w_h(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_h
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
+
+class _vi_ctrl_w_j(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_j
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
+
+class _vi_ctrl_w_k(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_k
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
+
+class _vi_ctrl_w_l(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_l
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
+
+class _vi_ctrl_w_less_than(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_<
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).decrease_current_group_width_by_n(count)
+
+class _vi_ctrl_w_minus(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_-
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).decrease_current_group_height_by_n(count)
+
+class _vi_ctrl_w_n(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_n
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).split_with_new_file(count)
+
+class _vi_ctrl_w_o(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_o
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.window).close_all_other_views()
+
+class _vi_ctrl_w_pipe(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=None):
+        SublimeWindowAPI(self.window).set_current_group_width_to_n(count)
+
+class _vi_ctrl_w_plus(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_+
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).increase_current_group_height_by_n(count)
+
+class _vi_ctrl_w_q(IrreversibleTextCommand):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_q
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.view.window()).quit_current_view()
+
+class _vi_ctrl_w_s(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_s
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=None):
+        SublimeWindowAPI(self.window).split_current_view_in_two(count)
+
+class _vi_ctrl_w_t(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_t
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        SublimeWindowAPI(self.window).move_group_focus_to_top_left()
+
+class _vi_ctrl_w_underscore(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W__
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=None):
+        SublimeWindowAPI(self.window).set_current_group_height_to_n(count)
+
+class _vi_ctrl_w_v(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_v
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1, mode=None):
+        SublimeWindowAPI(self.window).split_current_view_in_two_vertically(count)
+
+class _vi_ctrl_w_x(ViWindowCommandBase):
+    """
+    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_x
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1):
+        SublimeWindowAPI(self.window).exchange_current_view_with_view_in_next_or_previous_group(count)
 
 # TODO: z<CR> != zt
 class _vi_z_enter(IrreversibleTextCommand):
@@ -2141,6 +2341,9 @@ class _vi_z_enter(IrreversibleTextCommand):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
+
+        # TODO if count is given should be the same as CTRL-W__
+
         pt = resolve_insertion_point_at_b(first_sel(self.view))
         home_line = self.view.line(pt)
 
@@ -2267,6 +2470,11 @@ class _vi_big_j(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, separator=' ', count=1):
+
+        # jsodc_join is better when joining comments
+        # self.view.run_command('jsdocs_join')
+        # return
+
         sels = self.view.sel()
         s = R(sels[0].a, sels[-1].b)
         if mode == modes.INTERNAL_NORMAL:
