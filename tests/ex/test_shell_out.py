@@ -3,12 +3,12 @@ import os
 
 import sublime
 
-from Vintageous.tests import set_text
-from Vintageous.tests import add_sel
-from Vintageous.tests import get_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.tests import set_text
+from NeoVintageous.tests import add_sel
+from NeoVintageous.tests import get_sel
+from NeoVintageous.tests import ViewTest
 
-import Vintageous.ex.plat as plat
+import NeoVintageous.ex.plat as plat
 
 class Test_ex_shell_out_no_input(ViewTest):
     @unittest.skipIf(os.name == 'nt', 'not supported on Windows')

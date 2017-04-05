@@ -1,11 +1,11 @@
-from Vintageous.vi import utils
-from Vintageous.vi.keys import mappings
-from Vintageous.vi.keys import seq_to_command
-from Vintageous.vi.keys import to_bare_command_name
-from Vintageous.vi.keys import KeySequenceTokenizer
-from Vintageous.vi.utils import modes
-from Vintageous.vi.cmd_base import cmd_types
-from Vintageous.vi import variables
+from NeoVintageous.vi import utils
+from NeoVintageous.vi.keys import mappings
+from NeoVintageous.vi.keys import seq_to_command
+from NeoVintageous.vi.keys import to_bare_command_name
+from NeoVintageous.vi.keys import KeySequenceTokenizer
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.cmd_base import cmd_types
+from NeoVintageous.vi import variables
 
 
 _mappings = {

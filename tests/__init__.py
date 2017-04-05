@@ -1,8 +1,8 @@
 import sublime
 import unittest
 
-from Vintageous.state import State
-from Vintageous.vi.utils import modes
+from NeoVintageous.state import State
+from NeoVintageous.vi.utils import modes
 
 class ViewTest(unittest.TestCase):
     """

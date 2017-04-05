@@ -1,6 +1,6 @@
 # NeoVintageous
 
-[![Build Status](https://travis-ci.org/gerardroche/Vintageous.svg?branch=master)](https://travis-ci.org/gerardroche/Vintageous)
+[![Build Status](https://travis-ci.org/NeoVintageous/NeoVintageous.svg?branch=master)](https://travis-ci.org/NeoVintageous/NeoVintageous)
 
 A Vim emulation layer for Sublime Text.
 
@@ -58,15 +58,15 @@ Or set it per-project: `Project > Edit Project`
 
 ### Package Control installation
 
-**Currently not available on Package Control. It will be soon.** The preferred method of installation will be [Package Control](https://packagecontrol.io/browse/authors/gerardroche).
+**Currently not available on Package Control. It will be soon.** The preferred method of installation will be [Package Control](https://packagecontrol.io/browse/authors/NeoVintageous).
 
 ### Manual installation
 
 1. Close Sublime Text.
-2. Download or clone this repository to a directory named **`Vintageous`** in the Sublime Text Packages directory for your platform:
-    * Linux: `git clone https://github.com/gerardroche/Vintageous.git ~/.config/sublime-text-3/Packages/Vintageous`
-    * OS X: `git clone https://github.com/gerardroche/Vintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/Vintageous`
-    * Windows: `git clone https://github.com/gerardroche/Vintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/Vintageous`
+2. Download or clone this repository to a directory named **`NeoVintageous`** in the Sublime Text Packages directory for your platform:
+    * Linux: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
+    * OS X: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
+    * Windows: `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
 3. Done!
 
 ## CONTRIBUTING

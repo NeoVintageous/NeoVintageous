@@ -1,18 +1,18 @@
-from Vintageous.ex.ex_error import ERR_NO_RANGE_ALLOWED
-from Vintageous.ex.ex_error import VimError
-from Vintageous.ex.parser.tokens import TokenDigits
-from Vintageous.ex.parser.tokens import TokenDollar
-from Vintageous.ex.parser.tokens import TokenDot
-from Vintageous.ex.parser.tokens import TokenMark
-from Vintageous.ex.parser.tokens import TokenOffset
-from Vintageous.ex.parser.tokens import TokenOfSearch
-from Vintageous.ex.parser.tokens import TokenPercent
-from Vintageous.ex.parser.tokens import TokenSearchBackward
-from Vintageous.ex.parser.tokens import TokenSearchForward
-from Vintageous.vi.search import reverse_search_by_pt
-from Vintageous.vi.utils import first_sel
-from Vintageous.vi.utils import R
-from Vintageous.vi.utils import row_at
+from NeoVintageous.ex.ex_error import ERR_NO_RANGE_ALLOWED
+from NeoVintageous.ex.ex_error import VimError
+from NeoVintageous.ex.parser.tokens import TokenDigits
+from NeoVintageous.ex.parser.tokens import TokenDollar
+from NeoVintageous.ex.parser.tokens import TokenDot
+from NeoVintageous.ex.parser.tokens import TokenMark
+from NeoVintageous.ex.parser.tokens import TokenOffset
+from NeoVintageous.ex.parser.tokens import TokenOfSearch
+from NeoVintageous.ex.parser.tokens import TokenPercent
+from NeoVintageous.ex.parser.tokens import TokenSearchBackward
+from NeoVintageous.ex.parser.tokens import TokenSearchForward
+from NeoVintageous.vi.search import reverse_search_by_pt
+from NeoVintageous.vi.utils import first_sel
+from NeoVintageous.vi.utils import R
+from NeoVintageous.vi.utils import row_at
 
 
 class Node(object):

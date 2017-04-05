@@ -57,7 +57,7 @@ class ViCommandDefBase(object):
     def translate(self, state):
         """
         Returns the command as a valid Json object containing all necessary
-        data to be run by Vintageous. This is usually the last step before
+        data to be run by NeoVintageous. This is usually the last step before
         handing the command off to ST.
 
         Every motion and operator must override this method.
@@ -84,7 +84,7 @@ class ViCommandDefBase(object):
     def serialize(self):
         """
         Returns a valid Json object representing this command in a format
-        Vintageous uses internally.
+        NeoVintageous uses internally.
         """
         data = {'name': self.__class__.__name__,
                 'data': {k: v for k, v in self.__dict__.items()

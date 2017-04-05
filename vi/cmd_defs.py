@@ -1,19 +1,19 @@
 """
-Vim commands used internally by Vintageous that also produce ST commands.
+Vim commands used internally by NeoVintageous that also produce ST commands.
 
 These are the core implementations for all Vim commands.
 """
 
-from Vintageous.vi.utils import modes
-from Vintageous.vi.inputs import input_types
-from Vintageous.vi.inputs import parser_def
-from Vintageous.vi import inputs
-from Vintageous.vi import utils
-from Vintageous.vi.cmd_base import ViOperatorDef
-from Vintageous.vi.cmd_base import ViMotionDef
-from Vintageous.vi.cmd_base import ViMissingCommandDef
-from Vintageous.vi import keys
-from Vintageous.vi.keys import seqs
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.inputs import input_types
+from NeoVintageous.vi.inputs import parser_def
+from NeoVintageous.vi import inputs
+from NeoVintageous.vi import utils
+from NeoVintageous.vi.cmd_base import ViOperatorDef
+from NeoVintageous.vi.cmd_base import ViMotionDef
+from NeoVintageous.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.vi import keys
+from NeoVintageous.vi.keys import seqs
 
 import sublime_plugin
 
@@ -1346,7 +1346,7 @@ class ViRestoreVisualSelections(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_K_CTRL_B, modes=_MODES_ACTION)
 class StToggleSidebar(ViOperatorDef):
     """
-    Vintageous: `<C-K-b>`
+    NeoVintageous: `<C-K-b>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1364,7 +1364,7 @@ class StToggleSidebar(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_SHIFT_B, modes=_MODES_ACTION)
 class StShowBuildSystemsMenu(ViOperatorDef):
     """
-    Vintageous: `<C-S-b>`
+    NeoVintageous: `<C-S-b>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1382,7 +1382,7 @@ class StShowBuildSystemsMenu(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_BIG_F, modes=_MODES_ACTION)
 class StFinInFiles(ViOperatorDef):
     """
-    Vintageous: `Ctrl+Shift+F`
+    NeoVintageous: `Ctrl+Shift+F`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1436,7 +1436,7 @@ class ViJumpForward(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_CTRL_F12, modes=_MODES_ACTION)
 class StGotoSymbolInProject(ViOperatorDef):
     """
-    Vintageous: `<C-S-f12>`
+    NeoVintageous: `<C-S-f12>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1454,7 +1454,7 @@ class StGotoSymbolInProject(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_F12, modes=_MODES_ACTION)
 class StGotoSymbolInFile(ViOperatorDef):
     """
-    Vintageous: `<C-f12>`
+    NeoVintageous: `<C-f12>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1472,7 +1472,7 @@ class StGotoSymbolInFile(ViOperatorDef):
 @keys.assign(seq=seqs.F12, modes=_MODES_ACTION)
 class StGotoDefinition(ViOperatorDef):
     """
-    Vintageous: `f12`
+    NeoVintageous: `f12`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1490,7 +1490,7 @@ class StGotoDefinition(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_F2, modes=_MODES_ACTION)
 class StToggleBookmark(ViOperatorDef):
     """
-    Vintageous: `<C-f2>`
+    NeoVintageous: `<C-f2>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1508,7 +1508,7 @@ class StToggleBookmark(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_SHIFT_F2, modes=_MODES_ACTION)
 class StClearBookmarks(ViOperatorDef):
     """
-    Vintageous: `<C-S-f2>`
+    NeoVintageous: `<C-S-f2>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1526,7 +1526,7 @@ class StClearBookmarks(ViOperatorDef):
 @keys.assign(seq=seqs.F2, modes=_MODES_ACTION)
 class StPrevBookmark(ViOperatorDef):
     """
-    Vintageous: `f2`
+    NeoVintageous: `f2`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1544,7 +1544,7 @@ class StPrevBookmark(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F2, modes=_MODES_ACTION)
 class StNextBookmark(ViOperatorDef):
     """
-    Vintageous: `<S-f2>`
+    NeoVintageous: `<S-f2>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1685,7 +1685,7 @@ class ViScrollByLinesDown(ViOperatorDef):
 @keys.assign(seq=seqs.F11, modes=_MODES_ACTION)
 class StToggleFullScreen(ViOperatorDef):
     """
-    Vintageous: `f11`
+    NeoVintageous: `f11`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1703,7 +1703,7 @@ class StToggleFullScreen(ViOperatorDef):
 @keys.assign(seq=seqs.F7, modes=_MODES_ACTION)
 class StBuild(ViOperatorDef):
     """
-    Vintageous: `f7`
+    NeoVintageous: `f7`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1721,7 +1721,7 @@ class StBuild(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
 class StFindPrev(ViOperatorDef):
     """
-    Vintageous: `Ctrl+F4`
+    NeoVintageous: `Ctrl+F4`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1805,7 +1805,7 @@ class ViToggleMacroRecorder(ViOperatorDef):
 @keys.assign(seq=seqs.F3, modes=_MODES_ACTION)
 class StFindNext(ViOperatorDef):
     """
-    Vintageous: `f3`
+    NeoVintageous: `f3`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1823,7 +1823,7 @@ class StFindNext(ViOperatorDef):
 @keys.assign(seq=seqs.F4, modes=_MODES_ACTION)
 class StFindNextResult(ViOperatorDef):
     """
-    Vintageous: `f4`
+    NeoVintageous: `f4`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1841,7 +1841,7 @@ class StFindNextResult(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
 class StFindPrevResult(ViOperatorDef):
     """
-    Vintageous: `Shift+F4`
+    NeoVintageous: `Shift+F4`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1950,7 +1950,7 @@ class ViEnterVisualBlockMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_P, modes=_MODES_ACTION)
 class StShowGotoAnything(ViOperatorDef):
     """
-    Vintageous: `<C-p>`
+    NeoVintageous: `<C-p>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1968,7 +1968,7 @@ class StShowGotoAnything(ViOperatorDef):
 @keys.assign(seq=seqs.GA, modes=(modes.NORMAL,))
 class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
     """
-    Vintageous: `<ga>`
+    NeoVintageous: `<ga>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -1983,7 +1983,7 @@ class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
 @keys.assign(seq=seqs.J, modes=(modes.SELECT,))
 class ViAddSelection(ViOperatorDef):
     """
-    Vintageous: `<C-p>`
+    NeoVintageous: `<C-p>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -2001,7 +2001,7 @@ class ViAddSelection(ViOperatorDef):
 @keys.assign(seq=seqs.ALT_CTRL_P, modes=_MODES_ACTION)
 class StShowSwitchProject(ViOperatorDef):
     """
-    Vintageous: `<C-M-p>`
+    NeoVintageous: `<C-M-p>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -2019,7 +2019,7 @@ class StShowSwitchProject(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_BIG_P, modes=_MODES_ACTION)
 class StShowCommandPalette(ViOperatorDef):
     """
-    Vintageous: `<C-S-p>`
+    NeoVintageous: `<C-S-p>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -2037,7 +2037,7 @@ class StShowCommandPalette(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F11, modes=_MODES_ACTION)
 class StEnterDistractionFreeMode(ViOperatorDef):
     """
-    Vintageous: `<S-f11>`
+    NeoVintageous: `<S-f11>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -2063,7 +2063,7 @@ class StEnterDistractionFreeMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_9, group=8, modes=_MODES_ACTION)
 class StFocusGroup(ViOperatorDef):
     """
-    Vintageous: `<C-{num}>`
+    NeoVintageous: `<C-{num}>`
     """
 
     def __init__(self, *args, group=None, **kwargs):
@@ -2083,7 +2083,7 @@ class StFocusGroup(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_0, modes=_MODES_ACTION)
 class StFocusSideBar(ViOperatorDef):
     """
-    Vintageous: `<C-0>`
+    NeoVintageous: `<C-0>`
     """
 
     def __init__(self, *args, **kwargs):
@@ -2237,7 +2237,7 @@ class ViEnterCommandLineMode(ViOperatorDef):
 @keys.assign(seq=seqs.F9, modes=_MODES_ACTION)
 class StSortLines(ViOperatorDef):
     """
-    Vintageous: `f9`
+    NeoVintageous: `f9`
     """
 
     def __init__(self, *args, **kwargs):
@@ -2305,7 +2305,7 @@ class ViCloseFile(ViOperatorDef):
 @keys.assign(seq=seqs.F6, modes=_MODES_ACTION)
 class StToggleSpelling(ViOperatorDef):
     """
-    Vintageous: `f6`
+    NeoVintageous: `f6`
     """
 
     def __init__(self, *args, **kwargs):
@@ -2342,7 +2342,7 @@ class ViGotoSymbolInProject(ViOperatorDef):
 @keys.assign(seq=seqs.K, modes=(modes.SELECT,))
 class ViDeselectInstance(ViOperatorDef):
     """
-    Vintageous: `k` (select mode)
+    NeoVintageous: `k` (select mode)
     """
 
     def __init__(self, *args, **kwargs):
@@ -2365,7 +2365,7 @@ class ViDeselectInstance(ViOperatorDef):
 @keys.assign(seq=seqs.L, modes=(modes.SELECT,))
 class ViSkipInstance(ViOperatorDef):
     """
-    Vintageous: `l` (select mode)
+    NeoVintageous: `l` (select mode)
     """
 
     def __init__(self, *args, **kwargs):
@@ -3922,7 +3922,7 @@ class ViToggleCommentByLines(ViOperatorDef):
 @keys.assign(seq=seqs.GCC, modes=_MODES_ACTION)
 class ViCommentLine(ViOperatorDef):
     """
-    Vintageous: `gcc`
+    NeoVintageous: `gcc`
     """
 
     def __init__(self, *args, **kwargs):

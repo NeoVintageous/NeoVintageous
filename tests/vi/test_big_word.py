@@ -1,17 +1,17 @@
-# from Vintageous.vi.constants import _MODE_INTERNAL_NORMAL
-from Vintageous.vi.constants import MODE_NORMAL
-# from Vintageous.vi.constants import MODE_VISUAL
-# from Vintageous.vi.constants import MODE_VISUAL_LINE
+# from NeoVintageous.vi.constants import _MODE_INTERNAL_NORMAL
+from NeoVintageous.vi.constants import MODE_NORMAL
+# from NeoVintageous.vi.constants import MODE_VISUAL
+# from NeoVintageous.vi.constants import MODE_VISUAL_LINE
 
 from collections import namedtuple
 
-from Vintageous.tests import ViewTest
-from Vintageous.tests import set_text
-from Vintageous.tests import add_sel
+from NeoVintageous.tests import ViewTest
+from NeoVintageous.tests import set_text
+from NeoVintageous.tests import add_sel
 
-from Vintageous.vi.units import next_big_word_start
-from Vintageous.vi.units import big_word_starts
-from Vintageous.vi.units import CLASS_VI_INTERNAL_WORD_START
+from NeoVintageous.vi.units import next_big_word_start
+from NeoVintageous.vi.units import big_word_starts
+from NeoVintageous.vi.units import CLASS_VI_INTERNAL_WORD_START
 
 # TODO: Test against folded regions.
 # TODO: Ensure that we only create empty selections while testing. Add assert_all_sels_empty()?

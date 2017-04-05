@@ -142,7 +142,7 @@
 
 	{ "keys": ["D"], "command": "set_action", "args": {"action": "vi_big_d"}, "context": [{"key": "setting.command_mode"}] },
 
-	// This is a fake action that 'opens' the 'g' key namespace within Vintageous.
+	// This is a fake action that 'opens' the 'g' key namespace within NeoVintageous.
 	{ "keys": ["g"], "command": "set_action", "args": {"action": "vi_g_action"}, "context": [{"key": "setting.command_mode"}] },
 
 	// gg can either be an action or a motion. It's an action when there is no actual action.
@@ -160,7 +160,7 @@
 	{ "keys": ["#"], "command": "set_action", "args": {"action": "vi_g_octothorp"}, "context": [{"key": "setting.command_mode"}, {"key": "vi_in_key_namespace", "operand": "g"}] },
 	{ "keys": ["v"], "command": "set_action", "args": {"action": "vi_g_v"},         "context": [{"key": "vi_mode_normal"},       {"key": "vi_in_key_namespace", "operand": "g"}] },
 
-	// Enters select mode (multiple selection mode in Vintageous).
+	// Enters select mode (multiple selection mode in NeoVintageous).
 	// Includes the following actions:
 	//	* j: Adds selection (find_under_expand)
 	//	* k: Remove selection (soft_undo)
@@ -228,7 +228,7 @@
 	{ "keys": [">"], "command": "set_action", "args": {"action": "vi_lambda"},     "context": [{"key": "setting.command_mode"}] },
 	{ "keys": ["<"], "command": "set_action", "args": {"action": "vi_antilambda"}, "context": [{"key": "setting.command_mode"}] },
 
-	// This is a fake action that opens the 'z' key namespace within Vintageous.
+	// This is a fake action that opens the 'z' key namespace within NeoVintageous.
 	{ "keys": ["z"],     "command": "set_action", "args": {"action": "vi_z_action"}, "context": [{"key": "setting.command_mode"}] },
 	// Order matters: To avoid conflicts with t and possibly other key bindings with less
 	// restrictive contexts, place these after them.
@@ -268,7 +268,7 @@
 	{ "keys": ["Z", "Q"], "command": "ex_cquit", "context":[{"key": "vi_mode_normal"}] },
 
 	// Insert mode commands.==================================================
-	// FIXME: All this should probably go through Vintageous internal processing too.
+	// FIXME: All this should probably go through NeoVintageous internal processing too.
 	{ "keys": ["ctrl+u"], "command": "_ivi_ctrl_u", "context": [{"key": "setting.command_mode", "operand": false}] },
 	{ "keys": ["ctrl+w"], "command": "delete_word", "args": { "forward": false }, "context": [{"key": "setting.command_mode", "operand": false}] },
 	//========================================================================

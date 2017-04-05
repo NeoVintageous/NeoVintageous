@@ -1,11 +1,11 @@
 import sublime
 
-# from Vintageous.vi.constants import MODE_NORMAL, MODE_NORMAL_INSERT, MODE_INSERT, ACTIONS_EXITING_TO_INSERT_MODE, MODE_VISUAL_LINE, MODE_VISUAL, MODE_SELECT
-# from Vintageous.vi.constants import MODE_VISUAL_BLOCK
-from Vintageous.vi.utils import modes
-# from Vintageous.vi import constants
-from Vintageous.vi import utils
-# from Vintageous.vi.constants import action_to_namespace
+# from NeoVintageous.vi.constants import MODE_NORMAL, MODE_NORMAL_INSERT, MODE_INSERT, ACTIONS_EXITING_TO_INSERT_MODE, MODE_VISUAL_LINE, MODE_VISUAL, MODE_SELECT
+# from NeoVintageous.vi.constants import MODE_VISUAL_BLOCK
+from NeoVintageous.vi.utils import modes
+# from NeoVintageous.vi import constants
+from NeoVintageous.vi import utils
+# from NeoVintageous.vi.constants import action_to_namespace
 
 
 class KeyContext(object):
@@ -200,7 +200,7 @@ class KeyContext(object):
     #             break
 
     #     if not rv:
-    #         print("Vintageous: Can't enter visual mode at EOF if last line is empty.")
+    #         print("NeoVintageous: Can't enter visual mode at EOF if last line is empty.")
     #         utils.blink()
 
     #     return self._check(rv, operator, operand, match_all)

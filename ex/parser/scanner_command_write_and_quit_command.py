@@ -2,7 +2,7 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_WRITE_AND_QUIT_COMMAND
 from .tokens_base import TokenOfCommand
-from Vintageous import ex
+from NeoVintageous import ex
 
 
 plus_plus_translations = {

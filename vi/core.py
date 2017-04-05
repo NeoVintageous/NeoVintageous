@@ -1,8 +1,8 @@
 import sublime
 import sublime_plugin
 
-from Vintageous.state import State
-from Vintageous.vi.utils import IrreversibleTextCommand
+from NeoVintageous.state import State
+from NeoVintageous.vi.utils import IrreversibleTextCommand
 
 
 class ViCommandMixin(object):

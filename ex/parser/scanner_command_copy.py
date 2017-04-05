@@ -3,7 +3,7 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_COPY
 from .tokens_base import TokenOfCommand
 from .parser import parse_command_line
-from Vintageous import ex
+from NeoVintageous import ex
 
 
 @ex.command('copy', 'co')

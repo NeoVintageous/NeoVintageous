@@ -6,14 +6,14 @@ from unittest import mock
 from unittest.mock import call
 
 
-from Vintageous import state
-from Vintageous.vi.utils import modes
-from Vintageous.tests import set_text
-from Vintageous.tests import add_sel
-from Vintageous.tests import make_region
-from Vintageous.tests import ViewTest
-from Vintageous.vi.cmd_base import cmd_types
-from Vintageous.vi import cmd_defs
+from NeoVintageous import state
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.tests import set_text
+from NeoVintageous.tests import add_sel
+from NeoVintageous.tests import make_region
+from NeoVintageous.tests import ViewTest
+from NeoVintageous.vi.cmd_base import cmd_types
+from NeoVintageous.vi import cmd_defs
 
 
 class StateTestCase(ViewTest):
@@ -37,7 +37,7 @@ class Test_State(StateTestCase):
     @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def testCanInitialize(self):
         s = state.State(self.view)
-        # Make sure the actual usage of Vintageous doesn't change the pristine
+        # Make sure the actual usage of NeoVintageous doesn't change the pristine
         # state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')
         self.view.window().settings().erase('_vintageous_last_character_search')

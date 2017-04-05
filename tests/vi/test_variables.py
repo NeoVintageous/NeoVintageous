@@ -2,14 +2,14 @@ import unittest
 
 import sublime
 
-from Vintageous.tests import ViewTest
-from Vintageous.vi.variables import _SPECIAL_STRINGS
-from Vintageous.vi.variables import _DEFAULTS
-from Vintageous.vi.variables import _VARIABLES
-from Vintageous.vi.variables import is_key_name
-from Vintageous.vi.variables import set_
-from Vintageous.vi.variables import get
-from Vintageous.vi import variables
+from NeoVintageous.tests import ViewTest
+from NeoVintageous.vi.variables import _SPECIAL_STRINGS
+from NeoVintageous.vi.variables import _DEFAULTS
+from NeoVintageous.vi.variables import _VARIABLES
+from NeoVintageous.vi.variables import is_key_name
+from NeoVintageous.vi.variables import set_
+from NeoVintageous.vi.variables import get
+from NeoVintageous.vi import variables
 
 
 class Test_special_strings(ViewTest):

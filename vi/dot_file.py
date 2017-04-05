@@ -1,4 +1,4 @@
-from Vintageous import PluginLogger
+from NeoVintageous import PluginLogger
 
 import sublime
 
@@ -47,7 +47,7 @@ class DotFile(object):
                 line = line[1:]
                 return ('ex_let', {'command_line': line.strip()})
         except Exception:
-            print('Vintageous: bad config in dotfile: "%s"' % line.rstrip())
+            print('NeoVintageous: bad config in dotfile: "%s"' % line.rstrip())
             _logger.debug('bad config inf dotfile: "%s"', line.rstrip())
 
         return None, None

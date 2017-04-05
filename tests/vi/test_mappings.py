@@ -2,16 +2,16 @@ import unittest
 
 import sublime
 
-from Vintageous.state import State
-from Vintageous.vi.utils import modes
-from Vintageous.vi.mappings import Mappings
-from Vintageous.vi.mappings import _mappings
-from Vintageous.vi.mappings import mapping_status
-from Vintageous.tests import set_text
-from Vintageous.tests import add_sel
-from Vintageous.tests import make_region
-from Vintageous.tests import ViewTest
-from Vintageous.vi.cmd_base import cmd_types
+from NeoVintageous.state import State
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.mappings import Mappings
+from NeoVintageous.vi.mappings import _mappings
+from NeoVintageous.vi.mappings import mapping_status
+from NeoVintageous.tests import set_text
+from NeoVintageous.tests import add_sel
+from NeoVintageous.tests import make_region
+from NeoVintageous.tests import ViewTest
+from NeoVintageous.vi.cmd_base import cmd_types
 
 
 adding_tests = (

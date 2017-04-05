@@ -1,6 +1,6 @@
 import unittest
 
-from Vintageous import sublime_ext
+from NeoVintageous import sublime_ext
 
 class SublimeViewMock():
     pass

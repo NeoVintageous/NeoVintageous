@@ -1,15 +1,15 @@
 import unittest
 
-from Vintageous.vi.constants import _MODE_INTERNAL_NORMAL
-from Vintageous.vi.constants import MODE_NORMAL
-from Vintageous.vi.constants import MODE_VISUAL
-from Vintageous.vi.constants import MODE_VISUAL_LINE
-from Vintageous.state import State
-# from Vintageous.vi.actions import vi_r
+from NeoVintageous.vi.constants import _MODE_INTERNAL_NORMAL
+from NeoVintageous.vi.constants import MODE_NORMAL
+from NeoVintageous.vi.constants import MODE_VISUAL
+from NeoVintageous.vi.constants import MODE_VISUAL_LINE
+from NeoVintageous.state import State
+# from NeoVintageous.vi.actions import vi_r
 
-from Vintageous.tests import get_sel
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.tests import get_sel
+from NeoVintageous.tests import first_sel
+from NeoVintageous.tests import ViewTest
 
 
 class Test_vi_enter_normal_mode__SingleSelection__LeftRoRight(ViewTest):

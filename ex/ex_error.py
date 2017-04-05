@@ -82,7 +82,7 @@ def show_message(message, displays=Display.CONSOLE):
     @displays
       A `Display` where the message should be output to.
     '''
-    message = 'Vintageous: {}'.format(message)
+    message = 'NeoVintageous: {}'.format(message)
 
     if displays == Display.NONE:
         return

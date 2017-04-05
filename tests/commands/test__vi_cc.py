@@ -1,12 +1,12 @@
 import unittest
 from collections import namedtuple
 
-from Vintageous.vi.utils import modes
+from NeoVintageous.vi.utils import modes
 
-from Vintageous.tests import add_sel
-from Vintageous.tests import get_sel
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.tests import add_sel
+from NeoVintageous.tests import get_sel
+from NeoVintageous.tests import first_sel
+from NeoVintageous.tests import ViewTest
 
 
 def get_text(test):

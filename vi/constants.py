@@ -1,6 +1,6 @@
 # TODO: This module exists solely for retrocompatibility. Delete when possible.
 
-from Vintageous.vi.utils import modes
+from NeoVintageous.vi.utils import modes
 
 MODE_INSERT = modes.INSERT
 MODE_NORMAL = modes.NORMAL
@@ -8,7 +8,7 @@ MODE_VISUAL = modes.VISUAL
 MODE_VISUAL_LINE = modes.VISUAL_LINE
 # The mode you enter when giving i a count.
 MODE_NORMAL_INSERT = modes.NORMAL_INSERT
-# Vintageous always runs actions based on selections. Some Vim commands,
+# NeoVintageous always runs actions based on selections. Some Vim commands,
 # however, behave differently depending on whether the current mode is NORMAL
 # or VISUAL. To differentiate NORMAL mode operations (involving only an
 # action, or a motion plus an action) from VISUAL mode, we need to add an

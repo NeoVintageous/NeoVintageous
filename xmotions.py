@@ -6,42 +6,42 @@ import sublime_plugin
 from itertools import chain
 from collections import Counter
 
-from Vintageous import state as state_module
-from Vintageous.state import State
-from Vintageous.vi import cmd_defs
-from Vintageous.vi import units
-from Vintageous.vi import utils
-from Vintageous.vi.core import ViMotionCommand
-from Vintageous.vi.keys import mappings
-from Vintageous.vi.keys import seqs
-from Vintageous.vi.search import BufferSearchBase
-from Vintageous.vi.search import ExactWordBufferSearchBase
-from Vintageous.vi.search import find_in_range
-from Vintageous.vi.search import find_wrapping
-from Vintageous.vi.search import reverse_find_wrapping
-from Vintageous.vi.search import reverse_search
-from Vintageous.vi.search import reverse_search_by_pt
-from Vintageous.vi.text_objects import find_containing_tag
-from Vintageous.vi.text_objects import find_next_lone_bracket
-from Vintageous.vi.text_objects import find_prev_lone_bracket
-from Vintageous.vi.text_objects import get_closest_tag
-from Vintageous.vi.text_objects import get_text_object_region
-from Vintageous.vi.text_objects import word_end_reverse
-from Vintageous.vi.text_objects import word_reverse
-from Vintageous.vi.utils import col_at
-from Vintageous.vi.utils import directions
-from Vintageous.vi.utils import first_sel
-from Vintageous.vi.utils import get_bol
-from Vintageous.vi.utils import IrreversibleTextCommand
-from Vintageous.vi.utils import mark_as_widget
-from Vintageous.vi.utils import modes
-from Vintageous.vi.utils import R
-from Vintageous.vi.utils import regions_transformer
-from Vintageous.vi.utils import resize_visual_region
-from Vintageous.vi.utils import resolve_insertion_point_at_a
-from Vintageous.vi.utils import resolve_insertion_point_at_b
-from Vintageous.vi.utils import row_at
-from Vintageous.vi.utils import row_to_pt
+from NeoVintageous import state as state_module
+from NeoVintageous.state import State
+from NeoVintageous.vi import cmd_defs
+from NeoVintageous.vi import units
+from NeoVintageous.vi import utils
+from NeoVintageous.vi.core import ViMotionCommand
+from NeoVintageous.vi.keys import mappings
+from NeoVintageous.vi.keys import seqs
+from NeoVintageous.vi.search import BufferSearchBase
+from NeoVintageous.vi.search import ExactWordBufferSearchBase
+from NeoVintageous.vi.search import find_in_range
+from NeoVintageous.vi.search import find_wrapping
+from NeoVintageous.vi.search import reverse_find_wrapping
+from NeoVintageous.vi.search import reverse_search
+from NeoVintageous.vi.search import reverse_search_by_pt
+from NeoVintageous.vi.text_objects import find_containing_tag
+from NeoVintageous.vi.text_objects import find_next_lone_bracket
+from NeoVintageous.vi.text_objects import find_prev_lone_bracket
+from NeoVintageous.vi.text_objects import get_closest_tag
+from NeoVintageous.vi.text_objects import get_text_object_region
+from NeoVintageous.vi.text_objects import word_end_reverse
+from NeoVintageous.vi.text_objects import word_reverse
+from NeoVintageous.vi.utils import col_at
+from NeoVintageous.vi.utils import directions
+from NeoVintageous.vi.utils import first_sel
+from NeoVintageous.vi.utils import get_bol
+from NeoVintageous.vi.utils import IrreversibleTextCommand
+from NeoVintageous.vi.utils import mark_as_widget
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.utils import R
+from NeoVintageous.vi.utils import regions_transformer
+from NeoVintageous.vi.utils import resize_visual_region
+from NeoVintageous.vi.utils import resolve_insertion_point_at_a
+from NeoVintageous.vi.utils import resolve_insertion_point_at_b
+from NeoVintageous.vi.utils import row_at
+from NeoVintageous.vi.utils import row_to_pt
 
 
 class _vi_find_in_line(ViMotionCommand):
@@ -1749,7 +1749,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
                                       times=count)
 
         if not found:
-            print("Vintageous: Pattern not found.")
+            print("NeoVintageous: Pattern not found.")
             return
 
         regions_transformer(self.view, f)

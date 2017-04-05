@@ -1,9 +1,9 @@
 import sublime
 
-import Vintageous.ex.plat as plat
-import Vintageous.ex.plat.linux
-import Vintageous.ex.plat.osx
-import Vintageous.ex.plat.windows
+import NeoVintageous.ex.plat as plat
+import NeoVintageous.ex.plat.linux
+import NeoVintageous.ex.plat.osx
+import NeoVintageous.ex.plat.windows
 
 
 def run_and_wait(view, cmd):

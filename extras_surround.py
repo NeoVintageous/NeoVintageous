@@ -6,16 +6,16 @@
 import sublime
 import sublime_plugin
 
-from Vintageous.plugins import plugins
-from Vintageous.vi import inputs
-from Vintageous.vi import utils
-from Vintageous.vi.cmd_defs import ViOperatorDef
-from Vintageous.vi.core import ViTextCommandBase
-from Vintageous.vi.inputs import input_types
-from Vintageous.vi.inputs import parser_def
-from Vintageous.vi.search import reverse_search
-from Vintageous.vi.utils import modes
-from Vintageous.vi.utils import regions_transformer
+from NeoVintageous.plugins import plugins
+from NeoVintageous.vi import inputs
+from NeoVintageous.vi import utils
+from NeoVintageous.vi.cmd_defs import ViOperatorDef
+from NeoVintageous.vi.core import ViTextCommandBase
+from NeoVintageous.vi.inputs import input_types
+from NeoVintageous.vi.inputs import parser_def
+from NeoVintageous.vi.search import reverse_search
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.utils import regions_transformer
 
 import re
 

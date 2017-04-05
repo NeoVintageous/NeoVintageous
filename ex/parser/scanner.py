@@ -2,8 +2,8 @@
 Tokenization for the Vim command line.
 '''
 
-from Vintageous.ex.ex_error import ERR_UNKNOWN_COMMAND
-from Vintageous.ex.ex_error import VimError
+from NeoVintageous.ex.ex_error import ERR_UNKNOWN_COMMAND
+from NeoVintageous.ex.ex_error import VimError
 
 from . import subscanners
 from .state import EOF

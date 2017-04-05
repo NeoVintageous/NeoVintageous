@@ -1,12 +1,12 @@
-from Vintageous.vi.utils import modes
+from NeoVintageous.vi.utils import modes
 
-from Vintageous.state import State
+from NeoVintageous.state import State
 
-from Vintageous.tests import get_sel
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.tests import get_sel
+from NeoVintageous.tests import first_sel
+from NeoVintageous.tests import ViewTest
 
-from Vintageous.ex_commands import CURRENT_LINE_RANGE
+from NeoVintageous.ex_commands import CURRENT_LINE_RANGE
 
 
 class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(ViewTest):

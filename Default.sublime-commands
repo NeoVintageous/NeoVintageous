@@ -1,29 +1,29 @@
 [
     {
-        "caption": "Vintageous: Reset",
-        "command": "reset_vintageous"
+        "caption": "NeoVintageous: Reset",
+        "command": "reset_neovintageous"
     },
     {
-        "caption": "Vintageous: Toggle Vim Ctrl Keys",
-        "command": "vintageous_toggle_ctrl_keys"
+        "caption": "NeoVintageous: Toggle Vim Ctrl Keys",
+        "command": "neovintageous_toggle_ctrl_keys"
     },
     {
-        "caption": "Vintageous: Exit from command mode",
+        "caption": "NeoVintageous: Exit from command mode",
         "command": "force_exit_from_command_mode"
     },
     {
-        "caption": "Vintageous: Open .vintageousrc",
-        "command": "vintageous_open_config_file"
+        "caption": "NeoVintageous: Open .vintageousrc",
+        "command": "neovintageous_open_config_file"
     },
     {
-        "caption": "Preferences: Vintageous Settings – Default",
+        "caption": "Preferences: NeoVintageous Settings – Default",
         "command": "open_file",
         "args": {
-            "file": "${packages}/Vintageous/Preferences.sublime-settings"
+            "file": "${packages}/NeoVintageous/Preferences.sublime-settings"
         }
     },
     {
-        "caption": "Preferences: Vintageous Settings – User",
+        "caption": "Preferences: NeoVintageous Settings – User",
         "command": "open_file",
         "args": {
             "file": "${packages}/User/Preferences.sublime-settings"

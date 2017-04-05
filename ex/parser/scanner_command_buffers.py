@@ -3,9 +3,9 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_BUFFERS
 from .tokens_base import TokenOfCommand
 
-from Vintageous.ex.ex_error import ERR_INVALID_ARGUMENT
-from Vintageous.ex.ex_error import VimError
-from Vintageous import ex
+from NeoVintageous.ex.ex_error import ERR_INVALID_ARGUMENT
+from NeoVintageous.ex.ex_error import VimError
+from NeoVintageous import ex
 
 
 @ex.command('buffers', 'buffers')

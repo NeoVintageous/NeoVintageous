@@ -6,45 +6,45 @@ import subprocess
 import sublime
 import sublime_plugin
 
-from Vintageous.ex import ex_error
-from Vintageous.ex import shell
-from Vintageous.ex.ex_error import Display
-from Vintageous.ex.ex_error import ERR_CANT_FIND_DIR_IN_CDPATH
-from Vintageous.ex.ex_error import ERR_CANT_MOVE_LINES_ONTO_THEMSELVES
-from Vintageous.ex.ex_error import ERR_CANT_WRITE_FILE
-from Vintageous.ex.ex_error import ERR_EMPTY_BUFFER
-from Vintageous.ex.ex_error import ERR_FILE_EXISTS
-from Vintageous.ex.ex_error import ERR_INVALID_ADDRESS
-from Vintageous.ex.ex_error import ERR_NO_FILE_NAME
-from Vintageous.ex.ex_error import ERR_OTHER_BUFFER_HAS_CHANGES
-from Vintageous.ex.ex_error import ERR_READONLY_FILE
-from Vintageous.ex.ex_error import ERR_UNSAVED_CHANGES
-from Vintageous.ex.ex_error import show_error
-from Vintageous.ex.ex_error import show_message
-from Vintageous.ex.ex_error import show_status
-from Vintageous.ex.ex_error import show_not_implemented
-from Vintageous.ex.ex_error import VimError
-from Vintageous.ex.parser.parser import parse_command_line
-from Vintageous.ex.plat.windows import get_oem_cp
-from Vintageous.ex.plat.windows import get_startup_info
-from Vintageous.state import State
-from Vintageous.vi import abbrev
-from Vintageous.vi import utils
-from Vintageous.vi.constants import MODE_NORMAL
-from Vintageous.vi.constants import MODE_VISUAL
-from Vintageous.vi.constants import MODE_VISUAL_LINE
-from Vintageous.vi.core import ViWindowCommandBase
-from Vintageous.vi.mappings import Mappings
-from Vintageous.vi.search import find_all_in_range
-from Vintageous.vi.settings import set_global
-from Vintageous.vi.settings import set_local
-from Vintageous.vi.sublime import has_dirty_buffers
-from Vintageous.vi.utils import adding_regions
-from Vintageous.vi.utils import first_sel
-from Vintageous.vi.utils import modes
-from Vintageous.vi.utils import R
-from Vintageous.vi.utils import resolve_insertion_point_at_b
-from Vintageous.vi.utils import row_at
+from NeoVintageous.ex import ex_error
+from NeoVintageous.ex import shell
+from NeoVintageous.ex.ex_error import Display
+from NeoVintageous.ex.ex_error import ERR_CANT_FIND_DIR_IN_CDPATH
+from NeoVintageous.ex.ex_error import ERR_CANT_MOVE_LINES_ONTO_THEMSELVES
+from NeoVintageous.ex.ex_error import ERR_CANT_WRITE_FILE
+from NeoVintageous.ex.ex_error import ERR_EMPTY_BUFFER
+from NeoVintageous.ex.ex_error import ERR_FILE_EXISTS
+from NeoVintageous.ex.ex_error import ERR_INVALID_ADDRESS
+from NeoVintageous.ex.ex_error import ERR_NO_FILE_NAME
+from NeoVintageous.ex.ex_error import ERR_OTHER_BUFFER_HAS_CHANGES
+from NeoVintageous.ex.ex_error import ERR_READONLY_FILE
+from NeoVintageous.ex.ex_error import ERR_UNSAVED_CHANGES
+from NeoVintageous.ex.ex_error import show_error
+from NeoVintageous.ex.ex_error import show_message
+from NeoVintageous.ex.ex_error import show_status
+from NeoVintageous.ex.ex_error import show_not_implemented
+from NeoVintageous.ex.ex_error import VimError
+from NeoVintageous.ex.parser.parser import parse_command_line
+from NeoVintageous.ex.plat.windows import get_oem_cp
+from NeoVintageous.ex.plat.windows import get_startup_info
+from NeoVintageous.state import State
+from NeoVintageous.vi import abbrev
+from NeoVintageous.vi import utils
+from NeoVintageous.vi.constants import MODE_NORMAL
+from NeoVintageous.vi.constants import MODE_VISUAL
+from NeoVintageous.vi.constants import MODE_VISUAL_LINE
+from NeoVintageous.vi.core import ViWindowCommandBase
+from NeoVintageous.vi.mappings import Mappings
+from NeoVintageous.vi.search import find_all_in_range
+from NeoVintageous.vi.settings import set_global
+from NeoVintageous.vi.settings import set_local
+from NeoVintageous.vi.sublime import has_dirty_buffers
+from NeoVintageous.vi.utils import adding_regions
+from NeoVintageous.vi.utils import first_sel
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.utils import R
+from NeoVintageous.vi.utils import resolve_insertion_point_at_b
+from NeoVintageous.vi.utils import row_at
 
 
 GLOBAL_RANGES = []
@@ -219,25 +219,25 @@ class ExShell(ViWindowCommandBase):
             term = self.view.settings().get('VintageousEx_linux_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
-                sublime.status_message("Vintageous: Not terminal name found.")
+                sublime.status_message("NeoVintageous: Not terminal name found.")
                 return
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
                 print(e)
-                sublime.status_message("Vintageous: Error while executing command through shell.")
+                sublime.status_message("NeoVintageous: Error while executing command through shell.")
                 return
         elif sublime.platform() == 'osx':
             term = self.view.settings().get('VintageousEx_osx_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
-                sublime.status_message("Vintageous: Not terminal name found.")
+                sublime.status_message("NeoVintageous: Not terminal name found.")
                 return
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
                 print(e)
-                sublime.status_message("Vintageous: Error while executing command through shell.")
+                sublime.status_message("NeoVintageous: Error while executing command through shell.")
                 return
         elif sublime.platform() == 'windows':
             self.open_shell(['cmd.exe', '/k']).wait()
@@ -271,14 +271,14 @@ class ExReadShellOut(sublime_plugin.TextCommand):
                 the_shell = self.view.settings().get('linux_shell')
                 the_shell = the_shell or os.path.expandvars("$SHELL")
                 if not the_shell:
-                    sublime.status_message("Vintageous: No shell name found.")
+                    sublime.status_message("NeoVintageous: No shell name found.")
                     return
                 try:
                     p = subprocess.Popen([the_shell, '-c', parsed.command.command],
                                                         stdout=subprocess.PIPE)
                 except Exception as e:
                     print(e)
-                    sublime.status_message("Vintageous: Error while executing command through shell.")
+                    sublime.status_message("NeoVintageous: Error while executing command through shell.")
                     return
                 self.view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
 
@@ -365,7 +365,7 @@ class ExUnmap(ViWindowCommandBase):
             mappings.remove(modes.OPERATOR_PENDING, unmap.command.keys)
             mappings.remove(modes.VISUAL, unmap.command.keys)
         except KeyError:
-            sublime.status_message('Vintageous: Mapping not found.')
+            sublime.status_message('NeoVintageous: Mapping not found.')
 
 
 class ExNmap(ViWindowCommandBase):
@@ -396,7 +396,7 @@ class ExNunmap(ViWindowCommandBase):
         try:
             mappings.remove(modes.NORMAL, nunmap_command.command.keys)
         except KeyError:
-            sublime.status_message('Vintageous: Mapping not found.')
+            sublime.status_message('NeoVintageous: Mapping not found.')
 
 
 class ExOmap(ViWindowCommandBase):
@@ -427,7 +427,7 @@ class ExOunmap(ViWindowCommandBase):
         try:
             mappings.remove(modes.OPERATOR_PENDING, ounmap_command.command.keys)
         except KeyError:
-            sublime.status_message('Vintageous: Mapping not found.')
+            sublime.status_message('NeoVintageous: Mapping not found.')
 
 
 class ExVmap(ViWindowCommandBase):
@@ -462,7 +462,7 @@ class ExVunmap(ViWindowCommandBase):
             mappings.remove(modes.VISUAL_LINE, vunmap_command.command.keys)
             mappings.remove(modes.VISUAL_BLOCK, vunmap_command.command.keys)
         except KeyError:
-            sublime.status_message('Vintageous: Mapping  not found.')
+            sublime.status_message('NeoVintageous: Mapping  not found.')
 
 
 class ExAbbreviate(ViWindowCommandBase):
@@ -646,10 +646,10 @@ class ExWriteFile(ViWindowCommandBase):
             show_status('Appended to ' + os.path.abspath(fname))
             return
         except IOError as e:
-            print('Vintageous: could not write file')
-            print('Vintageous ============')
+            print('NeoVintageous: could not write file')
+            print('NeoVintageous ============')
             print(e)
-            print('=======================')
+            print('==========================')
             return
 
     def do_write(self, ex_command):
@@ -688,7 +688,7 @@ class ExWriteFile(ViWindowCommandBase):
         except IOError as e:
             # TODO: Add logging.
             show_error(VimError(ERR_CANT_WRITE_FILE))
-            print('Vintageous ==============================================')
+            print('NeoVintageous ==============================================')
             print (e)
             print('=========================================================')
 
@@ -754,7 +754,7 @@ class ExFile(ViWindowCommandBase):
         else:
             msg += " %d line(s) --%d%%--" % (lines, int(percent))
 
-        sublime.status_message('Vintageous: %s' % msg)
+        sublime.status_message('NeoVintageous: %s' % msg)
 
 
 class ExMove(ExTextCommandBase):
@@ -933,8 +933,8 @@ class ExSubstitute(sublime_plugin.TextCommand):
             count = 0
 
         if not pattern:
-            sublime.status_message("Vintageous: no previous pattern available")
-            print("Vintageous: no previous pattern available")
+            sublime.status_message("NeoVintageous: no previous pattern available")
+            print("NeoVintageous: no previous pattern available")
             return
 
         ExSubstitute.last_pattern = pattern
@@ -948,8 +948,8 @@ class ExSubstitute(sublime_plugin.TextCommand):
             compiled_rx = re.compile(pattern, flags=computed_flags)
         except Exception as e:
             sublime.status_message(
-                "Vintageous: bad pattern '%s'" % (e.message, pattern))
-            print("Vintageous [regex error]: %s ... in pattern '%s'"
+                "NeoVintageous: bad pattern '%s'" % (e.message, pattern))
+            print("NeoVintageous [regex error]: %s ... in pattern '%s'"
                 % (e.message, pattern))
             return
 
@@ -1086,7 +1086,7 @@ class ExGlobal(ViWindowCommandBase):
             matches = find_all_in_range(self._view, pattern,
                     global_range.begin(), global_range.end())
         except Exception as e:
-            msg = "Vintageous (global): %s ... in pattern '%s'" % (str(e), pattern)
+            msg = "NeoVintageous (global): %s ... in pattern '%s'" % (str(e), pattern)
             sublime.status_message(msg)
             print(msg)
             return
@@ -1351,7 +1351,7 @@ class ExListRegisters(ViWindowCommandBase):
 
     Lists registers in quick panel and saves selected to `"` register.
 
-    In Vintageous, registers store lists of values (due to multiple selections).
+    In NeoVintageous, registers store lists of values (due to multiple selections).
 
     http://vimdoc.sourceforge.net/htmldoc/change.html#:registers
     '''
@@ -1682,7 +1682,7 @@ class ExUnvsplit(ViWindowCommandBase):
 
         groups = self.window.num_groups()
         if groups == 1:
-            sublime.status_message("Vintageous: Can't delete more groups.")
+            sublime.status_message("NeoVintageous: Can't delete more groups.")
             return
 
         # If we don't do this, cloned views will be moved to the previous group and kept around.
@@ -1705,9 +1705,9 @@ class ExSetLocal(ViWindowCommandBase):
         try:
             set_local(self._view, option, value)
         except KeyError:
-            sublime.status_message("Vintageuos: No such option.")
+            sublime.status_message("NeoVintageous: No such option.")
         except ValueError:
-            sublime.status_message("Vintageous: Invalid value for option.")
+            sublime.status_message("NeoVintageous: Invalid value for option.")
 
 
 class ExSet(ViWindowCommandBase):
@@ -1727,9 +1727,9 @@ class ExSet(ViWindowCommandBase):
         try:
             set_global(self._view, option, value)
         except KeyError:
-            sublime.status_message("Vintageuos: No such option.")
+            sublime.status_message("NeoVintageous: No such option.")
         except ValueError:
-            sublime.status_message("Vintageous: Invalid value for option.")
+            sublime.status_message("NeoVintageous: Invalid value for option.")
 
 
 class ExLet(ViWindowCommandBase):

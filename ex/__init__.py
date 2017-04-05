@@ -12,7 +12,7 @@ def command(name, abbrev):
 
     Meant to be imported like this:
 
-        from Vintageous import ex
+        from NeoVintageous import ex
 
         ...
 

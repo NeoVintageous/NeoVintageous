@@ -2,12 +2,12 @@ import unittest
 
 import sublime
 
-from Vintageous.tests import ViewTest
-from Vintageous.vi import marks
-from Vintageous.state import State
-from Vintageous.tests import make_region
-from Vintageous.tests import set_text
-from Vintageous.tests import add_sel
+from NeoVintageous.tests import ViewTest
+from NeoVintageous.vi import marks
+from NeoVintageous.state import State
+from NeoVintageous.tests import make_region
+from NeoVintageous.tests import set_text
+from NeoVintageous.tests import add_sel
 
 
 # XXX: Use the mock module instead?

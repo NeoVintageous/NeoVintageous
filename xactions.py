@@ -3,32 +3,32 @@ import re
 
 import sublime
 
-from Vintageous import PluginLogger
-from Vintageous.state import _init_vintageous
-from Vintageous.state import State
-from Vintageous.vi import cmd_base
-from Vintageous.vi import cmd_defs
-from Vintageous.vi import mappings
-from Vintageous.vi import search
-from Vintageous.vi import units
-from Vintageous.vi import utils
-from Vintageous.vi.constants import regions_transformer_reversed
-from Vintageous.vi.core import ViTextCommandBase
-from Vintageous.vi.core import ViWindowCommandBase
-from Vintageous.vi.keys import key_names
-from Vintageous.vi.keys import KeySequenceTokenizer
-from Vintageous.vi.keys import to_bare_command_name
-from Vintageous.vi.mappings import Mappings
-from Vintageous.vi.utils import first_sel
-from Vintageous.vi.utils import gluing_undo_groups
-from Vintageous.vi.utils import IrreversibleTextCommand
-from Vintageous.vi.utils import is_view
-from Vintageous.vi.utils import modes
-from Vintageous.vi.utils import R
-from Vintageous.vi.utils import regions_transformer
-from Vintageous.vi.utils import resolve_insertion_point_at_b
-from Vintageous.vi.utils import restoring_sel
-from Vintageous.sublime_ext import SublimeWindowAPI
+from NeoVintageous import PluginLogger
+from NeoVintageous.state import _init_vintageous
+from NeoVintageous.state import State
+from NeoVintageous.vi import cmd_base
+from NeoVintageous.vi import cmd_defs
+from NeoVintageous.vi import mappings
+from NeoVintageous.vi import search
+from NeoVintageous.vi import units
+from NeoVintageous.vi import utils
+from NeoVintageous.vi.constants import regions_transformer_reversed
+from NeoVintageous.vi.core import ViTextCommandBase
+from NeoVintageous.vi.core import ViWindowCommandBase
+from NeoVintageous.vi.keys import key_names
+from NeoVintageous.vi.keys import KeySequenceTokenizer
+from NeoVintageous.vi.keys import to_bare_command_name
+from NeoVintageous.vi.mappings import Mappings
+from NeoVintageous.vi.utils import first_sel
+from NeoVintageous.vi.utils import gluing_undo_groups
+from NeoVintageous.vi.utils import IrreversibleTextCommand
+from NeoVintageous.vi.utils import is_view
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.utils import R
+from NeoVintageous.vi.utils import regions_transformer
+from NeoVintageous.vi.utils import resolve_insertion_point_at_b
+from NeoVintageous.vi.utils import restoring_sel
+from NeoVintageous.sublime_ext import SublimeWindowAPI
 
 _logger = PluginLogger(__name__)
 
@@ -325,7 +325,7 @@ class _enter_normal_mode(ViTextCommandBase):
             #      when we do the check above. Is that so?
             # XXX: The 'not is_view(self.view)' check above seems to be
             #      redundant, since those views should be ignored by
-            #      Vintageous altogether.
+            #      NeoVintageous altogether.
             if len(self.view.sel()) < 2:
                 # don't hide panel if multiple cursors
                 # if not from_init and getattr(self.view, 'settings') is None:
@@ -769,7 +769,7 @@ class ProcessNotation(ViWindowCommandBase):
                                         {parser_def.input_param: command._inp}
                                        )
         except IndexError:
-            _logger.info('[Vintageous] could not find a command to collect'
+            _logger.info('[NeoVintageous] could not find a command to collect'
                            'more user input')
             utils.blink()
         finally:
@@ -1934,7 +1934,7 @@ class _vi_p(ViTextCommandBase):
         register = register or '"'
         fragments = state.registers[register]
         if not fragments:
-            print("Vintageous: Nothing in register \".")
+            print("NeoVintageous: Nothing in register \".")
             return
 
         if state.mode == modes.VISUAL:
@@ -2549,7 +2549,7 @@ class _vi_ctrl_e(ViTextCommandBase):
         # TODO: Implement this motion properly; don't use built-in commands.
         # We're using an action because we don't care too much right now and we don't want the
         # motion to utils.blink every time we issue it (it does because the selections don't change and
-        # Vintageous rightfully thinks it has failed.)
+        # NeoVintageous rightfully thinks it has failed.)
         if mode == modes.VISUAL_LINE:
             return
         extend = True if mode == modes.VISUAL else False
@@ -2564,7 +2564,7 @@ class _vi_ctrl_y(ViTextCommandBase):
         # TODO: Implement this motion properly; don't use built-in commands.
         # We're using an action because we don't care too much right now and we don't want the
         # motion to utils.blink every time we issue it (it does because the selections don't change and
-        # Vintageous rightfully thinks it has failed.)
+        # NeoVintageous rightfully thinks it has failed.)
         if mode == modes.VISUAL_LINE:
             return
         extend = True if mode == modes.VISUAL else False
@@ -2586,7 +2586,7 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
                     self.view.run_command('insert_snippet', {'contents': str(rv[0])})
                     state.reset()
             except:
-                sublime.status_message("Vintageous: Invalid expression.")
+                sublime.status_message("NeoVintageous: Invalid expression.")
                 on_cancel()
 
         def on_cancel():
@@ -2628,7 +2628,7 @@ class _vi_at(IrreversibleTextCommand):
                 cmds = State.macro_registers[name]
                 State.macro_steps = cmds
             except ValueError as e:
-                print('Vintageous: error: %s' % e)
+                print('NeoVintageous: error: %s' % e)
                 return
 
         state = State(self.view)
@@ -2896,7 +2896,7 @@ class _vi_g_big_h(ViWindowCommandBase):
             return
 
         utils.blink()
-        sublime.status_message('Vintageous: No available search matches')
+        sublime.status_message('NeoVintageous: No available search matches')
         self.state.reset_command_data()
 
 

@@ -49,7 +49,7 @@ def set_generic_view_setting(view, name, value, opt, globally=False):
             prefs.set(name, opt.parser(value))
             sublime.save_settings('Preferences.sublime-settings')
         return
-    raise ValueError("Vintageous: bad option value")
+    raise ValueError("NeoVintageous: bad option value")
 
 
 def set_minimap(view, name, value, opt, globally=False):

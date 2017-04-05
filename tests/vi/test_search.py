@@ -1,7 +1,7 @@
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.tests import first_sel
+from NeoVintageous.tests import ViewTest
 
-from Vintageous.vi.search import find_wrapping
+from NeoVintageous.vi.search import find_wrapping
 
 
 class Test_find_wrapping(ViewTest):

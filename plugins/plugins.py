@@ -1,4 +1,4 @@
-from Vintageous.vi.utils import modes
+from NeoVintageous.vi.utils import modes
 
 
 mappings = {
@@ -15,9 +15,9 @@ classes = {}
 
 def register(seq, modes, *args, **kwargs):
     """
-    Registers a 'key sequence' to 'command' mapping with Vintageous.
+    Registers a 'key sequence' to 'command' mapping with NeoVintageous.
 
-    The registered key sequence must be known to Vintageous. The
+    The registered key sequence must be known to NeoVintageous. The
     registered command must be a ViMotionDef or ViOperatorDef.
 
     The decorated class is instantiated with `*args` and `**kwargs`.

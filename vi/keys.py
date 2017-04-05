@@ -1,10 +1,10 @@
 import re
 
-from Vintageous import PluginLogger
-from Vintageous.vi.utils import modes
-from Vintageous.vi import cmd_base
-from Vintageous.plugins import plugins
-from Vintageous.vi import variables
+from NeoVintageous import PluginLogger
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi import cmd_base
+from NeoVintageous.plugins import plugins
+from NeoVintageous.vi import variables
 
 
 _logger = PluginLogger(__name__)
@@ -26,7 +26,7 @@ class seqs:
     """
     Vim's built-in key sequences plus Sublime Text 3 staple commands.
 
-    These are the sequences of key presses known to Vintageous. Any other
+    These are the sequences of key presses known to NeoVintageous. Any other
     sequence pressed will be treated as 'unmapped'.
     """
 
@@ -528,9 +528,9 @@ def to_bare_command_name(seq):
 
 def assign(seq, modes, *args, **kwargs):
     """
-    Registers a 'key sequence' to 'command' mapping with Vintageous.
+    Registers a 'key sequence' to 'command' mapping with NeoVintageous.
 
-    The registered key sequence must be known to Vintageous. The
+    The registered key sequence must be known to NeoVintageous. The
     registered command must be a ViMotionDef or ViOperatorDef.
 
     The decorated class is instantiated with `*args` and `**kwargs`.

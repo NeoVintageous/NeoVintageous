@@ -108,7 +108,7 @@ class PluginLogger(object):
             fileHandler.setFormatter(f)
             self.logger.addHandler(fileHandler)
         else:
-            print("Vintageous: cannot find log file path: %s" % file_name)
+            print("NeoVintageous: cannot find log file path: %s" % file_name)
 
     def warn_aboug_logging_level(self):
         if self.logger.level <= logging.DEBUG:

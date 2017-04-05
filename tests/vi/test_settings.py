@@ -1,20 +1,20 @@
 import unittest
 
-from Vintageous.tests import ViewTest
-from Vintageous.vi.settings import SettingsManager
-from Vintageous.vi.settings import SublimeSettings
-from Vintageous.vi.settings import VI_OPTIONS
-from Vintageous.vi.settings import vi_user_setting
-from Vintageous.vi.settings import VintageSettings
-from Vintageous.vi.settings import SCOPE_VIEW
-from Vintageous.vi.settings import SCOPE_VI_VIEW
-from Vintageous.vi.settings import SCOPE_VI_WINDOW
-from Vintageous.vi.settings import SCOPE_WINDOW
-from Vintageous.vi.settings import set_generic_view_setting
-from Vintageous.vi.settings import opt_bool_parser
-from Vintageous.vi.settings import set_minimap
-from Vintageous.vi.settings import set_sidebar
-from Vintageous.vi.settings import opt_rulers_parser
+from NeoVintageous.tests import ViewTest
+from NeoVintageous.vi.settings import SettingsManager
+from NeoVintageous.vi.settings import SublimeSettings
+from NeoVintageous.vi.settings import VI_OPTIONS
+from NeoVintageous.vi.settings import vi_user_setting
+from NeoVintageous.vi.settings import VintageSettings
+from NeoVintageous.vi.settings import SCOPE_VIEW
+from NeoVintageous.vi.settings import SCOPE_VI_VIEW
+from NeoVintageous.vi.settings import SCOPE_VI_WINDOW
+from NeoVintageous.vi.settings import SCOPE_WINDOW
+from NeoVintageous.vi.settings import set_generic_view_setting
+from NeoVintageous.vi.settings import opt_bool_parser
+from NeoVintageous.vi.settings import set_minimap
+from NeoVintageous.vi.settings import set_sidebar
+from NeoVintageous.vi.settings import opt_rulers_parser
 
 
 class TestSublimeSettings(ViewTest):

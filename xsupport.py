@@ -7,13 +7,13 @@ import threading
 import sublime
 import sublime_plugin
 
-from Vintageous.state import _init_vintageous
-from Vintageous.state import State
-from Vintageous.vi import settings
-from Vintageous.vi import cmd_defs
-from Vintageous.vi.dot_file import DotFile
-from Vintageous.vi.utils import modes
-from Vintageous.vi.utils import regions_transformer
+from NeoVintageous.state import _init_vintageous
+from NeoVintageous.state import State
+from NeoVintageous.vi import settings
+from NeoVintageous.vi import cmd_defs
+from NeoVintageous.vi.dot_file import DotFile
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.utils import regions_transformer
 
 
 class _vi_slash_on_parser_done(sublime_plugin.WindowCommand):
@@ -125,15 +125,15 @@ class Sequence(sublime_plugin.TextCommand):
             self.view.run_command(cmd, args)
 
 
-class ResetVintageous(sublime_plugin.WindowCommand):
+class ResetNeovintageous(sublime_plugin.WindowCommand):
 
     def run(self):
         v = self.window.active_view()
         v.settings().erase('vintage')
         _init_vintageous(v)
         DotFile.from_user().run()
-        print("Package.Vintageous: State reset.")
-        sublime.status_message("Vintageous: State reset")
+        print("Package.NeoVintageous: State reset.")
+        sublime.status_message("NeoVintageous: State reset")
 
 
 class ForceExitFromCommandMode(sublime_plugin.WindowCommand):
@@ -149,11 +149,11 @@ class ForceExitFromCommandMode(sublime_plugin.WindowCommand):
         v.settings().set('command_mode', False)
         v.settings().set('inverse_caret_state', False)
 
-        print("Vintageous: Exiting from command mode.")
-        sublime.status_message("Vintageous: Exiting from command mode.")
+        print("NeoVintageous: Exiting from command mode.")
+        sublime.status_message("NeoVintageous: Exiting from command mode.")
 
 
-class VintageousToggleCtrlKeys(sublime_plugin.WindowCommand):
+class NeovintageousToggleCtrlKeys(sublime_plugin.WindowCommand):
 
     def run(self):
         prefs = sublime.load_settings('Preferences.sublime-settings')
@@ -161,18 +161,18 @@ class VintageousToggleCtrlKeys(sublime_plugin.WindowCommand):
         prefs.set('vintageous_use_ctrl_keys', (not value))
         sublime.save_settings('Preferences.sublime-settings')
         status = 'enabled' if (not value) else 'disabled'
-        print("Package.Vintageous: Use of Ctrl- keys {0}.".format(status))
-        sublime.status_message("Vintageous: Use of Ctrl- keys {0}"
+        print("Package.NeoVintageous: Use of Ctrl- keys {0}.".format(status))
+        sublime.status_message("NeoVintageous: Use of Ctrl- keys {0}"
                                .format(status))
 
 
-class ReloadVintageousSettings(sublime_plugin.TextCommand):
+class ReloadNeovintageousSettings(sublime_plugin.TextCommand):
 
     def run(self, edit):
         DotFile.from_user().run()
 
 
-class VintageousOpenConfigFile(sublime_plugin.WindowCommand):
+class NeovintageousOpenConfigFile(sublime_plugin.WindowCommand):
     """Opens or creates $packages/User/.vintageousrc.
     """
 

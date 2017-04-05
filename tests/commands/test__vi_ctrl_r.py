@@ -1,12 +1,12 @@
 import unittest
 
-from Vintageous.vi.utils import modes
+from NeoVintageous.vi.utils import modes
 
-from Vintageous.state import State
+from NeoVintageous.state import State
 
-from Vintageous.tests import get_sel
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.tests import get_sel
+from NeoVintageous.tests import first_sel
+from NeoVintageous.tests import ViewTest
 
 
 # XXX: Am I using the best way to test this?

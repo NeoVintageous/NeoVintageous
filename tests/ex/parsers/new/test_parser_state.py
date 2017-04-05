@@ -1,6 +1,6 @@
 import unittest
 
-from Vintageous.ex.parser.parser import ParserState
+from NeoVintageous.ex.parser.parser import ParserState
 
 
 class ParserState_Tests(unittest.TestCase):

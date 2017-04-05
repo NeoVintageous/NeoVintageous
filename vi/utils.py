@@ -1,6 +1,6 @@
 import sublime
 import sublime_plugin
-from Vintageous.vi.sublime import is_view as sublime_is_view
+from NeoVintageous.vi.sublime import is_view as sublime_is_view
 
 from contextlib import contextmanager
 import re
@@ -30,7 +30,7 @@ def mark_as_widget(view):
 
 def is_view(view):
     """
-    Returns `True` if @view is a normal view as Vintageous understands them.
+    Returns `True` if @view is a normal view as NeoVintageous understands them.
 
     It returns `False` for views that have a `__vi_external_disable`
     setting set to `True`.
@@ -41,9 +41,9 @@ def is_view(view):
 
 def is_ignored(view):
     """
-    Returns `True` if the view wants to be ignored by Vintageous.
+    Returns `True` if the view wants to be ignored by NeoVintageous.
 
-    Useful for external plugins that don't want Vintageous to be active for
+    Useful for external plugins that don't want NeoVintageous to be active for
     specific views.
     """
     return view.settings().get('__vi_external_disable', False)
@@ -51,9 +51,9 @@ def is_ignored(view):
 
 def is_ignored_but_command_mode(view):
     """
-    Returns `True` if the view wants to be ignored by Vintageous.
+    Returns `True` if the view wants to be ignored by NeoVintageous.
 
-    Useful for external plugins that don't want Vintageous to be active for
+    Useful for external plugins that don't want NeoVintageous to be active for
     specific views.
 
     .is_ignored_but_command_mode() differs from .is_ignored() in that here

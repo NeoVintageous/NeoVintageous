@@ -3,14 +3,14 @@ from collections import namedtuple
 
 import sublime
 
-from Vintageous.vi.text_objects import previous_begin_tag
-from Vintageous.vi.text_objects import find_containing_tag
-from Vintageous.vi.text_objects import next_end_tag
-from Vintageous.vi.text_objects import get_region_end
-from Vintageous.vi.text_objects import next_unbalanced_tag
-from Vintageous.vi.utils import modes
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.vi.text_objects import previous_begin_tag
+from NeoVintageous.vi.text_objects import find_containing_tag
+from NeoVintageous.vi.text_objects import next_end_tag
+from NeoVintageous.vi.text_objects import get_region_end
+from NeoVintageous.vi.text_objects import next_unbalanced_tag
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.tests import first_sel
+from NeoVintageous.tests import ViewTest
 
 
 test_data = namedtuple('test_data', 'content args expected msg')

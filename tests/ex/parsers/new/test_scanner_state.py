@@ -1,8 +1,8 @@
 import unittest
 
-from Vintageous.ex.parser.state import EOF
-from Vintageous.ex.parser.state import ScannerState
-from Vintageous.ex.parser.tokens import TOKEN_UNKNOWN
+from NeoVintageous.ex.parser.state import EOF
+from NeoVintageous.ex.parser.state import ScannerState
+from NeoVintageous.ex.parser.tokens import TOKEN_UNKNOWN
 
 
 class ScannerTests(unittest.TestCase):

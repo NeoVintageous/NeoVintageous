@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>name</key>
-    <string>Vintageous Command Line</string>
+    <string>NeoVintageous Command Line</string>
     <key>patterns</key>
     <array>
         <dict>

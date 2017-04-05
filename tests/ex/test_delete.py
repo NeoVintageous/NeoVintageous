@@ -1,17 +1,17 @@
 import unittest
 
-from Vintageous.vi.constants import _MODE_INTERNAL_NORMAL
-from Vintageous.vi.constants import MODE_NORMAL
-from Vintageous.vi.constants import MODE_VISUAL
-from Vintageous.vi.constants import MODE_VISUAL_LINE
+from NeoVintageous.vi.constants import _MODE_INTERNAL_NORMAL
+from NeoVintageous.vi.constants import MODE_NORMAL
+from NeoVintageous.vi.constants import MODE_VISUAL
+from NeoVintageous.vi.constants import MODE_VISUAL_LINE
 
-from Vintageous.state import State
+from NeoVintageous.state import State
 
-from Vintageous.tests import get_sel
-from Vintageous.tests import first_sel
-from Vintageous.tests import ViewTest
+from NeoVintageous.tests import get_sel
+from NeoVintageous.tests import first_sel
+from NeoVintageous.tests import ViewTest
 
-from Vintageous.ex_commands import CURRENT_LINE_RANGE
+from NeoVintageous.ex_commands import CURRENT_LINE_RANGE
 
 
 class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTest):

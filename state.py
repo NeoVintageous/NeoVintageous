@@ -2,29 +2,29 @@ from collections import Counter
 
 import sublime
 
-from Vintageous import PluginLogger
-from Vintageous import NullPluginLogger
-from Vintageous.vi import cmd_base
-from Vintageous.vi import cmd_defs
-from Vintageous.vi import settings
-from Vintageous.vi import utils
-from Vintageous.vi.contexts import KeyContext
-from Vintageous.vi.dot_file import DotFile
-from Vintageous.vi.macros import MacroRegisters
-from Vintageous.vi.marks import Marks
-from Vintageous.vi.registers import Registers
-from Vintageous.vi.settings import SettingsManager
-from Vintageous.vi.utils import directions
-from Vintageous.vi.utils import first_sel
-from Vintageous.vi.utils import input_types
-from Vintageous.vi.utils import is_ignored
-from Vintageous.vi.utils import is_ignored_but_command_mode
-from Vintageous.vi.utils import is_view
-from Vintageous.vi.utils import modes
-from Vintageous.vi.variables import Variables
+from NeoVintageous import PluginLogger
+from NeoVintageous import NullPluginLogger
+from NeoVintageous.vi import cmd_base
+from NeoVintageous.vi import cmd_defs
+from NeoVintageous.vi import settings
+from NeoVintageous.vi import utils
+from NeoVintageous.vi.contexts import KeyContext
+from NeoVintageous.vi.dot_file import DotFile
+from NeoVintageous.vi.macros import MacroRegisters
+from NeoVintageous.vi.marks import Marks
+from NeoVintageous.vi.registers import Registers
+from NeoVintageous.vi.settings import SettingsManager
+from NeoVintageous.vi.utils import directions
+from NeoVintageous.vi.utils import first_sel
+from NeoVintageous.vi.utils import input_types
+from NeoVintageous.vi.utils import is_ignored
+from NeoVintageous.vi.utils import is_ignored_but_command_mode
+from NeoVintageous.vi.utils import is_view
+from NeoVintageous.vi.utils import modes
+from NeoVintageous.vi.variables import Variables
 
 # !! Avoid error due to sublime_plugin.py:45 expectations.
-from Vintageous.plugins import plugins as user_plugins
+from NeoVintageous.plugins import plugins as user_plugins
 
 
 _logger = PluginLogger(__name__)
@@ -54,9 +54,9 @@ def _init_vintageous(view, new_session=False):
                 view.settings().set('inverse_caret_state', False)
             view.settings().erase('vintage')
             if is_ignored(view):
-                # Someone has intentionally disabled Vintageous, so let the user know.
+                # Someone has intentionally disabled NeoVintageous, so let the user know.
                 sublime.status_message(
-                    'Vintageous: Vim emulation disabled for the current view')
+                    'NeoVintageous: Vim emulation disabled for the current view')
         except AttributeError:
             _logger.info(
                 '[_init_vintageous] probably received the console view')
@@ -180,7 +180,7 @@ class State(object):
         self.settings = SettingsManager(self.view)
 
         _logger.debug(
-            '[State] Is .view an ST/Vintageous widget? {0}/{1}'.format(
+            '[State] Is .view an ST/NeoVintageous widget? {0}/{1}'.format(
                 bool(self.settings.view['is_widget']),
                 bool(self.settings.view['is_vintageous_widget']))
             )
@@ -566,7 +566,7 @@ class State(object):
     def reset_sequence(self):
         # TODO(guillermooo): When is_recording, we could store the .sequence
         # and replay that, but we can't easily translate key presses in insert
-        # mode to a Vintageous-friendly notation. A hybrid approach may work:
+        # mode to a NeoVintageous-friendly notation. A hybrid approach may work:
         # use a plain string for any command-mode-based mode, and native ST
         # commands for insert mode. That should make editing macros easier.
         self.sequence = ''
@@ -633,7 +633,7 @@ class State(object):
     def reset_volatile_data(self):
         """
         Resets window- or application-wide data to their default values when
-        starting a new Vintageous session.
+        starting a new NeoVintageous session.
         """
         self.glue_until_normal_mode = False
         self.view.run_command('unmark_undo_groups_for_gluing')
