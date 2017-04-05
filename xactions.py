@@ -1895,17 +1895,33 @@ class _vi_big_p(ViTextCommandBase):
         text_block, linewise = self.merge(fragments)
 
         if mode == modes.INTERNAL_NORMAL:
-            self.view.insert(edit, sel.a, text_block)
+            if not linewise:
+                self.view.insert(edit, sel.a, text_block)
+                self.view.sel().clear()
+                pt = sel.a + len(text_block) - 1
+                self.view.sel().add(R(pt))
+            else:
+                pt = self.view.line(sel.a).a
+                self.view.insert(edit, pt, text_block)
+                self.view.sel().clear()
+                row = utils.row_at(self.view, pt)
+                pt = self.view.text_point(row, 0)
+                self.view.sel().add(R(pt))
+
         elif mode == modes.VISUAL:
-            self.view.replace(edit, sel, text_block)
+            if not linewise:
+                self.view.replace(edit, sel, text_block)
+            else:
+                pt = sel.a
+                if text_block[0] != '\n':
+                    text_block = '\n' + text_block
+                self.view.replace(edit, sel, text_block)
+                self.view.sel().clear()
+                row = utils.row_at(self.view, pt + len(text_block))
+                pt = self.view.text_point(row - 1, 0)
+                self.view.sel().add(R(pt))
         else:
             return
-
-        self.view.sel().clear()
-        pt = sel.a
-        if not linewise:
-            pt += len(text_block) - 1
-        self.view.sel().add(R(pt))
 
         self.enter_normal_mode(mode=mode)
 
@@ -1917,6 +1933,8 @@ class _vi_big_p(ViTextCommandBase):
         """
         block = ''.join(fragments)
         if '\n' in fragments[0]:
+            if block[-1] != '\n':
+                return (block + '\n'), True
             return block, True
         return block, False
 

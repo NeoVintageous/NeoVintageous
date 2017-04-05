@@ -30,12 +30,6 @@ TESTS = (
               in_register=['xxx\n'], params={'mode': modes.INTERNAL_NORMAL, 'count': 1},
               expected=('xxx\nabc', R(0, 0)), msg='failed in {0}'),
 
-    # INTERNAL NORMAL MODE - linewise issue#1015
-    test_data(content='a b c\nd e f',
-              regions=[[(1, 2), (1, 2)]],
-              in_register=['b c\n'], params={'mode': modes.INTERNAL_NORMAL, 'count': 1},
-              expected=('a b c\nd b c\ne f', R(8, 8)), msg='failed in {0}'),
-
     # VISUAL MODE
     test_data(content='abc',
               regions=[[(0, 0), (0, 3)]],
@@ -46,7 +40,7 @@ TESTS = (
     test_data(content='aaa bbb ccc',
               regions=[[(0, 4), (0, 7)]],
               in_register=['xxx\n'], params={'mode': modes.VISUAL, 'count': 1},
-              expected=('aaa xxx\n ccc', R(4, 4)), msg='failed in {0}'),
+              expected=('aaa \nxxx\n ccc', R(5, 5)), msg='failed in {0}'),
 )
 
 
