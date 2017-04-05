@@ -38,7 +38,6 @@
 * Fixed: Console not longer auto closes on start
 * Fixed: Some file permissions
 * Fixed: `c_` and `d_` no longer cause an error
-* Fixed [#1041](https://github.com/guillermooo/Vintageous/pull/1041): Fix for P newline pasting
 * Fixed [#1042](https://github.com/guillermooo/Vintageous/pull/1042): Fix interactive commands not working after mapped commands
 * Fixed [#1074](https://github.com/guillermooo/Vintageous/pull/1074): New text objects
 * Removed: Settings
