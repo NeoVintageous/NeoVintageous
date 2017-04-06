@@ -1,30 +1,32 @@
 # CHANGELOG
 
+## Unreleased
+
 * Added: Commands
 
     Command | Description | Documentation | Notes
     ------- | ----------- | ------------- | -----
-    ctrl-w, ] | Jump to the definition of the keyword under the cursor | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/tagsrch.html#CTRL-\])
-    ctrl-w, h | Move cursor to view left of current one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_h) |
-    ctrl-w, j | Move cursor to view below current one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_j) |
-    ctrl-w, k | Move cursor to view above current one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_k) |
-    ctrl-w, l | Move cursor to view right of current one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_l) |
-    ctrl-w, b | Move cursor to bottom-right view | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_b) |
-    ctrl-w, t | Move cursor to top-left view | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_t) |
-    ctrl-w, H | Move the current window to be at the very top | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_H) | Currently only works in 2-col or 2-row layouts
-    ctrl-w, = | Make all views (almost) equally high and wide | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_=) |
-    ctrl-w, _ | Set current view height as high as possible | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W__) |
-    ctrl-w, &vert; | Set current view width as wide as possible | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar) |
-    ctrl-w, o | Make the current view the only one on the screen | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_o) |
-    ctrl-w, c | Close current view | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_c) |
-    ctrl-w, x | Exchange current view with next one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_x) |
-    ctrl-w, s | Split current window in two | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_s) | Requires [Origami](https://github.com/SublimeText/Origami)
-    ctrl-w, v | Split current window in two (vertically) | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_v) | Requires [Origami](https://github.com/SublimeText/Origami)
-    ctrl-w, J | Move the current window to be at the very bottom | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_J) | Currently only works in 2-col or 2-row layouts
-    ctrl-w, K | Move the current view to be at the far left | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_K) | Currently only works in 2-col or 2-row layouts
-    ctrl-w, L | Move the current window to be at the far right | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_L) | Currently only works in 2-col or 2-row layouts
-    ctrl-w, n | Create new view below current one | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_n) |
-    ga | Print the ascii value of the character under the cursor in dec, hex and oct | [vimdocs](http://vimdoc.sourceforge.net/htmldoc/various.html#ga) |
+    ctrl-w, ] | Jump to the definition of the keyword under the cursor | [Neovim doc](https://neovim.io/doc/user/tagsrch.html#CTRL-\]) |
+    ctrl-w, h | Move cursor to view left of current one | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_h) |
+    ctrl-w, j | Move cursor to view below current one | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_j) |
+    ctrl-w, k | Move cursor to view above current one | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_k) |
+    ctrl-w, l | Move cursor to view right of current one | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_l) |
+    ctrl-w, b | Move cursor to bottom-right view | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_b) |
+    ctrl-w, t | Move cursor to top-left view | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_t) |
+    ctrl-w, H | Move the current window to be at the very top | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_H) | Currently only works in 2-col or 2-row layouts
+    ctrl-w, = | Make all views (almost) equally high and wide | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_=) |
+    ctrl-w, _ | Set current view height as high as possible | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W__) |
+    ctrl-w, &vert; | Set current view width as wide as possible | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_bar) |
+    ctrl-w, o | Make the current view the only one on the screen | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_o) |
+    ctrl-w, c | Close current view | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_c) |
+    ctrl-w, x | Exchange current view with next one | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_x) |
+    ctrl-w, s | Split current window in two | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_s) | Requires [Origami](https://github.com/SublimeText/Origami)
+    ctrl-w, v | Split current window in two (vertically) | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_v) | Requires [Origami](https://github.com/SublimeText/Origami)
+    ctrl-w, J | Move the current window to be at the very bottom | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_J) | Currently only works in 2-col or 2-row layouts
+    ctrl-w, K | Move the current view to be at the far left | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_K) | Currently only works in 2-col or 2-row layouts
+    ctrl-w, L | Move the current window to be at the far right | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_L) | Currently only works in 2-col or 2-row layouts
+    ctrl-w, n | Create new view below current one | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_n) |
+    ga | Print the ascii value of the character under the cursor in dec, hex and oct | [Neovim doc](https://neovim.io/doc/user/various.html#ga) |
 
 * Added: Command palette commands to run test and open preferences
 * Added: vi_search.comment scope to searches for better control of highlighting
@@ -34,6 +36,8 @@
 * Added: Package Control menu for README, CHANGELOG, and LICENSE
 * Added: Command-line mode syntax uses new syntax format
 * Added: Commands to open README and CHANGELOG
+* Fixed: Double loading and unnecessary loading, unloading, and loading of modules on start
+* Fixed: Logging messages printed multiple times
 * Fixed: CTRL-W_H and CTRL-W-L windowing commands
 * Fixed: Error raised trying to scroll in a transient view
 * Fixed: Don't hide console on Esc if already in normal mode and currently have a multiple selection
