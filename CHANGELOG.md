@@ -33,6 +33,7 @@
 * Added [#1077](https://github.com/guillermooo/Vintageous/pull/1077): Support for Sublime Wrap Plus
 * Added: Package Control menu for README, CHANGELOG, and LICENSE
 * Added: Command-line mode syntax uses new syntax format
+* Added: Commands to open README and CHANGELOG
 * Fixed: CTRL-W_H and CTRL-W-L windowing commands
 * Fixed: Error raised trying to scroll in a transient view
 * Fixed: Don't hide console on Esc if already in normal mode and currently have a multiple selection
