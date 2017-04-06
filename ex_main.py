@@ -78,9 +78,10 @@ class ViColonInput(sublime_plugin.WindowCommand):
                on_done=self.on_done,
                on_change=self.on_change))
 
-        v.set_syntax_file('Packages/NeoVintageous/VintageousEx Cmdline.tmLanguage')
+        v.set_syntax_file('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
         v.settings().set('gutter', False)
         v.settings().set('rulers', [])
+        v.settings().set('auto_match_enabled', False)
 
         state = State(self.window.active_view())
         state.reset_during_init = False

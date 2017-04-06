@@ -32,6 +32,7 @@
 * Added: The [surround.vim](https://github.com/guillermooo/Vintageous_Plugin_Surround) plugin by @guillermooo has been integrated and is enabled by default.
 * Added [#1077](https://github.com/guillermooo/Vintageous/pull/1077): Support for Sublime Wrap Plus
 * Added: Package Control menu for README, CHANGELOG, and LICENSE
+* Added: Command-line mode syntax uses new syntax format
 * Fixed: CTRL-W_H and CTRL-W-L windowing commands
 * Fixed: Error raised trying to scroll in a transient view
 * Fixed: Don't hide console on Esc if already in normal mode and currently have a multiple selection
@@ -40,6 +41,7 @@
 * Fixed: `c_` and `d_` no longer cause an error
 * Fixed [#1042](https://github.com/guillermooo/Vintageous/pull/1042): Fix interactive commands not working after mapped commands
 * Fixed [#1074](https://github.com/guillermooo/Vintageous/pull/1074): New text objects
+* Fixed: Command-line mode syntax is now hidden from syntax menus
 * Removed: Settings
 
     Setting | Description | Notes
