@@ -948,9 +948,10 @@ class ViActivatePreviousTab(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_B, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_B, modes=_MODES_ACTION)
 class ViMoveCursorToBottomRightWindow(ViOperatorDef):
     """
-    Vim: `<C-w>b`
+    Vim: `<C-w>b`, `<C-w><C-b>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1068,9 +1069,12 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_H, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_H, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_LEFT, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_BACKSPACE, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
     """
-    Vim: `<C-w>h`
+    Vim: `<C-w>h`, `<C-w><C-h>`, `<C-w><left>`, `<C-w><bs>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1083,9 +1087,11 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_J, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_J, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_DOWN, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
     """
-    Vim: `<C-w>j`
+    Vim: `<C-w>j`, `<C-w><C-j>`, `<C-w><down>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1098,9 +1104,11 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_K, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_K, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_UP, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
     """
-    Vim: `<C-w>k`
+    Vim: `<C-w>k`, `<C-w><C-k>`, `<C-w><up>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1113,9 +1121,11 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_L, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_RIGHT, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
     """
-    Vim: `<C-w>l`
+    Vim: `<C-w>l`, `<C-w><C-l>`, `<C-w><right>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1158,9 +1168,10 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_N, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_N, modes=_MODES_ACTION)
 class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
     """
-    Vim: `<C-w>n`
+    Vim: `<C-w>n`, `<C-w><C-n>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1173,9 +1184,10 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_O, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_O, modes=_MODES_ACTION)
 class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
     """
-    Vim: `<C-w>o`
+    Vim: `<C-w>o`, `<C-w><C-o>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1218,9 +1230,10 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_Q, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_Q, modes=_MODES_ACTION)
 class ViQuitTheCurrentWindow(ViOperatorDef):
     """
-    Vim: `<C-w>q`
+    Vim: `<C-w>q`, `<C-w><C-q>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1233,9 +1246,11 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_S, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_BIG_S, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_S, modes=_MODES_ACTION)
 class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
     """
-    Vim: `<C-w>s`
+    Vim: `<C-w>s`, `<C-w>S`, `<C-w><C-s>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1248,9 +1263,10 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_T, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_T, modes=_MODES_ACTION)
 class ViMoveCursorToTopLeftWindow(ViOperatorDef):
     """
-    Vim: `<C-w>t`
+    Vim: `<C-w>t`, `<C-w><C-t>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1263,9 +1279,10 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_UNDERSCORE, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_UNDERSCORE, modes=_MODES_ACTION)
 class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
     """
-    Vim: `<C-w>_`
+    Vim: `<C-w>_`, `<C-w><C-_>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1278,9 +1295,10 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_V, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_V, modes=_MODES_ACTION)
 class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
     """
-    Vim: `<C-w>v`
+    Vim: `<C-w>v`, `<C-w><C-v>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1293,9 +1311,10 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
         return cmd
 
 @keys.assign(seq=seqs.CTRL_W_X, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_CTRL_X, modes=_MODES_ACTION)
 class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
     """
-    Vim: `<C-w>x`
+    Vim: `<C-w>x`, `<C-w><C-x>`
     """
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
