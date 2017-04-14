@@ -46,7 +46,7 @@ class ViewTest(unittest.TestCase):
     def add_sel(self, a=0, b=0):
         if not self.view:
             raise TypeError('no view available yet')
-        add_sel(self.view, a , b)
+        add_sel(self.view, a, b)
 
     def second_sel(self):
         return second_sel(self.view)
@@ -117,5 +117,3 @@ def first_sel(view):
 
 def second_sel(view):
     return get_sel(view, 1)
-
-

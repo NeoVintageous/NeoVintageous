@@ -72,6 +72,7 @@ class ViSurroundVisual(ViSurround):
                             on_done=None,
                             type=input_types.INMEDIATE)
 
+
 @plugins.register(seq='ds', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
 class ViDeleteSurround(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -143,6 +144,7 @@ class ViChangeSurround(ViOperatorDef):
         print(cmd)
         return cmd
 
+
 def regions_transformer_reversed(view, f):
     sels = reversed(list(view.sel()))
     new = []
@@ -153,6 +155,7 @@ def regions_transformer_reversed(view, f):
         new.append(region)
     view.sel().clear()
     view.sel().add_all(new)
+
 
 PAIRS_DEFAULT_PLAIN = {
     '(': ('(', ')'),
@@ -172,11 +175,13 @@ PAIRS_DEFAULT_SPACE = {
     '{': ('{ ', ' }'),
 }
 
+
 def get_surround_pairs(view):
     if view.settings().get("vintageous_surround_spaces",False):
         return PAIRS_DEFAULT_SPACE
     else:
         return PAIRS_DEFAULT_PLAIN
+
 
 # actual command implementation
 class _vi_plug_ys(ViTextCommandBase):
@@ -227,8 +232,10 @@ class _vi_plug_cs(sublime_plugin.TextCommand):
         '{': ('{', '}'),
         '}': ('{ ', ' }'),
     }
+
     def run(self, edit, mode=None, replace_what=''):
-        print(["cs",edit,mode,replace_what])
+        print(["cs", edit, mode, replace_what])
+
         def f(view, s):
             if mode == modes.INTERNAL_NORMAL:
                 self.replace(edit, s, replace_what)
@@ -269,6 +276,7 @@ class _vi_plug_ds(sublime_plugin.TextCommand):
         '{': ('{', '}'),
         '}': ('{ ', ' }'),
     }
+
     def run(self, edit, mode=None, replace_what=''):
         def f(view, s):
             if mode == modes.INTERNAL_NORMAL:

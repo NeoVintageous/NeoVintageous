@@ -716,7 +716,8 @@ class ProcessNotation(ViWindowCommandBase):
                                     })
                         else:
                             self.window.run_command('insert', {
-                               'characters': utils.translate_char(key)})
+                                'characters': utils.translate_char(key)
+                            })
                     if not state.must_collect_input:
                         return
                 finally:
@@ -809,7 +810,6 @@ class PressKey(ViWindowCommandBase):
                                modes.VISUAL_BLOCK,
                                modes.SELECT)):
                 _init_vintageous(state.view)
-
 
         if key.lower() == '<esc>':
             self.window.run_command('_enter_normal_mode', {'mode': state.mode})
@@ -933,7 +933,7 @@ class PressKey(ViWindowCommandBase):
 
         state.set_command(command)
 
-        _logger.info("[PressKey] '{0}'' mapped to '{1}'".format(state.partial_sequence, command))
+        _logger.info("[PressKey] '{0}' mapped to '{1}'".format(state.partial_sequence, command))
 
         if state.mode == modes.OPERATOR_PENDING:
             state.reset_partial_sequence()
@@ -947,7 +947,7 @@ class PressKey(ViWindowCommandBase):
         """
         state = State(self.window.active_view())
         if not state.action and key.isdigit():
-            if not repeat_count and (key != '0' or state.action_count) :
+            if not repeat_count and (key != '0' or state.action_count):
                 _logger.info('[PressKey] action count digit: {0}'.format(key))
                 state.action_count += key
                 return True
@@ -1077,7 +1077,7 @@ class _vi_cc(ViTextCommandBase):
         regions_transformer(self.view, motion)
         self.state.registers.yank(self, register)
         if not all(s.empty() for s in self.view.sel()):
-            self.view.run_command ('right_delete')
+            self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
         self.set_xpos(self.state)
 
@@ -1454,7 +1454,7 @@ class _vi_big_c(ViTextCommandBase):
         state = self.state
         state.registers.yank(self)
 
-        empty = [s for s  in list(self.view.sel()) if s.empty()]
+        empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
         for r in empty:
             self.view.sel().subtract(r)
@@ -1492,7 +1492,7 @@ class _vi_big_s_action(ViTextCommandBase):
         state = self.state
         state.registers.yank(self, register)
 
-        empty = [s for s  in list(self.view.sel()) if s.empty()]
+        empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
         for r in empty:
             self.view.sel().subtract(r)
@@ -1625,7 +1625,7 @@ class _vi_r(ViTextCommandBase):
 
             if mode in (modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK):
                 ends_in_newline = (view.substr(s.end() - 1) == '\n')
-                text = self.make_replacement_text (char, s)
+                text = self.make_replacement_text(char, s)
                 if ends_in_newline:
                     text += '\n'
 
@@ -2451,7 +2451,7 @@ class _vi_zz(IrreversibleTextCommand):
         first_sel = self.view.sel()[0]
         current_position = self.view.text_to_layout(first_sel.b)
         viewport_dim = self.view.viewport_extent()
-        new_pos =(0.0, current_position[1] - viewport_dim[1] / 2)
+        new_pos = (0.0, current_position[1] - viewport_dim[1] / 2)
 
         self.view.set_viewport_position(new_pos)
 
@@ -2474,14 +2474,13 @@ class _vi_modify_numbers(ViTextCommandBase):
         return (sign, int(self.view.substr(R(pt, end))),
                 R(end, self.view.line(pt).b))
 
-
     def find_next_num(self, regions):
         # Modify selections that are inside a number already.
         for i, r in enumerate(regions):
             a = r.b
             if self.view.substr(r.b).isdigit():
                 while self.view.substr(a).isdigit():
-                    a -=1
+                    a -= 1
                 regions[i] = R(a)
 
         lines = [self.view.substr(R(r.b, self.view.line(r.b).b)) for r in regions]
@@ -2903,7 +2902,7 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None):
         def select(view, s):
-            l =  view.line(s.b)
+            l = view.line(s.b)
             return R(l.end(), l.begin())
 
         if mode != modes.INTERNAL_NORMAL:
