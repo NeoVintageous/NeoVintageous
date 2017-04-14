@@ -79,7 +79,7 @@ Your issue reports and pull requests are welcome.
 
 ### Tests
 
-The [UnitTesting](https://github.com/randy3k/UnitTesting) package is used to run the tests. Install it, open the Command Palette, type "UnitTesting", press Enter and input "Vintageous" as the package to test.
+The [UnitTesting](https://github.com/randy3k/UnitTesting) package is used to run the tests. Install it, open the Command Palette, type "UnitTesting", press Enter and input "NeoVintageous" as the package to test.
 
 ## CHANGELOG
 
