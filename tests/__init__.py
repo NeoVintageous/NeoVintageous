@@ -44,9 +44,6 @@ class ViewTest(unittest.TestCase):
     def get_all_text(self):
         return self.view.substr(self.R(0, self.view.size()))
 
-    def erase_all(self):
-        self.view.run_command('__vi_tests_erase_buffer_content', {})
-
     def add_sel(self, a=0, b=0):
         if not self.view:
             raise TypeError('no view available yet')

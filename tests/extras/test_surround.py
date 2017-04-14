@@ -34,8 +34,6 @@ class Test_ys(ViewTest):
             actual = self.get_all_text()
             self.assertEqual(actual, expected, 'failed at {0}'.format(i))
 
-            self.erase_all()
-
     def testAll_InternalNormalMode(self):
         for (i, data) in enumerate(TESTS_YS):
 
@@ -55,8 +53,6 @@ class Test_ys(ViewTest):
 
             actual = self.get_all_text()
             self.assertEqual(actual, expected, 'failed at {0}'.format(i))
-
-            self.erase_all()
 
 
 TESTS_CS = (
@@ -85,8 +81,6 @@ class Test_cs(ViewTest):
             actual = self.get_all_text()
             self.assertEqual(actual, expected, 'failed at {0}'.format(i))
 
-            self.erase_all()
-
 
 TESTS_DS = (
     ('dog (cat) turkey', '(', 'dog cat turkey'),
@@ -113,8 +107,6 @@ class Test_cs(ViewTest):
             actual = self.get_all_text()
             self.assertEqual(actual, expected, 'failed at {0}'.format(i))
 
-            self.erase_all()
-
 
 TESTS_BIG_S = (
     ('dog cat turkey',  [[(0, 0), (0, 3)], [(0, 8), (0, 14)]], '"', '"dog" cat "turkey"'),
@@ -137,5 +129,3 @@ class Test_big_s(ViewTest):
 
             actual = self.get_all_text()
             self.assertEqual(actual, expected, 'failed at {0}'.format(i))
-
-            self.erase_all()
