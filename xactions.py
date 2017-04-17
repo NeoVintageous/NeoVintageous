@@ -398,8 +398,6 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
                 return R(s.b)
 
-            if mode == modes.INTERNAL_NORMAL:
-                return R(s.b)
 
             if mode == modes.VISUAL:
                 if s.a < s.b:
@@ -435,7 +433,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         if mode == modes.UNKNOWN:
             return
 
-        if (len(self.view.sel()) > 1) and (mode == modes.NORMAL):
+        if (len(self.view.sel()) > 1) and mode in (modes.NORMAL, modes.INTERNAL_NORMAL):
             sel = self.view.sel()[0]
             self.view.sel().clear()
             self.view.sel().add(sel)
