@@ -2164,8 +2164,8 @@ class ViEnterInserMode(ViOperatorDef):
 
 
 @keys.assign(seq=seqs.ESC, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_C, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_LEFT_SQUARE_BRACKET, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_C, modes=_MODES_ACTION + (modes.SELECT,))
+@keys.assign(seq=seqs.CTRL_LEFT_SQUARE_BRACKET, modes=_MODES_ACTION + (modes.SELECT,))
 class ViEnterNormalMode(ViOperatorDef):
     """
     Vim: `<esc>`
