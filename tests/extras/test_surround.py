@@ -1,7 +1,7 @@
 import sublime
 
 from NeoVintageous.tests import ViewTest
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi.utils import modes
 
 

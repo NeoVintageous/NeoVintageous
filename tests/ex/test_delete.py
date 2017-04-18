@@ -5,7 +5,7 @@ from NeoVintageous.vi.constants import MODE_NORMAL
 from NeoVintageous.vi.constants import MODE_VISUAL
 from NeoVintageous.vi.constants import MODE_VISUAL_LINE
 
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 
 from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel

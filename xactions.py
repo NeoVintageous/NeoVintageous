@@ -3,9 +3,9 @@ import re
 
 import sublime
 
-from NeoVintageous import PluginLogger
+from NeoVintageous.lib.logger import PluginLogger
 from NeoVintageous.state import _init_vintageous
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import cmd_base
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi import mappings

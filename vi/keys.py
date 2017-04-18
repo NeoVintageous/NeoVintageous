@@ -1,6 +1,6 @@
 import re
 
-from NeoVintageous import PluginLogger
+from NeoVintageous.lib.logger import PluginLogger
 from NeoVintageous.vi.utils import modes
 from NeoVintageous.vi import cmd_base
 from NeoVintageous.plugins import plugins

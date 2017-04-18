@@ -4,7 +4,7 @@ import sublime
 
 from NeoVintageous.tests import ViewTest
 from NeoVintageous.vi import marks
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.tests import make_region
 from NeoVintageous.tests import set_text
 from NeoVintageous.tests import add_sel

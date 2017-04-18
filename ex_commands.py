@@ -27,7 +27,7 @@ from NeoVintageous.ex.ex_error import VimError
 from NeoVintageous.ex.parser.parser import parse_command_line
 from NeoVintageous.ex.plat.windows import get_oem_cp
 from NeoVintageous.ex.plat.windows import get_startup_info
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import abbrev
 from NeoVintageous.vi import utils
 from NeoVintageous.vi.constants import MODE_NORMAL

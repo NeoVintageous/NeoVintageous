@@ -7,7 +7,7 @@ from itertools import chain
 from collections import Counter
 
 from NeoVintageous import state as state_module
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi import units
 from NeoVintageous.vi import utils

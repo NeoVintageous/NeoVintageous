@@ -3,8 +3,7 @@ import unittest
 import sublime
 import sublime_plugin
 
-from NeoVintageous.state import State
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.state import State
 
 
 # This needs to be done to initialise sublime plugin

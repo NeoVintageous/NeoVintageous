@@ -15,7 +15,7 @@ from NeoVintageous.ex.ex_error import show_not_implemented
 from NeoVintageous.ex.ex_error import VimError
 from NeoVintageous.ex.parser.parser import parse_command_line
 from NeoVintageous.ex.parser.scanner_command_goto import TokenCommandGoto
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi.settings import iter_settings
 from NeoVintageous.vi.sublime import show_ipanel
 from NeoVintageous.vi.utils import mark_as_widget

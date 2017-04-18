@@ -8,7 +8,7 @@ import sublime
 import sublime_plugin
 
 from NeoVintageous.state import _init_vintageous
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import settings
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi.dot_file import DotFile
