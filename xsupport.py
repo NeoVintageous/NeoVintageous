@@ -1,6 +1,3 @@
-"""Assorted commands.
-"""
-
 import os
 import threading
 
@@ -8,7 +5,7 @@ import sublime
 import sublime_plugin
 
 from NeoVintageous.state import _init_vintageous
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import settings
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi.dot_file import DotFile
@@ -108,7 +105,7 @@ class _vi_adjust_carets(sublime_plugin.TextCommand):
     def run(self, edit, mode=None):
         def f(view, s):
             if mode in (modes.NORMAL, modes.INTERNAL_NORMAL):
-                if  ((view.substr(s.b) == '\n' or s.b == view.size())
+                if ((view.substr(s.b) == '\n' or s.b == view.size())
                      and not view.line(s.b).empty()):
                         return sublime.Region(s.b - 1)
             return s
@@ -118,8 +115,10 @@ class _vi_adjust_carets(sublime_plugin.TextCommand):
 
 class Sequence(sublime_plugin.TextCommand):
 
-    """Required so that mark_undo_groups_for_gluing and friends work.
     """
+    Required so that mark_undo_groups_for_gluing and friends work.
+    """
+
     def run(self, edit, commands):
         for cmd, args in commands:
             self.view.run_command(cmd, args)
@@ -137,14 +136,17 @@ class ResetNeovintageous(sublime_plugin.WindowCommand):
 
 
 class ForceExitFromCommandMode(sublime_plugin.WindowCommand):
+
     """
     A sort of a panic button.
     """
+
     def run(self):
         v = self.window.active_view()
         v.settings().erase('vintage')
+
         # XXX: What happens exactly when the user presses Esc again now? Which
-        #      more are we in?
+        #      mode are we in?
 
         v.settings().set('command_mode', False)
         v.settings().set('inverse_caret_state', False)
@@ -173,7 +175,9 @@ class ReloadNeovintageousSettings(sublime_plugin.TextCommand):
 
 
 class NeovintageousOpenConfigFile(sublime_plugin.WindowCommand):
-    """Opens or creates $packages/User/.vintageousrc.
+
+    """
+    Opens or creates $packages/User/.vintageousrc.
     """
 
     def run(self):

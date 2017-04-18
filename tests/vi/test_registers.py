@@ -7,7 +7,7 @@ from unittest import mock
 from NeoVintageous.vi import registers
 from NeoVintageous.vi.registers import Registers
 from NeoVintageous.vi.settings import SettingsManager
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.tests import ViewTest
 
 

@@ -2,7 +2,7 @@ import unittest
 
 from NeoVintageous.vi.utils import modes
 
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 
 from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
@@ -71,7 +71,7 @@ class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTest):
 class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTest):
     def setUp(self):
         super().setUp()
-        self.range = {'left_ref': '.','left_offset': 0, 'left_search_offsets': [],
+        self.range = {'left_ref': '.', 'left_offset': 0, 'left_search_offsets': [],
                       'right_ref': '.', 'right_offset': 1, 'right_search_offsets': []}
 
     def testCanMoveDefaultLineRange(self):

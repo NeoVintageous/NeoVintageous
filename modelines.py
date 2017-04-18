@@ -70,6 +70,7 @@ def get_line_comment_char(view):
     else:
         return "(" + re.escape(commentChar.strip()) + "|" + re.escape(commentChar2.strip()) + ")"
 
+
 def build_modeline_prefix(view):
     lineComment = get_line_comment_char(view).lstrip() or DEFAULT_LINE_COMMENT
     return (MODELINE_PREFIX_TPL % lineComment)
@@ -110,8 +111,8 @@ class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
                     setter(name, to_json_type(value))
                 except ValueError as e:
                     sublime.status_message("[SublimeModelines] Bad modeline detected.")
-                    print ("[SublimeModelines] Bad option detected: %s, %s" % (name, value))
-                    print ("[SublimeModelines] Tip: Keys cannot be empty strings.")
+                    print("[SublimeModelines] Bad option detected: %s, %s" % (name, value))
+                    print("[SublimeModelines] Tip: Keys cannot be empty strings.")
 
     def on_load(self, view):
         self.do_modelines(view)

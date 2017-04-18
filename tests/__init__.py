@@ -1,8 +1,16 @@
-import sublime
 import unittest
 
-from NeoVintageous.state import State
-from NeoVintageous.vi.utils import modes
+import sublime
+import sublime_plugin
+
+from NeoVintageous.lib.state import State
+
+
+# This needs to be done to initialise sublime plugin
+# commands like TextCommand and WindowCommand because
+# sublime only loads .py files from the root package.
+sublime_plugin.reload_plugin('NeoVintageous.tests.helpers')
+
 
 class ViewTest(unittest.TestCase):
     """
@@ -35,13 +43,10 @@ class ViewTest(unittest.TestCase):
     def get_all_text(self):
         return self.view.substr(self.R(0, self.view.size()))
 
-    def erase_all(self):
-        self.view.run_command('__vi_tests_erase_buffer_content', {})
-
     def add_sel(self, a=0, b=0):
         if not self.view:
             raise TypeError('no view available yet')
-        add_sel(self.view, a , b)
+        add_sel(self.view, a, b)
 
     def second_sel(self):
         return second_sel(self.view)
@@ -112,5 +117,3 @@ def first_sel(view):
 
 def second_sel(view):
     return get_sel(view, 1)
-
-

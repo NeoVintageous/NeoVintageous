@@ -3,6 +3,7 @@ import re
 import stat
 import subprocess
 
+
 import sublime
 import sublime_plugin
 
@@ -27,7 +28,7 @@ from NeoVintageous.ex.ex_error import VimError
 from NeoVintageous.ex.parser.parser import parse_command_line
 from NeoVintageous.ex.plat.windows import get_oem_cp
 from NeoVintageous.ex.plat.windows import get_startup_info
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import abbrev
 from NeoVintageous.vi import utils
 from NeoVintageous.vi.constants import MODE_NORMAL
@@ -333,7 +334,7 @@ class ExMap(ViWindowCommandBase):
     http://vimdoc.sourceforge.net/htmldoc/map.html#:map
     """
     def run(self, command_line=''):
-    # def run(self, edit, mode=None, count=None, cmd=''):
+        # def run(self, edit, mode=None, count=None, cmd=''):
         assert command_line, 'expected non-empty command line'
 
         parsed = parse_command_line(command_line)
@@ -377,8 +378,7 @@ class ExNmap(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         nmap_command = parse_command_line(command_line)
-        keys, command = (nmap_command.command.keys,
-                nmap_command.command.command)
+        keys, command = (nmap_command.command.keys, nmap_command.command.command)
         mappings = Mappings(self.state)
         mappings.add(modes.NORMAL, keys, command)
 
@@ -408,8 +408,7 @@ class ExOmap(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         omap_command = parse_command_line(command_line)
-        keys, command = (omap_command.command.keys,
-                omap_command.command.command)
+        keys, command = (omap_command.command.keys, omap_command.command.command)
         mappings = Mappings(self.state)
         mappings.add(modes.OPERATOR_PENDING, keys, command)
 
@@ -439,8 +438,7 @@ class ExVmap(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         vmap_command = parse_command_line(command_line)
-        keys, command = (vmap_command.command.keys,
-                vmap_command.command.command)
+        keys, command = (vmap_command.command.keys, vmap_command.command.command)
         mappings = Mappings(self.state)
         mappings.add(modes.VISUAL, keys, command)
         mappings.add(modes.VISUAL_LINE, keys, command)
@@ -491,7 +489,7 @@ class ExAbbreviate(ViWindowCommandBase):
                                                     abbrev.Store().get_all()]
 
         self.window.show_quick_panel(abbrevs,
-                                     None, # Simply show the list.
+                                     None,  # Simply show the list.
                                      flags=sublime.MONOSPACE_FONT)
 
 
@@ -590,8 +588,7 @@ class ExWriteFile(ViWindowCommandBase):
             show_error(VimError(ERR_NO_FILE_NAME))
             return
 
-        read_only = (self.check_is_readonly(self._view.file_name())
-                     or self._view.is_read_only())
+        read_only = (self.check_is_readonly(self._view.file_name()) or self._view.is_read_only())
 
         if read_only and not parsed.command.forced:
             utils.blink()
@@ -689,7 +686,7 @@ class ExWriteFile(ViWindowCommandBase):
             # TODO: Add logging.
             show_error(VimError(ERR_CANT_WRITE_FILE))
             print('NeoVintageous ==============================================')
-            print (e)
+            print(e)
             print('=========================================================')
 
 
@@ -750,7 +747,7 @@ class ExFile(ViWindowCommandBase):
         if attrs:
             msg += " [%s]" % attrs
         if isinstance(lines, str):
-            msg += " -- %s --"  % lines
+            msg += " -- %s --" % lines
         else:
             msg += " %d line(s) --%d%%--" % (lines, int(percent))
 
@@ -1060,6 +1057,7 @@ class ExGlobal(ViWindowCommandBase):
         :g!/DON'T TOUCH THIS/delete
     """
     most_recent_pat = None
+
     def run(self, command_line=''):
 
         assert command_line, 'expected non-empty command_line'
@@ -1071,7 +1069,6 @@ class ExGlobal(ViWindowCommandBase):
             global_range = R(0, self._view.size())
         else:
             global_range = parsed.line_range.resolve(self._view)
-
 
         pattern = parsed.command.pattern
         if pattern:
@@ -1632,10 +1629,10 @@ class ExVsplit(ViWindowCommandBase):
 
     MAX_SPLITS = 4
     LAYOUT_DATA = {
-        1: {"cells": [[0,0, 1, 1]], "rows": [0.0, 1.0], "cols": [0.0, 1.0]},
-        2: {"cells": [[0,0, 1, 1], [1, 0, 2, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0,0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0,0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3,0, 4, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
+        1: {"cells": [[0, 0, 1, 1]], "rows": [0.0, 1.0], "cols": [0.0, 1.0]},
+        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.5, 1.0]},
+        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.33, 0.66, 1.0]},
+        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
     }
 
     def run(self, command_line=''):
@@ -1719,7 +1716,7 @@ class ExSet(ViWindowCommandBase):
         option = parsed.command.option
         value = parsed.command.value
 
-        print (locals())
+        print(locals())
 
         if option.endswith('?'):
             show_not_implemented()

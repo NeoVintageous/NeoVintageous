@@ -1,7 +1,4 @@
 {
-    // Enable verbose logging.
-    "vintageous_verbose": false,
-
     // Enable key bindings prefaced by the CTRL modifier.
     "vintageous_use_ctrl_keys": false,
 
@@ -29,9 +26,6 @@
 
     // Ignore case in '/', '?', '*', and '#'.
     "vintageous_ignorecase": true,
-
-    // Logging level e.g 'debug', 'info', 'error', 'critical'.
-    "vintageous_log_level": "error",
 
     // Enable surround.vim plugin. Provides mappings to easily delete, change
     // and add such surroundings in pairs e.g. "cs", "ds", and "ys" actions.

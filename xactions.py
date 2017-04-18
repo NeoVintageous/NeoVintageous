@@ -3,9 +3,9 @@ import re
 
 import sublime
 
-from NeoVintageous import PluginLogger
+from NeoVintageous.lib.logger import PluginLogger
 from NeoVintageous.state import _init_vintageous
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import cmd_base
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi import mappings
@@ -28,7 +28,7 @@ from NeoVintageous.vi.utils import R
 from NeoVintageous.vi.utils import regions_transformer
 from NeoVintageous.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.vi.utils import restoring_sel
-from NeoVintageous.sublime_ext import SublimeWindowAPI
+from NeoVintageous.lib.sublime_ext import SublimeWindowAPI
 
 _logger = PluginLogger(__name__)
 
@@ -716,7 +716,8 @@ class ProcessNotation(ViWindowCommandBase):
                                     })
                         else:
                             self.window.run_command('insert', {
-                               'characters': utils.translate_char(key)})
+                                'characters': utils.translate_char(key)
+                            })
                     if not state.must_collect_input:
                         return
                 finally:
@@ -809,7 +810,6 @@ class PressKey(ViWindowCommandBase):
                                modes.VISUAL_BLOCK,
                                modes.SELECT)):
                 _init_vintageous(state.view)
-
 
         if key.lower() == '<esc>':
             self.window.run_command('_enter_normal_mode', {'mode': state.mode})
@@ -933,7 +933,7 @@ class PressKey(ViWindowCommandBase):
 
         state.set_command(command)
 
-        _logger.info("[PressKey] '{0}'' mapped to '{1}'".format(state.partial_sequence, command))
+        _logger.info("[PressKey] '{0}' mapped to '{1}'".format(state.partial_sequence, command))
 
         if state.mode == modes.OPERATOR_PENDING:
             state.reset_partial_sequence()
@@ -947,7 +947,7 @@ class PressKey(ViWindowCommandBase):
         """
         state = State(self.window.active_view())
         if not state.action and key.isdigit():
-            if not repeat_count and (key != '0' or state.action_count) :
+            if not repeat_count and (key != '0' or state.action_count):
                 _logger.info('[PressKey] action count digit: {0}'.format(key))
                 state.action_count += key
                 return True
@@ -1077,7 +1077,7 @@ class _vi_cc(ViTextCommandBase):
         regions_transformer(self.view, motion)
         self.state.registers.yank(self, register)
         if not all(s.empty() for s in self.view.sel()):
-            self.view.run_command ('right_delete')
+            self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
         self.set_xpos(self.state)
 
@@ -1454,7 +1454,7 @@ class _vi_big_c(ViTextCommandBase):
         state = self.state
         state.registers.yank(self)
 
-        empty = [s for s  in list(self.view.sel()) if s.empty()]
+        empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
         for r in empty:
             self.view.sel().subtract(r)
@@ -1492,7 +1492,7 @@ class _vi_big_s_action(ViTextCommandBase):
         state = self.state
         state.registers.yank(self, register)
 
-        empty = [s for s  in list(self.view.sel()) if s.empty()]
+        empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
         for r in empty:
             self.view.sel().subtract(r)
@@ -1625,7 +1625,7 @@ class _vi_r(ViTextCommandBase):
 
             if mode in (modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK):
                 ends_in_newline = (view.substr(s.end() - 1) == '\n')
-                text = self.make_replacement_text (char, s)
+                text = self.make_replacement_text(char, s)
                 if ends_in_newline:
                     text += '\n'
 
@@ -2067,6 +2067,7 @@ class _vi_p(ViTextCommandBase):
             self.view.replace(edit, sel, text)
             return sel.begin()
 
+
 class _vi_ga(ViWindowCommandBase):
 
     """
@@ -2077,7 +2078,40 @@ class _vi_ga(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        self.window.run_command('show_ascii_value_of_character_under_cursor')
+
+        def character_to_notation(character):
+            """
+            Convert a character to a key notation.
+            Uses vim key notation.
+            http://vimdoc.sourceforge.net/htmldoc/intro.html#key-notation
+            """
+
+            character_notation_map = {
+                "\0": "Nul",
+                " ": "Space",
+                "\t": "Tab",
+                "\n": "NL"
+            }
+
+            if character in character_notation_map:
+                character = character_notation_map[character]
+
+            return "<" + character + ">"
+
+        view = self.window.active_view()
+
+        for region in view.sel():
+
+            c_str = view.substr(region.begin())
+            c_ord = ord(c_str)
+            c_hex = hex(c_ord)
+            c_oct = oct(c_ord)
+            c_not = character_to_notation(c_str)
+
+            msg_template = "%7s %3s,  Hex %4s,  Octal %5s"
+
+            return sublime.status_message(msg_template % (c_not, c_ord, c_hex, c_oct))
+
 
 class _vi_gt(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
@@ -2096,6 +2130,7 @@ class _vi_g_big_t(ViWindowCommandBase):
         self.window.run_command('tab_control', {'command': 'prev'})
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
+
 # TODO <C-]> should learn visual mode
 # TODO <C-]> should learn to count
 class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
@@ -2108,6 +2143,7 @@ class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
     def run(self):
         self.window.run_command('goto_definition')
 
+
 class _vi_ctrl_w_b(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_b
@@ -2117,6 +2153,7 @@ class _vi_ctrl_w_b(ViWindowCommandBase):
 
     def run(self):
         SublimeWindowAPI(self.window).move_group_focus_to_bottom_right()
+
 
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
     """
@@ -2128,6 +2165,7 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
     def run(self):
         SublimeWindowAPI(self.window).move_current_view_to_far_left()
 
+
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_j
@@ -2137,6 +2175,7 @@ class _vi_ctrl_w_big_j(ViWindowCommandBase):
 
     def run(self):
         SublimeWindowAPI(self.window).move_current_view_to_very_bottom()
+
 
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
     """
@@ -2148,6 +2187,7 @@ class _vi_ctrl_w_big_k(ViWindowCommandBase):
     def run(self):
         SublimeWindowAPI(self.window).move_current_view_to_very_top()
 
+
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_L
@@ -2157,6 +2197,7 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
 
     def run(self):
         SublimeWindowAPI(self.window).move_current_view_to_far_right()
+
 
 class _vi_ctrl_w_c(ViWindowCommandBase):
     """
@@ -2168,6 +2209,7 @@ class _vi_ctrl_w_c(ViWindowCommandBase):
     def run(self):
         SublimeWindowAPI(self.window).close_current_view()
 
+
 class _vi_ctrl_w_equal(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_=
@@ -2177,6 +2219,7 @@ class _vi_ctrl_w_equal(ViWindowCommandBase):
 
     def run(self):
         SublimeWindowAPI(self.window).resize_groups_almost_equally()
+
 
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
     """
@@ -2188,6 +2231,7 @@ class _vi_ctrl_w_greater_than(ViWindowCommandBase):
     def run(self, count=1):
         SublimeWindowAPI(self.window).increase_current_group_width_by_n(count)
 
+
 class _vi_ctrl_w_h(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_h
@@ -2197,6 +2241,7 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
 
     def run(self, count=1):
         SublimeWindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
+
 
 class _vi_ctrl_w_j(ViWindowCommandBase):
     """
@@ -2208,6 +2253,7 @@ class _vi_ctrl_w_j(ViWindowCommandBase):
     def run(self, count=1):
         SublimeWindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
 
+
 class _vi_ctrl_w_k(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_k
@@ -2217,6 +2263,7 @@ class _vi_ctrl_w_k(ViWindowCommandBase):
 
     def run(self, count=1):
         SublimeWindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
+
 
 class _vi_ctrl_w_l(ViWindowCommandBase):
     """
@@ -2228,6 +2275,7 @@ class _vi_ctrl_w_l(ViWindowCommandBase):
     def run(self, count=1):
         SublimeWindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
 
+
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_<
@@ -2237,6 +2285,7 @@ class _vi_ctrl_w_less_than(ViWindowCommandBase):
 
     def run(self, count=1):
         SublimeWindowAPI(self.window).decrease_current_group_width_by_n(count)
+
 
 class _vi_ctrl_w_minus(ViWindowCommandBase):
     """
@@ -2248,6 +2297,7 @@ class _vi_ctrl_w_minus(ViWindowCommandBase):
     def run(self, count=1):
         SublimeWindowAPI(self.window).decrease_current_group_height_by_n(count)
 
+
 class _vi_ctrl_w_n(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_n
@@ -2257,6 +2307,7 @@ class _vi_ctrl_w_n(ViWindowCommandBase):
 
     def run(self, count=1):
         SublimeWindowAPI(self.window).split_with_new_file(count)
+
 
 class _vi_ctrl_w_o(ViWindowCommandBase):
     """
@@ -2268,6 +2319,7 @@ class _vi_ctrl_w_o(ViWindowCommandBase):
     def run(self):
         SublimeWindowAPI(self.window).close_all_other_views()
 
+
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar
@@ -2277,6 +2329,7 @@ class _vi_ctrl_w_pipe(ViWindowCommandBase):
 
     def run(self, count=None):
         SublimeWindowAPI(self.window).set_current_group_width_to_n(count)
+
 
 class _vi_ctrl_w_plus(ViWindowCommandBase):
     """
@@ -2288,6 +2341,7 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
     def run(self, count=1):
         SublimeWindowAPI(self.window).increase_current_group_height_by_n(count)
 
+
 class _vi_ctrl_w_q(IrreversibleTextCommand):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_q
@@ -2297,6 +2351,7 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
 
     def run(self):
         SublimeWindowAPI(self.view.window()).quit_current_view()
+
 
 class _vi_ctrl_w_s(ViWindowCommandBase):
     """
@@ -2308,6 +2363,7 @@ class _vi_ctrl_w_s(ViWindowCommandBase):
     def run(self, count=None):
         SublimeWindowAPI(self.window).split_current_view_in_two(count)
 
+
 class _vi_ctrl_w_t(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_t
@@ -2317,6 +2373,7 @@ class _vi_ctrl_w_t(ViWindowCommandBase):
 
     def run(self):
         SublimeWindowAPI(self.window).move_group_focus_to_top_left()
+
 
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
     """
@@ -2328,6 +2385,7 @@ class _vi_ctrl_w_underscore(ViWindowCommandBase):
     def run(self, count=None):
         SublimeWindowAPI(self.window).set_current_group_height_to_n(count)
 
+
 class _vi_ctrl_w_v(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_v
@@ -2338,6 +2396,7 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
     def run(self, count=1, mode=None):
         SublimeWindowAPI(self.window).split_current_view_in_two_vertically(count)
 
+
 class _vi_ctrl_w_x(ViWindowCommandBase):
     """
     http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_x
@@ -2347,6 +2406,7 @@ class _vi_ctrl_w_x(ViWindowCommandBase):
 
     def run(self, count=1):
         SublimeWindowAPI(self.window).exchange_current_view_with_view_in_next_or_previous_group(count)
+
 
 # TODO: z<CR> != zt
 class _vi_z_enter(IrreversibleTextCommand):
@@ -2391,7 +2451,7 @@ class _vi_zz(IrreversibleTextCommand):
         first_sel = self.view.sel()[0]
         current_position = self.view.text_to_layout(first_sel.b)
         viewport_dim = self.view.viewport_extent()
-        new_pos =(0.0, current_position[1] - viewport_dim[1] / 2)
+        new_pos = (0.0, current_position[1] - viewport_dim[1] / 2)
 
         self.view.set_viewport_position(new_pos)
 
@@ -2414,14 +2474,13 @@ class _vi_modify_numbers(ViTextCommandBase):
         return (sign, int(self.view.substr(R(pt, end))),
                 R(end, self.view.line(pt).b))
 
-
     def find_next_num(self, regions):
         # Modify selections that are inside a number already.
         for i, r in enumerate(regions):
             a = r.b
             if self.view.substr(r.b).isdigit():
                 while self.view.substr(a).isdigit():
-                    a -=1
+                    a -= 1
                 regions[i] = R(a)
 
         lines = [self.view.substr(R(r.b, self.view.line(r.b).b)) for r in regions]
@@ -2843,7 +2902,7 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None):
         def select(view, s):
-            l =  view.line(s.b)
+            l = view.line(s.b)
             return R(l.end(), l.begin())
 
         if mode != modes.INTERNAL_NORMAL:

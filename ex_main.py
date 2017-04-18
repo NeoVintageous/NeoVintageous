@@ -15,7 +15,7 @@ from NeoVintageous.ex.ex_error import show_not_implemented
 from NeoVintageous.ex.ex_error import VimError
 from NeoVintageous.ex.parser.parser import parse_command_line
 from NeoVintageous.ex.parser.scanner_command_goto import TokenCommandGoto
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi.settings import iter_settings
 from NeoVintageous.vi.sublime import show_ipanel
 from NeoVintageous.vi.utils import mark_as_widget
@@ -49,6 +49,7 @@ def update_command_line_history(slot_name, item):
 class ViColonInput(sublime_plugin.WindowCommand):
     # Indicates whether the user issued the call.
     interactive_call = True
+
     def is_enabled(self):
         return bool(self.window.active_view())
 
@@ -78,9 +79,10 @@ class ViColonInput(sublime_plugin.WindowCommand):
                on_done=self.on_done,
                on_change=self.on_change))
 
-        v.set_syntax_file('Packages/NeoVintageous/VintageousEx Cmdline.tmLanguage')
+        v.set_syntax_file('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
         v.settings().set('gutter', False)
         v.settings().set('rulers', [])
+        v.settings().set('auto_match_enabled', False)
 
         state = State(self.window.active_view())
         state.reset_during_init = False
@@ -118,7 +120,7 @@ class ViColonInput(sublime_plugin.WindowCommand):
             show_error(ve)
             return
         except Exception as e:
-            message = str(e) +  ' ' + "(%s)" % cmd_line
+            message = str(e) + ' ' + "(%s)" % cmd_line
             show_not_implemented(message)
             return
 
@@ -159,6 +161,7 @@ class ExCompletionsProvider(sublime_plugin.EventListener):
 
 class CycleCmdlineHistory(sublime_plugin.TextCommand):
     HISTORY_INDEX = None
+
     def run(self, edit, backwards=False):
         if CycleCmdlineHistory.HISTORY_INDEX is None:
             CycleCmdlineHistory.HISTORY_INDEX = -1 if backwards else 0
@@ -208,7 +211,6 @@ class FsCompletion(sublime_plugin.TextCommand):
         FsCompletion.frozen_dir = ''
         FsCompletion.is_stale = True
         FsCompletion.items = None
-
 
     def run(self, edit):
         if self.view.score_selector(0, 'text.excmdline') == 0:
@@ -306,9 +308,11 @@ class ViSettingCompletion(sublime_plugin.TextCommand):
 
 
 class CmdlineContextProvider(sublime_plugin.EventListener):
+
     """
     Provides contexts for the cmdline input panel.
     """
+
     def on_query_context(self, view, key, operator, operand, match_all):
         if view.score_selector(0, 'text.excmdline') == 0:
             return

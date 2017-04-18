@@ -33,6 +33,7 @@ class Test_vi_big_i(ViewTest):
             self.view.sel().clear()
 
             set_text(self.view, data.initial_text)
+
             for region in data.regions:
                 self.add_sel(self.R(*region))
 

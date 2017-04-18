@@ -1,6 +1,5 @@
-from logging.handlers import RotatingFileHandler
-from os import path
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 
 
@@ -21,21 +20,21 @@ class LogDir(object):
 
     def _find_path(self, start, package):
         while True:
-            result = self._test(path.basename(start), package)
+            result = self._test(os.path.basename(start), package)
 
             if result == 'folder':
-                if path.exists(path.join(path.dirname(start), 'User')):
-                    return path.join(path.dirname(start), '.logs')
+                if os.path.exists(os.path.join(os.path.dirname(start), 'User')):
+                    return os.path.join(os.path.dirname(start), '.logs')
 
             elif result == 'sublime-package':
-                parent = path.dirname(start)
-                if path.exists(path.join(path.dirname(parent), 'Packages')):
-                    return path.join(path.dirname(parent), 'Packages', '.logs')
+                parent = os.path.dirname(start)
+                if os.path.exists(os.path.join(os.path.dirname(parent), 'Packages')):
+                    return os.path.join(os.path.dirname(parent), 'Packages', '.logs')
 
-            if path.dirname(start) == start:
+            if os.path.dirname(start) == start:
                 return
 
-            start = path.dirname(start)
+            start = os.path.dirname(start)
 
     def _find_log_dir(self):
         package = __name__.split('.')[0]
@@ -43,15 +42,16 @@ class LogDir(object):
         if package == '__main__':
             return
 
-        start = path.dirname(__file__)
+        start = os.path.dirname(__file__)
 
         logs_path = self._find_path(start, package)
 
         if not logs_path:
             return
 
-        if not path.exists(logs_path):
+        if not os.path.exists(logs_path):
             os.mkdir(logs_path)
+
         return logs_path
 
 
@@ -90,6 +90,7 @@ class PluginLogger(object):
     log_dir = LogDir.find()
 
     def __init__(self, name):
+
         self.logger = logging.getLogger(name)
         default_level = logging.ERROR
         user_level = self._get_log_level_from_file()
@@ -110,19 +111,19 @@ class PluginLogger(object):
         else:
             print("NeoVintageous: cannot find log file path: %s" % file_name)
 
-    def warn_aboug_logging_level(self):
+    def warn_about_logging_level(self):
         if self.logger.level <= logging.DEBUG:
             package = __name__.split('.')[0]
             self.warning("debug level set to DEBUG; check or delete %s", self._get_path_to_log())
 
     def _get_path_to_log(self):
         package = __name__.split('.')[0]
-        p = path.join(self.log_dir, package)
+        p = os.path.join(self.log_dir, package)
         return p
 
     def _get_log_level_from_file(self):
         p = self._get_path_to_log()
-        if path.exists(p):
+        if os.path.exists(p):
             with open(p, 'rt') as f:
                 text = f.read().strip().upper()
                 return getattr(logging, text, None)
@@ -148,6 +149,3 @@ class PluginLogger(object):
 
     def critical(self, message, *args, **kwargs):
         self.logger.critical(message, *args, **kwargs)
-
-
-PluginLogger(__name__).warn_aboug_logging_level()

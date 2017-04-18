@@ -7,7 +7,7 @@ from itertools import chain
 from collections import Counter
 
 from NeoVintageous import state as state_module
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi import units
 from NeoVintageous.vi import utils
@@ -254,7 +254,6 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         self.hilite(search_string)
 
 
-
 class _vi_l(ViMotionCommand):
     def run(self, mode=None, count=None):
         def f(view, s):
@@ -422,7 +421,6 @@ class _vi_j(ViMotionCommand):
                 if (target_pt + xpos) >= s.a:
                     return sublime.Region(s.a - 1, end + 1)
                 return sublime.Region(s.a, target_pt + xpos)
-
 
             if mode == modes.VISUAL_LINE:
                 if s.a < s.b:
@@ -758,6 +756,7 @@ class _vi_dollar(ViMotionCommand):
 
         regions_transformer(self.view, f)
 
+
 class _vi_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
@@ -972,7 +971,6 @@ class _vi_percent(ViMotionCommand):
             begin_tag, end_tag, _ = find_containing_tag(self.view, pt)
             if begin_tag:
                 return begin_tag if end_tag.contains(pt) else end_tag
-
 
     def run(self, percent=None, mode=None):
         if percent == None:
@@ -1396,10 +1394,10 @@ class _vi_underscore(ViMotionCommand):
 
                 # XXX: There may be better ways to communicate between actions
                 # and motions than by inspecting state.
-                if isinstance(self.state.action,cmd_defs.ViChangeByChars):
+                if isinstance(self.state.action, cmd_defs.ViChangeByChars):
                     return R(begin, end)
                 else:
-                    return R(begin, end+1)
+                    return R(begin, end + 1)
 
             elif mode == modes.VISUAL:
                 bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
@@ -1664,7 +1662,7 @@ class _vi_left_paren(ViMotionCommand):
                 return sublime.Region(sen.a, sen.a)
 
             elif mode == modes.VISUAL:
-                return sublime.Region(s.a + 1, sen.a +  1)
+                return sublime.Region(s.a + 1, sen.a + 1)
 
             elif mode == modes.INTERNAL_NORMAL:
                 return sublime.Region(s.a, sen.a + 1)
@@ -1672,7 +1670,6 @@ class _vi_left_paren(ViMotionCommand):
             return s
 
         regions_transformer(self.view, f)
-
 
 
 class _vi_right_paren(ViMotionCommand):
@@ -1804,6 +1801,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
 
+
 class _vi_repeat_buffer_search(ViMotionCommand):
     # TODO: This is a jump.
     commands = {
@@ -1824,6 +1822,7 @@ class _vi_repeat_buffer_search(ViMotionCommand):
             'count': count,
             'search_string': search_string
             })
+
 
 class _vi_n(ViMotionCommand):
     # TODO: This is a jump.
@@ -1900,7 +1899,7 @@ class _vi_ctrl_b(ViMotionCommand):
 
 
 class _vi_enter(ViMotionCommand):
-   def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1):
         self.view.run_command('_vi_j', {'mode': mode, 'count': count})
 
         def advance(view, s):
@@ -1922,7 +1921,7 @@ class _vi_enter(ViMotionCommand):
 
 
 class _vi_minus(ViMotionCommand):
-   def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1):
         self.view.run_command('_vi_k', {'mode': mode, 'count': count})
 
         def advance(view, s):
@@ -1944,7 +1943,7 @@ class _vi_minus(ViMotionCommand):
 
 
 class _vi_shift_enter(ViMotionCommand):
-   def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1):
         self.view.run_command('_vi_ctrl_f', {'mode': mode, 'count': count})
 
 
@@ -1972,9 +1971,13 @@ class _vi_select_text_object(ViMotionCommand):
 
 
 class _vi_go_to_symbol(ViMotionCommand):
-    """Go to local declaration. Differs from Vim because it leverages Sublime Text's ability to
-       actually locate symbols (Vim simply searches from the top of the file).
+
     """
+    Go to local declaration. Differs from Vim because it leverages Sublime
+    Text's ability to actually locate symbols (Vim simply searches from the top
+    of the file).
+    """
+
     def find_symbol(self, r, globally=False):
         query = self.view.substr(self.view.word(r))
         fname = self.view.file_name().replace('\\', '/')
@@ -1992,7 +1995,6 @@ class _vi_go_to_symbol(ViMotionCommand):
                 return locations[0]
         except IndexError:
             return
-
 
     def run(self, count=1, mode=None, globally=False):
 

@@ -1,4 +1,4 @@
-from NeoVintageous import PluginLogger
+from NeoVintageous.lib.logger import PluginLogger
 
 import sublime
 

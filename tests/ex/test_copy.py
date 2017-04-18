@@ -1,6 +1,6 @@
 from NeoVintageous.vi.utils import modes
 
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 
 from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel

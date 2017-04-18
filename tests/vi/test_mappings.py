@@ -2,7 +2,7 @@ import unittest
 
 import sublime
 
-from NeoVintageous.state import State
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi.utils import modes
 from NeoVintageous.vi.mappings import Mappings
 from NeoVintageous.vi.mappings import _mappings

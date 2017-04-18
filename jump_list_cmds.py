@@ -1,8 +1,6 @@
-"""Adds jump list functionality.
-
-   Wraps Sublime Text's own jump list.
 """
-
+Adds jump list functionality. Wraps Sublime Text's own jump list.
+"""
 
 import sublime
 import sublime_plugin

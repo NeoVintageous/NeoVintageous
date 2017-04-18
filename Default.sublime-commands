@@ -16,6 +16,20 @@
         "command": "neovintageous_open_config_file"
     },
     {
+        "caption": "NeoVintageous: Open changelog",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/NeoVintageous/CHANGELOG.md"
+        }
+    },
+    {
+        "caption": "NeoVintageous: Open readme",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/NeoVintageous/README.md"
+        }
+    },
+    {
         "caption": "Preferences: NeoVintageous Settings – Default",
         "command": "open_file",
         "args": {
