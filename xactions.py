@@ -2078,7 +2078,39 @@ class _vi_ga(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        self.window.run_command('show_ascii_value_of_character_under_cursor')
+
+        def character_to_notation(character):
+            """
+            Convert a character to a key notation.
+            Uses vim key notation.
+            http://vimdoc.sourceforge.net/htmldoc/intro.html#key-notation
+            """
+
+            character_notation_map = {
+                "\0": "Nul",
+                " ": "Space",
+                "\t": "Tab",
+                "\n": "NL"
+            }
+
+            if character in character_notation_map:
+                character = character_notation_map[character]
+
+            return "<" + character + ">"
+
+        view = self.window.active_view()
+
+        for region in view.sel():
+
+            c_str = view.substr(region.begin())
+            c_ord = ord(c_str)
+            c_hex = hex(c_ord)
+            c_oct = oct(c_ord)
+            c_not = character_to_notation(c_str)
+
+            msg_template = "%7s %3s,  Hex %4s,  Octal %5s"
+
+            return sublime.status_message(msg_template % (c_not, c_ord, c_hex, c_oct))
 
 
 class _vi_gt(ViWindowCommandBase):
