@@ -111,6 +111,10 @@ def get_sel(view, num):
     return view.sel()[num]
 
 
+def num_sels(view):
+    return len(view.sel())
+
+
 def first_sel(view):
     return get_sel(view, 0)
 
