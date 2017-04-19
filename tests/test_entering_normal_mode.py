@@ -86,17 +86,3 @@ class Test_vi_enter_normal_mode__MulipleSelections__FromNormalMode(ViewTest):
         self.view.run_command('_enter_normal_mode', {'mode': MODE_NORMAL})
         self.assertEqual(self.R((1, 0), (1, 0)), first_sel(self.view))
         self.assertEqual(1, num_sels(self.view))
-
-
-class Test_vi_enter_normal_mode__MulipleSelections__FromInternalNormalMode(ViewTest):
-    def testCaretEndsInExpectedRegion(self):
-        self.write('foo bar\nfoo bar\nfoo bar\n')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
-        self.add_sel(self.R((2, 0), (2, 0)))
-
-        State(self.view).mode = _MODE_INTERNAL_NORMAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': _MODE_INTERNAL_NORMAL})
-        self.assertEqual(self.R((1, 0), (1, 0)), first_sel(self.view))
-        self.assertEqual(1, num_sels(self.view))
