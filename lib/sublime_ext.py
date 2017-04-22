@@ -1,11 +1,35 @@
 import sublime
 
 
-LAYOUT_SINGLE_CELL = {'cells': [[0, 0, 1, 1]], 'cols': [0.0, 1.0], 'rows': [0.0, 1.0]}
-LAYOUT_TWO_COLUMN = {'cells': [[0, 0, 1, 1], [1, 0, 2, 1]], 'rows': [0.0, 1.0], 'cols': [0.0, 0.5, 1.0]}
-LAYOUT_THREE_COLUMN = {'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]], 'rows': [0.0, 1.0], 'cols': [0.0, 0.33, 0.66, 1.0]}
-LAYOUT_TWO_ROW = {'cells': [[0, 0, 1, 1], [0, 1, 1, 2]], 'cols': [0.0, 1.0], 'rows': [0.0, 0.5, 1.0]}
-LAYOUT_THREE_ROW = {'cols': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2], [0, 2, 1, 3]], 'rows': [0.0, 0.33, 0.66, 1.0]}
+LAYOUT_SINGLE_CELL = {
+    'cells': [[0, 0, 1, 1]],
+    'cols': [0.0, 1.0],
+    'rows': [0.0, 1.0]
+}
+
+LAYOUT_TWO_COLUMN = {
+    'cells': [[0, 0, 1, 1], [1, 0, 2, 1]],
+    'rows': [0.0, 1.0],
+    'cols': [0.0, 0.5, 1.0]
+}
+
+LAYOUT_THREE_COLUMN = {
+    'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
+    'rows': [0.0, 1.0],
+    'cols': [0.0, 0.33, 0.66, 1.0]
+}
+
+LAYOUT_TWO_ROW = {
+    'cells': [[0, 0, 1, 1], [0, 1, 1, 2]],
+    'rows': [0.0, 0.5, 1.0],
+    'cols': [0.0, 1.0]
+}
+
+LAYOUT_THREE_ROW = {
+    'cells': [[0, 0, 1, 1], [0, 1, 1, 2], [0, 2, 1, 3]],
+    'rows': [0.0, 0.33, 0.66, 1.0],
+    'cols': [0.0, 1.0]
+}
 
 
 class SublimeWindowAPI():
@@ -86,7 +110,7 @@ class SublimeWindowAPI():
 
         if current_view.is_dirty():
             dirty_buffer_message = 'No write since last change'
-            if current_view.file_name() != None:
+            if current_view.file_name() is not None:
                 dirty_buffer_message += ' for buffer "%s"' % current_view.file_name()
 
             return sublime.status_message(dirty_buffer_message)
@@ -159,8 +183,13 @@ class SublimeWindowAPI():
 
         """
 
-        if self.window.num_groups() > 2: return # TODO not implemented yet
-        if self.window.num_groups() < 2: return # no work to do
+        if self.window.num_groups() > 2:
+            # TODO not implemented yet
+            return
+
+        if self.window.num_groups() < 2:
+            # no work to do
+            return
 
         if self.window.active_group() != 0:
             # view index needs updating
@@ -178,8 +207,13 @@ class SublimeWindowAPI():
         Currently only supports 2 row or 2 column layouts.
         """
 
-        if self.window.num_groups() > 2: return # TODO not implemented yet
-        if self.window.num_groups() < 2: return # no work to do
+        if self.window.num_groups() > 2:
+            # TODO not implemented yet
+            return
+
+        if self.window.num_groups() < 2:
+            # no work to do
+            return
 
         if self.window.active_group() != 1:
             # view index needs updating
@@ -197,8 +231,13 @@ class SublimeWindowAPI():
         Currently only supports 2 row or 2 column layouts.
         """
 
-        if self.window.num_groups() > 2: return # TODO not implemented yet
-        if self.window.num_groups() < 2: return # no work to do
+        if self.window.num_groups() > 2:
+            # TODO not implemented yet
+            return
+
+        if self.window.num_groups() < 2:
+            # no work to do
+            return
 
         if self.window.active_group() != 1:
             # view index needs updating
@@ -216,8 +255,13 @@ class SublimeWindowAPI():
         Currently only supports 2 row or 2 column layouts.
         """
 
-        if self.window.num_groups() > 2: return # TODO not implemented yet
-        if self.window.num_groups() < 2: return # no work to do
+        if self.window.num_groups() > 2:
+            # TODO not implemented yet
+            return
+
+        if self.window.num_groups() < 2:
+            # no work to do
+            return
 
         if self.window.active_group() != 0:
             # view index needs updating
@@ -263,7 +307,7 @@ class SublimeWindowAPI():
 
     def _move_group_focus_to_nth_in_direction_of_current_one(self, direction, n=1):
         nth_group_number = self._get_nth_group_number_in_direction_of_current_one(direction, n)
-        if nth_group_number == None:
+        if nth_group_number is None:
             return
         self.window.focus_group(nth_group_number)
 
@@ -437,7 +481,9 @@ class SublimeWindowAPI():
     def increase_current_group_width_by_n(self, n=1):
         pass
 
-    # TODO could implement settings similar to vim window resizing e.g. 'winheight', 'winwidth', 'winfixheight', and 'winfixwidth'
+    # TODO could implement settings similar to vim
+    # window resizing e.g. 'winheight', 'winwidth',
+    # 'winfixheight', and 'winfixwidth'
     def resize_groups_almost_equally(self):
 
         """
@@ -466,7 +512,6 @@ class SublimeWindowAPI():
 
         if col_count > 2 or row_count > 2:
             self.window.set_layout(layout)
-
 
     def split_current_view_in_two(self, n=None):
         """
