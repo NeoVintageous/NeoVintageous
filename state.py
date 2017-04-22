@@ -3,6 +3,10 @@ import sublime
 from NeoVintageous.lib.logger import PluginLogger
 from NeoVintageous.lib.state import init_state
 
+# Load all the commands
+from .lib.commands.modelines import ExecuteSublimeTextModeLinesCommand # noqa
+
+
 _logger = PluginLogger(__name__)
 
 
