@@ -21,6 +21,8 @@ def command(name, abbrev):
             ...
     """
     command_names.append((name, abbrev))
+
     def inner(f):
         return f
+
     return inner

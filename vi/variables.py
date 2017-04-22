@@ -1,7 +1,3 @@
-import sublime
-
-import collections
-
 
 VAR_MAP_LEADER = 'mapleader'
 VAR_MAP_LOCAL_LEADER = 'maplocalleader'

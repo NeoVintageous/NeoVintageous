@@ -177,7 +177,7 @@ PAIRS_DEFAULT_SPACE = {
 
 
 def get_surround_pairs(view):
-    if view.settings().get("vintageous_surround_spaces",False):
+    if view.settings().get("vintageous_surround_spaces", False):
         return PAIRS_DEFAULT_SPACE
     else:
         return PAIRS_DEFAULT_PLAIN

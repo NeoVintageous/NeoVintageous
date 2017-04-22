@@ -1,9 +1,7 @@
 import sublime
 import sublime_plugin
-from NeoVintageous.vi.sublime import is_view as sublime_is_view
 
 from contextlib import contextmanager
-import re
 
 
 # alias
@@ -95,7 +93,7 @@ class modes:
     UNKNOWN = 'mode_unknown'
     REPLACE = 'mode_replace'
     NORMAL_INSERT = 'mode_normal_insert'
-    SELECT ='mode_select'
+    SELECT = 'mode_select'
     CTRL_X = 'mode_control_x'
 
     @staticmethod
@@ -363,6 +361,7 @@ def get_eol(view, pt, inclusive=False):
     if not inclusive:
         return view.line(pt).end()
     return view.full_line(pt).end()
+
 
 def get_bol(view, pt):
     return view.line(pt).a

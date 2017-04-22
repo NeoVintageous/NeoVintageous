@@ -104,11 +104,10 @@ def word_starts(view, start, count=1, internal=False):
     for i in range(count):
         # On the last motion iteration, we must do some special stuff if we are still on the
         # starting line of the motion.
-        if (internal and (i == count - 1) and
-            (view.line(start) == view.line(pt))):
-                if view.substr(pt) == '\n':
-                    return pt + 1
-                return next_word_start(view, pt, internal=True)
+        if (internal and (i == count - 1) and (view.line(start) == view.line(pt))):
+            if view.substr(pt) == '\n':
+                return pt + 1
+            return next_word_start(view, pt, internal=True)
 
         pt = next_word_start(view, pt)
         if not internal or (i != count - 1):
@@ -194,9 +193,9 @@ def lines(view, s, count=1):
     a = view.line(s.b).a
     b = view.text_point(utils.row_at(view, s.b) + (count - 1), 0)
     # make sure we remove the last line if needed
-    if ((utils.row_at(view, b) == utils.last_row(view)) and
-        (view.substr(a - 1) == '\n')):
-            a -= 1
+    if ((utils.row_at(view, b) == utils.last_row(view)) and (view.substr(a - 1) == '\n')):
+        a -= 1
+
     return sublime.Region(a, view.full_line(b).b)
 
 
@@ -228,9 +227,8 @@ def next_paragraph_start(view, pt, count=1, skip_empty=True):
 
     # skip empty rows before moving for the first time
     current_row = utils.row_at(view, pt)
-    if (view.line(view.text_point(current_row + 1, 0)).empty() and
-        view.line(pt).empty()):
-            pt, _ = _next_non_empty_row(view, pt)
+    if (view.line(view.text_point(current_row + 1, 0)).empty() and view.line(pt).empty()):
+        pt, _ = _next_non_empty_row(view, pt)
 
     for i in range(count):
         pt, eof = _next_empty_row(view, pt)
@@ -317,4 +315,3 @@ def _prev_non_empty_row(view, pt):
             return 0, True
         if not reg.empty():
             return reg.a, False
-

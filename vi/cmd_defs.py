@@ -3637,7 +3637,7 @@ class ViSearchCharForward(ViMotionDef):
             state.last_char_search_command = 'vi_f'
         else:
             state.last_char_search_command = 'vi_t'
-        state.last_character_search =  self.inp
+        state.last_character_search = self.inp
         cmd['motion'] = '_vi_find_in_line'
         cmd['motion_args'] = {'char': self.inp,
                               'mode': state.mode,

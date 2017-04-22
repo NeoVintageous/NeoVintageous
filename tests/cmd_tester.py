@@ -24,8 +24,8 @@ TEST_RESULTS_DELIM = '\n---\n'
 
 
 _converters = defaultdict(lambda: (lambda x: str(x)))
-_converters ['mode'] = str
-_converters ['count'] = int
+_converters['mode'] = str
+_converters['count'] = int
 
 
 def _make_args(args):
@@ -92,8 +92,7 @@ def process_notation(text, sel_start_token='^', sel_end_token='$'):
 
 class ViCmdTest (object):
 
-    def __init__(self, cmd_name, args, description,
-                before_text, after_text, file_name, test_nr, options=None):
+    def __init__(self, cmd_name, args, description, before_text, after_text, file_name, test_nr, options=None):
         self.cmd_name = cmd_name
         self.args = args
         self.description = description
@@ -105,8 +104,7 @@ class ViCmdTest (object):
 
     @property
     def message(self):
-        return "Failure in File: {0} Test Nr.: {1} -- {2}".format(self.file_name,
-                self.test_nr, self.description)
+        return "Failure in File: {0} Test Nr.: {1} -- {2}".format(self.file_name, self.test_nr, self.description)
 
     @staticmethod
     def from_text(text, file_name, test_nr):
@@ -119,8 +117,7 @@ class ViCmdTest (object):
         args = _make_args(args.split())
         assert 'mode' in args, 'all commands need to know the current mode'
         before, after = body.split(TEST_RESULTS_DELIM)
-        return ViCmdTest(cmd_name, args, description, before, after,
-            file_name, test_nr, options)
+        return ViCmdTest(cmd_name, args, description, before, after, file_name, test_nr, options)
 
     @staticmethod
     def process_description(text):
@@ -136,7 +133,6 @@ class ViCmdTest (object):
 
         return '\n'.join(description), opts
 
-
     def run_with(self, runner):
         before_sels, before_text = process_notation(self.before_text)
         runner.append(before_text)
@@ -147,12 +143,12 @@ class ViCmdTest (object):
 
         after_sels, after_text = process_notation(self.after_text)
 
-        runner.assertEqual(view.substr(sublime.Region(0, view.size())),
-                after_text, self.message)
+        runner.assertEqual(view.substr(sublime.Region(0, view.size())), after_text, self.message)
 
         runner.assertEqual(list(view.sel()), after_sels, self.message)
 
-class ViCmdTester (unittest.TestCase):
+
+class ViCmdTester(unittest.TestCase):
     '''
     Runs tests based in cmd-test spec files (cmd-test).
 
@@ -210,26 +206,3 @@ class ViCmdTester (unittest.TestCase):
         """
         self.view.sel().clear()
         self.view.sel().add_all(sels)
-        return
-
-        if test.args['mode'] in ('mode_normal', 'mode_internal_normal'):
-            regions = self.view.find_all(r'$', sublime.LITERAL)
-            if not regions:
-                # TODO(guillermooo): report this? we should expect some regions
-                return
-            self.view.sel().add_all(regions)
-            self.view.run_command('right_delete')
-            return
-
-        if test.args ['mode'] == 'mode_visual':
-            visual_mode_regs = self.view.find_all(r'v+')
-            for vmr in visual_mode_regs:
-                self.view.sel().add(vmr)
-
-            if len(self.view.sel()) > 0:
-                return
-
-            visual_mode_regs = self.view.find_all(r'S')
-            for vmr in visual_mode_regs:
-                self.view.sel().add(sublime.Region(vmr.a))
-                self.view.run_command('right_delete')

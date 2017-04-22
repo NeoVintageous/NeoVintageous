@@ -1,6 +1,3 @@
-import sublime
-import sublime_plugin
-
 import glob
 import os
 import re

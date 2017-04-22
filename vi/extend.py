@@ -3,6 +3,7 @@
 
 from NeoVintageous.vi.constants import INPUT_FOR_ACTIONS
 
+
 class PluginManager(object):
     """Collects information from external plugins and manages it.
     """

@@ -9,7 +9,6 @@ from sublime import CLASS_LINE_END
 from sublime import CLASS_LINE_START
 from sublime import CLASS_EMPTY_LINE
 
-from NeoVintageous.vi import search
 from NeoVintageous.vi import units
 from NeoVintageous.vi import utils
 from NeoVintageous.vi.search import find_in_range
@@ -36,7 +35,6 @@ WORD_REVERSE_STOPS = CLASS_WORD_START | CLASS_EMPTY_LINE | \
                          CLASS_PUNCTUATION_START
 WORD_END_REVERSE_STOPS = CLASS_WORD_END | CLASS_EMPTY_LINE | \
                          CLASS_PUNCTUATION_END
-
 
 
 BRACKET = 1
@@ -77,10 +75,7 @@ PAIRS = {
 def is_at_punctuation(view, pt):
     next_char = view.substr(pt)
     # FIXME: Wrong if pt is at '\t'.
-    return (not (is_at_word(view, pt) or
-                 next_char.isspace() or
-                 next_char == '\n')
-            and next_char.isprintable())
+    return (not (is_at_word(view, pt) or next_char.isspace() or next_char == '\n') and next_char.isprintable())
 
 
 def is_at_word(view, pt):
@@ -93,11 +88,10 @@ def is_at_space(view, pt):
 
 
 def get_punctuation_region(view, pt):
-   start = view.find_by_class(pt + 1, forward=False,
-                              classes=CLASS_PUNCTUATION_START)
-   end = view.find_by_class(pt, forward=True,
-                            classes=CLASS_PUNCTUATION_END)
-   return sublime.Region(start, end)
+    start = view.find_by_class(pt + 1, forward=False, classes=CLASS_PUNCTUATION_START)
+    end = view.find_by_class(pt, forward=True, classes=CLASS_PUNCTUATION_END)
+
+    return sublime.Region(start, end)
 
 
 def get_space_region(view, pt):
@@ -162,15 +156,13 @@ def a_word(view, pt, inclusive=True, count=1):
 
         # If there is no space at the end of our word text object, include any
         # preceding spaces. (Follows Vim behavior.)
-        if (not view.substr(end - 1).isspace() and
-            view.substr(start - 1).isspace()):
-                start = utils.previous_non_white_space_char(
-                                                    view, start - 1,
-                                                    white_space=' \t') + 1
+        if (not view.substr(end - 1).isspace() and view.substr(start - 1).isspace()):
+            start = utils.previous_non_white_space_char(view, start - 1, white_space=' \t') + 1
 
         # Vim does some inconsistent stuff here...
         if count > 1 and view.substr(end) == '\n':
             end += 1
+
         return sublime.Region(start, end)
 
     for x in range(count):
@@ -433,19 +425,21 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
     else:
         return prev_opening_bracket
 
+
 def find_paragraph_text_object(view, s, inclusive=True, count=1):
     # In Vim, `vip` will select an inner paragraph -- all the lines having the
     # same whitespace status of the current location. And a `vap` will select
     # both the current inner paragraph (either whitespace or not) and the next
     # inner paragraph (the opposite).
     begin = None
-    end   = s.a
+    end = s.a
     for _ in range(count):
-        b1, e1  = find_inner_paragraph(view, end)
+        b1, e1 = find_inner_paragraph(view, end)
         b2, end = find_inner_paragraph(view, e1) if inclusive else (b1, e1)
         if begin is None:
             begin = b1
     return sublime.Region(begin, end)
+
 
 def find_inner_paragraph(view, initial_loc):
     '''Takes a location, as an integer. Returns a (begin, end) tuple of ints for
@@ -482,11 +476,12 @@ def find_inner_paragraph(view, initial_loc):
 
     return (begin, end)
 
+
 def find_indent_text_object(view, s, inclusive=True):
     '''Implements the indent text object as specified
     at http://vim.wikia.com/wiki/Indent_text_object'''
     begin = view.line(s)
-    end   = view.line(s)
+    end = view.line(s)
 
     start_line = view.line(s)
     start_line_content = view.substr(start_line)
@@ -512,7 +507,7 @@ def find_indent_text_object(view, s, inclusive=True):
             # the selection will be delimited by lines with
             # an indent that is less than the original line;
             # blank lines will be SELECTED.
-            pattern = "\s{0,"+str(whitespace_length-1)+"}\S"
+            pattern = "\s{0," + str(whitespace_length - 1) + "}\S"
             break_on_empty_lines = False
     else:
         # "i"
@@ -528,11 +523,12 @@ def find_indent_text_object(view, s, inclusive=True):
             # an indent that is less than the original line;
             # blank lines will be IGNORED and thus,
             # become the delimiter if one is encountered.
-            pattern = "\s{0,"+str(whitespace_length-1)+"}\S"
+            pattern = "\s{0," + str(whitespace_length - 1) + "}\S"
             break_on_empty_lines = True
 
     if pattern:
         pattern = re.compile(pattern)
+
         def should_break_on_line(line_content):
             if break_on_empty_lines and not line_content.strip():
                 return True
@@ -568,6 +564,7 @@ def find_indent_text_object(view, s, inclusive=True):
 
     return (begin, end)
 
+
 def find_line_text_object(view, s):
     '''Implements the line object'''
     line = view.line(s)
@@ -581,6 +578,7 @@ def find_line_text_object(view, s):
         begin = begin + len(whitespace_match.group(0))
 
     return (begin, end)
+
 
 # TODO: Move this to units.py.
 def word_reverse(view, pt, count=1, big=False):
@@ -608,16 +606,11 @@ def word_end_reverse(view, pt, count=1, big=False):
 
         # `ge` should stop at the previous word end if starting at a space
         # immediately after a word.
-        if (i == 0 and
-            view.substr(t).isspace() and
-            not view.substr(t - 1).isspace()):
-                continue
+        if (i == 0 and view.substr(t).isspace() and not view.substr(t - 1).isspace()):
+            continue
 
-        if (not view.substr(t).isalnum() and
-            not view.substr(t).isspace() and
-            view.substr(t - 1).isalnum() and
-            t > 0):
-                pass
+        if (not view.substr(t).isalnum() and not view.substr(t).isspace() and view.substr(t - 1).isalnum() and t > 0):
+            pass
         else:
             t = view.find_by_class(t, forward=False, classes=WORD_END_REVERSE_STOPS)
         if t == 0:
@@ -704,13 +697,8 @@ def find_containing_tag(view, start):
     return begin_region, end_region, tag_name
 
 
-def next_unbalanced_tag(view,
-                        search=None,
-                        search_args={},
-                        restart_at=None,
-                        tags=[]):
+def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags=[]):
     assert search and restart_at, 'wrong call'
-
     region, tag, is_end_tag = search(view, **search_args)
 
     if not region:

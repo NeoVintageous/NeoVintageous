@@ -4,7 +4,6 @@ import sublime_plugin
 import os
 
 from NeoVintageous.ex import command_names
-from NeoVintageous.ex import ex_error
 from NeoVintageous.ex.completions import iter_paths
 from NeoVintageous.ex.completions import parse
 from NeoVintageous.ex.completions import parse_for_setting
@@ -321,16 +320,16 @@ class CmdlineContextProvider(sublime_plugin.EventListener):
             value = wants_fs_completions(view.substr(view.line(0)))
             value = value and view.sel()[0].b == view.size()
             if operator == sublime.OP_EQUAL:
-                if operand == True:
+                if operand is True:
                     return value
-                elif operand == False:
+                elif operand is False:
                     return not value
 
         if key == 'vi_cmdline_at_setting_completion':
             value = wants_setting_completions(view.substr(view.line(0)))
             value = value and view.sel()[0].b == view.size()
             if operator == sublime.OP_EQUAL:
-                if operand == True:
+                if operand is True:
                     return value
-                elif operand == False:
+                elif operand is False:
                     return not value
