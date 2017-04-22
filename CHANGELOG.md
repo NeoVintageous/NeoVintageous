@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+### Fixed
+
+* Fixed: run last ex command "!!" not working
+
 ## 1.0.0 - 2017-04-22
 
 ### Added

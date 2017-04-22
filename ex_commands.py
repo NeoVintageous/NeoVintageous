@@ -169,7 +169,7 @@ class ExShellOut(sublime_plugin.TextCommand):
         shell_cmd = parsed.command.command
 
         if shell_cmd == '!':
-            if not _last_command:
+            if not self._last_command:
                 return
             shell_cmd = ExShellOut._last_command
 
