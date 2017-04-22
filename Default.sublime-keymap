@@ -444,5 +444,68 @@
     { "keys": ["down"], "command": "cycle_cmdline_history",                               "context": [{"key": "vi_is_cmdline"}] },
 
     { "keys": ["tab"],   "command": "fs_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_fs_completion"}] },
-    { "keys": ["tab"],   "command": "vi_setting_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] }
+    { "keys": ["tab"],   "command": "vi_setting_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] },
+
+
+    /////////////////////////////////
+    // Tree View - Sidebar control //
+    /////////////////////////////////
+
+    {
+        "keys": ["h"],
+        "command": "move",
+        "args": {"by": "characters", "forward": false},
+        "context": [
+            { "key": "control", "operand": "sidebar_tree" }
+        ]
+    },
+    {
+        "keys": ["j"],
+        "command": "move",
+        "args": {"by": "lines", "forward": true},
+        "context": [
+            { "key": "control", "operand": "sidebar_tree" }
+        ]
+    },
+    {
+        "keys": ["k"],
+        "command": "move",
+        "args": {"by": "lines", "forward": false},
+        "context": [
+            { "key": "control", "operand": "sidebar_tree" }
+        ]
+    },
+    {
+        "keys": ["l"],
+        "command": "move",
+        "args": {"by": "characters", "forward": true},
+        "context": [
+            { "key": "control", "operand": "sidebar_tree" }
+        ]
+    },
+
+    /////////////////////
+    // Overlay control //
+    /////////////////////
+
+    {
+        "keys": ["ctrl+j"],
+        "command": "move",
+        "args": {"by": "lines", "forward": true},
+        "context": [
+            { "key": "overlay_visible" },
+            { "key": "control", "operand": "overlay_control" },
+            { "key": "setting.vintageous_use_ctrl_keys" }
+        ]
+    },
+    {
+        "keys": ["ctrl+k"],
+        "command": "move",
+        "args": {"by": "lines", "forward": false},
+        "context": [
+            { "key": "overlay_visible" },
+            { "key": "control", "operand": "overlay_control" },
+            { "key": "setting.vintageous_use_ctrl_keys" }
+        ]
+    }
 ]
