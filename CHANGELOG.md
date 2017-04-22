@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: `gq` error
 * Fixed: error using registers
 * Fixed: error when searching
 * Fixed: running last ex command "!!" not working
