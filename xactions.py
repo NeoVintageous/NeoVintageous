@@ -114,8 +114,8 @@ class _vi_gq(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def wrap_command():
-            hasWrapPlus = view.settings().get('WrapPlus.include_line_ending')
-            if hasWrapPlus == None:
+            hasWrapPlus = self.view.settings().get('WrapPlus.include_line_ending')
+            if hasWrapPlus is None:
                 return 'wrap_lines'
             else:
                 return 'wrap_lines_plus'
