@@ -26,7 +26,7 @@ def find_line(view, start=0, end=-1, target=0):
     """
 
     # Don't bother if sought line is beyond buffer boundaries.
-    if  target < 0 or target > view.rowcol(view.size())[0] + 1:
+    if target < 0 or target > view.rowcol(view.size())[0] + 1:
         return -1
 
     if end == -1:
@@ -81,7 +81,7 @@ def reverse_search(view, what, start=0, end=-1, flags=0):
         if search_in_range(view, what, middle, hi, flags):
             lo = middle
         elif search_in_range(view, what, lo, middle - 1, flags):
-            hi = middle -1
+            hi = middle - 1
 
         # Don't search forever the same line.
         if last_match and line.contains(last_match):
@@ -89,6 +89,15 @@ def reverse_search(view, what, start=0, end=-1, flags=0):
             return view.rowcol(match.begin())[0] + 1
 
         last_match = sublime.Region(line.begin(), line.end())
+
+
+def calculate_relative_ref(view, where, start_line=None):
+    if where == '$':
+        return view.rowcol(view.size())[0] + 1
+    if where == '.':
+        if start_line:
+            return view.rowcol(view.text_point(start_line, 0))[0] + 1
+        return view.rowcol(view.sel()[0].begin())[0] + 1
 
 
 def search(view, what, start_line=None, flags=0):
@@ -99,7 +108,7 @@ def search(view, what, start_line=None, flags=0):
     else:
         start = view.sel()[0].begin()
     reg = view.find(what, start, flags)
-    if not reg is None:
+    if reg is not None:
         row = (view.rowcol(reg.begin())[0] + 1)
     else:
         row = calculate_relative_ref(view, '.', start_line=start_line)
