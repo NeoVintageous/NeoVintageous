@@ -3,7 +3,6 @@ from collections import namedtuple
 
 import sublime
 
-from NeoVintageous import state
 from NeoVintageous.vi.utils import modes
 from NeoVintageous.vi.utils import translate_char
 from NeoVintageous.tests import set_text

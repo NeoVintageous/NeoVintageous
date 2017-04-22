@@ -1,12 +1,10 @@
 # TODO: weird name to avoid init issues with state.py::State.
 
 import sublime
-import sublime_plugin
 
 from itertools import chain
 from collections import Counter
 
-from NeoVintageous import state as state_module
 from NeoVintageous.lib.state import State
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi import units
