@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/249): Implement `ctrl+[`
 * Added: sidebar navigation
 
     Key | Description
