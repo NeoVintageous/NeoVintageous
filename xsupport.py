@@ -4,7 +4,7 @@ import threading
 import sublime
 import sublime_plugin
 
-from NeoVintageous.state import _init_vintageous
+from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.vi import settings
 from NeoVintageous.vi import cmd_defs
@@ -18,8 +18,7 @@ class _vi_slash_on_parser_done(sublime_plugin.WindowCommand):
     def run(self, key=None):
         state = State(self.window.active_view())
         state.motion = cmd_defs.ViSearchForwardImpl()
-        state.last_buffer_search = (state.motion._inp or
-            state.last_buffer_search)
+        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
 class _vi_question_mark_on_parser_done(sublime_plugin.WindowCommand):
@@ -27,8 +26,7 @@ class _vi_question_mark_on_parser_done(sublime_plugin.WindowCommand):
     def run(self, key=None):
         state = State(self.window.active_view())
         state.motion = cmd_defs.ViSearchBackwardImpl()
-        state.last_buffer_search = (state.motion._inp or
-            state.last_buffer_search)
+        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
 # TODO: Test me.
@@ -89,7 +87,7 @@ class ViFocusRestorerEvent(sublime_plugin.EventListener):
         if self.timer:
             self.timer.cancel()
             # Switching to a different view; enter normal mode.
-            _init_vintageous(view)
+            init_state(view)
         else:
             # Switching back from another application. Ignore.
             pass
@@ -127,7 +125,7 @@ class ResetNeovintageous(sublime_plugin.WindowCommand):
     def run(self):
         v = self.window.active_view()
         v.settings().erase('vintage')
-        _init_vintageous(v)
+        init_state(v)
         DotFile.from_user().run()
         print("Package.NeoVintageous: State reset.")
         sublime.status_message("NeoVintageous: State reset")

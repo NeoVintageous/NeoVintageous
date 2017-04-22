@@ -4,7 +4,7 @@ import re
 import sublime
 
 from NeoVintageous.lib.logger import PluginLogger
-from NeoVintageous.state import _init_vintageous
+from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.vi import cmd_base
 from NeoVintageous.vi import cmd_defs
@@ -238,8 +238,10 @@ class _vi_a(ViTextCommandBase):
 
         regions_transformer(self.view, f)
         # TODO(guillermooo): derive this class from ViTextCommandBase ???
-        self.view.window().run_command('_enter_insert_mode', {'mode': mode,
-            'count': state.normal_insert_count})
+        self.view.window().run_command('_enter_insert_mode', {
+            'mode': mode,
+            'count': state.normal_insert_count
+        })
 
 
 class _vi_c(ViTextCommandBase):
@@ -302,7 +304,7 @@ class _enter_normal_mode(ViTextCommandBase):
       The mode we're coming from, which should still be the current mode.
 
     @from_init
-      Whether _enter_normal_mode has been called from _init_vintageous. This
+      Whether _enter_normal_mode has been called from init_state. This
       is important to know in order to not hide output panels when the user
       is only navigating files or clicking around, not pressing Esc.
     """
@@ -317,7 +319,7 @@ class _enter_normal_mode(ViTextCommandBase):
 
         if ((not from_init and (mode == modes.NORMAL) and not state.sequence) or
              not is_view(self.view)):
-            # When _enter_normal_mode is requested from _init_vintageous, we
+            # When _enter_normal_mode is requested from init_state, we
             # should not hide output panels; hide them only if the user
             # pressed Esc and we're not cancelling partial state data, or if a
             # panel has the focus.
@@ -808,7 +810,7 @@ class PressKey(ViWindowCommandBase):
                                modes.VISUAL_LINE,
                                modes.VISUAL_BLOCK,
                                modes.SELECT)):
-                _init_vintageous(state.view)
+                init_state(state.view)
 
         if key.lower() == '<esc>':
             self.window.run_command('_enter_normal_mode', {'mode': state.mode})
@@ -3003,7 +3005,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
 
     def run(self, edit, mode=None, register='"'):
         # TODO: Must exit to insert mode. As we're using a quick panel, the
-        #       mode is being reset in _init_vintageous.
+        #       mode is being reset in init_state.
         assert mode == modes.INSERT, 'bad mode'
 
         if (len(self.view.sel()) > 1 or not self.view.sel()[0].empty()):

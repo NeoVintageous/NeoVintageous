@@ -2,7 +2,7 @@ import os
 import unittest
 
 
-from NeoVintageous import state
+from NeoVintageous.lib.state import State
 from NeoVintageous.vi.utils import modes
 from NeoVintageous.tests import ViewTest
 from NeoVintageous.vi import cmd_defs
@@ -28,7 +28,7 @@ class Test_State(StateTestCase):
 
     @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def testCanInitialize(self):
-        s = state.State(self.view)
+        s = State(self.view)
         # Make sure the actual usage of NeoVintageous doesn't change the pristine
         # state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')

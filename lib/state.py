@@ -8,6 +8,7 @@ from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi import settings
 from NeoVintageous.vi import utils
 from NeoVintageous.vi.contexts import KeyContext
+from NeoVintageous.vi.dot_file import DotFile
 from NeoVintageous.vi.macros import MacroRegisters
 from NeoVintageous.vi.marks import Marks
 from NeoVintageous.vi.registers import Registers
@@ -15,10 +16,13 @@ from NeoVintageous.vi.settings import SettingsManager
 from NeoVintageous.vi.utils import directions
 from NeoVintageous.vi.utils import first_sel
 from NeoVintageous.vi.utils import input_types
+from NeoVintageous.vi.utils import is_ignored
+from NeoVintageous.vi.utils import is_ignored_but_command_mode
+from NeoVintageous.vi.utils import is_view
 from NeoVintageous.vi.utils import modes
 from NeoVintageous.vi.variables import Variables
 
-# !! Avoid error due to sublime_plugin.py:45 expectations.
+# !! Avoid error due to sublime_plugin.py:45 expectations
 from NeoVintageous.plugins import plugins as user_plugins
 
 
@@ -459,7 +463,6 @@ class State(object):
             self.view.erase_status('vim-mode')
 
     def display_status(self):
-        msg = "{0} {1}"
         mode_name = modes.to_friendly_name(self.mode)
         if mode_name:
             mode_name = '-- {0} --'.format(mode_name) if mode_name else ''
@@ -621,11 +624,8 @@ class State(object):
                               modes.VISUAL_BLOCK))
 
     def can_run_action(self):
-        if (self.action and
-                (not self.action['motion_required'] or
-                 self.in_any_visual_mode())
-                ):
-                    return True
+        if (self.action and (not self.action['motion_required'] or self.in_any_visual_mode())):
+            return True
 
     def get_visual_repeat_data(self):
         """Returns the data needed to restore visual selections before
@@ -816,3 +816,98 @@ class State(object):
             self.enter_normal_mode()
 
         self.reset_command_data()
+
+
+def init_state(view, new_session=False):
+    """
+    Initializes global data. Runs at startup and every time a view gets
+    activated, loaded, etc.
+
+    @new_session
+      Whether we're starting up Sublime Text. If so, volatile data must be
+      wiped.
+    """
+
+    _logger.debug("running init for view %d", view.id())
+
+    if not is_view(view):
+        # Abort if we got a widget, panel...
+        _logger.info(
+            '[init_state] ignoring view: {0}'.format(
+                view.name() or view.file_name() or '<???>'))
+        try:
+            # XXX: All this seems to be necessary here.
+            if not is_ignored_but_command_mode(view):
+                view.settings().set('command_mode', False)
+                view.settings().set('inverse_caret_state', False)
+            view.settings().erase('vintage')
+            if is_ignored(view):
+                # Someone has intentionally disabled NeoVintageous, so let the user know.
+                sublime.status_message(
+                    'NeoVintageous: Vim emulation disabled for the current view')
+        except AttributeError:
+            _logger.info(
+                '[init_state] probably received the console view')
+        except Exception:
+            _logger.error('[init_state] error initializing view')
+        finally:
+            return
+
+    state = State(view)
+
+    if not state.reset_during_init:
+        # Probably exiting from an input panel, like when using '/'. Don't
+        # reset the global state, as it may contain data needed to complete
+        # the command that's being built.
+        state.reset_during_init = True
+        return
+
+    # Non-standard user setting.
+    reset = state.settings.view['vintageous_reset_mode_when_switching_tabs']
+    # XXX: If the view was already in normal mode, we still need to run the
+    # init code. I believe this is due to Sublime Text (intentionally) not
+    # serializing the inverted caret state and the command_mode setting when
+    # first loading a file.
+    # If the mode is unknown, it might be a new file. Let normal mode setup
+    # continue.
+    if not reset and (state.mode not in (modes.NORMAL, modes.UNKNOWN)):
+        return
+
+    # If we have no selections, add one.
+    if len(state.view.sel()) == 0:
+        state.view.sel().add(sublime.Region(0))
+
+    state.logger.info('[init_state] running init')
+
+    if state.mode in (modes.VISUAL, modes.VISUAL_LINE):
+        # TODO: Don't we need to pass a mode here?
+        view.window().run_command('_enter_normal_mode', {'from_init': True})
+
+    elif state.mode in (modes.INSERT, modes.REPLACE):
+        # TODO: Don't we need to pass a mode here?
+        view.window().run_command('_enter_normal_mode', {'from_init': True})
+
+    elif (view.has_non_empty_selection_region() and
+          state.mode != modes.VISUAL):
+            # Runs, for example, when we've performed a search via ST3 search
+            # panel and we've pressed 'Find All'. In this case, we want to
+            # ensure a consistent state for multiple selections.
+            # TODO: We could end up with multiple selections in other ways
+            #       that bypass init_state.
+            state.mode = modes.VISUAL
+
+    else:
+        # This may be run when we're coming from cmdline mode.
+        pseudo_visual = view.has_non_empty_selection_region()
+        mode = modes.VISUAL if pseudo_visual else state.mode
+        # TODO: Maybe the above should be handled by State?
+        state.enter_normal_mode()
+        view.window().run_command('_enter_normal_mode', {'mode': mode,
+                                                         'from_init': True})
+
+    state.reset_command_data()
+    if new_session:
+        state.reset_volatile_data()
+
+        # Load settings.
+        DotFile.from_user().run()
