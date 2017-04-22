@@ -6,8 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* Fixed: edge case error when searching
-* Fixed: run last ex command "!!" not working
+* Fixed: error using registers
+* Fixed: error when searching
+* Fixed: running last ex command "!!" not working
 
 ## 1.0.0 - 2017-04-22
 

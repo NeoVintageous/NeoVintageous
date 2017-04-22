@@ -19,6 +19,7 @@ from NeoVintageous.vi.keys import key_names
 from NeoVintageous.vi.keys import KeySequenceTokenizer
 from NeoVintageous.vi.keys import to_bare_command_name
 from NeoVintageous.vi.mappings import Mappings
+from NeoVintageous.vi.registers import REG_EXPRESSION
 from NeoVintageous.vi.utils import first_sel
 from NeoVintageous.vi.utils import gluing_undo_groups
 from NeoVintageous.vi.utils import IrreversibleTextCommand
