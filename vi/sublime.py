@@ -1,5 +1,3 @@
-# An assortment of utilities.
-
 from contextlib import contextmanager
 
 

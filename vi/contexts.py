@@ -1,11 +1,7 @@
 import sublime
 
-# from NeoVintageous.vi.constants import MODE_NORMAL, MODE_NORMAL_INSERT, MODE_INSERT, ACTIONS_EXITING_TO_INSERT_MODE, MODE_VISUAL_LINE, MODE_VISUAL, MODE_SELECT
-# from NeoVintageous.vi.constants import MODE_VISUAL_BLOCK
 from NeoVintageous.vi.utils import modes
-# from NeoVintageous.vi import constants
 from NeoVintageous.vi import utils
-# from NeoVintageous.vi.constants import action_to_namespace
 
 
 class KeyContext(object):

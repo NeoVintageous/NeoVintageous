@@ -1,7 +1,7 @@
+import os
+
 import sublime
 import sublime_plugin
-
-import os
 
 from NeoVintageous.ex import command_names
 from NeoVintageous.ex.completions import iter_paths

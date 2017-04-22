@@ -1,6 +1,6 @@
-import sublime
-
 import itertools
+
+import sublime
 
 
 REG_UNNAMED = '"'

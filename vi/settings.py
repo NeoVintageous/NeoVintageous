@@ -1,8 +1,9 @@
-import sublime
+import json
 
 from collections import defaultdict
 from collections import namedtuple
-import json
+
+import sublime
 
 vi_user_setting = namedtuple('vi_editor_setting', 'scope values default parser action negatable')
 
@@ -21,6 +22,7 @@ SCOPE_VI_WINDOW = 4
 def volatile(f):
     VintageSettings._volatile_settings.append(f.__name__)
     return f
+
 
 def destroy(view):
     try:

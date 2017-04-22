@@ -1,12 +1,10 @@
 """
 Abbreviations.
 """
-
-import sublime
-import sublime_plugin
-
 import os
 import json
+
+import sublime
 
 
 def abbrevs_path():
@@ -30,6 +28,7 @@ def save_abbrevs(data):
     path = abbrevs_path()
     with open(path, 'w') as f:
         json.dump(data, f)
+
 
 class Store(object):
     """

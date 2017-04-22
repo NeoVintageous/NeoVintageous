@@ -1,23 +1,18 @@
-# TODO: weird name to avoid init issues with state.py::State.
+from itertools import chain
 
 import sublime
 
-from itertools import chain
-from collections import Counter
 
 from NeoVintageous.lib.state import State
 from NeoVintageous.vi import cmd_defs
 from NeoVintageous.vi import units
 from NeoVintageous.vi import utils
 from NeoVintageous.vi.core import ViMotionCommand
-from NeoVintageous.vi.keys import mappings
-from NeoVintageous.vi.keys import seqs
 from NeoVintageous.vi.search import BufferSearchBase
 from NeoVintageous.vi.search import ExactWordBufferSearchBase
 from NeoVintageous.vi.search import find_in_range
 from NeoVintageous.vi.search import find_wrapping
 from NeoVintageous.vi.search import reverse_find_wrapping
-from NeoVintageous.vi.search import reverse_search
 from NeoVintageous.vi.search import reverse_search_by_pt
 from NeoVintageous.vi.text_objects import find_containing_tag
 from NeoVintageous.vi.text_objects import find_next_lone_bracket
@@ -26,11 +21,8 @@ from NeoVintageous.vi.text_objects import get_closest_tag
 from NeoVintageous.vi.text_objects import get_text_object_region
 from NeoVintageous.vi.text_objects import word_end_reverse
 from NeoVintageous.vi.text_objects import word_reverse
-from NeoVintageous.vi.utils import col_at
 from NeoVintageous.vi.utils import directions
-from NeoVintageous.vi.utils import first_sel
 from NeoVintageous.vi.utils import get_bol
-from NeoVintageous.vi.utils import IrreversibleTextCommand
 from NeoVintageous.vi.utils import mark_as_widget
 from NeoVintageous.vi.utils import modes
 from NeoVintageous.vi.utils import R

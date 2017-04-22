@@ -3,6 +3,8 @@
 # For some reason this has to be at the top level or else the commands don't load
 # I have no idea why, if I figure it out I'll move this into an "extras" dir.
 
+import re
+
 import sublime
 import sublime_plugin
 
@@ -16,8 +18,6 @@ from NeoVintageous.vi.inputs import parser_def
 from NeoVintageous.vi.search import reverse_search
 from NeoVintageous.vi.utils import modes
 from NeoVintageous.vi.utils import regions_transformer
-
-import re
 
 
 @plugins.register(seq='ys', modes=(modes.NORMAL,))

@@ -1,8 +1,8 @@
-from NeoVintageous.lib.logger import PluginLogger
+import os
 
 import sublime
 
-import os
+from NeoVintageous.lib.logger import PluginLogger
 
 
 _logger = PluginLogger(__name__)

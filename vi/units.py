@@ -1,6 +1,7 @@
+import re
+
 import sublime
 
-from sublime import CLASS_EMPTY_LINE
 from sublime import CLASS_LINE_END
 from sublime import CLASS_LINE_START
 from sublime import CLASS_PUNCTUATION_END
@@ -8,13 +9,8 @@ from sublime import CLASS_PUNCTUATION_START
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 
-
-from NeoVintageous.vi.search import reverse_search_by_pt
 from NeoVintageous.vi import utils
 from NeoVintageous.vi.utils import next_non_white_space_char
-from NeoVintageous.vi.utils import R
-
-import re
 
 
 word_pattern = re.compile('\w')

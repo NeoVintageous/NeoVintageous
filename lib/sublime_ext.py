@@ -1,10 +1,12 @@
 import sublime
 
+
 LAYOUT_SINGLE_CELL = {'cells': [[0, 0, 1, 1]], 'cols': [0.0, 1.0], 'rows': [0.0, 1.0]}
 LAYOUT_TWO_COLUMN = {'cells': [[0, 0, 1, 1], [1, 0, 2, 1]], 'rows': [0.0, 1.0], 'cols': [0.0, 0.5, 1.0]}
 LAYOUT_THREE_COLUMN = {'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]], 'rows': [0.0, 1.0], 'cols': [0.0, 0.33, 0.66, 1.0]}
 LAYOUT_TWO_ROW = {'cells': [[0, 0, 1, 1], [0, 1, 1, 2]], 'cols': [0.0, 1.0], 'rows': [0.0, 0.5, 1.0]}
 LAYOUT_THREE_ROW = {'cols': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2], [0, 2, 1, 3]], 'rows': [0.0, 0.33, 0.66, 1.0]}
+
 
 class SublimeWindowAPI():
 

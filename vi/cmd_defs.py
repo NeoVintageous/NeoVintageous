@@ -11,11 +11,8 @@ from NeoVintageous.vi import inputs
 from NeoVintageous.vi import utils
 from NeoVintageous.vi.cmd_base import ViOperatorDef
 from NeoVintageous.vi.cmd_base import ViMotionDef
-from NeoVintageous.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.vi import keys
 from NeoVintageous.vi.keys import seqs
-
-import sublime_plugin
 
 
 _MODES_MOTION = (modes.NORMAL, modes.OPERATOR_PENDING, modes.VISUAL,

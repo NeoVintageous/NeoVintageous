@@ -1,7 +1,7 @@
+import re
+
 import sublime
 import sublime_plugin
-
-import re
 
 
 def find_in_range(view, term, start, end, flags=0):
