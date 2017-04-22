@@ -107,7 +107,37 @@ def _init_vintageous(view, new_session=False):
         DotFile.from_user().run()
 
 
+def ensure_other_vimlike_packages_are_disabled():
+    settings = sublime.load_settings('Preferences.sublime-settings')
+    ignored_packages = settings.get('ignored_packages', [])
+
+    save_settings = False
+    if 'Vintage' not in ignored_packages:
+        ignored_packages.append('Vintage')
+        save_settings = True
+
+    if 'Vintageous' not in ignored_packages:
+        ignored_packages.append('Vintageous')
+        save_settings = True
+
+    if 'Six' not in ignored_packages:
+        ignored_packages.append('Six')
+        save_settings = True
+
+    if save_settings:
+        ignored_packages.sort()
+        settings.set('ignored_packages', ignored_packages)
+        sublime.save_settings('Preferences.sublime-settings')
+
+
 def plugin_loaded():
+    try:
+        from package_control import events
+        if events.install('NeoVintageous'):
+            ensure_other_vimlike_packages_are_disabled()
+    except ImportError:
+        print('NeoVintageous: could not import Package Control')
+
     view = sublime.active_window().active_view()
     _init_vintageous(view, new_session=True)
 
