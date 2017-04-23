@@ -69,6 +69,9 @@ class ViewTest(unittest.TestCase):
                                         actual_region.end())
         self.assertEqual(expected_region, actual_region, msg)
 
+    def assertFirstSelEqual(self, sel):
+        self.assertEqual(self.R(sel[0], sel[1]), self.view.sel()[0])
+
 
 def make_region(view, a, b=None):
     try:

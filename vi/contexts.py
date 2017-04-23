@@ -210,12 +210,12 @@ class KeyContext(object):
 
     def _check(self, value, operator, operand, match_all):
         if operator == sublime.OP_EQUAL:
-            if operand == True:
+            if operand is True:
                 return value
-            elif operand == False:
+            elif operand is False:
                 return not value
-        elif operator == sublime.OP_NOT_EQUAL:
-            if operand == True:
+        elif operator is sublime.OP_NOT_EQUAL:
+            if operand is True:
                 return not value
-            elif operand == False:
+            elif operand is False:
                 return value

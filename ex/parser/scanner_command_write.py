@@ -19,9 +19,7 @@ plus_plus_translations = {
 @ex.command('write', 'w')
 class TokenCommandWrite(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                        TOKEN_COMMAND_WRITE,
-                        'write', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_WRITE, 'write', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_write_file'
 
@@ -86,7 +84,7 @@ def scan_command_write(state):
         if c == '>':
             state.expect('>')
             state.ignore()
-            params ['>>'] = True
+            params['>>'] = True
             state.match(r'.*$')
             params['file_name'] = state.emit().strip()
             continue
@@ -94,7 +92,7 @@ def scan_command_write(state):
         if c == '!':
             state.ignore()
             state.match(r'.*$')
-            params ['cmd'] = state.emit()
+            params['cmd'] = state.emit()
             continue
 
         if c != ' ':
@@ -105,4 +103,5 @@ def scan_command_write(state):
             state.ignore()
 
     state.expect(EOF)
-    return None, [TokenCommandWrite (params, forced=bang == '!'), TokenEof ()]
+
+    return None, [TokenCommandWrite(params, forced=bang == '!'), TokenEof()]

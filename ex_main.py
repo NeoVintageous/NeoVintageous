@@ -40,8 +40,10 @@ EX_HISTORY = {
 def update_command_line_history(slot_name, item):
     if len(EX_HISTORY[slot_name]) >= EX_HISTORY_MAX_LENGTH:
         EX_HISTORY[slot_name] = EX_HISTORY[slot_name][1:]
+
     if item in EX_HISTORY[slot_name]:
         EX_HISTORY[slot_name].pop(EX_HISTORY[slot_name].index(item))
+
     EX_HISTORY[slot_name].append(item)
 
 
@@ -73,10 +75,14 @@ class ViColonInput(sublime_plugin.WindowCommand):
 
         FsCompletion.invalidate()
 
-        v = mark_as_widget(show_ipanel(self.window,
-               initial_text=self.adjust_initial_text(initial_text),
-               on_done=self.on_done,
-               on_change=self.on_change))
+        v = mark_as_widget(
+            show_ipanel(
+                self.window,
+                initial_text=self.adjust_initial_text(initial_text),
+                on_done=self.on_done,
+                on_change=self.on_change
+            )
+        )
 
         v.set_syntax_file('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
         v.settings().set('gutter', False)

@@ -39,6 +39,7 @@ class VintageStateTracker(sublime_plugin.EventListener):
         view.run_command('_vi_adjust_carets', {'mode': state.mode})
 
     def on_query_context(self, view, key, operator, operand, match_all):
+        # print('NeoVintageous: [on_query_context()] view={}, key={}, operator={}, oeprand={}, match_all={}'.format(view, key, operator, operand, match_all))
         vintage_state = State(view)
         return vintage_state.context.check(key, operator, operand, match_all)
 
@@ -164,9 +165,9 @@ class NeovintageousToggleCtrlKeys(sublime_plugin.WindowCommand):
                                .format(status))
 
 
-class ReloadNeovintageousSettings(sublime_plugin.TextCommand):
+class ReloadNeovintageousSettings(sublime_plugin.WindowCommand):
 
-    def run(self, edit):
+    def run(self):
         DotFile.from_user().run()
 
 
@@ -177,12 +178,10 @@ class NeovintageousOpenConfigFile(sublime_plugin.WindowCommand):
     """
 
     def run(self):
-        path = os.path.realpath(os.path.join(sublime.packages_path(),
-                                'User/.vintageousrc'))
-        if os.path.exists(path):
-            self.window.open_file(path)
-        else:
+        path = os.path.realpath(os.path.join(sublime.packages_path(), 'User/.vintageousrc'))
+
+        if not os.path.exists(path):
             with open(path, 'w'):
                 pass
 
-            self.window.open_file(path)
+        self.window.open_file(path)

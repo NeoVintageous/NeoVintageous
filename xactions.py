@@ -30,6 +30,7 @@ from NeoVintageous.vi.utils import regions_transformer
 from NeoVintageous.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.sublime_ext import SublimeWindowAPI
 
+
 _logger = PluginLogger(__name__)
 
 

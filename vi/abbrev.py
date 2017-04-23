@@ -1,6 +1,3 @@
-"""
-Abbreviations.
-"""
 import os
 import json
 
@@ -8,8 +5,7 @@ import sublime
 
 
 def abbrevs_path():
-    path = os.path.join(sublime.packages_path(),
-                        'User/_vintageous_abbrev.sublime-completions')
+    path = os.path.join(sublime.packages_path(), 'User/_vintageous_abbrev.sublime-completions')
     return os.path.normpath(path)
 
 

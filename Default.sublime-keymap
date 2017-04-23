@@ -441,6 +441,7 @@
     {"keys": ["ctrl+shift+f10"], "command": "press_key", "args": {"key": "<C-S-f10>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+shift+f11"], "command": "press_key", "args": {"key": "<C-S-f11>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+shift+f12"], "command": "press_key", "args": {"key": "<C-S-f12>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
+
     { "keys": ["up"],   "command": "cycle_cmdline_history", "args": {"backwards": true }, "context": [{"key": "vi_is_cmdline"}] },
     { "keys": ["down"], "command": "cycle_cmdline_history",                               "context": [{"key": "vi_is_cmdline"}] },
 
