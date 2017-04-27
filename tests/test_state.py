@@ -3,9 +3,9 @@ import unittest
 
 
 from NeoVintageous.lib.state import State
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.tests import ViewTest
-from NeoVintageous.vi import cmd_defs
+from NeoVintageous.lib.vi import cmd_defs
 
 
 class StateTestCase(ViewTest):

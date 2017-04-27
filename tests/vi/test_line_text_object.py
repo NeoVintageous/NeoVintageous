@@ -6,7 +6,7 @@ from NeoVintageous.tests import set_text
 from NeoVintageous.tests import add_sel
 from NeoVintageous.tests import ViewTest
 
-from NeoVintageous.vi.text_objects import find_line_text_object
+from NeoVintageous.lib.vi.text_objects import find_line_text_object
 
 test = namedtuple('simple_test', 'start expected msg content')
 

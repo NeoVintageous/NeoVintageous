@@ -1,7 +1,7 @@
 from collections import namedtuple
 
-from NeoVintageous.vi.utils import input_types
-from NeoVintageous.vi import utils
+from NeoVintageous.lib.vi.utils import input_types
+from NeoVintageous.lib.vi import utils
 
 
 parser_def = namedtuple('parsed_def', 'command interactive_command input_param on_done type')

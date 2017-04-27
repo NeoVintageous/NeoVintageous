@@ -3,12 +3,12 @@ from collections import namedtuple
 
 import sublime
 
-from NeoVintageous.vi.text_objects import previous_begin_tag
-from NeoVintageous.vi.text_objects import find_containing_tag
-from NeoVintageous.vi.text_objects import next_end_tag
-from NeoVintageous.vi.text_objects import get_region_end
-from NeoVintageous.vi.text_objects import next_unbalanced_tag
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.text_objects import previous_begin_tag
+from NeoVintageous.lib.vi.text_objects import find_containing_tag
+from NeoVintageous.lib.vi.text_objects import next_end_tag
+from NeoVintageous.lib.vi.text_objects import get_region_end
+from NeoVintageous.lib.vi.text_objects import next_unbalanced_tag
+from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 

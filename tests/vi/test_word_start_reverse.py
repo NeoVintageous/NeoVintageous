@@ -1,8 +1,8 @@
 import unittest
 from collections import namedtuple
 
-from NeoVintageous.vi.text_objects import word_end_reverse
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.text_objects import word_end_reverse
+from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 

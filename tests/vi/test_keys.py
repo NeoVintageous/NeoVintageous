@@ -1,11 +1,11 @@
 from collections import namedtuple
 
-from NeoVintageous.vi.utils import translate_char
+from NeoVintageous.lib.vi.utils import translate_char
 from NeoVintageous.tests import ViewTest
-from NeoVintageous.vi.keys import to_bare_command_name
-from NeoVintageous.vi.keys import KeySequenceTokenizer
-from NeoVintageous.vi.keys import seqs
-from NeoVintageous.vi import variables
+from NeoVintageous.lib.vi.keys import to_bare_command_name
+from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
+from NeoVintageous.lib.vi.keys import seqs
+from NeoVintageous.lib.vi import variables
 
 
 _tests_tokenizer = (

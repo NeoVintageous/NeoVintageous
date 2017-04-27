@@ -9,15 +9,15 @@ import sublime
 import sublime_plugin
 
 from NeoVintageous.plugins import plugins
-from NeoVintageous.vi import inputs
-from NeoVintageous.vi import utils
-from NeoVintageous.vi.cmd_defs import ViOperatorDef
-from NeoVintageous.vi.core import ViTextCommandBase
-from NeoVintageous.vi.inputs import input_types
-from NeoVintageous.vi.inputs import parser_def
-from NeoVintageous.vi.search import reverse_search
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi.utils import regions_transformer
+from NeoVintageous.lib.vi import inputs
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.cmd_defs import ViOperatorDef
+from NeoVintageous.lib.vi.core import ViTextCommandBase
+from NeoVintageous.lib.vi.inputs import input_types
+from NeoVintageous.lib.vi.inputs import parser_def
+from NeoVintageous.lib.vi.search import reverse_search
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import regions_transformer
 
 
 @plugins.register(seq='ys', modes=(modes.NORMAL,))

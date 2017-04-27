@@ -6,7 +6,7 @@ from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.utils import modes
 
 
 class Test_vi_big_s_InModeInternalNormal(ViewTest):

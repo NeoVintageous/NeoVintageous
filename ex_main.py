@@ -15,10 +15,10 @@ from NeoVintageous.ex.ex_error import VimError
 from NeoVintageous.ex.parser.parser import parse_command_line
 from NeoVintageous.ex.parser.scanner_command_goto import TokenCommandGoto
 from NeoVintageous.lib.state import State
-from NeoVintageous.vi.settings import iter_settings
-from NeoVintageous.vi.sublime import show_ipanel
-from NeoVintageous.vi.utils import mark_as_widget
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.settings import iter_settings
+from NeoVintageous.lib.vi.sublime import show_ipanel
+from NeoVintageous.lib.vi.utils import mark_as_widget
+from NeoVintageous.lib.vi.utils import modes
 
 
 def plugin_loaded():

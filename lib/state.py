@@ -3,24 +3,24 @@ from collections import Counter
 import sublime
 
 from NeoVintageous.lib.logger import PluginLogger
-from NeoVintageous.vi import cmd_base
-from NeoVintageous.vi import cmd_defs
-from NeoVintageous.vi import settings
-from NeoVintageous.vi import utils
-from NeoVintageous.vi.contexts import KeyContext
-from NeoVintageous.vi.dot_file import DotFile
-from NeoVintageous.vi.macros import MacroRegisters
-from NeoVintageous.vi.marks import Marks
-from NeoVintageous.vi.registers import Registers
-from NeoVintageous.vi.settings import SettingsManager
-from NeoVintageous.vi.utils import directions
-from NeoVintageous.vi.utils import first_sel
-from NeoVintageous.vi.utils import input_types
-from NeoVintageous.vi.utils import is_ignored
-from NeoVintageous.vi.utils import is_ignored_but_command_mode
-from NeoVintageous.vi.utils import is_view
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi.variables import Variables
+from NeoVintageous.lib.vi import cmd_base
+from NeoVintageous.lib.vi import cmd_defs
+from NeoVintageous.lib.vi import settings
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.contexts import KeyContext
+from NeoVintageous.lib.vi.dot_file import DotFile
+from NeoVintageous.lib.vi.macros import MacroRegisters
+from NeoVintageous.lib.vi.marks import Marks
+from NeoVintageous.lib.vi.registers import Registers
+from NeoVintageous.lib.vi.settings import SettingsManager
+from NeoVintageous.lib.vi.utils import directions
+from NeoVintageous.lib.vi.utils import first_sel
+from NeoVintageous.lib.vi.utils import input_types
+from NeoVintageous.lib.vi.utils import is_ignored
+from NeoVintageous.lib.vi.utils import is_ignored_but_command_mode
+from NeoVintageous.lib.vi.utils import is_view
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.variables import Variables
 
 # !! Avoid error due to sublime_plugin.py:45 expectations
 from NeoVintageous.plugins import plugins as user_plugins

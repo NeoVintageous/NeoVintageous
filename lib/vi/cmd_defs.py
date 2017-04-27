@@ -4,15 +4,15 @@ Vim commands used internally by NeoVintageous that also produce ST commands.
 These are the core implementations for all Vim commands.
 """
 
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi.inputs import input_types
-from NeoVintageous.vi.inputs import parser_def
-from NeoVintageous.vi import inputs
-from NeoVintageous.vi import utils
-from NeoVintageous.vi.cmd_base import ViOperatorDef
-from NeoVintageous.vi.cmd_base import ViMotionDef
-from NeoVintageous.vi import keys
-from NeoVintageous.vi.keys import seqs
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.inputs import input_types
+from NeoVintageous.lib.vi.inputs import parser_def
+from NeoVintageous.lib.vi import inputs
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.cmd_base import ViOperatorDef
+from NeoVintageous.lib.vi.cmd_base import ViMotionDef
+from NeoVintageous.lib.vi import keys
+from NeoVintageous.lib.vi.keys import seqs
 
 
 _MODES_MOTION = (modes.NORMAL, modes.OPERATOR_PENDING, modes.VISUAL,

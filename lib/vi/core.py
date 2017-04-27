@@ -2,7 +2,7 @@ import sublime
 import sublime_plugin
 
 from NeoVintageous.lib.state import State
-from NeoVintageous.vi.utils import IrreversibleTextCommand
+from NeoVintageous.lib.vi.utils import IrreversibleTextCommand
 
 
 class ViCommandMixin(object):

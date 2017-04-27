@@ -1,7 +1,7 @@
 import sublime
 
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi import utils
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi import utils
 
 
 class KeyContext(object):

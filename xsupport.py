@@ -6,11 +6,11 @@ import sublime_plugin
 
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
-from NeoVintageous.vi import settings
-from NeoVintageous.vi import cmd_defs
-from NeoVintageous.vi.dot_file import DotFile
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi.utils import regions_transformer
+from NeoVintageous.lib.vi import settings
+from NeoVintageous.lib.vi import cmd_defs
+from NeoVintageous.lib.vi.dot_file import DotFile
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import regions_transformer
 
 
 class _vi_slash_on_parser_done(sublime_plugin.WindowCommand):

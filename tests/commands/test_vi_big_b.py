@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import second_sel
 from NeoVintageous.tests import ViewTest

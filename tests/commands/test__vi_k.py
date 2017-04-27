@@ -1,4 +1,4 @@
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.utils import modes
 
 from collections import namedtuple
 

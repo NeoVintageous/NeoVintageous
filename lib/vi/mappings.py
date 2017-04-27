@@ -1,9 +1,9 @@
-from NeoVintageous.vi.keys import seq_to_command
-from NeoVintageous.vi.keys import to_bare_command_name
-from NeoVintageous.vi.keys import KeySequenceTokenizer
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi.cmd_base import cmd_types
-from NeoVintageous.vi import variables
+from NeoVintageous.lib.vi.keys import seq_to_command
+from NeoVintageous.lib.vi.keys import to_bare_command_name
+from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.cmd_base import cmd_types
+from NeoVintageous.lib.vi import variables
 
 
 _mappings = {

@@ -6,8 +6,8 @@ from NeoVintageous.tests import set_text
 from NeoVintageous.tests import add_sel
 from NeoVintageous.tests import ViewTest
 
-from NeoVintageous.vi.text_objects import find_prev_lone_bracket
-from NeoVintageous.vi.text_objects import find_next_lone_bracket
+from NeoVintageous.lib.vi.text_objects import find_prev_lone_bracket
+from NeoVintageous.lib.vi.text_objects import find_next_lone_bracket
 
 
 test = namedtuple('simple_test', 'content start brackets expected msg')

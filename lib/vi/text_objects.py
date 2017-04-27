@@ -9,11 +9,11 @@ from sublime import CLASS_LINE_END
 from sublime import CLASS_LINE_START
 from sublime import CLASS_EMPTY_LINE
 
-from NeoVintageous.vi import units
-from NeoVintageous.vi import utils
-from NeoVintageous.vi.search import find_in_range
-from NeoVintageous.vi.search import reverse_search_by_pt
-from NeoVintageous.vi.utils import resolve_insertion_point_at_b
+from NeoVintageous.lib.vi import units
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.search import find_in_range
+from NeoVintageous.lib.vi.search import reverse_search_by_pt
+from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 
 
 RX_ANY_TAG = r'</?([0-9A-Za-z-]+).*?>'

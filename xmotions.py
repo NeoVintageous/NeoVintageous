@@ -4,34 +4,34 @@ import sublime
 
 
 from NeoVintageous.lib.state import State
-from NeoVintageous.vi import cmd_defs
-from NeoVintageous.vi import units
-from NeoVintageous.vi import utils
-from NeoVintageous.vi.core import ViMotionCommand
-from NeoVintageous.vi.search import BufferSearchBase
-from NeoVintageous.vi.search import ExactWordBufferSearchBase
-from NeoVintageous.vi.search import find_in_range
-from NeoVintageous.vi.search import find_wrapping
-from NeoVintageous.vi.search import reverse_find_wrapping
-from NeoVintageous.vi.search import reverse_search_by_pt
-from NeoVintageous.vi.text_objects import find_containing_tag
-from NeoVintageous.vi.text_objects import find_next_lone_bracket
-from NeoVintageous.vi.text_objects import find_prev_lone_bracket
-from NeoVintageous.vi.text_objects import get_closest_tag
-from NeoVintageous.vi.text_objects import get_text_object_region
-from NeoVintageous.vi.text_objects import word_end_reverse
-from NeoVintageous.vi.text_objects import word_reverse
-from NeoVintageous.vi.utils import directions
-from NeoVintageous.vi.utils import get_bol
-from NeoVintageous.vi.utils import mark_as_widget
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi.utils import R
-from NeoVintageous.vi.utils import regions_transformer
-from NeoVintageous.vi.utils import resize_visual_region
-from NeoVintageous.vi.utils import resolve_insertion_point_at_a
-from NeoVintageous.vi.utils import resolve_insertion_point_at_b
-from NeoVintageous.vi.utils import row_at
-from NeoVintageous.vi.utils import row_to_pt
+from NeoVintageous.lib.vi import cmd_defs
+from NeoVintageous.lib.vi import units
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.core import ViMotionCommand
+from NeoVintageous.lib.vi.search import BufferSearchBase
+from NeoVintageous.lib.vi.search import ExactWordBufferSearchBase
+from NeoVintageous.lib.vi.search import find_in_range
+from NeoVintageous.lib.vi.search import find_wrapping
+from NeoVintageous.lib.vi.search import reverse_find_wrapping
+from NeoVintageous.lib.vi.search import reverse_search_by_pt
+from NeoVintageous.lib.vi.text_objects import find_containing_tag
+from NeoVintageous.lib.vi.text_objects import find_next_lone_bracket
+from NeoVintageous.lib.vi.text_objects import find_prev_lone_bracket
+from NeoVintageous.lib.vi.text_objects import get_closest_tag
+from NeoVintageous.lib.vi.text_objects import get_text_object_region
+from NeoVintageous.lib.vi.text_objects import word_end_reverse
+from NeoVintageous.lib.vi.text_objects import word_reverse
+from NeoVintageous.lib.vi.utils import directions
+from NeoVintageous.lib.vi.utils import get_bol
+from NeoVintageous.lib.vi.utils import mark_as_widget
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import R
+from NeoVintageous.lib.vi.utils import regions_transformer
+from NeoVintageous.lib.vi.utils import resize_visual_region
+from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_a
+from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
+from NeoVintageous.lib.vi.utils import row_at
+from NeoVintageous.lib.vi.utils import row_to_pt
 
 
 class _vi_find_in_line(ViMotionCommand):

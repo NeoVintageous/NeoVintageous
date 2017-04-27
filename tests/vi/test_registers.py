@@ -4,9 +4,9 @@ import builtins
 import sublime
 
 from unittest import mock
-from NeoVintageous.vi import registers
-from NeoVintageous.vi.registers import Registers
-from NeoVintageous.vi.settings import SettingsManager
+from NeoVintageous.lib.vi import registers
+from NeoVintageous.lib.vi.registers import Registers
+from NeoVintageous.lib.vi.settings import SettingsManager
 from NeoVintageous.lib.state import State
 from NeoVintageous.tests import ViewTest
 

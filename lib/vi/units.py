@@ -9,8 +9,8 @@ from sublime import CLASS_PUNCTUATION_START
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 
-from NeoVintageous.vi import utils
-from NeoVintageous.vi.utils import next_non_white_space_char
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.utils import next_non_white_space_char
 
 
 word_pattern = re.compile('\w')

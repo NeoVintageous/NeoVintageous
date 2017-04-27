@@ -9,10 +9,10 @@ from NeoVintageous.ex.parser.tokens import TokenOfSearch
 from NeoVintageous.ex.parser.tokens import TokenPercent
 from NeoVintageous.ex.parser.tokens import TokenSearchBackward
 from NeoVintageous.ex.parser.tokens import TokenSearchForward
-from NeoVintageous.vi.search import reverse_search_by_pt
-from NeoVintageous.vi.utils import first_sel
-from NeoVintageous.vi.utils import R
-from NeoVintageous.vi.utils import row_at
+from NeoVintageous.lib.vi.search import reverse_search_by_pt
+from NeoVintageous.lib.vi.utils import first_sel
+from NeoVintageous.lib.vi.utils import R
+from NeoVintageous.lib.vi.utils import row_at
 
 
 class Node(object):

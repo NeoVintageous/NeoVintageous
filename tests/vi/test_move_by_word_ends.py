@@ -3,8 +3,8 @@ from collections import namedtuple
 
 import sublime
 
-from NeoVintageous.vi.units import word_ends
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.units import word_ends
+from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 

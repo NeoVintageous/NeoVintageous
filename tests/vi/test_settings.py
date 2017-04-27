@@ -1,20 +1,20 @@
 import unittest
 
 from NeoVintageous.tests import ViewTest
-from NeoVintageous.vi.settings import SettingsManager
-from NeoVintageous.vi.settings import SublimeSettings
-from NeoVintageous.vi.settings import VI_OPTIONS
-from NeoVintageous.vi.settings import vi_user_setting
-from NeoVintageous.vi.settings import VintageSettings
-from NeoVintageous.vi.settings import SCOPE_VIEW
-from NeoVintageous.vi.settings import SCOPE_VI_VIEW
-from NeoVintageous.vi.settings import SCOPE_VI_WINDOW
-from NeoVintageous.vi.settings import SCOPE_WINDOW
-from NeoVintageous.vi.settings import set_generic_view_setting
-from NeoVintageous.vi.settings import opt_bool_parser
-from NeoVintageous.vi.settings import set_minimap
-from NeoVintageous.vi.settings import set_sidebar
-from NeoVintageous.vi.settings import opt_rulers_parser
+from NeoVintageous.lib.vi.settings import SettingsManager
+from NeoVintageous.lib.vi.settings import SublimeSettings
+from NeoVintageous.lib.vi.settings import VI_OPTIONS
+from NeoVintageous.lib.vi.settings import vi_user_setting
+from NeoVintageous.lib.vi.settings import VintageSettings
+from NeoVintageous.lib.vi.settings import SCOPE_VIEW
+from NeoVintageous.lib.vi.settings import SCOPE_VI_VIEW
+from NeoVintageous.lib.vi.settings import SCOPE_VI_WINDOW
+from NeoVintageous.lib.vi.settings import SCOPE_WINDOW
+from NeoVintageous.lib.vi.settings import set_generic_view_setting
+from NeoVintageous.lib.vi.settings import opt_bool_parser
+from NeoVintageous.lib.vi.settings import set_minimap
+from NeoVintageous.lib.vi.settings import set_sidebar
+from NeoVintageous.lib.vi.settings import opt_rulers_parser
 
 
 class TestSublimeSettings(ViewTest):

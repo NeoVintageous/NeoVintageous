@@ -28,20 +28,20 @@ from NeoVintageous.ex.parser.parser import parse_command_line
 from NeoVintageous.ex.plat.windows import get_oem_cp
 from NeoVintageous.ex.plat.windows import get_startup_info
 from NeoVintageous.lib.state import State
-from NeoVintageous.vi import abbrev
-from NeoVintageous.vi import utils
-from NeoVintageous.vi.core import ViWindowCommandBase
-from NeoVintageous.vi.mappings import Mappings
-from NeoVintageous.vi.search import find_all_in_range
-from NeoVintageous.vi.settings import set_global
-from NeoVintageous.vi.settings import set_local
-from NeoVintageous.vi.sublime import has_dirty_buffers
-from NeoVintageous.vi.utils import adding_regions
-from NeoVintageous.vi.utils import first_sel
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi.utils import R
-from NeoVintageous.vi.utils import resolve_insertion_point_at_b
-from NeoVintageous.vi.utils import row_at
+from NeoVintageous.lib.vi import abbrev
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.core import ViWindowCommandBase
+from NeoVintageous.lib.vi.mappings import Mappings
+from NeoVintageous.lib.vi.search import find_all_in_range
+from NeoVintageous.lib.vi.settings import set_global
+from NeoVintageous.lib.vi.settings import set_local
+from NeoVintageous.lib.vi.sublime import has_dirty_buffers
+from NeoVintageous.lib.vi.utils import adding_regions
+from NeoVintageous.lib.vi.utils import first_sel
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import R
+from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
+from NeoVintageous.lib.vi.utils import row_at
 
 
 GLOBAL_RANGES = []

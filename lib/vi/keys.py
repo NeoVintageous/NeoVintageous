@@ -1,10 +1,10 @@
 import re
 
 from NeoVintageous.lib.logger import PluginLogger
-from NeoVintageous.vi.utils import modes
-from NeoVintageous.vi import cmd_base
+from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.plugins import plugins
-from NeoVintageous.vi import variables
+from NeoVintageous.lib.vi import variables
 
 
 _logger = PluginLogger(__name__)

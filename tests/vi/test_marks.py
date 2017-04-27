@@ -3,7 +3,7 @@ import unittest
 import sublime
 
 from NeoVintageous.tests import ViewTest
-from NeoVintageous.vi import marks
+from NeoVintageous.lib.vi import marks
 from NeoVintageous.lib.state import State
 from NeoVintageous.tests import make_region
 from NeoVintageous.tests import set_text

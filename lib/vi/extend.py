@@ -1,7 +1,7 @@
 """This module provides basic extensibility hooks for external plugins.
 """
 
-from NeoVintageous.vi.constants import INPUT_FOR_ACTIONS
+from NeoVintageous.lib.vi.constants import INPUT_FOR_ACTIONS
 
 
 class PluginManager(object):

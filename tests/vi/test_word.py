@@ -1,17 +1,17 @@
 import unittest
 
-# from NeoVintageous.vi.constants import _MODE_INTERNAL_NORMAL
-from NeoVintageous.vi.constants import MODE_NORMAL
-# from NeoVintageous.vi.constants import MODE_VISUAL
-# from NeoVintageous.vi.constants import MODE_VISUAL_LINE
+# from NeoVintageous.lib.vi.constants import _MODE_INTERNAL_NORMAL
+from NeoVintageous.lib.vi.constants import MODE_NORMAL
+# from NeoVintageous.lib.vi.constants import MODE_VISUAL
+# from NeoVintageous.lib.vi.constants import MODE_VISUAL_LINE
 
 from NeoVintageous.tests import ViewTest
 from NeoVintageous.tests import set_text
 from NeoVintageous.tests import add_sel
 
-from NeoVintageous.vi.units import next_word_start
-from NeoVintageous.vi.units import word_starts
-from NeoVintageous.vi.units import CLASS_VI_INTERNAL_WORD_START
+from NeoVintageous.lib.vi.units import next_word_start
+from NeoVintageous.lib.vi.units import word_starts
+from NeoVintageous.lib.vi.units import CLASS_VI_INTERNAL_WORD_START
 
 
 class Test_next_word_start_InNormalMode_FromWhitespace(ViewTest):

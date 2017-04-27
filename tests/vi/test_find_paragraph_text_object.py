@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 from NeoVintageous.tests import ViewTest, region2rowcols
-from NeoVintageous.vi.text_objects import find_paragraph_text_object
+from NeoVintageous.lib.vi.text_objects import find_paragraph_text_object
 
 
 # Note: trailing spaces are encoded in unicode to prevent automatic traling

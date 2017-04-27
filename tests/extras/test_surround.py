@@ -2,7 +2,7 @@ import sublime
 
 from NeoVintageous.tests import ViewTest
 from NeoVintageous.lib.state import State
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.utils import modes
 
 
 TESTS_YS = (

@@ -1,7 +1,7 @@
 import unittest
 from collections import namedtuple
 
-from NeoVintageous.vi.utils import modes
+from NeoVintageous.lib.vi.utils import modes
 
 from NeoVintageous.tests import add_sel
 from NeoVintageous.tests import get_sel
