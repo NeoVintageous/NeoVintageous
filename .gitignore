@@ -4,20 +4,24 @@
 # operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
+!/lib/
+/dist/
+/tmp/
+
 # Byte-compiled / optimized / DLL files
 /__pycache__/
 /*.py[cod]
+*$py.class
 
-# Distribution / packaging
-/dist/
-
-# Editors
+# Sublime Text
 /*.sublime-workspace
 /*.sublime-package
 
-/*~
-/*.TMP
-/*.swp
-/*.swo
-/*.swm
-/*.swn
+# VIM
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+tags
