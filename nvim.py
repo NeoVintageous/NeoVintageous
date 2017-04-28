@@ -1,7 +1,7 @@
 import sublime
 
-from NeoVintageous.lib.logger import PluginLogger
-from NeoVintageous.lib.state import init_state
+from .lib.logger import PluginLogger
+from .lib.state import init_state
 
 # Load all the commands
 from .lib.commands.modelines import ExecuteSublimeTextModeLinesCommand # noqa
