@@ -40,10 +40,10 @@ class ViDeleteByChars(ViOperatorDef):
         cmd = {}
         cmd['action'] = self.command
         cmd['action_args'] = {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
-                }
+            'mode': state.mode,
+            'count': state.count,
+            'register': state.register,
+        }
         return cmd
 
 
@@ -394,7 +394,7 @@ class ViChangeLine(ViOperatorDef):
             'mode': state.mode,
             'count': state.count,
             'register': state.register
-            }
+        }
         return cmd
 
 
@@ -417,7 +417,7 @@ class ViDeleteLine(ViOperatorDef):
             'mode': state.mode,
             'count': state.count,
             'register': state.register
-            }
+        }
         return cmd
 
 
@@ -1416,7 +1416,7 @@ class StShowBuildSystemsMenu(ViOperatorDef):
     def translate(self, state):
         cmd = {}
         cmd['action'] = 'build'
-        cmd['action_args'] = { 'select': True }
+        cmd['action_args'] = {'select': True}
         return cmd
 
 
@@ -1789,10 +1789,10 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
         self.scroll_into_view = True
 
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -1822,10 +1822,10 @@ class ViToggleMacroRecorder(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -2020,6 +2020,7 @@ class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
         cmd['action'] = '_vi_ga'
         cmd['action_args'] = {}
         return cmd
+
 
 @keys.assign(seq=seqs.J, modes=(modes.SELECT,))
 class ViAddSelection(ViOperatorDef):
@@ -2746,10 +2747,10 @@ class ViGotoExactMarkXpos(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -2934,8 +2935,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
         inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
         skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
 
-        cmd['motion'] = ('_vi_find_in_line' if forward
-                                            else '_vi_reverse_find_in_line')
+        cmd['motion'] = ('_vi_find_in_line' if forward else '_vi_reverse_find_in_line')
 
         cmd['motion_args'] = {'mode': state.mode, 'count': state.count,
                               'char': state.last_character_search,
@@ -2956,10 +2956,10 @@ class ViGotoMark(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -2976,7 +2976,7 @@ class ViGotoMark(ViMotionDef):
         if self.inp == "'":
             cmd['is_jump'] = True
             cmd['motion'] = '_vi_quote_quote'
-            cmd['motion_args'] = {} # {'mode': state.mode, 'count': state.count}
+            cmd['motion_args'] = {}  # {'mode': state.mode, 'count': state.count}
             return cmd
 
         cmd['is_jump'] = True
@@ -3164,8 +3164,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
         skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
 
-        cmd['motion'] = ('_vi_find_in_line' if not forward
-                                            else '_vi_reverse_find_in_line')
+        cmd['motion'] = ('_vi_find_in_line' if not forward else '_vi_reverse_find_in_line')
         cmd['motion_args'] = {'mode': state.mode, 'count': state.count,
                               'char': state.last_character_search,
                               'inclusive': inclusive,
@@ -3373,7 +3372,7 @@ class ViRepeatSearchForward(ViMotionDef):
             'mode': state.mode,
             'count': state.count,
             'reverse': False
-            }
+        }
 
         return cmd
 
@@ -3396,7 +3395,7 @@ class ViRepeatSearchBackward(ViMotionDef):
             'mode': state.mode,
             'count': state.count,
             'reverse': True
-            }
+        }
         return cmd
 
 
@@ -3539,10 +3538,10 @@ class ViReplaceCharacters(ViOperatorDef):
         self.repeatable = True
 
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3575,10 +3574,10 @@ class ViSetMark(ViOperatorDef):
         ViOperatorDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3660,10 +3659,10 @@ class ViATextObject(ViMotionDef):
 
     # TODO: rename to "vi_a_text_object".
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3700,10 +3699,10 @@ class ViITextObject(ViMotionDef):
         self.inclusive = inclusive
 
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3740,10 +3739,10 @@ class ViSearchCharBackward(ViMotionDef):
         self.inclusive = inclusive
 
         self.input_parser = parser_def(command=inputs.one_char,
-                       interactive_command=None,
-                       input_param=None,
-                       on_done=None,
-                       type=input_types.INMEDIATE)
+                                       interactive_command=None,
+                                       input_param=None,
+                                       on_done=None,
+                                       type=input_types.INMEDIATE)
 
     @property
     def accept_input(self):
@@ -4001,3 +4000,4 @@ class ViToggleBlockCommentByLines(ViOperatorDef):
                               'count': state.count,
                               }
         return cmd
+

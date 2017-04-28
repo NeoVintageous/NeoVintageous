@@ -174,10 +174,11 @@ class ExShellOut(sublime_plugin.TextCommand):
         try:
             if not parsed.line_range.is_empty:
                 shell.filter_thru_shell(
-                        view=self.view,
-                        edit=edit,
-                        regions=[parsed.line_range.resolve(self.view)],
-                        cmd=shell_cmd)
+                    view=self.view,
+                    edit=edit,
+                    regions=[parsed.line_range.resolve(self.view)],
+                    cmd=shell_cmd
+                )
             else:
                 # TODO: Read output into output panel.
                 # shell.run_and_wait(self.view, shell_cmd)
@@ -270,8 +271,7 @@ class ExReadShellOut(sublime_plugin.TextCommand):
                     sublime.status_message("NeoVintageous: No shell name found.")
                     return
                 try:
-                    p = subprocess.Popen([the_shell, '-c', parsed.command.command],
-                                                        stdout=subprocess.PIPE)
+                    p = subprocess.Popen([the_shell, '-c', parsed.command.command], stdout=subprocess.PIPE)
                 except Exception as e:
                     print(e)
                     sublime.status_message("NeoVintageous: Error while executing command through shell.")
@@ -280,9 +280,8 @@ class ExReadShellOut(sublime_plugin.TextCommand):
 
             elif sublime.platform() == 'windows':
                 p = subprocess.Popen(['cmd.exe', '/C', parsed.command.command],
-                                        stdout=subprocess.PIPE,
-                                        startupinfo=get_startup_info()
-                                        )
+                                     stdout=subprocess.PIPE,
+                                     startupinfo=get_startup_info())
                 cp = 'cp' + get_oem_cp()
                 rv = p.communicate()[0].decode(cp)[:-2].strip()
                 self.view.insert(edit, target_point, rv.strip() + '\n')
@@ -479,9 +478,7 @@ class ExAbbreviate(ViWindowCommandBase):
         abbrev.Store().set(parsed.command.short, parsed.command.full)
 
     def show_abbreviations(self):
-        abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents'])
-                                                    for item in
-                                                    abbrev.Store().get_all()]
+        abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
 
         self.window.show_quick_panel(abbrevs,
                                      None,  # Simply show the list.
@@ -733,8 +730,7 @@ class ExFile(ViWindowCommandBase):
         # fixme: doesn't calculate the buffer's % correctly
         if not isinstance(lines, str):
             vr = self._view.visible_region()
-            start_row, end_row = self._view.rowcol(vr.begin())[0], \
-                                              self._view.rowcol(vr.end())[0]
+            start_row, end_row = self._view.rowcol(vr.begin())[0], self._view.rowcol(vr.end())[0]
             mid = (start_row + end_row + 2) / 2
             percent = float(mid) / lines * 100.0
 
@@ -880,14 +876,14 @@ class ExDoubleAmpersand(ViWindowCommandBase):
         parsed = parse_command_line(command_line)
 
         new_command_line = '{0}substitute///{1} {2}'.format(
-                str(parsed.line_range),
-                ''.join(parsed.command.params['flags']),
-                parsed.command.params['count'],
-                )
+            str(parsed.line_range),
+            ''.join(parsed.command.params['flags']),
+            parsed.command.params['count'],
+        )
 
         self.window.run_command('ex_substitute', {
             'command_line': new_command_line.strip()
-            })
+        })
 
 
 class ExSubstitute(sublime_plugin.TextCommand):
@@ -941,8 +937,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
         except Exception as e:
             sublime.status_message(
                 "NeoVintageous: bad pattern '%s'" % (e.message, pattern))
-            print("NeoVintageous [regex error]: %s ... in pattern '%s'"
-                % (e.message, pattern))
+            print("NeoVintageous [regex error]: %s ... in pattern '%s'" % (e.message, pattern))
             return
 
         # TODO: Implement 'count'
@@ -959,7 +954,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
         self.view.replace(edit, target_region, new_text)
 
     def replace_confirming(self, edit, pattern, compiled_rx, replacement,
-                replace_count, target_region):
+                           replace_count, target_region):
         last_row = row_at(self.view, target_region.b - 1)
         start = target_region.begin()
 
@@ -1075,8 +1070,7 @@ class ExGlobal(ViWindowCommandBase):
         subcmd = parsed.command.subcommand
 
         try:
-            matches = find_all_in_range(self._view, pattern,
-                    global_range.begin(), global_range.end())
+            matches = find_all_in_range(self._view, pattern, global_range.begin(), global_range.end())
         except Exception as e:
             msg = "NeoVintageous (global): %s ... in pattern '%s'" % (str(e), pattern)
             sublime.status_message(msg)
@@ -1093,7 +1087,7 @@ class ExGlobal(ViWindowCommandBase):
             # Ex commands cooperating with :global must accept this additional
             # parameter.
             'global_lines': matches,
-            })
+        })
 
 
 class ExPrint(ViWindowCommandBase):
@@ -1240,7 +1234,7 @@ class ExBrowse(ViWindowCommandBase):
 
         self.window.run_command('prompt_open_file', {
             'initial_directory': self.state.settings.vi['_cmdline_cd']
-            })
+        })
 
 
 class ExEdit(ViWindowCommandBase):
@@ -1261,8 +1255,7 @@ class ExEdit(ViWindowCommandBase):
         parsed = parse_command_line(command_line)
 
         if parsed.command.file_name:
-            file_name = os.path.expanduser(
-                    os.path.expandvars(parsed.command.file_name))
+            file_name = os.path.expanduser(os.path.expandvars(parsed.command.file_name))
 
             if self._view.is_dirty() and not parsed.command.forced:
                 show_error(VimError(ERR_UNSAVED_CHANGES))
@@ -1277,8 +1270,9 @@ class ExEdit(ViWindowCommandBase):
 
             if not os.path.isabs(file_name):
                 file_name = os.path.join(
-                        self.state.settings.vi['_cmdline_cd'],
-                        file_name)
+                    self.state.settings.vi['_cmdline_cd'],
+                    file_name
+                )
 
             if not os.path.exists(file_name):
                 msg = '"{0}" [New File]'.format(os.path.basename(file_name))
@@ -1288,12 +1282,10 @@ class ExEdit(ViWindowCommandBase):
                 self.window.open_file(file_name)
 
                 # Give ST some time to load the new view.
-                sublime.set_timeout(
-                        lambda: show_message(msg, displays=Display.ALL), 150)
+                sublime.set_timeout(lambda: show_message(msg, displays=Display.ALL), 150)
                 return
 
-            show_not_implemented(
-                    'not implemented case for :edit ({0})'.format(command_line))
+            show_not_implemented('not implemented case for :edit ({0})'.format(command_line))
             return
 
         if parsed.command.forced or not self._view.is_dirty():
@@ -1418,20 +1410,20 @@ class TabControlCommand(ViWindowCommandBase):
         if command == 'open':
             if not file_name:  # TODO: file completion
                 self.window.run_command('show_overlay', {
-                        'overlay': 'goto',
-                        'show_files': True,
-                        })
+                    'overlay': 'goto',
+                    'show_files': True,
+                })
             else:
                 cur_dir = os.path.dirname(self._view.file_name())
                 self.window.open_file(os.path.join(cur_dir, file_name))
 
         elif command == 'next':
             self.window.run_command('select_by_index', {
-                    'index': (view_index + 1) % view_count})
+                'index': (view_index + 1) % view_count})
 
         elif command == 'prev':
             self.window.run_command('select_by_index', {
-                    'index': (view_index + view_count - 1) % view_count})
+                'index': (view_index + view_count - 1) % view_count})
 
         elif command == "last":
             self.window.run_command('select_by_index', {'index': view_count - 1})
@@ -1452,7 +1444,7 @@ class TabControlCommand(ViWindowCommandBase):
                     continue
                 self.window.focus_view(view)
                 self.window.run_command('ex_quit', {
-                        'command_line': quit_command_line})
+                    'command_line': quit_command_line})
 
             self.window.focus_view(self._view)
 
@@ -1463,7 +1455,7 @@ class TabControlCommand(ViWindowCommandBase):
 class ExTabOpenCommand(sublime_plugin.WindowCommand):
     def run(self, file_name=None):
         self.window.run_command('tab_control', {
-                'command': 'open', 'file_name': file_name}, )
+            'command': 'open', 'file_name': file_name}, )
 
 
 class ExTabnextCommand(ViWindowCommandBase):
@@ -1733,8 +1725,7 @@ class ExLet(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        self.state.variables.set(parsed.command.variable_name,
-                parsed.command.variable_value)
+        self.state.variables.set(parsed.command.variable_name, parsed.command.variable_value)
 
 
 class ExWriteAndQuitAll(ViWindowCommandBase):

@@ -65,7 +65,7 @@ class State(object):
             '[State] Is .view an ST/NeoVintageous widget? {0}/{1}'.format(
                 bool(self.settings.view['is_widget']),
                 bool(self.settings.view['is_vintageous_widget']))
-            )
+        )
 
     @property
     def glue_until_normal_mode(self):

@@ -154,8 +154,7 @@ class ExCompletionsProvider(sublime_plugin.EventListener):
         if prefix and prefix in self.CACHED_COMPLETION_PREFIXES:
             return self.CACHED_COMPLETIONS
 
-        compls = [x for x in COMPLETIONS if x.startswith(prefix) and
-                                            x != prefix]
+        compls = [x for x in COMPLETIONS if x.startswith(prefix) and x != prefix]
         self.CACHED_COMPLETION_PREFIXES = [prefix] + compls
         # S3 can only handle lists, not iterables.
         self.CACHED_COMPLETIONS = list(zip([prefix] + compls,
@@ -173,13 +172,11 @@ class CycleCmdlineHistory(sublime_plugin.TextCommand):
         else:
             CycleCmdlineHistory.HISTORY_INDEX += -1 if backwards else 1
 
-        if CycleCmdlineHistory.HISTORY_INDEX == len(EX_HISTORY['cmdline']) or \
-            CycleCmdlineHistory.HISTORY_INDEX < -len(EX_HISTORY['cmdline']):
-                CycleCmdlineHistory.HISTORY_INDEX = -1 if backwards else 0
+        if CycleCmdlineHistory.HISTORY_INDEX == len(EX_HISTORY['cmdline']) or CycleCmdlineHistory.HISTORY_INDEX < -len(EX_HISTORY['cmdline']):
+            CycleCmdlineHistory.HISTORY_INDEX = -1 if backwards else 0
 
         self.view.erase(edit, sublime.Region(0, self.view.size()))
-        self.view.insert(edit, 0, \
-                EX_HISTORY['cmdline'][CycleCmdlineHistory.HISTORY_INDEX])
+        self.view.insert(edit, 0, EX_HISTORY['cmdline'][CycleCmdlineHistory.HISTORY_INDEX])
 
 
 class HistoryIndexRestorer(sublime_plugin.EventListener):
@@ -236,15 +233,15 @@ class FsCompletion(sublime_plugin.TextCommand):
         if prefix == '..':
             FsCompletion.prefix = '../'
             self.view.run_command('write_fs_completion', {
-                                                    'cmd': cmd,
-                                                    'completion': '../'})
+                'cmd': cmd,
+                'completion': '../'})
 
         if prefix == '~':
             path = os.path.expanduser(prefix) + '/'
             FsCompletion.prefix = path
             self.view.run_command('write_fs_completion', {
-                                                    'cmd': cmd,
-                                                    'completion': path})
+                'cmd': cmd,
+                'completion': path})
             return
 
         if (not FsCompletion.items) or FsCompletion.is_stale:
@@ -255,17 +252,17 @@ class FsCompletion(sublime_plugin.TextCommand):
 
         try:
             self.view.run_command('write_fs_completion', {
-                                    'cmd': cmd,
-                                    'completion': next(FsCompletion.items)
-                                 })
+                'cmd': cmd,
+                'completion': next(FsCompletion.items)
+            })
         except StopIteration:
             FsCompletion.items = iter_paths(prefix=FsCompletion.prefix,
                                             from_dir=FsCompletion.frozen_dir,
                                             only_dirs=only_dirs)
             self.view.run_command('write_fs_completion', {
-                                    'cmd': cmd,
-                                    'completion': FsCompletion.prefix
-                                  })
+                'cmd': cmd,
+                'completion': FsCompletion.prefix
+            })
 
 
 class ViSettingCompletion(sublime_plugin.TextCommand):

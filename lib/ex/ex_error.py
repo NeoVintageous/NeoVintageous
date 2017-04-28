@@ -7,23 +7,23 @@ import sublime
 
 
 ERR_FILE_EXISTS = 13
-ERR_ADDRESS_REQUIRED = 14 # Command needs an address.
-ERR_INVALID_ADDRESS = 14 # Invalid range.
-ERR_INVALID_RANGE = 16 # Invalid range.
-ERR_NO_FILE_NAME = 32 # Command can't take arguments.
-ERR_UNSAVED_CHANGES = 37 # The buffer has been modified but not saved.
+ERR_ADDRESS_REQUIRED = 14  # Command needs an address.
+ERR_INVALID_ADDRESS = 14  # Invalid range.
+ERR_INVALID_RANGE = 16  # Invalid range.
+ERR_NO_FILE_NAME = 32  # Command can't take arguments.
+ERR_UNSAVED_CHANGES = 37  # The buffer has been modified but not saved.
 ERR_READONLY_FILE = 45
 ERR_UNDEFINED_VARIABLE = 121
 ERR_CANT_MOVE_LINES_ONTO_THEMSELVES = 134
 ERR_CANT_WRITE_FILE = 212
 ERR_CANT_FIND_DIR_IN_CDPATH = 344
-ERR_OTHER_BUFFER_HAS_CHANGES = 445 # :only, for example, may trigger this
+ERR_OTHER_BUFFER_HAS_CHANGES = 445  # :only, for example, may trigger this
 ERR_INVALID_ARGUMENT = 474
-ERR_NO_BANG_ALLOWED = 477 # Command doesn't allow !.
-ERR_NO_RANGE_ALLOWED = 481 # Command can't take a range.
-ERR_TRAILING_CHARS = 488 # Unknown command.
-ERR_UNKNOWN_COMMAND = 492 # Command can't take arguments.
-ERR_EMPTY_BUFFER = 749 # for example, :print in an empty buffer
+ERR_NO_BANG_ALLOWED = 477  # Command doesn't allow !.
+ERR_NO_RANGE_ALLOWED = 481  # Command can't take a range.
+ERR_TRAILING_CHARS = 488  # Unknown command.
+ERR_UNKNOWN_COMMAND = 492  # Command can't take arguments.
+ERR_EMPTY_BUFFER = 749  # for example, :print in an empty buffer
 
 
 ERR_MESSAGES = {

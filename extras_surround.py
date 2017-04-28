@@ -31,11 +31,12 @@ class ViSurround(ViOperatorDef):
         self.motion_required = True
 
         self.input_parser = parser_def(
-                            command=inputs.one_char,
-                            interactive_command=None,
-                            input_param=None,
-                            on_done=None,
-                            type=input_types.AFTER_MOTION)
+            command=inputs.one_char,
+            interactive_command=None,
+            input_param=None,
+            on_done=None,
+            type=input_types.AFTER_MOTION
+        )
 
     @property
     def accept_input(self):
@@ -66,11 +67,12 @@ class ViSurroundVisual(ViSurround):
         self.motion_required = False
 
         self.input_parser = parser_def(
-                            command=inputs.one_char,
-                            interactive_command=None,
-                            input_param=None,
-                            on_done=None,
-                            type=input_types.INMEDIATE)
+            command=inputs.one_char,
+            interactive_command=None,
+            input_param=None,
+            on_done=None,
+            type=input_types.INMEDIATE
+        )
 
 
 @plugins.register(seq='ds', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
@@ -83,11 +85,12 @@ class ViDeleteSurround(ViOperatorDef):
         self.repeatable = True
 
         self.input_parser = parser_def(
-                            command=inputs.one_char,
-                            interactive_command=None,
-                            input_param=None,
-                            on_done=None,
-                            type=input_types.INMEDIATE)
+            command=inputs.one_char,
+            interactive_command=None,
+            input_param=None,
+            on_done=None,
+            type=input_types.INMEDIATE
+        )
 
     @property
     def accept_input(self):

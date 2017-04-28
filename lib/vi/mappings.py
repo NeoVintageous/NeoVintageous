@@ -45,8 +45,7 @@ class Mappings(object):
         return sorted(_mappings[mode].keys())
 
     def _find_partial_match(self, mode, seq):
-        return list(x for x in self._get_mapped_seqs(mode)
-                            if x.startswith(seq))
+        return list(x for x in self._get_mapped_seqs(mode) if x.startswith(seq))
 
     def _find_full_match(self, mode, seq):
         partials = self._find_partial_match(mode, seq)

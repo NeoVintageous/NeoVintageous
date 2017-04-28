@@ -26,15 +26,11 @@ RX_ANY_START_TAG = r'<([0-9A-Za-z]+)(.*?)>'
 RX_ANY_END_TAG = r'</([0-9A-Za-z-]+).*?>'
 
 
-ANCHOR_NEXT_WORD_BOUNDARY = CLASS_WORD_START | CLASS_PUNCTUATION_START | \
-                            CLASS_LINE_END
-ANCHOR_PREVIOUS_WORD_BOUNDARY = CLASS_WORD_END | CLASS_PUNCTUATION_END | \
-                                CLASS_LINE_START
+ANCHOR_NEXT_WORD_BOUNDARY = CLASS_WORD_START | CLASS_PUNCTUATION_START | CLASS_LINE_END
+ANCHOR_PREVIOUS_WORD_BOUNDARY = CLASS_WORD_END | CLASS_PUNCTUATION_END | CLASS_LINE_START
 
-WORD_REVERSE_STOPS = CLASS_WORD_START | CLASS_EMPTY_LINE | \
-                         CLASS_PUNCTUATION_START
-WORD_END_REVERSE_STOPS = CLASS_WORD_END | CLASS_EMPTY_LINE | \
-                         CLASS_PUNCTUATION_END
+WORD_REVERSE_STOPS = CLASS_WORD_START | CLASS_EMPTY_LINE | CLASS_PUNCTUATION_START
+WORD_END_REVERSE_STOPS = CLASS_WORD_END | CLASS_EMPTY_LINE | CLASS_PUNCTUATION_END
 
 
 BRACKET = 1
@@ -117,10 +113,11 @@ def next_word_start(view, pt):
         # Skip all spaces surrounding the cursor and the text word.
         end = get_space_region(view, pt).b
         if is_at_word(view, end) or is_at_punctuation(view, end):
-            end = view.find_by_class(end, forward=True,
-                                     classes=CLASS_WORD_END |
-                                             CLASS_PUNCTUATION_END |
-                                             CLASS_LINE_END)
+            end = view.find_by_class(
+                end,
+                forward=True,
+                classes=CLASS_WORD_END | CLASS_PUNCTUATION_END | CLASS_LINE_END
+            )
             return end
 
     # Skip the word under the caret and any trailing spaces.
@@ -297,9 +294,7 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
                                                 start=0,
                                                 end=s.b)
         if sentence_start_2:
-            sentence_start = (sentence_start + 1 if (sentence_start >
-                                                     sentence_start_2.b)
-                                                 else sentence_start_2.b)
+            sentence_start = (sentence_start + 1 if (sentence_start > sentence_start_2.b) else sentence_start_2.b)
         else:
             sentence_start = sentence_start + 1
         sentence_end = find_in_range(view, r'([.?!:)](?=\s))|([.?!:)]$)',
@@ -330,10 +325,13 @@ def find_next_lone_bracket(view, start, items, unbalanced=0):
     # duplicating code.
     new_start = start
     for i in range(unbalanced or 1):
-        next_closing_bracket = find_in_range(view, items[1],
-                                                  start=new_start,
-                                                  end=view.size(),
-                                                  flags=sublime.IGNORECASE)
+        next_closing_bracket = find_in_range(
+            view,
+            items[1],
+            start=new_start,
+            end=view.size(),
+            flags=sublime.IGNORECASE
+        )
 
         if next_closing_bracket is None:
             # Unbalanced items; nothing we can do.
@@ -355,9 +353,9 @@ def find_next_lone_bracket(view, start, items, unbalanced=0):
     nested = 0
     while True:
         next_opening_bracket = find_in_range(view, items[0],
-                                              start=start,
-                                              end=next_closing_bracket.b,
-                                              flags=sublime.IGNORECASE)
+                                             start=start,
+                                             end=next_closing_bracket.b,
+                                             flags=sublime.IGNORECASE)
         if not next_opening_bracket:
             break
         nested += 1
@@ -365,8 +363,8 @@ def find_next_lone_bracket(view, start, items, unbalanced=0):
 
     if nested > 0:
         return find_next_lone_bracket(view, next_closing_bracket.end(),
-                                                  items,
-                                                  nested)
+                                      items,
+                                      nested)
     else:
         return next_closing_bracket
 
@@ -383,9 +381,9 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
     new_start = start
     for i in range(unbalanced or 1):
         prev_opening_bracket = reverse_search_by_pt(view, tags[0],
-                                                  start=0,
-                                                  end=new_start,
-                                                  flags=sublime.IGNORECASE)
+                                                    start=0,
+                                                    end=new_start,
+                                                    flags=sublime.IGNORECASE)
 
         if prev_opening_bracket is None:
             # Check whether the caret is exactly at a bracket.
@@ -398,10 +396,13 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
 
         while view.substr(prev_opening_bracket.begin() - 1) == '\\':
             prev_opening_bracket = reverse_search_by_pt(
-                                          view, tags[0],
-                                          start=0,
-                                          end=prev_opening_bracket.begin(),
-                                          flags=sublime.IGNORECASE)
+                view,
+                tags[0],
+                start=0,
+                end=prev_opening_bracket.begin(),
+                flags=sublime.IGNORECASE
+            )
+
             if prev_opening_bracket is None:
                 return
 
@@ -409,19 +410,21 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
 
     nested = 0
     while True:
-        next_closing_bracket = reverse_search_by_pt(view, tags[1],
-                                              start=prev_opening_bracket.a,
-                                              end=start,
-                                              flags=sublime.IGNORECASE)
+        next_closing_bracket = reverse_search_by_pt(view,
+                                                    tags[1],
+                                                    start=prev_opening_bracket.a,
+                                                    end=start,
+                                                    flags=sublime.IGNORECASE)
         if not next_closing_bracket:
             break
         nested += 1
         start = next_closing_bracket.begin()
 
     if nested > 0:
-        return find_prev_lone_bracket(view, prev_opening_bracket.begin(),
-                                                  tags,
-                                                  nested)
+        return find_prev_lone_bracket(view,
+                                      prev_opening_bracket.begin(),
+                                      tags,
+                                      nested)
     else:
         return prev_opening_bracket
 
@@ -674,9 +677,9 @@ def find_containing_tag(view, start):
         'start': start,
     }
     end_region, tag_name = next_unbalanced_tag(view,
-                                 search=next_end_tag,
-                                 search_args=search_forward_args,
-                                 restart_at=get_region_end)
+                                               search=next_end_tag,
+                                               search_args=search_forward_args,
+                                               restart_at=get_region_end)
 
     if not end_region:
         return None, None, None
@@ -687,9 +690,9 @@ def find_containing_tag(view, start):
         'end': end_region.a
     }
     begin_region, _ = next_unbalanced_tag(view,
-                                 search=previous_begin_tag,
-                                 search_args=search_backward_args,
-                                 restart_at=get_region_begin)
+                                          search=previous_begin_tag,
+                                          search_args=search_backward_args,
+                                          restart_at=get_region_begin)
 
     if not end_region:
         return None, None, None

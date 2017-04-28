@@ -2,12 +2,12 @@ from NeoVintageous.lib.vi.utils import modes
 
 
 mappings = {
-   modes.NORMAL: {},
-   modes.OPERATOR_PENDING: {},
-   modes.VISUAL: {},
-   modes.VISUAL_LINE: {},
-   modes.VISUAL_BLOCK: {},
-   modes.SELECT: {},
+    modes.NORMAL: {},
+    modes.OPERATOR_PENDING: {},
+    modes.VISUAL: {},
+    modes.VISUAL_LINE: {},
+    modes.VISUAL_BLOCK: {},
+    modes.SELECT: {},
 }
 
 classes = {}

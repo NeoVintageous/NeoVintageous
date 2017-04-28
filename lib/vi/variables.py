@@ -33,8 +33,7 @@ def expand_keys(seq):
 
     if seq.lower().startswith('<localleader>'):
         var = '<localleader>'
-        local_leader = _VARIABLES.get('maplocalleader',
-                            _DEFAULTS.get('maplocalleader'))
+        local_leader = _VARIABLES.get('maplocalleader', _DEFAULTS.get('maplocalleader'))
 
     try:
         return leader + seq[len(var_name):]

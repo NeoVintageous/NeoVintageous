@@ -181,8 +181,8 @@ class _vi_u(ViWindowCommandBase):
             regions_transformer(self._view, reverse)
             # FIXME: why from modes.VISUAL?
             self.window.run_command('_enter_normal_mode', {
-                    'mode': modes.VISUAL
-                    })
+                'mode': modes.VISUAL
+            })
 
         # If we yy, then u, we might end up with outlined regions if we
         # don't erase them here, because ST will restore them when undoing.
@@ -257,10 +257,10 @@ class _vi_c(ViTextCommandBase):
             if view.substr(s).strip():
                 if s.b > s.a:
                     pt = utils.previous_non_white_space_char(
-                            view, s.b - 1, white_space=' \t\n')
+                        view, s.b - 1, white_space=' \t\n')
                     return R(s.a, pt + 1)
                 pt = utils.previous_non_white_space_char(
-                        view, s.a - 1, white_space=' \t\n')
+                    view, s.a - 1, white_space=' \t\n')
                 return R(pt + 1, s.b)
             return s
 
@@ -318,8 +318,7 @@ class _enter_normal_mode(ViTextCommandBase):
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
 
-        if ((not from_init and (mode == modes.NORMAL) and not state.sequence) or
-             not is_view(self.view)):
+        if ((not from_init and (mode == modes.NORMAL) and not state.sequence) or not is_view(self.view)):
             # When _enter_normal_mode is requested from init_state, we
             # should not hide output panels; hide them only if the user
             # pressed Esc and we're not cancelling partial state data, or if a
@@ -368,17 +367,15 @@ class _enter_normal_mode(ViTextCommandBase):
             # after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
-            new_sels = [R(s.b + 1) if self.view.substr(s.b) != '\n'
-                                                else s
-                                                for s in sels]
+            new_sels = [R(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
             self.view.sel().add_all(new_sels)
             times = int(state.normal_insert_count) - 1
             state.normal_insert_count = '1'
             self.view.window().run_command('_vi_dot', {
-                                'count': times,
-                                'mode': mode,
-                                'repeat_data': state.repeat_data,
-                                })
+                'count': times,
+                'mode': mode,
+                'repeat_data': state.repeat_data,
+            })
             self.view.sel().clear()
             self.view.sel().add_all(new_sels)
 
@@ -575,14 +572,12 @@ class _enter_visual_line_mode_impl(ViTextCommandBase):
             if mode == modes.VISUAL:
                 if s.a < s.b:
                     if view.substr(s.b - 1) != '\n':
-                        return R(view.line(s.a).a,
-                                              view.full_line(s.b - 1).b)
+                        return R(view.line(s.a).a, view.full_line(s.b - 1).b)
                     else:
                         return R(view.line(s.a).a, s.b)
                 else:
                     if view.substr(s.a - 1) != '\n':
-                        return R(view.full_line(s.a - 1).b,
-                                              view.line(s.b).a)
+                        return R(view.full_line(s.a - 1).b, view.line(s.b).a)
                     else:
                         return R(s.a, view.line(s.b).a)
             else:
@@ -644,8 +639,7 @@ class ProcessNotation(ViWindowCommandBase):
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         state = self.state
-        _logger.info("[ProcessNotation] seq received: {0} mode: {1}"
-                                                    .format(keys, state.mode))
+        _logger.info("[ProcessNotation] seq received: {0} mode: {1}".format(keys, state.mode))
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -659,16 +653,15 @@ class ProcessNotation(ViWindowCommandBase):
         leading_motions = ''
         for key in KeySequenceTokenizer(keys).iter_tokenize():
             self.window.run_command('press_key', {
-                                'key': key,
-                                'do_eval': False,
-                                'repeat_count': repeat_count,
-                                'check_user_mappings': check_user_mappings
-                                })
+                'key': key,
+                'do_eval': False,
+                'repeat_count': repeat_count,
+                'check_user_mappings': check_user_mappings
+            })
             if state.action:
                 # The last key press has caused an action to be primed. That
                 # means there are no more leading motions. Break out of here.
-                _logger.info('[ProcessNotation] first action found in {0}'
-                                                      .format(state.sequence))
+                _logger.info('[ProcessNotation] first action found in {0}'.format(state.sequence))
                 state.reset_command_data()
                 if state.mode == modes.OPERATOR_PENDING:
                     state.mode = modes.NORMAL
@@ -696,8 +689,7 @@ class ProcessNotation(ViWindowCommandBase):
                 state.non_interactive = False
                 return
 
-            _logger.info('[ProcessNotation] original seq/leading motions: {0}/{1}'
-                                               .format(keys, leading_motions))
+            _logger.info('[ProcessNotation] original seq/leading motions: {0}/{1}'.format(keys, leading_motions))
             keys = keys[len(leading_motions):]
             _logger.info('[ProcessNotation] seq stripped to {0}'.format(keys))
 
@@ -712,10 +704,10 @@ class ProcessNotation(ViWindowCommandBase):
 
                         elif state.mode not in (modes.INSERT, modes.REPLACE):
                             self.window.run_command('press_key', {
-                                    'key': key,
-                                    'repeat_count': repeat_count,
-                                    'check_user_mappings': check_user_mappings
-                                    })
+                                'key': key,
+                                'repeat_count': repeat_count,
+                                'check_user_mappings': check_user_mappings
+                            })
                         else:
                             self.window.run_command('insert', {
                                 'characters': utils.translate_char(key)
@@ -727,15 +719,13 @@ class ProcessNotation(ViWindowCommandBase):
                     # Ensure we set the full command for '.' to use, but don't
                     # store '.' alone.
                     if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
-                            state.repeat_data = (
-                                        'vi', (leading_motions + keys),
-                                        initial_mode, None)
+                            state.repeat_data = ('vi', (leading_motions + keys), initial_mode, None)
 
         # We'll reach this point if we have a command that requests input
         # whose input parser isn't satistied. For example, `/foo`. Note that
         # `/foo<CR>`, on the contrary, would have satisfied the parser.
         _logger.info('[ProcessNotation] unsatisfied parser: {0} {1}'
-                                          .format(state.action, state.motion))
+                     .format(state.action, state.motion))
         if (state.action and state.motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
@@ -766,14 +756,15 @@ class ProcessNotation(ViWindowCommandBase):
 
             parser_def = command.input_parser
             _logger.info('[ProcessNotation] last attemp to collect input: {0}'
-                                                  .format(parser_def.command))
+                         .format(parser_def.command))
+
             if parser_def.interactive_command:
-                self.window.run_command(parser_def.interactive_command,
-                                        {parser_def.input_param: command._inp}
-                                       )
+                self.window.run_command(
+                    parser_def.interactive_command,
+                    {parser_def.input_param: command._inp}
+                )
         except IndexError:
-            _logger.info('[NeoVintageous] could not find a command to collect'
-                           'more user input')
+            _logger.info('[NeoVintageous] could not find a command to collect more user input')
             utils.blink()
         finally:
             self.state.non_interactive = False
@@ -855,9 +846,8 @@ class PressKey(ViWindowCommandBase):
             # we need to keep collecting input.
             return
 
-        _logger.info('[PressKey] getting cmd for seq/partial seq in (mode): {0}/{1} ({2})'.format(state.sequence,
-                                                                                                    state.partial_sequence,
-                                                                                                    state.mode))
+        _logger.info('[PressKey] getting cmd for seq/partial seq in (mode): {0}/{1} ({2})'
+                     .format(state.sequence, state.partial_sequence, state.mode))
         command = key_mappings.resolve(check_user_mappings=check_user_mappings)
 
         if isinstance(command, cmd_defs.ViOpenRegister):
@@ -903,8 +893,8 @@ class PressKey(ViWindowCommandBase):
                 # Exclude user mappings, since they've already been given a
                 # chance to evaluate.
                 command = key_mappings.resolve(sequence=bare_seq,
-                                                   mode=modes.NORMAL,
-                                                   check_user_mappings=False)
+                                               mode=modes.NORMAL,
+                                               check_user_mappings=False)
             else:
                 command = key_mappings.resolve(sequence=bare_seq)
 
@@ -998,8 +988,7 @@ class _vi_dot(ViWindowCommandBase):
             return
 
         if type_ == 'vi':
-            self.window.run_command('process_notation', {'keys': seq_or_cmd,
-                                                   'repeat_count': count})
+            self.window.run_command('process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
         elif type_ == 'native':
             sels = list(self.window.active_view().sel())
             # FIXME: We're not repeating as we should. It's the motion that
@@ -1039,8 +1028,7 @@ class _vi_dd(ViTextCommandBase):
                 return s
 
             view.erase(edit, s)
-            pt = utils.next_non_white_space_char(view, view.line(s.a).a,
-                white_space=' \t')
+            pt = utils.next_non_white_space_char(view, view.line(s.a).a, white_space=' \t')
             return R(pt)
 
         def set_sel():
@@ -1326,10 +1314,8 @@ class _vi_quote(ViTextCommandBase):
 
             elif mode == modes.INTERNAL_NORMAL:
                 if s.a < address.a:
-                    return R(view.full_line(s.b).a,
-                                          view.line(address.b).b)
-                return R(view.full_line(s.b).b,
-                                      view.line(address.b).a)
+                    return R(view.full_line(s.b).a, view.line(address.b).b)
+                return R(view.full_line(s.b).b, view.line(address.b).a)
 
             return s
 
@@ -1398,9 +1384,7 @@ class _vi_quote_quote(IrreversibleTextCommand):
     def run(self):
         current = _vi_quote_quote.next_command
         self.view.window().run_command(current)
-        _vi_quote_quote.next_command = ('jump_forward' if (current ==
-                                                            'jump_back')
-                                                       else 'jump_back')
+        _vi_quote_quote.next_command = ('jump_forward' if (current == 'jump_back') else 'jump_back')
 
 
 class _vi_big_d(ViTextCommandBase):
@@ -1840,19 +1824,16 @@ class _vi_big_x(ViTextCommandBase):
             if mode == modes.INTERNAL_NORMAL:
                 if view.line(s.b).empty():
                     abort = True
-                return R(s.b, max(s.b - count,
-                                               self.line_start(s.b)))
+                return R(s.b, max(s.b - count, self.line_start(s.b)))
             elif mode == modes.VISUAL:
                 if s.a < s.b:
                     if view.line(s.b - 1).empty() and s.size() == 1:
                         abort = True
-                    return R(view.full_line(s.b - 1).b,
-                                          view.line(s.a).a)
+                    return R(view.full_line(s.b - 1).b, view.line(s.a).a)
 
                 if view.line(s.b).empty() and s.size() == 1:
                     abort = True
-                return R(view.line(s.b).a,
-                                      view.full_line(s.a - 1).b)
+                return R(view.line(s.b).a, view.full_line(s.a - 1).b)
             return R(s.begin(), s.end())
 
         abort = False
@@ -1986,22 +1967,22 @@ class _vi_p(ViTextCommandBase):
                                        count)
                     paste_locations.append(l)
                 else:
-                    l = self.paste_all(edit, selection,
-                                   self.view.line(selection.b - 1).b,
-                                   fragment,
-                                   count)
+                    l = self.paste_all(
+                        edit, selection,
+                        self.view.line(selection.b - 1).b,
+                        fragment,
+                        count
+                    )
                     paste_locations.append(l)
             else:
                 pasting_linewise = False
                 # Pasting charwise...
                 # If pasting at EOL, make sure we don't paste after the newline character.
                 if self.view.substr(selection.b) == '\n':
-                    l = self.paste_all(edit, selection, selection.b + offset,
-                                   fragment, count)
+                    l = self.paste_all(edit, selection, selection.b + offset, fragment, count)
                     paste_locations.append(l)
                 else:
-                    l = self.paste_all(edit, selection, selection.b + offset + 1,
-                                   fragment, count)
+                    l = self.paste_all(edit, selection, selection.b + offset + 1, fragment, count)
                     paste_locations.append(l)
                 offset += len(fragment) * count
 
@@ -2017,13 +1998,11 @@ class _vi_p(ViTextCommandBase):
         b_pts = [s.b for s in list(self.view.sel())]
         if len(b_pts) > 1:
             self.view.sel().clear()
-            self.view.sel().add_all([R(ploc + paste_len - 1,
-                                                    ploc + paste_len - 1)
+            self.view.sel().add_all([R(ploc + paste_len - 1, ploc + paste_len - 1)
                                     for ploc in pts])
         else:
             self.view.sel().clear()
-            self.view.sel().add(R(pts[0] + paste_len - 1,
-                                               pts[0] + paste_len - 1))
+            self.view.sel().add(R(pts[0] + paste_len - 1, pts[0] + paste_len - 1))
 
     def reset_carets_linewise(self, pts):
         self.view.sel().clear()
@@ -2032,8 +2011,7 @@ class _vi_p(ViTextCommandBase):
             self.view.sel().add_all([R(loc) for loc in pts])
             return
 
-        pts = [utils.next_non_white_space_char(self.view, pt + 1)
-                    for pt in pts]
+        pts = [utils.next_non_white_space_char(self.view, pt + 1) for pt in pts]
 
         self.view.sel().add_all([R(pt) for pt in pts])
 

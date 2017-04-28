@@ -7,15 +7,15 @@ def run_and_wait(view, cmd):
     term = view.settings().get('VintageousEx_osx_terminal')
     term = term or os.path.expandvars("$COLORTERM") or os.path.expandvars("$TERM")
     subprocess.Popen([
-            term, '-e',
-            "bash -c \"%s; read -p 'Press RETURN to exit.'\"" % cmd]).wait()
+        term, '-e',
+        "bash -c \"%s; read -p 'Press RETURN to exit.'\"" % cmd]).wait()
 
 
 def run_and_read(view, cmd):
     out, err = subprocess.Popen([cmd],
-            stdout=PIPE,
-            stderr=PIPE,
-            shell=True).communicate()
+                                stdout=PIPE,
+                                stderr=PIPE,
+                                shell=True).communicate()
     try:
         return (out or err).decode('utf-8')
     except AttributeError:
@@ -26,7 +26,7 @@ def filter_region(view, text, command):
     shell = view.settings().get('VintageousEx_osx_shell')
     shell = shell or os.path.expandvars("$SHELL")
     p = subprocess.Popen([shell, '-c', 'echo "%s" | %s' % (text, command)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-    out, err =  p.communicate()[0][:-1]
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
+    out, err = p.communicate()[0][:-1]
     return out or err

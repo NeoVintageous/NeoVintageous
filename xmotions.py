@@ -60,8 +60,7 @@ class _vi_find_in_line(ViMotionCommand):
             for i in range(count):
                 # Define search range as 'rest of the line to the right'.
                 search_range = R(match.end(), eol)
-                match = find_in_range(view, char, search_range.a,
-                            search_range.b, sublime.LITERAL)
+                match = find_in_range(view, char, search_range.a, search_range.b, sublime.LITERAL)
 
                 # Count too high or simply no match; break.
                 if match is None:
@@ -155,11 +154,12 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         on_change = self.on_change
 
         mark_as_widget(self.view.window().show_input_panel(
-                                                            '',
-                                                            default,
-                                                            self.on_done,
-                                                            on_change,
-                                                            self.on_cancel))
+            '',
+            default,
+            self.on_done,
+            on_change,
+            self.on_cancel
+        ))
 
     def on_done(self, s):
         state = self.state
@@ -690,8 +690,7 @@ class _vi_big_g(ViMotionCommand):
             if mode == modes.NORMAL:
                 pt = eof
                 if not view.line(eof).empty():
-                    pt = utils.previous_non_white_space_char(view, eof - 1,
-                                                         white_space='\n')
+                    pt = utils.previous_non_white_space_char(view, eof - 1, white_space='\n')
                 return sublime.Region(pt, pt)
             elif mode == modes.VISUAL:
                 return sublime.Region(s.a, eof)
@@ -883,8 +882,7 @@ class _vi_right_brace(ViMotionCommand):
 
             # TODO(guillermooo): delete previous ws in remaining start line
             elif mode == modes.INTERNAL_NORMAL:
-                par_begin = units.next_paragraph_start(view, s.b, count,
-                    skip_empty=count > 1)
+                par_begin = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if par_begin == (self.view.size() - 1):
                     return R(s.a, self.view.size())
                 if view.substr(s.a - 1) == '\n' or s.a == 0:
@@ -892,8 +890,7 @@ class _vi_right_brace(ViMotionCommand):
                 return R(s.a, par_begin - 1)
 
             elif mode == modes.VISUAL_LINE:
-                par_begin = units.next_paragraph_start(view, s.b, count,
-                    skip_empty=count > 1)
+                par_begin = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if s.a <= s.b:
                     return R(s.a, par_begin + 1)
                 else:
@@ -948,9 +945,8 @@ class _vi_percent(ViMotionCommand):
     )
 
     def find_tag(self, pt):
-        if (self.view.score_selector(0, 'text.html') == 0 and
-            self.view.score_selector(0, 'text.xml') == 0):
-                return None
+        if (self.view.score_selector(0, 'text.html') == 0 and self.view.score_selector(0, 'text.xml') == 0):
+            return None
 
         if any([self.view.substr(pt) in p for p in self.pairs]):
             return None
@@ -1046,13 +1042,12 @@ class _vi_percent(ViMotionCommand):
                                                     self.view.line(caret_pt).b))
         try:
             found_brackets = min([(line_text.index(bracket), bracket)
-                                        for bracket in chain(*self.pairs)
-                                        if bracket in line_text])
+                                 for bracket in chain(*self.pairs)
+                                 if bracket in line_text])
         except ValueError:
             return None, None, None
 
-        bracket_a, bracket_b = [(a, b) for (a, b) in self.pairs
-                                       if found_brackets[1] in (a, b)][0]
+        bracket_a, bracket_b = [(a, b) for (a, b) in self.pairs if found_brackets[1] in (a, b)][0]
         return (found_brackets[1], (bracket_a, bracket_b),
                 self.view.text_point(caret_row, caret_col + found_brackets[0]))
 
@@ -1089,9 +1084,9 @@ class _vi_percent(ViMotionCommand):
         new_start = start
         for i in range(unbalanced or 1):
             prev_opening_bracket = reverse_search_by_pt(self.view, brackets[0],
-                                                      start=0,
-                                                      end=new_start,
-                                                      flags=sublime.LITERAL)
+                                                        start=0,
+                                                        end=new_start,
+                                                        flags=sublime.LITERAL)
             if prev_opening_bracket is None:
                 # Unbalanced brackets; nothing we can do.
                 return
@@ -1100,9 +1095,9 @@ class _vi_percent(ViMotionCommand):
         nested = 0
         while True:
             next_closing_bracket = reverse_search_by_pt(self.view, brackets[1],
-                                                  start=prev_opening_bracket.a,
-                                                  end=start,
-                                                  flags=sublime.LITERAL)
+                                                        start=prev_opening_bracket.a,
+                                                        end=start,
+                                                        flags=sublime.LITERAL)
             if not next_closing_bracket:
                 break
             nested += 1
@@ -1667,8 +1662,7 @@ class _vi_right_paren(ViMotionCommand):
         non_ws = utils.next_non_white_space_char(self.view, sen.b, '\t \n')
         sen = sublime.Region(non_ws, non_ws)
         while True:
-            sen = self.view.expand_by_class(sen, sublime.CLASS_PUNCTUATION_START |
-                                                 sublime.CLASS_LINE_END)
+            sen = self.view.expand_by_class(sen, sublime.CLASS_PUNCTUATION_START | sublime.CLASS_LINE_END)
             if (sen.b == self.view.size() or
                 (self.view.substr(sublime.Region(sen.b, sen.b + 2)).endswith(('. ', '.\t'))) or
                 (self.view.substr(sublime.Region(sen.b, sen.b + 1)).endswith(('?', '!'))) or
@@ -1748,11 +1742,12 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         state = self.state
         on_change = self.on_change if state.settings.vi['incsearch'] else None
         mark_as_widget(self.view.window().show_input_panel(
-                                                            '',
-                                                            default,
-                                                            self.on_done,
-                                                            on_change,
-                                                            self.on_cancel))
+            '',
+            default,
+            self.on_done,
+            on_change,
+            self.on_cancel
+        ))
 
     def on_done(self, s):
         state = self.state
@@ -1770,11 +1765,11 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         self.view.erase_regions('vi_inc_search')
         state = self.state
         occurrence = reverse_find_wrapping(self.view,
-                                 term=s,
-                                 start=0,
-                                 end=self.view.sel()[0].b,
-                                 flags=flags,
-                                 times=state.count)
+                                           term=s,
+                                           start=0,
+                                           end=self.view.sel()[0].b,
+                                           flags=flags,
+                                           times=state.count)
         if occurrence:
             if state.mode == modes.VISUAL:
                 occurrence = sublime.Region(self.view.sel()[0].a, occurrence.a)
@@ -1810,7 +1805,7 @@ class _vi_repeat_buffer_search(ViMotionCommand):
             'mode': mode,
             'count': count,
             'search_string': search_string
-            })
+        })
 
 
 class _vi_n(ViMotionCommand):

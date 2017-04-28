@@ -99,8 +99,7 @@ class ViCommandMixin(object):
             return
 
         sels = list(self._view.sel())
-        sublime.set_timeout(
-                lambda: self._view.erase_regions('vi_yy_target'), 350)
+        sublime.set_timeout(lambda: self._view.erase_regions('vi_yy_target'), 350)
         self._view.add_regions('vi_yy_target', sels, 'comment', '', sublime.DRAW_NO_FILL)
 
 
@@ -112,12 +111,11 @@ class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
     recommended they do if there isn't any good reason they shouldn't.
     """
 
-    # Yank config data is controlled through class attributes. ===============
+    # Yank config data is controlled through class attributes:
     _can_yank = False
     _synthetize_new_line_at_eof = False
     _yanks_linewise = False
     _populates_small_delete_register = False
-    #=========================================================================
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
