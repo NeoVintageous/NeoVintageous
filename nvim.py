@@ -4,28 +4,21 @@ from .lib.logger import PluginLogger
 from .lib.state import init_state
 
 # Load all the commands
-
-# TODO command appears to be unused
-from .lib.commands.ex_motions import _vi_cmd_line_a # noqa
-# TODO command appears to be unused
-from .lib.commands.ex_motions import _vi_cmd_line_k # noqa
-
+from .lib.commands.ex_motions import _vi_cmd_line_a # noqa TODO command appears to be unused
+from .lib.commands.ex_motions import _vi_cmd_line_k # noqa TODO command appears to be unused
 from .lib.commands.jumplist import _vi_add_to_jump_list # noqa
 from .lib.commands.modelines import ExecuteSublimeTextModeLinesCommand # noqa
-
 from .lib.commands.support import NeovintageousToggleUseCtrlKeysCommand # noqa
 from .lib.commands.support import NeovintageousOpenMyRcFileCommand # noqa
 from .lib.commands.support import NeovintageousResetCommand # noqa
 from .lib.commands.support import NeovintageousExitFromCommandModeCommand # noqa
-
-# TODO command seems to be unused
-from .lib.commands.support import NeovintageousReloadSettingsCommand # noqa
+from .lib.commands.support import NeovintageousReloadSettingsCommand # noqa TODO command appears to be unused
 
 
 _logger = PluginLogger(__name__)
 
 
-def ensure_other_vimlike_packages_are_disabled():
+def _ensure_other_vimlike_packages_are_disabled():
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
 
@@ -52,7 +45,7 @@ def plugin_loaded():
     try:
         from package_control import events
         if events.install('NeoVintageous'):
-            ensure_other_vimlike_packages_are_disabled()
+            _ensure_other_vimlike_packages_are_disabled()
     except ImportError:
         print('NeoVintageous: could not import Package Control')
 
@@ -66,6 +59,4 @@ def plugin_unloaded():
         view.settings().set('command_mode', False)
         view.settings().set('inverse_caret_state', False)
     except AttributeError:
-        _logger.warn(
-            'could not access sublime.active_window().active_view().settings '
-            ' while unloading')
+        _logger.warn('could not access sublime.active_window().active_view().settings while unloading')

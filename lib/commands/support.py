@@ -76,7 +76,7 @@ class NeovintageousExitFromCommandModeCommand(sublime_plugin.WindowCommand):
         sublime.status_message("NeoVintageous: exited from command mode")
 
 
-# TODO command seems to be unused
+# TODO command appears to be unused
 class NeovintageousReloadSettingsCommand(sublime_plugin.WindowCommand):
 
     def run(self):
