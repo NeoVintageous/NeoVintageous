@@ -1,7 +1,6 @@
-from NeoVintageous.tests import first_sel
-from NeoVintageous.tests import ViewTest
-
 from NeoVintageous.lib.vi.search import find_wrapping
+
+from NeoVintageous.tests import ViewTest
 
 
 class Test_find_wrapping(ViewTest):

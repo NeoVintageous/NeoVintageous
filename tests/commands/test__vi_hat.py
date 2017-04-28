@@ -1,7 +1,8 @@
 from collections import namedtuple
 
-from NeoVintageous.tests import ViewTest
 from NeoVintageous.lib.vi.utils import modes
+
+from NeoVintageous.tests import ViewTest
 
 test_data = namedtuple('test_data', 'text startRegion mode expectedRegion msg')
 
@@ -41,6 +42,7 @@ VISUAL_MULTI_LINE_CASES = (
     test_data(' 123\n 678', (8, 2), modes.VISUAL, (8, 1), 'Visual reverse multiline'),
 )
 
+
 class Test_vi_hat(ViewTest):
     def runTests(self, data):
         for (i, data) in enumerate(data):
@@ -48,9 +50,7 @@ class Test_vi_hat(ViewTest):
             self.clear_sel()
             self.add_sel(self.R(*data.startRegion))
             self.view.run_command('_vi_hat', {'mode': data.mode, 'count': 1})
-            self.assert_equal_regions(self.R(*data.expectedRegion), self.first_sel(),
-                "Failed on index {} {} : Text:\"{}\" Region:{}"
-                    .format(i, data.msg, data.text, data.startRegion))
+            self.assert_equal_regions(self.R(*data.expectedRegion), self.first_sel(), "Failed on index {} {} : Text:\"{}\" Region:{}".format(i, data.msg, data.text, data.startRegion))
 
     def testNormalCases(self):
         self.runTests(NORMAL_CASES)

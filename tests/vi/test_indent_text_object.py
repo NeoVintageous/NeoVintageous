@@ -2,11 +2,10 @@ from collections import namedtuple
 
 from sublime import Region as R
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
+from NeoVintageous.lib.vi.text_objects import find_indent_text_object
+
 from NeoVintageous.tests import ViewTest
 
-from NeoVintageous.lib.vi.text_objects import find_indent_text_object
 
 test = namedtuple('simple_test', 'content start expected expected_inclusive msg')
 
@@ -47,6 +46,7 @@ def a_python_fn:
 a_python_fn'''.lstrip()),
 )
 
+
 class Test_indent(ViewTest):
     def clear_selected_regions(self):
         self.view.sel().clear()
@@ -63,4 +63,3 @@ class Test_indent(ViewTest):
                 msg = "failed at test index {0}: {1}".format(i, data.msg)
                 expected = data.expected_inclusive if inclusive else data.expected
                 self.assertEqual(expected, actual, msg)
-

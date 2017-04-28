@@ -1,15 +1,11 @@
-import unittest
-
-import sublime
-
-from NeoVintageous.tests import ViewTest
 from NeoVintageous.lib.vi.variables import _SPECIAL_STRINGS
 from NeoVintageous.lib.vi.variables import _DEFAULTS
-from NeoVintageous.lib.vi.variables import _VARIABLES
 from NeoVintageous.lib.vi.variables import is_key_name
 from NeoVintageous.lib.vi.variables import set_
 from NeoVintageous.lib.vi.variables import get
 from NeoVintageous.lib.vi import variables
+
+from NeoVintageous.tests import ViewTest
 
 
 class Test_special_strings(ViewTest):

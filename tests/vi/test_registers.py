@@ -1,13 +1,12 @@
 import unittest
+from unittest import mock
 import builtins
 
 import sublime
 
-from unittest import mock
 from NeoVintageous.lib.vi import registers
-from NeoVintageous.lib.vi.registers import Registers
-from NeoVintageous.lib.vi.settings import SettingsManager
 from NeoVintageous.lib.state import State
+
 from NeoVintageous.tests import ViewTest
 
 
@@ -41,8 +40,8 @@ class TestCaseRegistersConstants(unittest.TestCase):
 
     def testSysClipboardAllConstantValue(self):
         self.assertEqual(registers.REG_SYS_CLIPBOARD_ALL,
-                             (registers.REG_SYS_CLIPBOARD_1,
-                              registers.REG_SYS_CLIPBOARD_2,))
+                         (registers.REG_SYS_CLIPBOARD_1,
+                          registers.REG_SYS_CLIPBOARD_2,))
 
     def testValidRegisterNamesConstantValue(self):
         names = tuple("{0}".format(c) for c in "abcdefghijklmnopqrstuvwxyz")
@@ -52,22 +51,22 @@ class TestCaseRegistersConstants(unittest.TestCase):
         names = tuple("{0}".format(c) for c in "0123456789")
         self.assertEqual(registers.REG_VALID_NUMBERS, names)
 
-    def testSysClipboardAllConstantValue(self):
+    def testSysClipboardAllConstantValue2(self):
         self.assertEqual(registers.REG_SPECIAL,
-                             (registers.REG_UNNAMED,
-                              registers.REG_SMALL_DELETE,
-                              registers.REG_BLACK_HOLE,
-                              registers.REG_LAST_INSERTED_TEXT,
-                              registers.REG_FILE_NAME,
-                              registers.REG_ALT_FILE_NAME,
-                              registers.REG_SYS_CLIPBOARD_1,
-                              registers.REG_SYS_CLIPBOARD_2,))
+                         (registers.REG_UNNAMED,
+                          registers.REG_SMALL_DELETE,
+                          registers.REG_BLACK_HOLE,
+                          registers.REG_LAST_INSERTED_TEXT,
+                          registers.REG_FILE_NAME,
+                          registers.REG_ALT_FILE_NAME,
+                          registers.REG_SYS_CLIPBOARD_1,
+                          registers.REG_SYS_CLIPBOARD_2,))
 
     def testAllConstantValue(self):
         self.assertEqual(registers.REG_ALL,
-                            (registers.REG_SPECIAL +
-                             registers.REG_VALID_NUMBERS +
-                             registers.REG_VALID_NAMES))
+                         (registers.REG_SPECIAL +
+                          registers.REG_VALID_NUMBERS +
+                          registers.REG_VALID_NAMES))
 
 
 class TestCaseRegisters(ViewTest):
@@ -77,8 +76,7 @@ class TestCaseRegisters(ViewTest):
         registers._REGISTER_DATA = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
-        # self.regs = Registers(view=self.view,
-                              # settings=SettingsManager(view=self.view))
+        # self.regs = Registers(view=self.view, settings=SettingsManager(view=self.view))
         self.regs = State(self.view).registers
 
     def tearDown(self):
@@ -121,8 +119,7 @@ class TestCaseRegisters(ViewTest):
     def testSettingExpressionRegisterDoesntPopulateUnnamedRegister(self):
         self.regs.set("=", [100])
         self.assertTrue(registers.REG_UNNAMED not in registers._REGISTER_DATA)
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_EXPRESSION],
-                        ["100"])
+        self.assertEqual(registers._REGISTER_DATA[registers.REG_EXPRESSION], ["100"])
 
     def testCanSetNormalRegisters(self):
         for name in registers.REG_VALID_NAMES:
@@ -392,7 +389,7 @@ class Test_yank(ViewTest):
         self.assertEqual(registers._REGISTER_DATA, {
             '1-9': [None] * 9,
             '0': None,
-            })
+        })
 
     def testYanksToUnnamedRegisterIfNoRegisterNameProvided(self):
         class vi_cmd_data:
@@ -409,7 +406,7 @@ class Test_yank(ViewTest):
                 '"': ['foo'],
                 '0': ['foo'],
                 '1-9': [None] * 9,
-                })
+            })
 
     def testYanksToRegisters(self):
         class vi_cmd_data:
@@ -424,7 +421,7 @@ class Test_yank(ViewTest):
                 'a': ['foo'],
                 '0': None,
                 '1-9': [None] * 9,
-                })
+            })
 
     def testCanPopulateSmallDeleteRegister(self):
         class vi_cmd_data:
@@ -457,4 +454,4 @@ class Test_yank(ViewTest):
                 self.assertEqual(registers._REGISTER_DATA, {
                     '1-9': [None] * 9,
                     '0': None,
-                    })
+                })

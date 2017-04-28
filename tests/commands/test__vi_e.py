@@ -1,8 +1,5 @@
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
@@ -41,6 +38,7 @@ class Test_vi_e_InNormalMode(ViewTest):
 
         self.assertEqual(self.R((2, 5), (2, 5)), first_sel(self.view))
 
+
 class Test_vi_e_InVisualMode(ViewTest):
     def testMoveToEndOfWord_OnLastLine2(self):
         self.write('abc abc abc')
@@ -48,4 +46,3 @@ class Test_vi_e_InVisualMode(ViewTest):
         self.add_sel(self.R(0, 2))
         self.view.run_command('_vi_e', {'mode': modes.VISUAL, 'count': 3})
         self.assertEqual(self.R((0, 0), (0, 11)), first_sel(self.view))
-

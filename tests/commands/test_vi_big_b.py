@@ -1,8 +1,8 @@
 from collections import namedtuple
 
 from NeoVintageous.lib.vi.utils import modes
+
 from NeoVintageous.tests import first_sel
-from NeoVintageous.tests import second_sel
 from NeoVintageous.tests import ViewTest
 
 
@@ -43,7 +43,7 @@ TESTS = (
     test_data(content='abc abc', sel=[[(0, 0), (0, 8)]],
               params={'mode': modes.VISUAL}, expected=[(0, 0), (0, 5)],
               actual_func=first_sel, msg='moves to previous word start from multiword selection (visual mode)'),
-    )
+)
 
 
 class Test_vi_b(ViewTest):

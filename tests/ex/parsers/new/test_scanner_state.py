@@ -2,7 +2,6 @@ import unittest
 
 from NeoVintageous.lib.ex.parser.state import EOF
 from NeoVintageous.lib.ex.parser.state import ScannerState
-from NeoVintageous.lib.ex.parser.tokens import TOKEN_UNKNOWN
 
 
 class ScannerTests(unittest.TestCase):
@@ -122,4 +121,3 @@ class ScannerTests(unittest.TestCase):
         self.assertTrue(state.match(r'\d{3}'))
         self.assertEqual(6, state.position)
         self.assertEqual(EOF, state.consume())
-

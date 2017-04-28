@@ -2,18 +2,18 @@
 Tests for o motion (visual kind).
 """
 
-import unittest
+# import unittest
 
-from NeoVintageous.lib.vi.constants import _MODE_INTERNAL_NORMAL
-from NeoVintageous.lib.vi.constants import MODE_NORMAL
-from NeoVintageous.lib.vi.constants import MODE_VISUAL
-from NeoVintageous.lib.vi.constants import MODE_VISUAL_LINE
+# from NeoVintageous.lib.vi.constants import _MODE_INTERNAL_NORMAL
+# from NeoVintageous.lib.vi.constants import MODE_NORMAL
+# from NeoVintageous.lib.vi.constants import MODE_VISUAL
+# from NeoVintageous.lib.vi.constants import MODE_VISUAL_LINE
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
-from NeoVintageous.tests import first_sel
-from NeoVintageous.tests import ViewTest
+# from NeoVintageous.tests import set_text
+# from NeoVintageous.tests import add_sel
+# from NeoVintageous.tests import get_sel
+# from NeoVintageous.tests import first_sel
+# from NeoVintageous.tests import ViewTest
 
 
 # unittest.skip("Command doesn't exist as such.")

@@ -1,10 +1,6 @@
-from NeoVintageous.lib.vi.utils import modes
-
 from collections import namedtuple
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
+from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
@@ -19,7 +15,8 @@ region_data = namedtuple('region_data', 'regions')
 def get_text(test):
     return test.view.substr(test.R(0, test.view.size()))
 
-def  first_sel_wrapper(test):
+
+def first_sel_wrapper(test):
     return first_sel(test.view)
 
 
@@ -65,8 +62,7 @@ TESTS_MODES = (
               expected=region_data([(20, 2), (10, 1)]), actual_func=first_sel_wrapper, msg='move many opposite end greater from same line'),
     test_data(cmd='_vi_k', initial_text=(''.join(('foo\n',) * 50)), regions=[[(21, 2), (20, 1)]], cmd_params={'mode': modes.VISUAL, 'xpos': 1, 'count': 10},
               expected=region_data([(21, 2), (10, 1)]), actual_func=first_sel_wrapper, msg='move many opposite end greater from same line'),
-
-    )
+)
 
 
 TESTS = TESTS_MODES
@@ -98,55 +94,46 @@ test = namedtuple('simple_test', 'content regions kwargs expected msg')
 MORE_TESTS = (
     test(content='''aaa
 bbb
-''',
-    regions=((1, 1), (1, 1)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 1}, expected=((0, 1), (0, 1)), msg='from same length'),
+''', regions=((1, 1), (1, 1)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 1}, expected=((0, 1), (0, 1)), msg='from same length'),
 
     test(content='''
 
-''',
-    regions=((1, 0), (1, 0)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 0}, expected=((0, 0), (0, 0)), msg='from empty to empty'),
+''', regions=((1, 0), (1, 0)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 0}, expected=((0, 0), (0, 0)), msg='from empty to empty'),
 
     test(content='''
 aaa
-''',
-    regions=((1, 2), (1, 2)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 2}, expected=((0, 0), (0,0)), msg='from longer to empty'),
+''', regions=((1, 2), (1, 2)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 2}, expected=((0, 0), (0, 0)), msg='from longer to empty'),
 
     test(content='''aaa
 
-''',
-    regions=((1, 0), (1, 0)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 0}, expected=((0, 0), (0, 0)), msg='from empty to longer'),
+''', regions=((1, 0), (1, 0)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 0}, expected=((0, 0), (0, 0)), msg='from empty to longer'),
 
     test(content='''aaa bbb
 aaa
-''',
-    regions=((1, 2), (1, 2)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 2}, expected=((0, 2), (0, 2)), msg='from shorter to longer'),
+''', regions=((1, 2), (1, 2)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 2}, expected=((0, 2), (0, 2)), msg='from shorter to longer'),
 
     test(content='''aaa
 aaa bbb
-''',
-    regions=((1, 6), (1, 6)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 6}, expected=((0, 2), (0, 2)), msg='from longer to shorter'),
+''', regions=((1, 6), (1, 6)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 6}, expected=((0, 2), (0, 2)), msg='from longer to shorter'),
 
-#     test(content='''\t\taaa
-# aaa bbb ccc
-# ''',
-#     regions=((1, 8), (1, 8)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 8}, expected=((0, 2), (0, 2)), msg='xpos with tabs'),
+    #     test(content='''\t\taaa
+    # aaa bbb ccc
+    # ''',
+    #     regions=((1, 8), (1, 8)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 8}, expected=((0, 2), (0, 2)), msg='xpos with tabs'),
 
     test(content='''aaa
 aaa bbb ccc
-''',
-    regions=((1, 8), (1, 8)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 1000}, expected=((0, 2), (0, 2)), msg='xpos stops at eol'),
+''', regions=((1, 8), (1, 8)), kwargs={'mode': modes.NORMAL, 'count': 1, 'xpos': 1000}, expected=((0, 2), (0, 2)), msg='xpos stops at eol'),
 
     # VISUAL
     test(content='''aaa
 
 ccc
-''',
-    regions=(((1, 0), (1, 1)),), kwargs={'mode': modes.VISUAL, 'count': 1, 'xpos': 0}, expected=((1, 1), (0, 0)), msg='from empty to non-empty (visual)'),
+''', regions=(((1, 0), (1, 1)),), kwargs={'mode': modes.VISUAL, 'count': 1, 'xpos': 0}, expected=((1, 1), (0, 0)), msg='from empty to non-empty (visual)'),
 
     test(content='''aaa bbb ccc ddd
 aaa bbb ccc ddd
-''',
-    regions=(((0, 6), (1, 2)),), kwargs={'mode': modes.VISUAL, 'count': 1, 'xpos': 2}, expected=((0, 7), (0, 2)), msg='from empty to non-empty (visual)'),
+''', regions=(((0, 6), (1, 2)),), kwargs={'mode': modes.VISUAL, 'count': 1, 'xpos': 2}, expected=((0, 7), (0, 2)), msg='from empty to non-empty (visual)'),
 )
 
 

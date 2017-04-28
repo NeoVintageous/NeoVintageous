@@ -1,12 +1,9 @@
 import unittest
 
-from NeoVintageous.lib.vi.constants import _MODE_INTERNAL_NORMAL
 from NeoVintageous.lib.vi.constants import MODE_NORMAL
 from NeoVintageous.lib.vi.constants import MODE_SELECT
 from NeoVintageous.lib.vi.constants import MODE_VISUAL
-from NeoVintageous.lib.vi.constants import MODE_VISUAL_LINE
 from NeoVintageous.lib.state import State
-# from NeoVintageous.lib.vi.actions import vi_r
 
 from NeoVintageous.tests import num_sels
 from NeoVintageous.tests import first_sel

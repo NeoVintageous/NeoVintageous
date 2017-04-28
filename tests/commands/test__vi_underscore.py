@@ -1,7 +1,9 @@
 from collections import namedtuple
 
-from NeoVintageous.tests import ViewTest
 from NeoVintageous.lib.vi.utils import modes
+
+from NeoVintageous.tests import ViewTest
+
 
 test_data = namedtuple('test_data', 'text startRegion mode count expectedRegion msg')
 
@@ -56,6 +58,7 @@ MULTI_COUNT_VISUAL_CASES = (
     test_data(' 123\n 678', (0, 3), modes.VISUAL, 3, (0, 7), 'Visual count 3 with only 2 lines'),
 )
 
+
 class Test_vi_underscore(ViewTest):
     def runTests(self, data):
         for (i, data) in enumerate(data):
@@ -63,9 +66,7 @@ class Test_vi_underscore(ViewTest):
             self.clear_sel()
             self.add_sel(self.R(*data.startRegion))
             self.view.run_command('_vi_underscore', {'mode': data.mode, 'count': data.count})
-            self.assert_equal_regions(self.R(*data.expectedRegion), self.first_sel(),
-                "Failed on index {} {} : Text:\"{}\" Region:{}"
-                    .format(i, data.msg, data.text, data.startRegion))
+            self.assert_equal_regions(self.R(*data.expectedRegion), self.first_sel(), "Failed on index {} {} : Text:\"{}\" Region:{}".format(i, data.msg, data.text, data.startRegion))
 
     def testNormalCases(self):
         self.runTests(NORMAL_CASES)

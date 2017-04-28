@@ -126,7 +126,7 @@ seq_test = namedtuple('seq_test', 'actual expected')
 TESTS_KNOWN_SEQUENCES = (
     seq_test(actual=seqs.A,          expected='a'),
     seq_test(actual=seqs.ALT_CTRL_P, expected='<C-M-p>'),
-    seq_test(actual=seqs.AMPERSAND , expected='&'),
+    seq_test(actual=seqs.AMPERSAND,  expected='&'),
     seq_test(actual=seqs.AW,         expected='aw'),
     seq_test(actual=seqs.B,          expected='b'),
     seq_test(actual=seqs.BACKSPACE,  expected='<bs>'),
@@ -264,7 +264,7 @@ TESTS_KNOWN_SEQUENCES = (
     seq_test(actual=seqs.BIG_X,                expected='X'),
     seq_test(actual=seqs.BIG_Y,                expected='Y'),
     seq_test(actual=seqs.BIG_Z,                expected='Z'),
-    seq_test(actual=seqs.C,                    expected= 'c'),
+    seq_test(actual=seqs.C,                    expected='c'),
     seq_test(actual=seqs.CC,                   expected='cc'),
     seq_test(actual=seqs.COLON,                expected=':'),
     seq_test(actual=seqs.COMMA,                expected=','),

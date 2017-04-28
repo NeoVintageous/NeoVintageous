@@ -1,11 +1,6 @@
-import unittest
 
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.lib.state import State
-
-from NeoVintageous.tests import get_sel
-from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
 
@@ -18,7 +13,7 @@ class Test__vi_ctrl_r(ViewTest):
 
         self.view.run_command('_vi_dd', {'mode': modes.INTERNAL_NORMAL})
         self.view.window().run_command('_vi_u')
-        self.view.window().run_command('_vi_ctrl_r') # passing mode is irrelevant
+        self.view.window().run_command('_vi_ctrl_r')  # passing mode is irrelevant
 
         actual = self.view.substr(self.R(0, self.view.size()))
         expected = 'abc\nabc\nabc'
@@ -33,7 +28,7 @@ class Test__vi_ctrl_r(ViewTest):
 
         self.view.run_command('_vi_big_d', {'mode': modes.INTERNAL_NORMAL})
         self.view.window().run_command('_vi_u')
-        self.view.window().run_command('_vi_ctrl_r') # passing mode is irrelevant
+        self.view.window().run_command('_vi_ctrl_r')  # passing mode is irrelevant
 
         actual = self.view.substr(self.R(0, self.view.size()))
         expected = 'abc\nxxx foo \nabc\nabc'

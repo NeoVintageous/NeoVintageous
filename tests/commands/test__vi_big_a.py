@@ -4,7 +4,6 @@ Tests for o motion (visual kind).
 
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import second_sel
 from NeoVintageous.tests import ViewTest

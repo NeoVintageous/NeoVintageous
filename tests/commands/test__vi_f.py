@@ -3,6 +3,7 @@ from collections import namedtuple
 from NeoVintageous.tests import ViewTest
 from NeoVintageous.lib.vi.utils import modes
 
+
 test_data = namedtuple('test_data', 'text startRegion findChar mode expectedRegion msg')
 
 NORMAL_CASES = (
@@ -59,17 +60,17 @@ VISUAL_MULTI_LINE_CASES = (
     test_data('0123\n5678', (7, 5), '8', modes.VISUAL, (6, 9), 'Select L2->LF+1, find on L2'),
 )
 
+
 class Test_vi_f(ViewTest):
     def runTests(self, data):
         for (i, data) in enumerate(data):
             self.write(data.text)
             self.clear_sel()
             self.add_sel(self.R(*data.startRegion))
-            self.view.run_command('_vi_find_in_line',
-                {'mode': data.mode, 'count': 1, 'char': data.findChar, 'inclusive': True})
+            self.view.run_command('_vi_find_in_line', {
+                'mode': data.mode, 'count': 1, 'char': data.findChar, 'inclusive': True})
             self.assert_equal_regions(self.R(*data.expectedRegion), self.first_sel(),
-                "Failed on index {} {} : Text:\"{}\" Region:{} Find:'{}'"
-                    .format(i, data.msg, data.text, data.startRegion, data.findChar))
+                                      "Failed on index {} {} : Text:\"{}\" Region:{} Find:'{}'".format(i, data.msg, data.text, data.startRegion, data.findChar))
 
     def testNormalCases(self):
         self.runTests(NORMAL_CASES)

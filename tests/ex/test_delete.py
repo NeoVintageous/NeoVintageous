@@ -1,17 +1,10 @@
 import unittest
 
-from NeoVintageous.lib.vi.constants import _MODE_INTERNAL_NORMAL
 from NeoVintageous.lib.vi.constants import MODE_NORMAL
-from NeoVintageous.lib.vi.constants import MODE_VISUAL
-from NeoVintageous.lib.vi.constants import MODE_VISUAL_LINE
-
 from NeoVintageous.lib.state import State
-
-from NeoVintageous.tests import get_sel
-from NeoVintageous.tests import first_sel
-from NeoVintageous.tests import ViewTest
-
 from NeoVintageous.ex_commands import CURRENT_LINE_RANGE
+
+from NeoVintageous.tests import ViewTest
 
 
 class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTest):
@@ -88,7 +81,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTest):
 class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTest):
     def setUp(self):
         super().setUp()
-        self.range = {'left_ref': None,'left_offset': None, 'left_search_offsets': [],
+        self.range = {'left_ref': None, 'left_offset': None, 'left_search_offsets': [],
                       'right_ref': None, 'right_offset': None, 'right_search_offsets': [],
                       'separator': ','}
 
@@ -139,7 +132,7 @@ class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTest):
 class Test_ex_delete_InNormalMode_CaretPosition(ViewTest):
     def setUp(self):
         super().setUp()
-        self.range = {'left_ref': None,'left_offset': None, 'left_search_offsets': [],
+        self.range = {'left_ref': None, 'left_offset': None, 'left_search_offsets': [],
                       'right_ref': None, 'right_offset': None, 'right_search_offsets': [],
                       'separator': ','}
 
@@ -162,7 +155,7 @@ class Test_ex_delete_InNormalMode_CaretPosition(ViewTest):
 class Test_ex_delete_ModeTransition(ViewTest):
     def setUp(self):
         super().setUp()
-        self.range = {'left_ref': None,'left_offset': None, 'left_search_offsets': [],
+        self.range = {'left_ref': None, 'left_offset': None, 'left_search_offsets': [],
                       'right_ref': None, 'right_offset': None, 'right_search_offsets': [],
                       'separator': ','}
 

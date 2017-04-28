@@ -1,7 +1,5 @@
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
@@ -34,7 +32,7 @@ class Test_vi_star_InNormalMode(ViewTest):
         self.assertEqual(self.R(4, 4), first_sel(self.view))
         self.assertEqual(self.view.get_regions('vi_search'), [self.R(0, 3), self.R(4, 7)])
 
-    def testSelectMatchEnd(self):
+    def testSelectMatchEnd2(self):
         self.write('abc\nabc')
         self.clear_sel()
         self.add_sel(self.R(2, 2))

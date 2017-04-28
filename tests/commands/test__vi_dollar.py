@@ -1,11 +1,7 @@
-import unittest
 from collections import namedtuple
 
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
@@ -13,7 +9,8 @@ from NeoVintageous.tests import ViewTest
 def get_text(test):
     return test.view.substr(test.R(0, test.view.size()))
 
-def  first_sel_wrapper(test):
+
+def first_sel_wrapper(test):
     return first_sel(test.view)
 
 
@@ -58,7 +55,7 @@ TESTS_INTERNAL_NORMAL = (
 
     test_data(cmd='_vi_dollar', initial_text='abc\nabc\nabc\nabc\n', regions=[[0, 0]], cmd_params={'mode': modes.INTERNAL_NORMAL, 'count': 3},
               expected=region_data([0, 12]), actual_func=first_sel_wrapper, msg=''),
-    )
+)
 
 
 TESTS = TESTS_INTERNAL_NORMAL

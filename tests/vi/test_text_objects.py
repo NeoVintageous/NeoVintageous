@@ -2,12 +2,10 @@ from collections import namedtuple
 
 from sublime import Region as R
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import ViewTest
-
 from NeoVintageous.lib.vi.text_objects import find_prev_lone_bracket
 from NeoVintageous.lib.vi.text_objects import find_next_lone_bracket
+
+from NeoVintageous.tests import ViewTest
 
 
 test = namedtuple('simple_test', 'content start brackets expected msg')
@@ -29,7 +27,7 @@ TESTS = (
 
     test(content='a\\{bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),
     test(content='a\\{bc', start=3, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket'),
-    )
+)
 
 
 TESTS_NEXT_BRACKET = (

@@ -1,7 +1,9 @@
 from collections import namedtuple
 
-from NeoVintageous.tests import ViewTest
 from NeoVintageous.lib.vi.utils import modes
+
+from NeoVintageous.tests import ViewTest
+
 
 test_data = namedtuple('test_data', 'text startRegion findChar mode expectedRegion msg')
 
@@ -67,17 +69,15 @@ SKIP_CASES = (
     test_data('xxxx', (2, 2), 'x', modes.NORMAL, (2, 2), 'Does not skip past final match'),
 )
 
+
 class Test_vi_t(ViewTest):
     def runTests(self, data, skipping=False):
         for (i, data) in enumerate(data):
             self.write(data.text)
             self.clear_sel()
             self.add_sel(self.R(*data.startRegion))
-            self.view.run_command('_vi_find_in_line',
-                {'mode': data.mode, 'count': 1, 'char': data.findChar, 'inclusive': False, 'skipping': skipping})
-            self.assert_equal_regions(self.R(*data.expectedRegion), self.first_sel(),
-                "Failed on index {} {} : Text:\"{}\" Region:{} Find:'{}'"
-                    .format(i, data.msg, data.text, data.startRegion, data.findChar))
+            self.view.run_command('_vi_find_in_line', {'mode': data.mode, 'count': 1, 'char': data.findChar, 'inclusive': False, 'skipping': skipping})
+            self.assert_equal_regions(self.R(*data.expectedRegion), self.first_sel(), "Failed on index {} {} : Text:\"{}\" Region:{} Find:'{}'".format(i, data.msg, data.text, data.startRegion, data.findChar))
 
     def runTestsWithSkip(self, data):
         self.runTests(data, skipping=True)

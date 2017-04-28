@@ -2,8 +2,6 @@ from collections import namedtuple
 
 from sublime import Region as R
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
 from NeoVintageous.tests import ViewTest
 
 from NeoVintageous.lib.vi.text_objects import find_line_text_object
@@ -19,6 +17,7 @@ TESTS_INDENT = (
          msg='should work with whitepsace', content='  whitespaced'),
 )
 
+
 class Test_line(ViewTest):
     def clear_selected_regions(self):
         self.view.sel().clear()
@@ -33,4 +32,3 @@ class Test_line(ViewTest):
 
             msg = "failed at test index {0}: {1}".format(i, data.msg)
             self.assertEqual(data.expected, actual, msg)
-

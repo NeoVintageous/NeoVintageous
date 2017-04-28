@@ -1,12 +1,7 @@
 from NeoVintageous.lib.vi.utils import modes
-
 from NeoVintageous.lib.state import State
 
-from NeoVintageous.tests import get_sel
-from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
-
-from NeoVintageous.ex_commands import CURRENT_LINE_RANGE
 
 
 class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(ViewTest):
@@ -69,7 +64,7 @@ class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(ViewTest):
 class Test_ex_copy_Copying_InNormalMode_MultipleLines(ViewTest):
     def setUp(self):
         super().setUp()
-        self.range = {'left_ref': '.','left_offset': 0, 'left_search_offsets': [],
+        self.range = {'left_ref': '.', 'left_offset': 0, 'left_search_offsets': [],
                       'right_ref': '.', 'right_offset': 1, 'right_search_offsets': []}
 
     def testCanCopyDefaultLineRange(self):

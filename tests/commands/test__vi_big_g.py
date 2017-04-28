@@ -1,8 +1,5 @@
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
@@ -61,4 +58,3 @@ class Test_vi_big_g_InVisualLineMode(ViewTest):
 
         self.view.run_command('_vi_big_g', {'mode': modes.VISUAL_LINE, 'count': 1})
         self.assertEqual(self.R(0, 8), first_sel(self.view))
-

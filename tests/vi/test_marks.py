@@ -1,13 +1,10 @@
-import unittest
-
 import sublime
 
-from NeoVintageous.tests import ViewTest
 from NeoVintageous.lib.vi import marks
 from NeoVintageous.lib.state import State
-from NeoVintageous.tests import make_region
+
+from NeoVintageous.tests import ViewTest
 from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
 
 
 # XXX: Use the mock module instead?
@@ -23,6 +20,7 @@ class View(object):
 
     def buffer_id(self):
         return self._buffer_id
+
 
 class Window(object):
     pass

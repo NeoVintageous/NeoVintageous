@@ -1,11 +1,5 @@
-import unittest
-
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
-from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
 

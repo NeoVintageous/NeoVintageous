@@ -1,7 +1,5 @@
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
@@ -39,6 +37,7 @@ class Test_vi_slash_InNormalMode(ViewTest):
 
         self.view.run_command('_vi_slash_impl', {'mode': modes.NORMAL, 'search_string': 'abc'})
         self.assertEqual(self.R(4, 4), first_sel(self.view))
+
 
 class Test_vi_question_mark_InNormalMode(ViewTest):
     def testSearchWrapBegin(self):

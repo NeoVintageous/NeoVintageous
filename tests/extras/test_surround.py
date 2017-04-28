@@ -1,8 +1,6 @@
-import sublime
+from NeoVintageous.lib.vi.utils import modes
 
 from NeoVintageous.tests import ViewTest
-from NeoVintageous.lib.state import State
-from NeoVintageous.lib.vi.utils import modes
 
 
 TESTS_YS = (
@@ -75,8 +73,7 @@ class Test_cs(ViewTest):
             self.state.mode = modes.INTERNAL_NORMAL
 
             replace_what, expected = data
-            self.view.run_command('_vi_plug_cs', {'mode': modes.INTERNAL_NORMAL,
-                                                   'replace_what': replace_what})
+            self.view.run_command('_vi_plug_cs', {'mode': modes.INTERNAL_NORMAL, 'replace_what': replace_what})
 
             actual = self.get_all_text()
             self.assertEqual(actual, expected, 'failed at {0}'.format(i))
@@ -91,7 +88,7 @@ TESTS_DS = (
 )
 
 
-class Test_cs(ViewTest):
+class Test_cs2(ViewTest):
     def testAll_InternalNormalMode(self):
         for (i, data) in enumerate(TESTS_DS):
 
@@ -109,8 +106,8 @@ class Test_cs(ViewTest):
 
 
 TESTS_BIG_S = (
-    ('dog cat turkey',  [[(0, 0), (0, 3)], [(0, 8), (0, 14)]], '"', '"dog" cat "turkey"'),
-    ('dog cat turkey',  [[(0, 3), (0, 0)]], '"', '"dog" cat turkey'),
+    ('dog cat turkey', [[(0, 0), (0, 3)], [(0, 8), (0, 14)]], '"', '"dog" cat "turkey"'),
+    ('dog cat turkey', [[(0, 3), (0, 0)]], '"', '"dog" cat turkey'),
 )
 
 

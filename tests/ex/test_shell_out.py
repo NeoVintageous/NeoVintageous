@@ -3,24 +3,24 @@ import os
 
 import sublime
 
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
-from NeoVintageous.tests import ViewTest
-
 import NeoVintageous.lib.ex.plat as plat
 
-class Test_ex_shell_out_no_input(ViewTest):
-    @unittest.skipIf(os.name == 'nt', 'not supported on Windows')
-    def testCommandOutput(self):
-        test_string = 'Testing!'
-        test_command_line = '!echo "' + test_string + '"'
-        output_panel = self.view.window().get_output_panel('vi_out')
-        self.view.window().run_command('ex_shell_out', {'command_line': test_command_line})
+from NeoVintageous.tests import ViewTest
 
-        actual = output_panel.substr(self.R(0, output_panel.size()))
-        expected = test_string + '\n'
-        self.assertEqual(expected, actual)
+
+class Test_ex_shell_out_no_input(ViewTest):
+
+    # # TODO redifined test that fails
+    # @unittest.skipIf(os.name == 'nt', 'not supported on Windows')
+    # def testCommandOutput(self):
+    #     test_string = 'Testing!'
+    #     test_command_line = '!echo "' + test_string + '"'
+    #     output_panel = self.view.window().get_output_panel('vi_out')
+    #     self.view.window().run_command('ex_shell_out', {'command_line': test_command_line})
+
+    #     actual = output_panel.substr(self.R(0, output_panel.size()))
+    #     expected = test_string + '\n'
+    #     self.assertEqual(expected, actual)
 
     @unittest.skipIf(os.name != 'nt', 'Windows')
     def testCommandOutput(self):
@@ -65,8 +65,8 @@ ccc''')
         test_command_line = ".!" + word_count_command
 
         self.view.run_command('ex_shell_out', {
-                'command_line': test_command_line
-                })
+            'command_line': test_command_line
+        })
 
         actual = self.view.substr(self.R(0, self.view.size()))
         expected = '''1
@@ -91,8 +91,8 @@ ccc
         test_command_line = ".!" + word_count_command
 
         self.view.run_command('ex_shell_out', {
-                'command_line': test_command_line
-                })
+            'command_line': test_command_line
+        })
 
         actual = self.view.substr(self.R(0, self.view.size()))
         expected = '''aaa

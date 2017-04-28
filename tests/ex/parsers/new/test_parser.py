@@ -1,7 +1,6 @@
 import unittest
 
 from NeoVintageous.lib.ex.parser.parser import parse_command_line
-from NeoVintageous.lib.ex.parser.scanner import Scanner
 from NeoVintageous.lib.ex.parser.tokens import TokenDot
 from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
 from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
@@ -50,7 +49,7 @@ class parse_line_ref_Tests(unittest.TestCase):
 
     def test_SearchForwardClearsPreviousReferences(self):
         parsed = parse_command_line('./foo/')
-        self.assertEqual(parsed.line_range.start, [TokenDot(), TokenSearchForward ('foo')])
+        self.assertEqual(parsed.line_range.start, [TokenDot(), TokenSearchForward('foo')])
         self.assertEqual(parsed.line_range.end, [])
 
     def test_SearchForwardClearsPreviousReferencesWithOffsets(self):
@@ -80,17 +79,17 @@ class parse_line_ref_Tests(unittest.TestCase):
 
     def test_CanParseSearchForwardWithOffsets(self):
         parsed = parse_command_line('/foo/+10+10+10')
-        self.assertEqual(parsed.line_range.start, [TokenSearchForward('foo'), TokenOffset ([10, 10, 10])])
+        self.assertEqual(parsed.line_range.start, [TokenSearchForward('foo'), TokenOffset([10, 10, 10])])
         self.assertEqual(parsed.line_range.end, [])
 
     def test_CanParseSearchBacwardWithOffset(self):
         parsed = parse_command_line('?foo?+10')
-        self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo'), TokenOffset ([10])])
+        self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo'), TokenOffset([10])])
         self.assertEqual(parsed.line_range.end, [])
 
     def test_CanParseSearchBacwardWithOffsets(self):
         parsed = parse_command_line('?foo?+10+10+10')
-        self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo'), TokenOffset ([10, 10, 10])])
+        self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo'), TokenOffset([10, 10, 10])])
         self.assertEqual(parsed.line_range.end, [])
 
     def test_CanParseDollarOnItsOwn(self):
@@ -148,18 +147,19 @@ class parse_line_ref_Tests(unittest.TestCase):
         self.assertEqual(parsed.line_range.start, [])
         self.assertEqual(parsed.line_range.end, [TokenOffset([10])])
 
-    def test_CanParseSemicolonOffset(self):
-        parsed = parse_command_line(';+10')
-        self.assertEqual(parsed.line_range.separator, TokenComma())
-        self.assertEqual(parsed.line_range.start, [])
-        self.assertEqual(parsed.line_range.end, [])
-        self.assertEqual(parsed.line_range.end_offset, [10])
+    # TODO review redefined test that fails
+    # def test_CanParseSemicolonOffset(self):
+    #     parsed = parse_command_line(';+10')
+    #     self.assertEqual(parsed.line_range.separator, TokenComma())
+    #     self.assertEqual(parsed.line_range.start, [])
+    #     self.assertEqual(parsed.line_range.end, [])
+    #     self.assertEqual(parsed.line_range.end_offset, [10])
 
     def test_CanParseOffsetCommaOffset(self):
         parsed = parse_command_line('+10,+10')
         self.assertEqual(parsed.line_range.separator, TokenComma())
         self.assertEqual(parsed.line_range.start, [TokenOffset([10])])
-        self.assertEqual(parsed.line_range.end, [TokenOffset ([10])])
+        self.assertEqual(parsed.line_range.end, [TokenOffset([10])])
 
     def test_CanParseSemicolonOffset(self):
         parsed = parse_command_line('+10;+10')
@@ -199,29 +199,29 @@ class parse_line_ref_ParseSubstituteCommand(unittest.TestCase):
 
     def test_CanParseWithSimpleRange(self):
         parsed = parse_command_line('4s')
-        self.assertEqual(parsed.line_range.start, [TokenDigits ('4')])
+        self.assertEqual(parsed.line_range.start, [TokenDigits('4')])
         self.assertEqual(parsed.command.content, 'substitute')
 
     def test_CanParseWithStartAndEndLines(self):
         parsed = parse_command_line('4,5s')
-        self.assertEqual(parsed.line_range.start, [TokenDigits ('4')])
-        self.assertEqual(parsed.line_range.end, [TokenDigits ('5')])
+        self.assertEqual(parsed.line_range.start, [TokenDigits('4')])
+        self.assertEqual(parsed.line_range.end, [TokenDigits('5')])
         self.assertEqual(parsed.command.content, 'substitute')
 
     def test_CanParseWithSearchForward(self):
         parsed = parse_command_line('/foo/s')
-        self.assertEqual(parsed.line_range.start, [TokenSearchForward ('foo')])
+        self.assertEqual(parsed.line_range.start, [TokenSearchForward('foo')])
         self.assertEqual(parsed.command.content, 'substitute')
 
     def test_CanParseWithSearchBackward(self):
         parsed = parse_command_line('?foo?s')
-        self.assertEqual(parsed.line_range.start, [TokenSearchBackward ('foo')])
+        self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo')])
         self.assertEqual(parsed.command.content, 'substitute')
 
     def test_CanParseWithSearchBackwardAndSearchForward(self):
         parsed = parse_command_line('?foo?,/bar/s')
-        self.assertEqual(parsed.line_range.start, [TokenSearchBackward ('foo')])
-        self.assertEqual(parsed.line_range.end, [TokenSearchForward ('bar')])
+        self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo')])
+        self.assertEqual(parsed.line_range.end, [TokenSearchForward('bar')])
         self.assertEqual(parsed.command.content, 'substitute')
 
     def test_CanParseWithZeroAndDollar(self):
@@ -270,8 +270,8 @@ class parse_line_ref_ParseMarks(unittest.TestCase):
 
     def test_CanParseOnTwoSides(self):
         parsed = parse_command_line("'a,'b")
-        self.assertEqual(parsed.line_range.start, [TokenMark ('a')])
-        self.assertEqual(parsed.line_range.end, [TokenMark ('b')])
+        self.assertEqual(parsed.line_range.start, [TokenMark('a')])
+        self.assertEqual(parsed.line_range.end, [TokenMark('b')])
 
 
 class parse_line_ref_ParseOnlyCommand(unittest.TestCase):

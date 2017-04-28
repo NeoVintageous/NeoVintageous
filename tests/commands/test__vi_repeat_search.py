@@ -1,7 +1,5 @@
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import first_sel
 from NeoVintageous.tests import ViewTest
 
@@ -73,6 +71,7 @@ class Test_vi_repeat_star_InNormalMode(ViewTest):
         self.assertEqual(self.R(4, 4), first_sel(self.view))
         self.assertEqual(self.view.get_regions('vi_search'), [self.R(4, 7), self.R(12, 15)])
 
+
 class Test_vi_repeat_octothorp_InNormalMode(ViewTest):
     def testRepeatForward(self):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
@@ -103,6 +102,7 @@ class Test_vi_repeat_octothorp_InNormalMode(ViewTest):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': modes.NORMAL, 'reverse': True})
         self.assertEqual(self.R(4, 4), first_sel(self.view))
         self.assertEqual(self.view.get_regions('vi_search'), [self.R(4, 7), self.R(12, 15)])
+
 
 class Test_vi_repeat_slash_InNormalMode(ViewTest):
     def testRepeatForward(self):
@@ -140,6 +140,7 @@ class Test_vi_repeat_slash_InNormalMode(ViewTest):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': modes.NORMAL, 'reverse': False})
         self.assertEqual(self.R(12, 12), first_sel(self.view))
         self.assertEqual(self.view.get_regions('vi_search'), [self.R(4, 7), self.R(12, 15), self.R(20, 23)])
+
 
 class Test_vi_repeat_question_mark_InNormalMode(ViewTest):
     def testRepeatForward(self):

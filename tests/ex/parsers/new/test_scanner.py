@@ -3,7 +3,6 @@ import unittest
 from NeoVintageous.lib.ex.parser.scanner import Scanner
 from NeoVintageous.lib.ex.parser.scanner_command_substitute import TokenCommandSubstitute
 from NeoVintageous.lib.ex.parser.scanner_command_write import TokenCommandWrite
-from NeoVintageous.lib.ex.parser.state import EOF
 from NeoVintageous.lib.ex.parser.tokens import TokenComma
 from NeoVintageous.lib.ex.parser.tokens import TokenDigits
 from NeoVintageous.lib.ex.parser.tokens import TokenDollar
@@ -32,12 +31,12 @@ class ScannerTests(unittest.TestCase):
         tokens = list(scanner.scan())
         self.assertEqual([TokenDollar(), TokenEof()], tokens)
 
-    def testCanScanDollar(self):
+    def testCanScanDollar2(self):
         scanner = Scanner(",")
         tokens = list(scanner.scan())
         self.assertEqual([TokenComma(), TokenEof()], tokens)
 
-    def testCanScanDollar(self):
+    def testCanScanDollar3(self):
         scanner = Scanner(";")
         tokens = list(scanner.scan())
         self.assertEqual([TokenSemicolon(), TokenEof()], tokens)

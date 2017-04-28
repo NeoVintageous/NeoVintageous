@@ -1,13 +1,8 @@
-import unittest
-
-from NeoVintageous.lib.vi.constants import MODE_NORMAL
-from NeoVintageous.lib.vi.constants import _MODE_INTERNAL_NORMAL
+from NeoVintageous.lib.vi.text_objects import a_word
 
 from NeoVintageous.tests import ViewTest
 from NeoVintageous.tests import set_text
 from NeoVintageous.tests import add_sel
-
-from NeoVintageous.lib.vi.text_objects import a_word
 
 
 class Test_a_word_InInternalNormalMode_Inclusive(ViewTest):
