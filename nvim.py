@@ -4,6 +4,12 @@ from .lib.logger import PluginLogger
 from .lib.state import init_state
 
 # Load all the commands
+
+# TODO command appears to be unused
+from .lib.commands.ex_motions import _vi_cmd_line_a # noqa
+# TODO command appears to be unused
+from .lib.commands.ex_motions import _vi_cmd_line_k # noqa
+
 from .lib.commands.jumplist import _vi_add_to_jump_list # noqa
 from .lib.commands.modelines import ExecuteSublimeTextModeLinesCommand # noqa
 
