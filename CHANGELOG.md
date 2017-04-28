@@ -4,6 +4,26 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased
 
+### Added
+
+* Added: sidebar navigation
+
+    Key | Description
+    --- | -----------
+    <kbd>j</kbd> | down
+    <kbd>k</kbd> | up
+    <kbd>h</kbd> | close node / go to parent node
+    <kbd>l</kbd> | open node
+
+* Added: overlay navigation
+
+    Key | Description
+    --- | -----------
+    <kbd>ctrl+j</kbd> | down
+    <kbd>ctrl+k</kbd> | up
+
+## 1.0.1 - 2017-04-28
+
 ### Fixed
 
 * Fixed: `gq` error
