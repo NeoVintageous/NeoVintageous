@@ -4,6 +4,7 @@ from .lib.logger import PluginLogger
 from .lib.state import init_state
 
 # Load all the commands
+from .lib.commands.jumplist import _vi_add_to_jump_list # noqa
 from .lib.commands.modelines import ExecuteSublimeTextModeLinesCommand # noqa
 
 from .lib.commands.support import NeovintageousToggleUseCtrlKeysCommand # noqa
