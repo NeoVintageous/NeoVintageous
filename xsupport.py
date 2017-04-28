@@ -1,4 +1,3 @@
-import os
 import threading
 
 import sublime
@@ -8,7 +7,6 @@ from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import settings
 from NeoVintageous.lib.vi import cmd_defs
-from NeoVintageous.lib.vi.dot_file import DotFile
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
@@ -119,69 +117,3 @@ class Sequence(sublime_plugin.TextCommand):
     def run(self, edit, commands):
         for cmd, args in commands:
             self.view.run_command(cmd, args)
-
-
-class ResetNeovintageous(sublime_plugin.WindowCommand):
-
-    def run(self):
-        v = self.window.active_view()
-        v.settings().erase('vintage')
-        init_state(v)
-        DotFile.from_user().run()
-        print("Package.NeoVintageous: State reset.")
-        sublime.status_message("NeoVintageous: State reset")
-
-
-class ForceExitFromCommandMode(sublime_plugin.WindowCommand):
-
-    """
-    A sort of a panic button.
-    """
-
-    def run(self):
-        v = self.window.active_view()
-        v.settings().erase('vintage')
-
-        # XXX: What happens exactly when the user presses Esc again now? Which
-        #      mode are we in?
-
-        v.settings().set('command_mode', False)
-        v.settings().set('inverse_caret_state', False)
-
-        print("NeoVintageous: Exiting from command mode.")
-        sublime.status_message("NeoVintageous: Exiting from command mode.")
-
-
-class NeovintageousToggleCtrlKeys(sublime_plugin.WindowCommand):
-
-    def run(self):
-        prefs = sublime.load_settings('Preferences.sublime-settings')
-        value = prefs.get('vintageous_use_ctrl_keys', False)
-        prefs.set('vintageous_use_ctrl_keys', (not value))
-        sublime.save_settings('Preferences.sublime-settings')
-        status = 'enabled' if (not value) else 'disabled'
-        print("Package.NeoVintageous: Use of Ctrl- keys {0}.".format(status))
-        sublime.status_message("NeoVintageous: Use of Ctrl- keys {0}"
-                               .format(status))
-
-
-class ReloadNeovintageousSettings(sublime_plugin.WindowCommand):
-
-    def run(self):
-        DotFile.from_user().run()
-
-
-class NeovintageousOpenConfigFile(sublime_plugin.WindowCommand):
-
-    """
-    Opens or creates $packages/User/.vintageousrc.
-    """
-
-    def run(self):
-        path = os.path.realpath(os.path.join(sublime.packages_path(), 'User/.vintageousrc'))
-
-        if not os.path.exists(path):
-            with open(path, 'w'):
-                pass
-
-        self.window.open_file(path)

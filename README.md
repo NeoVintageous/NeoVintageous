@@ -18,7 +18,7 @@ A Vim emulation layer for Sublime Text.
 
 ## DOCUMENTATION
 
-* [Neovim documentation](https://neovim.io/doc/user)
+See the [Neovim user documentation](https://neovim.io/doc/user).
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
@@ -28,6 +28,17 @@ ctrl-w, K | Move the current view to be at the far left | [Neovim doc](https://n
 ctrl-w, L | Move the current window to be at the far right | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2 col/row layouts
 ctrl-w, s | Split current window in two | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
 ctrl-w, v | Split current window in two (vertically) | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
+
+### Command Palette
+
+Command | Description
+------- | -----------
+NeoVintageous: Reset |
+NeoVintageous: Toggle Use Ctrl Keys |
+NeoVintageous: Exit from Command Mode |
+NeoVintageous: Open My .vintageousrc |
+NeoVintageous: Open Changelog |
+NeoVintageous: Open Readme |
 
 ## CONFIGURATION
 

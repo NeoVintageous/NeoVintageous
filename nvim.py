@@ -6,6 +6,14 @@ from .lib.state import init_state
 # Load all the commands
 from .lib.commands.modelines import ExecuteSublimeTextModeLinesCommand # noqa
 
+from .lib.commands.support import NeovintageousToggleUseCtrlKeysCommand # noqa
+from .lib.commands.support import NeovintageousOpenMyRcFileCommand # noqa
+from .lib.commands.support import NeovintageousResetCommand # noqa
+from .lib.commands.support import NeovintageousExitFromCommandModeCommand # noqa
+
+# TODO command seems to be unused
+from .lib.commands.support import NeovintageousReloadSettingsCommand # noqa
+
 
 _logger = PluginLogger(__name__)
 
