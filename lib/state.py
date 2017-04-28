@@ -23,7 +23,7 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.variables import Variables
 
 # !! Avoid error due to sublime_plugin.py:45 expectations
-from NeoVintageous.plugins import plugins as user_plugins
+from NeoVintageous.lib.plugins import plugins as user_plugins
 
 
 _logger = PluginLogger(__name__)
