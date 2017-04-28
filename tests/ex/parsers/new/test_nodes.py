@@ -1,15 +1,15 @@
 import unittest
 
-from NeoVintageous.ex.parser.nodes import RangeNode
-from NeoVintageous.ex.parser.nodes import CommandLineNode
-from NeoVintageous.ex.parser.tokens import TokenDot
-from NeoVintageous.ex.parser.tokens import TokenDigits
-from NeoVintageous.ex.parser.tokens import TokenSearchForward
-from NeoVintageous.ex.parser.tokens import TokenSearchBackward
-from NeoVintageous.ex.parser.tokens import TokenPercent
-from NeoVintageous.ex.parser.tokens import TokenOffset
-from NeoVintageous.ex.parser.tokens import TokenMark
-from NeoVintageous.ex.parser.scanner_command_substitute import TokenCommandSubstitute
+from NeoVintageous.lib.ex.parser.nodes import RangeNode
+from NeoVintageous.lib.ex.parser.nodes import CommandLineNode
+from NeoVintageous.lib.ex.parser.tokens import TokenDot
+from NeoVintageous.lib.ex.parser.tokens import TokenDigits
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
+from NeoVintageous.lib.ex.parser.tokens import TokenPercent
+from NeoVintageous.lib.ex.parser.tokens import TokenOffset
+from NeoVintageous.lib.ex.parser.tokens import TokenMark
+from NeoVintageous.lib.ex.parser.scanner_command_substitute import TokenCommandSubstitute
 
 from NeoVintageous.tests import ViewTest
 

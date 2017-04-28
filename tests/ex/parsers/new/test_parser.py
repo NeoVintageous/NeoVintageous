@@ -1,17 +1,17 @@
 import unittest
 
-from NeoVintageous.ex.parser.parser import parse_command_line
-from NeoVintageous.ex.parser.scanner import Scanner
-from NeoVintageous.ex.parser.tokens import TokenDot
-from NeoVintageous.ex.parser.tokens import TokenSearchForward
-from NeoVintageous.ex.parser.tokens import TokenSearchBackward
-from NeoVintageous.ex.parser.tokens import TokenDollar
-from NeoVintageous.ex.parser.tokens import TokenDigits
-from NeoVintageous.ex.parser.tokens import TokenPercent
-from NeoVintageous.ex.parser.tokens import TokenMark
-from NeoVintageous.ex.parser.tokens import TokenOffset
-from NeoVintageous.ex.parser.tokens import TokenComma
-from NeoVintageous.ex.parser.tokens import TokenSemicolon
+from NeoVintageous.lib.ex.parser.parser import parse_command_line
+from NeoVintageous.lib.ex.parser.scanner import Scanner
+from NeoVintageous.lib.ex.parser.tokens import TokenDot
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
+from NeoVintageous.lib.ex.parser.tokens import TokenDollar
+from NeoVintageous.lib.ex.parser.tokens import TokenDigits
+from NeoVintageous.lib.ex.parser.tokens import TokenPercent
+from NeoVintageous.lib.ex.parser.tokens import TokenMark
+from NeoVintageous.lib.ex.parser.tokens import TokenOffset
+from NeoVintageous.lib.ex.parser.tokens import TokenComma
+from NeoVintageous.lib.ex.parser.tokens import TokenSemicolon
 
 
 class parse_line_ref_Tests(unittest.TestCase):

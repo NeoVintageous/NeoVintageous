@@ -3,30 +3,29 @@ import re
 import stat
 import subprocess
 
-
 import sublime
 import sublime_plugin
 
-from NeoVintageous.ex import shell
-from NeoVintageous.ex.ex_error import Display
-from NeoVintageous.ex.ex_error import ERR_CANT_FIND_DIR_IN_CDPATH
-from NeoVintageous.ex.ex_error import ERR_CANT_MOVE_LINES_ONTO_THEMSELVES
-from NeoVintageous.ex.ex_error import ERR_CANT_WRITE_FILE
-from NeoVintageous.ex.ex_error import ERR_EMPTY_BUFFER
-from NeoVintageous.ex.ex_error import ERR_FILE_EXISTS
-from NeoVintageous.ex.ex_error import ERR_INVALID_ADDRESS
-from NeoVintageous.ex.ex_error import ERR_NO_FILE_NAME
-from NeoVintageous.ex.ex_error import ERR_OTHER_BUFFER_HAS_CHANGES
-from NeoVintageous.ex.ex_error import ERR_READONLY_FILE
-from NeoVintageous.ex.ex_error import ERR_UNSAVED_CHANGES
-from NeoVintageous.ex.ex_error import show_error
-from NeoVintageous.ex.ex_error import show_message
-from NeoVintageous.ex.ex_error import show_status
-from NeoVintageous.ex.ex_error import show_not_implemented
-from NeoVintageous.ex.ex_error import VimError
-from NeoVintageous.ex.parser.parser import parse_command_line
-from NeoVintageous.ex.plat.windows import get_oem_cp
-from NeoVintageous.ex.plat.windows import get_startup_info
+from NeoVintageous.lib.ex import shell
+from NeoVintageous.lib.ex.ex_error import Display
+from NeoVintageous.lib.ex.ex_error import ERR_CANT_FIND_DIR_IN_CDPATH
+from NeoVintageous.lib.ex.ex_error import ERR_CANT_MOVE_LINES_ONTO_THEMSELVES
+from NeoVintageous.lib.ex.ex_error import ERR_CANT_WRITE_FILE
+from NeoVintageous.lib.ex.ex_error import ERR_EMPTY_BUFFER
+from NeoVintageous.lib.ex.ex_error import ERR_FILE_EXISTS
+from NeoVintageous.lib.ex.ex_error import ERR_INVALID_ADDRESS
+from NeoVintageous.lib.ex.ex_error import ERR_NO_FILE_NAME
+from NeoVintageous.lib.ex.ex_error import ERR_OTHER_BUFFER_HAS_CHANGES
+from NeoVintageous.lib.ex.ex_error import ERR_READONLY_FILE
+from NeoVintageous.lib.ex.ex_error import ERR_UNSAVED_CHANGES
+from NeoVintageous.lib.ex.ex_error import show_error
+from NeoVintageous.lib.ex.ex_error import show_message
+from NeoVintageous.lib.ex.ex_error import show_status
+from NeoVintageous.lib.ex.ex_error import show_not_implemented
+from NeoVintageous.lib.ex.ex_error import VimError
+from NeoVintageous.lib.ex.parser.parser import parse_command_line
+from NeoVintageous.lib.ex.plat.windows import get_oem_cp
+from NeoVintageous.lib.ex.plat.windows import get_startup_info
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import abbrev
 from NeoVintageous.lib.vi import utils

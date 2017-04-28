@@ -3,17 +3,17 @@ import os
 import sublime
 import sublime_plugin
 
-from NeoVintageous.ex import command_names
-from NeoVintageous.ex.completions import iter_paths
-from NeoVintageous.ex.completions import parse
-from NeoVintageous.ex.completions import parse_for_setting
-from NeoVintageous.ex.completions import wants_fs_completions
-from NeoVintageous.ex.completions import wants_setting_completions
-from NeoVintageous.ex.ex_error import show_error
-from NeoVintageous.ex.ex_error import show_not_implemented
-from NeoVintageous.ex.ex_error import VimError
-from NeoVintageous.ex.parser.parser import parse_command_line
-from NeoVintageous.ex.parser.scanner_command_goto import TokenCommandGoto
+from NeoVintageous.lib.ex import command_names
+from NeoVintageous.lib.ex.completions import iter_paths
+from NeoVintageous.lib.ex.completions import parse
+from NeoVintageous.lib.ex.completions import parse_for_setting
+from NeoVintageous.lib.ex.completions import wants_fs_completions
+from NeoVintageous.lib.ex.completions import wants_setting_completions
+from NeoVintageous.lib.ex.ex_error import show_error
+from NeoVintageous.lib.ex.ex_error import show_not_implemented
+from NeoVintageous.lib.ex.ex_error import VimError
+from NeoVintageous.lib.ex.parser.parser import parse_command_line
+from NeoVintageous.lib.ex.parser.scanner_command_goto import TokenCommandGoto
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi.settings import iter_settings
 from NeoVintageous.lib.vi.sublime import show_ipanel

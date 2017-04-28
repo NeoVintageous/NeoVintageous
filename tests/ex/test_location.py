@@ -2,13 +2,13 @@ import sublime
 
 import unittest
 
-from NeoVintageous.ex.ex_location import get_line_nr
-from NeoVintageous.ex.ex_location import find_eol
-from NeoVintageous.ex.ex_location import find_bol
-from NeoVintageous.ex.ex_location import find_line
-from NeoVintageous.ex.ex_location import search_in_range
-from NeoVintageous.ex.ex_location import find_last_match
-from NeoVintageous.ex.ex_location import reverse_search
+from NeoVintageous.lib.ex.ex_location import get_line_nr
+from NeoVintageous.lib.ex.ex_location import find_eol
+from NeoVintageous.lib.ex.ex_location import find_bol
+from NeoVintageous.lib.ex.ex_location import find_line
+from NeoVintageous.lib.ex.ex_location import search_in_range
+from NeoVintageous.lib.ex.ex_location import find_last_match
+from NeoVintageous.lib.ex.ex_location import reverse_search
 
 
 class TestHelpers(unittest.TestCase):

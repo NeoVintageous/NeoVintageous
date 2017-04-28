@@ -8,7 +8,7 @@ from NeoVintageous.tests import add_sel
 from NeoVintageous.tests import get_sel
 from NeoVintageous.tests import ViewTest
 
-import NeoVintageous.ex.plat as plat
+import NeoVintageous.lib.ex.plat as plat
 
 class Test_ex_shell_out_no_input(ViewTest):
     @unittest.skipIf(os.name == 'nt', 'not supported on Windows')
