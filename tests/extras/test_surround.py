@@ -1,6 +1,6 @@
 from NeoVintageous.lib.vi.utils import modes
 
-from NeoVintageous.tests import ViewTest
+from NeoVintageous.tests.utils import ViewTestCase
 
 
 TESTS_YS = (
@@ -16,8 +16,8 @@ TESTS_YS = (
 )
 
 
-class Test_ys(ViewTest):
-    def testAll_VisualMode(self):
+class Test_ys(ViewTestCase):
+    def test_all_visual_mode(self):
         for (i, data) in enumerate(TESTS_YS):
 
             self.write('dog cat turkey')
@@ -32,7 +32,7 @@ class Test_ys(ViewTest):
             actual = self.get_all_text()
             self.assertEqual(actual, expected, 'failed at {0}'.format(i))
 
-    def testAll_InternalNormalMode(self):
+    def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(TESTS_YS):
 
             self.write('dog cat turkey')
@@ -63,8 +63,8 @@ TESTS_CS = (
 )
 
 
-class Test_cs(ViewTest):
-    def testAll_InternalNormalMode(self):
+class Test_cs(ViewTestCase):
+    def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(TESTS_CS):
 
             self.write('dog (cat) turkey')
@@ -88,8 +88,8 @@ TESTS_DS = (
 )
 
 
-class Test_cs2(ViewTest):
-    def testAll_InternalNormalMode(self):
+class Test_cs2(ViewTestCase):
+    def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(TESTS_DS):
 
             text, replace_what, expected = data
@@ -111,8 +111,8 @@ TESTS_BIG_S = (
 )
 
 
-class Test_big_s(ViewTest):
-    def testBigS_VisualMode(self):
+class Test_big_s(ViewTestCase):
+    def test_big_s_visual_mode(self):
         for (i, data) in enumerate(TESTS_BIG_S):
 
             text, regions, surround_with, expected = data
