@@ -16,6 +16,10 @@
         "command": "neovintageous_open_my_rc_file"
     },
     {
+        "caption": "NeoVintageous: Reload My .vintageousrc File",
+        "command": "neovintageous_reload_my_rc_file"
+    },
+    {
         "caption": "NeoVintageous: Open Changelog",
         "command": "open_file",
         "args": {"file": "${packages}/NeoVintageous/CHANGELOG.md"}

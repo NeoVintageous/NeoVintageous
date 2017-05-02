@@ -6,8 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Reload My `.vintageousrc` File command
 * Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/249): Implement `ctrl+[`
-* Added: sidebar navigation
+* Added: Sidebar navigation
 
     Key | Description
     --- | -----------
@@ -16,12 +17,16 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
     <kbd>h</kbd> | close node / go to parent node
     <kbd>l</kbd> | open node
 
-* Added: overlay navigation
+* Added: Overlay navigation
 
     Key | Description
     --- | -----------
     <kbd>ctrl+j</kbd> | down
     <kbd>ctrl+k</kbd> | up
+
+### Fixed
+
+* Fixed [#119](https://github.com/NeoVintageous/NeoVintageous/issues/119): Loosing user settings when toggling ctrl keys
 
 ## 1.0.1 - 2017-04-28
 
@@ -31,7 +36,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed: error using registers
 * Fixed: error when searching
 * Fixed: running last ex command "!!" not working
-* Fixed: #119
 
 ## 1.0.0 - 2017-04-22
 

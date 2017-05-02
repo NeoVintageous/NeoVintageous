@@ -12,7 +12,7 @@ from .lib.commands.support import NeovintageousToggleUseCtrlKeysCommand # noqa
 from .lib.commands.support import NeovintageousOpenMyRcFileCommand # noqa
 from .lib.commands.support import NeovintageousResetCommand # noqa
 from .lib.commands.support import NeovintageousExitFromCommandModeCommand # noqa
-from .lib.commands.support import NeovintageousReloadSettingsCommand # noqa TODO command appears to be unused
+from .lib.commands.support import NeovintageousReloadMyRcFileCommand # noqa
 
 
 _logger = PluginLogger(__name__)

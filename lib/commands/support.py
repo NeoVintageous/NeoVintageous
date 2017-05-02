@@ -26,13 +26,14 @@ class NeovintageousToggleUseCtrlKeysCommand(sublime_plugin.WindowCommand):
         sublime.save_settings('Preferences.sublime-settings')
 
         status = 'enabled' if use_ctrl_keys else 'disabled'
-        sublime.status_message("NeoVintageous: 'use ctrl keys' setting {}".format(status))
+
+        sublime.status_message("NeoVintageous: ctrl keys have been {}".format(status))
 
 
 class NeovintageousOpenMyRcFileCommand(sublime_plugin.WindowCommand):
 
     """
-    A command that opens the the user .vintageousrc file.
+    A command that opens the the user runtime configuration file.
     """
 
     def run(self):
@@ -43,6 +44,18 @@ class NeovintageousOpenMyRcFileCommand(sublime_plugin.WindowCommand):
                 pass
 
         self.window.open_file(file)
+
+
+class NeovintageousReloadMyRcFileCommand(sublime_plugin.WindowCommand):
+
+    """
+    A command that reloads the user runtime configuration file.
+    """
+
+    def run(self):
+        DotFile.from_user().run()
+
+        sublime.status_message("NeoVintageous: rc file reloaded")
 
 
 class NeovintageousResetCommand(sublime_plugin.WindowCommand):
@@ -74,12 +87,3 @@ class NeovintageousExitFromCommandModeCommand(sublime_plugin.WindowCommand):
         v.settings().set('inverse_caret_state', False)
 
         sublime.status_message("NeoVintageous: exited from command mode")
-
-
-# TODO command appears to be unused
-class NeovintageousReloadSettingsCommand(sublime_plugin.WindowCommand):
-
-    def run(self):
-        DotFile.from_user().run()
-
-        sublime.status_message("NeoVintageous: settings reloaded")
