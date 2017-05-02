@@ -832,22 +832,20 @@ def init_state(view, new_session=False):
 
     if not is_view(view):
         # Abort if we got a widget, panel...
-        _logger.info(
-            '[init_state] ignoring view: {0}'.format(
-                view.name() or view.file_name() or '<???>'))
+        _logger.info('[init_state] ignoring view: {0}'.format(view.name() or view.file_name() or '<???>'))
         try:
             # XXX: All this seems to be necessary here.
             if not is_ignored_but_command_mode(view):
                 view.settings().set('command_mode', False)
                 view.settings().set('inverse_caret_state', False)
+
             view.settings().erase('vintage')
+
             if is_ignored(view):
                 # Someone has intentionally disabled NeoVintageous, so let the user know.
-                sublime.status_message(
-                    'NeoVintageous: Vim emulation disabled for the current view')
+                sublime.status_message('NeoVintageous: Vim emulation disabled for the current view')
         except AttributeError:
-            _logger.info(
-                '[init_state] probably received the console view')
+            _logger.info('[init_state] probably received the console view')
         except Exception:
             _logger.error('[init_state] error initializing view')
         finally:
@@ -902,8 +900,7 @@ def init_state(view, new_session=False):
         mode = modes.VISUAL if pseudo_visual else state.mode
         # TODO: Maybe the above should be handled by State?
         state.enter_normal_mode()
-        view.window().run_command('_enter_normal_mode', {'mode': mode,
-                                                         'from_init': True})
+        view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
 
     state.reset_command_data()
     if new_session:
