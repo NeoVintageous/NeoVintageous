@@ -2,6 +2,9 @@
     "folders":
     [
         {
+            "folder_exclude_patterns": [
+                "covhtml"
+            ],
             "follow_symlinks": true,
             "path": "."
         }

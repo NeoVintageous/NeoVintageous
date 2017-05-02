@@ -6,6 +6,7 @@
 
 !/lib/
 !/tests/lib/
+/covhtml/
 /dist/
 /tmp/
 
