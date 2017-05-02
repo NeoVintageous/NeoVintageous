@@ -8,7 +8,7 @@ import re
 import sublime
 import sublime_plugin
 
-from NeoVintageous.lib.plugins import plugins
+from NeoVintageous.lib.plugin import plugin
 from NeoVintageous.lib.vi import inputs
 from NeoVintageous.lib.vi import utils
 from NeoVintageous.lib.vi.cmd_defs import ViOperatorDef
@@ -20,7 +20,7 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
 
-@plugins.register(seq='ys', modes=(modes.NORMAL,))
+@plugin.register(seq='ys', modes=(modes.NORMAL,))
 class ViSurround(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -59,7 +59,7 @@ class ViSurround(ViOperatorDef):
         return cmd
 
 
-@plugins.register(seq='S', modes=(modes.VISUAL, modes.VISUAL_BLOCK))
+@plugin.register(seq='S', modes=(modes.VISUAL, modes.VISUAL_BLOCK))
 class ViSurroundVisual(ViSurround):
     def __init__(self, *args, **kwargs):
         ViSurround.__init__(self, *args, **kwargs)
@@ -75,7 +75,7 @@ class ViSurroundVisual(ViSurround):
         )
 
 
-@plugins.register(seq='ds', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
+@plugin.register(seq='ds', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
 class ViDeleteSurround(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -113,7 +113,7 @@ class ViDeleteSurround(ViOperatorDef):
         return cmd
 
 
-@plugins.register(seq='cs', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
+@plugin.register(seq='cs', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
 class ViChangeSurround(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)

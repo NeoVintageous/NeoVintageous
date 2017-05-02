@@ -21,9 +21,7 @@ from NeoVintageous.lib.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.lib.vi.utils import is_view
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.variables import Variables
-
-# !! Avoid error due to sublime_plugin.py:45 expectations
-from NeoVintageous.lib.plugins import plugins as user_plugins
+from NeoVintageous.lib.plugin import plugin
 
 
 _logger = PluginLogger(__name__)
@@ -260,7 +258,7 @@ class State(object):
         if action:
             cls = getattr(cmd_defs, action['name'], None)
             if cls is None:
-                cls = user_plugins.classes.get(action['name'], None)
+                cls = plugin.classes.get(action['name'], None)
             if cls is None:
                 ValueError('unknown action: %s' % action)
             return cls.from_json(action['data'])

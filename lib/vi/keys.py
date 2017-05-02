@@ -3,7 +3,7 @@ import re
 from NeoVintageous.lib.logger import PluginLogger
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi import cmd_base
-from NeoVintageous.lib.plugins import plugins
+from NeoVintageous.lib.plugin import plugin
 from NeoVintageous.lib.vi import variables
 
 
@@ -303,8 +303,8 @@ def seq_to_command(state, seq, mode=None):
 
     command = None
 
-    if state.mode in plugins.mappings:
-        command = plugins.mappings[mode].get(seq, None)
+    if state.mode in plugin.mappings:
+        command = plugin.mappings[mode].get(seq, None)
 
     # The plugin command might only be enabled under certain conditions
     if command and hasattr(command, 'is_enabled') and (not command.is_enabled(state)):
