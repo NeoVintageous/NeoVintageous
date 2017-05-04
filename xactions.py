@@ -2044,7 +2044,7 @@ class _vi_p(ViTextCommandBase):
 
 
 class _vi_ga(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/various.html#ga."""
+    """https://neovim.io/doc/user/various.html#ga."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2057,7 +2057,7 @@ class _vi_ga(ViWindowCommandBase):
 
             Uses vim key notation.
 
-            http://vimdoc.sourceforge.net/htmldoc/intro.html#key-notation
+            https://neovim.io/doc/user/intro.html#key-notation
             """
             character_notation_map = {
                 "\0": "Nul",
@@ -2107,7 +2107,7 @@ class _vi_g_big_t(ViWindowCommandBase):
 # TODO <C-]> should learn visual mode
 # TODO <C-]> should learn to count
 class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/tagsrch.html#CTRL-]."""
+    """https://neovim.io/doc/user/tagsrch.html#CTRL-]."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2117,7 +2117,7 @@ class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_b(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_b."""
+    """https://neovim.io/doc/user/windows.html#ctrl-w_b."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2127,7 +2127,7 @@ class _vi_ctrl_w_b(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_h."""
+    """https://neovim.io/doc/user/windows.html#ctrl-w_h."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2137,7 +2137,7 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_j."""
+    """https://neovim.io/doc/user/windows.html#ctrl-w_j."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2147,7 +2147,7 @@ class _vi_ctrl_w_big_j(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_k."""
+    """https://neovim.io/doc/user/windows.html#ctrl-w_k."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2157,7 +2157,7 @@ class _vi_ctrl_w_big_k(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_L."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_L."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2167,7 +2167,7 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_c(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_c."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_c."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2177,7 +2177,7 @@ class _vi_ctrl_w_c(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_equal(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_=."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_=."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2187,7 +2187,7 @@ class _vi_ctrl_w_equal(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_>."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_>."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2197,7 +2197,7 @@ class _vi_ctrl_w_greater_than(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_h(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_h."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_h."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2207,7 +2207,7 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_j(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_j."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_j."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2217,7 +2217,7 @@ class _vi_ctrl_w_j(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_k(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_k."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_k."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2227,7 +2227,7 @@ class _vi_ctrl_w_k(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_l(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_l."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_l."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2237,7 +2237,7 @@ class _vi_ctrl_w_l(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_<."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_<."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2247,7 +2247,7 @@ class _vi_ctrl_w_less_than(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_minus(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_-."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_-."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2257,7 +2257,7 @@ class _vi_ctrl_w_minus(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_n(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_n."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_n."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2267,7 +2267,7 @@ class _vi_ctrl_w_n(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_o(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_o."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_o."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2277,7 +2277,7 @@ class _vi_ctrl_w_o(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_bar."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2287,7 +2287,7 @@ class _vi_ctrl_w_pipe(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_plus(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_+."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_+."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2297,7 +2297,7 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_q(IrreversibleTextCommand):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_q."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_q."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2307,7 +2307,7 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
 
 
 class _vi_ctrl_w_s(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_s."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_s."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2317,7 +2317,7 @@ class _vi_ctrl_w_s(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_t(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_t."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_t."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2327,7 +2327,7 @@ class _vi_ctrl_w_t(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W__."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W__."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2337,7 +2337,7 @@ class _vi_ctrl_w_underscore(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_v(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_v."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_v."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2347,7 +2347,7 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_x(ViWindowCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_x."""
+    """https://neovim.io/doc/user/windows.html#CTRL-W_x."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2361,7 +2361,7 @@ class _vi_z_enter(IrreversibleTextCommand):
     """
     Command: z<cr>.
 
-    http://vimdoc.sourceforge.net/htmldoc/scroll.html#z<CR>
+    https://neovim.io/doc/user/scroll.html#z<CR>
     """
 
     def __init__(self, *args, **kwargs):
@@ -2927,7 +2927,7 @@ class _vi_g_big_h(ViWindowCommandBase):
 
 
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
-    """http://vimdoc.sourceforge.net/htmldoc/insert.html#i_CTRL-X_CTRL-L."""
+    """https://neovim.io/doc/user/insert.html#i_CTRL-X_CTRL-L."""
 
     MAX_MATCHES = 20
 

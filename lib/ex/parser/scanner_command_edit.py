@@ -69,7 +69,7 @@ def scan_command_edit(state):
             if k == '+':
                 state.ignore()
                 # TODO: expect_match should work with emit()
-                # http://vimdoc.sourceforge.net/htmldoc/editing.html#[++opt]
+                # https://neovim.io/doc/user/editing.html#[++opt]
                 m = state.expect_match(
                     r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
                     lambda: VimError(ERR_INVALID_ARGUMENT))

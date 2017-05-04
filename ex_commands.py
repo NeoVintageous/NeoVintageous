@@ -252,7 +252,7 @@ class ExReadShellOut(sublime_plugin.TextCommand):
              :{range}r[ead] [++opt] [name]
              :[range]r[ead] !{cmd}
 
-    http://vimdoc.sourceforge.net/htmldoc/insert.html#:r
+    https://neovim.io/doc/user/insert.html#:r
     """
 
     @changing_cd
@@ -307,7 +307,7 @@ class ExPromptSelectOpenFile(ViWindowCommandBase):
              :buffers[!]
              :files[!]
 
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#:ls
+    https://neovim.io/doc/user/windows.html#:ls
     """
 
     def run(self, command_line=''):
@@ -332,7 +332,7 @@ class ExMap(ViWindowCommandBase):
 
     :map {lhs} {rhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:map
+    https://neovim.io/doc/user/map.html#:map
     """
 
     def run(self, command_line=''):
@@ -357,7 +357,7 @@ class ExUnmap(ViWindowCommandBase):
 
     :unm[ap]  {lhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:unmap
+    https://neovim.io/doc/user/map.html#:unmap
     """
 
     def run(self, command_line=''):
@@ -380,7 +380,7 @@ class ExNmap(ViWindowCommandBase):
 
     :nm[ap] {lhs} {rhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:nmap
+    https://neovim.io/doc/user/map.html#:nmap
     """
 
     def run(self, command_line=''):
@@ -397,7 +397,7 @@ class ExNunmap(ViWindowCommandBase):
 
     :nun[map] {lhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:nunmap
+    https://neovim.io/doc/user/map.html#:nunmap
     """
 
     def run(self, command_line=''):
@@ -416,7 +416,7 @@ class ExOmap(ViWindowCommandBase):
 
     :om[ap] {lhs} {rhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:omap
+    https://neovim.io/doc/user/map.html#:omap
     """
 
     def run(self, command_line=''):
@@ -433,7 +433,7 @@ class ExOunmap(ViWindowCommandBase):
 
     :ou[nmap] {lhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:ounmap
+    https://neovim.io/doc/user/map.html#:ounmap
     """
 
     def run(self, command_line=''):
@@ -452,7 +452,7 @@ class ExVmap(ViWindowCommandBase):
 
     :vm[ap] {lhs} {rhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:vmap
+    https://neovim.io/doc/user/map.html#:vmap
     """
 
     def run(self, command_line=''):
@@ -471,7 +471,7 @@ class ExVunmap(ViWindowCommandBase):
 
     :vu[nmap] {lhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:vunmap
+    https://neovim.io/doc/user/map.html#:vunmap
     """
 
     def run(self, command_line=''):
@@ -492,7 +492,7 @@ class ExAbbreviate(ViWindowCommandBase):
 
     :ab[breviate]
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:abbreviate
+    https://neovim.io/doc/user/map.html#:abbreviate
     """
 
     def run(self, command_line=''):
@@ -522,7 +522,7 @@ class ExUnabbreviate(ViWindowCommandBase):
 
     :una[bbreviate] {lhs}
 
-    http://vimdoc.sourceforge.net/htmldoc/map.html#:unabbreviate
+    https://neovim.io/doc/user/map.html#:unabbreviate
     """
 
     def run(self, command_line=''):
@@ -542,7 +542,7 @@ class ExPrintWorkingDir(ViWindowCommandBase):
 
     :pw[d]
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:pwd
+    https://neovim.io/doc/user/editing.html#:pwd
     """
 
     @changing_cd
@@ -564,7 +564,7 @@ class ExWriteFile(ViWindowCommandBase):
     :[range]w[rite][!] [++opt] >> {file}
     :[range]w[rite] [++opt] {!cmd}
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:write
+    https://neovim.io/doc/user/editing.html#:write
     """
 
     def check_is_readonly(self, fname):
@@ -727,7 +727,7 @@ class ExWriteAll(ViWindowCommandBase):
 
     :wa[ll][!]
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:wa
+    https://neovim.io/doc/user/editing.html#:wa
     """
 
     @changing_cd
@@ -750,7 +750,7 @@ class ExFile(ViWindowCommandBase):
 
     :f[file][!]
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:file
+    https://neovim.io/doc/user/editing.html#:file
     """
 
     def run(self, command_line=''):
@@ -796,7 +796,7 @@ class ExMove(ExTextCommandBase):
 
     :[range]m[ove] {address}
 
-    http://vimdoc.sourceforge.net/htmldoc/change.html#:move
+    https://neovim.io/doc/user/change.html#:move
     """
 
     def run_ex_command(self, edit, command_line=''):
@@ -843,7 +843,7 @@ class ExCopy(ExTextCommandBase):
 
     :[range]co[py] {address}
 
-    http://vimdoc.sourceforge.net/htmldoc/change.html#:copy
+    https://neovim.io/doc/user/change.html#:copy
     """
 
     def __init__(self, *args, **kwargs):
@@ -889,7 +889,7 @@ class ExOnly(ViWindowCommandBase):
 
     :on[ly][!]
 
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#:only
+    https://neovim.io/doc/user/windows.html#:only
     """
 
     def run(self, command_line=''):
@@ -921,7 +921,7 @@ class ExDoubleAmpersand(ViWindowCommandBase):
 
     :[range]&[&][flags] [count]
 
-    http://vimdoc.sourceforge.net/htmldoc/change.html#:&
+    https://neovim.io/doc/user/change.html#:&
     """
 
     def run(self, command_line=''):
@@ -946,7 +946,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
 
     :s[ubstitute]
 
-    http://vimdoc.sourceforge.net/htmldoc/change.html#:substitute
+    https://neovim.io/doc/user/change.html#:substitute
     """
 
     last_pattern = None
@@ -1041,7 +1041,7 @@ class ExDelete(ExTextCommandBase):
     :[range]d[elete] [x]
              :[range]d[elete] [x] {count}
 
-    http://vimdoc.sourceforge.net/htmldoc/change.html#:delete
+    https://neovim.io/doc/user/change.html#:delete
     """
 
     def select(self, regions, register):
@@ -1149,7 +1149,7 @@ class ExPrint(ViWindowCommandBase):
     :[range]p[rint] [flags]
              :[range]p[rint] {count} [flags]
 
-    http://vimdoc.sourceforge.net/htmldoc/various.html#:print
+    https://neovim.io/doc/user/various.html#:print
     """
 
     def run(self, command_line='', global_lines=None):
@@ -1198,7 +1198,7 @@ class ExQuitCommand(ViWindowCommandBase):
 
     :q[uit][!]
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:q
+    https://neovim.io/doc/user/editing.html#:q
     """
 
     def run(self, command_line=''):
@@ -1237,7 +1237,7 @@ class ExQuitAllCommand(ViWindowCommandBase):
 
     :qa[ll][!]
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:qa
+    https://neovim.io/doc/user/editing.html#:qa
     """
 
     def run(self, command_line=''):
@@ -1292,7 +1292,7 @@ class ExBrowse(ViWindowCommandBase):
 
     :bro[wse] {command}
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:browse
+    https://neovim.io/doc/user/editing.html#:browse
     """
 
     def run(self, command_line):
@@ -1313,7 +1313,7 @@ class ExEdit(ViWindowCommandBase):
     :e[dit]! [++opt] [+cmd] {file}
     :e[dit] [++opt] [+cmd] #[count]
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:edit
+    https://neovim.io/doc/user/editing.html#:edit
     """
 
     @changing_cd
@@ -1373,7 +1373,7 @@ class ExCquit(ViWindowCommandBase):
 
     :cq[uit][!]
 
-    http://vimdoc.sourceforge.net/htmldoc/quickfix.html#:cquit
+    https://neovim.io/doc/user/quickfix.html#:cquit
     """
 
     def run(self, command_line=''):
@@ -1389,7 +1389,7 @@ class ExExit(ViWindowCommandBase):
     :[range]exi[t][!] [++opt] [file]
     :xit
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:exit
+    https://neovim.io/doc/user/editing.html#:exit
     """
 
     def run(self, command_line=''):
@@ -1413,7 +1413,7 @@ class ExListRegisters(ViWindowCommandBase):
 
     In NeoVintageous, registers store lists of values (due to multiple selections).
 
-    http://vimdoc.sourceforge.net/htmldoc/change.html#:registers
+    https://neovim.io/doc/user/change.html#:registers
     """
 
     def run(self, command_line):
@@ -1446,7 +1446,7 @@ class ExNew(ViWindowCommandBase):
 
     :[N]new [++opt] [+cmd]
 
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#:new
+    https://neovim.io/doc/user/windows.html#:new
     """
 
     @changing_cd
@@ -1461,7 +1461,7 @@ class ExYank(sublime_plugin.TextCommand):
 
     :[range]y[ank] [x] {count}
 
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#:yank
+    https://neovim.io/doc/user/windows.html#:yank
     """
 
     def run(self, edit, command_line=''):
@@ -1546,7 +1546,7 @@ class ExTabnextCommand(ViWindowCommandBase):
 
     :tabn[ext]
 
-    http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabnext
+    https://neovim.io/doc/user/tabpage.html#:tabnext
     """
 
     def run(self, command_line=''):
@@ -1563,7 +1563,7 @@ class ExTabprevCommand(ViWindowCommandBase):
 
     :tabp[revious]
 
-    http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabprevious
+    https://neovim.io/doc/user/tabpage.html#:tabprevious
     """
 
     def run(self, command_line=''):
@@ -1580,7 +1580,7 @@ class ExTablastCommand(ViWindowCommandBase):
 
     :tabl[ast]
 
-    http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tablast
+    https://neovim.io/doc/user/tabpage.html#:tablast
     """
 
     def run(self, command_line=''):
@@ -1597,7 +1597,7 @@ class ExTabfirstCommand(ViWindowCommandBase):
 
     :tabf[irst]
 
-    http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabfirst
+    https://neovim.io/doc/user/tabpage.html#:tabfirst
     """
 
     def run(self, command_line=''):
@@ -1614,7 +1614,7 @@ class ExTabonlyCommand(ViWindowCommandBase):
 
     :tabo[only]
 
-    http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabonly
+    https://neovim.io/doc/user/tabpage.html#:tabonly
     """
 
     def run(self, command_line=''):
@@ -1637,7 +1637,7 @@ class ExCdCommand(ViWindowCommandBase):
 
     :cd without an argument behaves as in Unix for all platforms.
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:cd
+    https://neovim.io/doc/user/editing.html#:cd
     """
 
     @changing_cd
@@ -1715,7 +1715,7 @@ class ExVsplit(ViWindowCommandBase):
 
     :[N]vs[plit] [++opt] [+cmd] [file]
 
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#:vsplit
+    https://neovim.io/doc/user/windows.html#:vsplit
     """
 
     MAX_SPLITS = 4
@@ -1829,7 +1829,7 @@ class ExLet(ViWindowCommandBase):
 
     :let {var-name} = {expr1}
 
-    http://vimdoc.sourceforge.net/htmldoc/eval.html#:let
+    https://neovim.io/doc/user/eval.html#:let
     """
 
     def run(self, command_line=''):
@@ -1845,7 +1845,7 @@ class ExWriteAndQuitAll(ViWindowCommandBase):
     :wqa[ll] [++opt]
               :xa[ll]
 
-    http://vimdoc.sourceforge.net/htmldoc/editing.html#:wqall
+    https://neovim.io/doc/user/editing.html#:wqall
     """
 
     def run(self, command_line=''):
