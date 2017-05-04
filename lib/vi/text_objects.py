@@ -147,7 +147,6 @@ def a_word(view, pt, inclusive=True, count=1):
     start = current_word_start(view, pt)
     end = pt
 
-    p = 3
     if inclusive:
         end = units.word_starts(view, start, count=count, internal=True)
 
@@ -445,12 +444,18 @@ def find_paragraph_text_object(view, s, inclusive=True, count=1):
 
 
 def find_inner_paragraph(view, initial_loc):
-    '''Takes a location, as an integer. Returns a (begin, end) tuple of ints for
-    the Vim inner paragraph corresponding to that location. An inner paragraph
-    consists of a set of contiguous lines all having the same whitespace status
-    (a line either consists entirely of whitespace characters or it does not).'''
+    """
+    Take a location, as an integer.
+
+    Returns a (begin, end) tuple of ints for the Vim inner paragraph
+    corresponding to that location. An inner paragraph consists of a set of
+    contiguous lines all having the same whitespace status (a line either
+    consists entirely of whitespace characters or it does not).
+    """
     # Determine whether the initial point lies in an all-whitespace line.
-    is_whitespace = lambda region: len(view.substr(region).strip()) == 0
+    def is_whitespace(region):
+        return len(view.substr(region).strip()) == 0
+
     iws = is_whitespace(view.line(initial_loc))
 
     # Search backward finding all lines with similar whitespace status.
@@ -481,8 +486,7 @@ def find_inner_paragraph(view, initial_loc):
 
 
 def find_indent_text_object(view, s, inclusive=True):
-    '''Implements the indent text object as specified
-    at http://vim.wikia.com/wiki/Indent_text_object'''
+    """Implement the indent text object as specified at http://vim.wikia.com/wiki/Indent_text_object."""
     begin = view.line(s)
     end = view.line(s)
 
@@ -569,7 +573,7 @@ def find_indent_text_object(view, s, inclusive=True):
 
 
 def find_line_text_object(view, s):
-    '''Implements the line object'''
+    """Implement the line object."""
     line = view.line(s)
     line_content = view.substr(line)
 

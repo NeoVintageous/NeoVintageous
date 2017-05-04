@@ -1,12 +1,11 @@
-"""This module provides basic extensibility hooks for external plugins.
-"""
+"""This module provides basic extensibility hooks for external plugins."""
 
 from NeoVintageous.lib.vi.constants import INPUT_FOR_ACTIONS
 
 
 class PluginManager(object):
-    """Collects information from external plugins and manages it.
-    """
+    """Collect information from external plugins and manages it."""
+
     def __init__(self):
         self.actions = {}
         # See vi/constants.py (digraphs).

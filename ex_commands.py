@@ -70,8 +70,7 @@ def changing_cd(f, *args, **kwargs):
 
 
 def get_view_info(v):
-    """gathers data to be displayed by :ls or :buffers
-    """
+    """Gather data to be displayed by :ls or :buffers."""
     path = v.file_name()
     if path:
         parent, leaf = os.path.split(path)
@@ -148,10 +147,10 @@ class ExGoto(ViWindowCommandBase):
 
 class ExShellOut(sublime_plugin.TextCommand):
     """
+    http://vimdoc.sourceforge.net/htmldoc/various.html#:!.
+
     Command: :!{cmd}
              :!!
-
-    http://vimdoc.sourceforge.net/htmldoc/various.html#:!
     """
 
     _last_command = None
@@ -198,13 +197,15 @@ class ExShellOut(sublime_plugin.TextCommand):
 
 
 class ExShell(ViWindowCommandBase):
-    """Ex command(s): :shell
+    """
+    Ex command(s): :shell.
 
     Opens a shell at the current view's directory. Sublime Text keeps a virtual
     current directory that most of the time will be out of sync with the actual
     current directory. The virtual current directory is always set to the
     current view's directory, but it isn't accessible through the API.
     """
+
     def open_shell(self, command):
         return subprocess.Popen(command, cwd=os.getcwd())
 
@@ -244,13 +245,15 @@ class ExShell(ViWindowCommandBase):
 
 
 class ExReadShellOut(sublime_plugin.TextCommand):
-    '''
-    Command: :r[ead] [++opt] [name]
+    """
+    Ex command.
+
+    :r[ead] [++opt] [name]
              :{range}r[ead] [++opt] [name]
              :[range]r[ead] !{cmd}
 
     http://vimdoc.sourceforge.net/htmldoc/insert.html#:r
-    '''
+    """
 
     @changing_cd
     def run(self, edit, command_line=''):
@@ -297,13 +300,15 @@ class ExReadShellOut(sublime_plugin.TextCommand):
 
 
 class ExPromptSelectOpenFile(ViWindowCommandBase):
-    '''
-    Command: :ls[!]
+    """
+    Ex command.
+
+    :ls[!]
              :buffers[!]
              :files[!]
 
     http://vimdoc.sourceforge.net/htmldoc/windows.html#:ls
-    '''
+    """
 
     def run(self, command_line=''):
         self.file_names = [get_view_info(view) for view in self.window.views()]
@@ -323,10 +328,13 @@ class ExPromptSelectOpenFile(ViWindowCommandBase):
 
 class ExMap(ViWindowCommandBase):
     """
-    Command: :map {lhs} {rhs}
+    Ex command.
+
+    :map {lhs} {rhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:map
     """
+
     def run(self, command_line=''):
         # def run(self, edit, mode=None, count=None, cmd=''):
         assert command_line, 'expected non-empty command line'
@@ -344,11 +352,14 @@ class ExMap(ViWindowCommandBase):
 
 
 class ExUnmap(ViWindowCommandBase):
-    '''
-    Command: :unm[ap]  {lhs}
+    """
+    Ex command.
+
+    :unm[ap]  {lhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:unmap
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -365,10 +376,13 @@ class ExUnmap(ViWindowCommandBase):
 
 class ExNmap(ViWindowCommandBase):
     """
-    Command: :nm[ap] {lhs} {rhs}
+    Ex command.
+
+    :nm[ap] {lhs} {rhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:nmap
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         nmap_command = parse_command_line(command_line)
@@ -379,10 +393,13 @@ class ExNmap(ViWindowCommandBase):
 
 class ExNunmap(ViWindowCommandBase):
     """
-    Command: :nun[map] {lhs}
+    Ex command.
+
+    :nun[map] {lhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:nunmap
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         nunmap_command = parse_command_line(command_line)
@@ -395,10 +412,13 @@ class ExNunmap(ViWindowCommandBase):
 
 class ExOmap(ViWindowCommandBase):
     """
-    Command: :om[ap] {lhs} {rhs}
+    Ex command.
+
+    :om[ap] {lhs} {rhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:omap
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         omap_command = parse_command_line(command_line)
@@ -409,10 +429,13 @@ class ExOmap(ViWindowCommandBase):
 
 class ExOunmap(ViWindowCommandBase):
     """
-    Command: :ou[nmap] {lhs}
+    Ex command.
+
+    :ou[nmap] {lhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:ounmap
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         ounmap_command = parse_command_line(command_line)
@@ -425,10 +448,13 @@ class ExOunmap(ViWindowCommandBase):
 
 class ExVmap(ViWindowCommandBase):
     """
-    Command: :vm[ap] {lhs} {rhs}
+    Ex command.
+
+    :vm[ap] {lhs} {rhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:vmap
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         vmap_command = parse_command_line(command_line)
@@ -441,10 +467,13 @@ class ExVmap(ViWindowCommandBase):
 
 class ExVunmap(ViWindowCommandBase):
     """
-    Command: :vu[nmap] {lhs}
+    Ex command.
+
+    :vu[nmap] {lhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:vunmap
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         vunmap_command = parse_command_line(command_line)
@@ -458,11 +487,13 @@ class ExVunmap(ViWindowCommandBase):
 
 
 class ExAbbreviate(ViWindowCommandBase):
-    '''
-    Command: :ab[breviate]
+    """
+    Ex command.
+
+    :ab[breviate]
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:abbreviate
-    '''
+    """
 
     def run(self, command_line=''):
         if not command_line:
@@ -486,11 +517,14 @@ class ExAbbreviate(ViWindowCommandBase):
 
 
 class ExUnabbreviate(ViWindowCommandBase):
-    '''
-    Command: :una[bbreviate] {lhs}
+    """
+    Ex command.
+
+    :una[bbreviate] {lhs}
 
     http://vimdoc.sourceforge.net/htmldoc/map.html#:unabbreviate
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -503,11 +537,14 @@ class ExUnabbreviate(ViWindowCommandBase):
 
 
 class ExPrintWorkingDir(ViWindowCommandBase):
-    '''
-    Command: :pw[d]
+    """
+    Ex command.
+
+    :pw[d]
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:pwd
-    '''
+    """
+
     @changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -515,26 +552,28 @@ class ExPrintWorkingDir(ViWindowCommandBase):
 
 
 class ExWriteFile(ViWindowCommandBase):
-    '''
-    Command :w[rite] [++opt]
-            :w[rite]! [++opt]
-            :[range]w[rite][!] [++opt]
-            :[range]w[rite] [++opt] {file}
-            :[range]w[rite]! [++opt] {file}
-            :[range]w[rite][!] [++opt] >>
-            :[range]w[rite][!] [++opt] >> {file}
-            :[range]w[rite] [++opt] {!cmd}
+    """
+    Ex command.
+
+    :w[rite] [++opt]
+    :w[rite]! [++opt]
+    :[range]w[rite][!] [++opt]
+    :[range]w[rite] [++opt] {file}
+    :[range]w[rite]! [++opt] {file}
+    :[range]w[rite][!] [++opt] >>
+    :[range]w[rite][!] [++opt] >> {file}
+    :[range]w[rite] [++opt] {!cmd}
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:write
-    '''
+    """
 
     def check_is_readonly(self, fname):
-        '''
-        Returns `True` if @fname is read-only on the filesystem.
+        """
+        Return `True` if @fname is read-only on the filesystem.
 
         @fname
           Path to a file.
-        '''
+        """
         if not fname:
             return
 
@@ -683,11 +722,14 @@ class ExWriteFile(ViWindowCommandBase):
 
 
 class ExWriteAll(ViWindowCommandBase):
-    '''
-    Commmand: :wa[ll][!]
+    """
+    Ex commmand.
+
+    :wa[ll][!]
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:wa
-    '''
+    """
+
     @changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -703,11 +745,14 @@ class ExWriteAll(ViWindowCommandBase):
 
 
 class ExFile(ViWindowCommandBase):
-    '''
-    Command: :f[file][!]
+    """
+    Ex command.
+
+    :f[file][!]
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:file
-    '''
+    """
+
     def run(self, command_line=''):
         # XXX figure out what the right params are. vim's help seems to be
         # wrong
@@ -746,11 +791,14 @@ class ExFile(ViWindowCommandBase):
 
 
 class ExMove(ExTextCommandBase):
-    '''
-    Command: :[range]m[ove] {address}
+    """
+    Ex command.
+
+    :[range]m[ove] {address}
 
     http://vimdoc.sourceforge.net/htmldoc/change.html#:move
-    '''
+    """
+
     def run_ex_command(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -790,11 +838,13 @@ class ExMove(ExTextCommandBase):
 
 
 class ExCopy(ExTextCommandBase):
-    '''
-    Command: :[range]co[py] {address}
+    """
+    Ex command.
+
+    :[range]co[py] {address}
 
     http://vimdoc.sourceforge.net/htmldoc/change.html#:copy
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -835,7 +885,9 @@ class ExCopy(ExTextCommandBase):
 
 class ExOnly(ViWindowCommandBase):
     """
-    Command: :on[ly][!]
+    Ex command.
+
+    :on[ly][!]
 
     http://vimdoc.sourceforge.net/htmldoc/windows.html#:only
     """
@@ -864,11 +916,13 @@ class ExOnly(ViWindowCommandBase):
 
 
 class ExDoubleAmpersand(ViWindowCommandBase):
-    '''
-    Command: :[range]&[&][flags] [count]
+    """
+    Ex command.
+
+    :[range]&[&][flags] [count]
 
     http://vimdoc.sourceforge.net/htmldoc/change.html#:&
-    '''
+    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -887,11 +941,13 @@ class ExDoubleAmpersand(ViWindowCommandBase):
 
 
 class ExSubstitute(sublime_plugin.TextCommand):
-    '''
-    Command :s[ubstitute]
+    """
+    Ex command.
+
+    :s[ubstitute]
 
     http://vimdoc.sourceforge.net/htmldoc/change.html#:substitute
-    '''
+    """
 
     last_pattern = None
     last_flags = []
@@ -979,12 +1035,14 @@ class ExSubstitute(sublime_plugin.TextCommand):
 
 
 class ExDelete(ExTextCommandBase):
-    '''
-    Command: :[range]d[elete] [x]
+    """
+    Ex command.
+
+    :[range]d[elete] [x]
              :[range]d[elete] [x] {count}
 
     http://vimdoc.sourceforge.net/htmldoc/change.html#:delete
-    '''
+    """
 
     def select(self, regions, register):
         self.view.sel().clear()
@@ -1020,32 +1078,26 @@ class ExDelete(ExTextCommandBase):
 
 
 class ExGlobal(ViWindowCommandBase):
-    """Ex command(s): :global
+    """
+    Ex command.
 
-    Command: :[range]g[lobal]/{pattern}/[cmd]
-             :[range]g[lobal]!/{pattern}/[cmd]
+    :[range]g[lobal]/{pattern}/[cmd]
+    :[range]g[lobal]!/{pattern}/[cmd]
 
     :global filters lines where a pattern matches and then applies the supplied
-    action to all those lines.
+    action to all those lines. By default, :global searches all lines in the
+    buffer. If you want to filter lines where a pattern does NOT match, add an
+    exclamation point e.g. :g!/DON'T TOUCH THIS/delete.
 
-    Examples:
-        :10,20g/FOO/delete
+    Some examples.
 
-        This command deletes all lines between line 10 and line 20 where 'FOO'
-        matches.
+    This command deletes all lines between line 10 and line 20 where
+    'FOO'matches: `:10,20g/FOO/delete`.
 
-        :g:XXX:s!old!NEW!g
-
-        This command replaces all instances of 'old' with 'NEW' in every line
-        where 'XXX' matches.
-
-    By default, :global searches all lines in the buffer.
-
-    If you want to filter lines where a pattern does NOT match, add an
-    exclamation point:
-
-        :g!/DON'T TOUCH THIS/delete
+    This command replaces all instances of 'old' with 'NEW' in every line where
+    'XXX' matches: `:g:XXX:s!old!NEW!g`.
     """
+
     most_recent_pat = None
 
     def run(self, command_line=''):
@@ -1091,12 +1143,15 @@ class ExGlobal(ViWindowCommandBase):
 
 
 class ExPrint(ViWindowCommandBase):
-    '''
-    Command: :[range]p[rint] [flags]
+    """
+    Ex command.
+
+    :[range]p[rint] [flags]
              :[range]p[rint] {count} [flags]
 
     http://vimdoc.sourceforge.net/htmldoc/various.html#:print
-    '''
+    """
+
     def run(self, command_line='', global_lines=None):
         assert command_line, 'expected non-empty command line'
 
@@ -1138,11 +1193,14 @@ class ExPrint(ViWindowCommandBase):
 
 
 class ExQuitCommand(ViWindowCommandBase):
-    '''
-    Command: :q[uit][!]
+    """
+    Ex command.
+
+    :q[uit][!]
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:q
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1175,10 +1233,13 @@ class ExQuitCommand(ViWindowCommandBase):
 
 class ExQuitAllCommand(ViWindowCommandBase):
     """
-    Command: :qa[ll][!]
+    Ex command.
+
+    :qa[ll][!]
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:qa
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1198,10 +1259,13 @@ class ExQuitAllCommand(ViWindowCommandBase):
 
 class ExWriteAndQuitCommand(ViWindowCommandBase):
     """
-    Command: :wq[!] [++opt] {file}
+    Ex command.
+
+    :wq[!] [++opt] {file}
 
     Write and then close the active buffer.
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1223,11 +1287,13 @@ class ExWriteAndQuitCommand(ViWindowCommandBase):
 
 
 class ExBrowse(ViWindowCommandBase):
-    '''
+    """
+    Ex command.
+
     :bro[wse] {command}
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:browse
-    '''
+    """
 
     def run(self, command_line):
         assert command_line, 'expected a non-empty command line'
@@ -1239,11 +1305,13 @@ class ExBrowse(ViWindowCommandBase):
 
 class ExEdit(ViWindowCommandBase):
     """
-    Command: :e[dit] [++opt] [+cmd]
-             :e[dit]! [++opt] [+cmd]
-             :e[dit] [++opt] [+cmd] {file}
-             :e[dit]! [++opt] [+cmd] {file}
-             :e[dit] [++opt] [+cmd] #[count]
+    Ex command.
+
+    :e[dit] [++opt] [+cmd]
+    :e[dit]! [++opt] [+cmd]
+    :e[dit] [++opt] [+cmd] {file}
+    :e[dit]! [++opt] [+cmd] {file}
+    :e[dit] [++opt] [+cmd] #[count]
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:edit
     """
@@ -1300,11 +1368,14 @@ class ExEdit(ViWindowCommandBase):
 
 
 class ExCquit(ViWindowCommandBase):
-    '''
-    Command: :cq[uit][!]
+    """
+    Ex command.
+
+    :cq[uit][!]
 
     http://vimdoc.sourceforge.net/htmldoc/quickfix.html#:cquit
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command_line'
 
@@ -1313,11 +1384,14 @@ class ExCquit(ViWindowCommandBase):
 
 class ExExit(ViWindowCommandBase):
     """
-    Command: :[range]exi[t][!] [++opt] [file]
-             :xit
+    Ex command.
+
+    :[range]exi[t][!] [++opt] [file]
+    :xit
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:exit
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         if self._view.is_dirty():
@@ -1330,15 +1404,17 @@ class ExExit(ViWindowCommandBase):
 
 
 class ExListRegisters(ViWindowCommandBase):
-    '''
-    Command :reg[isters] {arg}
+    """
+    Ex command.
+
+    :reg[isters] {arg}
 
     Lists registers in quick panel and saves selected to `"` register.
 
     In NeoVintageous, registers store lists of values (due to multiple selections).
 
     http://vimdoc.sourceforge.net/htmldoc/change.html#:registers
-    '''
+    """
 
     def run(self, command_line):
         def show_lines(line_count):
@@ -1365,10 +1441,14 @@ class ExListRegisters(ViWindowCommandBase):
 
 
 class ExNew(ViWindowCommandBase):
-    """Ex command(s): :[N]new [++opt] [+cmd]
+    """
+    Ex command.
+
+    :[N]new [++opt] [+cmd]
 
     http://vimdoc.sourceforge.net/htmldoc/windows.html#:new
     """
+
     @changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1377,7 +1457,9 @@ class ExNew(ViWindowCommandBase):
 
 class ExYank(sublime_plugin.TextCommand):
     """
-    Command: :[range]y[ank] [x] {count}
+    Ex command.
+
+    :[range]y[ank] [x] {count}
 
     http://vimdoc.sourceforge.net/htmldoc/windows.html#:yank
     """
@@ -1459,11 +1541,14 @@ class ExTabOpenCommand(sublime_plugin.WindowCommand):
 
 
 class ExTabnextCommand(ViWindowCommandBase):
-    '''
-    Command: :tabn[ext]
+    """
+    Ex command.
+
+    :tabn[ext]
 
     http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabnext
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1473,11 +1558,14 @@ class ExTabnextCommand(ViWindowCommandBase):
 
 
 class ExTabprevCommand(ViWindowCommandBase):
-    '''
-    Command: :tabp[revious]
+    """
+    Ex command.
+
+    :tabp[revious]
 
     http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabprevious
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1487,11 +1575,14 @@ class ExTabprevCommand(ViWindowCommandBase):
 
 
 class ExTablastCommand(ViWindowCommandBase):
-    '''
-    Command: :tabl[ast]
+    """
+    Ex command.
+
+    :tabl[ast]
 
     http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tablast
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1501,11 +1592,14 @@ class ExTablastCommand(ViWindowCommandBase):
 
 
 class ExTabfirstCommand(ViWindowCommandBase):
-    '''
-    Command: :tabf[irst]
+    """
+    Ex command.
+
+    :tabf[irst]
 
     http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabfirst
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1515,11 +1609,14 @@ class ExTabfirstCommand(ViWindowCommandBase):
 
 
 class ExTabonlyCommand(ViWindowCommandBase):
-    '''
-    Command: :tabo[only]
+    """
+    Ex command.
+
+    :tabo[only]
 
     http://vimdoc.sourceforge.net/htmldoc/tabpage.html#:tabonly
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1529,8 +1626,10 @@ class ExTabonlyCommand(ViWindowCommandBase):
 
 
 class ExCdCommand(ViWindowCommandBase):
-    '''
-    Command: :cd[!]
+    """
+    Ex command.
+
+    :cd[!]
              :cd[!] {path}
              :cd[!] -
 
@@ -1539,7 +1638,7 @@ class ExCdCommand(ViWindowCommandBase):
     :cd without an argument behaves as in Unix for all platforms.
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:cd
-    '''
+    """
 
     @changing_cd
     def run(self, command_line=''):
@@ -1577,7 +1676,9 @@ class ExCdCommand(ViWindowCommandBase):
 
 class ExCddCommand(ViWindowCommandBase):
     """
-    Command (non-standard): :cdd[!]
+    Ex Command (non-standard).
+
+    :cdd[!]
 
     Non-standard command to change the current directory to the active
     view's directory.
@@ -1589,6 +1690,7 @@ class ExCddCommand(ViWindowCommandBase):
 
     (This command may be removed at any time.)
     """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1608,11 +1710,13 @@ class ExCddCommand(ViWindowCommandBase):
 
 
 class ExVsplit(ViWindowCommandBase):
-    '''
-    Command: :[N]vs[plit] [++opt] [+cmd] [file]
+    """
+    Ex command.
+
+    :[N]vs[plit] [++opt] [+cmd] [file]
 
     http://vimdoc.sourceforge.net/htmldoc/windows.html#:vsplit
-    '''
+    """
 
     MAX_SPLITS = 4
     LAYOUT_DATA = {
@@ -1656,11 +1760,14 @@ class ExVsplit(ViWindowCommandBase):
 
 
 class ExUnvsplit(ViWindowCommandBase):
-    '''
-    Command: :unvsplit
+    """
+    Ex command.
+
+    :unvsplit
 
     Non-standard Vim command.
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1717,11 +1824,14 @@ class ExSet(ViWindowCommandBase):
 
 
 class ExLet(ViWindowCommandBase):
-    '''
-    Command: :let {var-name} = {expr1}
+    """
+    Ex command.
+
+    :let {var-name} = {expr1}
 
     http://vimdoc.sourceforge.net/htmldoc/eval.html#:let
-    '''
+    """
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
@@ -1729,12 +1839,14 @@ class ExLet(ViWindowCommandBase):
 
 
 class ExWriteAndQuitAll(ViWindowCommandBase):
-    '''
-    Commmand: :wqa[ll] [++opt]
+    """
+    Ex commmand.
+
+    :wqa[ll] [++opt]
               :xa[ll]
 
     http://vimdoc.sourceforge.net/htmldoc/editing.html#:wqall
-    '''
+    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'

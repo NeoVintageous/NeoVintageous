@@ -7,24 +7,22 @@ from NeoVintageous.lib import ex
 
 @ex.command('&&', '&&')
 class TokenDoubleAmpersand(TokenOfCommand):
-	def __init__(self, params, *args, **kwargs):
-		super().__init__(params,
-						 TOKEN_COMMAND_DOUBLE_AMPERSAND,
-						 '&&', *args, **kwargs)
-		self.addressable = True
-		self.target_command = 'ex_double_ampersand'
+    def __init__(self, params, *args, **kwargs):
+        super().__init__(params, TOKEN_COMMAND_DOUBLE_AMPERSAND, '&&', *args, **kwargs)
+        self.addressable = True
+        self.target_command = 'ex_double_ampersand'
 
 
 def scan_command_double_ampersand(state):
-	params = {
-		'flags': [],
-		'count': '',
-	}
+    params = {
+        'flags': [],
+        'count': '',
+    }
 
-	m = state.match(r'\s*([cgr])*\s*(\d*)\s*$')
-	params['flags'] = list(m.group(1)) if m.group(1) else []
-	params['count'] = m.group(2) or ''
+    m = state.match(r'\s*([cgr])*\s*(\d*)\s*$')
+    params['flags'] = list(m.group(1)) if m.group(1) else []
+    params['count'] = m.group(2) or ''
 
-	state.expect(EOF)
+    state.expect(EOF)
 
-	return None, [TokenDoubleAmpersand(params), TokenEof()]
+    return None, [TokenDoubleAmpersand(params), TokenEof()]

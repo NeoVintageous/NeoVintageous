@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('only', 'on')
 class TokenCommandOnly(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({},
-                        TOKEN_COMMAND_ONLY,
-                        'only', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_ONLY, 'only', *args, **kwargs)
         self.target_command = 'ex_only'
 
 

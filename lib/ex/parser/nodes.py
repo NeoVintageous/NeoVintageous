@@ -20,9 +20,7 @@ class Node(object):
 
 
 class RangeNode(Node):
-    '''
-    Represents a Vim line range.
-    '''
+    """Represents a Vim line range."""
 
     def __init__(self, start=None, end=None, separator=None):
         self.start =  start or []
@@ -34,11 +32,11 @@ class RangeNode(Node):
             ''.join(str(x) for x in self.start),
             str(self.separator) if self.separator else '',
             ''.join(str(x) for x in self.end),
-            )
+        )
 
     def __rpr__(self):
         return ('RangeNode<{0}(start:{1}, end:{2}, separator:{3}]>'
-            .format(self.__class__.__name__, self.start, self.end, self.separator))
+                .format(self.__class__.__name__, self.start, self.end, self.separator))
 
     def __eq__(self, other):
         if not isinstance(other, RangeNode):
@@ -49,17 +47,16 @@ class RangeNode(Node):
 
     @property
     def is_empty(self):
-        '''
-        Indicates whether this range has ever been defined. For example, in
-        interactive mode, if `true`, it means that the user hasn't provided
-        any line range on the command line.
-        '''
+        """
+        Indicate whether this range has ever been defined.
+
+        For example, in interactive mode, if `true`, it means that the user
+        hasn't provided any line range on the command line.
+        """
         return not any((self.start, self.end, self.separator))
 
     def resolve_notation(self, view, token, current):
-        '''
-        Returns a line number.
-        '''
+        """Return a line number."""
         if isinstance(token, TokenDot):
             pt = view.text_point(current, 0)
             return row_at(view, pt)
@@ -119,8 +116,8 @@ class RangeNode(Node):
         raise NotImplementedError()
 
     def resolve_line_reference(self, view, line_reference, current=0):
-        '''
-        Calculates the line offset determined by @line_reference.
+        """
+        Calculate the line offset determined by @line_reference.
 
         @view
           The view where the calculation is made.
@@ -128,7 +125,7 @@ class RangeNode(Node):
           The sequence of tokens defining the line range to be calculated.
         @current
           Line number where we are now.
-        '''
+        """
         last_token = None
         # XXX: what happens if there is no selection in the view?
         current = row_at(view, first_sel(view).b)
@@ -146,10 +143,7 @@ class RangeNode(Node):
         return current
 
     def resolve(self, view):
-        '''
-        Returns a Sublime Text range representing the Vim line range that the
-        ex command should operate on.
-        '''
+        """Return a representing the Vim line range that the ex command should operate on."""
         start = self.resolve_line_reference(view, self.start or [TokenDot()])
 
         if not self.separator:
@@ -178,9 +172,7 @@ class CommandLineNode(Node):
         return '{0}, {1}'.format(str(self.line_range), str(self.command))
 
     def validate(self):
-        '''
-        Raises an error for known conditions.
-        '''
+        """Raise an error for known conditions."""
         if not (self.command and self.line_range):
             return
 

@@ -44,7 +44,7 @@ def scan_command_delete(state):
     m = state.expect_match(r'(?P<register>[a-zA-Z0-9"])(?:\s+(?P<count>\d+))?\s*$')
     params.update(m.groupdict())
 
-    if params ['count']:
+    if params['count']:
         raise NotImplementedError('parameter not implemented')
 
     return None, [TokenDelete(params), TokenEof()]

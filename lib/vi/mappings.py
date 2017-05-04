@@ -106,8 +106,9 @@ class Mappings(object):
 
     def resolve(self, sequence=None, mode=None, check_user_mappings=True):
         """
-        Looks at the current global state and returns the command mapped to
-        the available sequence. It may be a 'missing' command.
+        Look at the current global state and return the command mapped to the available sequence.
+
+        It may be a 'missing' command.
 
         @sequence
             If a @sequence is passed, it is used instead of the global state's.

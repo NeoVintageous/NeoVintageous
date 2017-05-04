@@ -1,3 +1,5 @@
+# TODO needs cleanup of noqa's
+
 _jump_list = []
 _jump_list_index = -1
 _current_latest = 1
@@ -16,18 +18,18 @@ class JumpList(object):
             _jump_list.pop()
 
     def reset(self):
-        _jump_list_index = -1
-        _jump_list = []
+        _jump_list_index = -1  # noqa: F841
+        _jump_list = []  # noqa: F841
 
     @property
     def previous(self):
         try:
-            idx = _jump_list_index
+            idx = _jump_list_index  # noqa: F823
             next_index = idx + 1
             if next_index > 100:
                 next_index = 100
             next_index = min(len(_jump_list) - 1, next_index)
-            _jump_list_index = next_index
+            _jump_list_index = next_index  # noqa: F841
             return _jump_list[next_index]
         except (IndexError, KeyError) as e:
             return None
@@ -35,12 +37,12 @@ class JumpList(object):
     @property
     def next(self):
         try:
-            idx = _jump_list_index
+            idx = _jump_list_index  # noqa: F823
             next_index = idx - 1
             if next_index < 0:
                 next_index = 0
             next_index = min(len(_jump_list) - 1, next_index)
-            _jump_list_index = next_index
+            _jump_list_index = next_index  # noqa: F841
             return _jump_list[next_index]
         except (IndexError, KeyError) as e:
             return None

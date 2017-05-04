@@ -84,15 +84,19 @@ class _vi_find_in_line(ViMotionCommand):
 
         char = utils.translate_char(char)
 
-        state = self.state
+        # state = self.state
 
         regions_transformer(self.view, f)
 
 
 class _vi_reverse_find_in_line(ViMotionCommand):
-    """Contrary to *F*, *T* does not look past the caret's position, so if ``character`` is right
-       before the caret, nothing happens.
     """
+    Reverse search.
+
+    Contrary to *F*, *T* does not look past the caret's position, so if
+    ``character`` is right before the caret, nothing happens.
+    """
+
     def run(self, char=None, mode=None, count=1, inclusive=True, skipping=False):
         def f(view, s):
             if mode == modes.VISUAL_LINE:
@@ -138,14 +142,14 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
         char = utils.translate_char(char)
 
-        state = self.state
+        # state = self.state
+
         regions_transformer(self.view, f)
 
 
 class _vi_slash(ViMotionCommand, BufferSearchBase):
-    """
-    Collects input for the / motion.
-    """
+    """Collects input for the / motion."""
+
     def run(self, default=''):
         self.state.reset_during_init = False
 
@@ -536,9 +540,8 @@ class _vi_k(ViMotionCommand):
 
                 end = min(self.view.line(target_pt).b, target_pt + xpos)
                 if s.b >= s.a:
-                    if (self.view.line(s.a).contains(s.b - 1) and
-                        not self.view.line(s.a).contains(target_pt)):
-                            return sublime.Region(s.a + 1, end)
+                    if (self.view.line(s.a).contains(s.b - 1) and not self.view.line(s.a).contains(target_pt)):
+                        return sublime.Region(s.a + 1, end)
                     else:
                         if (target_pt + xpos) < s.a:
                             return sublime.Region(s.a + 1, end)
@@ -869,7 +872,6 @@ class _vi_right_brace(ViMotionCommand):
             if mode == modes.NORMAL:
                 par_begin = units.next_paragraph_start(view, s.b, count)
                 # find the next non-empty row if needed
-                row = row_at(self.view, par_begin)
                 return R(par_begin)
 
             elif mode == modes.VISUAL:
@@ -1031,11 +1033,14 @@ class _vi_percent(ViMotionCommand):
         self.view.show(self.view.sel()[0])
 
     def find_a_bracket(self, caret_pt):
-        """Locates the next bracket after the caret in the current line.
-           If None is found, execution must be aborted.
-           Returns: (bracket, brackets, bracket_pt)
+        """
+        Locate the next bracket after the caret in the current line.
 
-           Example: ('(', ('(', ')'), 1337))
+        If None is found, execution must be aborted.
+
+        Return (bracket, brackets, bracket_pt).
+
+        Example ('(', ('(', ')'), 1337)).
         """
         caret_row, caret_col = self.view.rowcol(caret_pt)
         line_text = self.view.substr(sublime.Region(caret_pt,
@@ -1955,11 +1960,11 @@ class _vi_select_text_object(ViMotionCommand):
 
 
 class _vi_go_to_symbol(ViMotionCommand):
-
     """
-    Go to local declaration. Differs from Vim because it leverages Sublime
-    Text's ability to actually locate symbols (Vim simply searches from the top
-    of the file).
+    Go to local declaration.
+
+    Differs from Vim because it leverages Sublime Text's ability to actually
+    locate symbols (Vim simply searches from the top of the file).
     """
 
     def find_symbol(self, r, globally=False):
@@ -2017,9 +2022,8 @@ class _vi_go_to_symbol(ViMotionCommand):
 
 
 class _vi_gm(ViMotionCommand):
-    """
-    Vim: `gm`
-    """
+    """Vim: `gm`."""
+
     def run(self, mode=None, count=1):
         def advance(view, s):
             line = view.line(s.b)
@@ -2037,9 +2041,8 @@ class _vi_gm(ViMotionCommand):
 
 
 class _vi_left_square_bracket(ViMotionCommand):
-    """
-    Vim: `[`
-    """
+    """Vim: `[`."""
+
     BRACKETS = {
         '{': ('\\{', '\\}'),
         '}': ('\\{', '\\}'),
@@ -2068,9 +2071,8 @@ class _vi_left_square_bracket(ViMotionCommand):
 
 
 class _vi_right_square_bracket(ViMotionCommand):
-    """
-    Vim: `]`
-    """
+    """Vim: `]`."""
+
     BRACKETS = {
         '{': ('\\{', '\\}'),
         '}': ('\\{', '\\}'),

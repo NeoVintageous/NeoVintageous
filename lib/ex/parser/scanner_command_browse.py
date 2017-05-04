@@ -1,4 +1,3 @@
-from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_BROWSE
 from .tokens_base import TokenOfCommand
@@ -25,7 +24,7 @@ def scan_command_browse(state):
     m = state.match(r'(?P<cmd>.*)$')
     params.update(m.groupdict())
 
-    if params ['cmd']:
+    if params['cmd']:
         raise NotImplementedError('parameter not implemented')
 
     return None, [TokenBrowse(params), TokenEof()]

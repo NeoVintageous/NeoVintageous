@@ -17,14 +17,15 @@ class Marks(object):
         _MARKS[name] = win, view, rowcol
 
     def get_as_encoded_address(self, name, exact=False):
-        '''Returns an address for the mark @name.
+        """
+        Return an address for the mark @name.
 
         @name
           The name of the mark to be retrieved.
         @exact
           If `true`, the exact position of the mark is returned. Otherwise,
           the relevant row's 0 column is returned.
-        '''
+        """
         if name == "'":
             # Special case: '' motion
             return '<command _vi_double_single_quote>'

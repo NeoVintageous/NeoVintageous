@@ -27,10 +27,7 @@ MODE_VISUAL_BLOCK = modes.VISUAL_BLOCK
 
 
 def regions_transformer_reversed(view, f):
-    """
-    Applies ``f`` to every selection region in ``view`` and replaces the
-    existing selections.
-    """
+    """Applly @f to every selection region in ``view`` and replaces the existing selections."""
     sels = reversed(list(view.sel()))
 
     new_sels = []

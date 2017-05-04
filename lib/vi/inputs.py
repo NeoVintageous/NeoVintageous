@@ -15,9 +15,7 @@ def get(state, name):
 
 
 def one_char(in_):
-    """
-    Any input (character) satisfies this parser.
-    """
+    """Any input (character) satisfies this parser."""
     in_ = utils.translate_char(in_)
     return len(in_) == 1
 
@@ -159,9 +157,9 @@ def vi_left_square_bracket(state):
 
 
 def vi_slash(state):
-    """
-    This parse should always be used non-interactively. / usually collects
-    its input from an input panel.
+    """Parse should always be used non-interactively.
+
+    / usually collects its input from an input panel.
     """
     # Any input is valid; we're never satisfied.
     if state.non_interactive:
@@ -179,9 +177,9 @@ def vi_slash(state):
 
 
 def vi_question_mark(state):
-    """
-    This parser should always be used non-interactively. ? usually collects
-    its input from an input panel.
+    """Parser should always be used non-interactively.
+
+    ? usually collects its input from an input panel.
     """
     # Any input is valid; we're never satisfied.
     if state.non_interactive:

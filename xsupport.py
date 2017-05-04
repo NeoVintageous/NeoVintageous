@@ -109,10 +109,7 @@ class _vi_adjust_carets(sublime_plugin.TextCommand):
 
 
 class Sequence(sublime_plugin.TextCommand):
-
-    """
-    Required so that mark_undo_groups_for_gluing and friends work.
-    """
+    """Required so that mark_undo_groups_for_gluing and friends work."""
 
     def run(self, edit, commands):
         for cmd, args in commands:

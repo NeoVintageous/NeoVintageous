@@ -1,6 +1,4 @@
-'''
-Centralizes all subscanners for ex commands.
-'''
+"""Centralizes all subscanners for ex commands."""
 
 from collections import OrderedDict
 
@@ -41,7 +39,6 @@ from .scanner_command_tab_first_command import scan_command_tab_first_command
 from .scanner_command_tab_last_command import scan_command_tab_last_command
 from .scanner_command_tab_next_command import scan_command_tab_next_command
 from .scanner_command_tab_only_command import scan_command_tab_only_command
-from .scanner_command_tab_open_command import scan_command_tab_open_command
 from .scanner_command_tab_prev_command import scan_command_tab_prev_command
 from .scanner_command_unabbreviate import scan_command_unabbreviate
 from .scanner_command_unmap import scan_command_unmap

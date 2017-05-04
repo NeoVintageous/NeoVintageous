@@ -6,17 +6,15 @@ from NeoVintageous.lib.vi.utils import IrreversibleTextCommand
 
 
 class ViCommandMixin(object):
-    '''
-    Provides functionality needed by most vim commands.
+    """
+    Provide functionality needed by most vim commands.
 
     Intended to be used with TextCommand and WindowCommand classes.
-    '''
+    """
 
     @property
     def _view(self):
-        '''
-        Returns the view that should receive any actions.
-        '''
+        """Return the view that should receive any actions."""
         view = None
         try:
             view = self.view
@@ -30,9 +28,7 @@ class ViCommandMixin(object):
 
     @property
     def _window(self):
-        '''
-        Returns the view that should receive any actions.
-        '''
+        """Return the view that should receive any actions."""
         window = None
         try:
             window = self.window
@@ -49,9 +45,7 @@ class ViCommandMixin(object):
         return State(self._view)
 
     def save_sel(self):
-        """
-        Saves the current .sel() for later reference.
-        """
+        """Save the current .sel() for later reference."""
         self.old_sel = tuple(self._view.sel())
 
     def is_equal_to_old_sel(self, new_sel):
@@ -62,15 +56,12 @@ class ViCommandMixin(object):
             raise AttributeError('have you forgotten to call .save_sel()?')
 
     def has_sel_changed(self):
-        """
-        `True` is the current selection is different to .old_sel as recorded
-        by .save_sel().
-        """
+        """`True` is the current selection is different to .old_sel as recorded by .save_sel()."""
         return not self.is_equal_to_old_sel(self._view.sel())
 
     def enter_normal_mode(self, mode):
         """
-        Calls the command to enter normal mode.
+        Call the command to enter normal mode.
 
         @mode: The mode the state was in before calling this method.
         """
@@ -78,7 +69,7 @@ class ViCommandMixin(object):
 
     def enter_insert_mode(self, mode):
         """
-        Calls the command to enter normal mode.
+        Call the command to enter normal mode.
 
         @mode: The mode the state was in before calling this method.
         """
@@ -124,9 +115,8 @@ class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
 # Due to MRO in Python subclasses, IrreversibleTextCommand must come first so
 # that the modified .run_() method is found first.
 class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
-    """
-    Motions should bypass the undo stack.
-    """
+    """Motion should bypass the undo stack."""
+
     pass
 
 

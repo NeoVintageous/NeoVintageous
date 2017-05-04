@@ -9,9 +9,7 @@ from NeoVintageous.lib import ex
 @ex.command('substitute', 's')
 class TokenCommandSubstitute(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                        TOKEN_COMMAND_SUBSTITUTE,
-                        'substitute', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_SUBSTITUTE, 'substitute', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_substitute'
 
@@ -66,7 +64,6 @@ def scan_command_substitute_params(state):
         if c == EOF:
             raise ValueError("bad command: {0}".format(state.source))
 
-    replacement = None
     while True:
         c = state.consume()
 

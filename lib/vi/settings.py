@@ -162,7 +162,7 @@ def get_option(view, name):
 
 
 class SublimeSettings(object):
-    """ Helper class for accessing settings values from views """
+    """Helper class for accessing settings values from views."""
 
     def __init__(self, view=None):
         self.view = view
@@ -265,7 +265,7 @@ class VintageSettings(object):
 
 
 class SublimeWindowSettings(object):
-    """ Helper class for accessing settings values from views """
+    """Helper class for accessing settings values from views."""
 
     def __init__(self, view=None):
         self.view = view

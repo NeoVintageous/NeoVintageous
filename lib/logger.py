@@ -4,9 +4,7 @@ import os
 
 
 class LogDir(object):
-    '''
-    Locates the log dir for plugin logs.
-    '''
+    """Locates the log dir for plugin logs."""
 
     @staticmethod
     def find():
@@ -56,9 +54,7 @@ class LogDir(object):
 
 
 class NullPluginLogger(object):
-    '''
-    Supresses log records.
-    '''
+    """Supresses log records."""
 
     def __init__(self, name):
         pass
@@ -83,9 +79,7 @@ class NullPluginLogger(object):
 
 
 class PluginLogger(object):
-    '''
-    Logs events.
-    '''
+    """Logs events."""
 
     log_dir = LogDir.find()
 
@@ -105,7 +99,7 @@ class PluginLogger(object):
 
         file_name = self._file_name()
         if file_name:
-            fileHandler = RotatingFileHandler(file_name, maxBytes=1<<10)
+            fileHandler = RotatingFileHandler(file_name, maxBytes=1 << 10)
             fileHandler.setFormatter(f)
             self.logger.addHandler(fileHandler)
         else:
@@ -113,7 +107,6 @@ class PluginLogger(object):
 
     def warn_about_logging_level(self):
         if self.logger.level <= logging.DEBUG:
-            package = __name__.split('.')[0]
             self.warning("debug level set to DEBUG; check or delete %s", self._get_path_to_log())
 
     def _get_path_to_log(self):

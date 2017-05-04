@@ -1,7 +1,4 @@
-"""
-This module lists error codes and error display messages along with
-utilities to handle them.
-"""
+"""This module lists error codes and error display messages along with utilities to handle them."""
 
 import sublime
 
@@ -59,9 +56,7 @@ class Display:
 
 # TODO: report faulty command line.
 class VimError(Exception):
-    '''
-    Represents e Vim error.
-    '''
+    """Represents a Vim error."""
 
     def __init__(self, code, *args, **kwargs):
         self.code = code
@@ -73,15 +68,15 @@ class VimError(Exception):
 
 
 def show_message(message, displays=Display.CONSOLE):
-    '''
-    Displays a message.
+    """
+    Display a message.
 
     @message
       The message's message.
 
     @displays
       A `Display` where the message should be output to.
-    '''
+    """
     message = 'NeoVintageous: {}'.format(message)
 
     if displays == Display.NONE:
@@ -95,22 +90,20 @@ def show_message(message, displays=Display.CONSOLE):
 
 
 def show_status(message):
-    '''
-    Shows a status message in Sublime Text.
-    '''
+    """Show a status message in Sublime Text."""
     show_message(message, displays=Display.STATUS)
 
 
 def show_error(error, displays=Display.ALL, log=False):
-    '''
-    Displays error messages to the user.
+    """
+    Display error messages to the user.
 
     @error
       An instance of Exception.
 
     @displays
       Where to output the message to.
-    '''
+    """
     assert isinstance(error, Exception), "'error' must be an instance of 'Exception'"
     show_message(str(error), displays=displays)
 

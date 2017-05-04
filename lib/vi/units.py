@@ -114,10 +114,8 @@ def word_starts(view, start, count=1, internal=False):
                 pt = next_word_start(view, pt)
                 pt = next_non_white_space_char(view, pt, white_space=' \t')
 
-    if (internal and (view.line(start) != view.line(pt)) and
-       (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and
-         at_eol(view, pt - 1)):
-            pt -= 1
+    if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):
+        pt -= 1
 
     return pt
 
@@ -142,10 +140,8 @@ def big_word_starts(view, start, count=1, internal=False):
                 pt = next_big_word_start(view, pt)
                 pt = next_non_white_space_char(view, pt, white_space=' \t')
 
-    if (internal and (view.line(start) != view.line(pt)) and
-       (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and
-         at_eol(view, pt - 1)):
-            pt -= 1
+    if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):
+        pt -= 1
 
     return pt
 
@@ -174,7 +170,7 @@ def word_ends(view, start, count=1, big=False):
 
 def lines(view, s, count=1):
     """
-    Returns a region spanning @count full lines.
+    Return a region spanning @count full lines.
 
     Assumes we're operating in INTERNAL_NORMAL mode.
 
@@ -197,8 +193,9 @@ def lines(view, s, count=1):
 
 def inner_lines(view, s, count=1):
     """
-    Returns a region spanning @count inner lines. Inner lines are lines
-    excluding leading/trailing whitespace at outer ends.
+    Return a region spanning @count inner lines.
+
+    Inner lines are lines excluding leading/trailing whitespace at outer ends.
 
     Assumes we're operating in INTERNAL_NORMAL mode.
 
@@ -270,12 +267,10 @@ def prev_paragraph_start(view, pt, count=1, skip_empty=True):
         return 0
 
     current_row = utils.row_at(view, pt)
-    if (view.line(view.text_point(current_row - 1, 0)).empty() and
-        view.line(view.text_point(current_row, 0)).empty()):
-            pt, bof = _prev_non_empty_row(view, pt)
-
-            if bof:
-                return 0
+    if (view.line(view.text_point(current_row - 1, 0)).empty() and view.line(view.text_point(current_row, 0)).empty()):
+        pt, bof = _prev_non_empty_row(view, pt)
+        if bof:
+            return 0
 
     for i in range(count):
         pt, bof = _prev_empty_row(view, pt)

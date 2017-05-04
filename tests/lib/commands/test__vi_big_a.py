@@ -1,6 +1,4 @@
-"""
-Tests for o motion (visual kind).
-"""
+"""Tests for o motion (visual kind)."""
 
 from NeoVintageous.lib.vi.utils import modes
 

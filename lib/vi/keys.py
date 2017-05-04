@@ -11,9 +11,8 @@ _logger = PluginLogger(__name__)
 
 
 class mapping_scopes:
-    """
-    Scopes for mappings.
-    """
+    """Scopes for mappings."""
+
     DEFAULT =      0
     USER =         1
     PLUGIN =       2
@@ -140,7 +139,7 @@ class seqs:
     BIG_H =                        'H'
 
     G_BIG_J =                      'gJ'
-    CTRL_R=                        '<C-r>'
+    CTRL_R =                       '<C-r>'
     CTRL_R_EQUAL =                 '<C-r>='
     CTRL_A =                       '<C-a>'
     CTRL_I =                       '<C-i>'
@@ -193,7 +192,7 @@ class seqs:
     DOT =                          '.'
     DOUBLE_QUOTE =                 '"'
     E =                            'e'
-    ENTER =                        '<cr>' # Or rather <Enter>?
+    ENTER =                        '<cr>'  # Or rather <Enter>?
     SHIFT_ENTER =                  '<S-cr>'
     EQUAL =                        '='
     EQUAL_EQUAL =                  '=='
@@ -290,9 +289,9 @@ class seqs:
 
 
 def seq_to_command(state, seq, mode=None):
-    """
-    Returns the command definition mapped to @seq, or a 'missing' command
-    if none is found.
+    """Return the command definition mapped to @seq.
+
+    Returns a 'missing' command if none is found.
 
     @mode
         Forces the use of this mode instead of the global state's.
@@ -349,9 +348,8 @@ EOF = -2
 
 
 class key_names:
-    """
-    Names of special keys.
-    """
+    """Names of special keys."""
+
     BACKSPACE   = '<bs>'
     CR          = '<cr>'
     DOWN        = '<down>'
@@ -424,14 +422,10 @@ class key_names:
 
 # TODO: detect counts, registers, marks...
 class KeySequenceTokenizer(object):
-    """
-    Takes in a sequence of key names and tokenizes it.
-    """
+    """Takes in a sequence of key names and tokenizes it."""
+
     def __init__(self, source):
-        """
-        @source
-          A sequence of key names in Vim notation.
-        """
+        """Sequence of key names in Vim notation."""
         self.idx = -1
         self.source = source
         self.in_named_key = False
@@ -452,11 +446,7 @@ class KeySequenceTokenizer(object):
         return key.lower() in key_names.as_list
 
     def sort_modifiers(self, modifiers):
-        """
-        Ensures consistency in the order of modifier letters according to:
-
-          c > m > s
-        """
+        """Ensure consistency in the order of modifier letters according to c > m > s."""
         if len(modifiers) == 6:
             modifiers = 'c-m-s-'
         elif len(modifiers) > 2:
@@ -532,9 +522,7 @@ class KeySequenceTokenizer(object):
 
 
 def to_bare_command_name(seq):
-    """
-    Strips register and count data from @seq.
-    """
+    """Strip register and count data from @seq."""
     # Special case.
     if seq == '0':
         return seq
@@ -548,7 +536,7 @@ def to_bare_command_name(seq):
 
 def assign(seq, modes, *args, **kwargs):
     """
-    Registers a 'key sequence' to 'command' mapping with NeoVintageous.
+    Register a 'key sequence' to 'command' mapping with NeoVintageous.
 
     The registered key sequence must be known to NeoVintageous. The
     registered command must be a ViMotionDef or ViOperatorDef.

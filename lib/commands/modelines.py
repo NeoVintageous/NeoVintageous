@@ -88,7 +88,6 @@ def _to_json_type(v):
 
 
 class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
-
     """
     This event listener provides a feature similar to vim modelines.
 

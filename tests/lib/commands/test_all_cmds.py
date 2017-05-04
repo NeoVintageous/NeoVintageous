@@ -35,8 +35,8 @@ def _make_args(args):
 
 
 def _process_notation(text, sel_start_token='^', sel_end_token='$'):
-    '''
-    Processes @text assuming it contains markers defining selections.
+    """
+    Process @text assuming it contains markers defining selections.
 
     @text
       Text that contains @sel_start_token's and @sel_end_token's to define
@@ -52,7 +52,7 @@ def _process_notation(text, sel_start_token='^', sel_end_token='$'):
 
     Returns (selections, processed_text), where `selections` are valid ST
             ranges, and `processed_text` is @text without the special symbols.
-    '''
+    """
     deletions = 0
     start = None
     selections = []
@@ -106,8 +106,7 @@ class CommandTest(object):
 
     @staticmethod
     def from_text(text, file_name, test_nr):
-        ''' creates a test instance from a textual representation
-        '''
+        """Create a test instance from a textual representation."""
         header, body = text.split(_TEST_HEADER_DELIM, 1)
         header, description = header.split('\n', 1)
         description, options = CommandTest.process_description(description)
@@ -147,11 +146,11 @@ class CommandTest(object):
 
 
 class CommandTestCase(unittest.TestCase):
-    '''
+    """
     Runs tests based in cmd-test spec files (cmd-test).
 
     Subclasses must implement setUp() and in it set self.path_to_test_specs.
-    '''
+    """
 
     def get_motion_tests(self):
         specs = self.get_tests("*.motion-test")
@@ -162,9 +161,7 @@ class CommandTestCase(unittest.TestCase):
         return specs
 
     def get_tests(self, ext):
-        """
-        Yields `CommandTest`s found under the self.path_to_test_specs dir.
-        """
+        """Yield `CommandTest`s found under the self.path_to_test_specs dir."""
         specs = glob.glob(os.path.join(self.path_to_test_specs, ext + "-solo"))
         if specs:
             specs = specs[0:1]
@@ -196,7 +193,7 @@ class CommandTestCase(unittest.TestCase):
 
     def set_sels(self, sels):
         """
-        Enables adding selections to the buffer text using a minilanguage:
+        Enable adding selections to the buffer text using a minilanguage.
 
         S = add empty sel before S and delete S
         x = add empty sel before x

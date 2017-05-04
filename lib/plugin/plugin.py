@@ -15,7 +15,7 @@ classes = {}
 
 def register(seq, modes, *args, **kwargs):
     """
-    Registers a 'key sequence' to 'command' mapping with NeoVintageous.
+    Register a 'key sequence' to 'command' mapping with NeoVintageous.
 
     The registered key sequence must be known to NeoVintageous. The
     registered command must be a ViMotionDef or ViOperatorDef.

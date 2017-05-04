@@ -13,10 +13,7 @@ from NeoVintageous.lib.vi.dot_file import DotFile
 
 
 class NeovintageousToggleUseCtrlKeysCommand(sublime_plugin.WindowCommand):
-
-    """
-    A command that toggle the 'vintageous_use_ctrl_keys' setting.
-    """
+    """A command that toggle the 'vintageous_use_ctrl_keys' setting."""
 
     def run(self):
         settings = sublime.load_settings('Preferences.sublime-settings')
@@ -31,10 +28,7 @@ class NeovintageousToggleUseCtrlKeysCommand(sublime_plugin.WindowCommand):
 
 
 class NeovintageousOpenMyRcFileCommand(sublime_plugin.WindowCommand):
-
-    """
-    A command that opens the the user runtime configuration file.
-    """
+    """A command that opens the the user runtime configuration file."""
 
     def run(self):
         file = os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
@@ -47,10 +41,7 @@ class NeovintageousOpenMyRcFileCommand(sublime_plugin.WindowCommand):
 
 
 class NeovintageousReloadMyRcFileCommand(sublime_plugin.WindowCommand):
-
-    """
-    A command that reloads the user runtime configuration file.
-    """
+    """A command that reloads the user runtime configuration file."""
 
     def run(self):
         DotFile.from_user().run()
@@ -71,10 +62,7 @@ class NeovintageousResetCommand(sublime_plugin.WindowCommand):
 
 
 class NeovintageousExitFromCommandModeCommand(sublime_plugin.WindowCommand):
-
-    """
-    A sort of a panic button.
-    """
+    """A sort of a panic button."""
 
     def run(self):
         v = self.window.active_view()

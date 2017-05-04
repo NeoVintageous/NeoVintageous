@@ -1,4 +1,3 @@
-from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_NEW
 from .tokens_base import TokenOfCommand
@@ -38,8 +37,8 @@ def scan_command_new(state):
         # TODO: expect_match should work with emit()
         # http://vimdoc.sourceforge.net/htmldoc/editing.html#[++opt]
         m = state.expect_match(
-                r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-                lambda: VimError(ERR_INVALID_ARGUMENT))
+            r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
+            lambda: VimError(ERR_INVALID_ARGUMENT))
         name = m.group(0)
         params['++'] = plus_plus_translations.get(name, name)
         state.ignore()
@@ -47,7 +46,7 @@ def scan_command_new(state):
 
     m = state.match(r'.+$')
     if m:
-        params ['cmd'] = m.group(0).strip()
+        params['cmd'] = m.group(0).strip()
         raise NotImplementedError(':new not fully implemented')
 
     return None, [TokenNew(params), TokenEof()]

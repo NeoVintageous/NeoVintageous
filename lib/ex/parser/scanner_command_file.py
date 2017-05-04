@@ -29,4 +29,4 @@ def scan_command_file(state):
 
     state.expect(EOF, on_error=lambda: VimError(ERR_TRAILING_CHARS))
 
-    return None, [TokenCommandFile (forced=bang == '!'), TokenEof ()]
+    return None, [TokenCommandFile(forced=bang == '!'), TokenEof()]

@@ -45,8 +45,8 @@ def scan_command_exit(state):
             # TODO: expect_match should work with emit()
             # http://vimdoc.sourceforge.net/htmldoc/editing.html#[++opt]
             m = state.expect_match(
-                    r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-                    lambda: VimError(ERR_INVALID_ARGUMENT))
+                r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
+                lambda: VimError(ERR_INVALID_ARGUMENT))
             name = m.group(0)
             params['++'] = plus_plus_translations.get(name, name)
             state.ignore()
@@ -59,4 +59,4 @@ def scan_command_exit(state):
             state.ignore()
 
     state.expect(EOF)
-    return None, [TokenCommandExit (params, forced=bang == '!'), TokenEof ()]
+    return None, [TokenCommandExit(params, forced=bang == '!'), TokenEof()]

@@ -72,8 +72,7 @@ class ViewTestCase(unittest.TestCase):
         return self.view.sel()[1]
 
     def region2rowcols(self, reg):
-        '''Takes a view and a region. Returns a pair of row-col tuples
-        corresponding to the region's start and end points.'''
+        """Return row-col pair of tuples corresponding to region start and end points."""
         points = (reg.begin(), reg.end())
         return list(map(self.view.rowcol, points))
 
@@ -82,9 +81,7 @@ class ViewTestCase(unittest.TestCase):
             self.view.close()
 
     def assertRegionsEqual(self, expected_region, actual_region, msg=''):
-        """Tests that @expected_region and @actual_region cover the exact same
-        region. Does not take region orientation into account.
-        """
+        """Test that regions covers the exact same region. Does not take region orientation into account."""
         if (expected_region.size() == 1) and (actual_region.size() == 1):
             expected_region = _make_region(self.view, expected_region.begin(), expected_region.end())
             actual_region = _make_region(self.view, actual_region.begin(), actual_region.end())

@@ -28,16 +28,14 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import regions_transformer
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
-from NeoVintageous.lib.sublime_ext import SublimeWindowAPI
+from NeoVintageous.lib.window import WindowAPI
 
 
 _logger = PluginLogger(__name__)
 
 
 class _vi_g_big_u(ViTextCommandBase):
-    '''
-    Command: gU
-    '''
+    """Command: gU."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -162,9 +160,8 @@ class _vi_gq(ViTextCommandBase):
 
 
 class _vi_u(ViWindowCommandBase):
-    '''
-    Undoes last change.
-    '''
+    """Undoe last change."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -309,6 +306,7 @@ class _enter_normal_mode(ViTextCommandBase):
       is important to know in order to not hide output panels when the user
       is only navigating files or clicking around, not pressing Esc.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -508,10 +506,12 @@ class _enter_visual_mode(ViTextCommandBase):
 
 class _enter_visual_mode_impl(ViTextCommandBase):
     """
-    Transforms the view's selections. We don't do this inside the
-    EnterVisualMode window command because ST seems to neglect to repaint the
-    selections. (bug?)
+    Transform the view's selections.
+
+    We don't do this inside the EnterVisualMode window command because ST seems
+    to neglect to repaint the selections. (bug?)
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -561,9 +561,8 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
 
 class _enter_visual_line_mode_impl(ViTextCommandBase):
-    """
-    Transforms the view's selections.
-    """
+    """Transform the view's selections."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -634,6 +633,7 @@ class ProcessNotation(ViWindowCommandBase):
     @check_user_mappings
         Whether user mappings should be consulted to expand key sequences.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -772,8 +772,10 @@ class ProcessNotation(ViWindowCommandBase):
 
 class PressKey(ViWindowCommandBase):
     """
-    Core command. It interacts with the global state each time a key is
-    pressed.
+    Interact with the global state each time a key is pressed.
+
+    Core command.
+
 
     @key
         Key pressed.
@@ -905,23 +907,22 @@ class PressKey(ViWindowCommandBase):
                 state.reset_command_data()
                 return
 
-        if (state.mode == modes.OPERATOR_PENDING and
-            isinstance(command, cmd_defs.ViOperatorDef)):
-                # TODO: This may be unreachable code by now. ???
-                # we're expecting a motion, but we could still get an action.
-                # For example, dd, g~g~ or g~~
-                # remove counts
-                action_seq = to_bare_command_name(state.sequence)
-                _logger.info('[PressKey] action seq: {0}'.format(action_seq))
-                command = key_mappings.resolve(sequence=action_seq, mode=modes.NORMAL)
-                # TODO: Make _missing a command.
-                if isinstance(command, cmd_base.ViMissingCommandDef):
-                    _logger.info("[PressKey] unmapped sequence: {0}".format(state.sequence))
-                    state.reset_command_data()
-                    return
+        if (state.mode == modes.OPERATOR_PENDING and isinstance(command, cmd_defs.ViOperatorDef)):
+            # TODO: This may be unreachable code by now. ???
+            # we're expecting a motion, but we could still get an action.
+            # For example, dd, g~g~ or g~~
+            # remove counts
+            action_seq = to_bare_command_name(state.sequence)
+            _logger.info('[PressKey] action seq: {0}'.format(action_seq))
+            command = key_mappings.resolve(sequence=action_seq, mode=modes.NORMAL)
+            # TODO: Make _missing a command.
+            if isinstance(command, cmd_base.ViMissingCommandDef):
+                _logger.info("[PressKey] unmapped sequence: {0}".format(state.sequence))
+                state.reset_command_data()
+                return
 
-                if not command['motion_required']:
-                    state.mode = modes.NORMAL
+            if not command['motion_required']:
+                state.mode = modes.NORMAL
 
         state.set_command(command)
 
@@ -934,9 +935,7 @@ class PressKey(ViWindowCommandBase):
             state.eval()
 
     def handle_counts(self, key, repeat_count):
-        """
-        Returns `True` if the processing of the current key needs to stop.
-        """
+        """Return `True` if the processing of the current key needs to stop."""
         state = State(self.window.active_view())
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
@@ -944,12 +943,11 @@ class PressKey(ViWindowCommandBase):
                 state.action_count += key
                 return True
 
-        if (state.action and (state.mode == modes.OPERATOR_PENDING) and
-            key.isdigit()):
-                if not repeat_count and (key != '0' or state.motion_count):
-                    _logger.info('[PressKey] motion count digit: {0}'.format(key))
-                    state.motion_count += key
-                    return True
+        if (state.action and (state.mode == modes.OPERATOR_PENDING) and key.isdigit()):
+            if not repeat_count and (key != '0' or state.motion_count):
+                _logger.info('[PressKey] motion count digit: {0}'.format(key))
+                state.motion_count += key
+                return True
 
 
 class _vi_dot(ViWindowCommandBase):
@@ -1493,9 +1491,8 @@ class _vi_big_s_action(ViTextCommandBase):
 
 
 class _vi_s(ViTextCommandBase):
-    """
-    Implementation of Vim's 's' action.
-    """
+    """Implementation of Vim's 's' action."""
+
     # Yank config data.
     _can_yank = True
     _populates_small_delete_register = True
@@ -1535,10 +1532,8 @@ class _vi_s(ViTextCommandBase):
 
 
 class _vi_x(ViTextCommandBase):
+    """Implementation of Vim's x action."""
 
-    """
-    Implementation of Vim's x action.
-    """
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1909,10 +1904,10 @@ class _vi_big_p(ViTextCommandBase):
         self.enter_normal_mode(mode=mode)
 
     def merge(self, fragments):
-        """Merges a list of strings.
+        """
+        Merge a list of strings.
 
-        Returns a block of text and a bool indicating whether it's a linewise
-        block.
+        Return a block of text and a bool indicating whether it's a linewise block.
         """
         block = ''.join(fragments)
         if '\n' in fragments[0]:
@@ -1948,7 +1943,7 @@ class _vi_p(ViTextCommandBase):
         if len(sels) == len(fragments):
             sel_to_frag_mapped = zip(sels, fragments)
         else:
-            sel_to_frag_mapped = zip(sels, [fragments[0],] * len(sels))
+            sel_to_frag_mapped = zip(sels, [fragments[0], ] * len(sels))
 
         # FIXME: Fix this mess. Separate linewise from charwise pasting.
         pasting_linewise = True
@@ -2049,10 +2044,7 @@ class _vi_p(ViTextCommandBase):
 
 
 class _vi_ga(ViWindowCommandBase):
-
-    """
-    http://vimdoc.sourceforge.net/htmldoc/various.html#ga
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/various.html#ga."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2062,10 +2054,11 @@ class _vi_ga(ViWindowCommandBase):
         def character_to_notation(character):
             """
             Convert a character to a key notation.
+
             Uses vim key notation.
+
             http://vimdoc.sourceforge.net/htmldoc/intro.html#key-notation
             """
-
             character_notation_map = {
                 "\0": "Nul",
                 " ": "Space",
@@ -2114,9 +2107,8 @@ class _vi_g_big_t(ViWindowCommandBase):
 # TODO <C-]> should learn visual mode
 # TODO <C-]> should learn to count
 class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/tagsrch.html#CTRL-]
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/tagsrch.html#CTRL-]."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2125,9 +2117,8 @@ class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_b(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_b
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_b."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2136,9 +2127,8 @@ class _vi_ctrl_w_b(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_h
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_h."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2147,9 +2137,8 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_j
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_j."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2158,9 +2147,8 @@ class _vi_ctrl_w_big_j(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_k
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#ctrl-w_k."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2169,9 +2157,8 @@ class _vi_ctrl_w_big_k(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_L
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_L."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2180,9 +2167,8 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_c(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_c
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_c."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2191,9 +2177,8 @@ class _vi_ctrl_w_c(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_equal(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_=
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_=."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2202,9 +2187,8 @@ class _vi_ctrl_w_equal(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_>
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_>."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2213,9 +2197,8 @@ class _vi_ctrl_w_greater_than(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_h(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_h
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_h."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2224,9 +2207,8 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_j(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_j
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_j."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2235,9 +2217,8 @@ class _vi_ctrl_w_j(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_k(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_k
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_k."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2246,9 +2227,8 @@ class _vi_ctrl_w_k(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_l(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_l
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_l."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2257,9 +2237,8 @@ class _vi_ctrl_w_l(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_<
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_<."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2268,9 +2247,8 @@ class _vi_ctrl_w_less_than(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_minus(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_-
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_-."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2279,9 +2257,8 @@ class _vi_ctrl_w_minus(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_n(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_n
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_n."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2290,9 +2267,8 @@ class _vi_ctrl_w_n(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_o(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_o
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_o."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2301,9 +2277,8 @@ class _vi_ctrl_w_o(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_bar."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2312,9 +2287,8 @@ class _vi_ctrl_w_pipe(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_plus(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_+
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_+."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2323,9 +2297,8 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_q(IrreversibleTextCommand):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_q
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_q."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2334,9 +2307,8 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
 
 
 class _vi_ctrl_w_s(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_s
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_s."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2345,9 +2317,8 @@ class _vi_ctrl_w_s(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_t(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_t
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_t."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2356,9 +2327,8 @@ class _vi_ctrl_w_t(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W__
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W__."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2367,9 +2337,8 @@ class _vi_ctrl_w_underscore(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_v(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_v
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_v."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2378,9 +2347,8 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
 
 
 class _vi_ctrl_w_x(ViWindowCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_x
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/windows.html#CTRL-W_x."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2390,11 +2358,12 @@ class _vi_ctrl_w_x(ViWindowCommandBase):
 
 # TODO: z<CR> != zt
 class _vi_z_enter(IrreversibleTextCommand):
-    '''
-    Command: z<cr>
+    """
+    Command: z<cr>.
 
     http://vimdoc.sourceforge.net/htmldoc/scroll.html#z<CR>
-    '''
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2437,9 +2406,8 @@ class _vi_zz(IrreversibleTextCommand):
 
 
 class _vi_modify_numbers(ViTextCommandBase):
-    """
-    Base class for Ctrl-x and Ctrl-a.
-    """
+    """Base class for Ctrl-x and Ctrl-a."""
+
     DIGIT_PAT = re.compile('(\D+?)?(-)?(\d+)(\D+)?')
     NUM_PAT = re.compile('\d')
 
@@ -2507,9 +2475,12 @@ class _vi_modify_numbers(ViTextCommandBase):
 
 class _vi_select_big_j(IrreversibleTextCommand):
     """
-    Active in select mode. Clears multiple selections and returns to normal
-    mode. Should be more convenient than having to reach for Esc.
+    Active in select mode.
+
+    Clears multiple selections and returns to normal mode. Should be more
+    convenient than having to reach for Esc.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2636,7 +2607,7 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
         def on_done(s):
             state = State(self.view)
             try:
-                rv = [str(eval(s, None, None)),]
+                rv = [str(eval(s, None, None)), ]
                 if not insert:
                     state.registers[REG_EXPRESSION] = rv
                 else:
@@ -2788,9 +2759,8 @@ class _vi_select_j(ViWindowCommandBase):
 
 
 class _vi_tilde(ViTextCommandBase):
-    """
-    Implemented as if 'notildeopt' was `True`.
-    """
+    """Implemented as if 'notildeopt' was `True`."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2839,9 +2809,8 @@ class _vi_g_tilde(ViTextCommandBase):
 
 
 class _vi_visual_u(ViTextCommandBase):
-    """
-    'u' action in visual modes.
-    """
+    """'u' action in visual modes."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2858,9 +2827,8 @@ class _vi_visual_u(ViTextCommandBase):
 
 
 class _vi_visual_big_u(ViTextCommandBase):
-    """
-    'U' action in visual modes.
-    """
+    """'U' action in visual modes."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2938,6 +2906,7 @@ class _vi_g_big_h(ViWindowCommandBase):
     After a search has been performed via '/' or '?', selects all matches and
     enters select mode.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2958,9 +2927,8 @@ class _vi_g_big_h(ViWindowCommandBase):
 
 
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
-    """
-    http://vimdoc.sourceforge.net/htmldoc/insert.html#i_CTRL-X_CTRL-L
-    """
+    """http://vimdoc.sourceforge.net/htmldoc/insert.html#i_CTRL-X_CTRL-L."""
+
     MAX_MATCHES = 20
 
     def __init__(self, *args, **kwargs):
@@ -3111,9 +3079,8 @@ class _vi_gcc_motion(ViTextCommandBase):
             if mode == modes.INTERNAL_NORMAL:
                 end = view.text_point(utils.row_at(self.view, s.b) + (count - 1), 0)
                 begin = view.line(s.b).a
-                if ((utils.row_at(self.view, end) == utils.row_at(self.view, view.size())) and
-                    (view.substr(begin - 1) == '\n')):
-                        begin -= 1
+                if ((utils.row_at(self.view, end) == utils.row_at(self.view, view.size())) and (view.substr(begin - 1) == '\n')):
+                    begin -= 1
 
                 return R(begin, view.full_line(end).b)
 

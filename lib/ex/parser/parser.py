@@ -1,6 +1,4 @@
-'''
-Parsing for the Vim command line.
-'''
+"""Parsing for the Vim command line."""
 
 # ////////////////////////////////////////////////////////////////////////////
 # Some imports at the bottom to avoid circular refs.
@@ -147,20 +145,16 @@ def process_dollar(token, state, command_line):
 
 def process_digits(token, state, command_line):
     if not state.is_range_start_line_parsed:
-        if (command_line.line_range.start and
-            command_line.line_range.start[-1]) == TokenDot():
+        if (command_line.line_range.start and command_line.line_range.start[-1]) == TokenDot():
             raise ValueError('bad range: {0}'.format(state.scanner.state.source))
-        elif (command_line.line_range.start and
-            isinstance(command_line.line_range.start[-1], TokenDigits)):
+        elif (command_line.line_range.start and isinstance(command_line.line_range.start[-1], TokenDigits)):
             command_line.line_range.start = [token]
         else:
             command_line.line_range.start.append(token)
     else:
-        if (command_line.line_range.end and
-            command_line.line_range.end[-1] == TokenDot()):
-                raise ValueError('bad range: {0}'.format(state.scanner.state.source))
-        elif (command_line.line_range.end and
-            isinstance(command_line.line_range.end[-1], TokenDigits)):
+        if (command_line.line_range.end and command_line.line_range.end[-1] == TokenDot()):
+            raise ValueError('bad range: {0}'.format(state.scanner.state.source))
+        elif (command_line.line_range.end and isinstance(command_line.line_range.end[-1], TokenDigits)):
             command_line.line_range.end = [token]
         else:
             command_line.line_range.end.append(token)
@@ -193,14 +187,12 @@ def process_search_backward(token, state, command_line):
 
 def process_offset(token, state, command_line):
     if not state.is_range_start_line_parsed:
-        if (command_line.line_range.start and
-            command_line.line_range.start[-1] == TokenDollar()):
-                raise ValueError ('bad command line {}'.format(state.scanner.state.source))
+        if (command_line.line_range.start and command_line.line_range.start[-1] == TokenDollar()):
+            raise ValueError('bad command line {}'.format(state.scanner.state.source))
         command_line.line_range.start.append(token)
     else:
-        if (command_line.line_range.end and
-            command_line.line_range.end[-1] == TokenDollar()):
-                raise ValueError ('bad command line {}'.format(state.scanner.state.source))
+        if (command_line.line_range.end and command_line.line_range.end[-1] == TokenDollar()):
+            raise ValueError('bad command line {}'.format(state.scanner.state.source))
         command_line.line_range.end.append(token)
     return parse_line_ref, command_line
 
@@ -220,4 +212,4 @@ def process_dot(state, command_line):
 
 
 # avoid circular ref: some subscanners import parse_command_line()
-from .scanner import Scanner
+from .scanner import Scanner # noqa

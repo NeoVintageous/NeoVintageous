@@ -25,19 +25,19 @@ class TokenEdit(TokenOfCommand):
 
     @property
     def plusplus(self):
-        return self.params ['++']
+        return self.params['++']
 
     @property
     def command(self):
-        return self.params ['cmd']
+        return self.params['cmd']
 
     @property
     def file_name(self):
-        return self.params ['file_name']
+        return self.params['file_name']
 
     @property
     def count(self):
-        return self.params ['count']
+        return self.params['count']
 
 
 def scan_command_edit(state):
@@ -71,8 +71,8 @@ def scan_command_edit(state):
                 # TODO: expect_match should work with emit()
                 # http://vimdoc.sourceforge.net/htmldoc/editing.html#[++opt]
                 m = state.expect_match(
-                        r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-                        lambda: VimError(ERR_INVALID_ARGUMENT))
+                    r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
+                    lambda: VimError(ERR_INVALID_ARGUMENT))
                 name = m.group(0)
                 params['++'] = plus_plus_translations.get(name, name)
                 state.ignore()

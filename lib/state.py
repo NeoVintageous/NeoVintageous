@@ -29,7 +29,7 @@ _logger = PluginLogger(__name__)
 
 class State(object):
     """
-    Manages global Vim state. Accumulates command data, etc.
+    Manage global Vim state. Accumulates command data, etc.
 
     Usage:
       Always instantiate passing it the view that commands are going to
@@ -39,9 +39,7 @@ class State(object):
 
           state = State(view)
 
-    Notes:
-      `State` internally uses view.settings() and window.settings()
-      to persist data.
+    Note: `State` internally uses view.settings() and window.settings() to persist data.
     """
 
     registers = Registers()
@@ -68,8 +66,10 @@ class State(object):
     @property
     def glue_until_normal_mode(self):
         """
-        Indicates that editing commands should be grouped together in a single
-        undo step after the user requested `_enter_normal_mode` next.
+        Indicate that editing commands should be grouped together.
+
+        They should be grouped together in a single undo step after the user
+        requested `_enter_normal_mode` next.
 
         This property is *VOLATILE*; it shouldn't be persisted between
         sessions.
@@ -83,9 +83,11 @@ class State(object):
     @property
     def processing_notation(self):
         """
-        Indicates whether `ProcessNotation` is running a command and is
-        grouping all edits in one single undo step. That is, we are running
-        a non-interactive sequence of commands.
+        Indicate whether `ProcessNotation` is running.
+
+        Indicates whether `ProcessNotation` is running a command and is grouping
+        all edits in one single undo step. That is, we are running a non-
+        interactive sequence of commands.
 
         This property is *VOLATILE*; it shouldn't be persisted between
         sessions.
@@ -101,6 +103,8 @@ class State(object):
     @property
     def non_interactive(self):
         """
+        Indicate whether `ProcessNotation` is running.
+
         Indicates whether `ProcessNotation` is running a command and no
         interactive prompts should be used (for example, by the '/' motion.)
 
@@ -116,9 +120,7 @@ class State(object):
 
     @property
     def last_character_search(self):
-        """
-        Last character used as input for 'f' or 't'.
-        """
+        """Last character used as input for 'f' or 't'."""
         return self.settings.window['_vintageous_last_character_search'] or ''
 
     @last_character_search.setter
@@ -130,11 +132,10 @@ class State(object):
     @property
     def last_char_search_command(self):
         """
-        ',' and ';' change directions depending on which of 'f' or 't' was the
-        previous command.
+        ',' and ';' change directions depending on which of 'f' or 't' was the previous command.
 
-        Returns the name of the last character search command, namely:
-        'vi_f', 'vi_t', 'vi_big_f' or 'vi_big_t'.
+        Returns the name of the last character search command, namely: 'vi_f',
+        'vi_t', 'vi_big_f' or 'vi_big_t'.
         """
         name = self.settings.window['_vintageous_last_char_search_command']
         return name or 'vi_f'
@@ -146,8 +147,7 @@ class State(object):
     @property
     def last_buffer_search_command(self):
         """
-        'n' and 'N' change directions depending on which of '/' or '?' was the
-        previous command.
+        'n' and 'N' change directions depending on which of '/' or '?' was the previous command.
 
         Returns the name of the last character search command, namely:
         'vi_slash', 'vi_question_mark', 'vi_star', 'vi_octothorp'
@@ -161,9 +161,7 @@ class State(object):
 
     @property
     def must_capture_register_name(self):
-        """
-        Returns `True` if `State` is expecting a register name next.
-        """
+        """Return `True` if `State` is expecting a register name next."""
         return self.settings.vi['must_capture_register_name'] or False
 
     @must_capture_register_name.setter
@@ -172,9 +170,7 @@ class State(object):
 
     @property
     def last_buffer_search(self):
-        """
-        Returns the last string used by buffer search commands '/' or '?'.
-        """
+        """Return the last string used by buffer search commands '/' or '?'."""
         return self.settings.window['_vintageous_last_buffer_search'] or ''
 
     @last_buffer_search.setter
@@ -206,9 +202,10 @@ class State(object):
     @property
     def normal_insert_count(self):
         """
-        Count issued to 'i' or 'a', etc. These commands enter insert mode.
-        If passed a count, they must repeat the commands run while in insert
-        mode.
+        Count issued to 'i' or 'a', etc.
+
+        These commands enter insert mode. If passed a count, they must repeat
+        the commands run while in insert mode.
         """
         return self.settings.vi['normal_insert_count'] or '1'
 
@@ -218,9 +215,7 @@ class State(object):
 
     @property
     def sequence(self):
-        """
-        Sequence of keys provided by the user.
-        """
+        """Sequence of keys provided by the user."""
         return self.settings.vi['sequence'] or ''
 
     @sequence.setter
@@ -230,8 +225,9 @@ class State(object):
     @property
     def partial_sequence(self):
         """
-        Sometimes we need to store a partial sequence to obtain the commands'
-        full name. Such is the case of `gD`, for example.
+        Sometimes we need to store a partial sequence to obtain the commands' full name.
+
+        Such is the case of `gD`, for example.
         """
         return self.settings.vi['partial_sequence'] or ''
 
@@ -242,9 +238,11 @@ class State(object):
     @property
     def mode(self):
         """
-        Current mode. It isn't guaranteed that the underlying view's .sel()
-        will be in a consistent state (for example, that it will at least
-        have one non-empty region in visual mode.
+        State of current mode.
+
+        It isn't guaranteed that the underlying view's .sel() will be in a
+        consistent state (for example, that it will at least have one non-empty
+        region in visual mode.
         """
         return self.settings.vi['mode'] or modes.UNKNOWN
 
@@ -302,10 +300,12 @@ class State(object):
     @settings.volatile
     def repeat_data(self):
         """
-        Stores (type, cmd_name_or_key_seq, , mode) for '.' to use.
+        Store (type, cmd_name_or_key_seq, , mode) for '.' to use.
 
         `type` may be 'vi' or 'native'. `vi`-commands are executed via
-        `ProcessNotation`, while `native`-commands are executed via .run_command().
+        `ProcessNotation`, while `native`-commands are executed via
+        .run_command().
+
         """
         return self.settings.vi['repeat_data'] or None
 
@@ -318,9 +318,7 @@ class State(object):
 
     @property
     def count(self):
-        """
-        Calculates the actual count for the current command.
-        """
+        """Calculate the actual count for the current command."""
         c = 1
 
         if self.action_count:
@@ -336,9 +334,7 @@ class State(object):
 
     @property
     def xpos(self):
-        """
-        Stores the current xpos for carets.
-        """
+        """Store the current xpos for carets."""
         return self.settings.vi['xpos'] or 0
 
     @xpos.setter
@@ -348,9 +344,7 @@ class State(object):
 
     @property
     def visual_block_direction(self):
-        """
-        Stores the visual block direction for the current selection.
-        """
+        """Store the visual block direction for the current selection."""
         return self.settings.vi['visual_block_direction'] or directions.DOWN
 
     @visual_block_direction.setter
@@ -366,9 +360,7 @@ class State(object):
 
     @property
     def register(self):
-        """
-        Stores the current open register, as requested by the user.
-        """
+        """Store the current open register, as requested by the user."""
         return self.settings.vi['register'] or '"'
 
     @register.setter
@@ -380,10 +372,7 @@ class State(object):
 
     @property
     def must_collect_input(self):
-        """
-        Returns `True` if state must collect input for the current motion or
-        operator.
-        """
+        """Return `True` if state must collect input for the current motion or operator."""
         if self.motion and self.action:
             if self.motion.accept_input:
                 return True
@@ -508,8 +497,9 @@ class State(object):
 
     def reset_volatile_data(self):
         """
-        Resets window- or application-wide data to their default values when
-        starting a new NeoVintageous session.
+        Reset window or application wide data to their default values.
+
+        Use when starting a new session.
         """
         self.glue_until_normal_mode = False
         self.view.run_command('unmark_undo_groups_for_gluing')
@@ -542,16 +532,13 @@ class State(object):
                 self.xpos = xpos
 
     def _set_parsers(self, command):
-        """
-        Returns `True` if we've had to run an immediate parser via an input
-        panel.
-        """
+        """Return `True` if we've had to run an immediate parser via an input panel."""
         if command.accept_input:
             return self._run_parser_via_panel(command)
 
     def _run_parser_via_panel(self, command):
         """
-        Returns `True` if the current parser needs to be run via a panel.
+        Return `True` if the current parser needs to be run via a panel.
 
         If needed, it runs the input-panel-based parser.
         """
@@ -580,7 +567,7 @@ class State(object):
 
     def set_command(self, command):
         """
-        Sets the current command to @command.
+        Set the current command to @command.
 
         @command
           A command definition as found in `keys.py`.
@@ -626,8 +613,10 @@ class State(object):
             return True
 
     def get_visual_repeat_data(self):
-        """Returns the data needed to restore visual selections before
-        repeating a visual mode command in normal mode.
+        """
+        Return the data needed to restore visual selections.
+
+        Before repeating a visual mode command in normal mode.
         """
         if self.mode not in (modes.VISUAL, modes.VISUAL_LINE):
             return
@@ -685,9 +674,7 @@ class State(object):
                 State.macro_steps.append((cmd_name, args))
 
     def runnable(self):
-        """
-        Returns `True` if we can run the state data as it is.
-        """
+        """Return `True` if we can run the state data as it is."""
         if self.must_collect_input:
             return False
 
@@ -709,9 +696,7 @@ class State(object):
         return False
 
     def eval(self):
-        """
-        Run data as a command if possible.
-        """
+        """Run data as a command if possible."""
         if not self.runnable():
             return
 
@@ -818,14 +803,14 @@ class State(object):
 
 def init_state(view, new_session=False):
     """
-    Initializes global data. Runs at startup and every time a view gets
-    activated, loaded, etc.
+    Initialize global data.
+
+    Runs at startup and every time a view gets activated, loaded, etc.
 
     @new_session
       Whether we're starting up Sublime Text. If so, volatile data must be
       wiped.
     """
-
     _logger.debug("running init for view %d", view.id())
 
     if not is_view(view):

@@ -1,7 +1,6 @@
 from NeoVintageous.lib.ex.ex_error import ERR_UNDEFINED_VARIABLE
 from NeoVintageous.lib.ex.ex_error import VimError
 
-from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_LET
 from .tokens_base import TokenOfCommand
@@ -33,7 +32,8 @@ def scan_command_let(state):
 
     # TODO(guillermooo): :let has many more options.
 
-    m = state.expect_match(r'(?P<name>.+?)\s*=\s*(?P<value>.+?)\s*$',
+    m = state.expect_match(
+        r'(?P<name>.+?)\s*=\s*(?P<value>.+?)\s*$',
         on_error=lambda: VimError(ERR_UNDEFINED_VARIABLE))
 
     params.update(m.groupdict())

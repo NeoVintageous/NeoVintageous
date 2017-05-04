@@ -48,6 +48,7 @@ class KeyContext(object):
     #     # cleanup tasks, so let the command run anyway.
     #     if self.state.view.get_regions('vi_search'):
     #         return True
+
     def vi_is_view(self, key, operator, operand, match_all):
         value = utils.is_view(self.state.view)
         return self._check(value, operator, operand, match_all)
@@ -89,13 +90,13 @@ class KeyContext(object):
     #     return self._check(value, operator, operand, match_all)
 
     # def vi_has_action(self, key, operator, operand, match_all):
-        # value = self.state.action
-        # value = value and (value not in constants.INCOMPLETE_ACTIONS)
-        # return self._check(value, operator, operand, match_all)
+    #     value = self.state.action
+    #     value = value and (value not in constants.INCOMPLETE_ACTIONS)
+    #     return self._check(value, operator, operand, match_all)
 
     # def vi_has_motion_count(self, key, operator, operand, match_all):
-        # value = self.state.motion_digits
-        # return self._check(value, operator, operand, match_all)
+    #     value = self.state.motion_digits
+    #     return self._check(value, operator, operand, match_all)
 
     def vi_mode_normal_insert(self, key, operator, operand, match_all):
         value = self.state.mode == modes.NORMAL_INSERT
@@ -106,12 +107,11 @@ class KeyContext(object):
         return self._check(value, operator, operand, match_all)
 
     # def vi_mode_cannot_push_zero(self, key, operator, operand, match_all):
-        # value = False
-        # if operator == sublime.OP_EQUAL:
-            # value = not (self.state.motion_digits or
-                             # self.state.action_digits)
+    #     value = False
+    #     if operator == sublime.OP_EQUAL:
+    #         value = not (self.state.motion_digits or self.state.action_digits)
 
-        # return self._check(value, operator, operand, match_all)
+    #     return self._check(value, operator, operand, match_all)
 
     # def vi_mode_visual_any(self, key, operator, operand, match_all):
     #     value = self.state.mode in (moces.VISUAL_LINE, modes.VIUSAL, modes.VISUAL_BLOCK)
@@ -152,39 +152,38 @@ class KeyContext(object):
         return self._check((normal_or_visual or visual_line), operator, operand, match_all)
 
     # def vi_state_next_character_is_user_input(self, key, operator, operand, match_all):
-        # value = (self.state.expecting_user_input or
-                 # self.state.expecting_register)
-        # return self._check(value, operator, operand, match_all)
+    #     value = (self.state.expecting_user_input or self.state.expecting_register)
+    #     return self._check(value, operator, operand, match_all)
 
     # def vi_state_expecting_user_input(self, key, operator, operand, match_all):
-        # value = self.state.expecting_user_input
-        # return self._check(value, operator, operand, match_all)
+    #     value = self.state.expecting_user_input
+    #     return self._check(value, operator, operand, match_all)
 
     # def vi_state_expecting_register(self, key, operator, operand, match_all):
-        # value = self.state.expecting_register
-        # return self._check(value, operator, operand, match_all)
+    #     value = self.state.expecting_register
+    #     return self._check(value, operator, operand, match_all)
 
     # def vi_mode_can_push_digit(self, key, operator, operand, match_all):
-        # motion_digits = not self.state.motion
-        # action_digits = self.state.motion
-        # value = motion_digits or action_digits
-        # return self._check(value, operator, operand, match_all)
+    #     motion_digits = not self.state.motion
+    #     action_digits = self.state.motion
+    #     value = motion_digits or action_digits
+    #     return self._check(value, operator, operand, match_all)
 
     # def vi_is_recording_macro(self, key, operator, operand, match_all):
-        # value = self.state.is_recording
-        # return self._check(value, operator, operand, match_all)
+    #     value = self.state.is_recording
+    #     return self._check(value, operator, operand, match_all)
 
     # def vi_in_key_namespace(self, key, operator, operand, match_all):
-        # has_incomplete_action = self.vi_has_incomplete_action('vi_has_incomplete_action', sublime.OP_EQUAL, True, False)
-        # if not has_incomplete_action:
-            # return False
+    #     has_incomplete_action = self.vi_has_incomplete_action('vi_has_incomplete_action', sublime.OP_EQUAL, True, False)
+    #     if not has_incomplete_action:
+    #         return False
 
-        # value = action_to_namespace(self.state.action) or action_to_namespace(self.state.motion)
-        # if not value:
-            # return False
-        # value = value == operand
-        # return value
-        # return self._check(value, operator, True, match_all)
+    #     value = action_to_namespace(self.state.action) or action_to_namespace(self.state.motion)
+    #     if not value:
+    #         return False
+    #     value = value == operand
+    #     return value
+    #     return self._check(value, operator, True, match_all)
 
     # def vi_can_enter_any_visual_mode(self, key, operator, operand, match_all):
     #     sels = self.state.view.sel()

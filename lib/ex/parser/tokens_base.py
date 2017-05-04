@@ -1,6 +1,4 @@
-'''
-Basic stuff used by the scanner/parser.
-'''
+"""Basic stuff used by the scanner/parser."""
 
 # TODO: Do we actually need these IDs?
 
@@ -77,9 +75,8 @@ TOKEN_COMMAND_WRITE_AND_QUIT_ALL = 56
 
 
 class Token(object):
-    '''
-    Base class for tokens.
-    '''
+    """Base class for tokens."""
+
     def __init__(self, token_type, content):
         self.token_type = token_type
         self.content = content
@@ -98,16 +95,14 @@ class Token(object):
 
 
 class TokenOfRange(Token):
-    '''
-    Represent a line range element.
-    '''
+    """Represent a line range element."""
+
     pass
 
 
 class TokenOfCommand(Token):
-    '''
-    Represents a command line command element.
-    '''
+    """Represents a command line command element."""
+
     def __init__(self, params, *args, forced=False, **kwargs):
         self.params = params or {}
         # Indicates whether ! was passed on the command line (if the command

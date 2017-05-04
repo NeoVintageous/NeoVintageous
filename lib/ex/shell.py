@@ -1,9 +1,9 @@
 import sublime
 
 import NeoVintageous.lib.ex.plat as plat
-import NeoVintageous.lib.ex.plat.linux
-import NeoVintageous.lib.ex.plat.osx
-import NeoVintageous.lib.ex.plat.windows
+import NeoVintageous.lib.ex.plat.linux  # noqa: F401
+import NeoVintageous.lib.ex.plat.osx  # noqa: F401
+import NeoVintageous.lib.ex.plat.windows  # noqa: F401
 
 
 def run_and_wait(view, cmd):

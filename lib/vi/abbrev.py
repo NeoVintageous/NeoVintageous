@@ -27,9 +27,8 @@ def save_abbrevs(data):
 
 
 class Store(object):
-    """
-    Manages storage for abbreviations.
-    """
+    """Manages storage for abbreviations."""
+
     def set(self, short, full):
         abbrevs = load_abbrevs()
         idx = self.contains(abbrevs, short)

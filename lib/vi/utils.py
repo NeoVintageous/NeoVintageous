@@ -10,8 +10,9 @@ R = sublime.Region
 
 def mark_as_widget(view):
     """
-    Marks @view as a widget so we can later inspect that attribute, for
-    example, when hiding panels in _vi_enter_normal_mode.
+    Mark @view as a widget so we can later inspect that attribute.
+
+    For example, when hiding panels in _vi_enter_normal_mode.
 
     Used prominently by '/', '?' and ':'.
 
@@ -28,7 +29,7 @@ def mark_as_widget(view):
 
 def is_view(view):
     """
-    Returns `True` if @view is a normal view as NeoVintageous understands them.
+    Return `True` if @view is a normal view as NeoVintageous understands them.
 
     It returns `False` for views that have a `__vi_external_disable`
     setting set to `True`.
@@ -39,7 +40,7 @@ def is_view(view):
 
 def is_ignored(view):
     """
-    Returns `True` if the view wants to be ignored by NeoVintageous.
+    Return `True` if the view wants to be ignored by NeoVintageous.
 
     Useful for external plugins that don't want NeoVintageous to be active for
     specific views.
@@ -49,7 +50,7 @@ def is_ignored(view):
 
 def is_ignored_but_command_mode(view):
     """
-    Returns `True` if the view wants to be ignored by NeoVintageous.
+    Return `True` if the view wants to be ignored by NeoVintageous.
 
     Useful for external plugins that don't want NeoVintageous to be active for
     specific views.
@@ -61,17 +62,13 @@ def is_ignored_but_command_mode(view):
 
 
 def is_widget(view):
-    """
-    Returns `True` if the @view is any kind of widget.
-    """
+    """Return `True` if the @view is any kind of widget."""
     setts = view.settings()
     return (setts.get('is_widget') or setts.get('is_vintageous_widget'))
 
 
 def is_console(view):
-    """
-    Returns `True` if @view seems to be ST3's console.
-    """
+    """Return `True` if @view seems to be ST3's console."""
     # XXX: Is this reliable?
     return (getattr(view, 'settings') is None)
 
@@ -79,9 +76,8 @@ def is_console(view):
 # Use strings because we need to pass modes as arguments in
 # Default.sublime-keymap and it's more readable.
 class modes:
-    """
-    Vim modes.
-    """
+    """Vim modes."""
+
     COMMAND_LINE = 'mode_command_line'
     INSERT = 'mode_insert'
     INTERNAL_NORMAL = 'mode_internal_normal'
@@ -129,9 +125,8 @@ class modes:
 
 
 class input_types:
-    """
-    Types of input parsers.
-    """
+    """Types of input parsers."""
+
     INMEDIATE    = 1
     VIA_PANEL    = 2
     AFTER_MOTION = 3
@@ -156,7 +151,7 @@ def regions_transformer(view, f):
 
 def resolve_insertion_point_at_b(region):
     """
-    Returns the insertion point closest to @region.b for a visual region.
+    Return the insertion point closest to @region.b for a visual region.
 
     For non-visual regions, the insertion point is always any of the region's
     ends, so using this function is pointless.
@@ -171,8 +166,7 @@ def resolve_insertion_point_at_b(region):
 
 def resolve_insertion_point_at_a(region):
     """
-    Returns the actual insertion point closest to @region.a for a visual
-    region.
+    Return the actual insertion point closest to @region.a for a visual region.
 
     For non-visual regions, the insertion point is always any of the region's
     ends, so using this function is pointless.
@@ -190,10 +184,7 @@ def resolve_insertion_point_at_a(region):
 
 
 def new_inclusive_region(a, b):
-    """
-    Creates a region that includes the caracter at @a or @b depending on the
-    new region's orientation.
-    """
+    """Create region that includes the char at @a or @b depending on new region's orientation."""
     if a <= b:
         return sublime.Region(a, b + 1)
     else:
@@ -242,13 +233,14 @@ def blink(times=4, delay=55):
 
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
-    """ Base class.
+    """Base class.
 
-        The undo stack will ignore commands derived from this class. This is
-        useful to prevent global state management commands from shadowing
-        commands performing edits to the buffer, which are the important ones
-        to keep in the undo history.
+    The undo stack will ignore commands derived from this class. This is
+    useful to prevent global state management commands from shadowing
+    commands performing edits to the buffer, which are the important ones
+    to keep in the undo history.
     """
+
     def __init__(self, view):
         sublime_plugin.TextCommand.__init__(self, view)
 
@@ -387,7 +379,7 @@ class directions:
 
 def resize_visual_region(r, b):
     """
-    Defines a new visual mode region.
+    Define a new visual mode region.
 
     Returns a region where x.a != x.b.
 

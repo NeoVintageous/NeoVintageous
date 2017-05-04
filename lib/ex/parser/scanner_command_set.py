@@ -1,4 +1,3 @@
-from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_SET
 from .tokens_base import TokenOfCommand
@@ -15,11 +14,11 @@ class TokenSet(TokenOfCommand):
 
     @property
     def value(self):
-        return self.params ['value']
+        return self.params['value']
 
     @property
     def option(self):
-        return self.params ['option']
+        return self.params['option']
 
 
 def scan_command_set(state):
@@ -36,4 +35,3 @@ def scan_command_set(state):
     params.update(m.groupdict())
 
     return None, [TokenSet(params), TokenEof()]
-

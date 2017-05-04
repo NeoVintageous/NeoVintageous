@@ -21,9 +21,7 @@ _VARIABLES = {
 
 
 def expand_keys(seq):
-    '''Replaces well-known variables in key names with their corresponding
-    values.
-    '''
+    """Replace well-known variables in key names with their corresponding values."""
     leader = var_name = None
     # TODO(guillermooo): Can these variables appear in the middle of a
     # sequence instead of at the beginning only?
@@ -57,10 +55,12 @@ def set_(name, value):
 
 
 class Variables(object):
-    '''Stores variables during the current Sublime Text session.
+    """
+    Store variables during the current Sublime Text session.
 
     Meant to be used as a descriptor with `State`.
-    '''
+    """
+
     def __get__(self, instance, owner):
         self.view = instance.view
         self.settings = instance.settings

@@ -1,33 +1,33 @@
-from .tokens_base import *
+from .tokens_base import * # noqa
 
 
-class TokenEof(Token):
+class TokenEof(Token): # noqa
     def __init__(self, *args, **kwargs):
-        super().__init__(TOKEN_EOF, '__EOF__', *args, **kwargs)
+        super().__init__(TOKEN_EOF, '__EOF__', *args, **kwargs)  # noqa: F405
 
 
-class TokenOfSearch(TokenOfRange):
+class TokenOfSearch(TokenOfRange): # noqa
     pass
 
 
-class TokenDollar(TokenOfRange):
+class TokenDollar(TokenOfRange): # noqa
     def __init__(self, *args, **kwargs):
-        super().__init__(TOKEN_DOLLAR, '$', *args, **kwargs)
+        super().__init__(TOKEN_DOLLAR, '$', *args, **kwargs)  # noqa: F405
 
 
-class TokenComma(TokenOfRange):
+class TokenComma(TokenOfRange): # noqa
     def __init__(self, *args, **kwargs):
-        super().__init__(TOKEN_COMMA, ',', *args, **kwargs)
+        super().__init__(TOKEN_COMMA, ',', *args, **kwargs)  # noqa: F405
 
 
-class TokenSemicolon(TokenOfRange):
+class TokenSemicolon(TokenOfRange): # noqa
     def __init__(self, *args, **kwargs):
-        super().__init__(TOKEN_SEMICOLON, ';', *args, **kwargs)
+        super().__init__(TOKEN_SEMICOLON, ';', *args, **kwargs)  # noqa: F405
 
 
-class TokenOffset(TokenOfRange):
+class TokenOffset(TokenOfRange): # noqa
     def __init__(self, content, *args, **kwargs):
-        super().__init__(TOKEN_OFFSET, content, *args, **kwargs)
+        super().__init__(TOKEN_OFFSET, content, *args, **kwargs)  # noqa: F405
 
     def __str__(self):
         offsets = []
@@ -36,19 +36,19 @@ class TokenOffset(TokenOfRange):
         return ''.join(offsets)
 
 
-class TokenPercent(TokenOfRange):
+class TokenPercent(TokenOfRange): # noqa
     def __init__(self, *args, **kwargs):
-        super().__init__(TOKEN_PERCENT, '%', *args, **kwargs)
+        super().__init__(TOKEN_PERCENT, '%', *args, **kwargs)  # noqa: F405
 
 
-class TokenDot(TokenOfRange):
+class TokenDot(TokenOfRange): # noqa
     def __init__(self, *args, **kwargs):
-        super().__init__(TOKEN_DOT, '.', *args, **kwargs)
+        super().__init__(TOKEN_DOT, '.', *args, **kwargs)  # noqa: F405
 
 
 class TokenSearchForward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(TOKEN_SEARCH_FORWARD, content, *args, **kwargs)
+        super().__init__(TOKEN_SEARCH_FORWARD, content, *args, **kwargs)  # noqa: F405
 
     def __str__(self):
         return '/{0}/'.format(self.content)
@@ -56,20 +56,20 @@ class TokenSearchForward(TokenOfSearch):
 
 class TokenSearchBackward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(TOKEN_SEARCH_BACKWARD, content, *args, **kwargs)
+        super().__init__(TOKEN_SEARCH_BACKWARD, content, *args, **kwargs)  # noqa: F405
 
     def __str__(self):
         return '?{0}?'.format(self.content)
 
 
-class TokenDigits(TokenOfRange):
+class TokenDigits(TokenOfRange): # noqa
     def __init__(self, content, *args, **kwargs):
-        super().__init__(TOKEN_DIGITS, content, *args, **kwargs)
+        super().__init__(TOKEN_DIGITS, content, *args, **kwargs)  # noqa: F405
 
 
-class TokenMark(TokenOfRange):
+class TokenMark(TokenOfRange): # noqa
     def __init__(self, content, *args, **kwargs):
-        super().__init__(TOKEN_MARK, content, *args, **kwargs)
+        super().__init__(TOKEN_MARK, content, *args, **kwargs)  # noqa: F405
 
     def __str__(self):
         return "'{}".format(self.content)

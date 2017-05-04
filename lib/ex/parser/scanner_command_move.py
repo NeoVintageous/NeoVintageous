@@ -1,5 +1,4 @@
 from .parser import parse_command_line
-from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_MOVE
 from .tokens_base import TokenOfCommand
@@ -25,7 +24,7 @@ def scan_command_move(state):
         'address': None
     }
 
-    state.skip (' ')
+    state.skip(' ')
     state.ignore()
 
     m = state.match(r'(?P<address>.*$)')
@@ -34,5 +33,3 @@ def scan_command_move(state):
         params['address'] = parse_command_line(address_command_line).line_range
 
     return None, [TokenMove(params), TokenEof()]
-
-

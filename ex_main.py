@@ -310,10 +310,7 @@ class ViSettingCompletion(sublime_plugin.TextCommand):
 
 
 class CmdlineContextProvider(sublime_plugin.EventListener):
-
-    """
-    Provides contexts for the cmdline input panel.
-    """
+    """Provide contexts for the cmdline input panel."""
 
     def on_query_context(self, view, key, operator, operand, match_all):
         if view.score_selector(0, 'text.excmdline') == 0:

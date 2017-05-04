@@ -2,8 +2,7 @@ import sublime
 
 
 def get_line_nr(view, point):
-    """Return 1-based line number for `point`.
-    """
+    """Return 1-based line number for `point`."""
     return view.rowcol(point)[0] + 1
 
 
@@ -19,12 +18,12 @@ def find_bol(view, point):
 
 # TODO: make this return None for failures.
 def find_line(view, start=0, end=-1, target=0):
-    """Do binary search to find :target: line number.
+    """
+    Do a binary search to find :target: line number.
 
     Return: If `target` is found, `Region` comprising entire line no. `target`.
             If `target`is not found, `-1`.
     """
-
     # Don't bother if sought line is beyond buffer boundaries.
     if target < 0 or target > view.rowcol(view.size())[0] + 1:
         return -1
@@ -51,8 +50,7 @@ def search_in_range(view, what, start, end, flags=0):
 
 
 def find_last_match(view, what, start, end, flags=0):
-    """Find last occurrence of `what` between `start`, `end`.
-    """
+    """Find last occurrence of `what` between `start`, `end`."""
     match = view.find(what, start, flags)
     new_match = None
     while match:
@@ -64,8 +62,7 @@ def find_last_match(view, what, start, end, flags=0):
 
 
 def reverse_search(view, what, start=0, end=-1, flags=0):
-    """Do binary search to find `what` walking backwards in the buffer.
-    """
+    """Do binary search to find `what` walking backwards in the buffer."""
     if end == -1:
         end = view.size()
     end = find_eol(view, view.line(end).a)

@@ -7,15 +7,12 @@ from NeoVintageous.lib import ex
 
 @ex.command('cquit', 'cq')
 class TokenCquit(TokenOfCommand):
-	def __init__(self, *args, **kwargs):
-		super().__init__({},
-						 TOKEN_COMMAND_CQUIT,
-						 'cquit', *args, **kwargs)
-		self.target_command = 'ex_cquit'
+    def __init__(self, *args, **kwargs):
+        super().__init__({}, TOKEN_COMMAND_CQUIT, 'cquit', *args, **kwargs)
+        self.target_command = 'ex_cquit'
 
 
 def scan_command_cquit(state):
-	state.expect(EOF)
+    state.expect(EOF)
 
-	return None, [TokenCquit(), TokenEof()]
-
+    return None, [TokenCquit(), TokenEof()]

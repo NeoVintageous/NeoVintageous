@@ -94,14 +94,13 @@ class Registers(object):
 
     def set(self, name, values):
         """
-        Sets an a-z or 0-9 register.
+        Set an a-z or 0-9 register.
 
         In order to honor multiple selections in Sublime Text, we need to
         store register data as lists, one per selection. The paste command
         will then make the final decision about what to insert into the buffer
         when faced with unbalanced selection number / available register data.
         """
-
         # We accept integers as register names.
         name = str(name)
         assert len(str(name)) == 1, "Register names must be 1 char long: " + name
@@ -131,9 +130,7 @@ class Registers(object):
             self._maybe_set_sys_clipboard(name, values)
 
     def append_to(self, name, suffixes):
-        """
-        Appends to an a-z register. `name` must be a capital in A-Z.
-        """
+        """Append to an a-z register. `name` must be a capital in A-Z."""
         assert len(name) == 1, "Register names must be 1 char long."
         assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", \
             "Can only append to A-Z registers."
@@ -217,8 +214,7 @@ class Registers(object):
                 self[REG_SMALL_DELETE] = self.get_selected_text(vi_cmd_data)
 
     def get_selected_text(self, vi_cmd_data):
-        """Inspect settings and populate registers as needed.
-        """
+        """Inspect settings and populate registers as needed."""
         fragments = [self.view.substr(r) for r in list(self.view.sel())]
 
         # Add new line at EOF, but don't add too many new lines.

@@ -1,6 +1,4 @@
-'''
-Tokenization for the Vim command line.
-'''
+"""Tokenization for the Vim command line."""
 
 from NeoVintageous.lib.ex.ex_error import ERR_UNKNOWN_COMMAND
 from NeoVintageous.lib.ex.ex_error import VimError
@@ -23,19 +21,18 @@ from .tokens import TokenSemicolon
 
 # TODO: make this a function. We don't need state.
 class Scanner(object):
-    '''
-    Produces ex command-line tokens from a string.
-    '''
+    """Produce ex command-line tokens from a string."""
+
     def __init__(self, source):
         self.state = ScannerState(source)
 
     def scan(self):
-        '''
-        Generates ex command-line tokens for `source`.
+        """
+        Generate ex command-line tokens for `source`.
 
         The scanner works its way through the source string by passing the
         current state to the next scanning function.
-        '''
+        """
         next_func = scan_range
         while True:
             # We return multiple tokens so that we can work around cyclic imports:
@@ -50,11 +47,11 @@ class Scanner(object):
 
 
 def scan_range(state):
-    '''
-    Produces tokens found in a command line range.
+    """
+    Produce tokens found in a command line range.
 
     http://vimdoc.sourceforge.net/htmldoc/cmdline.html#cmdline-ranges
-    '''
+    """
     c = state.consume()
 
     if c == EOF:
@@ -132,7 +129,10 @@ def scan_search(state):
 
 def scan_offset(state):
     offsets = []
-    to_int = lambda x: int(x, 10)
+
+    def to_int(x):
+        return int(x, 10)
+
     sign = '-' if state.source[state.position - 1] == '-' else ''
 
     digits = state.expect_match(r'\s*(\d+)')

@@ -1,6 +1,4 @@
-'''
-Misc stuff needed for ex commands.
-'''
+"""Misc stuff needed for ex commands."""
 
 # Used to provide completions on the ex command line.
 command_names = []
@@ -8,7 +6,7 @@ command_names = []
 
 def command(name, abbrev):
     """
-    Registers the name of an ex command with `command_names`.
+    Register the name of an ex command with `command_names`.
 
     Meant to be imported like this:
 

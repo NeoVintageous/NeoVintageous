@@ -1,6 +1,8 @@
+
+
 class MacroRegisters(dict):
-    '''Crude implementation of macro registers.
-    '''
+    """Crude implementation of macro registers."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

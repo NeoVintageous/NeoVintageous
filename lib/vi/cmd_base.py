@@ -1,7 +1,6 @@
 class cmd_types:
-    """
-    Types of command.
-    """
+    """Types of command."""
+
     MOTION          = 1
     ACTION          = 2
     ANY             = 3
@@ -11,11 +10,9 @@ class cmd_types:
 
 
 class ViCommandDefBase(object):
-    """
-    Base class for all Vim commands.
-    """
+    """Base class for all Vim commands."""
 
-    _serializable = ['_inp',]
+    _serializable = ['_inp', ]
 
     def __init__(self):
         # the name of the st command wrapped by this class
@@ -36,15 +33,11 @@ class ViCommandDefBase(object):
 
     @property
     def inp(self):
-        """
-        Current input for this command.
-        """
+        """Input for this command."""
         return self._inp
 
     def accept(self, key):
-        """
-        Processes input for this command.
-        """
+        """Process input for this command."""
         _name = self.__class__.__name__
         assert self.input_parser, '{0} does not provide an input parser'.format(_name)
         raise NotImplementedError('{0} must implement .accept()'.format(_name))
@@ -54,9 +47,9 @@ class ViCommandDefBase(object):
 
     def translate(self, state):
         """
-        Returns the command as a valid Json object containing all necessary
-        data to be run by NeoVintageous. This is usually the last step before
-        handing the command off to ST.
+        Return the command as a valid Json object containing all necessary data to be run by NeoVintageous.
+
+        This is usually the last step before handing the command off to ST.
 
         Every motion and operator must override this method.
 
@@ -68,7 +61,7 @@ class ViCommandDefBase(object):
     @classmethod
     def from_json(cls, data):
         """
-        Instantiates a command from a valid Json object representing one.
+        Instantiate a command from a valid Json object representing one.
 
         @data
           Serialized command data as provided by .serialize().
@@ -78,10 +71,7 @@ class ViCommandDefBase(object):
         return instance
 
     def serialize(self):
-        """
-        Returns a valid Json object representing this command in a format
-        NeoVintageous uses internally.
-        """
+        """Return a valid Json object representing this command in a format NeoVintageous uses internally."""
         data = {'name': self.__class__.__name__,
                 'data': {k: v for k, v in self.__dict__.items() if k in self._serializable}}
 
@@ -94,9 +84,7 @@ class ViMissingCommandDef(ViCommandDefBase):
 
 
 class ViMotionDef(ViCommandDefBase):
-    """
-    Base class for all motions.
-    """
+    """Base class for all motions."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -106,9 +94,7 @@ class ViMotionDef(ViCommandDefBase):
 
 
 class ViOperatorDef(ViCommandDefBase):
-    """
-    Base class for all operators.
-    """
+    """Base class for all operators."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

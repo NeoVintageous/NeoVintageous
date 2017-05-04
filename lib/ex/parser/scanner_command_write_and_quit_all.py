@@ -20,9 +20,7 @@ plus_plus_translations = {
 @ex.command('xall', 'xa')
 class TokenCommandWriteAndQuitAll(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                        TOKEN_COMMAND_WRITE_AND_QUIT_ALL,
-                        'wqall', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_WRITE_AND_QUIT_ALL, 'wqall', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_write_and_quit_all'
 
@@ -47,8 +45,8 @@ def scan_command_write_and_quit_all(state):
         # TODO: expect_match should work with emit()
         # http://vimdoc.sourceforge.net/htmldoc/editing.html#[++opt]
         m = state.expect_match(
-                r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-                lambda: VimError(ERR_INVALID_ARGUMENT))
+            r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
+            lambda: VimError(ERR_INVALID_ARGUMENT))
         name = m.group(0)
         params['++'] = plus_plus_translations.get(name, name)
         state.ignore()
