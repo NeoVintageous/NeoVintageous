@@ -2,7 +2,7 @@ from collections import Counter
 
 import sublime
 
-from NeoVintageous.lib.logger import PluginLogger
+from NeoVintageous.lib.logger import get_logger
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import settings
@@ -24,7 +24,7 @@ from NeoVintageous.lib.vi.variables import Variables
 from NeoVintageous.lib.plugin import plugin
 
 
-_logger = PluginLogger(__name__)
+_logger = get_logger(__name__)
 
 
 class State(object):

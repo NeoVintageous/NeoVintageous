@@ -1,6 +1,6 @@
 import sublime
 
-from .lib.logger import PluginLogger
+from .lib.logger import get_logger
 from .lib.state import init_state
 
 # Load all the commands
@@ -15,7 +15,7 @@ from .lib.commands.support import NeovintageousExitFromCommandModeCommand # noqa
 from .lib.commands.support import NeovintageousReloadMyRcFileCommand # noqa
 
 
-_logger = PluginLogger(__name__)
+_logger = get_logger(__name__)
 
 
 def _ensure_other_vimlike_packages_are_disabled():
@@ -59,4 +59,4 @@ def plugin_unloaded():
         view.settings().set('command_mode', False)
         view.settings().set('inverse_caret_state', False)
     except AttributeError:
-        _logger.warn('could not access sublime.active_window().active_view().settings while unloading')
+        _logger.warning('could not access sublime.active_window().active_view().settings while unloading')

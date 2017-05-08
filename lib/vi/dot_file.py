@@ -2,10 +2,10 @@ import os
 
 import sublime
 
-from NeoVintageous.lib.logger import PluginLogger
+from NeoVintageous.lib.logger import get_logger
 
 
-_logger = PluginLogger(__name__)
+_logger = get_logger(__name__)
 
 
 class DotFile(object):

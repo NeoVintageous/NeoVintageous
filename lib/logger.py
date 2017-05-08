@@ -1,14 +1,19 @@
+# TODO refactor logging initialisation
+
 import logging
 from logging.handlers import RotatingFileHandler
 import os
 
 
-class LogDir(object):
+_DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
+
+
+class _LogDir():
     """Locates the log dir for plugin logs."""
 
     @staticmethod
     def find():
-        return LogDir()._find_log_dir()
+        return _LogDir()._find_log_dir()
 
     def _test(self, a, b):
         if a == b:
@@ -53,35 +58,10 @@ class LogDir(object):
         return logs_path
 
 
-class NullPluginLogger(object):
-    """Supresses log records."""
-
-    def __init__(self, name):
-        pass
-
-    def debug(self, message, *args, **kwargs):
-        pass
-
-    def info(self, message, *args, **kwargs):
-        pass
-
-    def warn(self, message, *args, **kwargs):
-        pass
-
-    def warning(self, message, *args, **kwargs):
-        pass
-
-    def error(self, message, *args, **kwargs):
-        pass
-
-    def critical(self, message, *args, **kwargs):
-        pass
-
-
-class PluginLogger(object):
+class _Logger():
     """Logs events."""
 
-    log_dir = LogDir.find()
+    log_dir = _LogDir.find()
 
     def __init__(self, name):
 
@@ -105,10 +85,6 @@ class PluginLogger(object):
         else:
             print("NeoVintageous: cannot find log file path: %s" % file_name)
 
-    def warn_about_logging_level(self):
-        if self.logger.level <= logging.DEBUG:
-            self.warning("debug level set to DEBUG; check or delete %s", self._get_path_to_log())
-
     def _get_path_to_log(self):
         package = __name__.split('.')[0]
         p = os.path.join(self.log_dir, package)
@@ -131,9 +107,6 @@ class PluginLogger(object):
     def info(self, message, *args, **kwargs):
         self.logger.info(message, *args, **kwargs)
 
-    def warn(self, message, *args, **kwargs):
-        self.logger.warning(message, *args, **kwargs)
-
     def warning(self, message, *args, **kwargs):
         self.logger.warning(message, *args, **kwargs)
 
@@ -142,3 +115,30 @@ class PluginLogger(object):
 
     def critical(self, message, *args, **kwargs):
         self.logger.critical(message, *args, **kwargs)
+
+
+class _NullLogger():
+    """An implementation of the Logger API that does nothing."""
+
+    def debug(self, message, *args, **kwargs):
+        pass
+
+    def info(self, message, *args, **kwargs):
+        pass
+
+    def warning(self, message, *args, **kwargs):
+        pass
+
+    def error(self, message, *args, **kwargs):
+        pass
+
+    def critical(self, message, *args, **kwargs):
+        pass
+
+
+if _DEBUG:
+    def get_logger(name):
+        return _Logger(name)
+else:
+    def get_logger(name):
+        return _NullLogger()

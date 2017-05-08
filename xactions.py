@@ -3,7 +3,7 @@ import re
 
 import sublime
 
-from NeoVintageous.lib.logger import PluginLogger
+from NeoVintageous.lib.logger import get_logger
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_base
@@ -31,7 +31,7 @@ from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.window import WindowAPI
 
 
-_logger = PluginLogger(__name__)
+_logger = get_logger(__name__)
 
 
 class _vi_g_big_u(ViTextCommandBase):
