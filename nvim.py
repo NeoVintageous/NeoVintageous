@@ -4,15 +4,15 @@ from .lib.logger import get_logger
 from .lib.state import init_state
 
 # Load all the commands
-from .lib.commands.ex_motions import _vi_cmd_line_a # noqa TODO command appears to be unused
-from .lib.commands.ex_motions import _vi_cmd_line_k # noqa TODO command appears to be unused
-from .lib.commands.jumplist import _vi_add_to_jump_list # noqa
-from .lib.commands.modelines import ExecuteSublimeTextModeLinesCommand # noqa
-from .lib.commands.support import NeovintageousToggleUseCtrlKeysCommand # noqa
-from .lib.commands.support import NeovintageousOpenMyRcFileCommand # noqa
-from .lib.commands.support import NeovintageousResetCommand # noqa
-from .lib.commands.support import NeovintageousExitFromCommandModeCommand # noqa
-from .lib.commands.support import NeovintageousReloadMyRcFileCommand # noqa
+from .lib.cmds.ex_motions import _vi_cmd_line_a # noqa TODO command appears to be unused
+from .lib.cmds.ex_motions import _vi_cmd_line_k # noqa TODO command appears to be unused
+from .lib.cmds.jumplist import _vi_add_to_jump_list # noqa
+from .lib.cmds.modelines import ExecuteSublimeTextModeLinesCommand # noqa
+from .lib.cmds.support import NeovintageousToggleUseCtrlKeysCommand # noqa
+from .lib.cmds.support import NeovintageousOpenMyRcFileCommand # noqa
+from .lib.cmds.support import NeovintageousResetCommand # noqa
+from .lib.cmds.support import NeovintageousExitFromCommandModeCommand # noqa
+from .lib.cmds.support import NeovintageousReloadMyRcFileCommand # noqa
 
 
 _logger = get_logger(__name__)
