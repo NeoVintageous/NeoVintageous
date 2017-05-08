@@ -84,8 +84,6 @@ class _vi_find_in_line(ViMotionCommand):
 
         char = utils.translate_char(char)
 
-        # state = self.state
-
         regions_transformer(self.view, f)
 
 
@@ -141,8 +139,6 @@ class _vi_reverse_find_in_line(ViMotionCommand):
             raise ValueError('bad parameters')
 
         char = utils.translate_char(char)
-
-        # state = self.state
 
         regions_transformer(self.view, f)
 

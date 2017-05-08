@@ -1,5 +1,3 @@
-import unittest
-
 from NeoVintageous.lib.vi.settings import SettingsManager
 from NeoVintageous.lib.vi.settings import SublimeSettings
 from NeoVintageous.lib.vi.settings import VI_OPTIONS
@@ -138,44 +136,3 @@ class TestViEditorSettings(ViewTestCase):
         self.settsman.view.window().settings().set('vintageous_foo', 100)
         self.assertEqual(self.settsman['foo'], 100)
         del VI_OPTIONS['foo']
-
-# class TestgetOption(unittest.TestCase):
-#   def setUp(self):
-#       TestsState.view.settings().erase('vintage')
-#       TestsState.view.settings().erase('vintageous_foo')
-#       self.vi_settings = VintageSettings(view=TestsState.view)
-
-#   def testDefaultScopeIsView(self):
-#       VI_OPTIONS['foo'] = vi_user_setting(scope=None, values=(100,), default='bar', parser=None, action=None, negatable=False)
-#       self.vi_settings.view.settings().set('vintageous_foo', 100)
-#       self.assertEqual(self.vi_settings['foo'], 100)
-#       del VI_OPTIONS['foo']
-
-#   def testReturnsDefaultValueIfUnset(self):
-#       VI_OPTIONS['foo'] = vi_user_setting(scope=None, values=(100,), default='bar', parser=None, action=None, negatable=False)
-#       self.assertEqual(self.vi_settings['foo'], 'bar')
-#       del VI_OPTIONS['foo']
-
-#   def testReturnsDefaultValueIfSetToWrongValue(self):
-#       VI_OPTIONS['foo'] = vi_user_setting(scope=None, values=(100,), default='bar', parser=None, action=None, negatable=False)
-#       self.vi_settings.view.settings().set('vintageous_foo', 'maraca')
-#       self.assertEqual(self.vi_settings['foo'], 'bar')
-#       del VI_OPTIONS['foo']
-
-#   def testReturnsCorrectValue(self):
-#       VI_OPTIONS['foo'] = vi_user_setting(scope=None, values=(100, 200), default='bar', parser=None, action=None, negatable=False)
-#       self.vi_settings.view.settings().set('vintageous_foo', 200)
-#       self.assertEqual(self.vi_settings['foo'], 200)
-#       del VI_OPTIONS['foo']
-
-#   def testCanReturnWindowLevelSetting(self):
-#       VI_OPTIONS['foo'] = vi_user_setting(scope=SCOPE_WINDOW, values=(100,), default='bar', parser=None, action=None, negatable=False)
-#       self.vi_settings.view.window().settings().set('vintageous_foo', 100)
-#       self.assertEqual(self.vi_settings['foo'], 100)
-#       del VI_OPTIONS['foo']
-
-#   def testCanReturnViewLevelSetting(self):
-#       VI_OPTIONS['foo'] = vi_user_setting(scope=SCOPE_VIEW, values=(100,), default='bar', parser=None, action=None, negatable=False)
-#       self.vi_settings.view.settings().set('vintageous_foo', 100)
-#       self.assertEqual(self.vi_settings['foo'], 100)
-#       del VI_OPTIONS['foo']

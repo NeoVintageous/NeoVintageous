@@ -28,8 +28,3 @@ class PluginManager(object):
 
     def register_action_input_parser(self, ip):
         INPUT_FOR_ACTIONS.update(ip)
-        # self.action_input_parsers.update(ip)
-
-# def plugin_loaded():
-#     global plugin_manager
-#     plugin_manager = PluginManager()
