@@ -1,7 +1,8 @@
 # Based on https://github.com/guillermooo/Vintageous_Plugin_Surround
 #
-# For some reason this has to be at the top level or else the commands don't load
-# I have no idea why, if I figure it out I'll move this into an "extras" dir.
+# For some reason this has to be at the top level or else the commands don't
+# load, I have no idea why, if I figure it out I'll move this into an "extras"
+# dir.
 
 import re
 
@@ -21,7 +22,8 @@ from NeoVintageous.lib.vi.utils import regions_transformer
 
 
 @plugin.register(seq='ys', modes=(modes.NORMAL,))
-class ViSurround(ViOperatorDef):
+class _nvim_surround_def_ys(ViOperatorDef):
+
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
 
@@ -52,17 +54,20 @@ class ViSurround(ViOperatorDef):
         return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_plug_ys'
-        cmd['action_args'] = {'mode': state.mode,
-                              'surround_with': self.inp}
-        return cmd
+        return {
+            'action': 'nvim_surround_ys',
+            'action_args': {
+                'mode': state.mode,
+                'surround_with': self.inp
+            }
+        }
 
 
 @plugin.register(seq='S', modes=(modes.VISUAL, modes.VISUAL_BLOCK))
-class ViSurroundVisual(ViSurround):
+class _nvim_surround_def_big_s(_nvim_surround_def_ys):
+
     def __init__(self, *args, **kwargs):
-        ViSurround.__init__(self, *args, **kwargs)
+        _nvim_surround_def_ys.__init__(self, *args, **kwargs)
 
         self.motion_required = False
 
@@ -76,7 +81,8 @@ class ViSurroundVisual(ViSurround):
 
 
 @plugin.register(seq='ds', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
-class ViDeleteSurround(ViOperatorDef):
+class _nvim_surround_def_ds(ViOperatorDef):
+
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
 
@@ -106,15 +112,18 @@ class ViDeleteSurround(ViOperatorDef):
         return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_plug_ds'
-        cmd['action_args'] = {'mode': state.mode,
-                              'replace_what': self.inp}
-        return cmd
+        return {
+            'action': 'nvim_surround_ds',
+            'action_args': {
+                'mode': state.mode,
+                'replace_what': self.inp
+            }
+        }
 
 
 @plugin.register(seq='cs', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
-class ViChangeSurround(ViOperatorDef):
+class _nvim_surround_def_cs(ViOperatorDef):
+
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
 
@@ -140,15 +149,16 @@ class ViChangeSurround(ViOperatorDef):
         return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_plug_cs'
-        cmd['action_args'] = {'mode': state.mode,
-                              'replace_what': self.inp}
-        print(cmd)
-        return cmd
+        return {
+            'action': 'nvim_surround_cs',
+            'action_args': {
+                'mode': state.mode,
+                'replace_what': self.inp
+            }
+        }
 
 
-def regions_transformer_reversed(view, f):
+def _regions_transformer_reversed(view, f):
     sels = reversed(list(view.sel()))
     new = []
     for sel in sels:
@@ -160,7 +170,7 @@ def regions_transformer_reversed(view, f):
     view.sel().add_all(new)
 
 
-PAIRS_DEFAULT_PLAIN = {
+_PAIRS_DEFAULT_PLAIN = {
     '(': ('(', ')'),
     ')': ('( ', ' )'),
     '[': ('[', ']'),
@@ -169,7 +179,7 @@ PAIRS_DEFAULT_PLAIN = {
     '}': ('{ ', ' }'),
 }
 
-PAIRS_DEFAULT_SPACE = {
+_PAIRS_DEFAULT_SPACE = {
     ')': ('(', ')'),
     '(': ('( ', ' )'),
     ']': ('[', ']'),
@@ -179,15 +189,15 @@ PAIRS_DEFAULT_SPACE = {
 }
 
 
-def get_surround_pairs(view):
+def _get_surround_pairs(view):
     if view.settings().get("vintageous_surround_spaces", False):
-        return PAIRS_DEFAULT_SPACE
+        return _PAIRS_DEFAULT_SPACE
     else:
-        return PAIRS_DEFAULT_PLAIN
+        return _PAIRS_DEFAULT_PLAIN
 
 
-# actual command implementation
-class _vi_plug_ys(ViTextCommandBase):
+class nvim_surround_ys(ViTextCommandBase):
+
     def run(self, edit, mode=None, surround_with='"', count=1, motion=None):
         def f(view, s):
             if mode == modes.INTERNAL_NORMAL:
@@ -207,12 +217,12 @@ class _vi_plug_ys(ViTextCommandBase):
             self.view.run_command(motion['motion'], motion['motion_args'])
 
         if surround_with:
-            regions_transformer_reversed(self.view, f)
+            _regions_transformer_reversed(self.view, f)
 
         self.enter_normal_mode(mode)
 
     def surround(self, edit, s, surround_with):
-        open_, close_ = get_surround_pairs(self.view).get(surround_with, (surround_with, surround_with))
+        open_, close_ = _get_surround_pairs(self.view).get(surround_with, (surround_with, surround_with))
 
         # Takes <q class="foo"> and produces: <q class="foo">text</q>
         if open_.startswith('<'):
@@ -226,7 +236,8 @@ class _vi_plug_ys(ViTextCommandBase):
         self.view.insert(edit, s.begin(), open_)
 
 
-class _vi_plug_cs(sublime_plugin.TextCommand):
+class nvim_surround_cs(sublime_plugin.TextCommand):
+
     PAIRS = {
         '(': ('(', ')'),
         ')': ('( ', ' )'),
@@ -237,8 +248,6 @@ class _vi_plug_cs(sublime_plugin.TextCommand):
     }
 
     def run(self, edit, mode=None, replace_what=''):
-        print(["cs", edit, mode, replace_what])
-
         def f(view, s):
             if mode == modes.INTERNAL_NORMAL:
                 self.replace(edit, s, replace_what)
@@ -250,7 +259,7 @@ class _vi_plug_cs(sublime_plugin.TextCommand):
 
     def replace(self, edit, s, replace_what):
         old, new = tuple(replace_what)
-        pairs = get_surround_pairs(self.view)
+        pairs = _get_surround_pairs(self.view)
         open_, close_ = pairs.get(old, (old, old))
         new_open, new_close = pairs.get(new, (new, new))
 
@@ -270,7 +279,8 @@ class _vi_plug_cs(sublime_plugin.TextCommand):
         self.view.replace(edit, prev_, new_open)
 
 
-class _vi_plug_ds(sublime_plugin.TextCommand):
+class nvim_surround_ds(sublime_plugin.TextCommand):
+
     PAIRS = {
         '(': ('(', ')'),
         ')': ('( ', ' )'),
@@ -292,7 +302,7 @@ class _vi_plug_ds(sublime_plugin.TextCommand):
 
     def replace(self, edit, s, replace_what):
         old, new = (replace_what, '')
-        open_, close_ = get_surround_pairs(self.view).get(old, (old, old))
+        open_, close_ = _get_surround_pairs(self.view).get(old, (old, old))
 
         if len(open_) == 1 and open_ == 't':
             open_, close_ = ('<.*?>', '</.*?>')

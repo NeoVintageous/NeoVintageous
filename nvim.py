@@ -13,6 +13,9 @@ from .lib.cmds.support import NeovintageousOpenMyRcFileCommand # noqa
 from .lib.cmds.support import NeovintageousResetCommand # noqa
 from .lib.cmds.support import NeovintageousExitFromCommandModeCommand # noqa
 from .lib.cmds.support import NeovintageousReloadMyRcFileCommand # noqa
+from .lib.extras.surround import nvim_surround_cs # noqa
+from .lib.extras.surround import nvim_surround_ds # noqa
+from .lib.extras.surround import nvim_surround_ys # noqa
 
 
 _logger = get_logger(__name__)
