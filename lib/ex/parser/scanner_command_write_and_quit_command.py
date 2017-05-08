@@ -3,7 +3,8 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_WRITE_AND_QUIT_COMMAND
 from .tokens_base import TokenOfCommand
 from NeoVintageous.lib import ex
-
+from NeoVintageous.lib.ex.ex_error import VimError
+from NeoVintageous.lib.ex.ex_error import ERR_INVALID_ARGUMENT
 
 plus_plus_translations = {
     'ff': 'fileformat',
@@ -33,8 +34,7 @@ def scan_command_write_and_quit_command(state):
     if c == EOF:
         return None, [TokenWriteAndQuitCommand(params), TokenEof()]
 
-    bang == c == '!'
-
+    bang = True if c == '!' else False
     if not bang:
         state.backup()
 

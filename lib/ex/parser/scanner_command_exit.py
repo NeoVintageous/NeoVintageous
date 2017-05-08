@@ -3,17 +3,25 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_EXIT
 from .tokens_base import TokenOfCommand
 from NeoVintageous.lib import ex
+from NeoVintageous.lib.ex.ex_error import ERR_INVALID_ARGUMENT
+from NeoVintageous.lib.ex.ex_error import VimError
+
+
+plus_plus_translations = {
+    'ff': 'fileformat',
+    'bin': 'binary',
+    'enc': 'fileencoding',
+    'nobin': 'nobinary',
+}
 
 
 @ex.command('exit', 'exi')
 @ex.command('xit', 'x')
 class TokenCommandExit(TokenOfCommand):
-	def __init__(self, params, *args, **kwargs):
-		super().__init__(params,
-						 TOKEN_COMMAND_EXIT,
-						 'exit', *args, **kwargs)
-		self.addressable = True
-		self.target_command = 'ex_exit'
+    def __init__(self, params, *args, **kwargs):
+        super().__init__(params, TOKEN_COMMAND_EXIT, 'exit', *args, **kwargs)
+        self.addressable = True
+        self.target_command = 'ex_exit'
 
 
 def scan_command_exit(state):

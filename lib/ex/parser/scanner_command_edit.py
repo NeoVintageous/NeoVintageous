@@ -2,9 +2,9 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_EDIT
 from .tokens_base import TokenOfCommand
-
-from NeoVintageous.lib.ex.ex_error import ERR_INVALID_ARGUMENT
 from NeoVintageous.lib import ex
+from NeoVintageous.lib.ex.ex_error import ERR_INVALID_ARGUMENT
+from NeoVintageous.lib.ex.ex_error import VimError
 
 
 plus_plus_translations = {
