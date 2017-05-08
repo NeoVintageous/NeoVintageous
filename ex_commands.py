@@ -147,10 +147,13 @@ class ExGoto(ViWindowCommandBase):
 
 class ExShellOut(sublime_plugin.TextCommand):
     """
-    http://vimdoc.sourceforge.net/htmldoc/various.html#:!.
+    Execute {cmd} with 'shell'.
 
-    Command: :!{cmd}
-             :!!
+    :!{cmd}     Execute {cmd} with 'shell'
+    :!!         Repeat last ":!{cmd}"
+
+    https://neovim.io/doc/user/various.html#:!
+    https://neovim.io/doc/user/various.html#:!!
     """
 
     _last_command = None
@@ -164,11 +167,11 @@ class ExShellOut(sublime_plugin.TextCommand):
 
         if shell_cmd == '!':
             if not self._last_command:
-                return
-            shell_cmd = ExShellOut._last_command
+                return sublime.status_message('NeoVintageous: No previous command')
+            shell_cmd = self._last_command
 
         # TODO: store only successful commands.
-        ExShellOut._last_command = shell_cmd
+        self._last_command = shell_cmd
 
         try:
             if not parsed.line_range.is_empty:

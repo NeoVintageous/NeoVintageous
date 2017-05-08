@@ -1,90 +1,57 @@
 import unittest
-import os
 
 import sublime
-
-import NeoVintageous.lib.ex.plat as plat
 
 from NeoVintageous.tests.utils import ViewTestCase
 
 
-class Test_ex_shell_out_no_input(ViewTestCase):
-
-    @unittest.skipIf(os.name != 'nt', 'Windows')
-    def test_command_output(self):
-        test_string = 'Testing!'
-        test_command_line = '!echo "' + test_string + '"'
-        output_panel = self.view.window().get_output_panel('vi_out')
-        self.view.window().run_command('ex_shell_out', {'command_line': test_command_line})
-
-        actual = output_panel.substr(self.R(0, output_panel.size()))
-        expected = '\\"{0}\\"\n'.format(test_string)
-        self.assertEqual(expected, actual)
+class TestExShellOutNoInput(ViewTestCase):
 
     def tearDown(self):
         # XXX: Ugly hack to make sure that the output panels created in these
         # tests don't hide the overall progress panel.
-        self.view.window().run_command('show_panel', {
-                                       'panel': 'output.vintageous.tests'
-                                       })
+        self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})
         super().tearDown()
 
+    def test_command_output(self):
+        output_panel = self.view.window().get_output_panel('vi_out')
 
-class Test_ex_shell_out_filter_through_shell(ViewTestCase):
-    @staticmethod
-    def getWordCountCommand():
-        if plat.HOST_PLATFORM == plat.WINDOWS:
-            return None
+        self.view.run_command('ex_shell_out', {
+            'command_line': '!echo "Testing!"'
+        })
+
+        if sublime.platform() == 'windows':
+            expected = '\\"Testing!\\"\n'
         else:
-            return 'wc -w'
+            expected = 'Testing!\n'
 
-    @unittest.skipIf(sublime.platform() == 'windows' or sublime.platform() == "osx", 'Windows or OSX')
+        actual = output_panel.substr(self.R(0, output_panel.size()))
+
+        self.assertEqual(expected, actual)
+
+
+class TestExShellOutFilterThroughShell(ViewTestCase):
+
+    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows and OSX
+    @unittest.skipIf(sublime.platform() == 'windows' or sublime.platform() == "osx", 'Test only works in Linux')
     def test_simple_filter_through_shell(self):
-        word_count_command = self.__class__.getWordCountCommand()
-        # TODO implement test for Windows.
-        if not word_count_command:
-            return True
-        self.view.sel().clear()
-        self.write('''aaa
-bbb
-ccc''')
-        self.add_sel(self.R((0, 2), (0, 2)))
-
-        test_command_line = ".!" + word_count_command
+        self.write("two words\nbbb\nccc")
+        self.select(2)
 
         self.view.run_command('ex_shell_out', {
-            'command_line': test_command_line
+            'command_line': '.! wc -w'
         })
 
-        actual = self.view.substr(self.R(0, self.view.size()))
-        expected = '''1
-bbb
-ccc'''
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo("2\nbbb\nccc")
 
-    @unittest.skipIf(sublime.platform() == 'windows' or sublime.platform() == "osx", 'Windows or OSX')
+    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows and OSX
+    @unittest.skipIf(sublime.platform() == 'windows' or sublime.platform() == "osx", 'Test only works in Linux')
     def test_multiple_filter_through_shell(self):
-        word_count_command = self.__class__.getWordCountCommand()
-        # TODO implement test for Windows.
-        if not word_count_command:
-            return True
-        self.view.sel().clear()
-        self.write('''aaa
-bbb
-ccc
-''')
-        # Two selections touching all numeric word lines.
-        self.add_sel(self.R((1, 0), (1, 0)))
-
-        test_command_line = ".!" + word_count_command
+        self.write("aaa\nthree short words\nccc")
+        self.select(10)
 
         self.view.run_command('ex_shell_out', {
-            'command_line': test_command_line
+            'command_line': '.! wc -w'
         })
 
-        actual = self.view.substr(self.R(0, self.view.size()))
-        expected = '''aaa
-1
-ccc
-'''
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo("aaa\n3\nccc")

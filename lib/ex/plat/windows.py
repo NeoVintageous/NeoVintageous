@@ -51,7 +51,7 @@ def filter_region(view, txt, command):
                              stderr=PIPE,
                              startupinfo=get_startup_info())
 
-        our, err = p.communicate()
+        out, err = p.communicate()
         return (out or err).decode(get_oem_cp()).replace('\r\n', '\n')[:-1].strip()
     finally:
         os.remove(script.name)

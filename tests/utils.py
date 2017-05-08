@@ -30,6 +30,10 @@ class ViewTestCase(unittest.TestCase):
         self.view = sublime.active_window().new_file()
         self.view.set_scratch(True)
 
+    def select(self, point_or_region):
+        self.view.sel().clear()
+        self.view.sel().add(point_or_region)
+
     @property
     def state(self):
         return State(self.view)
@@ -87,5 +91,5 @@ class ViewTestCase(unittest.TestCase):
             actual_region = _make_region(self.view, actual_region.begin(), actual_region.end())
         self.assertEqual(expected_region, actual_region, msg)
 
-    def assertFirstSelEqual(self, sel):
-        self.assertEqual(self.R(sel[0], sel[1]), self.view.sel()[0])
+    def assertContentIsEqualTo(self, expected):
+        self.assertEqual(self.view.substr(sublime.Region(0, self.view.size())), expected)
