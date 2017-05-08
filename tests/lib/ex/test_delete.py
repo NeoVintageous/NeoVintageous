@@ -2,7 +2,6 @@ import unittest
 
 from NeoVintageous.lib.vi.constants import MODE_NORMAL
 from NeoVintageous.lib.state import State
-from NeoVintageous.ex_commands import CURRENT_LINE_RANGE
 
 from NeoVintageous.tests.utils import ViewTestCase
 
@@ -10,189 +9,117 @@ from NeoVintageous.tests.utils import ViewTestCase
 class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
     def test_can_delete_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_delete', {'command_line': 'delete'})
 
-        actual = self.view.substr(self.R(0, self.view.size()))
-        expected = 'abc\nabc\nabc'
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc')
 
     def test_can_delete_at_eof__no_new_line(self):
         self.write('abc\nabc\nabc\nxxx')
-        self.clear_sel()
-        self.add_sel(self.R((3, 0), (3, 0)))
+        self.select(self.R((3, 0), (3, 0)))
 
-        r = CURRENT_LINE_RANGE.copy()
-        r['left_ref'] = '4'
         self.view.run_command('ex_delete', {'command_line': '4delete'})
 
-        actual = self.view.substr(self.R(0, self.view.size()))
-        expected = 'abc\nabc\nabc\n'
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc\n')
 
     def test_can_delete_at_eof__new_line(self):
         self.write('abc\nabc\nabc\nxxx\n')
-        self.clear_sel()
-        self.add_sel(self.R((3, 0), (3, 0)))
+        self.select(self.R((3, 0), (3, 0)))
 
-        r = CURRENT_LINE_RANGE.copy()
-        r['left_ref'] = '4'
         self.view.run_command('ex_delete', {'command_line': 'delete'})
 
-        actual = self.view.substr(self.R(0, self.view.size()))
-        expected = 'abc\nabc\nabc\n'
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc\n')
 
     def test_can_delete_zero_line_range(self):
         self.write('xxx\nabc\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
-        r = CURRENT_LINE_RANGE.copy()
-        r['text_range'] = '0'
-        # If we don't do this, it will default to '.' and the test will fail.
-        r['left_ref'] = '0'
         self.view.run_command('ex_delete', {'command_line': '0delete'})
 
-        actual = self.view.substr(self.R(0, self.view.size()))
-        expected = 'abc\nabc\nabc'
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc')
 
     def test_can_delete_empty_line(self):
         self.write('abc\nabc\n\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
-        r = CURRENT_LINE_RANGE.copy()
-        r['right_ref'] = None
-        r['left_ref'] = None
-        r['text_range'] = '3'
-        r['left_offset'] = 3
         self.view.run_command('ex_delete', {'command_line': '3delete'})
 
-        actual = self.view.substr(self.R(0, self.view.size()))
-        expected = 'abc\nabc\nabc'
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc')
 
 
-@unittest.skip("Fixme")
 class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.range = {'left_ref': None, 'left_offset': None, 'left_search_offsets': [],
-                      'right_ref': None, 'right_offset': None, 'right_search_offsets': [],
-                      'separator': ','}
 
     def test_can_delete_two_lines(self):
         self.write('abc\nxxx\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((0, 0), (0, 0)))
+        self.select(0)
 
-        self.range['left_offset'] = 2
-        self.range['right_offset'] = 3
-        self.range['text_range'] = '2,3'
-        self.view.run_command('ex_delete', {'line_range': self.range})
+        self.view.run_command('ex_delete', {'command_line': '2,3delete'})
 
-        expected = 'abc\nabc\nabc'
-        actual = self.view.substr(self.R(0, self.view.size()))
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc')
 
     def test_can_delete_three_lines(self):
         self.write('abc\nxxx\nxxx\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((0, 0), (0, 0)))
+        self.select(0)
 
-        self.range['left_offset'] = 2
-        self.range['right_offset'] = 4
-        self.range['text_range'] = '2,4'
-        self.view.run_command('ex_delete', {'line_range': self.range})
+        self.view.run_command('ex_delete', {'command_line': '2,4delete'})
 
-        expected = 'abc\nabc\nabc'
-        actual = self.view.substr(self.R(0, self.view.size()))
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc')
 
-    # TODO: fix this
     def test_can_delete_multiple_empty_lines(self):
         self.write('abc\n\n\n\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((0, 0), (0, 0)))
+        self.select(0)
 
-        self.range['left_offset'] = 2
-        self.range['right_offset'] = 4
-        self.range['text_range'] = '2,4'
-        self.view.run_command('ex_delete', {'line_range': self.range})
+        self.view.run_command('ex_delete', {'command_line': '2,4delete'})
 
-        expected = 'abc\nabc\nabc'
-        actual = self.view.substr(self.R(0, self.view.size()))
-        self.assertEqual(expected, actual)
+        self.assertContentIsEqualTo('abc\nabc\nabc')
 
 
+# TODO: test with multiple selections.
 class Test_ex_delete_InNormalMode_CaretPosition(ViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.range = {'left_ref': None, 'left_offset': None, 'left_search_offsets': [],
-                      'right_ref': None, 'right_offset': None, 'right_search_offsets': [],
-                      'separator': ','}
 
     def test_can_reposition_caret(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((3, 0), (3, 0)))
+        self.select(self.R((3, 0), (3, 0)))
 
-        self.range['left_offset'] = 2
-        self.range['text_range'] = '2,4'
         self.view.run_command('ex_delete', {'command_line': '2,4delete'})
 
         actual = list(self.view.sel())
         expected = [self.R((1, 0), (1, 0))]
-        self.assertEqual(expected, actual)
 
-    # TODO: test with multiple selections.
+        self.assertEqual(expected, actual)
 
 
 class Test_ex_delete_ModeTransition(ViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.range = {'left_ref': None, 'left_offset': None, 'left_search_offsets': [],
-                      'right_ref': None, 'right_offset': None, 'right_search_offsets': [],
-                      'separator': ','}
 
     def test_from_normal_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         state = State(self.view)
         state.enter_normal_mode()
 
         self.view.run_command('vi_enter_normal_mode')
-        prev_mode = state.mode
+        expected_mode = state.mode
 
-        self.range['left_offset'] = 2
-        self.range['text_range'] = '2'
-        self.view.run_command('ex_delete', {'line_range': self.range})
+        self.view.run_command('ex_delete', {'command_line': '2delete'})
 
         state = State(self.view)
-        new_mode = state.mode
-        self.assertEqual(prev_mode, new_mode)
+        actual_mode = state.mode
+        self.assertEqual(expected_mode, actual_mode)
 
     def test_from_visual_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 1)))
+        self.select(self.R((1, 0), (1, 1)))
 
         state = State(self.view)
         state.enter_visual_mode()
-        prev_mode = state.mode
+        expected_mode = state.mode
 
-        self.range['left_ref'] = "'<"
-        self.range['right_ref'] = "'>"
-        self.range['text_range'] = "'<,'>"
         self.view.run_command('ex_delete', {'command_line': "'<,'>delete"})
 
         state = State(self.view)
-        new_mode = state.mode
-        self.assertNotEqual(prev_mode, new_mode)
-        self.assertEqual(new_mode, MODE_NORMAL)
+        actual_mode = state.mode
+
+        self.assertEqual(actual_mode, self.modes.NORMAL)
+        self.assertNotEqual(expected_mode, actual_mode)

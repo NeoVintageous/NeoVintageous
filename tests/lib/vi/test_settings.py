@@ -139,14 +139,6 @@ class TestViEditorSettings(ViewTestCase):
         self.assertEqual(self.settsman['foo'], 100)
         del VI_OPTIONS['foo']
 
-    @unittest.skip("Not implemented")
-    def test_can_discriminate_window_settings_from_view_settings(self):
-        pass
-        # TODO: use mock to patch dict
-        # TODO: Scopes must be consulted in order from bottom to top: VIEW, WINDOW.
-        # VI_OPTIONS['foo'] = vi_user_setting(scope=SCOPE_WINDOW, values=(True, False), default='bar', parser=None)
-        # VI_OPTIONS['foo'] = vi_user_setting(scope=SCOPE_VIEW, values=(True, False), default='buzz', parser=None)
-
 # class TestgetOption(unittest.TestCase):
 #   def setUp(self):
 #       TestsState.view.settings().erase('vintage')

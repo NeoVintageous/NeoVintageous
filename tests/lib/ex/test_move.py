@@ -112,18 +112,6 @@ class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
         actual = self.view.substr(self.R(0, self.view.size()))
         self.assertEqual(expected, actual)
 
-    @unittest.skip("Not implemented")
-    def test_can_move_to_same_line(self):
-        self.write('abc\nxxx\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
-
-        self.view.run_command('ex_move', {'address': '2', 'line_range': self.range})
-
-        expected = 'abc\nxxx\nxxx\nxxx\nxxx\nabc\nabc'
-        actual = self.view.substr(self.R(0, self.view.size()))
-        self.assertEqual(expected, actual)
-
 
 class Test_ex_move_InNormalMode_CaretPosition(ViewTestCase):
     def test_can_reposition_caret(self):

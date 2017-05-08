@@ -3,12 +3,14 @@ import unittest
 import sublime
 
 from NeoVintageous.lib.state import State
+from NeoVintageous.lib.vi.utils import modes
 
 
 def _make_region(view, a, b=None):
     try:
         pt_a = view.text_point(*a)
         pt_b = view.text_point(*b)
+
         return sublime.Region(pt_a, pt_b)
     except (TypeError, ValueError):
         pass
@@ -26,9 +28,24 @@ def _make_region(view, a, b=None):
 
 class ViewTestCase(unittest.TestCase):
 
+    modes = modes
+
     def setUp(self):
         self.view = sublime.active_window().new_file()
         self.view.set_scratch(True)
+
+    def tearDown(self):
+        if self.view:
+            self.view.close()
+
+    def settings(self):
+        return self.view.settings()
+
+    def content(self):
+        return self.view.substr(sublime.Region(0, self.view.size()))
+
+    def write(self, text):
+        self.view.run_command('__vi_tests_write_buffer', {'text': text})
 
     def select(self, point_or_region):
         self.view.sel().clear()
@@ -45,16 +62,20 @@ class ViewTestCase(unittest.TestCase):
         if text:
             self.view.run_command('__vi_tests_write_buffer', {'text': text})
 
-    def write(self, text):
-        if not self.view:
-            raise TypeError('no view available yet')
-        self.view.run_command('__vi_tests_write_buffer', {'text': text})
-
     def R(self, a, b=None):
         return _make_region(self.view, a, b)
 
+    # TODO refactor deprecated; use content() instead
     def get_all_text(self):
-        return self.view.substr(self.R(0, self.view.size()))
+        return self.view.substr(sublime.Region(0, self.view.size()))
+
+    def select2RowCol(self, a=0, b=0):
+        self.view.sel().clear()
+        self.add_sel(self.R(a, b))
+
+    def set_sel(self, a=0, b=0):
+        self.view.sel().clear()
+        self.add_sel(a, b)
 
     def add_sel(self, a=0, b=0):
         if not self.view:
@@ -79,10 +100,6 @@ class ViewTestCase(unittest.TestCase):
         """Return row-col pair of tuples corresponding to region start and end points."""
         points = (reg.begin(), reg.end())
         return list(map(self.view.rowcol, points))
-
-    def tearDown(self):
-        if self.view:
-            self.view.close()
 
     def assertRegionsEqual(self, expected_region, actual_region, msg=''):
         """Test that regions covers the exact same region. Does not take region orientation into account."""

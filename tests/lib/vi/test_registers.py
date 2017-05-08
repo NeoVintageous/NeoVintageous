@@ -98,11 +98,6 @@ class TestCaseRegisters(ViewTestCase):
     def test_setting_non_list_value_throws_assertion_error(self):
         self.assertRaises(AssertionError, self.regs.set, "a", "foo")
 
-    @unittest.skip("Not implemented.")
-    def test_unknown_register_name_throws_exception(self):
-        # XXX Doesn't pass at the moment.
-        self.assertRaises(Exception, self.regs.set, "~", "foo")
-
     def test_register_data_is_always_stored_as_string(self):
         self.regs.set('"', [100])
         self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED],
