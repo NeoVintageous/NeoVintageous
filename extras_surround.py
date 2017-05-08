@@ -8,7 +8,7 @@ import re
 import sublime
 import sublime_plugin
 
-from NeoVintageous.lib.plugin import plugin
+from NeoVintageous.lib.api import plugin
 from NeoVintageous.lib.vi import inputs
 from NeoVintageous.lib.vi import utils
 from NeoVintageous.lib.vi.cmd_defs import ViOperatorDef

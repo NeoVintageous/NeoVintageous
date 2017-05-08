@@ -2,6 +2,7 @@ from collections import Counter
 
 import sublime
 
+from NeoVintageous.lib.api import plugin
 from NeoVintageous.lib.logger import get_logger
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
@@ -21,7 +22,6 @@ from NeoVintageous.lib.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.lib.vi.utils import is_view
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.variables import Variables
-from NeoVintageous.lib.plugin import plugin
 
 
 _logger = get_logger(__name__)
