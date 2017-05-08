@@ -1,6 +1,6 @@
 import unittest
 
-from NeoVintageous.lib.sublime_ext import SublimeWindowAPI
+from NeoVintageous.lib.window import WindowAPI
 
 
 class MockView():
@@ -92,7 +92,7 @@ class TestSublimeWindowApi(unittest.TestCase):
 
     def setUp(self):
         self.window = MockWindow()
-        self.api = SublimeWindowAPI(self.window)
+        self.api = WindowAPI(self.window)
 
     def test_nth_group_number_in_direction_of_current_one(self):
 

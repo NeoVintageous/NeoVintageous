@@ -32,7 +32,7 @@ LAYOUT_THREE_ROW = {
 }
 
 
-class SublimeWindowAPI():
+class WindowAPI():
 
     def __init__(self, window):
         self.window = window
@@ -40,12 +40,13 @@ class SublimeWindowAPI():
     # TODO could implement settings similar to vim "hidden" and "autowrite"
     def close_all_other_views(self):
         """
-        Make the current view the only one on the screen.  All other
-        views are closed.
+        Make the current view the only one on the screen.
+
+        All other views are closed.
+
         Modified views are merged into current group. Modified views
         are not removed, so changes cannot get lost.
         """
-
         current_group_num = self.window.active_group()
         current_view = self.window.active_view()
 
@@ -81,11 +82,14 @@ class SublimeWindowAPI():
 
     def _close_current_view(self, do_not_close_if_last):
         """
-        If {do_not_close_if_last} then this command fails when there
-        is only one view on screen. Modified views are not removed,
-        so changes cannot get lost.
-        If it's not a file on disk and contains only whitespace then
-        it is closed.
+        Close current view.
+
+        If {do_not_close_if_last} then this command fails when there is only one
+        view on screen. Modified views are not removed, so changes cannot get
+        lost.
+
+        If it's not a file on disk and contains only whitespace then it is
+        closed.
         """
         views_in_group = self.window.views_in_group(self.window.active_group())
         if len(views_in_group) == 0:
@@ -126,6 +130,8 @@ class SublimeWindowAPI():
     # TODO implement exchange when vertical and horizontal group splits
     def exchange_current_view_with_view_in_next_or_previous_group(self, count=1):
         """
+        Exchange view with previous one.
+
         Without {count}: Exchange current view with the view in the
         next group.  If there is no next group, exchange with the view
         in the previous group.
@@ -135,7 +141,6 @@ class SublimeWindowAPI():
         exchange is done in the row or column of groups that the
         current view is in.
         """
-
         if self.window.num_groups() < 2:
             return
 
@@ -168,8 +173,7 @@ class SublimeWindowAPI():
 
     def move_current_view_to_far_left(self):
         """
-        Move the current view to be at the far left, using the
-        full height of the view.
+        Move the current view to be at the far left, using the full height of the view.
 
         Example of moving window (a=active)
          ____________                    _________________
@@ -182,7 +186,6 @@ class SublimeWindowAPI():
         Currently only supports 2 row or 2 column layouts.
 
         """
-
         if self.window.num_groups() > 2:
             # TODO not implemented yet
             return
@@ -201,12 +204,10 @@ class SublimeWindowAPI():
 
     def move_current_view_to_far_right(self):
         """
-        Move the current view to be at the far right, using the
-        full height of the view.
+        Move the current view to be at the far right, using the full height of the view.
 
         Currently only supports 2 row or 2 column layouts.
         """
-
         if self.window.num_groups() > 2:
             # TODO not implemented yet
             return
@@ -225,12 +226,10 @@ class SublimeWindowAPI():
 
     def move_current_view_to_very_bottom(self):
         """
-        Move the current view to be at the very bottom, using the
-        full width of the view.
+        Move the current view to be at the very bottom, using the full width of the view.
 
         Currently only supports 2 row or 2 column layouts.
         """
-
         if self.window.num_groups() > 2:
             # TODO not implemented yet
             return
@@ -249,12 +248,10 @@ class SublimeWindowAPI():
 
     def move_current_view_to_very_top(self):
         """
-        Move the current view to be at the very top, using the
-        full width of the view.
+        Move the current view to be at the very top, using the full width of the view.
 
         Currently only supports 2 row or 2 column layouts.
         """
-
         if self.window.num_groups() > 2:
             # TODO not implemented yet
             return
@@ -273,29 +270,33 @@ class SublimeWindowAPI():
 
     def move_group_focus_to_nth_above_current_one(self, n=1):
         """
-        Move cursor to Nth group above current one.  Uses the cursor
-        position to select between alternatives.
+        Move cursor to Nth group above current one.
+
+        Uses the cursor position to select between alternatives.
         """
         self._move_group_focus_to_nth_in_direction_of_current_one('above', n)
 
     def move_group_focus_to_nth_below_current_one(self, n=1):
         """
-        Move cursor to Nth group below current one.  Uses the cursor
-        position to select between alternatives.
+        Move cursor to Nth group below current one.
+
+        Uses the cursor position to select between alternatives.
         """
         self._move_group_focus_to_nth_in_direction_of_current_one('below', n)
 
     def move_group_focus_to_nth_left_of_current_one(self, n=1):
         """
-        Move cursor to Nth group left of current one.  Uses the
-        cursor position to select between alternatives.
+        Move cursor to Nth group left of current one.
+
+        Uses the cursor position to select between alternatives.
         """
         self._move_group_focus_to_nth_in_direction_of_current_one('left', n)
 
     def move_group_focus_to_nth_right_of_current_one(self, n=1):
         """
-        Move cursor to Nth group right of current one.  Uses the
-        cursor position to select between alternatives.
+        Move cursor to Nth group right of current one.
+
+        Uses the cursor position to select between alternatives.
         """
         self._move_group_focus_to_nth_in_direction_of_current_one('right', n)
 
@@ -314,6 +315,8 @@ class SublimeWindowAPI():
     # TODO implement cursor position to select between alternatives
     def _get_nth_group_number_in_direction_of_current_one(self, direction, n):
         """
+        Retrieve group number in given direction.
+
         :param direction:
             A string, one of "above", "below", "left", or "right".
         :param n:
@@ -323,7 +326,6 @@ class SublimeWindowAPI():
         Returns the group number furthest in {direction} if {n}
         is more than the number of groups in {direction}.
         """
-
         layout = self.window.layout()
 
         if (direction == 'left' or direction == 'right') and len(layout['cols']) < 3:
@@ -389,10 +391,7 @@ class SublimeWindowAPI():
 
     # TODO implement set to n, currently sets to default highest possible
     def set_current_group_height_to_n(self, n=None):
-        """
-        Set current group height to N (default: highest possible)
-        """
-
+        """Set current group height to N (default: highest possible)."""
         layout = self.window.layout()
 
         row_len = len(layout['rows'])
@@ -428,10 +427,7 @@ class SublimeWindowAPI():
 
     # TODO implement set to n, currently sets to default widest possible
     def set_current_group_width_to_n(self, n=None):
-        """
-        Set current group width to N (default: widest possible)
-        """
-
+        """Set current group width to N (default: widest possible)."""
         layout = self.window.layout()
 
         col_len = len(layout['cols'])
@@ -485,13 +481,13 @@ class SublimeWindowAPI():
     # window resizing e.g. 'winheight', 'winwidth',
     # 'winfixheight', and 'winfixwidth'
     def resize_groups_almost_equally(self):
-
         """
-        Make all groups (almost) equally high and wide, but use 'winheight' and
-        'winwidth' for the current window.  Windows with 'winfixheight' set keep
-        their height and windows with 'winfixwidth' set keep their width.
-        """
+        Make all groups (almost) equally high and wide.
 
+        Uses 'winheight' and 'winwidth' for the current window.  Windows with
+        'winfixheight' set keep their height and windows with 'winfixwidth' set
+        keep their width.
+        """
         layout = self.window.layout()
         col_count = len(layout['cols'])
         row_count = len(layout['rows'])
@@ -515,12 +511,13 @@ class SublimeWindowAPI():
 
     def split_current_view_in_two(self, n=None):
         """
-        Split current view in two.  The result is two viewports on
-        the same file.  Make new view N high (default is to use half
-        the height of the current window).  Rduces the current view
-        height to create room (and others, if the 'equalalways' option
-        is set, 'eadirection' isn't "hor", and one of the is higher
-        than the current or the new view).
+        Split current view in two.
+
+        The result is two viewports on the same file.  Make new view N high
+        (default is to use half the height of the current window).  Rduces the
+        current view height to create room (and others, if the 'equalalways'
+        option is set, 'eadirection' isn't "hor", and one of the is higher than
+        the current or the new view).
         """
         self.window.run_command('create_pane', {'direction': 'down'})
         self.window.run_command('clone_file_to_pane', {'direction': 'down'})
@@ -532,9 +529,9 @@ class SublimeWindowAPI():
     def split_with_new_file(self, n=None):
         """
         Create a new group and start editing an empty file in it.
-        Make new group N high (default is to use half the existing
-        height).  Reduces the current group height to create room (and
-        others, if the 'equalalways' option is set and 'eadirection'
-        isn't "hor").
+
+        Make new group N high (default is to use half the existing height).
+        Reduces the current group height to create room (and others, if the
+        'equalalways' option is set and 'eadirection' isn't "hor").
         """
         self.window.run_command('create_pane', {'direction': 'down', 'give_focus': True})

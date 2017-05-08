@@ -2123,7 +2123,7 @@ class _vi_ctrl_w_b(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).move_group_focus_to_bottom_right()
+        WindowAPI(self.window).move_group_focus_to_bottom_right()
 
 
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
@@ -2133,7 +2133,7 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).move_current_view_to_far_left()
+        WindowAPI(self.window).move_current_view_to_far_left()
 
 
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
@@ -2143,7 +2143,7 @@ class _vi_ctrl_w_big_j(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).move_current_view_to_very_bottom()
+        WindowAPI(self.window).move_current_view_to_very_bottom()
 
 
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
@@ -2153,7 +2153,7 @@ class _vi_ctrl_w_big_k(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).move_current_view_to_very_top()
+        WindowAPI(self.window).move_current_view_to_very_top()
 
 
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
@@ -2163,7 +2163,7 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).move_current_view_to_far_right()
+        WindowAPI(self.window).move_current_view_to_far_right()
 
 
 class _vi_ctrl_w_c(ViWindowCommandBase):
@@ -2173,7 +2173,7 @@ class _vi_ctrl_w_c(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).close_current_view()
+        WindowAPI(self.window).close_current_view()
 
 
 class _vi_ctrl_w_equal(ViWindowCommandBase):
@@ -2183,7 +2183,7 @@ class _vi_ctrl_w_equal(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).resize_groups_almost_equally()
+        WindowAPI(self.window).resize_groups_almost_equally()
 
 
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
@@ -2193,7 +2193,7 @@ class _vi_ctrl_w_greater_than(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).increase_current_group_width_by_n(count)
+        WindowAPI(self.window).increase_current_group_width_by_n(count)
 
 
 class _vi_ctrl_w_h(ViWindowCommandBase):
@@ -2203,7 +2203,7 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
+        WindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
 
 
 class _vi_ctrl_w_j(ViWindowCommandBase):
@@ -2213,7 +2213,7 @@ class _vi_ctrl_w_j(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
+        WindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
 
 
 class _vi_ctrl_w_k(ViWindowCommandBase):
@@ -2223,7 +2223,7 @@ class _vi_ctrl_w_k(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
+        WindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
 
 
 class _vi_ctrl_w_l(ViWindowCommandBase):
@@ -2233,7 +2233,7 @@ class _vi_ctrl_w_l(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
+        WindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
 
 
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
@@ -2243,7 +2243,7 @@ class _vi_ctrl_w_less_than(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).decrease_current_group_width_by_n(count)
+        WindowAPI(self.window).decrease_current_group_width_by_n(count)
 
 
 class _vi_ctrl_w_minus(ViWindowCommandBase):
@@ -2253,7 +2253,7 @@ class _vi_ctrl_w_minus(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).decrease_current_group_height_by_n(count)
+        WindowAPI(self.window).decrease_current_group_height_by_n(count)
 
 
 class _vi_ctrl_w_n(ViWindowCommandBase):
@@ -2263,7 +2263,7 @@ class _vi_ctrl_w_n(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).split_with_new_file(count)
+        WindowAPI(self.window).split_with_new_file(count)
 
 
 class _vi_ctrl_w_o(ViWindowCommandBase):
@@ -2273,7 +2273,7 @@ class _vi_ctrl_w_o(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).close_all_other_views()
+        WindowAPI(self.window).close_all_other_views()
 
 
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
@@ -2283,7 +2283,7 @@ class _vi_ctrl_w_pipe(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=None):
-        SublimeWindowAPI(self.window).set_current_group_width_to_n(count)
+        WindowAPI(self.window).set_current_group_width_to_n(count)
 
 
 class _vi_ctrl_w_plus(ViWindowCommandBase):
@@ -2293,7 +2293,7 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).increase_current_group_height_by_n(count)
+        WindowAPI(self.window).increase_current_group_height_by_n(count)
 
 
 class _vi_ctrl_w_q(IrreversibleTextCommand):
@@ -2303,7 +2303,7 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.view.window()).quit_current_view()
+        WindowAPI(self.view.window()).quit_current_view()
 
 
 class _vi_ctrl_w_s(ViWindowCommandBase):
@@ -2313,7 +2313,7 @@ class _vi_ctrl_w_s(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=None):
-        SublimeWindowAPI(self.window).split_current_view_in_two(count)
+        WindowAPI(self.window).split_current_view_in_two(count)
 
 
 class _vi_ctrl_w_t(ViWindowCommandBase):
@@ -2323,7 +2323,7 @@ class _vi_ctrl_w_t(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        SublimeWindowAPI(self.window).move_group_focus_to_top_left()
+        WindowAPI(self.window).move_group_focus_to_top_left()
 
 
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
@@ -2333,7 +2333,7 @@ class _vi_ctrl_w_underscore(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=None):
-        SublimeWindowAPI(self.window).set_current_group_height_to_n(count)
+        WindowAPI(self.window).set_current_group_height_to_n(count)
 
 
 class _vi_ctrl_w_v(ViWindowCommandBase):
@@ -2343,7 +2343,7 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
-        SublimeWindowAPI(self.window).split_current_view_in_two_vertically(count)
+        WindowAPI(self.window).split_current_view_in_two_vertically(count)
 
 
 class _vi_ctrl_w_x(ViWindowCommandBase):
@@ -2353,7 +2353,7 @@ class _vi_ctrl_w_x(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1):
-        SublimeWindowAPI(self.window).exchange_current_view_with_view_in_next_or_previous_group(count)
+        WindowAPI(self.window).exchange_current_view_with_view_in_next_or_previous_group(count)
 
 
 # TODO: z<CR> != zt
