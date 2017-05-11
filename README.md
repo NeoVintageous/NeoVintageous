@@ -103,7 +103,7 @@ The [UnitTesting](https://github.com/randy3k/UnitTesting) package is used to run
 
 ### Debugging
 
-Logs are located in `Packages/.log/NeoVintageous.log`. The log level can be changed with a file in `Packages/.log/NeoVintageous` with the contents of the log level i.e. DEBUG, INFO, WARNING, ERROR, or CRITICAL.
+Debug messages are disabled by default. To enable them set the environment variable `SUBLIME_NEOVINTAGEOUS_DEBUG` to a non-blank value. The debug message log is located at `Packages/User/NeoVintageous.log`. See [Set a Sublime Text environment variable](https://github.com/gerardroche/sublime-phpunit#debugging) for a step by step guide on how to set an environment variable for Sublime Text.
 
 ### Reverting to a freshly installed state
 

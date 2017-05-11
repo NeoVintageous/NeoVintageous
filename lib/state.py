@@ -57,10 +57,11 @@ class State(object):
         #   - window settings (settings.window).
         self.settings = SettingsManager(self.view)
 
-        _logger.debug(
-            '[State] Is .view an ST/NeoVintageous widget? {0}/{1}'.format(
-                bool(self.settings.view['is_widget']),
-                bool(self.settings.view['is_vintageous_widget']))
+        _logger.debug("[State] View id={} '{}' is widget st/nvim: {}/{}".format(
+            view.id(),
+            view.file_name(),
+            bool(self.settings.view['is_widget']),
+            bool(self.settings.view['is_vintageous_widget']))
         )
 
     @property
@@ -313,7 +314,7 @@ class State(object):
     def repeat_data(self, value):
         assert isinstance(value, tuple) or isinstance(value, list), 'bad call'
         assert len(value) == 4, 'bad call'
-        self.logger.info("setting repeat data {0}".format(value))
+        self.logger.info("[State] Set repeat data: {0}".format(value))
         self.settings.vi['repeat_data'] = value
 
     @property
@@ -366,7 +367,7 @@ class State(object):
     @register.setter
     def register(self, value):
         assert len(str(value)) == 1, '`value` must be a character'
-        self.logger.info('opening register {0}'.format(value))
+        self.logger.info('[State] Open register {0}'.format(value))
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
@@ -524,8 +525,7 @@ class State(object):
                         ((counter['\t'] * tab_size) - counter['\t']))
             except Exception as e:
                 print(e)
-                _logger.error(
-                    'Vintageous: Error when setting xpos. Defaulting to 0.')
+                _logger.error('[State] Error setting xpos; default to 0.')
                 self.xpos = 0
                 return
             else:
@@ -552,7 +552,7 @@ class State(object):
     def process_user_input2(self, key):
         assert self.must_collect_input, "call only if input is required"
 
-        _logger.info('[State] processing input {0}'.format(key))
+        _logger.info('[State] Process input {0}'.format(key))
 
         if self.motion and self.motion.accept_input:
             motion = self.motion
@@ -703,8 +703,7 @@ class State(object):
         if self.action and self.motion:
             action_cmd = self.action.translate(self)
             motion_cmd = self.motion.translate(self)
-            self.logger.info(
-                '[State] full command, switching to internal normal mode')
+            self.logger.info('[State] Full command, switching to internal normal mode')
             self.mode = modes.INTERNAL_NORMAL
 
             # TODO: Make a requirement that motions and actions take a
@@ -720,8 +719,7 @@ class State(object):
             # let the action run the motion within its edit object so that
             # we don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
-            self.logger.info(
-                '[Stage] motion in motion+action: {0}'.format(motion_cmd))
+            self.logger.info('[Stage] Motion in motion+action: {0}'.format(motion_cmd))
 
             if self.glue_until_normal_mode and not self.processing_notation:
                 # We need to tell Sublime Text now that it should group
@@ -741,8 +739,7 @@ class State(object):
 
         if self.motion:
             motion_cmd = self.motion.translate(self)
-            self.logger.info(
-                '[State] lone motion cmd: {0}'.format(motion_cmd))
+            self.logger.info('[State] Lone motion cmd: {0}'.format(motion_cmd))
 
             self.add_macro_step(motion_cmd['motion'],
                                 motion_cmd['motion_args'])
@@ -754,10 +751,9 @@ class State(object):
 
         if self.action:
             action_cmd = self.action.translate(self)
-            self.logger.info('[State] lone action cmd {0}'.format(action_cmd))
+            self.logger.info('[State] Lone action cmd {0}'.format(action_cmd))
             if self.mode == modes.NORMAL:
-                self.logger.info(
-                    '[State] switching to internal normal mode')
+                self.logger.info('[State] Switch to internal normal mode')
                 self.mode = modes.INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
@@ -791,9 +787,7 @@ class State(object):
                     self.repeat_data = ('vi', seq, self.mode,
                                         visual_repeat_data)
 
-        self.logger.info(
-            'running command: action: {0} motion: {1}'.format(self.action,
-                                                              self.motion))
+        self.logger.info('[State] Run command: action = {0}, motion = {1}'.format(self.action, self.motion))
 
         if self.mode == modes.INTERNAL_NORMAL:
             self.enter_normal_mode()
@@ -815,7 +809,7 @@ def init_state(view, new_session=False):
 
     if not is_view(view):
         # Abort if we got a widget, panel...
-        _logger.info('[init_state] ignoring view: {0}'.format(view.name() or view.file_name() or '<???>'))
+        _logger.info('[State] Ignore view: {0}'.format(view.name() or view.file_name() or '<???>'))
         try:
             # XXX: All this seems to be necessary here.
             if not is_ignored_but_command_mode(view):
@@ -828,7 +822,7 @@ def init_state(view, new_session=False):
                 # Someone has intentionally disabled NeoVintageous, so let the user know.
                 sublime.status_message('NeoVintageous: Vim emulation disabled for the current view')
         except AttributeError:
-            _logger.info('[init_state] probably received the console view')
+            _logger.info('[State] Exception: probably received the console view')
         except Exception:
             _logger.error('[init_state] error initializing view')
         finally:
@@ -858,7 +852,7 @@ def init_state(view, new_session=False):
     if len(state.view.sel()) == 0:
         state.view.sel().add(sublime.Region(0))
 
-    state.logger.info('[init_state] running init')
+    state.logger.info('[State] Init')
 
     if state.mode in (modes.VISUAL, modes.VISUAL_LINE):
         # TODO: Don't we need to pass a mode here?
