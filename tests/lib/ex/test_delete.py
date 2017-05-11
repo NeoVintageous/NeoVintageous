@@ -1,6 +1,3 @@
-import unittest
-
-from NeoVintageous.lib.vi.constants import MODE_NORMAL
 from NeoVintageous.lib.state import State
 
 from NeoVintageous.tests.utils import ViewTestCase

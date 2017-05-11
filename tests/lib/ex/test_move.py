@@ -1,5 +1,3 @@
-import unittest
-
 from NeoVintageous.lib.state import State
 
 from NeoVintageous.tests.utils import ViewTestCase

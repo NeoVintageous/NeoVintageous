@@ -1,7 +1,6 @@
 import re
 
 import sublime
-import sublime_plugin
 
 
 _MODELINE_PREFIX_TPL = "%s\\s*(st|sublime): "
@@ -87,37 +86,14 @@ def _to_json_type(v):
         raise ValueError("Could not convert to JSON type.")
 
 
-class ExecuteSublimeTextModeLinesCommand(sublime_plugin.EventListener):
-    """
-    This event listener provides a feature similar to vim modelines.
-
-    Modelines set options local to the view by declaring them in the source
-    code file itself.
-
-        Example:
-        mysourcecodefile.py
-        # sublime: gutter false
-        # sublime: translate_tab_to_spaces true
-
-    The top as well as the bottom of the buffer is scanned for modelines.
-    _MAX_LINES_TO_CHECK * _LINE_LENGTH defines the size of the regions to be
-    scanned.
-    """
-
-    def do_modelines(self, view):
-        for setter, name, value in _gen_modeline_options(view):
-            if name == 'x_syntax':
-                view.set_syntax_file(value)
-            else:
-                try:
-                    setter(name, _to_json_type(value))
-                except ValueError as e:
-                    sublime.status_message("NeoVintageous: bad modeline detected")
-                    print("NeoVintageous: bad option detected {name = %s, value = %s}" % (name, value))
-                    print("NeoVintageous: (tip) keys cannot be empty strings")
-
-    def on_load(self, view):
-        self.do_modelines(view)
-
-    def on_post_save(self, view):
-        self.do_modelines(view)
+def modelines(view):
+    for setter, name, value in _gen_modeline_options(view):
+        if name == 'x_syntax':
+            view.set_syntax_file(value)
+        else:
+            try:
+                setter(name, _to_json_type(value))
+            except ValueError as e:
+                sublime.status_message("NeoVintageous: bad modeline detected")
+                print("NeoVintageous: bad option detected {name = %s, value = %s}" % (name, value))
+                print("NeoVintageous: (tip) keys cannot be empty strings")

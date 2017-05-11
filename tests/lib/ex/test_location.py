@@ -1,7 +1,5 @@
 import sublime
 
-import unittest
-
 from NeoVintageous.lib.ex.ex_location import get_line_nr
 from NeoVintageous.lib.ex.ex_location import find_eol
 from NeoVintageous.lib.ex.ex_location import find_bol

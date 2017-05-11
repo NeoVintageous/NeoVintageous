@@ -3,12 +3,9 @@ import os
 import sublime
 import sublime_plugin
 
-from NeoVintageous.lib.ex import command_names
 from NeoVintageous.lib.ex.completions import iter_paths
 from NeoVintageous.lib.ex.completions import parse
 from NeoVintageous.lib.ex.completions import parse_for_setting
-from NeoVintageous.lib.ex.completions import wants_fs_completions
-from NeoVintageous.lib.ex.completions import wants_setting_completions
 from NeoVintageous.lib.ex.ex_error import show_error
 from NeoVintageous.lib.ex.ex_error import show_not_implemented
 from NeoVintageous.lib.ex.ex_error import VimError
@@ -27,8 +24,6 @@ def plugin_loaded():
     d = os.path.dirname(v.file_name()) if v.file_name() else os.getcwd()
     state.settings.vi['_cmdline_cd'] = d
 
-
-COMPLETIONS = sorted([x[0] for x in command_names])
 
 EX_HISTORY_MAX_LENGTH = 20
 EX_HISTORY = {
@@ -140,29 +135,6 @@ class ViColonRepeatLast(sublime_plugin.WindowCommand):
                                 {'cmd_line': EX_HISTORY['cmdline'][-1]})
 
 
-class ExCompletionsProvider(sublime_plugin.EventListener):
-    CACHED_COMPLETIONS = []
-    CACHED_COMPLETION_PREFIXES = []
-
-    def on_query_completions(self, view, prefix, locations):
-        if view.score_selector(0, 'text.excmdline') == 0:
-            return []
-
-        if len(prefix) + 1 != view.size():
-            return []
-
-        if prefix and prefix in self.CACHED_COMPLETION_PREFIXES:
-            return self.CACHED_COMPLETIONS
-
-        compls = [x for x in COMPLETIONS if x.startswith(prefix) and x != prefix]
-        self.CACHED_COMPLETION_PREFIXES = [prefix] + compls
-        # S3 can only handle lists, not iterables.
-        self.CACHED_COMPLETIONS = list(zip([prefix] + compls,
-                                           compls + [prefix]))
-
-        return self.CACHED_COMPLETIONS
-
-
 class CycleCmdlineHistory(sublime_plugin.TextCommand):
     HISTORY_INDEX = None
 
@@ -179,13 +151,9 @@ class CycleCmdlineHistory(sublime_plugin.TextCommand):
         self.view.insert(edit, 0, EX_HISTORY['cmdline'][CycleCmdlineHistory.HISTORY_INDEX])
 
 
-class HistoryIndexRestorer(sublime_plugin.EventListener):
-    def on_deactivated(self, view):
-        # Because views load asynchronously, do not restore history index
-        # .on_activated(), but here instead. Otherwise, the .score_selector()
-        # call won't yield the desired results.
-        if view.score_selector(0, 'text.excmdline') > 0:
-            CycleCmdlineHistory.HISTORY_INDEX = None
+class ClearCmdlineHistoryIndexCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        CycleCmdlineHistory.HISTORY_INDEX = None
 
 
 class WriteFsCompletion(sublime_plugin.TextCommand):
@@ -307,29 +275,3 @@ class ViSettingCompletion(sublime_plugin.TextCommand):
                                        'completion': next(ViSettingCompletion.items)})
             except StopIteration:
                 return
-
-
-class CmdlineContextProvider(sublime_plugin.EventListener):
-    """Provide contexts for the cmdline input panel."""
-
-    def on_query_context(self, view, key, operator, operand, match_all):
-        if view.score_selector(0, 'text.excmdline') == 0:
-            return
-
-        if key == 'vi_cmdline_at_fs_completion':
-            value = wants_fs_completions(view.substr(view.line(0)))
-            value = value and view.sel()[0].b == view.size()
-            if operator == sublime.OP_EQUAL:
-                if operand is True:
-                    return value
-                elif operand is False:
-                    return not value
-
-        if key == 'vi_cmdline_at_setting_completion':
-            value = wants_setting_completions(view.substr(view.line(0)))
-            value = value and view.sel()[0].b == view.size()
-            if operator == sublime.OP_EQUAL:
-                if operand is True:
-                    return value
-                elif operand is False:
-                    return not value

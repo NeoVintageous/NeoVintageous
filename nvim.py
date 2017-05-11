@@ -3,11 +3,10 @@ import sublime
 from .lib.logger import get_logger
 from .lib.state import init_state
 
-# Load all the commands
+# Load the commands
 from .lib.cmds.ex_motions import _vi_cmd_line_a # noqa TODO command appears to be unused
 from .lib.cmds.ex_motions import _vi_cmd_line_k # noqa TODO command appears to be unused
 from .lib.cmds.jumplist import _vi_add_to_jump_list # noqa
-from .lib.cmds.modelines import ExecuteSublimeTextModeLinesCommand # noqa
 from .lib.cmds.support import NeovintageousToggleUseCtrlKeysCommand # noqa
 from .lib.cmds.support import NeovintageousOpenMyRcFileCommand # noqa
 from .lib.cmds.support import NeovintageousResetCommand # noqa
@@ -17,6 +16,15 @@ from .lib.extras.surround import nvim_surround_cs # noqa
 from .lib.extras.surround import nvim_surround_ds # noqa
 from .lib.extras.surround import nvim_surround_ys # noqa
 
+# Load the events TODO Refactor: events listeners into one event listener, see .lib.events
+from .lib.events import CmdlineContextProvider  # noqa: F401
+from .lib.events import ExCompletionsProvider  # noqa: F401
+from .lib.events import ExecuteModeLines  # noqa: F401
+from .lib.events import HistoryIndexRestorer  # noqa: F401
+from .lib.events import ViFocusRestorer  # noqa: F401
+from .lib.events import ViMouseTracker  # noqa: F401
+from .lib.events import VintageStateTracker  # noqa: F401
+
 
 _logger = get_logger(__name__)
 
@@ -25,20 +33,21 @@ def _ensure_other_vimlike_packages_are_disabled():
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
 
-    save_settings = False
+    do_save = False
+
     if 'Vintage' not in ignored_packages:
         ignored_packages.append('Vintage')
-        save_settings = True
+        do_save = True
 
     if 'Vintageous' not in ignored_packages:
         ignored_packages.append('Vintageous')
-        save_settings = True
+        do_save = True
 
     if 'Six' not in ignored_packages:
         ignored_packages.append('Six')
-        save_settings = True
+        do_save = True
 
-    if save_settings:
+    if do_save:
         ignored_packages.sort()
         settings.set('ignored_packages', ignored_packages)
         sublime.save_settings('Preferences.sublime-settings')
