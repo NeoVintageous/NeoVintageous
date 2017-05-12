@@ -72,7 +72,8 @@ def _ensure_other_vimlike_packages_are_disabled():
 
 
 def plugin_loaded():
-    _logger.debug('{}.{}'.format(__name__, 'plugin_loaded()'))
+    _logger.debug('%s.plugin_loaded()', __name__)
+
     try:
         from package_control import events
         if events.install('NeoVintageous'):
@@ -89,13 +90,17 @@ def plugin_loaded():
     d = os.path.dirname(v.file_name()) if v.file_name() else os.getcwd()
     state.settings.vi['_cmdline_cd'] = d
 
+    _logger.debug('%s.plugin_loaded() done.', __name__)
+
 
 def plugin_unloaded():
-    _logger.debug('{}.{}'.format(__name__, 'plugin_unloaded() DONE'))
+    _logger.debug('%s.plugin_unloaded()', __name__)
+
     view = sublime.active_window().active_view()
     try:
         view.settings().set('command_mode', False)
         view.settings().set('inverse_caret_state', False)
     except AttributeError:
         _logger.warning('could not access sublime.active_window().active_view().settings while unloading')
-    _logger.debug('{}.{}'.format(__name__, 'plugin_unloaded() DONE'))
+
+    _logger.debug('%s.plugin_unloaded() done.', __name__)

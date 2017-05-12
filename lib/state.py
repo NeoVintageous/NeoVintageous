@@ -57,11 +57,12 @@ class State(object):
         #   - window settings (settings.window).
         self.settings = SettingsManager(self.view)
 
-        _logger.debug("[State] View id={} '{}' is widget st/nvim: {}/{}".format(
+        _logger.debug(
+            "[State] view id = %d, st/nvim-widget = %s/%s, file = %s",
             view.id(),
-            view.file_name(),
             bool(self.settings.view['is_widget']),
-            bool(self.settings.view['is_vintageous_widget']))
+            bool(self.settings.view['is_vintageous_widget']),
+            view.file_name()
         )
 
     @property
@@ -805,11 +806,9 @@ def init_state(view, new_session=False):
       Whether we're starting up Sublime Text. If so, volatile data must be
       wiped.
     """
-    _logger.debug("running init for view %d", view.id())
-
     if not is_view(view):
         # Abort if we got a widget, panel...
-        _logger.info('[State] Ignore view: {0}'.format(view.name() or view.file_name() or '<???>'))
+        _logger.info('[init] ignore view id = %d', view.id())
         try:
             # XXX: All this seems to be necessary here.
             if not is_ignored_but_command_mode(view):
@@ -821,12 +820,15 @@ def init_state(view, new_session=False):
             if is_ignored(view):
                 # Someone has intentionally disabled NeoVintageous, so let the user know.
                 sublime.status_message('NeoVintageous: Vim emulation disabled for the current view')
+
         except AttributeError:
-            _logger.info('[State] Exception: probably received the console view')
+            _logger.exception('[init] Exception: probably received the console view')
         except Exception:
-            _logger.error('[init_state] error initializing view')
+            _logger.error('[init] error initializing view')
         finally:
             return
+
+    _logger.debug("[init] view id = %d", view.id())
 
     state = State(view)
 
@@ -851,8 +853,6 @@ def init_state(view, new_session=False):
     # If we have no selections, add one.
     if len(state.view.sel()) == 0:
         state.view.sel().add(sublime.Region(0))
-
-    state.logger.info('[State] Init')
 
     if state.mode in (modes.VISUAL, modes.VISUAL_LINE):
         # TODO: Don't we need to pass a mode here?
@@ -880,8 +880,9 @@ def init_state(view, new_session=False):
         view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
 
     state.reset_command_data()
-    if new_session:
-        state.reset_volatile_data()
 
-        # Load settings.
+    if new_session:
+        _logger.debug("[init] new session view id = %d", view.id())
+
+        state.reset_volatile_data()
         DotFile.from_user().run()
