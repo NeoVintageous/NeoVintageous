@@ -3,6 +3,7 @@ import os
 import sublime
 import sublime_plugin
 
+
 from NeoVintageous.lib.ex.completions import iter_paths
 from NeoVintageous.lib.ex.completions import parse
 from NeoVintageous.lib.ex.completions import parse_for_setting
@@ -18,11 +19,14 @@ from NeoVintageous.lib.vi.utils import mark_as_widget
 from NeoVintageous.lib.vi.utils import modes
 
 
-def plugin_loaded():
-    v = sublime.active_window().active_view()
-    state = State(v)
-    d = os.path.dirname(v.file_name()) if v.file_name() else os.getcwd()
-    state.settings.vi['_cmdline_cd'] = d
+__all__ = [
+    'CycleCmdlineHistory',
+    'FsCompletion',
+    'ViColonInput',
+    'ViColonRepeatLast',
+    'ViSettingCompletion',
+    'WriteFsCompletion'
+]
 
 
 EX_HISTORY_MAX_LENGTH = 20

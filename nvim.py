@@ -1,22 +1,40 @@
+import os
+
 import sublime
 
 from .lib.logger import get_logger
 from .lib.state import init_state
+from .lib.state import State
 
 # Load the commands
-from .lib.cmds.ex_motions import _vi_cmd_line_a # noqa TODO command appears to be unused
-from .lib.cmds.ex_motions import _vi_cmd_line_k # noqa TODO command appears to be unused
-from .lib.cmds.jumplist import _vi_add_to_jump_list # noqa
-from .lib.cmds.support import NeovintageousToggleUseCtrlKeysCommand # noqa
-from .lib.cmds.support import NeovintageousOpenMyRcFileCommand # noqa
-from .lib.cmds.support import NeovintageousResetCommand # noqa
-from .lib.cmds.support import NeovintageousExitFromCommandModeCommand # noqa
-from .lib.cmds.support import NeovintageousReloadMyRcFileCommand # noqa
-from .lib.extras.surround import nvim_surround_cs # noqa
-from .lib.extras.surround import nvim_surround_ds # noqa
-from .lib.extras.surround import nvim_surround_ys # noqa
+# TODO Refactor: there's gotta be a better way to organise commands
 
-# Load the events TODO Refactor: events listeners into one event listener, see .lib.events
+from .lib.cmds.ex_commands import *  # noqa: F401, F403
+from .lib.cmds.ex_main import *  # noqa: F401, F403
+from .lib.cmds.ex_motions import _vi_cmd_line_a  # noqa: F401 TODO command appears to be unused
+from .lib.cmds.ex_motions import _vi_cmd_line_k  # noqa: F401 TODO command appears to be unused
+
+from .lib.cmds.jumplist import _vi_add_to_jump_list  # noqa: F401
+
+from .lib.cmds.support import _vi_adjust_carets  # noqa: F401
+from .lib.cmds.support import _vi_question_mark_on_parser_done  # noqa: F401
+from .lib.cmds.support import _vi_slash_on_parser_done  # noqa: F401
+from .lib.cmds.support import NeovintageousExitFromCommandModeCommand  # noqa: F401
+from .lib.cmds.support import NeovintageousOpenMyRcFileCommand  # noqa: F401
+from .lib.cmds.support import NeovintageousReloadMyRcFileCommand  # noqa: F401
+from .lib.cmds.support import NeovintageousResetCommand  # noqa: F401
+from .lib.cmds.support import NeovintageousToggleUseCtrlKeysCommand  # noqa: F401
+from .lib.cmds.support import Sequence  # noqa: F401
+
+from .lib.cmds.actions import *  # noqa: F401, F403
+from .lib.cmds.motions import *  # noqa: F401, F403
+
+from .lib.extras.surround import nvim_surround_cs  # noqa: F401
+from .lib.extras.surround import nvim_surround_ds  # noqa: F401
+from .lib.extras.surround import nvim_surround_ys  # noqa: F401
+
+# Load the events
+# TODO Refactor: events listeners into one event listener, see .lib.events
 from .lib.events import CmdlineContextProvider  # noqa: F401
 from .lib.events import ExCompletionsProvider  # noqa: F401
 from .lib.events import ExecuteModeLines  # noqa: F401
@@ -64,6 +82,12 @@ def plugin_loaded():
 
     view = sublime.active_window().active_view()
     init_state(view, new_session=True)
+
+    # TODO refactor/optimise
+    v = sublime.active_window().active_view()
+    state = State(v)
+    d = os.path.dirname(v.file_name()) if v.file_name() else os.getcwd()
+    state.settings.vi['_cmdline_cd'] = d
 
 
 def plugin_unloaded():
