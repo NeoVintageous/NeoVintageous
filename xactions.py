@@ -28,7 +28,6 @@ from NeoVintageous.vi.utils import modes
 from NeoVintageous.vi.utils import R
 from NeoVintageous.vi.utils import regions_transformer
 from NeoVintageous.vi.utils import resolve_insertion_point_at_b
-from NeoVintageous.vi.utils import restoring_sel
 from NeoVintageous.lib.sublime_ext import SublimeWindowAPI
 
 _logger = PluginLogger(__name__)
@@ -690,10 +689,9 @@ class ProcessNotation(ViWindowCommandBase):
 
         # Strip the already run commands.
         if leading_motions:
-            if ((len(leading_motions) == len(keys)) and
-                (not state.must_collect_input)):
-                    state.non_interactive = False
-                    return
+            if ((len(leading_motions) == len(keys)) and (not state.must_collect_input)):
+                state.non_interactive = False
+                return
 
             _logger.info('[ProcessNotation] original seq/leading motions: {0}/{1}'
                                                .format(keys, leading_motions))
@@ -3008,10 +3006,9 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         #       mode is being reset in _init_vintageous.
         assert mode == modes.INSERT, 'bad mode'
 
-        if (len(self.view.sel()) > 1 or
-            not self.view.sel()[0].empty()):
-                utils.blink()
-                return
+        if (len(self.view.sel()) > 1 or not self.view.sel()[0].empty()):
+            utils.blink()
+            return
 
         s = self.view.sel()[0]
         line_begin = self.view.text_point(utils.row_at(self.view, s.b), 0)

@@ -307,7 +307,7 @@ def seq_to_command(state, seq, mode=None):
         command = plugins.mappings[mode].get(seq, None)
 
     # The plugin command might only be enabled under certain conditions
-    if command and hasattr(command,'is_enabled') and (not command.is_enabled(state)):
+    if command and hasattr(command, 'is_enabled') and (not command.is_enabled(state)):
         command = None
 
     if not command and state.mode in mappings:
@@ -331,7 +331,7 @@ mappings = {
     modes.VISUAL_LINE: {},
     modes.VISUAL_BLOCK: {},
     modes.SELECT: {},
-    '_missing':  dict(name='_missing')
+    '_missing': dict(name='_missing')
 }
 
 
@@ -346,6 +346,7 @@ user_mappings = {
 
 
 EOF = -2
+
 
 class key_names:
     """

@@ -56,9 +56,8 @@ class ViMouseTracker(sublime_plugin.EventListener):
 
             if state.mode in (modes.VISUAL, modes.VISUAL_LINE,
                               modes.VISUAL_BLOCK):
-                if (args.get('extend') or (args.get('by') == 'words') or
-                    args.get('additive')):
-                        return
+                if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
+                    return
 
                 elif not args.get('extend'):
                     return ('sequence', {'commands': [
@@ -105,9 +104,8 @@ class _vi_adjust_carets(sublime_plugin.TextCommand):
     def run(self, edit, mode=None):
         def f(view, s):
             if mode in (modes.NORMAL, modes.INTERNAL_NORMAL):
-                if ((view.substr(s.b) == '\n' or s.b == view.size())
-                     and not view.line(s.b).empty()):
-                        return sublime.Region(s.b - 1)
+                if ((view.substr(s.b) == '\n' or s.b == view.size()) and not view.line(s.b).empty()):
+                    return sublime.Region(s.b - 1)
             return s
 
         regions_transformer(self.view, f)

@@ -124,7 +124,7 @@ def scan_search(state):
             content = state.emit()
             state.consume()
             token = TokenSearchForward if c == '/' else TokenSearchBackward
-            return scan_range , [token(content)]
+            return scan_range, [token(content)]
 
         elif c == EOF:
             raise ValueError('unclosed search pattern: {0}'.format(state.source))

@@ -593,9 +593,8 @@ class _vi_k(ViMotionCommand):
                     # Don't do anything if previous row is empty. Vim does crazy stuff in that case.
                     # Don't do anything either if the previous line can't accomodate a rectangular selection
                     # of the required size.
-                    if (previous_line.empty() or
-                        self.view.rowcol(previous_line.b)[1] < rect_b):
-                            return
+                    if (previous_line.empty() or self.view.rowcol(previous_line.b)[1] < rect_b):
+                        return
                     rect_size = max(r.size() for r in self.view.sel())
                     rect_a_pt = self.view.text_point(row - 1, rect_a)
                     new_region = sublime.Region(rect_a_pt, rect_a_pt + rect_size)
@@ -973,7 +972,7 @@ class _vi_percent(ViMotionCommand):
                 return begin_tag if end_tag.contains(pt) else end_tag
 
     def run(self, percent=None, mode=None):
-        if percent == None:
+        if percent is None:
             def move_to_bracket(view, s):
                 def find_bracket_location(region):
                     pt = region.b

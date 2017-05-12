@@ -4,6 +4,7 @@ import sublime
 
 _MARKS = {}
 
+
 class Marks(object):
     def __get__(self, instance, owner):
         self.state = instance
@@ -48,4 +49,3 @@ class Marks(object):
                     return "{0}:{1}".format(fname, rowcol_encoded)
                 else:
                     return "<untitled {0}>:{1}".format(view.buffer_id(), rowcol_encoded)
-

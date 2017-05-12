@@ -7,7 +7,6 @@ import subprocess
 import sublime
 import sublime_plugin
 
-from NeoVintageous.ex import ex_error
 from NeoVintageous.ex import shell
 from NeoVintageous.ex.ex_error import Display
 from NeoVintageous.ex.ex_error import ERR_CANT_FIND_DIR_IN_CDPATH
@@ -31,9 +30,6 @@ from NeoVintageous.ex.plat.windows import get_startup_info
 from NeoVintageous.lib.state import State
 from NeoVintageous.vi import abbrev
 from NeoVintageous.vi import utils
-from NeoVintageous.vi.constants import MODE_NORMAL
-from NeoVintageous.vi.constants import MODE_VISUAL
-from NeoVintageous.vi.constants import MODE_VISUAL_LINE
 from NeoVintageous.vi.core import ViWindowCommandBase
 from NeoVintageous.vi.mappings import Mappings
 from NeoVintageous.vi.search import find_all_in_range

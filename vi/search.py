@@ -157,10 +157,10 @@ class BufferSearchBase(sublime_plugin.TextCommand):
     def calculate_flags(self):
         # TODO: Implement smartcase?
         flags = 0
-        if self.view.settings().get('vintageous_magic') == False:
-             flags |= sublime.LITERAL
+        if self.view.settings().get('vintageous_magic') is False:
+            flags |= sublime.LITERAL
 
-        if self.view.settings().get('vintageous_ignorecase') == True:
+        if self.view.settings().get('vintageous_ignorecase') is True:
             flags |= sublime.IGNORECASE
 
         return flags
@@ -188,13 +188,14 @@ class BufferSearchBase(sublime_plugin.TextCommand):
             sublime.DRAW_NO_FILL
         )
 
+
 # TODO: Test me.
 class ExactWordBufferSearchBase(BufferSearchBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def calculate_flags(self):
-        if self.view.settings().get('vintageous_ignorecase') == True:
+        if self.view.settings().get('vintageous_ignorecase') is True:
             return sublime.IGNORECASE
         return 0
 

@@ -1,18 +1,10 @@
-import sublime
-
 import os
 import unittest
-from unittest import mock
-from unittest.mock import call
 
 
 from NeoVintageous import state
 from NeoVintageous.vi.utils import modes
-from NeoVintageous.tests import set_text
-from NeoVintageous.tests import add_sel
-from NeoVintageous.tests import make_region
 from NeoVintageous.tests import ViewTest
-from NeoVintageous.vi.cmd_base import cmd_types
 from NeoVintageous.vi import cmd_defs
 
 
@@ -158,8 +150,10 @@ class Test_State_counts(StateTestCase):
     def testCountIsNeverLessThan1(self):
         self.state.motion_count = '0'
         self.assertEqual(self.state.count, 1)
+
         def set_count():
             self.state.motion_count = '-1'
+
         self.assertRaises(AssertionError, set_count)
 
     def testCanRetrieveGoodMotionCount(self):
