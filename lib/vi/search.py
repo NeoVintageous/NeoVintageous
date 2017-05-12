@@ -169,8 +169,10 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         return query
 
     def hilite(self, query):
-        flags = self.calculate_flags()
-        regs = self.view.find_all(self.build_pattern(query), flags)
+        regs = self.view.find_all(
+            self.build_pattern(query),
+            self.calculate_flags()
+        )
 
         if not regs:
             self.view.erase_regions('vi_search')
@@ -184,8 +186,8 @@ class BufferSearchBase(sublime_plugin.TextCommand):
             'vi_search',
             regs,
             'highlight.vi',
-            '',
-            sublime.DRAW_NO_FILL
+            "",
+            sublime.DRAW_NO_OUTLINE
         )
 
 
