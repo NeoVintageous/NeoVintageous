@@ -1,10 +1,7 @@
-import os
-
 import sublime
 
 from .lib.logger import get_logger
 from .lib.state import init_state
-from .lib.state import State
 
 # Load the commands
 
@@ -81,14 +78,7 @@ def plugin_loaded():
     except ImportError:
         print('NeoVintageous: could not import Package Control')
 
-    view = sublime.active_window().active_view()
-    init_state(view, new_session=True)
-
-    # TODO refactor/optimise
-    v = sublime.active_window().active_view()
-    state = State(v)
-    d = os.path.dirname(v.file_name()) if v.file_name() else os.getcwd()
-    state.settings.vi['_cmdline_cd'] = d
+    init_state(sublime.active_window().active_view(), new_session=True)
 
     _logger.debug('%s.plugin_loaded() done.', __name__)
 

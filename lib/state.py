@@ -1,3 +1,4 @@
+import os
 from collections import Counter
 
 import sublime
@@ -886,3 +887,7 @@ def init_state(view, new_session=False):
 
         state.reset_volatile_data()
         DotFile.from_user().run()
+
+        # TODO is setting the cwd for cmdline necessary?
+        cmdline_cd = os.path.dirname(view.file_name()) if view.file_name() else os.getcwd()
+        state.settings.vi['_cmdline_cd'] = cmdline_cd
