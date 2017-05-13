@@ -42,7 +42,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
             'command_line': '.! wc -w'
         })
 
-        self.assertContentIsEqualTo("2\nbbb\nccc")
+        self.assertContent("2\nbbb\nccc")
 
     # TODO Implement .!{cmd} (Ex Shell Out) test for Windows and OSX
     @unittest.skipIf(sublime.platform() == 'windows' or sublime.platform() == "osx", 'Test only works in Linux')
@@ -54,4 +54,4 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
             'command_line': '.! wc -w'
         })
 
-        self.assertContentIsEqualTo("aaa\n3\nccc")
+        self.assertContent("aaa\n3\nccc")

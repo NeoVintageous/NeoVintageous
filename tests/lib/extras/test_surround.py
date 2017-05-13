@@ -29,7 +29,7 @@ class Test_ys(ViewTestCase):
                 'surround_with': surround_with
             })
 
-            self.assertContentIsEqualTo(expected, 'failed at {0}'.format(i))
+            self.assertContent(expected, 'failed at {0}'.format(i))
 
     def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(self.dataProvider()):
@@ -50,7 +50,7 @@ class Test_ys(ViewTestCase):
                 'motion': motion
             })
 
-            self.assertContentIsEqualTo(expected, 'failed at {0}'.format(i))
+            self.assertContent(expected, 'failed at {0}'.format(i))
 
 
 class Test_cs(ViewTestCase):
@@ -78,7 +78,7 @@ class Test_cs(ViewTestCase):
                 'replace_what': replace_what
             })
 
-            self.assertContentIsEqualTo(expected, 'failed at {0}'.format(i))
+            self.assertContent(expected, 'failed at {0}'.format(i))
 
 
 class Test_ds(ViewTestCase):
@@ -105,7 +105,7 @@ class Test_ds(ViewTestCase):
                 'replace_what': replace_what
             })
 
-            self.assertContentIsEqualTo(expected, 'failed at {0}'.format(i))
+            self.assertContent(expected, 'failed at {0}'.format(i))
 
 
 class Test_big_s(ViewTestCase):
@@ -121,13 +121,11 @@ class Test_big_s(ViewTestCase):
 
             text, regions, surround_with, expected = data
             self.write(text)
-            self.clear_sel()
-            for region in regions:
-                self.add_sel(self.R(*region))
+            self.selectMultiple([self.R(*region) for region in regions])
 
             self.view.run_command('nvim_surround_ys', {
                 'mode': self.modes.VISUAL,
                 'surround_with': surround_with
             })
 
-            self.assertContentIsEqualTo(expected, 'failed at {0}'.format(i))
+            self.assertContent(expected, 'failed at {0}'.format(i))

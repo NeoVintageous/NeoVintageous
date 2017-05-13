@@ -9,14 +9,14 @@ class Test__vi_big_s(ViewTestCase):
 
         self.view.run_command('_vi_big_s_action', {'mode': self.modes.INTERNAL_NORMAL})
 
-        self.assertContentIsEqualTo('aaa aaa\n\nccc ccc\n')
+        self.assertContent('aaa aaa\n\nccc ccc\n')
 
         self.write('aaa aaa\nbbb bbb\nccc ccc\n')
         self.select(16)
 
         self.view.run_command('_vi_big_s_action', {'mode': self.modes.INTERNAL_NORMAL})
 
-        self.assertContentIsEqualTo('aaa aaa\nbbb bbb\n\n')
+        self.assertContent('aaa aaa\nbbb bbb\n\n')
 
     def test_deletes_whole_line_and_reindents_in_internal_normal_mode(self):
         self.settings().set('translate_tabs_to_spaces', False)
@@ -25,4 +25,4 @@ class Test__vi_big_s(ViewTestCase):
 
         self.view.run_command('_vi_big_s_action', {'mode': self.modes.INTERNAL_NORMAL})
 
-        self.assertContentIsEqualTo("\taaa aaa\n\t\nccc ccc")
+        self.assertContent("\taaa aaa\n\t\nccc ccc")

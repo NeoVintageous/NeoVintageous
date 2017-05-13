@@ -49,9 +49,13 @@ ALL_CASES = (
 
 class Test_find_paragraph_text_object(ViewTestCase):
 
-    MSG_FMT = 'find_paragraph_text_object(msg={!r}, motion={}, exp_rc={}, got_rc={})'
-
     def runTests(self, data):
+
+        def region2rowcols(reg):
+            """Return row-col pair of tuples corresponding to region start and end points."""
+            points = (reg.begin(), reg.end())
+            return list(map(self.view.rowcol, points))
+
         for (i, td) in enumerate(data):
             # Get method params from the Vim motion.
             count = int(td.motion[0:-2])
@@ -59,15 +63,18 @@ class Test_find_paragraph_text_object(ViewTestCase):
 
             # Set up the view.
             self.write(TEXT)
-            self.clear_sel()
-            s = self.R(*td.start_region)
-            self.add_sel(s)
+
+            r = self.R(*td.start_region)
+
+            self.select(r)
 
             # Expected vs actual region returned by find_paragraph_text_object().
             exp = self.R(*td.expected_region)
-            got = find_paragraph_text_object(self.view, s, inclusive=inclusive, count=count)
-            rcs = [self.region2rowcols(r) for r in (exp, got)]
-            msg = self.MSG_FMT.format(td.msg, td.motion, *rcs)
+            got = find_paragraph_text_object(self.view, r, inclusive=inclusive, count=count)
+
+            rcs = [region2rowcols(r) for r in (exp, got)]
+            msg = 'find_paragraph_text_object(msg={!r}, motion={}, exp_rc={}, got_rc={})'.format(td.msg, td.motion, *rcs)
+
             self.assertRegionsEqual(exp, got, msg)
 
     def test_all_cases(self):

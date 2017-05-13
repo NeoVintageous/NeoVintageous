@@ -63,17 +63,25 @@ VISUAL_MULTI_LINE_CASES = (
 
 
 class Test__vi_f(ViewTestCase):
+
     def runTests(self, data):
         for (i, data) in enumerate(data):
             self.write(data.text)
-            self.clear_sel()
-            self.add_sel(self.R(*data.startRegion))
+            self.select(self.R(*data.startRegion))
+
             self.view.run_command('_vi_find_in_line', {
-                'mode': data.mode, 'count': 1, 'char': data.findChar, 'inclusive': True})
+                'mode': data.mode,
+                'count': 1,
+                'char': data.findChar,
+                'inclusive': True
+            })
+
             self.assertRegionsEqual(
-                self.R(*data.expectedRegion), self.first_sel(),
+                self.R(*data.expectedRegion),
+                self.view.sel()[0],
                 "Failed on index {} {} : Text:\"{}\" Region:{} Find:'{}'"
-                .format(i, data.msg, data.text, data.startRegion, data.findChar))
+                .format(i, data.msg, data.text, data.startRegion, data.findChar)
+            )
 
     def test_normal_cases(self):
         self.runTests(NORMAL_CASES)

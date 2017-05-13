@@ -6,7 +6,7 @@ from NeoVintageous.tests.utils import ViewTestCase
 
 
 def first_sel(self):
-    return self.first_sel()
+    return self.view.sel()[0]
 
 
 # TODO: Test against folded regions.
@@ -131,14 +131,12 @@ aaa
 
 
 class Test__vi_j(ViewTestCase):
+
     def test_all(self):
         for (i, data) in enumerate(TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
-            self.view.sel().clear()
-
             self.write(data.initial_text)
-            for region in data.regions:
-                self.add_sel(self.R(*region))
+            self.selectMultiple([self.R(*region) for region in data.regions])
 
             self.view.run_command(data.cmd, data.cmd_params)
 
@@ -152,14 +150,12 @@ class Test__vi_j(ViewTestCase):
 
 
 class Test__vi_j_new(ViewTestCase):
+
     def test_all(self):
         for (i, data) in enumerate(MORE_TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
-            self.view.sel().clear()
-
             self.write(data.content)
-            for region in data.regions:
-                self.add_sel(self.R(*region))
+            self.selectMultiple([self.R(*region) for region in data.regions])
 
             self.view.run_command('_vi_j', data.kwargs)
 

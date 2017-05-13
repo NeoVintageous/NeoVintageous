@@ -10,7 +10,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
         self.view.run_command('ex_delete', {'command_line': 'delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc')
+        self.assertContent('abc\nabc\nabc')
 
     def test_can_delete_at_eof__no_new_line(self):
         self.write('abc\nabc\nabc\nxxx')
@@ -18,7 +18,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
         self.view.run_command('ex_delete', {'command_line': '4delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc\n')
+        self.assertContent('abc\nabc\nabc\n')
 
     def test_can_delete_at_eof__new_line(self):
         self.write('abc\nabc\nabc\nxxx\n')
@@ -26,7 +26,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
         self.view.run_command('ex_delete', {'command_line': 'delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc\n')
+        self.assertContent('abc\nabc\nabc\n')
 
     def test_can_delete_zero_line_range(self):
         self.write('xxx\nabc\nabc\nabc')
@@ -34,7 +34,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
         self.view.run_command('ex_delete', {'command_line': '0delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc')
+        self.assertContent('abc\nabc\nabc')
 
     def test_can_delete_empty_line(self):
         self.write('abc\nabc\n\nabc')
@@ -42,7 +42,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
         self.view.run_command('ex_delete', {'command_line': '3delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc')
+        self.assertContent('abc\nabc\nabc')
 
 
 class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTestCase):
@@ -53,7 +53,7 @@ class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTestCase):
 
         self.view.run_command('ex_delete', {'command_line': '2,3delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc')
+        self.assertContent('abc\nabc\nabc')
 
     def test_can_delete_three_lines(self):
         self.write('abc\nxxx\nxxx\nxxx\nabc\nabc')
@@ -61,7 +61,7 @@ class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTestCase):
 
         self.view.run_command('ex_delete', {'command_line': '2,4delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc')
+        self.assertContent('abc\nabc\nabc')
 
     def test_can_delete_multiple_empty_lines(self):
         self.write('abc\n\n\n\nabc\nabc')
@@ -69,7 +69,7 @@ class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTestCase):
 
         self.view.run_command('ex_delete', {'command_line': '2,4delete'})
 
-        self.assertContentIsEqualTo('abc\nabc\nabc')
+        self.assertContent('abc\nabc\nabc')
 
 
 # TODO: test with multiple selections.

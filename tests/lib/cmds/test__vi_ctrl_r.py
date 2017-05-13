@@ -8,8 +8,7 @@ from NeoVintageous.tests.utils import ViewTestCase
 class Test__vi_ctrl_r(ViewTestCase):
     def test_does_not_linger_past_soft_eol(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('_vi_dd', {'mode': modes.INTERNAL_NORMAL})
         self.view.window().run_command('_vi_u')
@@ -23,8 +22,7 @@ class Test__vi_ctrl_r(ViewTestCase):
 
     def test_does_not_linger_past_soft_eol2(self):
         self.write('abc\nxxx foo bar\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 8), (1, 8)))
+        self.select(self.R((1, 8), (1, 8)))
 
         self.view.run_command('_vi_big_d', {'mode': modes.INTERNAL_NORMAL})
         self.view.window().run_command('_vi_u')

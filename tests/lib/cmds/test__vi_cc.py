@@ -25,11 +25,8 @@ class Test__vi_cc(ViewTestCase):
     def test_all(self):
         for (i, data) in enumerate(TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
-            self.view.sel().clear()
-
             self.write(data.initial_text)
-            for region in data.regions:
-                self.add_sel(self.R(*region))
+            self.selectMultiple([self.R(*region) for region in data.regions])
 
             self.view.run_command(data.cmd, data.cmd_params)
 

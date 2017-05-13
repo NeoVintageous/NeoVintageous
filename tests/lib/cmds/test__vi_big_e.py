@@ -17,16 +17,19 @@ ALL_CASES = (
 
 
 class Test__vi_big_e(ViewTestCase):
+
     def runTests(self, data):
         for (i, data) in enumerate(data):
             self.write(data.text)
-            self.clear_sel()
-            self.add_sel(self.R(*data.startRegion))
+            self.select(self.R(*data.startRegion))
+
             self.view.run_command('_vi_big_e', {'mode': data.mode, 'count': 1})
+
             self.assertRegionsEqual(
-                self.R(*data.expectedRegion), self.first_sel(),
-                "Failed on index {} {} : Text:\"{}\" Region:{}"
-                .format(i, data.msg, data.text, data.startRegion))
+                self.R(*data.expectedRegion),
+                self.view.sel()[0],
+                "Failed on index {} {} : Text:\"{}\" Region:{}".format(i, data.msg, data.text, data.startRegion)
+            )
 
     def test_all_cases(self):
         self.runTests(ALL_CASES)

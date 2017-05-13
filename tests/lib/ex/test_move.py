@@ -6,8 +6,7 @@ from NeoVintageous.tests.utils import ViewTestCase
 class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
     def test_can_move_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move3'})
 
@@ -17,8 +16,7 @@ class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
 
     def test_can_move_to_eof(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move4'})
 
@@ -28,8 +26,7 @@ class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
 
     def test_can_move_to_bof(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move0'})
 
@@ -39,8 +36,7 @@ class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
 
     def test_can_move_to_empty_line(self):
         self.write('abc\nxxx\nabc\n\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move4'})
 
@@ -50,8 +46,7 @@ class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
 
     def test_can_move_to_same_line(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'address': '2'})
 
@@ -68,8 +63,7 @@ class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
 
     def test_can_move_default_line_range(self):
         self.write('abc\nxxx\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move4'})
 
@@ -79,8 +73,7 @@ class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
 
     def test_can_move_to_eof(self):
         self.write('aaa\nxxx\nxxx\naaa\naaa')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move5'})
 
@@ -90,8 +83,7 @@ class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
 
     def test_can_move_to_bof(self):
         self.write('abc\nxxx\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move0'})
 
@@ -101,8 +93,7 @@ class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
 
     def test_can_move_to_empty_line(self):
         self.write('aaa\nxxx\nxxx\naaa\n\naaa')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move5'})
 
@@ -114,8 +105,7 @@ class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
 class Test_ex_move_InNormalMode_CaretPosition(ViewTestCase):
     def test_can_reposition_caret(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         self.view.run_command('ex_move', {'command_line': 'move3'})
 
@@ -129,8 +119,7 @@ class Test_ex_move_InNormalMode_CaretPosition(ViewTestCase):
 class Test_ex_move_ModeTransition(ViewTestCase):
     def test_from_normal_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 0)))
+        self.select(self.R((1, 0), (1, 0)))
 
         state = State(self.view)
         state.enter_normal_mode()
@@ -146,8 +135,7 @@ class Test_ex_move_ModeTransition(ViewTestCase):
 
     def test_from_visual_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.clear_sel()
-        self.add_sel(self.R((1, 0), (1, 1)))
+        self.select(self.R((1, 0), (1, 1)))
 
         state = State(self.view)
         state.enter_visual_mode()

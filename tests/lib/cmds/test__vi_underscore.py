@@ -60,13 +60,19 @@ MULTI_COUNT_VISUAL_CASES = (
 
 
 class Test__vi_underscore(ViewTestCase):
+
     def runTests(self, data):
         for (i, data) in enumerate(data):
             self.write(data.text)
-            self.clear_sel()
-            self.add_sel(self.R(*data.startRegion))
+            self.select(self.R(*data.startRegion))
+
             self.view.run_command('_vi_underscore', {'mode': data.mode, 'count': data.count})
-            self.assertRegionsEqual(self.R(*data.expectedRegion), self.first_sel(), "Failed on index {} {} : Text:\"{}\" Region:{}".format(i, data.msg, data.text, data.startRegion))
+
+            self.assertRegionsEqual(
+                self.R(*data.expectedRegion),
+                self.view.sel()[0],
+                "Failed on index {} {} : Text:\"{}\" Region:{}".format(i, data.msg, data.text, data.startRegion)
+            )
 
     def test_normal_cases(self):
         self.runTests(NORMAL_CASES)

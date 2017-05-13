@@ -8,8 +8,7 @@ class Test_find_wrapping(ViewTestCase):
         self.write('''xxx
 aaa aaa xxx aaa
 ''')
-        self.clear_sel()
-        self.add_sel(a=15, b=15)
+        self.selectRegion(a=15, b=15)
 
         # 15 is after the second xxx
         match = find_wrapping(self.view, 'xxx', 15, self.view.size())
@@ -19,8 +18,7 @@ aaa aaa xxx aaa
         self.write('''xxx
 aaa aaa xxx aaa
 ''')
-        self.clear_sel()
-        self.add_sel(a=15, b=15)
+        self.selectRegion(a=15, b=15)
 
         # 15 is after the second xxx
         match = find_wrapping(self.view, 'yyy', 15, self.view.size())
@@ -30,8 +28,7 @@ aaa aaa xxx aaa
         self.write('''xxx
 aaa aaa xxx aaa
 ''')
-        self.clear_sel()
-        self.add_sel(a=4, b=4)
+        self.selectRegion(a=4, b=4)
 
         # 4 is the beginning of the second line
         match = find_wrapping(self.view, 'xxx', 4, self.view.size())

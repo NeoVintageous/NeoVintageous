@@ -6,7 +6,7 @@ from NeoVintageous.tests.utils import ViewTestCase
 
 
 def first_sel(self):
-    return self.first_sel()
+    return self.view.sel()[0]
 
 
 test_data = namedtuple('test_data', 'initial_text regions cmd_params expected actual_func msg')
@@ -42,8 +42,7 @@ class Test__vi_percent(ViewTestCase):
 
             self.write(data.initial_text)
             for region in data.regions:
-                self.clear_sel()
-                self.add_sel(self.R(*region))
+                self.select(self.R(*region))
 
             self.view.run_command('_vi_percent', data.cmd_params)
 

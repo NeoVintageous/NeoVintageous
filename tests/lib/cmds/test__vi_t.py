@@ -71,13 +71,26 @@ SKIP_CASES = (
 
 
 class Test__vi_t(ViewTestCase):
+
     def runTests(self, data, skipping=False):
         for (i, data) in enumerate(data):
             self.write(data.text)
-            self.clear_sel()
-            self.add_sel(self.R(*data.startRegion))
-            self.view.run_command('_vi_find_in_line', {'mode': data.mode, 'count': 1, 'char': data.findChar, 'inclusive': False, 'skipping': skipping})
-            self.assertRegionsEqual(self.R(*data.expectedRegion), self.first_sel(), "Failed on index {} {} : Text:\"{}\" Region:{} Find:'{}'".format(i, data.msg, data.text, data.startRegion, data.findChar))
+            self.select(self.R(*data.startRegion))
+
+            self.view.run_command('_vi_find_in_line', {
+                'mode': data.mode,
+                'count': 1,
+                'char': data.findChar,
+                'inclusive': False,
+                'skipping': skipping
+            })
+
+            self.assertRegionsEqual(
+                self.R(*data.expectedRegion),
+                self.view.sel()[0],
+                "Failed on index {} {} : Text:\"{}\" Region:{} Find:'{}'"
+                .format(i, data.msg, data.text, data.startRegion, data.findChar)
+            )
 
     def runTestsWithSkip(self, data):
         self.runTests(data, skipping=True)
