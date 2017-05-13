@@ -87,10 +87,8 @@ def plugin_unloaded():
     _logger.debug('%s.plugin_unloaded()', __name__)
 
     view = sublime.active_window().active_view()
-    try:
+    if view:
         view.settings().set('command_mode', False)
         view.settings().set('inverse_caret_state', False)
-    except AttributeError:
-        _logger.warning('could not access sublime.active_window().active_view().settings while unloading')
 
     _logger.debug('%s.plugin_unloaded() done.', __name__)
