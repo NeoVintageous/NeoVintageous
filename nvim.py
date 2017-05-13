@@ -31,14 +31,8 @@ from .lib.extras.surround import nvim_surround_ds  # noqa: F401
 from .lib.extras.surround import nvim_surround_ys  # noqa: F401
 
 # Load the events
-# TODO Refactor: events listeners into one event listener, see .lib.events
-from .lib.events import CmdlineContextProvider  # noqa: F401
-from .lib.events import ExCompletionsProvider  # noqa: F401
-from .lib.events import ExecuteModeLines  # noqa: F401
-from .lib.events import HistoryIndexRestorer  # noqa: F401
-from .lib.events import ViFocusRestorer  # noqa: F401
-from .lib.events import ViMouseTracker  # noqa: F401
-from .lib.events import VintageStateTracker  # noqa: F401
+
+from .lib.events import NeoVintageousEvents  # noqa: F401
 
 
 _logger = get_logger(__name__)

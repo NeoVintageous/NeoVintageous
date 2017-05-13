@@ -87,6 +87,23 @@ def _to_json_type(v):
 
 
 def modelines(view):
+    """
+    Provide a feature similar to vim modelines.
+
+    Modelines set options local to the view by declaring them in the source
+    code file itself.
+
+        Example:
+
+        # sublime: gutter false
+        # sublime: translate_tab_to_spaces true
+        # sublime: rulers [80, 120]
+        # sublime: tab_size 4
+
+    The top as well as the bottom of the buffer is scanned for modelines.
+    _MAX_LINES_TO_CHECK * _LINE_LENGTH defines the size of the regions to be
+    scanned.
+    """
     for setter, name, value in _gen_modeline_options(view):
         if name == 'x_syntax':
             view.set_syntax_file(value)

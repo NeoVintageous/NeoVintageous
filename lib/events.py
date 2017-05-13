@@ -1,4 +1,4 @@
-# TODO Refactor: event listeners into on event listener for more control over event priorities, cleaner code and improve perforamance
+# TODO Refactor XXX; cleanup, optimise (especially the on_query_context() and the on_text_command() events)
 
 import threading
 
@@ -18,38 +18,46 @@ from NeoVintageous.lib.vi.utils import modes
 _COMPLETIONS = sorted([x[0] for x in command_names])
 
 
-class CmdlineContextProvider(sublime_plugin.EventListener):
-    """Provide contexts for the cmdline input panel."""
-
-    def on_query_context(self, view, key, operator, operand, match_all):
-        if view.score_selector(0, 'text.excmdline') == 0:
-            return
-
-        if key == 'vi_cmdline_at_fs_completion':
-            value = wants_fs_completions(view.substr(view.line(0)))
-            value = value and view.sel()[0].b == view.size()
-            if operator == sublime.OP_EQUAL:
-                if operand is True:
-                    return value
-                elif operand is False:
-                    return not value
-
-        if key == 'vi_cmdline_at_setting_completion':
-            value = wants_setting_completions(view.substr(view.line(0)))
-            value = value and view.sel()[0].b == view.size()
-            if operator == sublime.OP_EQUAL:
-                if operand is True:
-                    return value
-                elif operand is False:
-                    return not value
-
-
-class ExCompletionsProvider(sublime_plugin.EventListener):
+class NeoVintageousEvents(sublime_plugin.EventListener):
 
     _CACHED_COMPLETIONS = []
     _CACHED_COMPLETION_PREFIXES = []
 
+    # XXX: Refactored from ViFocusRestorer
+    def __init__(self):
+        self.timer = None
+
+    # XXX: Refactored from CmdlineContextProvider and VintageStateTrackers
+    def on_query_context(self, view, key, operator, operand, match_all):
+
+        # XXX: Refactored from CmdlineContextProviders
+        if key == 'vi_cmdline_at_fs_completion':
+            if view.score_selector(0, 'text.excmdline') != 0:
+                value = wants_fs_completions(view.substr(view.line(0)))
+                value = value and view.sel()[0].b == view.size()
+                if operator == sublime.OP_EQUAL:
+                    if operand is True:
+                        return value
+                    elif operand is False:
+                        return not value
+
+        # XXX: Refactored from CmdlineContextProviders
+        if key == 'vi_cmdline_at_setting_completion':
+            if view.score_selector(0, 'text.excmdline') != 0:
+                value = wants_setting_completions(view.substr(view.line(0)))
+                value = value and view.sel()[0].b == view.size()
+                if operator == sublime.OP_EQUAL:
+                    if operand is True:
+                        return value
+                    elif operand is False:
+                        return not value
+
+        # XXX: Refactored from VintageStateTrackers
+        return State(view).context.check(key, operator, operand, match_all)
+
+    # XXX: Refactored from ExCompletionsProvider
     def on_query_completions(self, view, prefix, locations):
+
         if view.score_selector(0, 'text.excmdline') == 0:
             return []
 
@@ -66,51 +74,9 @@ class ExCompletionsProvider(sublime_plugin.EventListener):
 
         return self._CACHED_COMPLETIONS
 
-
-class ExecuteModeLines(sublime_plugin.EventListener):
-    """
-    This event listener provides a feature similar to vim modelines.
-
-    Modelines set options local to the view by declaring them in the source
-    code file itself.
-
-        Example:
-
-        # sublime: gutter false
-        # sublime: translate_tab_to_spaces true
-        # sublime: rulers [80, 120]
-        # sublime: tab_size 4
-
-    The top as well as the bottom of the buffer is scanned for modelines.
-    _MAX_LINES_TO_CHECK * _LINE_LENGTH defines the size of the regions to be
-    scanned.
-    """
-
-    def on_load(self, view):
-        modelines(view)
-
-    def on_post_save(self, view):
-        modelines(view)
-
-
-class VintageStateTracker(sublime_plugin.EventListener):
-
-    def on_post_save(self, view):
-        # Ensure the carets are within valid bounds. For instance, this is a
-        # concern when `trim_trailing_white_space_on_save` is set to true.
-        state = State(view)
-        view.run_command('_vi_adjust_carets', {'mode': state.mode})
-
-    def on_query_context(self, view, key, operator, operand, match_all):
-        return State(view).context.check(key, operator, operand, match_all)
-
-    def on_close(self, view):
-        settings.destroy(view)
-
-
-class ViMouseTracker(sublime_plugin.EventListener):
-
+    # XXX: Refactored from ViMouseTracker
     def on_text_command(self, view, command, args):
+
         if command == 'drag_select':
             state = State(view)
 
@@ -137,15 +103,31 @@ class ViMouseTracker(sublime_plugin.EventListener):
                         ]
                     })
 
+    # XXX: Refactored from ExecuteModeLines
+    def on_load(self, view):
+        modelines(view)
 
-class ViFocusRestorer(sublime_plugin.EventListener):
+    # XXX: Refactored from ExecuteModeLines and VintageStateTrackers
+    def on_post_save(self, view):
 
-    def __init__(self):
-        self.timer = None
+        # XXX: Refactored from ExecuteModeLines
+        modelines(view)
 
+        # XXX: Refactored from VintageStateTracker
+        # Ensure the carets are within valid bounds. For instance, this is a
+        # concern when `trim_trailing_white_space_on_save` is set to true.
+        state = State(view)
+        view.run_command('_vi_adjust_carets', {'mode': state.mode})
+
+    # XXX: Refactored from VintageStateTrackers
+    def on_close(self, view):
+        settings.destroy(view)
+
+    # XXX: Refactored from ViFocusRestorer
     def action(self):
         self.timer = None
 
+    # XXX: Refactored from ViFocusRestorer
     def on_activated(self, view):
         if self.timer:
             self.timer.cancel()
@@ -155,17 +137,17 @@ class ViFocusRestorer(sublime_plugin.EventListener):
             # Switching back from another application. Ignore.
             pass
 
+    # XXX: Refactored from ViFocusRestorer and HistoryIndexRestorers
     def on_deactivated(self, view):
-        self.timer = threading.Timer(0.25, self.action)
-        self.timer.start()
 
-
-# TODO This listener should be unnecessary
-class HistoryIndexRestorer(sublime_plugin.EventListener):
-
-    def on_deactivated(self, view):
+        # TODO Review clearing the cmdline history, does it need to be an event?
+        # XXX: Refactored from HistoryIndexRestorer
         # Because views load asynchronously, do not restore history index
         # .on_activated(), but here instead. Otherwise, the .score_selector()
         # call won't yield the desired results.
         if view.score_selector(0, 'text.excmdline') > 0:
             view.run_command('clear_cmdline_history_index')
+
+        # XXX: Refactored from ViFocusRestorer
+        self.timer = threading.Timer(0.25, self.action)
+        self.timer.start()
