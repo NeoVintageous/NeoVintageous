@@ -7,15 +7,15 @@ from .lib.state import init_state
 from .lib.state import State
 
 # Load the commands
-# TODO Refactor: there's gotta be a better way to organise commands
+
+# TODO Refactor: there's gotta be a better way to organise commands; perhaps
+#       just put all commands in one file?
 
 from .lib.cmds.ex_commands import *  # noqa: F401, F403
 from .lib.cmds.ex_main import *  # noqa: F401, F403
-from .lib.cmds.ex_motions import _vi_cmd_line_a  # noqa: F401 TODO command appears to be unused
-from .lib.cmds.ex_motions import _vi_cmd_line_k  # noqa: F401 TODO command appears to be unused
+from .lib.cmds.ex_motions import *  # noqa: F401, F403
 
-from .lib.cmds.jumplist import _vi_add_to_jump_list  # noqa: F401
-
+from .lib.cmds.support import _vi_add_to_jump_list  # noqa: F401
 from .lib.cmds.support import _vi_adjust_carets  # noqa: F401
 from .lib.cmds.support import _vi_question_mark_on_parser_done  # noqa: F401
 from .lib.cmds.support import _vi_slash_on_parser_done  # noqa: F401

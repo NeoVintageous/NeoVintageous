@@ -3,12 +3,20 @@ import os
 import sublime
 import sublime_plugin
 
+from Default.history_list import get_jump_history
+
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi.dot_file import DotFile
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
+
+
+class _vi_add_to_jump_list(sublime_plugin.WindowCommand):
+    def run(self):
+        get_jump_history(self.window.id()).push_selection(self.window.active_view())
+        hl = get_jump_history(self.window.id())
 
 
 class NeovintageousToggleUseCtrlKeysCommand(sublime_plugin.WindowCommand):
