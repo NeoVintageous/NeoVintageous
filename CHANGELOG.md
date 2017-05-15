@@ -6,8 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Reload My `.vintageousrc` File command
 * Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/249): Implement `ctrl+[`
-* Added: sidebar navigation
+* Added: Sidebar navigation
 
     Key | Description
     --- | -----------
@@ -16,12 +17,21 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
     <kbd>h</kbd> | close node / go to parent node
     <kbd>l</kbd> | open node
 
-* Added: overlay navigation
+* Added: Overlay navigation
 
     Key | Description
     --- | -----------
     <kbd>ctrl+j</kbd> | down
     <kbd>ctrl+k</kbd> | up
+
+### Fixed
+
+* Fixed: :wq! error
+* Fixed: :edit, :exit, :new, and :wq errors
+* Fixed: ":!{cmd}" execute {cmd} with 'shell' error (Windows)
+* Fixed: ":!!" repeat last ":!{cmd}" error (Windows)
+* Fixed: plugin unloading error
+* Fixed [#119](https://github.com/NeoVintageous/NeoVintageous/issues/119): Loosing user settings when toggling ctrl keys
 
 ## 1.0.1 - 2017-04-28
 

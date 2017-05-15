@@ -1,46 +1,42 @@
 [
     {
         "caption": "NeoVintageous: Reset",
-        "command": "reset_neovintageous"
+        "command": "neovintageous_reset"
     },
     {
-        "caption": "NeoVintageous: Toggle Vim Ctrl Keys",
-        "command": "neovintageous_toggle_ctrl_keys"
+        "caption": "NeoVintageous: Toggle Use Ctrl Keys",
+        "command": "neovintageous_toggle_use_ctrl_keys"
     },
     {
-        "caption": "NeoVintageous: Exit from command mode",
-        "command": "force_exit_from_command_mode"
+        "caption": "NeoVintageous: Exit from Command Mode",
+        "command": "neovintageous_exit_from_command_mode"
     },
     {
-        "caption": "NeoVintageous: Open .vintageousrc",
-        "command": "neovintageous_open_config_file"
+        "caption": "NeoVintageous: Open My .vintageousrc File",
+        "command": "neovintageous_open_my_rc_file"
     },
     {
-        "caption": "NeoVintageous: Open changelog",
+        "caption": "NeoVintageous: Reload My .vintageousrc File",
+        "command": "neovintageous_reload_my_rc_file"
+    },
+    {
+        "caption": "NeoVintageous: Open Changelog",
         "command": "open_file",
-        "args": {
-            "file": "${packages}/NeoVintageous/CHANGELOG.md"
-        }
+        "args": {"file": "${packages}/NeoVintageous/CHANGELOG.md"}
     },
     {
-        "caption": "NeoVintageous: Open readme",
+        "caption": "NeoVintageous: Open Readme",
         "command": "open_file",
-        "args": {
-            "file": "${packages}/NeoVintageous/README.md"
-        }
+        "args": {"file": "${packages}/NeoVintageous/README.md"}
     },
     {
         "caption": "Preferences: NeoVintageous Settings – Default",
         "command": "open_file",
-        "args": {
-            "file": "${packages}/NeoVintageous/Preferences.sublime-settings"
-        }
+        "args": {"file": "${packages}/NeoVintageous/Preferences.sublime-settings"}
     },
     {
         "caption": "Preferences: NeoVintageous Settings – User",
         "command": "open_file",
-        "args": {
-            "file": "${packages}/User/Preferences.sublime-settings"
-        }
+        "args": {"file": "${packages}/User/Preferences.sublime-settings"}
     }
 ]

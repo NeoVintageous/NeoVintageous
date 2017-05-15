@@ -1,2 +1,14 @@
 [flake8]
 max-line-length = 120
+
+# D100  Missing docstring in public module
+# D101  Missing docstring in public class
+# D102  Missing docstring in public method
+# D103  Missing docstring in public function
+# D104  Missing docstring in public package
+# D105  Missing docstring in magic method
+# E221  multiple spaces before operator
+# E222  multiple spaces after operator
+# E241  multiple spaces after ‘,’
+# E501  line too long
+ignore = E221, E222, E241, E501, D100, D101, D102, D103, D104, D105
