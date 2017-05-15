@@ -21,6 +21,13 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
 
+__all__ = [
+    'nvim_surround_cs',
+    'nvim_surround_ds',
+    'nvim_surround_ys'
+]
+
+
 @plugin.register(seq='ys', modes=(modes.NORMAL,))
 class _nvim_surround_def_ys(ViOperatorDef):
 

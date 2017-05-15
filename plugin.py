@@ -4,34 +4,16 @@ from .lib.logger import get_logger
 from .lib.state import init_state
 
 # Load the commands
-
-# TODO Refactor: there's gotta be a better way to organise commands; perhaps
-#       just put all commands in one file?
-
-from .lib.cmds.ex_commands import *  # noqa: F401, F403
+# TODO Review: Perhaps just put all commands, except extras, in one file lib/commands.py?
+from .lib.cmds.ex import *  # noqa: F401, F403
 from .lib.cmds.ex_main import *  # noqa: F401, F403
 from .lib.cmds.ex_motions import *  # noqa: F401, F403
-
-from .lib.cmds.support import _vi_add_to_jump_list  # noqa: F401
-from .lib.cmds.support import _vi_adjust_carets  # noqa: F401
-from .lib.cmds.support import _vi_question_mark_on_parser_done  # noqa: F401
-from .lib.cmds.support import _vi_slash_on_parser_done  # noqa: F401
-from .lib.cmds.support import NeovintageousExitFromCommandModeCommand  # noqa: F401
-from .lib.cmds.support import NeovintageousOpenMyRcFileCommand  # noqa: F401
-from .lib.cmds.support import NeovintageousReloadMyRcFileCommand  # noqa: F401
-from .lib.cmds.support import NeovintageousResetCommand  # noqa: F401
-from .lib.cmds.support import NeovintageousToggleUseCtrlKeysCommand  # noqa: F401
-from .lib.cmds.support import Sequence  # noqa: F401
-
 from .lib.cmds.actions import *  # noqa: F401, F403
 from .lib.cmds.motions import *  # noqa: F401, F403
-
-from .lib.extras.surround import nvim_surround_cs  # noqa: F401
-from .lib.extras.surround import nvim_surround_ds  # noqa: F401
-from .lib.extras.surround import nvim_surround_ys  # noqa: F401
+from .lib.cmds.support import *  # noqa: F401, F403
+from .lib.extras.surround import *  # noqa: F401, F403
 
 # Load the events
-
 from .lib.events import NeoVintageousEvents  # noqa: F401
 
 

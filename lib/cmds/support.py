@@ -13,6 +13,20 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
 
+__all__ = [
+    '_vi_add_to_jump_list',
+    '_vi_adjust_carets',
+    '_vi_question_mark_on_parser_done',
+    '_vi_slash_on_parser_done',
+    'NeovintageousExitFromCommandModeCommand',
+    'NeovintageousOpenMyRcFileCommand',
+    'NeovintageousReloadMyRcFileCommand',
+    'NeovintageousResetCommand',
+    'NeovintageousToggleUseCtrlKeysCommand',
+    'Sequence'
+]
+
+
 class _vi_add_to_jump_list(sublime_plugin.WindowCommand):
     def run(self):
         get_jump_history(self.window.id()).push_selection(self.window.active_view())
