@@ -6,8 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/63): Better search highlighting support
 * Added: Reload My `.vintageousrc` File command
-* Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/249): Implement `ctrl+[`
+* Added [#249](https://github.com/NeoVintageous/NeoVintageous/issues/249): Implement `ctrl+[`
 * Added: Sidebar navigation
 
     Key | Description

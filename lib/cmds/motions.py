@@ -245,13 +245,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             if state.mode == modes.VISUAL:
                 next_hit = sublime.Region(self.view.sel()[0].a, next_hit.a + 1)
 
-            self.view.add_regions(
-                'vi_inc_search',
-                [next_hit],
-                'highlight.find.vi',
-                '',
-                sublime.DRAW_NO_OUTLINE
-            )
+            self.view.add_regions('vi_inc_search', [next_hit], 'string.search', '', sublime.DRAW_NO_OUTLINE)
 
             if not self.view.visible_region().contains(next_hit.b):
                 self.view.show(next_hit.b)
@@ -1833,7 +1827,9 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         if occurrence:
             if state.mode == modes.VISUAL:
                 occurrence = sublime.Region(self.view.sel()[0].a, occurrence.a)
-            self.view.add_regions('vi_inc_search', [occurrence], 'comment', '')
+
+            self.view.add_regions('vi_inc_search', [occurrence], 'string.search', '', sublime.DRAW_NO_OUTLINE)
+
             if not self.view.visible_region().contains(occurrence):
                 self.view.show(occurrence)
 

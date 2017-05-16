@@ -78,6 +78,34 @@ Or set it per-project: `Project > Edit Project`
 }
 ```
 
+### Better search highlighting color scheme support
+
+Color schemes can [support better search highlighting](https://github.com/NeoVintageous/NeoVintageous/issues/63) via the following scopes.
+
+     <dict>
+        <key>scope</key>
+        <string>string.search</string>
+        <key>settings</key>
+        <dict>
+            <key>foreground</key>
+            <string>#000000</string>
+            <key>background</key>
+            <string>#C4BE89</string>
+        </dict>
+    </dict>
+    <dict>
+        <key>scope</key>
+        <string>string.search.occurrence</string>
+        <key>settings</key>
+        <dict>
+            <key>foreground</key>
+            <string>#000000</string>
+            <key>background</key>
+            <string>#FFE792</string>
+        </dict>
+    </dict>
+
+
 ## INSTALLATION
 
 ### Package Control installation

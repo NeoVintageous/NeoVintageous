@@ -178,17 +178,11 @@ class BufferSearchBase(sublime_plugin.TextCommand):
             self.view.erase_regions('vi_search')
             return
 
-        # TODO: Re-enable this.
+        # TODO: Re-enable hlsearch toggle setting.
         # if State(self.view).settings.vi['hlsearch'] == False:
         #     return
 
-        self.view.add_regions(
-            'vi_search',
-            regs,
-            'highlight.vi',
-            "",
-            sublime.DRAW_NO_OUTLINE
-        )
+        self.view.add_regions('vi_search', regs, 'string.search.occurrence', '', sublime.DRAW_NO_OUTLINE)
 
 
 # TODO: Test me.
