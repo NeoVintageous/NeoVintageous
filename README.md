@@ -109,6 +109,12 @@ Or set it per-project: `Project > Edit Project`
 }
 ```
 
+### Mapping CapsLock to Escape
+
+NeoVintageous cannot remap the caps lock. This is an OS level configuration e.g. on Ubuntu Gnome you can configure the caps lock to escape from the terminal:
+
+    gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+
 ### Better search highlighting support
 
 Color schemes can [support better search highlighting](https://github.com/NeoVintageous/NeoVintageous/issues/63#issuecomment-301948594) via the following scopes:
