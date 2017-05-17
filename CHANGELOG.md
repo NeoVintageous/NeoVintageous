@@ -1,4 +1,4 @@
-# CHANGELOG
+# NEOVINTAGEOUS CHANGELOG
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
@@ -7,8 +7,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/63): Better search highlighting support
-* Added: Reload My `.vintageousrc` File command
 * Added [#249](https://github.com/NeoVintageous/NeoVintageous/issues/249): Implement `ctrl+[`
+* Added: Reload My `.vintageousrc` File command
 * Added: Sidebar navigation
 
     Key | Description
@@ -27,14 +27,14 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: Error when reloading or upgrading NeoVintagous and NeoVintageous plugins
 * Fixed: :wq! error
 * Fixed: :edit, :exit, :new, and :wq errors
 * Fixed: ":!{cmd}" execute {cmd} with 'shell' error (Windows)
 * Fixed: ":!!" repeat last ":!{cmd}" error (Windows)
-* Fixed: plugin unloading error
 * Fixed [#119](https://github.com/NeoVintageous/NeoVintageous/issues/119): Loosing user settings when toggling ctrl keys
 
-## 1.0.1 - 2017-04-28
+## [1.0.1](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.0.1) - 2017-04-28
 
 ### Fixed
 
@@ -43,7 +43,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed: error when searching
 * Fixed: running last ex command "!!" not working
 
-## 1.0.0 - 2017-04-22
+## [1.0.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.0.0) - 2017-04-22
 
 ### Added
 

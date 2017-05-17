@@ -1,24 +1,39 @@
 # NeoVintageous
 
-[![Build Status](https://travis-ci.org/NeoVintageous/NeoVintageous.svg?branch=master)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna/branch/master?svg=true)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg?style=flat-square)](https://sublimetext.com) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?style=flat-square&label=packagecontrol)](https://github.com/NeoVintageous/NeoVintageous/tags)
+[![Build Status](https://travis-ci.org/NeoVintageous/NeoVintageous.svg?branch=master)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna/branch/master?svg=true)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg?style=flat-square)](https://sublimetext.com) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Source Code](https://img.shields.io/badge/source-github-blue.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?style=flat-square&label=stable)](https://github.com/NeoVintageous/NeoVintageous/tags)
 
-A Vim emulation layer for Sublime Text.
-
-**This is a fork of Vintageous and is under active development. It will be published on Package Control in the next week or so.**
+Vintageous-fork, a Vim emulation layer for Sublime Text.
 
 ## OVERVIEW
 
-* [Documentation](#documentation)
-* [Configuration](#configuration)
 * [Installation](#installation)
+* [Usage](#usage)
+* [Configuration](#configuration)
 * [Contributing](#contributing)
 * [Changelog](#changelog)
 * [Credits](#credits)
 * [License](#license)
 
-## DOCUMENTATION
+## INSTALLATION
 
-See the [Neovim user documentation](https://neovim.io/doc/user).
+### Package Control installation
+
+The preferred method of installation is [Package Control](https://packagecontrol.io/browse/authors/NeoVintageous).
+
+### Manual installation
+
+1. Close Sublime Text.
+2. Download or clone this repository to a directory named **`NeoVintageous`** in the Sublime Text Packages directory for your platform:
+    * Linux: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
+    * OS X: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
+    * Windows: `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
+3. Done!
+
+## Usage
+
+See [Neovim user documentation](https://neovim.io/doc/user). Below are notes about some of the features.
+
+For a toggle feature see the [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin.
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
@@ -33,12 +48,13 @@ ctrl-w, v | Split current window in two (vertically) | [Neovim doc](https://neov
 
 Command | Description
 ------- | -----------
+NeoVintageous: Exit from Command Mode |
+NeoVintageous: Open Changelog |
+NeoVintageous: Open My .vintageousrc |
+NeoVintageous: Open Readme |
+NeoVintageous: Reload My .vintageousrc |
 NeoVintageous: Reset |
 NeoVintageous: Toggle Use Ctrl Keys |
-NeoVintageous: Exit from Command Mode |
-NeoVintageous: Open My .vintageousrc |
-NeoVintageous: Open Changelog |
-NeoVintageous: Open Readme |
 
 ## CONFIGURATION
 
@@ -78,9 +94,9 @@ Or set it per-project: `Project > Edit Project`
 }
 ```
 
-### Better search highlighting color scheme support
+### Better search highlighting support
 
-Color schemes can [support better search highlighting](https://github.com/NeoVintageous/NeoVintageous/issues/63) via the following scopes.
+Color schemes can [support better search highlighting](https://github.com/NeoVintageous/NeoVintageous/issues/63#issuecomment-301948594) via the following scopes:
 
      <dict>
         <key>scope</key>
@@ -104,22 +120,6 @@ Color schemes can [support better search highlighting](https://github.com/NeoVin
             <string>#FFE792</string>
         </dict>
     </dict>
-
-
-## INSTALLATION
-
-### Package Control installation
-
-**Currently not available on Package Control. It will be soon.** The preferred method of installation will be [Package Control](https://packagecontrol.io/browse/authors/NeoVintageous).
-
-### Manual installation
-
-1. Close Sublime Text.
-2. Download or clone this repository to a directory named **`NeoVintageous`** in the Sublime Text Packages directory for your platform:
-    * Linux: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
-    * OS X: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
-    * Windows: `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
-3. Done!
 
 ## CONTRIBUTING
 
@@ -148,7 +148,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## CREDITS
 
-This project is a fork of [guillermooo/Vintageous](https://github.com/guillermooo/Vintageous).
+This project is a fork of [Vintageous](https://github.com/guillermooo/Vintageous).
 
 ## LICENSE
 
