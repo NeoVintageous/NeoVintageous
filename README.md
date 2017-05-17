@@ -33,8 +33,6 @@ The preferred method of installation is [Package Control](https://packagecontrol
 
 See [Neovim user documentation](https://neovim.io/doc/user). Below are notes about some of the features.
 
-For a toggle feature see the [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin.
-
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
 ctrl-w, H | Move the current window to be at the very top | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2 col/row layouts
@@ -55,6 +53,27 @@ NeoVintageous: Open Readme |
 NeoVintageous: Reload My .vintageousrc |
 NeoVintageous: Reset |
 NeoVintageous: Toggle Use Ctrl Keys |
+
+### Toggle command
+
+Use the [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin. It provides a command to toggle NeoVintageous.
+
+### .vintageousrc
+
+A feature similar to .vimrc.
+
+It allows to persist mappings. A runtime configuration file, `Packages/User/.vintageousrc`, is read during startup and supports the following commands for mapping keys:
+
+    :map / :unmap
+    :nmap / :nunmap
+    :omap / :ounmap
+    :vmap / :vunmap
+
+The current limitations apply:
+
+* No recursive or nested mappings.
+* Only keys known to Vintageous can be remapped.
+* Only commands known to Vintageous can be used in mappings.
 
 ### Modelines
 
