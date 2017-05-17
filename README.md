@@ -56,6 +56,21 @@ NeoVintageous: Reload My .vintageousrc |
 NeoVintageous: Reset |
 NeoVintageous: Toggle Use Ctrl Keys |
 
+### Modelines
+
+Provide a feature similar to [vim modelines](https://neovim.io/doc/user/options.html#modeline).
+
+Set options local to the view by declaring them in the source code file itself.
+
+Example
+
+    # sublime: gutter false
+    # sublime: translate_tab_to_spaces true
+    # sublime: rulers [80, 120]
+    # sublime: tab_size 4
+
+The top as well as the bottom of the buffer is scanned for modelines.
+
 ## CONFIGURATION
 
 Key | Description | Type | Default
