@@ -1,17 +1,20 @@
 {
-    "folders":
-    [
-        {
-            "follow_symlinks": true,
-            "path": "."
-        }
-    ],
-    "settings":
-    {
-        "default_line_ending": "unix",
-        "ensure_new_line_at_eof_on_save": true,
-        "tab_size": 4,
-        "translate_tabs_to_spaces": true,
-        "trim_trailing_white_space_on_save": true
-    }
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				"covhtml"
+			],
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"default_line_ending": "unix",
+		"ensure_new_line_at_eof_on_save": true,
+		"tab_size": 4,
+		"translate_tabs_to_spaces": true,
+		"trim_trailing_white_space_on_save": true
+	}
 }

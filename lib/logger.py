@@ -1,151 +1,72 @@
-import logging
 from logging.handlers import RotatingFileHandler
+import logging
 import os
 
 
-class LogDir(object):
-    '''
-    Locates the log dir for plugin logs.
-    '''
-
-    @staticmethod
-    def find():
-        return LogDir()._find_log_dir()
-
-    def _test(self, a, b):
-        if a == b:
-            return 'folder'
-        elif a == b + '.sublime-package':
-            return 'sublime-package'
-
-    def _find_path(self, start, package):
-        while True:
-            result = self._test(os.path.basename(start), package)
-
-            if result == 'folder':
-                if os.path.exists(os.path.join(os.path.dirname(start), 'User')):
-                    return os.path.join(os.path.dirname(start), '.logs')
-
-            elif result == 'sublime-package':
-                parent = os.path.dirname(start)
-                if os.path.exists(os.path.join(os.path.dirname(parent), 'Packages')):
-                    return os.path.join(os.path.dirname(parent), 'Packages', '.logs')
-
-            if os.path.dirname(start) == start:
-                return
-
-            start = os.path.dirname(start)
-
-    def _find_log_dir(self):
-        package = __name__.split('.')[0]
-
-        if package == '__main__':
-            return
-
-        start = os.path.dirname(__file__)
-
-        logs_path = self._find_path(start, package)
-
-        if not logs_path:
-            return
-
-        if not os.path.exists(logs_path):
-            os.mkdir(logs_path)
-
-        return logs_path
+_DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 
 
-class NullPluginLogger(object):
-    '''
-    Supresses log records.
-    '''
+def _log_file():
+    # TODO Why arn't we using sublime.packages_path() ?
+    module_relative_file = __name__.replace('.', os.sep) + '.py'
+    if __file__.endswith(module_relative_file):
+        return os.path.join(
+            __file__[:-(len(module_relative_file) + len(os.sep))],
+            'User',
+            'NeoVintageous.log'
+        )
 
-    def __init__(self, name):
+
+def _init_logger():
+    logger = logging.getLogger(__name__.split('.')[0])
+    logger.setLevel(logging.DEBUG)
+
+    handler_formatter = logging.Formatter('%(asctime)s %(levelname)-5s %(name)-30s %(message)s')
+
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(handler_formatter)
+    logger.addHandler(console_handler)
+
+    log_file = _log_file()
+    if log_file:
+        file_handler = RotatingFileHandler(
+            log_file,
+            maxBytes=10000000,  # 10000000 = 10MB
+            backupCount=3
+        )
+        file_handler.setFormatter(handler_formatter)
+        logger.addHandler(file_handler)
+    else:
+        print('NeoVintageous: could not create log file "%s"' % log_file)
+
+
+class _NullLogger():
+    """An implementation of the Logger API that does nothing."""
+
+    def debug(self, msg, *args, **kwargs):
         pass
 
-    def debug(self, message, *args, **kwargs):
+    def info(self, msg, *args, **kwargs):
         pass
 
-    def info(self, message, *args, **kwargs):
+    def warning(self, msg, *args, **kwargs):
         pass
 
-    def warn(self, message, *args, **kwargs):
+    def error(self, msg, *args, **kwargs):
         pass
 
-    def warning(self, message, *args, **kwargs):
+    def critical(self, msg, *args, **kwargs):
         pass
 
-    def error(self, message, *args, **kwargs):
-        pass
-
-    def critical(self, message, *args, **kwargs):
+    def exception(self, msg, *args, **kwargs):
         pass
 
 
-class PluginLogger(object):
-    '''
-    Logs events.
-    '''
+if _DEBUG:
+    _init_logger()
 
-    log_dir = LogDir.find()
-
-    def __init__(self, name):
-
-        self.logger = logging.getLogger(name)
-        default_level = logging.ERROR
-        user_level = self._get_log_level_from_file()
-        self.logger.setLevel(user_level if user_level is not None else default_level)
-
-        f = logging.Formatter('%(asctime)s %(levelname)-5s %(name)s %(message)s')
-
-        consoleHandler = logging.StreamHandler()
-        consoleHandler.setLevel(logging.WARNING)
-        consoleHandler.setFormatter(f)
-        self.logger.addHandler(consoleHandler)
-
-        file_name = self._file_name()
-        if file_name:
-            fileHandler = RotatingFileHandler(file_name, maxBytes=1<<10)
-            fileHandler.setFormatter(f)
-            self.logger.addHandler(fileHandler)
-        else:
-            print("NeoVintageous: cannot find log file path: %s" % file_name)
-
-    def warn_about_logging_level(self):
-        if self.logger.level <= logging.DEBUG:
-            package = __name__.split('.')[0]
-            self.warning("debug level set to DEBUG; check or delete %s", self._get_path_to_log())
-
-    def _get_path_to_log(self):
-        package = __name__.split('.')[0]
-        p = os.path.join(self.log_dir, package)
-        return p
-
-    def _get_log_level_from_file(self):
-        p = self._get_path_to_log()
-        if os.path.exists(p):
-            with open(p, 'rt') as f:
-                text = f.read().strip().upper()
-                return getattr(logging, text, None)
-
-    def _file_name(self):
-        p = __name__.split('.')[0]
-        return os.path.join(self.log_dir, '{}.log'.format(p))
-
-    def debug(self, message, *args, **kwargs):
-        self.logger.debug(message, *args, **kwargs)
-
-    def info(self, message, *args, **kwargs):
-        self.logger.info(message, *args, **kwargs)
-
-    def warn(self, message, *args, **kwargs):
-        self.logger.warning(message, *args, **kwargs)
-
-    def warning(self, message, *args, **kwargs):
-        self.logger.warning(message, *args, **kwargs)
-
-    def error(self, message, *args, **kwargs):
-        self.logger.error(message, *args, **kwargs)
-
-    def critical(self, message, *args, **kwargs):
-        self.logger.critical(message, *args, **kwargs)
+    def get_logger(name):
+        return logging.getLogger(name)
+else:
+    def get_logger(name):
+        return _NullLogger()

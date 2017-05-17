@@ -2,6 +2,10 @@
     // XXX: Temporary. Delete this when you don't need it any more.
     {"keys": ["shift+escape"], "command": "toggle_mode" },
 
+    // TODO Review why keys such as Ç, Ñ need to be defined. Including their
+    // lowercase (ç, ñ) and ctrl modifiers (ctrl+ç, ctrl+ñ). Why are these keys
+    // specifically defined below when other similar keys are not defined?
+
     {"keys": ["escape"], "command": "press_key",            "args": {"key": "<esc>"},           "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["escape"], "command": "_enter_normal_mode",   "args": {"mode": "mode_insert"},    "context": [{"key": "vi_insert_mode_aware"}]},
 
@@ -9,10 +13,6 @@
     {"keys": ["ctrl+enter"],        "command": "press_key", "args": {"key": "<C-cr>"},      "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+enter"],       "command": "press_key", "args": {"key": "<S-cr>"},      "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+ctrl+enter"],  "command": "press_key", "args": {"key": "<C-S-cr>"},    "context": [{"key": "vi_command_mode_aware"}]},
-
-    {"keys": ["ctrl+c"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
-
-    {"keys": ["ctrl+w"], "command": "delete_word", "args": {"forward": false}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
 
     {"keys": ["*"],         "command": "press_key", "args": {"key": "*"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["@"],         "command": "press_key", "args": {"key": "@"},       "context": [{"key": "vi_command_mode_aware"}]},
@@ -40,15 +40,31 @@
     {"keys": ["{"],         "command": "press_key", "args": {"key": "{"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["]"],         "command": "press_key", "args": {"key": "]"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["["],         "command": "press_key", "args": {"key": "["},       "context": [{"key": "vi_command_mode_aware"}]},
+
     {"keys": ["tab"],       "command": "press_key", "args": {"key": "<tab>"},   "context": [{"key": "vi_command_mode_aware"}]},
+
+    {"keys": ["tab"],       "command": "fs_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_fs_completion"}] },
+    {"keys": ["tab"],       "command": "vi_setting_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] },
+
     {"keys": ["backspace"], "command": "press_key", "args": {"key": "<bs>"},    "context": [{"key": "vi_command_mode_aware"}]},
 
-    {"keys": ["up"],    "command": "press_key", "args": {"key": "<up>"},    "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["down"],  "command": "press_key", "args": {"key": "<down>"},  "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["left"],  "command": "press_key", "args": {"key": "<left>"},  "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["right"], "command": "press_key", "args": {"key": "<right>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["end"],   "command": "press_key", "args": {"key": "<end>"},   "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["home"],  "command": "press_key", "args": {"key": "<home>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["up"],        "command": "press_key", "args": {"key": "<up>"},    "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["down"],      "command": "press_key", "args": {"key": "<down>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["left"],      "command": "press_key", "args": {"key": "<left>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["right"],     "command": "press_key", "args": {"key": "<right>"}, "context": [{"key": "vi_command_mode_aware"}]},
+
+    {"keys": ["up"],        "command": "cycle_cmdline_history", "args": {"backwards": true}, "context": [{"key": "vi_is_cmdline"}]},
+    {"keys": ["down"],      "command": "cycle_cmdline_history",                               "context": [{"key": "vi_is_cmdline"}]},
+
+    {"keys": ["end"],       "command": "press_key", "args": {"key": "<end>"},   "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["home"],      "command": "press_key", "args": {"key": "<home>"},  "context": [{"key": "vi_command_mode_aware"}]},
+
+    // Sidebar control
+    { "keys": ["h"], "command": "move", "args": {"by": "characters", "forward": false}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
+    { "keys": ["j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
+    { "keys": ["k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
+    { "keys": ["l"], "command": "move", "args": {"by": "characters", "forward": true}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
+    // --
 
     {"keys": ["a"], "command": "press_key", "args": {"key": "a"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["b"], "command": "press_key", "args": {"key": "b"}, "context": [{"key": "vi_command_mode_aware"}]},
@@ -108,6 +124,14 @@
     {"keys": ["Ç"], "command": "press_key", "args": {"key": "Ç"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ñ"], "command": "press_key", "args": {"key": "Ñ"}, "context": [{"key": "vi_command_mode_aware"}]},
 
+    // Overlay control
+    { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [ { "key": "overlay_visible" }, { "key": "control", "operand": "overlay_control" }, { "key": "setting.vintageous_use_ctrl_keys" } ] },
+    { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [ { "key": "overlay_visible" }, { "key": "control", "operand": "overlay_control" }, { "key": "setting.vintageous_use_ctrl_keys" } ] },
+    // --
+
+    {"keys": ["ctrl+c"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
+    {"keys": ["ctrl+w"], "command": "delete_word", "args": {"forward": false}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
+
     {"keys": ["ctrl+a"], "command": "press_key", "args": {"key": "<C-a>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+b"], "command": "press_key", "args": {"key": "<C-b>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+c"], "command": "press_key", "args": {"key": "<C-c>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "vi_use_ctrl_keys"}]},
@@ -139,6 +163,7 @@
     {"keys": ["ctrl+ñ"], "command": "press_key", "args": {"key": "<C-ñ>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "vi_use_ctrl_keys"}]},
 
     {"keys": ["ctrl+["], "command": "press_key", "args": {"key": "<C-[>"}, "context": [{"key": "vi_command_mode_aware"}, 	{"key": "vi_use_ctrl_keys"}]},
+    {"keys": ["ctrl+["], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+]"], "command": "press_key", "args": {"key": "<C-]>"}, "context": [{"key": "vi_command_mode_aware"}, 	{"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+."], "command": "press_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, 	{"key": "vi_use_ctrl_keys"}]},
 
@@ -173,7 +198,7 @@
     // {"keys": ["alt+ç"], "command": "press_key", "args": {"key": "alt+ç"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
     // {"keys": ["alt+ñ"], "command": "press_key", "args": {"key": "alt+ñ"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
 
-    // Disable these so that users don't inadvertently remap OS shortcuts.
+    // Disabled so OS shortcuts are not inadvertently remapped.
 
     // {"keys": ["super+a"], "command": "press_key", "args": {"key": "super+a"}, "context": [{"key": "setting.command_mode"}]},
     // {"keys": ["super+b"], "command": "press_key", "args": {"key": "super+b"}, "context": [{"key": "setting.command_mode"}]},
@@ -264,6 +289,9 @@
 
     {"keys": ["shift+ctrl+."], "command": "press_key", "args": {"key": "<C-S-.>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "vi_use_ctrl_keys"}]},
 
+    // TODO Review shift+ctrl+b appears to defined twice, once as key=<C-B> and
+    // once as <C-S-b>. Why? Only the last one defined (this one, key=<C-S-b>)
+    // gets triggered doesn't it? So the one defined above is redundant?
     {"keys": ["shift+ctrl+b"], "command": "press_key", "args": {"key": "<C-S-b>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "vi_use_ctrl_keys"}]},
 
     // {"keys": ["shift+alt+a"], "command": "press_key", "args": {"key": "alt+A"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
@@ -439,10 +467,5 @@
     {"keys": ["ctrl+shift+f9"], "command": "press_key", "args": {"key": "<C-S-f9>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+shift+f10"], "command": "press_key", "args": {"key": "<C-S-f10>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+shift+f11"], "command": "press_key", "args": {"key": "<C-S-f11>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f12"], "command": "press_key", "args": {"key": "<C-S-f12>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
-    { "keys": ["up"],   "command": "cycle_cmdline_history", "args": {"backwards": true }, "context": [{"key": "vi_is_cmdline"}] },
-    { "keys": ["down"], "command": "cycle_cmdline_history",                               "context": [{"key": "vi_is_cmdline"}] },
-
-    { "keys": ["tab"],   "command": "fs_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_fs_completion"}] },
-    { "keys": ["tab"],   "command": "vi_setting_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] }
+    {"keys": ["ctrl+shift+f12"], "command": "press_key", "args": {"key": "<C-S-f12>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "vi_use_ctrl_keys"}]}
 ]
