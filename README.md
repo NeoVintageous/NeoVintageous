@@ -111,9 +111,17 @@ Or set it per-project: `Project > Edit Project`
 
 ### Mapping CapsLock to Escape
 
-NeoVintageous cannot remap the caps lock. This is an OS level configuration e.g. on Ubuntu Gnome you can configure the caps lock to escape from the terminal:
+NeoVintageous cannot remap the caps lock. This is an OS level configuration e.g. on Ubuntu Gnome you can configure the caps lock to escape at the terminal:
 
     gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+
+### Holding down a key like j does not repeat the command
+
+This is a feature of OS X Lion and newer versions.
+
+To make a key repeat a command when holding it down, run this once at the terminal:
+
+    defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
 
 ### Better search highlighting support
 
