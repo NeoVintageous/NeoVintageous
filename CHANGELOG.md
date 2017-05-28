@@ -2,37 +2,40 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## [1.1.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.0) - 2017-05-28
 
 ### Added
 
-* Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/63): Better search highlighting support
-* Added [#249](https://github.com/NeoVintageous/NeoVintageous/issues/249): Implement `ctrl+[`
+* Added: [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous), A command to toggle NeoVintageous
 * Added: Reload My `.vintageousrc` File command
-* Added: Sidebar navigation
+* Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/63): "/" search does not highlight well
+* Added: New commands
 
-    Key | Description
-    --- | -----------
-    <kbd>j</kbd> | down
-    <kbd>k</kbd> | up
-    <kbd>h</kbd> | close node / go to parent node
-    <kbd>l</kbd> | open node
-
-* Added: Overlay navigation
-
-    Key | Description
-    --- | -----------
-    <kbd>ctrl+j</kbd> | down
-    <kbd>ctrl+k</kbd> | up
+    Key | Context | Description
+    --- | ------- | -----------
+    <kbd>j</kbd> | Sidebar | down
+    <kbd>k</kbd> | Sidebar | up
+    <kbd>h</kbd> | Sidebar | close node / go to parent node
+    <kbd>l</kbd> | Sidebar | open node
+    <kbd>ctrl+j</kbd> | Overlay | down
+    <kbd>ctrl+k</kbd> | Overlay | up
+    <kbd>ctrl+[</kbd> | Normal | Same as <kbd>Esc</kbd> ([#249](https://github.com/NeoVintageous/NeoVintageous/issues/249))
 
 ### Fixed
 
-* Fixed: Error when reloading or upgrading NeoVintagous and NeoVintageous plugins
-* Fixed: :wq! error
-* Fixed: :edit, :exit, :new, and :wq errors
-* Fixed: ":!{cmd}" execute {cmd} with 'shell' error (Windows)
-* Fixed: ":!!" repeat last ":!{cmd}" error (Windows)
+* Fixed: Error when reloading and upgrading NeoVintagous and NeoVintageous plugins
 * Fixed [#119](https://github.com/NeoVintageous/NeoVintageous/issues/119): Loosing user settings when toggling ctrl keys
+* Fixed [#84](https://github.com/NeoVintageous/NeoVintageous/issues/84): More detail or examples for mapping
+* Fixed [#34](https://github.com/NeoVintageous/NeoVintageous/issues/34): Small note regarding wiki OSX note
+* Fixed [#162](https://github.com/NeoVintageous/NeoVintageous/issues/162): Use sublime.packages_path()
+* Fixed [#246](https://github.com/NeoVintageous/NeoVintageous/issues/246): Error when toggling vintageous
+* Fixed: :!{cmd} error (Windows)
+* Fixed: :!! error (Windows)
+* Fixed: :new error
+* Fixed: :edit error
+* Fixed: :exit error
+* Fixed: :wq! error
+* Fixed: :wq error
 
 ## [1.0.1](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.0.1) - 2017-04-28
 
