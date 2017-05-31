@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: :file (ctrl+g) file name should be quoted
 * Fixed: Readme link to Linux and OSX cleaner script is broken
 * Fixed [#267](https://github.com/NeoVintageous/NeoVintageous/issues/267): Settings – User .vintageousrc menu item is broken
 * Fixed [#169](https://github.com/NeoVintageous/NeoVintageous/issues/169): How to map this using Vintageous?

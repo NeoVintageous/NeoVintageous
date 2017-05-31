@@ -839,7 +839,7 @@ class ExFile(ViWindowCommandBase):
             mid = (start_row + end_row + 2) / 2
             percent = float(mid) / lines * 100.0
 
-        msg = fname
+        msg = '"' + fname + '"'
         if attrs:
             msg += " [%s]" % attrs
         if isinstance(lines, str):
