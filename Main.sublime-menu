@@ -43,8 +43,8 @@
                                 "caption": "-"
                             },
                             {
-                                "caption": "Settings – User .vintageousrc",
-                                "command": "neovintageous_open_config_file"
+                                "caption": "Settings – My .vintageousrc File",
+                                "command": "neovintageous_open_my_rc_file"
                             },
                             {
                                 "caption": "-"
