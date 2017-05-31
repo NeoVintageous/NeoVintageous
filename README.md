@@ -1,6 +1,6 @@
 # NeoVintageous
 
-[![Build Status](https://travis-ci.org/NeoVintageous/NeoVintageous.svg?branch=master)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna/branch/master?svg=true)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg?style=flat-square)](https://sublimetext.com) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Source Code](https://img.shields.io/badge/source-github-blue.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?style=flat-square&label=stable)](https://github.com/NeoVintageous/NeoVintageous/tags)
+[![Build Status](https://travis-ci.org/NeoVintageous/NeoVintageous.svg?branch=master)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna/branch/master?svg=true)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg)](https://sublimetext.com) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?label=stable)](https://github.com/NeoVintageous/NeoVintageous/tags) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Source Code](https://img.shields.io/badge/source-github-blue.svg)](https://github.com/NeoVintageous/NeoVintageous)
 
 Vintageous-fork, a Vim emulation layer for Sublime Text.
 
@@ -20,6 +20,8 @@ Vintageous-fork, a Vim emulation layer for Sublime Text.
 
 The preferred method of installation is [Package Control](https://packagecontrol.io/browse/authors/NeoVintageous).
 
+*The plugin has been [submitted](https://github.com/wbond/package_control_channel/pull/6292) to Package Control, but is not available at the time writing.*
+
 ### Manual installation
 
 1. Close Sublime Text.
@@ -31,7 +33,7 @@ The preferred method of installation is [Package Control](https://packagecontrol
 
 ## USAGE
 
-See [Neovim user documentation](https://neovim.io/doc/user). Below are notes about some of the features.
+What follows are supplementary documentations about feature differences that are specific to Sublime Text. See the [VIM main help file](https://neovim.io/doc/user) for a complete guide on VIM usage.
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
@@ -56,7 +58,9 @@ NeoVintageous: Toggle Use Ctrl Keys |
 
 ### Toggle command
 
-Use the [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin. It provides a command to toggle NeoVintageous.
+Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin which provides a command to toggle NeoVintageous.
+
+*The plugin has been [submitted](https://github.com/wbond/package_control_channel/pull/6292) to Package Control, but is not available at the time writing.*
 
 ### The .vintageousrc file
 
