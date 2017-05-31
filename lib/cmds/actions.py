@@ -142,6 +142,7 @@ __all__ = [
 _logger = get_logger(__name__)
 
 
+# https://neovim.io/doc/user/change.html#gU
 class _vi_g_big_u(ViTextCommandBase):
     """Command: gU."""
 
@@ -179,6 +180,7 @@ class _vi_g_big_u(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#gu
 class _vi_gu(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -214,6 +216,7 @@ class _vi_gu(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#gq
 class _vi_gq(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -266,6 +269,7 @@ class _vi_gq(ViTextCommandBase):
             raise ValueError('bad mode: ' + mode)
 
 
+# https://neovim.io/doc/user/undo.html#u
 class _vi_u(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -291,6 +295,7 @@ class _vi_u(ViWindowCommandBase):
         self._view.erase_regions('vi_yy_target')
 
 
+# https://neovim.io/doc/user/undo.html#CTRL-R
 class _vi_ctrl_r(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -314,6 +319,7 @@ class _vi_ctrl_r(ViWindowCommandBase):
         regions_transformer(self._view, f)
 
 
+# https://neovim.io/doc/user/insert.html#a
 class _vi_a(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -347,6 +353,7 @@ class _vi_a(ViTextCommandBase):
         })
 
 
+# https://neovim.io/doc/user/change.html#c
 class _vi_c(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1048,6 +1055,7 @@ class PressKey(ViWindowCommandBase):
                 return True
 
 
+# https://neovim.io/doc/user/repeat.html#%2e
 class _vi_dot(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1102,6 +1110,7 @@ class _vi_dot(ViWindowCommandBase):
         state.update_xpos()
 
 
+# https://neovim.io/doc/user/change.html#dd
 class _vi_dd(ViTextCommandBase):
 
     _can_yank = True
@@ -1140,6 +1149,7 @@ class _vi_dd(ViTextCommandBase):
         # TODO(guillermooo): deleting last line leaves the caret at \n
 
 
+# https://neovim.io/doc/user/change.html#cc
 class _vi_cc(ViTextCommandBase):
 
     _can_yank = True
@@ -1168,6 +1178,7 @@ class _vi_cc(ViTextCommandBase):
         self.set_xpos(self.state)
 
 
+# https://neovim.io/doc/user/insert.html#o
 class _vi_visual_o(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1186,6 +1197,7 @@ class _vi_visual_o(ViTextCommandBase):
 
 
 # TODO: is this really a text command?
+# https://neovim.io/doc/user/change.html#yy
 class _vi_yy(ViTextCommandBase):
 
     _can_yank = True
@@ -1224,6 +1236,7 @@ class _vi_yy(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#y
 class _vi_y(ViTextCommandBase):
 
     _can_yank = True
@@ -1251,6 +1264,7 @@ class _vi_y(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#d
 class _vi_d(ViTextCommandBase):
 
     _can_yank = True
@@ -2171,6 +2185,7 @@ class _vi_ga(ViWindowCommandBase):
             return sublime.status_message(msg_template % (c_not, c_ord, c_hex, c_oct))
 
 
+# https://neovim.io/doc/user/tabpage.html#gt
 class _vi_gt(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2180,6 +2195,7 @@ class _vi_gt(ViWindowCommandBase):
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
+# https://neovim.io/doc/user/tabpage.html#gT
 class _vi_g_big_t(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2432,6 +2448,7 @@ class _vi_z_enter(IrreversibleTextCommand):
         self.view.set_viewport_position(taget_pt)
 
 
+# https://neovim.io/doc/user/scroll.html#z-
 class _vi_z_minus(IrreversibleTextCommand):
 
     def __init__(self, *args, **kwargs):
@@ -2445,6 +2462,7 @@ class _vi_z_minus(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
+# https://neovim.io/doc/user/scroll.html#zz
 class _vi_zz(IrreversibleTextCommand):
 
     def __init__(self, view):
@@ -2541,6 +2559,7 @@ class _vi_select_big_j(IrreversibleTextCommand):
         self.view.run_command('_enter_normal_mode', {'mode': mode})
 
 
+# https://neovim.io/doc/user/change.html#J
 class _vi_big_j(ViTextCommandBase):
     WHITE_SPACE = ' \t'
 
@@ -2605,6 +2624,7 @@ class _vi_big_j(ViTextCommandBase):
         sels.add(R(end_pos))
 
 
+# https://neovim.io/doc/user/visual.html#gv
 class _vi_gv(IrreversibleTextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2619,6 +2639,7 @@ class _vi_gv(IrreversibleTextCommand):
         self.view.sel().add_all(sels)
 
 
+# https://neovim.io/doc/user/scroll.html#CTRL-E
 class _vi_ctrl_e(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2634,6 +2655,7 @@ class _vi_ctrl_e(ViTextCommandBase):
         self.view.run_command('scroll_lines', {'amount': -1, 'extend': extend})
 
 
+# https://neovim.io/doc/user/scroll.html#CTRL-Y
 class _vi_ctrl_y(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2649,6 +2671,7 @@ class _vi_ctrl_y(ViTextCommandBase):
         self.view.run_command('scroll_lines', {'amount': 1, 'extend': extend})
 
 
+# https://neovim.io/doc/user/cmdline.html#c_CTRL-R
 class _vi_ctrl_r_equal(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
