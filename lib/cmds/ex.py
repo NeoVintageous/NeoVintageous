@@ -1870,8 +1870,6 @@ class ExSet(ViWindowCommandBase):
         option = parsed.command.option
         value = parsed.command.value
 
-        print(locals())
-
         if option.endswith('?'):
             show_not_implemented()
             return

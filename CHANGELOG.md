@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: :set prints debug messages to console even when debugging is disabled
 * Fixed [#268](https://github.com/NeoVintageous/NeoVintageous/issues/268): :set doesn't work in some cases e.g. :set hlsearch
 * Fixed: :file (ctrl+g) file name should be quoted
 * Fixed: Readme link to Linux and OSX cleaner script is broken
