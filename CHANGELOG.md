@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unrelased
+
+### Fixed
+
+* Fixed [#169](https://github.com/NeoVintageous/NeoVintageous/issues/169): How to map this using Vintageous?
+
 ## [1.1.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.0) - 2017-05-28
 
 ### Added

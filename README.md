@@ -58,22 +58,31 @@ NeoVintageous: Toggle Use Ctrl Keys |
 
 Use the [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin. It provides a command to toggle NeoVintageous.
 
-### .vintageousrc
+### The .vintageousrc file
 
-A feature similar to .vimrc.
+A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file, which provides a way start Sublime Text with all your favourite Neovintageous option settings and mappings, you write them in what is called the `.vintageousrc` file.
 
-It allows to persist mappings. A runtime configuration file, `Packages/User/.vintageousrc`, is read during startup and supports the following commands for mapping keys:
+The file is located at `Packages/User/.vintageousrc` and is read during startup.
 
-    :map / :unmap
-    :nmap / :nunmap
-    :omap / :ounmap
-    :vmap / :vunmap
+There is currently only limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:unmap` `:nmap`, `:nunmap` `:omap`, `:ounmap` `:vmap`, and `:vunmap`.
 
-The current limitations apply:
+Examples
 
-* No recursive or nested mappings.
-* Only keys known to Vintageous can be remapped.
-* Only commands known to Vintageous can be used in mappings.
+    :let mapleader=,
+
+    # map space to enter command line mode
+    :map <space> :
+
+    # map ,a to visually select all content
+    :map <leader>a ggvG
+
+    # Map space to scroll up
+    :map <space> <C-u>
+
+    # Map shift+enter to scroll down
+    :map <S-cr> <C-d>
+
+Read more about mappings in [VIM main help file](https://neovim.io/doc/user/map.html).
 
 ### Modelines
 
