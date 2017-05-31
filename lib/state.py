@@ -59,10 +59,10 @@ class State(object):
         self.settings = SettingsManager(self.view)
 
         _logger.debug(
-            "[State] view id = %d, st/nvim-widget = %s/%s, file = %s",
-            view.id(),
+            "[State] st/nvim-widget = %s/%s, view id = %d, file = %s",
             bool(self.settings.view['is_widget']),
             bool(self.settings.view['is_vintageous_widget']),
+            view.id(),
             view.file_name()
         )
 

@@ -298,7 +298,7 @@ def seq_to_command(state, seq, mode=None):
     """
     mode = mode or state.mode
 
-    _logger.info('[seq_to_command] state/seq: {0}/{1}'.format(mode, seq))
+    _logger.info('[seq_to_command] mode = \'%s\', seq = \'%s\'', mode, seq)
 
     command = None
 
