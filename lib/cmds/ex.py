@@ -202,17 +202,9 @@ class ExGoto(ViWindowCommandBase):
         self._view.show(self._view.sel()[0])
 
 
+# https://neovim.io/doc/user/various.html#:%21
+# https://neovim.io/doc/user/various.html#:%21%21
 class ExShellOut(sublime_plugin.TextCommand):
-    """
-    Execute {cmd} with 'shell'.
-
-    :!{cmd}     Execute {cmd} with 'shell'
-    :!!         Repeat last ":!{cmd}"
-
-    https://neovim.io/doc/user/various.html#:!
-    https://neovim.io/doc/user/various.html#:!!
-    """
-
     _last_command = None
 
     @changing_cd
@@ -304,16 +296,8 @@ class ExShell(ViWindowCommandBase):
             show_not_implemented()
 
 
+# https://neovim.io/doc/user/insert.html#:r
 class ExReadShellOut(sublime_plugin.TextCommand):
-    """
-    Ex command.
-
-    :r[ead] [++opt] [name]
-             :{range}r[ead] [++opt] [name]
-             :[range]r[ead] !{cmd}
-
-    https://neovim.io/doc/user/insert.html#:r
-    """
 
     @changing_cd
     def run(self, edit, command_line=''):
@@ -359,16 +343,8 @@ class ExReadShellOut(sublime_plugin.TextCommand):
             return
 
 
+# https://neovim.io/doc/user/windows.html#:ls
 class ExPromptSelectOpenFile(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :ls[!]
-             :buffers[!]
-             :files[!]
-
-    https://neovim.io/doc/user/windows.html#:ls
-    """
 
     def run(self, command_line=''):
         self.file_names = [get_view_info(view) for view in self.window.views()]
@@ -386,17 +362,10 @@ class ExPromptSelectOpenFile(ViWindowCommandBase):
                 self.window.focus_view(view)
 
 
+# https://neovim.io/doc/user/map.html#:map
 class ExMap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :map {lhs} {rhs}
-
-    https://neovim.io/doc/user/map.html#:map
-    """
 
     def run(self, command_line=''):
-        # def run(self, edit, mode=None, count=None, cmd=''):
         assert command_line, 'expected non-empty command line'
 
         parsed = parse_command_line(command_line)
@@ -411,14 +380,8 @@ class ExMap(ViWindowCommandBase):
         mappings.add(modes.VISUAL, parsed.command.keys, parsed.command.command)
 
 
+# https://neovim.io/doc/user/map.html#:unmap
 class ExUnmap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :unm[ap]  {lhs}
-
-    https://neovim.io/doc/user/map.html#:unmap
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -434,14 +397,8 @@ class ExUnmap(ViWindowCommandBase):
             sublime.status_message('NeoVintageous: Mapping not found.')
 
 
+# https://neovim.io/doc/user/map.html#:nmap
 class ExNmap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :nm[ap] {lhs} {rhs}
-
-    https://neovim.io/doc/user/map.html#:nmap
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -451,14 +408,8 @@ class ExNmap(ViWindowCommandBase):
         mappings.add(modes.NORMAL, keys, command)
 
 
+# https://neovim.io/doc/user/map.html#:nunmap
 class ExNunmap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :nun[map] {lhs}
-
-    https://neovim.io/doc/user/map.html#:nunmap
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -470,14 +421,8 @@ class ExNunmap(ViWindowCommandBase):
             sublime.status_message('NeoVintageous: Mapping not found.')
 
 
+# https://neovim.io/doc/user/map.html#:omap
 class ExOmap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :om[ap] {lhs} {rhs}
-
-    https://neovim.io/doc/user/map.html#:omap
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -487,14 +432,8 @@ class ExOmap(ViWindowCommandBase):
         mappings.add(modes.OPERATOR_PENDING, keys, command)
 
 
+# https://neovim.io/doc/user/map.html#:ounmap
 class ExOunmap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :ou[nmap] {lhs}
-
-    https://neovim.io/doc/user/map.html#:ounmap
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -506,14 +445,8 @@ class ExOunmap(ViWindowCommandBase):
             sublime.status_message('NeoVintageous: Mapping not found.')
 
 
+# https://neovim.io/doc/user/map.html#:vmap
 class ExVmap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :vm[ap] {lhs} {rhs}
-
-    https://neovim.io/doc/user/map.html#:vmap
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -525,14 +458,8 @@ class ExVmap(ViWindowCommandBase):
         mappings.add(modes.VISUAL_BLOCK, keys, command)
 
 
+# https://neovim.io/doc/user/map.html#:vunmap
 class ExVunmap(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :vu[nmap] {lhs}
-
-    https://neovim.io/doc/user/map.html#:vunmap
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -546,14 +473,8 @@ class ExVunmap(ViWindowCommandBase):
             sublime.status_message('NeoVintageous: Mapping  not found.')
 
 
+# https://neovim.io/doc/user/map.html#:abbreviate
 class ExAbbreviate(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :ab[breviate]
-
-    https://neovim.io/doc/user/map.html#:abbreviate
-    """
 
     def run(self, command_line=''):
         if not command_line:
@@ -576,14 +497,8 @@ class ExAbbreviate(ViWindowCommandBase):
                                      flags=sublime.MONOSPACE_FONT)
 
 
+# https://neovim.io/doc/user/map.html#:unabbreviate
 class ExUnabbreviate(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :una[bbreviate] {lhs}
-
-    https://neovim.io/doc/user/map.html#:unabbreviate
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -596,14 +511,8 @@ class ExUnabbreviate(ViWindowCommandBase):
         abbrev.Store().erase(parsed.command.short)
 
 
+# https://neovim.io/doc/user/editing.html#:pwd
 class ExPrintWorkingDir(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :pw[d]
-
-    https://neovim.io/doc/user/editing.html#:pwd
-    """
 
     @changing_cd
     def run(self, command_line=''):
@@ -611,39 +520,8 @@ class ExPrintWorkingDir(ViWindowCommandBase):
         show_status(os.getcwd())
 
 
+# https://neovim.io/doc/user/editing.html#:write
 class ExWriteFile(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :w[rite] [++opt]
-    :w[rite]! [++opt]
-    :[range]w[rite][!] [++opt]
-    :[range]w[rite] [++opt] {file}
-    :[range]w[rite]! [++opt] {file}
-    :[range]w[rite][!] [++opt] >>
-    :[range]w[rite][!] [++opt] >> {file}
-    :[range]w[rite] [++opt] {!cmd}
-
-    https://neovim.io/doc/user/editing.html#:write
-    """
-
-    def check_is_readonly(self, fname):
-        """
-        Return `True` if @fname is read-only on the filesystem.
-
-        @fname
-          Path to a file.
-        """
-        if not fname:
-            return
-
-        try:
-            mode = os.stat(fname)
-            read_only = (stat.S_IMODE(mode.st_mode) & stat.S_IWUSR != stat.S_IWUSR)
-        except FileNotFoundError:
-            return
-
-        return read_only
 
     @changing_cd
     def run(self, command_line=''):
@@ -687,6 +565,24 @@ class ExWriteFile(ViWindowCommandBase):
             return
 
         self.window.run_command('save')
+
+    def check_is_readonly(self, fname):
+        """
+        Return `True` if @fname is read-only on the filesystem.
+
+        @fname
+          Path to a file.
+        """
+        if not fname:
+            return
+
+        try:
+            mode = os.stat(fname)
+            read_only = (stat.S_IMODE(mode.st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+        except FileNotFoundError:
+            return
+
+        return read_only
 
     def do_append(self, parsed_command):
         if parsed_command.command.target_file:
@@ -781,14 +677,8 @@ class ExWriteFile(ViWindowCommandBase):
             print('=========================================================')
 
 
+# https://neovim.io/doc/user/editing.html#:wa
 class ExWriteAll(ViWindowCommandBase):
-    """
-    Ex commmand.
-
-    :wa[ll][!]
-
-    https://neovim.io/doc/user/editing.html#:wa
-    """
 
     @changing_cd
     def run(self, command_line=''):
@@ -804,14 +694,8 @@ class ExWriteAll(ViWindowCommandBase):
             v.run_command('save')
 
 
+# https://neovim.io/doc/user/editing.html#:file
 class ExFile(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :f[file][!]
-
-    https://neovim.io/doc/user/editing.html#:file
-    """
 
     def run(self, command_line=''):
         # XXX figure out what the right params are. vim's help seems to be
@@ -850,14 +734,8 @@ class ExFile(ViWindowCommandBase):
         sublime.status_message('NeoVintageous: %s' % msg)
 
 
+# https://neovim.io/doc/user/change.html#:move
 class ExMove(ExTextCommandBase):
-    """
-    Ex command.
-
-    :[range]m[ove] {address}
-
-    https://neovim.io/doc/user/change.html#:move
-    """
 
     def run_ex_command(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -897,14 +775,8 @@ class ExMove(ExTextCommandBase):
         self.set_next_sel([[destination.a, destination.a]])
 
 
+# https://neovim.io/doc/user/change.html#:copy
 class ExCopy(ExTextCommandBase):
-    """
-    Ex command.
-
-    :[range]co[py] {address}
-
-    https://neovim.io/doc/user/change.html#:copy
-    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -943,14 +815,8 @@ class ExCopy(ExTextCommandBase):
         self.set_next_sel([(cursor_dest, cursor_dest)])
 
 
+# https://neovim.io/doc/user/windows.html#:only
 class ExOnly(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :on[ly][!]
-
-    https://neovim.io/doc/user/windows.html#:only
-    """
 
     def run(self, command_line=''):
 
@@ -975,14 +841,8 @@ class ExOnly(ViWindowCommandBase):
             view.close()
 
 
+# https://neovim.io/doc/user/change.html#:&
 class ExDoubleAmpersand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :[range]&[&][flags] [count]
-
-    https://neovim.io/doc/user/change.html#:&
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1000,14 +860,8 @@ class ExDoubleAmpersand(ViWindowCommandBase):
         })
 
 
+# https://neovim.io/doc/user/change.html#:substitute
 class ExSubstitute(sublime_plugin.TextCommand):
-    """
-    Ex command.
-
-    :s[ubstitute]
-
-    https://neovim.io/doc/user/change.html#:substitute
-    """
 
     last_pattern = None
     last_flags = []
@@ -1094,15 +948,8 @@ class ExSubstitute(sublime_plugin.TextCommand):
             start = match.b + (self.view.size() - size_before)
 
 
+# https://neovim.io/doc/user/change.html#:delete
 class ExDelete(ExTextCommandBase):
-    """
-    Ex command.
-
-    :[range]d[elete] [x]
-             :[range]d[elete] [x] {count}
-
-    https://neovim.io/doc/user/change.html#:delete
-    """
 
     def select(self, regions, register):
         self.view.sel().clear()
@@ -1139,7 +986,7 @@ class ExDelete(ExTextCommandBase):
 
 class ExGlobal(ViWindowCommandBase):
     """
-    Ex command.
+    Global filters.
 
     :[range]g[lobal]/{pattern}/[cmd]
     :[range]g[lobal]!/{pattern}/[cmd]
@@ -1202,15 +1049,8 @@ class ExGlobal(ViWindowCommandBase):
         })
 
 
+# https://neovim.io/doc/user/various.html#:print
 class ExPrint(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :[range]p[rint] [flags]
-             :[range]p[rint] {count} [flags]
-
-    https://neovim.io/doc/user/various.html#:print
-    """
 
     def run(self, command_line='', global_lines=None):
         assert command_line, 'expected non-empty command line'
@@ -1252,14 +1092,8 @@ class ExPrint(ViWindowCommandBase):
         return to_display
 
 
+# https://neovim.io/doc/user/editing.html#:q
 class ExQuitCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :q[uit][!]
-
-    https://neovim.io/doc/user/editing.html#:q
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1291,14 +1125,8 @@ class ExQuitCommand(ViWindowCommandBase):
             self.window.run_command('ex_unvsplit')
 
 
+# https://neovim.io/doc/user/editing.html#:qa
 class ExQuitAllCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :qa[ll][!]
-
-    https://neovim.io/doc/user/editing.html#:qa
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1318,13 +1146,6 @@ class ExQuitAllCommand(ViWindowCommandBase):
 
 
 class ExWriteAndQuitCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :wq[!] [++opt] {file}
-
-    Write and then close the active buffer.
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1346,14 +1167,8 @@ class ExWriteAndQuitCommand(ViWindowCommandBase):
         self.window.run_command('ex_quit', {'command_line': 'quit'})
 
 
+# https://neovim.io/doc/user/editing.html#:browse
 class ExBrowse(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :bro[wse] {command}
-
-    https://neovim.io/doc/user/editing.html#:browse
-    """
 
     def run(self, command_line):
         assert command_line, 'expected a non-empty command line'
@@ -1363,18 +1178,8 @@ class ExBrowse(ViWindowCommandBase):
         })
 
 
+# https://neovim.io/doc/user/editing.html#:edit
 class ExEdit(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :e[dit] [++opt] [+cmd]
-    :e[dit]! [++opt] [+cmd]
-    :e[dit] [++opt] [+cmd] {file}
-    :e[dit]! [++opt] [+cmd] {file}
-    :e[dit] [++opt] [+cmd] #[count]
-
-    https://neovim.io/doc/user/editing.html#:edit
-    """
 
     @changing_cd
     def run(self, command_line=''):
@@ -1427,14 +1232,8 @@ class ExEdit(ViWindowCommandBase):
         show_error(VimError(ERR_UNSAVED_CHANGES))
 
 
+# https://neovim.io/doc/user/quickfix.html#:cquit
 class ExCquit(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :cq[uit][!]
-
-    https://neovim.io/doc/user/quickfix.html#:cquit
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command_line'
@@ -1442,15 +1241,8 @@ class ExCquit(ViWindowCommandBase):
         self.window.run_command('exit')
 
 
+# https://neovim.io/doc/user/editing.html#:exit
 class ExExit(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :[range]exi[t][!] [++opt] [file]
-    :xit
-
-    https://neovim.io/doc/user/editing.html#:exit
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1463,18 +1255,8 @@ class ExExit(ViWindowCommandBase):
             self.window.run_command('exit')
 
 
+# https://neovim.io/doc/user/change.html#:registers
 class ExListRegisters(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :reg[isters] {arg}
-
-    Lists registers in quick panel and saves selected to `"` register.
-
-    In NeoVintageous, registers store lists of values (due to multiple selections).
-
-    https://neovim.io/doc/user/change.html#:registers
-    """
 
     def run(self, command_line):
         def show_lines(line_count):
@@ -1500,14 +1282,8 @@ class ExListRegisters(ViWindowCommandBase):
         self.state.registers['"'] = [value]
 
 
+# https://neovim.io/doc/user/windows.html#:new
 class ExNew(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :[N]new [++opt] [+cmd]
-
-    https://neovim.io/doc/user/windows.html#:new
-    """
 
     @changing_cd
     def run(self, command_line=''):
@@ -1515,14 +1291,8 @@ class ExNew(ViWindowCommandBase):
         self.window.run_command('new_file')
 
 
+# https://neovim.io/doc/user/windows.html#:yank
 class ExYank(sublime_plugin.TextCommand):
-    """
-    Ex command.
-
-    :[range]y[ank] [x] {count}
-
-    https://neovim.io/doc/user/windows.html#:yank
-    """
 
     def run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1600,14 +1370,8 @@ class ExTabOpenCommand(sublime_plugin.WindowCommand):
             'command': 'open', 'file_name': file_name}, )
 
 
+# https://neovim.io/doc/user/tabpage.html#:tabnext
 class ExTabnextCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :tabn[ext]
-
-    https://neovim.io/doc/user/tabpage.html#:tabnext
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1617,14 +1381,8 @@ class ExTabnextCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "next"}, )
 
 
+# https://neovim.io/doc/user/tabpage.html#:tabprevious
 class ExTabprevCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :tabp[revious]
-
-    https://neovim.io/doc/user/tabpage.html#:tabprevious
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1634,14 +1392,8 @@ class ExTabprevCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "prev"}, )
 
 
+# https://neovim.io/doc/user/tabpage.html#:tablast
 class ExTablastCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :tabl[ast]
-
-    https://neovim.io/doc/user/tabpage.html#:tablast
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1651,14 +1403,8 @@ class ExTablastCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "last"}, )
 
 
+# https://neovim.io/doc/user/tabpage.html#:tabfirst
 class ExTabfirstCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :tabf[irst]
-
-    https://neovim.io/doc/user/tabpage.html#:tabfirst
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1668,14 +1414,8 @@ class ExTabfirstCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "first"}, )
 
 
+# https://neovim.io/doc/user/tabpage.html#:tabonly
 class ExTabonlyCommand(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :tabo[only]
-
-    https://neovim.io/doc/user/tabpage.html#:tabonly
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1685,19 +1425,12 @@ class ExTabonlyCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "only", "forced": parsed.command.forced})
 
 
+# https://neovim.io/doc/user/editing.html#:cd
 class ExCdCommand(ViWindowCommandBase):
     """
-    Ex command.
-
-    :cd[!]
-             :cd[!] {path}
-             :cd[!] -
-
     Print or change the current directory.
 
-    :cd without an argument behaves as in Unix for all platforms.
-
-    https://neovim.io/doc/user/editing.html#:cd
+    Without an argument behaves as in Unix for all platforms.
     """
 
     @changing_cd
@@ -1769,14 +1502,8 @@ class ExCddCommand(ViWindowCommandBase):
             show_error(VimError(ERR_CANT_FIND_DIR_IN_CDPATH))
 
 
+# https://neovim.io/doc/user/windows.html#:vsplit
 class ExVsplit(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :[N]vs[plit] [++opt] [+cmd] [file]
-
-    https://neovim.io/doc/user/windows.html#:vsplit
-    """
 
     MAX_SPLITS = 4
     LAYOUT_DATA = {
@@ -1821,11 +1548,7 @@ class ExVsplit(ViWindowCommandBase):
 
 class ExUnvsplit(ViWindowCommandBase):
     """
-    Ex command.
-
-    :unvsplit
-
-    Non-standard Vim command.
+    Non-standard Vim :unvsplit command.
     """
 
     def run(self, command_line=''):
@@ -1842,6 +1565,7 @@ class ExUnvsplit(ViWindowCommandBase):
         self.window.run_command('set_layout', ExVsplit.LAYOUT_DATA[groups - 1])
 
 
+# https://neovim.io/doc/user/options.html#:setlocal
 class ExSetLocal(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1861,6 +1585,7 @@ class ExSetLocal(ViWindowCommandBase):
             sublime.status_message("NeoVintageous: Invalid value for option.")
 
 
+# https://neovim.io/doc/user/options.html#:set
 class ExSet(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1881,14 +1606,8 @@ class ExSet(ViWindowCommandBase):
             sublime.status_message("NeoVintageous: Invalid value for option.")
 
 
+# https://neovim.io/doc/user/eval.html#:let
 class ExLet(ViWindowCommandBase):
-    """
-    Ex command.
-
-    :let {var-name} = {expr1}
-
-    https://neovim.io/doc/user/eval.html#:let
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1896,15 +1615,8 @@ class ExLet(ViWindowCommandBase):
         self.state.variables.set(parsed.command.variable_name, parsed.command.variable_value)
 
 
+# https://neovim.io/doc/user/editing.html#:wqall
 class ExWriteAndQuitAll(ViWindowCommandBase):
-    """
-    Ex commmand.
-
-    :wqa[ll] [++opt]
-              :xa[ll]
-
-    https://neovim.io/doc/user/editing.html#:wqall
-    """
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'

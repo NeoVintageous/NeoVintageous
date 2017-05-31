@@ -103,14 +103,10 @@ class NeoVintageousEvents(sublime_plugin.EventListener):
                         ]
                     })
 
-    # XXX: Refactored from ExecuteModeLines
     def on_load(self, view):
         modelines(view)
 
-    # XXX: Refactored from ExecuteModeLines and VintageStateTrackers
     def on_post_save(self, view):
-
-        # XXX: Refactored from ExecuteModeLines
         modelines(view)
 
         # XXX: Refactored from VintageStateTracker

@@ -2073,8 +2073,6 @@ class _vi_go_to_symbol(ViMotionCommand):
 
 
 class _vi_gm(ViMotionCommand):
-    """Vim: `gm`."""
-
     def run(self, mode=None, count=1):
         def advance(view, s):
             line = view.line(s.b)
@@ -2092,8 +2090,6 @@ class _vi_gm(ViMotionCommand):
 
 
 class _vi_left_square_bracket(ViMotionCommand):
-    """Vim: `[`."""
-
     BRACKETS = {
         '{': ('\\{', '\\}'),
         '}': ('\\{', '\\}'),
@@ -2122,8 +2118,6 @@ class _vi_left_square_bracket(ViMotionCommand):
 
 
 class _vi_right_square_bracket(ViMotionCommand):
-    """Vim: `]`."""
-
     BRACKETS = {
         '{': ('\\{', '\\}'),
         '}': ('\\{', '\\}'),

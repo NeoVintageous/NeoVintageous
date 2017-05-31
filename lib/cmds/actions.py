@@ -237,8 +237,7 @@ class _vi_gq(ViTextCommandBase):
         wrap_lines = wrap_command()
 
         if mode in (modes.VISUAL, modes.VISUAL_LINE):
-            # TODO: ST seems to always reformat whole paragraphs with
-            #       'wrap_lines'.
+            # TODO: ST seems to always reformat whole paragraphs with 'wrap_lines'.
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
             self.view.run_command(wrap_lines)
@@ -268,8 +267,6 @@ class _vi_gq(ViTextCommandBase):
 
 
 class _vi_u(ViWindowCommandBase):
-    """Undoe last change."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -435,15 +432,14 @@ class _enter_normal_mode(ViTextCommandBase):
             #      redundant, since those views should be ignored by
             #      NeoVintageous altogether.
             if len(self.view.sel()) < 2:
-                # don't hide panel if multiple cursors
-                # if not from_init and getattr(self.view, 'settings') is None:
+                # Don't hide panel if multiple cursors
                 if not from_init:
                     self.view.window().run_command('hide_panel', {'cancel': True})
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
 
-        # Exit replace mode.
+        # Exit replace mode
         self.view.set_overwrite_status(False)
 
         state.enter_normal_mode()
@@ -469,8 +465,7 @@ class _enter_normal_mode(ViTextCommandBase):
 
         if mode == modes.INSERT and int(state.normal_insert_count) > 1:
             state.enter_insert_mode()
-            # TODO: Calculate size the view has grown by and place the caret
-            # after the newly inserted text.
+            # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
             new_sels = [R(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
@@ -669,8 +664,6 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
 
 class _enter_visual_line_mode_impl(ViTextCommandBase):
-    """Transform the view's selections."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -881,9 +874,6 @@ class ProcessNotation(ViWindowCommandBase):
 class PressKey(ViWindowCommandBase):
     """
     Interact with the global state each time a key is pressed.
-
-    Core command.
-
 
     @key
         Key pressed.
@@ -1399,8 +1389,6 @@ class _vi_m(ViTextCommandBase):
 
 
 class _vi_quote(ViTextCommandBase):
-    """
-    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1599,9 +1587,6 @@ class _vi_big_s_action(ViTextCommandBase):
 
 
 class _vi_s(ViTextCommandBase):
-    """Implementation of Vim's 's' action."""
-
-    # Yank config data.
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1640,8 +1625,6 @@ class _vi_s(ViTextCommandBase):
 
 
 class _vi_x(ViTextCommandBase):
-    """Implementation of Vim's x action."""
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -2151,22 +2134,16 @@ class _vi_p(ViTextCommandBase):
             return sel.begin()
 
 
+# https://neovim.io/doc/user/various.html#ga
 class _vi_ga(ViWindowCommandBase):
-    """https://neovim.io/doc/user/various.html#ga."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self):
 
         def character_to_notation(character):
-            """
-            Convert a character to a key notation.
-
-            Uses vim key notation.
-
-            https://neovim.io/doc/user/intro.html#key-notation
-            """
+            # Convert a character to a key notation. Uses vim key notation.
+            # See https://neovim.io/doc/user/intro.html#key-notation
             character_notation_map = {
                 "\0": "Nul",
                 " ": "Space",
@@ -2212,11 +2189,10 @@ class _vi_g_big_t(ViWindowCommandBase):
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
-# TODO <C-]> should learn visual mode
-# TODO <C-]> should learn to count
+# TODO <C-]> could learn visual mode
+# TODO <C-]> could learn to count
+# https://neovim.io/doc/user/tagsrch.html#CTRL-%5d
 class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
-    """https://neovim.io/doc/user/tagsrch.html#CTRL-]."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2224,9 +2200,8 @@ class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
         self.window.run_command('goto_definition')
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_b
 class _vi_ctrl_w_b(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_b."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2234,9 +2209,8 @@ class _vi_ctrl_w_b(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_bottom_right()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_h
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_h."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2244,9 +2218,8 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_far_left()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_j
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_j."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2254,9 +2227,8 @@ class _vi_ctrl_w_big_j(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_very_bottom()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_k
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_k."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2264,9 +2236,8 @@ class _vi_ctrl_w_big_k(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_very_top()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_L
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_L."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2274,9 +2245,8 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_far_right()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_c
 class _vi_ctrl_w_c(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_c."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2284,9 +2254,8 @@ class _vi_ctrl_w_c(ViWindowCommandBase):
         WindowAPI(self.window).close_current_view()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_=
 class _vi_ctrl_w_equal(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_=."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2294,9 +2263,8 @@ class _vi_ctrl_w_equal(ViWindowCommandBase):
         WindowAPI(self.window).resize_groups_almost_equally()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_%3e
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_>."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2304,9 +2272,8 @@ class _vi_ctrl_w_greater_than(ViWindowCommandBase):
         WindowAPI(self.window).increase_current_group_width_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_h
 class _vi_ctrl_w_h(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_h."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2314,9 +2281,8 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_j
 class _vi_ctrl_w_j(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_j."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2324,9 +2290,8 @@ class _vi_ctrl_w_j(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_k
 class _vi_ctrl_w_k(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_k."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2334,9 +2299,8 @@ class _vi_ctrl_w_k(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_l
 class _vi_ctrl_w_l(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_l."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2344,9 +2308,8 @@ class _vi_ctrl_w_l(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_%3C
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_<."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2354,9 +2317,8 @@ class _vi_ctrl_w_less_than(ViWindowCommandBase):
         WindowAPI(self.window).decrease_current_group_width_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_-
 class _vi_ctrl_w_minus(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_-."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2364,9 +2326,8 @@ class _vi_ctrl_w_minus(ViWindowCommandBase):
         WindowAPI(self.window).decrease_current_group_height_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_n
 class _vi_ctrl_w_n(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_n."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2374,9 +2335,8 @@ class _vi_ctrl_w_n(ViWindowCommandBase):
         WindowAPI(self.window).split_with_new_file(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_o
 class _vi_ctrl_w_o(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_o."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2384,9 +2344,8 @@ class _vi_ctrl_w_o(ViWindowCommandBase):
         WindowAPI(self.window).close_all_other_views()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_bar
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_bar."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2394,9 +2353,8 @@ class _vi_ctrl_w_pipe(ViWindowCommandBase):
         WindowAPI(self.window).set_current_group_width_to_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_+
 class _vi_ctrl_w_plus(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_+."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2404,8 +2362,8 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
         WindowAPI(self.window).increase_current_group_height_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_q
 class _vi_ctrl_w_q(IrreversibleTextCommand):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_q."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2414,9 +2372,8 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
         WindowAPI(self.view.window()).quit_current_view()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_s
 class _vi_ctrl_w_s(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_s."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2424,9 +2381,8 @@ class _vi_ctrl_w_s(ViWindowCommandBase):
         WindowAPI(self.window).split_current_view_in_two(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_t
 class _vi_ctrl_w_t(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_t."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2434,9 +2390,8 @@ class _vi_ctrl_w_t(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_top_left()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W__
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W__."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2444,9 +2399,8 @@ class _vi_ctrl_w_underscore(ViWindowCommandBase):
         WindowAPI(self.window).set_current_group_height_to_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_v
 class _vi_ctrl_w_v(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_v."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2454,9 +2408,8 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
         WindowAPI(self.window).split_current_view_in_two_vertically(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_x
 class _vi_ctrl_w_x(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_x."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2465,20 +2418,13 @@ class _vi_ctrl_w_x(ViWindowCommandBase):
 
 
 # TODO: z<CR> != zt
+# TODO if count is given should be the same as CTRL-W__
+# https://neovim.io/doc/user/scroll.html#z%3CCR%3E
 class _vi_z_enter(IrreversibleTextCommand):
-    """
-    Command: z<cr>.
-
-    https://neovim.io/doc/user/scroll.html#z<CR>
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
-
-        # TODO if count is given should be the same as CTRL-W__
-
         pt = resolve_insertion_point_at_b(first_sel(self.view))
         home_line = self.view.line(pt)
 
@@ -2513,8 +2459,8 @@ class _vi_zz(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
+# Base class for Ctrl-x and Ctrl-a
 class _vi_modify_numbers(ViTextCommandBase):
-    """Base class for Ctrl-x and Ctrl-a."""
 
     DIGIT_PAT = re.compile('(\D+?)?(-)?(\d+)(\D+)?')
     NUM_PAT = re.compile('\d')
@@ -2581,13 +2527,9 @@ class _vi_modify_numbers(ViTextCommandBase):
             self.view.sel().add(R(self.view.text_point(row, col)))
 
 
+# Active in select mode. Clears multiple selections and returns to normal mode.
+# Should be more convenient than having to reach for Esc.
 class _vi_select_big_j(IrreversibleTextCommand):
-    """
-    Active in select mode.
-
-    Clears multiple selections and returns to normal mode. Should be more
-    convenient than having to reach for Esc.
-    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2866,8 +2808,8 @@ class _vi_select_j(ViWindowCommandBase):
             self.window.run_command('find_under_expand')
 
 
+# Implemented as if 'notildeopt' was True
 class _vi_tilde(ViTextCommandBase):
-    """Implemented as if 'notildeopt' was `True`."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2917,8 +2859,6 @@ class _vi_g_tilde(ViTextCommandBase):
 
 
 class _vi_visual_u(ViTextCommandBase):
-    """'u' action in visual modes."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2935,8 +2875,6 @@ class _vi_visual_u(ViTextCommandBase):
 
 
 class _vi_visual_big_u(ViTextCommandBase):
-    """'U' action in visual modes."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -3007,14 +2945,9 @@ class _vi_guu(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# Non-standard command. After a search has been performed via '/' or '?',
+# selects all matches and enters select mode.
 class _vi_g_big_h(ViWindowCommandBase):
-    """
-    Non-standard command.
-
-    After a search has been performed via '/' or '?', selects all matches and
-    enters select mode.
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -3034,9 +2967,8 @@ class _vi_g_big_h(ViWindowCommandBase):
         self.state.reset_command_data()
 
 
+# https://neovim.io/doc/user/insert.html#i_CTRL-X_CTRL-L
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
-    """https://neovim.io/doc/user/insert.html#i_CTRL-X_CTRL-L."""
-
     MAX_MATCHES = 20
 
     def __init__(self, *args, **kwargs):
