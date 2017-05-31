@@ -151,6 +151,7 @@ def get_view_info(v):
 
 
 class ExTextCommandBase(sublime_plugin.TextCommand):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -182,6 +183,7 @@ class ExTextCommandBase(sublime_plugin.TextCommand):
 
 
 class ExGoto(ViWindowCommandBase):
+
     def run(self, command_line):
         if not command_line:
             # No-op: user issues ':'.
@@ -367,13 +369,11 @@ class ExMap(ViWindowCommandBase):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         parsed = parse_command_line(command_line)
 
         if not (parsed.command.keys and parsed.command.command):
             show_not_implemented('Showing mappings now implemented')
             return
-
         mappings = Mappings(self.state)
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
         mappings.add(modes.OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
@@ -402,10 +402,9 @@ class ExNmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        nmap_command = parse_command_line(command_line)
-        keys, command = (nmap_command.command.keys, nmap_command.command.command)
+        parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
-        mappings.add(modes.NORMAL, keys, command)
+        mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
 
 
 # https://neovim.io/doc/user/map.html#:nunmap
@@ -491,10 +490,7 @@ class ExAbbreviate(ViWindowCommandBase):
 
     def show_abbreviations(self):
         abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
-
-        self.window.show_quick_panel(abbrevs,
-                                     None,  # Simply show the list.
-                                     flags=sublime.MONOSPACE_FONT)
+        self.window.show_quick_panel(abbrevs, None, flags=sublime.MONOSPACE_FONT)
 
 
 # https://neovim.io/doc/user/map.html#:unabbreviate
@@ -1315,6 +1311,7 @@ class ExYank(sublime_plugin.TextCommand):
 
 
 class TabControlCommand(ViWindowCommandBase):
+
     def run(self, command, file_name=None, forced=False):
         view_count = len(self.window.views())
         (group_index, view_index) = self.window.get_view_index(self._view)
@@ -1365,6 +1362,7 @@ class TabControlCommand(ViWindowCommandBase):
 
 
 class ExTabOpenCommand(sublime_plugin.WindowCommand):
+
     def run(self, file_name=None):
         self.window.run_command('tab_control', {
             'command': 'open', 'file_name': file_name}, )
@@ -1567,9 +1565,9 @@ class ExUnvsplit(ViWindowCommandBase):
 
 # https://neovim.io/doc/user/options.html#:setlocal
 class ExSetLocal(ViWindowCommandBase):
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         parsed = parse_command_line(command_line)
         option = parsed.command.option
         value = parsed.command.value
@@ -1587,9 +1585,9 @@ class ExSetLocal(ViWindowCommandBase):
 
 # https://neovim.io/doc/user/options.html#:set
 class ExSet(ViWindowCommandBase):
+
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         parsed = parse_command_line(command_line)
 
         option = parsed.command.option

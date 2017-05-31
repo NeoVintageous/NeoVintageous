@@ -24,6 +24,7 @@ def mark_as_widget(view):
          Vim keys for them...
     """
     view.settings().set('is_vintageous_widget', True)
+
     return view
 
 
@@ -64,6 +65,7 @@ def is_ignored_but_command_mode(view):
 def is_widget(view):
     """Return `True` if the @view is any kind of widget."""
     setts = view.settings()
+
     return (setts.get('is_widget') or setts.get('is_vintageous_widget'))
 
 

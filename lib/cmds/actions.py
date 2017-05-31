@@ -12,7 +12,6 @@ from NeoVintageous.lib.vi import mappings
 from NeoVintageous.lib.vi import search
 from NeoVintageous.lib.vi import units
 from NeoVintageous.lib.vi import utils
-from NeoVintageous.lib.vi.constants import regions_transformer_reversed
 from NeoVintageous.lib.vi.core import ViTextCommandBase
 from NeoVintageous.lib.vi.core import ViWindowCommandBase
 from NeoVintageous.lib.vi.keys import key_names
@@ -27,6 +26,7 @@ from NeoVintageous.lib.vi.utils import is_view
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import regions_transformer
+from NeoVintageous.lib.vi.utils import regions_transformer_reversed
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.window import WindowAPI
 
@@ -355,11 +355,11 @@ class _vi_a(ViTextCommandBase):
 
 # https://neovim.io/doc/user/change.html#c
 class _vi_c(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     _can_yank = True
     _populates_small_delete_register = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None, motion=None, register=None):
         def compact(view, s):
@@ -450,6 +450,7 @@ class _enter_normal_mode(ViTextCommandBase):
         self.view.set_overwrite_status(False)
 
         state.enter_normal_mode()
+
         # XXX: st bug? if we don't do this, selections won't be redrawn
         self.view.run_command('_enter_normal_mode_impl', {'mode': mode})
 
@@ -462,11 +463,9 @@ class _enter_normal_mode(ViTextCommandBase):
                 # Required here so that the macro gets recorded.
                 state.glue_until_normal_mode = False
                 state.add_macro_step(*self.view.command_history(0)[:2])
-                state.add_macro_step('_enter_normal_mode', {'mode': mode,
-                                     'from_init': from_init})
+                state.add_macro_step('_enter_normal_mode', {'mode': mode, 'from_init': from_init})
             else:
-                state.add_macro_step('_enter_normal_mode', {'mode': mode,
-                                     'from_init': from_init})
+                state.add_macro_step('_enter_normal_mode', {'mode': mode, 'from_init': from_init})
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
                 state.glue_until_normal_mode = False
 
@@ -1110,7 +1109,6 @@ class _vi_dot(ViWindowCommandBase):
 
 # https://neovim.io/doc/user/change.html#dd
 class _vi_dd(ViTextCommandBase):
-
     _can_yank = True
     _yanks_linewise = True
     _populates_small_delete_register = False
@@ -1149,7 +1147,6 @@ class _vi_dd(ViTextCommandBase):
 
 # https://neovim.io/doc/user/change.html#cc
 class _vi_cc(ViTextCommandBase):
-
     _can_yank = True
     _yanks_linewise = True
     _populates_small_delete_register = False
@@ -1197,7 +1194,6 @@ class _vi_visual_o(ViTextCommandBase):
 # TODO: is this really a text command?
 # https://neovim.io/doc/user/change.html#yy
 class _vi_yy(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
     _yanks_linewise = True
@@ -1236,7 +1232,6 @@ class _vi_yy(ViTextCommandBase):
 
 # https://neovim.io/doc/user/change.html#y
 class _vi_y(ViTextCommandBase):
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1264,7 +1259,6 @@ class _vi_y(ViTextCommandBase):
 
 # https://neovim.io/doc/user/change.html#d
 class _vi_d(ViTextCommandBase):
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1494,7 +1488,6 @@ class _vi_quote_quote(IrreversibleTextCommand):
 
 
 class _vi_big_d(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -1523,7 +1516,6 @@ class _vi_big_d(ViTextCommandBase):
 
 
 class _vi_big_c(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -1560,7 +1552,6 @@ class _vi_big_c(ViTextCommandBase):
 
 
 class _vi_big_s_action(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -1680,7 +1671,6 @@ class _vi_x(ViTextCommandBase):
 
 
 class _vi_r(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
     _populates_small_delete_register = True
@@ -1906,7 +1896,6 @@ class _vi_o(ViTextCommandBase):
 
 
 class _vi_big_x(ViTextCommandBase):
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -2021,7 +2010,6 @@ class _vi_big_p(ViTextCommandBase):
 
 
 class _vi_p(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -2448,7 +2436,6 @@ class _vi_z_enter(IrreversibleTextCommand):
 
 # https://neovim.io/doc/user/scroll.html#z-
 class _vi_z_minus(IrreversibleTextCommand):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -3033,12 +3020,10 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         utils.blink()
 
     def show_matches(self, items):
-        self.view.window().show_quick_panel(items, self.replace,
-                                            sublime.MONOSPACE_FONT)
+        self.view.window().show_quick_panel(items, self.replace, sublime.MONOSPACE_FONT)
 
     def replace(self, s):
-        self.view.run_command('__replace_line',
-                              {'with_what': self._matches[s]})
+        self.view.run_command('__replace_line', {'with_what': self._matches[s]})
         del self.__dict__['_matches']
         pt = self.view.sel()[0].b
         self.view.sel().clear()
@@ -3097,7 +3082,6 @@ class _vi_g_big_c(ViTextCommandBase):
 
 
 class _vi_gcc_action(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
     _yanks_linewise = False

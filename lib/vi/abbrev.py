@@ -5,8 +5,12 @@ import sublime
 
 
 def abbrevs_path():
-    path = os.path.join(sublime.packages_path(), 'User/_vintageous_abbrev.sublime-completions')
-    return os.path.normpath(path)
+    return os.path.normpath(
+        os.path.join(
+            sublime.packages_path(),
+            'User/_vintageous_abbrev.sublime-completions'
+        )
+    )
 
 
 def load_abbrevs():
@@ -15,6 +19,7 @@ def load_abbrevs():
     if os.path.exists(path):
         with open(path, 'r') as f:
             decoded_json = json.load(f)
+
     return decoded_json or {'completions': []}
 
 
@@ -36,6 +41,7 @@ class Store(object):
             abbrevs['completions'][idx] = dict(trigger=short, contents=full)
         else:
             abbrevs['completions'].append(dict(trigger=short, contents=full))
+
         save_abbrevs(abbrevs)
 
     def get(self, short):
@@ -51,6 +57,7 @@ class Store(object):
         for (i, completion) in enumerate(data['completions']):
             if completion['trigger'] == short:
                 return i
+
         return None
 
     def erase(self, short):

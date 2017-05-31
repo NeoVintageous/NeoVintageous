@@ -96,8 +96,7 @@ class Mappings(object):
 
     # XXX: Provisional. Get rid of this as soon as possible.
     def incomplete_user_mapping(self):
-        (maybe_mapping, complete) = \
-            self.can_be_long_user_mapping(self.state.partial_sequence)
+        (maybe_mapping, complete) = self.can_be_long_user_mapping(self.state.partial_sequence)
         if maybe_mapping and not complete:
             self.state.logger.debug('[Mappings] incomplete user mapping \'%s\'', self.state.partial_sequence)
             return True

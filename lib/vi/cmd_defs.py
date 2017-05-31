@@ -9,11 +9,20 @@ from NeoVintageous.lib.vi import keys
 from NeoVintageous.lib.vi.keys import seqs
 
 
-_MODES_MOTION = (modes.NORMAL, modes.OPERATOR_PENDING, modes.VISUAL,
-                 modes.VISUAL_LINE, modes.VISUAL_BLOCK)
+_MODES_MOTION = (
+    modes.NORMAL,
+    modes.OPERATOR_PENDING,
+    modes.VISUAL,
+    modes.VISUAL_LINE,
+    modes.VISUAL_BLOCK
+)
 
-_MODES_ACTION = (modes.NORMAL, modes.VISUAL, modes.VISUAL_LINE,
-                 modes.VISUAL_BLOCK)
+_MODES_ACTION = (
+    modes.NORMAL,
+    modes.VISUAL,
+    modes.VISUAL_LINE,
+    modes.VISUAL_BLOCK
+)
 
 
 @keys.assign(seq=seqs.D, modes=_MODES_ACTION)
@@ -27,14 +36,14 @@ class ViDeleteByChars(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = self.command
-        cmd['action_args'] = {
-            'mode': state.mode,
-            'count': state.count,
-            'register': state.register,
+        return {
+            'action': self.command,
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
         }
-        return cmd
 
 
 @keys.assign(seq=seqs.BIG_O, modes=_MODES_ACTION)
@@ -46,10 +55,14 @@ class ViInsertLineBefore(ViOperatorDef):
 
     def translate(self, state):
         state.glue_until_normal_mode = True
-        cmd = {}
-        cmd['action'] = self.command
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+
+        return {
+            'action': self.command,
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.O, modes=_MODES_ACTION)
@@ -86,13 +99,14 @@ class ViRightDeleteChars(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_x'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-        return cmd
+        return {
+            'action': '_vi_x',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.S, modes=_MODES_ACTION)
@@ -105,13 +119,14 @@ class ViSubstituteChar(ViOperatorDef):
         # XXX: Handle differently from State?
         state.glue_until_normal_mode = True
 
-        cmd = {}
-        cmd['action'] = '_vi_s'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-        return cmd
+        return {
+            'action': '_vi_s',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.Y, modes=_MODES_ACTION)
@@ -123,13 +138,14 @@ class ViYankByChars(ViOperatorDef):
         self.motion_required = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_y'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-        return cmd
+        return {
+            'action': '_vi_y',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.EQUAL, modes=_MODES_ACTION)
@@ -159,10 +175,13 @@ class ViIndent(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_greater_than'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_greater_than',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.LESS_THAN, modes=_MODES_ACTION)
@@ -175,10 +194,13 @@ class ViUnindent(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_less_than'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_less_than',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.C, modes=_MODES_ACTION)
@@ -193,13 +215,14 @@ class ViChangeByChars(ViOperatorDef):
     def translate(self, state):
         state.glue_until_normal_mode = True
 
-        cmd = {}
-        cmd['action'] = '_vi_c'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-        return cmd
+        return {
+            'action': '_vi_c',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.U, modes=[modes.NORMAL])
@@ -210,16 +233,16 @@ class ViUndo(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_u'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_u',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 # TODO: Maybe this is duplicated.
-@keys.assign(seq=seqs.U, modes=[modes.VISUAL,
-                                modes.VISUAL_LINE,
-                                modes.VISUAL_BLOCK])
+@keys.assign(seq=seqs.U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
 class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -228,11 +251,13 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_visual_u'
-        cmd['action_args'] = {'count': state.count, 'mode': state.mode}
-
-        return cmd
+        return {
+            'action': '_vi_visual_u',
+            'action_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
@@ -243,10 +268,13 @@ class ViRedo(ViOperatorDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_r'
-        cmd['action_args'] = {'count': state.count, 'mode': state.mode}
-        return cmd
+        return {
+            'action': '_vi_ctrl_r',
+            'action_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_D, modes=_MODES_ACTION)
@@ -258,13 +286,14 @@ class ViDeleteToEol(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_big_d'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-        return cmd
+        return {
+            'action': '_vi_big_d',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_C, modes=_MODES_ACTION)
@@ -278,13 +307,14 @@ class ViChangeToEol(ViOperatorDef):
     def translate(self, state):
         state.glue_until_normal_mode = True
 
-        cmd = {}
-        cmd['action'] = '_vi_big_c'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register
-                              }
-        return cmd
+        return {
+            'action': '_vi_big_c',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_BIG_U_BIG_U, modes=_MODES_ACTION)
@@ -299,7 +329,11 @@ class ViChangeToUpperCaseByLines(ViOperatorDef):
     def translate(self, state):
         cmd = {}
         cmd['action'] = '_vi_g_big_u_big_u'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        cmd['action_args'] = {
+            'mode': state.mode,
+            'count': state.count
+        }
+
         return cmd
 
 
@@ -314,14 +348,14 @@ class ViChangeLine(ViOperatorDef):
     def translate(self, state):
         state.glue_until_normal_mode = True
 
-        cmd = {}
-        cmd['action'] = '_vi_cc'
-        cmd['action_args'] = {
-            'mode': state.mode,
-            'count': state.count,
-            'register': state.register
+        return {
+            'action': '_vi_cc',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
         }
-        return cmd
 
 
 @keys.assign(seq=seqs.DD, modes=_MODES_ACTION)
@@ -333,14 +367,14 @@ class ViDeleteLine(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_dd'
-        cmd['action_args'] = {
-            'mode': state.mode,
-            'count': state.count,
-            'register': state.register
+        return {
+            'action': '_vi_dd',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
         }
-        return cmd
 
 
 @keys.assign(seq=seqs.BIG_R, modes=_MODES_ACTION)
@@ -352,11 +386,12 @@ class ViEnterReplaceMode(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_enter_replace_mode'
-        cmd['action_args'] = {}
         state.glue_until_normal_mode = True
-        return cmd
+
+        return {
+            'action': '_enter_replace_mode',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.GREATER_THAN_GREATER_THAN, modes=_MODES_ACTION)
@@ -368,10 +403,13 @@ class ViIndentLine(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_greater_than_greater_than'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_greater_than_greater_than',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GUGU, modes=_MODES_ACTION)
@@ -384,10 +422,13 @@ class ViChangeToLowerCaseByLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_guu'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_guu',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GU, modes=_MODES_ACTION)
@@ -400,10 +441,13 @@ class ViChangeToLowerCaseByChars(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_gu'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_gu',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.EQUAL_EQUAL, modes=_MODES_ACTION)
@@ -415,10 +459,13 @@ class ViReindentLine(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_equal_equal'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_equal_equal',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.LESS_THAN_LESS_THAN, modes=_MODES_ACTION)
@@ -430,10 +477,13 @@ class ViUnindentLine(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_less_than_less_than'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_less_than_less_than',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.YY, modes=_MODES_ACTION)
@@ -445,13 +495,14 @@ class ViYankLine(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_yy'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-        return cmd
+        return {
+            'action': '_vi_yy',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_TILDE_TILDE, modes=_MODES_ACTION)
@@ -463,10 +514,13 @@ class ViInvertCaseByLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_tilde_g_tilde'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_g_tilde_g_tilde',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.TILDE, modes=_MODES_ACTION)
@@ -478,10 +532,13 @@ class ViForceInvertCaseByChars(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_tilde'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_tilde',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_S, modes=_MODES_ACTION)
@@ -495,8 +552,14 @@ class ViSubstituteByLines(ViOperatorDef):
     def translate(self, state):
         cmd = {}
         cmd['action'] = '_vi_big_s_action'
-        cmd['action_args'] = {'mode': state.mode, 'count': 1, 'register': state.register}
+        cmd['action_args'] = {
+            'mode': state.mode,
+            'count': 1,
+            'register': state.register
+        }
+
         state.glue_until_normal_mode = True
+
         return cmd
 
 
@@ -510,10 +573,13 @@ class ViInvertCaseByChars(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_tilde'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_g_tilde',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 # TODO: Duplicated.
@@ -527,10 +593,13 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_big_u'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_g_big_u',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_J, modes=_MODES_ACTION + (modes.SELECT,))
@@ -552,6 +621,7 @@ class ViJoinLines(ViOperatorDef):
 
         cmd['action'] = '_vi_big_j'
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -564,13 +634,14 @@ class ViDecrement(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_modify_numbers'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'subtract': True,
-                              }
-        return cmd
+        return {
+            'action': '_vi_modify_numbers',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'subtract': True
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_A, modes=_MODES_ACTION)
@@ -582,10 +653,13 @@ class ViIncrement(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_modify_numbers'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_modify_numbers',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 # FIXME: Doesn't work.
@@ -598,10 +672,14 @@ class ViJoinLinesNoSeparator(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_big_j'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count, 'separator': None}
-        return cmd
+        return {
+            'action': '_vi_g_big_j',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'separator': None
+            }
+        }
 
 
 @keys.assign(seq=seqs.V, modes=_MODES_ACTION)
@@ -612,10 +690,12 @@ class ViEnterVisualMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_enter_visual_mode'
-        cmd['action_args'] = {'mode': state.mode}
-        return cmd
+        return {
+            'action': '_enter_visual_mode',
+            'action_args': {
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.Z_ENTER, modes=_MODES_ACTION)
@@ -627,10 +707,13 @@ class ViScrollToScreenTop(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_z_enter'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_z_enter',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.ZB, modes=_MODES_ACTION)
@@ -642,10 +725,13 @@ class ViScrollToScreenBottom(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_z_minus'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_z_minus',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.ZZ, modes=_MODES_ACTION)
@@ -656,10 +742,13 @@ class ViScrollToScreenCenter(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_zz'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_zz',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GQ, modes=_MODES_ACTION)
@@ -671,18 +760,17 @@ class ViReformat(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_gq'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'action': '_vi_gq',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.P, modes=_MODES_ACTION)
 class ViPasteAfter(ViOperatorDef):
-    """Vim: `p`."""
-
-    # TODO: z- and zb are different.
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
         self.updates_xpos = True
@@ -690,14 +778,14 @@ class ViPasteAfter(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_p'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-
-        return cmd
+        return {
+            'action': '_vi_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_P, modes=_MODES_ACTION)
@@ -709,14 +797,14 @@ class ViPasteBefore(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_big_p'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              }
-
-        return cmd
+        return {
+            'action': '_vi_big_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_X, modes=_MODES_ACTION)
@@ -728,11 +816,14 @@ class ViLeftDeleteChar(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_big_x'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count, 'register': state.register}
-
-        return cmd
+        return {
+            'action': '_vi_big_x',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.GT, modes=_MODES_ACTION)
@@ -742,10 +833,13 @@ class ViActivateNextTab(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_gt'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_gt',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_BIG_T, modes=_MODES_ACTION)
@@ -755,10 +849,13 @@ class ViActivatePreviousTab(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_big_t'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_g_big_t',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_B, modes=_MODES_ACTION)
@@ -769,10 +866,10 @@ class ViMoveCursorToBottomRightWindow(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_b'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_b',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_BIG_H, modes=_MODES_ACTION)
@@ -782,10 +879,10 @@ class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_h'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_big_h',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_BIG_J, modes=_MODES_ACTION)
@@ -795,10 +892,10 @@ class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_j'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_big_j',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_BIG_K, modes=_MODES_ACTION)
@@ -808,10 +905,10 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_k'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_big_k',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_BIG_L, modes=_MODES_ACTION)
@@ -821,10 +918,10 @@ class ViMoveCurrentWindowToFarRight(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_big_l'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_big_l',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_C, modes=_MODES_ACTION)
@@ -834,10 +931,10 @@ class ViCloseTheCurrentWindow(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_c'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_c',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_EQUAL, modes=_MODES_ACTION)
@@ -847,10 +944,10 @@ class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_equal'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_equal',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_GREATER_THAN, modes=_MODES_ACTION)
@@ -860,10 +957,12 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_greater_than'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_greater_than',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_H, modes=_MODES_ACTION)
@@ -876,10 +975,12 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_h'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_h',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_J, modes=_MODES_ACTION)
@@ -891,10 +992,12 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_j'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_j',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_K, modes=_MODES_ACTION)
@@ -906,10 +1009,12 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_k'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_k',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
@@ -921,10 +1026,12 @@ class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_l'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_l',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_LESS_THAN, modes=_MODES_ACTION)
@@ -934,10 +1041,12 @@ class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_less_than'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_less_than',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_MINUS, modes=_MODES_ACTION)
@@ -947,10 +1056,12 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_minus'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_minus',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_N, modes=_MODES_ACTION)
@@ -961,10 +1072,12 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_n'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_n',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_O, modes=_MODES_ACTION)
@@ -975,10 +1088,10 @@ class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_o'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_o',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_PIPE, modes=_MODES_ACTION)
@@ -988,10 +1101,12 @@ class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_pipe'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_pipe',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_PLUS, modes=_MODES_ACTION)
@@ -1001,10 +1116,12 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_plus'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_plus',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_Q, modes=_MODES_ACTION)
@@ -1015,10 +1132,10 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_q'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_q',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_S, modes=_MODES_ACTION)
@@ -1030,10 +1147,12 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_s'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_s',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_T, modes=_MODES_ACTION)
@@ -1044,10 +1163,10 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_t'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_t',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_UNDERSCORE, modes=_MODES_ACTION)
@@ -1058,10 +1177,12 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_underscore'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_underscore',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_V, modes=_MODES_ACTION)
@@ -1072,10 +1193,13 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_v'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_v',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_W_X, modes=_MODES_ACTION)
@@ -1086,10 +1210,12 @@ class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_w_x'
-        cmd['action_args'] = {'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_w_x',
+            'action_args': {
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_V, modes=_MODES_ACTION)
@@ -1100,10 +1226,12 @@ class ViEnterVisualLineMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_enter_visual_line_mode'
-        cmd['action_args'] = {'mode': state.mode}
-        return cmd
+        return {
+            'action': '_enter_visual_line_mode',
+            'action_args': {
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.GV, modes=_MODES_ACTION)
@@ -1114,10 +1242,13 @@ class ViRestoreVisualSelections(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_gv'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_gv',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_K_CTRL_B, modes=_MODES_ACTION)
@@ -1128,10 +1259,10 @@ class StToggleSidebar(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'toggle_side_bar'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'toggle_side_bar',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_SHIFT_B, modes=_MODES_ACTION)
@@ -1142,10 +1273,12 @@ class StShowBuildSystemsMenu(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'build'
-        cmd['action_args'] = {'select': True}
-        return cmd
+        return {
+            'action': 'build',
+            'action_args': {
+                'select': True
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_BIG_F, modes=_MODES_ACTION)
@@ -1156,10 +1289,12 @@ class StFinInFiles(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'show_panel'
-        cmd['action_args'] = {'panel': 'find_in_files'}
-        return cmd
+        return {
+            'action': 'show_panel',
+            'action_args': {
+                'panel': 'find_in_files'
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_O, modes=_MODES_ACTION)
@@ -1170,10 +1305,10 @@ class ViJumpBack(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'jump_back'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'jump_back',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_I, modes=_MODES_ACTION)
@@ -1184,10 +1319,10 @@ class ViJumpForward(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'jump_forward'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'jump_forward',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.SHIFT_CTRL_F12, modes=_MODES_ACTION)
@@ -1198,10 +1333,10 @@ class StGotoSymbolInProject(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'goto_symbol_in_project'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'goto_symbol_in_project',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_F12, modes=_MODES_ACTION)
@@ -1212,10 +1347,13 @@ class StGotoSymbolInFile(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'show_overlay'
-        cmd['action_args'] = {'overlay': 'goto', 'text': '@'}
-        return cmd
+        return {
+            'action': 'show_overlay',
+            'action_args': {
+                'overlay': 'goto',
+                'text': '@'
+            }
+        }
 
 
 @keys.assign(seq=seqs.F12, modes=_MODES_ACTION)
@@ -1226,10 +1364,10 @@ class StGotoDefinition(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'goto_definition'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'goto_definition',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_F2, modes=_MODES_ACTION)
@@ -1240,10 +1378,10 @@ class StToggleBookmark(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'toggle_bookmark'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'toggle_bookmark',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_SHIFT_F2, modes=_MODES_ACTION)
@@ -1254,10 +1392,10 @@ class StClearBookmarks(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'clear_bookmarks'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'clear_bookmarks',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.F2, modes=_MODES_ACTION)
@@ -1268,10 +1406,10 @@ class StPrevBookmark(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'prev_bookmark'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'prev_bookmark',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.SHIFT_F2, modes=_MODES_ACTION)
@@ -1282,10 +1420,10 @@ class StNextBookmark(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'next_bookmark'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'next_bookmark',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.DOT, modes=_MODES_ACTION)
@@ -1298,10 +1436,12 @@ class ViRepeat(ViOperatorDef):
     def translate(self, state):
         cmd = {}
         cmd['action'] = '_vi_dot'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'repeat_data': state.repeat_data,
-                              }
+        cmd['action_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'repeat_data': state.repeat_data,
+        }
+
         return cmd
 
 
@@ -1314,10 +1454,13 @@ class ViOpenRegisterFromInsertMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_r'
-        cmd['action_args'] = {'count': state.count, 'mode': state.mode}
-        return cmd
+        return {
+            'action': '_vi_ctrl_r',
+            'action_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_Y, modes=_MODES_ACTION)
@@ -1328,10 +1471,13 @@ class ViScrollByLinesUp(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_y'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_y',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 # TODO: Implement U.
@@ -1345,18 +1491,17 @@ class ViUndoLineChanges(ViOperatorDef):
     def translate(self, state):
         cmd = {}
 
-        if state.mode in (modes.VISUAL,
-                          modes.VISUAL_LINE,
-                          modes.VISUAL_BLOCK):
+        if state.mode in (modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK):
             cmd['action'] = '_xxx_disabled'
             cmd['action_args'] = {'count': state.count, 'mode': state.mode}
+
             return cmd
 
         return {}
 
 
-@keys.assign(seq=seqs.BIG_U, modes=[modes.VISUAL, modes.VISUAL_LINE,
-                                    modes.VISUAL_BLOCK])
+# TODO: Maybe this is duplicated.
+@keys.assign(seq=seqs.BIG_U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
 class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         ViOperatorDef.__init__(self, *args, **kwargs)
@@ -1365,11 +1510,13 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-
-        cmd['action'] = '_vi_visual_big_u'
-        cmd['action_args'] = {'count': state.count, 'mode': state.mode}
-        return cmd
+        return {
+            'action': '_vi_visual_big_u',
+            'action_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_E, modes=_MODES_ACTION)
@@ -1380,10 +1527,13 @@ class ViScrollByLinesDown(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_e'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_ctrl_e',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.F11, modes=_MODES_ACTION)
@@ -1394,10 +1544,10 @@ class StToggleFullScreen(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'toggle_full_screen'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'toggle_full_screen',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.F7, modes=_MODES_ACTION)
@@ -1408,10 +1558,10 @@ class StBuild(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'build'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'build',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
@@ -1422,10 +1572,10 @@ class StFindPrev(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'find_prev'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'find_prev',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.AT, modes=_MODES_ACTION)
@@ -1434,7 +1584,6 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
         ViOperatorDef.__init__(self, *args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
-
         self.input_parser = parser_def(command=inputs.one_char,
                                        interactive_command=None,
                                        input_param=None,
@@ -1448,14 +1597,17 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
     def accept(self, key):
         assert len(key) == 1, '`@` only accepts a single char'
         self._inp = key
+
         return True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_at'
-        cmd['action_args'] = {'name': self.inp,
-                              'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_at',
+            'action_args': {
+                'name': self.inp,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.Q, modes=_MODES_ACTION)
@@ -1477,13 +1629,16 @@ class ViToggleMacroRecorder(ViOperatorDef):
     def accept(self, key):
         assert len(key) == 1, '`q` only accepts a single char'
         self._inp = key
+
         return True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_q'
-        cmd['action_args'] = {'name': self.inp}
-        return cmd
+        return {
+            'action': '_vi_q',
+            'action_args': {
+                'name': self.inp
+            }
+        }
 
 
 @keys.assign(seq=seqs.F3, modes=_MODES_ACTION)
@@ -1494,10 +1649,10 @@ class StFindNext(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'find_next'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'find_next',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.F4, modes=_MODES_ACTION)
@@ -1508,10 +1663,10 @@ class StFindNextResult(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'next_result'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'next_result',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
@@ -1522,10 +1677,10 @@ class StFindPrevResult(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'prev_result'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'prev_result',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.BIG_Z_BIG_Z, modes=_MODES_ACTION)
@@ -1536,10 +1691,13 @@ class ViQuit(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'ex_quit'
-        cmd['action_args'] = {'forced': True, 'count': state.count}
-        return cmd
+        return {
+            'action': 'ex_quit',
+            'action_args': {
+                'forced': True,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_BIG_H, modes=_MODES_ACTION)
@@ -1550,10 +1708,10 @@ class ViEnterSelectModeForSearch(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_big_h'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_g_big_h',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
@@ -1564,10 +1722,10 @@ class StPrevResult(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'prev_result'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'prev_result',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.GH, modes=_MODES_ACTION)
@@ -1578,10 +1736,12 @@ class ViEnterSelectMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_enter_select_mode'
-        cmd['action_args'] = {'mode': state.mode}
-        return cmd
+        return {
+            'action': '_enter_select_mode',
+            'action_args': {
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_V, modes=_MODES_ACTION)
@@ -1592,10 +1752,12 @@ class ViEnterVisualBlockMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_enter_visual_block_mode'
-        cmd['action_args'] = {'mode': state.mode}
-        return cmd
+        return {
+            'action': '_enter_visual_block_mode',
+            'action_args': {
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_P, modes=_MODES_ACTION)
@@ -1606,10 +1768,13 @@ class StShowGotoAnything(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'show_overlay'
-        cmd['action_args'] = {'overlay': 'goto', 'show_files': True}
-        return cmd
+        return {
+            'action': 'show_overlay',
+            'action_args': {
+                'overlay': 'goto',
+                'show_files': True
+            }
+        }
 
 
 @keys.assign(seq=seqs.GA, modes=(modes.NORMAL,))
@@ -1618,10 +1783,10 @@ class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
         ViOperatorDef.__init__(self, *args, **kwargs)
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ga'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ga',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.J, modes=(modes.SELECT,))
@@ -1632,10 +1797,13 @@ class ViAddSelection(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_select_j'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_select_j',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.ALT_CTRL_P, modes=_MODES_ACTION)
@@ -1646,10 +1814,10 @@ class StShowSwitchProject(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'prompt_select_workspace'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'prompt_select_workspace',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_BIG_P, modes=_MODES_ACTION)
@@ -1660,10 +1828,12 @@ class StShowCommandPalette(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'show_overlay'
-        cmd['action_args'] = {'overlay': 'command_palette'}
-        return cmd
+        return {
+            'action': 'show_overlay',
+            'action_args': {
+                'overlay': 'command_palette'
+            }
+        }
 
 
 @keys.assign(seq=seqs.SHIFT_F11, modes=_MODES_ACTION)
@@ -1674,10 +1844,10 @@ class StEnterDistractionFreeMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'toggle_distraction_free'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'toggle_distraction_free',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.CTRL_1, group=0, modes=_MODES_ACTION)
@@ -1698,10 +1868,12 @@ class StFocusGroup(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'focus_group'
-        cmd['action_args'] = {'group': self._group}
-        return cmd
+        return {
+            'action': 'focus_group',
+            'action_args': {
+                'group': self._group
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_0, modes=_MODES_ACTION)
@@ -1713,10 +1885,10 @@ class StFocusSideBar(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = self.command
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': self.command,
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.I, modes=_MODES_ACTION + (modes.SELECT,))
@@ -1729,10 +1901,13 @@ class ViEnterInserMode(ViOperatorDef):
     def translate(self, state):
         state.glue_until_normal_mode = True
 
-        cmd = {}
-        cmd['action'] = self.command
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': self.command,
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.ESC, modes=_MODES_ACTION)
@@ -1744,10 +1919,12 @@ class ViEnterNormalMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_enter_normal_mode'
-        cmd['action_args'] = {'mode': state.mode}
-        return cmd
+        return {
+            'action': '_enter_normal_mode',
+            'action_args': {
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_RIGHT_SQUARE_BRACKET, modes=_MODES_ACTION)
@@ -1756,10 +1933,10 @@ class ViJumpToDefinition(ViOperatorDef):
         ViOperatorDef.__init__(self, *args, **kwargs)
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_right_square_bracket'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': '_vi_ctrl_right_square_bracket',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.A, modes=_MODES_ACTION)
@@ -1821,10 +1998,10 @@ class ViEnterCommandLineMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'vi_colon_input'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'vi_colon_input',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.F9, modes=_MODES_ACTION)
@@ -1834,10 +2011,12 @@ class StSortLines(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'sort_lines'
-        cmd['action_args'] = {'case_sensitive': False}
-        return cmd
+        return {
+            'action': 'sort_lines',
+            'action_args': {
+                'case_sensitive': False
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_G, modes=_MODES_ACTION)
@@ -1847,10 +2026,10 @@ class ViShowFileStatus(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'ex_file'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'ex_file',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.BIG_Z_BIG_Q, modes=_MODES_ACTION)
@@ -1860,10 +2039,13 @@ class ViExitEditor(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'ex_quit'
-        cmd['action_args'] = {'forced': True, 'count': state.count}
-        return cmd
+        return {
+            'action': 'ex_quit',
+            'action_args': {
+                'forced': True,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_Z_BIG_Z, modes=_MODES_ACTION)
@@ -1873,10 +2055,13 @@ class ViCloseFile(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'ex_exit'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': 'ex_exit',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.F6, modes=_MODES_ACTION)
@@ -1886,10 +2071,12 @@ class StToggleSpelling(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = 'toggle_setting'
-        cmd['action_args'] = {'setting': 'spell_check'}
-        return cmd
+        return {
+            'action': 'toggle_setting',
+            'action_args': {
+                'setting': 'spell_check'
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_BIG_D, modes=_MODES_ACTION)
@@ -1902,9 +2089,12 @@ class ViGotoSymbolInProject(ViOperatorDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['action'] = '_vi_go_to_symbol'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'globally': True}
+        cmd['action_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'globally': True
+        }
+
         return cmd
 
 
@@ -1917,12 +2107,13 @@ class ViDeselectInstance(ViOperatorDef):
     def translate(self, state):
         # Non-standard
         if state.mode != modes.SELECT:
-            raise ValueError('bad mode, expected mode_select, got {0}'.format(state.mode))
+            raise ValueError(
+                'bad mode, expected mode_select, got {0}'.format(state.mode))
 
-        cmd = {}
-        cmd['action'] = 'soft_undo'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'soft_undo',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.L, modes=(modes.SELECT,))
@@ -1934,12 +2125,13 @@ class ViSkipInstance(ViOperatorDef):
     def translate(self, state):
         # Non-standard
         if state.mode != modes.SELECT:
-            raise ValueError('bad mode, expected mode_select, got {0}'.format(state.mode))
+            raise ValueError(
+                'bad mode, expected mode_select, got {0}'.format(state.mode))
 
-        cmd = {}
-        cmd['action'] = 'find_under_expand_skip'
-        cmd['action_args'] = {}
-        return cmd
+        return {
+            'action': 'find_under_expand_skip',
+            'action_args': {}
+        }
 
 
 @keys.assign(seq=seqs.GD, modes=_MODES_MOTION)
@@ -1953,9 +2145,12 @@ class ViGotoSymbolInFile(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_go_to_symbol'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'globally': False}
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'globally': False
+        }
+
         return cmd
 
 
@@ -1969,10 +2164,13 @@ class ViMoveRightByChars(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_l'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'motion': '_vi_l',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.SHIFT_ENTER, modes=_MODES_MOTION)
@@ -1983,11 +2181,13 @@ class ViShiftEnterMotion(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_shift_enter'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_shift_enter',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.B, modes=_MODES_MOTION)
@@ -1998,11 +2198,13 @@ class ViMoveByWordsBackward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_b'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_b',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_B, modes=_MODES_MOTION)
@@ -2013,11 +2215,13 @@ class ViMoveByBigWordsBackward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_big_b'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_big_b',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_W, modes=_MODES_MOTION)
@@ -2028,11 +2232,13 @@ class ViMoveByBigWords(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_big_w'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_big_w',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.E, modes=_MODES_MOTION)
@@ -2043,11 +2249,13 @@ class ViMoveByWordEnds(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_e'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_e',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_H, modes=_MODES_MOTION)
@@ -2058,11 +2266,13 @@ class ViGotoScreenTop(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_big_h'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_big_h',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GE, modes=_MODES_MOTION)
@@ -2073,11 +2283,13 @@ class ViMoveByWordEndsBackward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_ge'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_ge',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_BIG_E, modes=_MODES_MOTION)
@@ -2088,11 +2300,13 @@ class ViMoveByBigWordEndsBackward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_g_big_e'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_g_big_e',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_L, modes=_MODES_MOTION)
@@ -2103,11 +2317,13 @@ class ViGotoScreenBottom(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_big_l'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_big_l',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_M, modes=_MODES_MOTION)
@@ -2118,11 +2334,13 @@ class ViGotoScreenMiddle(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_big_m'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_big_m',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_D, modes=_MODES_MOTION)
@@ -2133,11 +2351,13 @@ class ViMoveHalfScreenDown(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_ctrl_d'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_ctrl_d',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_U, modes=_MODES_MOTION)
@@ -2148,11 +2368,13 @@ class ViMoveHalfScreenUp(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_ctrl_u'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_ctrl_u',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_F, modes=_MODES_MOTION)
@@ -2164,11 +2386,13 @@ class ViMoveScreenDown(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_ctrl_f'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_ctrl_f',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.CTRL_B, modes=_MODES_MOTION)
@@ -2180,11 +2404,13 @@ class ViMoveScreenUp(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_ctrl_b'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_ctrl_b',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BACKTICK, modes=_MODES_MOTION)
@@ -2206,15 +2432,19 @@ class ViGotoExactMarkXpos(ViMotionDef):
     def accept(self, key):
         assert len(key) == 1, '``` only accepts a single char'
         self._inp = key
+
         return True
 
     def translate(self, state):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_backtick'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'character': self.inp}
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'character': self.inp
+        }
+
         return cmd
 
 
@@ -2230,9 +2460,8 @@ class ViMoveToEol(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_dollar'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2248,9 +2477,8 @@ class ViMotionEnter(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_enter'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2265,9 +2493,8 @@ class ViMoveBackOneLine(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_minus'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2279,11 +2506,13 @@ class ViMoveToSoftEol(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_g__'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_g__',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GJ, modes=_MODES_MOTION)
@@ -2297,9 +2526,8 @@ class ViMoveByScreenLineDown(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_gj'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2314,9 +2542,8 @@ class ViMoveByScreenLineUp(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_gk'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2331,9 +2558,8 @@ class ViMoveByBlockUp(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_left_brace'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2345,17 +2571,19 @@ class ViRepeatCharSearchForward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
         forward = state.last_char_search_command in ('vi_t', 'vi_f')
         inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
         skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
 
+        cmd = {}
         cmd['motion'] = ('_vi_find_in_line' if forward else '_vi_reverse_find_in_line')
-
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count,
-                              'char': state.last_character_search,
-                              'inclusive': inclusive,
-                              'skipping': skipping}
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'char': state.last_character_search,
+            'inclusive': inclusive,
+            'skipping': skipping
+        }
 
         return cmd
 
@@ -2379,6 +2607,7 @@ class ViGotoMark(ViMotionDef):
     def accept(self, key):
         assert len(key) == 1, '`\'` only accepts a single char'
         self._inp = key
+
         return True
 
     def translate(self, state):
@@ -2387,15 +2616,18 @@ class ViGotoMark(ViMotionDef):
         if self.inp == "'":
             cmd['is_jump'] = True
             cmd['motion'] = '_vi_quote_quote'
-            cmd['motion_args'] = {}  # {'mode': state.mode, 'count': state.count}
+            cmd['motion_args'] = {}
+
             return cmd
 
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_quote'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'character': self.inp,
-                              }
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'character': self.inp
+        }
+
         return cmd
 
 
@@ -2410,9 +2642,8 @@ class ViMoveByBlockDown(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_right_brace'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2427,9 +2658,8 @@ class ViMoveBySentenceUp(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_left_paren'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2444,9 +2674,8 @@ class ViMoveBySentenceDown(ViMotionDef):
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_right_paren'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2470,15 +2699,18 @@ class ViGotoOpeningBracket(ViMotionDef):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`[` only accepts a single char'
         self._inp = translated
+
         return True
 
     def translate(self, state):
         cmd = {}
         cmd['motion'] = '_vi_left_square_bracket'
-        cmd['motion_args'] = {'char': self.inp,
-                              'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {
+            'char': self.inp,
+            'mode': state.mode,
+            'count': state.count,
+        }
+
         return cmd
 
 
@@ -2502,15 +2734,18 @@ class ViGotoClosingBracket(ViMotionDef):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`]` only accepts a single char'
         self._inp = translated
+
         return True
 
     def translate(self, state):
         cmd = {}
         cmd['motion'] = '_vi_right_square_bracket'
-        cmd['motion_args'] = {'char': self.inp,
-                              'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {
+            'char': self.inp,
+            'mode': state.mode,
+            'count': state.count,
+        }
+
         return cmd
 
 
@@ -2523,16 +2758,14 @@ class ViGotoLinesPercent(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_percent'
-
         percent = None
         if state.motion_count or state.action_count:
             percent = state.count
 
-        cmd['motion_args'] = {'mode': state.mode, 'percent': percent}
-
-        return cmd
+        return {
+            'motion': '_vi_percent',
+            'motion_args': {'mode': state.mode, 'percent': percent}
+        }
 
 
 @keys.assign(seq=seqs.COMMA, modes=_MODES_MOTION)
@@ -2543,16 +2776,19 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
         forward = state.last_char_search_command in ('vi_t', 'vi_f')
         inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
         skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
 
+        cmd = {}
         cmd['motion'] = ('_vi_find_in_line' if not forward else '_vi_reverse_find_in_line')
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count,
-                              'char': state.last_character_search,
-                              'inclusive': inclusive,
-                              'skipping': skipping}
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'char': state.last_character_search,
+            'inclusive': inclusive,
+            'skipping': skipping
+        }
 
         return cmd
 
@@ -2565,11 +2801,13 @@ class ViMoveByLineCols(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_pipe'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_pipe',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_E, modes=_MODES_MOTION)
@@ -2580,11 +2818,13 @@ class ViMoveByBigWordEnds(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_big_e'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_big_e',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.H, modes=_MODES_MOTION)
@@ -2602,10 +2842,12 @@ class ViMoveLeftByChars(ViMotionDef):
         if state.mode == modes.SELECT:
             cmd['motion'] = 'find_under_expand_skip'
             cmd['motion_args'] = {}
+
             return cmd
 
         cmd['motion'] = '_vi_h'
         cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2617,11 +2859,10 @@ class ViMoveByWords(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_w'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'motion': '_vi_w',
+            'motion_args': {'mode': state.mode, 'count': state.count}
+        }
 
 
 @keys.assign(seq=seqs.J, modes=_MODES_MOTION)
@@ -2636,7 +2877,12 @@ class ViMoveDownByLines(ViMotionDef):
     def translate(self, state):
         cmd = {}
         cmd['motion'] = '_vi_j'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count, 'xpos': state.xpos}
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'xpos': state.xpos
+        }
+
         return cmd
 
 
@@ -2650,9 +2896,12 @@ class ViMoveUpByLines(ViMotionDef):
     def translate(self, state):
         cmd = {}
         cmd['motion'] = '_vi_k'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'xpos': state.xpos}
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'xpos': state.xpos
+        }
+
         return cmd
 
 
@@ -2665,11 +2914,13 @@ class ViMoveToBol(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_hat'
-        cmd['motion_args'] = {'count': state.count, 'mode': state.mode}
-
-        return cmd
+        return {
+            'motion': '_vi_hat',
+            'motion_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.UNDERSCORE, modes=_MODES_MOTION)
@@ -2680,11 +2931,13 @@ class ViMoveToSoftBol(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_underscore'
-        cmd['motion_args'] = {'count': state.count, 'mode': state.mode}
-
-        return cmd
+        return {
+            'motion': '_vi_underscore',
+            'motion_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.ZERO, modes=_MODES_MOTION)
@@ -2695,11 +2948,13 @@ class ViMoveToHardBol(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_zero'
-        cmd['motion_args'] = {'count': state.count, 'mode': state.mode}
-
-        return cmd
+        return {
+            'motion': '_vi_zero',
+            'motion_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.N, modes=_MODES_MOTION)
@@ -2736,6 +2991,7 @@ class ViRepeatSearchBackward(ViMotionDef):
             'count': state.count,
             'reverse': True
         }
+
         return cmd
 
 
@@ -2747,11 +3003,13 @@ class ViFindWord(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_star'
-        cmd['motion_args'] = {'count': state.count, 'mode': state.mode}
-
-        return cmd
+        return {
+            'motion': '_vi_star',
+            'motion_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.OCTOTHORP, modes=_MODES_MOTION)
@@ -2766,11 +3024,13 @@ class ViReverseFindWord(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_octothorp'
-        cmd['motion_args'] = {'count': state.count, 'mode': state.mode}
-
-        return cmd
+        return {
+            'motion': '_vi_octothorp',
+            'motion_args': {
+                'count': state.count,
+                'mode': state.mode
+            }
+        }
 
 
 @keys.assign(seq=seqs.LEFT_SQUARE_BRACKET, modes=_MODES_MOTION)
@@ -2811,15 +3071,16 @@ class ViGotoBof(ViMotionDef):
 
     def translate(self, state):
         cmd = {}
-        # cmd['is_jump'] = True
 
         if state.action_count or state.motion_count:
             cmd['motion'] = '_vi_go_to_line'
             cmd['motion_args'] = {'line': state.count, 'mode': state.mode}
+
             return cmd
 
         cmd['motion'] = '_vi_gg'
         cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
+
         return cmd
 
 
@@ -2849,7 +3110,6 @@ class ViReplaceCharacters(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-
         self.input_parser = parser_def(command=inputs.one_char,
                                        interactive_command=None,
                                        input_param=None,
@@ -2864,16 +3124,19 @@ class ViReplaceCharacters(ViOperatorDef):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`r` only accepts a single char'
         self._inp = translated
+
         return True
 
     def translate(self, state):
         cmd = {}
         cmd['action'] = '_vi_r'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'register': state.register,
-                              'char': self.inp,
-                              }
+        cmd['action_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'register': state.register,
+            'char': self.inp
+        }
+
         return cmd
 
 
@@ -2895,15 +3158,18 @@ class ViSetMark(ViOperatorDef):
     def accept(self, key):
         assert len(key) == 1, '`m` only accepts a single char'
         self._inp = key
+
         return True
 
     def translate(self, state):
         cmd = {}
         cmd['action'] = '_vi_m'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'character': self.inp,
-                              }
+        cmd['action_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'character': self.inp
+        }
+
         return cmd
 
 
@@ -2930,27 +3196,31 @@ class ViSearchCharForward(ViMotionDef):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`f`, `t`, `F`, `T` only accept a single char'
         self._inp = translated
+
         return True
 
     def translate(self, state):
-        cmd = {}
         if self.inclusive:
             state.last_char_search_command = 'vi_f'
         else:
             state.last_char_search_command = 'vi_t'
+
         state.last_character_search = self.inp
+
+        cmd = {}
         cmd['motion'] = '_vi_find_in_line'
-        cmd['motion_args'] = {'char': self.inp,
-                              'mode': state.mode,
-                              'count': state.count,
-                              'inclusive': self.inclusive,
-                              }
+        cmd['motion_args'] = {
+            'char': self.inp,
+            'mode': state.mode,
+            'count': state.count,
+            'inclusive': self.inclusive
+        }
+
         return cmd
 
 
-@keys.assign(seq=seqs.A, modes=[modes.OPERATOR_PENDING,
-                                modes.VISUAL,
-                                modes.VISUAL_BLOCK])
+# TODO: rename to "vi_a_text_object".
+@keys.assign(seq=seqs.A, modes=[modes.OPERATOR_PENDING, modes.VISUAL, modes.VISUAL_BLOCK])
 class ViATextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         ViMotionDef.__init__(self, *args, **kwargs)
@@ -2970,29 +3240,29 @@ class ViATextObject(ViMotionDef):
     def accept(self, key):
         assert len(key) == 1, '`a` only accepts a single char'
         self._inp = key
+
         return True
 
     def translate(self, state):
         cmd = {}
         cmd['motion'] = '_vi_select_text_object'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'text_object': self.inp,
-                              'inclusive': True,
-                              }
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'text_object': self.inp,
+            'inclusive': True
+        }
+
         return cmd
 
 
-@keys.assign(seq=seqs.I, modes=[modes.OPERATOR_PENDING,
-                                modes.VISUAL,
-                                modes.VISUAL_BLOCK])
+@keys.assign(seq=seqs.I, modes=[modes.OPERATOR_PENDING, modes.VISUAL, modes.VISUAL_BLOCK])
 class ViITextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         ViMotionDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
-
         self.input_parser = parser_def(command=inputs.one_char,
                                        interactive_command=None,
                                        input_param=None,
@@ -3006,16 +3276,19 @@ class ViITextObject(ViMotionDef):
     def accept(self, key):
         assert len(key) == 1, '`i` only accepts a single char'
         self._inp = key
+
         return True
 
     def translate(self, state):
         cmd = {}
         cmd['motion'] = '_vi_select_text_object'
-        cmd['motion_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              'text_object': self.inp,
-                              'inclusive': False,
-                              }
+        cmd['motion_args'] = {
+            'mode': state.mode,
+            'count': state.count,
+            'text_object': self.inp,
+            'inclusive': False
+        }
+
         return cmd
 
 
@@ -3028,7 +3301,6 @@ class ViSearchCharBackward(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
-
         self.input_parser = parser_def(command=inputs.one_char,
                                        interactive_command=None,
                                        input_param=None,
@@ -3043,21 +3315,26 @@ class ViSearchCharBackward(ViMotionDef):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`t` only accepts a single char'
         self._inp = translated
+
         return True
 
     def translate(self, state):
-        cmd = {}
         if self.inclusive:
             state.last_char_search_command = 'vi_big_f'
         else:
             state.last_char_search_command = 'vi_big_t'
+
         state.last_character_search = self.inp
+
+        cmd = {}
         cmd['motion'] = '_vi_reverse_find_in_line'
-        cmd['motion_args'] = {'char': self.inp,
-                              'mode': state.mode,
-                              'count': state.count,
-                              'inclusive': self.inclusive,
-                              }
+        cmd['motion_args'] = {
+            'char': self.inp,
+            'mode': state.mode,
+            'count': state.count,
+            'inclusive': self.inclusive
+        }
+
         return cmd
 
 
@@ -3067,7 +3344,6 @@ class ViSearchForward(ViMotionDef):
         ViMotionDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-
         self.input_parser = parser_def(command='_vi_slash',
                                        interactive_command='_vi_slash',
                                        type=input_types.VIA_PANEL,
@@ -3078,10 +3354,12 @@ class ViSearchForward(ViMotionDef):
     def accept_input(self):
         if not self.inp:
             return True
+
         return not self.inp.lower().endswith('<cr>')
 
     def accept(self, key):
         self._inp += key
+
         return True
 
     def translate(self, state):
@@ -3106,13 +3384,15 @@ class ViSearchForwardImpl(ViMotionDef):
     def translate(self, state):
         if not self.inp:
             self._inp = state.last_buffer_search
+
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_slash_impl'
-        cmd['motion_args'] = {'search_string': self.inp,
-                              'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {
+            'search_string': self.inp,
+            'mode': state.mode,
+            'count': state.count,
+        }
 
         return cmd
 
@@ -3123,7 +3403,6 @@ class ViSearchBackward(ViMotionDef):
         ViMotionDef.__init__(self, *args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-
         self.input_parser = parser_def(command='_vi_question_mark',
                                        interactive_command='_vi_question_mark',
                                        type=input_types.VIA_PANEL,
@@ -3134,10 +3413,12 @@ class ViSearchBackward(ViMotionDef):
     def accept_input(self):
         if not self.inp:
             return True
+
         return not self.inp.lower().endswith('<cr>')
 
     def accept(self, key):
         self._inp += key
+
         return True
 
     def translate(self, state):
@@ -3145,6 +3426,7 @@ class ViSearchBackward(ViMotionDef):
             cmd = {}
             cmd['motion'] = '_vi_question_mark'
             cmd['motion_args'] = {}
+
             return cmd
         else:
             # We'll end up here, for example, when repeating via '.'.
@@ -3161,13 +3443,16 @@ class ViSearchBackwardImpl(ViMotionDef):
     def translate(self, state):
         if not self.inp:
             self._inp = state.last_buffer_search
+
         cmd = {}
         cmd['is_jump'] = True
         cmd['motion'] = '_vi_question_mark_impl'
-        cmd['motion_args'] = {'search_string': self.inp,
-                              'mode': state.mode,
-                              'count': state.count,
-                              }
+        cmd['motion_args'] = {
+            'search_string': self.inp,
+            'mode': state.mode,
+            'count': state.count
+        }
+
         return cmd
 
 
@@ -3179,12 +3464,13 @@ class ViInsertLineWithCommonPrefix(ViOperatorDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_ctrl_x_ctrl_l'
-        cmd['action_args'] = {'mode': state.mode,
-                              'register': state.register,
-                              }
-        return cmd
+        return {
+            'action': '_vi_ctrl_x_ctrl_l',
+            'action_args': {
+                'mode': state.mode,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.GM, modes=_MODES_MOTION)
@@ -3195,11 +3481,13 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-
-        cmd['motion'] = '_vi_gm'
-        cmd['motion_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'motion': '_vi_gm',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GC, modes=_MODES_ACTION)
@@ -3212,12 +3500,13 @@ class ViToggleCommentByLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_gc'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
-        return cmd
+        return {
+            'action': '_vi_gc',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GCC, modes=_MODES_ACTION)
@@ -3229,10 +3518,13 @@ class ViCommentLine(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_gcc_action'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-        return cmd
+        return {
+            'action': '_vi_gcc_action',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_BIG_C, modes=_MODES_ACTION)
@@ -3245,9 +3537,10 @@ class ViToggleBlockCommentByLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_big_c'
-        cmd['action_args'] = {'mode': state.mode,
-                              'count': state.count,
-                              }
-        return cmd
+        return {
+            'action': '_vi_g_big_c',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
