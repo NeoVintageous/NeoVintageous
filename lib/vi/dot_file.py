@@ -2,10 +2,10 @@ import os
 
 import sublime
 
-from NeoVintageous.lib.logger import get_logger
+from NeoVintageous.lib import nvim
 
 
-_logger = get_logger(__name__)
+_logger = nvim.get_logger(__name__)
 
 
 class DotFile(object):
@@ -53,7 +53,7 @@ class DotFile(object):
                 return ('ex_let', {'command_line': line.strip()})
 
         except Exception:
-            print('NeoVintageous: bad config in dotfile: "%s"' % line.rstrip())
-            _logger.debug('bad config inf dotfile: "%s"', line.rstrip())
+            _logger.debug('bad config in dotfile: \'%s\'', line.rstrip())
+            nvim.console_message('bad config in dotfile: \'%s\'' % line.rstrip())
 
         return None, None

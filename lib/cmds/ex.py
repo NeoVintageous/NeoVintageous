@@ -6,23 +6,8 @@ import subprocess
 import sublime
 import sublime_plugin
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.ex import shell
-from NeoVintageous.lib.ex.ex_error import Display
-from NeoVintageous.lib.ex.ex_error import ERR_CANT_FIND_DIR_IN_CDPATH
-from NeoVintageous.lib.ex.ex_error import ERR_CANT_MOVE_LINES_ONTO_THEMSELVES
-from NeoVintageous.lib.ex.ex_error import ERR_CANT_WRITE_FILE
-from NeoVintageous.lib.ex.ex_error import ERR_EMPTY_BUFFER
-from NeoVintageous.lib.ex.ex_error import ERR_FILE_EXISTS
-from NeoVintageous.lib.ex.ex_error import ERR_INVALID_ADDRESS
-from NeoVintageous.lib.ex.ex_error import ERR_NO_FILE_NAME
-from NeoVintageous.lib.ex.ex_error import ERR_OTHER_BUFFER_HAS_CHANGES
-from NeoVintageous.lib.ex.ex_error import ERR_READONLY_FILE
-from NeoVintageous.lib.ex.ex_error import ERR_UNSAVED_CHANGES
-from NeoVintageous.lib.ex.ex_error import show_error
-from NeoVintageous.lib.ex.ex_error import show_message
-from NeoVintageous.lib.ex.ex_error import show_status
-from NeoVintageous.lib.ex.ex_error import show_not_implemented
-from NeoVintageous.lib.ex.ex_error import VimError
 from NeoVintageous.lib.ex.parser.parser import parse_command_line
 from NeoVintageous.lib.ex.plat.windows import get_oem_cp
 from NeoVintageous.lib.ex.plat.windows import get_startup_info
@@ -218,7 +203,8 @@ class ExShellOut(sublime_plugin.TextCommand):
 
         if shell_cmd == '!':
             if not self._last_command:
-                return sublime.status_message('NeoVintageous: No previous command')
+                nvim.status_message('no previous command')
+                return
             shell_cmd = self._last_command
 
         # TODO: store only successful commands.
@@ -247,7 +233,7 @@ class ExShellOut(sublime_plugin.TextCommand):
                                                    'scroll_to_end': True})
                 self.view.window().run_command("show_panel", {"panel": "output.vi_out"})
         except NotImplementedError:
-            show_not_implemented()
+            nvim.not_implemented_message('not implemented')
 
 
 class ExShell(ViWindowCommandBase):
@@ -271,31 +257,31 @@ class ExShell(ViWindowCommandBase):
             term = self.view.settings().get('VintageousEx_linux_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
-                sublime.status_message("NeoVintageous: Not terminal name found.")
+                nvim.status_message('not terminal name found')
                 return
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
-                print(e)
-                sublime.status_message("NeoVintageous: Error while executing command through shell.")
+                nvim.console_message(e)
+                nvim.status_message('error while executing command through shell')
                 return
         elif sublime.platform() == 'osx':
             term = self.view.settings().get('VintageousEx_osx_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
-                sublime.status_message("NeoVintageous: Not terminal name found.")
+                nvim.status_message('not terminal name found')
                 return
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
-                print(e)
-                sublime.status_message("NeoVintageous: Error while executing command through shell.")
+                nvim.console_message(e)
+                nvim.status_message('error while executing command through shell')
                 return
         elif sublime.platform() == 'windows':
             self.open_shell(['cmd.exe', '/k']).wait()
         else:
             # XXX OSX (make check explicit)
-            show_not_implemented()
+            nvim.not_implemented_message('not implemented')
 
 
 # https://neovim.io/doc/user/insert.html#:r
@@ -317,13 +303,13 @@ class ExReadShellOut(sublime_plugin.TextCommand):
                 the_shell = self.view.settings().get('linux_shell')
                 the_shell = the_shell or os.path.expandvars("$SHELL")
                 if not the_shell:
-                    sublime.status_message("NeoVintageous: No shell name found.")
+                    nvim.status_message('no shell name found')
                     return
                 try:
                     p = subprocess.Popen([the_shell, '-c', parsed.command.command], stdout=subprocess.PIPE)
                 except Exception as e:
-                    print(e)
-                    sublime.status_message("NeoVintageous: Error while executing command through shell.")
+                    nvim.console_message(e)
+                    nvim.status_message('error while executing command through shell')
                     return
                 self.view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
 
@@ -335,13 +321,13 @@ class ExReadShellOut(sublime_plugin.TextCommand):
                 rv = p.communicate()[0].decode(cp)[:-2].strip()
                 self.view.insert(edit, target_point, rv.strip() + '\n')
             else:
-                show_not_implemented()
+                nvim.not_implemented_message('not implemented')
         # Read a file into the current view.
         else:
             # According to Vim's help, :r should read the current file's content
             # if no file name is given, but Vim doesn't do that.
             # TODO: implement reading a file into the buffer.
-            show_not_implemented()
+            nvim.not_implemented_message('not implemented')
             return
 
 
@@ -370,9 +356,8 @@ class ExMap(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-
         if not (parsed.command.keys and parsed.command.command):
-            show_not_implemented('Showing mappings now implemented')
+            nvim.not_implemented_message('showing mappings not implemented')
             return
         mappings = Mappings(self.state)
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
@@ -385,16 +370,14 @@ class ExUnmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         unmap = parse_command_line(command_line)
-
         mappings = Mappings(self.state)
         try:
             mappings.remove(modes.NORMAL, unmap.command.keys)
             mappings.remove(modes.OPERATOR_PENDING, unmap.command.keys)
             mappings.remove(modes.VISUAL, unmap.command.keys)
         except KeyError:
-            sublime.status_message('NeoVintageous: Mapping not found.')
+            nvim.status_message('mapping not found')
 
 
 # https://neovim.io/doc/user/map.html#:nmap
@@ -417,7 +400,7 @@ class ExNunmap(ViWindowCommandBase):
         try:
             mappings.remove(modes.NORMAL, nunmap_command.command.keys)
         except KeyError:
-            sublime.status_message('NeoVintageous: Mapping not found.')
+            nvim.status_message('mapping not found')
 
 
 # https://neovim.io/doc/user/map.html#:omap
@@ -441,7 +424,7 @@ class ExOunmap(ViWindowCommandBase):
         try:
             mappings.remove(modes.OPERATOR_PENDING, ounmap_command.command.keys)
         except KeyError:
-            sublime.status_message('NeoVintageous: Mapping not found.')
+            nvim.status_message('mapping not found')
 
 
 # https://neovim.io/doc/user/map.html#:vmap
@@ -469,7 +452,7 @@ class ExVunmap(ViWindowCommandBase):
             mappings.remove(modes.VISUAL_LINE, vunmap_command.command.keys)
             mappings.remove(modes.VISUAL_BLOCK, vunmap_command.command.keys)
         except KeyError:
-            sublime.status_message('NeoVintageous: Mapping  not found.')
+            nvim.status_message('mapping  not found')
 
 
 # https://neovim.io/doc/user/map.html#:abbreviate
@@ -483,7 +466,7 @@ class ExAbbreviate(ViWindowCommandBase):
         parsed = parse_command_line(command_line)
 
         if not (parsed.command.short and parsed.command.full):
-            show_not_implemented(':abbreviate not fully implemented')
+            nvim.not_implemented_message(':abbreviate not fully implemented')
             return
 
         abbrev.Store().set(parsed.command.short, parsed.command.full)
@@ -513,7 +496,7 @@ class ExPrintWorkingDir(ViWindowCommandBase):
     @changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        show_status(os.getcwd())
+        nvim.status_message(os.getcwd())
 
 
 # https://neovim.io/doc/user/editing.html#:write
@@ -527,11 +510,11 @@ class ExWriteFile(ViWindowCommandBase):
         parsed = parse_command_line(command_line)
 
         if parsed.command.options:
-            show_not_implemented("++opt isn't implemented for :write")
+            nvim.not_implemented_message('++opt isn\'t implemented for :write')
             return
 
         if parsed.command.command:
-            show_not_implemented('!cmd not implememted for :write')
+            nvim.not_implemented_message('!cmd not implememted for :write')
             return
 
         if not self._view:
@@ -542,7 +525,7 @@ class ExWriteFile(ViWindowCommandBase):
             return
 
         if parsed.command.command:
-            show_not_implemented("!cmd isn't implemented for :write")
+            nvim.not_implemented_message('!cmd isn\'t implemented for :write')
             return
 
         if parsed.command.target_file:
@@ -550,14 +533,14 @@ class ExWriteFile(ViWindowCommandBase):
             return
 
         if not self._view.file_name():
-            show_error(VimError(ERR_NO_FILE_NAME))
+            nvim.exception_message(nvim.Error(nvim.E_NO_FILE_NAME))
             return
 
         read_only = (self.check_is_readonly(self._view.file_name()) or self._view.is_read_only())
 
         if read_only and not parsed.command.forced:
             utils.blink()
-            show_error(VimError(ERR_READONLY_FILE))
+            nvim.exception_message(nvim.Error(nvim.E_READONLY_FILE))
             return
 
         self.window.run_command('save')
@@ -615,7 +598,7 @@ class ExWriteFile(ViWindowCommandBase):
         fname = parsed_command.command.target_file
 
         if not parsed_command.command.forced and not os.path.exists(fname):
-            show_error(VimError(ERR_CANT_WRITE_FILE))
+            nvim.exception_message(nvim.Error(nvim.E_CANT_WRITE_FILE))
             return
 
         try:
@@ -623,13 +606,13 @@ class ExWriteFile(ViWindowCommandBase):
                 text = self._view.substr(r)
                 f.write(text)
             # TODO: make this `show_info` instead.
-            show_status('Appended to ' + os.path.abspath(fname))
+            nvim.status_message('Appended to ' + os.path.abspath(fname))
             return
         except IOError as e:
-            print('NeoVintageous: could not write file')
-            print('NeoVintageous ============')
-            print(e)
-            print('==========================')
+            nvim.console_message('could not write file')
+            nvim.console_message('--------------------')
+            nvim.console_message(e)
+            nvim.console_message('--------------------')
             return
 
     def do_write(self, ex_command):
@@ -638,12 +621,12 @@ class ExWriteFile(ViWindowCommandBase):
         if not ex_command.command.forced:
             if os.path.exists(fname):
                 utils.blink()
-                show_error(VimError(ERR_FILE_EXISTS))
+                nvim.exception_message(nvim.Error(nvim.E_FILE_EXISTS))
                 return
 
             if self.check_is_readonly(fname):
                 utils.blink()
-                show_error(VimError(ERR_READONLY_FILE))
+                nvim.exception_message(nvim.Error(nvim.E_READONLY_FILE))
                 return
 
         region = None
@@ -667,10 +650,10 @@ class ExWriteFile(ViWindowCommandBase):
 
         except IOError as e:
             # TODO: Add logging.
-            show_error(VimError(ERR_CANT_WRITE_FILE))
-            print('NeoVintageous ==============================================')
-            print(e)
-            print('=========================================================')
+            nvim.exception_message(nvim.Error(nvim.E_CANT_WRITE_FILE))
+            nvim.console_message('----------------------------------------------')
+            nvim.console_message(e)
+            nvim.console_message('----------------------------------------------')
 
 
 # https://neovim.io/doc/user/editing.html#:wa
@@ -727,7 +710,7 @@ class ExFile(ViWindowCommandBase):
         else:
             msg += " %d line(s) --%d%%--" % (lines, int(percent))
 
-        sublime.status_message('NeoVintageous: %s' % msg)
+        nvim.status_message('%s' % msg)
 
 
 # https://neovim.io/doc/user/change.html#:move
@@ -739,13 +722,13 @@ class ExMove(ExTextCommandBase):
         move_command = parse_command_line(command_line)
 
         if move_command.command.address is None:
-            show_error(VimError(ERR_INVALID_ADDRESS))
+            nvim.exception_message(nvim.Error(nvim.E_INVALID_ADDRESS))
             return
 
         source = move_command.line_range.resolve(self.view)
 
         if any(s.contains(source) for s in self.view.sel()):
-            show_error(VimError(ERR_CANT_MOVE_LINES_ONTO_THEMSELVES))
+            nvim.exception_message(nvim.Error(nvim.E_CANT_MOVE_LINES_ONTO_THEMSELVES))
             return
 
         destination = move_command.command.address.resolve(self.view)
@@ -785,7 +768,7 @@ class ExCopy(ExTextCommandBase):
         unresolved = parsed.command.calculate_address()
 
         if unresolved is None:
-            show_error(VimError(ERR_INVALID_ADDRESS))
+            nvim.exception_message(nvim.Error(nvim.E_INVALID_ADDRESS))
             return
 
         # TODO: how do we signal row 0?
@@ -822,7 +805,7 @@ class ExOnly(ViWindowCommandBase):
         parsed = parse_command_line(command_line)
 
         if not parsed.command.forced and has_dirty_buffers(self.window):
-                show_error(VimError(ERR_OTHER_BUFFER_HAS_CHANGES))
+                nvim.exception_message(nvim.Error(nvim.E_OTHER_BUFFER_HAS_CHANGES))
                 return
 
         current_id = self._view.id()
@@ -887,8 +870,8 @@ class ExSubstitute(sublime_plugin.TextCommand):
             count = 0
 
         if not pattern:
-            sublime.status_message("NeoVintageous: no previous pattern available")
-            print("NeoVintageous: no previous pattern available")
+            nvim.status_message('no previous pattern available')
+            nvim.console_message('no previous pattern available')
             return
 
         ExSubstitute.last_pattern = pattern
@@ -901,9 +884,8 @@ class ExSubstitute(sublime_plugin.TextCommand):
         try:
             compiled_rx = re.compile(pattern, flags=computed_flags)
         except Exception as e:
-            sublime.status_message(
-                "NeoVintageous: bad pattern '%s'" % (e.message, pattern))
-            print("NeoVintageous [regex error]: %s ... in pattern '%s'" % (e.message, pattern))
+            nvim.status_message('bad pattern \'%s\'' % (e.message, pattern))
+            nvim.console_message('[regex error]: %s ... in pattern \'%s\'' % (e.message, pattern))
             return
 
         # TODO: Implement 'count'
@@ -1027,9 +1009,9 @@ class ExGlobal(ViWindowCommandBase):
         try:
             matches = find_all_in_range(self._view, pattern, global_range.begin(), global_range.end())
         except Exception as e:
-            msg = "NeoVintageous (global): %s ... in pattern '%s'" % (str(e), pattern)
-            sublime.status_message(msg)
-            print(msg)
+            msg = "(global): %s ... in pattern '%s'" % (str(e), pattern)
+            nvim.status_message(msg)
+            nvim.console_message(msg)
             return
 
         if not matches or not parsed.command.subcommand.cooperates_with_global:
@@ -1052,7 +1034,7 @@ class ExPrint(ViWindowCommandBase):
         assert command_line, 'expected non-empty command line'
 
         if self._view.size() == 0:
-            show_error(VimError(ERR_EMPTY_BUFFER))
+            nvim.exception_message(nvim.Error(nvim.E_EMPTY_BUFFER))
             return
 
         parsed = parse_command_line(command_line)
@@ -1102,11 +1084,11 @@ class ExQuitCommand(ViWindowCommandBase):
             view.set_scratch(True)
 
         if view.is_dirty() and not quit_command.command.forced:
-            show_error(VimError(ERR_UNSAVED_CHANGES))
+            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
             return
 
         if not view.file_name() and not quit_command.command.forced:
-            show_error(VimError(ERR_NO_FILE_NAME))
+            nvim.exception_message(nvim.Error(nvim.E_NO_FILE_NAME))
             return
 
         self.window.run_command('close')
@@ -1134,7 +1116,7 @@ class ExQuitAllCommand(ViWindowCommandBase):
                 if v.is_dirty():
                     v.set_scratch(True)
         elif has_dirty_buffers(self.window):
-            sublime.status_message("There are unsaved changes!")
+            nvim.status_message('there are unsaved changes!')
             return
 
         self.window.run_command('close_all')
@@ -1150,13 +1132,13 @@ class ExWriteAndQuitCommand(ViWindowCommandBase):
 
         # TODO: implement this
         if parsed.command.forced:
-            show_not_implemented()
+            nvim.not_implemented_message('not implemented')
             return
         if self._view.is_read_only():
-            sublime.status_message("Can't write a read-only buffer.")
+            nvim.status_message('can\'t write a read-only buffer')
             return
         if not self._view.file_name():
-            sublime.status_message("Can't save a file without name.")
+            nvim.status_message('can\'t save a file without name')
             return
 
         self.window.run_command('save')
@@ -1187,14 +1169,13 @@ class ExEdit(ViWindowCommandBase):
             file_name = os.path.expanduser(os.path.expandvars(parsed.command.file_name))
 
             if self._view.is_dirty() and not parsed.command.forced:
-                show_error(VimError(ERR_UNSAVED_CHANGES))
+                nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
                 return
 
             if os.path.isdir(file_name):
-                # TODO: Open a file-manager in a buffer.
-                show_message('Cannot open directory', displays=Display.ALL)
-                # 'prompt_open_file' does not accept initial root parameter
-                # self.window.run_command('prompt_open_file', {'path': file_name})
+                # TODO Open a file-manager in a buffer
+                nvim.status_message('Cannot open directory')
+                nvim.console_message('Cannot open directory')
                 return
 
             if not os.path.isabs(file_name):
@@ -1211,10 +1192,11 @@ class ExEdit(ViWindowCommandBase):
                 self.window.open_file(file_name)
 
                 # Give ST some time to load the new view.
-                sublime.set_timeout(lambda: show_message(msg, displays=Display.ALL), 150)
+                nvim.console_message(msg)
+                sublime.set_timeout(lambda: nvim.status_message(msg), 150)
                 return
 
-            show_not_implemented('not implemented case for :edit ({0})'.format(command_line))
+            nvim.not_implemented_message('not implemented case for :edit ({0})'.format(command_line))
             return
 
         if parsed.command.forced or not self._view.is_dirty():
@@ -1222,10 +1204,10 @@ class ExEdit(ViWindowCommandBase):
             return
 
         if self._view.is_dirty():
-            show_error(VimError(ERR_UNSAVED_CHANGES))
+            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
             return
 
-        show_error(VimError(ERR_UNSAVED_CHANGES))
+        nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
 
 
 # https://neovim.io/doc/user/quickfix.html#:cquit
@@ -1345,7 +1327,7 @@ class TabControlCommand(ViWindowCommandBase):
 
             group = self.window.views_in_group(group_index)
             if any(view.is_dirty() for view in group):
-                show_error(VimError(ERR_OTHER_BUFFER_HAS_CHANGES))
+                nvim.exception_message(nvim.Error(nvim.E_OTHER_BUFFER_HAS_CHANGES))
                 return
 
             for view in group:
@@ -1358,7 +1340,8 @@ class TabControlCommand(ViWindowCommandBase):
             self.window.focus_view(self._view)
 
         else:
-            show_message("Unknown TabControl Command", displays=Display.ALL)
+            nvim.console_message('unknown tab control command')
+            nvim.status_message('unknown tab control command')
 
 
 class ExTabOpenCommand(sublime_plugin.WindowCommand):
@@ -1438,7 +1421,7 @@ class ExCdCommand(ViWindowCommandBase):
         parsed = parse_command_line(command_line)
 
         if self._view.is_dirty() and not parsed.command.forced:
-            show_error(VimError(ERR_UNSAVED_CHANGES))
+            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
             return
 
         if not parsed.command.path:
@@ -1457,8 +1440,7 @@ class ExCdCommand(ViWindowCommandBase):
 
         path = os.path.realpath(os.path.expandvars(os.path.expanduser(parsed.command.path)))
         if not os.path.exists(path):
-            # TODO: Add error number in ex_error.py.
-            show_error(VimError(ERR_CANT_FIND_DIR_IN_CDPATH))
+            nvim.exception_message(nvim.Error(nvim.E_CANT_FIND_DIR_IN_CDPATH))
             return
 
         self.state.settings.vi['_cmdline_cd'] = path
@@ -1488,16 +1470,16 @@ class ExCddCommand(ViWindowCommandBase):
         parsed = parse_command_line(command_line)
 
         if self._view.is_dirty() and not parsed.command.forced:
-            show_error(VimError(ERR_UNSAVED_CHANGES))
+            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
             return
 
         path = os.path.dirname(self._view.file_name())
 
         try:
             self.state.settings.vi['_cmdline_cd'] = path
-            show_status(path)
+            nvim.status_message(path)
         except IOError:
-            show_error(VimError(ERR_CANT_FIND_DIR_IN_CDPATH))
+            nvim.exception_message(nvim.Error(nvim.E_CANT_FIND_DIR_IN_CDPATH))
 
 
 # https://neovim.io/doc/user/windows.html#:vsplit
@@ -1518,7 +1500,8 @@ class ExVsplit(ViWindowCommandBase):
 
         groups = self.window.num_groups()
         if groups >= ExVsplit.MAX_SPLITS:
-            show_message("Can't create more groups.", displays=Display.ALL)
+            nvim.console_message('Can\'t create more groups')
+            nvim.status_message('Can\'t create more groups')
             return
 
         old_view = self._view
@@ -1554,7 +1537,7 @@ class ExUnvsplit(ViWindowCommandBase):
 
         groups = self.window.num_groups()
         if groups == 1:
-            sublime.status_message("NeoVintageous: Can't delete more groups.")
+            nvim.status_message('can\'t delete more groups')
             return
 
         # If we don't do this, cloned views will be moved to the previous group and kept around.
@@ -1573,14 +1556,14 @@ class ExSetLocal(ViWindowCommandBase):
         value = parsed.command.value
 
         if option.endswith('?'):
-            show_not_implemented()
+            nvim.not_implemented_message('not implemented')
             return
         try:
             set_local(self._view, option, value)
         except KeyError:
-            sublime.status_message("NeoVintageous: No such option.")
+            nvim.status_message('no such option')
         except ValueError:
-            sublime.status_message("NeoVintageous: Invalid value for option.")
+            nvim.status_message('invalid value for option')
 
 
 # https://neovim.io/doc/user/options.html#:set
@@ -1594,14 +1577,14 @@ class ExSet(ViWindowCommandBase):
         value = parsed.command.value
 
         if option.endswith('?'):
-            show_not_implemented()
+            nvim.not_implemented_message('not implemented')
             return
         try:
             set_global(self._view, option, value)
         except KeyError:
-            sublime.status_message("NeoVintageous: No such option.")
+            nvim.status_message('no such option')
         except ValueError:
-            sublime.status_message("NeoVintageous: Invalid value for option.")
+            nvim.status_message('invalid value for option')
 
 
 # https://neovim.io/doc/user/eval.html#:let
@@ -1620,12 +1603,12 @@ class ExWriteAndQuitAll(ViWindowCommandBase):
         assert command_line, 'expected non-empty command line'
 
         if not all(v.file_name() for v in self.window.views()):
-            show_error(VimError(ERR_NO_FILE_NAME))
+            nvim.exception_message(nvim.Error(nvim.E_NO_FILE_NAME))
             utils.blink()
             return
 
         if any(v.is_read_only() for v in self.window.views()):
-            show_error(VimError(ERR_READONLY_FILE))
+            nvim.exception_message(nvim.Error(nvim.E_READONLY_FILE))
             utils.blink()
             return
 

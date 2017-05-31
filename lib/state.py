@@ -3,8 +3,8 @@ from collections import Counter
 
 import sublime
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.api import plugin
-from NeoVintageous.lib.logger import get_logger
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import settings
@@ -25,7 +25,7 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.variables import Variables
 
 
-_logger = get_logger(__name__)
+_logger = nvim.get_logger(__name__)
 
 
 class State(object):
@@ -820,7 +820,7 @@ def init_state(view, new_session=False):
 
             if is_ignored(view):
                 # Someone has intentionally disabled NeoVintageous, so let the user know.
-                sublime.status_message('NeoVintageous: Vim emulation disabled for the current view')
+                nvim.status_message('vim emulation disabled for the current view')
 
         except AttributeError:
             _logger.exception('[init] Exception: probably received the console view')

@@ -3,7 +3,7 @@ import re
 
 import sublime
 
-from NeoVintageous.lib.logger import get_logger
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_base
@@ -139,7 +139,7 @@ __all__ = [
     'ToggleMode'
 ]
 
-_logger = get_logger(__name__)
+_logger = nvim.get_logger(__name__)
 
 
 # https://neovim.io/doc/user/change.html#gU
@@ -487,7 +487,8 @@ class _enter_normal_mode(ViTextCommandBase):
             self.view.sel().add_all(new_sels)
 
         state.update_xpos(force=True)
-        sublime.status_message('')
+
+        sublime.status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
@@ -719,12 +720,13 @@ class ToggleMode(ViWindowCommandBase):
         value = self.window.active_view().settings().get('command_mode')
         self.window.active_view().settings().set('command_mode', not value)
         self.window.active_view().settings().set('inverse_caret_state', not value)
-        print("command_mode status:", not value)
+        nvim.console_message('command_mode status: %s' % (not value))
 
         state = self.state
         if not self.window.active_view().settings().get('command_mode'):
             state.mode = modes.INSERT
-        sublime.status_message('command mode status: %s' % (not value))
+
+        nvim.status_message('command mode status: %s' % (not value))
 
 
 class ProcessNotation(ViWindowCommandBase):
@@ -2021,7 +2023,7 @@ class _vi_p(ViTextCommandBase):
         register = register or '"'
         fragments = state.registers[register]
         if not fragments:
-            print("NeoVintageous: Nothing in register \".")
+            nvim.console_message('Nothing in register "')
             return
 
         if state.mode == modes.VISUAL:
@@ -2166,9 +2168,7 @@ class _vi_ga(ViWindowCommandBase):
             c_oct = oct(c_ord)
             c_not = character_to_notation(c_str)
 
-            msg_template = "%7s %3s,  Hex %4s,  Octal %5s"
-
-            return sublime.status_message(msg_template % (c_not, c_ord, c_hex, c_oct))
+            nvim.status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
 # https://neovim.io/doc/user/tabpage.html#gt
@@ -2672,7 +2672,7 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
                     self.view.run_command('insert_snippet', {'contents': str(rv[0])})
                     state.reset()
             except:
-                sublime.status_message("NeoVintageous: Invalid expression.")
+                nvim.status_message('invalid expression')
                 on_cancel()
 
         def on_cancel():
@@ -2714,7 +2714,7 @@ class _vi_at(IrreversibleTextCommand):
                 cmds = State.macro_registers[name]
                 State.macro_steps = cmds
             except ValueError as e:
-                print('NeoVintageous: error: %s' % e)
+                nvim.console_message('error: %s' % e)
                 return
 
         state = State(self.view)
@@ -2971,7 +2971,7 @@ class _vi_g_big_h(ViWindowCommandBase):
             return
 
         utils.blink()
-        sublime.status_message('NeoVintageous: No available search matches')
+        nvim.status_message('no available search matches')
         self.state.reset_command_data()
 
 

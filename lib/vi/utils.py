@@ -82,7 +82,21 @@ class modes:
 
     COMMAND_LINE = 'mode_command_line'
     INSERT = 'mode_insert'
+
+    # NeoVintageous always runs actions based on selections. Some Vim commands,
+    # however, behave differently depending on whether the current mode is NORMAL
+    # or VISUAL. To differentiate NORMAL mode operations (involving only an
+    # action, or a motion plus an action) from VISUAL mode, we need to add an
+    # additional mode for handling selections that won't interfere with the actual
+    # VISUAL mode.
+    #
+    # This is _MODE_INTERNAL_NORMAL's job. We consider _MODE_INTERNAL_NORMAL a
+    # pseudomode, because global state's .mode property should never set to it,
+    # yet it's set in vi_cmd_data often.
+    #
+    # Note that for pure motions we still use plain NORMAL mode.
     INTERNAL_NORMAL = 'mode_internal_normal'
+
     NORMAL = 'mode_normal'
     OPERATOR_PENDING = 'mode_operator_pending'
     VISUAL = 'mode_visual'
@@ -90,7 +104,10 @@ class modes:
     VISUAL_LINE = 'mode_visual_line'
     UNKNOWN = 'mode_unknown'
     REPLACE = 'mode_replace'
+
+    # The mode you enter when giving i a count
     NORMAL_INSERT = 'mode_normal_insert'
+
     SELECT = 'mode_select'
     CTRL_X = 'mode_control_x'
 
@@ -149,6 +166,25 @@ def regions_transformer(view, f):
         new.append(region)
     view.sel().clear()
     view.sel().add_all(new)
+
+
+# TODO IMPORTANT was refactored from a module that removed vi/constants.py ...
+#       but required by lib/cmds/actions.py module. This can
+#       probably be refactored to use regions_transformer(), in
+#       fact this function probably causes some bugs becayse
+#       regions_transformer() is newer but this function was
+#       looks like it was never updated.
+def regions_transformer_reversed(view, f):
+    """Apply @f to every selection region in ``view`` and replaces the existing selections."""
+    sels = reversed(list(view.sel()))
+
+    new_sels = []
+    for s in sels:
+        new_sels.append(f(view, s))
+
+    view.sel().clear()
+    for ns in new_sels:
+        view.sel().add(ns)
 
 
 def resolve_insertion_point_at_b(region):

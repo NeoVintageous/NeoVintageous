@@ -1,6 +1,6 @@
 import sublime
 
-from .lib.logger import get_logger
+from .lib import nvim
 from .lib.state import init_state
 
 # Load the commands
@@ -17,7 +17,7 @@ from .lib.extras.surround import *  # noqa: F401, F403
 from .lib.events import NeoVintageousEvents  # noqa: F401
 
 
-_logger = get_logger(__name__)
+_logger = nvim.get_logger(__name__)
 
 
 def _ensure_other_vimlike_packages_are_disabled():
@@ -52,7 +52,7 @@ def plugin_loaded():
         if events.install('NeoVintageous'):
             _ensure_other_vimlike_packages_are_disabled()
     except ImportError:
-        print('NeoVintageous: could not import Package Control')
+        nvim.console_message('could not import Package Control')
 
     init_state(sublime.active_window().active_view(), new_session=True)
 

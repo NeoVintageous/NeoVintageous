@@ -3,6 +3,7 @@ from itertools import chain
 import sublime
 
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import units
@@ -1783,7 +1784,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
                                       times=count)
 
         if not found:
-            print("NeoVintageous: Pattern not found.")
+            nvim.console_message('Pattern not found')
             return
 
         regions_transformer(self.view, f)

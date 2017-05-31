@@ -1,5 +1,4 @@
-from NeoVintageous.lib.ex.ex_error import ERR_NO_RANGE_ALLOWED
-from NeoVintageous.lib.ex.ex_error import VimError
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.ex.parser.tokens import TokenDigits
 from NeoVintageous.lib.ex.parser.tokens import TokenDollar
 from NeoVintageous.lib.ex.parser.tokens import TokenDot
@@ -77,7 +76,6 @@ class RangeNode(Node):
             start_pt = view.text_point(current, 0)
             match = view.find(str(token)[1:-1], start_pt)
             if not match:
-                # TODO: Convert this to a VimError or something like that.
                 raise ValueError('pattern not found')
             return row_at(view, match.a)
 
@@ -85,7 +83,6 @@ class RangeNode(Node):
             start_pt = view.text_point(current, 0)
             match = reverse_search_by_pt(view, str(token)[1:-1], 0, start_pt)
             if not match:
-                # TODO: Convert this to a VimError or something like that.
                 raise ValueError('pattern not found')
             return row_at(view, match.a)
 
@@ -177,4 +174,4 @@ class CommandLineNode(Node):
             return
 
         if not self.command.addressable and not self.line_range.is_empty:
-            raise VimError(ERR_NO_RANGE_ALLOWED)
+            raise nvim.Error(nvim.E_NO_RANGE_ALLOWED)

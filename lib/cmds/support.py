@@ -5,6 +5,7 @@ import sublime_plugin
 
 from Default.history_list import get_jump_history
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_defs
@@ -45,7 +46,7 @@ class NeovintageousToggleUseCtrlKeysCommand(sublime_plugin.WindowCommand):
 
         status = 'enabled' if use_ctrl_keys else 'disabled'
 
-        sublime.status_message("NeoVintageous: ctrl keys have been {}".format(status))
+        nvim.status_message('ctrl keys have been {}'.format(status))
 
 
 class NeovintageousOpenMyRcFileCommand(sublime_plugin.WindowCommand):
@@ -67,7 +68,7 @@ class NeovintageousReloadMyRcFileCommand(sublime_plugin.WindowCommand):
     def run(self):
         DotFile.from_user().run()
 
-        sublime.status_message("NeoVintageous: rc file reloaded")
+        nvim.status_message('rc file reloaded')
 
 
 class NeovintageousResetCommand(sublime_plugin.WindowCommand):
@@ -79,7 +80,7 @@ class NeovintageousResetCommand(sublime_plugin.WindowCommand):
 
         DotFile.from_user().run()
 
-        sublime.status_message("NeoVintageous: reset complete")
+        nvim.status_message('reset complete')
 
 
 class NeovintageousExitFromCommandModeCommand(sublime_plugin.WindowCommand):
@@ -95,7 +96,7 @@ class NeovintageousExitFromCommandModeCommand(sublime_plugin.WindowCommand):
         v.settings().set('command_mode', False)
         v.settings().set('inverse_caret_state', False)
 
-        sublime.status_message("NeoVintageous: exited from command mode")
+        nvim.status_message('exited from command mode')
 
 
 class _vi_slash_on_parser_done(sublime_plugin.WindowCommand):
