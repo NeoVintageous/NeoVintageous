@@ -1,0 +1,14 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: NeoVintageous Test Foobar
+scope: text.foobar
+hidden: true
+contexts:
+  main:
+    - match: ^(:)(?:(\d+)|(cd(?:d)?|w(?:rite|q|all)?|e(?:dit|new|xit)?|pw(?:d)?|buffers|files|ls|reg(?:isters)?|map|ab(?:breviate)?|q(:?uit|all)?|r(?:ead)?|as(?:cii)?|f(?:ile)?|move|co(?:py)?|t(?:abfirst|abprev|abedit|abe|abnext|abn|ablast|abl|abonly|abo)?|setl(:?ocal)?|se(?:t)?|s(?:ubstitute|hell|h)?|&&|d(?:elete)?|g(?:lobal)?|p(?:rint)?|P(?:rint)?|bro(?:owse)?|cq(?:uit)?|x(?:it)?|on(?:ly)?|new|y(?:ank)?|(?:un)?vs(?:plit)?)(!)?)?
+      captures:
+        1: keyword.excmdline
+        2: constant.numeric.excmdline
+        3: support.function.excmdline
+        4: keyword.excmdline

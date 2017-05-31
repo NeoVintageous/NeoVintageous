@@ -9,7 +9,6 @@ from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import settings
 from NeoVintageous.lib.vi import utils
-from NeoVintageous.lib.vi.contexts import KeyContext
 from NeoVintageous.lib.vi.dot_file import DotFile
 from NeoVintageous.lib.vi.macros import MacroRegisters
 from NeoVintageous.lib.vi.marks import Marks
@@ -46,7 +45,6 @@ class State(object):
     registers = Registers()
     macro_registers = MacroRegisters()
     marks = Marks()
-    context = KeyContext()
     variables = Variables()
     macro_steps = []
 
