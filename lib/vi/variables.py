@@ -1,18 +1,14 @@
 
-VAR_MAP_LEADER = 'mapleader'
-VAR_MAP_LOCAL_LEADER = 'maplocalleader'
-
-
 # well-known variables
 _SPECIAL_STRINGS = {
-    '<leader>': VAR_MAP_LEADER,
-    '<localleader>': VAR_MAP_LOCAL_LEADER,
+    '<leader>': 'mapleader',
+    '<localleader>': 'maplocalleader',
 }
 
 
 _DEFAULTS = {
-    VAR_MAP_LEADER: '\\',
-    VAR_MAP_LOCAL_LEADER: '\\'
+    'mapleader': '\\',
+    'maplocalleader': '\\'
 }
 
 

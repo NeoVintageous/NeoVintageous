@@ -4,12 +4,12 @@ from collections import Counter
 import sublime
 
 from NeoVintageous.lib import nvim
+from NeoVintageous.lib import rcfile
 from NeoVintageous.lib.api import plugin
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import settings
 from NeoVintageous.lib.vi import utils
-from NeoVintageous.lib.vi.dot_file import DotFile
 from NeoVintageous.lib.vi.macros import MacroRegisters
 from NeoVintageous.lib.vi.marks import Marks
 from NeoVintageous.lib.vi.registers import Registers
@@ -900,7 +900,7 @@ def init_state(view, new_session=False):
         _logger.debug("[init] new session view id = %d", view.id())
 
         state.reset_volatile_data()
-        DotFile.from_user().run()
+        rcfile.load()
 
         # TODO is setting the cwd for cmdline necessary?
         cmdline_cd = os.path.dirname(view.file_name()) if view.file_name() else os.getcwd()

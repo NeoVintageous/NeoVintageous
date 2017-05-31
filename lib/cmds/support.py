@@ -6,10 +6,10 @@ import sublime_plugin
 from Default.history_list import get_jump_history
 
 from NeoVintageous.lib import nvim
+from NeoVintageous.lib import rcfile
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_defs
-from NeoVintageous.lib.vi.dot_file import DotFile
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
@@ -53,20 +53,14 @@ class NeovintageousOpenMyRcFileCommand(sublime_plugin.WindowCommand):
     """A command that opens the the user runtime configuration file."""
 
     def run(self):
-        file = os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
-
-        if not os.path.exists(file):
-            with open(file, 'w'):
-                pass
-
-        self.window.open_file(file)
+        rcfile.open(self.window)
 
 
 class NeovintageousReloadMyRcFileCommand(sublime_plugin.WindowCommand):
     """A command that reloads the user runtime configuration file."""
 
     def run(self):
-        DotFile.from_user().run()
+        rcfile.reload()
 
         nvim.status_message('rc file reloaded')
 
@@ -77,8 +71,7 @@ class NeovintageousResetCommand(sublime_plugin.WindowCommand):
         view = self.window.active_view()
         view.settings().erase('vintage')
         init_state(view)
-
-        DotFile.from_user().run()
+        rcfile.reload()
 
         nvim.status_message('reset complete')
 
