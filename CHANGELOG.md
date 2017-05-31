@@ -6,6 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: [#266](https://github.com/NeoVintageous/NeoVintageous/issues/266) :nmap doesn't work in .vintageous file
+* Fixed: :omap doesn't work in .vintageous file
+* Fixed: :vmap doesn't work in .vintageous file
 * Fixed: :set prints debug messages to console even when debugging is disabled
 * Fixed [#268](https://github.com/NeoVintageous/NeoVintageous/issues/268): :set doesn't work in some cases e.g. :set hlsearch
 * Fixed: :file (ctrl+g) file name should be quoted

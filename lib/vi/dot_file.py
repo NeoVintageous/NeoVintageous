@@ -35,17 +35,22 @@ class DotFile(object):
                 line = line[1:]
                 return ('ex_map', {'command_line': line.rstrip()})
 
+            if line.startswith((':nmap ')):
+                line = line[1:]
+                return ('ex_nmap', {'command_line': line.rstrip()})
+
             if line.startswith((':omap ')):
-                line = line[len(':omap '):]
-                return ('ex_omap', {'cmd': line.rstrip()})
+                line = line[1:]
+                return ('ex_omap', {'command_line': line.rstrip()})
 
             if line.startswith((':vmap ')):
-                line = line[len(':vmap '):]
-                return ('ex_vmap', {'cmd': line.rstrip()})
+                line = line[1:]
+                return ('ex_vmap', {'command_line': line.rstrip()})
 
             if line.startswith((':let ')):
                 line = line[1:]
                 return ('ex_let', {'command_line': line.strip()})
+
         except Exception:
             print('NeoVintageous: bad config in dotfile: "%s"' % line.rstrip())
             _logger.debug('bad config inf dotfile: "%s"', line.rstrip())
