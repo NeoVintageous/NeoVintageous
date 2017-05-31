@@ -46,7 +46,6 @@ def set_generic_view_setting(view, name, value, opt, globally=False):
         if not globally or (opt.scope not in (SCOPE_VI_VIEW, SCOPE_VI_WINDOW)):
             view.settings().set(name, opt.parser(value))
         else:
-            name = 'vintageous_' + name
             prefs = sublime.load_settings('Preferences.sublime-settings')
             prefs.set(name, opt.parser(value))
             sublime.save_settings('Preferences.sublime-settings')
