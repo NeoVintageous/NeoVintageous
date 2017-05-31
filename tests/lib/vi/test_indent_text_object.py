@@ -2,9 +2,9 @@ from collections import namedtuple
 
 from sublime import Region
 
-from NeoVintageous.lib.vi.text_objects import find_indent_text_object
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.vi.text_objects import find_indent_text_object
 
 
 test = namedtuple('simple_test', 'content start expected expected_inclusive msg')

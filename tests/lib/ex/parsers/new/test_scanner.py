@@ -17,6 +17,7 @@ from NeoVintageous.lib.ex.parser.tokens import TokenSemicolon
 
 
 class TestScanner(unittest.TestCase):
+
     def test_can_instantiate(self):
         scanner = Scanner("foo")
         self.assertEqual(scanner.state.source, 'foo')
@@ -80,6 +81,7 @@ class TestScanner(unittest.TestCase):
 
 
 class TestScannerOffsets(unittest.TestCase):
+
     def test_can_scan_negative_offset(self):
         scanner = Scanner(".-100")
         tokens = list(scanner.scan())
@@ -87,6 +89,7 @@ class TestScannerOffsets(unittest.TestCase):
 
 
 class TestScannerDigits(unittest.TestCase):
+
     def test_can_scan_digits(self):
         scanner = Scanner("100")
         tokens = list(scanner.scan())
@@ -99,6 +102,7 @@ class TestScannerDigits(unittest.TestCase):
 
 
 class TestScannerCommandName(unittest.TestCase):
+
     def test_can_instantiate(self):
         scanner = Scanner("substitute")
         tokens = list(scanner.scan())
@@ -134,6 +138,7 @@ class TestScannerCommandName(unittest.TestCase):
 
 
 class TestScannerMarksScanner(unittest.TestCase):
+
     def test_can_instantiate(self):
         scanner = Scanner("'a")
         tokens = list(scanner.scan())
@@ -141,6 +146,7 @@ class TestScannerMarksScanner(unittest.TestCase):
 
 
 class TestScannerWriteCommand(unittest.TestCase):
+
     def test_can_instantiate(self):
         scanner = Scanner("write")
         tokens = list(scanner.scan())

@@ -14,6 +14,7 @@ from NeoVintageous.tests.utils import ViewTestCase
 
 
 class TestRangeNode(unittest.TestCase):
+
     def test_can_instantiate(self):
         node = RangeNode('foo', 'bar', ';')
         node.start_offset = [10]
@@ -30,6 +31,7 @@ class TestRangeNode(unittest.TestCase):
 
 
 class TestCommandLineNode(unittest.TestCase):
+
     def test_can_instantiate(self):
         range_node = RangeNode("foo", "bar", False)
         range_node.start_offset = [10]
@@ -215,6 +217,7 @@ fff fff
 
 
 class Tests_Line0(ViewTestCase):
+
     def test_can_calculate_visual_start(self):
         self.write('''xxx xxx
 aaa aaa
@@ -227,6 +230,7 @@ bbb bbb
 
 
 class Tests_Marks(ViewTestCase):
+
     def test_can_calculate_visual_start(self):
         self.write('''xxx xxx
 aaa aaa

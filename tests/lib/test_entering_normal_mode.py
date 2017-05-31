@@ -1,6 +1,6 @@
-from NeoVintageous.lib.state import State
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.state import State
 
 
 class TestViEnterNormalModeSingleSelectionLeftRoRight(ViewTestCase):

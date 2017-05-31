@@ -1,3 +1,5 @@
+from NeoVintageous.tests.utils import ViewTestCase
+
 from NeoVintageous.lib.vi.settings import SettingsManager
 from NeoVintageous.lib.vi.settings import SublimeSettings
 from NeoVintageous.lib.vi.settings import VI_OPTIONS
@@ -13,10 +15,9 @@ from NeoVintageous.lib.vi.settings import set_minimap
 from NeoVintageous.lib.vi.settings import set_sidebar
 from NeoVintageous.lib.vi.settings import opt_rulers_parser
 
-from NeoVintageous.tests.utils import ViewTestCase
-
 
 class TestSublimeSettings(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         self.view.settings().erase('foo')
@@ -41,6 +42,7 @@ class TestSublimeSettings(ViewTestCase):
 
 
 class TestVintageSettings(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         self.view.settings().erase('vintage')
@@ -65,6 +67,7 @@ class TestVintageSettings(ViewTestCase):
 
 
 class TestSettingsManager(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         self.view.settings().erase('vintage')
@@ -83,6 +86,7 @@ class TestSettingsManager(ViewTestCase):
 
 
 class TestViEditorSettings(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         self.view.settings().erase('vintage')

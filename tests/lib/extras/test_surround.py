@@ -33,7 +33,6 @@ class Test_ys(ViewTestCase):
 
     def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(self.dataProvider()):
-
             self.write('dog cat turkey')
             self.select(4)
             self.state.mode = self.modes.INTERNAL_NORMAL
@@ -67,7 +66,6 @@ class Test_cs(ViewTestCase):
 
     def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(self.dataProvider()):
-
             self.write('dog (cat) turkey')
             self.select(5)
             self.state.mode = self.modes.INTERNAL_NORMAL
@@ -94,7 +92,6 @@ class Test_ds(ViewTestCase):
 
     def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(self.dataProvider()):
-
             text, replace_what, expected = data
             self.write(text)
             self.select(5)
@@ -118,7 +115,6 @@ class Test_big_s(ViewTestCase):
 
     def test_big_s_visual_mode(self):
         for (i, data) in enumerate(self.dataProvider()):
-
             text, regions, surround_with, expected = data
             self.write(text)
             self.selectMultiple([self.R(*region) for region in regions])

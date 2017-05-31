@@ -1,5 +1,3 @@
-from NeoVintageous.lib.vi.utils import modes
-
 from NeoVintageous.tests.utils import ViewTestCase
 
 
@@ -9,7 +7,7 @@ class Test__vi_l_InNormalMode(ViewTestCase):
         self.write('abc')
         self.selectRegion(a=0, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.NORMAL, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': self.modes.NORMAL, 'count': 1})
 
         self.assertFirstSelection(self.R(1, 1))
 
@@ -17,7 +15,7 @@ class Test__vi_l_InNormalMode(ViewTestCase):
         self.write('foo bar baz')
         self.selectRegion(a=0, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.NORMAL, 'count': 10})
+        self.view.run_command('_vi_l', {'mode': self.modes.NORMAL, 'count': 10})
 
         self.assertFirstSelection(self.R(10, 10))
 
@@ -25,7 +23,7 @@ class Test__vi_l_InNormalMode(ViewTestCase):
         self.write('abc')
         self.selectRegion(a=0, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.NORMAL, 'count': 10000})
+        self.view.run_command('_vi_l', {'mode': self.modes.NORMAL, 'count': 10000})
 
         self.assertFirstSelection(self.R(2, 2))
 
@@ -36,7 +34,7 @@ class Test__vi_l_InInternalNormalMode(ViewTestCase):
         self.write('abc')
         self.selectRegion(a=0, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.INTERNAL_NORMAL, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': self.modes.INTERNAL_NORMAL, 'count': 1})
 
         self.assertFirstSelection(self.R(0, 1))
 
@@ -44,7 +42,7 @@ class Test__vi_l_InInternalNormalMode(ViewTestCase):
         self.write('foo bar baz')
         self.selectRegion(a=0, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.INTERNAL_NORMAL, 'count': 10})
+        self.view.run_command('_vi_l', {'mode': self.modes.INTERNAL_NORMAL, 'count': 10})
 
         self.assertFirstSelection(self.R(0, 10))
 
@@ -52,7 +50,7 @@ class Test__vi_l_InInternalNormalMode(ViewTestCase):
         self.write('abc')
         self.selectRegion(a=0, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.INTERNAL_NORMAL, 'count': 10000})
+        self.view.run_command('_vi_l', {'mode': self.modes.INTERNAL_NORMAL, 'count': 10000})
 
         self.assertFirstSelection(self.R(0, 3))
 
@@ -63,7 +61,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('abc')
         self.selectRegion(a=0, b=1)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
         self.assertFirstSelection(self.R(0, 2))
 
@@ -71,7 +69,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('abc')
         self.selectRegion(a=2, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
         self.assertFirstSelection(self.R(2, 1))
 
@@ -79,7 +77,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('abc')
         self.selectRegion(a=1, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
         self.assertFirstSelection(self.R(0, 2))
 
@@ -87,7 +85,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('foo bar baz')
         self.selectRegion(a=5, b=0)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 5})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 5})
 
         self.assertFirstSelection(self.R(4, 6))
 
@@ -95,7 +93,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('foo\nbar\n')
         self.selectRegion(a=5, b=1)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
         self.assertFirstSelection(self.R(5, 2))
 
@@ -103,7 +101,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('foo\nbar\n')
         self.selectRegion(a=5, b=3)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
         self.assertFirstSelection(self.R(5, 3))
 
@@ -111,7 +109,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('foo\nbar\n')
         self.selectRegion(a=5, b=3)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 100})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 100})
 
         self.assertFirstSelection(self.R(5, 3))
 
@@ -119,7 +117,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('foo bar fuzz buzz')
         self.selectRegion(a=0, b=1)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 10})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 10})
 
         self.assertFirstSelection(self.R(0, 11))
 
@@ -127,6 +125,6 @@ class Test__vi_l_InVisualMode(ViewTestCase):
         self.write('abc\n')
         self.selectRegion(a=0, b=1)
 
-        self.view.run_command('_vi_l', {'mode': modes.VISUAL, 'count': 10000})
+        self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 10000})
 
         self.assertFirstSelection(self.R(0, 4))

@@ -1,9 +1,10 @@
-from NeoVintageous.lib.vi.text_objects import a_word
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.vi.text_objects import a_word
 
 
 class Test_a_word_InInternalNormalMode_Inclusive(ViewTestCase):
+
     def test_returns_full_word__count_one(self):
         self.write('foo bar baz\n')
         r = self.R(5, 5)

@@ -1,35 +1,34 @@
-from collections import namedtuple
-
-from NeoVintageous.lib.vi.utils import modes
-
 from NeoVintageous.tests.utils import ViewTestCase
-
-
-test_data = namedtuple('test_data', 'text startRegion mode expectedRegion msg')
-
-ALL_CASES = (
-    test_data('01. 4',  (1, 1), modes.NORMAL,          (2, 2), 'Normal'),
-    test_data('012 4',  (1, 1), modes.INTERNAL_NORMAL, (1, 3), 'Internal Normal'),
-    test_data('0ab3 5', (1, 3), modes.VISUAL,          (1, 4), 'Visual Forward'),
-    test_data('0b2 a5', (5, 1), modes.VISUAL,          (5, 2), 'Visual Reverse no crossover'),
-    test_data('0ba3 5', (3, 1), modes.VISUAL,          (2, 4), 'Visual Reverse crossover'),
-)
 
 
 class Test__vi_big_e(ViewTestCase):
 
-    def runTests(self, data):
-        for (i, data) in enumerate(data):
-            self.write(data.text)
-            self.select(self.R(*data.startRegion))
+    def test_normal(self):
+        self.write('01. 4')
+        self.select(self.R(1, 1))
+        self.view.run_command('_vi_big_e', {'mode': ViewTestCase.modes.NORMAL, 'count': 1})
+        self.assertFirstSelection(self.R(2, 2))
 
-            self.view.run_command('_vi_big_e', {'mode': data.mode, 'count': 1})
+    def test_internal_normal(self):
+        self.write('012 4')
+        self.select(self.R(1, 1))
+        self.view.run_command('_vi_big_e', {'mode': ViewTestCase.modes.INTERNAL_NORMAL, 'count': 1})
+        self.assertFirstSelection(self.R(1, 3))
 
-            self.assertRegionsEqual(
-                self.R(*data.expectedRegion),
-                self.view.sel()[0],
-                "Failed on index {} {} : Text:\"{}\" Region:{}".format(i, data.msg, data.text, data.startRegion)
-            )
+    def test_visual_forward(self):
+        self.write('0ab3 5')
+        self.select(self.R(1, 3))
+        self.view.run_command('_vi_big_e', {'mode': ViewTestCase.modes.VISUAL, 'count': 1})
+        self.assertFirstSelection(self.R(1, 4))
 
-    def test_all_cases(self):
-        self.runTests(ALL_CASES)
+    def test_visual_reverse_no_crossover(self):
+        self.write('0b2 a5')
+        self.select(self.R(5, 1))
+        self.view.run_command('_vi_big_e', {'mode': ViewTestCase.modes.VISUAL, 'count': 1})
+        self.assertFirstSelection(self.R(5, 2))
+
+    def test_visual_reverse_crossover(self):
+        self.write('0ba3 5')
+        self.select(self.R(3, 1))
+        self.view.run_command('_vi_big_e', {'mode': ViewTestCase.modes.VISUAL, 'count': 1})
+        self.assertFirstSelection(self.R(2, 4))

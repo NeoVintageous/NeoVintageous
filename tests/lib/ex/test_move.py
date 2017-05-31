@@ -1,9 +1,10 @@
-from NeoVintageous.lib.state import State
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.state import State
 
 
 class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
+
     def test_can_move_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(self.R((1, 0), (1, 0)))
@@ -56,10 +57,6 @@ class Test_ex_move_Moving_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
 
 
 class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
-    def setUp(self):
-        super().setUp()
-        self.range = {'left_ref': '.', 'left_offset': 0, 'left_search_offsets': [],
-                      'right_ref': '.', 'right_offset': 1, 'right_search_offsets': []}
 
     def test_can_move_default_line_range(self):
         self.write('abc\nxxx\nxxx\nabc\nabc')
@@ -102,7 +99,9 @@ class Test_ex_move_Moveing_InNormalMode_MultipleLines(ViewTestCase):
         self.assertEqual(expected, actual)
 
 
+# TODO: test with multiple selections.
 class Test_ex_move_InNormalMode_CaretPosition(ViewTestCase):
+
     def test_can_reposition_caret(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(self.R((1, 0), (1, 0)))
@@ -113,10 +112,9 @@ class Test_ex_move_InNormalMode_CaretPosition(ViewTestCase):
         expected = [self.R((2, 0), (2, 0))]
         self.assertEqual(expected, actual)
 
-    # TODO: test with multiple selections.
-
 
 class Test_ex_move_ModeTransition(ViewTestCase):
+
     def test_from_normal_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(self.R((1, 0), (1, 0)))

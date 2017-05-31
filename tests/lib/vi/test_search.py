@@ -1,9 +1,10 @@
-from NeoVintageous.lib.vi.search import find_wrapping
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.vi.search import find_wrapping
 
 
 class Test_find_wrapping(ViewTestCase):
+
     def test_can_wrap_around_buffer(self):
         self.write('''xxx
 aaa aaa xxx aaa
