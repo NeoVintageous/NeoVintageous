@@ -80,7 +80,11 @@ def not_implemented_message(msg):
 
 
 def _log_file():
-    # TODO Why arn't we using sublime.packages_path() ?
+    # Why is sublime.packages_path() not used to build the path?
+    # > At importing time, plugins may not call any API functions, with the
+    # > exception of sublime.version(), sublime.platform(),
+    # > sublime.architecture() and sublime.channel().
+    # > - https://www.sublimetext.com/docs/3/api_reference.html.
     module_relative_file = __name__.replace('.', os.sep) + '.py'
     if __file__.endswith(module_relative_file):
         return os.path.join(
