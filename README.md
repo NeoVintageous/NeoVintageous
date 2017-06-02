@@ -64,29 +64,31 @@ Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNe
 
 ### The .vintageousrc file
 
-A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file, which provides a way start Sublime Text with all your favourite Neovintageous option settings and mappings, you write them in what is called the `.vintageousrc` file.
+A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file.
 
 The file is located at `Packages/User/.vintageousrc` and is read during startup.
 
-There is currently only limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:unmap` `:nmap`, `:nunmap` `:omap`, `:ounmap` `:vmap`, and `:vunmap`.
+There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:unmap` `:nmap`, `:nunmap` `:omap`, `:ounmap` `:vmap`, and `:vunmap`.
 
-Examples
+The character " (the double quote mark) starts a comment.
+
+Example
 
     :let mapleader=,
 
-    # map space to enter command line mode
-    :map <space> :
+    " Enter command line mode using space
+    :nmap <space> :
 
-    # map ,a to visually select all content
-    :map <leader>a ggvG
+    " Visually select all content using ,a
+    :nmap <leader>a ggvG
 
-    # Map space to scroll up
-    :map <space> <C-u>
+    " Scroll up using space
+    :nmap <space> <C-u>
 
-    # Map shift+enter to scroll down
-    :map <S-cr> <C-d>
+    " Scroll down using shift-enter
+    :nmap <S-cr> <C-d>
 
-Read more about mappings in [VIM main help file](https://neovim.io/doc/user/map.html).
+Read more about mappings in the [Vim main help file](https://neovim.io/doc/user/map.html).
 
 ### Modelines
 
