@@ -84,6 +84,10 @@ Example
     " Visually select all content using ,a
     :nmap <leader>a ggvG
 
+    " Scroll viewport faster ctrl+e and ctrl+y
+    :nmap <C-e> 3<C-e>
+    :nmap <C-y> 3<C-y>
+
     " Scroll up using space
     :nmap <space> <C-u>
 

@@ -2637,7 +2637,8 @@ class _vi_ctrl_e(ViTextCommandBase):
         if mode == modes.VISUAL_LINE:
             return
         extend = True if mode == modes.VISUAL else False
-        self.view.run_command('scroll_lines', {'amount': -1, 'extend': extend})
+
+        self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
 
 
 # https://neovim.io/doc/user/scroll.html#CTRL-Y
@@ -2653,7 +2654,8 @@ class _vi_ctrl_y(ViTextCommandBase):
         if mode == modes.VISUAL_LINE:
             return
         extend = True if mode == modes.VISUAL else False
-        self.view.run_command('scroll_lines', {'amount': 1, 'extend': extend})
+
+        self.view.run_command('scroll_lines', {'amount': count, 'extend': extend})
 
 
 # https://neovim.io/doc/user/cmdline.html#c_CTRL-R
