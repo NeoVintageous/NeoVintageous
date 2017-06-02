@@ -71,6 +71,7 @@ __all__ = [
     '_vi_left_brace',
     '_vi_left_paren',
     '_vi_left_square_bracket',
+    '_vi_left_square_bracket_c',
     '_vi_minus',
     '_vi_n',
     '_vi_octothorp',
@@ -83,6 +84,7 @@ __all__ = [
     '_vi_right_brace',
     '_vi_right_paren',
     '_vi_right_square_bracket',
+    '_vi_right_square_bracket_c',
     '_vi_select_text_object',
     '_vi_shift_enter',
     '_vi_slash',
@@ -2118,6 +2120,13 @@ class _vi_left_square_bracket(ViMotionCommand):
         regions_transformer(self.view, move)
 
 
+# https://neovim.io/doc/user/diff.html#[c
+class _vi_left_square_bracket_c(ViMotionCommand):
+    def run(self, mode=None, count=1):
+        for i in range(count):
+            self.view.run_command('git_gutter_prev_change')
+
+
 class _vi_right_square_bracket(ViMotionCommand):
     BRACKETS = {
         '{': ('\\{', '\\}'),
@@ -2144,3 +2153,10 @@ class _vi_right_square_bracket(ViMotionCommand):
             return
 
         regions_transformer(self.view, move)
+
+
+# https://neovim.io/doc/user/diff.html#]c
+class _vi_right_square_bracket_c(ViMotionCommand):
+    def run(self, mode=None, count=1):
+        for i in range(count):
+            self.view.run_command('git_gutter_next_change')

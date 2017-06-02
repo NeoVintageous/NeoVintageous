@@ -2,6 +2,17 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+### Added
+
+* Added: New commands
+
+  Command | Description | Documentation | Dependencies | Notes
+  ------- | ----------- | ------------- | ------------ | -----
+  [c | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
+  ]c | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
+
 ## [1.1.2](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-06-05
 
 ### Fixed

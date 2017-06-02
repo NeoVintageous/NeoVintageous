@@ -37,10 +37,12 @@ What follows are supplementary documentations about feature differences that are
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
-ctrl-w, H | Move the current window to be at the very top | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2 col/row layouts
-ctrl-w, J | Move the current window to be at the very bottom | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2 col/row layouts
-ctrl-w, K | Move the current view to be at the far left | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2 col/row layouts
-ctrl-w, L | Move the current window to be at the far right | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2 col/row layouts
+[c | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
+]c | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
+ctrl-w, H | Move the current window to be at the very top | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_H) | None | Only works in 2 col/row layouts
+ctrl-w, J | Move the current window to be at the very bottom | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_J) | None | Only works in 2 col/row layouts
+ctrl-w, K | Move the current view to be at the far left | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_K) | None | Only works in 2 col/row layouts
+ctrl-w, L | Move the current window to be at the far right | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_L) | None | Only works in 2 col/row layouts
 ctrl-w, s | Split current window in two | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
 ctrl-w, v | Split current window in two (vertically) | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
 

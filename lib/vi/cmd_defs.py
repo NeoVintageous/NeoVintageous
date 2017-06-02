@@ -2714,6 +2714,32 @@ class ViGotoOpeningBracket(ViMotionDef):
         return cmd
 
 
+@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET_C, modes=_MODES_ACTION)
+class ViBackwardToStartOfChange(ViMotionDef):
+
+    def translate(self, state):
+        return {
+            'motion': '_vi_left_square_bracket_c',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
+@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET_C, modes=_MODES_ACTION)
+class ViForwardToStartOfChange(ViMotionDef):
+
+    def translate(self, state):
+        return {
+            'motion': '_vi_right_square_bracket_c',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
 @keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET, modes=_MODES_MOTION)
 class ViGotoClosingBracket(ViMotionDef):
     def __init__(self, *args, **kwargs):
