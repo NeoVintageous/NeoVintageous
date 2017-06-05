@@ -144,6 +144,9 @@ class CycleCmdlineHistory(sublime_plugin.TextCommand):
     HISTORY_INDEX = None
 
     def run(self, edit, backwards=False):
+        if not EX_HISTORY['cmdline']:
+            return
+
         if CycleCmdlineHistory.HISTORY_INDEX is None:
             CycleCmdlineHistory.HISTORY_INDEX = -1 if backwards else 0
         else:
