@@ -33,16 +33,16 @@ The preferred method of installation is [Package Control](https://packagecontrol
 
 ## USAGE
 
-What follows are supplementary documentations about feature differences that are specific to Sublime Text. See the [VIM main help file](https://neovim.io/doc/user) for a complete guide on VIM usage.
+What follows are supplementary documentations about feature differences that are specific to Sublime Text. See the [Vim main help file](https://neovim.io/doc/user) for a complete guide on Vim.
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
-ctrl-w, H | Move the current window to be at the very top | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2 col/row layouts
-ctrl-w, J | Move the current window to be at the very bottom | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2 col/row layouts
-ctrl-w, K | Move the current view to be at the far left | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2 col/row layouts
-ctrl-w, L | Move the current window to be at the far right | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2 col/row layouts
-ctrl-w, s | Split current window in two | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
-ctrl-w, v | Split current window in two (vertically) | [Neovim doc](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
+ctrl-w, H | Move the current window to be at the very top | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2 col/row layouts
+ctrl-w, J | Move the current window to be at the very bottom | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2 col/row layouts
+ctrl-w, K | Move the current view to be at the far left | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2 col/row layouts
+ctrl-w, L | Move the current window to be at the far right | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2 col/row layouts
+ctrl-w, s | Split current window in two | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
+ctrl-w, v | Split current window in two (vertically) | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
 
 ### Command Palette
 
@@ -64,33 +64,35 @@ Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNe
 
 ### The .vintageousrc file
 
-A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file, which provides a way start Sublime Text with all your favourite Neovintageous option settings and mappings, you write them in what is called the `.vintageousrc` file.
+A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file.
 
 The file is located at `Packages/User/.vintageousrc` and is read during startup.
 
-There is currently only limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:unmap` `:nmap`, `:nunmap` `:omap`, `:ounmap` `:vmap`, and `:vunmap`.
+There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:unmap` `:nmap`, `:nunmap` `:omap`, `:ounmap` `:vmap`, and `:vunmap`.
 
-Examples
+The character " (the double quote mark) starts a comment.
+
+Example
 
     :let mapleader=,
 
-    # map space to enter command line mode
-    :map <space> :
+    " Enter command line mode using space
+    :nmap <space> :
 
-    # map ,a to visually select all content
-    :map <leader>a ggvG
+    " Visually select all content using ,a
+    :nmap <leader>a ggvG
 
-    # Map space to scroll up
-    :map <space> <C-u>
+    " Scroll up using space
+    :nmap <space> <C-u>
 
-    # Map shift+enter to scroll down
-    :map <S-cr> <C-d>
+    " Scroll down using shift-enter
+    :nmap <S-cr> <C-d>
 
-Read more about mappings in [VIM main help file](https://neovim.io/doc/user/map.html).
+Read more about mappings in the [Vim main help file](https://neovim.io/doc/user/map.html).
 
 ### Modelines
 
-Provide a feature similar to [vim modelines](https://neovim.io/doc/user/options.html#modeline).
+A feature comparative to [Vim Modeline](https://neovim.io/doc/user/options.html#modeline).
 
 Set options local to the view by declaring them in the source code file itself.
 
@@ -101,7 +103,7 @@ Example
     # sublime: rulers [80, 120]
     # sublime: tab_size 4
 
-The top as well as the bottom of the buffer is scanned for modelines.
+Read more about modeline in the [Vim main help file](https://neovim.io/doc/user/options.html#modeline).
 
 ## CONFIGURATION
 

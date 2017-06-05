@@ -1295,7 +1295,7 @@ class ExYank(sublime_plugin.TextCommand):
 class TabControlCommand(ViWindowCommandBase):
 
     def run(self, command, file_name=None, forced=False):
-        view_count = len(self.window.views())
+        view_count = len(self.window.views_in_group(self.window.active_group()))
         (group_index, view_index) = self.window.get_view_index(self._view)
 
         if command == 'open':

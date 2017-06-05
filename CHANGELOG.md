@@ -2,6 +2,16 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [1.1.2](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-06-05
+
+### Fixed
+
+* Fixed: gt command should wrap around from the last tab to the first tab
+* Fixed: Command-line mode history edge-case error when no history available
+* Fixed: Command-line mode history not working (regression)
+* Fixed [#192](https://github.com/NeoVintageous/NeoVintageous/issues/192): Closing last tab shouldn’t close sublime window with project (documentation)
+* Fixed [#122](https://github.com/NeoVintageous/NeoVintageous/issues/122): Tab doesn't work in visual mode (Shift+Tab does) (documentation)
+
 ## [1.1.1](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-05-31
 
 ### Fixed
