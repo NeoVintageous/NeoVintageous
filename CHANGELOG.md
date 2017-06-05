@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Unreleased
 
+* Fixed: gt command should wrap around from the last tab to the first tab
 * Fixed: Command-line mode history edge-case error when no history available
 * Fixed: Command-line mode history not working (regression)
 
