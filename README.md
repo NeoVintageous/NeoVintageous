@@ -194,7 +194,11 @@ The [UnitTesting](https://github.com/randy3k/UnitTesting) package is used to run
 
 ### Debugging
 
-Debug messages are disabled by default. To enable them set the environment variable `SUBLIME_NEOVINTAGEOUS_DEBUG` to a non-blank value. The debug message log is located at `Packages/User/NeoVintageous.log`. See [Set a Sublime Text environment variable](https://github.com/gerardroche/sublime-phpunit#debugging) for a step by step guide on how to set an environment variable for Sublime Text.
+The Sublime Text startup log can be read by going to `Menu > View > Show Console`.
+
+Sublime Text command and input logging can be enabled in the console (run the commands in input box at the bottom of the console panel): `sublime.log_commands(True); sublime.log_input(True)`. Other logging such as regex results, indexing, and build systems can be enabled too: `sublime.log_result_regex(True); sublime.log_indexing(True); sublime.log_build_systems(True)`.
+
+Neovintageous debug messages are disabled by default. To enable them set an environment variable named `SUBLIME_NEOVINTAGEOUS_DEBUG` to a non-blank value. See [Set a Sublime Text environment variable](https://github.com/gerardroche/sublime-phpunit#debugging) for a step by step guide on how to set an environment variable for Sublime Text. The debug message log is located at `Packages/User/NeoVintageous.log`. Debug messages are also printed to the console: `Menu > View > Show Console`.
 
 ### Reverting to a freshly installed state
 
