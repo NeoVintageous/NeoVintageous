@@ -2,7 +2,9 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-### Unreleased
+## [1.1.2](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-06-05
+
+### Fixed
 
 * Fixed: gt command should wrap around from the last tab to the first tab
 * Fixed: Command-line mode history edge-case error when no history available
