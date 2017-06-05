@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+### Unreleased
+
+* Fixed: Command-line mode history not working (regression)
+
 ## [1.1.1](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-05-31
 
 ### Fixed

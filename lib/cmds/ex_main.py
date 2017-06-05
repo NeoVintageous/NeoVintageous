@@ -20,6 +20,7 @@ from NeoVintageous.lib.vi.utils import modes
 
 
 __all__ = [
+    'ClearCmdlineHistoryIndex',
     'CycleCmdlineHistory',
     'FsCompletion',
     'ViColonInput',
@@ -155,7 +156,7 @@ class CycleCmdlineHistory(sublime_plugin.TextCommand):
         self.view.insert(edit, 0, EX_HISTORY['cmdline'][CycleCmdlineHistory.HISTORY_INDEX])
 
 
-class ClearCmdlineHistoryIndexCommand(sublime_plugin.TextCommand):
+class ClearCmdlineHistoryIndex(sublime_plugin.TextCommand):
     def run(self, edit):
         CycleCmdlineHistory.HISTORY_INDEX = None
 
