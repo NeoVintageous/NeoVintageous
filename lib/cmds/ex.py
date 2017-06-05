@@ -1294,7 +1294,7 @@ class ExYank(sublime_plugin.TextCommand):
 
 class TabControlCommand(ViWindowCommandBase):
 
-    def run(self, command, file_name=None, forced=False):
+    def run(self, command, file_name=None, forced=False, index=None):
         view_count = len(self.window.views_in_group(self.window.active_group()))
         (group_index, view_index) = self.window.get_view_index(self._view)
 
@@ -1321,6 +1321,9 @@ class TabControlCommand(ViWindowCommandBase):
 
         elif command == "first":
             self.window.run_command('select_by_index', {'index': 0})
+
+        elif command == 'goto':
+            self.window.run_command('select_by_index', {'index': index - 1})
 
         elif command == 'only':
             quit_command_line = 'quit' + '' if not forced else '!'

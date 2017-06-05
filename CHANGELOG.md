@@ -13,6 +13,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
   [c | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
   ]c | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
 
+* Added [#187](https://github.com/NeoVintageous/NeoVintageous/issues/187): switching to specific tab with [count] gt
 * Added: [count] to ctrl+e and ctrl+y (scroll lines)
 
 ## [1.1.2](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-06-05

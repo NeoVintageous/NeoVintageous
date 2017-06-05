@@ -336,6 +336,22 @@ class State(object):
         return c
 
     @property
+    def count_default_zero(self):
+        """Calculate the actual count for the current command but default 0."""
+        c = 0
+
+        if self.action_count:
+            c = int(self.action_count) or 0
+
+        if self.motion_count:
+            c *= (int(self.motion_count) or 0)
+
+        if c < 0:
+            raise ValueError('count must be zero or positive')
+
+        return c
+
+    @property
     def xpos(self):
         """Store the current xpos for carets."""
         return self.settings.vi['xpos'] or 0

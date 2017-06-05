@@ -2176,8 +2176,12 @@ class _vi_gt(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, count=1, mode=None):
-        self.window.run_command('tab_control', {'command': 'next'})
+    def run(self, count=0, mode=None):
+        if count > 0:
+            self.window.run_command('tab_control', {'command': 'goto', 'index': count})
+        else:
+            self.window.run_command('tab_control', {'command': 'next'})
+
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 

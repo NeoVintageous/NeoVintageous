@@ -837,7 +837,7 @@ class ViActivateNextTab(ViOperatorDef):
             'action': '_vi_gt',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count
+                'count': state.count_default_zero
             }
         }
 
