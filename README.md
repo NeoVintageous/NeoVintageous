@@ -33,7 +33,7 @@ The preferred method of installation is [Package Control](https://packagecontrol
 
 ## USAGE
 
-What follows are supplementary documentations about feature differences that are specific to Sublime Text. See the [VIM main help file](https://neovim.io/doc/user) for a complete guide on VIM.
+What follows are supplementary documentations about feature differences that are specific to Sublime Text. See the [Vim main help file](https://neovim.io/doc/user) for a complete guide on Vim.
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
@@ -92,7 +92,7 @@ Read more about mappings in the [Vim main help file](https://neovim.io/doc/user/
 
 ### Modelines
 
-Provide a feature similar to [vim modelines](https://neovim.io/doc/user/options.html#modeline).
+A feature comparative to [Vim Modeline](https://neovim.io/doc/user/options.html#modeline).
 
 Set options local to the view by declaring them in the source code file itself.
 
@@ -103,7 +103,7 @@ Example
     # sublime: rulers [80, 120]
     # sublime: tab_size 4
 
-The top as well as the bottom of the buffer is scanned for modelines.
+Read more about modeline in the [Vim main help file](https://neovim.io/doc/user/options.html#modeline).
 
 ## CONFIGURATION
 
