@@ -53,7 +53,7 @@ class Test__vi_b(ViewTestCase):
         for (i, data) in enumerate(TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.content)
-            self.selectMultiple([self.R(*region) for region in data.sel])
+            self.select([self.R(*region) for region in data.sel])
 
             self.view.run_command('_vi_big_b', data.params)
 

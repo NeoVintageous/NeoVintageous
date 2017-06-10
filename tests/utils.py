@@ -85,14 +85,6 @@ class ViewTestCase(unittest.TestCase):
             else:
                 self.view.sel().add(selection)
 
-    # DEPRECATED??? in favour of self.select() or self.select(self.region(...))
-    def selectRegion(self, a, b, xpos=-1):
-        self.select(Region(a, b, xpos))
-
-    # DEPRECATED??? in favour of self.select() instead
-    def selectMultiple(self, points_and_or_regions):
-        self.select(points_and_or_regions)
-
     def region(self, a, b=None, xpos=-1):
         return Region(a, b, xpos)
 

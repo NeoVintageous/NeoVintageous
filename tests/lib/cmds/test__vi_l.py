@@ -5,7 +5,7 @@ class Test__vi_l_InNormalMode(ViewTestCase):
 
     def test_can_move_in_normal_mode(self):
         self.write('abc')
-        self.selectRegion(a=0, b=0)
+        self.select(0)
 
         self.view.run_command('_vi_l', {'mode': self.modes.NORMAL, 'count': 1})
 
@@ -13,7 +13,7 @@ class Test__vi_l_InNormalMode(ViewTestCase):
 
     def test_can_move_in_normal_mode_with_count(self):
         self.write('foo bar baz')
-        self.selectRegion(a=0, b=0)
+        self.select(0)
 
         self.view.run_command('_vi_l', {'mode': self.modes.NORMAL, 'count': 10})
 
@@ -21,7 +21,7 @@ class Test__vi_l_InNormalMode(ViewTestCase):
 
     def test_stops_at_right_end_in_normal_mode(self):
         self.write('abc')
-        self.selectRegion(a=0, b=0)
+        self.select(0)
 
         self.view.run_command('_vi_l', {'mode': self.modes.NORMAL, 'count': 10000})
 
@@ -32,7 +32,7 @@ class Test__vi_l_InInternalNormalMode(ViewTestCase):
 
     def test_can_move_in_internal_normal_mode(self):
         self.write('abc')
-        self.selectRegion(a=0, b=0)
+        self.select(0)
 
         self.view.run_command('_vi_l', {'mode': self.modes.INTERNAL_NORMAL, 'count': 1})
 
@@ -40,7 +40,7 @@ class Test__vi_l_InInternalNormalMode(ViewTestCase):
 
     def test_can_move_in_internal_normal_mode_with_count(self):
         self.write('foo bar baz')
-        self.selectRegion(a=0, b=0)
+        self.select(0)
 
         self.view.run_command('_vi_l', {'mode': self.modes.INTERNAL_NORMAL, 'count': 10})
 
@@ -48,7 +48,7 @@ class Test__vi_l_InInternalNormalMode(ViewTestCase):
 
     def test_stops_at_right_end_in_internal_normal_mode(self):
         self.write('abc')
-        self.selectRegion(a=0, b=0)
+        self.select(0)
 
         self.view.run_command('_vi_l', {'mode': self.modes.INTERNAL_NORMAL, 'count': 10000})
 
@@ -59,7 +59,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_can_move(self):
         self.write('abc')
-        self.selectRegion(a=0, b=1)
+        self.select((0, 1))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
@@ -67,7 +67,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_can_move_reversed_no_cross_over(self):
         self.write('abc')
-        self.selectRegion(a=2, b=0)
+        self.select((2, 0))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
@@ -75,7 +75,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_can_move_reversed_minimal(self):
         self.write('abc')
-        self.selectRegion(a=1, b=0)
+        self.select((1, 0))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
@@ -83,7 +83,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_can_move_reversed_cross_over(self):
         self.write('foo bar baz')
-        self.selectRegion(a=5, b=0)
+        self.select((5, 0))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 5})
 
@@ -91,7 +91,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_can_move_reversed_different_lines(self):
         self.write('foo\nbar\n')
-        self.selectRegion(a=5, b=1)
+        self.select((5, 1))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
@@ -99,7 +99,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_stops_at_eol_different_lines_reversed(self):
         self.write('foo\nbar\n')
-        self.selectRegion(a=5, b=3)
+        self.select((5, 3))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 1})
 
@@ -107,7 +107,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_stops_at_eol_different_lines_reversed_large_count(self):
         self.write('foo\nbar\n')
-        self.selectRegion(a=5, b=3)
+        self.select((5, 3))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 100})
 
@@ -115,7 +115,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_can_move_with_count(self):
         self.write('foo bar fuzz buzz')
-        self.selectRegion(a=0, b=1)
+        self.select((0, 1))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 10})
 
@@ -123,7 +123,7 @@ class Test__vi_l_InVisualMode(ViewTestCase):
 
     def test_stops_at_right_end(self):
         self.write('abc\n')
-        self.selectRegion(a=0, b=1)
+        self.select((0, 1))
 
         self.view.run_command('_vi_l', {'mode': self.modes.VISUAL, 'count': 10000})
 

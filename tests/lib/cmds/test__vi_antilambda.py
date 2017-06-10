@@ -20,7 +20,7 @@ class Test__vi_double_antilambda(ViewTestCase):
         for (i, data) in enumerate(TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.initial_text)
-            self.selectMultiple([self.R(*region) for region in data.regions])
+            self.select([self.R(*region) for region in data.regions])
 
             self.view.run_command('_vi_less_than_less_than', data.cmd_params)
 

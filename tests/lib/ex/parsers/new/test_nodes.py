@@ -249,7 +249,7 @@ bbb bbb
 xxx xxx
 ccc ccc
 ''')
-        self.selectMultiple([self.R(8, 10), self.R(24, 27)])
+        self.select([self.R(8, 10), self.R(24, 27)])
         region = RangeNode(start=[TokenMark("<")]).resolve(self.view)
         self.assertRegionsEqual(self.R(8, 16), region)
 

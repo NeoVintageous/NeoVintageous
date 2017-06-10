@@ -42,7 +42,7 @@ class Test__vi_big_p(ViewTestCase):
         for (i, data) in enumerate(TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.content)
-            self.selectMultiple([self.R(*region) for region in data.regions])
+            self.select([self.R(*region) for region in data.regions])
 
             self.view.settings().set('vintageous_use_sys_clipboard', False)
             registers._REGISTER_DATA['"'] = data.in_register
