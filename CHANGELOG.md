@@ -22,6 +22,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
   [e | Exchange the current line with [count] lines above it. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
   ]e | Exchange the current line with [count] lines below it. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
 
+* Added [#275](https://github.com/NeoVintageous/NeoVintageous/issues/275): Commands in the .vintageousrc file don't need to be prefixed with : (colon)
 * Added [#187](https://github.com/NeoVintageous/NeoVintageous/issues/187): switching to specific tab with [count] gt
 * Added: [count] to ctrl+e and ctrl+y (scroll lines)
 

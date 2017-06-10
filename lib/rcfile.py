@@ -51,7 +51,7 @@ def _run():
         pass
 
 
-_PARSE_LINE_PATTERN = re.compile('^:(?P<command_line>(?P<cmd>map|nmap|omap|vmap|let) .*)$')
+_PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>map|nmap|omap|vmap|let) .*)$')
 
 
 def _parse_line(line):

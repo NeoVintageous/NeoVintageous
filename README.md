@@ -86,29 +86,29 @@ A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#0
 
 The file is located at `Packages/User/.vintageousrc` and is read during startup.
 
-There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:unmap` `:nmap`, `:nunmap` `:omap`, `:ounmap` `:vmap`, and `:vunmap`.
+There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:nmap`, `:omap`, and `:vmap`.
 
 The character " (the double quote mark) starts a comment.
 
 Example
 
-    :let mapleader=,
+    let mapleader=,
 
     " Enter command line mode using space
-    :nmap <space> :
+    nmap <space> :
 
     " Visually select all content using ,a
-    :nmap <leader>a ggvG
+    nmap <leader>a ggvG
+
+    " Sort with ,s in visual mode
+    vmap <leader>s <F9>
 
     " Scroll viewport faster ctrl+e and ctrl+y
-    :nmap <C-e> 3<C-e>
-    :nmap <C-y> 3<C-y>
-
-    " Scroll up using space
-    :nmap <space> <C-u>
+    nmap <C-e> 3<C-e>
+    nmap <C-y> 3<C-y>
 
     " Scroll down using shift-enter
-    :nmap <S-cr> <C-d>
+    nmap <S-cr> <C-d>
 
 Read more about mappings in the [Vim main help file](https://neovim.io/doc/user/map.html).
 
