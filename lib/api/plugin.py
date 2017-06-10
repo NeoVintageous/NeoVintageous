@@ -1,4 +1,6 @@
 from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.cmd_base import ViOperatorDef  # noqa: F401
+from NeoVintageous.lib.vi.cmd_base import ViMotionDef  # noqa: F401
 
 
 mappings = {
