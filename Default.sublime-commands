@@ -1,17 +1,5 @@
 [
     {
-        "caption": "NeoVintageous: Reset",
-        "command": "neovintageous_reset"
-    },
-    {
-        "caption": "NeoVintageous: Toggle Use Ctrl Keys",
-        "command": "neovintageous_toggle_use_ctrl_keys"
-    },
-    {
-        "caption": "NeoVintageous: Exit from Command Mode",
-        "command": "neovintageous_exit_from_command_mode"
-    },
-    {
         "caption": "NeoVintageous: Open My .vintageousrc File",
         "command": "neovintageous_open_my_rc_file"
     },

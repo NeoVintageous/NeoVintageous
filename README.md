@@ -50,13 +50,12 @@ ctrl-w, v | Split current window in two (vertically) | [windows.txt](https://neo
 
 Command | Description
 ------- | -----------
-NeoVintageous: Exit from Command Mode |
-NeoVintageous: Open Changelog |
-NeoVintageous: Open My .vintageousrc |
-NeoVintageous: Open Readme |
-NeoVintageous: Reload My .vintageousrc |
-NeoVintageous: Reset |
-NeoVintageous: Toggle Use Ctrl Keys |
+NeoVintageous: Open My .vintageousrc File | Open the runtime configuration file for editing
+NeoVintageous: Reload My .vintageousrc File | Reloads the runtime configuration file
+NeoVintageous: Open Changelog | Opens the changelog in a view
+NeoVintageous: Open Readme | Opens the readme in a view
+Preferences: NeoVintageous Settings – Default | Opens the default settings
+Preferences: NeoVintageous Settings – User | Opens the settings file for editing
 
 ### Toggle command
 
