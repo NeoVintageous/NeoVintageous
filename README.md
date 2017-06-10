@@ -54,6 +54,19 @@ A port of [tpope/vim-surround](https://github.com/tpope/vim-surround) is provide
 
 Documentation: [surround.txt](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt).
 
+#### Unimpaired
+
+A port of [tpope/vim-unimpaired](https://github.com/tpope/vim-unimpaired) is provided by default. *Not all unimpaired commands are implemented. Please open issues for missing features and commands. Below is a table of what is currently available.*
+
+Documentation: [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt).
+
+Command | Description | Documentation | Dependencies | Notes
+------- | ----------- | ------------- | ------------ | -----
+[&lt;Space&gt; | Add [count] blank lines before the cursor. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+]&lt;Space&gt; | Add [count] blank lines after the cursor. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+[e | Exchange the current line with [count] lines above it. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+]e | Exchange the current line with [count] lines below it. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+
 ### Command Palette
 
 Command | Description

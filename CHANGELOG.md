@@ -13,6 +13,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
   [c | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
   ]c | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
 
+* Added: Port of [tpope/vim-unimpaired](https://github.com/tpope/vim-unimpaired). *Not all unimpaired commands are implemented.*
+
+  Command | Description | Documentation | Dependencies | Notes
+  ------- | ----------- | ------------- | ------------ | -----
+  [&lt;Space&gt; | Add [count] blank lines before the cursor. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+  ]&lt;Space&gt; | Add [count] blank lines after the cursor. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+  [e | Exchange the current line with [count] lines above it. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+  ]e | Exchange the current line with [count] lines below it. | [unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | None |
+
 * Added [#187](https://github.com/NeoVintageous/NeoVintageous/issues/187): switching to specific tab with [count] gt
 * Added: [count] to ctrl+e and ctrl+y (scroll lines)
 
