@@ -20,8 +20,6 @@ Vintageous-fork, a Vim emulation layer for Sublime Text.
 
 The preferred method of installation is [Package Control](https://packagecontrol.io/browse/authors/NeoVintageous).
 
-*The plugin has been [submitted](https://github.com/wbond/package_control_channel/pull/6292) to Package Control, but is not available at the time writing.*
-
 ### Manual installation
 
 1. Close Sublime Text.
@@ -81,8 +79,6 @@ Preferences: NeoVintageous Settings – User | Opens the settings file for editi
 ### Toggle command
 
 Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin which provides a command to toggle NeoVintageous.
-
-*The plugin has been [submitted](https://github.com/wbond/package_control_channel/pull/6292) to Package Control, but is not available at the time writing.*
 
 ### The .vintageousrc file
 
