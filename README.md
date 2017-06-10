@@ -46,6 +46,14 @@ ctrl-w, L | Move the current window to be at the far right | [windows.txt](https
 ctrl-w, s | Split current window in two | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
 ctrl-w, v | Split current window in two (vertically) | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
 
+### Plugins
+
+#### Surround
+
+A port of [tpope/vim-surround](https://github.com/tpope/vim-surround) is provided by default. *Not all unimpaired commands are implemented. Please open issues for missing features and commands.*
+
+Documentation: [surround.txt](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt).
+
 ### Command Palette
 
 Command | Description
