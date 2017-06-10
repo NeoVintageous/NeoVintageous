@@ -88,11 +88,11 @@ def _to_json_type(v):
         raise ValueError("Could not convert to JSON type.")
 
 
-def modelines(view):
+def modeline(view):
     """
-    Provide a feature similar to vim modelines.
+    Provide a feature similar to vim modeline.
 
-    Modelines set options local to the view by declaring them in the source
+    Modeline sets options local to the view by declaring them in the source
     code file itself.
 
         Example:

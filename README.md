@@ -112,7 +112,7 @@ Example
 
 Read more about mappings in the [Vim main help file](https://neovim.io/doc/user/map.html).
 
-### Modelines
+### Modeline
 
 A feature comparative to [Vim Modeline](https://neovim.io/doc/user/options.html#modeline).
 

@@ -8,7 +8,7 @@ import sublime_plugin
 from NeoVintageous.lib.ex import command_names
 from NeoVintageous.lib.ex.completions import wants_fs_completions
 from NeoVintageous.lib.ex.completions import wants_setting_completions
-from NeoVintageous.lib.modelines import modelines
+from NeoVintageous.lib.modeline import modeline
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import settings
@@ -213,10 +213,10 @@ class NeoVintageousEvents(sublime_plugin.EventListener):
                     })
 
     def on_load(self, view):
-        modelines(view)
+        modeline(view)
 
     def on_post_save(self, view):
-        modelines(view)
+        modeline(view)
 
         # XXX: Refactored from VintageStateTracker
         # Ensure the carets are within valid bounds. For instance, this is a
