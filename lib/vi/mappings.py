@@ -1,9 +1,13 @@
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.vi.keys import seq_to_command
 from NeoVintageous.lib.vi.keys import to_bare_command_name
 from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.cmd_base import cmd_types
 from NeoVintageous.lib.vi import variables
+
+
+_logger = nvim.get_logger(__name__)
 
 
 _mappings = {
@@ -50,7 +54,7 @@ class Mappings(object):
     def _find_full_match(self, mode, seq):
         partials = self._find_partial_match(mode, seq)
         try:
-            self.state.logger.debug("[Mappings] checking partials {0} for {1}".format(partials, seq))
+            _logger.debug('checking partials \'%s\' for \'%s\'', partials, seq)
             name = list(x for x in partials if x == seq)[0]
             # FIXME: Possibly related to #613. We're not returning the view's
             # current mode.
@@ -66,20 +70,20 @@ class Mappings(object):
 
         keys, mapped_to = self._find_full_match(self.state.mode, seq)
         if keys:
-            self.state.logger.debug('[Mappings] found full command: \'%s\' -> \'%s\'', keys, mapped_to)
+            _logger.debug('found full command \'%s\' -> \'%s\'', keys, mapped_to)
             return Mapping(seq, mapped_to['name'], seq[len(keys):], mapping_status.COMPLETE)
 
         for key in KeySequenceTokenizer(seq).iter_tokenize():
             head += key
             keys, mapped_to = self._find_full_match(self.state.mode, head)
             if keys:
-                self.state.logger.debug('[Mappings] found full command: \'%s\' -> \'%s\'', keys, mapped_to)
+                _logger.debug('found full command \'%s\' -> \'%s\'', keys, mapped_to)
                 return Mapping(head, mapped_to['name'], seq[len(head):], mapping_status.COMPLETE)
             else:
                 break
 
         if self._find_partial_match(self.state.mode, seq):
-            self.state.logger.debug('[Mappings] found partial command: \'%s\'', seq)
+            _logger.debug('found partial command \'%s\'', seq)
             return Mapping(seq, '', '', mapping_status.INCOMPLETE)
 
         return None
@@ -89,16 +93,16 @@ class Mappings(object):
         full_match = self._find_full_match(self.state.mode, key)
         partial_matches = self._find_partial_match(self.state.mode, key)
         if partial_matches:
-            self.state.logger.debug("[Mappings] user mapping found: {0} -> {1}".format(key, partial_matches))
+            _logger.debug('user mapping found \'%s\' -> \'%s\'', key, partial_matches)
             return (True, full_match[0])
-        self.state.logger.debug("[Mappings] user mapping not found: {0} -> {1}".format(key, partial_matches))
+        _logger.debug('user mapping not found \'%s\' -> \'%s\'', key, partial_matches)
         return (False, True)
 
     # XXX: Provisional. Get rid of this as soon as possible.
     def incomplete_user_mapping(self):
         (maybe_mapping, complete) = self.can_be_long_user_mapping(self.state.partial_sequence)
         if maybe_mapping and not complete:
-            self.state.logger.debug('[Mappings] incomplete user mapping \'%s\'', self.state.partial_sequence)
+            _logger.debug('incomplete user mapping \'%s\'', self.state.partial_sequence)
             return True
 
     def resolve(self, sequence=None, mode=None, check_user_mappings=True):
@@ -128,18 +132,18 @@ class Mappings(object):
         # TODO: Use same structure as in mappings (nested dicst).
         command = None
         if check_user_mappings:
-            self.state.logger.debug('[Mappings] checking user mappings')
+            _logger.debug('checking user mappings')
             # TODO: We should be able to force a mode here too as, below.
             command = self.expand_first(seq)
 
         if command:
-            self.state.logger.debug('[Mappings] {0} equals command: {1}'.format(seq, command))
+            _logger.debug('\'%s\' equals command \'%s\'', seq, command)
             return command
             # return {'name': command.mapping, 'type': cmd_types.USER}
         else:
-            self.state.logger.debug('[Mappings] looking up >{0}<'.format(seq))
+            _logger.debug('looking up command for seq >>>%s<<<', seq)
             command = seq_to_command(self.state, seq, mode=mode)
-            self.state.logger.debug('[Mappings] got {0}'.format(command))
+            _logger.debug('got command \'%s\'', command)
             return command
 
     def add(self, mode, new, target):

@@ -46,7 +46,7 @@ def _ensure_other_vimlike_packages_are_disabled():
 
 
 def plugin_loaded():
-    _logger.debug('%s.plugin_loaded()', __name__)
+    _logger.debug('\n\n\n\n\n------ plugin_loaded() -----\n\n\n\n\n')
 
     try:
         from package_control import events
@@ -57,15 +57,11 @@ def plugin_loaded():
 
     init_state(sublime.active_window().active_view(), new_session=True)
 
-    _logger.debug('%s.plugin_loaded() done.', __name__)
+    _logger.debug('\n\n\n\n\n------ plugin_loaded() (finished) -----\n\n\n\n\n')
 
 
 def plugin_unloaded():
-    _logger.debug('%s.plugin_unloaded()', __name__)
-
     view = sublime.active_window().active_view()
     if view:
         view.settings().set('command_mode', False)
         view.settings().set('inverse_caret_state', False)
-
-    _logger.debug('%s.plugin_unloaded() done.', __name__)

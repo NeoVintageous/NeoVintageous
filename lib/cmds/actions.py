@@ -497,9 +497,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
     def run(self, edit, mode=None):
         def f(view, s):
-            _logger.info(
-                '[_enter_normal_mode_impl] entering normal mode from {0}'
-                .format(mode))
+            _logger.info('[_enter_normal_mode_impl] entering normal mode from \'%s\'', mode)
             if mode == modes.INSERT:
                 if view.line(s.b).a != s.b:
                     return R(s.b - 1)
@@ -770,7 +768,7 @@ class ProcessNotation(ViWindowCommandBase):
             if state.action:
                 # The last key press has caused an action to be primed. That
                 # means there are no more leading motions. Break out of here.
-                _logger.info('[ProcessNotation] first action found in {0}'.format(state.sequence))
+                _logger.info('[ProcessNotation] first action found in \'%s\'', state.sequence)
                 state.reset_command_data()
                 if state.mode == modes.OPERATOR_PENDING:
                     state.mode = modes.NORMAL
@@ -798,9 +796,9 @@ class ProcessNotation(ViWindowCommandBase):
                 state.non_interactive = False
                 return
 
-            _logger.info('[ProcessNotation] original seq/leading motions: {0}/{1}'.format(keys, leading_motions))
+            _logger.info('[ProcessNotation] original seq/leading motions: %s/%s', keys, leading_motions)
             keys = keys[len(leading_motions):]
-            _logger.info('[ProcessNotation] seq stripped to {0}'.format(keys))
+            _logger.info('[ProcessNotation] seq stripped to \'%s\'', keys)
 
         if not (state.motion and not state.action):
             with gluing_undo_groups(self.window.active_view(), state):
@@ -833,8 +831,7 @@ class ProcessNotation(ViWindowCommandBase):
         # We'll reach this point if we have a command that requests input
         # whose input parser isn't satistied. For example, `/foo`. Note that
         # `/foo<CR>`, on the contrary, would have satisfied the parser.
-        _logger.info('[ProcessNotation] unsatisfied parser: {0} {1}'
-                     .format(state.action, state.motion))
+        _logger.info('[ProcessNotation] unsatisfied parser action=\'%s\', motion=\'%s\'', state.action, state.motion)
         if (state.action and state.motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
@@ -864,8 +861,7 @@ class ProcessNotation(ViWindowCommandBase):
                 command = self.state.action or self.state.motion
 
             parser_def = command.input_parser
-            _logger.info('[ProcessNotation] last attemp to collect input: {0}'
-                         .format(parser_def.command))
+            _logger.info('[ProcessNotation] last attemp to collect input \'%s\'', parser_def.command)
 
             if parser_def.interactive_command:
                 self.window.run_command(
@@ -899,9 +895,7 @@ class PressKey(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
-        _logger.debug('[PressKey] key = \'%s\', repeat_count = %s, do_eval = %s, check_user_mappings = %s',
-                      key, repeat_count, do_eval, check_user_mappings)
-
+        _logger.debug('PressKey::run() key=\'%s\', repeat_count=%s, do_eval=%s, check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
         # If the user has made selections with the mouse, we may be in an
@@ -945,7 +939,7 @@ class PressKey(ViWindowCommandBase):
 
         state.partial_sequence += key
 
-        _logger.debug('[PressKey] sequence = \'%s\', partial sequence = \'%s\'', state.sequence, state.partial_sequence)
+        _logger.debug('[PressKey] sequence=\'%s\', partial sequence=\'%s\'', state.sequence, state.partial_sequence)
 
         key_mappings = Mappings(state)
         if check_user_mappings and key_mappings.incomplete_user_mapping():
@@ -953,7 +947,7 @@ class PressKey(ViWindowCommandBase):
             # e.g. we may have typed 'aa' and there's an 'aaa' mapping, so we need to keep collecting input.
             return
 
-        _logger.debug('[PressKey] get cmd for seq/partial seq in (mode): %s/%s (%s)', state.sequence, state.partial_sequence, state.mode)
+        _logger.debug('[PressKey] get cmd for seq/partial seq in (mode): %s/%s (%s)', state.sequence, state.partial_sequence, state.mode)  # noqa: E501
 
         command = key_mappings.resolve(check_user_mappings=check_user_mappings)
 
@@ -978,7 +972,7 @@ class PressKey(ViWindowCommandBase):
                 state.motion_count = mcount
                 state.action_count = acount
                 state.mode = modes.NORMAL
-                _logger.debug('[PressKey] running user mapping \'%s\' via process_notation starting in mode \'%s\'', new_keys, state.mode)
+                _logger.debug('[PressKey] running user mapping \'%s\' via process_notation starting in mode \'%s\'', new_keys, state.mode)  # noqa: E501
                 self.window.run_command('process_notation', {'keys': new_keys, 'check_user_mappings': False})
             return
 
@@ -1043,13 +1037,13 @@ class PressKey(ViWindowCommandBase):
         state = State(self.window.active_view())
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
-                _logger.info('[PressKey] action count digit: {0}'.format(key))
+                _logger.info('[PressKey] action count digit \'%s\'', key)
                 state.action_count += key
                 return True
 
         if (state.action and (state.mode == modes.OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or state.motion_count):
-                _logger.info('[PressKey] motion count digit: {0}'.format(key))
+                _logger.info('[PressKey] motion count digit \'%s\'', key)
                 state.motion_count += key
                 return True
 
@@ -1075,9 +1069,7 @@ class _vi_dot(ViWindowCommandBase):
             count = None
 
         type_, seq_or_cmd, old_mode, visual_data = repeat_data
-        _logger.info(
-            '[_vi_dot] type: {0} seq or cmd: {1} old mode: {2}'
-            .format(type_, seq_or_cmd, old_mode))
+        _logger.info('[_vi_dot] type=\'%s\', seq or cmd=\'%s\', old mode=\'%s\'', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != modes.VISUAL):
             state.restore_visual_data(visual_data)
