@@ -23,28 +23,32 @@ class _Context(object):
 
     def __init__(self, view):
         self.view = view
-        self.state = State(view)
+
+    def create_state(self):
+        return State(self.view)
 
     def vi_is_view(self, key, operator, operand, match_all):
-        return self._check(is_view(self.state.view), operator, operand, match_all)
+        return self._check(is_view(self.create_state().view), operator, operand, match_all)
 
     def vi_command_mode_aware(self, key, operator, operand, match_all):
-        in_command_mode = self.state.view.settings().get('command_mode')
+        in_command_mode = self.create_state().view.settings().get('command_mode')
         vi_is_view = self.vi_is_view(key, operator, operand, match_all)
 
         return self._check(in_command_mode and vi_is_view, operator, operand, match_all)
 
     def vi_insert_mode_aware(self, key, operator, operand, match_all):
-        in_command_mode = self.state.view.settings().get('command_mode')
+        in_command_mode = self.create_state().view.settings().get('command_mode')
         vi_is_view = self.vi_is_view(key, operator, operand, match_all)
 
         return self._check(not in_command_mode and vi_is_view, operator, operand, match_all)
 
     def vi_use_ctrl_keys(self, key, operator, operand, match_all):
-        return self._check(self.state.settings.view['vintageous_use_ctrl_keys'], operator, operand, match_all)
+        return self._check(self.create_state().settings.view['vintageous_use_ctrl_keys'], operator, operand, match_all)
 
     def vi_is_cmdline(self, key, operator, operand, match_all):
-        return self._check(self.state.view.score_selector(0, 'text.excmdline') != 0, operator, operand, match_all)
+        return self._check(
+            self.create_state().view.score_selector(0, 'text.excmdline') != 0, operator, operand, match_all
+        )
 
     def vi_cmdline_at_fs_completion(self, key, operator, operand, match_all):
         if self.view.score_selector(0, 'text.excmdline') != 0:
@@ -73,28 +77,30 @@ class _Context(object):
                     return not value
 
     def vi_enable_cmdline_mode(self, key, operator, operand, match_all):
-        return self._check(self.state.settings.view['vintageous_enable_cmdline_mode'], operator, operand, match_all)
+        return self._check(
+            self.create_state().settings.view['vintageous_enable_cmdline_mode'], operator, operand, match_all
+        )
 
     def vi_mode_normal_insert(self, key, operator, operand, match_all):
-        return self._check(self.state.mode == modes.NORMAL_INSERT, operator, operand, match_all)
+        return self._check(self.create_state().mode == modes.NORMAL_INSERT, operator, operand, match_all)
 
     def vi_mode_visual_block(self, key, operator, operand, match_all):
-        return self._check(self.state.mode == modes.VISUAL_BLOCK, operator, operand, match_all)
+        return self._check(self.create_state().mode == modes.VISUAL_BLOCK, operator, operand, match_all)
 
     def vi_mode_select(self, key, operator, operand, match_all):
-        return self._check(self.state.mode == modes.SELECT, operator, operand, match_all)
+        return self._check(self.create_state().mode == modes.SELECT, operator, operand, match_all)
 
     def vi_mode_visual_line(self, key, operator, operand, match_all):
-        return self._check(self.state.mode == modes.VISUAL_LINE, operator, operand, match_all)
+        return self._check(self.create_state().mode == modes.VISUAL_LINE, operator, operand, match_all)
 
     def vi_mode_insert(self, key, operator, operand, match_all):
-        return self._check(self.state.mode == modes.INSERT, operator, operand, match_all)
+        return self._check(self.create_state().mode == modes.INSERT, operator, operand, match_all)
 
     def vi_mode_visual(self, key, operator, operand, match_all):
-        return self._check(self.state.mode == modes.VISUAL, operator, operand, match_all)
+        return self._check(self.create_state().mode == modes.VISUAL, operator, operand, match_all)
 
     def vi_mode_normal(self, key, operator, operand, match_all):
-        return self._check(self.state.mode == modes.NORMAL, operator, operand, match_all)
+        return self._check(self.create_state().mode == modes.NORMAL, operator, operand, match_all)
 
     def vi_mode_normal_or_visual(self, key, operator, operand, match_all):
         # XXX: This context is used to disable some keys for VISUALLINE.
@@ -123,12 +129,25 @@ class _Context(object):
         #
         # operator is one of:
         #
-        #     sublime.OP_EQUAL: Is the value of the context equal to the operand?
-        #     sublime.OP_NOT_EQUAL: Is the value of the context not equal to the operand?
-        #     sublime.OP_REGEX_MATCH: Does the value of the context match the regex given in operand?
-        #     sublime.OP_NOT_REGEX_MATCH: Does the value of the context not match the regex given in operand?
-        #     sublime.OP_REGEX_CONTAINS: Does the value of the context contain a substring matching the regex given in operand?
-        #     sublime.OP_NOT_REGEX_CONTAINS: Does the value of the context not contain a substring matching the regex given in operand?
+        #     sublime.OP_EQUAL: Is the value of the context equal to the
+        #                       operand?
+        #
+        #     sublime.OP_NOT_EQUAL: Is the value of the context not equal to
+        #                           the operand?
+        #
+        #     sublime.OP_REGEX_MATCH: Does the value of the context match the
+        #                             regex given in operand?
+        #
+        #     sublime.OP_NOT_REGEX_MATCH: Does the value of the context not
+        #                                 match the regex given in operand?
+        #
+        #     sublime.OP_REGEX_CONTAINS: Does the value of the context contain
+        #                                a substring matching the regex given
+        #                                in operand?
+        #
+        #     sublime.OP_NOT_REGEX_CONTAINS: Does the value of the context not
+        #                                    contain a substring matching the
+        #                                    regex given in operand?
         #
         # match_all should be used if the context relates to the selections:
         # does every selection have to match (match_all == True), or is at least

@@ -11,11 +11,23 @@ class MockState():
         self.mode = mode
 
 
+class MockContext(_Context):
+
+    def __init__(self, view):
+        super().__init__(view)
+        self.state = None
+
+    def create_state(self):
+        if self.state is None:
+            self.state = State(self.view)
+        return self.state
+
+
 class TestKeyContext(ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.context = _Context(self.view)
+        self.context = MockContext(self.view)
 
     def test_doesnt_handle_invalid_keys(self):
         self.assertIsNone(self.context.query('foobar', sublime.OP_EQUAL, True, True))
