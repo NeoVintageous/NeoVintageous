@@ -110,9 +110,10 @@ Read more about mappings and the .vimrc file in the [Vim main help file](https:/
 
 A feature comparative to [Vim Modeline](https://neovim.io/doc/user/options.html#modeline).
 
-Set options local to the view by declaring them in the source code file itself.
+> If you start editing a new file, and the 'modeline' option is on, a number of
+> lines at the beginning and end of the file are checked for modelines.
 
-Example
+The modelines (settings) will be applied to the view.
 
     # sublime: gutter false
     # sublime: translate_tab_to_spaces true
