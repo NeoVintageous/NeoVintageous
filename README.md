@@ -44,6 +44,26 @@ ctrl-w, L | Move the current window to be at the far right | [windows](https://n
 ctrl-w, s | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
 ctrl-w, v | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
 
+### Sidebar
+
+Key | Description
+--- | -----------
+j | down
+k | up
+h | close node / go to parent node
+l | open node
+
+Press `Ctrl+0` to focus sidebar (normal mode).
+
+### Overlay
+
+Key | Description
+--- | -----------
+ctrl+j | down
+ctrl+k | up
+
+e.g. on `ctrl+p`, `ctrl+shift+p`, etc.
+
 ### Plugins
 
 #### Surround
