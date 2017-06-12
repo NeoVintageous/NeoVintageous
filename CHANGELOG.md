@@ -10,8 +10,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
   Command | Description | Documentation | Dependencies | Notes
   ------- | ----------- | ------------- | ------------ | -----
-  [c | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
-  ]c | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) |
+  [c | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+  ]c | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
 
 * Added: Port of [tpope/vim-unimpaired](https://github.com/tpope/vim-unimpaired). *Not all unimpaired commands are implemented.*
 
