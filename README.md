@@ -82,15 +82,9 @@ Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNe
 
 ### The .vintageousrc file
 
-A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file.
-
-The file is located at `Packages/User/.vintageousrc` and is read during startup.
-
-There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:nmap`, `:omap`, and `:vmap`.
+A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file. The file is located at `Packages/User/.vintageousrc` and is read during startup. There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:nmap`, `:omap`, and `:vmap`.
 
 The character " (the double quote mark) starts a comment.
-
-Example
 
     let mapleader=,
 
@@ -110,7 +104,7 @@ Example
     " Scroll down using shift-enter
     nmap <S-cr> <C-d>
 
-Read more about mappings in the [Vim main help file](https://neovim.io/doc/user/map.html).
+Read more about mappings and the .vimrc file in the [Vim main help file](https://neovim.io/doc/user/map.html).
 
 ### Modeline
 
