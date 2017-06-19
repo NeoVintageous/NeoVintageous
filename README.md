@@ -122,6 +122,29 @@ The modelines (settings) will be applied to the view.
 
 Read more about modeline in the [Vim main help file](https://neovim.io/doc/user/options.html#modeline).
 
+### Multiple cursors
+
+There two ways to use multiple selections.
+
+The first is to enter insert mode, `i`, then use `ctrl+d` to make multiple selections, press `Esc` to enter normal mode, from here you can use NeoVintageous normally e.g. `$` will jump the cursors to the end of line, `^` all cursors to the start of line, `v` enters all cursors into visual mode, `f{char}` makes all cursors visually select to `{char}`, etc.
+
+The other way is enter select mode, a non-standard mode that is used for multiple selections. *This mode is not the same as select mode in Vim.*
+
+Key Sequence | Command
+------------ | -------
+gh | Enter select mode (from normal or visual mode)
+j | Add selection
+k | Remove selection
+l | Skip current selection
+A | Select all instances
+i | Enter visual mode (preserving selections)
+J | Clear multiple selections and enter normal mode
+gH | After a search with / or ?, select all matches.
+
+Once you've created visual selections in select mode, you must return to insert mode by pressing `i` in order to edit text. Once in insert mode, you can switch to normal mode, etc.
+
+If you press `Esc` while in select mode, you will return to normal mode, but multiple carets won't be destroyed. If you press `Esc` a second time, you will be left with one single caret in normal mode.
+
 ## CONFIGURATION
 
 Key | Description | Type | Default
