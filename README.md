@@ -64,15 +64,13 @@ ctrl+k | up
 
 e.g. on `ctrl+p`, `ctrl+shift+p`, etc.
 
-### Plugins
-
-#### Surround
+### Surround plugin
 
 A port of [tpope/vim-surround](https://github.com/tpope/vim-surround) is provided by default. *Not all unimpaired commands are implemented. Please open issues for missing features and commands.*
 
 Documentation: [surround](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt).
 
-#### Unimpaired
+### Unimpaired plugin
 
 A port of [tpope/vim-unimpaired](https://github.com/tpope/vim-unimpaired) is provided by default. *Not all unimpaired commands are implemented. Please open issues for missing features and commands. Below is a table of what is currently available.*
 
