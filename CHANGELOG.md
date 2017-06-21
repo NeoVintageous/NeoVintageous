@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## [1.2.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.2.0) - 2017-06-21
 
 ### Added
 
