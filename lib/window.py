@@ -1,6 +1,9 @@
 import sublime
 
 
+from NeoVintageous.lib import nvim
+
+
 LAYOUT_SINGLE_CELL = {
     'cells': [[0, 0, 1, 1]],
     'cols': [0.0, 1.0],
@@ -110,14 +113,16 @@ class WindowAPI():
             return
 
         if do_not_close_if_last and len(self.window.views()) < 2:
-            return sublime.status_message('Cannot close last view')
+            nvim.status_message('cannot close last view')
+            return
 
         if current_view.is_dirty():
             dirty_buffer_message = 'No write since last change'
             if current_view.file_name() is not None:
                 dirty_buffer_message += ' for buffer "%s"' % current_view.file_name()
 
-            return sublime.status_message(dirty_buffer_message)
+            nvim.status_message(dirty_buffer_message)
+            return
 
         current_view.close()
 

@@ -1,11 +1,11 @@
 from NeoVintageous.tests.utils import ViewTestCase
 
-from NeoVintageous.lib.modelines import modelines
+from NeoVintageous.lib.modeline import modeline
 
 
-class TestModelines(ViewTestCase):
+class TestModeline(ViewTestCase):
 
-    def test_modelines(self):
+    def test_modeline(self):
         self.settings().set('translate_tab_to_spaces', True)
         self.settings().set('gutter', False)
         self.settings().set('rulers', [])
@@ -24,7 +24,7 @@ class TestModelines(ViewTestCase):
         self.assertEqual([], self.settings().get('rulers'))
         self.assertEqual(2, self.settings().get('tab_size'))
 
-        modelines(self.view)
+        modeline(self.view)
 
         # post condition
         self.assertFalse(self.settings().get('translate_tab_to_spaces'))

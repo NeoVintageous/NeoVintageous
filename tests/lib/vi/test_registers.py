@@ -4,13 +4,14 @@ import builtins
 
 import sublime
 
-from NeoVintageous.lib.vi import registers
-from NeoVintageous.lib.state import State
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.state import State
+from NeoVintageous.lib.vi import registers
 
 
 class TestCaseRegistersConstants(unittest.TestCase):
+
     def test_unnamed_constant_value(self):
         self.assertEqual(registers.REG_UNNAMED, '"')
 
@@ -70,6 +71,7 @@ class TestCaseRegistersConstants(unittest.TestCase):
 
 
 class TestCaseRegisters(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         sublime.set_clipboard('')
@@ -246,6 +248,7 @@ class TestCaseRegisters(ViewTestCase):
 
 
 class Test_get_selected_text(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         sublime.set_clipboard('')
@@ -362,6 +365,7 @@ class Test_get_selected_text(ViewTestCase):
 
 
 class Test_yank(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         sublime.set_clipboard('')

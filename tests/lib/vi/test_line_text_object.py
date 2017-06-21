@@ -6,10 +6,10 @@ from NeoVintageous.tests.utils import ViewTestCase
 
 from NeoVintageous.lib.vi.text_objects import find_line_text_object
 
+
 test = namedtuple('simple_test', 'start expected msg content')
 
 # cursor is at "|"
-
 TESTS_INDENT = (
     test(start=Region(2, 5), expected=Region(0, 16), msg='should work', content='asf  whitespaced'),
     test(start=Region(0, 0), expected=Region(2, 13), msg='should work with whitepsace', content='  whitespaced'),

@@ -1,3 +1,5 @@
+# https://github.com/tpope/vim-surround
+#
 # Based on https://github.com/guillermooo/Vintageous_Plugin_Surround
 #
 # For some reason this has to be at the top level or else the commands don't
@@ -12,12 +14,10 @@ import sublime_plugin
 from NeoVintageous.lib.api import plugin
 from NeoVintageous.lib.vi import inputs
 from NeoVintageous.lib.vi import utils
-from NeoVintageous.lib.vi.cmd_defs import ViOperatorDef
 from NeoVintageous.lib.vi.core import ViTextCommandBase
 from NeoVintageous.lib.vi.inputs import input_types
 from NeoVintageous.lib.vi.inputs import parser_def
 from NeoVintageous.lib.vi.search import reverse_search
-from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
 
@@ -28,11 +28,11 @@ __all__ = [
 ]
 
 
-@plugin.register(seq='ys', modes=(modes.NORMAL,))
-class _nvim_surround_def_ys(ViOperatorDef):
+@plugin.register(seq='ys', modes=(plugin.modes.NORMAL,))
+class _nvim_surround_def_ys(plugin.ViOperatorDef):
 
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -70,11 +70,11 @@ class _nvim_surround_def_ys(ViOperatorDef):
         }
 
 
-@plugin.register(seq='S', modes=(modes.VISUAL, modes.VISUAL_BLOCK))
+@plugin.register(seq='S', modes=(plugin.modes.VISUAL, plugin.modes.VISUAL_BLOCK))
 class _nvim_surround_def_big_s(_nvim_surround_def_ys):
 
     def __init__(self, *args, **kwargs):
-        _nvim_surround_def_ys.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.motion_required = False
 
@@ -87,11 +87,11 @@ class _nvim_surround_def_big_s(_nvim_surround_def_ys):
         )
 
 
-@plugin.register(seq='ds', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
-class _nvim_surround_def_ds(ViOperatorDef):
+@plugin.register(seq='ds', modes=(plugin.modes.NORMAL, plugin.modes.OPERATOR_PENDING))
+class _nvim_surround_def_ds(plugin.ViOperatorDef):
 
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -128,11 +128,11 @@ class _nvim_surround_def_ds(ViOperatorDef):
         }
 
 
-@plugin.register(seq='cs', modes=(modes.NORMAL, modes.OPERATOR_PENDING))
-class _nvim_surround_def_cs(ViOperatorDef):
+@plugin.register(seq='cs', modes=(plugin.modes.NORMAL, plugin.modes.OPERATOR_PENDING))
+class _nvim_surround_def_cs(plugin.ViOperatorDef):
 
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -207,10 +207,10 @@ class nvim_surround_ys(ViTextCommandBase):
 
     def run(self, edit, mode=None, surround_with='"', count=1, motion=None):
         def f(view, s):
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == plugin.modes.INTERNAL_NORMAL:
                 self.surround(edit, s, surround_with)
                 return sublime.Region(s.begin())
-            elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            elif mode in (plugin.modes.VISUAL, plugin.modes.VISUAL_BLOCK):
                 self.surround(edit, s, surround_with)
                 return sublime.Region(s.begin())
 
@@ -220,7 +220,7 @@ class nvim_surround_ys(ViTextCommandBase):
             self.enter_normal_mode(mode)
             raise ValueError('motion required')
 
-        if mode == modes.INTERNAL_NORMAL:
+        if mode == plugin.modes.INTERNAL_NORMAL:
             self.view.run_command(motion['motion'], motion['motion_args'])
 
         if surround_with:
@@ -256,7 +256,7 @@ class nvim_surround_cs(sublime_plugin.TextCommand):
 
     def run(self, edit, mode=None, replace_what=''):
         def f(view, s):
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == plugin.modes.INTERNAL_NORMAL:
                 self.replace(edit, s, replace_what)
                 return s
             return s
@@ -299,7 +299,7 @@ class nvim_surround_ds(sublime_plugin.TextCommand):
 
     def run(self, edit, mode=None, replace_what=''):
         def f(view, s):
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == plugin.modes.INTERNAL_NORMAL:
                 self.replace(edit, s, replace_what)
                 return s
             return s

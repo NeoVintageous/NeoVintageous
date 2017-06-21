@@ -3,8 +3,7 @@ from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_FILE
 from .tokens_base import TokenOfCommand
 
-from NeoVintageous.lib.ex.ex_error import ERR_TRAILING_CHARS
-from NeoVintageous.lib.ex.ex_error import VimError
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib import ex
 
 
@@ -25,8 +24,8 @@ def scan_command_file(state):
 
     bang = bang == '!'
     if not bang:
-        raise VimError(ERR_TRAILING_CHARS)
+        raise nvim.Error(nvim.E_TRAILING_CHARS)
 
-    state.expect(EOF, on_error=lambda: VimError(ERR_TRAILING_CHARS))
+    state.expect(EOF, on_error=lambda: nvim.Error(nvim.E_TRAILING_CHARS))
 
     return None, [TokenCommandFile(forced=bang == '!'), TokenEof()]

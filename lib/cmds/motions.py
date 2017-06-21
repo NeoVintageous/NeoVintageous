@@ -3,6 +3,7 @@ from itertools import chain
 import sublime
 
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import units
@@ -70,6 +71,7 @@ __all__ = [
     '_vi_left_brace',
     '_vi_left_paren',
     '_vi_left_square_bracket',
+    '_vi_left_square_bracket_c',
     '_vi_minus',
     '_vi_n',
     '_vi_octothorp',
@@ -82,6 +84,7 @@ __all__ = [
     '_vi_right_brace',
     '_vi_right_paren',
     '_vi_right_square_bracket',
+    '_vi_right_square_bracket_c',
     '_vi_select_text_object',
     '_vi_shift_enter',
     '_vi_slash',
@@ -1783,7 +1786,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
                                       times=count)
 
         if not found:
-            print("NeoVintageous: Pattern not found.")
+            nvim.console_message('Pattern not found')
             return
 
         regions_transformer(self.view, f)
@@ -2073,8 +2076,6 @@ class _vi_go_to_symbol(ViMotionCommand):
 
 
 class _vi_gm(ViMotionCommand):
-    """Vim: `gm`."""
-
     def run(self, mode=None, count=1):
         def advance(view, s):
             line = view.line(s.b)
@@ -2092,8 +2093,6 @@ class _vi_gm(ViMotionCommand):
 
 
 class _vi_left_square_bracket(ViMotionCommand):
-    """Vim: `[`."""
-
     BRACKETS = {
         '{': ('\\{', '\\}'),
         '}': ('\\{', '\\}'),
@@ -2121,9 +2120,14 @@ class _vi_left_square_bracket(ViMotionCommand):
         regions_transformer(self.view, move)
 
 
-class _vi_right_square_bracket(ViMotionCommand):
-    """Vim: `]`."""
+# https://neovim.io/doc/user/diff.html#[c
+class _vi_left_square_bracket_c(ViMotionCommand):
+    def run(self, mode=None, count=1):
+        for i in range(count):
+            self.view.run_command('git_gutter_prev_change')
 
+
+class _vi_right_square_bracket(ViMotionCommand):
     BRACKETS = {
         '{': ('\\{', '\\}'),
         '}': ('\\{', '\\}'),
@@ -2149,3 +2153,10 @@ class _vi_right_square_bracket(ViMotionCommand):
             return
 
         regions_transformer(self.view, move)
+
+
+# https://neovim.io/doc/user/diff.html#]c
+class _vi_right_square_bracket_c(ViMotionCommand):
+    def run(self, mode=None, count=1):
+        for i in range(count):
+            self.view.run_command('git_gutter_next_change')

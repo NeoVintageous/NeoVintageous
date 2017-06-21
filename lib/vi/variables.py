@@ -1,18 +1,14 @@
 
-VAR_MAP_LEADER = 'mapleader'
-VAR_MAP_LOCAL_LEADER = 'maplocalleader'
-
-
 # well-known variables
 _SPECIAL_STRINGS = {
-    '<leader>': VAR_MAP_LEADER,
-    '<localleader>': VAR_MAP_LOCAL_LEADER,
+    '<leader>': 'mapleader',
+    '<localleader>': 'maplocalleader',
 }
 
 
 _DEFAULTS = {
-    VAR_MAP_LEADER: '\\',
-    VAR_MAP_LOCAL_LEADER: '\\'
+    'mapleader': '\\',
+    'maplocalleader': '\\'
 }
 
 
@@ -23,6 +19,7 @@ _VARIABLES = {
 def expand_keys(seq):
     """Replace well-known variables in key names with their corresponding values."""
     leader = var_name = None
+
     # TODO(guillermooo): Can these variables appear in the middle of a
     # sequence instead of at the beginning only?
     if seq.lower().startswith('<leader>'):
@@ -46,6 +43,7 @@ def is_key_name(name):
 def get(name):
     name = name.lower()
     name = _SPECIAL_STRINGS.get(name, name)
+
     return _VARIABLES.get(name, _DEFAULTS.get(name))
 
 
@@ -64,6 +62,7 @@ class Variables(object):
     def __get__(self, instance, owner):
         self.view = instance.view
         self.settings = instance.settings
+
         return self
 
     def get(self, name):

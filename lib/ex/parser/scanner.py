@@ -1,8 +1,3 @@
-"""Tokenization for the Vim command line."""
-
-from NeoVintageous.lib.ex.ex_error import ERR_UNKNOWN_COMMAND
-from NeoVintageous.lib.ex.ex_error import VimError
-
 from . import subscanners
 from .state import EOF
 from .state import ScannerState
@@ -17,6 +12,7 @@ from .tokens import TokenPercent
 from .tokens import TokenSearchBackward
 from .tokens import TokenSearchForward
 from .tokens import TokenSemicolon
+from NeoVintageous.lib import nvim
 
 
 # TODO: make this a function. We don't need state.
@@ -163,5 +159,5 @@ def scan_command(state):
             state.ignore()
             return subscanner(state)
 
-    state.expect(EOF, lambda: VimError(ERR_UNKNOWN_COMMAND))
+    state.expect(EOF, lambda: nvim.Error(nvim.E_UNKNOWN_COMMAND))
     return None, [TokenEof()]

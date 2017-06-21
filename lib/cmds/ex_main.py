@@ -4,12 +4,10 @@ import sublime
 import sublime_plugin
 
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.ex.completions import iter_paths
 from NeoVintageous.lib.ex.completions import parse
 from NeoVintageous.lib.ex.completions import parse_for_setting
-from NeoVintageous.lib.ex.ex_error import show_error
-from NeoVintageous.lib.ex.ex_error import show_not_implemented
-from NeoVintageous.lib.ex.ex_error import VimError
 from NeoVintageous.lib.ex.parser.parser import parse_command_line
 from NeoVintageous.lib.ex.parser.scanner_command_goto import TokenCommandGoto
 from NeoVintageous.lib.state import State
@@ -120,13 +118,11 @@ class ViColonInput(sublime_plugin.WindowCommand):
 
             self.window.run_command(parsed_new.command.target_command, {'command_line': cmd_line[1:]})
             return
-        except VimError as ve:
-            # only new code emits VimErrors, so handle it.
-            show_error(ve)
+        except nvim.Error as ve:
+            nvim.exception_message(ve)
             return
         except Exception as e:
-            message = str(e) + ' ' + "(%s)" % cmd_line
-            show_not_implemented(message)
+            nvim.not_implemented_message(str(e) + ' ' + "(%s)" % cmd_line)
             return
 
 

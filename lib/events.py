@@ -8,14 +8,167 @@ import sublime_plugin
 from NeoVintageous.lib.ex import command_names
 from NeoVintageous.lib.ex.completions import wants_fs_completions
 from NeoVintageous.lib.ex.completions import wants_setting_completions
-from NeoVintageous.lib.modelines import modelines
+from NeoVintageous.lib.modeline import modeline
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import settings
 from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import is_view
 
 
 _COMPLETIONS = sorted([x[0] for x in command_names])
+
+
+class _Context(object):
+
+    def __init__(self, view):
+        self.view = view
+
+    def create_state(self):
+        return State(self.view)
+
+    def vi_is_view(self, key, operator, operand, match_all):
+        return self._check(is_view(self.create_state().view), operator, operand, match_all)
+
+    def vi_command_mode_aware(self, key, operator, operand, match_all):
+        in_command_mode = self.create_state().view.settings().get('command_mode')
+        vi_is_view = self.vi_is_view(key, operator, operand, match_all)
+
+        return self._check(in_command_mode and vi_is_view, operator, operand, match_all)
+
+    def vi_insert_mode_aware(self, key, operator, operand, match_all):
+        in_command_mode = self.create_state().view.settings().get('command_mode')
+        vi_is_view = self.vi_is_view(key, operator, operand, match_all)
+
+        return self._check(not in_command_mode and vi_is_view, operator, operand, match_all)
+
+    def vi_use_ctrl_keys(self, key, operator, operand, match_all):
+        return self._check(self.create_state().settings.view['vintageous_use_ctrl_keys'], operator, operand, match_all)
+
+    def vi_is_cmdline(self, key, operator, operand, match_all):
+        return self._check(
+            self.create_state().view.score_selector(0, 'text.excmdline') != 0, operator, operand, match_all
+        )
+
+    def vi_cmdline_at_fs_completion(self, key, operator, operand, match_all):
+        if self.view.score_selector(0, 'text.excmdline') != 0:
+            value = wants_fs_completions(self.view.substr(self.view.line(0)))
+            value = value and self.view.sel()[0].b == self.view.size()
+            if operator == sublime.OP_EQUAL:
+                if operand is True:
+                    return value
+                elif operand is False:
+                    return not value
+
+        # TODO queries should default to False because they can handle the
+        # request. The tests are passing because None is falsy, see
+        # https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false
+        # All the tests should be revised to use assertIs(False|True... to fix
+        # the edge case bugs.
+
+    def vi_cmdline_at_setting_completion(self, key, operator, operand, match_all):
+        if self.view.score_selector(0, 'text.excmdline') != 0:
+            value = wants_setting_completions(self.view.substr(self.view.line(0)))
+            value = value and self.view.sel()[0].b == self.view.size()
+            if operator == sublime.OP_EQUAL:
+                if operand is True:
+                    return value
+                elif operand is False:
+                    return not value
+
+    def vi_enable_cmdline_mode(self, key, operator, operand, match_all):
+        return self._check(
+            self.create_state().settings.view['vintageous_enable_cmdline_mode'], operator, operand, match_all
+        )
+
+    def vi_mode_normal_insert(self, key, operator, operand, match_all):
+        return self._check(self.create_state().mode == modes.NORMAL_INSERT, operator, operand, match_all)
+
+    def vi_mode_visual_block(self, key, operator, operand, match_all):
+        return self._check(self.create_state().mode == modes.VISUAL_BLOCK, operator, operand, match_all)
+
+    def vi_mode_select(self, key, operator, operand, match_all):
+        return self._check(self.create_state().mode == modes.SELECT, operator, operand, match_all)
+
+    def vi_mode_visual_line(self, key, operator, operand, match_all):
+        return self._check(self.create_state().mode == modes.VISUAL_LINE, operator, operand, match_all)
+
+    def vi_mode_insert(self, key, operator, operand, match_all):
+        return self._check(self.create_state().mode == modes.INSERT, operator, operand, match_all)
+
+    def vi_mode_visual(self, key, operator, operand, match_all):
+        return self._check(self.create_state().mode == modes.VISUAL, operator, operand, match_all)
+
+    def vi_mode_normal(self, key, operator, operand, match_all):
+        return self._check(self.create_state().mode == modes.NORMAL, operator, operand, match_all)
+
+    def vi_mode_normal_or_visual(self, key, operator, operand, match_all):
+        # XXX: This context is used to disable some keys for VISUALLINE.
+        # However, this is hiding some problems in visual transformers that might not be dealing
+        # correctly with VISUALLINE.
+        normal = self.vi_mode_normal(key, operator, operand, match_all)
+        visual = self.vi_mode_visual(key, operator, operand, match_all)
+        visual = visual or self.vi_mode_visual_block(key, operator, operand, match_all)
+
+        return self._check((normal or visual), operator, operand, match_all)
+
+    def vi_mode_normal_or_any_visual(self, key, operator, operand, match_all):
+        normal_or_visual = self.vi_mode_normal_or_visual(key, operator, operand, match_all)
+        visual_line = self.vi_mode_visual_line(key, operator, operand, match_all)
+
+        return self._check((normal_or_visual or visual_line), operator, operand, match_all)
+
+    def query(self, key, operator, operand, match_all):
+        # Called when determining to trigger a key binding with the given
+        # context key.
+        #
+        # If the plugin knows how to respond to the context, it should return
+        # either True of False.
+        #
+        # If the context is unknown, should return None.
+        #
+        # operator is one of:
+        #
+        #     sublime.OP_EQUAL: Is the value of the context equal to the
+        #                       operand?
+        #
+        #     sublime.OP_NOT_EQUAL: Is the value of the context not equal to
+        #                           the operand?
+        #
+        #     sublime.OP_REGEX_MATCH: Does the value of the context match the
+        #                             regex given in operand?
+        #
+        #     sublime.OP_NOT_REGEX_MATCH: Does the value of the context not
+        #                                 match the regex given in operand?
+        #
+        #     sublime.OP_REGEX_CONTAINS: Does the value of the context contain
+        #                                a substring matching the regex given
+        #                                in operand?
+        #
+        #     sublime.OP_NOT_REGEX_CONTAINS: Does the value of the context not
+        #                                    contain a substring matching the
+        #                                    regex given in operand?
+        #
+        # match_all should be used if the context relates to the selections:
+        # does every selection have to match (match_all == True), or is at least
+        # one matching enough then (match_all == False).
+        func = getattr(self, key, None)
+        if func:
+            return func(key, operator, operand, match_all)
+        else:
+            return None
+
+    def _check(self, value, operator, operand, match_all):
+        if operator == sublime.OP_EQUAL:
+            if operand is True:
+                return value
+            elif operand is False:
+                return not value
+        elif operator is sublime.OP_NOT_EQUAL:
+            if operand is True:
+                return not value
+            elif operand is False:
+                return value
 
 
 class NeoVintageousEvents(sublime_plugin.EventListener):
@@ -27,33 +180,8 @@ class NeoVintageousEvents(sublime_plugin.EventListener):
     def __init__(self):
         self.timer = None
 
-    # XXX: Refactored from CmdlineContextProvider and VintageStateTrackers
     def on_query_context(self, view, key, operator, operand, match_all):
-
-        # XXX: Refactored from CmdlineContextProviders
-        if key == 'vi_cmdline_at_fs_completion':
-            if view.score_selector(0, 'text.excmdline') != 0:
-                value = wants_fs_completions(view.substr(view.line(0)))
-                value = value and view.sel()[0].b == view.size()
-                if operator == sublime.OP_EQUAL:
-                    if operand is True:
-                        return value
-                    elif operand is False:
-                        return not value
-
-        # XXX: Refactored from CmdlineContextProviders
-        if key == 'vi_cmdline_at_setting_completion':
-            if view.score_selector(0, 'text.excmdline') != 0:
-                value = wants_setting_completions(view.substr(view.line(0)))
-                value = value and view.sel()[0].b == view.size()
-                if operator == sublime.OP_EQUAL:
-                    if operand is True:
-                        return value
-                    elif operand is False:
-                        return not value
-
-        # XXX: Refactored from VintageStateTrackers
-        return State(view).context.check(key, operator, operand, match_all)
+        return _Context(view).query(key, operator, operand, match_all)
 
     # XXX: Refactored from ExCompletionsProvider
     def on_query_completions(self, view, prefix, locations):
@@ -103,15 +231,11 @@ class NeoVintageousEvents(sublime_plugin.EventListener):
                         ]
                     })
 
-    # XXX: Refactored from ExecuteModeLines
     def on_load(self, view):
-        modelines(view)
+        modeline(view)
 
-    # XXX: Refactored from ExecuteModeLines and VintageStateTrackers
     def on_post_save(self, view):
-
-        # XXX: Refactored from ExecuteModeLines
-        modelines(view)
+        modeline(view)
 
         # XXX: Refactored from VintageStateTracker
         # Ensure the carets are within valid bounds. For instance, this is a

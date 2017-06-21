@@ -1,9 +1,10 @@
-from NeoVintageous.lib.state import State
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.state import State
 
 
 class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
+
     def test_can_delete_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(self.R((1, 0), (1, 0)))

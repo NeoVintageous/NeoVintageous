@@ -1,31 +1,42 @@
-from collections import namedtuple
+from NeoVintageous.tests.utils import ViewTestCase
 
 from NeoVintageous.lib.vi.text_objects import word_reverse
 
-from NeoVintageous.tests.utils import ViewTestCase
-
-
-test_data = namedtuple('test_data', 'content args expected msg')
-
-
-TESTS = (
-    test_data(content='abc',           args=(2, 1), expected=0, msg='find word start from the middle of a word'),
-    test_data(content='abc abc abc',   args=(8, 1), expected=4, msg='find word start from next word'),
-    test_data(content='abc abc abc',   args=(8, 2), expected=0, msg='find word start from next word (count: 2)'),
-    test_data(content='abc\nabc\nabc', args=(8, 1), expected=4, msg='find word start from different line'),
-    test_data(content='abc\n\nabc',    args=(5, 1), expected=4, msg='stop at empty line'),
-    test_data(content='abc a abc',     args=(6, 1), expected=4, msg='stop at single-char word'),
-    test_data(content='(abc) abc',     args=(6, 1), expected=4, msg='skip over punctuation simple'),
-    test_data(content='abc.(abc)',     args=(5, 1), expected=3, msg='skip over punctuation complex'),
-    test_data(content='abc == abc',    args=(7, 1), expected=4, msg='stop at isolated punctuation word'),
-)
-
 
 class Test_word_reverse(ViewTestCase):
-    def test_all(self):
-        for (i, data) in enumerate(TESTS):
-            self.write(data.content)
-            actual = word_reverse(self.view, *data.args)
 
-            msg = "failed at test index {0}: {1}".format(i, data.msg)
-            self.assertEqual(data.expected, actual, msg)
+    def test_find_word_start_from_the_middle_of_a_word(self):
+        self.write('abc')
+        self.assertEqual(0, word_reverse(self.view, 2, 1))
+
+    def test_find_word_start_from_next_word(self):
+        self.write('abc abc abc')
+        self.assertEqual(4, word_reverse(self.view, 8, 1))
+
+    def test_find_word_start_from_next_word__count_2(self):
+        self.write('abc abc abc')
+        self.assertEqual(0, word_reverse(self.view, 8, 2))
+
+    def test_find_word_start_from_different_line(self):
+        self.write('abc\nabc\nabc')
+        self.assertEqual(4, word_reverse(self.view, 8, 1))
+
+    def test_stop_at_empty_line(self):
+        self.write('abc\n\nabc')
+        self.assertEqual(4, word_reverse(self.view, 5, 1))
+
+    def test_stop_at_single_char_word(self):
+        self.write('abc a abc')
+        self.assertEqual(4, word_reverse(self.view, 6, 1))
+
+    def test_skip_over_punctuation_simple(self):
+        self.write('(abc) abc')
+        self.assertEqual(4, word_reverse(self.view, 6, 1))
+
+    def test_skip_over_punctuation_complex(self):
+        self.write('abc.(abc)')
+        self.assertEqual(3, word_reverse(self.view, 5, 1))
+
+    def test_stop_at_isolated_punctuation_word(self):
+        self.write('abc == abc')
+        self.assertEqual(4, word_reverse(self.view, 7, 1))

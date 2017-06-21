@@ -1,14 +1,11 @@
 from collections import namedtuple
 
-import sublime
+from NeoVintageous.tests.utils import ViewTestCase
 
 from NeoVintageous.lib.vi.units import word_ends
-from NeoVintageous.tests.utils import ViewTestCase
 
 
 test_data = namedtuple('test_data', 'content args kwargs expected msg')
-
-R = sublime.Region
 
 
 TESTS = (
@@ -16,7 +13,6 @@ TESTS = (
     test_data(content='  cat dog bee', args=(0,), kwargs={}, expected=5, msg="find current word's end from white space"),
     test_data(content='a dog bee', args=(0,), kwargs={}, expected=5, msg="find next word's end from 1-char word"),
     test_data(content='a. dog bee', args=(0,), kwargs={}, expected=2, msg="find next word's end in contiguous punctuation"),
-
     test_data(content='cat dog bees', args=(0,), kwargs={'count': 3}, expected=12, msg="find current word's end (count: 3)"),
     test_data(content='a dog bees', args=(0,), kwargs={'count': 3}, expected=10, msg="find next word's end from 1-char word (count: 3)"),
     test_data(content='a. dog bees', args=(0,), kwargs={'count': 3}, expected=11, msg="find next word's end in contiguous punctuation (count: 3)"),
@@ -28,7 +24,6 @@ TESTS_BIG = (
     test_data(content='  cat dog bee', args=(0,), kwargs={}, expected=5, msg="find current word's end from white space"),
     test_data(content='a dog bee', args=(0,), kwargs={'big': True}, expected=5, msg="find next word's end from 1-char word"),
     test_data(content='a. dog bee', args=(0,), kwargs={'big': True}, expected=2, msg="find next word's end in contiguous punctuation"),
-
     test_data(content='cat dog bees', args=(0,), kwargs={'big': True, 'count': 3}, expected=12, msg="find current word's end (count: 3)"),
     test_data(content='a dog bees', args=(0,), kwargs={'big': True, 'count': 3}, expected=10, msg="find next word's end from 1-char word (count: 3)"),
     test_data(content='a. dog bee ants', args=(0,), kwargs={'big': True, 'count': 3}, expected=10, msg="find next word's end in contiguous punctuation (count: 3)"),
@@ -37,6 +32,7 @@ TESTS_BIG = (
 
 
 class Test_WordEnds(ViewTestCase):
+
     def test_word_ends(self):
         for (i, data) in enumerate(TESTS):
             self.write(data.content)

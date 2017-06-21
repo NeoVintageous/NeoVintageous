@@ -1,5 +1,7 @@
 import sublime
 
+from NeoVintageous.tests.utils import ViewTestCase
+
 from NeoVintageous.lib.ex.ex_location import get_line_nr
 from NeoVintageous.lib.ex.ex_location import find_eol
 from NeoVintageous.lib.ex.ex_location import find_bol
@@ -7,8 +9,6 @@ from NeoVintageous.lib.ex.ex_location import find_line
 from NeoVintageous.lib.ex.ex_location import search_in_range
 from NeoVintageous.lib.ex.ex_location import find_last_match
 from NeoVintageous.lib.ex.ex_location import reverse_search
-
-from NeoVintageous.tests.utils import ViewTestCase
 
 
 # TODO test content doesn't need to be so big!!!

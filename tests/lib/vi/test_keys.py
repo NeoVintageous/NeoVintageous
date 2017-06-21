@@ -1,12 +1,12 @@
 from collections import namedtuple
 
+from NeoVintageous.tests.utils import ViewTestCase
+
 from NeoVintageous.lib.vi.utils import translate_char
 from NeoVintageous.lib.vi.keys import to_bare_command_name
 from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.keys import seqs
 from NeoVintageous.lib.vi import variables
-
-from NeoVintageous.tests.utils import ViewTestCase
 
 
 _tests_tokenizer = (
@@ -35,6 +35,7 @@ _tests_tokenizer = (
 
 
 class Test_KeySequenceTokenizer_tokenize_one(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         self.old_vars = variables._VARIABLES
@@ -54,7 +55,7 @@ class Test_KeySequenceTokenizer_tokenize_one(ViewTestCase):
         variables._VARIABLES = self.old_vars
 
 
-_tests_iter_tokenize = (
+_TESTS_ITER_TOKENIZE = (
     ('pp',         ['p', 'p'],                     'sequence'),
     ('<C-p>',      ['<C-p>'],                      'sequence'),
     ('<C-P>x',     ['<C-P>', 'x'],                 'sequence'),
@@ -68,17 +69,18 @@ _tests_iter_tokenize = (
 
 
 class Test_KeySequenceTokenizer_iter_tokenize(ViewTestCase):
+
     def parse(self, input_):
         tokenizer = KeySequenceTokenizer(input_)
         return list(tokenizer.iter_tokenize())
 
     def test_all(self):
-        for (i, t) in enumerate(_tests_iter_tokenize):
+        for (i, t) in enumerate(_TESTS_ITER_TOKENIZE):
             input_, expected, msg = t
             self.assertEqual(self.parse(input_), expected, "{0} - {1}".format(i, msg))
 
 
-_command_name_tests = (
+_COMMAND_NAME_TESTS = (
     ('daw', 'daw', ''),
     ('2daw', 'daw', ''),
     ('d2aw', 'daw', ''),
@@ -95,16 +97,17 @@ _command_name_tests = (
 
 
 class Test_to_bare_command_name(ViewTestCase):
+
     def transform(self, input_):
         return to_bare_command_name(input_)
 
     def test_all(self):
-        for (i, t) in enumerate(_command_name_tests):
+        for (i, t) in enumerate(_COMMAND_NAME_TESTS):
             input_, expected, msg = t
             self.assertEqual(self.transform(input_), expected, "{0} - {1}".format(i, msg))
 
 
-_tranlation_tests = (
+_TRANLATION_TESTS = (
     ('<enter>', '\n', ''),
     ('<cr>', '\n', ''),
     ('<sp>', ' ', ''),
@@ -115,8 +118,9 @@ _tranlation_tests = (
 
 
 class Test_translate_char(ViewTestCase):
+
     def test_all(self):
-        for (i, t) in enumerate(_tranlation_tests):
+        for (i, t) in enumerate(_TRANLATION_TESTS):
             input_, expected, msg = t
             self.assertEqual(translate_char(input_), expected, "{0} - {1}".format(i, msg))
 
@@ -343,6 +347,7 @@ TESTS_KNOWN_SEQUENCES = (
     seq_test(actual=seqs.L,                      expected='l'),
     seq_test(actual=seqs.LEFT_BRACE,             expected='{'),
     seq_test(actual=seqs.LEFT_SQUARE_BRACKET,    expected='['),
+    seq_test(actual=seqs.LEFT_SQUARE_BRACKET_C,  expected='[c'),
     seq_test(actual=seqs.LEFT_PAREN,             expected='('),
     seq_test(actual=seqs.LESS_THAN,              expected='<lt>'),
     seq_test(actual=seqs.LESS_THAN_LESS_THAN,    expected='<lt><lt>'),
@@ -363,6 +368,7 @@ TESTS_KNOWN_SEQUENCES = (
     seq_test(actual=seqs.R,                      expected='r'),
     seq_test(actual=seqs.RIGHT_BRACE,            expected='}'),
     seq_test(actual=seqs.RIGHT_SQUARE_BRACKET,   expected=']'),
+    seq_test(actual=seqs.RIGHT_SQUARE_BRACKET_C, expected=']c'),
     seq_test(actual=seqs.RIGHT_PAREN,            expected=')'),
     seq_test(actual=seqs.S,                      expected='s'),
     seq_test(actual=seqs.SEMICOLON,              expected=';'),
@@ -385,13 +391,15 @@ TESTS_KNOWN_SEQUENCES = (
 
 
 class Test_KeySequenceNames(ViewTestCase):
+
     def test_all(self):
         for (i, data) in enumerate(TESTS_KNOWN_SEQUENCES):
-            self.assertEqual(data.actual, data.expected,
-                             "failed at index {0}".format(i))
+            self.assertEqual(data.actual, data.expected, "failed at index {0}".format(i))
 
     def test_all_key_sequence_names_are_tested(self):
         tested_seqs = [k.actual for k in TESTS_KNOWN_SEQUENCES]
-        self.assertEqual(sorted(tested_seqs),
-                         sorted([v for (k, v) in seqs.__dict__.items()
-                                if k.isupper()]))
+
+        self.assertEqual(
+            sorted(tested_seqs),
+            sorted([v for (k, v) in seqs.__dict__.items() if k.isupper()])
+        )

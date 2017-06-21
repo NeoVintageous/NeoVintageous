@@ -1,13 +1,12 @@
 import sublime
 
-from NeoVintageous.lib.vi import marks
-from NeoVintageous.lib.state import State
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.state import State
+from NeoVintageous.lib.vi import marks
 
 
 # XXX: Use the mock module instead?
-##################################################
 class View(object):
     def __init__(self, id_, fname, buffer_id=0):
         self.view_id = id_
@@ -23,10 +22,10 @@ class View(object):
 
 class Window(object):
     pass
-##################################################
 
 
 class MarksTests(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         marks._MARKS = {}

@@ -1,6 +1,6 @@
 # NeoVintageous
 
-[![Build Status](https://travis-ci.org/NeoVintageous/NeoVintageous.svg?branch=master)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna/branch/master?svg=true)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg)](https://sublimetext.com) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?label=stable)](https://github.com/NeoVintageous/NeoVintageous/tags) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Source Code](https://img.shields.io/badge/source-github-blue.svg)](https://github.com/NeoVintageous/NeoVintageous)
+[![Build Status](https://travis-ci.org/NeoVintageous/NeoVintageous.svg?branch=master)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna/branch/master?svg=true)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Coverage Status](https://coveralls.io/repos/github/NeoVintageous/NeoVintageous/badge.svg?branch=master)](https://coveralls.io/github/NeoVintageous/NeoVintageous?branch=master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg)](https://sublimetext.com) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?label=stable)](https://github.com/NeoVintageous/NeoVintageous/tags) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Source Code](https://img.shields.io/badge/source-github-blue.svg)](https://github.com/NeoVintageous/NeoVintageous)
 
 Vintageous-fork, a Vim emulation layer for Sublime Text.
 
@@ -31,28 +31,38 @@ The preferred method of installation is [Package Control](https://packagecontrol
 
 ## USAGE
 
-What follows are supplementary documentations about feature differences that are specific to Sublime Text. See the [Vim main help file](https://neovim.io/doc/user) for a complete guide on Vim.
+What follows is supplementary documentation about Vim and Sublime Text feature differences. See the [Vim main help file](https://neovim.io/doc/user) for a complete guide on Vim.
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
-ctrl-w, H | Move the current window to be at the very top | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2 col/row layouts
-ctrl-w, J | Move the current window to be at the very bottom | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2 col/row layouts
-ctrl-w, K | Move the current view to be at the far left | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2 col/row layouts
-ctrl-w, L | Move the current window to be at the far right | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2 col/row layouts
-ctrl-w, s | Split current window in two | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
-ctrl-w, v | Split current window in two (vertically) | [windows.txt](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
+`[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+`]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+`ctrl-w H` | Move the current window to be at the very top | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2 col/row layouts
+`ctrl-w J` | Move the current window to be at the very bottom | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2 col/row layouts
+`ctrl-w K` | Move the current view to be at the far left | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2 col/row layouts
+`ctrl-w L` | Move the current window to be at the far right | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2 col/row layouts
+`ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
+`ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
+
+Command | Context | Description | Notes
+------- | ------- | ----------- | -----
+`j` | sidebar | down | `ctrl+0` focuses the sidebar
+`k` | sidebar | up | `ctrl+0` focuses the sidebar
+`h` | sidebar | close node / go to parent node | `ctrl+0` focuses the sidebar
+`l` | sidebar | open node | `ctrl+0` focuses the sidebar
+`ctrl+j` | overlay | down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+`ctrl+k` | overlay |up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
 
 ### Command Palette
 
 Command | Description
 ------- | -----------
-NeoVintageous: Exit from Command Mode |
-NeoVintageous: Open Changelog |
-NeoVintageous: Open My .vintageousrc |
-NeoVintageous: Open Readme |
-NeoVintageous: Reload My .vintageousrc |
-NeoVintageous: Reset |
-NeoVintageous: Toggle Use Ctrl Keys |
+NeoVintageous: Open My .vintageousrc File | Open the runtime configuration file for editing
+NeoVintageous: Reload My .vintageousrc File | Reload the runtime configuration file
+NeoVintageous: Open Changelog | Open the changelog in a view
+NeoVintageous: Open Readme | Open the readme in a view
+Preferences: NeoVintageous Settings – Default | Open the default settings
+Preferences: NeoVintageous Settings – User | Open the settings file for editing
 
 ### Toggle command
 
@@ -60,39 +70,33 @@ Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNe
 
 ### The .vintageousrc file
 
-A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file.
+A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file. The file is located at `Packages/User/.vintageousrc` and is read during startup. There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:nmap`, `:omap`, and `:vmap`.
 
-The file is located at `Packages/User/.vintageousrc` and is read during startup.
+    " The character " (the double quote mark) starts a comment
 
-There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:unmap` `:nmap`, `:nunmap` `:omap`, `:ounmap` `:vmap`, and `:vunmap`.
-
-The character " (the double quote mark) starts a comment.
-
-Example
-
-    :let mapleader=,
+    let mapleader=,
 
     " Enter command line mode using space
-    :nmap <space> :
+    nmap <space> :
 
     " Visually select all content using ,a
-    :nmap <leader>a ggvG
+    nmap <leader>a ggvG
 
-    " Scroll up using space
-    :nmap <space> <C-u>
+    " Sort with ,s in visual mode
+    vmap <leader>s <F9>
+
+    " Scroll viewport faster ctrl+e and ctrl+y
+    nmap <C-e> 3<C-e>
+    nmap <C-y> 3<C-y>
 
     " Scroll down using shift-enter
-    :nmap <S-cr> <C-d>
+    nmap <S-cr> <C-d>
 
-Read more about mappings in the [Vim main help file](https://neovim.io/doc/user/map.html).
+Read more about mappings and the .vimrc file in the [Vim main help file](https://neovim.io/doc/user/map.html).
 
-### Modelines
+### Modeline
 
-A feature comparative to [Vim Modeline](https://neovim.io/doc/user/options.html#modeline).
-
-Set options local to the view by declaring them in the source code file itself.
-
-Example
+A feature comparative to [Vim Modeline](https://neovim.io/doc/user/options.html#modeline). A number of lines at the beginning and end of the file are checked for "modelines", the modelines (settings) will be applied to the view when it's opened.
 
     # sublime: gutter false
     # sublime: translate_tab_to_spaces true
@@ -100,6 +104,46 @@ Example
     # sublime: tab_size 4
 
 Read more about modeline in the [Vim main help file](https://neovim.io/doc/user/options.html#modeline).
+
+### Multiple cursors
+
+There two ways to use multiple selections.
+
+The first is to enter insert mode, `i`, then use `ctrl+d` to make multiple selections, press `Esc` to enter normal mode, from here you can use NeoVintageous normally e.g. `$` will jump the cursors to the end of line, `^` all cursors to the start of line, `v` enters all cursors into visual mode, `f{char}` makes all cursors visually select to `{char}`, etc.
+
+The second way is enter select mode, a non-standard mode that is used for multiple selections. *This mode is not the same as select mode in Vim.*
+
+Key Sequence | Command
+------------ | -------
+`gh` | Enter select mode (from normal or visual mode)
+`j` | Add selection
+`k` | Remove selection
+`l` | Skip current selection
+`A` | Select all instances
+`i` | Enter visual mode (preserving selections)
+`J` | Clear multiple selections and enter normal mode
+`gH` | After a search with `/` or `?`, select all matches.
+
+Once you've created visual selections in select mode, you must return to insert mode by pressing `i` in order to edit text. Once in insert mode, you can switch to normal mode, etc. If you press `Esc` while in select mode, you will return to normal mode, but multiple carets won't be destroyed. If you press `Esc` a second time, you will be left with one single caret in normal mode.
+
+### Surround plugin
+
+A port of [tpope/vim-surround](https://github.com/tpope/vim-surround) is provided by default. *The implementation may not be complete, please open issues for missing features and commands.* Documentation: [vim-surround](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt).
+
+### Unimpaired plugin
+
+A port of [tpope/vim-unimpaired](https://github.com/tpope/vim-unimpaired) is provided by default. *The implementation may not be complete, please open issues for missing features and commands.* *Below is a table of what is currently available.* Documentation: [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt).
+
+Command | Description | Documentation | Dependencies | Notes
+------- | ----------- | ------------- | ------------ | -----
+`[<Space>` | Add `[count]` blank lines before the cursor. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
+`]<Space>` | Add `[count]` blank lines after the cursor. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
+`[e` | Exchange the current line with `[count]` lines above it. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
+`]e` | Exchange the current line with `[count]` lines below it. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
+
+### Other plugins
+
+Please open issues about vim plugins you would like to see implemented, or about plugins you are thinking of writing because we may be willing to add it to the plugin by default.
 
 ## CONFIGURATION
 

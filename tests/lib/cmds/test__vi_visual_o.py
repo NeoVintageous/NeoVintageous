@@ -1,7 +1,3 @@
-"""Tests for o motion (visual kind)."""
-
-from NeoVintageous.lib.vi.utils import modes
-
 from NeoVintageous.tests.utils import ViewTestCase
 
 
@@ -11,7 +7,7 @@ class Test__vi_visual_o_InNormalMode(ViewTestCase):
         self.write('abc')
         self.select(self.R((0, 2), (0, 0)))
 
-        self.view.run_command('_vi_visual_o', {'mode': modes.NORMAL, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': self.modes.NORMAL, 'count': 1})
 
         self.assertFirstSelection(self.R(2, 0))
 
@@ -22,7 +18,7 @@ class Test__vi_visual_o_InInternalNormalMode(ViewTestCase):
         self.write('abc')
         self.select(self.R((0, 2), (0, 0)))
 
-        self.view.run_command('_vi_visual_o', {'mode': modes.INTERNAL_NORMAL, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': self.modes.INTERNAL_NORMAL, 'count': 1})
 
         self.assertFirstSelection(self.R(2, 0))
 
@@ -33,7 +29,7 @@ class Test__vi_visual_o_InVisualMode(ViewTestCase):
         self.write('abc')
         self.select(self.R(0, 2))
 
-        self.view.run_command('_vi_visual_o', {'mode': modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': self.modes.VISUAL, 'count': 1})
 
         self.assertFirstSelection(self.R(2, 0))
 
@@ -44,6 +40,6 @@ class Test__vi_visual_o_InVisualLineMode(ViewTestCase):
         self.write('abc\ndef')
         self.select(self.R(0, 4))
 
-        self.view.run_command('_vi_visual_o', {'mode': modes.VISUAL_LINE, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': self.modes.VISUAL_LINE, 'count': 1})
 
         self.assertFirstSelection(self.R(4, 0))

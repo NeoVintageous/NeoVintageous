@@ -1,5 +1,3 @@
-from NeoVintageous.lib.vi.utils import modes
-
 from collections import namedtuple
 
 from NeoVintageous.tests.utils import ViewTestCase
@@ -15,32 +13,32 @@ region_data = namedtuple('region_data', 'regions')
 
 TESTS_MODES = (
     # NORMAL mode
-    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 1]], cmd_params={'mode': modes.NORMAL},
+    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 1]], cmd_params={'mode': ViewTestCase.modes.NORMAL},
               expected=region_data([0, 0]), actual_func=first_sel, msg='should move back one char (normal mode)'),
-    test_data(cmd='_vi_h', initial_text='foo bar baz', regions=[[1, 1]], cmd_params={'mode': modes.NORMAL, 'count': 10},
+    test_data(cmd='_vi_h', initial_text='foo bar baz', regions=[[1, 1]], cmd_params={'mode': ViewTestCase.modes.NORMAL, 'count': 10},
               expected=region_data([0, 0]), actual_func=first_sel, msg='should move back one char with count (normal mode)'),
-    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 1]], cmd_params={'mode': modes.NORMAL, 'count': 10000},
+    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 1]], cmd_params={'mode': ViewTestCase.modes.NORMAL, 'count': 10000},
               expected=region_data([0, 0]), actual_func=first_sel, msg='should move back one char with large count (normal mode)'),
 
-    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 1]], cmd_params={'mode': modes.INTERNAL_NORMAL},
+    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 1]], cmd_params={'mode': ViewTestCase.modes.INTERNAL_NORMAL},
               expected=region_data([1, 0]), actual_func=first_sel, msg='should select one char (internal normal mode)'),
-    test_data(cmd='_vi_h', initial_text='foo bar baz', regions=[[10, 10]], cmd_params={'mode': modes.INTERNAL_NORMAL},
+    test_data(cmd='_vi_h', initial_text='foo bar baz', regions=[[10, 10]], cmd_params={'mode': ViewTestCase.modes.INTERNAL_NORMAL},
               expected=region_data([10, 9]), actual_func=first_sel, msg='should select one char from eol (internal normal mode)'),
-    test_data(cmd='_vi_h', initial_text='foo bar baz', regions=[[1, 1]], cmd_params={'mode': modes.INTERNAL_NORMAL, 'count': 10000},
+    test_data(cmd='_vi_h', initial_text='foo bar baz', regions=[[1, 1]], cmd_params={'mode': ViewTestCase.modes.INTERNAL_NORMAL, 'count': 10000},
               expected=region_data([1, 0]), actual_func=first_sel, msg='should select one char large count (internal normal mode)'),
 
-    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 2]], cmd_params={'mode': modes.VISUAL},
+    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 2]], cmd_params={'mode': ViewTestCase.modes.VISUAL},
               expected=region_data([2, 0]), actual_func=first_sel, msg='should select one char (visual mode)'),
-    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 3]], cmd_params={'mode': modes.VISUAL, 'count': 1},
+    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 3]], cmd_params={'mode': ViewTestCase.modes.VISUAL, 'count': 1},
               expected=region_data([1, 2]), actual_func=first_sel, msg='should deselect one char (visual mode)'),
-    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 3]], cmd_params={'mode': modes.VISUAL, 'count': 2},
+    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 3]], cmd_params={'mode': ViewTestCase.modes.VISUAL, 'count': 2},
               expected=region_data([2, 0]), actual_func=first_sel, msg='should go back two chars (visual mode) crossing over'),
 
-    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 3]], cmd_params={'mode': modes.VISUAL, 'count': 100},
+    test_data(cmd='_vi_h', initial_text='abc', regions=[[1, 3]], cmd_params={'mode': ViewTestCase.modes.VISUAL, 'count': 100},
               expected=region_data([2, 0]), actual_func=first_sel, msg='can move reversed cross over large count visual mode'),
-    test_data(cmd='_vi_h', initial_text='foo bar fuzz buzz', regions=[[11, 12]], cmd_params={'mode': modes.VISUAL, 'count': 10},
+    test_data(cmd='_vi_h', initial_text='foo bar fuzz buzz', regions=[[11, 12]], cmd_params={'mode': ViewTestCase.modes.VISUAL, 'count': 10},
               expected=region_data([12, 1]), actual_func=first_sel, msg='can move with count visual mode'),
-    test_data(cmd='_vi_h', initial_text='abc\n', regions=[[1, 2]], cmd_params={'mode': modes.VISUAL, 'count': 10000},
+    test_data(cmd='_vi_h', initial_text='abc\n', regions=[[1, 2]], cmd_params={'mode': ViewTestCase.modes.VISUAL, 'count': 10000},
               expected=region_data([2, 0]), actual_func=first_sel, msg='stops at left end'),
 
 )
@@ -55,7 +53,7 @@ class Test__vi_h(ViewTestCase):
         for (i, data) in enumerate(TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.initial_text)
-            self.selectMultiple([self.R(*region) for region in data.regions])
+            self.select([self.R(*region) for region in data.regions])
 
             self.view.run_command(data.cmd, data.cmd_params)
 

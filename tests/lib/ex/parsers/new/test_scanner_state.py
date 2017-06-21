@@ -5,6 +5,7 @@ from NeoVintageous.lib.ex.parser.state import ScannerState
 
 
 class TestScanner(unittest.TestCase):
+
     def test_instantiate(self):
         state = ScannerState("foo")
 

@@ -1,6 +1,6 @@
-from NeoVintageous.lib.state import State
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.state import State
 
 
 class TestViEnterNormalModeSingleSelectionLeftRoRight(ViewTestCase):
@@ -31,7 +31,7 @@ class TestViEnterNormalModeMulipleSelectionsFromSelectMode(ViewTestCase):
 
     def test_carets_end_in_expected_region(self):
         self.write('foo bar\nfoo bar\nfoo bar\n')
-        self.selectMultiple([self.R((1, 0), (1, 3)), self.R((2, 0), (2, 3))])
+        self.select([self.R((1, 0), (1, 3)), self.R((2, 0), (2, 3))])
         State(self.view).mode = self.modes.SELECT
 
         self.view.run_command('_enter_normal_mode', {'mode': self.modes.SELECT})
@@ -45,7 +45,7 @@ class TestViEnterNormalModeMulipleSelectionsFromNormalMode(ViewTestCase):
 
     def test_caret_ends_in_expected_region(self):
         self.write('foo bar\nfoo bar\nfoo bar\n')
-        self.selectMultiple([self.R((1, 0), (1, 0)), self.R((2, 0), (2, 0))])
+        self.select([self.R((1, 0), (1, 0)), self.R((2, 0), (2, 0))])
         State(self.view).mode = self.modes.NORMAL
 
         self.view.run_command('_enter_normal_mode', {'mode': self.modes.NORMAL})

@@ -14,6 +14,7 @@ from NeoVintageous.lib.ex.parser.tokens import TokenSemicolon
 
 
 class TestParseLineRef(unittest.TestCase):
+
     def test_can_parse_empty(self):
         parsed = parse_command_line('')
         self.assertEqual(parsed.line_range, None)
@@ -173,6 +174,7 @@ class TestParseLineRef(unittest.TestCase):
 
 
 class TestParseLineRefTokenComma(unittest.TestCase):
+
     def test_can_parse_long_sequence(self):
         # Vim allows this.
         parsed = parse_command_line('1,2,3,4')
@@ -181,6 +183,7 @@ class TestParseLineRefTokenComma(unittest.TestCase):
 
 
 class TestParseLineRefParseSubstituteCommand(unittest.TestCase):
+
     def test_can_parse_it_on_its_own(self):
         parsed = parse_command_line('substitute')
         self.assertEqual(parsed.command.content, 'substitute')
@@ -224,12 +227,14 @@ class TestParseLineRefParseSubstituteCommand(unittest.TestCase):
 
 
 class TestParseLineRefPercent(unittest.TestCase):
+
     def test_can_parse_percent(self):
         parsed = parse_command_line("%")
         self.assertEqual(parsed.line_range.start, [TokenPercent()])
 
 
 class TestParseLineRefSetLineRangeSeparator(unittest.TestCase):
+
     def test_can_set_comma(self):
         parsed = parse_command_line(",")
         self.assertEqual(parsed.line_range.separator, TokenComma())
@@ -256,6 +261,7 @@ class TestParseLineRefSetLineRangeSeparator(unittest.TestCase):
 
 
 class TestParseLineRefParseMarks(unittest.TestCase):
+
     def test_can_parse_it_on_its_own(self):
         parsed = parse_command_line("'a")
         self.assertEqual(parsed.line_range.start, [TokenMark('a')])
@@ -267,6 +273,7 @@ class TestParseLineRefParseMarks(unittest.TestCase):
 
 
 class TestParseLineRefParseOnlyCommand(unittest.TestCase):
+
     def test_can_parse_it_on_its_own(self):
         parsed = parse_command_line('only')
         self.assertEqual(parsed.command.content, 'only')
@@ -277,6 +284,7 @@ class TestParseLineRefParseOnlyCommand(unittest.TestCase):
 
 
 class TestParseLineRefParseRegistersCommand(unittest.TestCase):
+
     def test_can_parse_it_on_its_own(self):
         parsed = parse_command_line('registers')
         self.assertEqual(parsed.command.content, 'registers')
@@ -287,6 +295,7 @@ class TestParseLineRefParseRegistersCommand(unittest.TestCase):
 
 
 class TestParseLineRefParseWriteCommand(unittest.TestCase):
+
     def test_can_parse_it_on_its_own(self):
         parsed = parse_command_line('write')
         self.assertEqual(parsed.command.content, 'write')

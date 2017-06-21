@@ -1,8 +1,9 @@
 from collections import namedtuple
 
+from NeoVintageous.tests.utils import ViewTestCase
+
 from NeoVintageous.lib.vi.text_objects import find_paragraph_text_object
 
-from NeoVintageous.tests.utils import ViewTestCase
 
 # Note: trailing spaces are encoded in unicode to prevent automatic traling
 # white space removal.

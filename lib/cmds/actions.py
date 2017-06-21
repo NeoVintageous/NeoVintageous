@@ -3,7 +3,7 @@ import re
 
 import sublime
 
-from NeoVintageous.lib.logger import get_logger
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_base
@@ -12,7 +12,6 @@ from NeoVintageous.lib.vi import mappings
 from NeoVintageous.lib.vi import search
 from NeoVintageous.lib.vi import units
 from NeoVintageous.lib.vi import utils
-from NeoVintageous.lib.vi.constants import regions_transformer_reversed
 from NeoVintageous.lib.vi.core import ViTextCommandBase
 from NeoVintageous.lib.vi.core import ViWindowCommandBase
 from NeoVintageous.lib.vi.keys import key_names
@@ -27,6 +26,7 @@ from NeoVintageous.lib.vi.utils import is_view
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import regions_transformer
+from NeoVintageous.lib.vi.utils import regions_transformer_reversed
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.window import WindowAPI
 
@@ -139,9 +139,10 @@ __all__ = [
     'ToggleMode'
 ]
 
-_logger = get_logger(__name__)
+_logger = nvim.get_logger(__name__)
 
 
+# https://neovim.io/doc/user/change.html#gU
 class _vi_g_big_u(ViTextCommandBase):
     """Command: gU."""
 
@@ -179,6 +180,7 @@ class _vi_g_big_u(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#gu
 class _vi_gu(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -214,6 +216,7 @@ class _vi_gu(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#gq
 class _vi_gq(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -237,8 +240,7 @@ class _vi_gq(ViTextCommandBase):
         wrap_lines = wrap_command()
 
         if mode in (modes.VISUAL, modes.VISUAL_LINE):
-            # TODO: ST seems to always reformat whole paragraphs with
-            #       'wrap_lines'.
+            # TODO: ST seems to always reformat whole paragraphs with 'wrap_lines'.
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
             self.view.run_command(wrap_lines)
@@ -267,9 +269,8 @@ class _vi_gq(ViTextCommandBase):
             raise ValueError('bad mode: ' + mode)
 
 
+# https://neovim.io/doc/user/undo.html#u
 class _vi_u(ViWindowCommandBase):
-    """Undoe last change."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -294,6 +295,7 @@ class _vi_u(ViWindowCommandBase):
         self._view.erase_regions('vi_yy_target')
 
 
+# https://neovim.io/doc/user/undo.html#CTRL-R
 class _vi_ctrl_r(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -317,6 +319,7 @@ class _vi_ctrl_r(ViWindowCommandBase):
         regions_transformer(self._view, f)
 
 
+# https://neovim.io/doc/user/insert.html#a
 class _vi_a(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -350,12 +353,13 @@ class _vi_a(ViTextCommandBase):
         })
 
 
+# https://neovim.io/doc/user/change.html#c
 class _vi_c(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     _can_yank = True
     _populates_small_delete_register = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None, motion=None, register=None):
         def compact(view, s):
@@ -435,18 +439,18 @@ class _enter_normal_mode(ViTextCommandBase):
             #      redundant, since those views should be ignored by
             #      NeoVintageous altogether.
             if len(self.view.sel()) < 2:
-                # don't hide panel if multiple cursors
-                # if not from_init and getattr(self.view, 'settings') is None:
+                # Don't hide panel if multiple cursors
                 if not from_init:
                     self.view.window().run_command('hide_panel', {'cancel': True})
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
 
-        # Exit replace mode.
+        # Exit replace mode
         self.view.set_overwrite_status(False)
 
         state.enter_normal_mode()
+
         # XXX: st bug? if we don't do this, selections won't be redrawn
         self.view.run_command('_enter_normal_mode_impl', {'mode': mode})
 
@@ -459,18 +463,15 @@ class _enter_normal_mode(ViTextCommandBase):
                 # Required here so that the macro gets recorded.
                 state.glue_until_normal_mode = False
                 state.add_macro_step(*self.view.command_history(0)[:2])
-                state.add_macro_step('_enter_normal_mode', {'mode': mode,
-                                     'from_init': from_init})
+                state.add_macro_step('_enter_normal_mode', {'mode': mode, 'from_init': from_init})
             else:
-                state.add_macro_step('_enter_normal_mode', {'mode': mode,
-                                     'from_init': from_init})
+                state.add_macro_step('_enter_normal_mode', {'mode': mode, 'from_init': from_init})
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
                 state.glue_until_normal_mode = False
 
         if mode == modes.INSERT and int(state.normal_insert_count) > 1:
             state.enter_insert_mode()
-            # TODO: Calculate size the view has grown by and place the caret
-            # after the newly inserted text.
+            # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
             new_sels = [R(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
@@ -486,7 +487,8 @@ class _enter_normal_mode(ViTextCommandBase):
             self.view.sel().add_all(new_sels)
 
         state.update_xpos(force=True)
-        sublime.status_message('')
+
+        sublime.status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
@@ -495,9 +497,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
     def run(self, edit, mode=None):
         def f(view, s):
-            _logger.info(
-                '[_enter_normal_mode_impl] entering normal mode from {0}'
-                .format(mode))
+            _logger.info('[_enter_normal_mode_impl] entering normal mode from \'%s\'', mode)
             if mode == modes.INSERT:
                 if view.line(s.b).a != s.b:
                     return R(s.b - 1)
@@ -669,8 +669,6 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
 
 class _enter_visual_line_mode_impl(ViTextCommandBase):
-    """Transform the view's selections."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -720,12 +718,13 @@ class ToggleMode(ViWindowCommandBase):
         value = self.window.active_view().settings().get('command_mode')
         self.window.active_view().settings().set('command_mode', not value)
         self.window.active_view().settings().set('inverse_caret_state', not value)
-        print("command_mode status:", not value)
+        nvim.console_message('command_mode status: %s' % (not value))
 
         state = self.state
         if not self.window.active_view().settings().get('command_mode'):
             state.mode = modes.INSERT
-        sublime.status_message('command mode status: %s' % (not value))
+
+        nvim.status_message('command mode status: %s' % (not value))
 
 
 class ProcessNotation(ViWindowCommandBase):
@@ -747,7 +746,7 @@ class ProcessNotation(ViWindowCommandBase):
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         state = self.state
-        _logger.info("[ProcessNotation] seq received: {0} mode: {1}".format(keys, state.mode))
+        _logger.debug('[ProcessNotation] run keys \'%s\', mode \'%s\'', keys, state.mode)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -769,7 +768,7 @@ class ProcessNotation(ViWindowCommandBase):
             if state.action:
                 # The last key press has caused an action to be primed. That
                 # means there are no more leading motions. Break out of here.
-                _logger.info('[ProcessNotation] first action found in {0}'.format(state.sequence))
+                _logger.info('[ProcessNotation] first action found in \'%s\'', state.sequence)
                 state.reset_command_data()
                 if state.mode == modes.OPERATOR_PENDING:
                     state.mode = modes.NORMAL
@@ -797,9 +796,9 @@ class ProcessNotation(ViWindowCommandBase):
                 state.non_interactive = False
                 return
 
-            _logger.info('[ProcessNotation] original seq/leading motions: {0}/{1}'.format(keys, leading_motions))
+            _logger.info('[ProcessNotation] original seq/leading motions: %s/%s', keys, leading_motions)
             keys = keys[len(leading_motions):]
-            _logger.info('[ProcessNotation] seq stripped to {0}'.format(keys))
+            _logger.info('[ProcessNotation] seq stripped to \'%s\'', keys)
 
         if not (state.motion and not state.action):
             with gluing_undo_groups(self.window.active_view(), state):
@@ -832,8 +831,7 @@ class ProcessNotation(ViWindowCommandBase):
         # We'll reach this point if we have a command that requests input
         # whose input parser isn't satistied. For example, `/foo`. Note that
         # `/foo<CR>`, on the contrary, would have satisfied the parser.
-        _logger.info('[ProcessNotation] unsatisfied parser: {0} {1}'
-                     .format(state.action, state.motion))
+        _logger.info('[ProcessNotation] unsatisfied parser action=\'%s\', motion=\'%s\'', state.action, state.motion)
         if (state.action and state.motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
@@ -863,8 +861,7 @@ class ProcessNotation(ViWindowCommandBase):
                 command = self.state.action or self.state.motion
 
             parser_def = command.input_parser
-            _logger.info('[ProcessNotation] last attemp to collect input: {0}'
-                         .format(parser_def.command))
+            _logger.info('[ProcessNotation] last attemp to collect input \'%s\'', parser_def.command)
 
             if parser_def.interactive_command:
                 self.window.run_command(
@@ -872,7 +869,7 @@ class ProcessNotation(ViWindowCommandBase):
                     {parser_def.input_param: command._inp}
                 )
         except IndexError:
-            _logger.info('[NeoVintageous] could not find a command to collect more user input')
+            _logger.info('[ProcessNotation] could not find a command to collect more user input')
             utils.blink()
         finally:
             self.state.non_interactive = False
@@ -881,9 +878,6 @@ class ProcessNotation(ViWindowCommandBase):
 class PressKey(ViWindowCommandBase):
     """
     Interact with the global state each time a key is pressed.
-
-    Core command.
-
 
     @key
         Key pressed.
@@ -901,8 +895,7 @@ class PressKey(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
-        _logger.info("[PressKey] pressed: {0}".format(key))
-
+        _logger.debug('PressKey::run() key=\'%s\', repeat_count=%s, do_eval=%s, check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
         # If the user has made selections with the mouse, we may be in an
@@ -931,9 +924,9 @@ class PressKey(ViWindowCommandBase):
         if state.must_collect_input:
             state.process_user_input2(key)
             if state.runnable():
-                _logger.info('[PressKey] state holds a complete command.')
+                _logger.debug('[PressKey] state holds a complete command')
                 if do_eval:
-                    _logger.info('[PressKey] evaluating complete command')
+                    _logger.debug('[PressKey] evaluate complete command')
                     state.eval()
                     state.reset_command_data()
             return
@@ -945,23 +938,21 @@ class PressKey(ViWindowCommandBase):
             return
 
         state.partial_sequence += key
-        _logger.info("[PressKey] sequence {0}".format(state.sequence))
-        _logger.info("[PressKey] partial sequence {0}".format(state.partial_sequence))
 
-        # key_mappings = KeyMappings(self.window.active_view())
+        _logger.debug('[PressKey] sequence=\'%s\', partial sequence=\'%s\'', state.sequence, state.partial_sequence)
+
         key_mappings = Mappings(state)
         if check_user_mappings and key_mappings.incomplete_user_mapping():
-            _logger.info("[PressKey] incomplete user mapping: {0}".format(state.partial_sequence))
-            # for example, we may have typed 'aa' and there's an 'aaa' mapping.
-            # we need to keep collecting input.
+            _logger.debug('[PressKey] incomplete user mapping: \'%s\'', state.partial_sequence)
+            # e.g. we may have typed 'aa' and there's an 'aaa' mapping, so we need to keep collecting input.
             return
 
-        _logger.info('[PressKey] getting cmd for seq/partial seq in (mode): {0}/{1} ({2})'
-                     .format(state.sequence, state.partial_sequence, state.mode))
+        _logger.debug('[PressKey] get cmd for seq/partial seq in (mode): %s/%s (%s)', state.sequence, state.partial_sequence, state.mode)  # noqa: E501
+
         command = key_mappings.resolve(check_user_mappings=check_user_mappings)
 
         if isinstance(command, cmd_defs.ViOpenRegister):
-            _logger.info('[PressKey] requesting register name')
+            _logger.debug('[PressKey] request register name')
             state.must_capture_register_name = True
             return
 
@@ -981,14 +972,13 @@ class PressKey(ViWindowCommandBase):
                 state.motion_count = mcount
                 state.action_count = acount
                 state.mode = modes.NORMAL
-                _logger.info('[PressKey] running user mapping {0} via process_notation starting in mode {1}'.format(new_keys, state.mode))
+                _logger.debug('[PressKey] running user mapping \'%s\' via process_notation starting in mode \'%s\'', new_keys, state.mode)  # noqa: E501
                 self.window.run_command('process_notation', {'keys': new_keys, 'check_user_mappings': False})
             return
 
         if isinstance(command, cmd_defs.ViOpenNameSpace):
-            # Keep collecing input to complete the sequence. For example, we
-            # may have typed 'g'.
-            _logger.info("[PressKey] opening namespace: {0}".format(state.partial_sequence))
+            # Keep collecting input to complete the sequence. For example, we may have typed 'g'
+            _logger.debug('[PressKey] opening namespace \'%s\'', state.partial_sequence)
             return
 
         elif isinstance(command, cmd_base.ViMissingCommandDef):
@@ -1009,7 +999,7 @@ class PressKey(ViWindowCommandBase):
                 command = key_mappings.resolve(sequence=bare_seq)
 
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.info('[PressKey] unmapped sequence: {0}'.format(state.sequence))
+                _logger.debug('[PressKey] unmapped sequence \'%s\'', state.sequence)
                 utils.blink()
                 state.mode = modes.NORMAL
                 state.reset_command_data()
@@ -1021,11 +1011,11 @@ class PressKey(ViWindowCommandBase):
             # For example, dd, g~g~ or g~~
             # remove counts
             action_seq = to_bare_command_name(state.sequence)
-            _logger.info('[PressKey] action seq: {0}'.format(action_seq))
+            _logger.debug('[PressKey] action seq \'%s\'', action_seq)
             command = key_mappings.resolve(sequence=action_seq, mode=modes.NORMAL)
             # TODO: Make _missing a command.
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.info("[PressKey] unmapped sequence: {0}".format(state.sequence))
+                _logger.debug("[PressKey] unmapped sequence \'%s\'", state.sequence)
                 state.reset_command_data()
                 return
 
@@ -1034,7 +1024,7 @@ class PressKey(ViWindowCommandBase):
 
         state.set_command(command)
 
-        _logger.info("[PressKey] '{0}' mapped to '{1}'".format(state.partial_sequence, command))
+        _logger.debug('[PressKey] \'%s\' mapped to \'%s\'', state.partial_sequence, command)
 
         if state.mode == modes.OPERATOR_PENDING:
             state.reset_partial_sequence()
@@ -1047,17 +1037,18 @@ class PressKey(ViWindowCommandBase):
         state = State(self.window.active_view())
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
-                _logger.info('[PressKey] action count digit: {0}'.format(key))
+                _logger.info('[PressKey] action count digit \'%s\'', key)
                 state.action_count += key
                 return True
 
         if (state.action and (state.mode == modes.OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or state.motion_count):
-                _logger.info('[PressKey] motion count digit: {0}'.format(key))
+                _logger.info('[PressKey] motion count digit \'%s\'', key)
                 state.motion_count += key
                 return True
 
 
+# https://neovim.io/doc/user/repeat.html#%2e
 class _vi_dot(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1078,9 +1069,7 @@ class _vi_dot(ViWindowCommandBase):
             count = None
 
         type_, seq_or_cmd, old_mode, visual_data = repeat_data
-        _logger.info(
-            '[_vi_dot] type: {0} seq or cmd: {1} old mode: {2}'
-            .format(type_, seq_or_cmd, old_mode))
+        _logger.info('[_vi_dot] type=\'%s\', seq or cmd=\'%s\', old mode=\'%s\'', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != modes.VISUAL):
             state.restore_visual_data(visual_data)
@@ -1112,8 +1101,8 @@ class _vi_dot(ViWindowCommandBase):
         state.update_xpos()
 
 
+# https://neovim.io/doc/user/change.html#dd
 class _vi_dd(ViTextCommandBase):
-
     _can_yank = True
     _yanks_linewise = True
     _populates_small_delete_register = False
@@ -1150,8 +1139,8 @@ class _vi_dd(ViTextCommandBase):
         # TODO(guillermooo): deleting last line leaves the caret at \n
 
 
+# https://neovim.io/doc/user/change.html#cc
 class _vi_cc(ViTextCommandBase):
-
     _can_yank = True
     _yanks_linewise = True
     _populates_small_delete_register = False
@@ -1178,6 +1167,7 @@ class _vi_cc(ViTextCommandBase):
         self.set_xpos(self.state)
 
 
+# https://neovim.io/doc/user/insert.html#o
 class _vi_visual_o(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1196,8 +1186,8 @@ class _vi_visual_o(ViTextCommandBase):
 
 
 # TODO: is this really a text command?
+# https://neovim.io/doc/user/change.html#yy
 class _vi_yy(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
     _yanks_linewise = True
@@ -1234,8 +1224,8 @@ class _vi_yy(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#y
 class _vi_y(ViTextCommandBase):
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1261,8 +1251,8 @@ class _vi_y(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# https://neovim.io/doc/user/change.html#d
 class _vi_d(ViTextCommandBase):
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1399,8 +1389,6 @@ class _vi_m(ViTextCommandBase):
 
 
 class _vi_quote(ViTextCommandBase):
-    """
-    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1494,7 +1482,6 @@ class _vi_quote_quote(IrreversibleTextCommand):
 
 
 class _vi_big_d(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -1523,7 +1510,6 @@ class _vi_big_d(ViTextCommandBase):
 
 
 class _vi_big_c(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -1560,7 +1546,6 @@ class _vi_big_c(ViTextCommandBase):
 
 
 class _vi_big_s_action(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -1599,9 +1584,6 @@ class _vi_big_s_action(ViTextCommandBase):
 
 
 class _vi_s(ViTextCommandBase):
-    """Implementation of Vim's 's' action."""
-
-    # Yank config data.
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1640,8 +1622,6 @@ class _vi_s(ViTextCommandBase):
 
 
 class _vi_x(ViTextCommandBase):
-    """Implementation of Vim's x action."""
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -1685,7 +1665,6 @@ class _vi_x(ViTextCommandBase):
 
 
 class _vi_r(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
     _populates_small_delete_register = True
@@ -1911,7 +1890,6 @@ class _vi_o(ViTextCommandBase):
 
 
 class _vi_big_x(ViTextCommandBase):
-
     _can_yank = True
     _populates_small_delete_register = True
 
@@ -2026,7 +2004,6 @@ class _vi_big_p(ViTextCommandBase):
 
 
 class _vi_p(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
 
@@ -2038,7 +2015,7 @@ class _vi_p(ViTextCommandBase):
         register = register or '"'
         fragments = state.registers[register]
         if not fragments:
-            print("NeoVintageous: Nothing in register \".")
+            nvim.console_message('Nothing in register "')
             return
 
         if state.mode == modes.VISUAL:
@@ -2151,22 +2128,16 @@ class _vi_p(ViTextCommandBase):
             return sel.begin()
 
 
+# https://neovim.io/doc/user/various.html#ga
 class _vi_ga(ViWindowCommandBase):
-    """https://neovim.io/doc/user/various.html#ga."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self):
 
         def character_to_notation(character):
-            """
-            Convert a character to a key notation.
-
-            Uses vim key notation.
-
-            https://neovim.io/doc/user/intro.html#key-notation
-            """
+            # Convert a character to a key notation. Uses vim key notation.
+            # See https://neovim.io/doc/user/intro.html#key-notation
             character_notation_map = {
                 "\0": "Nul",
                 " ": "Space",
@@ -2189,20 +2160,24 @@ class _vi_ga(ViWindowCommandBase):
             c_oct = oct(c_ord)
             c_not = character_to_notation(c_str)
 
-            msg_template = "%7s %3s,  Hex %4s,  Octal %5s"
-
-            return sublime.status_message(msg_template % (c_not, c_ord, c_hex, c_oct))
+            nvim.status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
+# https://neovim.io/doc/user/tabpage.html#gt
 class _vi_gt(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, count=1, mode=None):
-        self.window.run_command('tab_control', {'command': 'next'})
+    def run(self, count=0, mode=None):
+        if count > 0:
+            self.window.run_command('tab_control', {'command': 'goto', 'index': count})
+        else:
+            self.window.run_command('tab_control', {'command': 'next'})
+
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
+# https://neovim.io/doc/user/tabpage.html#gT
 class _vi_g_big_t(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2212,11 +2187,10 @@ class _vi_g_big_t(ViWindowCommandBase):
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
-# TODO <C-]> should learn visual mode
-# TODO <C-]> should learn to count
+# TODO <C-]> could learn visual mode
+# TODO <C-]> could learn to count
+# https://neovim.io/doc/user/tagsrch.html#CTRL-%5d
 class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
-    """https://neovim.io/doc/user/tagsrch.html#CTRL-]."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2224,9 +2198,8 @@ class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
         self.window.run_command('goto_definition')
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_b
 class _vi_ctrl_w_b(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_b."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2234,9 +2207,8 @@ class _vi_ctrl_w_b(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_bottom_right()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_h
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_h."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2244,9 +2216,8 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_far_left()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_j
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_j."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2254,9 +2225,8 @@ class _vi_ctrl_w_big_j(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_very_bottom()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_k
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#ctrl-w_k."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2264,9 +2234,8 @@ class _vi_ctrl_w_big_k(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_very_top()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_L
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_L."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2274,9 +2243,8 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_far_right()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_c
 class _vi_ctrl_w_c(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_c."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2284,9 +2252,8 @@ class _vi_ctrl_w_c(ViWindowCommandBase):
         WindowAPI(self.window).close_current_view()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_=
 class _vi_ctrl_w_equal(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_=."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2294,9 +2261,8 @@ class _vi_ctrl_w_equal(ViWindowCommandBase):
         WindowAPI(self.window).resize_groups_almost_equally()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_%3e
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_>."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2304,9 +2270,8 @@ class _vi_ctrl_w_greater_than(ViWindowCommandBase):
         WindowAPI(self.window).increase_current_group_width_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_h
 class _vi_ctrl_w_h(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_h."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2314,9 +2279,8 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_j
 class _vi_ctrl_w_j(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_j."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2324,9 +2288,8 @@ class _vi_ctrl_w_j(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_k
 class _vi_ctrl_w_k(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_k."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2334,9 +2297,8 @@ class _vi_ctrl_w_k(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_l
 class _vi_ctrl_w_l(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_l."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2344,9 +2306,8 @@ class _vi_ctrl_w_l(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_%3C
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_<."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2354,9 +2315,8 @@ class _vi_ctrl_w_less_than(ViWindowCommandBase):
         WindowAPI(self.window).decrease_current_group_width_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_-
 class _vi_ctrl_w_minus(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_-."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2364,9 +2324,8 @@ class _vi_ctrl_w_minus(ViWindowCommandBase):
         WindowAPI(self.window).decrease_current_group_height_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_n
 class _vi_ctrl_w_n(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_n."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2374,9 +2333,8 @@ class _vi_ctrl_w_n(ViWindowCommandBase):
         WindowAPI(self.window).split_with_new_file(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_o
 class _vi_ctrl_w_o(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_o."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2384,9 +2342,8 @@ class _vi_ctrl_w_o(ViWindowCommandBase):
         WindowAPI(self.window).close_all_other_views()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_bar
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_bar."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2394,9 +2351,8 @@ class _vi_ctrl_w_pipe(ViWindowCommandBase):
         WindowAPI(self.window).set_current_group_width_to_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_+
 class _vi_ctrl_w_plus(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_+."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2404,8 +2360,8 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
         WindowAPI(self.window).increase_current_group_height_by_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_q
 class _vi_ctrl_w_q(IrreversibleTextCommand):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_q."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2414,9 +2370,8 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
         WindowAPI(self.view.window()).quit_current_view()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_s
 class _vi_ctrl_w_s(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_s."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2424,9 +2379,8 @@ class _vi_ctrl_w_s(ViWindowCommandBase):
         WindowAPI(self.window).split_current_view_in_two(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_t
 class _vi_ctrl_w_t(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_t."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2434,9 +2388,8 @@ class _vi_ctrl_w_t(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_top_left()
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W__
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W__."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2444,9 +2397,8 @@ class _vi_ctrl_w_underscore(ViWindowCommandBase):
         WindowAPI(self.window).set_current_group_height_to_n(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_v
 class _vi_ctrl_w_v(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_v."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2454,9 +2406,8 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
         WindowAPI(self.window).split_current_view_in_two_vertically(count)
 
 
+# https://neovim.io/doc/user/windows.html#CTRL-W_x
 class _vi_ctrl_w_x(ViWindowCommandBase):
-    """https://neovim.io/doc/user/windows.html#CTRL-W_x."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2465,20 +2416,13 @@ class _vi_ctrl_w_x(ViWindowCommandBase):
 
 
 # TODO: z<CR> != zt
+# TODO if count is given should be the same as CTRL-W__
+# https://neovim.io/doc/user/scroll.html#z%3CCR%3E
 class _vi_z_enter(IrreversibleTextCommand):
-    """
-    Command: z<cr>.
-
-    https://neovim.io/doc/user/scroll.html#z<CR>
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
-
-        # TODO if count is given should be the same as CTRL-W__
-
         pt = resolve_insertion_point_at_b(first_sel(self.view))
         home_line = self.view.line(pt)
 
@@ -2486,8 +2430,8 @@ class _vi_z_enter(IrreversibleTextCommand):
         self.view.set_viewport_position(taget_pt)
 
 
+# https://neovim.io/doc/user/scroll.html#z-
 class _vi_z_minus(IrreversibleTextCommand):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2499,6 +2443,7 @@ class _vi_z_minus(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
+# https://neovim.io/doc/user/scroll.html#zz
 class _vi_zz(IrreversibleTextCommand):
 
     def __init__(self, view):
@@ -2513,8 +2458,8 @@ class _vi_zz(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
+# Base class for Ctrl-x and Ctrl-a
 class _vi_modify_numbers(ViTextCommandBase):
-    """Base class for Ctrl-x and Ctrl-a."""
 
     DIGIT_PAT = re.compile('(\D+?)?(-)?(\d+)(\D+)?')
     NUM_PAT = re.compile('\d')
@@ -2581,13 +2526,9 @@ class _vi_modify_numbers(ViTextCommandBase):
             self.view.sel().add(R(self.view.text_point(row, col)))
 
 
+# Active in select mode. Clears multiple selections and returns to normal mode.
+# Should be more convenient than having to reach for Esc.
 class _vi_select_big_j(IrreversibleTextCommand):
-    """
-    Active in select mode.
-
-    Clears multiple selections and returns to normal mode. Should be more
-    convenient than having to reach for Esc.
-    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2599,6 +2540,7 @@ class _vi_select_big_j(IrreversibleTextCommand):
         self.view.run_command('_enter_normal_mode', {'mode': mode})
 
 
+# https://neovim.io/doc/user/change.html#J
 class _vi_big_j(ViTextCommandBase):
     WHITE_SPACE = ' \t'
 
@@ -2663,6 +2605,7 @@ class _vi_big_j(ViTextCommandBase):
         sels.add(R(end_pos))
 
 
+# https://neovim.io/doc/user/visual.html#gv
 class _vi_gv(IrreversibleTextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2677,6 +2620,7 @@ class _vi_gv(IrreversibleTextCommand):
         self.view.sel().add_all(sels)
 
 
+# https://neovim.io/doc/user/scroll.html#CTRL-E
 class _vi_ctrl_e(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2689,9 +2633,11 @@ class _vi_ctrl_e(ViTextCommandBase):
         if mode == modes.VISUAL_LINE:
             return
         extend = True if mode == modes.VISUAL else False
-        self.view.run_command('scroll_lines', {'amount': -1, 'extend': extend})
+
+        self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
 
 
+# https://neovim.io/doc/user/scroll.html#CTRL-Y
 class _vi_ctrl_y(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2704,9 +2650,11 @@ class _vi_ctrl_y(ViTextCommandBase):
         if mode == modes.VISUAL_LINE:
             return
         extend = True if mode == modes.VISUAL else False
-        self.view.run_command('scroll_lines', {'amount': 1, 'extend': extend})
+
+        self.view.run_command('scroll_lines', {'amount': count, 'extend': extend})
 
 
+# https://neovim.io/doc/user/cmdline.html#c_CTRL-R
 class _vi_ctrl_r_equal(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2722,7 +2670,7 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
                     self.view.run_command('insert_snippet', {'contents': str(rv[0])})
                     state.reset()
             except:
-                sublime.status_message("NeoVintageous: Invalid expression.")
+                nvim.status_message('invalid expression')
                 on_cancel()
 
         def on_cancel():
@@ -2764,7 +2712,7 @@ class _vi_at(IrreversibleTextCommand):
                 cmds = State.macro_registers[name]
                 State.macro_steps = cmds
             except ValueError as e:
-                print('NeoVintageous: error: %s' % e)
+                nvim.console_message('error: %s' % e)
                 return
 
         state = State(self.view)
@@ -2866,8 +2814,8 @@ class _vi_select_j(ViWindowCommandBase):
             self.window.run_command('find_under_expand')
 
 
+# Implemented as if 'notildeopt' was True
 class _vi_tilde(ViTextCommandBase):
-    """Implemented as if 'notildeopt' was `True`."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2917,8 +2865,6 @@ class _vi_g_tilde(ViTextCommandBase):
 
 
 class _vi_visual_u(ViTextCommandBase):
-    """'u' action in visual modes."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2935,8 +2881,6 @@ class _vi_visual_u(ViTextCommandBase):
 
 
 class _vi_visual_big_u(ViTextCommandBase):
-    """'U' action in visual modes."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -3007,14 +2951,9 @@ class _vi_guu(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+# Non-standard command. After a search has been performed via '/' or '?',
+# selects all matches and enters select mode.
 class _vi_g_big_h(ViWindowCommandBase):
-    """
-    Non-standard command.
-
-    After a search has been performed via '/' or '?', selects all matches and
-    enters select mode.
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -3030,13 +2969,12 @@ class _vi_g_big_h(ViWindowCommandBase):
             return
 
         utils.blink()
-        sublime.status_message('NeoVintageous: No available search matches')
+        nvim.status_message('no available search matches')
         self.state.reset_command_data()
 
 
+# https://neovim.io/doc/user/insert.html#i_CTRL-X_CTRL-L
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
-    """https://neovim.io/doc/user/insert.html#i_CTRL-X_CTRL-L."""
-
     MAX_MATCHES = 20
 
     def __init__(self, *args, **kwargs):
@@ -3080,12 +3018,10 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         utils.blink()
 
     def show_matches(self, items):
-        self.view.window().show_quick_panel(items, self.replace,
-                                            sublime.MONOSPACE_FONT)
+        self.view.window().show_quick_panel(items, self.replace, sublime.MONOSPACE_FONT)
 
     def replace(self, s):
-        self.view.run_command('__replace_line',
-                              {'with_what': self._matches[s]})
+        self.view.run_command('__replace_line', {'with_what': self._matches[s]})
         del self.__dict__['_matches']
         pt = self.view.sel()[0].b
         self.view.sel().clear()
@@ -3144,7 +3080,6 @@ class _vi_g_big_c(ViTextCommandBase):
 
 
 class _vi_gcc_action(ViTextCommandBase):
-
     _can_yank = True
     _synthetize_new_line_at_eof = True
     _yanks_linewise = False

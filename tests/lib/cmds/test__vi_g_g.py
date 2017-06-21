@@ -1,5 +1,3 @@
-from NeoVintageous.lib.vi.utils import modes
-
 from NeoVintageous.tests.utils import ViewTestCase
 
 
@@ -9,7 +7,7 @@ class Test__vi_g_g_InNormalMode(ViewTestCase):
         self.write('abc\nabc')
         self.select(self.R(5, 5))
 
-        self.view.run_command('_vi_gg', {'mode': modes.NORMAL})
+        self.view.run_command('_vi_gg', {'mode': self.modes.NORMAL})
 
         self.assertFirstSelection(self.R(0, 0))
 
@@ -17,7 +15,7 @@ class Test__vi_g_g_InNormalMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select(self.R(5, 5))
 
-        self.view.run_command('_vi_gg', {'mode': modes.NORMAL})
+        self.view.run_command('_vi_gg', {'mode': self.modes.NORMAL})
 
         self.assertFirstSelection(self.R(0, 0))
 
@@ -28,7 +26,7 @@ class Test__vi_g_g_InVisualMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select(self.R((0, 1), (0, 2)))
 
-        self.view.run_command('_vi_gg', {'mode': modes.VISUAL})
+        self.view.run_command('_vi_gg', {'mode': self.modes.VISUAL})
 
         self.assertFirstSelection(self.R((0, 2), (0, 0)))
 
@@ -36,7 +34,7 @@ class Test__vi_g_g_InVisualMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select(self.R((0, 2), (0, 1)))
 
-        self.view.run_command('_vi_gg', {'mode': modes.VISUAL})
+        self.view.run_command('_vi_gg', {'mode': self.modes.VISUAL})
 
         self.assertFirstSelection(self.R((0, 2), (0, 0)))
 
@@ -47,7 +45,7 @@ class Test__vi_g_g_InInternalNormalMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select(self.R(1, 1))
 
-        self.view.run_command('_vi_gg', {'mode': modes.INTERNAL_NORMAL})
+        self.view.run_command('_vi_gg', {'mode': self.modes.INTERNAL_NORMAL})
 
         self.assertFirstSelection(self.R(4, 0))
 
@@ -58,7 +56,7 @@ class Test__vi_g_g_InVisualLineMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select(self.R((0, 0), (0, 4)))
 
-        self.view.run_command('_vi_gg', {'mode': modes.VISUAL_LINE})
+        self.view.run_command('_vi_gg', {'mode': self.modes.VISUAL_LINE})
 
         self.assertFirstSelection(self.R((0, 0), (0, 4)))
 
@@ -66,6 +64,6 @@ class Test__vi_g_g_InVisualLineMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select(self.R((0, 4), (0, 8)))
 
-        self.view.run_command('_vi_gg', {'mode': modes.VISUAL_LINE})
+        self.view.run_command('_vi_gg', {'mode': self.modes.VISUAL_LINE})
 
         self.assertFirstSelection(self.R((0, 0), (0, 8)))

@@ -1,13 +1,13 @@
 import re
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.api import plugin
-from NeoVintageous.lib.logger import get_logger
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import variables
 from NeoVintageous.lib.vi.utils import modes
 
 
-_logger = get_logger(__name__)
+_logger = nvim.get_logger(__name__)
 
 
 class mapping_scopes:
@@ -248,6 +248,7 @@ class seqs:
     L =                            'l'
     LEFT_BRACE =                   '{'
     LEFT_SQUARE_BRACKET =          '['
+    LEFT_SQUARE_BRACKET_C =        '[c'
     LEFT_PAREN =                   '('
     LESS_THAN =                    '<lt>'
     LESS_THAN_LESS_THAN =          '<lt><lt>'
@@ -268,6 +269,7 @@ class seqs:
     R =                            'r'
     RIGHT_BRACE =                  '}'
     RIGHT_SQUARE_BRACKET =         ']'
+    RIGHT_SQUARE_BRACKET_C =       ']c'
     RIGHT_PAREN =                  ')'
     S =                            's'
     SEMICOLON =                    ';'
@@ -298,7 +300,7 @@ def seq_to_command(state, seq, mode=None):
     """
     mode = mode or state.mode
 
-    _logger.info('[seq_to_command] state/seq: {0}/{1}'.format(mode, seq))
+    _logger.info('[seq_to_command] mode = \'%s\', seq = \'%s\'', mode, seq)
 
     command = None
 

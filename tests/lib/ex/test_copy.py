@@ -1,10 +1,10 @@
-from NeoVintageous.lib.vi.utils import modes
-from NeoVintageous.lib.state import State
-
 from NeoVintageous.tests.utils import ViewTestCase
+
+from NeoVintageous.lib.state import State
 
 
 class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
+
     def test_can_copy_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(self.R((1, 0), (1, 0)))
@@ -57,6 +57,7 @@ class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
 
 
 class Test_ex_copy_Copying_InNormalMode_MultipleLines(ViewTestCase):
+
     def setUp(self):
         super().setUp()
         self.range = {'left_ref': '.', 'left_offset': 0, 'left_search_offsets': [],
@@ -114,6 +115,7 @@ class Test_ex_copy_Copying_InNormalMode_MultipleLines(ViewTestCase):
 
 
 class Test_ex_copy_InNormalMode_CaretPosition(ViewTestCase):
+
     def test_can_reposition_caret(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(self.R((1, 0), (1, 0)))
@@ -126,6 +128,7 @@ class Test_ex_copy_InNormalMode_CaretPosition(ViewTestCase):
 
 
 class Test_ex_copy_ModeTransition(ViewTestCase):
+
     def test_from_normal_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(self.R((1, 0), (1, 0)))
@@ -140,7 +143,7 @@ class Test_ex_copy_ModeTransition(ViewTestCase):
 
         state = State(self.view)
         new_mode = state.mode
-        self.assertEqual(prev_mode, new_mode, modes.NORMAL)
+        self.assertEqual(prev_mode, new_mode, self.modes.NORMAL)
 
     def test_from_visual_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -155,4 +158,4 @@ class Test_ex_copy_ModeTransition(ViewTestCase):
         state = State(self.view)
         new_mode = state.mode
         self.assertNotEqual(prev_mode, new_mode)
-        self.assertEqual(new_mode, modes.NORMAL)
+        self.assertEqual(new_mode, self.modes.NORMAL)

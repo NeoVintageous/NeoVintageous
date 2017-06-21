@@ -1,6 +1,6 @@
 import sublime
 
-from .lib.logger import get_logger
+from .lib import nvim
 from .lib.state import init_state
 
 # Load the commands
@@ -12,12 +12,13 @@ from .lib.cmds.actions import *  # noqa: F401, F403
 from .lib.cmds.motions import *  # noqa: F401, F403
 from .lib.cmds.support import *  # noqa: F401, F403
 from .lib.extras.surround import *  # noqa: F401, F403
+from .lib.extras.unimpaired import *  # noqa: F401, F403
 
 # Load the events
 from .lib.events import NeoVintageousEvents  # noqa: F401
 
 
-_logger = get_logger(__name__)
+_logger = nvim.get_logger(__name__)
 
 
 def _ensure_other_vimlike_packages_are_disabled():
@@ -45,26 +46,22 @@ def _ensure_other_vimlike_packages_are_disabled():
 
 
 def plugin_loaded():
-    _logger.debug('%s.plugin_loaded()', __name__)
+    _logger.debug('\n\n\n\n\n------ plugin_loaded() -----\n\n\n\n\n')
 
     try:
         from package_control import events
         if events.install('NeoVintageous'):
             _ensure_other_vimlike_packages_are_disabled()
     except ImportError:
-        print('NeoVintageous: could not import Package Control')
+        nvim.console_message('could not import Package Control')
 
     init_state(sublime.active_window().active_view(), new_session=True)
 
-    _logger.debug('%s.plugin_loaded() done.', __name__)
+    _logger.debug('\n\n\n\n\n------ plugin_loaded() (finished) -----\n\n\n\n\n')
 
 
 def plugin_unloaded():
-    _logger.debug('%s.plugin_unloaded()', __name__)
-
     view = sublime.active_window().active_view()
     if view:
         view.settings().set('command_mode', False)
         view.settings().set('inverse_caret_state', False)
-
-    _logger.debug('%s.plugin_unloaded() done.', __name__)

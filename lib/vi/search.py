@@ -149,7 +149,6 @@ def reverse_search_by_pt(view, term, start, end, flags=0):
             return find_last_in_range(view, term, max(hi_line.a, start), min(hi_line.b, end), flags)
 
 
-# TODO: Test me.
 class BufferSearchBase(sublime_plugin.TextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -185,7 +184,6 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         self.view.add_regions('vi_search', regs, 'string.search.occurrence', '', sublime.DRAW_NO_OUTLINE)
 
 
-# TODO: Test me.
 class ExactWordBufferSearchBase(BufferSearchBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

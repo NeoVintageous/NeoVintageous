@@ -2,6 +2,8 @@ import re
 
 import sublime
 
+from NeoVintageous.lib import nvim
+
 
 _MODELINE_PREFIX_TPL = "%s\\s*(st|sublime): "
 _DEFAULT_LINE_COMMENT = '#'
@@ -86,11 +88,11 @@ def _to_json_type(v):
         raise ValueError("Could not convert to JSON type.")
 
 
-def modelines(view):
+def modeline(view):
     """
-    Provide a feature similar to vim modelines.
+    Provide a feature similar to vim modeline.
 
-    Modelines set options local to the view by declaring them in the source
+    Modeline sets options local to the view by declaring them in the source
     code file itself.
 
         Example:
@@ -101,6 +103,7 @@ def modelines(view):
         # sublime: tab_size 4
 
     The top as well as the bottom of the buffer is scanned for modelines.
+
     _MAX_LINES_TO_CHECK * _LINE_LENGTH defines the size of the regions to be
     scanned.
     """
@@ -111,6 +114,10 @@ def modelines(view):
             try:
                 setter(name, _to_json_type(value))
             except ValueError as e:
-                sublime.status_message("NeoVintageous: bad modeline detected")
-                print("NeoVintageous: bad option detected {name = %s, value = %s}" % (name, value))
-                print("NeoVintageous: (tip) keys cannot be empty strings")
+
+                # TODO improve status message
+                nvim.status_message('bad modeline detected')
+
+                # TODO improve console message
+                nvim.console_message('bad option detected {name = %s, value = %s}' % (name, value))
+                nvim.console_message('(tip) keys cannot be empty strings')
