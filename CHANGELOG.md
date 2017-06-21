@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#252](https://github.com/NeoVintageous/NeoVintageous/issues/252): The package is now available in Package Control
 * Added: New commands
 
 Command | Description | Documentation | Dependencies | Notes
@@ -25,8 +26,14 @@ Command | Description | Documentation | Dependencies | Notes
 * Added [#275](https://github.com/NeoVintageous/NeoVintageous/issues/275): Commands in the `.vintageousrc` file don't need to be prefixed with `:` (colon)
 * Added [#187](https://github.com/NeoVintageous/NeoVintageous/issues/187): Switching to specific tab with `[count]` `gt`
 * Added: `[count]` to `ctrl+e` and `ctrl+y` (scroll lines)
+* Added: Coveralls code coverage reporting
+* Added: Surround plugin usage (documentation)
+* Added: `.vintageousrc` usage (documentation)
+* Added: Modeline usage (documentation)
+* Added: Multiple cursor usage (documentation)
+* Added: Sidebar and Overlay navigation usage (documentation)
 
-## [1.1.2](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-06-05
+## [1.1.2](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.2) - 2017-06-05
 
 ### Fixed
 
