@@ -7,21 +7,21 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * Added [#252](https://github.com/NeoVintageous/NeoVintageous/issues/252): The package is now available in Package Control
-* Added: New commands
+* Added: Git diff commands
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
 `[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
 `]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
 
-* Added: Port of [tpope/vim-unimpaired](https://github.com/tpope/vim-unimpaired). *The implementation may not be complete, please open issues for missing features and commands.*
+* Added: Port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) is provided by default. *The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
-`[<Space>` | Add `[count]` blank lines before the cursor. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
-`]<Space>` | Add `[count]` blank lines after the cursor. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
-`[e` | Exchange the current line with `[count]` lines above it. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
-`]e` | Exchange the current line with `[count]` lines below it. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
+`[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
+`]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
+`[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
+`]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
 
 * Added [#275](https://github.com/NeoVintageous/NeoVintageous/issues/275): Commands in the `.vintageousrc` file don't need to be prefixed with `:` (colon)
 * Added [#187](https://github.com/NeoVintageous/NeoVintageous/issues/187): Switching to specific tab with `[count]` `gt`
@@ -78,7 +78,7 @@ Command | Description | Documentation | Dependencies | Notes
 
 ### Fixed
 
-* Fixed: Error when reloading and upgrading NeoVintagous and NeoVintageous plugins
+* Fixed: Error when reloading and upgrading NeoVintageous and NeoVintageous plugins
 * Fixed [#119](https://github.com/NeoVintageous/NeoVintageous/issues/119): Loosing user settings when toggling ctrl keys
 * Fixed [#84](https://github.com/NeoVintageous/NeoVintageous/issues/84): More detail or examples for mapping
 * Fixed [#34](https://github.com/NeoVintageous/NeoVintageous/issues/34): Small note regarding wiki OSX note
@@ -109,7 +109,7 @@ Command | Description | Documentation | Dependencies | Notes
 
     Command | Description | Documentation | Dependencies | Notes
     ------- | ----------- | ------------- | ------------ | -----
-    `ctrl-w ]` | Jump to the definition of the keyword under the cursor | [tagsearch](https://neovim.io/doc/user/tagsrch.html#CTRL-\]) | |
+    `ctrl+]` | Jump to the definition of the keyword under the cursor | [tagsearch](https://neovim.io/doc/user/tagsrch.html#CTRL-\]) | |
     `ctrl-w h` | Move cursor to view left of current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_h) | |
     `ctrl-w j` | Move cursor to view below current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_j) | |
     `ctrl-w k` | Move cursor to view above current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_k) | |
@@ -119,7 +119,7 @@ Command | Description | Documentation | Dependencies | Notes
     `ctrl-w H` | Move the current window to be at the very top | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2-col or 2-row layouts
     `ctrl-w =` | Make all views (almost) equally high and wide | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_=) | |
     `ctrl-w _` | Set current view height as high as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W__) | |
-    `ctrl-w |` | Set current view width as wide as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_bar) | |
+    `ctrl-w \|` | Set current view width as wide as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_bar) | |
     `ctrl-w o` | Make the current view the only one on the screen | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_o) | |
     `ctrl-w c` | Close current view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_c) | |
     `ctrl-w x` | Exchange current view with next one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_x) | |
@@ -133,7 +133,7 @@ Command | Description | Documentation | Dependencies | Notes
     `ctrl+c` | Exit select mode | |
     `ctrl+[` | Exit select mode | |
 
-* Added: Port of [tpope/vim-surround](https://github.com/tpope/vim-surround) based on the [Vintageous_Plugin_Surround](https://github.com/guillermooo/Vintageous_Plugin_Surround) plugin by @guillermooo
+* Added: Port of [surround.vim](https://github.com/tpope/vim-surround) is provided by default. It is based on the [Vintageous_Plugin_Surround](https://github.com/guillermooo/Vintageous_Plugin_Surround) plugin by @guillermooo
 * Added: `vi_search.comment` scope on search matches for better control of highlighting
 * Added: `vintageous_visualyank` setting to disable visual bells when yanking text
 * Added [#1077](https://github.com/guillermooo/Vintageous/pull/1077): Support for Sublime Wrap Plus

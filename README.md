@@ -132,14 +132,18 @@ A port of [tpope/vim-surround](https://github.com/tpope/vim-surround) is provide
 
 ### Unimpaired plugin
 
-A port of [tpope/vim-unimpaired](https://github.com/tpope/vim-unimpaired) is provided by default. *The implementation may not be complete, please open issues for missing features and commands.* *Below is a table of what is currently available.* Documentation: [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt).
+A port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) is provided by default.
 
-Command | Description | Documentation | Dependencies | Notes
-------- | ----------- | ------------- | ------------ | -----
-`[<Space>` | Add `[count]` blank lines before the cursor. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
-`]<Space>` | Add `[count]` blank lines after the cursor. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
-`[e` | Exchange the current line with `[count]` lines above it. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
-`]e` | Exchange the current line with `[count]` lines below it. | [vim-unimpaired](https://raw.githubusercontent.com/tpope/vim-unimpaired/master/doc/unimpaired.txt) | |
+*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
+
+Command | Description | Documentation
+------- | ----------- | -------------
+`[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+
+Read more about unimpaired usage in the [help file](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt).
 
 ### Other plugins
 
