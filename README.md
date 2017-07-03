@@ -128,7 +128,17 @@ Once you've created visual selections in select mode, you must return to insert 
 
 ### Surround plugin
 
-A port of [tpope/vim-surround](https://github.com/tpope/vim-surround) is provided by default. *The implementation may not be complete, please open issues for missing features and commands.* Documentation: [vim-surround](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt).
+A port of [surround.vim](https://github.com/tpope/vim-surround) is provided by default.
+
+*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
+
+Command | Description | Documentation
+------- | ----------- | -------------
+`ds` | Delete surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
+`cs` | Change surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
+`ys` | Yank surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
+
+Read more about surround.vim usage in the [help file](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt).
 
 ### Unimpaired plugin
 
