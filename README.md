@@ -126,6 +126,20 @@ Key Sequence | Command
 
 Once you've created visual selections in select mode, you must return to insert mode by pressing `i` in order to edit text. Once in insert mode, you can switch to normal mode, etc. If you press `Esc` while in select mode, you will return to normal mode, but multiple carets won't be destroyed. If you press `Esc` a second time, you will be left with one single caret in normal mode.
 
+### Commentary plugin
+
+A port of [commentary.vim](https://github.com/tpope/vim-commentary) is provided by default.
+
+*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
+
+Command | Description | Documentation
+------- | ----------- | -------------
+`gc{motion}` | Comment or uncomment lines that `{motion}` moves over. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
+`gcc` | Comment or uncomment current line. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
+`{Visual}gc` | Comment or uncomment the highlighted lines. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
+
+Read more about commentary usage in the [help file](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt).
+
 ### Surround plugin
 
 A port of [surround.vim](https://github.com/tpope/vim-surround) is provided by default.

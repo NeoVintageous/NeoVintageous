@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Commentary plugin usage (documentation)
 * Added: Surround plugin usage (documentation)
 
 ## [1.2.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.2.0) - 2017-06-21
