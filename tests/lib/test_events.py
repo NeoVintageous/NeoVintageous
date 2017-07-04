@@ -48,14 +48,14 @@ class TestKeyContext(ViewTestCase):
         self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_REGEX_CONTAINS, '.*', False))
 
     def test_vi_mode_normal(self):
-        self.context.state = MockState(ViewTestCase.modes.NORMAL_INSERT)
+        self.context.state = MockState(ViewTestCase.NORMAL_INSERT_MODE)
         self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertFalse(self.context.query('vi_mode_normal', sublime.OP_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_EQUAL, False, False))
         self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_NOT_EQUAL, True, False))
         self.assertFalse(self.context.query('vi_mode_normal', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(ViewTestCase.modes.NORMAL)
+        self.context.state = MockState(ViewTestCase.NORMAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_EQUAL, True, False))
@@ -64,14 +64,14 @@ class TestKeyContext(ViewTestCase):
         self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_NOT_EQUAL, False, False))
 
     def test_vi_mode_insert(self):
-        self.context.state = MockState(ViewTestCase.modes.NORMAL)
+        self.context.state = MockState(ViewTestCase.NORMAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertFalse(self.context.query('vi_mode_insert', sublime.OP_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_EQUAL, False, False))
         self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_NOT_EQUAL, True, False))
         self.assertFalse(self.context.query('vi_mode_insert', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(ViewTestCase.modes.INSERT)
+        self.context.state = MockState(ViewTestCase.INSERT_MODE)
         self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_EQUAL, True, False))
@@ -80,14 +80,14 @@ class TestKeyContext(ViewTestCase):
         self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_NOT_EQUAL, False, False))
 
     def test_vi_mode_visual(self):
-        self.context.state = MockState(ViewTestCase.modes.NORMAL)
+        self.context.state = MockState(ViewTestCase.NORMAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertFalse(self.context.query('vi_mode_visual', sublime.OP_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_EQUAL, False, False))
         self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_NOT_EQUAL, True, False))
         self.assertFalse(self.context.query('vi_mode_visual', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(ViewTestCase.modes.VISUAL)
+        self.context.state = MockState(ViewTestCase.VISUAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_EQUAL, True, False))
@@ -96,14 +96,14 @@ class TestKeyContext(ViewTestCase):
         self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_NOT_EQUAL, False, False))
 
     def test_vi_mode_normal_insert(self):
-        self.context.state = MockState(ViewTestCase.modes.NORMAL)
+        self.context.state = MockState(ViewTestCase.NORMAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertFalse(self.context.query('vi_mode_normal_insert', sublime.OP_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_EQUAL, False, False))
         self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_EQUAL, True, False))
         self.assertFalse(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(ViewTestCase.modes.NORMAL_INSERT)
+        self.context.state = MockState(ViewTestCase.NORMAL_INSERT_MODE)
         self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_EQUAL, True, False))
@@ -112,14 +112,14 @@ class TestKeyContext(ViewTestCase):
         self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_EQUAL, False, False))
 
     def test_vi_mode_visual_block(self):
-        self.context.state = MockState(ViewTestCase.modes.NORMAL)
+        self.context.state = MockState(ViewTestCase.NORMAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertFalse(self.context.query('vi_mode_visual_block', sublime.OP_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_EQUAL, False, False))
         self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_NOT_EQUAL, True, False))
         self.assertFalse(self.context.query('vi_mode_visual_block', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(ViewTestCase.modes.VISUAL_BLOCK)
+        self.context.state = MockState(ViewTestCase.VISUAL_BLOCK_MODE)
         self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_EQUAL, True, False))
@@ -128,14 +128,14 @@ class TestKeyContext(ViewTestCase):
         self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_NOT_EQUAL, False, False))
 
     def test_vi_mode_visual_line(self):
-        self.context.state = MockState(ViewTestCase.modes.NORMAL)
+        self.context.state = MockState(ViewTestCase.NORMAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertFalse(self.context.query('vi_mode_visual_line', sublime.OP_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_EQUAL, False, False))
         self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_NOT_EQUAL, True, False))
         self.assertFalse(self.context.query('vi_mode_visual_line', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(ViewTestCase.modes.VISUAL_LINE)
+        self.context.state = MockState(ViewTestCase.VISUAL_LINE_MODE)
         self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_EQUAL, True, False))
@@ -144,14 +144,14 @@ class TestKeyContext(ViewTestCase):
         self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_NOT_EQUAL, False, False))
 
     def test_vi_mode_select(self):
-        self.context.state = MockState(ViewTestCase.modes.NORMAL)
+        self.context.state = MockState(ViewTestCase.NORMAL_MODE)
         self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertFalse(self.context.query('vi_mode_select', sublime.OP_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_select', sublime.OP_EQUAL, False, False))
         self.assertTrue(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, True, False))
         self.assertFalse(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(ViewTestCase.modes.SELECT)
+        self.context.state = MockState(ViewTestCase.SELECT_MODE)
         self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_REGEX_MATCH, '.*', False))
         self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_NOT_REGEX_MATCH, '.*', False))
         self.assertTrue(self.context.query('vi_mode_select', sublime.OP_EQUAL, True, False))
@@ -194,7 +194,7 @@ class TestKeyContext(ViewTestCase):
         self.write(':set ')
         self.assertTrue(self.context.query('vi_cmdline_at_setting_completion', sublime.OP_EQUAL, True, False))
 
-        self.view.assign_syntax('Packages/NeoVintageous/tests/fixtures/Command-line mode foobar.sublime-syntax')
+        self.view.assign_syntax('Packages/NeoVintageous/tests/fixtures/res/Command-line mode foobar.sublime-syntax')
         self.assertFalse(self.context.query('vi_cmdline_at_setting_completion', sublime.OP_EQUAL, True, False))
 
     def test_vi_is_view(self):

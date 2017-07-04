@@ -65,19 +65,19 @@ class Test_find_paragraph_text_object(ViewTestCase):
             # Set up the view.
             self.write(TEXT)
 
-            r = self.R(*td.start_region)
+            r = self._R(*td.start_region)
 
             self.select(r)
 
             # Expected vs actual region returned by find_paragraph_text_object().
-            exp = self.R(*td.expected_region)
+            exp = self._R(*td.expected_region)
             got = find_paragraph_text_object(self.view, r, inclusive=inclusive, count=count)
 
             rcs = [region2rowcols(r) for r in (exp, got)]
             msg = 'find_paragraph_text_object(msg={!r}, motion={}, exp_rc={}, got_rc={})'.format(
                   td.msg, td.motion, *rcs)
 
-            self.assertRegionsEqual(exp, got, msg)
+            self._assertRegionsEqual(exp, got, msg)
 
     def test_all_cases(self):
         self.runTests(ALL_CASES)

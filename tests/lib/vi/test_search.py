@@ -13,7 +13,7 @@ aaa aaa xxx aaa
 
         # 15 is after the second xxx
         match = find_wrapping(self.view, 'xxx', 15, self.view.size())
-        self.assertEqual(match, self.R(0, 3))
+        self.assertEqual(match, self.Region(0, 3))
 
     def test_fails_if_search_string_not_present(self):
         self.write('''xxx
@@ -33,4 +33,4 @@ aaa aaa xxx aaa
 
         # 4 is the beginning of the second line
         match = find_wrapping(self.view, 'xxx', 4, self.view.size())
-        self.assertEqual(match, self.R(12, 15))
+        self.assertEqual(match, self.Region(12, 15))

@@ -5,9 +5,8 @@ class Test__vi_dd_InNormalMode(ViewTestCase):
 
     def test_deletes_last_line(self):
         self.write('abc\nabc\nabc')
-        self.select(self.R((2, 0), (2, 0)))
+        self.select(8)
 
-        self.view.run_command('_vi_dd', {'mode': self.modes.INTERNAL_NORMAL})
+        self.view.run_command('_vi_dd', {'mode': self.INTERNAL_NORMAL_MODE})
 
-        expected = self.view.substr(self.R(0, self.view.size()))
-        self.assertEqual(expected, 'abc\nabc')
+        self.assertContent('abc\nabc')

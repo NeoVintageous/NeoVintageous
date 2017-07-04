@@ -5,88 +5,85 @@ class Test__vi_big_a_InNormalMode_SingleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc')
-        self.select(self.R(0, 2))
+        self.select(2)
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.INTERNAL_NORMAL, 'count': 1})
-        self.assertFirstSelection(self.R(3, 3))
+        self.view.run_command('_vi_big_a', {'mode': self.INTERNAL_NORMAL_MODE, 'count': 1})
+
+        self.assertSelection(3)
 
 
 class Test__vi_big_a_InNormalMode_MultipleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc\nabc')
-        self.select([self.R((0, 1), (0, 1)), self.R((1, 1), (1, 1))])
+        self.select([(1, 1), (5, 5)])
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.INTERNAL_NORMAL, 'count': 1})
+        self.view.run_command('_vi_big_a', {'mode': self.INTERNAL_NORMAL_MODE, 'count': 1})
 
-        self.assertFirstSelection(self.R(3, 3))
-        self.assertSecondSelection(self.R((1, 3), (1, 3)))
+        self.assertSelection([self.Region(3), self.Region(7)])
 
 
 class Test__vi_big_a_InVisualMode_SingleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc')
-        self.select(self.R((0, 0), (0, 2)))
+        self.select((0, 2))
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_big_a', {'mode': self.VISUAL_MODE, 'count': 1})
 
-        self.assertFirstSelection(self.R(2, 2))
+        self.assertSelection(2)
 
 
 class Test__vi_big_a_InVisualMode_MultipleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc\nabc')
-        self.select([self.R((0, 0), (0, 2)), self.R((1, 1), (1, 2))])
+        self.select([(0, 2), (4, 6)])
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.VISUAL, 'count': 1})
+        self.view.run_command('_vi_big_a', {'mode': self.VISUAL_MODE, 'count': 1})
 
-        self.assertFirstSelection(self.R(2, 2))
-        self.assertSecondSelection(self.R((1, 2), (1, 2)))
+        self.assertSelection([self.Region(2), self.Region(6)])
 
 
 class Test__vi_big_a_InVisualLineMode_SingleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc')
-        self.select(self.R((0, 0), (0, 3)))
+        self.select((0, 3))
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.VISUAL_LINE, 'count': 1})
+        self.view.run_command('_vi_big_a', {'mode': self.VISUAL_LINE_MODE, 'count': 1})
 
-        self.assertFirstSelection(self.R(3, 3))
+        self.assertSelection(3)
 
 
 class Test__vi_big_a_InVisualLineMode_MultipleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc\nabc')
-        self.select([self.R((0, 0), (0, 4)), self.R((1, 0), (1, 3))])
+        self.select([(0, 4), (4, 7)])
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.VISUAL_LINE, 'count': 1})
+        self.view.run_command('_vi_big_a', {'mode': self.VISUAL_LINE_MODE, 'count': 1})
 
-        self.assertFirstSelection(self.R(3, 3))
-        self.assertSecondSelection(self.R((1, 3), (1, 3)))
+        self.assertSelection([self.Region(3), self.Region(7)])
 
 
 class Test__vi_big_a_InVisualBlockMode_SingleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc')
-        self.select(self.R((0, 0), (0, 2)))
+        self.select((0, 2))
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.VISUAL_BLOCK, 'count': 1})
+        self.view.run_command('_vi_big_a', {'mode': self.VISUAL_BLOCK_MODE, 'count': 1})
 
-        self.assertFirstSelection(self.R(2, 2))
+        self.assertSelection(2)
 
 
 class Test__vi_big_a_InVisualBlockMode_MultipleSel(ViewTestCase):
 
     def test_moves_caret_to_eol(self):
         self.write('abc\nabc')
-        self.select([self.R((0, 0), (0, 2)), self.R((1, 0), (1, 2))])
+        self.select([(0, 2), (4, 6)])
 
-        self.view.run_command('_vi_big_a', {'mode': self.modes.VISUAL_BLOCK, 'count': 1})
+        self.view.run_command('_vi_big_a', {'mode': self.VISUAL_BLOCK_MODE, 'count': 1})
 
-        self.assertFirstSelection(self.R(2, 2))
-        self.assertSecondSelection(self.R((1, 2), (1, 2)))
+        self.assertSelection([self.Region(2), self.Region(6)])

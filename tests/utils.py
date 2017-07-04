@@ -1,4 +1,4 @@
-import unittest
+from unittest import TestCase
 
 from sublime import Region
 from sublime import active_window
@@ -27,9 +27,19 @@ def _make_region(view, a, b=None):
         return Region(a)
 
 
-class ViewTestCase(unittest.TestCase):
+class ViewTestCase(TestCase):
 
-    modes = modes
+    COMMAND_LINE_MODE = modes.COMMAND_LINE
+    INSERT_MODE = modes.INSERT
+    INTERNAL_NORMAL_MODE = modes.INTERNAL_NORMAL
+    NORMAL_MODE = modes.NORMAL
+    NORMAL_INSERT_MODE = modes.NORMAL_INSERT
+    OPERATOR_PENDING_MODE = modes.OPERATOR_PENDING
+    SELECT_MODE = modes.SELECT
+    UNKNOWN_MODE = modes.UNKNOWN
+    VISUAL_BLOCK_MODE = modes.VISUAL_BLOCK
+    VISUAL_LINE_MODE = modes.VISUAL_LINE
+    VISUAL_MODE = modes.VISUAL
 
     def setUp(self):
         self.view = active_window().new_file()
@@ -53,27 +63,6 @@ class ViewTestCase(unittest.TestCase):
         self.view.run_command('__neovintageous_test_write', {'text': text})
 
     def select(self, selections):
-        # Create selections in the test view.
-        #
-        # selections -- point|tuple|Region|list<point|tuple|Region>
-        #
-        # Points and tuples are converted to regions.
-        #
-        # # Examples
-        #
-        #     self.select(3)
-        #     self.select((3, 5))
-        #     self.select([3, 5, 7])
-        #     self.select([(3, 5), (7, 11))
-        #     self.select([3, (7, 11), 17, (19, 23))
-        #
-        #     # The above is shorthand for:
-        #
-        #     self.select(sublime.Region(3))
-        #     self.select(sublime.Region(3, 5))
-        #     self.select([sublime.Region(3), sublime.Region(5), sublime.Region(7)])
-        #     self.select([sublime.Region(3, 5), sublime.Region(7, 11))
-        #     self.select([sublime.Region(3), sublime.Region(7, 11), sublime.Region(17), sublime.Region(19, 23)])
         self.view.sel().clear()
 
         if not isinstance(selections, list):
@@ -85,15 +74,15 @@ class ViewTestCase(unittest.TestCase):
             else:
                 self.view.sel().add(selection)
 
-    def region(self, a, b=None, xpos=-1):
+    def Region(self, a, b=None, xpos=-1):
         return Region(a, b, xpos)
 
-    # DEPRECATED??? in favour of self.select() or self.select(self.region(...))
-    def R(self, a, b=None):
+    # DEPRECATED Use newer API methods self.select(), self.Region()
+    def _R(self, a, b=None):
         return _make_region(self.view, a, b)
 
-    # DEPRECATED???
-    def assertRegionsEqual(self, expected_region, actual_region, msg=None):
+    # DEPRECATED Favour newer API methods like, e.g. assertSelection(), assertContent(), and explicit assertions rather than magic
+    def _assertRegionsEqual(self, expected_region, actual_region, msg=None):
         """Test that regions covers the exact same region. Does not take region orientation into account."""
         if (expected_region.size() == 1) and (actual_region.size() == 1):
             expected_region = _make_region(self.view, expected_region.begin(), expected_region.end())
@@ -104,51 +93,15 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.view.substr(Region(0, self.view.size())), expected, msg)
 
     def assertSelection(self, expected):
-        # Test the expected selection is the same as the selection in the test view.
-        #
-        # expected -- point|tuple|Region|list<Region>
-        #
-        # Points and tuples are converted to regions.
-        #
-        # # Examples
-        #
-        #     self.assertSelection(3)
-        #     self.assertSelection((3, 5))
-        #     self.assertSelection([self.region(3, 5), self.region(7)])
-        #
-        #     # The above is shorthand for:
-        #
-        #     self.assertEqual([sublime.Region(3)], list(self.view.sel()))
-        #     self.assertEqual([sublime.Region(3, 5)], list(self.view.sel()))
-        #     self.assertEqual([sublime.Region(3, 5), sublime.Region(7)], list(self.view.sel()))
         if isinstance(expected, int):
             self.assertEqual([Region(expected)], list(self.view.sel()))
         elif isinstance(expected, tuple):
             self.assertEqual([Region(expected[0], expected[1])], list(self.view.sel()))
         elif isinstance(expected, Region):
             self.assertEqual([expected], list(self.view.sel()))
-        else:  # Defaults to expect a list of regions.
+        else:  # Defaults to expect a list of Regions.
+            # TODO loop through expected and convert points and tuples to regions
             self.assertEqual(expected, list(self.view.sel()))
-
-    def assertFirstSelection(self, expected):
-        # Works similar to assertSelection() except the etst is only against the
-        # first selection.
-        if isinstance(expected, int):
-            self.assertEqual(Region(expected), self.view.sel()[0])
-        elif isinstance(expected, tuple):
-            self.assertEqual(Region(expected[0], expected[1]), self.view.sel()[0])
-        else:  # Defaults to expect a region.
-            self.assertEqual(expected, self.view.sel()[0])
-
-    def assertSecondSelection(self, expected):
-        # Works similar to assertSelection() except the etst is only against the
-        # first selection.
-        if isinstance(expected, int):
-            self.assertEqual(Region(expected), self.view.sel()[1])
-        elif isinstance(expected, tuple):
-            self.assertEqual(Region(expected[0], expected[1]), self.view.sel()[1])
-        else:  # Defaults to expect a region.
-            self.assertEqual(expected, self.view.sel()[1])
 
     def assertSelectionCount(self, expected):
         self.assertEqual(expected, len(self.view.sel()))

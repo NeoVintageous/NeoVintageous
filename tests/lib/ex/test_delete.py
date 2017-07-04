@@ -7,7 +7,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
     def test_can_delete_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.select(self.R((1, 0), (1, 0)))
+        self.select(4)
 
         self.view.run_command('ex_delete', {'command_line': 'delete'})
 
@@ -15,7 +15,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
     def test_can_delete_at_eof__no_new_line(self):
         self.write('abc\nabc\nabc\nxxx')
-        self.select(self.R((3, 0), (3, 0)))
+        self.select(12)
 
         self.view.run_command('ex_delete', {'command_line': '4delete'})
 
@@ -23,7 +23,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
     def test_can_delete_at_eof__new_line(self):
         self.write('abc\nabc\nabc\nxxx\n')
-        self.select(self.R((3, 0), (3, 0)))
+        self.select(12)
 
         self.view.run_command('ex_delete', {'command_line': 'delete'})
 
@@ -31,7 +31,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
     def test_can_delete_zero_line_range(self):
         self.write('xxx\nabc\nabc\nabc')
-        self.select(self.R((1, 0), (1, 0)))
+        self.select(4)
 
         self.view.run_command('ex_delete', {'command_line': '0delete'})
 
@@ -39,7 +39,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
 
     def test_can_delete_empty_line(self):
         self.write('abc\nabc\n\nabc')
-        self.select(self.R((1, 0), (1, 0)))
+        self.select(4)
 
         self.view.run_command('ex_delete', {'command_line': '3delete'})
 
@@ -78,21 +78,18 @@ class Test_ex_delete_InNormalMode_CaretPosition(ViewTestCase):
 
     def test_can_reposition_caret(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.select(self.R((3, 0), (3, 0)))
+        self.select(12)
 
         self.view.run_command('ex_delete', {'command_line': '2,4delete'})
 
-        actual = list(self.view.sel())
-        expected = [self.R((1, 0), (1, 0))]
-
-        self.assertEqual(expected, actual)
+        self.assertSelection(4)
 
 
 class Test_ex_delete_ModeTransition(ViewTestCase):
 
     def test_from_normal_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.select(self.R((1, 0), (1, 0)))
+        self.select(4)
 
         state = State(self.view)
         state.enter_normal_mode()
@@ -108,7 +105,7 @@ class Test_ex_delete_ModeTransition(ViewTestCase):
 
     def test_from_visual_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
-        self.select(self.R((1, 0), (1, 1)))
+        self.select((4, 5))
 
         state = State(self.view)
         state.enter_visual_mode()
@@ -119,5 +116,5 @@ class Test_ex_delete_ModeTransition(ViewTestCase):
         state = State(self.view)
         actual_mode = state.mode
 
-        self.assertEqual(actual_mode, self.modes.NORMAL)
+        self.assertEqual(actual_mode, self.NORMAL_MODE)
         self.assertNotEqual(expected_mode, actual_mode)
