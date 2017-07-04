@@ -7,7 +7,7 @@ from sublime_plugin import EventListener
 from NeoVintageous.lib.ex import command_names
 from NeoVintageous.lib.ex.completions import wants_fs_completions
 from NeoVintageous.lib.ex.completions import wants_setting_completions
-from NeoVintageous.lib.modeline import modeline
+from NeoVintageous.lib.modeline import do_modeline
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import settings
@@ -251,11 +251,11 @@ class NeoVintageousEvents(EventListener):
 
     def on_load(self, view):
         if view.settings().get('vintageous_modeline', False):
-            modeline(view)
+            do_modeline(view)
 
     def on_post_save(self, view):
         if view.settings().get('vintageous_modeline', False):
-            modeline(view)
+            do_modeline(view)
 
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.

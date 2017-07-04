@@ -37,6 +37,11 @@
     // https://vimhelp.appspot.com/options.txt.html#'modeline'
     "vintageous_modeline": false,
 
+    // If 'vintageous_modeline' is on 'vintageous_modelines' gives the number of
+    // lines that is checked for set commands.
+    // https://vimhelp.appspot.com/options.txt.html#'modelines'
+    "vintageous_modelines": 5,
+
     // {currently only works in a few situations}
     // Minimal number of screen lines to keep above and below the cursor.
     // https://vimhelp.appspot.com/options.txt.html#'scrolloff'

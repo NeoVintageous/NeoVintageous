@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Support for 'vintageous_modelines' option; defaults to 5
 * Added: Use new SublimeLinter API
 * Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/245): `:sp[lit] [file]`
 * Added: Unimpaired statusbar toggles on: `[oe`, off: `]oe`, and toggle `coe`

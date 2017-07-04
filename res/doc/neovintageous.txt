@@ -478,8 +478,14 @@ Menu > Preferences > Key Bindings: >
 
                                                          *'vintageous_modeline'*
 'vintageous_modeline'                   boolean (default: false)
-                                        See 'modeline'.
-        Enable |modeline|.
+
+        See 'modeline'.
+
+
+                                                        *'vintageous_modelines'*
+'vintageous_modelines'                  number (default 5)
+
+        See 'modelines'.
 
 
                                    *'vintageous_reset_mode_when_switching_tabs'*

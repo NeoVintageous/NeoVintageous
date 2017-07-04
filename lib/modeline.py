@@ -1,35 +1,39 @@
 import re
 
-import sublime
+from sublime import Region
 
-from NeoVintageous.lib import nvim
+from NeoVintageous.lib.nvim import message
 
 
-_MODELINE_PREFIX_TPL = "%s\\s*(st|sublime): "
+_MODELINES_MAX_LINE_LEN = 80
+_PREFIX_TPL = '%s\\s*(st|sublime): '
 _DEFAULT_LINE_COMMENT = '#'
 _MULTIOPT_SEP = '; '
-_MAX_LINES_TO_CHECK = 50
-_LINE_LENGTH = 80
-_MODELINES_REG_SIZE = _MAX_LINES_TO_CHECK * _LINE_LENGTH
 
 
-def _is_modeline(prefix, line):
-    return bool(re.match(prefix, line))
+def _gen_modelines(view, modelines):
+    # Args:
+    #   view (sublime.View):
+    #   modelines (int): Number of modelines to check.
+    #
+    # Return:
+    #   list
+    max_pts = modelines * _MODELINES_MAX_LINE_LEN
 
+    to_pt = view.text_point(modelines, 0)
+    to_pt = min(to_pt, max_pts)
 
-def _gen_modelines(view):
-    topRegEnd = min(_MODELINES_REG_SIZE, view.size())
-    candidates = view.lines(sublime.Region(0, view.full_line(topRegEnd).end()))
+    candidates = view.lines(Region(0, to_pt))
 
-    # Consider modelines at the end of the buffer too. There might be overlap
-    # with the top region, but it doesn't matter because it means the buffer is
-    # tiny.
-    pt = view.size() - _MODELINES_REG_SIZE
-    bottomRegStart = pt if pt > -1 else 0
-    candidates += view.lines(sublime.Region(bottomRegStart, view.size()))
+    view_size = view.size()
+    last_line_number = view.rowcol(view_size)[0]
+    if last_line_number >= modelines:
+        from_pt = view.text_point(max(last_line_number - modelines, modelines), 0)
+        from_pt = max(from_pt, (view_size - max_pts))
+        candidates += view.lines(Region(from_pt, view.size()))
 
     prefix = _build_modeline_prefix(view)
-    modelines = (view.substr(c) for c in candidates if _is_modeline(prefix, view.substr(c)))
+    modelines = (view.substr(c) for c in candidates if re.match(prefix, view.substr(c)))
 
     for modeline in modelines:
         yield modeline
@@ -46,7 +50,7 @@ def _gen_raw_options(modelines):
 
 
 def _gen_modeline_options(view):
-    modelines = _gen_modelines(view)
+    modelines = _gen_modelines(view, view.settings().get('vintageous_modelines'))
     for opt in _gen_raw_options(modelines):
         name, sep, value = opt.partition(' ')
         yield view.settings().set, name.rstrip(':'), value.rstrip(';')
@@ -74,39 +78,40 @@ def _get_line_comment_char(view):
 
 def _build_modeline_prefix(view):
     lineComment = _get_line_comment_char(view).lstrip() or _DEFAULT_LINE_COMMENT
-    return (_MODELINE_PREFIX_TPL % lineComment)
+
+    return (_PREFIX_TPL % lineComment)
 
 
 def _to_json_type(v):
-    """Convert string value to proper JSON type."""
+    # Convert string value to proper JSON type.
+    #
+    # Args:
+    #   v (sublime.View):
     if v.lower() in ('true', 'false'):
         v = v[0].upper() + v[1:].lower()
 
     try:
         return eval(v, {}, {})
     except Exception:
-        raise ValueError("Could not convert to JSON type.")
+        raise ValueError('could not convert to JSON type')
 
 
-def modeline(view):
-    """
-    Provide a feature similar to vim modeline.
-
-    Modeline sets options local to the view by declaring them in the source
-    code file itself.
-
-        Example:
-
-        # sublime: gutter false
-        # sublime: translate_tab_to_spaces true
-        # sublime: rulers [80, 120]
-        # sublime: tab_size 4
-
-    The top as well as the bottom of the buffer is scanned for modelines.
-
-    _MAX_LINES_TO_CHECK * _LINE_LENGTH defines the size of the regions to be
-    scanned.
-    """
+def do_modeline(view):
+    # A feature similar to vim modeline.
+    #
+    # A number of lines at the beginning and end of the file are checked for
+    # modelines.
+    #
+    # See :help auto-setting for more information.
+    #
+    # Args:
+    #   view (sublime.View)
+    #
+    # Example:
+    #     # sublime: gutter false
+    #     # sublime: translate_tab_to_spaces true
+    #     # sublime: rulers [80, 120]
+    #     # sublime: tab_size 4
     for setter, name, value in _gen_modeline_options(view):
         if name == 'x_syntax':
             view.set_syntax_file(value)
@@ -114,10 +119,4 @@ def modeline(view):
             try:
                 setter(name, _to_json_type(value))
             except ValueError as e:
-
-                # TODO improve status message
-                nvim.status_message('bad modeline detected')
-
-                # TODO improve console message
-                nvim.console_message('bad option detected {name = %s, value = %s}' % (name, value))
-                nvim.console_message('(tip) keys cannot be empty strings')
+                message('Error detected while processing modelines: option = {}'.format(name))
