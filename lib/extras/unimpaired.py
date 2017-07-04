@@ -76,8 +76,9 @@ class NeovintageousUnimpairedBlankUpCommand(TextCommand):
                 '\n' * count
             )
 
-        self.view.sel().clear()
-        self.view.sel().add_all(new_sels)
+        if new_sels:
+            self.view.sel().clear()
+            self.view.sel().add_all(new_sels)
 
 
 # Add [count] blank lines below the cursor.
@@ -94,8 +95,9 @@ class NeovintageousUnimpairedBlankDownCommand(TextCommand):
                 '\n' * count
             )
 
-        self.view.sel().clear()
-        self.view.sel().add_all(new_sels)
+        if new_sels:
+            self.view.sel().clear()
+            self.view.sel().add_all(new_sels)
 
 
 # Exchange the current line with [count] lines above it.
