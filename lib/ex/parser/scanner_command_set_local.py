@@ -7,9 +7,7 @@ from NeoVintageous.lib import ex
 @ex.command('setlocal', 'setlocal')
 class TokenSet(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_SET_LOCAL,
-                         'setlocal', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_SET_LOCAL, 'setlocal', *args, **kwargs)
         self.target_command = 'ex_set_local'
 
     @property

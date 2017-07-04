@@ -17,9 +17,7 @@ plus_plus_translations = {
 @ex.command('read', 'r')
 class TokenReadShellOut(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_READ_SHELL_OUT,
-                         'read', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_READ_SHELL_OUT, 'read', *args, **kwargs)
         self.target_command = 'ex_read_shell_out'
 
     @property

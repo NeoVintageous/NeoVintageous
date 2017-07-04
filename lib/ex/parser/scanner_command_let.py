@@ -8,9 +8,7 @@ from NeoVintageous.lib import nvim
 @ex.command('let', 'let')
 class TokenCommandLet(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_LET,
-                         'let', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_LET, 'let', *args, **kwargs)
         self.target_command = 'ex_let'
 
     @property

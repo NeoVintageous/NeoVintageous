@@ -38,8 +38,8 @@ VISUAL_ONE_CHAR_CASES = (
     test_data('bx', (2, 0), 'x', ViewTestCase.modes.VISUAL, (2, 0), 'Reverse find a'),
     test_data('fx', (0, 1), 'x', ViewTestCase.modes.VISUAL, (0, 1), 'Forward find next'),
     test_data('rx', (1, 0), 'x', ViewTestCase.modes.VISUAL, (1, 0), 'Reverse find next'),
-    test_data('f',  (0, 1), 'f', ViewTestCase.modes.VISUAL, (0, 1), 'Forward find self'),
-    test_data('r',  (1, 0), 'r', ViewTestCase.modes.VISUAL, (1, 0), 'Reverse find self'),
+    test_data('f', (0, 1), 'f', ViewTestCase.modes.VISUAL, (0, 1), 'Forward find self'),
+    test_data('r', (1, 0), 'r', ViewTestCase.modes.VISUAL, (1, 0), 'Reverse find self'),
 )
 
 VISUAL_MULTI_MATCHES_CASES = (
@@ -51,14 +51,14 @@ VISUAL_MULTI_MATCHES_CASES = (
 )
 
 VISUAL_MULTI_LINE_CASES = (
-    test_data('012\n456',   (0, 5), '2', ViewTestCase.modes.VISUAL, (0, 5), 'Select L1->L2, find on L1'),
-    test_data('012\n456',   (0, 5), '6', ViewTestCase.modes.VISUAL, (0, 6), 'Select L1->L2, find on L2'),
-    test_data('012\n456',   (0, 4), '2', ViewTestCase.modes.VISUAL, (0, 4), 'Select L1->LF, find on L1'),
-    test_data('012\n456',   (0, 4), '6', ViewTestCase.modes.VISUAL, (0, 4), 'Select L1->LF, find on L2'),
-    test_data('012\n456',   (5, 0), '2', ViewTestCase.modes.VISUAL, (5, 1), 'Select L2->L1, find on L1'),
-    test_data('012\n456',   (5, 0), '6', ViewTestCase.modes.VISUAL, (5, 0), 'Select L2->L1, find on L2'),
-    test_data('012\n456',   (5, 3), '2', ViewTestCase.modes.VISUAL, (5, 3), 'Select L2->LF, find on L1'),
-    test_data('012\n456',   (5, 3), '6', ViewTestCase.modes.VISUAL, (5, 3), 'Select L2->LF, find on L2'),
+    test_data('012\n456', (0, 5), '2', ViewTestCase.modes.VISUAL, (0, 5), 'Select L1->L2, find on L1'),
+    test_data('012\n456', (0, 5), '6', ViewTestCase.modes.VISUAL, (0, 6), 'Select L1->L2, find on L2'),
+    test_data('012\n456', (0, 4), '2', ViewTestCase.modes.VISUAL, (0, 4), 'Select L1->LF, find on L1'),
+    test_data('012\n456', (0, 4), '6', ViewTestCase.modes.VISUAL, (0, 4), 'Select L1->LF, find on L2'),
+    test_data('012\n456', (5, 0), '2', ViewTestCase.modes.VISUAL, (5, 1), 'Select L2->L1, find on L1'),
+    test_data('012\n456', (5, 0), '6', ViewTestCase.modes.VISUAL, (5, 0), 'Select L2->L1, find on L2'),
+    test_data('012\n456', (5, 3), '2', ViewTestCase.modes.VISUAL, (5, 3), 'Select L2->LF, find on L1'),
+    test_data('012\n456', (5, 3), '6', ViewTestCase.modes.VISUAL, (5, 3), 'Select L2->LF, find on L2'),
     test_data('0123\n5678', (7, 5), '8', ViewTestCase.modes.VISUAL, (6, 8), 'Select L2->LF+1, find on L2'),
 )
 

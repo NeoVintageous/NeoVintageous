@@ -146,8 +146,8 @@ class modes:
 class input_types:
     """Types of input parsers."""
 
-    INMEDIATE    = 1
-    VIA_PANEL    = 2
+    INMEDIATE = 1
+    VIA_PANEL = 2
     AFTER_MOTION = 3
 
 

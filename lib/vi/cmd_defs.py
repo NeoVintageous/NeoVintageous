@@ -3071,8 +3071,7 @@ class ViReverseFindWord(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_SHIFT_DOT, modes=_MODES_MOTION)
 # TODO: This is called a 'submode' in the vim docs.
 @keys.assign(seq=seqs.CTRL_X, modes=[modes.INSERT])
-# FIXME: This should not be a motion.
-class ViOpenNameSpace(ViMotionDef):
+class ViOpenNameSpace(ViMotionDef):  # FIXME: This should not be a motion.
     def __init__(self, *args, **kwargs):
         ViMotionDef.__init__(self, *args, **kwargs)
 
@@ -3516,6 +3515,9 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         }
 
 
+# TODO gc is non standard and looks like it based on
+# https://github.com/tpope/vim-commentary it should probably be moved to the
+# extras directory as an extras plugin.
 @keys.assign(seq=seqs.GC, modes=_MODES_ACTION)
 class ViToggleCommentByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):

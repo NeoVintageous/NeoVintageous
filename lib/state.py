@@ -576,8 +576,7 @@ class State(object):
         @command
           A command definition as found in `keys.py`.
         """
-        assert isinstance(command, cmd_base.ViCommandDefBase), \
-            'ViCommandDefBase expected, got {0}'.format(type(command))
+        assert isinstance(command, cmd_base.ViCommandDefBase), 'ViCommandDefBase expected, got {0}'.format(type(command))  # noqa: 501
 
         if isinstance(command, cmd_base.ViMotionDef):
             if self.runnable():
@@ -728,16 +727,14 @@ class State(object):
             if self.glue_until_normal_mode and not self.processing_notation:
                 # We need to tell Sublime Text now that it should group
                 # all the next edits until we enter normal mode again.
-                sublime.active_window().run_command(
-                    'mark_undo_groups_for_gluing')
+                sublime.active_window().run_command('mark_undo_groups_for_gluing')
 
             self.add_macro_step(action_cmd['action'], args)
 
             sublime.active_window().run_command(action_cmd['action'], args)
             if not self.non_interactive:
                 if self.action.repeatable:
-                    self.repeat_data = ('vi', str(self.sequence),
-                                        self.mode, None)
+                    self.repeat_data = ('vi', str(self.sequence), self.mode, None)
             self.reset_command_data()
             return
 
@@ -761,8 +758,7 @@ class State(object):
                 self.mode = modes.INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
-                    action_cmd['action_args']['mode'] = \
-                        modes.INTERNAL_NORMAL
+                    action_cmd['action_args']['mode'] = modes.INTERNAL_NORMAL
             elif self.mode in (modes.VISUAL, modes.VISUAL_LINE):
                 self.view.add_regions('visual_sel', list(self.view.sel()))
 
@@ -773,23 +769,18 @@ class State(object):
             # iXXX<Esc>llaYYY<Esc>, where we want to group the whole
             # sequence instead.
             if self.glue_until_normal_mode and not self.processing_notation:
-                sublime.active_window().run_command(
-                    'mark_undo_groups_for_gluing')
+                sublime.active_window().run_command('mark_undo_groups_for_gluing')
 
             seq = self.sequence
             visual_repeat_data = self.get_visual_repeat_data()
             action = self.action
 
-            self.add_macro_step(action_cmd['action'],
-                                action_cmd['action_args'])
-
-            sublime.active_window().run_command(action_cmd['action'],
-                                                action_cmd['action_args'])
+            self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
+            sublime.active_window().run_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
-                    self.repeat_data = ('vi', seq, self.mode,
-                                        visual_repeat_data)
+                    self.repeat_data = ('vi', seq, self.mode, visual_repeat_data)
 
         _logger.info('[eval] run command action=%s, motion=%s', self.action, self.motion)
 

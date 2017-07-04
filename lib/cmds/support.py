@@ -1,5 +1,3 @@
-import os
-
 import sublime
 import sublime_plugin
 
@@ -31,7 +29,6 @@ __all__ = [
 class _vi_add_to_jump_list(sublime_plugin.WindowCommand):
     def run(self):
         get_jump_history(self.window.id()).push_selection(self.window.active_view())
-        hl = get_jump_history(self.window.id())
 
 
 class NeovintageousToggleUseCtrlKeysCommand(sublime_plugin.WindowCommand):

@@ -488,7 +488,7 @@ class _enter_normal_mode(ViTextCommandBase):
 
         state.update_xpos(force=True)
 
-        sublime.status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()
+        sublime.status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()  # noqa: E501
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
@@ -790,7 +790,7 @@ class ProcessNotation(ViWindowCommandBase):
             self.collect_input()
             return
 
-        # Strip the already run commands.
+        # Strip the already run commands
         if leading_motions:
             if ((len(leading_motions) == len(keys)) and (not state.must_collect_input)):
                 state.non_interactive = False
@@ -1638,7 +1638,7 @@ class _vi_x(ViTextCommandBase):
                 eol = utils.get_eol(view, s.b)
                 return R(s.b, min(s.b + count, eol))
             if s.size() == 1:
-                b = s.b - 1 if s.a < s.b else s.b
+                b = s.b - 1 if s.a < s.b else s.b  # FIXME # noqa: F841
             return s
 
         if mode not in (modes.VISUAL,
@@ -2039,20 +2039,11 @@ class _vi_p(ViTextCommandBase):
             if fragment.startswith('\n'):
                 # Pasting linewise...
                 # If pasting at EOL or BOL, make sure we paste before the newline character.
-                if (utils.is_at_eol(self.view, selection) or
-                    utils.is_at_bol(self.view, selection)):
-                    l = self.paste_all(edit, selection,
-                                       self.view.line(selection.b).b,
-                                       fragment,
-                                       count)
+                if (utils.is_at_eol(self.view, selection) or utils.is_at_bol(self.view, selection)):
+                    l = self.paste_all(edit, selection, self.view.line(selection.b).b, fragment, count)
                     paste_locations.append(l)
                 else:
-                    l = self.paste_all(
-                        edit, selection,
-                        self.view.line(selection.b - 1).b,
-                        fragment,
-                        count
-                    )
+                    l = self.paste_all(edit, selection, self.view.line(selection.b - 1).b, fragment, count)
                     paste_locations.append(l)
             else:
                 pasting_linewise = False
@@ -2753,7 +2744,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
                 return
 
             self.view.sel().clear()
-            lhs_edge = self.view.rowcol(first.b)[1]
+            lhs_edge = self.view.rowcol(first.b)[1]  # FIXME # noqa: F841
             regs = self.view.split_by_newlines(first)
 
             offset_a, offset_b = self.view.rowcol(first.a)[1], self.view.rowcol(first.b)[1]
@@ -3035,10 +3026,10 @@ class __replace_line(ViTextCommandBase):
     def run(self, edit, with_what):
         b = self.view.line(self.view.sel()[0].b).a
         pt = utils.next_non_white_space_char(self.view, b, white_space=' \t')
-        self.view.replace(edit, R(pt, self.view.line(pt).b),
-                          with_what)
+        self.view.replace(edit, R(pt, self.view.line(pt).b), with_what)
 
 
+# https://neovim.io/doc/user/change.html#gc
 class _vi_gc(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3122,7 +3113,10 @@ class _vi_gcc_motion(ViTextCommandBase):
             if mode == modes.INTERNAL_NORMAL:
                 end = view.text_point(utils.row_at(self.view, s.b) + (count - 1), 0)
                 begin = view.line(s.b).a
-                if ((utils.row_at(self.view, end) == utils.row_at(self.view, view.size())) and (view.substr(begin - 1) == '\n')):
+                if (
+                    (utils.row_at(self.view, end) == utils.row_at(self.view, view.size())) and
+                    (view.substr(begin - 1) == '\n')
+                ):
                     begin -= 1
 
                 return R(begin, view.full_line(end).b)

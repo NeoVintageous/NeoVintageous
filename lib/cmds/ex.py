@@ -867,7 +867,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
             replacement = ExSubstitute.last_replacement
             # TODO: Don't we have to reuse the previous flags?
             flags = []
-            count = 0
+            count = 0  # FIXME # noqa: F841
 
         if not pattern:
             nvim.status_message('no previous pattern available')
@@ -1075,7 +1075,6 @@ class ExQuitCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         quit_command = parse_command_line(command_line)
 
         view = self._view
@@ -1241,7 +1240,7 @@ class ExListRegisters(ViWindowCommandBase):
             lines_display = '... [+{0}]'.format(line_count - 1)
             return lines_display if line_count > 1 else ''
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         # TODO: implement arguments.
 
@@ -1360,7 +1359,7 @@ class ExTabnextCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "next"}, )
 
@@ -1371,7 +1370,7 @@ class ExTabprevCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "prev"}, )
 
@@ -1382,7 +1381,7 @@ class ExTablastCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "last"}, )
 
@@ -1393,7 +1392,7 @@ class ExTabfirstCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "first"}, )
 
@@ -1490,10 +1489,18 @@ class ExVsplit(ViWindowCommandBase):
 
     MAX_SPLITS = 4
     LAYOUT_DATA = {
-        1: {"cells": [[0, 0, 1, 1]], "rows": [0.0, 1.0], "cols": [0.0, 1.0]},
-        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
+        1: {"cells": [[0, 0, 1, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 1.0]},
+        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.5, 1.0]},
+        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.33, 0.66, 1.0]},
+        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
     }
 
     def run(self, command_line=''):
@@ -1531,9 +1538,7 @@ class ExVsplit(ViWindowCommandBase):
 
 
 class ExUnvsplit(ViWindowCommandBase):
-    """
-    Non-standard Vim :unvsplit command.
-    """
+    """Non-standard Vim :unvsplit command."""
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'

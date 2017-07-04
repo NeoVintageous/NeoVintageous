@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('tabprev', 'tabp')
 class TokenTabPrevCommand(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__([],
-                         TOKEN_COMMAND_TAB_PREV_COMMAND,
-                         'tabprev', *args, **kwargs)
+        super().__init__([], TOKEN_COMMAND_TAB_PREV_COMMAND, 'tabprev', *args, **kwargs)
         self.target_command = 'ex_tabprev'
 
 
@@ -21,4 +19,5 @@ def scan_command_tab_prev_command(state):
         return None, [TokenTabPrevCommand(), TokenEof()]
 
     bang = c == '!'
+
     return None, [TokenTabPrevCommand(forced=bang), TokenEof()]

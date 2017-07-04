@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('move', 'm')
 class TokenMove(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_MOVE,
-                         'move', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_MOVE, 'move', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_move'
 

@@ -1,11 +1,11 @@
 class cmd_types:
     """Types of command."""
 
-    MOTION          = 1
-    ACTION          = 2
-    ANY             = 3
-    OTHER           = 4
-    USER            = 5
+    MOTION = 1
+    ACTION = 2
+    ANY = 3
+    OTHER = 4
+    USER = 5
     OPEN_NAME_SPACE = 6
 
 

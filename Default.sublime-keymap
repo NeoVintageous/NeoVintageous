@@ -60,10 +60,10 @@
     {"keys": ["home"],      "command": "press_key", "args": {"key": "<home>"},  "context": [{"key": "vi_command_mode_aware"}]},
 
     // Sidebar control
-    { "keys": ["h"], "command": "move", "args": {"by": "characters", "forward": false}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
-    { "keys": ["j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
-    { "keys": ["k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
-    { "keys": ["l"], "command": "move", "args": {"by": "characters", "forward": true}, "context": [ { "key": "control", "operand": "sidebar_tree" } ] },
+    {"keys": ["h"], "command": "move", "args": {"by": "characters", "forward": false},  "context": [{"key": "control", "operand": "sidebar_tree"}]},
+    {"keys": ["j"], "command": "move", "args": {"by": "lines", "forward": true},        "context": [{"key": "control", "operand": "sidebar_tree"}]},
+    {"keys": ["k"], "command": "move", "args": {"by": "lines", "forward": false},       "context": [{"key": "control", "operand": "sidebar_tree"}]},
+    {"keys": ["l"], "command": "move", "args": {"by": "characters", "forward": true},   "context": [{"key": "control", "operand": "sidebar_tree"}]},
     // --
 
     {"keys": ["a"], "command": "press_key", "args": {"key": "a"}, "context": [{"key": "vi_command_mode_aware"}]},

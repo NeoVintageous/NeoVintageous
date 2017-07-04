@@ -112,15 +112,24 @@ class TestViEditorSettings(ViewTestCase):
 
     def test_settings_are_correctly_defined(self):
         KNOWN_OPTIONS = {
-            'hlsearch':    vi_user_setting(scope=SCOPE_VI_VIEW,    values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-            'magic':       vi_user_setting(scope=SCOPE_VI_VIEW,    values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-            'incsearch':   vi_user_setting(scope=SCOPE_VI_VIEW,    values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-            'ignorecase':  vi_user_setting(scope=SCOPE_VI_VIEW,    values=(True, False, '0', '1'), default=False, parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-            'autoindent':  vi_user_setting(scope=SCOPE_VI_VIEW,    values=(True, False, '0', '1'), default=True,  parser=None,              action=set_generic_view_setting, negatable=False),
-            'showminimap': vi_user_setting(scope=SCOPE_WINDOW,     values=(True, False, '0', '1'), default=True,  parser=None,              action=set_minimap,              negatable=True),
-            'visualbell':  vi_user_setting(scope=SCOPE_VI_WINDOW,  values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-            'rulers':      vi_user_setting(scope=SCOPE_VIEW,       values=None,                    default=[],    parser=opt_rulers_parser, action=set_generic_view_setting, negatable=False),
-            'showsidebar': vi_user_setting(scope=SCOPE_WINDOW,     values=(True, False, '0', '1'), default=True,  parser=None,              action=set_sidebar,              negatable=True),
+            'hlsearch': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                        parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
+            'magic': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                     parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
+            'incsearch': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                         parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
+            'ignorecase': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False,
+                                          parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
+            'autoindent': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                          parser=None, action=set_generic_view_setting, negatable=False),
+            'showminimap': vi_user_setting(scope=SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
+                                           parser=None, action=set_minimap, negatable=True),
+            'visualbell': vi_user_setting(scope=SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True,
+                                          parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
+            'rulers': vi_user_setting(scope=SCOPE_VIEW, values=None, default=[],
+                                      parser=opt_rulers_parser, action=set_generic_view_setting, negatable=False),
+            'showsidebar': vi_user_setting(scope=SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
+                                           parser=None, action=set_sidebar, negatable=True),
         }
 
         self.assertEqual(len(KNOWN_OPTIONS), len(VI_OPTIONS))
@@ -136,7 +145,14 @@ class TestViEditorSettings(ViewTestCase):
 
     def test_can_retrieve_window_level_settings(self):
         # TODO: use mock to patch dict
-        VI_OPTIONS['foo'] = vi_user_setting(scope=SCOPE_WINDOW, values=(100,), default='bar', parser=None, action=None, negatable=False)
+        VI_OPTIONS['foo'] = vi_user_setting(
+            scope=SCOPE_WINDOW,
+            values=(100,),
+            default='bar',
+            parser=None,
+            action=None,
+            negatable=False
+        )
         self.settsman.view.window().settings().set('vintageous_foo', 100)
         self.assertEqual(self.settsman['foo'], 100)
         del VI_OPTIONS['foo']

@@ -9,9 +9,7 @@ from NeoVintageous.lib import ex
 @ex.command('tabrewind', 'tabr')
 class TokenTabFirstCommand(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__([],
-                         TOKEN_COMMAND_TAB_FIRST_COMMAND,
-                         'tabfirst', *args, **kwargs)
+        super().__init__([], TOKEN_COMMAND_TAB_FIRST_COMMAND, 'tabfirst', *args, **kwargs)
         self.target_command = 'ex_tabfirst'
 
 
@@ -22,4 +20,5 @@ def scan_command_tab_first_command(state):
         return None, [TokenTabFirstCommand(), TokenEof()]
 
     bang = c == '!'
+
     return None, [TokenTabFirstCommand(forced=bang), TokenEof()]

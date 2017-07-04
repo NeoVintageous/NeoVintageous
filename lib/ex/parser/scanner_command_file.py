@@ -10,9 +10,7 @@ from NeoVintageous.lib import ex
 @ex.command('file', 'f')
 class TokenCommandFile(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({},
-                         TOKEN_COMMAND_FILE,
-                         'file', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_FILE, 'file', *args, **kwargs)
         self.target_command = 'ex_file'
 
 

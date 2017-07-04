@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('wall', 'wa')
 class TokenWriteAllCommand(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({},
-                         TOKEN_COMMAND_WRITE_ALL,
-                         'write_all', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_WRITE_ALL, 'write_all', *args, **kwargs)
         self.target_command = 'ex_write_all'
 
 

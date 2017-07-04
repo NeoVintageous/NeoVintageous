@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('cd', 'cd')
 class TokenCdCommand(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_CD_COMMAND,
-                         'cd', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_CD_COMMAND, 'cd', *args, **kwargs)
         self.target_command = 'ex_cd'
 
     @property

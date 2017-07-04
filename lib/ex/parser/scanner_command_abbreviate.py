@@ -2,7 +2,6 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_ABBREVIATE
 from .tokens_base import TokenOfCommand
-
 from NeoVintageous.lib import ex
 
 

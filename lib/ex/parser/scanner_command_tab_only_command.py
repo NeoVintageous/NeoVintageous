@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('tabonly', 'tabo')
 class TokenTabOnlyCommand(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__([],
-                         TOKEN_COMMAND_TAB_ONLY_COMMAND,
-                         'tabonly', *args, **kwargs)
+        super().__init__([], TOKEN_COMMAND_TAB_ONLY_COMMAND, 'tabonly', *args, **kwargs)
         self.target_command = 'ex_tabonly'
 
 
@@ -21,4 +19,5 @@ def scan_command_tab_only_command(state):
         return None, [TokenTabOnlyCommand(), TokenEof()]
 
     bang = c == '!'
+
     return None, [TokenTabOnlyCommand(forced=bang), TokenEof()]

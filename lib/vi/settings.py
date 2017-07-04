@@ -84,15 +84,15 @@ def opt_rulers_parser(value):
 
 
 VI_OPTIONS = {
-    'autoindent':  vi_user_setting(scope=SCOPE_VI_VIEW,   values=(True, False, '0', '1'), default=True,  parser=None,              action=set_generic_view_setting, negatable=False),
-    'hlsearch':    vi_user_setting(scope=SCOPE_VI_VIEW,   values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-    'ignorecase':  vi_user_setting(scope=SCOPE_VI_VIEW,   values=(True, False, '0', '1'), default=False, parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-    'incsearch':   vi_user_setting(scope=SCOPE_VI_VIEW,   values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-    'magic':       vi_user_setting(scope=SCOPE_VI_VIEW,   values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-    'visualbell':  vi_user_setting(scope=SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True,  parser=opt_bool_parser,   action=set_generic_view_setting, negatable=True),
-    'rulers':      vi_user_setting(scope=SCOPE_VIEW,      values=None,                    default=[],    parser=opt_rulers_parser, action=set_generic_view_setting, negatable=False),
-    'showminimap': vi_user_setting(scope=SCOPE_WINDOW,    values=(True, False, '0', '1'), default=True,  parser=None,              action=set_minimap,              negatable=True),
-    'showsidebar': vi_user_setting(scope=SCOPE_WINDOW,    values=(True, False, '0', '1'), default=True,  parser=None,              action=set_sidebar,              negatable=True),
+    'autoindent': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=None, action=set_generic_view_setting, negatable=False),  # noqa: E501
+    'hlsearch': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),  # noqa: E501
+    'ignorecase': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False, parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),  # noqa: E501
+    'incsearch': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),  # noqa: E501
+    'magic': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),  # noqa: E501
+    'visualbell': vi_user_setting(scope=SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True, parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),  # noqa: E501
+    'rulers': vi_user_setting(scope=SCOPE_VIEW, values=None, default=[], parser=opt_rulers_parser, action=set_generic_view_setting, negatable=False),  # noqa: E501
+    'showminimap': vi_user_setting(scope=SCOPE_WINDOW, values=(True, False, '0', '1'), default=True, parser=None, action=set_minimap, negatable=True),  # noqa: E501
+    'showsidebar': vi_user_setting(scope=SCOPE_WINDOW, values=(True, False, '0', '1'), default=True, parser=None, action=set_sidebar, negatable=True),  # noqa: E501
 }
 
 
@@ -203,7 +203,7 @@ class VintageSettings(object):
         if view is not None and not isinstance(self.view.settings().get('vintage'), dict):
             self.view.settings().set('vintage', dict())
 
-        if view is not None and view.window() is not None and not isinstance(self.view.window().settings().get('vintage'), dict):
+        if view is not None and view.window() is not None and not isinstance(self.view.window().settings().get('vintage'), dict):  # noqa: E501
             self.view.window().settings().set('vintage', dict())
 
     def __get__(self, instance, owner):

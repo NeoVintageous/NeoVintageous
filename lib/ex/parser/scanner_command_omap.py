@@ -7,9 +7,7 @@ from NeoVintageous.lib import ex
 @ex.command('omap', 'om')
 class TokenCommandOmap(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_OMAP,
-                         'omap', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_OMAP, 'omap', *args, **kwargs)
         self.target_command = 'ex_omap'
 
     @property

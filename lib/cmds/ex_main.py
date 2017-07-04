@@ -148,7 +148,10 @@ class CycleCmdlineHistory(sublime_plugin.TextCommand):
         else:
             CycleCmdlineHistory.HISTORY_INDEX += -1 if backwards else 1
 
-        if CycleCmdlineHistory.HISTORY_INDEX == len(EX_HISTORY['cmdline']) or CycleCmdlineHistory.HISTORY_INDEX < -len(EX_HISTORY['cmdline']):
+        if (
+            CycleCmdlineHistory.HISTORY_INDEX == len(EX_HISTORY['cmdline']) or
+            CycleCmdlineHistory.HISTORY_INDEX < -len(EX_HISTORY['cmdline'])
+        ):
             CycleCmdlineHistory.HISTORY_INDEX = -1 if backwards else 0
 
         self.view.erase(edit, sublime.Region(0, self.view.size()))

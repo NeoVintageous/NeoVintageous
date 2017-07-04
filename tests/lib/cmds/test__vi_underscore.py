@@ -46,7 +46,7 @@ MULTI_COUNT_NORMAL_CASES = (
 
 MULTI_COUNT_INTERNAL_NORMAL_CASES = (
     # Test cases for 'c' behavior, 'd' behaves differently
-    test_data(' 123\n 678\n bcd', (2, 2), ViewTestCase.modes.INTERNAL_NORMAL, 2, (0, 10),  'Internal count 2'),
+    test_data(' 123\n 678\n bcd', (2, 2), ViewTestCase.modes.INTERNAL_NORMAL, 2, (0, 10), 'Internal count 2'),
     test_data(' 123\n 678\n bcd', (7, 7), ViewTestCase.modes.INTERNAL_NORMAL, 3, (5, 14), 'Internal over count'),
 )
 

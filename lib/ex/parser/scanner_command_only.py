@@ -21,4 +21,5 @@ def scan_command_only(state):
         return None, [TokenCommandOnly(forced=True), TokenEof()]
 
     assert bang == EOF, 'trailing characters'
+
     return None, [TokenCommandOnly(), TokenEof()]

@@ -55,15 +55,18 @@ def scan_range(state):
 
     if c == '.':
         state.emit()
+
         return scan_range, [TokenDot()]
 
     if c == '$':
         state.emit()
+
         return scan_range, [TokenDollar()]
 
     if c in ',;':
         token = TokenComma if c == ',' else TokenSemicolon
         state.emit()
+
         return scan_range, [token()]
 
     if c == "'":
@@ -77,6 +80,7 @@ def scan_range(state):
 
     if c == '%':
         state.emit()
+
         return scan_range, [TokenPercent()]
 
     if c in '\t ':
@@ -87,11 +91,13 @@ def scan_range(state):
         return scan_digits(state)
 
     state.backup()
+
     return scan_command, []
 
 
 def scan_mark(state):
     c = state.expect_match(r'[a-zA-Z\[\]()<>]')
+
     return scan_range, [TokenMark(c.group(0))]
 
 
@@ -101,8 +107,10 @@ def scan_digits(state):
         if not c.isdigit():
             if c == EOF:
                 return None, [TokenDigits(state.emit()), TokenEof()]
+
             state.backup()
             break
+
     return scan_range, [TokenDigits(state.emit())]
 
 
@@ -117,6 +125,7 @@ def scan_search(state):
             content = state.emit()
             state.consume()
             token = TokenSearchForward if c == '/' else TokenSearchBackward
+
             return scan_range, [token(content)]
 
         elif c == EOF:
@@ -139,6 +148,7 @@ def scan_offset(state):
 
         if c == EOF:
             state.ignore()
+
             return None, [TokenOffset(list(map(to_int, offsets))), TokenEof()]
 
         if c == '+' or c == '-':
@@ -150,6 +160,7 @@ def scan_offset(state):
         if not c.isdigit():
             state.backup()
             state.ignore()
+
             return scan_range, [TokenOffset(list(map(to_int, offsets)))]
 
 
@@ -160,4 +171,5 @@ def scan_command(state):
             return subscanner(state)
 
     state.expect(EOF, lambda: nvim.Error(nvim.E_UNKNOWN_COMMAND))
+
     return None, [TokenEof()]

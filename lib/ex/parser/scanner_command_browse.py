@@ -7,9 +7,7 @@ from NeoVintageous.lib import ex
 @ex.command('browse', 'bro')
 class TokenBrowse(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_BROWSE,
-                         'browse', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_BROWSE, 'browse', *args, **kwargs)
         self.target_command = 'ex_browse'
 
 

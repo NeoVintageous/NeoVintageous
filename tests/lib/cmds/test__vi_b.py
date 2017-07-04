@@ -11,14 +11,14 @@ test_data = namedtuple('test_data', 'initial_text regions cmd_params expected ac
 
 
 TESTS_NORMAL_MODE_SINGLE_SEL = (
-    test_data(initial_text='abc',     regions=[[(0, 2), (0, 2)]], cmd_params={'mode': ViewTestCase.modes.NORMAL},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),
-    test_data(initial_text='abc abc', regions=[[(0, 4), (0, 4)]], cmd_params={'mode': ViewTestCase.modes.NORMAL},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),
-    test_data(initial_text='abc a',   regions=[[(0, 4), (0, 4)]], cmd_params={'mode': ViewTestCase.modes.NORMAL},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),
+    test_data(initial_text='abc',     regions=[[(0, 2), (0, 2)]], cmd_params={'mode': ViewTestCase.modes.NORMAL},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E501, E241
+    test_data(initial_text='abc abc', regions=[[(0, 4), (0, 4)]], cmd_params={'mode': ViewTestCase.modes.NORMAL},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E501, E241
+    test_data(initial_text='abc a',   regions=[[(0, 4), (0, 4)]], cmd_params={'mode': ViewTestCase.modes.NORMAL},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E501, E241
 )
 
 TESTS_VISUAL_MODE_SINGLE_SEL_START_LEN_1 = (
-    test_data(initial_text='abc',   regions=[[(0, 2), (0, 3)]], cmd_params={'mode': ViewTestCase.modes.VISUAL},  expected=[(0, 3), (0, 0)], actual_func=first_sel,  msg=''),
-    test_data(initial_text='abc a', regions=[[(0, 4), (0, 5)]], cmd_params={'mode': ViewTestCase.modes.VISUAL},  expected=[(0, 5), (0, 0)], actual_func=first_sel,  msg=''),
+    test_data(initial_text='abc',   regions=[[(0, 2), (0, 3)]], cmd_params={'mode': ViewTestCase.modes.VISUAL},  expected=[(0, 3), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E501, E241
+    test_data(initial_text='abc a', regions=[[(0, 4), (0, 5)]], cmd_params={'mode': ViewTestCase.modes.VISUAL},  expected=[(0, 5), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E501, E241
 )
 
 TESTS = TESTS_NORMAL_MODE_SINGLE_SEL + TESTS_VISUAL_MODE_SINGLE_SEL_START_LEN_1

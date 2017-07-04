@@ -56,8 +56,8 @@ class Mappings(object):
         try:
             _logger.debug('checking partials \'%s\' for \'%s\'', partials, seq)
             name = list(x for x in partials if x == seq)[0]
-            # FIXME: Possibly related to #613. We're not returning the view's
-            # current mode.
+            # FIXME: Possibly related to #613. We're not returning the view's current mode
+
             return (name, _mappings[mode][name])
         except IndexError:
             return (None, None)

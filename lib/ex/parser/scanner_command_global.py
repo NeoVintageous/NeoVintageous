@@ -9,9 +9,7 @@ from NeoVintageous.lib import ex
 @ex.command('global', 'g')
 class TokenCommandGlobal(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_GLOBAL,
-                         'global', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_GLOBAL, 'global', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_global'
 

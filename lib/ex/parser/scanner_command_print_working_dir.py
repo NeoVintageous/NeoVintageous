@@ -14,4 +14,5 @@ class TokenPrintWorkingDir(TokenOfCommand):
 
 def scan_command_print_working_dir(state):
     state.expect(EOF)
+
     return None, [TokenPrintWorkingDir(), TokenEof()]

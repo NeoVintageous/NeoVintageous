@@ -1,8 +1,5 @@
-"""Basic stuff used by the scanner/parser."""
+# TODO REVIEW Do we actually need these IDs?
 
-# TODO: Do we actually need these IDs?
-
-# keep these items ordered by value
 TOKEN_EOF = -1
 TOKEN_UNKNOWN = 0
 TOKEN_DOT = 1
@@ -16,7 +13,6 @@ TOKEN_PERCENT = 8
 TOKEN_DIGITS = 9
 TOKEN_MARK = 10
 
-# tokens for commands
 TOKEN_COMMAND_UNKNOWN = 0
 TOKEN_COMMAND_SUBSTITUTE = 1
 TOKEN_COMMAND_ONLY = 2
@@ -74,9 +70,7 @@ TOKEN_COMMAND_LET = 55
 TOKEN_COMMAND_WRITE_AND_QUIT_ALL = 56
 
 
-class Token(object):
-    """Base class for tokens."""
-
+class Token():
     def __init__(self, token_type, content):
         self.token_type = token_type
         self.content = content
@@ -90,19 +84,16 @@ class Token(object):
     def __eq__(self, other):
         if not isinstance(other, Token):
             return False
+
         return (other.content == self.content and
                 other.token_type == self.token_type)
 
 
 class TokenOfRange(Token):
-    """Represent a line range element."""
-
     pass
 
 
 class TokenOfCommand(Token):
-    """Represents a command line command element."""
-
     def __init__(self, params, *args, forced=False, **kwargs):
         self.params = params or {}
         # Indicates whether ! was passed on the command line (if the command
