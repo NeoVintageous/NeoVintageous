@@ -246,8 +246,8 @@ class ViSettingCompletion(sublime_plugin.TextCommand):
     @staticmethod
     def invalidate():
         ViSettingCompletion.prefix = ''
-        is_stale = True
-        items = None
+        ViSettingCompletion.is_stale = True
+        ViSettingCompletion.items = None
 
     def run(self, edit):
         if self.view.score_selector(0, 'text.excmdline') == 0:
