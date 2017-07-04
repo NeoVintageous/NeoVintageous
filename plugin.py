@@ -46,7 +46,7 @@ def _ensure_other_vimlike_packages_are_disabled():
 
 
 def plugin_loaded():
-    _logger.debug('\n\n\n\n\n------ plugin_loaded() -----\n\n\n\n\n')
+    _logger.debug('init')
 
     try:
         from package_control import events
@@ -57,7 +57,7 @@ def plugin_loaded():
 
     init_state(sublime.active_window().active_view(), new_session=True)
 
-    _logger.debug('\n\n\n\n\n------ plugin_loaded() (finished) -----\n\n\n\n\n')
+    _logger.debug('done')
 
 
 def plugin_unloaded():

@@ -40,7 +40,7 @@ def reload():
 
 
 def _run():
-    _logger.debug('_run() file=\'%s\'', file_name())
+    _logger.debug('file=\'%s\'', file_name())
     try:
         with _open(file_name(), 'r') as f:
             for line in f:
@@ -58,7 +58,7 @@ _PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>map|nmap|omap|
 def _parse_line(line):
     try:
         line = line.rstrip()
-        _logger.debug('parse line \'%s\'', line)
+        _logger.debug('\'%s\'', line)
         match = _PARSE_LINE_PATTERN.match(line)
         if match:
             return ('ex_' + match.group('cmd'), {'command_line': match.group('command_line')})

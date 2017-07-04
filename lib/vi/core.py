@@ -1,6 +1,7 @@
 import sublime
 import sublime_plugin
 
+from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi.utils import IrreversibleTextCommand
 
@@ -79,7 +80,7 @@ class ViCommandMixin(object):
         try:
             xpos = self._view.rowcol(self._view.sel()[0].b)[1]
         except Exception as e:
-            print(e)
+            nvim.console_message(e)
             raise ValueError('could not set xpos')
 
         state.xpos = xpos

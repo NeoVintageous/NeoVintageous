@@ -54,7 +54,7 @@ class Mappings(object):
     def _find_full_match(self, mode, seq):
         partials = self._find_partial_match(mode, seq)
         try:
-            _logger.debug('checking partials \'%s\' for \'%s\'', partials, seq)
+            _logger.debug('check partials %s for %s', partials, seq)
             name = list(x for x in partials if x == seq)[0]
             # FIXME: Possibly related to #613. We're not returning the view's current mode
 
@@ -93,16 +93,20 @@ class Mappings(object):
         full_match = self._find_full_match(self.state.mode, key)
         partial_matches = self._find_partial_match(self.state.mode, key)
         if partial_matches:
-            _logger.debug('user mapping found \'%s\' -> \'%s\'', key, partial_matches)
+            _logger.debug('found user mapping \'%s\' -> %s', key, partial_matches)
+
             return (True, full_match[0])
-        _logger.debug('user mapping not found \'%s\' -> \'%s\'', key, partial_matches)
+
+        _logger.debug('user mapping not found \'%s\'', key)
+
         return (False, True)
 
     # XXX: Provisional. Get rid of this as soon as possible.
     def incomplete_user_mapping(self):
         (maybe_mapping, complete) = self.can_be_long_user_mapping(self.state.partial_sequence)
         if maybe_mapping and not complete:
-            _logger.debug('incomplete user mapping \'%s\'', self.state.partial_sequence)
+            _logger.debug('\'%s\'', self.state.partial_sequence)
+
             return True
 
     def resolve(self, sequence=None, mode=None, check_user_mappings=True):
@@ -132,7 +136,7 @@ class Mappings(object):
         # TODO: Use same structure as in mappings (nested dicst).
         command = None
         if check_user_mappings:
-            _logger.debug('checking user mappings')
+            _logger.debug('check user mappings')
             # TODO: We should be able to force a mode here too as, below.
             command = self.expand_first(seq)
 
@@ -141,7 +145,7 @@ class Mappings(object):
             return command
             # return {'name': command.mapping, 'type': cmd_types.USER}
         else:
-            _logger.debug('looking up command for seq >>>%s<<<', seq)
+            _logger.debug('look up command for seq >>>%s<<<', seq)
             command = seq_to_command(self.state, seq, mode=mode)
             _logger.debug('got command \'%s\'', command)
             return command
