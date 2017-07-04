@@ -169,6 +169,30 @@ Command | Description | Documentation
 
 Read more about unimpaired usage in the [help file](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt).
 
+### Abolish plugin
+
+A port of [abolish.vim](https://github.com/tpope/vim-abolish) is provided by default.
+
+*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
+
+Want to turn `fooBar` into `foo_bar`?  Press `crs` (coerce to snake\_case).  MixedCase (`crm`), camelCase (`crc`), snake\_case (`crs`), UPPER\_CASE (`cru`), dash-case (`cr-`), dot.case (`cr.`), space case (`cr<space>`), and Title Case (`crt`) are all just three keystrokes away.
+
+Command | Description | Documentation
+------- | ----------- | -------------
+`crm` | Coerce word under cursor to MixedCase. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crc` | Coerce word under cursor to camelCase. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crs` | Coerce word under cursor to snake_case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr_` | Coerce word under cursor to snake_case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cru` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crU` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr-` | Coerce word under cursor to dash-case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crk` | Coerce word under cursor to kebab-case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr.` | Coerce word under cursor to dot.case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr<Space>` | Coerce word under cursor to space case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crt` | Coerce word under cursor to Title Case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+
+Read more about abolish usage in the [help file](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt).
+
 ### Other plugins
 
 Please open issues about vim plugins you would like to see implemented, or about plugins you are thinking of writing because we may be willing to add it to the plugin by default.

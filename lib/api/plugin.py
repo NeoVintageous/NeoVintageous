@@ -1,7 +1,14 @@
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.cmd_base import ViOperatorDef  # noqa: F401
 from NeoVintageous.lib.vi.cmd_base import ViMotionDef  # noqa: F401
+from NeoVintageous.lib.vi import inputs  # noqa: F401
 
+
+NORMAL_MODE = modes.NORMAL
+VISUAL_MODE = modes.VISUAL
+VISUAL_BLOCK_MODE = modes.VISUAL_BLOCK
+OPERATOR_PENDING_MODE = modes.OPERATOR_PENDING
+INTERNAL_NORMAL_MODE = modes.INTERNAL_NORMAL
 
 mappings = {
     modes.NORMAL: {},

@@ -13,6 +13,7 @@ from .lib.cmds.motions import *  # noqa: F401, F403
 from .lib.cmds.support import *  # noqa: F401, F403
 from .lib.extras.surround import *  # noqa: F401, F403
 from .lib.extras.unimpaired import *  # noqa: F401, F403
+from .lib.extras.abolish import *  # noqa: F401, F403
 
 # Load the events
 from .lib.events import NeoVintageousEvents  # noqa: F401
