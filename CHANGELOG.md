@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `.vintageousrc` `<leader>` special string can be used more than once in a mapping e.g. `nnoremap <leader><leader> ggvG`
+* Added: `.vintageousrc` `<leader>` special string can be used anywhere in mapping e.g. `nnoremap g<leader> ggvG`
 * Added: `.vintageousrc` `noremap`, `nnoremap`, `vnoremap`, and `onoremap` commands
 * Added: `.vintageousrc` syntax highlighting
 * Added: `ctrl+n` and `ctrl+p` auto-complete navigation
