@@ -1,9 +1,8 @@
-# TODO Refactor XXX; cleanup, optimise (especially the on_query_context() and the on_text_command() events)
+from threading import Timer
 
-import threading
-
-import sublime
-import sublime_plugin
+from sublime import OP_EQUAL
+from sublime import OP_NOT_EQUAL
+from sublime_plugin import EventListener
 
 from NeoVintageous.lib.ex import command_names
 from NeoVintageous.lib.ex.completions import wants_fs_completions
@@ -16,6 +15,13 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import is_view
 
 
+_NORMAL_INSERT_MODE = modes.NORMAL_INSERT
+_VISUAL_BLOCK_MODE = modes.VISUAL_BLOCK
+_SELECT_MODE = modes.SELECT
+_VISUAL_LINE_MODE = modes.VISUAL_LINE
+_INSERT_MODE = modes.INSERT
+_VISUAL_MODE = modes.VISUAL
+_NORMAL_MODE = modes.NORMAL
 _COMPLETIONS = sorted([x[0] for x in command_names])
 
 
@@ -54,7 +60,7 @@ class _Context(object):
         if self.view.score_selector(0, 'text.excmdline') != 0:
             value = wants_fs_completions(self.view.substr(self.view.line(0)))
             value = value and self.view.sel()[0].b == self.view.size()
-            if operator == sublime.OP_EQUAL:
+            if operator == OP_EQUAL:
                 if operand is True:
                     return value
                 elif operand is False:
@@ -70,7 +76,7 @@ class _Context(object):
         if self.view.score_selector(0, 'text.excmdline') != 0:
             value = wants_setting_completions(self.view.substr(self.view.line(0)))
             value = value and self.view.sel()[0].b == self.view.size()
-            if operator == sublime.OP_EQUAL:
+            if operator == OP_EQUAL:
                 if operand is True:
                     return value
                 elif operand is False:
@@ -82,25 +88,25 @@ class _Context(object):
         )
 
     def vi_mode_normal_insert(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == modes.NORMAL_INSERT, operator, operand, match_all)
+        return self._check(self.create_state().mode == _NORMAL_INSERT_MODE, operator, operand, match_all)
 
     def vi_mode_visual_block(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == modes.VISUAL_BLOCK, operator, operand, match_all)
+        return self._check(self.create_state().mode == _VISUAL_BLOCK_MODE, operator, operand, match_all)
 
     def vi_mode_select(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == modes.SELECT, operator, operand, match_all)
+        return self._check(self.create_state().mode == _SELECT_MODE, operator, operand, match_all)
 
     def vi_mode_visual_line(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == modes.VISUAL_LINE, operator, operand, match_all)
+        return self._check(self.create_state().mode == _VISUAL_LINE_MODE, operator, operand, match_all)
 
     def vi_mode_insert(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == modes.INSERT, operator, operand, match_all)
+        return self._check(self.create_state().mode == _INSERT_MODE, operator, operand, match_all)
 
     def vi_mode_visual(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == modes.VISUAL, operator, operand, match_all)
+        return self._check(self.create_state().mode == _VISUAL_MODE, operator, operand, match_all)
 
     def vi_mode_normal(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == modes.NORMAL, operator, operand, match_all)
+        return self._check(self.create_state().mode == _NORMAL_MODE, operator, operand, match_all)
 
     def vi_mode_normal_or_visual(self, key, operator, operand, match_all):
         # XXX: This context is used to disable some keys for VISUALLINE.
@@ -159,33 +165,31 @@ class _Context(object):
             return None
 
     def _check(self, value, operator, operand, match_all):
-        if operator == sublime.OP_EQUAL:
+        if operator == OP_EQUAL:
             if operand is True:
                 return value
             elif operand is False:
                 return not value
-        elif operator is sublime.OP_NOT_EQUAL:
+        elif operator is OP_NOT_EQUAL:
             if operand is True:
                 return not value
             elif operand is False:
                 return value
 
 
-class NeoVintageousEvents(sublime_plugin.EventListener):
+# TODO Refactor XXX; cleanup, optimise (especially the on_query_context() and the on_text_command() events)
+class NeoVintageousEvents(EventListener):
 
     _CACHED_COMPLETIONS = []
     _CACHED_COMPLETION_PREFIXES = []
 
-    # XXX: Refactored from ViFocusRestorer
     def __init__(self):
-        self.timer = None
+        self._on_deactivate_callback_timer = None
 
     def on_query_context(self, view, key, operator, operand, match_all):
         return _Context(view).query(key, operator, operand, match_all)
 
-    # XXX: Refactored from ExCompletionsProvider
     def on_query_completions(self, view, prefix, locations):
-
         if view.score_selector(0, 'text.excmdline') == 0:
             return []
 
@@ -197,18 +201,15 @@ class NeoVintageousEvents(sublime_plugin.EventListener):
 
         compls = [x for x in _COMPLETIONS if x.startswith(prefix) and x != prefix]
         self._CACHED_COMPLETION_PREFIXES = [prefix] + compls
-        # S3 can only handle lists, not iterables.
         self._CACHED_COMPLETIONS = list(zip([prefix] + compls, compls + [prefix]))
 
         return self._CACHED_COMPLETIONS
 
-    # XXX: Refactored from ViMouseTracker
     def on_text_command(self, view, command, args):
-
         if command == 'drag_select':
             state = State(view)
 
-            if state.mode in (modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK):
+            if state.mode in (_VISUAL_MODE, _VISUAL_LINE_MODE, _VISUAL_BLOCK_MODE):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
                     return
                 elif not args.get('extend'):
@@ -219,7 +220,7 @@ class NeoVintageousEvents(sublime_plugin.EventListener):
                         ]
                     })
 
-            elif state.mode == modes.NORMAL:
+            elif state.mode == _NORMAL_MODE:
                 # TODO(guillermooo): Dragging the mouse does not seem to
                 # fire a different event than simply clicking. This makes it
                 # hard to update the xpos.
@@ -237,41 +238,32 @@ class NeoVintageousEvents(sublime_plugin.EventListener):
     def on_post_save(self, view):
         modeline(view)
 
-        # XXX: Refactored from VintageStateTracker
         # Ensure the carets are within valid bounds. For instance, this is a
-        # concern when `trim_trailing_white_space_on_save` is set to true.
-        state = State(view)
-        view.run_command('_vi_adjust_carets', {'mode': state.mode})
+        # concern when 'trim_trailing_white_space_on_save' is set to true.
+        view.run_command('_vi_adjust_carets', {'mode': State(view).mode})
 
-    # XXX: Refactored from VintageStateTrackers
     def on_close(self, view):
         settings.destroy(view)
 
-    # XXX: Refactored from ViFocusRestorer
-    def action(self):
-        self.timer = None
-
-    # XXX: Refactored from ViFocusRestorer
     def on_activated(self, view):
-        if self.timer:
-            self.timer.cancel()
-            # Switching to a different view; enter normal mode.
+        if self._on_deactivate_callback_timer:
+            # Switching to a different view; enter normal mode
             init_state(view)
-        else:
-            # Switching back from another application. Ignore.
+            self._on_deactivate_callback_timer.cancel()
+        else:  # Switching back from another application; Ignore
             pass
 
-    # XXX: Refactored from ViFocusRestorer and HistoryIndexRestorers
     def on_deactivated(self, view):
 
         # TODO Review clearing the cmdline history, does it need to be an event?
-        # XXX: Refactored from HistoryIndexRestorer
         # Because views load asynchronously, do not restore history index
         # .on_activated(), but here instead. Otherwise, the .score_selector()
         # call won't yield the desired results.
         if view.score_selector(0, 'text.excmdline') > 0:
             view.run_command('clear_cmdline_history_index')
 
-        # XXX: Refactored from ViFocusRestorer
-        self.timer = threading.Timer(0.25, self.action)
-        self.timer.start()
+        self._on_deactivate_callback_timer = Timer(0.25, self._on_deactivate_callback)
+        self._on_deactivate_callback_timer.start()
+
+    def _on_deactivate_callback(self):
+        self._on_deactivate_callback_timer = None
