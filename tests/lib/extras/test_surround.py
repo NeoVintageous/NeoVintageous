@@ -24,7 +24,7 @@ class Test_ys(ViewTestCase):
 
             surround_with, expected = data
 
-            self.view.run_command('nvim_surround_ys', {
+            self.view.run_command('_neovintageous_surround_ys', {
                 'mode': self.VISUAL_MODE,
                 'surround_with': surround_with
             })
@@ -43,7 +43,7 @@ class Test_ys(ViewTestCase):
 
             surround_with, expected = data
 
-            self.view.run_command('nvim_surround_ys', {
+            self.view.run_command('_neovintageous_surround_ys', {
                 'mode': self.INTERNAL_NORMAL_MODE,
                 'surround_with': surround_with,
                 'motion': motion
@@ -71,7 +71,7 @@ class Test_cs(ViewTestCase):
             self.state.mode = self.INTERNAL_NORMAL_MODE
 
             replace_what, expected = data
-            self.view.run_command('nvim_surround_cs', {
+            self.view.run_command('_neovintageous_surround_cs', {
                 'mode': self.INTERNAL_NORMAL_MODE,
                 'replace_what': replace_what
             })
@@ -97,7 +97,7 @@ class Test_ds(ViewTestCase):
             self.select(5)
             self.state.mode = self.INTERNAL_NORMAL_MODE
 
-            self.view.run_command('nvim_surround_ds', {
+            self.view.run_command('_neovintageous_surround_ds', {
                 'mode': self.INTERNAL_NORMAL_MODE,
                 'replace_what': replace_what
             })
@@ -119,7 +119,7 @@ class Test_big_s(ViewTestCase):
             self.write(text)
             self.select([self._R(*region) for region in regions])
 
-            self.view.run_command('nvim_surround_ys', {
+            self.view.run_command('_neovintageous_surround_ys', {
                 'mode': self.VISUAL_MODE,
                 'surround_with': surround_with
             })
