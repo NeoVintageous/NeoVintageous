@@ -124,6 +124,20 @@
     {"keys": ["Ç"], "command": "press_key", "args": {"key": "Ç"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ñ"], "command": "press_key", "args": {"key": "Ñ"}, "context": [{"key": "vi_command_mode_aware"}]},
 
+    // Note that some plugins set some `CTRL` modifier keymaps in the form
+    // `CTRL+{Char}, {Char}` i.e. press `CTRL+{Char}` followed a character in the
+    // range `{Char}`. This means when  you press `CTRL+{Char}` ST waits for the
+    // next key press.
+    //
+    // This may obviously cause issues where we want to map `CTRL+{Char}` directly
+    // to a command without pressing another key. In these cases the `CTRL`
+    // modifier will need to be pressed twice.
+    //
+    // A common `CTRL` modifiers defined by plugins in `CTRL+{Char}, {Char}`. In
+    // this example it causes an issue with the `CTRL+k` keymap defined for
+    // naviating the overlay i.e. in some cases it needs to be pressed twice to
+    // work.
+
     // Overlay control
     // alias ctrl+j is an alias of ctrl+n
     { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
