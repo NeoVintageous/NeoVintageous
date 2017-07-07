@@ -50,8 +50,8 @@ Command | Context | Description | Notes
 `k` | sidebar | up | `ctrl+0` focuses the sidebar
 `h` | sidebar | close node / go to parent node | `ctrl+0` focuses the sidebar
 `l` | sidebar | open node | `ctrl+0` focuses the sidebar
-`ctrl+n` or `ctrl+j` | overlay | down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
-`ctrl+p` or `ctrl+k` | overlay | up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+`ctrl+n` or `ctrl+j` | overlay, auto-complete | down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+`ctrl+p` or `ctrl+k` | overlay, auto-complete | up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
 
 ### Command Palette
 

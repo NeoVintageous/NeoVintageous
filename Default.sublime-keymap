@@ -133,6 +133,16 @@
     { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     // --
 
+    // Autocomplete control
+    // @todo Add control operand constraint. What is the control operand for the autocomplete popup?
+    // alias ctrl+j is an alias of ctrl+n
+    {"keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    // alias ctrl+k is an alias of ctrl+p
+    {"keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    // --
+
     {"keys": ["ctrl+c"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
     {"keys": ["ctrl+w"], "command": "delete_word", "args": {"forward": false}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "vi_use_ctrl_keys"}]},
 

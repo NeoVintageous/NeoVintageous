@@ -6,6 +6,13 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `ctrl+n` and `ctrl+p` auto-complete navigation
+
+  Command | Description
+  ------- | -----------
+  `ctrl+n` or `ctrl+j` | down
+  `ctrl+p` or `ctrl+k` | up
+
 * Added: `ctrl+n` and `ctrl+p` overlay navigation
 
   Command | Description | Notes
