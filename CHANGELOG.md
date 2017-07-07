@@ -6,6 +6,13 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `ctrl+n` and `ctrl+p` overlay navigation
+
+  Command | Description | Notes
+  ------- | ----------- | -----
+  `ctrl+n` | down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+  `ctrl+p` | up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+
 * Added: Port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) go to error commands
 
   Command | Description | Documentation | Dependencies
