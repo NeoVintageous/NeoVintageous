@@ -6,7 +6,24 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added: Port of [abolish.vim](https://github.com/tpope/vim-abolish). Below is a table of what is currently available.
+* Added: Port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) go to error commands
+
+  Command | Description | Documentation | Dependencies
+  ------- | ----------- | ------------- | ------------
+  `[l` | Jump to `[count]` next error. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [Linter](https://github.com/SublimeLinter/SublimeLinter3)
+  `]l` | Jump to `[count]` previous error.. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [Linter](https://github.com/SublimeLinter/SublimeLinter3)
+
+* Added: Port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) option toggling commands
+
+  On | Off | Toggle | Description | Documentation
+  -- | --- | ------ | ----------- | -------------
+  `[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+
+* Added: Port of [abolish.vim](https://github.com/tpope/vim-abolish) coercion commands
 
   Command | Description | Documentation
   ------- | ----------- | -------------
