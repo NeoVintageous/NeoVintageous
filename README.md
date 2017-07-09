@@ -70,27 +70,36 @@ Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNe
 
 ### The .vintageousrc file
 
-A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file. The file is located at `Packages/User/.vintageousrc` and is read during startup. There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:nmap`, `:omap`, and `:vmap`.
+A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file. The file is located at `Packages/User/.vintageousrc` and is read during startup. There is limited support, the following are supported in basic use-cases: `let mapleader=`, `map`, `nmap`, `omap`, `vmap`, `noremap`, `nnoremap`, `onoremap`, and `vnoremap`. It's important to note that currently `map`, `nmap`, `omap`, `vmap` work the same as their `remap` variants, this is a known issue.
 
-    " The character " (the double quote mark) starts a comment
+```
+" The character " (the double quote mark) starts a comment
 
-    let mapleader=,
+let mapleader=,
 
-    " Enter command line mode using space
-    nmap <space> :
+" Enter command line mode
+nnoremap <space> :
 
-    " Visually select all content using ,a
-    nmap <leader>a ggvG
+" Visually select all content
+nnoremap <leader>a ggvG
 
-    " Sort with ,s in visual mode
-    vmap <leader>s <F9>
+" " Sort with ,s in visual mode
+" vnoremap <leader>s <F9>
 
-    " Scroll viewport faster ctrl+e and ctrl+y
-    nmap <C-e> 3<C-e>
-    nmap <C-y> 3<C-y>
+" Scroll viewport faster with ctrl+e and ctrl+y
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 
-    " Scroll down using shift-enter
-    nmap <S-cr> <C-d>
+" Make j and k work file linewise instead of screen linewise.
+" http://stevelosh.com/blog/2010/09/coming-home-to-vim/
+" Important! There is a potential performance hit
+" navigating with j and k with these mappings enabled.
+nnoremap j gj
+nnoremap k gk
+
+" " Scroll down using shift+enter
+" noremap <S-cr> <C-d>
+```
 
 Read more about mappings and the .vimrc file in the [Vim main help file](https://neovim.io/doc/user/map.html).
 

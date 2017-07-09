@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `.vintageousrc` `noremap`, `nnoremap`, `vnoremap`, and `onoremap` commands
 * Added: `.vintageousrc` syntax highlighting
 * Added: `ctrl+n` and `ctrl+p` auto-complete navigation
 
