@@ -217,6 +217,30 @@ NeoVintageous cannot remap the caps lock. This is an OS level configuration e.g.
 
     gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 
+### Mapping `jj` to `Esc`
+
+Add the following custom keybinding: `Preferences > Key Bindings`
+
+```json
+{
+    "keys": ["j", "j"],
+    "command": "_enter_normal_mode",
+    "args": {"mode": "mode_insert"},
+    "context": [{"key": "vi_insert_mode_aware"}]
+}
+```
+
+Alternative key bindings can also be mapped e.g. `ctrl+[`
+
+```json
+{
+    "keys": ["ctrl+["],
+    "command": "_enter_normal_mode",
+    "args": {"mode": "mode_insert"},
+    "context": [{"key": "vi_insert_mode_aware"}]
+}
+```
+
 ### Holding down a key like j does not repeat the command
 
 This is a feature of OS X Lion and newer versions.

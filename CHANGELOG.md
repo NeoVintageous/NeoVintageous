@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: How to map `jj` to `Esc` (documentation)
 * Added: How to disable arrow keys (documentation)
 * Added: Commentary plugin usage (documentation)
 * Added: Surround plugin usage (documentation)
