@@ -25,35 +25,34 @@ def _ensure_other_vimlike_packages_are_disabled():
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
 
-    do_save = False
+    settings_need_saving = False
 
     if 'Vintage' not in ignored_packages:
         ignored_packages.append('Vintage')
-        do_save = True
+        settings_need_saving = True
 
     if 'Vintageous' not in ignored_packages:
         ignored_packages.append('Vintageous')
-        do_save = True
+        settings_need_saving = True
 
     if 'Six' not in ignored_packages:
         ignored_packages.append('Six')
-        do_save = True
+        settings_need_saving = True
 
-    if do_save:
+    if settings_need_saving:
         ignored_packages.sort()
         settings.set('ignored_packages', ignored_packages)
         sublime.save_settings('Preferences.sublime-settings')
+        # TODO Should the user be prompted with dialog about needing to restart ST?
 
 
 def plugin_loaded():
     _logger.debug('init')
 
-    try:
-        from package_control import events
-        if events.install('NeoVintageous'):
-            _ensure_other_vimlike_packages_are_disabled()
-    except ImportError:
-        nvim.console_message('could not import Package Control')
+    _ensure_other_vimlike_packages_are_disabled()
+
+    # TODO Should the CHANGELOG be opened on upgrade?
+    # TODO Should the user be prompted with dialog about needing to restart ST on upgrade?
 
     init_state(sublime.active_window().active_view(), new_session=True)
 
