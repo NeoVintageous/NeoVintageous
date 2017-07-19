@@ -1,0 +1,281 @@
+# SYNTAX TEST "Packages/NeoVintageous/res/Command-line mode.sublime-syntax"
+
+
+:
+#<- keyword
+
+:foobar
+#<- keyword
+#^^^^^^ -keyword
+#^^^^^^ -support
+#^^^^^^ -constant
+
+:4
+#<- keyword
+#^ constant.numeric
+
+:42
+#<- keyword
+#^ constant.numeric
+
+:ab
+#<- keyword
+#^^ support.function
+:abbreviate
+#<- keyword
+#^^^^^^^^^^ support.function
+:ab!
+#^^ -support.function
+#  ^ -keyword
+:abbreviate!
+#^^^^^^^^^^ -support.function
+#          ^ -keyword
+
+:as
+#<- keyword
+#^^ support.function
+:ascii
+#<- keyword
+#^^^^^ support.function
+:as!
+#<- keyword
+#^^ -support.function
+#  ^ -keyword
+:ascii!
+#<- keyword
+#^^^^^ -support.function
+#     ^ -keyword
+
+:bro
+#<- keyword
+#^^^ support.function
+:browse
+#<- keyword
+#^^^^^^ support.function
+:bro!
+#<- keyword
+#^^^ support.function
+#   ^ keyword
+:browse!
+#<- keyword
+#^^^^^^ support.function
+#      ^ keyword
+
+:buffers
+#<- keyword
+#^^^^^^^ support.function
+:buffers!
+#<- keyword
+#^^^^^^^ support.function
+#       ^ keyword
+
+:cd
+#<- keyword
+#^^ support.function
+:cdd
+#<- keyword
+#^^^ support.function
+:clo
+#<- keyword
+#^^^ support.function
+:close
+#<- keyword
+#^^^^^ support.function
+:clo!
+#<- keyword
+#^^^ support.function
+#   ^ keyword
+:close!
+#<- keyword
+#^^^^^ support.function
+#     ^ keyword
+
+:exi
+#<- keyword
+#^^^ support.function
+:exit!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:file
+#<- keyword
+#^^^^ support.function
+:file!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:files
+#<- keyword
+#^^^^^ support.function
+:files!
+#<- keyword
+#^^^^^ support.function
+#     ^ keyword
+
+:ls
+#<- keyword
+#^^ support.function
+:ls!
+#<- keyword
+#^^ support.function
+#  ^ keyword
+
+:print
+#<- keyword
+#^^^^^ support.function
+:Print
+#<- keyword
+#^^^^^ support.function
+
+:pw
+#<- keyword
+#^^ support.function
+:pwd
+#<- keyword
+#^^^ support.function
+:pd!
+#^^ -support.function
+#  ^ -keyword
+:pwd!
+#^^^ -support.function
+#   ^ -keyword
+
+:q
+#<- keyword
+#^ support.function
+
+:qa
+#<- keyword
+#^^ support.function
+
+:qall
+#<- keyword
+#^^^^ support.function
+
+:qall!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:quit
+#<- keyword
+#^^^^ support.function
+
+:quit!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:quita
+#<- keyword
+#^^^^^  support.function
+
+:quitall
+#<- keyword
+#^^^^^^^  support.function
+
+:quitall!
+#<- keyword
+#^^^^^^^  support.function
+#       ^ keyword
+
+:r
+#<- keyword
+#^ support.function
+:read
+#<- keyword
+#^^^^ support.function
+:reg
+#<- keyword
+#^^^ support.function
+:registers
+#<- keyword
+#^^^^^^^^^ support.function
+
+:s
+#<- keyword
+#^ support.function
+:substitute
+#<- keyword
+#^^^^^^^^^^ support.function
+:se
+#<- keyword
+#^^ support.function
+:set
+#<- keyword
+#^^^ support.function
+:setl
+#<- keyword
+#^^^^ support.function
+:setlocal
+#<- keyword
+#^^^^^^^^ support.function
+:sh
+#<- keyword
+#^^ support.function
+:shell
+#<- keyword
+#^^ support.function
+
+:w
+#<- keyword
+#^ support.function
+:wall
+#<- keyword
+#^^^^ support.function
+:write
+#<- keyword
+#^^^^^ support.function
+:wq
+#<- keyword
+#^^ support.function
+:wq!
+#<- keyword
+#^^ support.function
+#  ^ keyword
+:wqa
+#<- keyword
+#^^^ support.function
+:wqall
+#<- keyword
+#^^^^^ support.function
+
+:x
+#<- keyword
+#^ support.function
+:x!
+#<- keyword
+#^ support.function
+# ^ keyword
+:xit
+#<- keyword
+#^^^ support.function
+:xit!
+#<- keyword
+#^^^ support.function
+#   ^ keyword
+:xa
+#<- keyword
+#^^ support.function
+:xa!
+#<- keyword
+#^^ support.function
+#  ^ keyword
+:xall
+#<- keyword
+#^^^^ support.function
+:xall!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:yank
+#<- keyword
+#^^^^ support.function
+
+:42yank
+#<- keyword
+#^^ constant.numeric
+#  ^^^^ support.function

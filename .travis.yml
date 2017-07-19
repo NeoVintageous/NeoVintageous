@@ -32,6 +32,7 @@ install:
 
 script:
     - sh travis.sh run_tests --coverage
+    - sh travis.sh run_syntax_tests
     - flake8 --statistics
 
 after_success:

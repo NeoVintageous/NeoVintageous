@@ -21,6 +21,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Removed: Deprecated `neovintageous_exit_from_command_mode` command
 * Removed: Deprecated `toggle_mode` command
 
+### Fixed
+
+* Fixed: Lots of Command-line mode syntax highlighting bugs
+
 ## 1.3.1 - 2017-07-31
 
 * Fixed [#281](https://github.com/NeoVintageous/NeoVintageous/issues/281): `aW` text objects error if cursor starts at whitespace
