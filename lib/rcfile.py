@@ -52,7 +52,7 @@ def _run():
         pass
 
 
-_PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|vnoremap|vmap|onoremap|omap|let) .*)$')  # noqa: E501
+_PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|vnoremap|vmap|onoremap|omap|let) .*)$')  # FIXME # noqa: E501
 
 
 # TODO Properly implement map, nmap, vmap and omap

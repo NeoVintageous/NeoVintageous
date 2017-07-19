@@ -18,27 +18,27 @@ test = namedtuple('simple_test', 'content start brackets expected msg')
 
 TESTS = (
     test(content='aaa', start=1, brackets=('\\{', '\\}'), expected=None, msg='should return none'),
-    test(content='a{a}a', start=1, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find bracket at caret position'),  # noqa: E501
+    test(content='a{a}a', start=1, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find bracket at caret position'),  # FIXME # noqa: E501
     test(content='{aa}a', start=1, brackets=('\\{', '\\}'), expected=Region(0, 1), msg='should find bracket at BOF'),
-    test(content='bbb{aa}a', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find brackets after caret'),  # noqa: E501
-    test(content='a{bc', start=3, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find unbalanced bracket before caret'),  # noqa: E501
+    test(content='bbb{aa}a', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find brackets after caret'),  # FIXME # noqa: E501
+    test(content='a{bc', start=3, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find unbalanced bracket before caret'),  # FIXME # noqa: E501
 
-    test(content='foo {bar {foo} bar}', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from RHS'),  # noqa: E501
-    test(content='foo {bar {foo} bar}', start=7, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from LHS'),  # noqa: E501
-    test(content='foo {bar {foo} bar}', start=13, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner bracket'),  # noqa: E501
+    test(content='foo {bar {foo} bar}', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from RHS'),  # FIXME # noqa: E501
+    test(content='foo {bar {foo} bar}', start=7, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from LHS'),  # FIXME # noqa: E501
+    test(content='foo {bar {foo} bar}', start=13, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner bracket'),  # FIXME # noqa: E501
 
-    test(content='foo {bar {foo} bar', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer if unbalanced outer'),  # noqa: E501
-    test(content='foo {bar {foo} bar', start=12, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner if unbalanced outer'),  # noqa: E501
-    test(content='foo {bar {foo} bar', start=4, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find bracket at caret position'),  # noqa: E501
+    test(content='foo {bar {foo} bar', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer if unbalanced outer'),  # FIXME # noqa: E501
+    test(content='foo {bar {foo} bar', start=12, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner if unbalanced outer'),  # FIXME # noqa: E501
+    test(content='foo {bar {foo} bar', start=4, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find bracket at caret position'),  # FIXME # noqa: E501
 
-    test(content='a\\{bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # noqa: E501
+    test(content='a\\{bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # FIXME # noqa: E501
     test(content='a\\{bc', start=3, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket'),
 )
 
 TESTS_NEXT_BRACKET = (
-    test(content='a\\}bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # noqa: E501
+    test(content='a\\}bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # FIXME # noqa: E501
     test(content='a\\}bc', start=0, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket'),
-    test(content='foo {bar foo bar}', start=16, brackets=('\\{', '\\}'), expected=Region(16, 17), msg='should find next bracket at caret position'),  # noqa: E501
+    test(content='foo {bar foo bar}', start=16, brackets=('\\{', '\\}'), expected=Region(16, 17), msg='should find next bracket at caret position'),  # FIXME # noqa: E501
 )
 
 

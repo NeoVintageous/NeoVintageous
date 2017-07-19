@@ -109,6 +109,7 @@ def changing_cd(f, *args, **kwargs):
             f(*args, **kwargs)
         finally:
             os.chdir(old)
+
     return inner
 
 
@@ -1306,7 +1307,9 @@ class ExTabOpenCommand(sublime_plugin.WindowCommand):
 
     def run(self, file_name=None):
         self.window.run_command('tab_control', {
-            'command': 'open', 'file_name': file_name}, )
+            'command': 'open',
+            'file_name': file_name
+        })
 
 
 # https://neovim.io/doc/user/tabpage.html#:tabnext

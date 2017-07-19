@@ -173,15 +173,14 @@ class State(object):
     @property
     def reset_during_init(self):
         # Some commands gather user input through input panels. An input panel
-        # is just a view, so when it's closed, the previous view gets
-        # activated and Vintageous init code runs. In this case, however, we
-        # most likely want the global state to remain unchanged. This variable
-        # helps to signal this.
-        #
-        # For an example, see the '_vi_slash' command.
+        # is just a view, so when it's closed, the previous view gets activated
+        # and Vintageous init code runs. In this case, however, we most likely
+        # want the global state to remain unchanged. This variable helps to
+        # signal this. For an example, see the '_vi_slash' command.
         value = self.settings.window['_vintageous_reset_during_init']
         if not isinstance(value, bool):
             return True
+
         return value
 
     @reset_during_init.setter
@@ -574,7 +573,7 @@ class State(object):
         @command
           A command definition as found in `keys.py`.
         """
-        assert isinstance(command, cmd_base.ViCommandDefBase), 'ViCommandDefBase expected, got {0}'.format(type(command))  # noqa: 501
+        assert isinstance(command, cmd_base.ViCommandDefBase), 'ViCommandDefBase expected, got {0}'.format(type(command))  # FIXME # noqa: E501
 
         if isinstance(command, cmd_base.ViMotionDef):
             if self.runnable():

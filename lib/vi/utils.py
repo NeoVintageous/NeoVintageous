@@ -199,6 +199,7 @@ def resolve_insertion_point_at_b(region):
     """
     if region.a < region.b:
         return (region.b - 1)
+
     return region.b
 
 
