@@ -2,6 +2,7 @@ from functools import partial
 import re
 
 import sublime
+from sublime import Region
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
@@ -15,7 +16,6 @@ from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import IrreversibleTextCommand
 from NeoVintageous.lib.vi.utils import is_view
 from NeoVintageous.lib.vi.utils import modes
-from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import regions_transformer
 from NeoVintageous.lib.vi.utils import regions_transformer_reversed
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
@@ -143,7 +143,7 @@ class _vi_g_big_u(ViTextCommandBase):
             view.replace(edit, s, view.substr(s).upper())
             # Reverse the resulting region so that _enter_normal_mode
             # collapses the selection as we want it.
-            return R(s.b, s.a)
+            return Region(s.b, s.a)
 
         if mode not in (modes.INTERNAL_NORMAL,
                         modes.VISUAL,
@@ -179,7 +179,7 @@ class _vi_gu(ViTextCommandBase):
             view.replace(edit, s, view.substr(s).lower())
             # reverse the resulting region so that _enter_normal_mode collapses the
             # selection as we want it.
-            return R(s.b, s.a)
+            return Region(s.b, s.a)
 
         if mode not in (modes.INTERNAL_NORMAL,
                         modes.VISUAL,
@@ -219,11 +219,11 @@ class _vi_gq(ViTextCommandBase):
                 return 'wrap_lines_plus'
 
         def reverse(view, s):
-            return R(s.end(), s.begin())
+            return Region(s.end(), s.begin())
 
         def shrink(view, s):
             if view.substr(s.b - 1) == '\n':
-                return R(s.a, s.b - 1)
+                return Region(s.a, s.b - 1)
             return s
 
         wrap_lines = wrap_command()
@@ -270,7 +270,7 @@ class _vi_u(ViWindowCommandBase):
 
         if self._view.has_non_empty_selection_region():
             def reverse(view, s):
-                return R(s.end(), s.begin())
+                return Region(s.end(), s.begin())
 
             # TODO: xpos is misaligned after this.
             regions_transformer(self._view, reverse)
@@ -302,7 +302,7 @@ class _vi_ctrl_r(ViWindowCommandBase):
     def correct_xpos(self):
         def f(view, s):
             if (view.substr(s.b) == '\n' and not view.line(s.b).empty()):
-                return R(s.b - 1)
+                return Region(s.b - 1)
             return s
 
         regions_transformer(self._view, f)
@@ -316,7 +316,7 @@ class _vi_a(ViTextCommandBase):
     def run(self, edit, count=1, mode=None):
         def f(view, s):
             if view.substr(s.b) != '\n' and s.b < view.size():
-                return R(s.b + 1)
+                return Region(s.b + 1)
             return s
 
         state = State(self.view)
@@ -356,10 +356,10 @@ class _vi_c(ViTextCommandBase):
                 if s.b > s.a:
                     pt = utils.previous_non_white_space_char(
                         view, s.b - 1, white_space=' \t\n')
-                    return R(s.a, pt + 1)
+                    return Region(s.a, pt + 1)
                 pt = utils.previous_non_white_space_char(
                     view, s.a - 1, white_space=' \t\n')
-                return R(pt + 1, s.b)
+                return Region(pt + 1, s.b)
             return s
 
         if mode is None:
@@ -463,7 +463,7 @@ class _enter_normal_mode(ViTextCommandBase):
             # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
-            new_sels = [R(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
+            new_sels = [Region(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
             self.view.sel().add_all(new_sels)
             times = int(state.normal_insert_count) - 1
             state.normal_insert_count = '1'
@@ -490,22 +490,22 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         def f(view, s):
             if mode == modes.INSERT:
                 if view.line(s.b).a != s.b:
-                    return R(s.b - 1)
+                    return Region(s.b - 1)
 
-                return R(s.b)
+                return Region(s.b)
 
             if mode == modes.INTERNAL_NORMAL:
-                return R(s.b)
+                return Region(s.b)
 
             if mode == modes.VISUAL:
                 if s.a < s.b:
                     pt = s.b - 1
                     if view.line(pt).empty():
-                        return R(pt)
+                        return Region(pt)
                     if view.substr(pt) == '\n':
                         pt -= 1
-                    return R(pt)
-                return R(s.b)
+                    return Region(pt)
+                return Region(s.b)
 
             if mode in (modes.VISUAL_LINE, modes.VISUAL_BLOCK):
                 # save selections for gv
@@ -519,14 +519,14 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                     pt = s.b - 1
                     if (view.substr(pt) == '\n') and not view.line(pt).empty():
                         pt -= 1
-                    return R(pt)
+                    return Region(pt)
                 else:
-                    return R(s.b)
+                    return Region(s.b)
 
             if mode == modes.SELECT:
-                return R(s.begin())
+                return Region(s.begin())
 
-            return R(s.b)
+            return Region(s.b)
 
         if mode == modes.UNKNOWN:
             return
@@ -616,7 +616,7 @@ class _enter_visual_mode_impl(ViTextCommandBase):
     def run(self, edit, mode=None):
         def f(view, s):
             if mode == modes.VISUAL_LINE:
-                return R(s.a, s.b)
+                return Region(s.a, s.b)
             else:
                 if s.empty() and (s.b == self.view.size()):
                     utils.blink()
@@ -630,7 +630,7 @@ class _enter_visual_mode_impl(ViTextCommandBase):
                 # Only extend .b by 1 if we're looking at empty sels.
                 if not view.has_non_empty_selection_region():
                     end += 1
-                return R(s.a, end)
+                return Region(s.a, end)
 
         regions_transformer(self.view, f)
 
@@ -667,14 +667,14 @@ class _enter_visual_line_mode_impl(ViTextCommandBase):
             if mode == modes.VISUAL:
                 if s.a < s.b:
                     if view.substr(s.b - 1) != '\n':
-                        return R(view.line(s.a).a, view.full_line(s.b - 1).b)
+                        return Region(view.line(s.a).a, view.full_line(s.b - 1).b)
                     else:
-                        return R(view.line(s.a).a, s.b)
+                        return Region(view.line(s.a).a, s.b)
                 else:
                     if view.substr(s.a - 1) != '\n':
-                        return R(view.full_line(s.a - 1).b, view.line(s.b).a)
+                        return Region(view.full_line(s.a - 1).b, view.line(s.b).a)
                     else:
-                        return R(s.a, view.line(s.b).a)
+                        return Region(s.a, view.line(s.b).a)
             else:
                 return view.full_line(s.b)
 
@@ -687,7 +687,7 @@ class _enter_replace_mode(ViTextCommandBase):
 
     def run(self, edit):
         def f(view, s):
-            return R(s.b)
+            return Region(s.b)
 
         state = self.state
         state.settings.view['command_mode'] = False
@@ -775,13 +775,13 @@ class _vi_dd(ViTextCommandBase):
 
             view.erase(edit, s)
             pt = utils.next_non_white_space_char(view, view.line(s.a).a, white_space=' \t')
-            return R(pt)
+            return Region(pt)
 
         def set_sel():
             old = [s.a for s in list(self.view.sel())]
             self.view.sel().clear()
             new = [utils.next_non_white_space_char(self.view, pt) for pt in old]
-            self.view.sel().add_all([R(pt) for pt in new])
+            self.view.sel().add_all([Region(pt) for pt in new])
 
         regions_transformer(self.view, do_motion)
         self.state.registers.yank(self, register, operation='delete')
@@ -829,7 +829,7 @@ class _vi_visual_o(ViTextCommandBase):
             # in modes.VISUAL_LINE, so we enable this for convenience. Change when/if ST can move
             # the caret while in modes.VISUAL_LINE.
             if mode in (modes.VISUAL, modes.VISUAL_LINE):
-                return R(s.b, s.a)
+                return Region(s.b, s.a)
             return s
 
         regions_transformer(self.view, f)
@@ -851,10 +851,10 @@ class _vi_yy(ViTextCommandBase):
             if count > 1:
                 row, col = self.view.rowcol(s.b)
                 end = view.text_point(row + count - 1, 0)
-                return R(view.line(s.a).a, view.full_line(end).b)
+                return Region(view.line(s.a).a, view.full_line(end).b)
 
             if view.line(s.b).empty():
-                return R(s.b, min(view.size(), s.b + 1))
+                return Region(s.b, min(view.size(), s.b + 1))
             return view.full_line(s.b)
 
         def restore():
@@ -885,7 +885,7 @@ class _vi_y(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         def f(view, s):
-            return R(s.end(), s.begin())
+            return Region(s.end(), s.begin())
 
         if mode == modes.INTERNAL_NORMAL:
             if motion is None:
@@ -912,7 +912,7 @@ class _vi_d(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         def reverse(view, s):
-            return R(s.end(), s.begin())
+            return Region(s.end(), s.begin())
 
         if mode not in (modes.INTERNAL_NORMAL, modes.VISUAL,
                         modes.VISUAL_LINE):
@@ -949,7 +949,7 @@ class _vi_d(ViTextCommandBase):
         # XXX: abstract this out for all types of selections.
         def advance_to_text_start(view, s):
             pt = utils.next_non_white_space_char(self.view, s.b)
-            return R(pt)
+            return Region(pt)
 
         if mode == modes.INTERNAL_NORMAL:
             regions_transformer(self.view, advance_to_text_start)
@@ -963,8 +963,8 @@ class _vi_big_a(ViTextCommandBase):
         def f(view, s):
             if mode == modes.VISUAL_BLOCK:
                 if self.view.substr(s.b - 1) == '\n':
-                    return R(s.end() - 1)
-                return R(s.end())
+                    return Region(s.end() - 1)
+                return Region(s.end())
 
             elif mode == modes.VISUAL:
                 pt = s.b
@@ -972,14 +972,14 @@ class _vi_big_a(ViTextCommandBase):
                     pt -= 1
                 if s.a > s.b:
                     pt = view.line(s.a).a
-                return R(pt)
+                return Region(pt)
 
             elif mode == modes.VISUAL_LINE:
                 if s.a < s.b:
                     if s.b < view.size():
-                        return R(s.end() - 1)
-                    return R(s.end())
-                return R(s.begin())
+                        return Region(s.end() - 1)
+                    return Region(s.end())
+                return Region(s.begin())
 
             elif mode != modes.INTERNAL_NORMAL:
                 return s
@@ -988,7 +988,7 @@ class _vi_big_a(ViTextCommandBase):
                 return s
 
             hard_eol = self.view.line(s.b).end()
-            return R(hard_eol, hard_eol)
+            return Region(hard_eol, hard_eol)
 
         if mode == modes.SELECT:
             self.view.window().run_command('find_all_under')
@@ -1006,21 +1006,21 @@ class _vi_big_i(ViTextCommandBase):
     def run(self, edit, count=1, mode=None):
         def f(view, s):
             if mode == modes.VISUAL_BLOCK:
-                return R(s.begin())
+                return Region(s.begin())
             elif mode == modes.VISUAL:
                 pt = view.line(s.a).a
                 if s.a > s.b:
                     pt = s.b
-                return R(pt)
+                return Region(pt)
             elif mode == modes.VISUAL_LINE:
                 line = view.line(s.a)
                 pt = utils.next_non_white_space_char(view, line.a)
-                return R(pt)
+                return Region(pt)
             elif mode != modes.INTERNAL_NORMAL:
                 return s
             line = view.line(s.b)
             pt = utils.next_non_white_space_char(view, line.a)
-            return R(pt, pt)
+            return Region(pt, pt)
 
         regions_transformer(self.view, f)
 
@@ -1048,19 +1048,19 @@ class _vi_quote(ViTextCommandBase):
             if mode == modes.VISUAL:
                 if s.a <= s.b:
                     if address.b < s.b:
-                        return R(s.a + 1, address.b)
+                        return Region(s.a + 1, address.b)
                     else:
-                        return R(s.a, address.b)
+                        return Region(s.a, address.b)
                 else:
-                    return R(s.a + 1, address.b)
+                    return Region(s.a + 1, address.b)
 
             elif mode == modes.NORMAL:
                 return address
 
             elif mode == modes.INTERNAL_NORMAL:
                 if s.a < address.a:
-                    return R(view.full_line(s.b).a, view.line(address.b).b)
-                return R(view.full_line(s.b).b, view.line(address.b).a)
+                    return Region(view.full_line(s.b).a, view.line(address.b).b)
+                return Region(view.full_line(s.b).b, view.line(address.b).a)
 
             return s
 
@@ -1093,15 +1093,15 @@ class _vi_backtick(ViTextCommandBase):
             if mode == modes.VISUAL:
                 if s.a <= s.b:
                     if address.b < s.b:
-                        return R(s.a + 1, address.b)
+                        return Region(s.a + 1, address.b)
                     else:
-                        return R(s.a, address.b)
+                        return Region(s.a, address.b)
                 else:
-                    return R(s.a + 1, address.b)
+                    return Region(s.a + 1, address.b)
             elif mode == modes.NORMAL:
                 return address
             elif mode == modes.INTERNAL_NORMAL:
-                return R(s.a, address.b)
+                return Region(s.a, address.b)
 
             return s
 
@@ -1145,7 +1145,7 @@ class _vi_big_d(ViTextCommandBase):
                 if count == 1:
                     if view.line(s.b).size() > 0:
                         eol = view.line(s.b).b
-                        return R(s.b, eol)
+                        return Region(s.b, eol)
                     return s
             return s
 
@@ -1173,7 +1173,7 @@ class _vi_big_c(ViTextCommandBase):
                 if count == 1:
                     if view.line(s.b).size() > 0:
                         eol = view.line(s.b).b
-                        return R(s.b, eol)
+                        return Region(s.b, eol)
                     return s
             return s
 
@@ -1211,7 +1211,7 @@ class _vi_big_s_action(ViTextCommandBase):
                         eol = view.line(s.b).b
                         begin = view.line(s.b).a
                         begin = utils.next_non_white_space_char(view, begin, white_space=' \t')
-                        return R(begin, eol)
+                        return Region(begin, eol)
                     return s
             return s
 
@@ -1245,9 +1245,9 @@ class _vi_s(ViTextCommandBase):
         def select(view, s):
             if mode == modes.INTERNAL_NORMAL:
                 if view.line(s.b).empty():
-                    return R(s.b)
-                return R(s.b, s.b + count)
-            return R(s.begin(), s.end())
+                    return Region(s.b)
+                return Region(s.b, s.b + count)
+            return Region(s.begin(), s.end())
 
         if mode not in (modes.VISUAL,
                         modes.VISUAL_LINE,
@@ -1287,7 +1287,7 @@ class _vi_x(ViTextCommandBase):
             nonlocal abort
             if mode == modes.INTERNAL_NORMAL:
                 eol = utils.get_eol(view, s.b)
-                return R(s.b, min(s.b + count, eol))
+                return Region(s.b, min(s.b + count, eol))
             if s.size() == 1:
                 b = s.b - 1 if s.a < s.b else s.b  # FIXME # noqa: F841
             return s
@@ -1334,13 +1334,13 @@ class _vi_r(ViTextCommandBase):
         def f(view, s):
             if mode == modes.INTERNAL_NORMAL:
                 pt = s.b + count
-                text = self.make_replacement_text(char, R(s.a, pt))
-                view.replace(edit, R(s.a, pt), text)
+                text = self.make_replacement_text(char, Region(s.a, pt))
+                view.replace(edit, Region(s.a, pt), text)
 
                 if char == '\n':
-                    return R(s.b + 1)
+                    return Region(s.b + 1)
                 else:
-                    return R(s.b)
+                    return Region(s.b)
 
             if mode in (modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK):
                 ends_in_newline = (view.substr(s.end() - 1) == '\n')
@@ -1351,9 +1351,9 @@ class _vi_r(ViTextCommandBase):
                 view.replace(edit, s, text)
 
                 if char == '\n':
-                    return R(s.begin() + 1)
+                    return Region(s.begin() + 1)
                 else:
-                    return R(s.begin())
+                    return Region(s.begin())
 
         if char is None:
             raise ValueError('bad parameters')
@@ -1379,12 +1379,12 @@ class _vi_less_than_less_than(ViTextCommandBase):
 
             a = utils.get_bol(view, s.a)
             pt = view.text_point(utils.row_at(view, a) + (count - 1), 0)
-            return R(a, utils.get_eol(view, pt))
+            return Region(a, utils.get_eol(view, pt))
 
         def action(view, s):
             bol = utils.get_bol(view, s.begin())
             pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
-            return R(pt)
+            return Region(pt)
 
         regions_transformer(self.view, motion)
         self.view.run_command('unindent')
@@ -1397,13 +1397,13 @@ class _vi_equal_equal(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         def select(view):
             s0 = utils.first_sel(self.view)
             end_row = utils.row_at(view, s0.b) + (count - 1)
             view.sel().clear()
-            view.sel().add(R(s0.begin(), view.text_point(end_row, 1)))
+            view.sel().add(Region(s0.begin(), view.text_point(end_row, 1)))
 
         if count > 1:
             select(self.view)
@@ -1421,12 +1421,12 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
         def f(view, s):
             bol = utils.get_bol(view, s.begin())
             pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
-            return R(pt)
+            return Region(pt)
 
         def select(view):
             s0 = utils.first_sel(view)
             end_row = utils.row_at(view, s0.b) + (count - 1)
-            utils.replace_sel(view, R(s0.begin(), view.text_point(end_row, 1)))
+            utils.replace_sel(view, Region(s0.begin(), view.text_point(end_row, 1)))
 
         if count > 1:
             select(self.view)
@@ -1442,12 +1442,12 @@ class _vi_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         def indent_from_begin(view, s, level=1):
             block = '\t' if not translate else ' ' * size
             self.view.insert(edit, s.begin(), block * level)
-            return R(s.begin() + 1)
+            return Region(s.begin() + 1)
 
         if mode == modes.VISUAL_BLOCK:
             translate = self.view.settings().get('translate_tabs_to_spaces')
@@ -1481,7 +1481,7 @@ class _vi_less_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         # Note: Vim does not unindent in visual block mode.
 
@@ -1504,7 +1504,7 @@ class _vi_equal(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
@@ -1556,17 +1556,17 @@ class _vi_big_x(ViTextCommandBase):
             if mode == modes.INTERNAL_NORMAL:
                 if view.line(s.b).empty():
                     abort = True
-                return R(s.b, max(s.b - count, self.line_start(s.b)))
+                return Region(s.b, max(s.b - count, self.line_start(s.b)))
             elif mode == modes.VISUAL:
                 if s.a < s.b:
                     if view.line(s.b - 1).empty() and s.size() == 1:
                         abort = True
-                    return R(view.full_line(s.b - 1).b, view.line(s.a).a)
+                    return Region(view.full_line(s.b - 1).b, view.line(s.a).a)
 
                 if view.line(s.b).empty() and s.size() == 1:
                     abort = True
-                return R(view.line(s.b).a, view.full_line(s.a - 1).b)
-            return R(s.begin(), s.end())
+                return Region(view.line(s.b).a, view.full_line(s.a - 1).b)
+            return Region(s.begin(), s.end())
 
         abort = False
 
@@ -1614,14 +1614,14 @@ class _vi_big_p(ViTextCommandBase):
                 self.view.insert(edit, sel.a, text_block)
                 self.view.sel().clear()
                 pt = sel.a + len(text_block) - 1
-                self.view.sel().add(R(pt))
+                self.view.sel().add(Region(pt))
             else:
                 pt = self.view.line(sel.a).a
                 self.view.insert(edit, pt, text_block)
                 self.view.sel().clear()
                 row = utils.row_at(self.view, pt)
                 pt = self.view.text_point(row, 0)
-                self.view.sel().add(R(pt))
+                self.view.sel().add(Region(pt))
 
         elif mode == modes.VISUAL:
             if not linewise:
@@ -1634,7 +1634,7 @@ class _vi_big_p(ViTextCommandBase):
                 self.view.sel().clear()
                 row = utils.row_at(self.view, pt + len(text_block))
                 pt = self.view.text_point(row - 1, 0)
-                self.view.sel().add(R(pt))
+                self.view.sel().add(Region(pt))
         else:
             return
 
@@ -1720,22 +1720,22 @@ class _vi_p(ViTextCommandBase):
         b_pts = [s.b for s in list(self.view.sel())]
         if len(b_pts) > 1:
             self.view.sel().clear()
-            self.view.sel().add_all([R(ploc + paste_len - 1, ploc + paste_len - 1)
+            self.view.sel().add_all([Region(ploc + paste_len - 1, ploc + paste_len - 1)
                                     for ploc in pts])
         else:
             self.view.sel().clear()
-            self.view.sel().add(R(pts[0] + paste_len - 1, pts[0] + paste_len - 1))
+            self.view.sel().add(Region(pts[0] + paste_len - 1, pts[0] + paste_len - 1))
 
     def reset_carets_linewise(self, pts):
         self.view.sel().clear()
 
         if self.state.mode == modes.VISUAL_LINE:
-            self.view.sel().add_all([R(loc) for loc in pts])
+            self.view.sel().add_all([Region(loc) for loc in pts])
             return
 
         pts = [utils.next_non_white_space_char(self.view, pt + 1) for pt in pts]
 
-        self.view.sel().add_all([R(pt) for pt in pts])
+        self.view.sel().add_all([Region(pt) for pt in pts])
 
     def prepare_fragment(self, text):
         if text.endswith('\n') and text != '\n':
@@ -2114,8 +2114,8 @@ class _vi_modify_numbers(ViTextCommandBase):
         end = pt
         while self.view.substr(end).isdigit():
             end += 1
-        return (sign, int(self.view.substr(R(pt, end))),
-                R(end, self.view.line(pt).b))
+        return (sign, int(self.view.substr(Region(pt, end))),
+                Region(end, self.view.line(pt).b))
 
     def find_next_num(self, regions):
         # Modify selections that are inside a number already.
@@ -2124,9 +2124,9 @@ class _vi_modify_numbers(ViTextCommandBase):
             if self.view.substr(r.b).isdigit():
                 while self.view.substr(a).isdigit():
                     a -= 1
-                regions[i] = R(a)
+                regions[i] = Region(a)
 
-        lines = [self.view.substr(R(r.b, self.view.line(r.b).b)) for r in regions]
+        lines = [self.view.substr(Region(r.b, self.view.line(r.b).b)) for r in regions]
         matches = [_vi_modify_numbers.NUM_PAT.search(text) for text in lines]
         if all(matches):
             return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]
@@ -2156,16 +2156,16 @@ class _vi_modify_numbers(ViTextCommandBase):
             offset = 0
             if sign == -1:
                 offset = -1
-                self.view.replace(edit, R(pt - 1, tail.b), new_text)
+                self.view.replace(edit, Region(pt - 1, tail.b), new_text)
             else:
-                self.view.replace(edit, R(pt, tail.b), new_text)
+                self.view.replace(edit, Region(pt, tail.b), new_text)
 
             rowcol = self.view.rowcol(pt + len(num_as_text) - 1 + offset)
             end_sels.append(rowcol)
 
         self.view.sel().clear()
         for (row, col) in end_sels:
-            self.view.sel().add(R(self.view.text_point(row, col)))
+            self.view.sel().add(Region(self.view.text_point(row, col)))
 
 
 # Active in select mode. Clears multiple selections and returns to normal mode.
@@ -2196,7 +2196,7 @@ class _vi_big_j(ViTextCommandBase):
         # return
 
         sels = self.view.sel()
-        s = R(sels[0].a, sels[-1].b)
+        s = Region(sels[0].a, sels[-1].b)
         if mode == modes.INTERNAL_NORMAL:
             end_pos = self.view.line(s.b).b
             start = end = s.b
@@ -2227,7 +2227,7 @@ class _vi_big_j(ViTextCommandBase):
         else:
             return s
 
-        text_to_join = self.view.substr(R(start, end))
+        text_to_join = self.view.substr(Region(start, end))
         lines = text_to_join.split('\n')
 
         if separator:
@@ -2242,9 +2242,9 @@ class _vi_big_j(ViTextCommandBase):
             # gJ
             joined_text = ''.join(lines)
 
-        self.view.replace(edit, R(start, end), joined_text)
+        self.view.replace(edit, Region(start, end), joined_text)
         sels.clear()
-        sels.add(R(end_pos))
+        sels.add(Region(end_pos))
 
 
 # https://neovim.io/doc/user/visual.html#gv
@@ -2377,7 +2377,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None):
         def f(view, s):
-            return R(s.b, s.b + 1)
+            return Region(s.b, s.b + 1)
 
         if mode in (modes.VISUAL_LINE,):
             return
@@ -2413,13 +2413,13 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
                 if first.a <= first.b:
                     if offset_b < offset_a:
-                        new_r = R(a - 1, b + 1, eol)
+                        new_r = Region(a - 1, b + 1, eol)
                     else:
-                        new_r = R(a, b, eol)
+                        new_r = Region(a, b, eol)
                 elif offset_b < offset_a:
-                    new_r = R(a, b, eol)
+                    new_r = Region(a, b, eol)
                 else:
-                    new_r = R(a - 1, b + 1, eol)
+                    new_r = Region(a - 1, b + 1, eol)
 
                 new_regs.append(new_r)
 
@@ -2465,11 +2465,11 @@ class _vi_tilde(ViTextCommandBase):
     def run(self, edit, count=1, mode=None, motion=None):
         def select(view, s):
             if mode == modes.VISUAL:
-                return R(s.end(), s.begin())
-            return R(s.begin(), s.end() + count)
+                return Region(s.end(), s.begin())
+            return Region(s.begin(), s.end() + count)
 
         def after(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         regions_transformer(self.view, select)
         self.view.run_command('swap_case')
@@ -2486,7 +2486,7 @@ class _vi_g_tilde(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None, motion=None):
         def f(view, s):
-            return R(s.end(), s.begin())
+            return Region(s.end(), s.begin())
 
         if motion:
             self.save_sel()
@@ -2515,7 +2515,7 @@ class _vi_visual_u(ViTextCommandBase):
             self.view.replace(edit, s, self.view.substr(s).lower())
 
         def after(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         regions_transformer(self.view, after)
 
@@ -2531,7 +2531,7 @@ class _vi_visual_big_u(ViTextCommandBase):
             self.view.replace(edit, s, self.view.substr(s).upper())
 
         def after(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         regions_transformer(self.view, after)
 
@@ -2545,7 +2545,7 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
     def run(self, edit, count=1, mode=None):
         def select(view, s):
             l = view.line(s.b)
-            return R(l.end(), l.begin())
+            return Region(l.end(), l.begin())
 
         if mode != modes.INTERNAL_NORMAL:
             raise ValueError('wrong mode')
@@ -2568,7 +2568,7 @@ class _vi_g_big_u_big_u(ViTextCommandBase):
 
         def to_upper(view, s):
             view.replace(edit, s, view.substr(s).upper())
-            return R(s.a)
+            return Region(s.a)
 
         regions_transformer(self.view, select)
         regions_transformer(self.view, to_upper)
@@ -2582,7 +2582,7 @@ class _vi_guu(ViTextCommandBase):
     def run(self, edit, mode=None, count=1):
         def select(view, s):
             l = view.line(s.b)
-            return R(l.end(), l.begin())
+            return Region(l.end(), l.begin())
 
         def to_lower(view, s):
             view.replace(edit, s, view.substr(s).lower())
@@ -2649,7 +2649,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
 
         s = self.view.sel()[0]
         line_begin = self.view.text_point(utils.row_at(self.view, s.b), 0)
-        prefix = self.view.substr(R(line_begin, s.b)).lstrip()
+        prefix = self.view.substr(Region(line_begin, s.b)).lstrip()
         self._matches = self.find_matches(prefix, end=self.view.line(s.b).a)
         if self._matches:
             self.show_matches(self._matches)
@@ -2667,7 +2667,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         del self.__dict__['_matches']
         pt = self.view.sel()[0].b
         self.view.sel().clear()
-        self.view.sel().add(R(pt))
+        self.view.sel().add(Region(pt))
 
 
 class __replace_line(ViTextCommandBase):
@@ -2677,7 +2677,7 @@ class __replace_line(ViTextCommandBase):
     def run(self, edit, with_what):
         b = self.view.line(self.view.sel()[0].b).a
         pt = utils.next_non_white_space_char(self.view, b, white_space=' \t')
-        self.view.replace(edit, R(pt, self.view.line(pt).b), with_what)
+        self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
 
 
 # https://neovim.io/doc/user/change.html#gc
@@ -2687,7 +2687,7 @@ class _vi_gc(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
@@ -2707,7 +2707,7 @@ class _vi_g_big_c(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return R(s.begin())
+            return Region(s.begin())
 
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
@@ -2741,7 +2741,7 @@ class _vi_gcc_action(ViTextCommandBase):
                                                          self.view.line(s.a).a,
                                                          white_space=' \t')
 
-                return R(pt, pt)
+                return Region(pt, pt)
             return s
 
         self.view.run_command('_vi_gcc_motion', {'mode': mode, 'count': count})
@@ -2752,7 +2752,7 @@ class _vi_gcc_action(ViTextCommandBase):
         row = [self.view.rowcol(s.begin())[0] for s in self.view.sel()][0]
         regions_transformer_reversed(self.view, f)
         self.view.sel().clear()
-        self.view.sel().add(R(self.view.text_point(row, 0)))
+        self.view.sel().add(Region(self.view.text_point(row, 0)))
 
 
 class _vi_gcc_motion(ViTextCommandBase):
@@ -2770,7 +2770,7 @@ class _vi_gcc_motion(ViTextCommandBase):
                 ):
                     begin -= 1
 
-                return R(begin, view.full_line(end).b)
+                return Region(begin, view.full_line(end).b)
 
             return s
 

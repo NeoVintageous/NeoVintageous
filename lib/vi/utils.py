@@ -1,11 +1,10 @@
-import sublime
-import sublime_plugin
-
 from contextlib import contextmanager
 
+import sublime
+from sublime import Region
+import sublime_plugin
 
-# alias
-R = sublime.Region
+from NeoVintageous.lib import nvim
 
 
 def mark_as_widget(view):
@@ -429,15 +428,15 @@ def resize_visual_region(r, b):
     """
     if b < r.a:
         if r.b > r.a:
-            return R(r.a + 1, b)
-        return R(r.a, b)
+            return Region(r.a + 1, b)
+        return Region(r.a, b)
 
     if b > r.a:
         if r.b < r.a:
-            return R(r.a - 1, b + 1)
-        return R(r.a, b + 1)
+            return Region(r.a - 1, b + 1)
+        return Region(r.a, b + 1)
 
-    return R(b, b + 1)
+    return Region(b, b + 1)
 
 
 @contextmanager

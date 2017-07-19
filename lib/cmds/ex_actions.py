@@ -4,6 +4,7 @@ import stat
 import subprocess
 
 import sublime
+from sublime import Region
 import sublime_plugin
 
 from NeoVintageous.lib import nvim
@@ -23,7 +24,6 @@ from NeoVintageous.lib.vi.sublime import has_dirty_buffers
 from NeoVintageous.lib.vi.utils import adding_regions
 from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import modes
-from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.vi.utils import row_at
 from NeoVintageous.lib.window import WindowAPI
@@ -573,7 +573,7 @@ class ExWriteFile(ViWindowCommandBase):
         r = None
         if parsed_command.line_range.is_empty:
             # If the user didn't provide any range data, Vim appends whe whole buffer.
-            r = R(0, self._view.size())
+            r = Region(0, self._view.size())
         else:
             r = parsed_command.line_range.resolve(self._view)
 
@@ -584,7 +584,7 @@ class ExWriteFile(ViWindowCommandBase):
 
         self._view.run_command('append', {'characters': text})
 
-        utils.replace_sel(self._view, R(self._view.line(location).a))
+        utils.replace_sel(self._view, Region(self._view.line(location).a))
 
         self.enter_normal_mode(mode=self.state.mode)
         self.state.enter_normal_mode()
@@ -593,7 +593,7 @@ class ExWriteFile(ViWindowCommandBase):
         r = None
         if parsed_command.line_range.is_empty:
             # If the user didn't provide any range data, Vim writes whe whole buffer.
-            r = R(0, self._view.size())
+            r = Region(0, self._view.size())
         else:
             r = parsed_command.line_range.resolve(self._view)
 
@@ -634,7 +634,7 @@ class ExWriteFile(ViWindowCommandBase):
         region = None
         if ex_command.line_range.is_empty:
             # If the user didn't provide any range data, Vim writes whe whole buffer.
-            region = R(0, self._view.size())
+            region = Region(0, self._view.size())
         else:
             region = ex_command.line_range.resolve(self._view)
 
@@ -742,8 +742,8 @@ class ExMove(ExTextCommandBase):
         if destination.end() >= self.view.size():
             text = '\n' + text.rstrip()
 
-        if destination == R(-1):
-            destination = R(0)
+        if destination == Region(-1):
+            destination = Region(0)
 
         if destination.end() < source.begin():
             self.view.erase(edit, source)
@@ -777,7 +777,7 @@ class ExCopy(ExTextCommandBase):
         target_region = unresolved.resolve(self.view)
 
         address = None
-        if target_region == R(-1, -1):
+        if target_region == Region(-1, -1):
             address = 0
         else:
             row = utils.row_at(self.view, target_region.begin()) + 1
@@ -912,7 +912,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
             match = self.view.find(pattern, start)
 
             # no match or match out of range -- stop
-            if (match == R(-1)) or (row_at(self.view, match.a) > last_row):
+            if (match == Region(-1)) or (row_at(self.view, match.a) > last_row):
                 self.view.show(first_sel(self.view).begin())
                 return
 
@@ -954,7 +954,7 @@ class ExDelete(ExTextCommandBase):
 
         r = parsed.line_range.resolve(self.view)
 
-        if r == R(-1, -1):
+        if r == Region(-1, -1):
             r = self.view.full_line(0)
 
         self.select([r], parsed.command.params['register'])
@@ -995,7 +995,7 @@ class ExGlobal(ViWindowCommandBase):
 
         global_range = None
         if parsed.line_range.is_empty:
-            global_range = R(0, self._view.size())
+            global_range = Region(0, self._view.size())
         else:
             global_range = parsed.line_range.resolve(self._view)
 
@@ -1063,7 +1063,7 @@ class ExPrint(ViWindowCommandBase):
         # FIXME: this is broken.
         # If :global called us, ignore the parsed range.
         if global_lines:
-            return [(self._view.substr(R(a, b)), row_at(self._view, a)) for (a, b) in global_lines]
+            return [(self._view.substr(Region(a, b)), row_at(self._view, a)) for (a, b) in global_lines]
 
         to_display = []
         for line in self._view.full_line(parsed_range):

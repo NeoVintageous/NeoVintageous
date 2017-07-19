@@ -1,3 +1,6 @@
+from sublime import Region
+
+
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.ex.parser.tokens import TokenDigits
 from NeoVintageous.lib.ex.parser.tokens import TokenDollar
@@ -10,7 +13,6 @@ from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
 from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
 from NeoVintageous.lib.vi.search import reverse_search_by_pt
 from NeoVintageous.lib.vi.utils import first_sel
-from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import row_at
 
 
@@ -148,17 +150,17 @@ class RangeNode(Node):
 
         if not self.separator:
             if start == -1:
-                return R(-1, -1)
+                return Region(-1, -1)
 
             if len(self.start) == 1 and isinstance(self.start[0], TokenPercent):
-                return R(0, view.size())
+                return Region(0, view.size())
 
             return view.full_line(view.text_point(start, 0))
 
         new_start = start if self.separator == ';' else 0
         end = self.resolve_line_reference(view, self.end or [TokenDot()], current=new_start)
 
-        return view.full_line(R(view.text_point(start, 0), view.text_point(end, 0)))
+        return view.full_line(Region(view.text_point(start, 0), view.text_point(end, 0)))
 
 
 class CommandLineNode(Node):
