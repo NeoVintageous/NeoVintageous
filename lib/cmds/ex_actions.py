@@ -26,6 +26,7 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.vi.utils import row_at
+from NeoVintageous.lib.window import WindowAPI
 
 
 __all__ = [
@@ -33,6 +34,7 @@ __all__ = [
     'ExBrowse',
     'ExCdCommand',
     'ExCddCommand',
+    'ExClose',
     'ExCopy',
     'ExCquit',
     'ExDelete',
@@ -1067,6 +1069,16 @@ class ExPrint(ViWindowCommandBase):
             text = self._view.substr(line)
             to_display.append((text, row_at(self._view, line.begin())))
         return to_display
+
+
+# https://neovim.io/doc/user/windows.html#:close
+class ExClose(ViWindowCommandBase):
+
+    def run(self, command_line=''):
+        assert command_line, 'expected non-empty command line'
+        parsed = parse_command_line(command_line)
+        do_not_close_if_last = False if parsed.command.forced else True
+        WindowAPI(self.window).close_current_view(do_not_close_if_last)
 
 
 # https://neovim.io/doc/user/editing.html#:q

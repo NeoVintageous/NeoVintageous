@@ -80,8 +80,8 @@ class WindowAPI():
         self._close_current_view(do_not_close_if_last=False)
         # TODO When quitting the last window (not counting a help window), exit Vim.
 
-    def close_current_view(self):
-        self._close_current_view(do_not_close_if_last=True)
+    def close_current_view(self, do_not_close_if_last=True):
+        self._close_current_view(do_not_close_if_last)
 
     def _close_current_view(self, do_not_close_if_last):
         """

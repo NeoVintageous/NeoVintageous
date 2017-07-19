@@ -7,6 +7,7 @@ from .scanner_command_browse import scan_command_browse
 from .scanner_command_buffers import scan_command_buffers
 from .scanner_command_cd_command import scan_command_cd_command
 from .scanner_command_cdd_command import scan_command_cdd_command
+from .scanner_command_close import scan_command_close
 from .scanner_command_copy import scan_command_copy
 from .scanner_command_cquit import scan_command_cquit
 from .scanner_command_delete import scan_command_delete
@@ -56,11 +57,12 @@ from .scanner_command_yank import scan_command_yank
 patterns = OrderedDict()
 
 # TODO: compile regexes. ??
-# IMPORTANT: Order matters.
+# IMPORTANT: Order matters. WHY?
 patterns[r'!(?=.+)'] = scan_command_shell_out
 patterns[r'&&?'] = scan_command_double_ampersand
 patterns[r'ab(?:breviate)?'] = scan_command_abbreviate
 patterns[r'bro(?:wse)?'] = scan_command_browse
+patterns[r'clo(?:se)?'] = scan_command_close
 patterns[r'co(?:py)?'] = scan_command_copy
 patterns[r'cq(?:uit)?'] = scan_command_cquit
 patterns[r'd(?:elete)?'] = scan_command_delete
