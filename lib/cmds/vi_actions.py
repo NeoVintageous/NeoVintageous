@@ -2009,7 +2009,7 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        WindowAPI(self.view.window()).quit_current_view()
+        WindowAPI(self.view.window()).quit_current_view(exit_sublime_if_last=True)
 
 
 # https://neovim.io/doc/user/windows.html#CTRL-W_s
