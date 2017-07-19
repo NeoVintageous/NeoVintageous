@@ -76,19 +76,19 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#252](https://github.com/NeoVintageous/NeoVintageous/issues/252): The package is now available in Package Control
 * Added: Git diff commands
 
-Command | Description | Documentation | Dependencies | Notes
-------- | ----------- | ------------- | ------------ | -----
-`[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
-`]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+  Command | Description | Documentation | Dependencies | Notes
+  ------- | ----------- | ------------- | ------------ | -----
+  `[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+  `]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
 
 * Added: Port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) is provided by default. *The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
 
-Command | Description | Documentation | Dependencies | Notes
-------- | ----------- | ------------- | ------------ | -----
-`[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
-`]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
-`[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
-`]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
+  Command | Description | Documentation | Dependencies | Notes
+  ------- | ----------- | ------------- | ------------ | -----
+  `[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
+  `]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
+  `[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
+  `]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | |
 
 * Added [#275](https://github.com/NeoVintageous/NeoVintageous/issues/275): Commands in the `.vintageousrc` file don't need to be prefixed with `:` (colon)
 * Added [#187](https://github.com/NeoVintageous/NeoVintageous/issues/187): Switching to specific tab with `[count]` `gt`
@@ -133,15 +133,15 @@ Command | Description | Documentation | Dependencies | Notes
 * Added [#63](https://github.com/NeoVintageous/NeoVintageous/issues/63): `/` search does not highlight well
 * Added: New commands
 
-    Key | Context | Description
-    --- | ------- | -----------
-    `j` | Sidebar | down
-    `k` | Sidebar | up
-    `h` | Sidebar | close node / go to parent node
-    `l` | Sidebar | open node
-    `ctrl+j` | Overlay | down
-    `ctrl+k` | Overlay | up
-    `ctrl+[` | Normal | Same as `Esc` ([#249](https://github.com/NeoVintageous/NeoVintageous/issues/249))
+  Key | Context | Description
+  --- | ------- | -----------
+  `j` | Sidebar | down
+  `k` | Sidebar | up
+  `h` | Sidebar | close node / go to parent node
+  `l` | Sidebar | open node
+  `ctrl+j` | Overlay | down
+  `ctrl+k` | Overlay | up
+  `ctrl+[` | Normal | Same as `Esc` ([#249](https://github.com/NeoVintageous/NeoVintageous/issues/249))
 
 ### Fixed
 
@@ -174,31 +174,31 @@ Command | Description | Documentation | Dependencies | Notes
 
 * Added: New commands
 
-    Command | Description | Documentation | Dependencies | Notes
-    ------- | ----------- | ------------- | ------------ | -----
-    `ctrl+]` | Jump to the definition of the keyword under the cursor | [tagsearch](https://neovim.io/doc/user/tagsrch.html#CTRL-\]) | |
-    `ctrl-w h` | Move cursor to view left of current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_h) | |
-    `ctrl-w j` | Move cursor to view below current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_j) | |
-    `ctrl-w k` | Move cursor to view above current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_k) | |
-    `ctrl-w l` | Move cursor to view right of current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_l) | |
-    `ctrl-w b` | Move cursor to bottom-right view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_b) | |
-    `ctrl-w t` | Move cursor to top-left view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_t) | |
-    `ctrl-w H` | Move the current window to be at the very top | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2-col or 2-row layouts
-    `ctrl-w =` | Make all views (almost) equally high and wide | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_=) | |
-    `ctrl-w _` | Set current view height as high as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W__) | |
-    `ctrl-w \|` | Set current view width as wide as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_bar) | |
-    `ctrl-w o` | Make the current view the only one on the screen | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_o) | |
-    `ctrl-w c` | Close current view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_c) | |
-    `ctrl-w x` | Exchange current view with next one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_x) | |
-    `ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami) |
-    `ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami) |
-    `ctrl-w J` | Move the current window to be at the very bottom | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2-col or 2-row layouts
-    `ctrl-w K` | Move the current view to be at the far left | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2-col or 2-row layouts
-    `ctrl-w L` | Move the current window to be at the far right | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2-col or 2-row layouts
-    `ctrl-w n` | Create new view below current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_n) | |
-    `ga` | Print the ascii value of the character under the cursor in dec, hex and oct | [various](https://neovim.io/doc/user/various.html#ga) | |
-    `ctrl+c` | Exit select mode | |
-    `ctrl+[` | Exit select mode | |
+  Command | Description | Documentation | Dependencies | Notes
+  ------- | ----------- | ------------- | ------------ | -----
+  `ctrl+]` | Jump to the definition of the keyword under the cursor | [tagsearch](https://neovim.io/doc/user/tagsrch.html#CTRL-\]) | |
+  `ctrl-w h` | Move cursor to view left of current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_h) | |
+  `ctrl-w j` | Move cursor to view below current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_j) | |
+  `ctrl-w k` | Move cursor to view above current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_k) | |
+  `ctrl-w l` | Move cursor to view right of current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_l) | |
+  `ctrl-w b` | Move cursor to bottom-right view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_b) | |
+  `ctrl-w t` | Move cursor to top-left view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_t) | |
+  `ctrl-w H` | Move the current window to be at the very top | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2-col or 2-row layouts
+  `ctrl-w =` | Make all views (almost) equally high and wide | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_=) | |
+  `ctrl-w _` | Set current view height as high as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W__) | |
+  `ctrl-w \|` | Set current view width as wide as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_bar) | |
+  `ctrl-w o` | Make the current view the only one on the screen | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_o) | |
+  `ctrl-w c` | Close current view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_c) | |
+  `ctrl-w x` | Exchange current view with next one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_x) | |
+  `ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami) |
+  `ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami) |
+  `ctrl-w J` | Move the current window to be at the very bottom | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2-col or 2-row layouts
+  `ctrl-w K` | Move the current view to be at the far left | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2-col or 2-row layouts
+  `ctrl-w L` | Move the current window to be at the far right | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2-col or 2-row layouts
+  `ctrl-w n` | Create new view below current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_n) | |
+  `ga` | Print the ascii value of the character under the cursor in dec, hex and oct | [various](https://neovim.io/doc/user/various.html#ga) | |
+  `ctrl+c` | Exit select mode | |
+  `ctrl+[` | Exit select mode | |
 
 * Added: Port of [surround.vim](https://github.com/tpope/vim-surround) is provided by default. It is based on the [Vintageous_Plugin_Surround](https://github.com/guillermooo/Vintageous_Plugin_Surround) plugin by @guillermooo
 * Added: `vi_search.comment` scope on search matches for better control of highlighting
@@ -212,11 +212,11 @@ Command | Description | Documentation | Dependencies | Notes
 
 * Removed: Settings
 
-    Setting | Description | Notes
-    ------- | ----------- | -----
-    `vintageous_test_runner_keymaps` | Enable test runner keymaps | Tests are now run using [UnitTesting](https://github.com/randy3k/UnitTesting)
-    `vintageous_log_level` | | No longer used for logging
-    `vintageous_verbose` | | No longer used for logging
+  Setting | Description | Notes
+  ------- | ----------- | -----
+  `vintageous_test_runner_keymaps` | Enable test runner keymaps | Tests are now run using [UnitTesting](https://github.com/randy3k/UnitTesting)
+  `vintageous_log_level` | | No longer used for logging
+  `vintageous_verbose` | | No longer used for logging
 
 ### Fixed
 
