@@ -80,8 +80,7 @@ __all__ = [
     'ExWriteAndQuitAll',
     'ExWriteAndQuitCommand',
     'ExWriteFile',
-    'ExYank',
-    'TabControlCommand'
+    'ExYank'
 ]
 
 
@@ -1289,61 +1288,6 @@ class ExYank(sublime_plugin.TextCommand):
         # TODO: o_O?
         if register == '"':
             state.registers['0'] = [text]
-
-
-class TabControlCommand(ViWindowCommandBase):
-
-    def run(self, command, file_name=None, forced=False, index=None):
-        view_count = len(self.window.views_in_group(self.window.active_group()))
-        (group_index, view_index) = self.window.get_view_index(self._view)
-
-        if command == 'open':
-            if not file_name:  # TODO: file completion
-                self.window.run_command('show_overlay', {
-                    'overlay': 'goto',
-                    'show_files': True,
-                })
-            else:
-                cur_dir = os.path.dirname(self._view.file_name())
-                self.window.open_file(os.path.join(cur_dir, file_name))
-
-        elif command == 'next':
-            self.window.run_command('select_by_index', {
-                'index': (view_index + 1) % view_count})
-
-        elif command == 'prev':
-            self.window.run_command('select_by_index', {
-                'index': (view_index + view_count - 1) % view_count})
-
-        elif command == "last":
-            self.window.run_command('select_by_index', {'index': view_count - 1})
-
-        elif command == "first":
-            self.window.run_command('select_by_index', {'index': 0})
-
-        elif command == 'goto':
-            self.window.run_command('select_by_index', {'index': index - 1})
-
-        elif command == 'only':
-            quit_command_line = 'quit' + '' if not forced else '!'
-
-            group = self.window.views_in_group(group_index)
-            if any(view.is_dirty() for view in group):
-                nvim.exception_message(nvim.Error(nvim.E_OTHER_BUFFER_HAS_CHANGES))
-                return
-
-            for view in group:
-                if view.id() == self._view.id():
-                    continue
-                self.window.focus_view(view)
-                self.window.run_command('ex_quit', {
-                    'command_line': quit_command_line})
-
-            self.window.focus_view(self._view)
-
-        else:
-            nvim.console_message('unknown tab control command')
-            nvim.status_message('unknown tab control command')
 
 
 class ExTabOpenCommand(sublime_plugin.WindowCommand):

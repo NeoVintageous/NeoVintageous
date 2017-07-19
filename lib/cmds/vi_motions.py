@@ -1719,7 +1719,7 @@ class _vi_right_paren(ViMotionCommand):
             if (sen.b == self.view.size() or
                 (self.view.substr(sublime.Region(sen.b, sen.b + 2)).endswith(('. ', '.\t'))) or
                 (self.view.substr(sublime.Region(sen.b, sen.b + 1)).endswith(('?', '!'))) or
-                (self.view.substr(self.view.line(sen.b)).strip() == '')):
+                (self.view.substr(self.view.line(sen.b)).strip() == '')):  # FIXME # noqa: E129
                     if self.view.substr(sen.b) in '.?!':
                         return sublime.Region(sen.a, sen.b + 1)
                     else:

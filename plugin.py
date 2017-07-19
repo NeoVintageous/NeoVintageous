@@ -5,12 +5,11 @@ from .lib.state import init_state
 
 # Load the commands
 # TODO Review: Perhaps just put all commands, except extras, in one file lib/commands.py?
-from .lib.cmds.ex import *  # noqa: F401, F403
-from .lib.cmds.ex_main import *  # noqa: F401, F403
+from .lib.commands import *  # noqa: F401, F403
+from .lib.cmds.ex_actions import *  # noqa: F401, F403
 from .lib.cmds.ex_motions import *  # noqa: F401, F403
-from .lib.cmds.actions import *  # noqa: F401, F403
-from .lib.cmds.motions import *  # noqa: F401, F403
-from .lib.cmds.support import *  # noqa: F401, F403
+from .lib.cmds.vi_actions import *  # noqa: F401, F403
+from .lib.cmds.vi_motions import *  # noqa: F401, F403
 from .lib.extras.surround import *  # noqa: F401, F403
 from .lib.extras.unimpaired import *  # noqa: F401, F403
 from .lib.extras.abolish import *  # noqa: F401, F403
