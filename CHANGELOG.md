@@ -13,6 +13,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: Command-line syntax `:quit` highlighting
 * Fixed: Edge-case plugin conflict issues
 * Fixed: Edge-case Unimpaired plugin issue adding blanks
 * Fixed: Edge-case issue invalidating ex mode completions

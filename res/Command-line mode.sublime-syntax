@@ -34,7 +34,7 @@ contexts:
               p(?:rint)?|
               P(?:rint)?|
               pw(?:d)?|
-              q(:?uit|all)?|
+              q(?:uit|all)?|
               r(?:ead)?|
               reg(?:isters)?|
               s(?:ubstitute|hell|h)?|
