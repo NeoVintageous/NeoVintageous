@@ -7,24 +7,18 @@ class Test_a_word_InInternalNormalMode_Inclusive(ViewTestCase):
 
     def test_returns_full_word__count_one(self):
         self.write('foo bar baz\n')
-        r = self.R(5, 5)
-        self.select(r)
+        self.select(5)
 
-        reg = a_word(self.view, r.b)
-        self.assertEqual('bar ', self.view.substr(reg))
+        self.assertEqual('bar ', self.view.substr(a_word(self.view, 5)))
 
     def test_returns_word_and_preceding_white_space__count_one(self):
         self.write('(foo bar) baz\n')
-        r = self.R(5, 5)
-        self.select(r)
+        self.select(5)
 
-        reg = a_word(self.view, r.b)
-        self.assertEqual(' bar', self.view.substr(reg))
+        self.assertEqual(' bar', self.view.substr(a_word(self.view, 5)))
 
     def test_returns_word_and_all_preceding_white_space__count_one(self):
         self.write('(foo   bar) baz\n')
-        r = self.R(8, 8)
-        self.select(r)
+        self.select(8)
 
-        reg = a_word(self.view, r.b)
-        self.assertEqual('   bar', self.view.substr(reg))
+        self.assertEqual('   bar', self.view.substr(a_word(self.view, 8)))

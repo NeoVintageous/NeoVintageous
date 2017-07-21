@@ -49,18 +49,18 @@ class TestRangeNodeResolveNotation(ViewTestCase):
 bbb bbb
 ccc ccc
 ''')
-        self.select(self.R((1, 0), (1, 0)))
+        self.select(8)
         region = RangeNode().resolve(self.view)
-        self.assertRegionsEqual(self.R(8, 16), region)
+        self._assertRegionsEqual(self.Region(8, 16), region)
 
     def test_returs_current_line_if_range_is_empty2(self):
         self.write('''aaa aaa
 bbb bbb
 ccc ccc
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode().resolve(self.view)
-        self.assertRegionsEqual(self.R(0, 8), region)
+        self._assertRegionsEqual(self.Region(0, 8), region)
 
     def test_returs_current_line_if_range_is_empty_and_adds_offset(self):
         self.write('''aaa aaa
@@ -68,9 +68,9 @@ bbb bbb
 ccc ccc
 ddd ddd
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenOffset([1, 1])]).resolve(self.view)
-        self.assertRegionsEqual(self.R(16, 24), region)
+        self._assertRegionsEqual(self.Region(16, 24), region)
 
     def test_returs_current_line_if_range_is_empty_and_adds_offsets(self):
         self.write('''aaa aaa
@@ -78,9 +78,9 @@ bbb bbb
 ccc ccc
 ddd ddd
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenOffset([2])]).resolve(self.view)
-        self.assertRegionsEqual(self.R(16, 24), region)
+        self._assertRegionsEqual(self.Region(16, 24), region)
 
     def test_returs_requested_start_line_number(self):
         self.write('''aaa aaa
@@ -88,10 +88,10 @@ bbb bbb
 ccc ccc
 ddd ddd
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenDigits('2')]).resolve(self.view)
 
-        self.assertRegionsEqual(self.R(8, 16), region)
+        self._assertRegionsEqual(self.Region(8, 16), region)
 
     def test_returs_requested_start_line_number_and_adds_offset(self):
         self.write('''aaa aaa
@@ -99,9 +99,9 @@ bbb bbb
 ccc ccc
 ddd ddd
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenDigits('2'), TokenOffset([2])]).resolve(self.view)
-        self.assertRegionsEqual(self.R(24, 32), region)
+        self._assertRegionsEqual(self.Region(24, 32), region)
 
     def test_returs_requested_start_line_number_and_adds_offset2(self):
         self.write('''aaa aaa
@@ -109,9 +109,9 @@ bbb bbb
 ccc ccc
 ddd ddd
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenDigits('2'), TokenOffset([1])]).resolve(self.view)
-        self.assertRegionsEqual(self.R(16, 24), region)
+        self._assertRegionsEqual(self.Region(16, 24), region)
 
     def test_returs_whole_buffer_if_percent_requested(self):
         self.write('''aaa aaa
@@ -119,9 +119,9 @@ bbb bbb
 ccc ccc
 ddd ddd
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenPercent()]).resolve(self.view)
-        self.assertRegionsEqual(self.R(0, 32), region)
+        self._assertRegionsEqual(self.Region(0, 32), region)
 
 
 class Tests_SearchForward(ViewTestCase):
@@ -132,9 +132,9 @@ bbb bbb
 ccc cat
 ddd cat
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenSearchForward('cat')]).resolve(self.view)
-        self.assertRegionsEqual(self.R(16, 24), region)
+        self._assertRegionsEqual(self.Region(16, 24), region)
 
     def test_can_search_forward_with_offset(self):
         self.write('''aaa aaa
@@ -142,9 +142,9 @@ bbb bbb
 ccc cat
 ddd ddd
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenSearchForward('cat'), TokenOffset([1])]).resolve(self.view)
-        self.assertRegionsEqual(self.R(24, 32), region)
+        self._assertRegionsEqual(self.Region(24, 32), region)
 
     def test_failed_search_throws(self):
         self.write('''aaa aaa
@@ -152,7 +152,7 @@ bbb bbb
 ccc cat
 ddd cat
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         line_range = RangeNode(start=[TokenSearchForward('dog')])
         self.assertRaises(ValueError, line_range.resolve, self.view)
 
@@ -164,9 +164,9 @@ ddd ddd
 eee eee
 fff cat
 ''')
-        self.select(self.R((0, 0), (0, 0)))
+        self.select(0)
         region = RangeNode(start=[TokenSearchForward('cat'), TokenSearchForward('cat')]).resolve(self.view)
-        self.assertRegionsEqual(self.R(40, 48), region)
+        self._assertRegionsEqual(self.Region(40, 48), region)
 
 
 class Tests_SearchBackward(ViewTestCase):
@@ -178,9 +178,9 @@ ccc cat
 ddd ddd
 xxx xxx
 ''')
-        self.select(self.R(self.view.size()))
+        self.select(self.view.size())
         region = RangeNode(start=[TokenSearchBackward('cat')]).resolve(self.view)
-        self.assertRegionsEqual(self.R(16, 24), region)
+        self._assertRegionsEqual(self.Region(16, 24), region)
 
     def test_can_search_backward_with_offset(self):
         self.write('''aaa aaa
@@ -189,9 +189,9 @@ ccc cat
 ddd ddd
 xxx xxx
 ''')
-        self.select(self.R(self.view.size()))
+        self.select(self.view.size())
         region = RangeNode(start=[TokenSearchBackward('cat'), TokenOffset([1])]).resolve(self.view)
-        self.assertRegionsEqual(self.R(24, 32), region)
+        self._assertRegionsEqual(self.Region(24, 32), region)
 
     def test_failed_search_throws(self):
         self.write('''aaa aaa
@@ -199,7 +199,7 @@ bbb bbb
 ccc cat
 ddd cat
 ''')
-        self.select(self.R(self.view.size()))
+        self.select(self.view.size())
         line_range = RangeNode(start=[TokenSearchBackward('dog')])
         self.assertRaises(ValueError, line_range.resolve, self.view)
 
@@ -211,9 +211,9 @@ ddd cat
 eee eee
 fff fff
 ''')
-        self.select(self.R(self.view.size()))
+        self.select(self.view.size())
         region = RangeNode(start=[TokenSearchBackward('cat'), TokenSearchBackward('cat')]).resolve(self.view)
-        self.assertRegionsEqual(self.R(16, 24), region)
+        self._assertRegionsEqual(self.Region(16, 24), region)
 
 
 class Tests_Line0(ViewTestCase):
@@ -224,9 +224,9 @@ aaa aaa
 xxx xxx
 bbb bbb
 ''')
-        self.select(self.R(8, 10))
+        self.select((8, 10))
         region = RangeNode(start=[TokenDigits('0')]).resolve(self.view)
-        self.assertRegionsEqual(self.R(-1, -1), region)
+        self._assertRegionsEqual(self.Region(-1, -1), region)
 
 
 class Tests_Marks(ViewTestCase):
@@ -237,9 +237,9 @@ aaa aaa
 xxx xxx
 bbb bbb
 ''')
-        self.select(self.R(8, 10))
+        self.select((8, 10))
         region = RangeNode(start=[TokenMark("<")]).resolve(self.view)
-        self.assertRegionsEqual(self.R(8, 16), region)
+        self._assertRegionsEqual(self.Region(8, 16), region)
 
     def test_can_calculate_visual_start_with_multiple_sels(self):
         self.write('''xxx xxx
@@ -249,9 +249,9 @@ bbb bbb
 xxx xxx
 ccc ccc
 ''')
-        self.select([self.R(8, 10), self.R(24, 27)])
+        self.select([(8, 10), (24, 27)])
         region = RangeNode(start=[TokenMark("<")]).resolve(self.view)
-        self.assertRegionsEqual(self.R(8, 16), region)
+        self._assertRegionsEqual(self.Region(8, 16), region)
 
     def test_can_calculate_visual_end(self):
         self.write('''xxx xxx
@@ -259,9 +259,9 @@ aaa aaa
 xxx xxx
 bbb bbb
 ''')
-        self.select(self.R(8, 10))
+        self.select((8, 10))
         region = RangeNode(start=[TokenMark(">")]).resolve(self.view)
-        self.assertRegionsEqual(self.R(8, 16), region)
+        self._assertRegionsEqual(self.Region(8, 16), region)
 
     def test_can_calculate_visual_end_with_multiple_sels(self):
         self.write('''xxx xxx
@@ -271,6 +271,6 @@ bbb bbb
 xxx xxx
 ccc ccc
 ''')
-        self.select(self.R(8, 10))
+        self.select((8, 10))
         region = RangeNode(start=[TokenMark("<"), TokenMark(">")]).resolve(self.view)
-        self.assertRegionsEqual(self.R(8, 16), region)
+        self._assertRegionsEqual(self.Region(8, 16), region)

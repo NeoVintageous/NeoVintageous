@@ -42,6 +42,7 @@ def parse_command_line(source):
         parse_func, command_line = parse_func(state, command_line)
         if parse_func is None:
             command_line.validate()
+
             return command_line
 
 
@@ -59,18 +60,22 @@ def parse_line_ref(state, command_line):
 
     if isinstance(token, TokenDot):
         init_line_range(command_line)
+
         return process_dot(state, command_line)
 
     if isinstance(token, TokenOffset):
         init_line_range(command_line)
+
         return process_offset(token, state, command_line)
 
     if isinstance(token, TokenSearchForward):
         init_line_range(command_line)
+
         return process_search_forward(token, state, command_line)
 
     if isinstance(token, TokenSearchBackward):
         init_line_range(command_line)
+
         return process_search_backward(token, state, command_line)
 
     if isinstance(token, TokenComma):
@@ -78,6 +83,7 @@ def parse_line_ref(state, command_line):
         command_line.line_range.separator = TokenComma()
         # Vim resolves :1,2,3,4 to :3,4
         state.is_range_start_line_parsed = not state.is_range_start_line_parsed
+
         return parse_line_ref, command_line
 
     if isinstance(token, TokenSemicolon):
@@ -85,27 +91,33 @@ def parse_line_ref(state, command_line):
         command_line.line_range.separator = TokenSemicolon()
         # Vim resolves :1;2;3;4 to :3;4
         state.is_range_start_line_parsed = not state.is_range_start_line_parsed
+
         return parse_line_ref, command_line
 
     if isinstance(token, TokenDigits):
         init_line_range(command_line)
+
         return process_digits(token, state, command_line)
 
     if isinstance(token, TokenDollar):
         init_line_range(command_line)
+
         return process_dollar(token, state, command_line)
 
     if isinstance(token, TokenPercent):
         init_line_range(command_line)
+
         return process_percent(token, state, command_line)
 
     if isinstance(token, TokenMark):
         init_line_range(command_line)
+
         return process_mark(token, state, command_line)
 
     if isinstance(token, TokenOfCommand):
         init_line_range(command_line)
         command_line.command = token
+
         return None, command_line
 
     return None, command_line
@@ -116,6 +128,7 @@ def process_mark(token, state, command_line):
         command_line.line_range.start.append(token)
     else:
         command_line.line_range.end.append(token)
+
     return parse_line_ref, command_line
 
 
@@ -128,6 +141,7 @@ def process_percent(token, state, command_line):
         if command_line.line_range.end:
             raise ValueError('bad range: {0}'.format(state.scanner.state.source))
         command_line.line_range.end.append(token)
+
     return parse_line_ref, command_line
 
 
@@ -140,6 +154,7 @@ def process_dollar(token, state, command_line):
         if command_line.line_range.end:
             raise ValueError('bad range: {0}'.format(state.scanner.state.source))
         command_line.line_range.end.append(token)
+
     return parse_line_ref, command_line
 
 
@@ -170,6 +185,7 @@ def process_search_forward(token, state, command_line):
         if command_line.line_range.end:
             command_line.line_range.end_offset = []
         command_line.line_range.end.append(token)
+
     return parse_line_ref, command_line
 
 
@@ -182,6 +198,7 @@ def process_search_backward(token, state, command_line):
         if command_line.line_range.end:
             command_line.line_range.end_offset = []
         command_line.line_range.end.append(token)
+
     return parse_line_ref, command_line
 
 
@@ -194,6 +211,7 @@ def process_offset(token, state, command_line):
         if (command_line.line_range.end and command_line.line_range.end[-1] == TokenDollar()):
             raise ValueError('bad command line {}'.format(state.scanner.state.source))
         command_line.line_range.end.append(token)
+
     return parse_line_ref, command_line
 
 
@@ -212,4 +230,4 @@ def process_dot(state, command_line):
 
 
 # avoid circular ref: some subscanners import parse_command_line()
-from .scanner import Scanner # noqa
+from .scanner import Scanner  # FIXME # noqa: E402

@@ -76,12 +76,14 @@ class WindowAPI():
                 # TODO is this the best way to close a group
                 self.window.run_command('close_pane', {'group': i})
 
-    def quit_current_view(self):
+    def quit_current_view(self, exit_sublime_if_last=False):
         self._close_current_view(do_not_close_if_last=False)
-        # TODO When quitting the last window (not counting a help window), exit Vim.
+        if exit_sublime_if_last:
+            if len(self.window.views()) == 0:
+                self.window.run_command('close')
 
-    def close_current_view(self):
-        self._close_current_view(do_not_close_if_last=True)
+    def close_current_view(self, do_not_close_if_last=True):
+        self._close_current_view(do_not_close_if_last)
 
     def _close_current_view(self, do_not_close_if_last):
         """

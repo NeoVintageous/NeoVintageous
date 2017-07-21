@@ -99,7 +99,7 @@ def _init_logger():
     logger.setLevel(logging.DEBUG)
 
     handler_formatter = logging.Formatter(
-        '%(levelname)-5s %(name)-30s %(message)s'
+        '%(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s'
     )
 
     console_handler = logging.StreamHandler()
@@ -116,11 +116,10 @@ def _init_logger():
         file_handler.setFormatter(handler_formatter)
         logger.addHandler(file_handler)
     else:
-        console_message('could not create log file "%s"' % log_file)
+        console_message('could not create log file \'%s\'' % log_file)
 
 
 class _NullLogger():
-    """An implementation of the Logger API that does nothing."""
 
     def debug(self, msg, *args, **kwargs):
         pass

@@ -15,4 +15,5 @@ class TokenCommandUnvsplit(TokenOfCommand):
 
 def scan_command_unvsplit(state):
     state.expect(EOF)
+
     return None, [TokenCommandUnvsplit(), TokenEof()]

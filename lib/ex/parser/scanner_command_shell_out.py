@@ -7,9 +7,7 @@ from NeoVintageous.lib import ex
 @ex.command('!', '!')
 class TokenShellOut(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_SHELL_OUT,
-                         '!', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_SHELL_OUT, '!', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_shell_out'
 

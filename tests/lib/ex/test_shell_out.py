@@ -25,7 +25,7 @@ class TestExShellOutNoInput(ViewTestCase):
         else:
             expected = 'Testing!\n'
 
-        actual = output_panel.substr(self.R(0, output_panel.size()))
+        actual = output_panel.substr(self.Region(0, output_panel.size()))
 
         self.assertEqual(expected, actual)
 

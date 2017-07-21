@@ -50,8 +50,8 @@ Command | Context | Description | Notes
 `k` | sidebar | up | `ctrl+0` focuses the sidebar
 `h` | sidebar | close node / go to parent node | `ctrl+0` focuses the sidebar
 `l` | sidebar | open node | `ctrl+0` focuses the sidebar
-`ctrl+j` | overlay | down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
-`ctrl+k` | overlay |up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+`ctrl+n` or `ctrl+j` | overlay, auto-complete | down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+`ctrl+p` or `ctrl+k` | overlay, auto-complete | up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
 
 ### Command Palette
 
@@ -70,27 +70,36 @@ Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNe
 
 ### The .vintageousrc file
 
-A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file. The file is located at `Packages/User/.vintageousrc` and is read during startup. There is limited support, the following are supported in basic use-cases: `:let mapleader=`, `:map`, `:nmap`, `:omap`, and `:vmap`.
+A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file. The file is located at `Packages/User/.vintageousrc` and is read during startup. There is limited support, the following are supported in basic use-cases: `let mapleader=`, `map`, `nmap`, `omap`, `vmap`, `noremap`, `nnoremap`, `onoremap`, and `vnoremap`. It's important to note that currently `map`, `nmap`, `omap`, `vmap` work the same as their `remap` variants, this is a known issue.
 
-    " The character " (the double quote mark) starts a comment
+```
+" The character " (the double quote mark) starts a comment
 
-    let mapleader=,
+let mapleader=,
 
-    " Enter command line mode using space
-    nmap <space> :
+" Enter command line mode
+nnoremap <space> :
 
-    " Visually select all content using ,a
-    nmap <leader>a ggvG
+" Visually select all content
+nnoremap <leader>a ggvG
 
-    " Sort with ,s in visual mode
-    vmap <leader>s <F9>
+" " Sort with ,s in visual mode
+" vnoremap <leader>s <F9>
 
-    " Scroll viewport faster ctrl+e and ctrl+y
-    nmap <C-e> 3<C-e>
-    nmap <C-y> 3<C-y>
+" Scroll viewport faster with ctrl+e and ctrl+y
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 
-    " Scroll down using shift-enter
-    nmap <S-cr> <C-d>
+" Make j and k work file linewise instead of screen linewise.
+" http://stevelosh.com/blog/2010/09/coming-home-to-vim/
+" Important! There is a potential performance hit
+" navigating with j and k with these mappings enabled.
+nnoremap j gj
+nnoremap k gk
+
+" " Scroll down using shift+enter
+" noremap <S-cr> <C-d>
+```
 
 Read more about mappings and the .vimrc file in the [Vim main help file](https://neovim.io/doc/user/map.html).
 
@@ -160,14 +169,50 @@ A port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) is provided 
 
 *The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
 
-Command | Description | Documentation
-------- | ----------- | -------------
-`[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-`]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-`[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-`]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+Command | Description | Documentation | Dependencies
+------- | ----------- | ------------- | ------------
+`[l` | Jump to `[count]` next error. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [Linter](https://github.com/SublimeLinter/SublimeLinter3)
+`]l` | Jump to `[count]` previous error.. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [Linter](https://github.com/SublimeLinter/SublimeLinter3)
+`[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
+`]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
+`[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
+`]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
+
+**Option toggling**
+
+On | Off | Toggle | Description | Documentation
+-- | --- | ------ | ----------- | -------------
+`[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 
 Read more about unimpaired usage in the [help file](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt).
+
+### Abolish plugin
+
+A port of [abolish.vim](https://github.com/tpope/vim-abolish) is provided by default.
+
+*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
+
+Want to turn `fooBar` into `foo_bar`?  Press `crs` (coerce to snake\_case).  MixedCase (`crm`), camelCase (`crc`), snake\_case (`crs`), UPPER\_CASE (`cru`), dash-case (`cr-`), dot.case (`cr.`), space case (`cr<space>`), and Title Case (`crt`) are all just three keystrokes away.
+
+Command | Description | Documentation
+------- | ----------- | -------------
+`crm` | Coerce word under cursor to MixedCase. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crc` | Coerce word under cursor to camelCase. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crs` | Coerce word under cursor to snake_case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr_` | Coerce word under cursor to snake_case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cru` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crU` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr-` | Coerce word under cursor to dash-case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crk` | Coerce word under cursor to kebab-case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr.` | Coerce word under cursor to dot.case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`cr<Space>` | Coerce word under cursor to space case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crt` | Coerce word under cursor to Title Case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+
+Read more about abolish usage in the [help file](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt).
 
 ### Other plugins
 

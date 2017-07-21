@@ -56,8 +56,6 @@ class State(object):
         #   - window settings (settings.window).
         self.settings = SettingsManager(self.view)
 
-        _logger.debug('State::__init__() iswidget=%s, isnvimwidget=%s, view=[id=%d,file=\'%s\']', bool(self.settings.view['is_widget']), bool(self.settings.view['is_vintageous_widget']), view.id(), view.file_name())  # noqa: E501
-
     @property
     def glue_until_normal_mode(self):
         """
@@ -308,7 +306,7 @@ class State(object):
     def repeat_data(self, value):
         assert isinstance(value, tuple) or isinstance(value, list), 'bad call'
         assert len(value) == 4, 'bad call'
-        _logger.info('set repeat data: \'%s\'', value)
+        _logger.debug('set repeat data: \'%s\'', value)
         self.settings.vi['repeat_data'] = value
 
     @property
@@ -371,7 +369,7 @@ class State(object):
     @register.setter
     def register(self, value):
         assert len(str(value)) == 1, '`value` must be a character'
-        _logger.info('register() \'%s\'', value)
+        _logger.debug('\'%s\'', value)
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
@@ -528,7 +526,7 @@ class State(object):
                 xpos = (self.view.rowcol(pos)[1] +
                         ((counter['\t'] * tab_size) - counter['\t']))
             except Exception as e:
-                print(e)
+                nvim.console_message(e)
                 _logger.exception('error setting xpos; default to 0')
                 self.xpos = 0
                 return
@@ -556,7 +554,7 @@ class State(object):
     def process_user_input2(self, key):
         assert self.must_collect_input, "call only if input is required"
 
-        _logger.info('process input \'%s\'', key)
+        _logger.debug('process input key \'%s\'', key)
 
         if self.motion and self.motion.accept_input:
             motion = self.motion
@@ -576,8 +574,7 @@ class State(object):
         @command
           A command definition as found in `keys.py`.
         """
-        assert isinstance(command, cmd_base.ViCommandDefBase), \
-            'ViCommandDefBase expected, got {0}'.format(type(command))
+        assert isinstance(command, cmd_base.ViCommandDefBase), 'ViCommandDefBase expected, got {0}'.format(type(command))  # noqa: 501
 
         if isinstance(command, cmd_base.ViMotionDef):
             if self.runnable():
@@ -604,7 +601,7 @@ class State(object):
                 return
 
         else:
-            _logger.info('command \'%s\'', command)
+            _logger.debug('command \'%s\'', command)
             raise ValueError('unexpected command type')
 
     def in_any_visual_mode(self):
@@ -707,7 +704,7 @@ class State(object):
         if self.action and self.motion:
             action_cmd = self.action.translate(self)
             motion_cmd = self.motion.translate(self)
-            _logger.info('full command, switching to internal normal mode...')
+            _logger.debug('full command, switching to internal normal mode...')
             self.mode = modes.INTERNAL_NORMAL
 
             # TODO: Make a requirement that motions and actions take a
@@ -723,27 +720,25 @@ class State(object):
             # let the action run the motion within its edit object so that
             # we don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
-            _logger.info('motion in motion+action \'%s\'', motion_cmd)
+            _logger.debug('motion in motion+action \'%s\'', motion_cmd)
 
             if self.glue_until_normal_mode and not self.processing_notation:
                 # We need to tell Sublime Text now that it should group
                 # all the next edits until we enter normal mode again.
-                sublime.active_window().run_command(
-                    'mark_undo_groups_for_gluing')
+                sublime.active_window().run_command('mark_undo_groups_for_gluing')
 
             self.add_macro_step(action_cmd['action'], args)
 
             sublime.active_window().run_command(action_cmd['action'], args)
             if not self.non_interactive:
                 if self.action.repeatable:
-                    self.repeat_data = ('vi', str(self.sequence),
-                                        self.mode, None)
+                    self.repeat_data = ('vi', str(self.sequence), self.mode, None)
             self.reset_command_data()
             return
 
         if self.motion:
             motion_cmd = self.motion.translate(self)
-            _logger.info('lone motion cmd \'%s\'', motion_cmd)
+            _logger.debug('lone motion cmd \'%s\'', motion_cmd)
 
             self.add_macro_step(motion_cmd['motion'],
                                 motion_cmd['motion_args'])
@@ -755,14 +750,13 @@ class State(object):
 
         if self.action:
             action_cmd = self.action.translate(self)
-            _logger.info('lone action cmd \'%s\'', action_cmd)
+            _logger.debug('lone action cmd \'%s\'', action_cmd)
             if self.mode == modes.NORMAL:
-                _logger.info('switch to internal normal mode')
+                _logger.debug('switch to internal normal mode')
                 self.mode = modes.INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
-                    action_cmd['action_args']['mode'] = \
-                        modes.INTERNAL_NORMAL
+                    action_cmd['action_args']['mode'] = modes.INTERNAL_NORMAL
             elif self.mode in (modes.VISUAL, modes.VISUAL_LINE):
                 self.view.add_regions('visual_sel', list(self.view.sel()))
 
@@ -773,25 +767,20 @@ class State(object):
             # iXXX<Esc>llaYYY<Esc>, where we want to group the whole
             # sequence instead.
             if self.glue_until_normal_mode and not self.processing_notation:
-                sublime.active_window().run_command(
-                    'mark_undo_groups_for_gluing')
+                sublime.active_window().run_command('mark_undo_groups_for_gluing')
 
             seq = self.sequence
             visual_repeat_data = self.get_visual_repeat_data()
             action = self.action
 
-            self.add_macro_step(action_cmd['action'],
-                                action_cmd['action_args'])
-
-            sublime.active_window().run_command(action_cmd['action'],
-                                                action_cmd['action_args'])
+            self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
+            sublime.active_window().run_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
-                    self.repeat_data = ('vi', seq, self.mode,
-                                        visual_repeat_data)
+                    self.repeat_data = ('vi', seq, self.mode, visual_repeat_data)
 
-        _logger.info('[eval] run command action=%s, motion=%s', self.action, self.motion)
+        _logger.debug('run command action=%s, motion=%s', self.action, self.motion)
 
         if self.mode == modes.INTERNAL_NORMAL:
             self.enter_normal_mode()
@@ -809,11 +798,11 @@ def init_state(view, new_session=False):
       Whether we're starting up Sublime Text. If so, volatile data must be
       wiped.
     """
-    _logger.info('init_state() new session=%s, view=[id=%d,file=\'%s\']', new_session, view.id(), view.file_name())
+    _logger.debug('newsession=%s, view=[id=%d,file=\'%s\']', new_session, view.id(), view.file_name())
 
     if not is_view(view):
         # Abort if we got a widget, panel...
-        _logger.info('[init_state] ignore view=[id=%d]', view.id())
+        _logger.debug('ignore view=[id=%d]', view.id())
         try:
             # XXX: All this seems to be necessary here.
             if not is_ignored_but_command_mode(view):
@@ -827,9 +816,9 @@ def init_state(view, new_session=False):
                 nvim.status_message('vim emulation disabled for the current view')
 
         except AttributeError:
-            _logger.exception('[init_state] exception; probably received the console view')
+            _logger.exception('exception; probably received the console view')
         except Exception:
-            _logger.exception('[init_state] error initializing view')
+            _logger.exception('error initializing view')
         finally:
             return
 

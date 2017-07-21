@@ -6,7 +6,49 @@ scope: text.excmdline
 hidden: true
 contexts:
   main:
-    - match: ^(:)(?:(\d+)|(cd(?:d)?|w(?:rite|q|all)?|e(?:dit|new|xit)?|pw(?:d)?|buffers|files|ls|reg(?:isters)?|map|ab(?:breviate)?|q(:?uit|all)?|r(?:ead)?|as(?:cii)?|f(?:ile)?|move|co(?:py)?|t(?:abfirst|abprev|abedit|abe|abnext|abn|ablast|abl|abonly|abo)?|setl(:?ocal)?|se(?:t)?|s(?:ubstitute|hell|h)?|&&|d(?:elete)?|g(?:lobal)?|p(?:rint)?|P(?:rint)?|bro(?:owse)?|cq(?:uit)?|x(?:it)?|on(?:ly)?|new|y(?:ank)?|(?:un)?vs(?:plit)?)(!)?)?
+    - match: |-
+        (?x)
+        ^
+          (:)
+          (?:
+            (\d+)|
+            (
+              &&|
+              ab(?:breviate)?|
+              as(?:cii)?|
+              bro(?:owse)?|
+              buffers|
+              cd(?:d)?|
+              clo(?:se)?|
+              co(?:py)?|
+              cq(?:uit)?|
+              d(?:elete)?|
+              e(?:dit|new|xit)?|
+              f(?:ile)?|
+              files|
+              g(?:lobal)?|
+              ls|
+              map|
+              move|
+              new|
+              on(?:ly)?|
+              p(?:rint)?|
+              P(?:rint)?|
+              pw(?:d)?|
+              q(?:uit|all)?|
+              r(?:ead)?|
+              reg(?:isters)?|
+              s(?:ubstitute|hell|h)?|
+              se(?:t)?|
+              setl(:?ocal)?|
+              t(?:abfirst|abprev|abedit|abe|abnext|abn|ablast|abl|abonly|abo)?|
+              (?:un)?vs(?:plit)?|
+              w(?:rite|q|all)?|
+              x(?:it)?|
+              y(?:ank)?
+            )
+            (!)
+          ?)?
       captures:
         1: keyword.excmdline
         2: constant.numeric.excmdline

@@ -7,14 +7,14 @@ class Test__vi_big_s(ViewTestCase):
         self.write('aaa aaa\nbbb bbb\nccc ccc\n')
         self.select(8)
 
-        self.view.run_command('_vi_big_s_action', {'mode': self.modes.INTERNAL_NORMAL})
+        self.view.run_command('_vi_big_s_action', {'mode': self.INTERNAL_NORMAL_MODE})
 
         self.assertContent('aaa aaa\n\nccc ccc\n')
 
         self.write('aaa aaa\nbbb bbb\nccc ccc\n')
         self.select(16)
 
-        self.view.run_command('_vi_big_s_action', {'mode': self.modes.INTERNAL_NORMAL})
+        self.view.run_command('_vi_big_s_action', {'mode': self.INTERNAL_NORMAL_MODE})
 
         self.assertContent('aaa aaa\nbbb bbb\n\n')
 
@@ -23,6 +23,6 @@ class Test__vi_big_s(ViewTestCase):
         self.write("\taaa aaa\nbbb bbb\nccc ccc")
         self.select(9)
 
-        self.view.run_command('_vi_big_s_action', {'mode': self.modes.INTERNAL_NORMAL})
+        self.view.run_command('_vi_big_s_action', {'mode': self.INTERNAL_NORMAL_MODE})
 
         self.assertContent("\taaa aaa\n\t\nccc ccc")

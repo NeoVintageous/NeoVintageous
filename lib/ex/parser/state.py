@@ -18,8 +18,10 @@ class ScannerState(object):
         """Consumes one character from `source`."""
         if self.position >= len(self.source):
             return EOF
+
         rv = self.source[self.position]
         self.position += 1
+
         return rv
 
     def backup(self):
@@ -38,6 +40,7 @@ class ScannerState(object):
         """
         content = self.source[self.start:self.position]
         self.ignore()
+
         return content
 
     def skip(self, character):
@@ -78,6 +81,7 @@ class ScannerState(object):
             if on_error:
                 raise on_error()
             raise ValueError('expected {0}, got {1} instead'.format(item, c))
+
         return c
 
     def expect_match(self, pattern, on_error=None):
@@ -96,9 +100,12 @@ class ScannerState(object):
         m = re.compile(pattern).match(self.source, self.position)
         if m:
             self.position += m.end() - m.start()
+
             return m
+
         if not on_error:
             raise ValueError('expected match with {0}, at {1}'.format(pattern, self.source[self.position:]))
+
         raise on_error()
 
     def peek(self, item):
@@ -123,5 +130,7 @@ class ScannerState(object):
         m = re.compile(pattern).match(self.source, self.position)
         if m:
             self.position += m.end() - m.start()
+
             return m
+
         return

@@ -17,9 +17,7 @@ plus_plus_translations = {
 @ex.command('edit', 'e')
 class TokenEdit(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_EDIT,
-                         'edit', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_EDIT, 'edit', *args, **kwargs)
         self.target_command = 'ex_edit'
 
     @property

@@ -1,44 +1,44 @@
-# https://github.com/tpope/vim-surround
-#
-# Based on https://github.com/guillermooo/Vintageous_Plugin_Surround
-#
-# For some reason this has to be at the top level or else the commands don't
-# load, I have no idea why, if I figure it out I'll move this into an "extras"
-# dir.
+# Inspired by https://github.com/tpope/vim-surround
+# Initially based on https://github.com/guillermooo/Vintageous_Plugin_Surround
 
 import re
 
-import sublime
-import sublime_plugin
+from sublime import LITERAL
+from sublime import Region
+from sublime_plugin import TextCommand
 
-from NeoVintageous.lib.api import plugin
-from NeoVintageous.lib.vi import inputs
-from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.api.plugin import inputs
+from NeoVintageous.lib.api.plugin import INTERNAL_NORMAL_MODE
+from NeoVintageous.lib.api.plugin import NORMAL_MODE
+from NeoVintageous.lib.api.plugin import OPERATOR_PENDING_MODE
+from NeoVintageous.lib.api.plugin import register
+from NeoVintageous.lib.api.plugin import ViOperatorDef
+from NeoVintageous.lib.api.plugin import VISUAL_BLOCK_MODE
+from NeoVintageous.lib.api.plugin import VISUAL_MODE
 from NeoVintageous.lib.vi.core import ViTextCommandBase
 from NeoVintageous.lib.vi.inputs import input_types
 from NeoVintageous.lib.vi.inputs import parser_def
 from NeoVintageous.lib.vi.search import reverse_search
 from NeoVintageous.lib.vi.utils import regions_transformer
+from NeoVintageous.lib.vi.utils import translate_char
 
 
 __all__ = [
-    'nvim_surround_cs',
-    'nvim_surround_ds',
-    'nvim_surround_ys'
+    '_neovintageous_surround_cs',
+    '_neovintageous_surround_ds',
+    '_neovintageous_surround_ys'
 ]
 
 
-@plugin.register(seq='ys', modes=(plugin.modes.NORMAL,))
-class _nvim_surround_def_ys(plugin.ViOperatorDef):
+@register(seq='ys', modes=(NORMAL_MODE,))
+class _surround_ys(ViOperatorDef):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
         self.motion_required = True
-
         self.input_parser = parser_def(
             command=inputs.one_char,
             interactive_command=None,
@@ -54,7 +54,7 @@ class _nvim_surround_def_ys(plugin.ViOperatorDef):
         return not(single or tag)
 
     def accept(self, key):
-        self._inp += utils.translate_char(key)
+        self._inp += translate_char(key)
         return True
 
     def is_enabled(self, state):
@@ -62,7 +62,7 @@ class _nvim_surround_def_ys(plugin.ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': 'nvim_surround_ys',
+            'action': '_neovintageous_surround_ys',
             'action_args': {
                 'mode': state.mode,
                 'surround_with': self.inp
@@ -70,14 +70,12 @@ class _nvim_surround_def_ys(plugin.ViOperatorDef):
         }
 
 
-@plugin.register(seq='S', modes=(plugin.modes.VISUAL, plugin.modes.VISUAL_BLOCK))
-class _nvim_surround_def_big_s(_nvim_surround_def_ys):
+@register(seq='S', modes=(VISUAL_MODE, VISUAL_BLOCK_MODE))
+class _surround_S(_surround_ys):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.motion_required = False
-
         self.input_parser = parser_def(
             command=inputs.one_char,
             interactive_command=None,
@@ -87,16 +85,14 @@ class _nvim_surround_def_big_s(_nvim_surround_def_ys):
         )
 
 
-@plugin.register(seq='ds', modes=(plugin.modes.NORMAL, plugin.modes.OPERATOR_PENDING))
-class _nvim_surround_def_ds(plugin.ViOperatorDef):
+@register(seq='ds', modes=(NORMAL_MODE, OPERATOR_PENDING_MODE))
+class _surround_ds(ViOperatorDef):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-
         self.input_parser = parser_def(
             command=inputs.one_char,
             interactive_command=None,
@@ -112,7 +108,7 @@ class _nvim_surround_def_ds(plugin.ViOperatorDef):
         return not(single or tag)
 
     def accept(self, key):
-        self._inp += utils.translate_char(key)
+        self._inp += translate_char(key)
         return True
 
     def is_enabled(self, state):
@@ -120,7 +116,7 @@ class _nvim_surround_def_ds(plugin.ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': 'nvim_surround_ds',
+            'action': '_neovintageous_surround_ds',
             'action_args': {
                 'mode': state.mode,
                 'replace_what': self.inp
@@ -128,28 +124,28 @@ class _nvim_surround_def_ds(plugin.ViOperatorDef):
         }
 
 
-@plugin.register(seq='cs', modes=(plugin.modes.NORMAL, plugin.modes.OPERATOR_PENDING))
-class _nvim_surround_def_cs(plugin.ViOperatorDef):
+@register(seq='cs', modes=(NORMAL_MODE, OPERATOR_PENDING_MODE))
+class _surround_cs(ViOperatorDef):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-
-        self.input_parser = parser_def(command=inputs.one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=input_types.INMEDIATE)
+        self.input_parser = parser_def(
+            command=inputs.one_char,
+            interactive_command=None,
+            input_param=None,
+            on_done=None,
+            type=input_types.INMEDIATE
+        )
 
     @property
     def accept_input(self):
         return len(self.inp) != 2
 
     def accept(self, key):
-        self._inp += utils.translate_char(key)
+        self._inp += translate_char(key)
         return True
 
     def is_enabled(self, state):
@@ -157,7 +153,7 @@ class _nvim_surround_def_cs(plugin.ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': 'nvim_surround_cs',
+            'action': '_neovintageous_surround_cs',
             'action_args': {
                 'mode': state.mode,
                 'replace_what': self.inp
@@ -170,7 +166,7 @@ def _regions_transformer_reversed(view, f):
     new = []
     for sel in sels:
         region = f(view, sel)
-        if not isinstance(region, sublime.Region):
+        if not isinstance(region, Region):
             raise TypeError('sublime.Region required')
         new.append(region)
     view.sel().clear()
@@ -197,22 +193,22 @@ _PAIRS_DEFAULT_SPACE = {
 
 
 def _get_surround_pairs(view):
-    if view.settings().get("vintageous_surround_spaces", False):
+    if view.settings().get('vintageous_surround_spaces'):
         return _PAIRS_DEFAULT_SPACE
     else:
         return _PAIRS_DEFAULT_PLAIN
 
 
-class nvim_surround_ys(ViTextCommandBase):
+class _neovintageous_surround_ys(ViTextCommandBase):
 
     def run(self, edit, mode=None, surround_with='"', count=1, motion=None):
         def f(view, s):
-            if mode == plugin.modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL_MODE:
                 self.surround(edit, s, surround_with)
-                return sublime.Region(s.begin())
-            elif mode in (plugin.modes.VISUAL, plugin.modes.VISUAL_BLOCK):
+                return Region(s.begin())
+            elif mode in (VISUAL_MODE, VISUAL_BLOCK_MODE):
                 self.surround(edit, s, surround_with)
-                return sublime.Region(s.begin())
+                return Region(s.begin())
 
             return s
 
@@ -220,7 +216,7 @@ class nvim_surround_ys(ViTextCommandBase):
             self.enter_normal_mode(mode)
             raise ValueError('motion required')
 
-        if mode == plugin.modes.INTERNAL_NORMAL:
+        if mode == INTERNAL_NORMAL_MODE:
             self.view.run_command(motion['motion'], motion['motion_args'])
 
         if surround_with:
@@ -243,20 +239,11 @@ class nvim_surround_ys(ViTextCommandBase):
         self.view.insert(edit, s.begin(), open_)
 
 
-class nvim_surround_cs(sublime_plugin.TextCommand):
-
-    PAIRS = {
-        '(': ('(', ')'),
-        ')': ('( ', ' )'),
-        '[': ('[', ']'),
-        ']': ('[ ', ' ]'),
-        '{': ('{', '}'),
-        '}': ('{ ', ' }'),
-    }
+class _neovintageous_surround_cs(TextCommand):
 
     def run(self, edit, mode=None, replace_what=''):
         def f(view, s):
-            if mode == plugin.modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL_MODE:
                 self.replace(edit, s, replace_what)
                 return s
             return s
@@ -276,8 +263,8 @@ class nvim_surround_cs(sublime_plugin.TextCommand):
             prev_ = reverse_search(self.view, open_, end=s.b, start=0)
         else:
             # brute force
-            next_ = self.view.find(close_, s.b, sublime.LITERAL)
-            prev_ = reverse_search(self.view, open_, end=s.b, start=0, flags=sublime.LITERAL)
+            next_ = self.view.find(close_, s.b, LITERAL)
+            prev_ = reverse_search(self.view, open_, end=s.b, start=0, flags=LITERAL)
 
         if not (next_ and prev_):
             return
@@ -286,20 +273,11 @@ class nvim_surround_cs(sublime_plugin.TextCommand):
         self.view.replace(edit, prev_, new_open)
 
 
-class nvim_surround_ds(sublime_plugin.TextCommand):
-
-    PAIRS = {
-        '(': ('(', ')'),
-        ')': ('( ', ' )'),
-        '[': ('[', ']'),
-        ']': ('[ ', ' ]'),
-        '{': ('{', '}'),
-        '}': ('{ ', ' }'),
-    }
+class _neovintageous_surround_ds(TextCommand):
 
     def run(self, edit, mode=None, replace_what=''):
         def f(view, s):
-            if mode == plugin.modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL_MODE:
                 self.replace(edit, s, replace_what)
                 return s
             return s
@@ -317,8 +295,8 @@ class nvim_surround_ds(sublime_plugin.TextCommand):
             prev_ = reverse_search(self.view, open_, end=s.b, start=0)
         else:
             # brute force
-            next_ = self.view.find(close_, s.b, sublime.LITERAL)
-            prev_ = reverse_search(self.view, open_, end=s.b, start=0, flags=sublime.LITERAL)
+            next_ = self.view.find(close_, s.b, LITERAL)
+            prev_ = reverse_search(self.view, open_, end=s.b, start=0, flags=LITERAL)
 
         if not (next_ and prev_):
             return

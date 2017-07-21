@@ -22,7 +22,7 @@ class RangeNode(Node):
     """Represents a Vim line range."""
 
     def __init__(self, start=None, end=None, separator=None):
-        self.start =  start or []
+        self.start = start or []
         self.end = end or []
         self.separator = separator
 
@@ -40,6 +40,7 @@ class RangeNode(Node):
     def __eq__(self, other):
         if not isinstance(other, RangeNode):
             return False
+
         return (self.start == other.start and
                 self.end == other.end and
                 self.separator == other.separator)
@@ -77,6 +78,7 @@ class RangeNode(Node):
             match = view.find(str(token)[1:-1], start_pt)
             if not match:
                 raise ValueError('pattern not found')
+
             return row_at(view, match.a)
 
         if isinstance(token, TokenSearchBackward):
@@ -84,6 +86,7 @@ class RangeNode(Node):
             match = reverse_search_by_pt(view, str(token)[1:-1], 0, start_pt)
             if not match:
                 raise ValueError('pattern not found')
+
             return row_at(view, match.a)
 
         if isinstance(token, TokenMark):

@@ -2,7 +2,6 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_SUBSTITUTE
 from .tokens_base import TokenOfCommand
-
 from NeoVintageous.lib import ex
 
 
@@ -92,4 +91,5 @@ def scan_command_substitute_params(state):
     state.skip(' ')
     state.ignore()
     state.expect(EOF)
+
     return None, [TokenCommandSubstitute(params), TokenEof()]

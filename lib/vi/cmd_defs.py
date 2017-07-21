@@ -28,7 +28,7 @@ _MODES_ACTION = (
 @keys.assign(seq=seqs.D, modes=_MODES_ACTION)
 class ViDeleteByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.command = '_vi_d'
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -49,7 +49,7 @@ class ViDeleteByChars(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_O, modes=_MODES_ACTION)
 class ViInsertLineBefore(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.command = '_vi_big_o'
         self.scroll_into_view = True
 
@@ -68,7 +68,7 @@ class ViInsertLineBefore(ViOperatorDef):
 @keys.assign(seq=seqs.O, modes=_MODES_ACTION)
 class ViInsertLineAfter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = False
 
@@ -93,7 +93,7 @@ class ViInsertLineAfter(ViOperatorDef):
 @keys.assign(seq=seqs.X, modes=_MODES_ACTION)
 class ViRightDeleteChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
@@ -112,7 +112,7 @@ class ViRightDeleteChars(ViOperatorDef):
 @keys.assign(seq=seqs.S, modes=_MODES_ACTION)
 class ViSubstituteChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -132,7 +132,7 @@ class ViSubstituteChar(ViOperatorDef):
 @keys.assign(seq=seqs.Y, modes=_MODES_ACTION)
 class ViYankByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -151,7 +151,7 @@ class ViYankByChars(ViOperatorDef):
 @keys.assign(seq=seqs.EQUAL, modes=_MODES_ACTION)
 class ViReindent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -168,7 +168,7 @@ class ViReindent(ViOperatorDef):
 @keys.assign(seq=seqs.GREATER_THAN, modes=_MODES_ACTION)
 class ViIndent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -187,7 +187,7 @@ class ViIndent(ViOperatorDef):
 @keys.assign(seq=seqs.LESS_THAN, modes=_MODES_ACTION)
 class ViUnindent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -206,7 +206,7 @@ class ViUnindent(ViOperatorDef):
 @keys.assign(seq=seqs.C, modes=_MODES_ACTION)
 class ViChangeByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -228,7 +228,7 @@ class ViChangeByChars(ViOperatorDef):
 @keys.assign(seq=seqs.U, modes=[modes.NORMAL])
 class ViUndo(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -245,7 +245,7 @@ class ViUndo(ViOperatorDef):
 @keys.assign(seq=seqs.U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
 class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -263,7 +263,7 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
 class ViRedo(ViOperatorDef):
     def __init__(self, inclusive=False, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -280,7 +280,7 @@ class ViRedo(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_D, modes=_MODES_ACTION)
 class ViDeleteToEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -299,7 +299,7 @@ class ViDeleteToEol(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_C, modes=_MODES_ACTION)
 class ViChangeToEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -321,7 +321,7 @@ class ViChangeToEol(ViOperatorDef):
 @keys.assign(seq=seqs.G_BIG_U_G_BIG_U, modes=_MODES_ACTION)
 class ViChangeToUpperCaseByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -340,7 +340,7 @@ class ViChangeToUpperCaseByLines(ViOperatorDef):
 @keys.assign(seq=seqs.CC, modes=_MODES_ACTION)
 class ViChangeLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -361,7 +361,7 @@ class ViChangeLine(ViOperatorDef):
 @keys.assign(seq=seqs.DD, modes=_MODES_ACTION)
 class ViDeleteLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -380,7 +380,7 @@ class ViDeleteLine(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_R, modes=_MODES_ACTION)
 class ViEnterReplaceMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -397,7 +397,7 @@ class ViEnterReplaceMode(ViOperatorDef):
 @keys.assign(seq=seqs.GREATER_THAN_GREATER_THAN, modes=_MODES_ACTION)
 class ViIndentLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -416,7 +416,7 @@ class ViIndentLine(ViOperatorDef):
 @keys.assign(seq=seqs.GUU, modes=_MODES_ACTION)
 class ViChangeToLowerCaseByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -434,7 +434,7 @@ class ViChangeToLowerCaseByLines(ViOperatorDef):
 @keys.assign(seq=seqs.GU, modes=_MODES_ACTION)
 class ViChangeToLowerCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -453,7 +453,7 @@ class ViChangeToLowerCaseByChars(ViOperatorDef):
 @keys.assign(seq=seqs.EQUAL_EQUAL, modes=_MODES_ACTION)
 class ViReindentLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -471,7 +471,7 @@ class ViReindentLine(ViOperatorDef):
 @keys.assign(seq=seqs.LESS_THAN_LESS_THAN, modes=_MODES_ACTION)
 class ViUnindentLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -490,7 +490,7 @@ class ViUnindentLine(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_Y, modes=_MODES_ACTION)
 class ViYankLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -508,7 +508,7 @@ class ViYankLine(ViOperatorDef):
 @keys.assign(seq=seqs.G_TILDE_TILDE, modes=_MODES_ACTION)
 class ViInvertCaseByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -526,7 +526,7 @@ class ViInvertCaseByLines(ViOperatorDef):
 @keys.assign(seq=seqs.TILDE, modes=_MODES_ACTION)
 class ViForceInvertCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -544,7 +544,7 @@ class ViForceInvertCaseByChars(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_S, modes=_MODES_ACTION)
 class ViSubstituteByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -566,7 +566,7 @@ class ViSubstituteByLines(ViOperatorDef):
 @keys.assign(seq=seqs.G_TILDE, modes=_MODES_ACTION)
 class ViInvertCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -586,7 +586,7 @@ class ViInvertCaseByChars(ViOperatorDef):
 @keys.assign(seq=seqs.G_BIG_U, modes=_MODES_ACTION)
 class ViChangeToUpperCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -605,7 +605,7 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_J, modes=_MODES_ACTION + (modes.SELECT,))
 class ViJoinLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -628,7 +628,7 @@ class ViJoinLines(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_X, modes=_MODES_ACTION)
 class ViDecrement(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -647,7 +647,7 @@ class ViDecrement(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_A, modes=_MODES_ACTION)
 class ViIncrement(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -666,7 +666,7 @@ class ViIncrement(ViOperatorDef):
 @keys.assign(seq=seqs.G_BIG_J, modes=_MODES_ACTION)
 class ViJoinLinesNoSeparator(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -685,7 +685,7 @@ class ViJoinLinesNoSeparator(ViOperatorDef):
 @keys.assign(seq=seqs.V, modes=_MODES_ACTION)
 class ViEnterVisualMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -702,7 +702,7 @@ class ViEnterVisualMode(ViOperatorDef):
 @keys.assign(seq=seqs.ZT, modes=_MODES_ACTION)
 class ViScrollToScreenTop(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -720,7 +720,7 @@ class ViScrollToScreenTop(ViOperatorDef):
 @keys.assign(seq=seqs.Z_MINUS, modes=_MODES_ACTION)
 class ViScrollToScreenBottom(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -737,7 +737,7 @@ class ViScrollToScreenBottom(ViOperatorDef):
 @keys.assign(seq=seqs.ZZ, modes=_MODES_ACTION)
 class ViScrollToScreenCenter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -754,7 +754,7 @@ class ViScrollToScreenCenter(ViOperatorDef):
 @keys.assign(seq=seqs.GQ, modes=_MODES_ACTION)
 class ViReformat(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.motion_required = True
         self.scroll_into_view = True
@@ -772,7 +772,7 @@ class ViReformat(ViOperatorDef):
 @keys.assign(seq=seqs.P, modes=_MODES_ACTION)
 class ViPasteAfter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -791,7 +791,7 @@ class ViPasteAfter(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_P, modes=_MODES_ACTION)
 class ViPasteBefore(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -810,7 +810,7 @@ class ViPasteBefore(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_X, modes=_MODES_ACTION)
 class ViLeftDeleteChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -829,7 +829,7 @@ class ViLeftDeleteChar(ViOperatorDef):
 @keys.assign(seq=seqs.GT, modes=_MODES_ACTION)
 class ViActivateNextTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -845,7 +845,7 @@ class ViActivateNextTab(ViOperatorDef):
 @keys.assign(seq=seqs.G_BIG_T, modes=_MODES_ACTION)
 class ViActivatePreviousTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -862,7 +862,7 @@ class ViActivatePreviousTab(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_B, modes=_MODES_ACTION)
 class ViMoveCursorToBottomRightWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -875,7 +875,7 @@ class ViMoveCursorToBottomRightWindow(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_BIG_H, modes=_MODES_ACTION)
 class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -888,7 +888,7 @@ class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_BIG_J, modes=_MODES_ACTION)
 class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -901,7 +901,7 @@ class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_BIG_K, modes=_MODES_ACTION)
 class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -914,7 +914,7 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_BIG_L, modes=_MODES_ACTION)
 class ViMoveCurrentWindowToFarRight(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -927,7 +927,7 @@ class ViMoveCurrentWindowToFarRight(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_C, modes=_MODES_ACTION)
 class ViCloseTheCurrentWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -940,7 +940,7 @@ class ViCloseTheCurrentWindow(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_EQUAL, modes=_MODES_ACTION)
 class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -953,7 +953,7 @@ class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_GREATER_THAN, modes=_MODES_ACTION)
 class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -971,7 +971,7 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_BACKSPACE, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -988,7 +988,7 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_DOWN, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1005,7 +1005,7 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_UP, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1022,7 +1022,7 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_RIGHT, modes=_MODES_ACTION)
 class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1037,7 +1037,7 @@ class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_LESS_THAN, modes=_MODES_ACTION)
 class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1052,7 +1052,7 @@ class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_MINUS, modes=_MODES_ACTION)
 class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1068,7 +1068,7 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_N, modes=_MODES_ACTION)
 class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1084,7 +1084,7 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_O, modes=_MODES_ACTION)
 class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1097,7 +1097,7 @@ class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_PIPE, modes=_MODES_ACTION)
 class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1112,7 +1112,7 @@ class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_PLUS, modes=_MODES_ACTION)
 class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1128,7 +1128,7 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_Q, modes=_MODES_ACTION)
 class ViQuitTheCurrentWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1143,7 +1143,7 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_S, modes=_MODES_ACTION)
 class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1159,7 +1159,7 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_T, modes=_MODES_ACTION)
 class ViMoveCursorToTopLeftWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1173,7 +1173,7 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_UNDERSCORE, modes=_MODES_ACTION)
 class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1189,7 +1189,7 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_V, modes=_MODES_ACTION)
 class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1206,7 +1206,7 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_W_CTRL_X, modes=_MODES_ACTION)
 class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1221,7 +1221,7 @@ class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_V, modes=_MODES_ACTION)
 class ViEnterVisualLineMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1237,7 +1237,7 @@ class ViEnterVisualLineMode(ViOperatorDef):
 @keys.assign(seq=seqs.GV, modes=_MODES_ACTION)
 class ViRestoreVisualSelections(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1254,7 +1254,7 @@ class ViRestoreVisualSelections(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_K_CTRL_B, modes=_MODES_ACTION)
 class StToggleSidebar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1268,7 +1268,7 @@ class StToggleSidebar(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_SHIFT_B, modes=_MODES_ACTION)
 class StShowBuildSystemsMenu(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1284,7 +1284,7 @@ class StShowBuildSystemsMenu(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_BIG_F, modes=_MODES_ACTION)
 class StFinInFiles(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1300,7 +1300,7 @@ class StFinInFiles(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_O, modes=_MODES_ACTION)
 class ViJumpBack(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1314,7 +1314,7 @@ class ViJumpBack(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_I, modes=_MODES_ACTION)
 class ViJumpForward(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1328,7 +1328,7 @@ class ViJumpForward(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_CTRL_F12, modes=_MODES_ACTION)
 class StGotoSymbolInProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1342,7 +1342,7 @@ class StGotoSymbolInProject(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_F12, modes=_MODES_ACTION)
 class StGotoSymbolInFile(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1359,7 +1359,7 @@ class StGotoSymbolInFile(ViOperatorDef):
 @keys.assign(seq=seqs.F12, modes=_MODES_ACTION)
 class StGotoDefinition(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1373,7 +1373,7 @@ class StGotoDefinition(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_F2, modes=_MODES_ACTION)
 class StToggleBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1387,7 +1387,7 @@ class StToggleBookmark(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_SHIFT_F2, modes=_MODES_ACTION)
 class StClearBookmarks(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1401,7 +1401,7 @@ class StClearBookmarks(ViOperatorDef):
 @keys.assign(seq=seqs.F2, modes=_MODES_ACTION)
 class StPrevBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1415,7 +1415,7 @@ class StPrevBookmark(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F2, modes=_MODES_ACTION)
 class StNextBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1429,7 +1429,7 @@ class StNextBookmark(ViOperatorDef):
 @keys.assign(seq=seqs.DOT, modes=_MODES_ACTION)
 class ViRepeat(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1449,7 +1449,7 @@ class ViRepeat(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
 class ViOpenRegisterFromInsertMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1466,7 +1466,7 @@ class ViOpenRegisterFromInsertMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_Y, modes=_MODES_ACTION)
 class ViScrollByLinesUp(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1484,7 +1484,7 @@ class ViScrollByLinesUp(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_U, modes=[modes.NORMAL])
 class ViUndoLineChanges(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1504,7 +1504,7 @@ class ViUndoLineChanges(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
 class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -1522,7 +1522,7 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_E, modes=_MODES_ACTION)
 class ViScrollByLinesDown(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1539,7 +1539,7 @@ class ViScrollByLinesDown(ViOperatorDef):
 @keys.assign(seq=seqs.F11, modes=_MODES_ACTION)
 class StToggleFullScreen(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1553,7 +1553,7 @@ class StToggleFullScreen(ViOperatorDef):
 @keys.assign(seq=seqs.F7, modes=_MODES_ACTION)
 class StBuild(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1567,7 +1567,7 @@ class StBuild(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
 class StFindPrev(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1581,7 +1581,7 @@ class StFindPrev(ViOperatorDef):
 @keys.assign(seq=seqs.AT, modes=_MODES_ACTION)
 class ViOpenMacrosForRepeating(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
@@ -1613,7 +1613,7 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
 @keys.assign(seq=seqs.Q, modes=_MODES_ACTION)
 class ViToggleMacroRecorder(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
@@ -1644,7 +1644,7 @@ class ViToggleMacroRecorder(ViOperatorDef):
 @keys.assign(seq=seqs.F3, modes=_MODES_ACTION)
 class StFindNext(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1658,7 +1658,7 @@ class StFindNext(ViOperatorDef):
 @keys.assign(seq=seqs.F4, modes=_MODES_ACTION)
 class StFindNextResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1672,7 +1672,7 @@ class StFindNextResult(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
 class StFindPrevResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1686,7 +1686,7 @@ class StFindPrevResult(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_Z_BIG_Z, modes=_MODES_ACTION)
 class ViQuit(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1703,7 +1703,7 @@ class ViQuit(ViOperatorDef):
 @keys.assign(seq=seqs.G_BIG_H, modes=_MODES_ACTION)
 class ViEnterSelectModeForSearch(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1717,7 +1717,7 @@ class ViEnterSelectModeForSearch(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
 class StPrevResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1731,7 +1731,7 @@ class StPrevResult(ViOperatorDef):
 @keys.assign(seq=seqs.GH, modes=_MODES_ACTION)
 class ViEnterSelectMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1747,7 +1747,7 @@ class ViEnterSelectMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_V, modes=_MODES_ACTION)
 class ViEnterVisualBlockMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1763,7 +1763,7 @@ class ViEnterVisualBlockMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_P, modes=_MODES_ACTION)
 class StShowGotoAnything(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1780,7 +1780,7 @@ class StShowGotoAnything(ViOperatorDef):
 @keys.assign(seq=seqs.GA, modes=(modes.NORMAL,))
 class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def translate(self, state):
         return {
@@ -1792,7 +1792,7 @@ class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
 @keys.assign(seq=seqs.J, modes=(modes.SELECT,))
 class ViAddSelection(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1809,7 +1809,7 @@ class ViAddSelection(ViOperatorDef):
 @keys.assign(seq=seqs.ALT_CTRL_P, modes=_MODES_ACTION)
 class StShowSwitchProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1823,7 +1823,7 @@ class StShowSwitchProject(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_BIG_P, modes=_MODES_ACTION)
 class StShowCommandPalette(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1839,7 +1839,7 @@ class StShowCommandPalette(ViOperatorDef):
 @keys.assign(seq=seqs.SHIFT_F11, modes=_MODES_ACTION)
 class StEnterDistractionFreeMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -1861,7 +1861,7 @@ class StEnterDistractionFreeMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_9, group=8, modes=_MODES_ACTION)
 class StFocusGroup(ViOperatorDef):
     def __init__(self, *args, group=None, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._serializable.append('_group')
         self._group = group
         self.updates_xpos = True
@@ -1879,7 +1879,7 @@ class StFocusGroup(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_0, modes=_MODES_ACTION)
 class StFocusSideBar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.command = 'focus_side_bar'
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -1894,7 +1894,7 @@ class StFocusSideBar(ViOperatorDef):
 @keys.assign(seq=seqs.I, modes=_MODES_ACTION + (modes.SELECT,))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.command = '_enter_insert_mode'
         self.scroll_into_view = True
 
@@ -1915,7 +1915,7 @@ class ViEnterInserMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_LEFT_SQUARE_BRACKET, modes=_MODES_ACTION + (modes.SELECT,))
 class ViEnterNormalMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1930,7 +1930,7 @@ class ViEnterNormalMode(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_RIGHT_SQUARE_BRACKET, modes=_MODES_ACTION)
 class ViJumpToDefinition(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def translate(self, state):
         return {
@@ -1942,7 +1942,7 @@ class ViJumpToDefinition(ViOperatorDef):
 @keys.assign(seq=seqs.A, modes=_MODES_ACTION)
 class ViInsertAfterChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1960,7 +1960,7 @@ class ViInsertAfterChar(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_A, modes=_MODES_ACTION + (modes.SELECT,))
 class ViInsertAtEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1977,7 +1977,7 @@ class ViInsertAtEol(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_I, modes=_MODES_ACTION)
 class ViInsertAtBol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -1994,7 +1994,7 @@ class ViInsertAtBol(ViOperatorDef):
 @keys.assign(seq=seqs.COLON, modes=_MODES_ACTION)
 class ViEnterCommandLineMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2007,7 +2007,7 @@ class ViEnterCommandLineMode(ViOperatorDef):
 @keys.assign(seq=seqs.F9, modes=_MODES_ACTION)
 class StSortLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2022,7 +2022,7 @@ class StSortLines(ViOperatorDef):
 @keys.assign(seq=seqs.CTRL_G, modes=_MODES_ACTION)
 class ViShowFileStatus(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2035,7 +2035,7 @@ class ViShowFileStatus(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_Z_BIG_Q, modes=_MODES_ACTION)
 class ViExitEditor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2051,7 +2051,7 @@ class ViExitEditor(ViOperatorDef):
 @keys.assign(seq=seqs.BIG_Z_BIG_Z, modes=_MODES_ACTION)
 class ViCloseFile(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2067,7 +2067,7 @@ class ViCloseFile(ViOperatorDef):
 @keys.assign(seq=seqs.F6, modes=_MODES_ACTION)
 class StToggleSpelling(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2082,7 +2082,7 @@ class StToggleSpelling(ViOperatorDef):
 @keys.assign(seq=seqs.G_BIG_D, modes=_MODES_ACTION)
 class ViGotoSymbolInProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2101,7 +2101,7 @@ class ViGotoSymbolInProject(ViOperatorDef):
 @keys.assign(seq=seqs.K, modes=(modes.SELECT,))
 class ViDeselectInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2119,7 +2119,7 @@ class ViDeselectInstance(ViOperatorDef):
 @keys.assign(seq=seqs.L, modes=(modes.SELECT,))
 class ViSkipInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2137,7 +2137,7 @@ class ViSkipInstance(ViOperatorDef):
 @keys.assign(seq=seqs.GD, modes=_MODES_MOTION)
 class ViGotoSymbolInFile(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -2159,7 +2159,7 @@ class ViGotoSymbolInFile(ViMotionDef):
 @keys.assign(seq=seqs.SPACE, modes=_MODES_MOTION)
 class ViMoveRightByChars(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2176,7 +2176,7 @@ class ViMoveRightByChars(ViMotionDef):
 @keys.assign(seq=seqs.SHIFT_ENTER, modes=_MODES_MOTION)
 class ViShiftEnterMotion(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2193,7 +2193,7 @@ class ViShiftEnterMotion(ViMotionDef):
 @keys.assign(seq=seqs.B, modes=_MODES_MOTION)
 class ViMoveByWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2210,7 +2210,7 @@ class ViMoveByWordsBackward(ViMotionDef):
 @keys.assign(seq=seqs.BIG_B, modes=_MODES_MOTION)
 class ViMoveByBigWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2227,7 +2227,7 @@ class ViMoveByBigWordsBackward(ViMotionDef):
 @keys.assign(seq=seqs.BIG_W, modes=_MODES_MOTION)
 class ViMoveByBigWords(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2244,7 +2244,7 @@ class ViMoveByBigWords(ViMotionDef):
 @keys.assign(seq=seqs.E, modes=_MODES_MOTION)
 class ViMoveByWordEnds(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2261,7 +2261,7 @@ class ViMoveByWordEnds(ViMotionDef):
 @keys.assign(seq=seqs.BIG_H, modes=_MODES_MOTION)
 class ViGotoScreenTop(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2278,7 +2278,7 @@ class ViGotoScreenTop(ViMotionDef):
 @keys.assign(seq=seqs.GE, modes=_MODES_MOTION)
 class ViMoveByWordEndsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2295,7 +2295,7 @@ class ViMoveByWordEndsBackward(ViMotionDef):
 @keys.assign(seq=seqs.G_BIG_E, modes=_MODES_MOTION)
 class ViMoveByBigWordEndsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2312,7 +2312,7 @@ class ViMoveByBigWordEndsBackward(ViMotionDef):
 @keys.assign(seq=seqs.BIG_L, modes=_MODES_MOTION)
 class ViGotoScreenBottom(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2329,7 +2329,7 @@ class ViGotoScreenBottom(ViMotionDef):
 @keys.assign(seq=seqs.BIG_M, modes=_MODES_MOTION)
 class ViGotoScreenMiddle(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2346,7 +2346,7 @@ class ViGotoScreenMiddle(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_D, modes=_MODES_MOTION)
 class ViMoveHalfScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2363,7 +2363,7 @@ class ViMoveHalfScreenDown(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_U, modes=_MODES_MOTION)
 class ViMoveHalfScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2381,7 +2381,7 @@ class ViMoveHalfScreenUp(ViMotionDef):
 @keys.assign(seq=seqs.PAGE_UP, modes=_MODES_MOTION)
 class ViMoveScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2399,7 +2399,7 @@ class ViMoveScreenDown(ViMotionDef):
 @keys.assign(seq=seqs.PAGE_DOWN, modes=_MODES_MOTION)
 class ViMoveScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2416,7 +2416,7 @@ class ViMoveScreenUp(ViMotionDef):
 @keys.assign(seq=seqs.BACKTICK, modes=_MODES_MOTION)
 class ViGotoExactMarkXpos(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
@@ -2452,7 +2452,7 @@ class ViGotoExactMarkXpos(ViMotionDef):
 @keys.assign(seq=seqs.END, modes=_MODES_MOTION)
 class ViMoveToEol(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2469,7 +2469,7 @@ class ViMoveToEol(ViMotionDef):
 @keys.assign(seq=seqs.PLUS, modes=_MODES_MOTION)
 class ViMotionEnter(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2485,7 +2485,7 @@ class ViMotionEnter(ViMotionDef):
 @keys.assign(seq=seqs.MINUS, modes=_MODES_MOTION)
 class ViMoveBackOneLine(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2501,7 +2501,7 @@ class ViMoveBackOneLine(ViMotionDef):
 @keys.assign(seq=seqs.G_UNDERSCORE, modes=_MODES_MOTION)
 class ViMoveToSoftEol(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2518,7 +2518,7 @@ class ViMoveToSoftEol(ViMotionDef):
 @keys.assign(seq=seqs.GJ, modes=_MODES_MOTION)
 class ViMoveByScreenLineDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2534,7 +2534,7 @@ class ViMoveByScreenLineDown(ViMotionDef):
 @keys.assign(seq=seqs.GK, modes=_MODES_MOTION)
 class ViMoveByScreenLineUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2550,7 +2550,7 @@ class ViMoveByScreenLineUp(ViMotionDef):
 @keys.assign(seq=seqs.LEFT_BRACE, modes=_MODES_MOTION)
 class ViMoveByBlockUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2566,7 +2566,7 @@ class ViMoveByBlockUp(ViMotionDef):
 @keys.assign(seq=seqs.SEMICOLON, modes=_MODES_MOTION)
 class ViRepeatCharSearchForward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2591,7 +2591,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
 @keys.assign(seq=seqs.QUOTE, modes=_MODES_MOTION)
 class ViGotoMark(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
@@ -2634,7 +2634,7 @@ class ViGotoMark(ViMotionDef):
 @keys.assign(seq=seqs.RIGHT_BRACE, modes=_MODES_MOTION)
 class ViMoveByBlockDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2650,7 +2650,7 @@ class ViMoveByBlockDown(ViMotionDef):
 @keys.assign(seq=seqs.LEFT_PAREN, modes=_MODES_MOTION)
 class ViMoveBySentenceUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2666,7 +2666,7 @@ class ViMoveBySentenceUp(ViMotionDef):
 @keys.assign(seq=seqs.RIGHT_PAREN, modes=_MODES_MOTION)
 class ViMoveBySentenceDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2682,7 +2682,7 @@ class ViMoveBySentenceDown(ViMotionDef):
 @keys.assign(seq=seqs.LEFT_SQUARE_BRACKET, modes=_MODES_MOTION)
 class ViGotoOpeningBracket(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = parser_def(command=inputs.vi_left_square_bracket,
@@ -2743,7 +2743,7 @@ class ViForwardToStartOfChange(ViMotionDef):
 @keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET, modes=_MODES_MOTION)
 class ViGotoClosingBracket(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = parser_def(command=inputs.vi_left_square_bracket,
@@ -2779,7 +2779,7 @@ class ViGotoClosingBracket(ViMotionDef):
 @keys.assign(seq=seqs.PERCENT, modes=_MODES_MOTION)
 class ViGotoLinesPercent(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2797,7 +2797,7 @@ class ViGotoLinesPercent(ViMotionDef):
 @keys.assign(seq=seqs.COMMA, modes=_MODES_MOTION)
 class ViRepeatCharSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2822,7 +2822,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
 @keys.assign(seq=seqs.PIPE, modes=_MODES_MOTION)
 class ViMoveByLineCols(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2839,7 +2839,7 @@ class ViMoveByLineCols(ViMotionDef):
 @keys.assign(seq=seqs.BIG_E, modes=_MODES_MOTION)
 class ViMoveByBigWordEnds(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2858,7 +2858,7 @@ class ViMoveByBigWordEnds(ViMotionDef):
 @keys.assign(seq=seqs.BACKSPACE, modes=_MODES_MOTION)
 class ViMoveLeftByChars(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2880,7 +2880,7 @@ class ViMoveLeftByChars(ViMotionDef):
 @keys.assign(seq=seqs.W, modes=_MODES_MOTION)
 class ViMoveByWords(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2897,7 +2897,7 @@ class ViMoveByWords(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_N, modes=_MODES_MOTION)
 class ViMoveDownByLines(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2916,7 +2916,7 @@ class ViMoveDownByLines(ViMotionDef):
 @keys.assign(seq=seqs.UP, modes=_MODES_MOTION)
 class ViMoveUpByLines(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -2935,7 +2935,7 @@ class ViMoveUpByLines(ViMotionDef):
 @keys.assign(seq=seqs.HOME, modes=_MODES_MOTION)
 class ViMoveToBol(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -2952,7 +2952,7 @@ class ViMoveToBol(ViMotionDef):
 @keys.assign(seq=seqs.UNDERSCORE, modes=_MODES_MOTION)
 class ViMoveToSoftBol(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -2969,7 +2969,7 @@ class ViMoveToSoftBol(ViMotionDef):
 @keys.assign(seq=seqs.ZERO, modes=_MODES_MOTION)
 class ViMoveToHardBol(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -2986,7 +2986,7 @@ class ViMoveToHardBol(ViMotionDef):
 @keys.assign(seq=seqs.N, modes=_MODES_MOTION)
 class ViRepeatSearchForward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -3005,7 +3005,7 @@ class ViRepeatSearchForward(ViMotionDef):
 @keys.assign(seq=seqs.BIG_N, modes=_MODES_MOTION)
 class ViRepeatSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -3024,7 +3024,7 @@ class ViRepeatSearchBackward(ViMotionDef):
 @keys.assign(seq=seqs.STAR, modes=_MODES_MOTION)
 class ViFindWord(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -3045,7 +3045,7 @@ class ViReverseFindWord(ViMotionDef):
     #         small village surrounded by eight fields.
 
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -3071,10 +3071,9 @@ class ViReverseFindWord(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_SHIFT_DOT, modes=_MODES_MOTION)
 # TODO: This is called a 'submode' in the vim docs.
 @keys.assign(seq=seqs.CTRL_X, modes=[modes.INSERT])
-# FIXME: This should not be a motion.
-class ViOpenNameSpace(ViMotionDef):
+class ViOpenNameSpace(ViMotionDef):  # FIXME: This should not be a motion.
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def translate(self, state):
         return {}
@@ -3083,7 +3082,7 @@ class ViOpenNameSpace(ViMotionDef):
 @keys.assign(seq=seqs.DOUBLE_QUOTE, modes=_MODES_MOTION)
 class ViOpenRegister(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def translate(self, state):
         return {}
@@ -3092,7 +3091,7 @@ class ViOpenRegister(ViMotionDef):
 @keys.assign(seq=seqs.GG, modes=_MODES_MOTION)
 class ViGotoBof(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -3113,7 +3112,7 @@ class ViGotoBof(ViMotionDef):
 @keys.assign(seq=seqs.BIG_G, modes=_MODES_MOTION)
 class ViGotoEof(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
@@ -3132,7 +3131,7 @@ class ViGotoEof(ViMotionDef):
 @keys.assign(seq=seqs.R, modes=_MODES_ACTION)
 class ViReplaceCharacters(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
@@ -3169,7 +3168,7 @@ class ViReplaceCharacters(ViOperatorDef):
 @keys.assign(seq=seqs.M, modes=_MODES_ACTION)
 class ViSetMark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.input_parser = parser_def(command=inputs.one_char,
                                        interactive_command=None,
@@ -3203,7 +3202,7 @@ class ViSetMark(ViOperatorDef):
 @keys.assign(seq=seqs.F, modes=_MODES_MOTION, inclusive=True)
 class ViSearchCharForward(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._serializable.append('inclusive')
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -3249,7 +3248,7 @@ class ViSearchCharForward(ViMotionDef):
 @keys.assign(seq=seqs.A, modes=[modes.OPERATOR_PENDING, modes.VISUAL, modes.VISUAL_BLOCK])
 class ViATextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
@@ -3285,7 +3284,7 @@ class ViATextObject(ViMotionDef):
 @keys.assign(seq=seqs.I, modes=[modes.OPERATOR_PENDING, modes.VISUAL, modes.VISUAL_BLOCK])
 class ViITextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
@@ -3322,7 +3321,7 @@ class ViITextObject(ViMotionDef):
 @keys.assign(seq=seqs.BIG_F, modes=_MODES_MOTION, inclusive=True)
 class ViSearchCharBackward(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._serializable.append('inclusive')
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -3367,7 +3366,7 @@ class ViSearchCharBackward(ViMotionDef):
 @keys.assign(seq=seqs.SLASH, modes=_MODES_MOTION)
 class ViSearchForward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = parser_def(command='_vi_slash',
@@ -3402,7 +3401,7 @@ class ViSearchForward(ViMotionDef):
 
 class ViSearchForwardImpl(ViMotionDef):
     def __init__(self, *args, term='', **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self._inp = term
         self.updates_xpos = True
@@ -3426,7 +3425,7 @@ class ViSearchForwardImpl(ViMotionDef):
 @keys.assign(seq=seqs.QUESTION_MARK, modes=_MODES_MOTION)
 class ViSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = parser_def(command='_vi_question_mark',
@@ -3461,7 +3460,7 @@ class ViSearchBackward(ViMotionDef):
 
 class ViSearchBackwardImpl(ViMotionDef):
     def __init__(self, *args, term='', **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self._inp = term
@@ -3485,7 +3484,7 @@ class ViSearchBackwardImpl(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_X_CTRL_L, modes=[modes.INSERT])
 class ViInsertLineWithCommonPrefix(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -3502,7 +3501,7 @@ class ViInsertLineWithCommonPrefix(ViOperatorDef):
 @keys.assign(seq=seqs.GM, modes=_MODES_MOTION)
 class ViMoveHalfScreenHorizontally(ViMotionDef):
     def __init__(self, *args, **kwargs):
-        ViMotionDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -3516,10 +3515,13 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         }
 
 
+# TODO gc is non standard and looks like it based on
+# https://github.com/tpope/vim-commentary it should probably be moved to the
+# extras directory as an extras plugin.
 @keys.assign(seq=seqs.GC, modes=_MODES_ACTION)
 class ViToggleCommentByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -3538,7 +3540,7 @@ class ViToggleCommentByLines(ViOperatorDef):
 @keys.assign(seq=seqs.GCC, modes=_MODES_ACTION)
 class ViCommentLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
@@ -3556,7 +3558,7 @@ class ViCommentLine(ViOperatorDef):
 @keys.assign(seq=seqs.G_BIG_C, modes=_MODES_ACTION)
 class ViToggleBlockCommentByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
-        ViOperatorDef.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True

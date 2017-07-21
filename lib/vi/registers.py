@@ -132,8 +132,7 @@ class Registers(object):
     def append_to(self, name, suffixes):
         """Append to an a-z register. `name` must be a capital in A-Z."""
         assert len(name) == 1, "Register names must be 1 char long."
-        assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", \
-            "Can only append to A-Z registers."
+        assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Can only append to A-Z registers."
 
         existing_values = _REGISTER_DATA.get(name.lower(), '')
         new_values = itertools.zip_longest(existing_values,

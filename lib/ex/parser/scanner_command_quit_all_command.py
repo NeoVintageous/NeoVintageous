@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('quall', 'qa')
 class TokenQuitAllCommand(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({},
-                         TOKEN_COMMAND_QUIT_ALL_COMMAND,
-                         'qall', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_QUIT_ALL_COMMAND, 'qall', *args, **kwargs)
         self.target_command = 'ex_quit_all'
 
 

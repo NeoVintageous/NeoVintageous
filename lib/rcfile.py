@@ -40,7 +40,7 @@ def reload():
 
 
 def _run():
-    _logger.debug('_run() file=\'%s\'', file_name())
+    _logger.debug('file=\'%s\'', file_name())
     try:
         with _open(file_name(), 'r') as f:
             for line in f:
@@ -52,16 +52,35 @@ def _run():
         pass
 
 
-_PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>map|nmap|omap|vmap|let) .*)$')
+_PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|vnoremap|vmap|onoremap|omap|let) .*)$')  # noqa: E501
+
+
+# TODO Properly implement map, nmap, vmap and omap
+# Currently map, nmap, vmap, and omap work the same as
+# noremap, nnoremap, vnoremap, and onoremap.
+_TMP_CMD_ALIASES = {
+    'noremap': 'map',
+    'nnoremap': 'nmap',
+    'vnoremap': 'vmap',
+    'onoremap': 'omap'
+}
 
 
 def _parse_line(line):
     try:
         line = line.rstrip()
-        _logger.debug('parse line \'%s\'', line)
-        match = _PARSE_LINE_PATTERN.match(line)
-        if match:
-            return ('ex_' + match.group('cmd'), {'command_line': match.group('command_line')})
+        if line:
+            _logger.debug('\'%s\'', line)
+            match = _PARSE_LINE_PATTERN.match(line)
+            if match:
+                cmd_line = match.group('command_line')
+                cmd = match.group('cmd')
+
+                if cmd in _TMP_CMD_ALIASES:
+                    cmd_line = cmd_line.replace(cmd, _TMP_CMD_ALIASES[cmd])
+                    cmd = _TMP_CMD_ALIASES[cmd]
+
+                return ('ex_' + cmd, {'command_line': cmd_line})
     except Exception:
         _logger.exception('bad command in rcfile: \'%s\'', line.rstrip())
         nvim.console_message('bad command in rcfile: \'%s\'' % line.rstrip())

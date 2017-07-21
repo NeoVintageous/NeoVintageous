@@ -5,14 +5,14 @@ from .lib.state import init_state
 
 # Load the commands
 # TODO Review: Perhaps just put all commands, except extras, in one file lib/commands.py?
-from .lib.cmds.ex import *  # noqa: F401, F403
-from .lib.cmds.ex_main import *  # noqa: F401, F403
+from .lib.commands import *  # noqa: F401, F403
+from .lib.cmds.ex_actions import *  # noqa: F401, F403
 from .lib.cmds.ex_motions import *  # noqa: F401, F403
-from .lib.cmds.actions import *  # noqa: F401, F403
-from .lib.cmds.motions import *  # noqa: F401, F403
-from .lib.cmds.support import *  # noqa: F401, F403
+from .lib.cmds.vi_actions import *  # noqa: F401, F403
+from .lib.cmds.vi_motions import *  # noqa: F401, F403
 from .lib.extras.surround import *  # noqa: F401, F403
 from .lib.extras.unimpaired import *  # noqa: F401, F403
+from .lib.extras.abolish import *  # noqa: F401, F403
 
 # Load the events
 from .lib.events import NeoVintageousEvents  # noqa: F401
@@ -25,39 +25,38 @@ def _ensure_other_vimlike_packages_are_disabled():
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
 
-    do_save = False
+    settings_need_saving = False
 
     if 'Vintage' not in ignored_packages:
         ignored_packages.append('Vintage')
-        do_save = True
+        settings_need_saving = True
 
     if 'Vintageous' not in ignored_packages:
         ignored_packages.append('Vintageous')
-        do_save = True
+        settings_need_saving = True
 
     if 'Six' not in ignored_packages:
         ignored_packages.append('Six')
-        do_save = True
+        settings_need_saving = True
 
-    if do_save:
+    if settings_need_saving:
         ignored_packages.sort()
         settings.set('ignored_packages', ignored_packages)
         sublime.save_settings('Preferences.sublime-settings')
+        # TODO Should the user be prompted with dialog about needing to restart ST?
 
 
 def plugin_loaded():
-    _logger.debug('\n\n\n\n\n------ plugin_loaded() -----\n\n\n\n\n')
+    _logger.debug('init')
 
-    try:
-        from package_control import events
-        if events.install('NeoVintageous'):
-            _ensure_other_vimlike_packages_are_disabled()
-    except ImportError:
-        nvim.console_message('could not import Package Control')
+    _ensure_other_vimlike_packages_are_disabled()
+
+    # TODO Should the CHANGELOG be opened on upgrade?
+    # TODO Should the user be prompted with dialog about needing to restart ST on upgrade?
 
     init_state(sublime.active_window().active_view(), new_session=True)
 
-    _logger.debug('\n\n\n\n\n------ plugin_loaded() (finished) -----\n\n\n\n\n')
+    _logger.debug('done')
 
 
 def plugin_unloaded():

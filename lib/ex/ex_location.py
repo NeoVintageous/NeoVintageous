@@ -73,7 +73,7 @@ def reverse_search(view, what, start=0, end=-1, flags=0):
     while True:
         middle = (lo + hi) / 2
         line = view.line(middle)
-        middle, eol = find_bol(view, line.a), find_eol(view, line.a)
+        middle, eol = find_bol(view, line.a), find_eol(view, line.a)  # FIXME # noqa: F841
 
         if search_in_range(view, what, middle, hi, flags):
             lo = middle

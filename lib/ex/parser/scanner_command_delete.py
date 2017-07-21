@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('delete', 'd')
 class TokenDelete(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_DELETE,
-                         'delete', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_DELETE, 'delete', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_delete'
 

@@ -1,5 +1,4 @@
 
-# well-known variables
 _SPECIAL_STRINGS = {
     '<leader>': 'mapleader',
     '<localleader>': 'maplocalleader',
@@ -17,23 +16,16 @@ _VARIABLES = {
 
 
 def expand_keys(seq):
-    """Replace well-known variables in key names with their corresponding values."""
-    leader = var_name = None
+    seq_lower = seq.lower()
+    for key, key_value, in _SPECIAL_STRINGS.items():
+        while key in seq_lower:
+            index = seq_lower.index(key)
+            value = _VARIABLES.get(key_value, _DEFAULTS.get(key_value))
+            if value:
+                seq = seq[:index] + value + seq[index + len(key):]
+                seq_lower = seq.lower()
 
-    # TODO(guillermooo): Can these variables appear in the middle of a
-    # sequence instead of at the beginning only?
-    if seq.lower().startswith('<leader>'):
-        var_name = '<leader>'
-        leader = _VARIABLES.get('mapleader', _DEFAULTS.get('mapleader'))
-
-    if seq.lower().startswith('<localleader>'):
-        var = '<localleader>'
-        local_leader = _VARIABLES.get('maplocalleader', _DEFAULTS.get('maplocalleader'))
-
-    try:
-        return leader + seq[len(var_name):]
-    except TypeError:
-        return seq
+    return seq
 
 
 def is_key_name(name):
@@ -48,16 +40,10 @@ def get(name):
 
 
 def set_(name, value):
-    # TODO(guillermooo): Set vars in settings.
     _VARIABLES[name] = value
 
 
 class Variables(object):
-    """
-    Store variables during the current Sublime Text session.
-
-    Meant to be used as a descriptor with `State`.
-    """
 
     def __get__(self, instance, owner):
         self.view = instance.view

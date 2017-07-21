@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('print', 'p')
 class TokenCommandPrint(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_PRINT,
-                         'print', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_PRINT, 'print', *args, **kwargs)
         self.addressable = True
         self.cooperates_with_global = True
         self.target_command = 'ex_print'

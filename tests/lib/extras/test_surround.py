@@ -20,12 +20,12 @@ class Test_ys(ViewTestCase):
         for (i, data) in enumerate(self.dataProvider()):
             self.write('dog cat turkey')
             self.select((4, 7))
-            self.state.mode = self.modes.VISUAL
+            self.state.mode = self.VISUAL_MODE
 
             surround_with, expected = data
 
-            self.view.run_command('nvim_surround_ys', {
-                'mode': self.modes.VISUAL,
+            self.view.run_command('_neovintageous_surround_ys', {
+                'mode': self.VISUAL_MODE,
                 'surround_with': surround_with
             })
 
@@ -35,16 +35,16 @@ class Test_ys(ViewTestCase):
         for (i, data) in enumerate(self.dataProvider()):
             self.write('dog cat turkey')
             self.select(4)
-            self.state.mode = self.modes.INTERNAL_NORMAL
+            self.state.mode = self.INTERNAL_NORMAL_MODE
 
             motion = {}
             motion['motion'] = '_vi_e'
-            motion['motion_args'] = {'mode': self.modes.INTERNAL_NORMAL, 'count': 1}
+            motion['motion_args'] = {'mode': self.INTERNAL_NORMAL_MODE, 'count': 1}
 
             surround_with, expected = data
 
-            self.view.run_command('nvim_surround_ys', {
-                'mode': self.modes.INTERNAL_NORMAL,
+            self.view.run_command('_neovintageous_surround_ys', {
+                'mode': self.INTERNAL_NORMAL_MODE,
                 'surround_with': surround_with,
                 'motion': motion
             })
@@ -68,11 +68,11 @@ class Test_cs(ViewTestCase):
         for (i, data) in enumerate(self.dataProvider()):
             self.write('dog (cat) turkey')
             self.select(5)
-            self.state.mode = self.modes.INTERNAL_NORMAL
+            self.state.mode = self.INTERNAL_NORMAL_MODE
 
             replace_what, expected = data
-            self.view.run_command('nvim_surround_cs', {
-                'mode': self.modes.INTERNAL_NORMAL,
+            self.view.run_command('_neovintageous_surround_cs', {
+                'mode': self.INTERNAL_NORMAL_MODE,
                 'replace_what': replace_what
             })
 
@@ -95,10 +95,10 @@ class Test_ds(ViewTestCase):
             text, replace_what, expected = data
             self.write(text)
             self.select(5)
-            self.state.mode = self.modes.INTERNAL_NORMAL
+            self.state.mode = self.INTERNAL_NORMAL_MODE
 
-            self.view.run_command('nvim_surround_ds', {
-                'mode': self.modes.INTERNAL_NORMAL,
+            self.view.run_command('_neovintageous_surround_ds', {
+                'mode': self.INTERNAL_NORMAL_MODE,
                 'replace_what': replace_what
             })
 
@@ -117,10 +117,10 @@ class Test_big_s(ViewTestCase):
         for (i, data) in enumerate(self.dataProvider()):
             text, regions, surround_with, expected = data
             self.write(text)
-            self.select([self.R(*region) for region in regions])
+            self.select([self._R(*region) for region in regions])
 
-            self.view.run_command('nvim_surround_ys', {
-                'mode': self.modes.VISUAL,
+            self.view.run_command('_neovintageous_surround_ys', {
+                'mode': self.VISUAL_MODE,
                 'surround_with': surround_with
             })
 

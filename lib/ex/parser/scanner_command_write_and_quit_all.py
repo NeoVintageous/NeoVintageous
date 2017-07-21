@@ -2,7 +2,6 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_WRITE_AND_QUIT_ALL
 from .tokens_base import TokenOfCommand
-
 from NeoVintageous.lib import ex
 from NeoVintageous.lib import nvim
 
@@ -51,4 +50,5 @@ def scan_command_write_and_quit_all(state):
         state.ignore()
 
     state.expect(EOF)
+
     return None, [TokenCommandWriteAndQuitAll(params), TokenEof()]

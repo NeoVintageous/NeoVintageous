@@ -26,6 +26,7 @@ from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.vi.utils import row_at
+from NeoVintageous.lib.window import WindowAPI
 
 
 __all__ = [
@@ -33,6 +34,7 @@ __all__ = [
     'ExBrowse',
     'ExCdCommand',
     'ExCddCommand',
+    'ExClose',
     'ExCopy',
     'ExCquit',
     'ExDelete',
@@ -80,8 +82,7 @@ __all__ = [
     'ExWriteAndQuitAll',
     'ExWriteAndQuitCommand',
     'ExWriteFile',
-    'ExYank',
-    'TabControlCommand'
+    'ExYank'
 ]
 
 
@@ -867,7 +868,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
             replacement = ExSubstitute.last_replacement
             # TODO: Don't we have to reuse the previous flags?
             flags = []
-            count = 0
+            count = 0  # FIXME # noqa: F841
 
         if not pattern:
             nvim.status_message('no previous pattern available')
@@ -1070,12 +1071,21 @@ class ExPrint(ViWindowCommandBase):
         return to_display
 
 
+# https://neovim.io/doc/user/windows.html#:close
+class ExClose(ViWindowCommandBase):
+
+    def run(self, command_line=''):
+        assert command_line, 'expected non-empty command line'
+        parsed = parse_command_line(command_line)
+        do_not_close_if_last = False if parsed.command.forced else True
+        WindowAPI(self.window).close_current_view(do_not_close_if_last)
+
+
 # https://neovim.io/doc/user/editing.html#:q
 class ExQuitCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         quit_command = parse_command_line(command_line)
 
         view = self._view
@@ -1241,7 +1251,7 @@ class ExListRegisters(ViWindowCommandBase):
             lines_display = '... [+{0}]'.format(line_count - 1)
             return lines_display if line_count > 1 else ''
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         # TODO: implement arguments.
 
@@ -1292,61 +1302,6 @@ class ExYank(sublime_plugin.TextCommand):
             state.registers['0'] = [text]
 
 
-class TabControlCommand(ViWindowCommandBase):
-
-    def run(self, command, file_name=None, forced=False, index=None):
-        view_count = len(self.window.views_in_group(self.window.active_group()))
-        (group_index, view_index) = self.window.get_view_index(self._view)
-
-        if command == 'open':
-            if not file_name:  # TODO: file completion
-                self.window.run_command('show_overlay', {
-                    'overlay': 'goto',
-                    'show_files': True,
-                })
-            else:
-                cur_dir = os.path.dirname(self._view.file_name())
-                self.window.open_file(os.path.join(cur_dir, file_name))
-
-        elif command == 'next':
-            self.window.run_command('select_by_index', {
-                'index': (view_index + 1) % view_count})
-
-        elif command == 'prev':
-            self.window.run_command('select_by_index', {
-                'index': (view_index + view_count - 1) % view_count})
-
-        elif command == "last":
-            self.window.run_command('select_by_index', {'index': view_count - 1})
-
-        elif command == "first":
-            self.window.run_command('select_by_index', {'index': 0})
-
-        elif command == 'goto':
-            self.window.run_command('select_by_index', {'index': index - 1})
-
-        elif command == 'only':
-            quit_command_line = 'quit' + '' if not forced else '!'
-
-            group = self.window.views_in_group(group_index)
-            if any(view.is_dirty() for view in group):
-                nvim.exception_message(nvim.Error(nvim.E_OTHER_BUFFER_HAS_CHANGES))
-                return
-
-            for view in group:
-                if view.id() == self._view.id():
-                    continue
-                self.window.focus_view(view)
-                self.window.run_command('ex_quit', {
-                    'command_line': quit_command_line})
-
-            self.window.focus_view(self._view)
-
-        else:
-            nvim.console_message('unknown tab control command')
-            nvim.status_message('unknown tab control command')
-
-
 class ExTabOpenCommand(sublime_plugin.WindowCommand):
 
     def run(self, file_name=None):
@@ -1360,7 +1315,7 @@ class ExTabnextCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "next"}, )
 
@@ -1371,7 +1326,7 @@ class ExTabprevCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "prev"}, )
 
@@ -1382,7 +1337,7 @@ class ExTablastCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "last"}, )
 
@@ -1393,7 +1348,7 @@ class ExTabfirstCommand(ViWindowCommandBase):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        parsed = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
 
         self.window.run_command("tab_control", {"command": "first"}, )
 
@@ -1490,10 +1445,18 @@ class ExVsplit(ViWindowCommandBase):
 
     MAX_SPLITS = 4
     LAYOUT_DATA = {
-        1: {"cells": [[0, 0, 1, 1]], "rows": [0.0, 1.0], "cols": [0.0, 1.0]},
-        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]], "rows": [0.0, 1.0], "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
+        1: {"cells": [[0, 0, 1, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 1.0]},
+        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.5, 1.0]},
+        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.33, 0.66, 1.0]},
+        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
     }
 
     def run(self, command_line=''):
@@ -1531,9 +1494,7 @@ class ExVsplit(ViWindowCommandBase):
 
 
 class ExUnvsplit(ViWindowCommandBase):
-    """
-    Non-standard Vim :unvsplit command.
-    """
+    """Non-standard Vim :unvsplit command."""
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'

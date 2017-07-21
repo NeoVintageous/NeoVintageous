@@ -7,9 +7,7 @@ from NeoVintageous.lib import ex
 @ex.command('unabbreviate', 'una')
 class TokenUnabbreviate(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_UNABBREVIATE,
-                         'unabbreviate', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_UNABBREVIATE, 'unabbreviate', *args, **kwargs)
         self.target_command = 'ex_unabbreviate'
 
     @property

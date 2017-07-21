@@ -8,9 +8,7 @@ from NeoVintageous.lib import ex
 @ex.command('copy', 'co')
 class TokenCopy(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_COPY,
-                         'copy', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_COPY, 'copy', *args, **kwargs)
         self.addressable = True
         self.target_command = 'ex_copy'
 

@@ -66,4 +66,5 @@ def scan_command_exit(state):
             state.ignore()
 
     state.expect(EOF)
+
     return None, [TokenCommandExit(params, forced=bang == '!'), TokenEof()]

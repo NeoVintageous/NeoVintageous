@@ -17,9 +17,7 @@ plus_plus_translations = {
 @ex.command('wq', 'wq')
 class TokenWriteAndQuitCommand(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_WRITE_AND_QUIT_COMMAND,
-                         'wq', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_WRITE_AND_QUIT_COMMAND, 'wq', *args, **kwargs)
         self.target_command = 'ex_write_and_quit'
 
 

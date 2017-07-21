@@ -7,9 +7,7 @@ from NeoVintageous.lib import ex
 @ex.command('ounmap', 'ounm')
 class TokenCommandOunmap(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params,
-                         TOKEN_COMMAND_OUNMAP,
-                         'ounmap', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_OUNMAP, 'ounmap', *args, **kwargs)
         self.target_command = 'ex_ounmap'
 
     @property

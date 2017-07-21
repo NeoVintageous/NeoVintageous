@@ -27,18 +27,10 @@
     // Ignore case in '/', '?', '*', and '#'.
     "vintageous_ignorecase": true,
 
-    // Enable surround.vim plugin. Provides mappings to easily delete, change
-    // and add such surroundings in pairs e.g. "cs", "ds", and "ys" actions.
+    // Enable the surround.vim plugin.
     "vintageous_enable_surround": true,
 
     // Enable surround.vim plugin pair opener spaces, otherwise the pair closes
     // have spaces.
-    //
-    // Setting | Action | Result
-    // ------- | ------ | ------
-    // true  | ysw( | ( things )
-    // true  | ysw) | (things)
-    // false | ysw( | (things)
-    // false | ysw) | ( things )
     "vintageous_surround_spaces": false
 }
