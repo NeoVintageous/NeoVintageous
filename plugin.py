@@ -49,7 +49,20 @@ def _ensure_other_vimlike_packages_are_disabled():
 def plugin_loaded():
     _logger.debug('init')
 
-    _ensure_other_vimlike_packages_are_disabled()
+    # Tests fail for OSX on Travis if we try to disable existing
+    # vim emulator plugins on load. Things work fine on Linux
+    # and Windows (on Travis and I've also manually tested on
+    # both Windows and Linix) so this might be an issue only
+    # on Travis. TODO needs investigating
+    if sublime.platform() == 'osx':
+        try:
+            from package_control import events
+            if events.install('NeoVintageous'):
+                _ensure_other_vimlike_packages_are_disabled()
+        except ImportError:
+            nvim.console_message('could not import Package Control')
+    else:
+        _ensure_other_vimlike_packages_are_disabled()
 
     # TODO Should the CHANGELOG be opened on upgrade?
     # TODO Should the user be prompted with dialog about needing to restart ST on upgrade?
