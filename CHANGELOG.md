@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## 1.3.0 - 2017-07-21
 
 ### Added
 
@@ -71,7 +71,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed: Edge-case Unimpaired plugin issue adding blanks
 * Fixed: Edge-case issue invalidating ex mode completions
 
-## [1.2.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.2.0) - 2017-06-21
+## 1.2.0 - 2017-06-21
 
 ### Added
 
@@ -102,7 +102,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added: Multiple cursor usage (documentation)
 * Added: Sidebar and Overlay navigation usage (documentation)
 
-## [1.1.2](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.2) - 2017-06-05
+## 1.1.2 - 2017-06-05
 
 ### Fixed
 
@@ -112,7 +112,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#192](https://github.com/NeoVintageous/NeoVintageous/issues/192): Closing last tab shouldn’t close sublime window with project (documentation)
 * Fixed [#122](https://github.com/NeoVintageous/NeoVintageous/issues/122): `Tab` doesn't work in visual mode (`Shift+Tab` does) (documentation)
 
-## [1.1.1](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.1) - 2017-05-31
+## 1.1.1 - 2017-05-31
 
 ### Fixed
 
@@ -126,7 +126,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#267](https://github.com/NeoVintageous/NeoVintageous/issues/267): Settings – User `.vintageousrc` menu item is broken
 * Fixed [#169](https://github.com/NeoVintageous/NeoVintageous/issues/169): How to map this using Vintageous? (documentation)
 
-## [1.1.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.1.0) - 2017-05-28
+## 1.1.0 - 2017-05-28
 
 ### Added
 
@@ -161,7 +161,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed: `:wq!` error
 * Fixed: `:wq` error
 
-## [1.0.1](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.0.1) - 2017-04-28
+## 1.0.1 - 2017-04-28
 
 ### Fixed
 
@@ -170,7 +170,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed: error when searching
 * Fixed: running last ex command `!!` not working
 
-## [1.0.0](https://github.com/NeoVintageous/NeoVintageous/releases/tag/1.0.0) - 2017-04-22
+## 1.0.0 - 2017-04-22
 
 ### Added
 
