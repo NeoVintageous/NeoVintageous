@@ -1,79 +1,119 @@
 import sublime
 
-from .lib import nvim
-from .lib.state import init_state
+# The plugin loading is designed to handle errors gracefully.
+#
+# When upgrading the plugin, changes to the plugin structure can cause import
+# errors. In these cases we want to notify the user about needing to restart
+# Sublime Text to finish the upgrade.
+#
+# In the case any errors we also don't want to leave the normal functioning of
+# the editor unusable. We can't access the sublime api until the plugin_loaded()
+# hook is called, so we need to catch exceptions and run cleanup operations when
+# the plugin_loaded() hook.
 
-# Load the commands
-# TODO Review: Perhaps just put all commands, except extras, in one file lib/commands.py?
-from .lib.commands import *  # noqa: F401, F403
-from .lib.cmds.ex_actions import *  # noqa: F401, F403
-from .lib.cmds.ex_motions import *  # noqa: F401, F403
-from .lib.cmds.vi_actions import *  # noqa: F401, F403
-from .lib.cmds.vi_motions import *  # noqa: F401, F403
-from .lib.extras.surround import *  # noqa: F401, F403
-from .lib.extras.unimpaired import *  # noqa: F401, F403
-from .lib.extras.abolish import *  # noqa: F401, F403
+try:
+    _EXCEPTION = None
+    from .lib.state import init_state
+    from .lib.commands import *             # noqa: F401,F403
+    from .lib.cmds.ex_actions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
+    from .lib.cmds.ex_motions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
+    from .lib.cmds.vi_actions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
+    from .lib.cmds.vi_motions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
+    from .lib.extras.surround import *      # noqa: F401,F403,E501 TODO maybe put commands into one file (lib.extras) (not lib.plugins see f29727)
+    from .lib.extras.unimpaired import *    # noqa: F401,F403,E501 TODO maybe put commands into one file (lib.extras) (not lib.plugins see f29727)
+    from .lib.extras.abolish import *       # noqa: F401,F403,E501 TODO maybe put commands into one file (lib.extras) (not lib.plugins see f29727)
+    from .lib.events import NeoVintageousEvents  # noqa: F401,E501 TODO lib.events should use __all__ and use import * like the commands above
+except Exception as e:
+    _EXCEPTION = e
+    import traceback
+    traceback.print_exc()
 
-# Load the events
-from .lib.events import NeoVintageousEvents  # noqa: F401
 
+def _update_ignored_packages():
 
-_logger = nvim.get_logger(__name__)
+    # Updates the list of ignored packages with packages that are redundant,
+    # obsolete, or cause problems due to conflicts e.g. Vintage, Vintageous,
+    # etc.
 
-
-def _ensure_other_vimlike_packages_are_disabled():
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
-
-    settings_need_saving = False
-
-    if 'Vintage' not in ignored_packages:
-        ignored_packages.append('Vintage')
-        settings_need_saving = True
-
-    if 'Vintageous' not in ignored_packages:
-        ignored_packages.append('Vintageous')
-        settings_need_saving = True
-
-    if 'Six' not in ignored_packages:
-        ignored_packages.append('Six')
-        settings_need_saving = True
-
-    if settings_need_saving:
-        ignored_packages.sort()
+    conflict_packages = [x for x in ['Six', 'Vintage', 'Vintageous'] if x not in ignored_packages]
+    if conflict_packages:
+        print('NeoVintageous: update ignored packages with conflicts {}'.format(conflict_packages))
+        ignored_packages = sorted(ignored_packages + conflict_packages)
         settings.set('ignored_packages', ignored_packages)
         sublime.save_settings('Preferences.sublime-settings')
-        # TODO Should the user be prompted with dialog about needing to restart ST?
+
+
+def _cleanup_views():
+
+    # Resets cursor and mode. In the case of errors loading the plugin this can
+    # help prevent the normal functioning of editor becoming unusable e.g. the
+    # cursor getting stuck in a block shape or the mode getting stuck in normal
+    # or visual mode.
+
+    for window in sublime.windows():
+        for view in window.views():
+            settings = view.settings()
+            settings.set('command_mode', False)
+            settings.set('inverse_caret_state', False)
 
 
 def plugin_loaded():
-    _logger.debug('init')
 
-    # Tests fail for OSX on Travis if we try to disable existing
-    # vim emulator plugins on load. Things work fine on Linux
-    # and Windows (on Travis and I've also manually tested on
-    # both Windows and Linix) so this might be an issue only
-    # on Travis. TODO needs investigating
-    if sublime.platform() == 'osx':
-        try:
-            from package_control import events
-            if events.install('NeoVintageous'):
-                _ensure_other_vimlike_packages_are_disabled()
-        except ImportError:
-            nvim.console_message('could not import Package Control')
-    else:
-        _ensure_other_vimlike_packages_are_disabled()
+    try:
+        pc_event = None
+        from package_control import events
+        if events.install('NeoVintageous'):
+            pc_event = 'install'
+        if events.post_upgrade('NeoVintageous'):
+            pc_event = 'post_upgrade'
+    except ImportError:
+        pass  # Package Control isn't available
+    except Exception:
+        import traceback
+        traceback.print_exc()
 
-    # TODO Should the CHANGELOG be opened on upgrade?
-    # TODO Should the user be prompted with dialog about needing to restart ST on upgrade?
+    try:
+        _update_ignored_packages()
+    except Exception:
+        import traceback
+        traceback.print_exc()
 
-    init_state(sublime.active_window().active_view(), new_session=True)
+    try:
+        _exception = None
+        init_state(sublime.active_window().active_view(), new_session=True)
+    except Exception as e:
+        _exception = e
+        import traceback
+        traceback.print_exc()
 
-    _logger.debug('done')
+    if _EXCEPTION or _exception:
+        _cleanup_views()
+
+        if isinstance(_EXCEPTION, ImportError) or isinstance(_exception, ImportError):
+            if pc_event == 'post_upgrade':
+                message = "Failed to load some modules trying to upgrade NeoVintageous. "\
+                          "Please restart Sublime Text to finish the upgrade."
+            else:
+                message = "Failed to load some NeoVintageous modules. "\
+                          "Please restart Sublime Text."
+        else:
+            if pc_event == 'post_upgrade':
+                message = "An error occurred trying to upgrade NeoVintageous. "\
+                          "Please restart Sublime Text to finish the upgrade."
+            else:
+                message = "An error occurred trying to load NeoVintageous. "\
+                          "Please restart Sublime Text."
+
+        print('NeoVintageous: ' + message)
+        sublime.message_dialog(message)
 
 
 def plugin_unloaded():
-    view = sublime.active_window().active_view()
-    if view:
-        view.settings().set('command_mode', False)
-        view.settings().set('inverse_caret_state', False)
+
+    try:
+        _cleanup_views()
+    except Exception:
+        import traceback
+        traceback.print_exc()
