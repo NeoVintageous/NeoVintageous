@@ -86,9 +86,11 @@ def _log_file():
     # > sublime.architecture() and sublime.channel().
     # > - https://www.sublimetext.com/docs/3/api_reference.html.
     module_relative_file = __name__.replace('.', os.sep) + '.py'
-    if __file__.endswith(module_relative_file):
+    current_file = __file__.replace('NeoVintageous.sublime-package', 'NeoVintageous')
+    if current_file.endswith(module_relative_file):
+        path = current_file.replace('/Installed Packages/NeoVintageous/', '/Packages/NeoVintageous/')
         return os.path.join(
-            __file__[:-(len(module_relative_file) + len(os.sep))],
+            path[:-(len(module_relative_file) + len(os.sep))],
             'User',
             'NeoVintageous.log'
         )
@@ -107,6 +109,7 @@ def _init_logger():
     logger.addHandler(console_handler)
 
     log_file = _log_file()
+    console_message('log file \'%s\'' % log_file)
     if log_file:
         file_handler = RotatingFileHandler(
             log_file,
