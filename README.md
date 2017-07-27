@@ -1,13 +1,21 @@
-# NeoVintageous
+![NeoVintageous Logo](res/neovintageous.png)
+
+An advanced Vim emulation layer for Sublime Text.
 
 [![Build Status](https://img.shields.io/travis/NeoVintageous/NeoVintageous/master.svg?style=flat-square)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://img.shields.io/appveyor/ci/gerardroche/neovintageous/master.svg?style=flat-square)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Coverage Status](https://img.shields.io/coveralls/NeoVintageous/NeoVintageous/master.svg?style=flat-square)](https://coveralls.io/github/NeoVintageous/NeoVintageous?branch=master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg?style=flat-square)](https://sublimetext.com) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?style=flat-square&label=stable)](https://github.com/NeoVintageous/NeoVintageous/tags) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Downloads](https://img.shields.io/packagecontrol/dt/NeoVintageous.svg?style=flat-square)](https://packagecontrol.io/packages/NeoVintageous)
 
-A Vim emulation layer for Sublime Text (Vintageous fork)
+Neovintageous is project that seeks to continue the development of Vintageous as an open source project.
+
+* Open source
+* Highly configurable
+* Plugins out-of-the-box
+* Strong defaults
+* Drop-in replacement for Vintageous
 
 ## OVERVIEW
 
 * [Installation](#installation)
-* [Usage](#usage)
+* [Documentation](#documentation)
 * [Configuration](#configuration)
 * [Contributing](#contributing)
 * [Changelog](#changelog)
@@ -29,29 +37,27 @@ The preferred method of installation is [Package Control](https://packagecontrol
     * Windows: `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
 3. Done!
 
-## USAGE
+## DOCUMENTATION
 
-What follows is supplementary documentation about Vim and Sublime Text feature differences. See the [Vim main help file](https://neovim.io/doc/user) for a complete guide on Vim.
+A complete guide to vim usage can be found in the [Vim documentation](https://neovim.io/doc/user).
+
+Command | Context | Description | Notes
+------- | ------- | ----------- | -----
+`j` | Sidebar | Move down | e.g. `ctrl+0` focuses the sidebar
+`k` | Sidebar | Move up | e.g. `ctrl+0` focuses the sidebar
+`h` | Sidebar | Close node / Go to parent node | e.g. `ctrl+0` focuses the sidebar
+`l` | Sidebar | Open node | e.g. `ctrl+0` focuses the sidebar
+`ctrl+n` or `ctrl+j` | Overlay, Auto-complete | Next / Move down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+`ctrl+p` or `ctrl+k` | Overlay, Auto-complete | Previous / Move up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
+
+Some commands have dependencies. All dependencies are optional and can be installed via Package Control.
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
 `[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
 `]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
-`ctrl-w H` | Move the current window to be at the very top | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2 col/row layouts
-`ctrl-w J` | Move the current window to be at the very bottom | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2 col/row layouts
-`ctrl-w K` | Move the current view to be at the far left | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2 col/row layouts
-`ctrl-w L` | Move the current window to be at the far right | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2 col/row layouts
 `ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
 `ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
-
-Command | Context | Description | Notes
-------- | ------- | ----------- | -----
-`j` | sidebar | down | `ctrl+0` focuses the sidebar
-`k` | sidebar | up | `ctrl+0` focuses the sidebar
-`h` | sidebar | close node / go to parent node | `ctrl+0` focuses the sidebar
-`l` | sidebar | open node | `ctrl+0` focuses the sidebar
-`ctrl+n` or `ctrl+j` | overlay, auto-complete | down | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
-`ctrl+p` or `ctrl+k` | overlay, auto-complete | up | e.g. `ctrl+p` and `ctrl+shift+p` invoke overlays
 
 ### Command Palette
 
@@ -70,7 +76,14 @@ Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNe
 
 ### The .vintageousrc file
 
-A feature comparative to the [`.vimrc`](https://neovim.io/doc/user/usr_05.html#05.1) file. The file is located at `Packages/User/.vintageousrc` and is read during startup. There is limited support, the following are supported in basic use-cases: `let mapleader=`, `map`, `nmap`, `omap`, `vmap`, `noremap`, `nnoremap`, `onoremap`, and `vnoremap`. It's important to note that currently `map`, `nmap`, `omap`, `vmap` work the same as their `remap` variants, this is a known issue.
+A feature comparative to the `.vimrc` file.
+
+The file is located at `Packages/User/.vintageousrc` and is read during startup. It can be opened for editing via the Command Palette: `NeoVintageous: Open My .vintageousrc File`. It can be reloaded too: `NeoVintageous: Reload My .vintageousrc File`.
+
+There is limited support. The following are supported in basic use-cases: `let mapleader=`, `noremap`, `nnoremap`, `onoremap`, `vnoremap`, `map`, `nmap`, `omap`, and `vmap`.
+
+It's important to note that currently `map`, `nmap`, `omap`, `vmap` work the same as their `*remap` variants, this is a known issue.
+
 
 ```
 " The character " (the double quote mark) starts a comment
@@ -90,29 +103,29 @@ nnoremap <leader>a ggvG
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
-" Make j and k work file linewise instead of screen linewise.
-" http://stevelosh.com/blog/2010/09/coming-home-to-vim/
-" Important! There is a potential performance hit
-" navigating with j and k with these mappings enabled.
-nnoremap j gj
-nnoremap k gk
+" " Make j and k work file linewise instead of screen linewise.
+" " http://stevelosh.com/blog/2010/09/coming-home-to-vim/
+" " Important! There is a potential performance hit
+" " navigating with j and k with these mappings enabled.
+" nnoremap j gj
+" nnoremap k gk
 
 " " Scroll down using shift+enter
 " noremap <S-cr> <C-d>
 ```
 
-Read more about mappings and the .vimrc file in the [Vim main help file](https://neovim.io/doc/user/map.html).
+Read more about mappings and the .vimrc file in the [Vim documentation](https://neovim.io/doc/user/map.html).
 
 ### Modeline
 
-A feature comparative to [Vim Modeline](https://neovim.io/doc/user/options.html#modeline). A number of lines at the beginning and end of the file are checked for "modelines", the modelines (settings) will be applied to the view when it's opened.
+A feature comparative to Vim Modeline: a number of lines at the beginning and end of the file are checked for "modelines", the modelines are settings that will be applied to the view when it's opened.
 
     # sublime: gutter false
     # sublime: translate_tab_to_spaces true
     # sublime: rulers [80, 120]
     # sublime: tab_size 4
 
-Read more about modeline in the [Vim main help file](https://neovim.io/doc/user/options.html#modeline).
+Read more about modeline in the [Vim documentation](https://neovim.io/doc/user/options.html#modeline).
 
 ### Multiple cursors
 
@@ -135,11 +148,11 @@ Key Sequence | Command
 
 Once you've created visual selections in select mode, you must return to insert mode by pressing `i` in order to edit text. Once in insert mode, you can switch to normal mode, etc. If you press `Esc` while in select mode, you will return to normal mode, but multiple carets won't be destroyed. If you press `Esc` a second time, you will be left with one single caret in normal mode.
 
-### Commentary plugin
+### Plugins out-of-the-box
 
-A port of [commentary.vim](https://github.com/tpope/vim-commentary) is provided by default.
+A number of plugins are provided out-of-the-box. Please open issues about other plugins you would like to see implemented and about plugins you're thinking of writing because we may be willing to add it out-of-the-box.
 
-*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
+#### [commentary.vim](https://github.com/tpope/vim-commentary)
 
 Command | Description | Documentation
 ------- | ----------- | -------------
@@ -147,13 +160,7 @@ Command | Description | Documentation
 `gcc` | Comment or uncomment current line. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
 `{Visual}gc` | Comment or uncomment the highlighted lines. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
 
-Read more about commentary usage in the [help file](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt).
-
-### Surround plugin
-
-A port of [surround.vim](https://github.com/tpope/vim-surround) is provided by default.
-
-*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
+#### [surround.vim](https://github.com/tpope/vim-surround)
 
 Command | Description | Documentation
 ------- | ----------- | -------------
@@ -161,42 +168,26 @@ Command | Description | Documentation
 `cs` | Change surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
 `ys` | Yank surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
 
-Read more about surround.vim usage in the [help file](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt).
+#### [unimpaired.vim](https://github.com/tpope/vim-unimpaired)
 
-### Unimpaired plugin
-
-A port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) is provided by default.
-
-*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
-
-Command | Description | Documentation | Dependencies
-------- | ----------- | ------------- | ------------
-`[l` | Jump to `[count]` next error. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [Linter](https://github.com/SublimeLinter/SublimeLinter3)
-`]l` | Jump to `[count]` previous error.. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [Linter](https://github.com/SublimeLinter/SublimeLinter3)
+Command | Description | Documentation | Dependency
+------- | ----------- | ------------- | ----------
+`[l` | Jump to `[count]` next error. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3)
+`]l` | Jump to `[count]` previous error.. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3)
 `[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
 `]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
 `[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
 `]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
 
-**Option toggling**
-
-On | Off | Toggle | Description | Documentation
--- | --- | ------ | ----------- | -------------
+On | Off | Toggle | Option | Documentation
+-- | --- | ------ | ------ | -------------
 `[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 `[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 `[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 `[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 `[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 
-Read more about unimpaired usage in the [help file](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt).
-
-### Abolish plugin
-
-A port of [abolish.vim](https://github.com/tpope/vim-abolish) is provided by default.
-
-*The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
-
-Want to turn `fooBar` into `foo_bar`?  Press `crs` (coerce to snake\_case).  MixedCase (`crm`), camelCase (`crc`), snake\_case (`crs`), UPPER\_CASE (`cru`), dash-case (`cr-`), dot.case (`cr.`), space case (`cr<space>`), and Title Case (`crt`) are all just three keystrokes away.
+#### [abolish.vim](https://github.com/tpope/vim-abolish)
 
 Command | Description | Documentation
 ------- | ----------- | -------------
@@ -211,12 +202,6 @@ Command | Description | Documentation
 `cr.` | Coerce word under cursor to dot.case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
 `cr<Space>` | Coerce word under cursor to space case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
 `crt` | Coerce word under cursor to Title Case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-
-Read more about abolish usage in the [help file](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt).
-
-### Other plugins
-
-Please open issues about vim plugins you would like to see implemented, or about plugins you are thinking of writing because we may be willing to add it to the plugin by default.
 
 ## CONFIGURATION
 
@@ -236,9 +221,9 @@ Key | Description | Type | Default
 `vintageous_visualbell` | Enable visual bell. | `boolean` | `true`
 `vintageous_visualyank` | Enable visual bell when yanking. | `boolean` | `true`
 
-### Use ctrl keys
+### Use CTRL keys
 
-To enable ctrl modifier keys set it globally: `Preferences > Settings`
+`Preferences > Settings`
 
 ```json
 {
@@ -246,7 +231,7 @@ To enable ctrl modifier keys set it globally: `Preferences > Settings`
 }
 ```
 
-Or set it per-project: `Project > Edit Project`
+`Project > Edit Project`
 
 ```json
 {
@@ -258,7 +243,7 @@ Or set it per-project: `Project > Edit Project`
 
 ### Mapping CapsLock to Escape
 
-NeoVintageous cannot remap the caps lock. This is an OS level configuration e.g. on Ubuntu Gnome you can configure the caps lock to escape at the terminal:
+NeoVintageous cannot remap the CapsLock, however it can be remapped at an OS level e.g. in Ubuntu Gnome you can remap the CapsLock to Escape at the terminal.
 
     gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 
@@ -275,7 +260,7 @@ Add the following custom keybinding: `Preferences > Key Bindings`
 }
 ```
 
-Alternative key bindings can also be mapped e.g. `ctrl+[`
+Other key bindings can also be mapped.
 
 ```json
 {
@@ -321,9 +306,9 @@ Color schemes can [support better search highlighting](https://github.com/NeoVin
         </dict>
     </dict>
 
-### Disabling arrow keys
+### Disable arrow keys
 
-Add as many of the following key bindings as you would like to disable.
+Add as many of the following key bindings as you would like to disable. Use the force.
 
 ```json
 [
@@ -355,11 +340,21 @@ Add as many of the following key bindings as you would like to disable.
 ]
 ```
 
-Then enable them: `Preferences > Settings`
+`Preferences > Settings`
 
 ```json
 {
     "neovintageous_disable_arrow_keys": true
+}
+```
+
+`Project > Edit Project`
+
+```json
+{
+    "settings": {
+        "neovintageous_disable_arrow_keys": true
+    }
 }
 ```
 
