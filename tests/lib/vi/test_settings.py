@@ -1,19 +1,19 @@
 from NeoVintageous.tests.utils import ViewTestCase
 
+from NeoVintageous.lib.vi.settings import _opt_bool_parser
+from NeoVintageous.lib.vi.settings import _opt_rulers_parser
+from NeoVintageous.lib.vi.settings import _SCOPE_VI_VIEW
+from NeoVintageous.lib.vi.settings import _SCOPE_VI_WINDOW
+from NeoVintageous.lib.vi.settings import _SCOPE_VIEW
+from NeoVintageous.lib.vi.settings import _SCOPE_WINDOW
+from NeoVintageous.lib.vi.settings import _set_generic_view_setting
+from NeoVintageous.lib.vi.settings import _set_minimap
+from NeoVintageous.lib.vi.settings import _set_sidebar
+from NeoVintageous.lib.vi.settings import _SublimeSettings
+from NeoVintageous.lib.vi.settings import _VI_OPTIONS
+from NeoVintageous.lib.vi.settings import _vi_user_setting
+from NeoVintageous.lib.vi.settings import _VintageSettings
 from NeoVintageous.lib.vi.settings import SettingsManager
-from NeoVintageous.lib.vi.settings import SublimeSettings
-from NeoVintageous.lib.vi.settings import VI_OPTIONS
-from NeoVintageous.lib.vi.settings import vi_user_setting
-from NeoVintageous.lib.vi.settings import VintageSettings
-from NeoVintageous.lib.vi.settings import SCOPE_VIEW
-from NeoVintageous.lib.vi.settings import SCOPE_VI_VIEW
-from NeoVintageous.lib.vi.settings import SCOPE_VI_WINDOW
-from NeoVintageous.lib.vi.settings import SCOPE_WINDOW
-from NeoVintageous.lib.vi.settings import set_generic_view_setting
-from NeoVintageous.lib.vi.settings import opt_bool_parser
-from NeoVintageous.lib.vi.settings import set_minimap
-from NeoVintageous.lib.vi.settings import set_sidebar
-from NeoVintageous.lib.vi.settings import opt_rulers_parser
 
 
 class TestSublimeSettings(ViewTestCase):
@@ -21,7 +21,7 @@ class TestSublimeSettings(ViewTestCase):
     def setUp(self):
         super().setUp()
         self.view.settings().erase('foo')
-        self.setts = SublimeSettings(view=self.view)
+        self.setts = _SublimeSettings(view=self.view)
 
     def test_can_initialize_class(self):
         self.assertEqual(self.setts.view, self.view)
@@ -46,7 +46,7 @@ class TestVintageSettings(ViewTestCase):
     def setUp(self):
         super().setUp()
         self.view.settings().erase('vintage')
-        self.setts = VintageSettings(view=self.view)
+        self.setts = _VintageSettings(view=self.view)
 
     def test_can_initialize_class(self):
         self.assertEqual(self.setts.view, self.view)
@@ -93,7 +93,7 @@ class TestViEditorSettings(ViewTestCase):
         self.view.settings().erase('vintageous_hlsearch')
         self.view.settings().erase('vintageous_foo')
         self.view.window().settings().erase('vintageous_foo')
-        self.settsman = VintageSettings(view=self.view)
+        self.settsman = _VintageSettings(view=self.view)
 
     def test_knows_all_settings(self):
         all_settings = [
@@ -108,33 +108,33 @@ class TestViEditorSettings(ViewTestCase):
             'visualbell',
         ]
 
-        self.assertEqual(sorted(all_settings), sorted(list(VI_OPTIONS.keys())))
+        self.assertEqual(sorted(all_settings), sorted(list(_VI_OPTIONS.keys())))
 
     def test_settings_are_correctly_defined(self):
         KNOWN_OPTIONS = {
-            'hlsearch': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                        parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
-            'magic': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                     parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
-            'incsearch': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                         parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
-            'ignorecase': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False,
-                                          parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
-            'autoindent': vi_user_setting(scope=SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                          parser=None, action=set_generic_view_setting, negatable=False),
-            'showminimap': vi_user_setting(scope=SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
-                                           parser=None, action=set_minimap, negatable=True),
-            'visualbell': vi_user_setting(scope=SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True,
-                                          parser=opt_bool_parser, action=set_generic_view_setting, negatable=True),
-            'rulers': vi_user_setting(scope=SCOPE_VIEW, values=None, default=[],
-                                      parser=opt_rulers_parser, action=set_generic_view_setting, negatable=False),
-            'showsidebar': vi_user_setting(scope=SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
-                                           parser=None, action=set_sidebar, negatable=True),
+            'hlsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                         parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
+            'magic': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                      parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
+            'incsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                          parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
+            'ignorecase': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False,
+                                           parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
+            'autoindent': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
+                                           parser=None, action=_set_generic_view_setting, negatable=False),
+            'showminimap': _vi_user_setting(scope=_SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
+                                            parser=None, action=_set_minimap, negatable=True),
+            'visualbell': _vi_user_setting(scope=_SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True,
+                                           parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
+            'rulers': _vi_user_setting(scope=_SCOPE_VIEW, values=None, default=[],
+                                       parser=_opt_rulers_parser, action=_set_generic_view_setting, negatable=False),
+            'showsidebar': _vi_user_setting(scope=_SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
+                                            parser=None, action=_set_sidebar, negatable=True),
         }
 
-        self.assertEqual(len(KNOWN_OPTIONS), len(VI_OPTIONS))
+        self.assertEqual(len(KNOWN_OPTIONS), len(_VI_OPTIONS))
         for (k, v) in KNOWN_OPTIONS.items():
-            self.assertEqual(VI_OPTIONS[k], v)
+            self.assertEqual(_VI_OPTIONS[k], v)
 
     def test_can_retrieve_default_value(self):
         self.assertEqual(self.settsman['hlsearch'], True)
@@ -145,8 +145,8 @@ class TestViEditorSettings(ViewTestCase):
 
     def test_can_retrieve_window_level_settings(self):
         # TODO: use mock to patch dict
-        VI_OPTIONS['foo'] = vi_user_setting(
-            scope=SCOPE_WINDOW,
+        _VI_OPTIONS['foo'] = _vi_user_setting(
+            scope=_SCOPE_WINDOW,
             values=(100,),
             default='bar',
             parser=None,
@@ -155,4 +155,4 @@ class TestViEditorSettings(ViewTestCase):
         )
         self.settsman.view.window().settings().set('vintageous_foo', 100)
         self.assertEqual(self.settsman['foo'], 100)
-        del VI_OPTIONS['foo']
+        del _VI_OPTIONS['foo']

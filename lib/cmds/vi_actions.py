@@ -1,8 +1,10 @@
 from functools import partial
 import re
 
-import sublime
+from sublime import ENCODED_POSITION
+from sublime import MONOSPACE_FONT
 from sublime import Region
+from sublime import status_message
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
@@ -133,8 +135,6 @@ _logger = nvim.get_logger(__name__)
 
 # https://neovim.io/doc/user/change.html#gU
 class _vi_g_big_u(ViTextCommandBase):
-    """Command: gU."""
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -477,7 +477,7 @@ class _enter_normal_mode(ViTextCommandBase):
 
         state.update_xpos(force=True)
 
-        sublime.status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()  # noqa: E501
+        status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()  # FIXME # noqa: E501
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
@@ -1072,7 +1072,7 @@ class _vi_quote(ViTextCommandBase):
 
         if isinstance(address, str):
             if not address.startswith('<command'):
-                self.view.window().open_file(address, sublime.ENCODED_POSITION)
+                self.view.window().open_file(address, ENCODED_POSITION)
             else:
                 # We get a command in this form: <command _vi_double_quote>
                 self.view.run_command(address.split(' ')[1][:-1])
@@ -1113,7 +1113,7 @@ class _vi_backtick(ViTextCommandBase):
 
         if isinstance(address, str):
             if not address.startswith('<command'):
-                self.view.window().open_file(address, sublime.ENCODED_POSITION)
+                self.view.window().open_file(address, ENCODED_POSITION)
             return
 
         # This is a motion in a composite command.
@@ -2660,7 +2660,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         utils.blink()
 
     def show_matches(self, items):
-        self.view.window().show_quick_panel(items, self.replace, sublime.MONOSPACE_FONT)
+        self.view.window().show_quick_panel(items, self.replace, MONOSPACE_FONT)
 
     def replace(self, s):
         self.view.run_command('__replace_line', {'with_what': self._matches[s]})

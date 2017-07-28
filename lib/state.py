@@ -719,7 +719,7 @@ class State(object):
             # let the action run the motion within its edit object so that
             # we don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
-            _logger.debug('motion in motion+action \'%s\'', motion_cmd)
+            _logger.debug('motion cmd \'%s\', action cmd \'%s\'', motion_cmd, action_cmd)
 
             if self.glue_until_normal_mode and not self.processing_notation:
                 # We need to tell Sublime Text now that it should group

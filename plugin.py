@@ -57,6 +57,7 @@ def _cleanup_views():
             settings = view.settings()
             settings.set('command_mode', False)
             settings.set('inverse_caret_state', False)
+            # TODO should the "vintage" setting be erased too? i.e. v.settings().erase('vintage')
 
 
 def plugin_loaded():

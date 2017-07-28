@@ -2,7 +2,7 @@ from logging.handlers import RotatingFileHandler
 import logging
 import os
 
-import sublime
+from sublime import status_message as _status_message
 
 
 _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
@@ -62,7 +62,7 @@ class Error(Exception):
 
 
 def status_message(msg):
-    sublime.status_message('NeoVintageous: ' + str(msg))
+    _status_message('NeoVintageous: ' + str(msg))
 
 
 def console_message(msg):

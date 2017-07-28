@@ -1,8 +1,8 @@
 import os
 
 from sublime import Region
-from sublime_plugin import WindowCommand
 from sublime_plugin import TextCommand
+from sublime_plugin import WindowCommand
 
 from Default.history_list import get_jump_history
 

@@ -1,34 +1,34 @@
-import sublime
+from sublime import Region
 
 
 from NeoVintageous.lib import nvim
 
 
-LAYOUT_SINGLE_CELL = {
+_LAYOUT_SINGLE_CELL = {
     'cells': [[0, 0, 1, 1]],
     'cols': [0.0, 1.0],
     'rows': [0.0, 1.0]
 }
 
-LAYOUT_TWO_COLUMN = {
+_LAYOUT_TWO_COLUMN = {
     'cells': [[0, 0, 1, 1], [1, 0, 2, 1]],
     'rows': [0.0, 1.0],
     'cols': [0.0, 0.5, 1.0]
 }
 
-LAYOUT_THREE_COLUMN = {
+_LAYOUT_THREE_COLUMN = {
     'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
     'rows': [0.0, 1.0],
     'cols': [0.0, 0.33, 0.66, 1.0]
 }
 
-LAYOUT_TWO_ROW = {
+_LAYOUT_TWO_ROW = {
     'cells': [[0, 0, 1, 1], [0, 1, 1, 2]],
     'rows': [0.0, 0.5, 1.0],
     'cols': [0.0, 1.0]
 }
 
-LAYOUT_THREE_ROW = {
+_LAYOUT_THREE_ROW = {
     'cells': [[0, 0, 1, 1], [0, 1, 1, 2], [0, 2, 1, 3]],
     'rows': [0.0, 0.33, 0.66, 1.0],
     'cols': [0.0, 1.0]
@@ -106,7 +106,7 @@ class WindowAPI():
             return
 
         # If it's not a file on disk and contains only whitespace then close it
-        if not current_view.file_name() and current_view.substr(sublime.Region(0, current_view.size())).strip() == '':
+        if not current_view.file_name() and current_view.substr(Region(0, current_view.size())).strip() == '':
             current_view.set_scratch(True)
             current_view.close()
             views_in_group = self.window.views_in_group(self.window.active_group())
@@ -206,7 +206,7 @@ class WindowAPI():
             self._exchange_current_view(self.window.active_view_in_group(0))
             self.window.focus_group(0)
 
-        self.window.set_layout(LAYOUT_TWO_COLUMN)
+        self.window.set_layout(_LAYOUT_TWO_COLUMN)
         self.resize_groups_almost_equally()
 
     def move_current_view_to_far_right(self):
@@ -228,7 +228,7 @@ class WindowAPI():
             self._exchange_current_view(self.window.active_view_in_group(1))
             self.window.focus_group(1)
 
-        self.window.set_layout(LAYOUT_TWO_COLUMN)
+        self.window.set_layout(_LAYOUT_TWO_COLUMN)
         self.resize_groups_almost_equally()
 
     def move_current_view_to_very_bottom(self):
@@ -250,7 +250,7 @@ class WindowAPI():
             self._exchange_current_view(self.window.active_view_in_group(1))
             self.window.focus_group(1)
 
-        self.window.set_layout(LAYOUT_TWO_ROW)
+        self.window.set_layout(_LAYOUT_TWO_ROW)
         self.resize_groups_almost_equally()
 
     def move_current_view_to_very_top(self):
@@ -272,7 +272,7 @@ class WindowAPI():
             self._exchange_current_view(self.window.active_view_in_group(0))
             self.window.focus_group(0)
 
-        self.window.set_layout(LAYOUT_TWO_ROW)
+        self.window.set_layout(_LAYOUT_TWO_ROW)
         self.resize_groups_almost_equally()
 
     def move_group_focus_to_nth_above_current_one(self, n=1):

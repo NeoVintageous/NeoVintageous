@@ -1,7 +1,14 @@
 from itertools import chain
 
-import sublime
+from sublime import CLASS_EMPTY_LINE
+from sublime import CLASS_LINE_END
+from sublime import CLASS_PUNCTUATION_END
+from sublime import CLASS_PUNCTUATION_START
+from sublime import DRAW_NO_OUTLINE
+from sublime import ENCODED_POSITION
+from sublime import LITERAL
 from sublime import Region
+
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
@@ -121,7 +128,7 @@ class _vi_find_in_line(ViMotionCommand):
             for i in range(count):
                 # Define search range as 'rest of the line to the right'.
                 search_range = Region(match.end(), eol)
-                match = find_in_range(view, char, search_range.a, search_range.b, sublime.LITERAL)
+                match = find_in_range(view, char, search_range.a, search_range.b, LITERAL)
 
                 # Count too high or simply no match; break.
                 if match is None:
@@ -177,7 +184,7 @@ class _vi_reverse_find_in_line(ViMotionCommand):
                 match = b
                 for i in range(count):
                     # line_text does not include character at match
-                    line_text = view.substr(sublime.Region(line_start, match))
+                    line_text = view.substr(Region(line_start, match))
                     found_at = line_text.rindex(char)
                     match = line_start + found_at
             except ValueError:
@@ -188,9 +195,9 @@ class _vi_reverse_find_in_line(ViMotionCommand):
                 target_pos = target_pos + 1
 
             if mode == modes.NORMAL:
-                return sublime.Region(target_pos)
+                return Region(target_pos)
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(b, target_pos)
+                return Region(b, target_pos)
             # For visual modes...
             else:
                 new_a = resolve_insertion_point_at_a(s)
@@ -245,9 +252,9 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
                                  times=state.count)
         if next_hit:
             if state.mode == modes.VISUAL:
-                next_hit = sublime.Region(self.view.sel()[0].a, next_hit.a + 1)
+                next_hit = Region(self.view.sel()[0].a, next_hit.a + 1)
 
-            self.view.add_regions('vi_inc_search', [next_hit], 'string.search', '', sublime.DRAW_NO_OUTLINE)
+            self.view.add_regions('vi_inc_search', [next_hit], 'string.search', '', DRAW_NO_OUTLINE)
 
             if not self.view.visible_region().contains(next_hit.b):
                 self.view.show(next_hit.b)
@@ -265,16 +272,16 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string='', mode=None, count=1):
         def f(view, s):
             if mode == modes.VISUAL:
-                return sublime.Region(s.a, match.a + 1)
+                return Region(s.a, match.a + 1)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, match.a)
+                return Region(s.a, match.a)
 
             elif mode == modes.NORMAL:
-                return sublime.Region(match.a, match.a)
+                return Region(match.a, match.a)
 
             elif mode == modes.VISUAL_LINE:
-                return sublime.Region(s.a, view.full_line(match.b - 1).b)
+                return Region(s.a, view.full_line(match.b - 1).b)
 
             return s
 
@@ -289,7 +296,6 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
 
         # TODO: What should we do here? Case-sensitive or case-insensitive search? Configurable?
         # Search wrapping around the end of the buffer.
-        # flags = sublime.IGNORECASE | sublime.LITERAL
         flags = self.calculate_flags()
         match = find_wrapping(self.view, search_string, start, wrapped_end, flags=flags, times=count)
         if not match:
@@ -307,17 +313,17 @@ class _vi_l(ViMotionCommand):
                     return s
 
                 x_limit = min(view.line(s.b).b - 1, s.b + count, view.size())
-                return sublime.Region(x_limit, x_limit)
+                return Region(x_limit, x_limit)
 
             if mode == modes.INTERNAL_NORMAL:
                 x_limit = min(view.line(s.b).b, s.b + count)
                 x_limit = max(0, x_limit)
-                return sublime.Region(s.a, x_limit)
+                return Region(s.a, x_limit)
 
             if mode in (modes.VISUAL, modes.VISUAL_BLOCK):
                 if s.a < s.b:
                     x_limit = min(view.full_line(s.b - 1).b, s.b + count)
-                    return sublime.Region(s.a, x_limit)
+                    return Region(s.a, x_limit)
 
                 if s.a > s.b:
                     x_limit = min(view.full_line(s.b).b - 1, s.b + count)
@@ -326,9 +332,9 @@ class _vi_l(ViMotionCommand):
 
                     if view.line(s.a) == view.line(s.b) and count >= s.size():
                         x_limit = min(view.full_line(s.b).b, s.b + count + 1)
-                        return sublime.Region(s.a - 1, x_limit)
+                        return Region(s.a - 1, x_limit)
 
-                    return sublime.Region(s.a, x_limit)
+                    return Region(s.a, x_limit)
 
             return s
 
@@ -340,7 +346,7 @@ class _vi_h(ViMotionCommand):
         def f(view, s):
             if mode == modes.INTERNAL_NORMAL:
                 x_limit = max(view.line(s.b).a, s.b - count)
-                return sublime.Region(s.a, x_limit)
+                return Region(s.a, x_limit)
 
             # TODO: Split handling of the two modes for clarity.
             elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
@@ -352,16 +358,16 @@ class _vi_h(ViMotionCommand):
                     x_limit = max(view.line(s.b - 1).a + 1, s.b - count)
                     if view.line(s.a) == view.line(s.b - 1) and count >= s.size():
                         x_limit = max(view.line(s.b - 1).a, s.b - count - 1)
-                        return sublime.Region(s.a + 1, x_limit)
-                    return sublime.Region(s.a, x_limit)
+                        return Region(s.a + 1, x_limit)
+                    return Region(s.a, x_limit)
 
                 if s.a > s.b:
                     x_limit = max(view.line(s.b).a, s.b - count)
-                    return sublime.Region(s.a, x_limit)
+                    return Region(s.a, x_limit)
 
             elif mode == modes.NORMAL:
                 x_limit = max(view.line(s.b).a, s.b - count)
-                return sublime.Region(x_limit, x_limit)
+                return Region(x_limit, x_limit)
 
             # XXX: We should never reach this.
             return s
@@ -437,16 +443,17 @@ class _vi_j(ViMotionCommand):
                 target_pt = self.next_non_folded_pt(target_pt)
 
                 if view.line(target_pt).empty():
-                    return sublime.Region(target_pt, target_pt)
+                    return Region(target_pt, target_pt)
 
                 pt = self.calculate_xpos(target_pt, xpos)[0]
-                return sublime.Region(pt)
+
+                return Region(pt)
 
             if mode == modes.INTERNAL_NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
-                return sublime.Region(view.line(s.a).a, view.full_line(target_pt).b)
+                return Region(view.line(s.a).a, view.full_line(target_pt).b)
 
             if mode == modes.VISUAL:
                 exact_position = s.b - 1 if (s.a < s.b) else s.b
@@ -457,19 +464,20 @@ class _vi_j(ViMotionCommand):
 
                 end = min(self.view.line(target_pt).b, target_pt + xpos)
                 if s.a < s.b:
-                    return sublime.Region(s.a, end + 1)
+                    return Region(s.a, end + 1)
 
                 if (target_pt + xpos) >= s.a:
-                    return sublime.Region(s.a - 1, end + 1)
-                return sublime.Region(s.a, target_pt + xpos)
+                    return Region(s.a - 1, end + 1)
+
+                return Region(s.a, target_pt + xpos)
 
             if mode == modes.VISUAL_LINE:
                 if s.a < s.b:
                     current_row = view.rowcol(s.b - 1)[0]
                     target_row = min(current_row + count, view.rowcol(view.size())[0])
-
                     target_pt = view.text_point(target_row, 0)
-                    return sublime.Region(s.a, view.full_line(target_pt).b)
+
+                    return Region(s.a, view.full_line(target_pt).b)
 
                 elif s.a > s.b:
                     current_row = view.rowcol(s.b)[0]
@@ -477,9 +485,9 @@ class _vi_j(ViMotionCommand):
                     target_pt = view.text_point(target_row, 0)
 
                     if target_row > view.rowcol(s.a - 1)[0]:
-                        return sublime.Region(view.line(s.a - 1).a, view.full_line(target_pt).b)
+                        return Region(view.line(s.a - 1).a, view.full_line(target_pt).b)
 
-                    return sublime.Region(s.a, view.full_line(target_pt).a)
+                    return Region(s.a, view.full_line(target_pt).a)
 
             return s
 
@@ -513,7 +521,7 @@ class _vi_j(ViMotionCommand):
                     max_size = max(r.size() for r in self.view.sel())
                     row, col = self.view.rowcol(self.view.sel()[-1].a)
                     start = self.view.text_point(row + 1, col)
-                    new_region = sublime.Region(start, start + max_size)
+                    new_region = Region(start, start + max_size)
                     self.view.sel().add(new_region)
                     # FIXME: Perhaps we should scroll into view in a more general way...
 
@@ -567,16 +575,18 @@ class _vi_k(ViMotionCommand):
                 target_pt = self.previous_non_folded_pt(target_pt)
 
                 if view.line(target_pt).empty():
-                    return sublime.Region(target_pt, target_pt)
+                    return Region(target_pt, target_pt)
 
                 pt, _ = self.calculate_xpos(target_pt, xpos)
-                return sublime.Region(pt)
+
+                return Region(pt)
 
             if mode == modes.INTERNAL_NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row - count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
-                return sublime.Region(view.full_line(s.a).b, view.line(target_pt).a)
+
+                return Region(view.full_line(s.a).b, view.line(target_pt).a)
 
             if mode == modes.VISUAL:
                 exact_position = s.b - 1 if (s.a < s.b) else s.b
@@ -588,13 +598,14 @@ class _vi_k(ViMotionCommand):
                 end = min(self.view.line(target_pt).b, target_pt + xpos)
                 if s.b >= s.a:
                     if (self.view.line(s.a).contains(s.b - 1) and not self.view.line(s.a).contains(target_pt)):
-                        return sublime.Region(s.a + 1, end)
+                        return Region(s.a + 1, end)
                     else:
                         if (target_pt + xpos) < s.a:
-                            return sublime.Region(s.a + 1, end)
+                            return Region(s.a + 1, end)
                         else:
-                            return sublime.Region(s.a, end + 1)
-                return sublime.Region(s.a, end)
+                            return Region(s.a, end + 1)
+
+                return Region(s.a, end)
 
             if mode == modes.VISUAL_LINE:
                 if s.a < s.b:
@@ -603,16 +614,16 @@ class _vi_k(ViMotionCommand):
                     target_pt = view.text_point(target_row, 0)
 
                     if target_row < view.rowcol(s.begin())[0]:
-                        return sublime.Region(view.full_line(s.a).b, view.full_line(target_pt).a)
+                        return Region(view.full_line(s.a).b, view.full_line(target_pt).a)
 
-                    return sublime.Region(s.a, view.full_line(target_pt).b)
+                    return Region(s.a, view.full_line(target_pt).b)
 
                 elif s.a > s.b:
                     current_row = view.rowcol(s.b)[0]
                     target_row = max(current_row - count, 0)
                     target_pt = view.text_point(target_row, 0)
 
-                    return sublime.Region(s.a, view.full_line(target_pt).a)
+                    return Region(s.a, view.full_line(target_pt).a)
 
         state = State(self.view)
 
@@ -637,7 +648,7 @@ class _vi_k(ViMotionCommand):
                         return
                     rect_size = max(r.size() for r in self.view.sel())
                     rect_a_pt = self.view.text_point(row - 1, rect_a)
-                    new_region = sublime.Region(rect_a_pt, rect_a_pt + rect_size)
+                    new_region = Region(rect_a_pt, rect_a_pt + rect_size)
                     self.view.sel().add(new_region)
                     # FIXME: We should probably scroll into view in a more general way.
                     #        Or maybe every motion should handle this on their own.
@@ -671,19 +682,19 @@ class _vi_gg(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == modes.NORMAL:
-                return sublime.Region(0)
+                return Region(0)
             elif mode == modes.VISUAL:
                 if s.a < s.b:
-                    return sublime.Region(s.a + 1, 0)
+                    return Region(s.a + 1, 0)
                 else:
-                    return sublime.Region(s.a, 0)
+                    return Region(s.a, 0)
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(view.full_line(s.b).b, 0)
+                return Region(view.full_line(s.b).b, 0)
             elif mode == modes.VISUAL_LINE:
                 if s.a < s.b:
-                    return sublime.Region(0, s.b)
+                    return Region(0, s.b)
                 else:
-                    return sublime.Region(0, s.a)
+                    return Region(0, s.a)
             return s
 
         self.view.window().run_command('_vi_add_to_jump_list')
@@ -699,32 +710,32 @@ class _vi_go_to_line(ViMotionCommand):
         def f(view, s):
             if mode == modes.NORMAL:
                 non_ws = utils.next_non_white_space_char(view, dest)
-                return sublime.Region(non_ws, non_ws)
+                return Region(non_ws, non_ws)
             elif mode == modes.INTERNAL_NORMAL:
                 start_line = view.full_line(s.a)
                 dest_line = view.full_line(dest)
                 if start_line.a == dest_line.a:
                     return dest_line
                 elif start_line.a < dest_line.a:
-                    return sublime.Region(start_line.a, dest_line.b)
+                    return Region(start_line.a, dest_line.b)
                 else:
-                    return sublime.Region(start_line.b, dest_line.a)
+                    return Region(start_line.b, dest_line.a)
             elif mode == modes.VISUAL:
                 if dest < s.a and s.a < s.b:
-                    return sublime.Region(s.a + 1, dest)
+                    return Region(s.a + 1, dest)
                 elif dest < s.a:
-                    return sublime.Region(s.a, dest)
+                    return Region(s.a, dest)
                 elif dest > s.b and s.a > s.b:
-                    return sublime.Region(s.a - 1, dest + 1)
-                return sublime.Region(s.a, dest + 1)
+                    return Region(s.a - 1, dest + 1)
+                return Region(s.a, dest + 1)
             elif mode == modes.VISUAL_LINE:
                 if dest < s.a and s.a < s.b:
-                    return sublime.Region(view.full_line(s.a).b, dest)
+                    return Region(view.full_line(s.a).b, dest)
                 elif dest < s.a:
-                    return sublime.Region(s.a, dest)
+                    return Region(s.a, dest)
                 elif dest > s.a and s.a > s.b:
-                    return sublime.Region(view.full_line(s.a - 1).a, view.full_line(dest).b)
-                return sublime.Region(s.a, view.full_line(dest).b)
+                    return Region(view.full_line(s.a - 1).a, view.full_line(dest).b)
+                return Region(s.a, view.full_line(dest).b)
             return s
 
         regions_transformer(self.view, f)
@@ -741,15 +752,15 @@ class _vi_big_g(ViMotionCommand):
                 pt = eof
                 if not view.line(eof).empty():
                     pt = utils.previous_non_white_space_char(view, eof - 1, white_space='\n')
-                return sublime.Region(pt, pt)
+                return Region(pt, pt)
             elif mode == modes.VISUAL:
-                return sublime.Region(s.a, eof)
+                return Region(s.a, eof)
             elif mode == modes.INTERNAL_NORMAL:
                 begin = view.line(s.b).a
                 begin = max(0, begin - 1)
-                return sublime.Region(begin, eof)
+                return Region(begin, eof)
             elif mode == modes.VISUAL_LINE:
-                return sublime.Region(s.a, eof)
+                return Region(s.a, eof)
 
             return s
 
@@ -801,21 +812,21 @@ class _vi_w(ViMotionCommand):
             if mode == modes.NORMAL:
                 pt = units.word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
-                    pt = utils.previous_non_white_space_char(view, pt - 1,
-                                                             white_space='\n')
-                return sublime.Region(pt, pt)
+                    pt = utils.previous_non_white_space_char(view, pt - 1, white_space='\n')
 
+                return Region(pt, pt)
             elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
                 start = (s.b - 1) if (s.a < s.b) else s.b
                 pt = units.word_starts(view, start=start, count=count)
 
                 if (s.a > s.b) and (pt >= s.a):
-                    return sublime.Region(s.a - 1, pt + 1)
+                    return Region(s.a - 1, pt + 1)
                 elif s.a > s.b:
-                    return sublime.Region(s.a, pt)
+                    return Region(s.a, pt)
                 elif view.size() == pt:
                     pt -= 1
-                return sublime.Region(s.a, pt + 1)
+
+                return Region(s.a, pt + 1)
 
             elif mode == modes.INTERNAL_NORMAL:
                 a = s.a
@@ -824,7 +835,8 @@ class _vi_w(ViMotionCommand):
                 if (not view.substr(view.line(s.a)).strip() and
                    view.line(s.b) != view.line(pt)):
                         a = view.line(s.a).a
-                return sublime.Region(a, pt)
+
+                return Region(a, pt)
 
             return s
 
@@ -839,17 +851,17 @@ class _vi_big_w(ViMotionCommand):
                 if ((pt == view.size()) and (not view.line(pt).empty())):
                     pt = utils.previous_non_white_space_char(view, pt - 1,
                                                              white_space='\n')
-                return sublime.Region(pt, pt)
+                return Region(pt, pt)
 
             elif mode == modes.VISUAL:
                 pt = units.big_word_starts(view, start=s.b - 1, count=count)
                 if s.a > s.b and pt >= s.a:
-                    return sublime.Region(s.a - 1, pt + 1)
+                    return Region(s.a - 1, pt + 1)
                 elif s.a > s.b:
-                    return sublime.Region(s.a, pt)
+                    return Region(s.a, pt)
                 elif (view.size() == pt):
                     pt -= 1
-                return sublime.Region(s.a, pt + 1)
+                return Region(s.a, pt + 1)
 
             elif mode == modes.INTERNAL_NORMAL:
                 a = s.a
@@ -860,7 +872,7 @@ class _vi_big_w(ViMotionCommand):
                 if (not view.substr(view.line(s.a)).strip() and
                    view.line(s.b) != view.line(pt)):
                         a = view.line(s.a).a
-                return sublime.Region(a, pt)
+                return Region(a, pt)
 
             return s
 
@@ -872,15 +884,15 @@ class _vi_e(ViMotionCommand):
         def f(view, s):
             if mode == modes.NORMAL:
                 pt = units.word_ends(view, start=s.b, count=count)
-                return sublime.Region(pt - 1)
+                return Region(pt - 1)
 
             elif mode == modes.VISUAL:
                 pt = units.word_ends(view, start=s.b - 1, count=count)
                 if (s.a > s.b) and (pt >= s.a):
-                    return sublime.Region(s.a - 1, pt)
+                    return Region(s.a - 1, pt)
                 elif (s.a > s.b):
-                    return sublime.Region(s.a, pt)
-                return sublime.Region(s.a, pt)
+                    return Region(s.a, pt)
+                return Region(s.a, pt)
 
             elif mode == modes.INTERNAL_NORMAL:
                 a = s.a
@@ -890,7 +902,7 @@ class _vi_e(ViMotionCommand):
                 if (not view.substr(view.line(s.a)).strip() and
                    view.line(s.b) != view.line(pt)):
                         a = view.line(s.a).a
-                return sublime.Region(a, pt)
+                return Region(a, pt)
             return s
 
         regions_transformer(self.view, f)
@@ -900,14 +912,14 @@ class _vi_zero(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == modes.NORMAL:
-                return sublime.Region(view.line(s.b).a)
+                return Region(view.line(s.b).a)
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, view.line(s.b).a)
+                return Region(s.a, view.line(s.b).a)
             elif mode == modes.VISUAL:
                 if s.a < s.b:
-                    return sublime.Region(s.a, view.line(s.b - 1).a + 1)
+                    return Region(s.a, view.line(s.b - 1).a + 1)
                 else:
-                    return sublime.Region(s.a, view.line(s.b).a)
+                    return Region(s.a, view.line(s.b).a)
             return s
 
         regions_transformer(self.view, f)
@@ -957,7 +969,7 @@ class _vi_left_brace(ViMotionCommand):
         def f(view, s):
             # TODO: must skip empty paragraphs.
             start = utils.previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
-            par_as_region = view.expand_by_class(start, sublime.CLASS_EMPTY_LINE)
+            par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
 
             if mode == modes.NORMAL:
                 next_start = units.prev_paragraph_start(view, s.b, count)
@@ -1038,28 +1050,28 @@ class _vi_percent(ViMotionCommand):
                         # Testing against adjusted begin
                         end = (found + 1) if (begin <= found) else found
 
-                        return sublime.Region(begin, end)
+                        return Region(begin, end)
 
                 if mode == modes.VISUAL_LINE:
                     # TODO: Improve handling of s.a < s.b and s.a > s.b cases.
                     a = find_bracket_location(s)
                     if a is not None:
                         a = self.view.full_line(a).b
-                        return sublime.Region(s.begin(), a)
+                        return Region(s.begin(), a)
 
                 elif mode == modes.NORMAL:
                     a = find_bracket_location(s)
                     if a is not None:
-                        return sublime.Region(a, a)
+                        return Region(a, a)
 
                 # TODO: According to Vim we must swallow brackets in this case.
                 elif mode == modes.INTERNAL_NORMAL:
                     found = find_bracket_location(s)
                     if found is not None:
                         if found < s.a:
-                            return sublime.Region(s.a + 1, found)
+                            return Region(s.a + 1, found)
                         else:
-                            return sublime.Region(s.a, found + 1)
+                            return Region(s.a, found + 1)
 
                 return s
 
@@ -1071,7 +1083,7 @@ class _vi_percent(ViMotionCommand):
 
         def f(view, s):
             pt = view.text_point(row, 0)
-            return sublime.Region(pt, pt)
+            return Region(pt, pt)
 
         regions_transformer(self.view, f)
 
@@ -1090,8 +1102,7 @@ class _vi_percent(ViMotionCommand):
         Example ('(', ('(', ')'), 1337)).
         """
         caret_row, caret_col = self.view.rowcol(caret_pt)
-        line_text = self.view.substr(sublime.Region(caret_pt,
-                                                    self.view.line(caret_pt).b))
+        line_text = self.view.substr(Region(caret_pt, self.view.line(caret_pt).b))
         try:
             found_brackets = min([(line_text.index(bracket), bracket)
                                  for bracket in chain(*self.pairs)
@@ -1109,7 +1120,7 @@ class _vi_percent(ViMotionCommand):
             next_closing_bracket = find_in_range(self.view, brackets[1],
                                                  start=new_start,
                                                  end=self.view.size(),
-                                                 flags=sublime.LITERAL)
+                                                 flags=LITERAL)
             if next_closing_bracket is None:
                 # Unbalanced brackets; nothing we can do.
                 return
@@ -1120,7 +1131,7 @@ class _vi_percent(ViMotionCommand):
             next_opening_bracket = find_in_range(self.view, brackets[0],
                                                  start=start,
                                                  end=next_closing_bracket.end(),
-                                                 flags=sublime.LITERAL)
+                                                 flags=LITERAL)
             if not next_opening_bracket:
                 break
             nested += 1
@@ -1138,7 +1149,7 @@ class _vi_percent(ViMotionCommand):
             prev_opening_bracket = reverse_search_by_pt(self.view, brackets[0],
                                                         start=0,
                                                         end=new_start,
-                                                        flags=sublime.LITERAL)
+                                                        flags=LITERAL)
             if prev_opening_bracket is None:
                 # Unbalanced brackets; nothing we can do.
                 return
@@ -1149,7 +1160,7 @@ class _vi_percent(ViMotionCommand):
             next_closing_bracket = reverse_search_by_pt(self.view, brackets[1],
                                                         start=prev_opening_bracket.a,
                                                         end=start,
-                                                        flags=sublime.LITERAL)
+                                                        flags=LITERAL)
             if not next_closing_bracket:
                 break
             nested += 1
@@ -1168,12 +1179,12 @@ class _vi_big_h(ViMotionCommand):
         def f(view, s):
             if mode == modes.NORMAL:
                 non_ws = utils.next_non_white_space_char(view, target)
-                return sublime.Region(non_ws, non_ws)
+                return Region(non_ws, non_ws)
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a + 1, target)
+                return Region(s.a + 1, target)
             elif mode == modes.VISUAL:
                 new_target = utils.next_non_white_space_char(view, target)
-                return sublime.Region(s.a + 1, new_target)
+                return Region(s.a + 1, new_target)
             else:
                 return s
 
@@ -1192,17 +1203,17 @@ class _vi_big_l(ViMotionCommand):
         def f(view, s):
             if mode == modes.NORMAL:
                 non_ws = utils.next_non_white_space_char(view, target)
-                return sublime.Region(non_ws, non_ws)
+                return Region(non_ws, non_ws)
             elif mode == modes.INTERNAL_NORMAL:
                 if s.b >= target:
-                    return sublime.Region(s.a + 1, target)
-                return sublime.Region(s.a, target)
+                    return Region(s.a + 1, target)
+                return Region(s.a, target)
             elif mode == modes.VISUAL:
                 if s.b >= target:
                     new_target = utils.next_non_white_space_char(view, target)
-                    return sublime.Region(s.a + 1, new_target)
+                    return Region(s.a + 1, new_target)
                 new_target = utils.next_non_white_space_char(view, target)
-                return sublime.Region(s.a, new_target + 1)
+                return Region(s.a, new_target + 1)
             else:
                 return s
 
@@ -1210,8 +1221,7 @@ class _vi_big_l(ViMotionCommand):
         row, _ = self.view.rowcol(r.b)
         row -= count + 1
 
-        # XXXX: Subtract 1 so that Sublime Text won't attempt to scroll the line into view, which
-        # would be quite annoying.
+        # XXX: Subtract 1 so that ST won't attempt to scroll the line into view, which would be quite annoying
         target = self.view.text_point(row - 1, 0)
 
         regions_transformer(self.view, f)
@@ -1223,17 +1233,17 @@ class _vi_big_m(ViMotionCommand):
         def f(view, s):
             if mode == modes.NORMAL:
                 non_ws = utils.next_non_white_space_char(view, target)
-                return sublime.Region(non_ws, non_ws)
+                return Region(non_ws, non_ws)
             elif mode == modes.INTERNAL_NORMAL:
                 if s.b >= target:
-                    return sublime.Region(s.a + 1, target)
-                return sublime.Region(s.a, target)
+                    return Region(s.a + 1, target)
+                return Region(s.a, target)
             elif mode == modes.VISUAL:
                 if s.b >= target:
                     new_target = utils.next_non_white_space_char(view, target)
-                    return sublime.Region(s.a + 1, new_target)
+                    return Region(s.a + 1, new_target)
                 new_target = utils.next_non_white_space_char(view, target)
-                return sublime.Region(s.a, new_target + 1)
+                return Region(s.a, new_target + 1)
             else:
                 return s
 
@@ -1271,15 +1281,15 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
 
             if match:
                 if mode == modes.INTERNAL_NORMAL:
-                    return sublime.Region(s.a, match.begin())
+                    return Region(s.a, match.begin())
                 elif mode == modes.VISUAL:
-                    return sublime.Region(s.a, match.begin())
+                    return Region(s.a, match.begin())
                 elif mode == modes.NORMAL:
-                    return sublime.Region(match.begin(), match.begin())
+                    return Region(match.begin(), match.begin())
 
             elif mode == modes.NORMAL:
                 pt = view.word(s.end()).begin()
-                return sublime.Region(pt)
+                return Region(pt)
 
             return s
 
@@ -1320,15 +1330,15 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 
             if match:
                 if mode == modes.INTERNAL_NORMAL:
-                    return sublime.Region(s.b, match.begin())
+                    return Region(s.b, match.begin())
                 elif mode == modes.VISUAL:
-                    return sublime.Region(s.b, match.begin())
+                    return Region(s.b, match.begin())
                 elif mode == modes.NORMAL:
-                    return sublime.Region(match.begin(), match.begin())
+                    return Region(match.begin(), match.begin())
 
             elif mode == modes.NORMAL:
                 pt = utils.previous_white_space_char(view, s.b)
-                return sublime.Region(pt + 1)
+                return Region(pt + 1)
 
             return s
 
@@ -1352,21 +1362,21 @@ class _vi_b(ViMotionCommand):
         def do_motion(view, s):
             if mode == modes.NORMAL:
                 pt = word_reverse(self.view, s.b, count)
-                return sublime.Region(pt)
+                return Region(pt)
 
             elif mode == modes.INTERNAL_NORMAL:
                 pt = word_reverse(self.view, s.b, count)
-                return sublime.Region(s.a, pt)
+                return Region(s.a, pt)
 
             elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count)
                     if pt < s.a:
-                        return sublime.Region(s.a + 1, pt)
-                    return sublime.Region(s.a, pt + 1)
+                        return Region(s.a + 1, pt)
+                    return Region(s.a, pt + 1)
                 elif s.b < s.a:
                     pt = word_reverse(self.view, s.b, count)
-                    return sublime.Region(s.a, pt)
+                    return Region(s.a, pt)
 
             return s
 
@@ -1379,21 +1389,21 @@ class _vi_big_b(ViMotionCommand):
         def do_motion(view, s):
             if mode == modes.NORMAL:
                 pt = word_reverse(self.view, s.b, count, big=True)
-                return sublime.Region(pt)
+                return Region(pt)
 
             elif mode == modes.INTERNAL_NORMAL:
                 pt = word_reverse(self.view, s.b, count, big=True)
-                return sublime.Region(s.a, pt)
+                return Region(s.a, pt)
 
             elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count, big=True)
                     if pt < s.a:
-                        return sublime.Region(s.a + 1, pt)
-                    return sublime.Region(s.a, pt + 1)
+                        return Region(s.a + 1, pt)
+                    return Region(s.a, pt + 1)
                 elif s.b < s.a:
                     pt = word_reverse(self.view, s.b, count, big=True)
-                    return sublime.Region(s.a, pt)
+                    return Region(s.a, pt)
 
             return s
 
@@ -1420,7 +1430,7 @@ class _vi_underscore(ViMotionCommand):
 
             if mode == modes.NORMAL:
                 bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
-                return sublime.Region(bol)
+                return Region(bol)
 
             elif mode == modes.INTERNAL_NORMAL:
                 # TODO: differentiate between 'd' and 'c'
@@ -1457,11 +1467,11 @@ class _vi_hat(ViMotionCommand):
             bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
 
             if mode == modes.NORMAL:
-                return sublime.Region(bol)
+                return Region(bol)
             elif mode == modes.INTERNAL_NORMAL:
                 # The character at the "end" of the region is skipped in both
                 # forward and reverse cases, so unlike other regions, no need to add 1 to it
-                return sublime.Region(a, bol)
+                return Region(a, bol)
             elif mode == modes.VISUAL:
                 return utils.new_inclusive_region(a, bol)
             else:
@@ -1537,8 +1547,7 @@ class _vi_ctrl_u(ViMotionCommand):
         prev_half_page = self.view.rowcol(origin.b)[0] - half_page_span
 
         pt = self.view.text_point(prev_half_page, 0)
-        return sublime.Region(pt, pt), (self.view.rowcol(visible.b)[0] -
-                                        self.view.rowcol(pt)[0])
+        return Region(pt, pt), (self.view.rowcol(visible.b)[0] - self.view.rowcol(pt)[0])
 
     def run(self, mode=None, count=None):
 
@@ -1547,13 +1556,13 @@ class _vi_ctrl_u(ViMotionCommand):
                 return previous
 
             elif mode == modes.VISUAL:
-                return sublime.Region(s.a, previous.b)
+                return Region(s.a, previous.b)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, previous.b)
+                return Region(s.a, previous.b)
 
             elif mode == modes.VISUAL_LINE:
-                return sublime.Region(s.a, self.view.full_line(previous.b).b)
+                return Region(s.a, self.view.full_line(previous.b).b)
 
             return s
 
@@ -1575,8 +1584,8 @@ class _vi_ctrl_d(ViMotionCommand):
         next_half_page = self.view.rowcol(origin.b)[0] + half_page_span
 
         pt = self.view.text_point(next_half_page, 0)
-        return sublime.Region(pt, pt), (self.view.rowcol(pt)[0] -
-                                        self.view.rowcol(visible.a)[0])
+
+        return Region(pt, pt), (self.view.rowcol(pt)[0] - self.view.rowcol(visible.a)[0])
 
     def run(self, mode=None, extend=False, count=None):
 
@@ -1585,13 +1594,13 @@ class _vi_ctrl_d(ViMotionCommand):
                 return next
 
             elif mode == modes.VISUAL:
-                return sublime.Region(s.a, next.b)
+                return Region(s.a, next.b)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, next.b)
+                return Region(s.a, next.b)
 
             elif mode == modes.VISUAL_LINE:
-                return sublime.Region(s.a, self.view.full_line(next.b).b)
+                return Region(s.a, self.view.full_line(next.b).b)
 
             return s
 
@@ -1611,27 +1620,27 @@ class _vi_pipe(ViMotionCommand):
         def f(view, s):
             if mode == modes.NORMAL:
                 pt = self.col_to_pt(pt=s.b, nr=count)
-                return sublime.Region(pt, pt)
+                return Region(pt, pt)
 
             elif mode == modes.VISUAL:
                 pt = self.col_to_pt(pt=s.b - 1, nr=count)
                 if s.a < s.b:
                     if pt < s.a:
-                        return sublime.Region(s.a + 1, pt)
+                        return Region(s.a + 1, pt)
                     else:
-                        return sublime.Region(s.a, pt + 1)
+                        return Region(s.a, pt + 1)
                 else:
                     if pt > s.a:
-                        return sublime.Region(s.a - 1, pt + 1)
+                        return Region(s.a - 1, pt + 1)
                     else:
-                        return sublime.Region(s.a, pt)
+                        return Region(s.a, pt)
 
             elif mode == modes.INTERNAL_NORMAL:
                 pt = self.col_to_pt(pt=s.b, nr=count)
                 if s.a < s.b:
-                    return sublime.Region(s.a, pt)
+                    return Region(s.a, pt)
                 else:
-                    return sublime.Region(s.a + 1, pt)
+                    return Region(s.a + 1, pt)
 
             return s
 
@@ -1643,15 +1652,15 @@ class _vi_ge(ViMotionCommand):
         def to_word_end(view, s):
             if mode == modes.NORMAL:
                 pt = word_end_reverse(view, s.b, count)
-                return sublime.Region(pt)
+                return Region(pt)
             elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_end_reverse(view, s.b - 1, count)
                     if pt > s.a:
-                        return sublime.Region(s.a, pt + 1)
-                    return sublime.Region(s.a + 1, pt)
+                        return Region(s.a, pt + 1)
+                    return Region(s.a + 1, pt)
                 pt = word_end_reverse(view, s.b, count)
-                return sublime.Region(s.a, pt)
+                return Region(s.a, pt)
             return s
 
         regions_transformer(self.view, to_word_end)
@@ -1662,15 +1671,15 @@ class _vi_g_big_e(ViMotionCommand):
         def to_word_end(view, s):
             if mode == modes.NORMAL:
                 pt = word_end_reverse(view, s.b, count, big=True)
-                return sublime.Region(pt)
+                return Region(pt)
             elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_end_reverse(view, s.b - 1, count, big=True)
                     if pt > s.a:
-                        return sublime.Region(s.a, pt + 1)
-                    return sublime.Region(s.a + 1, pt)
+                        return Region(s.a, pt + 1)
+                    return Region(s.a + 1, pt)
                 pt = word_end_reverse(view, s.b, count, big=True)
-                return sublime.Region(s.a, pt)
+                return Region(s.a, pt)
             return s
 
         regions_transformer(self.view, to_word_end)
@@ -1680,9 +1689,9 @@ class _vi_left_paren(ViMotionCommand):
     def find_previous_sentence_end(self, r):
         sen = r
         pt = utils.previous_non_white_space_char(self.view, sen.a, white_space='\n \t')
-        sen = sublime.Region(pt, pt)
+        sen = Region(pt, pt)
         while True:
-            sen = self.view.expand_by_class(sen, sublime.CLASS_LINE_END | sublime.CLASS_PUNCTUATION_END)
+            sen = self.view.expand_by_class(sen, CLASS_LINE_END | CLASS_PUNCTUATION_END)
             if sen.a <= 0 or self.view.substr(sen.begin() - 1) in ('.', '\n', '?', '!'):
                 if self.view.substr(sen.begin() - 1) == '.' and not self.view.substr(sen.begin()) == ' ':
                     continue
@@ -1695,13 +1704,13 @@ class _vi_left_paren(ViMotionCommand):
             sen = self.find_previous_sentence_end(s)
 
             if mode == modes.NORMAL:
-                return sublime.Region(sen.a, sen.a)
+                return Region(sen.a, sen.a)
 
             elif mode == modes.VISUAL:
-                return sublime.Region(s.a + 1, sen.a + 1)
+                return Region(s.a + 1, sen.a + 1)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, sen.a + 1)
+                return Region(s.a, sen.a + 1)
 
             return s
 
@@ -1712,18 +1721,18 @@ class _vi_right_paren(ViMotionCommand):
     def find_next_sentence_end(self, r):
         sen = r
         non_ws = utils.next_non_white_space_char(self.view, sen.b, '\t \n')
-        sen = sublime.Region(non_ws, non_ws)
+        sen = Region(non_ws, non_ws)
         while True:
-            sen = self.view.expand_by_class(sen, sublime.CLASS_PUNCTUATION_START | sublime.CLASS_LINE_END)
+            sen = self.view.expand_by_class(sen, CLASS_PUNCTUATION_START | CLASS_LINE_END)
             if (sen.b == self.view.size() or
-                (self.view.substr(sublime.Region(sen.b, sen.b + 2)).endswith(('. ', '.\t'))) or
-                (self.view.substr(sublime.Region(sen.b, sen.b + 1)).endswith(('?', '!'))) or
+                (self.view.substr(Region(sen.b, sen.b + 2)).endswith(('. ', '.\t'))) or
+                (self.view.substr(Region(sen.b, sen.b + 1)).endswith(('?', '!'))) or
                 (self.view.substr(self.view.line(sen.b)).strip() == '')):  # FIXME # noqa: E129
                     if self.view.substr(sen.b) in '.?!':
-                        return sublime.Region(sen.a, sen.b + 1)
+                        return Region(sen.a, sen.b + 1)
                     else:
                         if self.view.line(sen.b).empty():
-                            return sublime.Region(sen.a, sen.b)
+                            return Region(sen.a, sen.b)
                         else:
                             return self.view.full_line(sen.b)
 
@@ -1734,14 +1743,14 @@ class _vi_right_paren(ViMotionCommand):
 
             if mode == modes.NORMAL:
                 target = min(sen.b, view.size() - 1)
-                return sublime.Region(target, target)
+                return Region(target, target)
 
             elif mode == modes.VISUAL:
                 # TODO: Must encompass new line char too?
-                return sublime.Region(s.a, sen.b)
+                return Region(s.a, sen.b)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, sen.b)
+                return Region(s.a, sen.b)
 
             return s
 
@@ -1753,17 +1762,17 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
         def f(view, s):
             # FIXME: readjust carets if we searched for '\n'.
             if mode == modes.VISUAL:
-                return sublime.Region(s.end(), found.a)
+                return Region(s.end(), found.a)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.end(), found.a)
+                return Region(s.end(), found.a)
 
             elif mode == modes.NORMAL:
-                return sublime.Region(found.a, found.a)
+                return Region(found.a, found.a)
 
             elif mode == modes.VISUAL_LINE:
                 # FIXME: Ensure that the very first ? search excludes the current line.
-                return sublime.Region(s.end(), view.full_line(found.a).a)
+                return Region(s.end(), view.full_line(found.a).a)
 
             return s
 
@@ -1824,9 +1833,9 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
                                            times=state.count)
         if occurrence:
             if state.mode == modes.VISUAL:
-                occurrence = sublime.Region(self.view.sel()[0].a, occurrence.a)
+                occurrence = Region(self.view.sel()[0].a, occurrence.a)
 
-            self.view.add_regions('vi_inc_search', [occurrence], 'string.search', '', sublime.DRAW_NO_OUTLINE)
+            self.view.add_regions('vi_inc_search', [occurrence], 'string.search', '', DRAW_NO_OUTLINE)
 
             if not self.view.visible_region().contains(occurrence):
                 self.view.show(occurrence)
@@ -1884,10 +1893,10 @@ class _vi_big_e(ViMotionCommand):
             pt = units.word_ends(view, b, count=count, big=True)
 
             if mode == modes.NORMAL:
-                return sublime.Region(pt - 1)
+                return Region(pt - 1)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, pt)
+                return Region(s.a, pt)
 
             elif mode == modes.VISUAL:
                 start = s.a
@@ -1895,17 +1904,17 @@ class _vi_big_e(ViMotionCommand):
                     start = s.a - 1
                 end = pt - 1
                 if start <= end:
-                    return sublime.Region(start, end + 1)
+                    return Region(start, end + 1)
                 else:
-                    return sublime.Region(start + 1, end)
+                    return Region(start + 1, end)
 
             # Untested
             elif mode == modes.VISUAL_BLOCK:
                 if s.a > s.b:
                     if pt > s.a:
-                        return sublime.Region(s.a - 1, pt)
-                    return sublime.Region(s.a, pt - 1)
-                return sublime.Region(s.a, pt)
+                        return Region(s.a - 1, pt)
+                    return Region(s.a, pt - 1)
+                return Region(s.a, pt)
 
             return s
 
@@ -1944,15 +1953,15 @@ class _vi_enter(ViMotionCommand):
             if mode == modes.NORMAL:
                 pt = utils.next_non_white_space_char(view, s.b,
                                                      white_space=' \t')
-                return sublime.Region(pt)
+                return Region(pt)
             elif mode == modes.VISUAL:
                 if s.a < s.b:
                     pt = utils.next_non_white_space_char(view, s.b - 1,
                                                          white_space=' \t')
-                    return sublime.Region(s.a, pt + 1)
+                    return Region(s.a, pt + 1)
                 pt = utils.next_non_white_space_char(view, s.b,
                                                      white_space=' \t')
-                return sublime.Region(s.a, pt)
+                return Region(s.a, pt)
             return s
 
         regions_transformer(self.view, advance)
@@ -2038,13 +2047,13 @@ class _vi_go_to_symbol(ViMotionCommand):
 
         def f(view, s):
             if mode == modes.NORMAL:
-                return sublime.Region(location, location)
+                return Region(location, location)
 
             elif mode == modes.VISUAL:
-                return sublime.Region(s.a + 1, location)
+                return Region(s.a + 1, location)
 
             elif mode == modes.INTERNAL_NORMAL:
-                return sublime.Region(s.a, location)
+                return Region(s.a, location)
 
             return s
 
@@ -2062,7 +2071,7 @@ class _vi_go_to_symbol(ViMotionCommand):
             #       the current one?
             self.view.window().open_file(
                 location[0] + ':' + ':'.join([str(x) for x in location[2]]),
-                sublime.ENCODED_POSITION)
+                ENCODED_POSITION)
             return
 
         # Local symbol; select.
@@ -2099,7 +2108,7 @@ class _vi_left_square_bracket(ViMotionCommand):
         def move(view, s):
             reg = find_prev_lone_bracket(self.view, s.b, brackets)
             if reg is not None:
-                return sublime.Region(reg.a)
+                return Region(reg.a)
             return s
 
         if mode != modes.NORMAL:
@@ -2134,7 +2143,7 @@ class _vi_right_square_bracket(ViMotionCommand):
         def move(view, s):
             reg = find_next_lone_bracket(self.view, s.b, brackets)
             if reg is not None:
-                return sublime.Region(reg.a)
+                return Region(reg.a)
             return s
 
         if mode != modes.NORMAL:

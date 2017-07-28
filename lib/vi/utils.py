@@ -34,8 +34,12 @@ def is_view(view):
     It returns `False` for views that have a `__vi_external_disable`
     setting set to `True`.
     """
-    return not any((is_widget(view), is_console(view),
-                    is_ignored(view), is_ignored_but_command_mode(view)))
+    return not any((
+        is_widget(view),
+        is_console(view),
+        is_ignored(view),
+        is_ignored_but_command_mode(view)
+    ))
 
 
 def is_ignored(view):
@@ -66,6 +70,26 @@ def is_widget(view):
     setts = view.settings()
 
     return (setts.get('is_widget') or setts.get('is_vintageous_widget'))
+
+
+def mark_as_widget(view):
+    """
+    Mark @view as a widget so we can later inspect that attribute.
+
+    For example, when hiding panels in _vi_enter_normal_mode.
+
+    Used prominently by '/', '?' and ':'.
+
+    XXX: This doesn't always work as we expect. For example, changing
+         settings to a panel created instants before does not make those
+         settings visible when the panel is activated. Investigate.
+         We still need this so that contexts will ignore widgets, though.
+         However, the fact that they are widgets should suffice to disable
+         Vim keys for them...
+    """
+    view.settings().set('is_vintageous_widget', True)
+
+    return view
 
 
 def is_console(view):
