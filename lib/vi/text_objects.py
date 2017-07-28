@@ -213,11 +213,12 @@ def a_big_word(view, pt, inclusive=False, count=1):
     for x in range(count):
         if is_at_space(view, end):
             if start is None:
-                start = get_space_region(view, pt)
-            if not inclusive:
-                end = get_space_region(view, end).b
-            else:
+                start = get_space_region(view, pt).a
+
+            if inclusive:
                 end = big_word_end(view, get_space_region(view, end).b)
+            else:
+                end = get_space_region(view, end).b
 
         if is_at_punctuation(view, end):
             if start is None:

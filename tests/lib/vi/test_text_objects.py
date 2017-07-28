@@ -295,3 +295,32 @@ class TestABigWordEnd(ViewTestCase):
 
         self.assertEqual(16, big_word_end(self.view, 14))
         self.assertEqual(16, big_word_end(self.view, 15))
+
+
+class TestABigWord(ViewTestCase):
+
+    def test_returns_full_words(self):
+        self.write('a baz bA.__ eol')
+        self.assertRegion('a', a_big_word(self.view, 0))
+        self.assertRegion(' baz', a_big_word(self.view, 1))
+        self.assertRegion('baz', a_big_word(self.view, 2))
+        self.assertRegion('baz', a_big_word(self.view, 3))
+        self.assertRegion('baz', a_big_word(self.view, 4))
+        self.assertRegion(' bA.__', a_big_word(self.view, 5))
+        self.assertRegion('bA.__', a_big_word(self.view, 6))
+        self.assertRegion('bA.__', a_big_word(self.view, 7))
+        self.assertRegion('bA.__', a_big_word(self.view, 8))
+        self.assertRegion('bA.__', a_big_word(self.view, 9))
+        self.assertRegion('bA.__', a_big_word(self.view, 10))
+        self.assertRegion(' eol', a_big_word(self.view, 11))
+        self.assertRegion('eol', a_big_word(self.view, 12))
+        self.assertRegion('eol', a_big_word(self.view, 13))
+        self.assertRegion('eol', a_big_word(self.view, 14))
+
+    def test_should_not_error_when_cursor_starts_on_whitespace(self):
+        self.write('a   b')
+        self.assertRegion('a', a_big_word(self.view, 0))
+        self.assertRegion('   b', a_big_word(self.view, 1))
+        self.assertRegion('   b', a_big_word(self.view, 2))
+        self.assertRegion('   b', a_big_word(self.view, 3))
+        self.assertRegion('b', a_big_word(self.view, 4))
