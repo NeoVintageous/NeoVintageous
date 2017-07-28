@@ -3263,8 +3263,9 @@ class ViATextObject(ViMotionDef):
         return self.inp == ''
 
     def accept(self, key):
-        assert len(key) == 1, '`a` only accepts a single char'
-        self._inp = key
+        translated = utils.translate_char(key)
+        assert len(translated) == 1, '`a` only accepts a single char'
+        self._inp = translated
 
         return True
 
@@ -3299,8 +3300,9 @@ class ViITextObject(ViMotionDef):
         return self.inp == ''
 
     def accept(self, key):
-        assert len(key) == 1, '`i` only accepts a single char'
-        self._inp = key
+        translated = utils.translate_char(key)
+        assert len(translated) == 1, '`i` only accepts a single char'
+        self._inp = translated
 
         return True
 
