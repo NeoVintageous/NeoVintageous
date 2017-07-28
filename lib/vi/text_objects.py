@@ -141,7 +141,8 @@ def current_word_end(view, pt):
     return view.word(pt).b
 
 
-# See vim :help word for a definition of word.
+# https://neovim.io/doc/user/motion.html#word
+# Used for motions in operations like daw and caw
 def a_word(view, pt, inclusive=True, count=1):
     assert count > 0
     start = current_word_start(view, pt)
@@ -168,6 +169,7 @@ def a_word(view, pt, inclusive=True, count=1):
 
 
 def big_word_end(view, pt):
+    prev = pt
     while True:
         if is_at_punctuation(view, pt):
             pt = get_punctuation_region(view, pt).b
@@ -175,10 +177,18 @@ def big_word_end(view, pt):
             pt = current_word_end(view, pt)
         else:
             break
+
+        if pt == prev:
+            # Guards against run-away loops
+            break
+
+        prev = pt
+
     return pt
 
 
 def big_word_start(view, pt):
+    prev = pt
     while True:
         if is_at_punctuation(view, pt):
             pt = get_punctuation_region(view, pt).a - 1
@@ -186,10 +196,19 @@ def big_word_start(view, pt):
             pt = current_word_start(view, pt) - 1
         else:
             break
+
+        if pt == prev:
+            # Guards against run-away loops
+            break
+
+        prev = pt
+
     return pt + 1
 
 
-def a_big_word(view, pt, inclusive=True, count=1):
+# https://neovim.io/doc/user/motion.html#WORD
+# Used for motions in operations like daW and caW
+def a_big_word(view, pt, inclusive=False, count=1):
     start, end = None, pt
     for x in range(count):
         if is_at_space(view, end):

@@ -77,11 +77,21 @@ class ViewTestCase(TestCase):
     def Region(self, a, b=None, xpos=-1):
         return Region(a, b, xpos)
 
+    def assertRegion(self, expected, actual):
+        if isinstance(expected, str):
+            self.assertEqual(expected, self.view.substr(actual))
+        elif isinstance(expected, int):
+            self.assertEqual(Region(expected), actual)
+        elif isinstance(expected, tuple):
+            self.assertEqual(Region(expected[0], expected[1]), actual)
+        else:
+            self.assertEqual(expected, actual)
+
     # DEPRECATED Use newer API methods self.select(), self.Region()
     def _R(self, a, b=None):
         return _make_region(self.view, a, b)
 
-    # DEPRECATED Favour newer API methods like, e.g. assertSelection(), assertContent(), and explicit assertions rather than magic
+    # DEPRECATED Favour newer API methods like, e.g. assertRegion(), assertSelection(), and assertContent()
     def _assertRegionsEqual(self, expected_region, actual_region, msg=None):
         """Test that regions covers the exact same region. Does not take region orientation into account."""
         if (expected_region.size() == 1) and (actual_region.size() == 1):
@@ -91,6 +101,9 @@ class ViewTestCase(TestCase):
 
     def assertContent(self, expected, msg=None):
         self.assertEqual(self.view.substr(Region(0, self.view.size())), expected, msg)
+
+    def assertSize(self, expected):
+        self.assertEqual(expected, self.view.size())
 
     def assertSelection(self, expected):
         if isinstance(expected, int):
