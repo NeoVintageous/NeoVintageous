@@ -1,22 +1,22 @@
 from .state import EOF
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_CDD_COMMAND
+from .tokens_base import TOKEN_COMMAND_CDD
 from .tokens_base import TokenOfCommand
 from NeoVintageous.lib import ex
 
 
 @ex.command('cdd', 'cdd')
-class TokenCddCommand(TokenOfCommand):
+class TokenCdd(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_CDD_COMMAND, 'cdd', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_CDD, 'cdd', *args, **kwargs)
         self.target_command = 'ex_cdd'
 
 
-def scan_command_cdd_command(state):
+def scan_command_cdd(state):
     c = state.consume()
 
     if c == EOF:
-        return None, [TokenCddCommand(), TokenEof()]
+        return None, [TokenCdd(), TokenEof()]
 
     bang = c == '!'
     if not bang:
@@ -24,4 +24,4 @@ def scan_command_cdd_command(state):
 
     state.expect(EOF)
 
-    return None, [TokenCddCommand(forced=bang), TokenEof()]
+    return None, [TokenCdd(forced=bang), TokenEof()]

@@ -1,22 +1,22 @@
 from .state import EOF
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_QUIT_ALL_COMMAND
+from .tokens_base import TOKEN_COMMAND_QUIT_ALL
 from .tokens_base import TokenOfCommand
 from NeoVintageous.lib import ex
 
 
 @ex.command('quall', 'qa')
-class TokenQuitAllCommand(TokenOfCommand):
+class TokenQuitAll(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_QUIT_ALL_COMMAND, 'qall', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_QUIT_ALL, 'qall', *args, **kwargs)
         self.target_command = 'ex_quit_all'
 
 
-def scan_command_quit_all_command(state):
+def scan_command_quit_all(state):
     c = state.consume()
 
     bang = c == '!'
 
     state.expect(EOF)
 
-    return None, [TokenQuitAllCommand(forced=bang), TokenEof()]
+    return None, [TokenQuitAll(forced=bang), TokenEof()]

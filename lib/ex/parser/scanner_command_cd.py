@@ -1,14 +1,14 @@
 from .state import EOF
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_CD_COMMAND
+from .tokens_base import TOKEN_COMMAND_CD
 from .tokens_base import TokenOfCommand
 from NeoVintageous.lib import ex
 
 
 @ex.command('cd', 'cd')
-class TokenCdCommand(TokenOfCommand):
+class TokenCd(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_CD_COMMAND, 'cd', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_CD, 'cd', *args, **kwargs)
         self.target_command = 'ex_cd'
 
     @property
@@ -20,7 +20,7 @@ class TokenCdCommand(TokenOfCommand):
         return self.params['-']
 
 
-def scan_command_cd_command(state):
+def scan_command_cd(state):
     params = {
         'path': None,
         '-': None,
@@ -46,4 +46,4 @@ def scan_command_cd_command(state):
         m = state.match(r'(?P<path>.+?)\s*$')
         params.update(m.groupdict())
 
-    return None, [TokenCdCommand(params, forced=bang), TokenEof()]
+    return None, [TokenCd(params, forced=bang), TokenEof()]
