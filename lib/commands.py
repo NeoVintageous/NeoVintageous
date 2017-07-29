@@ -41,7 +41,6 @@ __all__ = [
     'ClearCmdlineHistoryIndex',
     'CycleCmdlineHistory',
     'FsCompletion',
-    'NeovintageousExitFromCommandModeCommand',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
     'NeovintageousResetCommand',
@@ -686,23 +685,6 @@ class NeovintageousResetCommand(WindowCommand):
         rcfile.reload()
 
         nvim.status_message('reset complete')
-
-
-# DEPRECATED
-class NeovintageousExitFromCommandModeCommand(WindowCommand):
-    """A sort of a panic button."""
-
-    def run(self):
-        v = self.window.active_view()
-        v.settings().erase('vintage')
-
-        # XXX: What happens exactly when the user presses Esc again now? Which
-        #      mode are we in?
-
-        v.settings().set('command_mode', False)
-        v.settings().set('inverse_caret_state', False)
-
-        nvim.status_message('exited from command mode')
 
 
 class _vi_slash_on_parser_done(WindowCommand):
