@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+### Removed
+
+* Removed: Deprecated `toggle_mode` command
+
 ## 1.3.1 - 2017-07-31
 
 * Fixed [#281](https://github.com/NeoVintageous/NeoVintageous/issues/281): `aW` text objects error if cursor starts at whitespace

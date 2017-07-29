@@ -1,7 +1,4 @@
 [
-    // DEPRECATED: Temporary. Delete this when you don't need it any more.
-    {"keys": ["shift+escape"], "command": "toggle_mode" },
-
     // TODO Review why keys such as Ç, Ñ need to be defined. Including their
     // lowercase (ç, ñ) and ctrl modifiers (ctrl+ç, ctrl+ñ). Why are these keys
     // specifically defined below when other similar keys are not defined?

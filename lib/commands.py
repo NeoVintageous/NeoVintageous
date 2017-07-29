@@ -50,7 +50,6 @@ __all__ = [
     'ProcessNotation',
     'Sequence',
     'TabControlCommand',
-    'ToggleMode',
     'ViColonInput',
     'ViColonRepeatLast',
     'ViSettingCompletion',
@@ -704,22 +703,6 @@ class NeovintageousExitFromCommandModeCommand(WindowCommand):
         v.settings().set('inverse_caret_state', False)
 
         nvim.status_message('exited from command mode')
-
-
-# DEPRECATED: Remove this command once we don't need it any longer.
-class ToggleMode(ViWindowCommandBase):
-
-    def run(self):
-        value = self.window.active_view().settings().get('command_mode')
-        self.window.active_view().settings().set('command_mode', not value)
-        self.window.active_view().settings().set('inverse_caret_state', not value)
-        nvim.console_message('command_mode status: %s' % (not value))
-
-        state = self.state
-        if not self.window.active_view().settings().get('command_mode'):
-            state.mode = modes.INSERT
-
-        nvim.status_message('command mode status: %s' % (not value))
 
 
 class _vi_slash_on_parser_done(WindowCommand):
