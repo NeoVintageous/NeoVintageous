@@ -38,7 +38,8 @@ class Test__vi_octothorp_InNormalMode(ViewTestCase):
         self.view.run_command('_vi_octothorp', {'mode': self.NORMAL_MODE})
 
         self.assertSelection(0)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(0, 3), self.Region(4, 7), self.Region(12, 15)])
+        self.assertEqual(self.view.get_regions('vi_search'), [
+            self.Region(0, 3), self.Region(4, 7), self.Region(12, 15)])
 
     def test_select_wrap_match(self):
         self.write('boo\nabc\nfoo\nabc\nbar')

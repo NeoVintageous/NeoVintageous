@@ -14,16 +14,16 @@ def second_sel(self):
 test_data = namedtuple('test_data', 'initial_text regions cmd_params expected actual_func msg')
 
 TESTS = (
-    test_data('abc',           [[(0, 0), (0, 2)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE}, [(0, 0), (0, 0)], first_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc',      [[(0, 1), (0, 1)], [(1, 1), (1, 1)]], {'mode': ViewTestCase.INTERNAL_NORMAL_MODE}, [(0, 0), (0, 0)], first_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc',      [[(0, 1), (0, 1)], [(1, 1), (1, 1)]], {'mode': ViewTestCase.INTERNAL_NORMAL_MODE}, [(1, 0), (1, 0)], second_sel, ''),  # noqa: E501, E241
-    test_data('abc',           [[(0, 0), (0, 2)]],                   {'mode': ViewTestCase.VISUAL_MODE},           [(0, 0), (0, 0)], first_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc',      [[(0, 1), (0, 2)], [(1, 1), (1, 2)]], {'mode': ViewTestCase.VISUAL_MODE},           [(0, 0), (0, 0)], first_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc',      [[(0, 1), (0, 2)], [(1, 1), (1, 2)]], {'mode': ViewTestCase.VISUAL_MODE},           [(1, 0), (1, 0)], second_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc\nabc', [[(0, 0), (1, 4)]],                   {'mode': ViewTestCase.VISUAL_LINE_MODE},      [(0, 0), (0, 0)], first_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc\nabc', [[(1, 0), (2, 4)]],                   {'mode': ViewTestCase.VISUAL_LINE_MODE},      [(1, 0), (1, 0)], first_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc',      [[(0, 2), (0, 3)], [(1, 2), (1, 3)]], {'mode': ViewTestCase.VISUAL_BLOCK_MODE},     [(0, 2), (0, 2)], first_sel, ''),  # noqa: E501, E241
-    test_data('abc\nabc',      [[(0, 2), (0, 3)], [(1, 2), (1, 3)]], {'mode': ViewTestCase.VISUAL_BLOCK_MODE},     [(1, 2), (1, 2)], second_sel, ''),  # noqa: E501, E241
+    test_data('abc',           [[(0, 0), (0, 2)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE}, [(0, 0), (0, 0)], first_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc',      [[(0, 1), (0, 1)], [(1, 1), (1, 1)]], {'mode': ViewTestCase.INTERNAL_NORMAL_MODE}, [(0, 0), (0, 0)], first_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc',      [[(0, 1), (0, 1)], [(1, 1), (1, 1)]], {'mode': ViewTestCase.INTERNAL_NORMAL_MODE}, [(1, 0), (1, 0)], second_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc',           [[(0, 0), (0, 2)]],                   {'mode': ViewTestCase.VISUAL_MODE},           [(0, 0), (0, 0)], first_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc',      [[(0, 1), (0, 2)], [(1, 1), (1, 2)]], {'mode': ViewTestCase.VISUAL_MODE},           [(0, 0), (0, 0)], first_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc',      [[(0, 1), (0, 2)], [(1, 1), (1, 2)]], {'mode': ViewTestCase.VISUAL_MODE},           [(1, 0), (1, 0)], second_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc\nabc', [[(0, 0), (1, 4)]],                   {'mode': ViewTestCase.VISUAL_LINE_MODE},      [(0, 0), (0, 0)], first_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc\nabc', [[(1, 0), (2, 4)]],                   {'mode': ViewTestCase.VISUAL_LINE_MODE},      [(1, 0), (1, 0)], first_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc',      [[(0, 2), (0, 3)], [(1, 2), (1, 3)]], {'mode': ViewTestCase.VISUAL_BLOCK_MODE},     [(0, 2), (0, 2)], first_sel, ''),  # FIXME # noqa: E501,E241
+    test_data('abc\nabc',      [[(0, 2), (0, 3)], [(1, 2), (1, 3)]], {'mode': ViewTestCase.VISUAL_BLOCK_MODE},     [(1, 2), (1, 2)], second_sel, ''),  # FIXME # noqa: E501,E241
 )
 
 

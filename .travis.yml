@@ -1,3 +1,5 @@
+language: python
+
 env:
     global:
         - PACKAGE="NeoVintageous"
@@ -7,7 +9,6 @@ env:
 matrix:
     include:
         - os: linux
-          language: python
           python: 3.3
         - os: osx
           language: generic
@@ -16,20 +17,24 @@ before_install:
     - curl -OL https://raw.githubusercontent.com/randy3k/UnitTesting/master/sbin/travis.sh
 
 install:
+    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+            pip install flake8;
+            pip install flake8-docstrings;
+            pip install python-coveralls;
+      elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
+            brew update;
+            brew install python3;
+            pip3 install flake8;
+            pip3 install flake8-docstrings;
+            pip3 install python-coveralls;
+      fi
     - sh travis.sh bootstrap
 
 script:
     - sh travis.sh run_tests --coverage
+    - flake8 --statistics
 
 after_success:
-    - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-            brew update;
-            brew install python3;
-            pip3 install python-coveralls;
-      fi
-    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-            pip install python-coveralls;
-      fi
     - coveralls
 
 notifications:

@@ -6,11 +6,11 @@ from NeoVintageous.tests.utils import ViewTestCase
 test_data = namedtuple('test_data', 'initial_text regions cmd_params expected msg')
 
 TESTS = (
-    test_data('    abc',                   [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1}, 'abc',               'failed in {0}'),  # noqa: E501, E241
-    test_data('        abc',               [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1}, '    abc',           'failed in {0}'),  # noqa: E501, E241
-    test_data('    abc\n    abc',          [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 2}, 'abc\nabc',          'failed in {0}'),  # noqa: E501, E241
-    test_data('    abc\n    abc\n    abc', [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 3}, 'abc\nabc\nabc',     'failed in {0}'),  # noqa: E501, E241
-    test_data('    abc\n    abc\n    abc', [[(0, 0), (0, 0)], [(1, 0), (1, 0)]], {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1}, 'abc\nabc\n    abc', 'failed in {0}'),  # noqa: E501, E241
+    test_data('    abc',                   [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1}, 'abc',               'failed in {0}'),  # FIXME # noqa: E501,E241
+    test_data('        abc',               [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1}, '    abc',           'failed in {0}'),  # FIXME # noqa: E501,E241
+    test_data('    abc\n    abc',          [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 2}, 'abc\nabc',          'failed in {0}'),  # FIXME # noqa: E501,E241
+    test_data('    abc\n    abc\n    abc', [[(0, 0), (0, 0)]],                   {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 3}, 'abc\nabc\nabc',     'failed in {0}'),  # FIXME # noqa: E501,E241
+    test_data('    abc\n    abc\n    abc', [[(0, 0), (0, 0)], [(1, 0), (1, 0)]], {'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1}, 'abc\nabc\n    abc', 'failed in {0}'),  # FIXME # noqa: E501,E241
 )
 
 

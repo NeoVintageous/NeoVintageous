@@ -114,7 +114,7 @@ def word_starts(view, start, count=1, internal=False):
                 pt = next_word_start(view, pt)
                 pt = next_non_white_space_char(view, pt, white_space=' \t')
 
-    if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):
+    if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):  # FIXME # noqa: E501
         pt -= 1
 
     return pt
@@ -140,7 +140,7 @@ def big_word_starts(view, start, count=1, internal=False):
                 pt = next_big_word_start(view, pt)
                 pt = next_non_white_space_char(view, pt, white_space=' \t')
 
-    if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):
+    if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):  # FIXME # noqa: E501
         pt -= 1
 
     return pt
