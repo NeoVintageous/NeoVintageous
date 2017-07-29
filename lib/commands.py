@@ -43,7 +43,6 @@ __all__ = [
     'FsCompletion',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
-    'NeovintageousResetCommand',
     'NeovintageousToggleUseCtrlKeysCommand',
     'PressKey',
     'ProcessNotation',
@@ -673,18 +672,6 @@ class NeovintageousReloadMyRcFileCommand(WindowCommand):
         rcfile.reload()
 
         nvim.status_message('rc file reloaded')
-
-
-# DEPRECATED
-class NeovintageousResetCommand(WindowCommand):
-
-    def run(self):
-        view = self.window.active_view()
-        view.settings().erase('vintage')
-        init_state(view)
-        rcfile.reload()
-
-        nvim.status_message('reset complete')
 
 
 class _vi_slash_on_parser_done(WindowCommand):
