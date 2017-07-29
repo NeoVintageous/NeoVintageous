@@ -1,6 +1,5 @@
 import os
 
-import sublime
 from sublime import Region
 from sublime_plugin import WindowCommand
 from sublime_plugin import TextCommand
@@ -43,7 +42,6 @@ __all__ = [
     'FsCompletion',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
-    'NeovintageousToggleUseCtrlKeysCommand',
     'PressKey',
     'ProcessNotation',
     'Sequence',
@@ -641,21 +639,6 @@ class ViSettingCompletion(TextCommand):
 class _vi_add_to_jump_list(WindowCommand):
     def run(self):
         get_jump_history(self.window.id()).push_selection(self.window.active_view())
-
-
-# DEPRECATED
-class NeovintageousToggleUseCtrlKeysCommand(WindowCommand):
-
-    def run(self):
-        settings = sublime.load_settings('Preferences.sublime-settings')
-        use_ctrl_keys = not settings.get('vintageous_use_ctrl_keys')
-
-        settings.set('vintageous_use_ctrl_keys', use_ctrl_keys)
-        sublime.save_settings('Preferences.sublime-settings')
-
-        status = 'enabled' if use_ctrl_keys else 'disabled'
-
-        nvim.status_message('ctrl keys have been {}'.format(status))
 
 
 class NeovintageousOpenMyRcFileCommand(WindowCommand):

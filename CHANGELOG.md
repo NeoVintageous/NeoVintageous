@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Removed
 
+* Removed: Deprecated `neovintageous_toggle_use_ctrl_keys` command
 * Removed: Deprecated `neovintageous_reset` command
 * Removed: Deprecated `neovintageous_exit_from_command_mode` command
 * Removed: Deprecated `toggle_mode` command
