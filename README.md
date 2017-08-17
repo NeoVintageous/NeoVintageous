@@ -93,6 +93,10 @@ let mapleader=,
 " Enter command line mode
 nnoremap <space> :
 
+" Toggle the sidebar. `cot` is a non standard Unimpaired
+" plugin command, which is provided out-of-the-box.
+nnoremap <leader>d cot
+
 " Visually select all content
 nnoremap <leader>a ggvG
 
@@ -183,8 +187,10 @@ On | Off | Toggle | Option | Documentation
 -- | --- | ------ | ------ | -------------
 `[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 `[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[om` | `]om` | `com` | 'minimap' (non standard i.e. not in the original Unimpaired plugin) |
 `[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 `[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[ot` | `]ot` | `cot` | 'sidebar' (non standard i.e. not in the original Unimpaired plugin) |
 `[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 
 #### [abolish.vim](https://github.com/tpope/vim-abolish)

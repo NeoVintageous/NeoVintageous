@@ -122,7 +122,7 @@ class _UnimpairedToggle(_BaseToggleDef):
             'action': '_neovintageous_unimpaired',
             'action_args': {
                 'action': 'toggle_option',
-                'key': self.inp
+                'value': self.inp
             }
         }
 
@@ -133,9 +133,8 @@ class _UnimpairedToggleOn(_BaseToggleDef):
         return {
             'action': '_neovintageous_unimpaired',
             'action_args': {
-                'action': 'toggle_option',
-                'key': self.inp,
-                'on': True
+                'action': 'enable_option',
+                'value': self.inp
             }
         }
 
@@ -146,9 +145,8 @@ class _UnimpairedToggleOff(_BaseToggleDef):
         return {
             'action': '_neovintageous_unimpaired',
             'action_args': {
-                'action': 'toggle_option',
-                'key': self.inp,
-                'off': True
+                'action': 'disable_option',
+                'value': self.inp
             }
         }
 
@@ -210,44 +208,74 @@ def _blank_up(view, edit, count):
         view.sel().add_all(new_sels)
 
 
-def _toggle_bool(settings, key, on=False, off=False):
+def _set_bool_option(view, key, flag=None):
+    settings = view.settings()
     value = settings.get(key)
 
-    if on:
+    if flag is None:
+        settings.set(key, not value)
+    elif flag:
         if not value:
             settings.set(key, True)
-    elif off:
+    else:
         if value:
             settings.set(key, False)
-    else:
-        settings.set(key, not value)
 
 
-def _toggle_value(settings, key, on_value, off_value, on=False, off=False):
+def _set_value_option(view, key, on_value, off_value, flag=None):
+    settings = view.settings()
     value = settings.get(key)
 
-    if on:
+    if flag is None:
+        settings.set(key, off_value if value == on_value else on_value)
+    elif flag:
         if value != on_value:
             settings.set(key, on_value)
-    elif off:
+    else:
         if value != off_value:
             settings.set(key, off_value)
-    else:
-        settings.set(key, off_value if value == on_value else on_value)
 
 
-def _toggle_list(settings, on=False, off=False):
+def _list_option(view, flag=None):
     # TODO instead of toggle between "all" and "selection" toggle between "all"
     # and whatever the user default is Set to "none" to turn off drawing white
     # space, "selection" to draw only the white space within the selection, and
     # "all" to draw all white space.
-    _toggle_value(settings, 'draw_white_space', 'all', 'selection', on, off)
+    _set_value_option(view, 'draw_white_space', 'all', 'selection', flag)
 
 
-# None = Not implemented
-# string = bool toggle
-# callable = invoked toggle
-_OPTION_TOGGLES = {
+def _minimap_option(view, flag=None):
+    window = view.window()
+    is_visible = window.is_minimap_visible()
+    if flag is None:
+        window.set_minimap_visible(not is_visible)
+    elif flag:
+        if not is_visible:
+            window.set_minimap_visible(True)
+    else:
+        if is_visible:
+            window.set_minimap_visible(False)
+
+
+def _sidebar_option(view, flag=None):
+    window = view.window()
+    is_visible = window.is_sidebar_visible()
+    if flag is None:
+        window.set_sidebar_visible(not is_visible)
+    elif flag:
+        if not is_visible:
+            window.set_sidebar_visible(True)
+    else:
+        if is_visible:
+            window.set_sidebar_visible(False)
+
+
+# Used by the _toggle_option() function
+# Values:
+# * None means the option is not implemented
+# * A string means the option is a boolean option
+# * A function means it is a complex option
+_OPTIONS = {
     'background': None,
     'crosshairs': None,
     'cursorcolumn': None,
@@ -255,7 +283,9 @@ _OPTION_TOGGLES = {
     'diff': None,
     'hlsearch': None,
     'ignorecase': None,
-    'list': _toggle_list,
+    'list': _list_option,
+    'sidebar': _sidebar_option,  # non standard i.e. not in the original Unimpaired plugin
+    'minimap': _minimap_option,  # non standard i.e. not in the original Unimpaired plugin
     'number': 'line_numbers',
     'relativenumber': None,
     'spell': 'spell_check',
@@ -271,9 +301,11 @@ _OPTION_ALIASES = {
     'h': 'hlsearch',
     'i': 'ignorecase',
     'l': 'list',
+    'm': 'minimap',  # non standard i.e. not in the original Unimpaired plugin
     'n': 'number',
     'r': 'relativenumber',
     's': 'spell',
+    't': 'sidebar',  # non standard i.e. not in the original Unimpaired plugin
     'u': 'cursorcolumn',
     'v': 'virtualedit',
     'w': 'wrap',
@@ -281,28 +313,26 @@ _OPTION_ALIASES = {
 }
 
 
-def _toggle_option(view, key, on, off):
+def _toggle_option(view, key, value=None):
     if key in _OPTION_ALIASES:
         key = _OPTION_ALIASES[key]
 
-    if key not in _OPTION_TOGGLES:
+    if key not in _OPTIONS:
         raise ValueError('unknown toggle')
 
-    toggle = _OPTION_TOGGLES[key]
+    option = _OPTIONS[key]
 
-    if not toggle:
-        raise ValueError('toggle not implemented')
+    if not option:
+        raise ValueError('option is not implemented')
 
-    settings = view.settings()
-
-    if isinstance(toggle, str):
-        _toggle_bool(settings, toggle, on, off)
+    if isinstance(option, str):
+        _set_bool_option(view, option, value)
     else:
-        toggle(settings, on, off)
+        option(view, value)
 
 
 class _neovintageous_unimpaired_command(TextCommand):
-    def run(self, edit, action, key=None, on=False, off=False, mode=None, count=1):
+    def run(self, edit, action, value=None, mode=None, count=1):
         if action == 'move_down':
             # Exchange the current line with [count] lines below it
             _move_down(self.view, count)
@@ -322,6 +352,10 @@ class _neovintageous_unimpaired_command(TextCommand):
             # Go to the previous [count] SCM conflict marker or diff/patch hunk
             _context_previous(self.view, count)
         elif action == 'toggle_option':
-            _toggle_option(self.view, key, on, off)
+            _toggle_option(self.view, value)
+        elif action == 'enable_option':
+            _toggle_option(self.view, value, True)
+        elif action == 'disable_option':
+            _toggle_option(self.view, value, False)
         else:
-            raise ValueError('Unknown action')
+            raise ValueError('unknown action')

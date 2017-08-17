@@ -4,6 +4,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased
 
+### Added
+
+* Added: `cot` toggle sidebar command (Unimpaired plugin)
+* Added: `[ot` toggle sidebar on command (Unimpaired plugin)
+* Added: `]ot` toggle sidebar off command (Unimpaired plugin)
+* Added: `com` toggle minimap command (Unimpaired plugin)
+* Added: `[om` toggle minimap on command (Unimpaired plugin)
+* Added: `]om` toggle minimap off command (Unimpaired plugin)
+
 ### Removed
 
 * Removed: Unimplemented `tabopen` ex command
