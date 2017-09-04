@@ -25,11 +25,11 @@ from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.keys import to_bare_command_name
 from NeoVintageous.lib.vi.mappings import Mappings
 from NeoVintageous.lib.vi.settings import iter_settings
-from NeoVintageous.lib.vi.sublime import show_ipanel
 from NeoVintageous.lib.vi.utils import gluing_undo_groups
 from NeoVintageous.lib.vi.utils import mark_as_widget
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
+from NeoVintageous.lib.vi.utils import show_ipanel
 
 
 __all__ = [

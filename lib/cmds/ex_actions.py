@@ -26,7 +26,7 @@ from NeoVintageous.lib.vi.mappings import Mappings
 from NeoVintageous.lib.vi.search import find_all_in_range
 from NeoVintageous.lib.vi.settings import set_global
 from NeoVintageous.lib.vi.settings import set_local
-from NeoVintageous.lib.vi.sublime import has_dirty_buffers
+from NeoVintageous.lib.vi.utils import has_dirty_buffers
 from NeoVintageous.lib.vi.utils import adding_regions
 from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import modes
