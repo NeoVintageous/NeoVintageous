@@ -253,6 +253,9 @@ class NeoVintageousEvents(EventListener):
         else:  # Switching back from another application; Ignore
             pass
 
+    def _on_deactivate_callback(self):
+        self._on_deactivate_callback_timer = None
+
     def on_deactivated(self, view):
 
         # TODO Review clearing the cmdline history, does it need to be an event?
@@ -264,6 +267,3 @@ class NeoVintageousEvents(EventListener):
 
         self._on_deactivate_callback_timer = Timer(0.25, self._on_deactivate_callback)
         self._on_deactivate_callback_timer.start()
-
-    def _on_deactivate_callback(self):
-        self._on_deactivate_callback_timer = None
