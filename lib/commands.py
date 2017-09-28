@@ -93,7 +93,7 @@ class PressKey(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
-        _logger.debug('[press_key] \'%s\', repeat_count=%s, do_eval=%s, check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
+        _logger.debug('\n\npress key \'%s\' repeat_count=%s, do_eval=%s, check_user_mappings=%s\n', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
         # If the user has made selections with the mouse, we may be in an
@@ -118,13 +118,13 @@ class PressKey(ViWindowCommandBase):
             state.partial_sequence = ''
             return
 
-        # if capturing input, we shall not pass this point
         if state.must_collect_input:
+            _logger.debug('@press_key collecting input...')
             state.process_user_input2(key)
             if state.runnable():
-                _logger.debug('[press_key] state holds a complete command')
+                _logger.debug('@press_key state holds a complete command')
                 if do_eval:
-                    _logger.debug('[press_key] evaluate complete command')
+                    _logger.debug('@press_key evaluate complete command')
                     state.eval()
                     state.reset_command_data()
             return
@@ -137,20 +137,14 @@ class PressKey(ViWindowCommandBase):
 
         state.partial_sequence += key
 
-        _logger.debug('[press_key] sequence=\'%s\', partial=\'%s\'', state.sequence, state.partial_sequence)
-
         key_mappings = Mappings(state)
         if check_user_mappings and key_mappings.incomplete_user_mapping():
-            _logger.debug('[press_key] incomplete user mapping: \'%s\'', state.partial_sequence)
-            # e.g. we may have typed 'aa' and there's an 'aaa' mapping, so we need to keep collecting input.
             return
-
-        _logger.debug('[press_key] get cmd for seq/partial seq in (mode): %s/%s (%s)', state.sequence, state.partial_sequence, state.mode)  # noqa: E501
 
         command = key_mappings.resolve(check_user_mappings=check_user_mappings)
 
         if isinstance(command, cmd_defs.ViOpenRegister):
-            _logger.debug('[press_key] request register name')
+            _logger.debug('@press_key request register name')
             state.must_capture_register_name = True
             return
 
@@ -175,7 +169,7 @@ class PressKey(ViWindowCommandBase):
 
         if isinstance(command, cmd_defs.ViOpenNameSpace):
             # Keep collecting input to complete the sequence. For example, we may have typed 'g'
-            _logger.debug('[press_key] opening namespace \'%s\'', state.partial_sequence)
+            _logger.debug('@press_key opening namespace \'%s\'', state.partial_sequence)
             return
 
         elif isinstance(command, cmd_base.ViMissingCommandDef):
@@ -195,7 +189,7 @@ class PressKey(ViWindowCommandBase):
                 command = key_mappings.resolve(sequence=bare_seq)
 
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.debug('[press_key] unmapped sequence \'%s\'', state.sequence)
+                _logger.debug('@press_key unmapped sequence \'%s\'', state.sequence)
                 utils.blink()
                 state.mode = modes.NORMAL
                 state.reset_command_data()
@@ -207,11 +201,11 @@ class PressKey(ViWindowCommandBase):
             # For example, dd, g~g~ or g~~
             # remove counts
             action_seq = to_bare_command_name(state.sequence)
-            _logger.debug('[press_key] action seq \'%s\'', action_seq)
+            _logger.debug('@press_key action seq \'%s\'', action_seq)
             command = key_mappings.resolve(sequence=action_seq, mode=modes.NORMAL)
             # TODO: Make _missing a command.
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.debug('[press_key] unmapped sequence \'%s\'', state.sequence)
+                _logger.debug('@press_key unmapped sequence \'%s\'', state.sequence)
                 state.reset_command_data()
                 return
 
@@ -220,7 +214,7 @@ class PressKey(ViWindowCommandBase):
 
         state.set_command(command)
 
-        _logger.debug('[press_key] \'%s\' mapped to \'%s\'', state.partial_sequence, command)
+        _logger.debug('@press_key \'%s\' mapped to \'%s\'', state.partial_sequence, command)
 
         if state.mode == modes.OPERATOR_PENDING:
             state.reset_partial_sequence()
@@ -232,13 +226,13 @@ class PressKey(ViWindowCommandBase):
         """Return True if the processing of the current key needs to stop."""
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
-                _logger.debug('[press_key] action count digit \'%s\'', key)
+                _logger.debug('@press_key action count digit \'%s\'', key)
                 state.action_count += key
                 return True
 
         if (state.action and (state.mode == modes.OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or state.motion_count):
-                _logger.debug('[press_key] motion count digit \'%s\'', key)
+                _logger.debug('@press_key motion count digit \'%s\'', key)
                 state.motion_count += key
                 return True
 
@@ -262,7 +256,7 @@ class ProcessNotation(ViWindowCommandBase):
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         state = self.state
-        _logger.debug('[process_notation] run keys \'%s\', mode \'%s\'', keys, state.mode)
+        _logger.debug('process notation keys \'%s\', mode \'%s\'', keys, state.mode)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.

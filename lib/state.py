@@ -212,6 +212,7 @@ class State(object):
 
     @sequence.setter
     def sequence(self, value):
+        _logger.debug('set sequence \'%s\'', value)
         self.settings.vi['sequence'] = value
 
     @property
@@ -225,6 +226,7 @@ class State(object):
 
     @partial_sequence.setter
     def partial_sequence(self, value):
+        _logger.debug('set partial sequence \'%s\'', value)
         self.settings.vi['partial_sequence'] = value
 
     @property
@@ -368,7 +370,7 @@ class State(object):
     @register.setter
     def register(self, value):
         assert len(str(value)) == 1, '`value` must be a character'
-        _logger.debug('\'%s\'', value)
+        _logger.debug('register \'%s\'', value)
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
@@ -797,7 +799,7 @@ def init_state(view, new_session=False):
       Whether we're starting up Sublime Text. If so, volatile data must be
       wiped.
     """
-    _logger.debug('newsession=%s, view=[id=%d,file=\'%s\']', new_session, view.id(), view.file_name())
+    _logger.debug('newsession=%s for view=[id=%d,file=\'%s\']', new_session, view.id(), view.file_name())
 
     if not is_view(view):
         # Abort if we got a widget, panel...

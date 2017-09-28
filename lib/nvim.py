@@ -61,22 +61,25 @@ class Error(Exception):
         return 'E{0} {1}'.format(self.code, self.message)
 
 
-def status_message(msg):
-    _status_message('NeoVintageous: ' + str(msg))
-
-
 def console_message(msg):
     print('NeoVintageous: ' + str(msg))
 
 
+def status_message(msg):
+    _status_message('NeoVintageous: ' + str(msg))
+
+
+def message(msg):
+    status_message(msg)
+    console_message(msg)
+
+
 def exception_message(exception):
-    status_message(exception)
-    console_message(exception)
+    message(exception)
 
 
 def not_implemented_message(msg):
-    status_message(msg)
-    console_message(msg)
+    message(msg)
 
 
 def _log_file():
@@ -96,30 +99,45 @@ def _log_file():
         )
 
 
+class _LogFormatter(logging.Formatter):
+
+    def format(self, record):
+        if not record.msg.startswith(' '):
+            pad_count = 60 - (len(record.name) + len(record.funcName) + len(str(record.lineno)))
+            if pad_count > 0:
+                record.msg = (' ' * pad_count) + record.msg
+
+        result = super().format(record)
+
+        return result
+
+
 def _init_logger():
-    logger = logging.getLogger(__name__.split('.')[0])
+    console_message('init debug logger')
+
+    formatter = _LogFormatter('%(asctime)s %(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s')
+
+    logger = logging.getLogger('NeoVintageous')
     logger.setLevel(logging.DEBUG)
 
-    handler_formatter = logging.Formatter(
-        '%(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s'
-    )
+    # Stream handler
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(handler_formatter)
-    logger.addHandler(console_handler)
-
+    # File handler
     log_file = _log_file()
-    console_message('log file \'%s\'' % log_file)
     if log_file:
+        console_message('debug log file \'{}\''.format(log_file))
         file_handler = RotatingFileHandler(
             log_file,
             maxBytes=10000000,  # 10000000 = 10MB
-            backupCount=3
+            backupCount=2
         )
-        file_handler.setFormatter(handler_formatter)
+        file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
     else:
-        console_message('could not create log file \'%s\'' % log_file)
+        console_message('could not create log file \'{}\''.format(log_file))
 
 
 class _NullLogger():
@@ -147,6 +165,8 @@ if _DEBUG:
     _init_logger()
 
     def get_logger(name):
+        console_message('@get_logger name = {}'.format(name))
+
         return logging.getLogger(name)
 else:
     def get_logger(name):

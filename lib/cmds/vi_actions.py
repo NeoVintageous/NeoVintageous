@@ -485,7 +485,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
-        _logger.debug('[_enter_normal_mode_impl] entering normal mode from \'%s\'', mode)
+        _logger.debug('enter normal mode from mode \'%s\'', mode)
 
         def f(view, s):
             if mode == modes.INSERT:

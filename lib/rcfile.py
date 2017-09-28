@@ -70,7 +70,6 @@ def _parse_line(line):
     try:
         line = line.rstrip()
         if line:
-            _logger.debug('\'%s\'', line)
             match = _PARSE_LINE_PATTERN.match(line)
             if match:
                 cmd_line = match.group('command_line')
