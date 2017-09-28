@@ -7,12 +7,12 @@ class Test_ys(ViewTestCase):
         return (
             ('"', 'dog "cat" turkey'),
             ('2', 'dog 2cat2 turkey'),
-            ('(', 'dog (cat) turkey'),
-            (')', 'dog ( cat ) turkey'),
-            ('[', 'dog [cat] turkey'),
-            (']', 'dog [ cat ] turkey'),
-            ('{', 'dog {cat} turkey'),
-            ('}', 'dog { cat } turkey'),
+            ('(', 'dog ( cat ) turkey'),
+            (')', 'dog (cat) turkey'),
+            ('[', 'dog [ cat ] turkey'),
+            (']', 'dog [cat] turkey'),
+            ('{', 'dog { cat } turkey'),
+            ('}', 'dog {cat} turkey'),
             ('<foo>', 'dog <foo>cat</foo> turkey'),
         )
 
@@ -31,6 +31,7 @@ class Test_ys(ViewTestCase):
 
             self.assertContent(expected, 'failed at {0}'.format(i))
 
+    # TODO These tests can be removed because they have been ported to the functional test suite
     def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(self.dataProvider()):
             self.write('dog cat turkey')
@@ -52,16 +53,20 @@ class Test_ys(ViewTestCase):
             self.assertContent(expected, 'failed at {0}'.format(i))
 
 
+# TODO These tests can be removed because they have been ported to the functional test suite
 class Test_cs(ViewTestCase):
 
     def dataProvider(self):
         return (
-            ('("', 'dog "cat" turkey'),
-            ('(2', 'dog 2cat2 turkey'),
-            ('([', 'dog [cat] turkey'),
-            ('(]', 'dog [ cat ] turkey'),
-            ('({', 'dog {cat} turkey'),
-            ('(}', 'dog { cat } turkey'),
+            (')"', 'dog "cat" turkey'),
+            (')\'', 'dog \'cat\' turkey'),
+            (')2', 'dog 2cat2 turkey'),
+            (')(', 'dog ( cat ) turkey'),
+            (')[', 'dog [ cat ] turkey'),
+            (')]', 'dog [cat] turkey'),
+            ('){', 'dog { cat } turkey'),
+            (')}', 'dog {cat} turkey'),
+            (')>', 'dog <cat> turkey'),
         )
 
     def test_all_internal_normal_mode(self):
@@ -79,27 +84,39 @@ class Test_cs(ViewTestCase):
             self.assertContent(expected, 'failed at {0}'.format(i))
 
 
+# TODO These tests can be removed because they have been ported to the functional test suite
 class Test_ds(ViewTestCase):
 
     def dataProvider(self):
         return (
             ('dog (cat) turkey', '(', 'dog cat turkey'),
-            ('dog ( cat ) turkey', '(', 'dog  cat  turkey'),
-            ('dog [cat] turkey', '[', 'dog cat turkey'),
+            ('dog (cat) turkey', ')', 'dog cat turkey'),
+            ('dog (cat) turkey', 'b', 'dog cat turkey'),
+            ('dog ( cat ) turkey', '(', 'dog cat turkey'),
+            ('dog ( cat ) turkey', ')', 'dog  cat  turkey'),
+            ('dog ( cat ) turkey', 'b', 'dog  cat  turkey'),
             ('dog {cat} turkey', '{', 'dog cat turkey'),
-            # ('dog <foo>cat</foo> turkey', '<foo>', 'dog cat turkey'),
+            ('dog {cat} turkey', '}', 'dog cat turkey'),
+            ('dog {cat} turkey', 'B', 'dog cat turkey'),
+            ('dog [cat] turkey', '[', 'dog cat turkey'),
+            ('dog [cat] turkey', ']', 'dog cat turkey'),
+            ('dog [cat] turkey', 'r', 'dog cat turkey'),
+            ('dog <cat> turkey', '<', 'dog cat turkey'),
+            ('dog <cat> turkey', '>', 'dog cat turkey'),
+            ('dog <cat> turkey', 'a', 'dog cat turkey'),
+            ('dog <i>cat</i> turkey', 't', 'dog cat turkey'),
         )
 
     def test_all_internal_normal_mode(self):
         for (i, data) in enumerate(self.dataProvider()):
-            text, replace_what, expected = data
+            text, target, expected = data
             self.write(text)
-            self.select(5)
+            self.select(7)
             self.state.mode = self.INTERNAL_NORMAL_MODE
 
             self.view.run_command('_neovintageous_surround_ds', {
                 'mode': self.INTERNAL_NORMAL_MODE,
-                'replace_what': replace_what
+                'target': target
             })
 
             self.assertContent(expected, 'failed at {0}'.format(i))

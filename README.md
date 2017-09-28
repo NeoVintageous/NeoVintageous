@@ -313,7 +313,6 @@ Key | Description | Type | Default
 `vintageous_magic` | Use regular expressions in '/' and '?' otherwise uses smart case, interpret pattern literally, and ignore case. | `boolean` | `true`
 `vintageous_modeline` | Enable modeline. | `boolean` | `false`
 `vintageous_reset_mode_when_switching_tabs` | Reset to normal mode when a tab is activated. | `boolean` | `true`
-`vintageous_surround_spaces` | Enable surround.vim plugin pair opener spaces, otherwise the pair closes have spaces i.e. if true then `ysw(` and `ysw)` -&gt; `( things )` and `(things)`, otherwise if false then `ysw(` and `ysw)` -&gt; `(things) and `( things )` | `boolean` | `false`
 `vintageous_use_ctrl_keys` | Enable key bindings prefaced by the CTRL modifier. | `boolean` | `false`
 `vintageous_use_sys_clipboard` | Propagate copy actions to the system clipboard. | `boolean` | `false`
 `vintageous_visualbell` | Enable visual bell. | `boolean` | `true`

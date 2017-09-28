@@ -6,8 +6,22 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added: `:h[elp]` open a view and display the help file
+* Added: `ds(`, `ds{`, `ds[`, and `ds<` now also trims contained whitespace (Surround plugin)
+* Added: `dsb` alias for `ds)` delete surrounding `()` (Surround plugin)
+* Added: `dsB` alias for `ds}` delete surrounding `{}` (Surround plugin)
+* Added: `dsr` alias for `ds]` delete surrounding `[]` (Surround plugin)
+* Added: `dsa` alias for `ds>` delete surrounding `<>` (Surround plugin)
+* Added: `ds<` delete surrounding `<>` (Surround plugin)
+* Added: `ds>` delete surrounding `<>` (Surround plugin)
+* Added: `dst` delete surrounding pair of HTML or XML tags (Surround plugin)
+* Added: `ds` followed by a target that is not one of the punctuation pairs, `()[]{}<>`, are now only searched for on the current line (Surround plugin)
+* Added: `ds{target}` cursor position is now moves to the start of first target (Surround plugin)
+* Added: `cs{target}` followed by one of `])}` now inserts an inner whitespace character (Surround plugin)
+* Added: `cs>{replacement}` now replaces surround tag characters `<>` with replacement (Surround plugin)
+* Added: `cs{target}` folowed by `>` now replaces target with replacement surroundings `<>` (Surround plugin)
+* Added: `cs{target}{replacement}` cursor position is now moves to the start of first target (Surround plugin)
 * Added: `:h[elp] {subject}` like ":help", additionally jump to the tag `{subject}`
+* Added: `:h[elp]` open a view and display the help file
 * Added: `gx` open url under cursor in browser
 * Added: Support for `:UserCommand<CR>` `.vintageousrc` mappings
 * Added: Support for `:excommand<CR>` `.vintageousrc` mappings
@@ -25,11 +39,14 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
-* Changed: Modeline `vintageous_modeline` is now disabled by default
+* Changed: `ds<` no longer deletes surrounding tag; use `dst` instead (Surround plugin)
+* Changed: `ds>` no longer deletes surrounding tag; use `dst` instead (Surround plugin)
+* Changed: Modeline `vintageous_modeline` is disabled by default
 * Changed: "Open Changelog" command caption changed to "Changelog"
 
 ### Removed
 
+* Removed: `vintageous_surround_spaces` setting
 * Removed: Unimplemented `tabopen` ex command
 * Removed: Deprecated `neovintageous_toggle_use_ctrl_keys` command
 * Removed: Deprecated `neovintageous_reset` command
@@ -38,6 +55,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#282](https://github.com/NeoVintageous/NeoVintageous/issues/282): Surround doesn't work as expected on first symbol
 * Fixed: Several `.vintageousrc` syntax highlighting bugs
 * Fixed: Lots of Command-line mode syntax highlighting bugs
 
