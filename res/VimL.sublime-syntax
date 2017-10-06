@@ -11,7 +11,7 @@ contexts:
   main:
     - match: "\".*"
       scope: comment.line.viml
-    - match: \b((n|v|o)?(nore)?map|let)\b
+    - match: \b((n|o|s|v)?(nore)?map|let)\b
       scope: keyword.control.viml
     - match: \b(map(local)?leader)\b
       scope: variable.language.viml

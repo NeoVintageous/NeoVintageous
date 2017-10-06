@@ -70,6 +70,7 @@ __all__ = [
     'ExSetLocal',
     'ExShell',
     'ExShellOut',
+    'ExSmap',
     'ExSubstitute',
     'ExTabfirstCommand',
     'ExTablastCommand',
@@ -426,6 +427,16 @@ class ExOunmap(ViWindowCommandBase):
             mappings.remove(modes.OPERATOR_PENDING, ounmap_command.command.keys)
         except KeyError:
             nvim.status_message('mapping not found')
+
+
+# https://neovim.io/doc/user/map.html#:smap
+class ExSmap(ViWindowCommandBase):
+
+    def run(self, command_line=''):
+        assert command_line, 'expected non-empty command line'
+        parsed = parse_command_line(command_line)
+        mappings = Mappings(self.state)
+        mappings.add(modes.SELECT, parsed.command.keys, parsed.command.command)
 
 
 # https://neovim.io/doc/user/map.html#:vmap

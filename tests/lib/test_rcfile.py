@@ -16,12 +16,14 @@ class TestRcfile(unittest.TestCase):
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('let mapleader=,'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('map x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('nmap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vmap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('omap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('smap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vmap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('noremap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('nnoremap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vnoremap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('onoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('snoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vnoremap x y'))
 
     def test_parse_line_return_none(self):
         self.assertEquals((None, None), _parse_line(''))
@@ -36,8 +38,16 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line(':let mapleader=,'))
         self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line(':map x yz'))
         self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line(':nmap x yz'))
-        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line(':vmap x yz'))
         self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line(':omap x yz'))
+        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line(':smap x yz'))
+        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line(':vmap x yz'))
+        # The *noremap commands are not properly implemented. They are currently
+        # aliased to the regulat *map commands.
+        self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line(':noremap x yz'))
+        self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line(':nnoremap x yz'))
+        self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line(':onoremap x yz'))
+        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line(':snoremap x yz'))
+        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line(':vnoremap x yz'))
 
     def test_parse_line_strips_trailing_whitespace(self):
         self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line(':let mapleader=,    '))
@@ -47,5 +57,13 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line('let mapleader=,'))
         self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line('map x yz'))
         self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line('nmap x yz'))
-        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line('vmap x yz'))
         self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line('omap x yz'))
+        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line('smap x yz'))
+        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line('vmap x yz'))
+        # The *noremap commands are not properly implemented. They are currently
+        # aliased to the regulat *map commands.
+        self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line('noremap x yz'))
+        self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line('nnoremap x yz'))
+        self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line('onoremap x yz'))
+        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line('snoremap x yz'))
+        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line('vnoremap x yz'))

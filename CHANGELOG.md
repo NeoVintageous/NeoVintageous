@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `:snoremap` command
+* Added: `:smap` command
 * Added: `cot` toggle sidebar command (Unimpaired plugin)
 * Added: `[ot` toggle sidebar on command (Unimpaired plugin)
 * Added: `]ot` toggle sidebar off command (Unimpaired plugin)
@@ -29,6 +31,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: Several `.vintageousrc` syntax highlighting bugs
 * Fixed: Lots of Command-line mode syntax highlighting bugs
 
 ## 1.3.1 - 2017-07-31

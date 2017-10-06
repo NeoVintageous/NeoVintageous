@@ -1,0 +1,57 @@
+" SYNTAX TEST "Packages/NeoVintageous/res/VimL.sublime-syntax"
+
+" The character " (the double quote mark) starts a comment
+" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment.line
+
+let mapleader=,
+" ^ keyword.control
+"   ^^^^^^^^^ variable.language
+"            ^ keyword.operator.assignment
+
+let mapleader=, " x
+"               ^^^ comment.line
+
+nnoremap <space> :
+" ^^^^^^ keyword.control
+"        ^^^^^^^ storage.type
+
+nnoremap <space> : " x
+"                  ^^^ comment.line
+
+nnoremap <leader>d :ToggleSideBar<CR>
+" ^^^^^^ keyword.control
+"        ^^^^^^^^ storage.type
+"                                ^^^^ storage.type
+
+nnoremap <leader>d :ToggleSideBar<CR> " x
+"                                     ^^^ comment.line
+
+nnoremap <C-y> 3<C-y>
+" ^^^^^^ keyword.control
+"        ^^^^^ storage.type
+"               ^^^^^ storage.type
+
+nnoremap <C-y> 3<C-y> " x
+"                     ^^^ comment.line
+
+map x y
+" ^ keyword.control
+nmap x y
+" ^ keyword.control
+omap x y
+" ^ keyword.control
+smap x y
+" ^ keyword.control
+vmap x y
+" ^ keyword.control
+
+noremap x y
+" ^ keyword.control
+nnoremap x y
+" ^ keyword.control
+onoremap x y
+" ^ keyword.control
+snoremap x y
+" ^ keyword.control
+vnoremap x y
+" ^ keyword.control
