@@ -30,16 +30,15 @@ The preferred method of installation is [Package Control](https://packagecontrol
 
 ### Manual installation
 
-1. Close Sublime Text.
-2. Download or clone this repository to a directory named **`NeoVintageous`** in the Sublime Text Packages directory for your platform:
-    * Linux: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
-    * OS X: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
-    * Windows: `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
-3. Done!
+Close Sublime Text then download or clone this repository to a directory named `NeoVintageous` in the Sublime Text Packages directory for your platform:
+
+* Linux: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
+* OSX: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
+* Windows: `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
 
 ## DOCUMENTATION
 
-A complete guide to vim usage can be found in the [Vim documentation](https://neovim.io/doc/user).
+A complete guide to vim usage can be found in the [Vim documentation][vimdoc].
 
 Command | Context | Description | Notes
 ------- | ------- | ----------- | -----
@@ -54,10 +53,10 @@ Some commands have dependencies. All dependencies are optional and can be instal
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
-`[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
-`]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
-`ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami)
-`ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami)
+`[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter] | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+`]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter] | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+`ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami]
+`ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami]
 
 ### Command Palette
 
@@ -72,7 +71,7 @@ Preferences: NeoVintageous Settings – User | Open the settings file for editin
 
 ### Toggle command
 
-Use the official [ToggleNeoVintageous](https://github.com/NeoVintageous/ToggleNeoVintageous) plugin which provides a command to toggle NeoVintageous.
+The official [ToggleNeoVintageous] plugin provides a command to toggle NeoVintageous.
 
 ### The .vintageousrc file
 
@@ -122,7 +121,7 @@ Read more about mappings and the .vimrc file in the [Vim documentation](https://
 
 ### Modeline
 
-A feature comparative to Vim Modeline: a number of lines at the beginning and end of the file are checked for "modelines", the modelines are settings that will be applied to the view when it's opened.
+A feature comparative to Vim Modeline: a number of lines at the beginning and end of the file are checked for "modelines", the modelines are settings that will be applied to the view when it's opened. This is easiest to understand with some examples:
 
     # sublime: gutter false
     # sublime: translate_tab_to_spaces true
@@ -156,58 +155,60 @@ Once you've created visual selections in select mode, you must return to insert 
 
 A number of plugins are provided out-of-the-box. Please open issues about other plugins you would like to see implemented and about plugins you're thinking of writing because we may be willing to add it out-of-the-box.
 
-#### [commentary.vim](https://github.com/tpope/vim-commentary)
+#### [commentary.vim]
 
 Command | Description | Documentation
 ------- | ----------- | -------------
-`gc{motion}` | Comment or uncomment lines that `{motion}` moves over. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
-`gcc` | Comment or uncomment current line. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
-`{Visual}gc` | Comment or uncomment the highlighted lines. | [commentary.vim](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
+`gc{motion}` | Comment or uncomment lines that `{motion}` moves over. | [commentary.vim][commentary.vim#doc]
+`gcc` | Comment or uncomment current line. | [commentary.vim][commentary.vim#doc]
+`{Visual}gc` | Comment or uncomment the highlighted lines. | [commentary.vim][commentary.vim#doc]
 
-#### [surround.vim](https://github.com/tpope/vim-surround)
+#### [surround.vim]
 
 Command | Description | Documentation
 ------- | ----------- | -------------
-`ds` | Delete surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
-`cs` | Change surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
-`ys` | Yank surroundings. | [surround.vim](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
+`ds{target}` | Delete surrounding `{target}` characters. | [surround.vim][surround.vim#doc]
+`cs{target}{replacement}` | Change surrounding `{target}` with `{replacement}` characters. | [surround.vim][surround.vim#doc]
+`ys{motion}{target}` | Yank `{motion}` and surround with `{target}` characters. | [surround.vim][surround.vim#doc]
 
-#### [unimpaired.vim](https://github.com/tpope/vim-unimpaired)
 
-Command | Description | Documentation | Dependency
-------- | ----------- | ------------- | ----------
-`[l` | Jump to `[count]` next error. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3)
-`]l` | Jump to `[count]` previous error.. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) | [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3)
-`[<Space>` | Add `[count]` blank lines before the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
-`]<Space>` | Add `[count]` blank lines after the cursor. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
-`[e` | Exchange the current line with `[count]` lines above it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
-`]e` | Exchange the current line with `[count]` lines below it. | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt) |
+#### [unimpaired.vim]
+
+Command | Description | Dependency | Documentation
+------- | ----------- | ---------- | -------------
+`[l` | Jump to `[count]` next error. | [SublimeLinter] | [unimpaired.vim][unimpaired.vim#doc]
+`]l` | Jump to `[count]` previous error. | [SublimeLinter] | [unimpaired.vim][unimpaired.vim#doc]
+`[<Space>` | Add `[count]` blank lines before the cursor. | | [unimpaired.vim][unimpaired.vim#doc]
+`]<Space>` | Add `[count]` blank lines after the cursor. | | [unimpaired.vim][unimpaired.vim#doc]
+`[e` | Exchange the current line with `[count]` lines above it. | | [unimpaired.vim][unimpaired.vim#doc]
+`]e` | Exchange the current line with `[count]` lines below it. | | [unimpaired.vim][unimpaired.vim#doc]
 
 On | Off | Toggle | Option | Documentation
 -- | --- | ------ | ------ | -------------
-`[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-`[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-`[om` | `]om` | `com` | 'minimap' (non standard i.e. not in the original Unimpaired plugin) |
-`[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-`[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-`[ot` | `]ot` | `cot` | 'sidebar' (non standard i.e. not in the original Unimpaired plugin) |
-`[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+`[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[om` | `]om` | `com` | 'minimap' | Non-standard i.e. not in the original Unimpaired plugin.
+`[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[ot` | `]ot` | `cot` | 'sidebar' | Non-standard i.e. not in the original Unimpaired plugin.
+`[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim][unimpaired.vim#doc]
 
-#### [abolish.vim](https://github.com/tpope/vim-abolish)
+
+#### [abolish.vim]
 
 Command | Description | Documentation
 ------- | ----------- | -------------
-`crm` | Coerce word under cursor to MixedCase. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`crc` | Coerce word under cursor to camelCase. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`crs` | Coerce word under cursor to snake_case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`cr_` | Coerce word under cursor to snake_case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`cru` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`crU` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`cr-` | Coerce word under cursor to dash-case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`crk` | Coerce word under cursor to kebab-case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`cr.` | Coerce word under cursor to dot.case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`cr<Space>` | Coerce word under cursor to space case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
-`crt` | Coerce word under cursor to Title Case. | [abolish.vim](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
+`crm` | Coerce word under cursor to MixedCase. | [abolish.vim][abolish.vim#doc]
+`crc` | Coerce word under cursor to camelCase. | [abolish.vim][abolish.vim#doc]
+`crs` | Coerce word under cursor to snake_case. | [abolish.vim][abolish.vim#doc]
+`cr_` | Coerce word under cursor to snake_case. | [abolish.vim][abolish.vim#doc]
+`cru` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim][abolish.vim#doc]
+`crU` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim][abolish.vim#doc]
+`cr-` | Coerce word under cursor to dash-case. | [abolish.vim][abolish.vim#doc]
+`crk` | Coerce word under cursor to kebab-case. | [abolish.vim][abolish.vim#doc]
+`cr.` | Coerce word under cursor to dot.case. | [abolish.vim][abolish.vim#doc]
+`cr<Space>` | Coerce word under cursor to space case. | [abolish.vim][abolish.vim#doc]
+`crt` | Coerce word under cursor to Title Case. | [abolish.vim][abolish.vim#doc]
 
 ## CONFIGURATION
 
@@ -370,7 +371,7 @@ Your issue reports and pull requests are welcome.
 
 ### Tests
 
-The [UnitTesting](https://github.com/randy3k/UnitTesting) package is used to run the tests. Install it, open the Command Palette, type "UnitTesting", press Enter and input "NeoVintageous" as the package to test.
+The [UnitTesting] package is used to run the tests. Install it, open the Command Palette, type "UnitTesting", press Enter and input "NeoVintageous" as the package to test.
 
 ### Debugging
 
@@ -400,3 +401,18 @@ This project is a fork of [Vintageous](https://github.com/guillermooo/Vintageous
 ## LICENSE
 
 Released under the [MIT License](LICENSE).
+
+[abolish.vim#doc]: https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt
+[abolish.vim]: https://github.com/tpope/vim-abolish
+[commentary.vim#doc]: https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt
+[commentary.vim]: https://github.com/tpope/vim-commentary
+[Git Gutter]: https://github.com/jisaacks/GitGutter
+[Origami]: https://github.com/SublimeText/Origami
+[SublimeLinter]: https://github.com/SublimeLinter/SublimeLinter3
+[surround.vim#doc]: https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
+[surround.vim]: https://github.com/tpope/vim-surround
+[ToggleNeoVintageous]: https://github.com/NeoVintageous/ToggleNeoVintageous
+[unimpaired.vim#doc]: https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt
+[unimpaired.vim]: https://github.com/tpope/vim-unimpaired
+[Unit Testing]: https://github.com/randy3k/UnitTesting
+[vimdoc]: https://neovim.io/doc/user
