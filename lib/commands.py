@@ -132,7 +132,7 @@ class PressKey(ViWindowCommandBase):
         if repeat_count:
             state.action_count = str(repeat_count)
 
-        if self.handle_counts(key, repeat_count):
+        if self._handle_count(state, key, repeat_count):
             return
 
         state.partial_sequence += key
@@ -160,7 +160,6 @@ class PressKey(ViWindowCommandBase):
             if do_eval:
                 new_keys = command.mapping
                 if state.mode == modes.OPERATOR_PENDING:
-                    command_name = command.mapping  # FIXME # noqa: F841
                     new_keys = state.sequence[:-len(state.partial_sequence)] + command.mapping
                 reg = state.register
                 acount = state.action_count
@@ -181,7 +180,6 @@ class PressKey(ViWindowCommandBase):
 
         elif isinstance(command, cmd_base.ViMissingCommandDef):
             bare_seq = to_bare_command_name(state.sequence)
-
             if state.mode == modes.OPERATOR_PENDING:
                 # We might be looking at a command like 'dd'. The first 'd' is
                 # mapped for normal mode, but the second is missing in
@@ -230,9 +228,8 @@ class PressKey(ViWindowCommandBase):
         if do_eval:
             state.eval()
 
-    def handle_counts(self, key, repeat_count):
-        """Return `True` if the processing of the current key needs to stop."""
-        state = State(self.window.active_view())
+    def _handle_count(self, state, key, repeat_count):
+        """Return True if the processing of the current key needs to stop."""
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
                 _logger.debug('[press_key] action count digit \'%s\'', key)

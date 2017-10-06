@@ -89,7 +89,7 @@ class Mappings(object):
         return None
 
     # XXX: Provisional. Get rid of this as soon as possible.
-    def can_be_long_user_mapping(self, key):
+    def _can_be_long_user_mapping(self, key):
         full_match = self._find_full_match(self.state.mode, key)
         partial_matches = self._find_partial_match(self.state.mode, key)
         if partial_matches:
@@ -102,8 +102,9 @@ class Mappings(object):
         return (False, True)
 
     # XXX: Provisional. Get rid of this as soon as possible.
+    # e.g. we may have typed 'aa' and there's an 'aaa' mapping, so we need to keep collecting input.
     def incomplete_user_mapping(self):
-        (maybe_mapping, complete) = self.can_be_long_user_mapping(self.state.partial_sequence)
+        (maybe_mapping, complete) = self._can_be_long_user_mapping(self.state.partial_sequence)
         if maybe_mapping and not complete:
             _logger.debug('\'%s\'', self.state.partial_sequence)
 
