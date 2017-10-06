@@ -159,12 +159,6 @@ class TestKeyContext(ViewTestCase):
         self.assertFalse(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, True, False))
         self.assertTrue(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, False, False))
 
-    def test_vi_use_ctrl_keys(self):
-        self.view.settings().set('vintageous_use_ctrl_keys', False)
-        self.assertFalse(self.context.query('vi_use_ctrl_keys', sublime.OP_EQUAL, True, False))
-        self.view.settings().set('vintageous_use_ctrl_keys', True)
-        self.assertTrue(self.context.query('vi_use_ctrl_keys', sublime.OP_EQUAL, True, False))
-
     def test_vi_enable_cmdline_mode(self):
         self.view.settings().set('vintageous_enable_cmdline_mode', False)
         self.assertFalse(self.context.query('vi_enable_cmdline_mode', sublime.OP_EQUAL, True, False))

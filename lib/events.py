@@ -48,9 +48,6 @@ class _Context(object):
 
         return self._check(not in_command_mode and vi_is_view, operator, operand, match_all)
 
-    def vi_use_ctrl_keys(self, key, operator, operand, match_all):
-        return self._check(self.create_state().settings.view['vintageous_use_ctrl_keys'], operator, operand, match_all)
-
     def vi_is_cmdline(self, key, operator, operand, match_all):
         return self._check(
             self.create_state().view.score_selector(0, 'text.excmdline') != 0, operator, operand, match_all
