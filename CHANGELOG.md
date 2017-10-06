@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* Changed: Modeline `vintageous_modeline` is now disabled by default
 * Changed: "Open Readme" command caption changed to "Readme"
 * Changed: "Open Changelog" command caption changed to "Changelog"
 

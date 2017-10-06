@@ -233,10 +233,12 @@ class NeoVintageousEvents(EventListener):
                     })
 
     def on_load(self, view):
-        modeline(view)
+        if view.settings().get('vintageous_modeline', False):
+            modeline(view)
 
     def on_post_save(self, view):
-        modeline(view)
+        if view.settings().get('vintageous_modeline', False):
+            modeline(view)
 
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.

@@ -24,6 +24,9 @@
     // interpret pattern literally, and ignore case.
     "vintageous_magic": true,
 
+    // Enable modeline feature.
+    "vintageous_modeline": false,
+
     // Ignore case in '/', '?', '*', and '#'.
     "vintageous_ignorecase": true,
 
