@@ -80,7 +80,25 @@ def find_last_in_range(view, term, start, end, flags=0):
     return last_found
 
 
-# reverse search
+# The @start position is linewise.
+#
+# The @end position is NOT linewise.
+#
+# For a characterwise reverse search use reverse_search_by_pt().
+#
+# TODO REVIEW The current implementation of the @end position is not technically
+# not linewise. The start position *is* linewise. I don't know if this is
+# causing bugs or if internals depends on this functionality, so "fixing it" and
+# making it a true linewise search may break things in unexpected ways. It needs
+# reviewing.
+#
+# The @start position is where the search ends.
+#
+# The @end position is where the search starts.
+#
+# TODO REVIEW The @end and @start position seem to be inverted i.e. the @start
+# position should be the point where the search starts and the @end position
+# should be where it ends oppose to the current behaviour.
 def reverse_search(view, term, start, end, flags=0):
     assert isinstance(start, int) or start is None
     assert isinstance(end, int) or end is None
