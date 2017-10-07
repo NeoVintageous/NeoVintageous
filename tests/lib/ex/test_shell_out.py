@@ -32,8 +32,9 @@ class TestExShellOutNoInput(ViewTestCase):
 
 class TestExShellOutFilterThroughShell(ViewTestCase):
 
-    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows and OSX
-    @unittest.skipIf(sublime.platform() == 'windows' or sublime.platform() == "osx", 'Test only works in Linux')
+    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
+    @unittest.skipIf(sublime.platform() == 'windows',
+                     'Test does not work on Windows')
     def test_simple_filter_through_shell(self):
         self.write("two words\nbbb\nccc")
         self.select(2)
@@ -42,10 +43,42 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
             'command_line': '.! wc -w'
         })
 
-        self.assertContent("2\nbbb\nccc")
+        # Ignore whitespace for the first line as on OS X "wc -l" pads the
+        # number with whitespace like this:
+        # $ echo hi ho | wc -w
+        #        2
+        self.assertContentMatches(r"\s*2\nbbb\nccc")
 
-    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows and OSX
-    @unittest.skipIf(sublime.platform() == 'windows' or sublime.platform() == "osx", 'Test only works in Linux')
+    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
+    @unittest.skipIf(sublime.platform() == 'windows',
+                     'Test does not work on Windows')
+    def test_command_escaping(self):
+        """Tests that command is escaped correctly."""
+        self.write('this gets replaced')
+        self.select(2)
+
+        self.view.run_command('ex_shell_out', {
+            'command_line': '.! echo \\"one\\" \\\'two\\\''
+        })
+        self.assertContent('"one" \'two\'\n')
+
+    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
+    @unittest.skipIf(sublime.platform() == 'windows',
+                     'Test does not work on Windows')
+    def test_text_escaping(self):
+        """Tests that text is escaped correctly when passed to command."""
+        line = 'this "contains" \'quotes\' "; false; echo "\n'
+        self.write(line)
+        self.select(2)
+
+        self.view.run_command('ex_shell_out', {
+            'command_line': '.! cat'
+        })
+        self.assertContent(line)
+
+    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
+    @unittest.skipIf(sublime.platform() == 'windows',
+                     'Test does not work on Windows')
     def test_multiple_filter_through_shell(self):
         self.write("aaa\nthree short words\nccc")
         self.select(10)
@@ -54,4 +87,4 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
             'command_line': '.! wc -w'
         })
 
-        self.assertContent("aaa\n3\nccc")
+        self.assertContentMatches(r"aaa\n\s*3\nccc")
