@@ -1,21 +1,21 @@
 [
     {
-        "caption": "NeoVintageous: Open My .vintageousrc File",
-        "command": "neovintageous_open_my_rc_file"
-    },
-    {
-        "caption": "NeoVintageous: Reload My .vintageousrc File",
-        "command": "neovintageous_reload_my_rc_file"
-    },
-    {
-        "caption": "NeoVintageous: Open Changelog",
+        "caption": "NeoVintageous: Changelog",
         "command": "open_file",
         "args": {"file": "${packages}/NeoVintageous/CHANGELOG.md"}
     },
     {
-        "caption": "NeoVintageous: Open Readme",
+        "caption": "NeoVintageous: Open My .vintageousrc File",
+        "command": "neovintageous_open_my_rc_file"
+    },
+    {
+        "caption": "NeoVintageous: Readme",
         "command": "open_file",
         "args": {"file": "${packages}/NeoVintageous/README.md"}
+    },
+    {
+        "caption": "NeoVintageous: Reload My .vintageousrc File",
+        "command": "neovintageous_reload_my_rc_file"
     },
     {
         "caption": "Preferences: NeoVintageous Settings – Default",

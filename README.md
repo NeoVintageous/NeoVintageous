@@ -62,10 +62,10 @@ Command | Description | Documentation | Dependencies | Notes
 
 Command | Description
 ------- | -----------
+NeoVintageous: Changelog | Open the changelog in a view
 NeoVintageous: Open My .vintageousrc File | Open the runtime configuration file for editing
+NeoVintageous: Readme | Open the readme in a view
 NeoVintageous: Reload My .vintageousrc File | Reload the runtime configuration file
-NeoVintageous: Open Changelog | Open the changelog in a view
-NeoVintageous: Open Readme | Open the readme in a view
 Preferences: NeoVintageous Settings – Default | Open the default settings
 Preferences: NeoVintageous Settings – User | Open the settings file for editing
 

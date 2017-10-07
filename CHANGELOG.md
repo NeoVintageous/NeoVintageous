@@ -14,6 +14,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added: `]om` toggle minimap off command (Unimpaired plugin)
 * Added: How to map `jk` to `Esc` (documentation)
 
+### Changed
+
+* Changed: "Open Readme" command caption changed to "Readme"
+* Changed: "Open Changelog" command caption changed to "Changelog"
+
 ### Removed
 
 * Removed: Unimplemented `tabopen` ex command
