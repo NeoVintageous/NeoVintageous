@@ -254,9 +254,9 @@ NeoVintageous cannot remap the CapsLock, however it can be remapped at an OS lev
 
     gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 
-### Mapping `jj` to `Esc`
+### Mapping `jj`, `jk`, `ctrl+[`, etc. to `Esc`
 
-Add the following custom keybinding: `Preferences > Key Bindings`
+`Preferences > Key Bindings`
 
 ```json
 {
@@ -267,7 +267,14 @@ Add the following custom keybinding: `Preferences > Key Bindings`
 }
 ```
 
-Other key bindings can also be mapped.
+```json
+{
+    "keys": ["j", "k"],
+    "command": "_enter_normal_mode",
+    "args": {"mode": "mode_insert"},
+    "context": [{"key": "vi_insert_mode_aware"}]
+}
+```
 
 ```json
 {
