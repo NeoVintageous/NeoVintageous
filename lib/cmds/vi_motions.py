@@ -2127,8 +2127,7 @@ class _vi_left_square_bracket(ViMotionCommand):
 # https://vimhelp.appspot.com/diff.txt.html#[c
 class _vi_left_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
-        for i in range(count):
-            self.view.run_command('git_gutter_prev_change')
+        self.view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
 
 
 class _vi_right_square_bracket(ViMotionCommand):
@@ -2162,5 +2161,4 @@ class _vi_right_square_bracket(ViMotionCommand):
 # https://vimhelp.appspot.com/diff.txt.html#]c
 class _vi_right_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
-        for i in range(count):
-            self.view.run_command('git_gutter_next_change')
+        self.view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})

@@ -60,19 +60,11 @@ JUMPING TO DIFFS                                    *neovintageous-jumpto-diffs*
 
                         Requires: https://github.com/jisaacks/GitGutter
 
-                        To disable GitGutter wrapping: >
-                            git_gutter_next_prev_change_wrap: false
-                        <
-
                         Also see |[c|.
 
 ]c                      Jump forwards to the next start of a change.
 
                         Requires: https://github.com/jisaacks/GitGutter
-
-                        To disable wrapping: >
-                            git_gutter_next_prev_change_wrap: false
-                        <
 
                         Also see |]c|.
 
