@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Support for `:UserCommand<CR>` `.vintageousrc` mappings
+* Added: Support for `:excommand<CR>` `.vintageousrc` mappings
 * Added: `:snoremap` command
 * Added: `:smap` command
 * Added: `cot` toggle sidebar command (Unimpaired plugin)

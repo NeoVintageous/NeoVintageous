@@ -1,4 +1,5 @@
 import os
+import re
 
 from sublime import Region
 from sublime_plugin import TextCommand
@@ -162,9 +163,40 @@ class PressKey(ViWindowCommandBase):
                 state.register = reg
                 state.motion_count = mcount
                 state.action_count = acount
-                state.mode = modes.NORMAL
-                _logger.debug('[press_key] running user mapping \'%s\' via process_notation starting in mode \'%s\'', new_keys, state.mode)  # noqa: E501
+
+                # TODO REVIEW *Not* setting the mode seems to fix some issues with commands like :snoremap
+                # state.mode = modes.NORMAL
+
+                _logger.debug('@press_key running user mapping keys=%s, command=%s' % (new_keys, command))
+
+                # Support for basic Command-line mode mappings
+                # `:command<CR>` maps to ex command.
+                # `:UserCommand<CR>` maps to Sublime Text command (starts with uppercase).
+
+                if ':' in new_keys:
+                    match = re.match('^\\:(?P<cmd_line_command>[a-zA-Z0-9_]+)\\<CR\\>', new_keys)
+                    if match:
+                        cmd_line_command = match.group('cmd_line_command')
+                        if cmd_line_command[0].isupper():
+                            # run regular sublime text command
+                            def _coerce_to_snakecase(string):
+                                string = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', string)
+                                string = re.sub(r"([a-z\d])([A-Z])", r'\1_\2', string)
+                                string = string.replace("-", "_")
+
+                                return string.lower()
+
+                            return self.window.run_command(_coerce_to_snakecase(cmd_line_command))
+                        else:
+                            return self.window.run_command('vi_colon_input', {'cmd_line': ':' + cmd_line_command})
+
+                    if ':' == new_keys:
+                        return self.window.run_command('vi_colon_input')
+
+                    return nvim.console_message('invalid command line mapping %s -> %s (only `:name<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
+
                 self.window.run_command('process_notation', {'keys': new_keys, 'check_user_mappings': False})
+
             return
 
         if isinstance(command, cmd_defs.ViOpenNameSpace):

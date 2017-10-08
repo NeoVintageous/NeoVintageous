@@ -79,42 +79,51 @@ A feature comparative to the `.vimrc` file.
 
 The file is located at `Packages/User/.vintageousrc` and is read during startup. It can be opened for editing via the Command Palette: `NeoVintageous: Open My .vintageousrc File`. It can be reloaded too: `NeoVintageous: Reload My .vintageousrc File`.
 
-There is limited support. The following are supported in basic use-cases: `let mapleader=`, `noremap`, `nnoremap`, `onoremap`, `vnoremap`, `map`, `nmap`, `omap`, and `vmap`.
+`let mapleader=`, `noremap`, `nnoremap`, `onoremap`, `vnoremap`, `map`, `nmap`, `omap`, and `vmap` are all supported in basic use-cases. *Note that `map`, `nmap`, `omap`, `vmap` work the same as their `*remap` variants, this is a known issue.*
 
-It's important to note that currently `map`, `nmap`, `omap`, `vmap` work the same as their `*remap` variants, this is a known issue.
+Mapping to basic ex commands is supported in the form `:excommand<CR>`.
 
+To map to a Sublime Text command, the command must start an uppercase letter, to avoid confusion with builtin ex commands e.g. `:YourCommand<CR>`. The command is converted to snake case.
+
+This is easiest to understand with some examples:
 
 ```
 " The character " (the double quote mark) starts a comment
 
 let mapleader=,
 
-" Enter command line mode
+" Enter command line mode.
 nnoremap <space> :
 
-" Toggle the sidebar. `cot` is a non standard Unimpaired
-" plugin command, which is provided out-of-the-box.
-nnoremap <leader>d cot
-
-" Visually select all content
-nnoremap <leader>a ggvG
-
-" " Sort with ,s in visual mode
-" vnoremap <leader>s <F9>
-
-" Scroll viewport faster with ctrl+e and ctrl+y
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
+" Toggle the side bar.
+nnoremap <leader>d :ToggleSideBar<CR>
 
 " " Make j and k work file linewise instead of screen linewise.
-" " http://stevelosh.com/blog/2010/09/coming-home-to-vim/
-" " Important! There is a potential performance hit
-" " navigating with j and k with these mappings enabled.
 " nnoremap j gj
 " nnoremap k gk
 
-" " Scroll down using shift+enter
-" noremap <S-cr> <C-d>
+" Scroll viewport faster.
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
+
+" Easy buffer navigation.
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Select entire buffer
+nnoremap <leader>vaa ggvGg_
+nnoremap <leader>Vaa ggVG
+
+" Test
+" https://github.com/gerardroche/sublime-test
+" https://github.com/gerardroche/sublime-phpunit
+nnoremap <leader>t :TestNearest<CR>
+nnoremap <leader>T :TestFile<CR>
+nnoremap <leader>a :TestSuite<CR>
+nnoremap <leader>l :TestLast<CR>
+nnoremap <leader>g :TestVisit<CR>
 ```
 
 Read more about mappings and the .vimrc file in the [Vim documentation](https://neovim.io/doc/user/map.html).
