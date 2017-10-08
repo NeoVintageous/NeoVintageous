@@ -9,7 +9,7 @@ scope: source.vintageourc
 hidden: true
 contexts:
   main:
-    - match: "\".*"
+    - match: "^\\s*\".*"
       scope: comment.line.vintageourc
     - match: \b((n|o|s|v)?(nore)?map|let)\b
       scope: keyword.control.vintageourc

@@ -9,14 +9,14 @@ let mapleader=,
 "            ^ keyword.operator.assignment
 
 let mapleader=, " x
-"               ^^^ comment.line
+"               ^^^ -comment
 
 nnoremap <space> :
 " ^^^^^^ keyword.control
 "        ^^^^^^^ storage.type
 
 nnoremap <space> : " x
-"                  ^^^ comment.line
+"                  ^^^ -comment
 
 nnoremap <leader>d :ToggleSideBar<CR>
 " ^^^^^^ keyword.control
@@ -24,7 +24,7 @@ nnoremap <leader>d :ToggleSideBar<CR>
 "                                ^^^^ storage.type
 
 nnoremap <leader>d :ToggleSideBar<CR> " x
-"                                     ^^^ comment.line
+"                                     ^^^ -comment
 
 nnoremap <C-y> 3<C-y>
 " ^^^^^^ keyword.control
@@ -32,7 +32,7 @@ nnoremap <C-y> 3<C-y>
 "               ^^^^^ storage.type
 
 nnoremap <C-y> 3<C-y> " x
-"                     ^^^ comment.line
+"                     ^^^ -comment
 
 map x y
 " ^ keyword.control
