@@ -1,4 +1,4 @@
-" SYNTAX TEST "Packages/NeoVintageous/res/VimL.sublime-syntax"
+" SYNTAX TEST "Packages/NeoVintageous/res/Vintageousrc.sublime-syntax"
 
 " The character " (the double quote mark) starts a comment
 " ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment.line
