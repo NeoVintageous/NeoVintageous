@@ -1,9 +1,11 @@
 " SYNTAX TEST "Packages/NeoVintageous/res/Vintageousrc.sublime-syntax"
 
 " The character " (the double quote mark) starts a comment
+" ^ source.vintageousrc
 " ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment.line
 
 let mapleader=,
+" ^ source.vintageousrc
 " ^ keyword.control
 "   ^^^^^^^^^ variable.language
 "            ^ keyword.operator.assignment

@@ -5,7 +5,7 @@ name: Vintageousrc (NeoVintageous)
 file_extensions:
   - .vintageousrc
   - .neovintageousrc
-scope: source.vintageourc
+scope: source.vintageousrc
 hidden: true
 contexts:
   main:
