@@ -2,11 +2,11 @@
 
 from sublime_plugin import TextCommand
 
-from NeoVintageous.lib.api.plugin import inputs
-from NeoVintageous.lib.api.plugin import NORMAL_MODE
-from NeoVintageous.lib.api.plugin import register
-from NeoVintageous.lib.api.plugin import ViOperatorDef
-from NeoVintageous.lib.api.plugin import VISUAL_MODE
+from NeoVintageous.lib.plugin import inputs
+from NeoVintageous.lib.plugin import NORMAL_MODE
+from NeoVintageous.lib.plugin import register
+from NeoVintageous.lib.plugin import ViOperatorDef
+from NeoVintageous.lib.plugin import VISUAL_MODE
 
 
 __all__ = [

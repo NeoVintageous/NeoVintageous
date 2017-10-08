@@ -4,8 +4,8 @@ from collections import Counter
 import sublime
 
 from NeoVintageous.lib import nvim
+from NeoVintageous.lib import plugin
 from NeoVintageous.lib import rcfile
-from NeoVintageous.lib.api import plugin
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import settings

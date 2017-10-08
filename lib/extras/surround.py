@@ -7,14 +7,14 @@ from sublime import LITERAL
 from sublime import Region
 from sublime_plugin import TextCommand
 
-from NeoVintageous.lib.api.plugin import inputs
-from NeoVintageous.lib.api.plugin import INTERNAL_NORMAL_MODE
-from NeoVintageous.lib.api.plugin import NORMAL_MODE
-from NeoVintageous.lib.api.plugin import OPERATOR_PENDING_MODE
-from NeoVintageous.lib.api.plugin import register
-from NeoVintageous.lib.api.plugin import ViOperatorDef
-from NeoVintageous.lib.api.plugin import VISUAL_BLOCK_MODE
-from NeoVintageous.lib.api.plugin import VISUAL_MODE
+from NeoVintageous.lib.plugin import inputs
+from NeoVintageous.lib.plugin import INTERNAL_NORMAL_MODE
+from NeoVintageous.lib.plugin import NORMAL_MODE
+from NeoVintageous.lib.plugin import OPERATOR_PENDING_MODE
+from NeoVintageous.lib.plugin import register
+from NeoVintageous.lib.plugin import ViOperatorDef
+from NeoVintageous.lib.plugin import VISUAL_BLOCK_MODE
+from NeoVintageous.lib.plugin import VISUAL_MODE
 from NeoVintageous.lib.vi.core import ViTextCommandBase
 from NeoVintageous.lib.vi.inputs import input_types
 from NeoVintageous.lib.vi.inputs import parser_def

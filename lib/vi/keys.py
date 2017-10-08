@@ -1,7 +1,7 @@
 import re
 
 from NeoVintageous.lib import nvim
-from NeoVintageous.lib.api import plugin
+from NeoVintageous.lib import plugin
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import variables
 from NeoVintageous.lib.vi.utils import modes
