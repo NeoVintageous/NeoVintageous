@@ -18,13 +18,8 @@
         "command": "neovintageous_reload_my_rc_file"
     },
     {
-        "caption": "Preferences: NeoVintageous Settings – Default",
-        "command": "open_file",
-        "args": {"file": "${packages}/NeoVintageous/Preferences.sublime-settings"}
-    },
-    {
-        "caption": "Preferences: NeoVintageous Settings – User",
-        "command": "open_file",
-        "args": {"file": "${packages}/User/Preferences.sublime-settings"}
+        "caption": "Preferences: NeoVintageous Settings",
+        "command": "edit_settings",
+        "args": {"base_file": "${packages}/NeoVintageous/Preferences.sublime-settings"}
     }
 ]

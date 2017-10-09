@@ -17,6 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added: `[om` toggle minimap on command (Unimpaired plugin)
 * Added: `]om` toggle minimap off command (Unimpaired plugin)
 * Added: Documentation command
+* Added: Edit Settings command
 * Added: How to map `jk` to `Esc` (documentation)
 
 ### Changed
