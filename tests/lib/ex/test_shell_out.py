@@ -1,6 +1,6 @@
-import unittest
+from unittest import skipIf
 
-import sublime
+from sublime import platform
 
 from NeoVintageous.tests.utils import ViewTestCase
 
@@ -20,7 +20,7 @@ class TestExShellOutNoInput(ViewTestCase):
             'command_line': '!echo "Testing!"'
         })
 
-        if sublime.platform() == 'windows':
+        if platform() == 'windows':
             expected = '\\"Testing!\\"\n'
         else:
             expected = 'Testing!\n'
@@ -32,9 +32,7 @@ class TestExShellOutNoInput(ViewTestCase):
 
 class TestExShellOutFilterThroughShell(ViewTestCase):
 
-    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
-    @unittest.skipIf(sublime.platform() == 'windows',
-                     'Test does not work on Windows')
+    @skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_simple_filter_through_shell(self):
         self.write("two words\nbbb\nccc")
         self.select(2)
@@ -49,11 +47,8 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         #        2
         self.assertContentMatches(r"\s*2\nbbb\nccc")
 
-    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
-    @unittest.skipIf(sublime.platform() == 'windows',
-                     'Test does not work on Windows')
-    def test_command_escaping(self):
-        """Tests that command is escaped correctly."""
+    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    def test_command_is_escaped_correctly(self):
         self.write('this gets replaced')
         self.select(2)
 
@@ -62,11 +57,8 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         })
         self.assertContent('"one" \'two\'\n')
 
-    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
-    @unittest.skipIf(sublime.platform() == 'windows',
-                     'Test does not work on Windows')
-    def test_text_escaping(self):
-        """Tests that text is escaped correctly when passed to command."""
+    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    def test_text_is_escaped_correctly_when_passed_to_command(self):
         line = 'this "contains" \'quotes\' "; false; echo "\n'
         self.write(line)
         self.select(2)
@@ -76,9 +68,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         })
         self.assertContent(line)
 
-    # TODO Implement .!{cmd} (Ex Shell Out) test for Windows
-    @unittest.skipIf(sublime.platform() == 'windows',
-                     'Test does not work on Windows')
+    @skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_multiple_filter_through_shell(self):
         self.write("aaa\nthree short words\nccc")
         self.select(10)
@@ -88,3 +78,27 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         })
 
         self.assertContentMatches(r"aaa\n\s*3\nccc")
+
+    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    def test_filter_command_with_multiple_options_through_shell(self):
+        self.write("a\none two\nb")
+        self.select(2)
+        self.view.run_command('ex_shell_out', {'command_line': '.! wc --chars'})
+        self.assertContentMatches(r'a\n\s*8\nb')
+
+        self.write("a\none two\nb")
+        self.select(2)
+        self.view.run_command('ex_shell_out', {'command_line': '.! wc --words --chars'})
+        self.assertContentMatches(r'a\n\s*2\s+8\nb')
+
+        self.write("a\none two\nb")
+        self.select(2)
+        self.view.run_command('ex_shell_out', {'command_line': '.! wc --lines --words --chars'})
+        self.assertContentMatches(r'a\n\s*1\s*2\s+8\nb')
+
+    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    def test_filter_piped_command_through_shell(self):
+        self.write("a\none two\nb")
+        self.select(2)
+        self.view.run_command('ex_shell_out', {'command_line': '.! echo "one two" | wc --words --chars'})
+        self.assertContentMatches(r'\s*2\s*8')
