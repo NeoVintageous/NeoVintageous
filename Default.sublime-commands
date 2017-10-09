@@ -5,13 +5,13 @@
         "args": {"file": "${packages}/NeoVintageous/CHANGELOG.md"}
     },
     {
-        "caption": "NeoVintageous: Open My .vintageousrc File",
-        "command": "neovintageous_open_my_rc_file"
+        "caption": "NeoVintageous: Documentation",
+        "command": "open_url",
+        "args": {"url": "https://github.com/NeoVintageous/NeoVintageous"}
     },
     {
-        "caption": "NeoVintageous: Readme",
-        "command": "open_file",
-        "args": {"file": "${packages}/NeoVintageous/README.md"}
+        "caption": "NeoVintageous: Open My .vintageousrc File",
+        "command": "neovintageous_open_my_rc_file"
     },
     {
         "caption": "NeoVintageous: Reload My .vintageousrc File",

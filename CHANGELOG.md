@@ -16,12 +16,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added: `com` toggle minimap command (Unimpaired plugin)
 * Added: `[om` toggle minimap on command (Unimpaired plugin)
 * Added: `]om` toggle minimap off command (Unimpaired plugin)
+* Added: Documentation command
 * Added: How to map `jk` to `Esc` (documentation)
 
 ### Changed
 
 * Changed: Modeline `vintageous_modeline` is now disabled by default
-* Changed: "Open Readme" command caption changed to "Readme"
 * Changed: "Open Changelog" command caption changed to "Changelog"
 
 ### Removed
