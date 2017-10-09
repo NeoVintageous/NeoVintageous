@@ -11,6 +11,11 @@ NORMAL_CASES = (
     test_data('0x2345', (1, 1), 'x', ViewTestCase.NORMAL_MODE, (1, 1), 'Find self'),
     test_data('0a2xx5', (1, 1), 'x', ViewTestCase.NORMAL_MODE, (2, 2), 'Find multiple'),
     test_data('0x2x45', (1, 1), 'x', ViewTestCase.NORMAL_MODE, (2, 2), 'Find self multiple'),
+    test_data('0a23:5', (1, 1), ':', ViewTestCase.NORMAL_MODE, (3, 3), 'Find ahead (colon)'),
+    test_data('0a:345', (1, 1), ':', ViewTestCase.NORMAL_MODE, (1, 1), 'Find next (colon)'),
+    test_data('0:2345', (1, 1), ':', ViewTestCase.NORMAL_MODE, (1, 1), 'Find self (colon)'),
+    test_data('0a2::5', (1, 1), ':', ViewTestCase.NORMAL_MODE, (2, 2), 'Find multiple (colon)'),
+    test_data('0:2:45', (1, 1), ':', ViewTestCase.NORMAL_MODE, (2, 2), 'Find self multiple (colon)'),
 )
 
 INTERNAL_NORMAL_CASES = (
