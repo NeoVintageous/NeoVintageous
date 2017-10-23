@@ -3,7 +3,7 @@
 # http://www.sublimetext.com/docs/3/syntax.html
 name: Help (NeoVintageous)
 scope: text.neovintageous.help
-hidden: false
+hidden: true
 contexts:
   main:
 
