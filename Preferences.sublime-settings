@@ -42,6 +42,12 @@
     // https://vimhelp.appspot.com/options.txt.html#'scrolloff'
     "vintageous_scrolloff": 5,
 
+    // {currently only works in a few situations}
+    // The minimal number of screen columns to keep to the left and to the right
+    // of the cursor if nowrap' is set or if 'word_wrap' is disabled.
+    // https://vimhelp.appspot.com/options.txt.html#'sidescrolloff'
+    "vintageous_sidescrolloff": 5,
+
     // Ignore case in search patterns ('/', '?', '*', and '#').
     // https://vimhelp.appspot.com/options.txt.html#'ignorecase'
     "vintageous_ignorecase": true,
