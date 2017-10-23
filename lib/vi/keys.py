@@ -222,7 +222,7 @@ class seqs:
     H = 'h'
     HAT = '^'
     HOME = '<home>'
-    I = 'i'
+    I = 'i'  # noqa: E741
     J = 'j'
     K = 'k'
     L = 'l'
@@ -236,7 +236,7 @@ class seqs:
     M = 'm'
     MINUS = '-'
     N = 'n'
-    O = 'o'
+    O = 'o'  # noqa: E741
     OCTOTHORP = '#'
     P = 'p'
     PAGE_DOWN = 'pagedown'

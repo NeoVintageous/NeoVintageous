@@ -29,6 +29,7 @@ install:
             pip3 install python-coveralls;
       fi
     - sh travis.sh bootstrap
+    - flake8 --version
 
 script:
     - sh travis.sh run_tests --coverage

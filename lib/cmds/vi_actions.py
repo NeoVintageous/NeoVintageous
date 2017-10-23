@@ -1693,21 +1693,21 @@ class _vi_p(ViTextCommandBase):
                 # Pasting linewise...
                 # If pasting at EOL or BOL, make sure we paste before the newline character.
                 if (utils.is_at_eol(self.view, selection) or utils.is_at_bol(self.view, selection)):
-                    l = self.paste_all(edit, selection, self.view.line(selection.b).b, fragment, count)
-                    paste_locations.append(l)
+                    pa = self.paste_all(edit, selection, self.view.line(selection.b).b, fragment, count)
+                    paste_locations.append(pa)
                 else:
-                    l = self.paste_all(edit, selection, self.view.line(selection.b - 1).b, fragment, count)
-                    paste_locations.append(l)
+                    pa = self.paste_all(edit, selection, self.view.line(selection.b - 1).b, fragment, count)
+                    paste_locations.append(pa)
             else:
                 pasting_linewise = False
                 # Pasting charwise...
                 # If pasting at EOL, make sure we don't paste after the newline character.
                 if self.view.substr(selection.b) == '\n':
-                    l = self.paste_all(edit, selection, selection.b + offset, fragment, count)
-                    paste_locations.append(l)
+                    pa = self.paste_all(edit, selection, selection.b + offset, fragment, count)
+                    paste_locations.append(pa)
                 else:
-                    l = self.paste_all(edit, selection, selection.b + offset + 1, fragment, count)
-                    paste_locations.append(l)
+                    pa = self.paste_all(edit, selection, selection.b + offset + 1, fragment, count)
+                    paste_locations.append(pa)
                 offset += len(fragment) * count
 
         if pasting_linewise:
@@ -2573,8 +2573,9 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None):
         def select(view, s):
-            l = view.line(s.b)
-            return Region(l.end(), l.begin())
+            line = view.line(s.b)
+
+            return Region(line.end(), line.begin())
 
         if mode != modes.INTERNAL_NORMAL:
             raise ValueError('wrong mode')
@@ -2610,8 +2611,9 @@ class _vi_guu(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
-            l = view.line(s.b)
-            return Region(l.end(), l.begin())
+            line = view.line(s.b)
+
+            return Region(line.end(), line.begin())
 
         def to_lower(view, s):
             view.replace(edit, s, view.substr(s).lower())
