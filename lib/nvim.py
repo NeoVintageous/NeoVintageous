@@ -107,14 +107,10 @@ class _LogFormatter(logging.Formatter):
             if pad_count > 0:
                 record.msg = (' ' * pad_count) + record.msg
 
-        result = super().format(record)
-
-        return result
+        return super().format(record)
 
 
 def _init_logger():
-    console_message('init debug logger')
-
     formatter = _LogFormatter('%(asctime)s %(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s')
 
     logger = logging.getLogger('NeoVintageous')
@@ -128,7 +124,6 @@ def _init_logger():
     # File handler
     log_file = _log_file()
     if log_file:
-        console_message('debug log file \'{}\''.format(log_file))
         file_handler = RotatingFileHandler(
             log_file,
             maxBytes=10000000,  # 10000000 = 10MB
@@ -136,6 +131,8 @@ def _init_logger():
         )
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
+
+        logger.debug('debug log file: \'{}\''.format(log_file))
     else:
         console_message('could not create log file \'{}\''.format(log_file))
 
@@ -165,9 +162,10 @@ if _DEBUG:
     _init_logger()
 
     def get_logger(name):
-        console_message('@get_logger name = {}'.format(name))
+        logger = logging.getLogger(name)
+        logger.debug('logger name: %s', name)
 
-        return logging.getLogger(name)
+        return logger
 else:
     def get_logger(name):
         return _NullLogger()
