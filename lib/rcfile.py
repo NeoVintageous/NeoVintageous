@@ -40,16 +40,17 @@ def reload():
 
 
 def _run():
-    _logger.debug('file=\'%s\'', file_name())
+    _logger.debug('run \'%s\'', file_name())
     try:
+        window = sublime.active_window()
         with _open(file_name(), 'r') as f:
             for line in f:
                 cmd, args = _parse_line(line)
                 if cmd:
                     _logger.debug('run command \'%s\' with args %s', cmd, args)
-                    sublime.active_window().run_command(cmd, args)
+                    window.run_command(cmd, args)
     except FileNotFoundError:
-        pass
+        _logger.debug('rcfile not found')
 
 
 _PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')  # FIXME # noqa: E501
@@ -83,6 +84,5 @@ def _parse_line(line):
                 return ('ex_' + cmd, {'command_line': cmd_line})
     except Exception:
         _logger.exception('bad command in rcfile: \'%s\'', line.rstrip())
-        nvim.console_message('bad command in rcfile: \'%s\'' % line.rstrip())
 
     return None, None

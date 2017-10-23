@@ -27,8 +27,8 @@ from .scanner_command_only import scan_command_only
 from .scanner_command_ounmap import scan_command_ounmap
 from .scanner_command_print import scan_command_print
 from .scanner_command_print_working_dir import scan_command_print_working_dir
-from .scanner_command_quit_all import scan_command_quit_all
 from .scanner_command_quit import scan_command_quit
+from .scanner_command_quit_all import scan_command_quit_all
 from .scanner_command_read_shell_out import scan_command_read_shell_out
 from .scanner_command_register import scan_command_register
 from .scanner_command_set import scan_command_set
@@ -50,15 +50,15 @@ from .scanner_command_vsplit import scan_command_vsplit
 from .scanner_command_vunmap import scan_command_vunmap
 from .scanner_command_write import scan_command_write
 from .scanner_command_write_all import scan_command_write_all
-from .scanner_command_write_and_quit_all import scan_command_write_and_quit_all
 from .scanner_command_write_and_quit import scan_command_write_and_quit
+from .scanner_command_write_and_quit_all import scan_command_write_and_quit_all
 from .scanner_command_yank import scan_command_yank
 
 
 patterns = OrderedDict()
 
 # TODO: compile regexes. ??
-# IMPORTANT: Order matters. WHY?
+# IMPORTANT: Order matters. WHY? WHY? WHY?
 patterns[r'!(?=.+)'] = scan_command_shell_out
 patterns[r'&&?'] = scan_command_double_ampersand
 patterns[r'ab(?:breviate)?'] = scan_command_abbreviate

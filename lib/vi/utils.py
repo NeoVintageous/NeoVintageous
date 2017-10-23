@@ -365,13 +365,16 @@ def last_row(view):
 def translate_char(char):
     # FIXME: What happens to keys like <home>, <up>, etc? We shouln't be
     #        able to use those in some contexts, like as arguments to f, t...
-    if char.lower() in ('<enter>', '<cr>'):
+
+    lchar = char.lower()
+
+    if lchar in ('<enter>', '<cr>'):
         return '\n'
-    elif char.lower() in ('<sp>', '<space>'):
+    elif lchar in ('<sp>', '<space>'):
         return ' '
-    elif char.lower() == '<lt>':
+    elif lchar == '<lt>':
         return '<'
-    elif char.lower() == '<tab>':
+    elif lchar == '<tab>':
         return '\t'
     else:
         return char
