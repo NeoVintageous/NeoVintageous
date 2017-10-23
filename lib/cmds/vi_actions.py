@@ -133,7 +133,7 @@ __all__ = [
 _logger = nvim.get_logger(__name__)
 
 
-# https://neovim.io/doc/user/change.html#gU
+# https://vimhelp.appspot.com/change.txt.html#gU
 class _vi_g_big_u(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -169,7 +169,7 @@ class _vi_g_big_u(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
-# https://neovim.io/doc/user/change.html#gu
+# https://vimhelp.appspot.com/change.txt.html#gu
 class _vi_gu(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -205,7 +205,7 @@ class _vi_gu(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
-# https://neovim.io/doc/user/change.html#gq
+# https://vimhelp.appspot.com/change.txt.html#gq
 class _vi_gq(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -258,7 +258,7 @@ class _vi_gq(ViTextCommandBase):
             raise ValueError('bad mode: ' + mode)
 
 
-# https://neovim.io/doc/user/undo.html#u
+# https://vimhelp.appspot.com/undo.txt.html#u
 class _vi_u(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -284,7 +284,7 @@ class _vi_u(ViWindowCommandBase):
         self._view.erase_regions('vi_yy_target')
 
 
-# https://neovim.io/doc/user/undo.html#CTRL-R
+# https://vimhelp.appspot.com/undo.txt.html#CTRL-R
 class _vi_ctrl_r(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -308,7 +308,7 @@ class _vi_ctrl_r(ViWindowCommandBase):
         regions_transformer(self._view, f)
 
 
-# https://neovim.io/doc/user/insert.html#a
+# https://vimhelp.appspot.com/insert.txt.html#a
 class _vi_a(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -342,7 +342,7 @@ class _vi_a(ViTextCommandBase):
         })
 
 
-# https://neovim.io/doc/user/change.html#c
+# https://vimhelp.appspot.com/change.txt.html#c
 class _vi_c(ViTextCommandBase):
     _can_yank = True
     _populates_small_delete_register = True
@@ -699,7 +699,7 @@ class _enter_replace_mode(ViTextCommandBase):
         state.reset()
 
 
-# https://neovim.io/doc/user/repeat.html#%2e
+# https://vimhelp.appspot.com/repeat.txt.html#%2e
 class _vi_dot(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -752,7 +752,7 @@ class _vi_dot(ViWindowCommandBase):
         state.update_xpos()
 
 
-# https://neovim.io/doc/user/change.html#dd
+# https://vimhelp.appspot.com/change.txt.html#dd
 class _vi_dd(ViTextCommandBase):
     _can_yank = True
     _yanks_linewise = True
@@ -790,7 +790,7 @@ class _vi_dd(ViTextCommandBase):
         # TODO(guillermooo): deleting last line leaves the caret at \n
 
 
-# https://neovim.io/doc/user/change.html#cc
+# https://vimhelp.appspot.com/change.txt.html#cc
 class _vi_cc(ViTextCommandBase):
     _can_yank = True
     _yanks_linewise = True
@@ -818,7 +818,7 @@ class _vi_cc(ViTextCommandBase):
         self.set_xpos(self.state)
 
 
-# https://neovim.io/doc/user/insert.html#o
+# https://vimhelp.appspot.com/insert.txt.html#o
 class _vi_visual_o(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -837,7 +837,7 @@ class _vi_visual_o(ViTextCommandBase):
 
 
 # TODO: is this really a text command?
-# https://neovim.io/doc/user/change.html#yy
+# https://vimhelp.appspot.com/change.txt.html#yy
 class _vi_yy(ViTextCommandBase):
     _can_yank = True
     _synthetize_new_line_at_eof = True
@@ -875,7 +875,7 @@ class _vi_yy(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
-# https://neovim.io/doc/user/change.html#y
+# https://vimhelp.appspot.com/change.txt.html#y
 class _vi_y(ViTextCommandBase):
     _can_yank = True
     _populates_small_delete_register = True
@@ -902,7 +902,7 @@ class _vi_y(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
-# https://neovim.io/doc/user/change.html#d
+# https://vimhelp.appspot.com/change.txt.html#d
 class _vi_d(ViTextCommandBase):
     _can_yank = True
     _populates_small_delete_register = True
@@ -1770,7 +1770,7 @@ class _vi_p(ViTextCommandBase):
             return sel.begin()
 
 
-# https://neovim.io/doc/user/various.html#ga
+# https://vimhelp.appspot.com/various.txt.html#ga
 class _vi_ga(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1779,7 +1779,7 @@ class _vi_ga(ViWindowCommandBase):
 
         def character_to_notation(character):
             # Convert a character to a key notation. Uses vim key notation.
-            # See https://neovim.io/doc/user/intro.html#key-notation
+            # See https://vimhelp.appspot.com/intro.txt.html#key-notation
             character_notation_map = {
                 "\0": "Nul",
                 " ": "Space",
@@ -1805,7 +1805,7 @@ class _vi_ga(ViWindowCommandBase):
             nvim.status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
-# https://neovim.io/doc/user/tabpage.html#gt
+# https://vimhelp.appspot.com/tabpage.txt.html#gt
 class _vi_gt(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1819,7 +1819,7 @@ class _vi_gt(ViWindowCommandBase):
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
-# https://neovim.io/doc/user/tabpage.html#gT
+# https://vimhelp.appspot.com/tabpage.txt.html#gT
 class _vi_g_big_t(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1831,7 +1831,7 @@ class _vi_g_big_t(ViWindowCommandBase):
 
 # TODO <C-]> could learn visual mode
 # TODO <C-]> could learn to count
-# https://neovim.io/doc/user/tagsrch.html#CTRL-%5d
+# https://vimhelp.appspot.com/tagsrch.txt.html#CTRL-%5d
 class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1840,7 +1840,7 @@ class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
         self.window.run_command('goto_definition')
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_b
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_b
 class _vi_ctrl_w_b(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1849,7 +1849,7 @@ class _vi_ctrl_w_b(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_bottom_right()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_h
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_h
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1858,7 +1858,7 @@ class _vi_ctrl_w_big_h(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_far_left()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_j
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_j
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1867,7 +1867,7 @@ class _vi_ctrl_w_big_j(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_very_bottom()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_k
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_k
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1876,7 +1876,7 @@ class _vi_ctrl_w_big_k(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_very_top()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_L
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_L
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1885,7 +1885,7 @@ class _vi_ctrl_w_big_l(ViWindowCommandBase):
         WindowAPI(self.window).move_current_view_to_far_right()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_c
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_c
 class _vi_ctrl_w_c(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1894,7 +1894,7 @@ class _vi_ctrl_w_c(ViWindowCommandBase):
         WindowAPI(self.window).close_current_view()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_=
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_=
 class _vi_ctrl_w_equal(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1903,7 +1903,7 @@ class _vi_ctrl_w_equal(ViWindowCommandBase):
         WindowAPI(self.window).resize_groups_almost_equally()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_%3e
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_%3e
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1912,7 +1912,7 @@ class _vi_ctrl_w_greater_than(ViWindowCommandBase):
         WindowAPI(self.window).increase_current_group_width_by_n(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_h
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_h
 class _vi_ctrl_w_h(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1921,7 +1921,7 @@ class _vi_ctrl_w_h(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_j
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_j
 class _vi_ctrl_w_j(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1930,7 +1930,7 @@ class _vi_ctrl_w_j(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_k
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_k
 class _vi_ctrl_w_k(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1939,7 +1939,7 @@ class _vi_ctrl_w_k(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_l
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_l
 class _vi_ctrl_w_l(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1948,7 +1948,7 @@ class _vi_ctrl_w_l(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_%3C
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_%3C
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1957,7 +1957,7 @@ class _vi_ctrl_w_less_than(ViWindowCommandBase):
         WindowAPI(self.window).decrease_current_group_width_by_n(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_-
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_-
 class _vi_ctrl_w_minus(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1966,7 +1966,7 @@ class _vi_ctrl_w_minus(ViWindowCommandBase):
         WindowAPI(self.window).decrease_current_group_height_by_n(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_n
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_n
 class _vi_ctrl_w_n(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1975,7 +1975,7 @@ class _vi_ctrl_w_n(ViWindowCommandBase):
         WindowAPI(self.window).split_with_new_file(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_o
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_o
 class _vi_ctrl_w_o(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1984,7 +1984,7 @@ class _vi_ctrl_w_o(ViWindowCommandBase):
         WindowAPI(self.window).close_all_other_views()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_bar
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_bar
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1993,7 +1993,7 @@ class _vi_ctrl_w_pipe(ViWindowCommandBase):
         WindowAPI(self.window).set_current_group_width_to_n(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_+
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_+
 class _vi_ctrl_w_plus(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2002,7 +2002,7 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
         WindowAPI(self.window).increase_current_group_height_by_n(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_q
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_q
 class _vi_ctrl_w_q(IrreversibleTextCommand):
 
     def __init__(self, *args, **kwargs):
@@ -2012,7 +2012,7 @@ class _vi_ctrl_w_q(IrreversibleTextCommand):
         WindowAPI(self.view.window()).quit_current_view(exit_sublime_if_last=True)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_s
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_s
 class _vi_ctrl_w_s(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2021,7 +2021,7 @@ class _vi_ctrl_w_s(ViWindowCommandBase):
         WindowAPI(self.window).split_current_view_in_two(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_t
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_t
 class _vi_ctrl_w_t(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2030,7 +2030,7 @@ class _vi_ctrl_w_t(ViWindowCommandBase):
         WindowAPI(self.window).move_group_focus_to_top_left()
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W__
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W__
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2039,7 +2039,7 @@ class _vi_ctrl_w_underscore(ViWindowCommandBase):
         WindowAPI(self.window).set_current_group_height_to_n(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_v
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_v
 class _vi_ctrl_w_v(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2048,7 +2048,7 @@ class _vi_ctrl_w_v(ViWindowCommandBase):
         WindowAPI(self.window).split_current_view_in_two_vertically(count)
 
 
-# https://neovim.io/doc/user/windows.html#CTRL-W_x
+# https://vimhelp.appspot.com/windows.txt.html#CTRL-W_x
 class _vi_ctrl_w_x(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2059,7 +2059,7 @@ class _vi_ctrl_w_x(ViWindowCommandBase):
 
 # TODO: z<CR> != zt
 # TODO if count is given should be the same as CTRL-W__
-# https://neovim.io/doc/user/scroll.html#z%3CCR%3E
+# https://vimhelp.appspot.com/scroll.txt.html#z%3CCR%3E
 class _vi_z_enter(IrreversibleTextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2072,7 +2072,7 @@ class _vi_z_enter(IrreversibleTextCommand):
         self.view.set_viewport_position(taget_pt)
 
 
-# https://neovim.io/doc/user/scroll.html#z-
+# https://vimhelp.appspot.com/scroll.txt.html#z-
 class _vi_z_minus(IrreversibleTextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2085,7 +2085,7 @@ class _vi_z_minus(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
-# https://neovim.io/doc/user/scroll.html#zz
+# https://vimhelp.appspot.com/scroll.txt.html#zz
 class _vi_zz(IrreversibleTextCommand):
 
     def __init__(self, view):
@@ -2182,7 +2182,7 @@ class _vi_select_big_j(IrreversibleTextCommand):
         self.view.run_command('_enter_normal_mode', {'mode': mode})
 
 
-# https://neovim.io/doc/user/change.html#J
+# https://vimhelp.appspot.com/change.txt.html#J
 class _vi_big_j(ViTextCommandBase):
     WHITE_SPACE = ' \t'
 
@@ -2247,7 +2247,7 @@ class _vi_big_j(ViTextCommandBase):
         sels.add(Region(end_pos))
 
 
-# https://neovim.io/doc/user/visual.html#gv
+# https://vimhelp.appspot.com/visual.txt.html#gv
 class _vi_gv(IrreversibleTextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2262,7 +2262,7 @@ class _vi_gv(IrreversibleTextCommand):
         self.view.sel().add_all(sels)
 
 
-# https://neovim.io/doc/user/scroll.html#CTRL-E
+# https://vimhelp.appspot.com/scroll.txt.html#CTRL-E
 class _vi_ctrl_e(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2279,7 +2279,7 @@ class _vi_ctrl_e(ViTextCommandBase):
         self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
 
 
-# https://neovim.io/doc/user/scroll.html#CTRL-Y
+# https://vimhelp.appspot.com/scroll.txt.html#CTRL-Y
 class _vi_ctrl_y(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2296,7 +2296,7 @@ class _vi_ctrl_y(ViTextCommandBase):
         self.view.run_command('scroll_lines', {'amount': count, 'extend': extend})
 
 
-# https://neovim.io/doc/user/cmdline.html#c_CTRL-R
+# https://vimhelp.appspot.com/cmdline.txt.html#c_CTRL-R
 class _vi_ctrl_r_equal(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2615,7 +2615,7 @@ class _vi_g_big_h(ViWindowCommandBase):
         self.state.reset_command_data()
 
 
-# https://neovim.io/doc/user/insert.html#i_CTRL-X_CTRL-L
+# https://vimhelp.appspot.com/insert.txt.html#i_CTRL-X_CTRL-L
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
     MAX_MATCHES = 20
 
@@ -2680,7 +2680,7 @@ class __replace_line(ViTextCommandBase):
         self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
 
 
-# https://neovim.io/doc/user/change.html#gc
+# https://vimhelp.appspot.com/change.txt.html#gc
 class _vi_gc(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

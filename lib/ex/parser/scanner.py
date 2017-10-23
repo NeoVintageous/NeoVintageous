@@ -46,7 +46,7 @@ def scan_range(state):
     """
     Produce tokens found in a command line range.
 
-    https://neovim.io/doc/user/cmdline.html#cmdline-ranges
+    https://vimhelp.appspot.com/cmdline.txt.html#cmdline-ranges
     """
     c = state.consume()
 

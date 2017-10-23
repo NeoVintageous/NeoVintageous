@@ -147,7 +147,7 @@ def current_word_end(view, pt):
     return view.word(pt).b
 
 
-# https://neovim.io/doc/user/motion.html#word
+# https://vimhelp.appspot.com/motion.txt.html#word
 # Used for motions in operations like daw and caw
 def a_word(view, pt, inclusive=True, count=1):
     assert count > 0
@@ -212,7 +212,7 @@ def big_word_start(view, pt):
     return pt + 1
 
 
-# https://neovim.io/doc/user/motion.html#WORD
+# https://vimhelp.appspot.com/motion.txt.html#WORD
 # Used for motions in operations like daW and caW
 def a_big_word(view, pt, inclusive=False, count=1):
     start, end = None, pt

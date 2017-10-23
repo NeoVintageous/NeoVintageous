@@ -2124,7 +2124,7 @@ class _vi_left_square_bracket(ViMotionCommand):
         regions_transformer(self.view, move)
 
 
-# https://neovim.io/doc/user/diff.html#[c
+# https://vimhelp.appspot.com/diff.txt.html#[c
 class _vi_left_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
         for i in range(count):
@@ -2159,7 +2159,7 @@ class _vi_right_square_bracket(ViMotionCommand):
         regions_transformer(self.view, move)
 
 
-# https://neovim.io/doc/user/diff.html#]c
+# https://vimhelp.appspot.com/diff.txt.html#]c
 class _vi_right_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
         for i in range(count):

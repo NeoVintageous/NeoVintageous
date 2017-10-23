@@ -53,10 +53,10 @@ Some commands have dependencies. All dependencies are optional and can be instal
 
 Command | Description | Documentation | Dependencies | Notes
 ------- | ----------- | ------------- | ------------ | -----
-`[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter] | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
-`]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter] | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
-`ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami]
-`ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami]
+`[c` | Jump backwards to the previous start of a change. | [diff](https://vimhelp.appspot.com/diff.txt.html#[c) | [Git Gutter] | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+`]c` | Jump forwards to the next start of a change. | [diff](https://vimhelp.appspot.com/diff.txt.html#]c) | [Git Gutter] | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+`ctrl-w s` | Split current window in two | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_s) | [Origami]
+`ctrl-w v` | Split current window in two (vertically) | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_v) | [Origami]
 
 ### Command Palette
 
@@ -126,7 +126,7 @@ nnoremap <leader>l :TestLast<CR>
 nnoremap <leader>g :TestVisit<CR>
 ```
 
-Read more about mappings and the .vimrc file in the [Vim documentation](https://neovim.io/doc/user/map.html).
+Read more about mappings and the .vimrc file in the [Vim documentation](https://vimhelp.appspot.com/map.txt.html).
 
 ### Modeline
 
@@ -137,7 +137,7 @@ A feature comparative to Vim Modeline: a number of lines at the beginning and en
     # sublime: rulers [80, 120]
     # sublime: tab_size 4
 
-Read more about modeline in the [Vim documentation](https://neovim.io/doc/user/options.html#modeline).
+Read more about modeline in the [Vim documentation](https://vimhelp.appspot.com/options.txt.html#modeline).
 
 ### Multiple cursors
 
@@ -194,13 +194,13 @@ Command | Description | Dependency | Documentation
 
 On | Off | Toggle | Option | Documentation
 -- | --- | ------ | ------ | -------------
-`[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim][unimpaired.vim#doc]
-`[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[oc` | `]oc` | `coc` | ['cursorline'](https://vimhelp.appspot.com/options.txt.html#%27cursorline%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[ol` | `]ol` | `col` | ['list'](https://vimhelp.appspot.com/options.txt.html#%27list%27) | [unimpaired.vim][unimpaired.vim#doc]
 `[om` | `]om` | `com` | 'minimap' | Non-standard i.e. not in the original Unimpaired plugin.
-`[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim][unimpaired.vim#doc]
-`[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[on` | `]on` | `con` | ['number'](https://vimhelp.appspot.com/options.txt.html#%27number%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[os` | `]os` | `cos` | ['spell'](https://vimhelp.appspot.com/options.txt.html#%27spell%27) | [unimpaired.vim][unimpaired.vim#doc]
 `[ot` | `]ot` | `cot` | 'sidebar' | Non-standard i.e. not in the original Unimpaired plugin.
-`[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim][unimpaired.vim#doc]
+`[ow` | `]ow` | `cow` | ['wrap'](https://vimhelp.appspot.com/options.txt.html#%27wrap%27) | [unimpaired.vim][unimpaired.vim#doc]
 
 
 #### [abolish.vim]

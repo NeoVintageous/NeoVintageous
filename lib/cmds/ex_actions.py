@@ -168,8 +168,8 @@ class ExGoto(ViWindowCommandBase):
         self._view.show(self._view.sel()[0])
 
 
-# https://neovim.io/doc/user/various.html#:%21
-# https://neovim.io/doc/user/various.html#:%21%21
+# https://vimhelp.appspot.com/various.txt.html#:%21
+# https://vimhelp.appspot.com/various.txt.html#:%21%21
 class ExShellOut(TextCommand):
     _last_command = None
 
@@ -263,7 +263,7 @@ class ExShell(ViWindowCommandBase):
             nvim.not_implemented_message('not implemented')
 
 
-# https://neovim.io/doc/user/insert.html#:r
+# https://vimhelp.appspot.com/insert.txt.html#:r
 class ExReadShellOut(TextCommand):
 
     @_changing_cd
@@ -310,7 +310,7 @@ class ExReadShellOut(TextCommand):
             return
 
 
-# https://neovim.io/doc/user/windows.html#:ls
+# https://vimhelp.appspot.com/windows.txt.html#:ls
 class ExPromptSelectOpenFile(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -352,7 +352,7 @@ class ExPromptSelectOpenFile(ViWindowCommandBase):
         return [leaf, path]
 
 
-# https://neovim.io/doc/user/map.html#:map
+# https://vimhelp.appspot.com/map.txt.html#:map
 class ExMap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -367,7 +367,7 @@ class ExMap(ViWindowCommandBase):
         mappings.add(modes.VISUAL, parsed.command.keys, parsed.command.command)
 
 
-# https://neovim.io/doc/user/map.html#:unmap
+# https://vimhelp.appspot.com/map.txt.html#:unmap
 class ExUnmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -382,7 +382,7 @@ class ExUnmap(ViWindowCommandBase):
             nvim.status_message('mapping not found')
 
 
-# https://neovim.io/doc/user/map.html#:nmap
+# https://vimhelp.appspot.com/map.txt.html#:nmap
 class ExNmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -392,7 +392,7 @@ class ExNmap(ViWindowCommandBase):
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
 
 
-# https://neovim.io/doc/user/map.html#:nunmap
+# https://vimhelp.appspot.com/map.txt.html#:nunmap
 class ExNunmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -405,7 +405,7 @@ class ExNunmap(ViWindowCommandBase):
             nvim.status_message('mapping not found')
 
 
-# https://neovim.io/doc/user/map.html#:omap
+# https://vimhelp.appspot.com/map.txt.html#:omap
 class ExOmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -416,7 +416,7 @@ class ExOmap(ViWindowCommandBase):
         mappings.add(modes.OPERATOR_PENDING, keys, command)
 
 
-# https://neovim.io/doc/user/map.html#:ounmap
+# https://vimhelp.appspot.com/map.txt.html#:ounmap
 class ExOunmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -429,7 +429,7 @@ class ExOunmap(ViWindowCommandBase):
             nvim.status_message('mapping not found')
 
 
-# https://neovim.io/doc/user/map.html#:smap
+# https://vimhelp.appspot.com/map.txt.html#:smap
 class ExSmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -439,7 +439,7 @@ class ExSmap(ViWindowCommandBase):
         mappings.add(modes.SELECT, parsed.command.keys, parsed.command.command)
 
 
-# https://neovim.io/doc/user/map.html#:vmap
+# https://vimhelp.appspot.com/map.txt.html#:vmap
 class ExVmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -452,7 +452,7 @@ class ExVmap(ViWindowCommandBase):
         mappings.add(modes.VISUAL_BLOCK, keys, command)
 
 
-# https://neovim.io/doc/user/map.html#:vunmap
+# https://vimhelp.appspot.com/map.txt.html#:vunmap
 class ExVunmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -467,7 +467,7 @@ class ExVunmap(ViWindowCommandBase):
             nvim.status_message('mapping  not found')
 
 
-# https://neovim.io/doc/user/map.html#:abbreviate
+# https://vimhelp.appspot.com/map.txt.html#:abbreviate
 class ExAbbreviate(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -488,7 +488,7 @@ class ExAbbreviate(ViWindowCommandBase):
         self.window.show_quick_panel(abbrevs, None, flags=MONOSPACE_FONT)
 
 
-# https://neovim.io/doc/user/map.html#:unabbreviate
+# https://vimhelp.appspot.com/map.txt.html#:unabbreviate
 class ExUnabbreviate(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -502,7 +502,7 @@ class ExUnabbreviate(ViWindowCommandBase):
         abbrev.Store().erase(parsed.command.short)
 
 
-# https://neovim.io/doc/user/editing.html#:pwd
+# https://vimhelp.appspot.com/editing.txt.html#:pwd
 class ExPrintWorkingDir(ViWindowCommandBase):
 
     @_changing_cd
@@ -511,7 +511,7 @@ class ExPrintWorkingDir(ViWindowCommandBase):
         nvim.status_message(os.getcwd())
 
 
-# https://neovim.io/doc/user/editing.html#:write
+# https://vimhelp.appspot.com/editing.txt.html#:write
 class ExWriteFile(ViWindowCommandBase):
 
     @_changing_cd
@@ -668,7 +668,7 @@ class ExWriteFile(ViWindowCommandBase):
             nvim.console_message('----------------------------------------------')
 
 
-# https://neovim.io/doc/user/editing.html#:wa
+# https://vimhelp.appspot.com/editing.txt.html#:wa
 class ExWriteAll(ViWindowCommandBase):
 
     @_changing_cd
@@ -685,7 +685,7 @@ class ExWriteAll(ViWindowCommandBase):
             v.run_command('save')
 
 
-# https://neovim.io/doc/user/editing.html#:file
+# https://vimhelp.appspot.com/editing.txt.html#:file
 class ExFile(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -725,7 +725,7 @@ class ExFile(ViWindowCommandBase):
         nvim.status_message('%s' % msg)
 
 
-# https://neovim.io/doc/user/change.html#:move
+# https://vimhelp.appspot.com/change.txt.html#:move
 class ExMove(ExTextCommandBase):
 
     def run_ex_command(self, edit, command_line=''):
@@ -766,7 +766,7 @@ class ExMove(ExTextCommandBase):
         self.set_next_sel([[destination.a, destination.a]])
 
 
-# https://neovim.io/doc/user/change.html#:copy
+# https://vimhelp.appspot.com/change.txt.html#:copy
 class ExCopy(ExTextCommandBase):
 
     def __init__(self, *args, **kwargs):
@@ -806,7 +806,7 @@ class ExCopy(ExTextCommandBase):
         self.set_next_sel([(cursor_dest, cursor_dest)])
 
 
-# https://neovim.io/doc/user/windows.html#:only
+# https://vimhelp.appspot.com/windows.txt.html#:only
 class ExOnly(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -832,7 +832,7 @@ class ExOnly(ViWindowCommandBase):
             view.close()
 
 
-# https://neovim.io/doc/user/change.html#:&
+# https://vimhelp.appspot.com/change.txt.html#:&
 class ExDoubleAmpersand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -851,7 +851,7 @@ class ExDoubleAmpersand(ViWindowCommandBase):
         })
 
 
-# https://neovim.io/doc/user/change.html#:substitute
+# https://vimhelp.appspot.com/change.txt.html#:substitute
 class ExSubstitute(TextCommand):
 
     _last_pattern = None
@@ -938,7 +938,7 @@ class ExSubstitute(TextCommand):
             start = match.b + (self.view.size() - size_before)
 
 
-# https://neovim.io/doc/user/change.html#:delete
+# https://vimhelp.appspot.com/change.txt.html#:delete
 class ExDelete(ExTextCommandBase):
 
     def select(self, regions, register):
@@ -1039,7 +1039,7 @@ class ExGlobal(ViWindowCommandBase):
         })
 
 
-# https://neovim.io/doc/user/various.html#:print
+# https://vimhelp.appspot.com/various.txt.html#:print
 class ExPrint(ViWindowCommandBase):
 
     def run(self, command_line='', global_lines=None):
@@ -1082,7 +1082,7 @@ class ExPrint(ViWindowCommandBase):
         return to_display
 
 
-# https://neovim.io/doc/user/windows.html#:close
+# https://vimhelp.appspot.com/windows.txt.html#:close
 class ExClose(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1092,7 +1092,7 @@ class ExClose(ViWindowCommandBase):
         WindowAPI(self.window).close_current_view(do_not_close_if_last)
 
 
-# https://neovim.io/doc/user/editing.html#:q
+# https://vimhelp.appspot.com/editing.txt.html#:q
 class ExQuitCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1124,7 +1124,7 @@ class ExQuitCommand(ViWindowCommandBase):
             self.window.run_command('ex_unvsplit')
 
 
-# https://neovim.io/doc/user/editing.html#:qa
+# https://vimhelp.appspot.com/editing.txt.html#:qa
 class ExQuitAllCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1166,7 +1166,7 @@ class ExWriteAndQuitCommand(ViWindowCommandBase):
         self.window.run_command('ex_quit', {'command_line': 'quit'})
 
 
-# https://neovim.io/doc/user/editing.html#:browse
+# https://vimhelp.appspot.com/editing.txt.html#:browse
 class ExBrowse(ViWindowCommandBase):
 
     def run(self, command_line):
@@ -1177,7 +1177,7 @@ class ExBrowse(ViWindowCommandBase):
         })
 
 
-# https://neovim.io/doc/user/editing.html#:edit
+# https://vimhelp.appspot.com/editing.txt.html#:edit
 class ExEdit(ViWindowCommandBase):
 
     @_changing_cd
@@ -1231,7 +1231,7 @@ class ExEdit(ViWindowCommandBase):
         nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
 
 
-# https://neovim.io/doc/user/quickfix.html#:cquit
+# https://vimhelp.appspot.com/quickfix.txt.html#:cquit
 class ExCquit(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1240,7 +1240,7 @@ class ExCquit(ViWindowCommandBase):
         self.window.run_command('exit')
 
 
-# https://neovim.io/doc/user/editing.html#:exit
+# https://vimhelp.appspot.com/editing.txt.html#:exit
 class ExExit(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1254,7 +1254,7 @@ class ExExit(ViWindowCommandBase):
             self.window.run_command('exit')
 
 
-# https://neovim.io/doc/user/change.html#:registers
+# https://vimhelp.appspot.com/change.txt.html#:registers
 class ExListRegisters(ViWindowCommandBase):
 
     def run(self, command_line):
@@ -1281,7 +1281,7 @@ class ExListRegisters(ViWindowCommandBase):
         self.state.registers['"'] = [value]
 
 
-# https://neovim.io/doc/user/windows.html#:new
+# https://vimhelp.appspot.com/windows.txt.html#:new
 class ExNew(ViWindowCommandBase):
 
     @_changing_cd
@@ -1290,7 +1290,7 @@ class ExNew(ViWindowCommandBase):
         self.window.run_command('new_file')
 
 
-# https://neovim.io/doc/user/windows.html#:yank
+# https://vimhelp.appspot.com/windows.txt.html#:yank
 class ExYank(TextCommand):
 
     def run(self, edit, command_line=''):
@@ -1322,7 +1322,7 @@ class ExTabOpenCommand(WindowCommand):
         })
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabnext
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabnext
 class ExTabnextCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1333,7 +1333,7 @@ class ExTabnextCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "next"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabprevious
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabprevious
 class ExTabprevCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1344,7 +1344,7 @@ class ExTabprevCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "prev"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tablast
+# https://vimhelp.appspot.com/tabpage.txt.html#:tablast
 class ExTablastCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1355,7 +1355,7 @@ class ExTablastCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "last"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabfirst
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabfirst
 class ExTabfirstCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1366,7 +1366,7 @@ class ExTabfirstCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "first"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabonly
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabonly
 class ExTabonlyCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1377,7 +1377,7 @@ class ExTabonlyCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "only", "forced": parsed.command.forced})
 
 
-# https://neovim.io/doc/user/editing.html#:cd
+# https://vimhelp.appspot.com/editing.txt.html#:cd
 class ExCdCommand(ViWindowCommandBase):
     """
     Print or change the current directory.
@@ -1453,7 +1453,7 @@ class ExCddCommand(ViWindowCommandBase):
             nvim.exception_message(nvim.Error(nvim.E_CANT_FIND_DIR_IN_CDPATH))
 
 
-# https://neovim.io/doc/user/windows.html#:vsplit
+# https://vimhelp.appspot.com/windows.txt.html#:vsplit
 class ExVsplit(ViWindowCommandBase):
 
     _MAX_SPLITS = 4
@@ -1524,7 +1524,7 @@ class ExUnvsplit(ViWindowCommandBase):
         self.window.run_command('set_layout', ExVsplit.LAYOUT_DATA[groups - 1])
 
 
-# https://neovim.io/doc/user/options.html#:setlocal
+# https://vimhelp.appspot.com/options.txt.html#:setlocal
 class ExSetLocal(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1544,7 +1544,7 @@ class ExSetLocal(ViWindowCommandBase):
             nvim.status_message('invalid value for option')
 
 
-# https://neovim.io/doc/user/options.html#:set
+# https://vimhelp.appspot.com/options.txt.html#:set
 class ExSet(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1565,7 +1565,7 @@ class ExSet(ViWindowCommandBase):
             nvim.status_message('invalid value for option')
 
 
-# https://neovim.io/doc/user/eval.html#:let
+# https://vimhelp.appspot.com/eval.txt.html#:let
 class ExLet(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1574,7 +1574,7 @@ class ExLet(ViWindowCommandBase):
         self.state.variables.set(parsed.command.variable_name, parsed.command.variable_value)
 
 
-# https://neovim.io/doc/user/editing.html#:wqall
+# https://vimhelp.appspot.com/editing.txt.html#:wqall
 class ExWriteAndQuitAll(ViWindowCommandBase):
 
     def run(self, command_line=''):

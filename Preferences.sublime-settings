@@ -1,36 +1,47 @@
 {
     // Enable key bindings prefaced by the CTRL modifier.
+    // {not in Vim}
     "vintageous_use_ctrl_keys": false,
 
     // Highlight searches in '/', '?', etc.
+    // https://vimhelp.appspot.com/options.txt.html#%27hlsearch%27
     "vintageous_hlsearch": true,
 
     // Apply search patterns incrementally as they are typed.
+    // https://vimhelp.appspot.com/options.txt.html#%27incsearch%27
     "vintageous_incsearch": true,
 
     // Enable ':' and ex commands.
+    // {not in Vim}
     "vintageous_enable_cmdline_mode": true,
 
     // Reset to normal mode when a tab is activated.
+    // {not in Vim}
     "vintageous_reset_mode_when_switching_tabs": true,
 
     // Enable auto indentation.
+    // https://vimhelp.appspot.com/options.txt.html#%27autoindent%27
     "vintageous_autoindent": true,
 
     // Propagate copy actions to the system clipboard.
+    // {not in Vim}
     "vintageous_use_sys_clipboard": false,
 
-    // Use regular expressions in '/' and '?' otherwise uses smart case,
-    // interpret pattern literally, and ignore case.
+    // Changes the special characters that can be used in search patterns. Use
+    // regular expressions in '/' and '?' otherwise uses smart case, interpret
+    // pattern literally, and ignore case.
+    // https://vimhelp.appspot.com/options.txt.html#%27magic%27
     "vintageous_magic": true,
 
     // Enable modeline feature.
+    // https://vimhelp.appspot.com/options.txt.html#'modeline'
     "vintageous_modeline": false,
 
-    // Ignore case in '/', '?', '*', and '#'.
+    // Ignore case in search patterns ('/', '?', '*', and '#').
+    // https://vimhelp.appspot.com/options.txt.html#'ignorecase'
     "vintageous_ignorecase": true,
 
-    // Enable the surround.vim plugin.
+    // Port of https://github.com/tpope/vim-surround
     "vintageous_enable_surround": true,
 
     // Enable surround.vim plugin pair opener spaces, otherwise the pair closes
