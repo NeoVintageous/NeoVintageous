@@ -1,85 +1,99 @@
 %YAML 1.2
 ---
 # http://www.sublimetext.com/docs/3/syntax.html
-name: NeoVintageous Command-line mode
+name: Command-line mode (NeoVintageous)
 scope: text.excmdline
-hidden: true
+hidden: false
 contexts:
   main:
+    - match: '^:$'
+      scope: keyword.excmdline
 
-    - match: ^(:)$
-      captures:
-        1: keyword.excmdline
-
+    # :[N]
     - match: ^(:)(\d+)$
       captures:
         1: keyword.excmdline
         2: constant.numeric.excmdline
 
-    # Commands that allow !
+    # :command
     - match: |-
-        (?x)
-        ^
-          (:)
-          (\d+)?
-          (
-            bro(?:wse)?|
-            buffers|
-            clo(?:se)?|
-            cq(?:uit)?|
-            exi(?:t)?|
-            f(?:ile(?:s)?)?|
-            ls|
-            map|
-            on(?:ly)?|
-            q(?:a(?:ll)?|u(?:it(?:a(?:ll)?)?|all))?|
-            wq(?:a(?:ll)?)?|
-            w(?:rite|q|all)?|
-            x(?:it|a(?:ll)?)?
-          )
-          (!)?
-        $
+        (?x)^(:)(
+          as(?:cii)?
+        )$
+      captures:
+        1: keyword.excmdline
+        2: support.function.excmdline
+
+    # :command[!]
+    - match: |-
+        (?x)^(:)(
+          ls|
+          q(?:a(?:ll)?|u(?:it(?:a(?:ll)?)?|all))?
+        )(!)?$
+      captures:
+        1: keyword.excmdline
+        2: support.function.excmdline
+        3: keyword.excmdline
+
+    # :command [<param>]
+    - match: |-
+        (?x)^(:)(
+          ab(?:breviate)?|
+          bro(?:wse)?|
+          h(?:elp)?
+        )((?:\s).+|\s*)?$
+      captures:
+        1: keyword.excmdline
+        2: support.function.excmdline
+        3: variable.parameter.excmdline
+
+    # :[N]command[!]
+    - match: |-
+        (?x)^(:)(\d+)?(
+          buffers|
+          clo(?:se)?|
+          cq(?:uit)?|
+          exi(?:t)?|
+          f(?:ile(?:s)?)?|
+          map|
+          on(?:ly)?|
+          wq(?:a(?:ll)?)?|
+          w(?:rite|q|all)?|
+          x(?:it|a(?:ll)?)?
+        )(!)?$
       captures:
         1: keyword.excmdline
         2: constant.numeric.excmdline
         3: support.function.excmdline
         4: keyword.excmdline
 
-    # Commands that don't allow !
+    # :[N]command
     - match: |-
-        (?x)
-        ^
-          (:)
-          (\d+)?
-          (
-            &&|
-            ab(?:breviate)?|
-            as(?:cii)?|
-            cd(?:d)?|
-            co(?:py)?|
-            d(?:elete)?|
-            e(?:dit|new)?|
-            g(?:lobal)?|
-            move|
-            new|
-            p(?:w(?:d)?|rint)|
-            P(?:rint)?|
-            reg(?:isters)?|
-            r(?:ead)?|
-            se(?:t|tl(:?ocal)?)?|
-            sp(?:lit)?|
-            (?:un)?vs(?:plit)?|
-            s(?:ubstitute|hell|h)?|
-            t(?:abfirst|abprev|abedit|abe|abnext|abn|ablast|abl|abonly|abo)?|
-            y(?:ank)?
-          )
-        $
+        (?x)^(:)(\d+)?(
+          &&|
+          cd(?:d)?|
+          co(?:py)?|
+          d(?:elete)?|
+          e(?:dit|new)?|
+          g(?:lobal)?|
+          move|
+          new|
+          p(?:w(?:d)?|rint)|
+          P(?:rint)?|
+          reg(?:isters)?|
+          r(?:ead)?|
+          se(?:t|tl(:?ocal)?)?|
+          sp(?:lit)?|
+          (?:un)?vs(?:plit)?|
+          s(?:ubstitute|hell|h)?|
+          t(?:abfirst|abprev|abedit|abe|abnext|abn|ablast|abl|abonly|abo)?|
+          y(?:ank)?
+        )$
       captures:
         1: keyword.excmdline
         2: constant.numeric.excmdline
         3: support.function.excmdline
 
     # everything else
-    - match: ^(:).*
-      captures:
-        1: keyword.excmdline
+    - match: '^:'
+      scope: keyword.excmdline

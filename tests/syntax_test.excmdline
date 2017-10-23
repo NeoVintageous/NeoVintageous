@@ -1,35 +1,78 @@
 # SYNTAX TEST "Packages/NeoVintageous/res/Command-line mode.sublime-syntax"
 
+# https://vimhelp.appspot.com/cmdline.txt.html
 
 :
 #<- keyword
 
-:foobar
+:foo
 #<- keyword
-#^^^^^^ -keyword
-#^^^^^^ -support
-#^^^^^^ -constant
+#^^^ -constant
+#^^^ -keyword
+#^^^ -support
+#^^^ -variable
 
-:4
+:foo bar
+#<- keyword
+#^^^^^^^ -constant
+#^^^^^^^ -keyword
+#^^^^^^^ -support
+#^^^^^^^ -variable
+
+:!!!
+#^^^ -constant
+#^^^ -keyword
+#^^^ -support
+#^^^ -variable
+
+:1
 #<- keyword
 #^ constant.numeric
 
-:42
+:12
 #<- keyword
-#^ constant.numeric
+#^^ constant.numeric
+
+:123
+#<- keyword
+#^^^ constant.numeric
 
 :ab
 #<- keyword
 #^^ support.function
+:ab lhs
+#<- keyword
+#^^ support.function
+#   ^^^ variable.parameter
+:ab lhs rhs
+#<- keyword
+#^^ support.function
+#   ^^^ variable.parameter
+#       ^^^ variable.parameter
 :abbreviate
 #<- keyword
 #^^^^^^^^^^ support.function
-:ab!
-#^^ -support.function
-#  ^ -keyword
-:abbreviate!
-#^^^^^^^^^^ -support.function
-#          ^ -keyword
+:abbreviate lhs
+#<- keyword
+#^^^^^^^^^^ support.function
+#           ^^^ variable.parameter
+:abbreviate lhs rhs
+#<- keyword
+#^^^^^^^^^^ support.function
+#           ^^^ variable.parameter
+#               ^^^ variable.parameter
+
+:1ab
+#^^^ -constant
+#^^^ -keyword
+#^^^ -support
+#^^^ -variable
+
+:ab ab
+#   ^^ -support
+
+:abbreviate abbreviate
+#           ^^^^^^^^^^ -support
 
 :as
 #<- keyword
@@ -37,29 +80,29 @@
 :ascii
 #<- keyword
 #^^^^^ support.function
-:as!
-#<- keyword
-#^^ -support.function
-#  ^ -keyword
 :ascii!
 #<- keyword
-#^^^^^ -support.function
-#     ^ -keyword
+#^^^^^ -support
+#     ^ -variable
+:ascii x
+#<- keyword
+#^^^^^ -support
+#      ^ -variable
 
 :bro
 #<- keyword
 #^^^ support.function
+:bro cmd
+#<- keyword
+#^^^ support.function
+#    ^^^ variable.parameter
 :browse
 #<- keyword
 #^^^^^^ support.function
-:bro!
-#<- keyword
-#^^^ support.function
-#   ^ keyword
-:browse!
+:browse cmd
 #<- keyword
 #^^^^^^ support.function
-#      ^ keyword
+#       ^^^ variable.parameter
 
 :buffers
 #<- keyword
@@ -75,6 +118,7 @@
 :cdd
 #<- keyword
 #^^^ support.function
+
 :clo
 #<- keyword
 #^^^ support.function
@@ -106,6 +150,30 @@
 #^^^^ support.function
 #    ^ keyword
 
+:h
+#<- keyword
+#^ support.function
+:h subject
+#<- keyword
+#^ support.function
+#  ^^^^^^^ variable.parameter
+:help
+#<- keyword
+#^^^^ support.function
+:help subject
+#<- keyword
+#^^^^ support.function
+#     ^^^^^^^ variable.parameter
+:help!
+#<- keyword
+#^^^^ -support
+#    ^ -keyword
+:help! x
+#<- keyword
+#^^^^ -support
+#    ^ -keyword
+#      ^ -variable
+
 :files
 #<- keyword
 #^^^^^ support.function
@@ -121,6 +189,15 @@
 #<- keyword
 #^^ support.function
 #  ^ keyword
+
+:only
+#<- keyword
+#^^^^ support.function
+
+:only!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
 
 :print
 #<- keyword
@@ -274,8 +351,12 @@
 :yank
 #<- keyword
 #^^^^ support.function
-
 :42yank
 #<- keyword
 #^^ constant.numeric
 #  ^^^^ support.function
+:42yank x
+#^^^^^^^^ -constant
+#^^^^^^^^ -keyword
+#^^^^^^^^ -support
+#^^^^^^^^ -variable
