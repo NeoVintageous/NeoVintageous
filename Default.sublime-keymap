@@ -3,6 +3,20 @@
     // lowercase (ç, ñ) and ctrl modifiers (ctrl+ç, ctrl+ñ). Why are these keys
     // specifically defined below when other similar keys are not defined?
 
+    // Note that some plugins set some `CTRL` modifier keymaps in the form
+    // `CTRL+{Char}, {Char}` i.e. press `CTRL+{Char}` followed a character in the
+    // range `{Char}`. This means when  you press `CTRL+{Char}` ST waits for the
+    // next key press.
+    //
+    // This may obviously cause issues where we want to map `CTRL+{Char}` directly
+    // to a command without pressing another key. In these cases the `CTRL`
+    // modifier will need to be pressed twice.
+    //
+    // A common `CTRL` modifiers defined by plugins in `CTRL+{Char}, {Char}`. In
+    // this example it causes an issue with the `CTRL+k` keymap defined for
+    // naviating the overlay i.e. in some cases it needs to be pressed twice to
+    // work.
+
     {"keys": ["escape"], "command": "press_key",            "args": {"key": "<esc>"},           "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["escape"], "command": "_enter_normal_mode",   "args": {"mode": "mode_insert"},    "context": [{"key": "vi_insert_mode_aware"}]},
 
@@ -39,20 +53,19 @@
     {"keys": ["["],         "command": "press_key", "args": {"key": "["},       "context": [{"key": "vi_command_mode_aware"}]},
 
     {"keys": ["tab"],       "command": "press_key", "args": {"key": "<tab>"},   "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["tab"],       "command": "fs_completion",                         "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_fs_completion"}] },
+    {"keys": ["tab"],       "command": "vi_setting_completion",                 "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] },
 
-    {"keys": ["tab"],       "command": "fs_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_fs_completion"}] },
-    {"keys": ["tab"],       "command": "vi_setting_completion", "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] },
+    {"keys": ["up"],        "command": "press_key", "args": {"key": "<up>"},                    "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["up"],        "command": "cycle_cmdline_history", "args": {"backwards": true},    "context": [{"key": "vi_is_cmdline"}]},
 
-    {"keys": ["backspace"], "command": "press_key", "args": {"key": "<bs>"},    "context": [{"key": "vi_command_mode_aware"}]},
-
-    {"keys": ["up"],        "command": "press_key", "args": {"key": "<up>"},    "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["down"],      "command": "press_key", "args": {"key": "<down>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["down"],      "command": "cycle_cmdline_history",                 "context": [{"key": "vi_is_cmdline"}]},
+
     {"keys": ["left"],      "command": "press_key", "args": {"key": "<left>"},  "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["right"],     "command": "press_key", "args": {"key": "<right>"}, "context": [{"key": "vi_command_mode_aware"}]},
 
-    {"keys": ["up"],        "command": "cycle_cmdline_history", "args": {"backwards": true}, "context": [{"key": "vi_is_cmdline"}]},
-    {"keys": ["down"],      "command": "cycle_cmdline_history",                               "context": [{"key": "vi_is_cmdline"}]},
-
+    {"keys": ["backspace"], "command": "press_key", "args": {"key": "<bs>"},    "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["end"],       "command": "press_key", "args": {"key": "<end>"},   "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["home"],      "command": "press_key", "args": {"key": "<home>"},  "context": [{"key": "vi_command_mode_aware"}]},
 
@@ -121,79 +134,64 @@
     {"keys": ["Ç"], "command": "press_key", "args": {"key": "Ç"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ñ"], "command": "press_key", "args": {"key": "Ñ"}, "context": [{"key": "vi_command_mode_aware"}]},
 
-    // Note that some plugins set some `CTRL` modifier keymaps in the form
-    // `CTRL+{Char}, {Char}` i.e. press `CTRL+{Char}` followed a character in the
-    // range `{Char}`. This means when  you press `CTRL+{Char}` ST waits for the
-    // next key press.
-    //
-    // This may obviously cause issues where we want to map `CTRL+{Char}` directly
-    // to a command without pressing another key. In these cases the `CTRL`
-    // modifier will need to be pressed twice.
-    //
-    // A common `CTRL` modifiers defined by plugins in `CTRL+{Char}, {Char}`. In
-    // this example it causes an issue with the `CTRL+k` keymap defined for
-    // naviating the overlay i.e. in some cases it needs to be pressed twice to
-    // work.
-
     // Overlay control
-    // alias ctrl+j is an alias of ctrl+n
-    { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    // alias ctrl+k is an alias of ctrl+p
+    { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true},  "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    // aliases of ctrl+n and ctrl+p
+    { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true},  "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     // --
 
-    // Autocomplete control
-    // @todo Add control operand constraint. What is the control operand for the autocomplete popup?
-    // alias ctrl+j is an alias of ctrl+n
-    {"keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    // alias ctrl+k is an alias of ctrl+p
-    {"keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    // Autocomplete control TODO Add control operand constraint (it doesn't look like ST currently supports a control constraint for autocomplete).
+    {"keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true},   "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false},  "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    // aliases of ctrl+n and ctrl+p
+    {"keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true},   "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false},  "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     // --
 
-    {"keys": ["ctrl+c"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+w"], "command": "delete_word", "args": {"forward": false}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+c"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"},  "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+w"], "command": "delete_word", "args": {"forward": false},              "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    {"keys": ["ctrl+a"], "command": "press_key", "args": {"key": "<C-a>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+b"], "command": "press_key", "args": {"key": "<C-b>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+c"], "command": "press_key", "args": {"key": "<C-c>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+d"], "command": "press_key", "args": {"key": "<C-d>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+e"], "command": "press_key", "args": {"key": "<C-e>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f"], "command": "press_key", "args": {"key": "<C-f>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+g"], "command": "press_key", "args": {"key": "<C-g>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+h"], "command": "press_key", "args": {"key": "<C-h>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+i"], "command": "press_key", "args": {"key": "<C-i>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+j"], "command": "press_key", "args": {"key": "<C-j>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+k"], "command": "press_key", "args": {"key": "<C-k>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+l"], "command": "press_key", "args": {"key": "<C-l>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+m"], "command": "press_key", "args": {"key": "<C-m>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+n"], "command": "press_key", "args": {"key": "<C-n>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+o"], "command": "press_key", "args": {"key": "<C-o>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+p"], "command": "press_key", "args": {"key": "<C-p>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+r"], "command": "press_key", "args": {"key": "<C-r>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+q"], "command": "press_key", "args": {"key": "<C-q>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+r"], "command": "press_key", "args": {"key": "<C-r>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+s"], "command": "press_key", "args": {"key": "<C-s>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+t"], "command": "press_key", "args": {"key": "<C-t>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+u"], "command": "press_key", "args": {"key": "<C-u>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+v"], "command": "press_key", "args": {"key": "<C-v>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+w"], "command": "press_key", "args": {"key": "<C-w>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+x"], "command": "press_key", "args": {"key": "<C-x>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+y"], "command": "press_key", "args": {"key": "<C-y>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+z"], "command": "press_key", "args": {"key": "<C-z>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+ç"], "command": "press_key", "args": {"key": "<C-ç>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+ñ"], "command": "press_key", "args": {"key": "<C-ñ>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+a"], "command": "press_key", "args": {"key": "<C-a>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+b"], "command": "press_key", "args": {"key": "<C-b>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+c"], "command": "press_key", "args": {"key": "<C-c>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+d"], "command": "press_key", "args": {"key": "<C-d>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+e"], "command": "press_key", "args": {"key": "<C-e>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f"], "command": "press_key", "args": {"key": "<C-f>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+g"], "command": "press_key", "args": {"key": "<C-g>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+h"], "command": "press_key", "args": {"key": "<C-h>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+i"], "command": "press_key", "args": {"key": "<C-i>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+j"], "command": "press_key", "args": {"key": "<C-j>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+k"], "command": "press_key", "args": {"key": "<C-k>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+l"], "command": "press_key", "args": {"key": "<C-l>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+m"], "command": "press_key", "args": {"key": "<C-m>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+n"], "command": "press_key", "args": {"key": "<C-n>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+o"], "command": "press_key", "args": {"key": "<C-o>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+p"], "command": "press_key", "args": {"key": "<C-p>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+r"], "command": "press_key", "args": {"key": "<C-r>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+q"], "command": "press_key", "args": {"key": "<C-q>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+r"], "command": "press_key", "args": {"key": "<C-r>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+s"], "command": "press_key", "args": {"key": "<C-s>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+t"], "command": "press_key", "args": {"key": "<C-t>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+u"], "command": "press_key", "args": {"key": "<C-u>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+v"], "command": "press_key", "args": {"key": "<C-v>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+w"], "command": "press_key", "args": {"key": "<C-w>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+x"], "command": "press_key", "args": {"key": "<C-x>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+y"], "command": "press_key", "args": {"key": "<C-y>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+z"], "command": "press_key", "args": {"key": "<C-z>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+ç"], "command": "press_key", "args": {"key": "<C-ç>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+ñ"], "command": "press_key", "args": {"key": "<C-ñ>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    {"keys": ["ctrl+["], "command": "press_key", "args": {"key": "<C-[>"}, "context": [{"key": "vi_command_mode_aware"}, 	{"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+["], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+]"], "command": "press_key", "args": {"key": "<C-]>"}, "context": [{"key": "vi_command_mode_aware"}, 	{"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+."], "command": "press_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, 	{"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+["], "command": "press_key", "args": {"key": "<C-[>"},                  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+["], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"},  "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    {"keys": ["ctrl+x"], "command": "press_key", "args": {"key": "<C-x>"}, "context": [{"key": "vi_insert_mode_aware"},     {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+l"], "command": "press_key", "args": {"key": "<C-l>"}, "context": [{"key": "vi_insert_mode_aware"},     {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+]"], "command": "press_key", "args": {"key": "<C-]>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+."], "command": "press_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+
+    {"keys": ["ctrl+x"], "command": "press_key", "args": {"key": "<C-x>"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+l"], "command": "press_key", "args": {"key": "<C-l>"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+
     // {"keys": ["alt+a"], "command": "press_key", "args": {"key": "alt+a"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     // {"keys": ["alt+b"], "command": "press_key", "args": {"key": "alt+b"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     // {"keys": ["alt+c"], "command": "press_key", "args": {"key": "alt+c"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
@@ -406,30 +404,30 @@
     // {"keys": ["shift+ctrl+alt+ç"], "command": "press_key", "args": {"key": "<ctrl+alt+Ç>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     // {"keys": ["shift+ctrl+alt+ñ"], "command": "press_key", "args": {"key": "<ctrl+alt+Ñ>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    {"keys": ["1"], "command": "press_key", "args": {"key": "1"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["2"], "command": "press_key", "args": {"key": "2"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["3"], "command": "press_key", "args": {"key": "3"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["4"], "command": "press_key", "args": {"key": "4"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["5"], "command": "press_key", "args": {"key": "5"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["6"], "command": "press_key", "args": {"key": "6"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["7"], "command": "press_key", "args": {"key": "7"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["8"], "command": "press_key", "args": {"key": "8"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["9"], "command": "press_key", "args": {"key": "9"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["0"], "command": "press_key", "args": {"key": "0"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["º"], "command": "press_key", "args": {"key": "º"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["ª"], "command": "press_key", "args": {"key": "ª"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["!"], "command": "press_key", "args": {"key": "!"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["1"],  "command": "press_key", "args": {"key": "1"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["2"],  "command": "press_key", "args": {"key": "2"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["3"],  "command": "press_key", "args": {"key": "3"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["4"],  "command": "press_key", "args": {"key": "4"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["5"],  "command": "press_key", "args": {"key": "5"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["6"],  "command": "press_key", "args": {"key": "6"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["7"],  "command": "press_key", "args": {"key": "7"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["8"],  "command": "press_key", "args": {"key": "8"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["9"],  "command": "press_key", "args": {"key": "9"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["0"],  "command": "press_key", "args": {"key": "0"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["º"],  "command": "press_key", "args": {"key": "º"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["ª"],  "command": "press_key", "args": {"key": "ª"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["!"],  "command": "press_key", "args": {"key": "!"},  "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["\""], "command": "press_key", "args": {"key": "\""}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["·"], "command": "press_key", "args": {"key": "·"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["$"], "command": "press_key", "args": {"key": "$"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["%"], "command": "press_key", "args": {"key": "%"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["&"], "command": "press_key", "args": {"key": "&"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["/"], "command": "press_key", "args": {"key": "/"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["("], "command": "press_key", "args": {"key": "("}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": [")"], "command": "press_key", "args": {"key": ")"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["="], "command": "press_key", "args": {"key": "="}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["?"], "command": "press_key", "args": {"key": "?"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["¿"], "command": "press_key", "args": {"key": "¿"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["·"],  "command": "press_key", "args": {"key": "·"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["$"],  "command": "press_key", "args": {"key": "$"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["%"],  "command": "press_key", "args": {"key": "%"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["&"],  "command": "press_key", "args": {"key": "&"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["/"],  "command": "press_key", "args": {"key": "/"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["("],  "command": "press_key", "args": {"key": "("},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": [")"],  "command": "press_key", "args": {"key": ")"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["="],  "command": "press_key", "args": {"key": "="},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["?"],  "command": "press_key", "args": {"key": "?"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["¿"],  "command": "press_key", "args": {"key": "¿"},  "context": [{"key": "vi_command_mode_aware"}]},
 
     {"keys": ["ctrl+1"], "command": "press_key", "args": {"key": "<C-1>"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ctrl+2"], "command": "press_key", "args": {"key": "<C-2>"}, "context": [{"key": "vi_command_mode_aware"}]},
@@ -442,15 +440,15 @@
     {"keys": ["ctrl+9"], "command": "press_key", "args": {"key": "<C-9>"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ctrl+0"], "command": "press_key", "args": {"key": "<C-0>"}, "context": [{"key": "vi_command_mode_aware"}]},
 
-    {"keys": ["f1"], "command": "press_key", "args": {"key": "<f1>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f2"], "command": "press_key", "args": {"key": "<f2>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f3"], "command": "press_key", "args": {"key": "<f3>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f4"], "command": "press_key", "args": {"key": "<f4>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f5"], "command": "press_key", "args": {"key": "<f5>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f6"], "command": "press_key", "args": {"key": "<f6>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f7"], "command": "press_key", "args": {"key": "<f7>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f8"], "command": "press_key", "args": {"key": "<f8>"}, "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["f9"], "command": "press_key", "args": {"key": "<f9>"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f1"],  "command": "press_key", "args": {"key": "<f1>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f2"],  "command": "press_key", "args": {"key": "<f2>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f3"],  "command": "press_key", "args": {"key": "<f3>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f4"],  "command": "press_key", "args": {"key": "<f4>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f5"],  "command": "press_key", "args": {"key": "<f5>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f6"],  "command": "press_key", "args": {"key": "<f6>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f7"],  "command": "press_key", "args": {"key": "<f7>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f8"],  "command": "press_key", "args": {"key": "<f8>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["f9"],  "command": "press_key", "args": {"key": "<f9>"},  "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["f10"], "command": "press_key", "args": {"key": "<f10>"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["f11"], "command": "press_key", "args": {"key": "<f11>"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["f12"], "command": "press_key", "args": {"key": "<f12>"}, "context": [{"key": "vi_command_mode_aware"}]},
@@ -468,28 +466,28 @@
     {"keys": ["shift+f11"], "command": "press_key", "args": {"key": "<S-f11>"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+f12"], "command": "press_key", "args": {"key": "<S-f12>"}, "context": [{"key": "vi_command_mode_aware"}]},
 
-    {"keys": ["ctrl+f1"], "command": "press_key", "args": {"key": "<C-f1>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f2"], "command": "press_key", "args": {"key": "<C-f2>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f3"], "command": "press_key", "args": {"key": "<C-f3>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f4"], "command": "press_key", "args": {"key": "<C-f4>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f5"], "command": "press_key", "args": {"key": "<C-f5>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f6"], "command": "press_key", "args": {"key": "<C-f6>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f7"], "command": "press_key", "args": {"key": "<C-f7>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f8"], "command": "press_key", "args": {"key": "<C-f8>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+f9"], "command": "press_key", "args": {"key": "<C-f9>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f1"],  "command": "press_key", "args": {"key": "<C-f1>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f2"],  "command": "press_key", "args": {"key": "<C-f2>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f3"],  "command": "press_key", "args": {"key": "<C-f3>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f4"],  "command": "press_key", "args": {"key": "<C-f4>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f5"],  "command": "press_key", "args": {"key": "<C-f5>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f6"],  "command": "press_key", "args": {"key": "<C-f6>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f7"],  "command": "press_key", "args": {"key": "<C-f7>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f8"],  "command": "press_key", "args": {"key": "<C-f8>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+f9"],  "command": "press_key", "args": {"key": "<C-f9>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+f10"], "command": "press_key", "args": {"key": "<C-f10>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+f11"], "command": "press_key", "args": {"key": "<C-f11>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+f12"], "command": "press_key", "args": {"key": "<C-f12>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    {"keys": ["ctrl+shift+f1"], "command": "press_key", "args": {"key": "<C-S-f1>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f2"], "command": "press_key", "args": {"key": "<C-S-f2>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f3"], "command": "press_key", "args": {"key": "<C-S-f3>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f4"], "command": "press_key", "args": {"key": "<C-S-f4>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f5"], "command": "press_key", "args": {"key": "<C-S-f5>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f6"], "command": "press_key", "args": {"key": "<C-S-f6>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f7"], "command": "press_key", "args": {"key": "<C-S-f7>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f8"], "command": "press_key", "args": {"key": "<C-S-f8>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+shift+f9"], "command": "press_key", "args": {"key": "<C-S-f9>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f1"],  "command": "press_key", "args": {"key": "<C-S-f1>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f2"],  "command": "press_key", "args": {"key": "<C-S-f2>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f3"],  "command": "press_key", "args": {"key": "<C-S-f3>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f4"],  "command": "press_key", "args": {"key": "<C-S-f4>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f5"],  "command": "press_key", "args": {"key": "<C-S-f5>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f6"],  "command": "press_key", "args": {"key": "<C-S-f6>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f7"],  "command": "press_key", "args": {"key": "<C-S-f7>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f8"],  "command": "press_key", "args": {"key": "<C-S-f8>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+shift+f9"],  "command": "press_key", "args": {"key": "<C-S-f9>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+shift+f10"], "command": "press_key", "args": {"key": "<C-S-f10>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+shift+f11"], "command": "press_key", "args": {"key": "<C-S-f11>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+shift+f12"], "command": "press_key", "args": {"key": "<C-S-f12>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]}
