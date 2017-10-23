@@ -62,12 +62,11 @@ Command | Description | Documentation | Dependencies | Notes
 
 Command | Description
 ------- | -----------
-NeoVintageous: Changelog | Open the changelog in a view
-NeoVintageous: Open My .vintageousrc File | Open the runtime configuration file for editing
-NeoVintageous: Readme | Open the readme in a view
-NeoVintageous: Reload My .vintageousrc File | Reload the runtime configuration file
-Preferences: NeoVintageous Settings – Default | Open the default settings
-Preferences: NeoVintageous Settings – User | Open the settings file for editing
+NeoVintageous: Changelog | Open the changelog.
+NeoVintageous: Documentation | Open the documentation.
+NeoVintageous: Open My .vintageousrc File | Open the runtime configuration file for editing.
+NeoVintageous: Reload My .vintageousrc File | Reload the runtime configuration file.
+Preferences: NeoVintageous Settings | Open the settings for editing.
 
 ### Toggle command
 
@@ -75,19 +74,42 @@ The official [ToggleNeoVintageous] plugin provides a command to toggle NeoVintag
 
 ### The .vintageousrc file
 
-A feature comparative to the `.vimrc` file.
+A feature comparative to the `.vimrc` file. The file is located at
+`Packages/User/.vintageousrc` and is read during startup. It can be opened and
+reloaded via the Command Palette.
 
-The file is located at `Packages/User/.vintageousrc` and is read during startup. It can be opened for editing via the Command Palette: `NeoVintageous: Open My .vintageousrc File`. It can be reloaded too: `NeoVintageous: Reload My .vintageousrc File`.
+#### Variables
 
-`let mapleader=`, `noremap`, `nnoremap`, `onoremap`, `vnoremap`, `map`, `nmap`, `omap`, and `vmap` are all supported in basic use-cases. *Note that `map`, `nmap`, `omap`, `vmap` work the same as their `*remap` variants, this is a known issue.*
+To define a mapping which uses the "mapleader" variable, the special string
+"`<leader>`" can be used.  It is replaced with the string value of "mapleader".
+If "mapleader" is not set or empty, a backslash is used instead.
 
-Mapping to basic ex commands is supported in the form `:excommand<CR>`.
+#### Commands
 
-To map to a Sublime Text command, the command must start an uppercase letter, to avoid confusion with builtin ex commands e.g. `:YourCommand<CR>`. The command is converted to snake case.
+Overview of which map commands are supported and in which mode.
+
+Commands | Modes
+-------- | -----
+`map` `noremap` | Normal, Visual, Select, Operator-pending
+`nmap` `nnoremap` | Normal
+`omap` `onoremap` |  Operator-pending
+`vmap` `vnoremap` |  Visual
+
+*Currently the `remap` commands are aliases of the `map` commands, this is a
+known issue.*
+
+Mapping to Command-line mode commands is only supported in the most common
+use-case: `:command<CR>`.
+
+Mapping to Sublime Text commands is supported in the most common use-case:
+`:Command<CR>`. Sublime Text commands must start an uppercase letter, to avoid
+confusion with builtin Command-line mode commands, and are converted to snake
+case e.g. `:ToggleSideBar<CR>` will execute the `toggle_side_bar` Sublime Text
+command.
 
 This is easiest to understand with some examples:
 
-```
+```vim
 " The character " (the double quote mark) starts a comment
 
 let mapleader=,
@@ -110,13 +132,25 @@ nnoremap <C-y> 3<C-y>
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
+
+" Stop the highlighting
+" The :nohlsearch ex command is currently not
+" supported. Pressing Esc is workaround.
+nnoremap <C-l> <Esc>
 
 " Select entire buffer
 nnoremap <leader>vaa ggvGg_
 nnoremap <leader>Vaa ggVG
 
-" Test
+" Sorting
+nnoremap <leader>s vip<F9>o^<Esc>^8<C-y>
+
+" Open
+nnoremap <leader>oc :OpenCommandPalette<CR>
+nnoremap <leader>op :OpenPreferences<CR>
+nnoremap <leader>on :NeovintageousOpenMyRcFile<CR>
+
+" Test plugin
 " https://github.com/gerardroche/sublime-test
 " https://github.com/gerardroche/sublime-phpunit
 nnoremap <leader>t :TestNearest<CR>
@@ -124,6 +158,32 @@ nnoremap <leader>T :TestFile<CR>
 nnoremap <leader>a :TestSuite<CR>
 nnoremap <leader>l :TestLast<CR>
 nnoremap <leader>g :TestVisit<CR>
+```
+
+Two custom commands are used in the above mappings:
+
+```python
+import os
+
+import sublime
+import sublime_plugin
+
+class OpenCommandPaletteCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        self.window.run_command('show_overlay', {
+            'overlay': 'command_palette'
+        })
+
+
+class OpenPreferencesCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        self.window.run_command('open_file', {
+            'file': os.path.join(
+                sublime.packages_path(),
+                'User',
+                'Preferences.sublime-settings'
+            )
+        })
 ```
 
 Read more about mappings and the .vimrc file in the [Vim documentation](https://vimhelp.appspot.com/map.txt.html).
@@ -162,9 +222,13 @@ Once you've created visual selections in select mode, you must return to insert 
 
 ### Plugins out-of-the-box
 
-A number of plugins are provided out-of-the-box. Please open issues about other plugins you would like to see implemented and about plugins you're thinking of writing because we may be willing to add it out-of-the-box.
+A plethora of plugins are provided out-of-the-box.
 
-#### [commentary.vim]
+Open issues about other plugins you would like to see implemented and about
+plugins you're thinking of writing because we may be willing to add it out-of-
+the-box.
+
+#### [commentary.vim][]
 
 Command | Description | Documentation
 ------- | ----------- | -------------
@@ -172,7 +236,7 @@ Command | Description | Documentation
 `gcc` | Comment or uncomment current line. | [commentary.vim][commentary.vim#doc]
 `{Visual}gc` | Comment or uncomment the highlighted lines. | [commentary.vim][commentary.vim#doc]
 
-#### [surround.vim]
+#### [surround.vim][]
 
 Command | Description | Documentation
 ------- | ----------- | -------------
@@ -181,7 +245,7 @@ Command | Description | Documentation
 `ys{motion}{target}` | Yank `{motion}` and surround with `{target}` characters. | [surround.vim][surround.vim#doc]
 
 
-#### [unimpaired.vim]
+#### [unimpaired.vim][]
 
 Command | Description | Dependency | Documentation
 ------- | ----------- | ---------- | -------------
@@ -202,22 +266,39 @@ On | Off | Toggle | Option | Documentation
 `[ot` | `]ot` | `cot` | 'sidebar' | Non-standard i.e. not in the original Unimpaired plugin.
 `[ow` | `]ow` | `cow` | ['wrap'](https://vimhelp.appspot.com/options.txt.html#%27wrap%27) | [unimpaired.vim][unimpaired.vim#doc]
 
+#### [abolish.vim][]
 
-#### [abolish.vim]
+##### Coercion
 
-Command | Description | Documentation
-------- | ----------- | -------------
-`crm` | Coerce word under cursor to MixedCase. | [abolish.vim][abolish.vim#doc]
-`crc` | Coerce word under cursor to camelCase. | [abolish.vim][abolish.vim#doc]
-`crs` | Coerce word under cursor to snake_case. | [abolish.vim][abolish.vim#doc]
-`cr_` | Coerce word under cursor to snake_case. | [abolish.vim][abolish.vim#doc]
-`cru` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim][abolish.vim#doc]
-`crU` | Coerce word under cursor to SNAKE_UPPERCASE. | [abolish.vim][abolish.vim#doc]
-`cr-` | Coerce word under cursor to dash-case. | [abolish.vim][abolish.vim#doc]
-`crk` | Coerce word under cursor to kebab-case. | [abolish.vim][abolish.vim#doc]
-`cr.` | Coerce word under cursor to dot.case. | [abolish.vim][abolish.vim#doc]
-`cr<Space>` | Coerce word under cursor to space case. | [abolish.vim][abolish.vim#doc]
-`crt` | Coerce word under cursor to Title Case. | [abolish.vim][abolish.vim#doc]
+Abolish's case mutating algorithms can be applied to the word under the cursor
+using the cr mapping (mnemonic: CoeRce) followed by one of the following
+characters:
+
+Character | Algorithm
+--------- | ---------
+`m` | MixedCase
+`c` | camelCase
+`s` | snake_case
+`_` | snake_case
+`u` | SNAKE_UPPERCASE
+`U` | SNAKE_UPPERCASE
+`-` | dash-case (not usually reversible; see [abolish-coercion-reversibility](#coercion-reversibility))
+`k` | kebab-case (not usually reversible; see [abolish-coercion-reversibility](#coercion-reversibility))
+`.` | dot.case (not usually reversible; see [abolish-coercion-reversibility](#coercion-reversibility))
+`<Space>` | space case (not usually reversible; see [abolish-coercion-reversibility](#coercion-reversibility))
+`t` | Title Case (not usually reversible; see [abolish-coercion-reversibility](#coercion-reversibility))
+
+For example, cru on a lowercase word is a slightly easier to type equivalent
+to gUiw.
+
+##### Coercion reversibility
+
+Some separators, such as "-" and ".", are listed as "not usually reversible".
+The reason is that these are not "keyword characters", so vim (and
+abolish.vim) will treat them as breaking a word.
+
+For example: "key_word" is a single keyword.  The dash-case version,
+"key-word", is treated as two keywords, "key" and "word".
 
 ## CONFIGURATION
 
@@ -264,6 +345,14 @@ NeoVintageous cannot remap the CapsLock, however it can be remapped at an OS lev
 
     gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 
+### Holding down a key like j does not repeat the command
+
+This is a feature of OS X Lion and newer versions.
+
+To make a key repeat a command when holding it down, run this once at the terminal:
+
+    defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
+
 ### Mapping `jj`, `jk`, `ctrl+[`, etc. to `Esc`
 
 `Preferences > Key Bindings`
@@ -294,14 +383,6 @@ NeoVintageous cannot remap the CapsLock, however it can be remapped at an OS lev
     "context": [{"key": "vi_insert_mode_aware"}]
 }
 ```
-
-### Holding down a key like j does not repeat the command
-
-This is a feature of OS X Lion and newer versions.
-
-To make a key repeat a command when holding it down, run this once at the terminal:
-
-    defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
 
 ### Better search highlighting support
 
