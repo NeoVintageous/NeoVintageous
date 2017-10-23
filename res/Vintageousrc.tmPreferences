@@ -2,7 +2,7 @@
 <plist version="1.0">
 <dict>
     <key>name</key>
-    <string>Comments</string>
+    <string>Vintageousrc (NeoVintageous)</string>
     <key>scope</key>
     <string>source.vintageousrc</string>
     <key>settings</key>
