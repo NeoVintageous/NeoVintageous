@@ -4,7 +4,10 @@ import stat
 import subprocess
 
 from sublime import ENCODED_POSITION
+from sublime import find_resources
 from sublime import FORCE_GROUP
+from sublime import LITERAL
+from sublime import load_resource
 from sublime import MONOSPACE_FONT
 from sublime import ok_cancel_dialog
 from sublime import platform
@@ -50,6 +53,7 @@ __all__ = [
     'ExFile',
     'ExGlobal',
     'ExGoto',
+    'ExHelp',
     'ExLet',
     'ExListRegisters',
     'ExMap',
@@ -166,6 +170,88 @@ class ExGoto(ViWindowCommandBase):
         self.window.run_command('_vi_go_to_line', {'line': line_nr, 'mode': self.state.mode})
         self.window.run_command('_vi_add_to_jump_list')
         self._view.show(self._view.sel()[0])
+
+
+# https://vimhelp.appspot.com/help.txt.html
+class ExHelp(ViWindowCommandBase):
+
+    _tags = {}
+
+    def run(self, command_line):
+        parsed = parse_command_line(command_line)
+        if not parsed:
+            return
+
+        subject = parsed.command.subject
+        if not subject:
+            subject = 'helphelp'
+
+        subject = subject.lower()
+
+        if not self._tags:
+            nvim.console_message('building help tags...')
+
+            tags_resources = [r for r in find_resources(
+                'tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
+
+            if not tags_resources:
+                return nvim.message('tags file not found')
+
+            tags_matcher = re.compile('^([^\s]+)\s+([^\s]+)\s+(.+)$')
+            tags_resource = load_resource(tags_resources[0])
+            for line in tags_resource.split('\n'):
+                if line:
+                    match = tags_matcher.match(line)
+                    self._tags[match.group(1).lower()] = (match.group(2), match.group(3))
+
+            nvim.console_message('finished building help tags')
+
+        if subject not in self._tags:
+            return nvim.message('E149: Sorry, no help for %s' % subject)
+
+        tag = self._tags[subject]
+
+        doc_resources = [r for r in find_resources(
+            tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
+
+        if not doc_resources:
+            return nvim.message('no help file found for %s' % tag[0])
+
+        help_name_prefix = 'help'
+        help_name_postfix = 'NeoVintageous'
+
+        for view in self.window.views():
+            if view.name().startswith(help_name_prefix):
+                if view.name().endswith(help_name_postfix):
+                    view.close()
+
+        help_view = self.window.new_file()
+        help_view.set_scratch(True)
+        help_view.settings().set('auto_indent', False)
+        help_view.settings().set('smart_indent', False)
+        help_view.settings().set('translate_tabs_to_spaces', False)
+        help_view.settings().set('trim_automatic_white_space', False)
+        help_view.settings().set('tab_size', 8)
+        help_view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
+        help_view.set_name('%s | %s | %s' % (help_name_prefix, tag[0], help_name_postfix))
+        help_view.run_command('insert', {'characters': load_resource(doc_resources[0])})
+
+        # Format the tag so that we can
+        # do a literal search rather
+        # than regular expression.
+        tag_region = help_view.find(tag[1].lstrip('/'), 0, LITERAL)
+
+        # Add one point so that the cursor is
+        # on the tag rather than the tag
+        # punctuation star character.
+        c_pt = tag_region.begin() + 1
+
+        help_view.sel().clear()
+        help_view.sel().add(c_pt)
+        help_view.show(c_pt, False)
+        help_view.run_command('scroll_lines', {
+            'amount': help_view.settings().get('vintageous_scrolloff')
+        })
 
 
 # https://vimhelp.appspot.com/various.txt.html#:%21

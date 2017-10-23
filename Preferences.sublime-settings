@@ -37,6 +37,11 @@
     // https://vimhelp.appspot.com/options.txt.html#'modeline'
     "vintageous_modeline": false,
 
+    // {currently only works in a few situations}
+    // Minimal number of screen lines to keep above and below the cursor.
+    // https://vimhelp.appspot.com/options.txt.html#'scrolloff'
+    "vintageous_scrolloff": 5,
+
     // Ignore case in search patterns ('/', '?', '*', and '#').
     // https://vimhelp.appspot.com/options.txt.html#'ignorecase'
     "vintageous_ignorecase": true,

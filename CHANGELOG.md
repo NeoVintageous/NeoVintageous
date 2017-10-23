@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `:h[elp]` open a view and display the help file
+* Added: `:h[elp] {subject}` like ":help", additionally jump to the tag `{subject}`
 * Added: `gx` open url under cursor in browser
 * Added: Support for `:UserCommand<CR>` `.vintageousrc` mappings
 * Added: Support for `:excommand<CR>` `.vintageousrc` mappings

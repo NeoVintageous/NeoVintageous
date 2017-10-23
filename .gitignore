@@ -4,12 +4,6 @@
 # operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
-!/lib/
-!/tests/lib/
-/covhtml/
-/dist/
-/tmp/
-
 # Byte-compiled / optimized / DLL files
 /__pycache__/
 /*.py[cod]
@@ -27,3 +21,11 @@ Session.vim
 .netrwhist
 *~
 tags
+
+# Project
+!/lib/
+!/tests/lib/
+!/res/doc/tags
+/covhtml/
+/dist/
+/tmp/
