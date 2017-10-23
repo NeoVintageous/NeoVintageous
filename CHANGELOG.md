@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `gx` open url under cursor in browser
 * Added: Support for `:UserCommand<CR>` `.vintageousrc` mappings
 * Added: Support for `:excommand<CR>` `.vintageousrc` mappings
 * Added: `:snoremap` command

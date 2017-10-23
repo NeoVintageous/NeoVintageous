@@ -1,5 +1,6 @@
 from functools import partial
 import re
+import webbrowser
 
 from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
@@ -103,6 +104,7 @@ __all__ = [
     '_vi_gu',
     '_vi_guu',
     '_vi_gv',
+    '_vi_gx',
     '_vi_less_than',
     '_vi_less_than_less_than',
     '_vi_m',
@@ -2260,6 +2262,33 @@ class _vi_gv(IrreversibleTextCommand):
         self.view.window().run_command('_enter_visual_mode', {'mode': mode})
         self.view.sel().clear()
         self.view.sel().add_all(sels)
+
+
+# https://vimhelp.appspot.com/pi_netrw.txt.html#netrw-gx
+class _vi_gx(IrreversibleTextCommand):
+
+    URL_REGEX = r"""(?x)
+        .*(?P<url>
+            https?://               # http:// or https://
+            (?:www\.)?              # www.
+            (?:[a-zA-Z0-9]+\.)+     # domain
+            [a-zA-Z]+               # tld
+            /?[a-zA-Z0-9\-._?,!'(){}\[\]/+&@%$#=:"|~;]*     # url path
+        )
+    """
+
+    def run(self, mode=None, count=None):
+        if len(self.view.sel()) != 1:
+            return
+
+        sel = self.view.sel()[0]
+        line = self.view.line(sel)
+        text = self.view.substr(line)
+
+        m = re.match(self.URL_REGEX, text)
+        if m:
+            url = m.group('url')
+            webbrowser.open_new_tab(url)
 
 
 # https://vimhelp.appspot.com/scroll.txt.html#CTRL-E

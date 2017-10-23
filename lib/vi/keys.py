@@ -218,6 +218,7 @@ class seqs:
     GUGU = 'gugu'
     GUU = 'guu'
     GV = 'gv'
+    GX = 'gx'
     H = 'h'
     HAT = '^'
     HOME = '<home>'

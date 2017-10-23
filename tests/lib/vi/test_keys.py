@@ -316,6 +316,7 @@ _TESTS_KNOWN_SEQUENCES = (
     _seq_test(actual=seqs.GUGU, expected='gugu'),
     _seq_test(actual=seqs.GUU, expected='guu'),
     _seq_test(actual=seqs.GV, expected='gv'),
+    _seq_test(actual=seqs.GX, expected='gx'),
     _seq_test(actual=seqs.H, expected='h'),
     _seq_test(actual=seqs.HAT, expected='^'),
     _seq_test(actual=seqs.HOME, expected='<home>'),

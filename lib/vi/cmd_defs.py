@@ -1251,6 +1251,18 @@ class ViRestoreVisualSelections(ViOperatorDef):
         }
 
 
+@keys.assign(seq=seqs.GX, modes=_MODES_ACTION)
+class NetrwGx(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_vi_gx',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
 @keys.assign(seq=seqs.CTRL_K_CTRL_B, modes=_MODES_ACTION)
 class StToggleSidebar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
