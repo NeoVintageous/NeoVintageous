@@ -83,22 +83,22 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
     def test_filter_command_with_multiple_options_through_shell(self):
         self.write("a\none two\nb")
         self.select(2)
-        self.view.run_command('ex_shell_out', {'command_line': '.! wc --chars'})
+        self.view.run_command('ex_shell_out', {'command_line': '.! wc -m'})
         self.assertContentMatches(r'a\n\s*8\nb')
 
         self.write("a\none two\nb")
         self.select(2)
-        self.view.run_command('ex_shell_out', {'command_line': '.! wc --words --chars'})
+        self.view.run_command('ex_shell_out', {'command_line': '.! wc -w -m'})
         self.assertContentMatches(r'a\n\s*2\s+8\nb')
 
         self.write("a\none two\nb")
         self.select(2)
-        self.view.run_command('ex_shell_out', {'command_line': '.! wc --lines --words --chars'})
+        self.view.run_command('ex_shell_out', {'command_line': '.! wc -l -w -m'})
         self.assertContentMatches(r'a\n\s*1\s*2\s+8\nb')
 
     @skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_filter_piped_command_through_shell(self):
         self.write("a\none two\nb")
         self.select(2)
-        self.view.run_command('ex_shell_out', {'command_line': '.! echo "one two" | wc --words --chars'})
+        self.view.run_command('ex_shell_out', {'command_line': '.! echo "one two" | wc -w -m'})
         self.assertContentMatches(r'\s*2\s*8')
