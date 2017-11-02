@@ -187,6 +187,8 @@
     {"keys": ["ctrl+["], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"},  "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
     {"keys": ["ctrl+]"], "command": "press_key", "args": {"key": "<C-]>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+]"], "command": "_neovintageous_help_goto", "context": [{"key": "selector", "operand": "text.neovintageous.help"}]},
+
     {"keys": ["ctrl+."], "command": "press_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
     {"keys": ["ctrl+x"], "command": "press_key", "args": {"key": "<C-x>"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},

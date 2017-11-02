@@ -34,6 +34,7 @@ from NeoVintageous.lib.vi.utils import show_ipanel
 
 
 __all__ = [
+    '_neovintageous_help_goto',
     '_vi_add_to_jump_list',
     '_vi_adjust_carets',
     '_vi_question_mark_on_parser_done',
@@ -62,6 +63,35 @@ _EX_HISTORY = {
     'cmdline': [],
     'searches': []
 }
+
+
+# TODO Add status messages e.g. for no docs found, etc.
+class _neovintageous_help_goto(ViWindowCommandBase):
+    def run(self):
+        view = self.window.active_view()
+        pt = view.sel()[0]
+        scope = view.scope_name(pt.begin()).rstrip()
+
+        # TODO Fix jumptags scopes (rename them to less generic scopes)
+        jumptag_scopes = [
+            'text.neovintageous.help string.neovintageous',
+            'text.neovintageous.help support.constant.neovintageous'
+        ]
+
+        if scope not in jumptag_scopes:
+            return
+
+        subject = view.substr(view.extract_scope(pt.begin()))
+
+        if len(subject) < 3:
+            return
+
+        match = re.match('^\'[a-z_]+\'|\|[^\s\|]+\|$', subject)
+        if match:
+            subject = subject.strip('|')
+            # TODO Refactor ex_help code into a reusable middle layer so that
+            # this command doesn't have to call the ex command.
+            self.window.run_command('ex_help', {'command_line': 'help ' + subject})
 
 
 def _update_command_line_history(slot_name, item):
@@ -659,6 +689,7 @@ class ViSettingCompletion(TextCommand):
                 return
 
 
+# TODO Refactor jumplist and history into descrete module
 class _vi_add_to_jump_list(WindowCommand):
     def run(self):
         get_jump_history(self.window.id()).push_selection(self.window.active_view())

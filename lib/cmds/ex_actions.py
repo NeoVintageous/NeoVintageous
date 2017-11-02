@@ -189,7 +189,7 @@ class ExHelp(ViWindowCommandBase):
         subject = subject.lower()
 
         if not self._tags:
-            nvim.console_message('building help tags...')
+            nvim.console_message('initializing help tags...')
 
             tags_resources = [r for r in find_resources(
                 'tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
@@ -204,7 +204,7 @@ class ExHelp(ViWindowCommandBase):
                     match = tags_matcher.match(line)
                     self._tags[match.group(1).lower()] = (match.group(2), match.group(3))
 
-            nvim.console_message('finished building help tags')
+            nvim.console_message('finished initializing help tags')
 
         if subject not in self._tags:
             return nvim.message('E149: Sorry, no help for %s' % subject)
@@ -217,24 +217,28 @@ class ExHelp(ViWindowCommandBase):
         if not doc_resources:
             return nvim.message('no help file found for %s' % tag[0])
 
-        help_name_prefix = 'help'
-        help_name_postfix = 'NeoVintageous'
+        # TODO REFACTOR into reusable api
+        def window_find_open_view(window, name):
+            for view in self.window.views():
+                if view.name() == name:
+                    return view
 
-        for view in self.window.views():
-            if view.name().startswith(help_name_prefix):
-                if view.name().endswith(help_name_postfix):
-                    view.close()
+        help_view_name = '%s [vim help]' % (tag[0])
+        help_view = window_find_open_view(self.window, help_view_name)
+        if help_view:
+            self.window.focus_view(help_view)
 
-        help_view = self.window.new_file()
-        help_view.set_scratch(True)
-        help_view.settings().set('auto_indent', False)
-        help_view.settings().set('smart_indent', False)
-        help_view.settings().set('translate_tabs_to_spaces', False)
-        help_view.settings().set('trim_automatic_white_space', False)
-        help_view.settings().set('tab_size', 8)
-        help_view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
-        help_view.set_name('%s | %s | %s' % (help_name_prefix, tag[0], help_name_postfix))
-        help_view.run_command('insert', {'characters': load_resource(doc_resources[0])})
+        if not help_view:
+            help_view = self.window.new_file()
+            help_view.set_scratch(True)
+            help_view.set_name(help_view_name)
+            help_view.settings().set('auto_indent', False)
+            help_view.settings().set('smart_indent', False)
+            help_view.settings().set('translate_tabs_to_spaces', False)
+            help_view.settings().set('trim_automatic_white_space', False)
+            help_view.settings().set('tab_size', 8)
+            help_view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
+            help_view.run_command('insert', {'characters': load_resource(doc_resources[0])})
 
         # Format the tag so that we can
         # do a literal search rather
@@ -249,9 +253,11 @@ class ExHelp(ViWindowCommandBase):
         help_view.sel().clear()
         help_view.sel().add(c_pt)
         help_view.show(c_pt, False)
-        help_view.run_command('scroll_lines', {
-            'amount': help_view.settings().get('vintageous_scrolloff')
-        })
+
+        # TODO fix scrolloff properly in the core for all commands
+        # help_view.run_command('scroll_lines', {
+        #     'amount': help_view.settings().get('vintageous_scrolloff')
+        # })
 
 
 # https://vimhelp.appspot.com/various.txt.html#:%21
