@@ -10,10 +10,13 @@ contexts:
     - match: \*[^*\s]+\*
       scope: entity.name.neovintageous
 
-    - match: \'[a-z][a-z]+\'
+    - match: \'[a-z][a-z_]+\'
       scope: string.neovintageous
 
     - include: jumptags
+
+    - match: \bhttps://[a-zA-Z0-9\.\\/]+\b
+      scope: markup.underline.link.neovintageous
 
     - match: \<[^\>\s]+\>
       scope: markup.raw.inline.neovintageous
@@ -21,11 +24,29 @@ contexts:
     - match: \`[a-z]+\`
       scope: markup.raw.inline.neovintageous
 
+    - match: CTRL-SHIFT-[a-zA-Z]+
+      scope: markup.raw.inline.neovintageous
+
+    - match: CTRL-[a-zA-Z]+
+      scope: markup.raw.inline.neovintageous
+
     - match: CTRL-\{[^}]+\}
       scope: markup.raw.inline.neovintageous
 
     - match: CTRL-[^\s]
       scope: markup.raw.inline.neovintageous
+
+    - match: (?:META|ALT)-\.
+      scope: markup.raw.inline.neovintageous
+
+    - match: ^\s+\*Note\s+.*$
+      scope: markup.inserted.neovintageous
+
+    - match: ^\s+\*Todo\s+.*$
+      scope: markup.ignored.neovintageous
+
+    - match: ^\s+\*Error\s+.*$
+      scope: markup.deleted.neovintageous
 
     - match: \{(?=[a-zA-Z])
       scope: markup.raw.inline.neovintageous
@@ -49,13 +70,20 @@ contexts:
     - match: ^\>$
       push:
         - meta_scope: markup.raw.block.neovintageous
-        - match: ^\<$
+        - match: ^\s*\<$
           pop: true
 
     - match: (?<=\:\s)\>$
       push:
         - meta_scope: markup.raw.block.neovintageous
-        - match: (^(?=[^\s]))
+        # - match: (^(?=[^\s]))
+        - match: (^\s*\<$|^(?=[^\s]))
+          pop: true
+
+    - match: (?<=\:\s)\>$
+      push:
+        - meta_scope: markup.raw.block.neovintageous
+        - match: ^\s*\<$
           pop: true
 
     - match: ^([A-Z\-\s]+)\s+(\*[^\*]+\*)$

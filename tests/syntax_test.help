@@ -22,6 +22,10 @@ Introduction to Vim                 *ref* *reference*
 
 ==============================================================================
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment
+
+------------------------------------------------------------------------------
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment
+
 1. Introduction                     *intro*
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
 #                                   ^^^^^^^ entity.name
@@ -120,6 +124,8 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 # ^^^^^^^^ string
 . 'helpfile'
 # ^^^^^^^^^^ string
+. 'option_underscore'
+# ^^^^^^^^^^^^^^^^^^^ string
 . 'c'
 # ^^^ - string
 . 'INVALID'
@@ -132,6 +138,36 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 # ^^^^^^^^^^ - string
 
 .. [count]
+#  ^^^^^^^ markup.raw.inline
+.. [range]
+#  ^^^^^^^ markup.raw.inline
+.. [line]
+#  ^^^^^^ markup.raw.inline
+.. [count]
+#  ^^^^^^^ markup.raw.inline
+.. [offset]
+#  ^^^^^^^^ markup.raw.inline
+.. [cmd]
+#  ^^^^^ markup.raw.inline
+.. [num]
+#  ^^^^^ markup.raw.inline
+.. [+num]
+#  ^^^^^^ markup.raw.inline
+.. [-num]
+#  ^^^^^^ markup.raw.inline
+.. [+cmd]
+#  ^^^^^^ markup.raw.inline
+.. [++opt]
+#  ^^^^^^^ markup.raw.inline
+.. [arg]
+#  ^^^^^ markup.raw.inline
+.. [arguments]
+#  ^^^^^^^^^^^ markup.raw.inline
+.. [ident]
+#  ^^^^^^^ markup.raw.inline
+.. [addr]
+#  ^^^^^^ markup.raw.inline
+.. [group]
 #  ^^^^^^^ markup.raw.inline
 .. :foo[bar]
 #  ^^^^^^^^^ -markup.raw.inline
@@ -158,6 +194,22 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 # ^^^^^^ markup.raw.inline
 . CTRL-{char}
 # ^^^^^^^^^^^ markup.raw.inline
+. CTRL-Break
+# ^^^^^^^^^^ markup.raw.inline
+. CTRL-Del
+# ^^^^^^^^ markup.raw.inline
+. CTRL-PageDown
+# ^^^^^^^^^^^^^ markup.raw.inline
+. CTRL-P
+# ^^^^^^ markup.raw.inline
+. CTRL-SHIFT-P
+# ^^^^^^^^^^^^ markup.raw.inline
+. CTRL-.
+# ^^^^^^ markup.raw.inline
+. META-.
+# ^^^^^^ markup.raw.inline
+. ALT-.
+# ^^^^^ markup.raw.inline
 
 . {Visual}
 # ^^^^^^^^ markup.raw.inline
@@ -171,6 +223,9 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 #   ^^^^^^^^ markup.raw.inline
 . {Visual}[x
 # ^^^^^^^^ markup.raw.inline
+
+                                        {NeoVintageous specific}
+#                                       ^^^^^^^^^^^^^^^^^^^^^^^^ markup.raw.inline
 
 ..{Multi
 # ^^^^^^ markup.raw.inline
@@ -192,32 +247,45 @@ text}
                             *}*
 #                           ^^^ -markup.raw
 
+https://example.com
+^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+https://example.com/x/y
+^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+https://example.com/X/Y
+^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+https://example.com/1/2
+^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+    *Todo ...
+    ^^^^^^^^^ markup.ignored
+    *Error ...
+    ^^^^^^^^^^ markup.deleted
+    *Note ...
+    ^^^^^^^^^ markup.inserted
+
 >
     code...
     # ^^^^^ markup.raw.block
 <
 
-To get a literal "<lt>" in a mapping: >
-    #                                 ^ markup.raw.block
-    Block terminated by newline
-    # ^^^^^^^^^^^^^^^^ markup.raw.block
+    Previous < character should terminate code block
+    # ^ -markup.raw
 
-Examples for mapping CTRL-H to the six characters "<Home>": >
-    #                                                       ^ markup.raw.block
-    Block terminated by text
-    # ^^^^^^^^^^^^^^^^^ markup.raw.block
-Text
-# ^^ -markup.raw
+Text: >
+    # ^ markup.raw.block
+    code...
+    # ^^^^^ markup.raw.block
+Text at zero column terminates code block
+# ^ -markup.raw
 
-        >
-#       ^ -markup.raw
+Text: >
+    # ^ markup.raw.block
+    code...
+    # ^^^^^ markup.raw.block
+    <
 
-this: >
-
-    Block that starts with blank
-    line and terminates with text
-    # ^^ markup.raw.block
-Text
-# ^^ -markup.raw
-
-Mnemonic: encoding always comes before decoding; "[" always comes before "]".
+    Previous < character should terminate code block
+    # ^ -markup.raw
