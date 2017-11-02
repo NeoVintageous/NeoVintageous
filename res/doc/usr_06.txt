@@ -1,4 +1,4 @@
-*usr_06.txt*	For Vim version 8.0.  Last change: 2009 Oct 28
+*usr_06.txt*	Nvim
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -35,17 +35,17 @@ easy to overview the file.  After a while you will find that black&white text
 slows you down!
 
 If you always want to use syntax highlighting, put the ":syntax enable"
-command in your |vimrc| file.
+command in your |init.vim| file.
 
 If you want syntax highlighting only when the terminal supports colors, you
-can put this in your |vimrc| file: >
+can put this in your |init.vim| file: >
 
 	if &t_Co > 1
 	   syntax enable
 	endif
 
 If you want syntax highlighting only in the GUI version, put the ":syntax
-enable" command in your |gvimrc| file.
+enable" command in your |ginit.vim| file.
 
 ==============================================================================
 *06.2*	No or wrong colors?
@@ -55,8 +55,7 @@ There can be a number of reasons why you don't see colors:
 - Your terminal does not support colors.
 	Vim will use bold, italic and underlined text, but this doesn't look
 	very nice.  You probably will want to try to get a terminal with
-	colors.  For Unix, I recommend the xterm from the XFree86 project:
-	|xfree-xterm|.
+	colors.
 
 - Your terminal does support colors, but Vim doesn't know this.
 	Make sure your $TERM setting is correct.  For example, when using an
@@ -68,9 +67,7 @@ There can be a number of reasons why you don't see colors:
 
 		TERM=xterm-color; export TERM
 
-<	The terminal name must match the terminal you are using.  If it
-	still doesn't work, have a look at |xterm-color|, which shows a few
-	ways to make Vim display colors (not only for an xterm).
+<	The terminal name must match the terminal you are using.
 
 - The file type is not recognized.
 	Vim doesn't know all file types, and sometimes it's near to impossible
@@ -144,15 +141,15 @@ the GUI use the Edit/Color Scheme menu.  You can also type the command: >
 want to try out.  Look in the directory $VIMRUNTIME/colors.
 
 When you found the color scheme that you like, add the ":colorscheme" command
-to your |vimrc| file.
+to your |init.vim| file.
 
 You could also write your own color scheme.  This is how you do it:
 
 1. Select a color scheme that comes close.  Copy this file to your own Vim
    directory.  For Unix, this should work: >
 
-	!mkdir ~/.vim/colors
-	!cp $VIMRUNTIME/colors/morning.vim ~/.vim/colors/mine.vim
+	!mkdir -p ~/.config/nvim/colors
+	!cp $VIMRUNTIME/colors/morning.vim ~/.config/nvim/colors/mine.vim
 <
    This is done from Vim, because it knows the value of $VIMRUNTIME.
 

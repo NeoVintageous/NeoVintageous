@@ -1,4 +1,4 @@
-*remote.txt*    For Vim version 8.0.  Last change: 2017 Aug 01
+*remote.txt*    Nvim
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6,11 +6,7 @@
 
 Vim client-server communication				*client-server*
 
-1. Common functionality		|clientserver|
-2. X11 specific items		|x11-clientserver|
-3. MS-Windows specific items	|w32-clientserver|
-
-{Vi does not have any of these commands}
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Common functionality					*clientserver*
@@ -59,11 +55,6 @@ The following command line arguments are available:
 						*--remote-tab-wait-silent*
    --remote-tab-wait-silent	Like --remote-wait-silent but open each file
 				in a new tabpage.
-								*--servername*
-   --servername {name}		Become the server {name}.  When used together
-				with one of the --remote commands: connect to
-				server {name} instead of the default (see
-				below).
 								*--remote-send*
    --remote-send {keys}		Send {keys} to server and exit.  The {keys}
    				are not mapped.  Special key names are
@@ -72,9 +63,6 @@ The following command line arguments are available:
 								*--remote-expr*
    --remote-expr {expr}		Evaluate {expr} in server and print the result
 				on stdout.
-								*--serverlist*
-   --serverlist			Output a list of server names.
-
 
 Examples ~
 
@@ -99,7 +87,7 @@ Tell the remote server "BLA" to write all files and exit: >
     vim --servername BLA --remote-send '<C-\><C-N>:wqa<CR>'
 
 
-SERVER NAME						*client-server-name*
+SERVER NAME
 
 By default Vim will try to register the name under which it was invoked (gvim,
 egvim ...).  This can be overridden with the --servername argument.  If the
@@ -149,7 +137,6 @@ the description in |eval.txt| or use CTRL-] on the function name to jump to
 the full explanation.
 
     synopsis				     explanation ~
-    remote_startserver( name)		     run a server
     remote_expr( server, string, idvar)      send expression
     remote_send( server, string, idvar)      send key sequence
     serverlist()			     get a list of available servers
@@ -196,8 +183,7 @@ version compiled with OLE.  Windows messages are used, this works on any
 version of MS-Windows.  But only communication within one system is possible.
 
 Since MS-Windows messages are used, any other application should be able to
-communicate with a Vim server.  An alternative is using the OLE functionality
-|ole-interface|.
+communicate with a Vim server.
 
 When using gvim, the --remote-wait only works properly this way: >
 

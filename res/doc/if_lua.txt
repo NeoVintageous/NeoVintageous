@@ -1,43 +1,169 @@
-*if_lua.txt*    For Vim version 8.0.  Last change: 2015 Oct 16
+*if_lua.txt*    Nvim
 
 
-		  VIM REFERENCE MANUAL    by Luis Carvalho
+			    NVIM REFERENCE MANUAL
 
 
-The Lua Interface to Vim				*lua* *Lua*
+Lua Interface to Nvim					*lua* *Lua*
 
-1. Commands			|lua-commands|
-2. The vim module		|lua-vim|
-3. List userdata		|lua-list|
-4. Dict userdata		|lua-dict|
-5. Funcref userdata		|lua-funcref|
-6. Buffer userdata		|lua-buffer|
-7. Window userdata		|lua-window|
-8. The luaeval function		|lua-luaeval|
-9. Dynamic loading		|lua-dynamic|
-
-{Vi does not have any of these commands}
-
-The Lua interface is available only when Vim was compiled with the
-|+lua| feature.
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
-1. Commands						*lua-commands*
+Importing modules					*lua-require*
+
+Nvim automatically adjusts `package.path` and `package.cpath` according to
+effective 'runtimepath' value.  Adjustment happens whenever 'runtimepath' is
+changed.  `package.path` is adjusted by simply appending `/lua/?.lua` and
+`/lua/?/init.lua` to each directory from 'runtimepath' (`/` is actually the
+first character of `package.config`).
+
+Similarly to `package.path`, modified directories from 'runtimepath' are also
+added to `package.cpath`.  In this case, instead of appending `/lua/?.lua` and
+`/lua/?/init.lua` to each runtimepath, all unique `?`-containing suffixes of
+the existing `package.cpath` are used.  Example:
+
+1. Given that
+   - 'runtimepath' contains `/foo/bar,/xxx;yyy/baz,/abc`;
+   - initial (defined at compile time or derived from 
+     `$LUA_CPATH`/`$LUA_INIT`) `package.cpath` contains 
+     `./?.so;/def/ghi/a?d/j/g.elf;/def/?.so`.
+2. It finds `?`-containing suffixes `/?.so`, `/a?d/j/g.elf` and `/?.so`, in 
+   order: parts of the path starting from the first path component containing 
+   question mark and preceding path separator.
+3. The suffix of `/def/?.so`, namely `/?.so` is not unique, as it’s the same 
+   as the suffix of the first path from `package.path` (i.e. `./?.so`).  Which 
+   leaves `/?.so` and `/a?d/j/g.elf`, in this order.
+4. 'runtimepath' has three paths: `/foo/bar`, `/xxx;yyy/baz` and `/abc`.  The 
+   second one contains semicolon which is a paths separator so it is out, 
+   leaving only `/foo/bar` and `/abc`, in order.
+5. The cartesian product of paths from 4. and suffixes from 3. is taken, 
+   giving four variants. In each variant `/lua` path segment is inserted 
+   between path and suffix, leaving
+
+   - `/foo/bar/lua/?.so`
+   - `/foo/bar/lua/a?d/j/g.elf`
+   - `/abc/lua/?.so`
+   - `/abc/lua/a?d/j/g.elf`
+
+6. New paths are prepended to the original `package.cpath`.
+
+The result will look like this:
+
+    `/foo/bar,/xxx;yyy/baz,/abc` ('runtimepath')
+    × `./?.so;/def/ghi/a?d/j/g.elf;/def/?.so` (`package.cpath`)
+
+    = `/foo/bar/lua/?.so;/foo/bar/lua/a?d/j/g.elf;/abc/lua/?.so;/abc/lua/a?d/j/g.elf;./?.so;/def/ghi/a?d/j/g.elf;/def/?.so`
+
+Note: to keep up with 'runtimepath' updates paths added at previous update are 
+remembered and removed at the next update, while all paths derived from the 
+new 'runtimepath' are prepended as described above.  This allows removing 
+paths when path is removed from 'runtimepath', adding paths when they are 
+added and reordering `package.path`/`package.cpath` content if 'runtimepath' 
+was reordered.
+
+Note 2: even though adjustments happens automatically Nvim does not track 
+current values of `package.path` or `package.cpath`.  If you happened to 
+delete some paths from there you need to reset 'runtimepath' to make them 
+readded.  Just running `let &runtimepath = &runtimepath` should work.
+
+Note 3: skipping paths from 'runtimepath' which contain semicolons applies 
+both to `package.path` and `package.cpath`.  Given that there is a number of 
+badly written plugins using shell which will not work with paths containing 
+semicolons it is better to not have them in 'runtimepath' at all.
+
+------------------------------------------------------------------------------
+Example of a plugin that uses lua modules		*lua-require-example*
+
+The following example plugin adds a command `:MakeCharBlob` which transforms 
+current buffer into a long `unsigned char` array.  Lua contains transformation 
+function in a module `lua/charblob.lua` which is imported in 
+`autoload/charblob.vim` (`require("charblob")`).  Example plugin is supposed 
+to be put into any directory from 'runtimepath', e.g. `~/.config/nvim` (in 
+this case `lua/charblob.lua` means `~/.config/nvim/lua/charblob.lua`).
+
+autoload/charblob.vim: >
+
+	function charblob#encode_buffer()
+	  call setline(1, luaeval(
+	  \    'require("charblob").encode(unpack(_A))',
+	  \    [getline(1, '$'), &textwidth, '  ']))
+	endfunction
+
+plugin/charblob.vim: >
+
+	if exists('g:charblob_loaded')
+	  finish
+	endif
+	let g:charblob_loaded = 1
+
+	command MakeCharBlob :call charblob#encode_buffer()
+
+lua/charblob.lua: >
+
+	local function charblob_bytes_iter(lines)
+	  local init_s = {
+	    next_line_idx = 1,
+	    next_byte_idx = 1,
+	    lines = lines,
+	  }
+	  local function next(s, _)
+	    if lines[s.next_line_idx] == nil then
+	      return nil
+	    end
+	    if s.next_byte_idx > #(lines[s.next_line_idx]) then
+	      s.next_line_idx = s.next_line_idx + 1
+	      s.next_byte_idx = 1
+	      return ('\n'):byte()
+	    end
+	    local ret = lines[s.next_line_idx]:byte(s.next_byte_idx)
+	    if ret == ('\n'):byte() then
+	      ret = 0  -- See :h NL-used-for-NUL.
+	    end
+	    s.next_byte_idx = s.next_byte_idx + 1
+	    return ret
+	  end
+	  return next, init_s, nil
+	end
+
+	local function charblob_encode(lines, textwidth, indent)
+	  local ret = {
+	    'const unsigned char blob[] = {',
+	    indent,
+	  }
+	  for byte in charblob_bytes_iter(lines) do
+	    --                .- space + number (width 3) + comma
+	    if #(ret[#ret]) + 5 > textwidth then
+	      ret[#ret + 1] = indent
+	    else
+	      ret[#ret] = ret[#ret] .. ' '
+	    end
+	    ret[#ret] = ret[#ret] .. (('%3u,'):format(byte))
+	  end
+	  ret[#ret + 1] = '};'
+	  return ret
+	end
+
+	return {
+	  bytes_iter = charblob_bytes_iter,
+	  encode = charblob_encode,
+	}
+
+==============================================================================
+Commands						*lua-commands*
 
 							*:lua*
 :[range]lua {chunk}
-			Execute Lua chunk {chunk}.    {not in Vi}
+			Execute Lua chunk {chunk}.
 
 Examples:
 >
-	:lua print("Hello, Vim!")
-	:lua local curbuf = vim.buffer() curbuf[7] = "line #7"
+	:lua vim.api.nvim_command('echo "Hello, Nvim!"')
 <
 
 :[range]lua << {endmarker}
 {script}
 {endmarker}
-			Execute Lua script {script}.  {not in Vi}
+			Execute Lua script {script}.
 			Note: This command doesn't work when the Lua
 			feature wasn't compiled in.  To avoid errors, see
 			|script-here|.
@@ -52,13 +178,17 @@ Example:
 >
 	function! CurrentLineInfo()
 	lua << EOF
-	local linenr = vim.window().line
-	local curline = vim.buffer()[linenr]
-	print(string.format("Current line [%d] has %d chars",
+	local linenr = vim.api.nvim_win_get_cursor(0)[1]
+	local curline = vim.api.nvim_buf_get_lines(
+		0, linenr, linenr + 1, false)[1]
+	print(string.format("Current line [%d] has %d bytes",
 		linenr, #curline))
 	EOF
 	endfunction
-<
+
+Note that the variables are prefixed with `local`: they will disappear when
+block finishes. This is not the case for globals.
+
 To see what version of Lua you have: >
 	:lua print(_VERSION)
 
@@ -74,7 +204,6 @@ If you use LuaJIT you can also use this: >
 			If the value returned by the function is a string it
 			becomes the text of the line in the current turn. The
 			default for [range] is the whole file: "1,$".
-							{not in Vi}
 
 Examples:
 >
@@ -88,7 +217,7 @@ Examples:
 
 							*:luafile*
 :[range]luafile {file}
-			Execute Lua script in {file}. {not in Vi}
+			Execute Lua script in {file}.
 			The whole argument is used as a single file name.
 
 Examples:
@@ -101,336 +230,136 @@ All these commands execute a Lua chunk from either the command line (:lua and
 :luado) or a file (:luafile) with the given line [range]. Similarly to the Lua
 interpreter, each chunk has its own scope and so only global variables are
 shared between command calls. All Lua default libraries are available. In
-addition, Lua "print" function has its output redirected to the Vim message
+addition, Lua "print" function has its output redirected to the Nvim message
 area, with arguments separated by a white space instead of a tab.
 
-Lua uses the "vim" module (see |lua-vim|) to issue commands to Vim
+Lua uses the "vim" module (see |lua-vim|) to issue commands to Nvim
 and manage buffers (|lua-buffer|) and windows (|lua-window|). However,
 procedures that alter buffer content, open new buffers, and change cursor
 position are restricted when the command is executed in the |sandbox|.
 
 
 ==============================================================================
-2. The vim module					*lua-vim*
+The vim module						*lua-vim*
 
-Lua interfaces Vim through the "vim" module. The first and last line of the
-input range are stored in "vim.firstline" and "vim.lastline" respectively. The
-module also includes routines for buffer, window, and current line queries,
-Vim evaluation and command execution, and others.
+Lua interfaces Nvim through the "vim" module. Currently it has the `api`
+submodule and some Nvim-specific utilities.
 
-	vim.list([arg])		Returns an empty list or, if "arg" is a Lua
-				table with numeric keys 1, ..., n (a
-				"sequence"), returns a list l such that l[i] =
-				arg[i] for i = 1, ..., n (see |List|).
-				Non-numeric keys are not used to initialize
-				the list. See also |lua-eval| for conversion
-				rules. Example: >
-					:lua t = {math.pi, false, say = 'hi'}
-					:echo luaeval('vim.list(t)')
-					:" [3.141593, 0], 'say' is ignored
-<
-	vim.dict([arg])		Returns an empty dictionary or, if "arg" is a
-				Lua table, returns a dict d such that d[k] =
-				arg[k] for all string keys k in "arg" (see
-				|Dictionary|). Number keys are converted to
-				strings. Keys that are not strings are not
-				used to initialize the dictionary. See also
-				|lua-eval| for conversion rules. Example: >
-					:lua t = {math.pi, false, say = 'hi'}
-					:echo luaeval('vim.dict(t)')
-					:" {'say': 'hi'}, numeric keys ignored
-<
-	vim.funcref({name})	Returns a Funcref to function {name} (see
-				|Funcref|). It is equivalent to Vim's
-				"function". NOT IMPLEMENTED YET
+------------------------------------------------------------------------------
+vim.api.* functions
 
-	vim.buffer([arg])	If "arg" is a number, returns buffer with
-				number "arg" in the buffer list or, if "arg"
-				is a string, returns buffer whose full or short
-				name is "arg". In both cases, returns 'nil'
-				(nil value, not string) if the buffer is not
-				found. Otherwise, if "toboolean(arg)" is
-				'true' returns the first buffer in the buffer
-				list or else the current buffer.
+`vim.api` exposes the Nvim |API| as a table of Lua functions. All functions
+are available.
 
-	vim.window([arg])	If "arg" is a number, returns window with
-				number "arg" or 'nil' (nil value, not string)
-				if not found. Otherwise, if "toboolean(arg)"
-				is 'true' returns the first window or else the
-				current window.
+For example, to use the "nvim_get_current_line()" API function, call
+"vim.api.nvim_get_current_line()": >
 
-	vim.type({arg})		Returns the type of {arg}. It is equivalent to
-				Lua's "type" function, but returns "list",
-				"dict", "funcref", "buffer", or "window" if
-				{arg} is a list, dictionary, funcref, buffer,
-				or window, respectively. Examples: >
-					:lua l = vim.list()
-					:lua print(type(l), vim.type(l))
-					:" userdata list
-<
-	vim.command({cmd})	Executes the vim (ex-mode) command {cmd}.
-				Examples: >
-					:lua vim.command"set tw=60"
-					:lua vim.command"normal ddp"
-<
-	vim.eval({expr})	Evaluates expression {expr} (see |expression|),
-				converts the result to Lua, and returns it.
-				Vim strings and numbers are directly converted
-				to Lua strings and numbers respectively. Vim
-				lists and dictionaries are converted to Lua
-				userdata (see |lua-list| and |lua-dict|).
-				Examples: >
-					:lua tw = vim.eval"&tw"
-					:lua print(vim.eval"{'a': 'one'}".a)
-<
-	vim.line()		Returns the current line (without the trailing
-				<EOL>), a Lua string.
+	print(tostring(vim.api.nvim_get_current_line()))
 
-	vim.beep()		Beeps.
+------------------------------------------------------------------------------
+vim.* utility functions
 
-	vim.open({fname})	Opens a new buffer for file {fname} and
-				returns it. Note that the buffer is not set as
-				current.
+vim.stricmp(a, b)					*lua-vim.stricmp*
+	Function used for case-insensitive string comparison.  Takes two 
+	string arguments and returns 0, 1 or -1 if strings are equal, a is 
+	greater then b or a is lesser then b respectively.
 
+vim.type_idx						*lua-vim.type_idx*
+	Type index for use in |lua-special-tables|.  Specifying one of the 
+	values from |lua-vim.types| allows typing the empty table (it is 
+	unclear whether empty lua table represents empty list or empty array) 
+	and forcing integral numbers to be |Float|.  See |lua-special-tbl| for 
+	more details.
+
+vim.val_idx						*lua-vim.val_idx*
+	Value index for tables representing |Float|s.  A table representing 
+	floating-point value 1.0 looks like this: >
+		{
+		  [vim.type_idx] = vim.types.float,
+		  [vim.val_idx] = 1.0,
+		}
+<	See also |lua-vim.type_idx| and |lua-special-tbl|.
+
+vim.types						*lua-vim.types*
+	Table with possible values for |lua-vim.type_idx|.  Contains two sets 
+	of key-value pairs: first maps possible values for |lua-vim.type_idx| 
+	to human-readable strings, second maps human-readable type names to 
+	values for |lua-vim.type_idx|.  Currently contains pairs for `float`, 
+	`array` and `dictionary` types.
+
+	Note: one must expect that values corresponding to `vim.types.float`, 
+	`vim.types.array` and `vim.types.dictionary` fall under only two 
+	following assumptions:
+	1. Value may serve both as a key and as a value in a table.  Given the 
+	   properties of lua tables this basically means “value is not `nil`”.
+	2. For each value in `vim.types` table `vim.types[vim.types[value]]` 
+	   is the same as `value`.
+	No other restrictions are put on types, and it is not guaranteed that 
+	values corresponding to `vim.types.float`, `vim.types.array` and 
+	`vim.types.dictionary` will not change or that `vim.types` table will 
+	only contain values for these three types.
 
 ==============================================================================
-3. List userdata					*lua-list*
+The luaeval function					*lua-luaeval* *lua-eval*
+							*luaeval()*
 
-List userdata represent vim lists, and the interface tries to follow closely
-Vim's syntax for lists. Since lists are objects, changes in list references in
-Lua are reflected in Vim and vice-versa. A list "l" has the following
-properties and methods:
-
-Properties
-----------
-	o "#l" is the number of items in list "l", equivalent to "len(l)"
-	    in Vim.
-	o "l[k]" returns the k-th item in "l"; "l" is zero-indexed, as in Vim.
-	    To modify the k-th item, simply do "l[k] = newitem"; in
-	    particular, "l[k] = nil" removes the k-th item from "l".
-	o "l()" returns an iterator for "l".
-
-Methods
--------
-	o "l:add(item)" appends "item" to the end of "l".
-	o "l:insert(item[, pos])" inserts "item" at (optional)
-	    position "pos" in the list. The default value for "pos" is 0.
-
-Examples:
->
-	:let l = [1, 'item']
-	:lua l = vim.eval('l') -- same 'l'
-	:lua l:add(vim.list())
-	:lua l[0] = math.pi
-	:echo l[0] " 3.141593
-	:lua l[0] = nil -- remove first item
-	:lua l:insert(true, 1)
-	:lua print(l, #l, l[0], l[1], l[-1])
-	:lua for item in l() do print(item) end
-<
-
-==============================================================================
-4. Dict userdata					*lua-dict*
-
-Similarly to list userdata, dict userdata represent vim dictionaries; since
-dictionaries are also objects, references are kept between Lua and Vim. A dict
-"d" has the following properties:
-
-Properties
-----------
-	o "#d" is the number of items in dict "d", equivalent to "len(d)"
-	    in Vim.
-	o "d.key" or "d['key']" returns the value at entry "key" in "d".
-	    To modify the entry at this key, simply do "d.key = newvalue"; in
-	    particular, "d.key = nil" removes the entry from "d".
-	o "d()" returns an iterator for "d" and is equivalent to "items(d)" in
-	    Vim.
-
-Examples:
->
-	:let d = {'n':10}
-	:lua d = vim.eval('d') -- same 'd'
-	:lua print(d, d.n, #d)
-	:let d.self = d
-	:lua for k, v in d() do print(d, k, v) end
-	:lua d.x = math.pi
-	:lua d.self = nil -- remove entry
-	:echo d
-<
-
-==============================================================================
-5. Funcref userdata					*lua-funcref*
-
-Funcref userdata represent funcref variables in Vim. Funcrefs that were
-defined with a "dict" attribute need to be obtained as a dictionary key
-in order to have "self" properly assigned to the dictionary (see examples
-below.) A funcref "f" has the following properties:
-
-Properties
-----------
-	o "#f" is the name of the function referenced by "f"
-	o "f(...)" calls the function referenced by "f" (with arguments)
-
-Examples:
->
-	:function I(x)
-	:  return a:x
-	:  endfunction
-	:let R = function('I')
-	:lua i1 = vim.funcref('I')
-	:lua i2 = vim.eval('R')
-	:lua print(#i1, #i2) -- both 'I'
-	:lua print(i1, i2, #i2(i1) == #i1(i2))
-	:function Mylen() dict
-	:  return len(self.data)
-	:  endfunction
-	:let mydict = {'data': [0, 1, 2, 3]}
-	:lua d = vim.eval('mydict'); d.len = vim.funcref('Mylen')
-	:echo mydict.len()
-	:lua l = d.len -- assign d as 'self'
-	:lua print(l())
-<
-
-==============================================================================
-6. Buffer userdata					*lua-buffer*
-
-Buffer userdata represent vim buffers. A buffer userdata "b" has the following
-properties and methods:
-
-Properties
-----------
-	o "b()" sets "b" as the current buffer.
-	o "#b" is the number of lines in buffer "b".
-	o "b[k]" represents line number k: "b[k] = newline" replaces line k
-	    with string "newline" and "b[k] = nil" deletes line k.
-	o "b.name" contains the short name of buffer "b" (read-only).
-	o "b.fname" contains the full name of buffer "b" (read-only).
-	o "b.number" contains the position of buffer "b" in the buffer list
-	    (read-only).
-
-Methods
--------
-	o "b:insert(newline[, pos])" inserts string "newline" at (optional)
-	    position "pos" in the buffer. The default value for "pos" is
-	    "#b + 1". If "pos == 0" then "newline" becomes the first line in
-	    the buffer.
-	o "b:next()" returns the buffer next to "b" in the buffer list.
-	o "b:previous()" returns the buffer previous to "b" in the buffer
-	    list.
-	o "b:isvalid()" returns 'true' (boolean) if buffer "b" corresponds to
-	    a "real" (not freed from memory) Vim buffer.
-
-Examples:
->
-	:lua b = vim.buffer() -- current buffer
-	:lua print(b.name, b.number)
-	:lua b[1] = "first line"
-	:lua b:insert("FIRST!", 0)
-	:lua b[1] = nil -- delete top line
-	:lua for i=1,3 do b:insert(math.random()) end
-	:3,4lua for i=vim.lastline,vim.firstline,-1 do b[i] = nil end
-	:lua vim.open"myfile"() -- open buffer and set it as current
-
-	function! ListBuffers()
-	lua << EOF
-	local b = vim.buffer(true) -- first buffer in list
-	while b ~= nil do
-		print(b.number, b.name, #b)
-		b = b:next()
-	end
-	vim.beep()
-	EOF
-	endfunction
-<
-
-==============================================================================
-7. Window userdata					*lua-window*
-
-Window objects represent vim windows. A window userdata "w" has the following
-properties and methods:
-
-Properties
-----------
-	o "w()" sets "w" as the current window.
-	o "w.buffer" contains the buffer of window "w" (read-only).
-	o "w.line" represents the cursor line position in window "w".
-	o "w.col" represents the cursor column position in window "w".
-	o "w.width" represents the width of window "w".
-	o "w.height" represents the height of window "w".
-
-Methods
--------
-	o "w:next()" returns the window next to "w".
-	o "w:previous()" returns the window previous to "w".
-	o "w:isvalid()" returns 'true' (boolean) if window "w" corresponds to
-	    a "real" (not freed from memory) Vim window.
-
-Examples:
->
-	:lua w = vim.window() -- current window
-	:lua print(w.buffer.name, w.line, w.col)
-	:lua w.width = w.width + math.random(10)
-	:lua w.height = 2 * math.random() * w.height
-	:lua n,w = 0,vim.window(true) while w~=nil do n,w = n + 1,w:next() end
-	:lua print("There are " .. n .. " windows")
-<
-
-==============================================================================
-8. The luaeval function					*lua-luaeval* *lua-eval*
-
-The (dual) equivalent of "vim.eval" for passing Lua values to Vim is
-"luaeval". "luaeval" takes an expression string and an optional argument and
-returns the result of the expression. It is semantically equivalent in Lua to:
+The (dual) equivalent of "vim.eval" for passing Lua values to Nvim is
+"luaeval". "luaeval" takes an expression string and an optional argument used 
+for _A inside expression and returns the result of the expression. It is 
+semantically equivalent in Lua to:
 >
 	local chunkheader = "local _A = select(1, ...) return "
 	function luaeval (expstr, arg)
 	    local chunk = assert(loadstring(chunkheader .. expstr, "luaeval"))
 	    return chunk(arg) -- return typval
 	end
-<
-Note that "_A" receives the argument to "luaeval". Lua numbers, strings, and
-list, dict, and funcref userdata are converted to their Vim respective types,
-while Lua booleans are converted to numbers. An error is thrown if conversion
-of any of the remaining Lua types, including userdata other than lists, dicts,
-and funcrefs, is attempted.
+
+Note that "_A" receives the argument to "luaeval". Lua nils, numbers, strings, 
+tables and booleans are converted to their respective VimL types. An error is 
+thrown if conversion of any of the remaining Lua types is attempted.
+
+Note 2: lua tables are used as both dictionaries and lists, thus making it 
+impossible to determine whether empty table is meant to be empty list or empty 
+dictionary. Additionally lua does not have integer numbers. To distinguish 
+between these cases there is the following agreement:
+
+0. Empty table is empty list.
+1. Table with N incrementally growing integral numbers, starting from 1 and 
+   ending with N is considered to be a list.
+2. Table with string keys, none of which contains NUL byte, is considered to 
+   be a dictionary.
+3. Table with string keys, at least one of which contains NUL byte, is also 
+   considered to be a dictionary, but this time it is converted to 
+   a |msgpack-special-map|.
+							*lua-special-tbl*
+4. Table with `vim.type_idx` key may be a dictionary, a list or floating-point 
+   value:
+   - `{[vim.type_idx]=vim.types.float, [vim.val_idx]=1}` is converted to 
+     a floating-point 1.0. Note that by default integral lua numbers are 
+     converted to |Number|s, non-integral are converted to |Float|s. This 
+     variant allows integral |Float|s.
+   - `{[vim.type_idx]=vim.types.dictionary}` is converted to an empty 
+     dictionary, `{[vim.type_idx]=vim.types.dictionary, [42]=1, a=2}` is 
+     converted to a dictionary `{'a': 42}`: non-string keys are ignored. 
+     Without `vim.type_idx` key tables with keys not fitting in 1., 2. or 3. 
+     are errors.
+   - `{[vim.type_idx]=vim.types.list}` is converted to an empty list. As well 
+     as `{[vim.type_idx]=vim.types.list, [42]=1}`: integral keys that do not 
+     form a 1-step sequence from 1 to N are ignored, as well as all 
+     non-integral keys.
 
 Examples: >
 
 	:echo luaeval('math.pi')
-	:lua a = vim.list():add('newlist')
-	:let a = luaeval('a')
-	:echo a[0] " 'newlist'
 	:function Rand(x,y) " random uniform between x and y
 	:  return luaeval('(_A.y-_A.x)*math.random()+_A.x', {'x':a:x,'y':a:y})
 	:  endfunction
 	:echo Rand(1,10)
 
-
-==============================================================================
-9. Dynamic loading				    *lua-dynamic*
-
-On MS-Windows and Unix the Lua library can be loaded dynamically.  The
-|:version| output then includes |+lua/dyn|.
-
-This means that Vim will search for the Lua DLL or shared library file only
-when needed.  When you don't use the Lua interface you don't need it, thus
-you can use Vim without this file.
-
-
-MS-Windows ~
-
-To use the Lua interface the Lua DLL must be in your search path.  In a
-console window type "path" to see what directories are used.  The 'luadll'
-option can be also used to specify the Lua DLL.  The version of the DLL must
-match the Lua version Vim was compiled with.
-
-
-Unix ~
-
-The 'luadll' option can be used to specify the Lua shared library file instead
-of DYNAMIC_LUA_DLL file what was specified at compile time.  The version of
-the shared library must match the Lua version Vim was compiled with.
-
+Note that currently second argument to `luaeval` undergoes VimL to lua 
+conversion, so changing containers in lua do not affect values in VimL. Return 
+value is also always converted. When converting, |msgpack-special-dict|s are 
+treated specially.
 
 ==============================================================================
  vim:tw=78:ts=8:noet:ft=help:norl:

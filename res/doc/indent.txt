@@ -1,4 +1,4 @@
-*indent.txt*    For Vim version 8.0.  Last change: 2014 Dec 06
+*indent.txt*    Nvim
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6,8 +6,7 @@
 
 This file is about indenting C programs and other files.
 
-1. Indenting C style programs	|C-indenting|
-2. Indenting by expression	|indent-expression|
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Indenting C style programs				*C-indenting*
@@ -21,9 +20,6 @@ formatting conventions established with C.  These options affect only the
 indent and do not perform other formatting.  There are additional options that
 affect other kinds of formatting as well as indenting, see |format-comments|,
 |fo-table|, |gq| and |formatting| for the main ones.
-
-Note that this will not work when the |+smartindent| or |+cindent| features
-have been disabled at compile time.
 
 There are in fact four main methods available for indentation, each one
 overrides the previous if it is enabled, or non-empty for 'indentexpr':
@@ -325,21 +321,6 @@ The examples below assume a 'shiftwidth' of 4.
 		      void function();       void function();
 		  }                          }
 <
-							*cino-E*
-	EN    Indent inside C++ linkage specifications (extern "C" or
-	      extern "C++") N characters extra compared to a normal block.
-	      (default 0).
-
-		cino=			   cino=E-s >
-		  extern "C" {               extern "C" {
-		      void function();       void function();
-		  }                          }
-
-		  extern "C"                 extern "C"
-		  {                          {
-		      void function();       void function();
-		  }                          }
-<
 							*cino-p*
 	pN    Parameter declarations for K&R-style function declarations will
 	      be indented N characters from the margin.  (default
@@ -569,7 +550,7 @@ The examples below assume a 'shiftwidth' of 4.
 
 
 The defaults, spelled out in full, are:
-	cinoptions=>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,E0,ps,ts,is,+s,
+	cinoptions=>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,ps,ts,is,+s,
 			c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0
 
 Vim puts a line in column 1 if:
@@ -736,7 +717,7 @@ also left unindented because continue statements are also used for purposes
 other than ending a do loop.  Programs such as Tidy can convert structured
 do/continue loops to the do/enddo form.  Do loops of the do/enddo variety can
 be indented.  If you use only structured loops of the do/enddo form, you should
-declare this by setting the fortran_do_enddo variable in your .vimrc as
+declare this by setting the fortran_do_enddo variable in your vimrc as
 follows >
 
    let fortran_do_enddo=1
@@ -755,7 +736,7 @@ The indenting of program units (subroutines, functions, modules, and program
 blocks) is enabled by default but can be suppressed if a lighter, screen-width
 preserving indent style is desired.  To suppress the indenting of program
 units for all fortran files set the global fortran_indent_less variable in
-your .vimrc as follows >
+your vimrc as follows >
 
   let fortran_indent_less=1
 
@@ -987,7 +968,7 @@ VERILOG							*ft-verilog-indent*
 General block statements such as if, for, case, always, initial, function,
 specify and begin, etc., are indented.  The module block statements (first
 level blocks) are not indented by default.  you can turn on the indent with
-setting a variable in the .vimrc as follows: >
+setting a variable in the vimrc as follows: >
 
   let b:verilog_indent_modules = 1
 
@@ -1035,7 +1016,7 @@ To turn this off, add >
 
   let g:vhdl_indent_genportmap = 0
 
-to the .vimrc file, which causes the previous alignment example to change: >
+to the vimrc file, which causes the previous alignment example to change: >
 
   ENTITY sync IS
   PORT (
@@ -1059,7 +1040,7 @@ To turn this off, add >
 
   let g:vhdl_indent_rhsassign = 0
 
-to the .vimrc file, which causes the previous alignment example to change: >
+to the vimrc file, which causes the previous alignment example to change: >
 
   sig_out <= (bus_a(1) AND
     (sig_b OR sig_c)) OR

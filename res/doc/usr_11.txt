@@ -1,4 +1,4 @@
-*usr_11.txt*	For Vim version 8.0.  Last change: 2010 Jul 20
+*usr_11.txt*	Nvim
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -44,7 +44,7 @@ To be on the safe side, write this file under another name: >
 	:write help.txt.recovered
 
 Compare the file with the original file to check if you ended up with what you
-expected.  Vimdiff is very useful for this |08.7|.  For example: >
+expected.  Diff mode is very useful for this |08.7|.  For example: >
 
 	:write help.txt.recovered
 	:edit #
@@ -283,8 +283,6 @@ machines.  Therefore, don't rely on Vim always warning you.
 If you really don't want to see this message, you can add the 'A' flag to the
 'shortmess' option.  But it's very unusual that you need this.
 
-For remarks about encryption and the swap file, see |:recover-crypt|.
-
 ==============================================================================
 *11.4*	Further reading
 
@@ -295,7 +293,6 @@ For remarks about encryption and the swap file, see |:recover-crypt|.
 'updatecount'	Number of key strokes after which the swap file is flushed to
 		disk.
 'updatetime'	Timeout after which the swap file is flushed to disk.
-'swapsync'	Whether the disk is synced when the swap file is flushed.
 'directory'	List of directory names where to store the swap file.
 'maxmem'	Limit for memory usage before writing text to the swap file.
 'maxmemtot'	Same, but for all files in total.

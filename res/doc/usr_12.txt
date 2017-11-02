@@ -1,4 +1,4 @@
-*usr_12.txt*	For Vim version 8.0.  Last change: 2017 Aug 11
+*usr_12.txt*	Nvim
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -237,19 +237,8 @@ simple way: Move the cursor to the word you want to find help on and press >
 
 	K
 
-Vim will run the external "man" program on the word.  If the man page is
-found, it is displayed.  This uses the normal pager to scroll through the text
-(mostly the "more" program).  When you get to the end pressing <Enter> will
-get you back into Vim.
-
-A disadvantage is that you can't see the man page and the text you are working
-on at the same time.  There is a trick to make the man page appear in a Vim
-window.  First, load the man filetype plugin: >
-
-	:runtime! ftplugin/man.vim
-
-Put this command in your vimrc file if you intend to do this often.  Now you
-can use the ":Man" command to open a window on a man page: >
+Nvim will run |:Man| on the word.  If the man page is found, it is displayed.
+You can also use the |:Man| command to open a window on a man page: >
 
 	:Man csh
 
@@ -267,15 +256,14 @@ window.
 
 To display a man page for the word under the cursor, use this: >
 
-	\K
+	K
 
-(If you redefined the <Leader>, use it instead of the backslash).
 For example, you want to know the return value of "strstr()" while editing
 this line:
 
 	if ( strstr (input, "aap") == ) ~
 
-Move the cursor to somewhere on "strstr" and type "\K".  A window will open
+Move the cursor to somewhere on "strstr" and type "K".  A window will open
 to display the man page for strstr().
 
 ==============================================================================
@@ -290,7 +278,7 @@ command: >
 The line range "%" is used, thus this works on the whole file.  The pattern
 that the ":substitute" command matches with is "\s\+$".  This finds white
 space characters (\s), 1 or more of them (\+), before the end-of-line ($).
-Later will be explained how you write patterns like this, see |usr_27.txt|.
+Later will be explained how you write patterns like this |usr_27.txt|.
    The "to" part of the substitute command is empty: "//".  Thus it replaces
 with nothing, effectively deleting the matched white space.
 
@@ -309,7 +297,7 @@ matches can be found.
 ==============================================================================
 *12.8*	Find where a word is used
 
-If you are a UNIX user, you can use a combination of Vim and the grep command
+If you are a Unix user, you can use a combination of Vim and the grep command
 to edit all the files that contain a given word.  This is extremely useful if
 you are working on a program and want to view or edit all the files that
 contain a specific variable.
@@ -324,7 +312,7 @@ will only list the files containing the word and not print the matching lines.
 The word it is searching for is "frame_counter".  Actually, this can be any
 regular expression.  (Note: What grep uses for regular expressions is not
 exactly the same as what Vim uses.)
-   The entire command is enclosed in backticks (`).  This tells the UNIX shell
+   The entire command is enclosed in backticks (`).  This tells the Unix shell
 to run this command and pretend that the results were typed on the command
 line.  So what happens is that the grep command is run and produces a list of
 files, these files are put on the Vim command line.  This results in Vim

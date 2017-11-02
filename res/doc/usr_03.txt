@@ -1,4 +1,4 @@
-*usr_03.txt*	For Vim version 8.0.  Last change: 2017 Jul 21
+*usr_03.txt*	Nvim
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -203,7 +203,8 @@ more typing.
 		last line of a file    V
 
 Another way to move to a line is using the "%" command with a count.  For
-example "50%" moves you to halfway the file.  "90%" goes to near the end.
+example, "50%" moves you halfway through the file, and "90%" goes to near the
+end.
 
 The previous assumes that you want to move to a line in the file, no matter if
 it's currently visible or not.  What if you want to move to one of the lines
@@ -352,7 +353,7 @@ The "?" command works like "/" but searches backwards: >
 	?word
 
 The "N" command repeats the last search the opposite direction.  Thus using
-"N" after a "/" command searches backwards, using "N" after "?" searches
+"N" after a "/" command search backwards, using "N" after "?" searches
 forward.
 
 
@@ -428,18 +429,19 @@ HIGHLIGHTING MATCHES
 While editing a program you see a variable called "nr".  You want to check
 where it's used.  You could move the cursor to "nr" and use the "*" command
 and press "n" to go along all the matches.
-   There is another way.  Type this command: >
 
-	:set hlsearch
-
-If you now search for "nr", Vim will highlight all matches.  That is a very
-good way to see where the variable is used, without the need to type commands.
+Vim will highlight all matches. That is a very good way to see where the
+variable is used, without the need to type commands.
    To switch this off: >
 
 	:set nohlsearch
 
 Then you need to switch it on again if you want to use it for the next search
-command.  If you only want to remove the highlighting, use this command: >
+command: >
+
+	:set hlsearch
+
+If you only want to remove the highlighting, use this command: >
 
 	:nohlsearch
 
@@ -453,31 +455,25 @@ TUNING SEARCHES
 There are a few options that change how searching works.  These are the
 essential ones:
 >
-	:set incsearch
-
-This makes Vim display the match for the string while you are still typing it.
-Use this to check if the right match will be found.  Then press <Enter> to
-really jump to that location.  Or type more to change the search string.
->
 	:set nowrapscan
 
 This stops the search at the end of the file.  Or, when you are searching
 backwards, at the start of the file.  The 'wrapscan' option is on by default,
 thus searching wraps around the end of the file.
+>
+	:set noincsearch
+
+This disables the display of the matches while you are still typing your
+search.
 
 
 INTERMEZZO
 
 If you like one of the options mentioned before, and set it each time you use
-Vim, you can put the command in your Vim startup file.
-   Edit the file, as mentioned at |not-compatible|.  Or use this command to
-find out where it is: >
+Vim, you can put the command in your Vim startup file.  Edit the file, for
+example with: >
 
-	:scriptnames
-
-Edit the file, for example with: >
-
-	:edit ~/.vimrc
+	:edit ~/.config/nvim/init.vim
 
 Then add a line with the command to set the option, just like you typed it in
 Vim.  Example: >
@@ -512,7 +508,7 @@ only if it is at the beginning of a line.
    The $ character matches the end of a line.  Therefore, "was$" matches the
 word was only if it is at the end of a line.
 
-Let's mark the places where "/the" matches in this example line with "x"s:
+Let's mark the places where "the" matches in this example line with "x"s:
 
 	the solder holding one of the chips melted and the ~
 	xxx			  xxx		       xxx

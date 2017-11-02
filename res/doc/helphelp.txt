@@ -1,4 +1,4 @@
-*helphelp.txt*	For Vim version 8.0.  Last change: 2017 Mar 19
+*helphelp.txt*	Nvim
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6,9 +6,7 @@
 
 Help on help files					*helphelp*
 
-1. Help commands		|online-help|
-2. Translated help files	|help-translated|
-3. Writing help files		|help-writing|
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Help commands					*online-help*
@@ -24,7 +22,8 @@ Help on help files					*helphelp*
 			the very top.
 			The 'helplang' option is used to select a language, if
 			the main help file is available in several languages.
-			{not in Vi}
+
+			Type |gO| to see the table of contents.
 
 						*{subject}* *E149* *E661*
 :h[elp] {subject}	Like ":help", additionally jump to the tag {subject}.
@@ -97,13 +96,13 @@ Help on help files					*helphelp*
 			command from a following command.  You need to type
 			CTRL-V first to insert the <LF> or <CR>.  Example: >
 				:help so<C-V><CR>only
-<			{not in Vi}
+<
 
 :h[elp]! [subject]	Like ":help", but in non-English help files prefer to
 			find a tag in a file with the same language as the
 			current file.  See |help-translated|.
 
-						 	*:helpc* *:helpclose*
+							*:helpc* *:helpclose*
 :helpc[lose]            Close one help window, if there is one.
 
 							*:helpg* *:helpgrep*
@@ -133,7 +132,6 @@ Help on help files					*helphelp*
 			|:execute| when needed.
 			Compressed help files will not be searched (Fedora
 			compresses the help files).
-			{not in Vi}
 
 							*:lh* *:lhelpgrep*
 :lh[elpgrep] {pattern}[@xx]
@@ -142,16 +140,15 @@ Help on help files					*helphelp*
 			already opened, then the location list for that window
 			is used.  Otherwise, a new help window is opened and
 			the location list for that window is set.  The
-			location list for the current window is not changed
-			then.
+			location list for the current window is not changed.
 
 							*:exu* *:exusage*
 :exu[sage]		Show help on Ex commands.  Added to simulate the Nvi
-			command. {not in Vi}
+			command.
 
 							*:viu* *:viusage*
 :viu[sage]		Show help on Normal mode commands.  Added to simulate
-			the Nvi command. {not in Vi}
+			the Nvi command.
 
 When no argument is given to |:help| the file given with the 'helpfile' option
 will be opened.  Otherwise the specified tag is searched for in all "doc/tags"
@@ -194,15 +191,8 @@ command: >
 	:!xterm -e vim +help &
 <
 
-			*:helpfind* *:helpf*
-:helpf[ind]		Like |:help|, but use a dialog to enter the argument.
-			Only for backwards compatibility.  It now executes the
-			ToolBar.FindHelp menu entry instead of using a builtin
-			dialog.  {only when compiled with |+GUI_GTK|}
-			{not in Vi}
-
 					*:helpt* *:helptags*
-				*E154* *E150* *E151* *E152* *E153* *E670*
+			*E154* *E150* *E151* *E152* *E153* *E670* *E856*
 :helpt[ags] [++t] {dir}
 			Generate the help tags file(s) for directory {dir}.
 			When {dir} is ALL then all "doc" directories in
@@ -224,7 +214,7 @@ command: >
 			To rebuild the help tags in the runtime directory
 			(requires write permission there): >
 				:helptags $VIMRUNTIME/doc
-<			{not in Vi}
+<
 
 
 ==============================================================================
@@ -315,7 +305,7 @@ the applicable Vim version.  The last field specifies the last modification
 date of the file.  Each field is separated by a tab.
 
 At the bottom of the help file, place a Vim modeline to set the 'textwidth'
-and 'tabstop' options and the 'filetype' to "help".  Never set a global option
+and 'tabstop' options and the 'filetype' to 'help'.  Never set a global option
 in such a modeline, that can have consequences undesired by whoever reads that
 help.
 
@@ -336,6 +326,9 @@ highlighted as a command, like a code block (see below).
 
 When referring to a Vim option in the help file, place the option name between
 two single quotes, eg. 'statusline'
+
+When referring to any other technical term, such as a filename or function
+parameter, surround it in backticks (`), eg. `~/.path/to/init.vim`.
 
 
 HIGHLIGHTING

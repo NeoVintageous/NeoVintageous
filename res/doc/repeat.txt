@@ -1,4 +1,4 @@
-*repeat.txt*    For Vim version 8.0.  Last change: 2017 Jun 10
+*repeat.txt*    Nvim
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -8,14 +8,7 @@ Repeating commands, Vim scripts and debugging			*repeating*
 
 Chapter 26 of the user manual introduces repeating |usr_26.txt|.
 
-1. Single repeats		|single-repeat|
-2. Multiple repeats		|multi-repeat|
-3. Complex repeats		|complex-repeat|
-4. Using Vim scripts		|using-scripts|
-5. Using Vim packages		|packages|
-6. Creating Vim packages	|package-create|
-7. Debugging scripts		|debug-scripts|
-8. Profiling			|profiling|
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Single repeats					*single-repeat*
@@ -39,14 +32,12 @@ of area is used, see |visual-repeat|.
 
 							*@:*
 @:			Repeat last command-line [count] times.
-			{not available when compiled without the
-			|+cmdline_hist| feature}
 
 
 ==============================================================================
 2. Multiple repeats					*multi-repeat*
 
-						*:g* *:global* *E148*
+						*:g* *:global* *E147* *E148*
 :[range]g[lobal]/{pattern}/[cmd]
 			Execute the Ex command [cmd] (default ":p") on the
 			lines within [range] where {pattern} matches.
@@ -79,15 +70,8 @@ The default for [range] is the whole buffer (1,$).  Use "CTRL-C" to interrupt
 the command.  If an error message is given for a line, the command for that
 line is aborted and the global command continues with the next marked or
 unmarked line.
-								*E147* 
-When the command is used recursively, it only works on one line.  Giving a
-range is then not allowed. This is useful to find all lines that match a
-pattern and do not match another pattern: >
-	:g/found/v/notfound/{cmd}
-This first finds all lines containing "found", but only executes {cmd} when
-there is no match for "notfound".
 
-To execute a non-Ex command, you can use the `:normal` command: >
+To repeat a non-Ex command, you can use the ":normal" command: >
 	:g/pat/normal {commands}
 Make sure that {commands} ends with a whole command, otherwise Vim will wait
 for you to type the rest of the command for each match.  The screen will not
@@ -124,11 +108,12 @@ q{0-9a-zA-Z"}		Record typed characters into register {0-9a-zA-Z"}
 			used for |y| and |p| the result is most likely not
 			what is expected, because the put will paste the
 			recorded macro and the yank will overwrite the
-			recorded macro. {Vi: no recording}
+			recorded macro.
 
-q			Stops recording.  (Implementation note: The 'q' that
-			stops recording is not stored in the register, unless
-			it was the result of a mapping)  {Vi: no recording}
+q			Stops recording.
+			Implementation note: The 'q' that stops recording is
+			not stored in the register, unless it was the result
+			of a mapping
 
 							*@*
 @{0-9a-z".=*+}		Execute the contents of register {0-9a-z".=*+} [count]
@@ -140,35 +125,29 @@ q			Stops recording.  (Implementation note: The 'q' that
 			applies.
 			For "@=" you are prompted to enter an expression.  The
 			result of the expression is then executed.
-			See also |@:|.  {Vi: only named registers}
+			See also |@:|.
 
 							*@@* *E748*
 @@			Repeat the previous @{0-9a-z":*} [count] times.
 
-:[addr]*{0-9a-z".=+}						*:@* *:star*
+							*:@*
 :[addr]@{0-9a-z".=*+}	Execute the contents of register {0-9a-z".=*+} as an Ex
 			command.  First set cursor at line [addr] (default is
 			current line).  When the last line in the register does
 			not have a <CR> it will be added automatically when
 			the 'e' flag is present in 'cpoptions'.
-			Note that the ":*" command is only recognized when the
-			'*' flag is present in 'cpoptions'.  This is NOT the
-			default when 'nocompatible' is used.
 			For ":@=" the last used expression is used.  The
 			result of evaluating the expression is executed as an
 			Ex command.
 			Mappings are not recognized in these commands.
-			{Vi: only in some versions} Future: Will execute the
-			register for each line in the address range.
 
 							*:@:*
 :[addr]@:		Repeat last command-line.  First set cursor at line
-			[addr] (default is current line).  {not in Vi}
+			[addr] (default is current line).
 
 :[addr]@							*:@@*
 :[addr]@@		Repeat the previous :@{0-9a-z"}.  First set cursor at
-			line [addr] (default is current line).  {Vi: only in
-			some versions}
+			line [addr] (default is current line).
 
 ==============================================================================
 4. Using Vim scripts					*using-scripts*
@@ -187,7 +166,6 @@ For writing a Vim script, see chapter 41 of the user manual |usr_41.txt|.
 			|:bufdo|, in a loop or when another command follows
 			the display won't be updated while executing the
 			commands.
-			{not in Vi}
 
 							*:ru* *:runtime*
 :ru[ntime][!] [where] {file} ..
@@ -230,7 +208,6 @@ For writing a Vim script, see chapter 41 of the user manual |usr_41.txt|.
 			when no file could be found.
 			When 'verbose' is two or higher, there is a message
 			about each searched file.
-			{not in Vi}
 
 							*:pa* *:packadd* *E919*
 :pa[ckadd][!] {name}	Search for an optional plugin directory in 'packpath'
@@ -312,21 +289,10 @@ For writing a Vim script, see chapter 41 of the user manual |usr_41.txt|.
 			Mark) in utf-8 format Vim will recognize it, no need
 			to use ":scriptencoding utf-8" then.
 
-			If you set the 'encoding' option in your |.vimrc|,
-			`:scriptencoding` must be placed after that. E.g.: >
-				set encoding=utf-8
-				scriptencoding utf-8
-<
-			When compiled without the |+multi_byte| feature this
-			command is ignored.
-			{not in Vi}
-
 						*:scr* *:scriptnames*
 :scr[iptnames]		List all sourced script names, in the order they were
 			first sourced.  The number is used for the script ID
 			|<SID>|.
-			{not in Vi} {not available when compiled without the
-			|+eval| feature}
 
 						*:fini* *:finish* *E168*
 :fini[sh]		Stop sourcing a script.  Can only be used in a Vim
@@ -336,7 +302,7 @@ For writing a Vim script, see chapter 41 of the user manual |usr_41.txt|.
 			following the ":finally" up to the matching |:endtry|
 			are executed first.  This process applies to all
 			nested ":try"s in the script.  The outermost ":endtry"
-			then stops sourcing the script.  {not in Vi}
+			then stops sourcing the script.
 
 All commands and command sequences can be repeated by putting them in a named
 register and then executing it.  There are two ways to get the commands in the
@@ -375,8 +341,8 @@ nested as deep as the number of files that can be opened at one time (about
 You can use the "<sfile>" string (literally, this is not a special key) inside
 of the sourced file, in places where a file name is expected.  It will be
 replaced by the file name of the sourced file.  For example, if you have a
-"other.vimrc" file in the same directory as your ".vimrc" file, you can source
-it from your ".vimrc" file with this command: >
+"other.vimrc" file in the same directory as your |init.vim| file, you can 
+source it from your |init.vim| file with this command: >
 	:source <sfile>:h/other.vimrc
 
 In script files terminal-dependent key codes are represented by
@@ -384,27 +350,20 @@ terminal-independent two character codes.  This means that they can be used
 in the same way on different kinds of terminals.  The first character of a
 key code is 0x80 or 128, shown on the screen as "~@".  The second one can be
 found in the list |key-notation|.  Any of these codes can also be entered
-with CTRL-V followed by the three digit decimal code.  This does NOT work for
-the <t_xx> termcap codes, these can only be used in mappings.
+with CTRL-V followed by the three digit decimal code.
 
 							*:source_crnl* *W15*
-MS-DOS, Win32 and OS/2: Files that are read with ":source" normally have
-<CR><NL> <EOL>s.  These always work.  If you are using a file with <NL> <EOL>s
-(for example, a file made on Unix), this will be recognized if 'fileformats'
-is not empty and the first line does not end in a <CR>.  This fails if the
-first line has something like ":map <F1> :help^M", where "^M" is a <CR>.  If
-the first line ends in a <CR>, but following ones don't, you will get an error
-message, because the <CR> from the first lines will be lost.
-
-Mac Classic: Files that are read with ":source" normally have <CR> <EOL>s.
+Windows: Files that are read with ":source" normally have <CR><NL> <EOL>s.
 These always work.  If you are using a file with <NL> <EOL>s (for example, a
 file made on Unix), this will be recognized if 'fileformats' is not empty and
-the first line does not end in a <CR>.  Be careful not to use a file with <NL>
-linebreaks which has a <CR> in first line.
+the first line does not end in a <CR>.  This fails if the first line has
+something like ":map <F1> :help^M", where "^M" is a <CR>.  If the first line
+ends in a <CR>, but following ones don't, you will get an error message,
+because the <CR> from the first lines will be lost.
 
 On other systems, Vim expects ":source"ed files to end in a <NL>.  These
 always work.  If you are using a file with <CR><NL> <EOL>s (for example, a
-file made on MS-DOS), all lines will have a trailing <CR>.  This may cause
+file made on Windows), all lines will have a trailing <CR>.  This may cause
 problems for some commands (e.g., mappings).  There is no automatic <EOL>
 detection, because it's common to start with a line that defines a mapping
 that ends in a <CR>, which will confuse the automaton.
@@ -484,15 +443,15 @@ advantages over normal plugins:
 
 Using a package and loading automatically ~
 
-Let's assume your Vim files are in the "~/.vim" directory and you want to add a
-package from a zip archive "/tmp/foopack.zip":
-	% mkdir -p ~/.vim/pack/foo
-	% cd ~/.vim/pack/foo
+Let's assume your Vim files are in the "~/.local/share/nvim/site" directory
+and you want to add a package from a zip archive "/tmp/foopack.zip":
+	% mkdir -p ~/.local/share/nvim/site/pack/foo
+	% cd ~/.local/share/nvim/site/pack/foo
 	% unzip /tmp/foopack.zip
 
 The directory name "foo" is arbitrary, you can pick anything you like.
 
-You would now have these files under ~/.vim:
+You would now have these files under ~/.local/share/nvim/site:
 	pack/foo/README.txt
 	pack/foo/start/foobar/plugin/foo.vim
 	pack/foo/start/foobar/syntax/some.vim
@@ -504,7 +463,7 @@ directories are added to 'runtimepath'.  Then all the plugins are loaded.
 See |packload-two-steps| for how these two steps can be useful.
 
 In the example Vim will find "pack/foo/start/foobar/plugin/foo.vim" and adds 
-"~/.vim/pack/foo/start/foobar" to 'runtimepath'.
+"~/.local/share/nvim/site/pack/foo/start/foobar" to 'runtimepath'.
 
 If the "foobar" plugin kicks in and sets the 'filetype' to "some", Vim will
 find the syntax/some.vim file, because its directory is in 'runtimepath'.
@@ -531,8 +490,8 @@ Using a single plugin and loading it automatically ~
 
 If you don't have a package but a single plugin, you need to create the extra
 directory level:
-	% mkdir -p ~/.vim/pack/foo/start/foobar
-	% cd ~/.vim/pack/foo/start/foobar
+	% mkdir -p ~/.local/share/nvim/site/pack/foo/start/foobar
+	% cd ~/.local/share/nvim/site/pack/foo/start/foobar
 	% unzip /tmp/someplugin.zip
 
 You would now have these files:
@@ -547,7 +506,8 @@ Optional plugins ~
 To load an optional plugin from a pack use the `:packadd` command: >
 	:packadd foodebug
 This searches for "pack/*/opt/foodebug" in 'packpath' and will find
-~/.vim/pack/foo/opt/foodebug/plugin/debugger.vim and source it.
+~/.local/share/nvim/site/pack/foo/opt/foodebug/plugin/debugger.vim and source
+it.
 
 This could be done if some conditions are met.  For example, depending on
 whether Vim supports a feature or a dependency is missing.
@@ -610,8 +570,8 @@ Your directory layout would be like this:
    opt/fooextra/doc/tags  	        " help tags
 
 This allows for the user to do: >
-	mkdir ~/.vim/pack/myfoobar
-	cd ~/.vim/pack/myfoobar
+	mkdir ~/.local/share/nvim/site/pack/myfoobar
+	cd ~/.local/share/nvim/site/pack/myfoobar
 	git clone https://github.com/you/foobar.git
 
 Here "myfoobar" is a name that the user can choose, the only condition is that
@@ -658,7 +618,6 @@ sourced file or user function and set breakpoints.
 NOTE: The debugging mode is far from perfect.  Debugging will have side
 effects on how Vim works.  You cannot use it to debug everything.  For
 example, the display is messed up by the debugging messages.
-{Vi does not have a debug mode}
 
 An alternative to debug mode is setting the 'verbose' option.  With a bigger
 number it will give more verbose messages about what Vim is doing.
@@ -673,7 +632,7 @@ To enter debugging mode use one of these methods:
    useful to find out what is happening when Vim is starting up.  A side
    effect is that Vim will switch the terminal mode before initialisations
    have finished, with unpredictable results.
-   For a GUI-only version (Windows, Macintosh) the debugging will start as
+   For a GUI-only version (Windows) the debugging will start as
    soon as the GUI window has been opened.  To make this happen early, add a
    ":gui" command in the vimrc file.
 								*:debug*
@@ -793,7 +752,7 @@ DEFINING BREAKPOINTS
 
 :breaka[dd] file [lnum] {name}
 		Set a breakpoint in a sourced file.  Example: >
-			:breakadd file 43 .vimrc
+			:breakadd file 43 init.vim
 
 :breaka[dd] here
 		Set a breakpoint in the current line of the current file.
@@ -879,7 +838,6 @@ OBSCURE
 Profiling means that Vim measures the time that is spent on executing
 functions and/or scripts.  The |+profile| feature is required for this.
 It is only included when Vim was compiled with "huge" features.
-{Vi does not have profiling}
 
 You can also use the |reltime()| function to measure time.  This only requires
 the |+reltime| feature, which is present more often.
@@ -898,6 +856,9 @@ For example, to profile the one_script.vim script file: >
 		"~/" and environment variables in {fname} will be expanded.
 		If {fname} already exists it will be silently overwritten.
 		The variable |v:profiling| is set to one.
+
+:prof[ile] stop
+		Write the logfile and stop profiling.
 
 :prof[ile] pause
 		Don't profile until the following ":profile continue".  Can be
@@ -922,6 +883,9 @@ For example, to profile the one_script.vim script file: >
 		after this command.  A :profile command in the script itself
 		won't work.
 
+:prof[ile] dump
+		Don't wait until exiting Vim and write the current state of
+		profiling to the log immediately.
 
 :profd[el] ...						*:profd* *:profdel*
 		Stop profiling for the arguments specified. See |:breakdel|
@@ -964,10 +928,6 @@ long you take to respond to the input() prompt is irrelevant.
 
 Profiling should give a good indication of where time is spent, but keep in
 mind there are various things that may clobber the results:
-
-- The accuracy of the time measured depends on the gettimeofday() system
-  function.  It may only be as accurate as 1/100 second, even though the times
-  are displayed in micro seconds.
 
 - Real elapsed time is measured, if other processes are busy they may cause
   delays at unpredictable moments.  You may want to run the profiling several

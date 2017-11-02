@@ -1,4 +1,4 @@
-*if_cscop.txt*  For Vim version 8.0.  Last change: 2017 Jun 14
+*if_cscop.txt*  Nvim
 
 
 		  VIM REFERENCE MANUAL    by Andy Kahn
@@ -12,16 +12,7 @@ a cscope query is just like jumping to any tag; it is saved on the tag stack
 so that with the right keyboard mappings, you can jump back and forth between
 functions as you normally would with |tags|.
 
-1. Cscope introduction		|cscope-intro|
-2. Cscope related commands	|cscope-commands|
-3. Cscope options		|cscope-options|
-4. How to use cscope in Vim	|cscope-howtouse|
-5. Limitations			|cscope-limitations|
-6. Suggested usage		|cscope-suggestions|
-7. Availability & Information	|cscope-info|
-
-This is currently for Unix and Win32 only.
-{Vi does not have any of these commands}
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Cscope introduction					*cscope-intro*
@@ -91,10 +82,9 @@ suggested use.)
 2. Cscope related commands				*cscope-commands*
 
 		*:cscope* *:cs* *:scs* *:scscope* *E259* *E262* *E561* *E560*
-All cscope commands are accessed through suboptions to the cscope commands.
-	`:cscope` or `:cs` is the main command
-	`:scscope` or `:scs` does the same and splits the window
-	`:lcscope` or `:lcs` uses the location list, see |:lcscope|
+All cscope commands are accessed through suboptions to the main cscope
+command ":cscope".  The shortest abbreviation is ":cs".  The ":scscope"
+command does the same and also splits the window (short: "scs").
 
 The available subcommands are:
 
@@ -244,8 +234,8 @@ through your tags file(s).
 3. Cscope options					*cscope-options*
 
 Use the |:set| command to set all cscope options.  Ideally, you would do
-this in one of your startup files (e.g., .vimrc).  Some cscope related
-variables are only valid within |.vimrc|.  Setting them after vim has
+this in one of your startup files (e.g., vimrc).  Some cscope related
+variables are only valid within |init.vim|.  Setting them after vim has
 started will have no effect!
 
 							*cscopeprg* *csprg*
@@ -295,10 +285,10 @@ Examples: >
 						*cscopeverbose* *csverb*
 If 'cscopeverbose' is not set (the default), messages will not be printed
 indicating success or failure when adding a cscope database.  Ideally, you
-should reset this option in your |.vimrc| before adding any cscope databases,
-and after adding them, set it.  From then on, when you add more databases
-within Vim, you will get a (hopefully) useful message should the database fail
-to be added.  Examples: >
+should reset this option in your |init.vim| before adding any cscope 
+databases, and after adding them, set it.  From then on, when you add more 
+databases within Vim, you will get a (hopefully) useful message should the 
+database fail to be added.  Examples: >
 	:set csverb
 	:set nocsverb
 <
@@ -320,7 +310,7 @@ refer to the cscope man page for more details.
 
 Assuming you have a cscope database, you need to "add" the database to Vim.
 This establishes a cscope "connection" and makes it available for Vim to use.
-You can do this in your .vimrc file, or you can do it manually after starting
+You can do this in your vimrc file, or you can do it manually after starting
 vim.  For example, to add the cscope database "cscope.out", you would do:
 
 	:cs add cscope.out
@@ -363,16 +353,13 @@ cscope version for Win32 see:
 
 	http://iamphet.nm.ru/cscope/index.html
 
-The DJGPP-built version from http://cscope.sourceforge.net is known to not
-work with Vim.
-
 Hard-coded limitation: doing a |:tjump| when |:cstag| searches the tag files
 is not configurable (e.g., you can't do a tselect instead).
 
 ==============================================================================
 6. Suggested usage					*cscope-suggestions*
 
-Put these entries in your .vimrc (adjust the pathname accordingly to your
+Put these entries in your vimrc (adjust the pathname accordingly to your
 setup): >
 
 	if has("cscope")

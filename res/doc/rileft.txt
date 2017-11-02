@@ -1,4 +1,4 @@
-*rileft.txt*    For Vim version 8.0.  Last change: 2006 Apr 24
+*rileft.txt*    Nvim
 
 
 		  VIM REFERENCE MANUAL    by Avner Lottem
@@ -11,12 +11,6 @@ Right to Left display mode for Vim				*rileft*
 These functions were originally created by Avner Lottem:
    E-mail: alottem@iil.intel.com
    Phone:  +972-4-8307322
-
-{Vi does not have any of these commands}
-
-								*E26*
-{only available when compiled with the |+rightleft| feature}
-
 
 Introduction
 ------------
@@ -111,9 +105,6 @@ o  Does not support reverse insert and rightleft modes on the command-line.
 
 o  Somewhat slower in right-to-left mode, because right-to-left motion is
    emulated inside Vim, not by the controlling terminal.
-
-o  When the Athena GUI is used, the bottom scrollbar works in the wrong
-   direction.  This is difficult to fix.
 
 o  When both 'rightleft' and 'revins' are on: 'textwidth' does not work.
    Lines do not wrap at all; you just get a single, long line.

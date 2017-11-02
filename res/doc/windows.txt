@@ -1,4 +1,4 @@
-*windows.txt*   For Vim version 8.0.  Last change: 2017 Sep 25
+*windows.txt*   Nvim
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -13,24 +13,7 @@ differently when used in combination with more than one window.
 The basics are explained in chapter 7 and 8 of the user manual |usr_07.txt|
 |usr_08.txt|.
 
-1.  Introduction				|windows-intro|
-2.  Starting Vim				|windows-starting|
-3.  Opening and closing a window		|opening-window|
-4.  Moving cursor to other windows		|window-move-cursor|
-5.  Moving windows around			|window-moving|
-6.  Window resizing				|window-resize|
-7.  Argument and buffer list commands		|buffer-list|
-8.  Do a command in all buffers or windows	|list-repeat|
-9.  Tag or file name under the cursor		|window-tag|
-10. The preview window				|preview-window|
-11. Using hidden buffers			|buffer-hidden|
-12. Special kinds of buffers			|special-buffers|
-
-{Vi does not have any of these commands}
-{not able to use multiple windows when the |+windows| feature was disabled at
-compile time}
-{not able to use vertically split windows when the |+vertsplit| feature was
-disabled at compile time}
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Introduction					*windows-intro* *window*
@@ -59,7 +42,7 @@ hidden:   The buffer is not displayed.  If there is a file for this buffer, it
 							*inactive-buffer*
 inactive: The buffer is not displayed and does not contain anything.  Options
 	  for the buffer are remembered if the file was once loaded.  It can
-	  contain marks from the |viminfo| file.  But the buffer doesn't
+	  contain marks from the |shada| file.  But the buffer doesn't
 	  contain text.
 
 In a table:
@@ -134,7 +117,7 @@ check if the 'highlight' option contains "si".  In version 3.0, this meant to
 invert the status line.  Now it should be "sr", reverse the status line, as
 "si" now stands for italic!  If italic is not available on your terminal, the
 status line is inverted anyway; you will only see this problem on terminals
-that have termcap codes for italics.
+that have |terminfo| capabilities for italics.
 
 ==============================================================================
 3. Opening and closing a window				*opening-window* *E36*
@@ -222,11 +205,6 @@ CTRL-W ^	Does ":split #", split window in two and edit alternate file.
 		When a count is given, it becomes ":split #N", split window
 		and edit buffer N.
 
-						*CTRL-W_:*
-CTRL-W :	Does the same as typing |:| : edit a command line.  Useful in a
-		terminal window, where all Vim commands must be preceded with
-		CTRL-W or 'termkey'.
-
 Note that the 'splitbelow' and 'splitright' options influence where a new
 window will appear.
 
@@ -282,19 +260,17 @@ Closing a window
 :{count}q[uit]
 CTRL-W q						*CTRL-W_q*
 CTRL-W CTRL-Q						*CTRL-W_CTRL-Q*
-		Without {count}: Quit the current window.  If {count} is
-		given quit the {count} window.
+		Without {count}: Quit the current window. If {count} is
+		given quit the {count} window
 
 		When quitting the last window (not counting a help window),
 		exit Vim.
-		
+
 		When 'hidden' is set, and there is only one window for the
-		current buffer, it becomes hidden.  When 'hidden' is not set,
+		current buffer, it becomes hidden. When 'hidden' is not set,
 		and there is only one window for the current buffer, and the
 		buffer was changed, the command fails.
-		
 		(Note: CTRL-Q does not work on all terminals).
-		
 		If [count] is greater than the last window number the last
 		window will be closed: >
 		    :1quit  " quit the first window
@@ -308,23 +284,22 @@ CTRL-W CTRL-Q						*CTRL-W_CTRL-Q*
 :q[uit]!
 :{count}q[uit]!
 		Without {count}: Quit the current window.  If {count} is
-		given quit the {count} window.
-
+		given quit the {count} window
 		If this was the last window for a buffer, any changes to that
-		buffer are lost.  When quitting the last window (not counting
-		help windows), exit Vim.  The contents of the buffer are lost,
+		buffer are lost. When quitting the last window (not counting
+		help windows), exit Vim. The contents of the buffer are lost,
 		even when 'hidden' is set.
 
 :clo[se][!]
 :{count}clo[se][!]
 CTRL-W c					*CTRL-W_c* *:clo* *:close*
-		Without {count}: Close the current window.  If {count} is
-		given close the {count} window.
+		Without {count}: Close the current window. If given close the
+		{count} window.
 
-		When the 'hidden' option is set, or when the buffer was
-		changed and the [!] is used, the buffer becomes hidden (unless
-		there is another window editing it).
-		
+		When 'hidden' is set, or when the buffer was changed and the
+		[!] is used, the buffer becomes hidden (unless there is another
+		window editing it).
+
 		When there is only one window in the current tab page and
 		there is another tab page, this closes the current tab page.
 		|tab-page|.
@@ -341,23 +316,22 @@ CTRL-W CTRL-C						*CTRL-W_CTRL-C*
 		window, but that does not work, because the CTRL-C cancels the
 		command.
 
-							*:hide*
+                                                                *:hide*
 :hid[e]
 :{count}hid[e]
-		Without {count}: Quit the current window, unless it is the
-		last window on the screen.
-		If {count} is given quit the {count} window.
-		
-		The buffer becomes hidden (unless there is another window
-		editing it or 'bufhidden' is "unload", "delete" or "wipe").
-		If the window is the last one in the current tab page the tab
-		page is closed.  |tab-page| 
-		
-		The value of 'hidden' is irrelevant for this command.  Changes
-		to the buffer are not written and won't get lost, so this is a
-		"safe" command.
+		Quit the current window, unless it is the last window on the
+		screen. For {count} see |:quit|.
 
-:hid[e] {cmd}	Execute {cmd} with 'hidden' is set.  The previous value of
+		The buffer becomes hidden (unless there is another window
+		editing it or 'bufhidden' is `unload`, `delete` or `wipe`).
+		If the window is the last one in the current tab page the tab
+		page is closed. |tab-page|
+
+		The value of 'hidden' is irrelevant for this command.
+		Changes to the buffer are not written and won't get lost, so
+		this is a "safe" command.
+
+:hid[e] {cmd}	Execute {cmd} with 'hidden' set. The previous value of
 		'hidden' is restored after {cmd} has been executed.
 		Example: >
 		    :hide edit Makefile
@@ -368,12 +342,12 @@ CTRL-W CTRL-C						*CTRL-W_CTRL-C*
 :{count}on[ly][!]
 CTRL-W o						*CTRL-W_o* *E445*
 CTRL-W CTRL-O					*CTRL-W_CTRL-O* *:on* *:only*
-		Make the current window the only one on the screen.  All other
-		windows are closed.  For {count} see |:quit| command.
-		
+		Make the current window the only one on the screen. All other
+		windows are closed. For {count} see |:quit|.
+
 		When the 'hidden' option is set, all buffers in closed windows
 		become hidden.
-		
+
 		When 'hidden' is not set, and the 'autowrite' option is set,
 		modified buffers are written.  Otherwise, windows that have
 		buffers that are modified are not removed, unless the [!] is
@@ -502,7 +476,6 @@ CTRL-W H	Move the current window to be at the far left, using the
 		current window and then creating another one with
 		":vert topleft split", except that the current window contents
 		is used for the new window.
-		{not available when compiled without the |+vertsplit| feature}
 
 						*CTRL-W_L*
 CTRL-W L	Move the current window to be at the far right, using the full
@@ -510,7 +483,6 @@ CTRL-W L	Move the current window to be at the far right, using the full
 		current window and then creating another one with
 		":vert botright split", except that the current window
 		contents is used for the new window.
-		{not available when compiled without the |+vertsplit| feature}
 
 						*CTRL-W_T*
 CTRL-W T	Move the current window to a new tab page.  This fails if
@@ -550,6 +522,9 @@ CTRL-W >	Increase current window width by N (default 1).
 
 :vertical res[ize] [N]			*:vertical-resize* *CTRL-W_bar*
 CTRL-W |	Set current window width to N (default: widest possible).
+
+						*:mod* *:mode*
+:mod[e]		Detects the screen size and redraws the screen.
 
 You can also resize a window by dragging a status line up or down with the
 mouse.  Or by dragging a vertical separator line left or right.  This only
@@ -619,8 +594,7 @@ The minimal height and width of a window is set with 'winminheight' and
 41. :buffers		list of buffers
 
 The meaning of [N] depends on the command:
- [N] is the number of buffers to go forward/backward on 2/12/22/32,
-     3/13/23/33, and 4/14/24/34
+ [N] is number of buffers to go forward/backward on ?2, ?3, and ?4
  [N] is an argument number, defaulting to current argument, for 1 and 21
  [N] is a buffer number, defaulting to current buffer, for 11 and 31
  [N] is a count for 19 and 39
@@ -711,7 +685,6 @@ can also get to them with the buffer list commands, like ":bnext".
 		When using the |:tab| modifier each argument is opened in a
 		tab page.  The last window is used if it's empty.
 		Also see |++opt| and |+cmd|.
-		{only available when compiled with a GUI}
 
 ==============================================================================
 8. Do a command in all buffers or windows			*list-repeat*
@@ -719,7 +692,7 @@ can also get to them with the buffer list commands, like ":bnext".
 							*:windo*
 :[range]windo {cmd}	Execute {cmd} in each window or if [range] is given
 			only in windows for which the window number lies in
-			the [range].  It works like doing this: >
+			the [range]. It works like doing this: >
 				CTRL-W t
 				:{cmd}
 				CTRL-W w
@@ -732,15 +705,13 @@ can also get to them with the buffer list commands, like ":bnext".
 			the current window.
 			{cmd} can contain '|' to concatenate several commands.
 			{cmd} must not open or close windows or reorder them.
-			{not in Vi} {not available when compiled without the
-			|+listcmds| feature}
 			Also see |:tabdo|, |:argdo|, |:bufdo|, |:cdo|, |:ldo|,
-			|:cfdo| and |:lfdo|
+			|:cfdo| and |:lfdo|.
 
 							*:bufdo*
 :[range]bufdo[!] {cmd}	Execute {cmd} in each buffer in the buffer list or if
 			[range] is given only for buffers for which their
-			buffer number is in the [range].  It works like doing
+			buffer number is in the [range]. It works like doing
 			this: >
 				:bfirst
 				:{cmd}
@@ -761,10 +732,8 @@ can also get to them with the buffer list commands, like ":bnext".
 			autocommand event is disabled by adding it to
 			'eventignore'.  This considerably speeds up editing
 			each buffer.
-			{not in Vi} {not available when compiled without the
-			|+listcmds| feature}
 			Also see |:tabdo|, |:argdo|, |:windo|, |:cdo|, |:ldo|,
-			|:cfdo| and |:lfdo|
+			|:cfdo| and |:lfdo|.
 
 Examples: >
 
@@ -882,7 +851,7 @@ CTRL-W CTRL-Z					*CTRL-W_CTRL-Z* *:pc* *:pclose*
 							*:pp* *:ppop*
 :[count]pp[op][!]
 		Does ":[count]pop[!]" in the preview window.  See |:pop| and
-		|:ptag|.  {not in Vi}
+		|:ptag|.
 
 CTRL-W }						*CTRL-W_}*
 		Use identifier under cursor as a tag and perform a :ptag on
@@ -1033,26 +1002,23 @@ list of buffers. |unlisted-buffer|
 			   displayed in a window |hidden-buffer|
 		   -	a buffer with 'modifiable' off
 		   =	a readonly buffer
-		   R	a terminal buffer with a running job
-		   F	a terminal buffer with a finished job
-		   ?    a terminal buffer without a job: `:terminal NONE`
 		    +	a modified buffer
 		    x   a buffer with read errors
 
 		[flags] can be a combination of the following characters,
 		which restrict the buffers to be listed:
-		     +   modified buffers
-		     -   buffers with 'modifiable' off
-		     =   readonly buffers
-		     a   active buffers
-		     u   unlisted buffers (overrides the "!")
-		     h   hidden buffers
-		     x   buffers with a read error
-		     %   current buffer
-		     #   alternate buffer
+			+	modified buffers
+			-	buffers with 'modifiable' off
+			=	readonly buffers
+			a	active buffers
+			u	unlisted buffers (overrides the "!")
+			h	hidden buffers
+			x	buffers with a read error
+			%	current buffer
+			#	alternate buffer
 		Combining flags means they are "and"ed together, e.g.:
-		     h+   hidden buffers which are modified
-		     a+   active buffers which are modified
+			h+	hidden buffers which are modified
+			a+	active buffers which are modified
 
 		When using |:filter| the pattern is matched against the
 		displayed buffer name, e.g.: >
@@ -1078,11 +1044,10 @@ list of buffers. |unlisted-buffer|
 		from the buffer list |unlisted-buffer| and option values,
 		variables and mappings/abbreviations for the buffer are
 		cleared. Examples: >
-		    :.,$-bdelete    " delete buffers from the current one to
-				    " last but one
-		    :%bdelete	    " delete all buffers
+                    :.,$-bdelete   "delete buffers from the current one to
+                                   " last but one
+                    :%bdelete      " delete all buffers
 <
-
 :bdelete[!] {bufname}						*E93* *E94*
 		Like ":bdelete[!] [N]", but buffer given by name.  Note that a
 		buffer whose name is a number cannot be referenced by that
@@ -1106,11 +1071,10 @@ list of buffers. |unlisted-buffer|
 		related to the buffer is lost.  All marks in this buffer
 		become invalid, option settings are lost, etc.  Don't use this
 		unless you know what you are doing. Examples: >
-		    :.+,$bwipeout   " wipe out all buffers after the current
-				    " one
-		    :%bwipeout	    " wipe out all buffers
+                    :.+,$bwipeout   " wipe out all buffers after the current
+                                    " one
+                    :%bwipeout      " wipe out all buffers
 <
-
 :[N]bun[load][!]				*:bun* *:bunload* *E515*
 :bun[load][!] [N]
 		Unload buffer [N] (default: current buffer).  The memory
@@ -1281,9 +1245,6 @@ help		Contains a help file.  Will only be created with the |:help|
 		command.  The flag that indicates a help buffer is internal
 		and can't be changed.  The 'buflisted' option will be reset
 		for a help buffer.
-
-terminal	A terminal window buffer, see |terminal|. The contents cannot
-		be read or changed until the job ends.
 
 directory	Displays directory contents.  Can be used by a file explorer
 		plugin.  The buffer is created with these settings: >

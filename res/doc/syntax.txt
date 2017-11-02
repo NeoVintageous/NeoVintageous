@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 8.0.  Last change: 2017 Aug 12
+*syntax.txt*	Nvim
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -20,29 +20,7 @@ In the User Manual:
 |usr_06.txt| introduces syntax highlighting.
 |usr_44.txt| introduces writing a syntax file.
 
-1.  Quick start			|:syn-qstart|
-2.  Syntax files		|:syn-files|
-3.  Syntax loading procedure	|syntax-loading|
-4.  Syntax file remarks		|:syn-file-remarks|
-5.  Defining a syntax		|:syn-define|
-6.  :syntax arguments		|:syn-arguments|
-7.  Syntax patterns		|:syn-pattern|
-8.  Syntax clusters		|:syn-cluster|
-9.  Including syntax files	|:syn-include|
-10. Synchronizing		|:syn-sync|
-11. Listing syntax items	|:syntax|
-12. Highlight command		|:highlight|
-13. Linking groups		|:highlight-link|
-14. Cleaning up			|:syn-clear|
-15. Highlighting tags		|tag-highlight|
-16. Window-local syntax		|:ownsyntax|
-17. Color xterms		|xterm-color|
-18. When syntax is slow		|:syntime|
-
-{Vi does not have any of these commands}
-
-Syntax highlighting is not available when the |+syntax| feature has been
-disabled at compile time.
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Quick start						*:syn-qstart*
@@ -76,10 +54,10 @@ with: >
 For a color terminal see |:hi-normal-cterm|.
 For setting up your own colors syntax highlighting see |syncolor|.
 
-NOTE: The syntax files on MS-DOS and Windows have lines that end in <CR><NL>.
-The files for Unix end in <NL>.  This means you should use the right type of
-file for your system.  Although on MS-DOS and Windows the right format is
-automatically selected if the 'fileformats' option is not empty.
+NOTE: The syntax files on Windows have lines that end in <CR><NL>.  The files
+for Unix end in <NL>.  This means you should use the right type of file for
+your system.  Although on Windows the right format is automatically selected
+if the 'fileformats' option is not empty.
 
 NOTE: When using reverse video ("gvim -fg white -bg black"), the default value
 of 'background' will not be set until the GUI window is opened, which is after
@@ -148,14 +126,14 @@ automatically with ":syntax enable", do this:
 
 1. Create your user runtime directory.	You would normally use the first item
    of the 'runtimepath' option.  Example for Unix: >
-	mkdir ~/.vim
+	mkdir ~/.config/nvim
 
 2. Create a directory in there called "syntax".  For Unix: >
-	mkdir ~/.vim/syntax
+	mkdir ~/.config/nvim/syntax
 
 3. Write the Vim syntax file.  Or download one from the internet.  Then write
    it in your syntax directory.  For example, for the "mine" syntax: >
-	:w ~/.vim/syntax/mine.vim
+	:w ~/.config/nvim/syntax/mine.vim
 
 Now you can start using your syntax file manually: >
 	:set syntax=mine
@@ -175,8 +153,8 @@ add a few items or change the highlighting, follow these steps:
 1. Create your user directory from 'runtimepath', see above.
 
 2. Create a directory in there called "after/syntax".  For Unix: >
-	mkdir ~/.vim/after
-	mkdir ~/.vim/after/syntax
+	mkdir ~/.config/nvim/after
+	mkdir ~/.config/nvim/after/syntax
 
 3. Write a Vim script that contains the commands you want to use.  For
    example, to change the colors for the C syntax: >
@@ -184,15 +162,15 @@ add a few items or change the highlighting, follow these steps:
 
 4. Write that file in the "after/syntax" directory.  Use the name of the
    syntax, with ".vim" added.  For our C syntax: >
-	:w ~/.vim/after/syntax/c.vim
+	:w ~/.config/nvim/after/syntax/c.vim
 
 That's it.  The next time you edit a C file the Comment color will be
 different.  You don't even have to restart Vim.
 
 If you have multiple files, you can use the filetype as the directory name.
 All the "*.vim" files in this directory will be used, for example:
-	~/.vim/after/syntax/c/one.vim
-	~/.vim/after/syntax/c/two.vim
+	~/.config/nvim/after/syntax/c/one.vim
+	~/.config/nvim/after/syntax/c/two.vim
 
 
 REPLACING AN EXISTING SYNTAX FILE			*mysyntaxfile-replace*
@@ -478,7 +456,7 @@ moves through the buffer, switches windows, and the like: >
 
   vim -E -s -c "let g:html_no_progress=1" -c "syntax on" -c "set ft=c" -c "runtime syntax/2html.vim" -cwqa myfile.c
 <
-Note that the -s flag prevents loading your .vimrc and any plugins, so you
+Note that the -s flag prevents loading your vimrc and any plugins, so you
 need to explicitly source/enable anything that will affect the HTML
 conversion. See |-E| and |-s-ex| for details. It is probably best to create a
 script to replace all the -c commands and use it with the -u flag instead of
@@ -897,13 +875,13 @@ for both 3 GL and 4 GL programming. Large number of standard defines/constants
 are supported.
 
 Some special violation of coding standards will be signalled when one specify
-in ones |.vimrc|: >
+in ones |init.vim|: >
 	let baan_code_stds=1
 
 *baan-folding*
 
 Syntax folding can be enabled at various levels through the variables
-mentioned below (Set those in your |.vimrc|). The more complex folding on
+mentioned below (Set those in your |init.vim|). The more complex folding on
 source blocks and SQL can be CPU intensive.
 
 To allow any folding and enable folding at function level use: >
@@ -917,8 +895,8 @@ SELECTEMPTY, ... The indentation preceding the begin/end keywords has to
 match (spaces are not considered equal to a tab). >
 	let baan_fold_sql=1
 Note: Block folding can result in many small folds. It is suggested to |:set|
-the options 'foldminlines' and 'foldnestmax' in |.vimrc| or use |:setlocal| in
-.../after/syntax/baan.vim (see |after-directory|). Eg: >
+the options 'foldminlines' and 'foldnestmax' in |init.vim| or use |:setlocal| 
+in .../after/syntax/baan.vim (see |after-directory|). Eg: >
 	set foldminlines=5
 	set foldnestmax=6
 
@@ -1003,7 +981,7 @@ highlighting for cErrInParen and cErrInBracket.
 
 If you want to use folding in your C files, you can add these lines in a file
 in the "after" directory in 'runtimepath'.  For Unix this would be
-~/.vim/after/syntax/c.vim. >
+~/.config/nvim/after/syntax/c.vim. >
     syn sync fromstart
     set foldmethod=syntax
 
@@ -1030,7 +1008,7 @@ chill_minlines		like c_minlines
 CHANGELOG				*changelog.vim* *ft-changelog-syntax*
 
 ChangeLog supports highlighting spaces at the start of a line.
-If you do not like this, add following line to your .vimrc: >
+If you do not like this, add following line to your vimrc: >
 	let g:changelog_spacing_errors = 0
 This works the next time you edit a changelog file.  You can also use
 "b:changelog_spacing_errors" to set this per buffer (before loading the syntax
@@ -1078,7 +1056,7 @@ COBOL						*cobol.vim* *ft-cobol-syntax*
 COBOL highlighting has different needs for legacy code than it does for fresh
 development.  This is due to differences in what is being done (maintenance
 versus development) and other factors.	To enable legacy code highlighting,
-add this line to your .vimrc: >
+add this line to your vimrc: >
 	:let cobol_legacy_code = 1
 To disable it again, use this: >
 	:unlet cobol_legacy_code
@@ -1132,7 +1110,7 @@ Cynlib files are C++ files that use the Cynlib class library to enable
 hardware modelling and simulation using C++.  Typically Cynlib files have a .cc
 or a .cpp extension, which makes it very difficult to distinguish them from a
 normal C++ file.  Thus, to enable Cynlib highlighting for .cc files, add this
-line to your .vimrc file: >
+line to your vimrc file: >
 
 	:let cynlib_cyntax_for_cc=1
 
@@ -1246,7 +1224,7 @@ or >
 
 It can also be done automatically for C, C++, C#, IDL and PHP files by setting
 the global or buffer-local variable load_doxygen_syntax.  This is done by
-adding the following to your .vimrc. >
+adding the following to your vimrc. >
 	:let g:load_doxygen_syntax=1
 
 There are a couple of variables that have an effect on syntax highlighting, and
@@ -1399,7 +1377,7 @@ start of a new paragraph, so the ftplugin sets 'tw'=0 (unlimited line length),
 and so on. It also includes some keymaps that are disabled by default.
 
 If you want to enable the keymaps that make "j" and "k" and the cursor keys
-move up and down by display lines, add this to your .vimrc: >
+move up and down by display lines, add this to your vimrc: >
 	:let flexwiki_maps = 1
 
 
@@ -1451,16 +1429,17 @@ syntax highlighting will not be correct if the form is incorrectly set.
 When you create a new fortran file, the syntax script assumes fixed source
 form.  If you always use free source form, then >
     :let fortran_free_source=1
-in your .vimrc prior to the :syntax on command.  If you always use fixed source
+in your vimrc prior to the :syntax on command.  If you always use fixed source
 form, then >
     :let fortran_fixed_source=1
-in your .vimrc prior to the :syntax on command.
+in your vimrc prior to the :syntax on command.
 
 If the form of the source code depends, in a non-standard way, upon the file
 extension, then it is most convenient to set fortran_free_source in a ftplugin
 file.  For more information on ftplugin files, see |ftplugin|. Note that this
 will work only if the "filetype plugin indent on" command precedes the "syntax
 on" command in your .vimrc file.
+
 
 When you edit an existing fortran file, the syntax script will assume free
 source form if the fortran_free_source variable has been set, and assumes
@@ -1483,7 +1462,7 @@ Tabs are not recognized by the Fortran standards.  Tabs are not a good idea in
 fixed format fortran source code which requires fixed column boundaries.
 Therefore, tabs are marked as errors.  Nevertheless, some programmers like
 using tabs.  If your fortran files contain tabs, then you should set the
-variable fortran_have_tabs in your .vimrc with a command such as >
+variable fortran_have_tabs in your vimrc with a command such as >
     :let fortran_have_tabs=1
 placed prior to the :syntax on command.  Unfortunately, the use of tabs will
 mean that the syntax file will not be able to detect incorrect margins.
@@ -1529,7 +1508,7 @@ other legacy features excluded from F will be highlighted as todo items and
 that free source form will be assumed.
 
 The dialect can be selected in various ways.  If all your fortran files use
-the same dialect, set the global variable fortran_dialect in your .vimrc prior
+the same dialect, set the global variable fortran_dialect in your vimrc prior
 to your syntax on statement.  The case-sensitive, permissible values of
 fortran_dialect are "f08" or "F".  Invalid values of fortran_dialect are
 ignored.
@@ -1546,7 +1525,7 @@ contain the code >
 	unlet! b:fortran_dialect
     endif
 Note that this will work only if the "filetype plugin indent on" command
-precedes the "syntax on" command in your .vimrc file.
+precedes the "syntax on" command in your vimrc file.
 
 Finer control is necessary if the file extension does not uniquely identify
 the dialect.  You can override the default dialect, on a file-by-file basis,
@@ -1591,15 +1570,6 @@ as Fvwm2 configuration files, add the following: >
   :au! BufNewFile,BufRead /etc/X11/fvwm2/*  let b:fvwm_version = 2 |
 					 \ set filetype=fvwm
 
-If you'd like Vim to highlight all valid color names, tell it where to
-find the color database (rgb.txt) on your system.  Do this by setting
-"rgb_file" to its location.  Assuming your color database is located
-in /usr/X11/lib/X11/, you should add the line >
-
-	:let rgb_file = "/usr/X11/lib/X11/rgb.txt"
-
-to your .vimrc file.
-
 
 GSP						*gsp.vim* *ft-gsp-syntax*
 
@@ -1640,7 +1610,7 @@ Haskell code, the latter in both Bird style and TeX style.  The Haskell
 syntax highlighting will also highlight C preprocessor directives.
 
 If you want to highlight delimiter characters (useful if you have a
-light-coloured background), add to your .vimrc: >
+light-coloured background), add to your vimrc: >
 	:let hs_highlight_delimiters = 1
 To treat True and False as keywords as opposed to ordinary identifiers,
 add: >
@@ -1650,21 +1620,21 @@ To also treat the names of primitive types as keywords: >
 And to treat the names of even more relatively common types as keywords: >
 	:let hs_highlight_more_types = 1
 If you want to highlight the names of debugging functions, put in
-your .vimrc: >
+your vimrc: >
 	:let hs_highlight_debug = 1
 
 The Haskell syntax highlighting also highlights C preprocessor
 directives, and flags lines that start with # but are not valid
 directives as erroneous.  This interferes with Haskell's syntax for
 operators, as they may start with #.  If you want to highlight those
-as operators as opposed to errors, put in your .vimrc: >
+as operators as opposed to errors, put in your vimrc: >
 	:let hs_allow_hash_operator = 1
 
 The syntax highlighting for literate Haskell code will try to
 automatically guess whether your literate Haskell code contains
 TeX markup or not, and correspondingly highlight TeX constructs
 or nothing at all.  You can override this globally by putting
-in your .vimrc >
+in your vimrc >
 	:let lhs_markup = none
 for no highlighting at all, or >
 	:let lhs_markup = tex
@@ -1757,7 +1727,7 @@ The coloring scheme for HTML/OS works as follows:
 Functions and variable names are the same color by default, because VIM
 doesn't specify different colors for Functions and Identifiers.  To change
 this (which is recommended if you want function names to be recognizable in a
-different color) you need to add the following line to either your ~/.vimrc: >
+different color) you need to add the following line to your vimrc: >
   :hi Function term=underline cterm=bold ctermfg=LightGray
 
 Of course, the ctermfg can be a different color if you choose.
@@ -1776,7 +1746,7 @@ IA64				*ia64.vim* *intel-itanium* *ft-ia64-syntax*
 Highlighting for the Intel Itanium 64 assembly language.  See |asm.vim| for
 how to recognize this filetype.
 
-To have *.inc files be recognized as IA64, add this to your .vimrc file: >
+To have *.inc files be recognized as IA64, add this to your vimrc file: >
 	:let g:filetype_inc = "ia64"
 
 
@@ -1938,7 +1908,7 @@ difficulties (such as may happen with large lex files).
 
 LIFELINES				*lifelines.vim* *ft-lifelines-syntax*
 
-To highlight deprecated functions as errors, add in your .vimrc: >
+To highlight deprecated functions as errors, add in your vimrc: >
 
 	:let g:lifelines_deprecated = 1
 <
@@ -1981,7 +1951,7 @@ LPC						*lpc.vim* *ft-lpc-syntax*
 LPC stands for a simple, memory-efficient language: Lars Pensj| C.  The
 file name of LPC is usually *.c.  Recognizing these files as LPC would bother
 users writing only C programs.	If you want to use LPC syntax in Vim, you
-should set a variable in your .vimrc file: >
+should set a variable in your vimrc file: >
 
 	:let lpc_syntax_for_c = 1
 
@@ -2060,13 +2030,13 @@ MAPLE						*maple.vim* *ft-maple-syntax*
 Maple V, by Waterloo Maple Inc, supports symbolic algebra.  The language
 supports many packages of functions which are selectively loaded by the user.
 The standard set of packages' functions as supplied in Maple V release 4 may be
-highlighted at the user's discretion.  Users may place in their .vimrc file: >
+highlighted at the user's discretion.  Users may place in their vimrc file: >
 
 	:let mvpkg_all= 1
 
 to get all package functions highlighted, or users may select any subset by
 choosing a variable/package from the table below and setting that variable to
-1, also in their .vimrc file (prior to sourcing
+1, also in their vimrc file (prior to sourcing
 $VIMRUNTIME/syntax/syntax.vim).
 
 	Table of Maple V Package Function Selectors >
@@ -2083,7 +2053,7 @@ $VIMRUNTIME/syntax/syntax.vim).
 MATHEMATICA		*mma.vim* *ft-mma-syntax* *ft-mathematica-syntax*
 
 Empty *.m files will automatically be presumed to be Matlab files unless you
-have the following in your .vimrc: >
+have the following in your vimrc: >
 
 	let filetype_m = "mma"
 
@@ -2136,16 +2106,6 @@ For syncing, minlines defaults to 100.	If you prefer another value, you can
 set "msql_minlines" to the value you desire.  Example: >
 
 	:let msql_minlines = 200
-
-
-N1QL						*n1ql.vim* *ft-n1ql-syntax*
-
-N1QL is a SQL-like declarative language for manipulating JSON documents in
-Couchbase Server databases.
-
-Vim syntax highlights N1QL statements, keywords, operators, types, comments,
-and special values.  Vim ignores syntactical elements specific to SQL or its
-many dialects, like COLUMN or CHAR, that don't exist in N1QL.
 
 
 NCF						*ncf.vim* *ft-ncf-syntax*
@@ -2219,7 +2179,7 @@ highlighting definition for the syntax groups "nroffDefinition" and
 			 \ gui=reverse,bold
 
 If you want to navigate preprocessor entries in your source file as easily as
-with section markers, you can activate the following option in your .vimrc
+with section markers, you can activate the following option in your vimrc
 file: >
 
 	let b:preprocs_as_sections = 1
@@ -2656,9 +2616,9 @@ later, and part earlier) adds.
 
 RESTRUCTURED TEXT			*rst.vim* *ft-rst-syntax*
 
-You may set what syntax definitions should be used for code blocks via >
+You may set what syntax definitions should be used for code blocks via
 	let rst_syntax_code_list = ['vim', 'lisp', ...]
-<
+
 
 REXX						*rexx.vim* *ft-rexx-syntax*
 
@@ -2672,7 +2632,7 @@ number is that redrawing can become slow.
 
 Vim tries to guess what type a ".r" file is.  If it can't be detected (from
 comment lines), the default is "r".  To make the default rexx add this line to
-your .vimrc:  *g:filetype_r*
+your vimrc:							*g:filetype_r*
 >
 	:let g:filetype_r = "r"
 
@@ -2893,7 +2853,7 @@ systems sh is symbolically linked to "bash" (Linux, Windows+cygwin) or "ksh"
 (Posix).
 
 One may specify a global default by instantiating one of the following
-variables in your <.vimrc>:
+variables in your vimrc:
 
    ksh: >
 	let g:is_kornshell = 1
@@ -2956,7 +2916,7 @@ the following line in your .vimrc: >
 
 You may wish to embed languages into sh.  I'll give an example courtesy of
 Lorance Stinson on how to do this with awk as an example. Put the following
-file into $HOME/.vim/after/syntax/sh/awkembed.vim: >
+file into $HOME/.config/nvim/after/syntax/sh/awkembed.vim: >
 
     " AWK Embedding:
     " ==============
@@ -3032,7 +2992,7 @@ for how the filetype is detected.
 
 Tcsh does not allow \" in strings unless the "backslash_quote" shell variable
 is set.  If you want VIM to assume that no backslash quote constructs exist add
-this line to your .vimrc: >
+this line to your vimrc: >
 
 	:let tcsh_backslash_quote = 0
 
@@ -3073,7 +3033,7 @@ TEX				*tex.vim* *ft-tex-syntax* *latex-syntax*
 As of version 28 of <syntax/tex.vim>, syntax-based folding of parts, chapters,
 sections, subsections, etc are supported.  Put >
 	let g:tex_fold_enabled=1
-in your <.vimrc>, and :set fdm=syntax.  I suggest doing the latter via a
+in your vimrc, and :set fdm=syntax.  I suggest doing the latter via a
 modeline at the end of your LaTeX file: >
 	% vim: fdm=syntax
 If your system becomes too slow, then you might wish to look into >
@@ -3084,7 +3044,7 @@ If your system becomes too slow, then you might wish to look into >
 
 If you don't want spell checking anywhere in your LaTeX document, put >
 	let g:tex_nospell=1
-into your .vimrc.  If you merely wish to suppress spell checking inside
+into your vimrc.  If you merely wish to suppress spell checking inside
 comments only, see |g:tex_comment_nospell|.
 
 				*tex-nospell* *g:tex_comment_nospell*
@@ -3092,7 +3052,7 @@ comments only, see |g:tex_comment_nospell|.
 
 Some folks like to include things like source code in comments and so would
 prefer that spell checking be disabled in comments in LaTeX files.  To do
-this, put the following in your <.vimrc>: >
+this, put the following in your vimrc: >
       let g:tex_comment_nospell= 1
 If you want to suppress spell checking everywhere inside your LaTeX document,
 see |g:tex_nospell|.
@@ -3102,7 +3062,7 @@ see |g:tex_nospell|.
 
 Often verbatim regions are used for things like source code; seldom does
 one want source code spell-checked.  However, for those of you who do
-want your verbatim zones spell-checked, put the following in your <.vimrc>: >
+want your verbatim zones spell-checked, put the following in your vimrc: >
 	let g:tex_verbspell= 1
 <
 					*tex-runon* *tex-stopzone*
@@ -3137,7 +3097,7 @@ Finally, if syntax highlighting is still too slow, you may set >
 
 	:let g:tex_fast= ""
 
-in your .vimrc.  Used this way, the g:tex_fast variable causes the syntax
+in your vimrc.  Used this way, the g:tex_fast variable causes the syntax
 highlighting script to avoid defining any regions and associated
 synchronization.  The result will be much faster syntax highlighting; the
 price: you will no longer have as much highlighting or any syntax-based
@@ -3179,7 +3139,7 @@ http://vim.sf.net/.
 The <tex.vim> supports lexical error checking of various sorts.  Thus,
 although the error checking is ofttimes very useful, it can indicate
 errors where none actually are.  If this proves to be a problem for you,
-you may put in your <.vimrc> the following statement: >
+you may put in your vimrc the following statement: >
 	let g:tex_no_error=1
 and all error checking by <syntax/tex.vim> will be suppressed.
 
@@ -3209,7 +3169,7 @@ such use of @ as an error.  To solve this: >
 	:let b:tex_stylish = 1
 	:set ft=tex
 
-Putting "let g:tex_stylish=1" into your <.vimrc> will make <syntax/tex.vim>
+Putting "let g:tex_stylish=1" into your vimrc will make <syntax/tex.vim>
 always accept such use of @.
 
 					*tex-cchar* *tex-cole* *tex-conceal*
@@ -3229,7 +3189,7 @@ with |'conceallevel'| at 0 and the other at 2; and both using |'scrollbind'|.
  Tex: Selective Conceal Mode~
 
 You may selectively use conceal mode by setting g:tex_conceal in your
-<.vimrc>.  By default, g:tex_conceal is set to "admgs" to enable concealment
+vimrc.  By default, g:tex_conceal is set to "admgs" to enable concealment
 for the following sets of characters: >
 
 	a = accents/ligatures
@@ -3280,8 +3240,8 @@ syntax highlighting script handles this with the following logic:
 	For example, I use Luxi Mono Bold; it doesn't support subscript
 	characters for "hklmnpst", so I put >
 		let g:tex_subscripts= "[0-9aeijoruvx,+-/().]"
-<	in ~/.vim/ftplugin/tex/tex.vim in order to avoid having inscrutable
-	utf-8 glyphs appear.
+<	in ~/.config/nvim/ftplugin/tex/tex.vim in order to avoid having 
+	inscrutable utf-8 glyphs appear.
 
 
 TF						*tf.vim* *ft-tf-syntax*
@@ -3310,18 +3270,10 @@ improve screen updating rates (see |:syn-sync| for more on this). >
 The g:vimsyn_embed option allows users to select what, if any, types of
 embedded script highlighting they wish to have. >
 
-   g:vimsyn_embed == 0   : don't support any embedded scripts
-   g:vimsyn_embed =~ 'l' : support embedded lua
-   g:vimsyn_embed =~ 'm' : support embedded mzscheme
-   g:vimsyn_embed =~ 'p' : support embedded perl
-   g:vimsyn_embed =~ 'P' : support embedded python
-   g:vimsyn_embed =~ 'r' : support embedded ruby
-   g:vimsyn_embed =~ 't' : support embedded tcl
+   g:vimsyn_embed == 0      : disable (don't embed any scripts)
+   g:vimsyn_embed == 'lPr'  : support embedded lua, python and ruby
 <
-By default, g:vimsyn_embed is a string supporting interpreters that your vim
-itself supports.  Concatenate multiple characters to support multiple types
-of embedded interpreters; ie. g:vimsyn_embed= "mp" supports embedded mzscheme
-and embedded perl.
+This option is disabled by default.
 						*g:vimsyn_folding*
 
 Some folding is now supported with syntax/vim.vim: >
@@ -3329,12 +3281,7 @@ Some folding is now supported with syntax/vim.vim: >
    g:vimsyn_folding == 0 or doesn't exist: no syntax-based folding
    g:vimsyn_folding =~ 'a' : augroups
    g:vimsyn_folding =~ 'f' : fold functions
-   g:vimsyn_folding =~ 'l' : fold lua      script
-   g:vimsyn_folding =~ 'm' : fold mzscheme script
-   g:vimsyn_folding =~ 'p' : fold perl     script
    g:vimsyn_folding =~ 'P' : fold python   script
-   g:vimsyn_folding =~ 'r' : fold ruby     script
-   g:vimsyn_folding =~ 't' : fold tcl      script
 <
 							*g:vimsyn_noerror*
 Not all error highlighting that syntax/vim.vim does may be correct; Vim script
@@ -3351,7 +3298,7 @@ The syntax of XF86Config file differs in XFree86 v3.x and v4.x.  Both
 variants are supported.  Automatic detection is used, but is far from perfect.
 You may need to specify the version manually.  Set the variable
 xf86conf_xfree86_version to 3 or 4 according to your XFree86 version in
-your .vimrc.  Example: >
+your vimrc.  Example: >
 	:let xf86conf_xfree86_version=3
 When using a mix of versions, set the b:xf86conf_xfree86_version variable.
 
@@ -4130,7 +4077,7 @@ See |pattern| for the explanation of what a pattern is.  Syntax patterns are
 always interpreted like the 'magic' option is set, no matter what the actual
 value of 'magic' is.  And the patterns are interpreted like the 'l' flag is
 not included in 'cpoptions'.  This was done to make syntax files portable and
-independent of 'compatible' and 'magic' settings.
+independent of the 'magic' setting.
 
 Try to avoid patterns that can match an empty string, such as "[a-z]*".
 This slows down the highlighting a lot, because it matches everywhere.
@@ -4245,8 +4192,8 @@ the match doesn't move to another line.
 The skip pattern can include the "\n", but the search for an end pattern will
 continue in the first character of the next line, also when that character is
 matched by the skip pattern.  This is because redrawing may start in any line
-halfway a region and there is no check if the skip pattern started in a
-previous line.	For example, if the skip pattern is "a\nb" and an end pattern
+halfway in a region and there is no check if the skip pattern started in a
+previous line. For example, if the skip pattern is "a\nb" and an end pattern
 is "b", the end pattern does match in the second line of this: >
 	 x x a
 	 b x x
@@ -4688,8 +4635,7 @@ mentioned for the default values. See |:verbose-cmd| for more information.
 					*highlight-args* *E416* *E417* *E423*
 There are three types of terminals for highlighting:
 term	a normal terminal (vt100, xterm)
-cterm	a color terminal (MS-DOS console, color-xterm, these have the "Co"
-	termcap entry)
+cterm	a color terminal (Windows console, color-xterm)
 gui	the GUI
 
 For each type the highlighting can be given.  This makes it possible to use
@@ -4699,26 +4645,22 @@ the same syntax file on all terminals, and use the optimal highlighting.
 
 					*bold* *underline* *undercurl*
 					*inverse* *italic* *standout*
-					*nocombine* *strikethrough*
 term={attr-list}			*attr-list* *highlight-term* *E418*
 	attr-list is a comma separated list (without spaces) of the
 	following items (in any order):
 		bold
 		underline
-		undercurl	not always available
-		strikethrough	not always available
+		undercurl	a curly underline
 		reverse
 		inverse		same as reverse
 		italic
 		standout
-		nocombine	override attributes instead of combining them
 		NONE		no attributes used (used to reset it)
 
 	Note that "bold" can be used here and by using a bold font.  They
 	have the same effect.
-	"undercurl" is a curly underline.  When "undercurl" is not possible
-	then "underline" is used.  In general "undercurl" and "strikethrough"
-	is only available in the GUI.  The color is set with |highlight-guisp|.
+	If running in a terminal, "undercurl" acts as an alias for "underline".
+	It is set using |highlight-guisp|.
 
 start={term-list}				*highlight-start* *E422*
 stop={term-list}				*term-list* *highlight-stop*
@@ -4733,20 +4675,11 @@ stop={term-list}				*term-list* *highlight-stop*
 	highlighted area.  This should undo the "start" argument.
 	Otherwise the screen will look messed up.
 
-	The {term-list} can have two forms:
-
-	1. A string with escape sequences.
-	   This is any string of characters, except that it can't start with
-	   "t_" and blanks are not allowed.  The <> notation is recognized
-	   here, so you can use things like "<Esc>" and "<Space>".  Example:
+        {term-list} is a a string with escape sequences. This is any string of
+        characters, except that it can't start with "t_" and blanks are not
+        allowed.  The <> notation is recognized here, so you can use things
+        like "<Esc>" and "<Space>".  Example:
 		start=<Esc>[27h;<Esc>[<Space>r;
-
-	2. A list of terminal codes.
-	   Each terminal code has the form "t_xx", where "xx" is the name of
-	   the termcap entry.  The codes have to be separated with commas.
-	   White space is not allowed.	Example:
-		start=t_C1,t_BL
-	   The terminal codes must exist for this to work.
 
 
 2. highlight arguments for color terminals
@@ -4762,7 +4695,7 @@ cterm={attr-list}					*highlight-cterm*
 ctermfg={color-nr}				*highlight-ctermfg* *E421*
 ctermbg={color-nr}				*highlight-ctermbg*
 	The {color-nr} argument is a color number.  Its range is zero to
-	(not including) the number given by the termcap entry "Co".
+	(not including) the number of |tui-colors| available.
 	The actual color with this number depends on the type of terminal
 	and its settings.  Sometimes the color also depends on the settings of
 	"cterm".  For example, on some systems "cterm=bold ctermfg=3" gives
@@ -4772,7 +4705,7 @@ ctermbg={color-nr}				*highlight-ctermbg*
 	unpredictable.	See your xterm documentation for the defaults.	The
 	colors for a color-xterm can be changed from the .Xdefaults file.
 	Unfortunately this means that it's not possible to get the same colors
-	for each user.	See |xterm-color| for info about color xterms.
+	for each user.
 
 	The MSDOS standard colors are fixed (in a console window), so these
 	have been used for the names.  But the meaning of color names in X11
@@ -4825,23 +4758,21 @@ ctermbg={color-nr}				*highlight-ctermbg*
 	Example: >
 		:highlight Normal ctermfg=grey ctermbg=darkblue
 <	When setting the "ctermbg" color for the Normal group, the
-	'background' option will be adjusted automatically, under the
-	condition that the color is recognized and 'background' was not set
-	explicitly.  This causes the highlight groups that depend on
-	'background' to change!  This means you should set the colors for
-	Normal first, before setting other colors.
+	'background' option will be adjusted automatically.  This causes the
+	highlight groups that depend on 'background' to change!  This means
+	you should set the colors for Normal first, before setting other
+	colors.
 	When a colorscheme is being used, changing 'background' causes it to
 	be reloaded, which may reset all colors (including Normal).  First
 	delete the "g:colors_name" variable when you don't want this.
 
 	When you have set "ctermfg" or "ctermbg" for the Normal group, Vim
-	needs to reset the color when exiting.	This is done with the "op"
-	termcap entry |t_op|.  If this doesn't work correctly, try setting the
-	't_op' option in your .vimrc.
+	needs to reset the color when exiting.	This is done with the
+	"orig_pair" |terminfo| entry.
 							*E419* *E420*
 	When Vim knows the normal foreground and background colors, "fg" and
 	"bg" can be used as color names.  This only works after setting the
-	colors for the Normal group and for the MS-DOS console.  Example, for
+	colors for the Normal group and for the Windows console.  Example, for
 	reverse video: >
 	    :highlight Visual ctermfg=bg ctermbg=fg
 <	Note that the colors are used that are valid at the moment this
@@ -4867,7 +4798,7 @@ font={font-name}					*highlight-font*
 	When setting the font for the "Normal" group, this becomes the default
 	font (until the 'guifont' option is changed; the last one set is
 	used).
-	The following only works with Motif and Athena, not with other GUIs:
+	The following only works with Motif not with other GUIs:
 	When setting the font for the "Menu" group, the menus will be changed.
 	When setting the font for the "Tooltip" group, the tooltips will be
 	changed.
@@ -4883,8 +4814,7 @@ guifg={color-name}					*highlight-guifg*
 guibg={color-name}					*highlight-guibg*
 guisp={color-name}					*highlight-guisp*
 	These give the foreground (guifg), background (guibg) and special
-	(guisp) color to use in the GUI.  "guisp" is used for undercurl and
-	strikethrough.
+	(guisp) color to use in the GUI.  "guisp" is used for undercurl.
 	There are a few special names:
 		NONE		no color (transparent)
 		bg		use normal background color
@@ -4908,10 +4838,7 @@ guisp={color-name}					*highlight-guisp*
 	    Black	White
 	    Orange	Purple		Violet
 
-	In the Win32 GUI version, additional system colors are available.  See
-	|win32-colors|.
-
-	You can also specify a color by its Red, Green and Blue values.
+	You can also specify a color by its RGB (red, green, blue) values.
 	The format is "#rrggbb", where
 		"rr"	is the Red value
 		"gg"	is the Green value
@@ -4920,10 +4847,9 @@ guisp={color-name}					*highlight-guisp*
   :highlight Comment guifg=#11f0c3 guibg=#ff00ff
 <
 					*highlight-groups* *highlight-default*
-These are the default highlighting groups.  These groups are used by the
-'highlight' option default.  Note that the highlighting depends on the value
-of 'background'.  You can see the current settings with the ":highlight"
-command.
+These are the builtin highlighting groups.  Note that the highlighting depends
+on the value of 'background'.  You can see the current settings with the
+":highlight" command.
 							*hl-ColorColumn*
 ColorColumn	used for the columns set with 'colorcolumn'
 							*hl-Conceal*
@@ -4949,9 +4875,13 @@ DiffChange	diff mode: Changed line |diff.txt|
 DiffDelete	diff mode: Deleted line |diff.txt|
 							*hl-DiffText*
 DiffText	diff mode: Changed text within a changed line |diff.txt|
-							*hl-EndOfBuffer*
-EndOfBuffer	filler lines (~) after the last line in the buffer.
+						 {Nvim} *hl-EndOfBuffer*
+EndOfBuffer	filler lines (~) after the end of the buffer.
 		By default, this is highlighted like |hl-NonText|.
+						 {Nvim} *hl-TermCursor*
+TermCursor	cursor in a focused terminal
+						 {Nvim} *hl-TermCursorNC*
+TermCursorNC	cursor in an unfocused terminal
 							*hl-ErrorMsg*
 ErrorMsg	error messages on the command line
 							*hl-VertSplit*
@@ -4965,6 +4895,9 @@ SignColumn	column where |signs| are displayed
 							*hl-IncSearch*
 IncSearch	'incsearch' highlighting; also used for the text replaced with
 		":s///c"
+							*hl-Substitute*
+Substitute	|:substitute| replacement text highlighting
+
 							*hl-LineNr*
 LineNr		Line number for ":number" and ":#" commands, and when 'number'
 		or 'relativenumber' option is set.
@@ -4980,12 +4913,14 @@ ModeMsg		'showmode' message (e.g., "-- INSERT --")
 							*hl-MoreMsg*
 MoreMsg		|more-prompt|
 							*hl-NonText*
-NonText		'@' at the end of the window, characters from 'showbreak'
-		and other characters that do not really exist in the text
-		(e.g., ">" displayed when a double-wide character doesn't
-		fit at the end of the line).
+NonText		'@' at the end of the window, characters from 'showbreak' 
+		and other characters that do not really exist in the text 
+		(e.g., ">" displayed when a double-wide character doesn't 
+		fit at the end of the line). See also |hl-EndOfBuffer|.
 							*hl-Normal*
 Normal		normal text
+							*hl-NormalNC*
+NormalNC	normal text in non-current window
 							*hl-Pmenu*
 Pmenu		Popup menu: normal item.
 							*hl-PmenuSel*
@@ -4997,29 +4932,28 @@ PmenuThumb	Popup menu: Thumb of the scrollbar.
 							*hl-Question*
 Question	|hit-enter| prompt and yes/no questions
 							*hl-QuickFixLine*
-QuickFixLine	Current |quickfix| item in the quickfix window.
+QuickFixLine	Current |quickfix| item in the quickfix window. Combined with
+                |hl-CursorLine| when the cursor is there.
 							*hl-Search*
 Search		Last search pattern highlighting (see 'hlsearch').
 		Also used for similar items that need to stand out.
 							*hl-SpecialKey*
-SpecialKey	Meta and special keys listed with ":map", also for text used
-		to show unprintable characters in the text, 'listchars'.
-		Generally: text that is displayed differently from what it
-		really is.
+SpecialKey	Unprintable characters: text displayed differently from what
+		it really is. But not 'listchars' whitespace. |hl-Whitespace|
 							*hl-SpellBad*
 SpellBad	Word that is not recognized by the spellchecker. |spell|
-		This will be combined with the highlighting used otherwise.
+		Combined with the highlighting used otherwise.
 							*hl-SpellCap*
 SpellCap	Word that should start with a capital. |spell|
-		This will be combined with the highlighting used otherwise.
+		Combined with the highlighting used otherwise.
 							*hl-SpellLocal*
 SpellLocal	Word that is recognized by the spellchecker as one that is
 		used in another region. |spell|
-		This will be combined with the highlighting used otherwise.
+		Combined with the highlighting used otherwise.
 							*hl-SpellRare*
 SpellRare	Word that is recognized by the spellchecker as one that is
 		hardly ever used. |spell|
-		This will be combined with the highlighting used otherwise.
+		Combined with the highlighting used otherwise.
 							*hl-StatusLine*
 StatusLine	status line of current window
 							*hl-StatusLineNC*
@@ -5036,11 +4970,12 @@ TabLineSel	tab pages line, active tab page label
 Title		titles for output from ":set all", ":autocmd" etc.
 							*hl-Visual*
 Visual		Visual mode selection
-							*hl-VisualNOS*
+ 							*hl-VisualNOS*
 VisualNOS	Visual mode selection when vim is "Not Owning the Selection".
-		Only X11 Gui's |gui-x11| and |xterm-clipboard| supports this.
 							*hl-WarningMsg*
 WarningMsg	warning messages
+							*hl-Whitespace*
+Whitespace	"nbsp", "space", "tab" and "trail" in 'listchars'
 							*hl-WildMenu*
 WildMenu	current match in 'wildmenu' completion
 
@@ -5058,11 +4993,6 @@ Menu		Current font, background and foreground colors of the menus.
 		Also used for the toolbar.
 		Applicable highlight arguments: font, guibg, guifg.
 
-		NOTE: For Motif and Athena the font argument actually
-		specifies a fontset at all times, no matter if 'guifontset' is
-		empty, and as such it is tied to the current |:language| when
-		set.
-
 							*hl-Scrollbar*
 Scrollbar	Current background and foreground of the main window's
 		scrollbars.
@@ -5071,11 +5001,6 @@ Scrollbar	Current background and foreground of the main window's
 							*hl-Tooltip*
 Tooltip		Current font, background and foreground of the tooltips.
 		Applicable highlight arguments: font, guibg, guifg.
-
-		NOTE: For Motif and Athena the font argument actually
-		specifies a fontset at all times, no matter if 'guifontset' is
-		empty, and as such it is tied to the current |:language| when
-		set.
 
 ==============================================================================
 13. Linking groups		*:hi-link* *:highlight-link* *E412* *E413*
@@ -5176,7 +5101,8 @@ script file to set these colors.  Put this file in a directory in
 the default colors.  This way these colors will be used after the ":syntax
 reset" command.
 
-For Unix you can use the file ~/.vim/after/syntax/syncolor.vim.  Example: >
+For Unix you can use the file ~/.config/nvim/after/syntax/syncolor.vim.  
+Example: >
 
 	if &background == "light"
 	  highlight comment ctermfg=darkgreen guifg=darkgreen
@@ -5233,7 +5159,7 @@ types.vim: *.[ch]
 		awk 'BEGIN{printf("syntax keyword Type\t")}\
 			{printf("%s ", $$1)}END{print ""}' > $@
 
-And put these lines in your .vimrc: >
+And put these lines in your vimrc: >
 
    " load the types.vim highlighting file, if it exists
    autocmd BufRead,BufNewFile *.[ch] let fname = expand('<afile>:p:h') . '/types.vim'
@@ -5274,146 +5200,12 @@ When splitting the window, the new window will use the original syntax.
 ==============================================================================
 17. Color xterms				*xterm-color* *color-xterm*
 
-Most color xterms have only eight colors.  If you don't get colors with the
-default setup, it should work with these lines in your .vimrc: >
-   :if &term =~ "xterm"
-   :  if has("terminfo")
-   :	set t_Co=8
-   :	set t_Sf=<Esc>[3%p1%dm
-   :	set t_Sb=<Esc>[4%p1%dm
-   :  else
-   :	set t_Co=8
-   :	set t_Sf=<Esc>[3%dm
-   :	set t_Sb=<Esc>[4%dm
-   :  endif
-   :endif
-<	[<Esc> is a real escape, type CTRL-V <Esc>]
-
-You might want to change the first "if" to match the name of your terminal,
-e.g. "dtterm" instead of "xterm".
-
-Note: Do these settings BEFORE doing ":syntax on".  Otherwise the colors may
-be wrong.
-							*xiterm* *rxvt*
-The above settings have been mentioned to work for xiterm and rxvt too.
-But for using 16 colors in an rxvt these should work with terminfo: >
-	:set t_AB=<Esc>[%?%p1%{8}%<%t25;%p1%{40}%+%e5;%p1%{32}%+%;%dm
-	:set t_AF=<Esc>[%?%p1%{8}%<%t22;%p1%{30}%+%e1;%p1%{22}%+%;%dm
-<
 							*colortest.vim*
 To test your color setup, a file has been included in the Vim distribution.
 To use it, execute this command: >
    :runtime syntax/colortest.vim
 
-Some versions of xterm (and other terminals, like the Linux console) can
-output lighter foreground colors, even though the number of colors is defined
-at 8.  Therefore Vim sets the "cterm=bold" attribute for light foreground
-colors, when 't_Co' is 8.
-
-							*xfree-xterm*
-To get 16 colors or more, get the newest xterm version (which should be
-included with XFree86 3.3 and later).  You can also find the latest version
-at: >
-	http://invisible-island.net/xterm/xterm.html
-Here is a good way to configure it.  This uses 88 colors and enables the
-termcap-query feature, which allows Vim to ask the xterm how many colors it
-supports. >
-	./configure --disable-bold-color --enable-88-color --enable-tcap-query
-If you only get 8 colors, check the xterm compilation settings.
-(Also see |UTF8-xterm| for using this xterm with UTF-8 character encoding).
-
-This xterm should work with these lines in your .vimrc (for 16 colors): >
-   :if has("terminfo")
-   :  set t_Co=16
-   :  set t_AB=<Esc>[%?%p1%{8}%<%t%p1%{40}%+%e%p1%{92}%+%;%dm
-   :  set t_AF=<Esc>[%?%p1%{8}%<%t%p1%{30}%+%e%p1%{82}%+%;%dm
-   :else
-   :  set t_Co=16
-   :  set t_Sf=<Esc>[3%dm
-   :  set t_Sb=<Esc>[4%dm
-   :endif
-<	[<Esc> is a real escape, type CTRL-V <Esc>]
-
-Without |+terminfo|, Vim will recognize these settings, and automatically
-translate cterm colors of 8 and above to "<Esc>[9%dm" and "<Esc>[10%dm".
-Colors above 16 are also translated automatically.
-
-For 256 colors this has been reported to work: >
-
-   :set t_AB=<Esc>[48;5;%dm
-   :set t_AF=<Esc>[38;5;%dm
-
-Or just set the TERM environment variable to "xterm-color" or "xterm-16color"
-and try if that works.
-
-You probably want to use these X resources (in your ~/.Xdefaults file):
-	XTerm*color0:			#000000
-	XTerm*color1:			#c00000
-	XTerm*color2:			#008000
-	XTerm*color3:			#808000
-	XTerm*color4:			#0000c0
-	XTerm*color5:			#c000c0
-	XTerm*color6:			#008080
-	XTerm*color7:			#c0c0c0
-	XTerm*color8:			#808080
-	XTerm*color9:			#ff6060
-	XTerm*color10:			#00ff00
-	XTerm*color11:			#ffff00
-	XTerm*color12:			#8080ff
-	XTerm*color13:			#ff40ff
-	XTerm*color14:			#00ffff
-	XTerm*color15:			#ffffff
-	Xterm*cursorColor:		Black
-
-[Note: The cursorColor is required to work around a bug, which changes the
-cursor color to the color of the last drawn text.  This has been fixed by a
-newer version of xterm, but not everybody is using it yet.]
-
-To get these right away, reload the .Xdefaults file to the X Option database
-Manager (you only need to do this when you just changed the .Xdefaults file): >
-  xrdb -merge ~/.Xdefaults
-<
-					*xterm-blink* *xterm-blinking-cursor*
-To make the cursor blink in an xterm, see tools/blink.c.  Or use Thomas
-Dickey's xterm above patchlevel 107 (see above for where to get it), with
-these resources:
-	XTerm*cursorBlink:	on
-	XTerm*cursorOnTime:	400
-	XTerm*cursorOffTime:	250
-	XTerm*cursorColor:	White
-
-							*hpterm-color*
-These settings work (more or less) for an hpterm, which only supports 8
-foreground colors: >
-   :if has("terminfo")
-   :  set t_Co=8
-   :  set t_Sf=<Esc>[&v%p1%dS
-   :  set t_Sb=<Esc>[&v7S
-   :else
-   :  set t_Co=8
-   :  set t_Sf=<Esc>[&v%dS
-   :  set t_Sb=<Esc>[&v7S
-   :endif
-<	[<Esc> is a real escape, type CTRL-V <Esc>]
-
-						*Eterm* *enlightened-terminal*
-These settings have been reported to work for the Enlightened terminal
-emulator, or Eterm.  They might work for all xterm-like terminals that use the
-bold attribute to get bright colors.  Add an ":if" like above when needed. >
-       :set t_Co=16
-       :set t_AF=^[[%?%p1%{8}%<%t3%p1%d%e%p1%{22}%+%d;1%;m
-       :set t_AB=^[[%?%p1%{8}%<%t4%p1%d%e%p1%{32}%+%d;1%;m
-<
-						*TTpro-telnet*
-These settings should work for TTpro telnet.  Tera Term Pro is a freeware /
-open-source program for MS-Windows. >
-	set t_Co=16
-	set t_AB=^[[%?%p1%{8}%<%t%p1%{40}%+%e%p1%{32}%+5;%;%dm
-	set t_AF=^[[%?%p1%{8}%<%t%p1%{30}%+%e%p1%{22}%+1;%;%dm
-Also make sure TTpro's Setup / Window / Full Color is enabled, and make sure
-that Setup / Font / Enable Bold is NOT enabled.
-(info provided by John Love-Jensen <eljay@Adobe.COM>)
-
+Nvim uses |256-color| and |true-color| terminal capabilities whereever possible.
 
 ==============================================================================
 18. When syntax is slow						*:syntime*

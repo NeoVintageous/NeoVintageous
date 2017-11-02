@@ -1,16 +1,10 @@
-*farsi.txt*     For Vim version 8.0.  Last change: 2015 Aug 29
+*farsi.txt*     Nvim
 
 
 		  VIM REFERENCE MANUAL    by Mortaza Ghassab Shiran
 
 
 Right to Left and Farsi Mapping for Vim		*farsi* *Farsi*
-
-{Vi does not have any of these commands}
-
-						*E27*
-In order to use right-to-left and Farsi mapping support, it is necessary to
-compile Vim with the |+farsi| feature.
 
 These functions have been made by Mortaza G. Shiran <shiran@jps.net>
 
@@ -59,60 +53,6 @@ o  Toggling between Farsi ISIR-3342 standard encoding and Vim Farsi via F9
    right-to-left mode, this function is also supported only in right-to-left
    mode.
 
-Farsi Fonts					*farsi-fonts*
------------
-
-The following files are found in the subdirectories of the '$VIM/farsi/fonts'
-directory:
-
-   +  far-a01.pcf    X Windows fonts for Unix including Linux systems
-   +  far-a01.bf     X Windows fonts for SunOS
-   +  far-a01.f16    a screen fonts for Unix including Linux systems
-   +  far-a01.fon    a monospaced fonts for Windows NT/95/98
-   +  far-a01.com    a screen fonts for DOS
-
-
-Font Installation
------------------
-
-o  Installation of fonts for MS Window systems (NT/95/98)
-
-   From 'Control Panel' folder, start the 'Fonts' program.  Then from 'file'
-   menu item select 'Install New Fonts ...'.  Browse and select the
-   'far-a01.fon', then follow the installation guide.
-   NOTE: several people have reported that this does not work.  The solution
-   is unknown.
-
-o  Installation of fonts for X Window systems (Unix/Linux)
-
-   Depending on your system, copy far-a01.pcf.Z or far-a01.pcf.gz into a
-   directory of your choice.  Change to the directory containing the Farsi
-   fonts and execute the following commands:
-
-   >  mkfontdir
-   >  xset +fp path_name_of_farsi_fonts_directory
-
-o  Installation of fonts for X Window systems (SunOS)
-
-   Copy far-a01.bf font into a directory of your choice.
-   Change to the directory containing the far-a01.fb fonts and
-   execute the following commands:
-
-   >  fldfamily
-   >  xset +fp path_name_of_fonts_directory
-
-o  Installation of ASCII screen fonts (Unix/Linux)
-
-   For Linux system, copy the far-a01.f16 fonts into /usr/lib/kbd/consolefonts
-   directory and execute the setfont program as "setfont far-a01.f16".  For
-   other systems (e.g. SCO Unix), please refer to the fonts installation
-   section of your system administration manuals.
-
-o  Installation of ASCII screen fonts (DOS)
-
-   After system power on, prior to the first use of Vim, upload the Farsi
-   fonts by executing the far-a01.com font uploading program.
-
 
 Usage
 -----
@@ -128,8 +68,7 @@ o  Setting the Farsi fonts
       ':set guifont=far-a01' in the Vim window.
 
       You can have 'guifont' set to far-a01 by Vim during the Vim startup
-      by appending the ':set guifont=far-a01' into your .vimrc file
-      (in case of NT/95/98 platforms _vimrc).
+      by appending the ':set guifont=far-a01' into your vimrc file.
 
       Under the X Window environment, you can also start Vim with the
       '-fn far-a01' option.
@@ -145,7 +84,7 @@ o  Farsi Keymapping Activation
    To activate the Farsi keymapping, set either 'altkeymap' or 'fkmap'.
    This is done by entering ':set akm' or ':set fk' in the Vim window.
    You can have 'altkeymap' or 'fkmap' set as default by appending ':set akm'
-   or ':set fk' in your .vimrc file or _vimrc in case of NT/95/98 platforms.
+   or ':set fk' in your vimrc file.
 
    To turn off the Farsi keymapping as a default second language keymapping,
    reset the 'altkeymap' by entering ':set noakm'.
@@ -162,8 +101,8 @@ o  right-to-left Farsi Mode
    + While in Left-to-right mode, enter 'set rl' in the command line ('rl' is
      the abbreviation for rightleft).
 
-   + Put the 'set rl' line in your '.vimrc' file to start Vim in
-     right-to-left mode permanently.
+   + Put the 'set rl' line in your vimrc file to start Vim in right-to-left
+     mode permanently.
 
 Encoding
 --------
@@ -172,7 +111,7 @@ The letter encoding used is the Vim extended ISIR-3342 standard with a built
 in function to convert between Vim extended ISIR-3342 and ISIR-3342 standard.
 
 For document portability reasons, the letter encoding is kept the same across
-different platforms (i.e. UNIX's, NT/95/98, MS DOS, ...).
+different platforms (i.e. Unix, Windows, ...).
 
 
 o  Keyboard

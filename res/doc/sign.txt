@@ -1,4 +1,4 @@
-*sign.txt*      For Vim version 8.0.  Last change: 2016 Aug 17
+*sign.txt*      Nvim
 
 
 		  VIM REFERENCE MANUAL    by Gordon Prieur
@@ -7,11 +7,7 @@
 
 Sign Support Features				*sign-support*
 
-1. Introduction				|sign-intro|
-2. Commands				|sign-commands|
-
-{Vi does not have any of these features}
-{only available when compiled with the |+signs| feature}
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Introduction					*sign-intro* *signs*
@@ -28,10 +24,8 @@ Microsystem's dtterm does support this it's the only terminal emulator I know
 of which does).  A text sign and the highlight should be feasible in any color
 terminal emulator.
 
-Signs and highlights are not useful just for debuggers.  Sun's Visual
-WorkShop uses signs and highlights to mark build errors and SourceBrowser
-hits.  Additionally, the debugger supports 8 to 10 different signs and
-highlight colors. |workshop|  Same for Netbeans |netbeans|.
+Signs and highlights are not useful just for debuggers.  There are plugins
+that use signs to mark build errors or display version control status.
 
 There are two steps in using signs:
 
@@ -82,12 +76,8 @@ DEFINING A SIGN.			*:sign-define* *E255* *E160* *E612*
 		Define the file name where the bitmap can be found.  Should be
 		a full path.  The bitmap should fit in the place of two
 		characters.  This is not checked.  If the bitmap is too big it
-		will cause redraw problems.  Only GTK 2 can scale the bitmap
-		to fit the space available.
+		will cause redraw problems.
 			toolkit		supports ~
-			GTK 1		pixmap (.xpm)
-			GTK 2		many
-			Motif		pixmap (.xpm)
 			Win32		.bmp, .ico, .cur
 					pixmap (.xpm) |+xpm_w32|
 

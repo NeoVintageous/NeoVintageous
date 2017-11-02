@@ -1,4 +1,4 @@
-*tabpage.txt*   For Vim version 8.0.  Last change: 2016 Oct 20
+*tabpage.txt*   Nvim
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -10,15 +10,7 @@ The commands which have been added to use multiple tab pages are explained
 here.  Additionally, there are explanations for commands that work differently
 when used in combination with more than one tab page.
 
-1. Introduction			|tab-page-intro|
-2. Commands			|tab-page-commands|
-3. Other items			|tab-page-other|
-4. Setting 'tabline'		|setting-tabline|
-5. Setting 'guitablabel'	|setting-guitablabel|
-
-{Vi does not have any of these commands}
-{not able to use multiple tab pages when the |+windows| feature was disabled
-at compile time}
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Introduction						*tab-page-intro*
@@ -52,8 +44,8 @@ A double click with the mouse in the non-GUI tab pages line opens a new, empty
 tab page.  It is placed left of the position of the click.  The first click
 may select another tab page first, causing an extra screen update.
 
-This also works in a few GUI versions, esp. Win32 and Motif.  But only when
-clicking right of the labels.
+This also works in a few GUI versions, esp. Win32.  But only when clicking
+right of the labels.
 
 In the GUI tab pages line you can use the right mouse button to open menu.
 |tabline-menu|.
@@ -63,16 +55,16 @@ For the related autocommands see |tabnew-autocmd|.
 :[count]tabe[dit]				*:tabe* *:tabedit* *:tabnew*
 :[count]tabnew
 		Open a new tab page with an empty window, after the current
-		tab page.  If [count] is given the new tab page appears after
-		the tab page [count] otherwise the new tab page will appear
+		tab page. If [count] is given the new tab page appears after
+		the tabpage [count] otherwise the new tab page will appear
 		after the current one. >
-		    :tabnew	" opens tabpage after the current one
-		    :.tabnew	" as above
-		    :+tabnew	" opens tabpage after the next tab page
+		    :tabnew     " opens tabpage after the current one
+		    :.tabnew    " as above
+		    :+tabnew    " opens tabpage after the next tab page
 				" note: it is one further than :tabnew
-		    :-tabnew	" opens tabpage before the current one
-		    :0tabnew	" opens tabpage before the first one
-		    :$tabnew	" opens tabpage after the last one
+		    :-tabnew    " opens tabpage before the current
+		    :0tabnew    " opens tabpage before the first one
+		    :$tabnew    " opens tabpage after the last one
 
 :[count]tabe[dit] [++opt] [+cmd] {file}
 :[count]tabnew [++opt] [+cmd] {file}
@@ -129,7 +121,7 @@ something else.
 		  changes, and there is no other window on this buffer.
 		Changes to the buffer are not written and won't get lost, so
 		this is a "safe" command. >
-		    :tabclose	    " close the current tab page
+                    :tabclose   " close the current tab page
 
 :{count}tabc[lose][!]
 :tabc[lose][!] {count}
@@ -153,10 +145,8 @@ something else.
 		buffers that are modified are not removed, unless the [!] is
 		given, then they become hidden.  But modified buffers are
 		never abandoned, so changes cannot get lost. >
-		    :tabonly	    " close all tab pages except the current
-				    " one
+		    :tabonly " close all tab pages except the current one
 
-:{count}tabo[nly][!]
 :tabo[nly][!] {count}
 		Close all tab pages except {count} one. >
 		    :.tabonly	    " as above
@@ -242,10 +232,10 @@ REORDERING TAB PAGES:
 		Move the current tab page to after tab page N.  Use zero to
 		make the current tab page the first one.  Without N the tab
 		page is made the last one. >
-		    :.tabmove	" do nothing
-		    :-tabmove	" move the tab page to the left
-		    :+tabmove	" move the tab page to the right
-		    :0tabmove	" move the tab page to the beginning of the tab
+		    :.tabmove   " do nothing
+		    :-tabmove   " move the tab page to the left
+		    :+tabmove   " move the tab page to the right
+		    :0tabmove   " move the tab page to the beginning  of the tab
 				" list
 		    :tabmove 0	" as above
 		    :tabmove	" move the tab page to the last
@@ -271,8 +261,8 @@ LOOPING OVER TAB PAGES:
 
 							*:tabd* *:tabdo*
 :[range]tabd[o] {cmd}
-		Execute {cmd} in each tab page or if [range] is given only in
-		tab pages which tab page number is in the [range].  It works
+		Execute {cmd} in each tab page or, if [range] is given, only
+		in tabpages which tab page number is in the [range]. It works
 		like doing this: >
 			:tabfirst
 			:{cmd}
@@ -286,10 +276,8 @@ LOOPING OVER TAB PAGES:
 		current tab page.
 		{cmd} can contain '|' to concatenate several commands.
 		{cmd} must not open or close tab pages or reorder them.
-		{not in Vi} {not available when compiled without the
-		|+listcmds| feature}
 		Also see |:windo|, |:argdo|, |:bufdo|, |:cdo|, |:ldo|, |:cfdo|
-		and |:lfdo|
+		and |:lfdo|.
 
 ==============================================================================
 3. Other items						*tab-page-other*
@@ -330,9 +318,12 @@ When switching to another tab page the order is:
 	BufLeave
 	WinLeave
 	TabLeave
-	TabEnter
 	WinEnter
+	TabEnter
 	BufEnter
+
+When entering a new tab page (|:tabnew|), TabNew is triggered before TabEnter
+and after WinEnter.
 
 ==============================================================================
 4. Setting 'tabline'					*setting-tabline*

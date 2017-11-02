@@ -1,4 +1,4 @@
-*scroll.txt*    For Vim version 8.0.  Last change: 2016 Nov 10
+*scroll.txt*    Nvim
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -16,12 +16,7 @@ upwards in the buffer, the text in the window moves downwards on your screen.
 
 See section |03.7| of the user manual for an introduction.
 
-1. Scrolling downwards		|scroll-down|
-2. Scrolling upwards		|scroll-up|
-3. Scrolling relative to cursor	|scroll-cursor|
-4. Scrolling horizontally	|scroll-horizontal|
-5. Scrolling synchronously	|scroll-binding|
-6. Scrolling with a mouse wheel |scroll-mouse-wheel|
+                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Scrolling downwards					*scroll-down*
@@ -118,7 +113,7 @@ z<CR>			Redraw, line [count] at top of window (default
 
 							*zt*
 zt			Like "z<CR>", but leave the cursor in the same
-			column.  {not in Vi}
+			column.
 
 							*zN<CR>*
 z{height}<CR>		Redraw, make window {height} lines tall.  This is
@@ -134,7 +129,7 @@ z.			Redraw, line [count] at center of window (default
 							*zz*
 zz			Like "z.", but leave the cursor in the same column.
 			Careful: If caps-lock is on, this command becomes
-			"ZZ": write buffer and exit!  {not in Vi}
+			"ZZ": write buffer and exit!
 
 							*z-*
 z-			Redraw, line [count] at bottom of window (default
@@ -143,7 +138,6 @@ z-			Redraw, line [count] at bottom of window (default
 
 							*zb*
 zb			Like "z-", but leave the cursor in the same column.
-			{not in Vi}
 
 ==============================================================================
 4. Scrolling horizontally				*scroll-horizontal*
@@ -156,26 +150,22 @@ not used.
 z<Right>    or						*zl* *z<Right>*
 zl			Move the view on the text [count] characters to the
 			right, thus scroll the text [count] characters to the
-			left.  This only works when 'wrap' is off.  {not in
-			Vi}
+			left.  This only works when 'wrap' is off.
 
 z<Left>      or						*zh* *z<Left>*
 zh			Move the view on the text [count] characters to the
 			left, thus scroll the text [count] characters to the
-			right.  This only works when 'wrap' is off.  {not in
-			Vi}
+			right.  This only works when 'wrap' is off.
 
 							*zL*
 zL			Move the view on the text half a screenwidth to the
 			right, thus scroll the text half a screenwidth to the
-			left.  This only works when 'wrap' is off.  {not in
-			Vi}
+			left.  This only works when 'wrap' is off.
 
 							*zH*
 zH			Move the view on the text half a screenwidth to the
 			left, thus scroll the text half a screenwidth to the
-			right.  This only works when 'wrap' is off.  {not in
-			Vi}
+			right.  This only works when 'wrap' is off.
 
 For the following two commands the cursor is not moved in the text, only the
 text scrolls on the screen.
@@ -183,12 +173,12 @@ text scrolls on the screen.
 							*zs*
 zs			Scroll the text horizontally to position the cursor
 			at the start (left side) of the screen.  This only
-			works when 'wrap' is off.  {not in Vi}
+			works when 'wrap' is off.
 
 							*ze*
 ze			Scroll the text horizontally to position the cursor
 			at the end (right side) of the screen.  This only
-			works when 'wrap' is off.  {not in Vi}
+			works when 'wrap' is off.
 
 ==============================================================================
 5. Scrolling synchronously				*scroll-binding*
@@ -221,7 +211,7 @@ past its buffer's limits.
 However, if a 'scrollbind' window that has a relative offset that is past its
 buffer's limits is given the cursor focus, the other 'scrollbind' windows must
 jump to a location where the current window's relative offset is valid.  This
-behavior can be changed by clearing the "jump" flag from the 'scrollopt'
+behavior can be changed by clearing the 'jump' flag from the 'scrollopt'
 option.
 
 						*syncbind* *:syncbind* *:sync*
@@ -241,35 +231,9 @@ This allows quick adjustment of the relative offset of 'scrollbind' windows.
 ==============================================================================
 6. Scrolling with a mouse wheel				*scroll-mouse-wheel*
 
-When your mouse has a scroll wheel, it should work with Vim in the GUI.  How
-it works depends on your system.  It might also work in an xterm
-|xterm-mouse-wheel|.  By default only vertical scroll wheels are supported,
-but some GUIs also support horizontal scroll wheels.
-
-For the Win32 GUI the scroll action is hard coded.  It works just like
-dragging the scrollbar of the current window.  How many lines are scrolled
-depends on your mouse driver.  If the scroll action causes input focus
-problems, see |intellimouse-wheel-problems|.
-
-For the X11 GUIs (Motif, Athena and GTK) scrolling the wheel generates key
-presses <ScrollWheelUp>, <ScrollWheelDown>, <ScrollWheelLeft> and
-<ScrollWheelRight>.  For example, if you push the scroll wheel upwards a
-<ScrollWheelUp> key press is generated causing the window to scroll upwards
-(while the text is actually moving downwards).  The default action for these
-keys are:
-    <ScrollWheelUp>	    scroll three lines up	*<ScrollWheelUp>*
-    <S-ScrollWheelUp>	    scroll one page up		*<S-ScrollWheelUp>*
-    <C-ScrollWheelUp>	    scroll one page up		*<C-ScrollWheelUp>*
-    <ScrollWheelDown>	    scroll three lines down	*<ScrollWheelDown>*
-    <S-ScrollWheelDown>	    scroll one page down	*<S-ScrollWheelDown>*
-    <C-ScrollWheelDown>	    scroll one page down	*<C-ScrollWheelDown>*
-    <ScrollWheelLeft>	    scroll six columns left	*<ScrollWheelLeft>*
-    <S-ScrollWheelLeft>	    scroll one page left	*<S-ScrollWheelLeft>*
-    <C-ScrollWheelLeft>	    scroll one page left	*<C-ScrollWheelLeft>*
-    <ScrollWheelRight>	    scroll six columns right	*<ScrollWheelRight>*
-    <S-ScrollWheelRight>    scroll one page right	*<S-ScrollWheelRight>*
-    <C-ScrollWheelRight>    scroll one page right	*<C-ScrollWheelRight>*
-This should work in all modes, except when editing the command line.
+When your mouse has a scroll wheel, it should work with Nvim in the GUI and
+any terminal that has mouse support.  By default only vertical scroll wheels
+are supported, but some GUIs also support horizontal scroll wheels.
 
 Note that horizontal scrolling only works if 'nowrap' is set.  Also, unless
 the "h" flag in 'guioptions' is set, the cursor moves to the longest visible
@@ -284,50 +248,4 @@ the scroll wheel move one line or half a page in Normal mode: >
    :map <S-ScrollWheelDown> <C-D>
 You can also use Alt and Ctrl modifiers.
 
-This only works when Vim gets the scroll wheel events, of course.  You can
-check if this works with the "xev" program.
-
-When using XFree86, the /etc/XF86Config file should have the correct entry for
-your mouse.  For FreeBSD, this entry works for a Logitech scrollmouse: >
-    Protocol     "MouseMan"
-    Device       "/dev/psm0"
-    ZAxisMapping 4 5
-See the XFree86 documentation for information.
-
-						*<MouseDown>* *<MouseUp>*
-The keys <MouseDown> and <MouseUp> have been deprecated.  Use <ScrollWheelUp>
-instead of <MouseDown> and use <ScrollWheelDown> instead of <MouseUp>.
-
-							*xterm-mouse-wheel*
-To use the mouse wheel in a new xterm you only have to make the scroll wheel
-work in your Xserver, as mentioned above.
-
-To use the mouse wheel in an older xterm you must do this:
-1. Make it work in your Xserver, as mentioned above.
-2. Add translations for the xterm, so that the xterm will pass a scroll event
-   to Vim as an escape sequence.
-3. Add mappings in Vim, to interpret the escape sequences as <ScrollWheelDown>
-   or <ScrollWheelUp> keys.
-
-You can do the translations by adding this to your ~.Xdefaults file (or other
-file where your X resources are kept): >
-
-  XTerm*VT100.Translations:		#override \n\
-		s<Btn4Down>: string("0x9b") string("[64~") \n\
-		s<Btn5Down>: string("0x9b") string("[65~") \n\
-		<Btn4Down>: string("0x9b") string("[62~") \n\
-		<Btn5Down>: string("0x9b") string("[63~") \n\
-		<Btn4Up>: \n\
-		<Btn5Up>:
-
-Add these mappings to your vimrc file: >
-	:map <M-Esc>[62~ <ScrollWheelUp>
-	:map! <M-Esc>[62~ <ScrollWheelUp>
-	:map <M-Esc>[63~ <ScrollWheelDown>
-	:map! <M-Esc>[63~ <ScrollWheelDown>
-	:map <M-Esc>[64~ <S-ScrollWheelUp>
-	:map! <M-Esc>[64~ <S-ScrollWheelUp>
-	:map <M-Esc>[65~ <S-ScrollWheelDown>
-	:map! <M-Esc>[65~ <S-ScrollWheelDown>
-<
  vim:tw=78:ts=8:ft=help:norl:
