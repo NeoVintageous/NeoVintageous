@@ -157,6 +157,7 @@ Interfaces ~
 Versions ~
 |vim_diff.txt|	Main differences between Nvim and Vim
 |vi_diff.txt|	Main differences between Vim and Vi
+|neovintageous.txt|	Main differences between NeoVintageous and Vim
 						*standard-plugin-list*
 Standard plugins ~
 |pi_gzip.txt|      Reading and writing compressed files
