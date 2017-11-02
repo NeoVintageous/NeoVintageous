@@ -1582,6 +1582,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 :AdaTagFile	ft_ada.txt	/*:AdaTagFile*
 :AdaTypes	ft_ada.txt	/*:AdaTypes*
 :CheckHealth	pi_health.txt	/*:CheckHealth*
+:Commentary	commentary.txt	/*:Commentary*
 :CompilerSet	usr_41.txt	/*:CompilerSet*
 :DiffOrig	diff.txt	/*:DiffOrig*
 :DoMatchParen	pi_paren.txt	/*:DoMatchParen*
@@ -4876,6 +4877,7 @@ colortest.vim	syntax.txt	/*colortest.vim*
 command-line-functions	usr_41.txt	/*command-line-functions*
 command-line-window	cmdline.txt	/*command-line-window*
 command-mode	intro.txt	/*command-mode*
+commentary.txt	commentary.txt	/*commentary.txt*
 compiler-compaqada	ft_ada.txt	/*compiler-compaqada*
 compiler-decada	ft_ada.txt	/*compiler-decada*
 compiler-gcc	quickfix.txt	/*compiler-gcc*
@@ -5830,6 +5832,10 @@ g`	motion.txt	/*g`*
 g`a	motion.txt	/*g`a*
 ga	various.txt	/*ga*
 garbagecollect()	eval.txt	/*garbagecollect()*
+gc	commentary.txt	/*gc*
+gcc	commentary.txt	/*gcc*
+gcgc	commentary.txt	/*gcgc*
+gcu	commentary.txt	/*gcu*
 gd	pattern.txt	/*gd*
 gdb	debug.txt	/*gdb*
 ge	motion.txt	/*ge*
@@ -6962,6 +6968,7 @@ o_V	motion.txt	/*o_V*
 o_[%	pi_matchit.txt	/*o_[%*
 o_]%	pi_matchit.txt	/*o_]%*
 o_g%	pi_matchit.txt	/*o_g%*
+o_gc	commentary.txt	/*o_gc*
 o_v	motion.txt	/*o_v*
 object-motions	motion.txt	/*object-motions*
 object-select	motion.txt	/*object-select*
@@ -8091,6 +8098,7 @@ v_g_CTRL-A	change.txt	/*v_g_CTRL-A*
 v_g_CTRL-G	editing.txt	/*v_g_CTRL-G*
 v_g_CTRL-X	change.txt	/*v_g_CTRL-X*
 v_g_CTRL-]	tagsrch.txt	/*v_g_CTRL-]*
+v_gc	commentary.txt	/*v_gc*
 v_gf	editing.txt	/*v_gf*
 v_gn	visual.txt	/*v_gn*
 v_gq	change.txt	/*v_gq*
