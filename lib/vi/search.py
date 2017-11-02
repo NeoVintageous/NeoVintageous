@@ -99,6 +99,8 @@ def find_last_in_range(view, term, start, end, flags=0):
 # TODO REVIEW The @end and @start position seem to be inverted i.e. the @start
 # position should be the point where the search starts and the @end position
 # should be where it ends oppose to the current behaviour.
+#
+# TODO should word the same as view.find() and return Region(-1, -1), rather than None, when not found
 def reverse_search(view, term, start, end, flags=0):
     assert isinstance(start, int) or start is None
     assert isinstance(end, int) or end is None

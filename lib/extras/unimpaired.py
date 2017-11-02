@@ -284,13 +284,13 @@ _OPTIONS = {
     'hlsearch': None,
     'ignorecase': None,
     'list': _list_option,
-    'sidebar': _sidebar_option,  # non standard i.e. not in the original Unimpaired plugin
     'minimap': _minimap_option,  # non standard i.e. not in the original Unimpaired plugin
     'number': 'line_numbers',
     'relativenumber': None,
+    'sidebar': _sidebar_option,  # non standard i.e. not in the original Unimpaired plugin
     'spell': 'spell_check',
     'virtualedit': None,
-    'wrap': 'word_wrap',
+    'wrap': 'word_wrap'
 }
 
 
@@ -309,7 +309,7 @@ _OPTION_ALIASES = {
     'u': 'cursorcolumn',
     'v': 'virtualedit',
     'w': 'wrap',
-    'x': 'crosshairs',
+    'x': 'crosshairs'
 }
 
 
@@ -332,6 +332,7 @@ def _toggle_option(view, key, value=None):
 
 
 class _neovintageous_unimpaired_command(TextCommand):
+    # TODO refactor to use standard *kwargs and *args instead of value param
     def run(self, edit, action, value=None, mode=None, count=1):
         if action == 'move_down':
             # Exchange the current line with [count] lines below it
