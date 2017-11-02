@@ -184,7 +184,7 @@ class ExHelp(ViWindowCommandBase):
 
         subject = parsed.command.subject
         if not subject:
-            subject = 'helphelp'
+            subject = 'help.txt'
 
         subject = subject.lower()
 
