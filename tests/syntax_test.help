@@ -1,0 +1,291 @@
+# SYNTAX TEST "Packages/NeoVintageous/res/Help.sublime-syntax"
+
+*intro.txt*     For Vim version 8.0.  Last change: 2017 Sep 04
+# ^^^^^^^^^ entity.name
+#          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
+
+Introduction to Vim                 *ref* *reference*
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
+#                                   ^^^^^  entity.name
+#                                         ^^^^^^^^^^^  entity.name
+
+1. Introduction                 |intro|
+#                               ^^^^^^^ support.constant
+2. Vim on the internet          |internet|
+3. Credits                      |credits|
+4. Notation                     |notation|
+5. Modes, introduction          |vim-modes-intro|
+#                               ^^^^^^^^^^^^^^^^^ support.constant
+6. Switching from mode to mode  |mode-switching|
+7. The window contents          |window-contents|
+8. Definitions                  |definitions|
+
+==============================================================================
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment
+
+------------------------------------------------------------------------------
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment
+
+1. Introduction                     *intro*
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
+#                                   ^^^^^^^ entity.name
+
+Cursor motions                  *cursor-motions* *navigation*
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity.name
+#                               ^^^^^^^^^^^^^^^^ entity.name
+#                                                ^^^^^^^^^^^^ entity.name
+
+            *www* *WWW*  *faq* *FAQ* *distribution* *download*
+#           ^^^^^ entity.name
+#                 ^^^^^ entity.name
+#                        ^^^^^ entity.name
+#                              ^^^^^ entity.name
+#                                    ^^^^^^^^^^^^^^ entity.name
+#                                                   ^^^^^^^^^^ entity.name
+
+    *name*
+#   ^^^^^^ entity.name
+    *name* *name*
+#   ^^^^^^ entity.name
+#          ^^^^^^ entity.name
+    *name* *name* *name*
+#   ^^^^^^ entity.name
+#          ^^^^^^ entity.name
+#                 ^^^^^^ entity.name
+    *name.txt*
+#   ^^^^^^^^^^ entity.name
+    *name-dash*
+#   ^^^^^^^^^^^ entity.name
+    *:name*
+#   ^^^^^^^ entity.name
+    *:Name*
+#   ^^^^^^^ entity.name
+    *:S*
+#   ^^^^ entity.name
+    *i_CTRL-G_s* *i_CTRL-G_S*
+#   ^^^^^^^^^^^^ entity.name
+#                ^^^^^^^^^^^^ entity.name
+
+HEADING             *tag*
+# ^^^^^ storage
+#                   ^^^^^ entity.name
+
+HEADING             *tag* *tag*
+# ^^^^^ storage
+#                   ^^^^^ entity.name
+#                         ^^^^^ entity.name
+
+HEADING             *tag* *tag* *tag*
+# ^^^^^ storage
+#                   ^^^^^ entity.name
+#                         ^^^^^ entity.name
+#                               ^^^^^ entity.name
+
+INTRODUCTION                                    *abolish* *:Abolish* *:Subvert*
+# ^^^^^^^^^^ storage
+#                                               ^^^^^^^^^ entity.name
+#                                                         ^^^^^^^^^^ entity.name
+#                                                                    ^^^^^^^^^^ entity.name
+
+LINE OPERATIONS                                 *unimpaired-lines*
+# ^^^^^^^^^^^^^ storage
+#                                               ^^^^^^^^^^^^^^^^^^ entity.name
+
+CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
+# ^^^^^^^^^^^^^^^ storage
+#                           ^^^^^^^^^^^^ entity.name
+#                                        ^^^^^^^^^^^^^^^^^^^ entity.name
+#                                                            ^^^^^^ entity.name
+
+<kMultiply> keypad *            *keypad-multiply*
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity.name
+#                               ^^^^^^^^^^^^^^^^^ entity.name
+
+.. |search|
+#  ^^^^^^^^ support.constant
+.. |search-offset|
+#  ^^^^^^^^^^^^^^^ support.constant
+.. |gui.txt|
+#  ^^^^^^^^^ support.constant
+.. |:s_flag|
+#  ^^^^^^^^^ support.constant
+    +-----------------------+
+    |first line             |
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^ -support.constant
+    |second line            |
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^ -support.constant
+    |@                      |
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^ -support.constant
+    |@                      |
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^ -support.constant
+    +-----------------------+
+
+. 'option'
+# ^^^^^^^^ string
+. 'helpfile'
+# ^^^^^^^^^^ string
+. 'option_underscore'
+# ^^^^^^^^^^^^^^^^^^^ string
+. 'c'
+# ^^^ - string
+. 'INVALID'
+# ^^^^^^^^^ - string
+. 'Invalid'
+# ^^^^^^^^^ - string
+. 'in-valid'
+# ^^^^^^^^^^ - string
+. 'in valid'
+# ^^^^^^^^^^ - string
+
+.. [count]
+#  ^^^^^^^ markup.raw.inline
+.. [range]
+#  ^^^^^^^ markup.raw.inline
+.. [line]
+#  ^^^^^^ markup.raw.inline
+.. [count]
+#  ^^^^^^^ markup.raw.inline
+.. [offset]
+#  ^^^^^^^^ markup.raw.inline
+.. [cmd]
+#  ^^^^^ markup.raw.inline
+.. [num]
+#  ^^^^^ markup.raw.inline
+.. [+num]
+#  ^^^^^^ markup.raw.inline
+.. [-num]
+#  ^^^^^^ markup.raw.inline
+.. [+cmd]
+#  ^^^^^^ markup.raw.inline
+.. [++opt]
+#  ^^^^^^^ markup.raw.inline
+.. [arg]
+#  ^^^^^ markup.raw.inline
+.. [arguments]
+#  ^^^^^^^^^^^ markup.raw.inline
+.. [ident]
+#  ^^^^^^^ markup.raw.inline
+.. [addr]
+#  ^^^^^^ markup.raw.inline
+.. [group]
+#  ^^^^^^^ markup.raw.inline
+.. :foo[bar]
+#  ^^^^^^^^^ -markup.raw.inline
+
+.. <C-G>
+#  ^^^^^ markup.raw.inline
+.. <div>
+#  ^^^^^ markup.raw.inline
+.. <space>
+#  ^^^^^^^ markup.raw.inline
+.. <F1>
+#  ^^^^ markup.raw.inline
+.. <Help>
+#  ^^^^^^ markup.raw.inline
+.. {char1-char2}
+#  ^^^^^^^^^^^^^ markup.raw.inline
+
+.. \< invalid \>
+#  ^^^^^^^^^^^^^ -entity
+
+. CTRL-]
+# ^^^^^^ markup.raw.inline
+. CTRL-T
+# ^^^^^^ markup.raw.inline
+. CTRL-{char}
+# ^^^^^^^^^^^ markup.raw.inline
+. CTRL-Break
+# ^^^^^^^^^^ markup.raw.inline
+. CTRL-Del
+# ^^^^^^^^ markup.raw.inline
+. CTRL-PageDown
+# ^^^^^^^^^^^^^ markup.raw.inline
+. CTRL-P
+# ^^^^^^ markup.raw.inline
+. CTRL-SHIFT-P
+# ^^^^^^^^^^^^ markup.raw.inline
+. CTRL-.
+# ^^^^^^ markup.raw.inline
+. META-.
+# ^^^^^^ markup.raw.inline
+. ALT-.
+# ^^^^^ markup.raw.inline
+
+. {Visual}
+# ^^^^^^^^ markup.raw.inline
+. {motion}
+# ^^^^^^^^ markup.raw.inline
+. {Vi does not have on-line help}
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ markup.raw.inline
+. {a,b}
+# ^^^^^ markup.raw.inline
+. [x{motion}
+#   ^^^^^^^^ markup.raw.inline
+. {Visual}[x
+# ^^^^^^^^ markup.raw.inline
+
+                                        {NeoVintageous specific}
+#                                       ^^^^^^^^^^^^^^^^^^^^^^^^ markup.raw.inline
+
+..{Multi
+# ^^^^^^ markup.raw.inline
+line
+# ^^ markup.raw.inline
+text}
+# ^^^ markup.raw.inline
+
+            {not available when compiled without the
+            inline |+byte_offset| feature}
+#           ^^^^^^^ markup.raw.inline
+#                  ^^^^^^^^^^^^^^ support.constant
+#                                ^^^^^^^^^ markup.raw.inline
+
+                            *{*
+#                           ^^^ -markup.raw
+  {           [count] paragraphs backward.  |exclusive| motion.
+# ^^^^^^^^^^^^ -markup.raw
+                            *}*
+#                           ^^^ -markup.raw
+
+https://example.com
+^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+https://example.com/x/y
+^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+https://example.com/X/Y
+^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+https://example.com/1/2
+^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link
+
+    *Todo ...
+    ^^^^^^^^^ markup.ignored
+    *Error ...
+    ^^^^^^^^^^ markup.deleted
+    *Note ...
+    ^^^^^^^^^ markup.inserted
+
+>
+    code...
+    # ^^^^^ markup.raw.block
+<
+
+    Previous < character should terminate code block
+    # ^ -markup.raw
+
+Text: >
+    # ^ markup.raw.block
+    code...
+    # ^^^^^ markup.raw.block
+Text at zero column terminates code block
+# ^ -markup.raw
+
+Text: >
+    # ^ markup.raw.block
+    code...
+    # ^^^^^ markup.raw.block
+    <
+
+    Previous < character should terminate code block
+    # ^ -markup.raw

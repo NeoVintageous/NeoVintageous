@@ -54,7 +54,7 @@ class Mappings(object):
     def _find_full_match(self, mode, seq):
         partials = self._find_partial_match(mode, seq)
         try:
-            _logger.debug('check partials %s for %s', partials, seq)
+            _logger.debug('check partials for seq \'%s\' -> %s', seq, partials)
             name = list(x for x in partials if x == seq)[0]
             # FIXME: Possibly related to #613. We're not returning the view's current mode
 
@@ -70,42 +70,36 @@ class Mappings(object):
 
         keys, mapped_to = self._find_full_match(self.state.mode, seq)
         if keys:
-            _logger.debug('found full command \'%s\' -> \'%s\'', keys, mapped_to)
             return Mapping(seq, mapped_to['name'], seq[len(keys):], mapping_status.COMPLETE)
 
         for key in KeySequenceTokenizer(seq).iter_tokenize():
             head += key
             keys, mapped_to = self._find_full_match(self.state.mode, head)
             if keys:
-                _logger.debug('found full command \'%s\' -> \'%s\'', keys, mapped_to)
                 return Mapping(head, mapped_to['name'], seq[len(head):], mapping_status.COMPLETE)
             else:
                 break
 
         if self._find_partial_match(self.state.mode, seq):
-            _logger.debug('found partial command \'%s\'', seq)
             return Mapping(seq, '', '', mapping_status.INCOMPLETE)
 
         return None
 
     # XXX: Provisional. Get rid of this as soon as possible.
-    def can_be_long_user_mapping(self, key):
+    def _can_be_long_user_mapping(self, key):
         full_match = self._find_full_match(self.state.mode, key)
         partial_matches = self._find_partial_match(self.state.mode, key)
         if partial_matches:
-            _logger.debug('found user mapping \'%s\' -> %s', key, partial_matches)
-
             return (True, full_match[0])
-
-        _logger.debug('user mapping not found \'%s\'', key)
 
         return (False, True)
 
     # XXX: Provisional. Get rid of this as soon as possible.
+    # e.g. we may have typed 'aa' and there's an 'aaa' mapping, so we need to keep collecting input.
     def incomplete_user_mapping(self):
-        (maybe_mapping, complete) = self.can_be_long_user_mapping(self.state.partial_sequence)
+        (maybe_mapping, complete) = self._can_be_long_user_mapping(self.state.partial_sequence)
         if maybe_mapping and not complete:
-            _logger.debug('\'%s\'', self.state.partial_sequence)
+            _logger.debug('incomplete user mapping')
 
             return True
 
@@ -136,7 +130,6 @@ class Mappings(object):
         # TODO: Use same structure as in mappings (nested dicst).
         command = None
         if check_user_mappings:
-            _logger.debug('check user mappings')
             # TODO: We should be able to force a mode here too as, below.
             command = self.expand_first(seq)
 
@@ -145,7 +138,6 @@ class Mappings(object):
             return command
             # return {'name': command.mapping, 'type': cmd_types.USER}
         else:
-            _logger.debug('look up command for seq >>>%s<<<', seq)
             command = seq_to_command(self.state, seq, mode=mode)
             _logger.debug('got command \'%s\'', command)
             return command

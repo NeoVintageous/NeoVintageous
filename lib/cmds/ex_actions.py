@@ -3,8 +3,18 @@ import re
 import stat
 import subprocess
 
-import sublime
-import sublime_plugin
+from sublime import ENCODED_POSITION
+from sublime import find_resources
+from sublime import FORCE_GROUP
+from sublime import LITERAL
+from sublime import load_resource
+from sublime import MONOSPACE_FONT
+from sublime import ok_cancel_dialog
+from sublime import platform
+from sublime import Region
+from sublime import set_timeout
+from sublime_plugin import TextCommand
+from sublime_plugin import WindowCommand
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.ex import shell
@@ -19,11 +29,10 @@ from NeoVintageous.lib.vi.mappings import Mappings
 from NeoVintageous.lib.vi.search import find_all_in_range
 from NeoVintageous.lib.vi.settings import set_global
 from NeoVintageous.lib.vi.settings import set_local
-from NeoVintageous.lib.vi.sublime import has_dirty_buffers
+from NeoVintageous.lib.vi.utils import has_dirty_buffers
 from NeoVintageous.lib.vi.utils import adding_regions
 from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import modes
-from NeoVintageous.lib.vi.utils import R
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.vi.utils import row_at
 from NeoVintageous.lib.window import WindowAPI
@@ -44,6 +53,7 @@ __all__ = [
     'ExFile',
     'ExGlobal',
     'ExGoto',
+    'ExHelp',
     'ExLet',
     'ExListRegisters',
     'ExMap',
@@ -64,12 +74,13 @@ __all__ = [
     'ExSetLocal',
     'ExShell',
     'ExShellOut',
+    'ExSmap',
     'ExSubstitute',
-    'ExTabOpenCommand',
     'ExTabfirstCommand',
     'ExTablastCommand',
     'ExTabnextCommand',
     'ExTabonlyCommand',
+    'ExTabOpenCommand',
     'ExTabprevCommand',
     'ExTextCommandBase',
     'ExUnabbreviate',
@@ -86,13 +97,7 @@ __all__ = [
 ]
 
 
-GLOBAL_RANGES = []
-CURRENT_LINE_RANGE = {'left_ref': '.', 'left_offset': 0,
-                      'left_search_offsets': [], 'right_ref': None,
-                      'right_offset': 0, 'right_search_offsets': []}
-
-
-def changing_cd(f, *args, **kwargs):
+def _changing_cd(f, *args, **kwargs):
     def inner(*args, **kwargs):
         try:
             state = State(args[0].view)
@@ -109,34 +114,11 @@ def changing_cd(f, *args, **kwargs):
             f(*args, **kwargs)
         finally:
             os.chdir(old)
+
     return inner
 
 
-def get_view_info(v):
-    """Gather data to be displayed by :ls or :buffers."""
-    path = v.file_name()
-    if path:
-        parent, leaf = os.path.split(path)
-        parent = os.path.basename(parent)
-        path = os.path.join(parent, leaf)
-    else:
-        path = v.name() or str(v.buffer_id())
-        leaf = v.name() or 'untitled'
-
-    status = []
-    if not v.file_name():
-        status.append("t")
-    if v.is_dirty():
-        status.append("*")
-    if v.is_read_only():
-        status.append("r")
-
-    if status:
-        leaf += ' (%s)' % ', '.join(status)
-    return [leaf, path]
-
-
-class ExTextCommandBase(sublime_plugin.TextCommand):
+class ExTextCommandBase(TextCommand):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -151,7 +133,7 @@ class ExTextCommandBase(sublime_plugin.TextCommand):
     def set_sel(self):
         sel = self.deserialize_sel()
         self.view.sel().clear()
-        self.view.sel().add_all([sublime.Region(b) for (a, b) in sel])
+        self.view.sel().add_all([Region(b) for (a, b) in sel])
 
     def set_next_sel(self, data):
         self.view.settings().set('ex_data', {'next_sel': data})
@@ -190,12 +172,100 @@ class ExGoto(ViWindowCommandBase):
         self._view.show(self._view.sel()[0])
 
 
-# https://neovim.io/doc/user/various.html#:%21
-# https://neovim.io/doc/user/various.html#:%21%21
-class ExShellOut(sublime_plugin.TextCommand):
+# https://vimhelp.appspot.com/help.txt.html
+class ExHelp(ViWindowCommandBase):
+
+    _tags = {}
+
+    def run(self, command_line):
+        parsed = parse_command_line(command_line)
+        if not parsed:
+            return
+
+        subject = parsed.command.subject
+        if not subject:
+            subject = 'help.txt'
+
+        subject = subject.lower()
+
+        if not self._tags:
+            nvim.console_message('initializing help tags...')
+
+            tags_resources = [r for r in find_resources(
+                'tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
+
+            if not tags_resources:
+                return nvim.message('tags file not found')
+
+            tags_matcher = re.compile('^([^\s]+)\s+([^\s]+)\s+(.+)$')
+            tags_resource = load_resource(tags_resources[0])
+            for line in tags_resource.split('\n'):
+                if line:
+                    match = tags_matcher.match(line)
+                    self._tags[match.group(1).lower()] = (match.group(2), match.group(3))
+
+            nvim.console_message('finished initializing help tags')
+
+        if subject not in self._tags:
+            return nvim.message('E149: Sorry, no help for %s' % subject)
+
+        tag = self._tags[subject]
+
+        doc_resources = [r for r in find_resources(
+            tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
+
+        if not doc_resources:
+            return nvim.message('no help file found for %s' % tag[0])
+
+        # TODO REFACTOR into reusable api
+        def window_find_open_view(window, name):
+            for view in self.window.views():
+                if view.name() == name:
+                    return view
+
+        help_view_name = '%s [vim help]' % (tag[0])
+        help_view = window_find_open_view(self.window, help_view_name)
+        if help_view:
+            self.window.focus_view(help_view)
+
+        if not help_view:
+            help_view = self.window.new_file()
+            help_view.set_scratch(True)
+            help_view.set_name(help_view_name)
+            help_view.settings().set('auto_indent', False)
+            help_view.settings().set('smart_indent', False)
+            help_view.settings().set('translate_tabs_to_spaces', False)
+            help_view.settings().set('trim_automatic_white_space', False)
+            help_view.settings().set('tab_size', 8)
+            help_view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
+            help_view.run_command('insert', {'characters': load_resource(doc_resources[0])})
+
+        # Format the tag so that we can
+        # do a literal search rather
+        # than regular expression.
+        tag_region = help_view.find(tag[1].lstrip('/'), 0, LITERAL)
+
+        # Add one point so that the cursor is
+        # on the tag rather than the tag
+        # punctuation star character.
+        c_pt = tag_region.begin() + 1
+
+        help_view.sel().clear()
+        help_view.sel().add(c_pt)
+        help_view.show(c_pt, False)
+
+        # TODO fix scrolloff properly in the core for all commands
+        # help_view.run_command('scroll_lines', {
+        #     'amount': help_view.settings().get('vintageous_scrolloff')
+        # })
+
+
+# https://vimhelp.appspot.com/various.txt.html#:%21
+# https://vimhelp.appspot.com/various.txt.html#:%21%21
+class ExShellOut(TextCommand):
     _last_command = None
 
-    @changing_cd
+    @_changing_cd
     def run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -250,11 +320,11 @@ class ExShell(ViWindowCommandBase):
     def open_shell(self, command):
         return subprocess.Popen(command, cwd=os.getcwd())
 
-    @changing_cd
+    @_changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
-        if sublime.platform() == 'linux':
+        if platform() == 'linux':
             term = self.view.settings().get('VintageousEx_linux_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
@@ -266,7 +336,7 @@ class ExShell(ViWindowCommandBase):
                 nvim.console_message(e)
                 nvim.status_message('error while executing command through shell')
                 return
-        elif sublime.platform() == 'osx':
+        elif platform() == 'osx':
             term = self.view.settings().get('VintageousEx_osx_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
@@ -278,17 +348,17 @@ class ExShell(ViWindowCommandBase):
                 nvim.console_message(e)
                 nvim.status_message('error while executing command through shell')
                 return
-        elif sublime.platform() == 'windows':
+        elif platform() == 'windows':
             self.open_shell(['cmd.exe', '/k']).wait()
         else:
             # XXX OSX (make check explicit)
             nvim.not_implemented_message('not implemented')
 
 
-# https://neovim.io/doc/user/insert.html#:r
-class ExReadShellOut(sublime_plugin.TextCommand):
+# https://vimhelp.appspot.com/insert.txt.html#:r
+class ExReadShellOut(TextCommand):
 
-    @changing_cd
+    @_changing_cd
     def run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -299,7 +369,7 @@ class ExReadShellOut(sublime_plugin.TextCommand):
         target_point = min(r.end(), self.view.size())
 
         if parsed.command.command:
-            if sublime.platform() == 'linux':
+            if platform() == 'linux':
                 # TODO: make shell command configurable.
                 the_shell = self.view.settings().get('linux_shell')
                 the_shell = the_shell or os.path.expandvars("$SHELL")
@@ -314,7 +384,7 @@ class ExReadShellOut(sublime_plugin.TextCommand):
                     return
                 self.view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
 
-            elif sublime.platform() == 'windows':
+            elif platform() == 'windows':
                 p = subprocess.Popen(['cmd.exe', '/C', parsed.command.command],
                                      stdout=subprocess.PIPE,
                                      startupinfo=get_startup_info())
@@ -332,11 +402,11 @@ class ExReadShellOut(sublime_plugin.TextCommand):
             return
 
 
-# https://neovim.io/doc/user/windows.html#:ls
+# https://vimhelp.appspot.com/windows.txt.html#:ls
 class ExPromptSelectOpenFile(ViWindowCommandBase):
 
     def run(self, command_line=''):
-        self.file_names = [get_view_info(view) for view in self.window.views()]
+        self.file_names = [self._get_view_info(view) for view in self.window.views()]
         self.view_ids = [view.id() for view in self.window.views()]
         self.window.show_quick_panel(self.file_names, self.on_done)
 
@@ -350,8 +420,31 @@ class ExPromptSelectOpenFile(ViWindowCommandBase):
             if view.id() == sought_id:
                 self.window.focus_view(view)
 
+    def _get_view_info(self, v):
+        path = v.file_name()
+        if path:
+            parent, leaf = os.path.split(path)
+            parent = os.path.basename(parent)
+            path = os.path.join(parent, leaf)
+        else:
+            path = v.name() or str(v.buffer_id())
+            leaf = v.name() or 'untitled'
 
-# https://neovim.io/doc/user/map.html#:map
+        status = []
+        if not v.file_name():
+            status.append("t")
+        if v.is_dirty():
+            status.append("*")
+        if v.is_read_only():
+            status.append("r")
+
+        if status:
+            leaf += ' (%s)' % ', '.join(status)
+
+        return [leaf, path]
+
+
+# https://vimhelp.appspot.com/map.txt.html#:map
 class ExMap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -366,7 +459,7 @@ class ExMap(ViWindowCommandBase):
         mappings.add(modes.VISUAL, parsed.command.keys, parsed.command.command)
 
 
-# https://neovim.io/doc/user/map.html#:unmap
+# https://vimhelp.appspot.com/map.txt.html#:unmap
 class ExUnmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -381,7 +474,7 @@ class ExUnmap(ViWindowCommandBase):
             nvim.status_message('mapping not found')
 
 
-# https://neovim.io/doc/user/map.html#:nmap
+# https://vimhelp.appspot.com/map.txt.html#:nmap
 class ExNmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -391,7 +484,7 @@ class ExNmap(ViWindowCommandBase):
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
 
 
-# https://neovim.io/doc/user/map.html#:nunmap
+# https://vimhelp.appspot.com/map.txt.html#:nunmap
 class ExNunmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -404,7 +497,7 @@ class ExNunmap(ViWindowCommandBase):
             nvim.status_message('mapping not found')
 
 
-# https://neovim.io/doc/user/map.html#:omap
+# https://vimhelp.appspot.com/map.txt.html#:omap
 class ExOmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -415,7 +508,7 @@ class ExOmap(ViWindowCommandBase):
         mappings.add(modes.OPERATOR_PENDING, keys, command)
 
 
-# https://neovim.io/doc/user/map.html#:ounmap
+# https://vimhelp.appspot.com/map.txt.html#:ounmap
 class ExOunmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -428,7 +521,17 @@ class ExOunmap(ViWindowCommandBase):
             nvim.status_message('mapping not found')
 
 
-# https://neovim.io/doc/user/map.html#:vmap
+# https://vimhelp.appspot.com/map.txt.html#:smap
+class ExSmap(ViWindowCommandBase):
+
+    def run(self, command_line=''):
+        assert command_line, 'expected non-empty command line'
+        parsed = parse_command_line(command_line)
+        mappings = Mappings(self.state)
+        mappings.add(modes.SELECT, parsed.command.keys, parsed.command.command)
+
+
+# https://vimhelp.appspot.com/map.txt.html#:vmap
 class ExVmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -441,7 +544,7 @@ class ExVmap(ViWindowCommandBase):
         mappings.add(modes.VISUAL_BLOCK, keys, command)
 
 
-# https://neovim.io/doc/user/map.html#:vunmap
+# https://vimhelp.appspot.com/map.txt.html#:vunmap
 class ExVunmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -456,7 +559,7 @@ class ExVunmap(ViWindowCommandBase):
             nvim.status_message('mapping  not found')
 
 
-# https://neovim.io/doc/user/map.html#:abbreviate
+# https://vimhelp.appspot.com/map.txt.html#:abbreviate
 class ExAbbreviate(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -474,10 +577,10 @@ class ExAbbreviate(ViWindowCommandBase):
 
     def show_abbreviations(self):
         abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
-        self.window.show_quick_panel(abbrevs, None, flags=sublime.MONOSPACE_FONT)
+        self.window.show_quick_panel(abbrevs, None, flags=MONOSPACE_FONT)
 
 
-# https://neovim.io/doc/user/map.html#:unabbreviate
+# https://vimhelp.appspot.com/map.txt.html#:unabbreviate
 class ExUnabbreviate(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -491,19 +594,19 @@ class ExUnabbreviate(ViWindowCommandBase):
         abbrev.Store().erase(parsed.command.short)
 
 
-# https://neovim.io/doc/user/editing.html#:pwd
+# https://vimhelp.appspot.com/editing.txt.html#:pwd
 class ExPrintWorkingDir(ViWindowCommandBase):
 
-    @changing_cd
+    @_changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         nvim.status_message(os.getcwd())
 
 
-# https://neovim.io/doc/user/editing.html#:write
+# https://vimhelp.appspot.com/editing.txt.html#:write
 class ExWriteFile(ViWindowCommandBase):
 
-    @changing_cd
+    @_changing_cd
     def run(self, command_line=''):
         if not command_line:
             raise ValueError('empty command line; that seems to be an error')
@@ -572,7 +675,7 @@ class ExWriteFile(ViWindowCommandBase):
         r = None
         if parsed_command.line_range.is_empty:
             # If the user didn't provide any range data, Vim appends whe whole buffer.
-            r = R(0, self._view.size())
+            r = Region(0, self._view.size())
         else:
             r = parsed_command.line_range.resolve(self._view)
 
@@ -583,7 +686,7 @@ class ExWriteFile(ViWindowCommandBase):
 
         self._view.run_command('append', {'characters': text})
 
-        utils.replace_sel(self._view, R(self._view.line(location).a))
+        utils.replace_sel(self._view, Region(self._view.line(location).a))
 
         self.enter_normal_mode(mode=self.state.mode)
         self.state.enter_normal_mode()
@@ -592,7 +695,7 @@ class ExWriteFile(ViWindowCommandBase):
         r = None
         if parsed_command.line_range.is_empty:
             # If the user didn't provide any range data, Vim writes whe whole buffer.
-            r = R(0, self._view.size())
+            r = Region(0, self._view.size())
         else:
             r = parsed_command.line_range.resolve(self._view)
 
@@ -633,7 +736,7 @@ class ExWriteFile(ViWindowCommandBase):
         region = None
         if ex_command.line_range.is_empty:
             # If the user didn't provide any range data, Vim writes whe whole buffer.
-            region = R(0, self._view.size())
+            region = Region(0, self._view.size())
         else:
             region = ex_command.line_range.resolve(self._view)
 
@@ -657,10 +760,10 @@ class ExWriteFile(ViWindowCommandBase):
             nvim.console_message('----------------------------------------------')
 
 
-# https://neovim.io/doc/user/editing.html#:wa
+# https://vimhelp.appspot.com/editing.txt.html#:wa
 class ExWriteAll(ViWindowCommandBase):
 
-    @changing_cd
+    @_changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -674,7 +777,7 @@ class ExWriteAll(ViWindowCommandBase):
             v.run_command('save')
 
 
-# https://neovim.io/doc/user/editing.html#:file
+# https://vimhelp.appspot.com/editing.txt.html#:file
 class ExFile(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -714,7 +817,7 @@ class ExFile(ViWindowCommandBase):
         nvim.status_message('%s' % msg)
 
 
-# https://neovim.io/doc/user/change.html#:move
+# https://vimhelp.appspot.com/change.txt.html#:move
 class ExMove(ExTextCommandBase):
 
     def run_ex_command(self, edit, command_line=''):
@@ -741,8 +844,8 @@ class ExMove(ExTextCommandBase):
         if destination.end() >= self.view.size():
             text = '\n' + text.rstrip()
 
-        if destination == R(-1):
-            destination = R(0)
+        if destination == Region(-1):
+            destination = Region(0)
 
         if destination.end() < source.begin():
             self.view.erase(edit, source)
@@ -755,7 +858,7 @@ class ExMove(ExTextCommandBase):
         self.set_next_sel([[destination.a, destination.a]])
 
 
-# https://neovim.io/doc/user/change.html#:copy
+# https://vimhelp.appspot.com/change.txt.html#:copy
 class ExCopy(ExTextCommandBase):
 
     def __init__(self, *args, **kwargs):
@@ -776,7 +879,7 @@ class ExCopy(ExTextCommandBase):
         target_region = unresolved.resolve(self.view)
 
         address = None
-        if target_region == R(-1, -1):
+        if target_region == Region(-1, -1):
             address = 0
         else:
             row = utils.row_at(self.view, target_region.begin()) + 1
@@ -795,7 +898,7 @@ class ExCopy(ExTextCommandBase):
         self.set_next_sel([(cursor_dest, cursor_dest)])
 
 
-# https://neovim.io/doc/user/windows.html#:only
+# https://vimhelp.appspot.com/windows.txt.html#:only
 class ExOnly(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -821,7 +924,7 @@ class ExOnly(ViWindowCommandBase):
             view.close()
 
 
-# https://neovim.io/doc/user/change.html#:&
+# https://vimhelp.appspot.com/change.txt.html#:&
 class ExDoubleAmpersand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -840,12 +943,12 @@ class ExDoubleAmpersand(ViWindowCommandBase):
         })
 
 
-# https://neovim.io/doc/user/change.html#:substitute
-class ExSubstitute(sublime_plugin.TextCommand):
+# https://vimhelp.appspot.com/change.txt.html#:substitute
+class ExSubstitute(TextCommand):
 
-    last_pattern = None
-    last_flags = []
-    last_replacement = ''
+    _last_pattern = None
+    _last_flags = []
+    _last_replacement = ''
 
     def run(self, edit, command_line=''):
 
@@ -864,8 +967,8 @@ class ExSubstitute(sublime_plugin.TextCommand):
 
         # :s
         if not pattern:
-            pattern = ExSubstitute.last_pattern
-            replacement = ExSubstitute.last_replacement
+            pattern = ExSubstitute._last_pattern
+            replacement = ExSubstitute._last_replacement
             # TODO: Don't we have to reuse the previous flags?
             flags = []
             count = 0  # FIXME # noqa: F841
@@ -875,9 +978,9 @@ class ExSubstitute(sublime_plugin.TextCommand):
             nvim.console_message('no previous pattern available')
             return
 
-        ExSubstitute.last_pattern = pattern
-        ExSubstitute.last_replacement = replacement
-        ExSubstitute.last_flags = flags
+        ExSubstitute._last_pattern = pattern
+        ExSubstitute._last_replacement = replacement
+        ExSubstitute._last_flags = flags
 
         computed_flags = re.MULTILINE
         computed_flags |= re.IGNORECASE if ('i' in flags) else 0
@@ -911,7 +1014,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
             match = self.view.find(pattern, start)
 
             # no match or match out of range -- stop
-            if (match == R(-1)) or (row_at(self.view, match.a) > last_row):
+            if (match == Region(-1)) or (row_at(self.view, match.a) > last_row):
                 self.view.show(first_sel(self.view).begin())
                 return
 
@@ -919,7 +1022,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
 
             with adding_regions(self.view, 's_confirm', [match], 'comment'):
                 self.view.show(match.a, True)
-                if sublime.ok_cancel_dialog("Confirm replacement?"):
+                if ok_cancel_dialog("Confirm replacement?"):
                     text = self.view.substr(match)
                     substituted = re.sub(compiled_rx, replacement, text, count=replace_count)
                     self.view.replace(edit, match, substituted)
@@ -927,7 +1030,7 @@ class ExSubstitute(sublime_plugin.TextCommand):
             start = match.b + (self.view.size() - size_before)
 
 
-# https://neovim.io/doc/user/change.html#:delete
+# https://vimhelp.appspot.com/change.txt.html#:delete
 class ExDelete(ExTextCommandBase):
 
     def select(self, regions, register):
@@ -953,7 +1056,7 @@ class ExDelete(ExTextCommandBase):
 
         r = parsed.line_range.resolve(self.view)
 
-        if r == R(-1, -1):
+        if r == Region(-1, -1):
             r = self.view.full_line(0)
 
         self.select([r], parsed.command.params['register'])
@@ -984,7 +1087,7 @@ class ExGlobal(ViWindowCommandBase):
     'XXX' matches: `:g:XXX:s!old!NEW!g`.
     """
 
-    most_recent_pat = None
+    _most_recent_pat = None
 
     def run(self, command_line=''):
 
@@ -994,15 +1097,15 @@ class ExGlobal(ViWindowCommandBase):
 
         global_range = None
         if parsed.line_range.is_empty:
-            global_range = R(0, self._view.size())
+            global_range = Region(0, self._view.size())
         else:
             global_range = parsed.line_range.resolve(self._view)
 
         pattern = parsed.command.pattern
         if pattern:
-            ExGlobal.most_recent_pat = pattern
+            ExGlobal._most_recent_pat = pattern
         else:
-            pattern = ExGlobal.most_recent_pat
+            pattern = ExGlobal._most_recent_pat
 
         # Should default to 'print'
         subcmd = parsed.command.subcommand
@@ -1028,7 +1131,7 @@ class ExGlobal(ViWindowCommandBase):
         })
 
 
-# https://neovim.io/doc/user/various.html#:print
+# https://vimhelp.appspot.com/various.txt.html#:print
 class ExPrint(ViWindowCommandBase):
 
     def run(self, command_line='', global_lines=None):
@@ -1062,7 +1165,7 @@ class ExPrint(ViWindowCommandBase):
         # FIXME: this is broken.
         # If :global called us, ignore the parsed range.
         if global_lines:
-            return [(self._view.substr(R(a, b)), row_at(self._view, a)) for (a, b) in global_lines]
+            return [(self._view.substr(Region(a, b)), row_at(self._view, a)) for (a, b) in global_lines]
 
         to_display = []
         for line in self._view.full_line(parsed_range):
@@ -1071,7 +1174,7 @@ class ExPrint(ViWindowCommandBase):
         return to_display
 
 
-# https://neovim.io/doc/user/windows.html#:close
+# https://vimhelp.appspot.com/windows.txt.html#:close
 class ExClose(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1081,7 +1184,7 @@ class ExClose(ViWindowCommandBase):
         WindowAPI(self.window).close_current_view(do_not_close_if_last)
 
 
-# https://neovim.io/doc/user/editing.html#:q
+# https://vimhelp.appspot.com/editing.txt.html#:q
 class ExQuitCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1113,7 +1216,7 @@ class ExQuitCommand(ViWindowCommandBase):
             self.window.run_command('ex_unvsplit')
 
 
-# https://neovim.io/doc/user/editing.html#:qa
+# https://vimhelp.appspot.com/editing.txt.html#:qa
 class ExQuitAllCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1155,7 +1258,7 @@ class ExWriteAndQuitCommand(ViWindowCommandBase):
         self.window.run_command('ex_quit', {'command_line': 'quit'})
 
 
-# https://neovim.io/doc/user/editing.html#:browse
+# https://vimhelp.appspot.com/editing.txt.html#:browse
 class ExBrowse(ViWindowCommandBase):
 
     def run(self, command_line):
@@ -1166,10 +1269,10 @@ class ExBrowse(ViWindowCommandBase):
         })
 
 
-# https://neovim.io/doc/user/editing.html#:edit
+# https://vimhelp.appspot.com/editing.txt.html#:edit
 class ExEdit(ViWindowCommandBase):
 
-    @changing_cd
+    @_changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1203,7 +1306,7 @@ class ExEdit(ViWindowCommandBase):
 
                 # Give ST some time to load the new view.
                 nvim.console_message(msg)
-                sublime.set_timeout(lambda: nvim.status_message(msg), 150)
+                set_timeout(lambda: nvim.status_message(msg), 150)
                 return
 
             nvim.not_implemented_message('not implemented case for :edit ({0})'.format(command_line))
@@ -1220,7 +1323,7 @@ class ExEdit(ViWindowCommandBase):
         nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
 
 
-# https://neovim.io/doc/user/quickfix.html#:cquit
+# https://vimhelp.appspot.com/quickfix.txt.html#:cquit
 class ExCquit(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1229,7 +1332,7 @@ class ExCquit(ViWindowCommandBase):
         self.window.run_command('exit')
 
 
-# https://neovim.io/doc/user/editing.html#:exit
+# https://vimhelp.appspot.com/editing.txt.html#:exit
 class ExExit(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1243,7 +1346,7 @@ class ExExit(ViWindowCommandBase):
             self.window.run_command('exit')
 
 
-# https://neovim.io/doc/user/change.html#:registers
+# https://vimhelp.appspot.com/change.txt.html#:registers
 class ExListRegisters(ViWindowCommandBase):
 
     def run(self, command_line):
@@ -1259,7 +1362,7 @@ class ExListRegisters(ViWindowCommandBase):
         pairs = [(k, repr(v[0]), len(v)) for (k, v) in pairs]
         pairs = ['"{0}  {1}  {2}'.format(k, v, show_lines(lines)) for (k, v, lines) in pairs]
 
-        self.window.show_quick_panel(pairs, self.on_done, flags=sublime.MONOSPACE_FONT)
+        self.window.show_quick_panel(pairs, self.on_done, flags=MONOSPACE_FONT)
 
     def on_done(self, idx):
         """Save selected value to `"` register."""
@@ -1270,17 +1373,17 @@ class ExListRegisters(ViWindowCommandBase):
         self.state.registers['"'] = [value]
 
 
-# https://neovim.io/doc/user/windows.html#:new
+# https://vimhelp.appspot.com/windows.txt.html#:new
 class ExNew(ViWindowCommandBase):
 
-    @changing_cd
+    @_changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         self.window.run_command('new_file')
 
 
-# https://neovim.io/doc/user/windows.html#:yank
-class ExYank(sublime_plugin.TextCommand):
+# https://vimhelp.appspot.com/windows.txt.html#:yank
+class ExYank(TextCommand):
 
     def run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1302,14 +1405,16 @@ class ExYank(sublime_plugin.TextCommand):
             state.registers['0'] = [text]
 
 
-class ExTabOpenCommand(sublime_plugin.WindowCommand):
+class ExTabOpenCommand(WindowCommand):
 
     def run(self, file_name=None):
         self.window.run_command('tab_control', {
-            'command': 'open', 'file_name': file_name}, )
+            'command': 'open',
+            'file_name': file_name
+        })
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabnext
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabnext
 class ExTabnextCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1320,7 +1425,7 @@ class ExTabnextCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "next"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabprevious
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabprevious
 class ExTabprevCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1331,7 +1436,7 @@ class ExTabprevCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "prev"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tablast
+# https://vimhelp.appspot.com/tabpage.txt.html#:tablast
 class ExTablastCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1342,7 +1447,7 @@ class ExTablastCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "last"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabfirst
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabfirst
 class ExTabfirstCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1353,7 +1458,7 @@ class ExTabfirstCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "first"}, )
 
 
-# https://neovim.io/doc/user/tabpage.html#:tabonly
+# https://vimhelp.appspot.com/tabpage.txt.html#:tabonly
 class ExTabonlyCommand(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1364,7 +1469,7 @@ class ExTabonlyCommand(ViWindowCommandBase):
         self.window.run_command("tab_control", {"command": "only", "forced": parsed.command.forced})
 
 
-# https://neovim.io/doc/user/editing.html#:cd
+# https://vimhelp.appspot.com/editing.txt.html#:cd
 class ExCdCommand(ViWindowCommandBase):
     """
     Print or change the current directory.
@@ -1372,7 +1477,7 @@ class ExCdCommand(ViWindowCommandBase):
     Without an argument behaves as in Unix for all platforms.
     """
 
-    @changing_cd
+    @_changing_cd
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
 
@@ -1440,10 +1545,12 @@ class ExCddCommand(ViWindowCommandBase):
             nvim.exception_message(nvim.Error(nvim.E_CANT_FIND_DIR_IN_CDPATH))
 
 
-# https://neovim.io/doc/user/windows.html#:vsplit
+# https://vimhelp.appspot.com/windows.txt.html#:vsplit
 class ExVsplit(ViWindowCommandBase):
 
-    MAX_SPLITS = 4
+    _MAX_SPLITS = 4
+
+    # TODO Refactor variable access into reusable function because it's also used by ExUnvsplit
     LAYOUT_DATA = {
         1: {"cells": [[0, 0, 1, 1]],
             "rows": [0.0, 1.0],
@@ -1465,7 +1572,7 @@ class ExVsplit(ViWindowCommandBase):
         file_name = parsed.command.params['file_name']
 
         groups = self.window.num_groups()
-        if groups >= ExVsplit.MAX_SPLITS:
+        if groups >= ExVsplit._MAX_SPLITS:
             nvim.console_message('Can\'t create more groups')
             nvim.status_message('Can\'t create more groups')
             return
@@ -1488,9 +1595,8 @@ class ExVsplit(ViWindowCommandBase):
         self.open_file(current_file_name)
 
     def open_file(self, file_name):
-        flags = (sublime.FORCE_GROUP | sublime.ENCODED_POSITION)
-        self.window.open_file(file_name, group=(self.window.num_groups() - 1),
-                              flags=flags)
+        flags = (FORCE_GROUP | ENCODED_POSITION)
+        self.window.open_file(file_name, group=(self.window.num_groups() - 1), flags=flags)
 
 
 class ExUnvsplit(ViWindowCommandBase):
@@ -1510,7 +1616,7 @@ class ExUnvsplit(ViWindowCommandBase):
         self.window.run_command('set_layout', ExVsplit.LAYOUT_DATA[groups - 1])
 
 
-# https://neovim.io/doc/user/options.html#:setlocal
+# https://vimhelp.appspot.com/options.txt.html#:setlocal
 class ExSetLocal(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1530,7 +1636,7 @@ class ExSetLocal(ViWindowCommandBase):
             nvim.status_message('invalid value for option')
 
 
-# https://neovim.io/doc/user/options.html#:set
+# https://vimhelp.appspot.com/options.txt.html#:set
 class ExSet(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1551,7 +1657,7 @@ class ExSet(ViWindowCommandBase):
             nvim.status_message('invalid value for option')
 
 
-# https://neovim.io/doc/user/eval.html#:let
+# https://vimhelp.appspot.com/eval.txt.html#:let
 class ExLet(ViWindowCommandBase):
 
     def run(self, command_line=''):
@@ -1560,7 +1666,7 @@ class ExLet(ViWindowCommandBase):
         self.state.variables.set(parsed.command.variable_name, parsed.command.variable_value)
 
 
-# https://neovim.io/doc/user/editing.html#:wqall
+# https://vimhelp.appspot.com/editing.txt.html#:wqall
 class ExWriteAndQuitAll(ViWindowCommandBase):
 
     def run(self, command_line=''):

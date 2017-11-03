@@ -1,4 +1,4 @@
-from .tokens_base import * # noqa
+from .tokens_base import *  # FIXME # noqa: F403
 
 
 class TokenEof(Token):  # FIXME # noqa: F405

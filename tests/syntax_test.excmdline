@@ -1,0 +1,362 @@
+# SYNTAX TEST "Packages/NeoVintageous/res/Command-line mode.sublime-syntax"
+
+# https://vimhelp.appspot.com/cmdline.txt.html
+
+:
+#<- keyword
+
+:foo
+#<- keyword
+#^^^ -constant
+#^^^ -keyword
+#^^^ -support
+#^^^ -variable
+
+:foo bar
+#<- keyword
+#^^^^^^^ -constant
+#^^^^^^^ -keyword
+#^^^^^^^ -support
+#^^^^^^^ -variable
+
+:!!!
+#^^^ -constant
+#^^^ -keyword
+#^^^ -support
+#^^^ -variable
+
+:1
+#<- keyword
+#^ constant.numeric
+
+:12
+#<- keyword
+#^^ constant.numeric
+
+:123
+#<- keyword
+#^^^ constant.numeric
+
+:ab
+#<- keyword
+#^^ support.function
+:ab lhs
+#<- keyword
+#^^ support.function
+#   ^^^ variable.parameter
+:ab lhs rhs
+#<- keyword
+#^^ support.function
+#   ^^^ variable.parameter
+#       ^^^ variable.parameter
+:abbreviate
+#<- keyword
+#^^^^^^^^^^ support.function
+:abbreviate lhs
+#<- keyword
+#^^^^^^^^^^ support.function
+#           ^^^ variable.parameter
+:abbreviate lhs rhs
+#<- keyword
+#^^^^^^^^^^ support.function
+#           ^^^ variable.parameter
+#               ^^^ variable.parameter
+
+:1ab
+#^^^ -constant
+#^^^ -keyword
+#^^^ -support
+#^^^ -variable
+
+:ab ab
+#   ^^ -support
+
+:abbreviate abbreviate
+#           ^^^^^^^^^^ -support
+
+:as
+#<- keyword
+#^^ support.function
+:ascii
+#<- keyword
+#^^^^^ support.function
+:ascii!
+#<- keyword
+#^^^^^ -support
+#     ^ -variable
+:ascii x
+#<- keyword
+#^^^^^ -support
+#      ^ -variable
+
+:bro
+#<- keyword
+#^^^ support.function
+:bro cmd
+#<- keyword
+#^^^ support.function
+#    ^^^ variable.parameter
+:browse
+#<- keyword
+#^^^^^^ support.function
+:browse cmd
+#<- keyword
+#^^^^^^ support.function
+#       ^^^ variable.parameter
+
+:buffers
+#<- keyword
+#^^^^^^^ support.function
+:buffers!
+#<- keyword
+#^^^^^^^ support.function
+#       ^ keyword
+
+:cd
+#<- keyword
+#^^ support.function
+:cdd
+#<- keyword
+#^^^ support.function
+
+:clo
+#<- keyword
+#^^^ support.function
+:close
+#<- keyword
+#^^^^^ support.function
+:clo!
+#<- keyword
+#^^^ support.function
+#   ^ keyword
+:close!
+#<- keyword
+#^^^^^ support.function
+#     ^ keyword
+
+:exi
+#<- keyword
+#^^^ support.function
+:exit!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:file
+#<- keyword
+#^^^^ support.function
+:file!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:h
+#<- keyword
+#^ support.function
+:h subject
+#<- keyword
+#^ support.function
+#  ^^^^^^^ variable.parameter
+:help
+#<- keyword
+#^^^^ support.function
+:help subject
+#<- keyword
+#^^^^ support.function
+#     ^^^^^^^ variable.parameter
+:help!
+#<- keyword
+#^^^^ -support
+#    ^ -keyword
+:help! x
+#<- keyword
+#^^^^ -support
+#    ^ -keyword
+#      ^ -variable
+
+:files
+#<- keyword
+#^^^^^ support.function
+:files!
+#<- keyword
+#^^^^^ support.function
+#     ^ keyword
+
+:ls
+#<- keyword
+#^^ support.function
+:ls!
+#<- keyword
+#^^ support.function
+#  ^ keyword
+
+:only
+#<- keyword
+#^^^^ support.function
+
+:only!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:print
+#<- keyword
+#^^^^^ support.function
+:Print
+#<- keyword
+#^^^^^ support.function
+
+:pw
+#<- keyword
+#^^ support.function
+:pwd
+#<- keyword
+#^^^ support.function
+:pd!
+#^^ -support.function
+#  ^ -keyword
+:pwd!
+#^^^ -support.function
+#   ^ -keyword
+
+:q
+#<- keyword
+#^ support.function
+
+:qa
+#<- keyword
+#^^ support.function
+
+:qall
+#<- keyword
+#^^^^ support.function
+
+:qall!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:quit
+#<- keyword
+#^^^^ support.function
+
+:quit!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:quita
+#<- keyword
+#^^^^^  support.function
+
+:quitall
+#<- keyword
+#^^^^^^^  support.function
+
+:quitall!
+#<- keyword
+#^^^^^^^  support.function
+#       ^ keyword
+
+:r
+#<- keyword
+#^ support.function
+:read
+#<- keyword
+#^^^^ support.function
+:reg
+#<- keyword
+#^^^ support.function
+:registers
+#<- keyword
+#^^^^^^^^^ support.function
+
+:s
+#<- keyword
+#^ support.function
+:substitute
+#<- keyword
+#^^^^^^^^^^ support.function
+:se
+#<- keyword
+#^^ support.function
+:set
+#<- keyword
+#^^^ support.function
+:setl
+#<- keyword
+#^^^^ support.function
+:setlocal
+#<- keyword
+#^^^^^^^^ support.function
+:sh
+#<- keyword
+#^^ support.function
+:shell
+#<- keyword
+#^^ support.function
+
+:w
+#<- keyword
+#^ support.function
+:wall
+#<- keyword
+#^^^^ support.function
+:write
+#<- keyword
+#^^^^^ support.function
+:wq
+#<- keyword
+#^^ support.function
+:wq!
+#<- keyword
+#^^ support.function
+#  ^ keyword
+:wqa
+#<- keyword
+#^^^ support.function
+:wqall
+#<- keyword
+#^^^^^ support.function
+
+:x
+#<- keyword
+#^ support.function
+:x!
+#<- keyword
+#^ support.function
+# ^ keyword
+:xit
+#<- keyword
+#^^^ support.function
+:xit!
+#<- keyword
+#^^^ support.function
+#   ^ keyword
+:xa
+#<- keyword
+#^^ support.function
+:xa!
+#<- keyword
+#^^ support.function
+#  ^ keyword
+:xall
+#<- keyword
+#^^^^ support.function
+:xall!
+#<- keyword
+#^^^^ support.function
+#    ^ keyword
+
+:yank
+#<- keyword
+#^^^^ support.function
+:42yank
+#<- keyword
+#^^ constant.numeric
+#  ^^^^ support.function
+:42yank x
+#^^^^^^^^ -constant
+#^^^^^^^^ -keyword
+#^^^^^^^^ -support
+#^^^^^^^^ -variable

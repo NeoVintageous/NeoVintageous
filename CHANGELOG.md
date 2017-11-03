@@ -2,6 +2,63 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+### Added
+
+* Added: `ds(`, `ds{`, `ds[`, and `ds<` now also trims contained whitespace (Surround plugin)
+* Added: `dsb` alias for `ds)` delete surrounding `()` (Surround plugin)
+* Added: `dsB` alias for `ds}` delete surrounding `{}` (Surround plugin)
+* Added: `dsr` alias for `ds]` delete surrounding `[]` (Surround plugin)
+* Added: `dsa` alias for `ds>` delete surrounding `<>` (Surround plugin)
+* Added: `ds<` delete surrounding `<>` (Surround plugin)
+* Added: `ds>` delete surrounding `<>` (Surround plugin)
+* Added: `dst` delete surrounding pair of HTML or XML tags (Surround plugin)
+* Added: `ds` followed by a target that is not one of the punctuation pairs, `()[]{}<>`, are now only searched for on the current line (Surround plugin)
+* Added: `ds{target}` cursor position is now moves to the start of first target (Surround plugin)
+* Added: `cs{target}` followed by one of `])}` now inserts an inner whitespace character (Surround plugin)
+* Added: `cs>{replacement}` now replaces surround tag characters `<>` with replacement (Surround plugin)
+* Added: `cs{target}` folowed by `>` now replaces target with replacement surroundings `<>` (Surround plugin)
+* Added: `cs{target}{replacement}` cursor position is now moves to the start of first target (Surround plugin)
+* Added: `:h[elp] {subject}` like ":help", additionally jump to the tag `{subject}`
+* Added: `:h[elp]` open a view and display the help file
+* Added: `gx` open url under cursor in browser
+* Added: Support for `:UserCommand<CR>` `.vintageousrc` mappings
+* Added: Support for `:excommand<CR>` `.vintageousrc` mappings
+* Added: `:snoremap` command
+* Added: `:smap` command
+* Added: `cot` toggle sidebar command (Unimpaired plugin)
+* Added: `[ot` toggle sidebar on command (Unimpaired plugin)
+* Added: `]ot` toggle sidebar off command (Unimpaired plugin)
+* Added: `com` toggle minimap command (Unimpaired plugin)
+* Added: `[om` toggle minimap on command (Unimpaired plugin)
+* Added: `]om` toggle minimap off command (Unimpaired plugin)
+* Added: Documentation command
+* Added: Edit Settings command
+* Added: How to map `jk` to `Esc` (documentation)
+
+### Changed
+
+* Changed: `ds<` no longer deletes surrounding tag; use `dst` instead (Surround plugin)
+* Changed: `ds>` no longer deletes surrounding tag; use `dst` instead (Surround plugin)
+* Changed: Modeline `vintageous_modeline` is disabled by default
+* Changed: "Open Changelog" command caption changed to "Changelog"
+
+### Removed
+
+* Removed: `vintageous_surround_spaces` setting
+* Removed: Unimplemented `tabopen` ex command
+* Removed: Deprecated `neovintageous_toggle_use_ctrl_keys` command
+* Removed: Deprecated `neovintageous_reset` command
+* Removed: Deprecated `neovintageous_exit_from_command_mode` command
+* Removed: Deprecated `toggle_mode` command
+
+### Fixed
+
+* Fixed [#282](https://github.com/NeoVintageous/NeoVintageous/issues/282): Surround doesn't work as expected on first symbol
+* Fixed: Several `.vintageousrc` syntax highlighting bugs
+* Fixed: Lots of Command-line mode syntax highlighting bugs
+
 ## 1.3.1 - 2017-07-31
 
 * Fixed [#281](https://github.com/NeoVintageous/NeoVintageous/issues/281): `aW` text objects error if cursor starts at whitespace
@@ -44,11 +101,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
   On | Off | Toggle | Description | Documentation
   -- | --- | ------ | ----------- | -------------
-  `[oc` | `]oc` | `coc` | ['cursorline'](https://neovim.io/doc/user/options.html#%27cursorline%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-  `[ol` | `]ol` | `col` | ['list'](https://neovim.io/doc/user/options.html#%27list%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-  `[on` | `]on` | `con` | ['number'](https://neovim.io/doc/user/options.html#%27number%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-  `[os` | `]os` | `cos` | ['spell'](https://neovim.io/doc/user/options.html#%27spell%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
-  `[ow` | `]ow` | `cow` | ['wrap'](https://neovim.io/doc/user/options.html#%27wrap%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[oc` | `]oc` | `coc` | ['cursorline'](https://vimhelp.appspot.com/options.txt.html#%27cursorline%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[ol` | `]ol` | `col` | ['list'](https://vimhelp.appspot.com/options.txt.html#%27list%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[on` | `]on` | `con` | ['number'](https://vimhelp.appspot.com/options.txt.html#%27number%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[os` | `]os` | `cos` | ['spell'](https://vimhelp.appspot.com/options.txt.html#%27spell%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
+  `[ow` | `]ow` | `cow` | ['wrap'](https://vimhelp.appspot.com/options.txt.html#%27wrap%27) | [unimpaired.vim](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 
 * Added: Port of [abolish.vim](https://github.com/tpope/vim-abolish) coercion commands
 
@@ -87,8 +144,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
   Command | Description | Documentation | Dependencies | Notes
   ------- | ----------- | ------------- | ------------ | -----
-  `[c` | Jump backwards to the previous start of a change. | [diff](https://neovim.io/doc/user/diff.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
-  `]c` | Jump forwards to the next start of a change. | [diff](https://neovim.io/doc/user/diff.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+  `[c` | Jump backwards to the previous start of a change. | [diff](https://vimhelp.appspot.com/diff.txt.html#[c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
+  `]c` | Jump forwards to the next start of a change. | [diff](https://vimhelp.appspot.com/diff.txt.html#]c) | [Git Gutter](https://github.com/jisaacks/GitGutter) | Disable wrapping: set `git_gutter_next_prev_change_wrap` to `false` (Preferences &gt; Settings)
 
 * Added: Port of [unimpaired.vim](https://github.com/tpope/vim-unimpaired) is provided by default. *The implementation may not be complete. Please open issues about missing features.* *Below is a table of what is currently available.*
 
@@ -185,27 +242,27 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
   Command | Description | Documentation | Dependencies | Notes
   ------- | ----------- | ------------- | ------------ | -----
-  `ctrl+]` | Jump to the definition of the keyword under the cursor | [tagsearch](https://neovim.io/doc/user/tagsrch.html#CTRL-\]) | |
-  `ctrl-w h` | Move cursor to view left of current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_h) | |
-  `ctrl-w j` | Move cursor to view below current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_j) | |
-  `ctrl-w k` | Move cursor to view above current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_k) | |
-  `ctrl-w l` | Move cursor to view right of current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_l) | |
-  `ctrl-w b` | Move cursor to bottom-right view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_b) | |
-  `ctrl-w t` | Move cursor to top-left view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_t) | |
-  `ctrl-w H` | Move the current window to be at the very top | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_H) | | Only works in 2-col or 2-row layouts
-  `ctrl-w =` | Make all views (almost) equally high and wide | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_=) | |
-  `ctrl-w _` | Set current view height as high as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W__) | |
-  `ctrl-w \|` | Set current view width as wide as possible | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_bar) | |
-  `ctrl-w o` | Make the current view the only one on the screen | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_o) | |
-  `ctrl-w c` | Close current view | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_c) | |
-  `ctrl-w x` | Exchange current view with next one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_x) | |
-  `ctrl-w s` | Split current window in two | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami) |
-  `ctrl-w v` | Split current window in two (vertically) | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami) |
-  `ctrl-w J` | Move the current window to be at the very bottom | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_J) | | Only works in 2-col or 2-row layouts
-  `ctrl-w K` | Move the current view to be at the far left | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_K) | | Only works in 2-col or 2-row layouts
-  `ctrl-w L` | Move the current window to be at the far right | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_L) | | Only works in 2-col or 2-row layouts
-  `ctrl-w n` | Create new view below current one | [windows](https://neovim.io/doc/user/windows.html#CTRL-W_n) | |
-  `ga` | Print the ascii value of the character under the cursor in dec, hex and oct | [various](https://neovim.io/doc/user/various.html#ga) | |
+  `ctrl+]` | Jump to the definition of the keyword under the cursor | [tagsearch](https://vimhelp.appspot.com/tagsrch.txt.html#CTRL-\]) | |
+  `ctrl-w h` | Move cursor to view left of current one | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_h) | |
+  `ctrl-w j` | Move cursor to view below current one | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_j) | |
+  `ctrl-w k` | Move cursor to view above current one | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_k) | |
+  `ctrl-w l` | Move cursor to view right of current one | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_l) | |
+  `ctrl-w b` | Move cursor to bottom-right view | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_b) | |
+  `ctrl-w t` | Move cursor to top-left view | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_t) | |
+  `ctrl-w H` | Move the current window to be at the very top | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_H) | | Only works in 2-col or 2-row layouts
+  `ctrl-w =` | Make all views (almost) equally high and wide | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_=) | |
+  `ctrl-w _` | Set current view height as high as possible | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W__) | |
+  `ctrl-w \|` | Set current view width as wide as possible | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_bar) | |
+  `ctrl-w o` | Make the current view the only one on the screen | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_o) | |
+  `ctrl-w c` | Close current view | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_c) | |
+  `ctrl-w x` | Exchange current view with next one | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_x) | |
+  `ctrl-w s` | Split current window in two | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_s) | [Origami](https://github.com/SublimeText/Origami) |
+  `ctrl-w v` | Split current window in two (vertically) | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_v) | [Origami](https://github.com/SublimeText/Origami) |
+  `ctrl-w J` | Move the current window to be at the very bottom | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_J) | | Only works in 2-col or 2-row layouts
+  `ctrl-w K` | Move the current view to be at the far left | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_K) | | Only works in 2-col or 2-row layouts
+  `ctrl-w L` | Move the current window to be at the far right | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_L) | | Only works in 2-col or 2-row layouts
+  `ctrl-w n` | Create new view below current one | [windows](https://vimhelp.appspot.com/windows.txt.html#CTRL-W_n) | |
+  `ga` | Print the ascii value of the character under the cursor in dec, hex and oct | [various](https://vimhelp.appspot.com/various.txt.html#ga) | |
   `ctrl+c` | Exit select mode | |
   `ctrl+[` | Exit select mode | |
 

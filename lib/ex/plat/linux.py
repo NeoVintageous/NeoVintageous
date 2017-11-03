@@ -1,31 +1,14 @@
-import os
-import subprocess
-from subprocess import PIPE
+from NeoVintageous.lib.ex.plat import unixlike
 
 
 def run_and_wait(view, cmd):
-    term = view.settings().get('VintageousEx_linux_terminal')
-    term = term or os.path.expandvars("$COLORTERM") or os.path.expandvars("$TERM")
-    subprocess.Popen([
-        term, '-e',
-        "bash -c \"%s; read -p 'Press RETURN to exit.'\"" % cmd]).wait()
+    unixlike.run_and_wait(view, cmd, 'VintageousEx_linux_terminal')
 
 
 def run_and_read(view, cmd):
-    out, err = subprocess.Popen([cmd],
-                                stdout=PIPE,
-                                stderr=PIPE,
-                                shell=True).communicate()
-    try:
-        return (out or err).decode('utf-8')
-    except AttributeError:
-        return ''
+    return unixlike.run_and_read(view, cmd)
 
 
 def filter_region(view, text, command):
-    shell = view.settings().get('VintageousEx_linux_shell')
-    shell = shell or os.path.expandvars("$SHELL")
-    p = subprocess.Popen([shell, '-c', 'echo "%s" | %s' % (text, command)],
-                         stderr=subprocess.PIPE,
-                         stdout=subprocess.PIPE)
-    return p.communicate()[0][:-1].decode('utf-8')
+    return unixlike.filter_region(
+        view, text, command, 'VintageousEx_linux_shell')

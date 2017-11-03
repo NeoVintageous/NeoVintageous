@@ -48,9 +48,6 @@ class _Context(object):
 
         return self._check(not in_command_mode and vi_is_view, operator, operand, match_all)
 
-    def vi_use_ctrl_keys(self, key, operator, operand, match_all):
-        return self._check(self.create_state().settings.view['vintageous_use_ctrl_keys'], operator, operand, match_all)
-
     def vi_is_cmdline(self, key, operator, operand, match_all):
         return self._check(
             self.create_state().view.score_selector(0, 'text.excmdline') != 0, operator, operand, match_all
@@ -187,6 +184,11 @@ class NeoVintageousEvents(EventListener):
         self._on_deactivate_callback_timer = None
 
     def on_query_context(self, view, key, operator, operand, match_all):
+        # Called when determining to trigger a key binding with the given
+        # context key. If the plugin knows how to respond to the context, it
+        # should return either True of False. If the context is unknown, it
+        # should return None.
+
         return _Context(view).query(key, operator, operand, match_all)
 
     def on_query_completions(self, view, prefix, locations):
@@ -233,10 +235,12 @@ class NeoVintageousEvents(EventListener):
                     })
 
     def on_load(self, view):
-        modeline(view)
+        if view.settings().get('vintageous_modeline', False):
+            modeline(view)
 
     def on_post_save(self, view):
-        modeline(view)
+        if view.settings().get('vintageous_modeline', False):
+            modeline(view)
 
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.
@@ -253,6 +257,9 @@ class NeoVintageousEvents(EventListener):
         else:  # Switching back from another application; Ignore
             pass
 
+    def _on_deactivate_callback(self):
+        self._on_deactivate_callback_timer = None
+
     def on_deactivated(self, view):
 
         # TODO Review clearing the cmdline history, does it need to be an event?
@@ -264,6 +271,3 @@ class NeoVintageousEvents(EventListener):
 
         self._on_deactivate_callback_timer = Timer(0.25, self._on_deactivate_callback)
         self._on_deactivate_callback_timer.start()
-
-    def _on_deactivate_callback(self):
-        self._on_deactivate_callback_timer = None

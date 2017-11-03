@@ -1,5 +1,15 @@
 [
     {
+        "caption": "NeoVintageous: Changelog",
+        "command": "open_file",
+        "args": {"file": "${packages}/NeoVintageous/CHANGELOG.md"}
+    },
+    {
+        "caption": "NeoVintageous: Documentation",
+        "command": "open_url",
+        "args": {"url": "https://github.com/NeoVintageous/NeoVintageous"}
+    },
+    {
         "caption": "NeoVintageous: Open My .vintageousrc File",
         "command": "neovintageous_open_my_rc_file"
     },
@@ -8,23 +18,8 @@
         "command": "neovintageous_reload_my_rc_file"
     },
     {
-        "caption": "NeoVintageous: Open Changelog",
-        "command": "open_file",
-        "args": {"file": "${packages}/NeoVintageous/CHANGELOG.md"}
-    },
-    {
-        "caption": "NeoVintageous: Open Readme",
-        "command": "open_file",
-        "args": {"file": "${packages}/NeoVintageous/README.md"}
-    },
-    {
-        "caption": "Preferences: NeoVintageous Settings – Default",
-        "command": "open_file",
-        "args": {"file": "${packages}/NeoVintageous/Preferences.sublime-settings"}
-    },
-    {
-        "caption": "Preferences: NeoVintageous Settings – User",
-        "command": "open_file",
-        "args": {"file": "${packages}/User/Preferences.sublime-settings"}
+        "caption": "Preferences: NeoVintageous Settings",
+        "command": "edit_settings",
+        "args": {"base_file": "${packages}/NeoVintageous/Preferences.sublime-settings"}
     }
 ]

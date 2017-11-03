@@ -4,8 +4,8 @@ from collections import Counter
 import sublime
 
 from NeoVintageous.lib import nvim
+from NeoVintageous.lib import plugin
 from NeoVintageous.lib import rcfile
-from NeoVintageous.lib.api import plugin
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import settings
@@ -173,15 +173,14 @@ class State(object):
     @property
     def reset_during_init(self):
         # Some commands gather user input through input panels. An input panel
-        # is just a view, so when it's closed, the previous view gets
-        # activated and Vintageous init code runs. In this case, however, we
-        # most likely want the global state to remain unchanged. This variable
-        # helps to signal this.
-        #
-        # For an example, see the '_vi_slash' command.
+        # is just a view, so when it's closed, the previous view gets activated
+        # and Vintageous init code runs. In this case, however, we most likely
+        # want the global state to remain unchanged. This variable helps to
+        # signal this. For an example, see the '_vi_slash' command.
         value = self.settings.window['_vintageous_reset_during_init']
         if not isinstance(value, bool):
             return True
+
         return value
 
     @reset_during_init.setter
@@ -213,6 +212,7 @@ class State(object):
 
     @sequence.setter
     def sequence(self, value):
+        _logger.debug('set sequence \'%s\'', value)
         self.settings.vi['sequence'] = value
 
     @property
@@ -226,6 +226,7 @@ class State(object):
 
     @partial_sequence.setter
     def partial_sequence(self, value):
+        _logger.debug('set partial sequence \'%s\'', value)
         self.settings.vi['partial_sequence'] = value
 
     @property
@@ -369,7 +370,7 @@ class State(object):
     @register.setter
     def register(self, value):
         assert len(str(value)) == 1, '`value` must be a character'
-        _logger.debug('\'%s\'', value)
+        _logger.debug('register \'%s\'', value)
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
@@ -574,7 +575,7 @@ class State(object):
         @command
           A command definition as found in `keys.py`.
         """
-        assert isinstance(command, cmd_base.ViCommandDefBase), 'ViCommandDefBase expected, got {0}'.format(type(command))  # noqa: 501
+        assert isinstance(command, cmd_base.ViCommandDefBase), 'ViCommandDefBase expected, got {0}'.format(type(command))  # FIXME # noqa: E501
 
         if isinstance(command, cmd_base.ViMotionDef):
             if self.runnable():
@@ -720,7 +721,7 @@ class State(object):
             # let the action run the motion within its edit object so that
             # we don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
-            _logger.debug('motion in motion+action \'%s\'', motion_cmd)
+            _logger.debug('motion cmd \'%s\', action cmd \'%s\'', motion_cmd, action_cmd)
 
             if self.glue_until_normal_mode and not self.processing_notation:
                 # We need to tell Sublime Text now that it should group
@@ -798,7 +799,7 @@ def init_state(view, new_session=False):
       Whether we're starting up Sublime Text. If so, volatile data must be
       wiped.
     """
-    _logger.debug('newsession=%s, view=[id=%d,file=\'%s\']', new_session, view.id(), view.file_name())
+    _logger.debug('newsession=%s for view=[id=%d,file=\'%s\']', new_session, view.id(), view.file_name())
 
     if not is_view(view):
         # Abort if we got a widget, panel...

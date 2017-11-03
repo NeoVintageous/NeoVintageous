@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 from NeoVintageous.lib.vi.utils import input_types
-from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.utils import translate_char
 
 
 parser_def = namedtuple('parsed_def', 'command interactive_command input_param on_done type')
@@ -16,7 +16,7 @@ def get(state, name):
 
 def one_char(in_):
     """Any input (character) satisfies this parser."""
-    in_ = utils.translate_char(in_)
+    in_ = translate_char(in_)
     return len(in_) == 1
 
 

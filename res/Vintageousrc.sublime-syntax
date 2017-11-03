@@ -1,0 +1,21 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Vintageousrc (NeoVintageous)
+file_extensions:
+  - .vintageousrc
+  - .neovintageousrc
+scope: source.vintageousrc
+hidden: true
+contexts:
+  main:
+    - match: "^\\s*\".*"
+      scope: comment.line.vintageourc
+    - match: \b((n|o|s|v)?(nore)?map|let)\b
+      scope: keyword.control.vintageourc
+    - match: \b(map(local)?leader)\b
+      scope: variable.language.vintageourc
+    - match: \<[A-Za-z0-9-]+\>
+      scope: storage.type.vintageourc
+    - match: "="
+      scope: keyword.operator.assignment.vintageourc

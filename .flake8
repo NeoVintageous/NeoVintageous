@@ -7,4 +7,6 @@ max-line-length = 120
 # D103  Missing docstring in public function
 # D104  Missing docstring in public package
 # D105  Missing docstring in magic method
-ignore = D100, D101, D102, D103, D104, D105
+# D107 Missing docstring in __init__
+# E722 E722 do not use bare except'
+ignore = D100, D101, D102, D103, D104, D105, D107, E722

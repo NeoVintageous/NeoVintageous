@@ -2,7 +2,7 @@ from logging.handlers import RotatingFileHandler
 import logging
 import os
 
-import sublime
+from sublime import status_message as _status_message
 
 
 _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
@@ -61,22 +61,25 @@ class Error(Exception):
         return 'E{0} {1}'.format(self.code, self.message)
 
 
-def status_message(msg):
-    sublime.status_message('NeoVintageous: ' + str(msg))
-
-
 def console_message(msg):
     print('NeoVintageous: ' + str(msg))
 
 
+def status_message(msg):
+    _status_message('NeoVintageous: ' + str(msg))
+
+
+def message(msg):
+    status_message(msg)
+    console_message(msg)
+
+
 def exception_message(exception):
-    status_message(exception)
-    console_message(exception)
+    message(exception)
 
 
 def not_implemented_message(msg):
-    status_message(msg)
-    console_message(msg)
+    message(msg)
 
 
 def _log_file():
@@ -86,37 +89,52 @@ def _log_file():
     # > sublime.architecture() and sublime.channel().
     # > - https://www.sublimetext.com/docs/3/api_reference.html.
     module_relative_file = __name__.replace('.', os.sep) + '.py'
-    if __file__.endswith(module_relative_file):
+    current_file = __file__.replace('NeoVintageous.sublime-package', 'NeoVintageous')
+    if current_file.endswith(module_relative_file):
+        path = current_file.replace('/Installed Packages/NeoVintageous/', '/Packages/NeoVintageous/')
         return os.path.join(
-            __file__[:-(len(module_relative_file) + len(os.sep))],
+            path[:-(len(module_relative_file) + len(os.sep))],
             'User',
             'NeoVintageous.log'
         )
 
 
+class _LogFormatter(logging.Formatter):
+
+    def format(self, record):
+        if not record.msg.startswith(' '):
+            pad_count = 60 - (len(record.name) + len(record.funcName) + len(str(record.lineno)))
+            if pad_count > 0:
+                record.msg = (' ' * pad_count) + record.msg
+
+        return super().format(record)
+
+
 def _init_logger():
-    logger = logging.getLogger(__name__.split('.')[0])
+    formatter = _LogFormatter('%(asctime)s %(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s')
+
+    logger = logging.getLogger('NeoVintageous')
     logger.setLevel(logging.DEBUG)
 
-    handler_formatter = logging.Formatter(
-        '%(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s'
-    )
+    # Stream handler
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(handler_formatter)
-    logger.addHandler(console_handler)
-
+    # File handler
     log_file = _log_file()
     if log_file:
         file_handler = RotatingFileHandler(
             log_file,
             maxBytes=10000000,  # 10000000 = 10MB
-            backupCount=3
+            backupCount=2
         )
-        file_handler.setFormatter(handler_formatter)
+        file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
+
+        logger.debug('debug log file: \'{}\''.format(log_file))
     else:
-        console_message('could not create log file \'%s\'' % log_file)
+        console_message('could not create log file \'{}\''.format(log_file))
 
 
 class _NullLogger():
@@ -144,7 +162,10 @@ if _DEBUG:
     _init_logger()
 
     def get_logger(name):
-        return logging.getLogger(name)
+        logger = logging.getLogger(name)
+        logger.debug('logger name: %s', name)
+
+        return logger
 else:
     def get_logger(name):
         return _NullLogger()

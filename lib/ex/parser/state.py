@@ -104,7 +104,7 @@ class ScannerState(object):
             return m
 
         if not on_error:
-            raise ValueError('expected match with {0}, at {1}'.format(pattern, self.source[self.position:]))
+            raise ValueError('expected match with \'{0}\', at \'{1}\''.format(pattern, self.source[self.position:]))
 
         raise on_error()
 

@@ -7,9 +7,14 @@ env:
         - SUBLIME_TEXT_VERSION="3"
 
 matrix:
+    allow_failures:
+        - python: "3.6"
+    fast_finish: true
     include:
         - os: linux
           python: 3.3
+        - os: linux
+          python: 3.6
         - os: osx
           language: generic
 
@@ -29,9 +34,11 @@ install:
             pip3 install python-coveralls;
       fi
     - sh travis.sh bootstrap
+    - flake8 --version
 
 script:
     - sh travis.sh run_tests --coverage
+    - sh travis.sh run_syntax_tests
     - flake8 --statistics
 
 after_success:

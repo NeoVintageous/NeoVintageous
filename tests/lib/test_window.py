@@ -100,26 +100,26 @@ class TestSublimeWindowApi(unittest.TestCase):
             {
                 'layout': LAYOUT_FOOBAR_COLS_AND_ROWS,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
                 ]
             },
             {
                 'layout': LAYOUT_EMPTY_COLS_AND_ROWS,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
                 ]
             },
             {
                 'layout': LAYOUT_SINGLE_CELL,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
                 ]
             },
             {
                 'layout': LAYOUT_TWO_COLUMN,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': 1, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]},  # noqa: E501
-                    {'active_group': 1, 'left': 0, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': 1, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]},  # FIXME # noqa: E501
+                    {'active_group': 1, 'left': 0, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
                 ]
             },
             {
@@ -135,8 +135,8 @@ class TestSublimeWindowApi(unittest.TestCase):
             {
                 'layout': LAYOUT_TWO_ROW,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': 1, 'above': None, 'count': [1, 2, 3, 4, 5]},  # noqa: E501
-                    {'active_group': 1, 'left': None, 'right': None, 'below': None, 'above': 0, 'count': [1, 2, 3, 4, 5]}  # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': 1, 'above': None, 'count': [1, 2, 3, 4, 5]},  # FIXME # noqa: E501
+                    {'active_group': 1, 'left': None, 'right': None, 'below': None, 'above': 0, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
                 ]
             },
             {

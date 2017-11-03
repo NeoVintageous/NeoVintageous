@@ -41,7 +41,7 @@ def scan_command_write_and_quit_all(state):
         state.expect('+')
         state.ignore()
         # TODO: expect_match should work with emit()
-        # https://neovim.io/doc/user/editing.html#[++opt]
+        # https://vimhelp.appspot.com/editing.txt.html#[++opt]
         m = state.expect_match(
             r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
             lambda: nvim.Error(nvim.E_INVALID_ARGUMENT))

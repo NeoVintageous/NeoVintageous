@@ -1,0 +1,109 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: Help (NeoVintageous)
+scope: text.neovintageous.help
+hidden: true
+contexts:
+  main:
+
+    - match: \*[^*\s]+\*
+      scope: entity.name.neovintageous
+
+    - match: \'[a-z][a-z_]+\'
+      scope: string.neovintageous
+
+    - include: jumptags
+
+    - match: \bhttps://[a-zA-Z0-9\.\\/]+\b
+      scope: markup.underline.link.neovintageous
+
+    - match: \<[^\>\s]+\>
+      scope: markup.raw.inline.neovintageous
+
+    - match: \`[a-z]+\`
+      scope: markup.raw.inline.neovintageous
+
+    - match: CTRL-SHIFT-[a-zA-Z]+
+      scope: markup.raw.inline.neovintageous
+
+    - match: CTRL-[a-zA-Z]+
+      scope: markup.raw.inline.neovintageous
+
+    - match: CTRL-\{[^}]+\}
+      scope: markup.raw.inline.neovintageous
+
+    - match: CTRL-[^\s]
+      scope: markup.raw.inline.neovintageous
+
+    - match: (?:META|ALT)-\.
+      scope: markup.raw.inline.neovintageous
+
+    - match: ^\s+\*Note\s+.*$
+      scope: markup.inserted.neovintageous
+
+    - match: ^\s+\*Todo\s+.*$
+      scope: markup.ignored.neovintageous
+
+    - match: ^\s+\*Error\s+.*$
+      scope: markup.deleted.neovintageous
+
+    - match: \{(?=[a-zA-Z])
+      scope: markup.raw.inline.neovintageous
+      push:
+        - match: \}
+          scope: markup.raw.inline.neovintageous
+          pop: true
+        - include: jumptags
+        - match: .
+          scope: markup.raw.inline.neovintageous
+
+    - match: ':[a-zA-Z]+\[[a-zA-Z]+\]'
+      scope: command.neovintageous
+
+    - match: \[[^\]\s]+\]
+      scope: markup.raw.inline.neovintageous
+
+    - match: \=|-{78}
+      scope: comment.neovintageous
+
+    - match: ^\>$
+      push:
+        - meta_scope: markup.raw.block.neovintageous
+        - match: ^\s*\<$
+          pop: true
+
+    - match: (?<=\:\s)\>$
+      push:
+        - meta_scope: markup.raw.block.neovintageous
+        # - match: (^(?=[^\s]))
+        - match: (^\s*\<$|^(?=[^\s]))
+          pop: true
+
+    - match: (?<=\:\s)\>$
+      push:
+        - meta_scope: markup.raw.block.neovintageous
+        - match: ^\s*\<$
+          pop: true
+
+    - match: ^([A-Z\-\s]+)\s+(\*[^\*]+\*)$
+      captures:
+        1: storage.neovintageous
+        2: entity.name.neovintageous
+
+    - match: ^([A-Z\-\s]+)\s+(\*[^\*]+\*)\s+(\*[^\*]+\*)$
+      captures:
+        1: storage.neovintageous
+        2: entity.name.neovintageous
+        3: entity.name.neovintageous
+
+    - match: ^([A-Z\-\s]+)\s+(\*[^\*]+\*)\s+(\*[^\*]+\*)\s+(\*[^\*]+\*)$
+      captures:
+        1: storage.neovintageous
+        2: entity.name.neovintageous
+        3: entity.name.neovintageous
+        4: entity.name.neovintageous
+
+  jumptags:
+    - match: \|[^|\s]+\|
+      scope: support.constant.neovintageous

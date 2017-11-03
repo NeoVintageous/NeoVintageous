@@ -1,11 +1,44 @@
-import sublime
-import sublime_plugin
-
 from contextlib import contextmanager
 
+from sublime import active_window
+from sublime import load_settings
+from sublime import Region
+from sublime import set_timeout
+from sublime_plugin import TextCommand
 
-# alias
-R = sublime.Region
+
+def has_dirty_buffers(window):
+    for v in window.views():
+        if v.is_dirty():
+            return True
+
+
+def is_ignored(view):
+    """
+    Return `True` if the view wants to be ignored.
+
+    Useful for external plugins that don't want NeoVintageous to be active for
+    specific views.
+    """
+    return view.settings().get('__vi_external_disable', False)
+
+
+def is_ignored_but_command_mode(view):
+    """
+    Return `True` if the view wants to be ignored.
+
+    Useful for external plugins that don't want NeoVintageous to be active for
+    specific views.
+
+    Differs from is_ignored() in that only keys should be disabled.
+    """
+    return view.settings().get('__vi_external_disable_keys', False)
+
+
+def is_widget(view):
+    settings = view.settings()
+
+    return (settings.get('is_widget') or settings.get('is_vintageous_widget'))
 
 
 def mark_as_widget(view):
@@ -28,51 +61,17 @@ def mark_as_widget(view):
     return view
 
 
-def is_view(view):
-    """
-    Return `True` if @view is a normal view as NeoVintageous understands them.
-
-    It returns `False` for views that have a `__vi_external_disable`
-    setting set to `True`.
-    """
-    return not any((is_widget(view), is_console(view),
-                    is_ignored(view), is_ignored_but_command_mode(view)))
-
-
-def is_ignored(view):
-    """
-    Return `True` if the view wants to be ignored by NeoVintageous.
-
-    Useful for external plugins that don't want NeoVintageous to be active for
-    specific views.
-    """
-    return view.settings().get('__vi_external_disable', False)
-
-
-def is_ignored_but_command_mode(view):
-    """
-    Return `True` if the view wants to be ignored by NeoVintageous.
-
-    Useful for external plugins that don't want NeoVintageous to be active for
-    specific views.
-
-    .is_ignored_but_command_mode() differs from .is_ignored() in that here
-    we declare that only keys should be disabled, not command mode.
-    """
-    return view.settings().get('__vi_external_disable_keys', False)
-
-
-def is_widget(view):
-    """Return `True` if the @view is any kind of widget."""
-    setts = view.settings()
-
-    return (setts.get('is_widget') or setts.get('is_vintageous_widget'))
-
-
 def is_console(view):
-    """Return `True` if @view seems to be ST3's console."""
-    # XXX: Is this reliable?
-    return (getattr(view, 'settings') is None)
+    return (getattr(view, 'settings') is None)  # XXX: Is this reliable?
+
+
+def is_view(view):
+    return not any((
+        is_widget(view),
+        is_console(view),
+        is_ignored(view),
+        is_ignored_but_command_mode(view)
+    ))
 
 
 # Use strings because we need to pass modes as arguments in
@@ -161,8 +160,8 @@ def regions_transformer(view, f):
     new = []
     for sel in sels:
         region = f(view, sel)
-        if not isinstance(region, sublime.Region):
-            raise TypeError('sublime.Region required')
+        if not isinstance(region, Region):
+            raise TypeError('Region required')
         new.append(region)
     view.sel().clear()
     view.sel().add_all(new)
@@ -199,6 +198,7 @@ def resolve_insertion_point_at_b(region):
     """
     if region.a < region.b:
         return (region.b - 1)
+
     return region.b
 
 
@@ -221,12 +221,27 @@ def resolve_insertion_point_at_a(region):
         return region.a - 1
 
 
+# TODO REVIEW this function looks unused; it was refactored from an obsolete module
+@contextmanager
+def restoring_sels(view):
+    old_sels = list(view.sel())
+    yield
+    view.sel().clear()
+    for s in old_sels:
+        # XXX: If the buffer has changed in the meantime, this won't work well.
+        view.sel().add(s)
+
+
+def show_ipanel(window, caption='', initial_text='', on_done=None, on_change=None, on_cancel=None):
+    return window.show_input_panel(caption, initial_text, on_done, on_change, on_cancel)
+
+
 def new_inclusive_region(a, b):
     """Create region that includes the char at @a or @b depending on new region's orientation."""
     if a <= b:
-        return sublime.Region(a, b + 1)
+        return Region(a, b + 1)
     else:
-        return sublime.Region(a + 1, b)
+        return Region(a + 1, b)
 
 
 def row_at(view, pt):
@@ -251,11 +266,11 @@ def gluing_undo_groups(view, state):
 
 
 def blink(times=4, delay=55):
-    prefs = sublime.load_settings('Preferences.sublime-settings')
+    prefs = load_settings('Preferences.sublime-settings')
     if prefs.get('vintageous_visualbell') is False:
         return
 
-    v = sublime.active_window().active_view()
+    v = active_window().active_view()
     settings = v.settings()
     # Ensure we leave the setting as we found it.
     times = times if (times % 2) == 0 else times + 1
@@ -265,12 +280,12 @@ def blink(times=4, delay=55):
         if times > 0:
             settings.set('highlight_line', not settings.get('highlight_line'))
             times -= 1
-            sublime.set_timeout(do_blink, delay)
+            set_timeout(do_blink, delay)
 
     do_blink()
 
 
-class IrreversibleTextCommand(sublime_plugin.TextCommand):
+class IrreversibleTextCommand(TextCommand):
     """Base class.
 
     The undo stack will ignore commands derived from this class. This is
@@ -280,7 +295,7 @@ class IrreversibleTextCommand(sublime_plugin.TextCommand):
     """
 
     def __init__(self, view):
-        sublime_plugin.TextCommand.__init__(self, view)
+        TextCommand.__init__(self, view)
 
     def run_(self, edit_token, args):
         # We discard the edit_token because we don't want an IrreversibleTextCommand
@@ -350,13 +365,16 @@ def last_row(view):
 def translate_char(char):
     # FIXME: What happens to keys like <home>, <up>, etc? We shouln't be
     #        able to use those in some contexts, like as arguments to f, t...
-    if char.lower() in ('<enter>', '<cr>'):
+
+    lchar = char.lower()
+
+    if lchar in ('<enter>', '<cr>'):
         return '\n'
-    elif char.lower() in ('<sp>', '<space>'):
+    elif lchar in ('<sp>', '<space>'):
         return ' '
-    elif char.lower() == '<lt>':
+    elif lchar == '<lt>':
         return '<'
-    elif char.lower() == '<tab>':
+    elif lchar == '<tab>':
         return '\t'
     else:
         return char
@@ -428,15 +446,15 @@ def resize_visual_region(r, b):
     """
     if b < r.a:
         if r.b > r.a:
-            return R(r.a + 1, b)
-        return R(r.a, b)
+            return Region(r.a + 1, b)
+        return Region(r.a, b)
 
     if b > r.a:
         if r.b < r.a:
-            return R(r.a - 1, b + 1)
-        return R(r.a, b + 1)
+            return Region(r.a - 1, b + 1)
+        return Region(r.a, b + 1)
 
-    return R(b, b + 1)
+    return Region(b, b + 1)
 
 
 @contextmanager

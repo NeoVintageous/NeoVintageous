@@ -1,9 +1,9 @@
 import os
+import re
 
-import sublime
 from sublime import Region
-from sublime_plugin import WindowCommand
 from sublime_plugin import TextCommand
+from sublime_plugin import WindowCommand
 
 from Default.history_list import get_jump_history
 
@@ -26,14 +26,15 @@ from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.keys import to_bare_command_name
 from NeoVintageous.lib.vi.mappings import Mappings
 from NeoVintageous.lib.vi.settings import iter_settings
-from NeoVintageous.lib.vi.sublime import show_ipanel
 from NeoVintageous.lib.vi.utils import gluing_undo_groups
 from NeoVintageous.lib.vi.utils import mark_as_widget
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
+from NeoVintageous.lib.vi.utils import show_ipanel
 
 
 __all__ = [
+    '_neovintageous_help_goto',
     '_vi_add_to_jump_list',
     '_vi_adjust_carets',
     '_vi_question_mark_on_parser_done',
@@ -41,16 +42,12 @@ __all__ = [
     'ClearCmdlineHistoryIndex',
     'CycleCmdlineHistory',
     'FsCompletion',
-    'NeovintageousExitFromCommandModeCommand',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
-    'NeovintageousResetCommand',
-    'NeovintageousToggleUseCtrlKeysCommand',
     'PressKey',
     'ProcessNotation',
     'Sequence',
     'TabControlCommand',
-    'ToggleMode',
     'ViColonInput',
     'ViColonRepeatLast',
     'ViSettingCompletion',
@@ -66,6 +63,35 @@ _EX_HISTORY = {
     'cmdline': [],
     'searches': []
 }
+
+
+# TODO Add status messages e.g. for no docs found, etc.
+class _neovintageous_help_goto(ViWindowCommandBase):
+    def run(self):
+        view = self.window.active_view()
+        pt = view.sel()[0]
+        scope = view.scope_name(pt.begin()).rstrip()
+
+        # TODO Fix jumptags scopes (rename them to less generic scopes)
+        jumptag_scopes = [
+            'text.neovintageous.help string.neovintageous',
+            'text.neovintageous.help support.constant.neovintageous'
+        ]
+
+        if scope not in jumptag_scopes:
+            return
+
+        subject = view.substr(view.extract_scope(pt.begin()))
+
+        if len(subject) < 3:
+            return
+
+        match = re.match('^\'[a-z_]+\'|\|[^\s\|]+\|$', subject)
+        if match:
+            subject = subject.strip('|')
+            # TODO Refactor ex_help code into a reusable middle layer so that
+            # this command doesn't have to call the ex command.
+            self.window.run_command('ex_help', {'command_line': 'help ' + subject})
 
 
 def _update_command_line_history(slot_name, item):
@@ -98,7 +124,7 @@ class PressKey(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
-        _logger.debug('[press_key] \'%s\', repeat_count=%s, do_eval=%s, check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
+        _logger.debug('\n\npress key \'%s\' repeat_count=%s, do_eval=%s, check_user_mappings=%s\n', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
         # If the user has made selections with the mouse, we may be in an
@@ -123,13 +149,13 @@ class PressKey(ViWindowCommandBase):
             state.partial_sequence = ''
             return
 
-        # if capturing input, we shall not pass this point
         if state.must_collect_input:
+            _logger.debug('@press_key collecting input...')
             state.process_user_input2(key)
             if state.runnable():
-                _logger.debug('[press_key] state holds a complete command')
+                _logger.debug('@press_key state holds a complete command')
                 if do_eval:
-                    _logger.debug('[press_key] evaluate complete command')
+                    _logger.debug('@press_key evaluate complete command')
                     state.eval()
                     state.reset_command_data()
             return
@@ -137,25 +163,19 @@ class PressKey(ViWindowCommandBase):
         if repeat_count:
             state.action_count = str(repeat_count)
 
-        if self.handle_counts(key, repeat_count):
+        if self._handle_count(state, key, repeat_count):
             return
 
         state.partial_sequence += key
 
-        _logger.debug('[press_key] sequence=\'%s\', partial=\'%s\'', state.sequence, state.partial_sequence)
-
         key_mappings = Mappings(state)
         if check_user_mappings and key_mappings.incomplete_user_mapping():
-            _logger.debug('[press_key] incomplete user mapping: \'%s\'', state.partial_sequence)
-            # e.g. we may have typed 'aa' and there's an 'aaa' mapping, so we need to keep collecting input.
             return
-
-        _logger.debug('[press_key] get cmd for seq/partial seq in (mode): %s/%s (%s)', state.sequence, state.partial_sequence, state.mode)  # noqa: E501
 
         command = key_mappings.resolve(check_user_mappings=check_user_mappings)
 
         if isinstance(command, cmd_defs.ViOpenRegister):
-            _logger.debug('[press_key] request register name')
+            _logger.debug('@press_key request register name')
             state.must_capture_register_name = True
             return
 
@@ -165,7 +185,6 @@ class PressKey(ViWindowCommandBase):
             if do_eval:
                 new_keys = command.mapping
                 if state.mode == modes.OPERATOR_PENDING:
-                    command_name = command.mapping  # FIXME # noqa: F841
                     new_keys = state.sequence[:-len(state.partial_sequence)] + command.mapping
                 reg = state.register
                 acount = state.action_count
@@ -174,19 +193,49 @@ class PressKey(ViWindowCommandBase):
                 state.register = reg
                 state.motion_count = mcount
                 state.action_count = acount
-                state.mode = modes.NORMAL
-                _logger.debug('[press_key] running user mapping \'%s\' via process_notation starting in mode \'%s\'', new_keys, state.mode)  # noqa: E501
+
+                # TODO REVIEW *Not* setting the mode seems to fix some issues with commands like :snoremap
+                # state.mode = modes.NORMAL
+
+                _logger.debug('@press_key running user mapping keys=%s, command=%s' % (new_keys, command))
+
+                # Support for basic Command-line mode mappings
+                # `:command<CR>` maps to ex command.
+                # `:UserCommand<CR>` maps to Sublime Text command (starts with uppercase).
+
+                if ':' in new_keys:
+                    match = re.match('^\\:(?P<cmd_line_command>[a-zA-Z0-9_]+)\\<CR\\>', new_keys)
+                    if match:
+                        cmd_line_command = match.group('cmd_line_command')
+                        if cmd_line_command[0].isupper():
+                            # run regular sublime text command
+                            def _coerce_to_snakecase(string):
+                                string = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', string)
+                                string = re.sub(r"([a-z\d])([A-Z])", r'\1_\2', string)
+                                string = string.replace("-", "_")
+
+                                return string.lower()
+
+                            return self.window.run_command(_coerce_to_snakecase(cmd_line_command))
+                        else:
+                            return self.window.run_command('vi_colon_input', {'cmd_line': ':' + cmd_line_command})
+
+                    if ':' == new_keys:
+                        return self.window.run_command('vi_colon_input')
+
+                    return nvim.console_message('invalid command line mapping %s -> %s (only `:name<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
+
                 self.window.run_command('process_notation', {'keys': new_keys, 'check_user_mappings': False})
+
             return
 
         if isinstance(command, cmd_defs.ViOpenNameSpace):
             # Keep collecting input to complete the sequence. For example, we may have typed 'g'
-            _logger.debug('[press_key] opening namespace \'%s\'', state.partial_sequence)
+            _logger.debug('@press_key opening namespace \'%s\'', state.partial_sequence)
             return
 
         elif isinstance(command, cmd_base.ViMissingCommandDef):
             bare_seq = to_bare_command_name(state.sequence)
-
             if state.mode == modes.OPERATOR_PENDING:
                 # We might be looking at a command like 'dd'. The first 'd' is
                 # mapped for normal mode, but the second is missing in
@@ -202,7 +251,7 @@ class PressKey(ViWindowCommandBase):
                 command = key_mappings.resolve(sequence=bare_seq)
 
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.debug('[press_key] unmapped sequence \'%s\'', state.sequence)
+                _logger.debug('@press_key unmapped sequence \'%s\'', state.sequence)
                 utils.blink()
                 state.mode = modes.NORMAL
                 state.reset_command_data()
@@ -214,11 +263,11 @@ class PressKey(ViWindowCommandBase):
             # For example, dd, g~g~ or g~~
             # remove counts
             action_seq = to_bare_command_name(state.sequence)
-            _logger.debug('[press_key] action seq \'%s\'', action_seq)
+            _logger.debug('@press_key action seq \'%s\'', action_seq)
             command = key_mappings.resolve(sequence=action_seq, mode=modes.NORMAL)
             # TODO: Make _missing a command.
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.debug('[press_key] unmapped sequence \'%s\'', state.sequence)
+                _logger.debug('@press_key unmapped sequence \'%s\'', state.sequence)
                 state.reset_command_data()
                 return
 
@@ -227,7 +276,7 @@ class PressKey(ViWindowCommandBase):
 
         state.set_command(command)
 
-        _logger.debug('[press_key] \'%s\' mapped to \'%s\'', state.partial_sequence, command)
+        _logger.debug('@press_key \'%s\' mapped to \'%s\'', state.partial_sequence, command)
 
         if state.mode == modes.OPERATOR_PENDING:
             state.reset_partial_sequence()
@@ -235,18 +284,17 @@ class PressKey(ViWindowCommandBase):
         if do_eval:
             state.eval()
 
-    def handle_counts(self, key, repeat_count):
-        """Return `True` if the processing of the current key needs to stop."""
-        state = State(self.window.active_view())
+    def _handle_count(self, state, key, repeat_count):
+        """Return True if the processing of the current key needs to stop."""
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
-                _logger.debug('[press_key] action count digit \'%s\'', key)
+                _logger.debug('@press_key action count digit \'%s\'', key)
                 state.action_count += key
                 return True
 
         if (state.action and (state.mode == modes.OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or state.motion_count):
-                _logger.debug('[press_key] motion count digit \'%s\'', key)
+                _logger.debug('@press_key motion count digit \'%s\'', key)
                 state.motion_count += key
                 return True
 
@@ -270,7 +318,7 @@ class ProcessNotation(ViWindowCommandBase):
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         state = self.state
-        _logger.debug('[process_notation] run keys \'%s\', mode \'%s\'', keys, state.mode)
+        _logger.debug('process notation keys \'%s\', mode \'%s\'', keys, state.mode)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -641,24 +689,10 @@ class ViSettingCompletion(TextCommand):
                 return
 
 
+# TODO Refactor jumplist and history into descrete module
 class _vi_add_to_jump_list(WindowCommand):
     def run(self):
         get_jump_history(self.window.id()).push_selection(self.window.active_view())
-
-
-# DEPRECATED
-class NeovintageousToggleUseCtrlKeysCommand(WindowCommand):
-
-    def run(self):
-        settings = sublime.load_settings('Preferences.sublime-settings')
-        use_ctrl_keys = not settings.get('vintageous_use_ctrl_keys')
-
-        settings.set('vintageous_use_ctrl_keys', use_ctrl_keys)
-        sublime.save_settings('Preferences.sublime-settings')
-
-        status = 'enabled' if use_ctrl_keys else 'disabled'
-
-        nvim.status_message('ctrl keys have been {}'.format(status))
 
 
 class NeovintageousOpenMyRcFileCommand(WindowCommand):
@@ -675,51 +709,6 @@ class NeovintageousReloadMyRcFileCommand(WindowCommand):
         rcfile.reload()
 
         nvim.status_message('rc file reloaded')
-
-
-# DEPRECATED
-class NeovintageousResetCommand(WindowCommand):
-
-    def run(self):
-        view = self.window.active_view()
-        view.settings().erase('vintage')
-        init_state(view)
-        rcfile.reload()
-
-        nvim.status_message('reset complete')
-
-
-# DEPRECATED
-class NeovintageousExitFromCommandModeCommand(WindowCommand):
-    """A sort of a panic button."""
-
-    def run(self):
-        v = self.window.active_view()
-        v.settings().erase('vintage')
-
-        # XXX: What happens exactly when the user presses Esc again now? Which
-        #      mode are we in?
-
-        v.settings().set('command_mode', False)
-        v.settings().set('inverse_caret_state', False)
-
-        nvim.status_message('exited from command mode')
-
-
-# DEPRECATED: Remove this command once we don't need it any longer.
-class ToggleMode(ViWindowCommandBase):
-
-    def run(self):
-        value = self.window.active_view().settings().get('command_mode')
-        self.window.active_view().settings().set('command_mode', not value)
-        self.window.active_view().settings().set('inverse_caret_state', not value)
-        nvim.console_message('command_mode status: %s' % (not value))
-
-        state = self.state
-        if not self.window.active_view().settings().get('command_mode'):
-            state.mode = modes.INSERT
-
-        nvim.status_message('command mode status: %s' % (not value))
 
 
 class _vi_slash_on_parser_done(WindowCommand):

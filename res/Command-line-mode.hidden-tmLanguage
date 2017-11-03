@@ -2,7 +2,9 @@
 <plist version="1.0">
 <dict>
     <key>name</key>
-    <string>NeoVintageous Command-line mode</string>
+    <string>Command-line mode (NeoVintageous)</string>
+    <key>scopeName</key>
+    <string>text.excmdline</string>
     <key>patterns</key>
     <array>
         <dict>
@@ -33,7 +35,5 @@
             <string>^(:)(?:(\d+)|(cd(?:d)?|w(?:rite|q|all)?|e(?:dit|new|xit)?|pw(?:d)?|buffers|files|ls|reg(?:isters)?|map|ab(?:breviate)?|q(:?uit|all)?|r(?:ead)?|as(?:cii)?|f(?:ile)?|move|co(?:py)?|t(?:abfirst|abprev|abedit|abe|abnext|abn|ablast|abl|abonly|abo)?|setl(:?ocal)?|se(?:t)?|s(?:ubstitute|hell|h)?|&amp;&amp;|d(?:elete)?|g(?:lobal)?|p(?:rint)?|P(?:rint)?|bro(?:owse)?|cq(?:uit)?|x(?:it)?|on(?:ly)?|new|y(?:ank)?|(?:un)?vs(?:plit)?)(!)?)?</string>
         </dict>
     </array>
-    <key>scopeName</key>
-    <string>text.excmdline</string>
 </dict>
 </plist>

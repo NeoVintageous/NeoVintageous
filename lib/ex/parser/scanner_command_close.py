@@ -8,7 +8,6 @@ from NeoVintageous.lib import ex
 @ex.command('close', 'clo')
 class TokenClose(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        # print('args=', args, 'kwargs=', kwargs)
         super().__init__({}, TOKEN_COMMAND_CLOSE, 'close', *args, **kwargs)
         self.target_command = 'ex_close'
 

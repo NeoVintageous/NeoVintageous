@@ -6,10 +6,10 @@ import sublime
 # errors. In these cases we want to notify the user about needing to restart
 # Sublime Text to finish the upgrade.
 #
-# In the case any errors we also don't want to leave the normal functioning of
-# the editor unusable. We can't access the sublime api until the plugin_loaded()
-# hook is called, so we need to catch exceptions and run cleanup operations when
-# the plugin_loaded() hook.
+# In the case of any errors we also don't want to leave the normal functioning
+# of the editor unusable. We can't access the sublime api until the
+# plugin_loaded() hook is called, so we need to catch any exceptions and run
+# cleanup operations when the plugin_loaded() hook is called.
 
 try:
     _EXCEPTION = None
@@ -57,9 +57,12 @@ def _cleanup_views():
             settings = view.settings()
             settings.set('command_mode', False)
             settings.set('inverse_caret_state', False)
+            # TODO should the "vintage" setting be erased too? i.e. v.settings().erase('vintage')
 
 
 def plugin_loaded():
+
+    # Handles errors gracefully.
 
     try:
         pc_event = None

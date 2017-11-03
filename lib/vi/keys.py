@@ -1,7 +1,7 @@
 import re
 
 from NeoVintageous.lib import nvim
-from NeoVintageous.lib.api import plugin
+from NeoVintageous.lib import plugin
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import variables
 from NeoVintageous.lib.vi.utils import modes
@@ -218,10 +218,11 @@ class seqs:
     GUGU = 'gugu'
     GUU = 'guu'
     GV = 'gv'
+    GX = 'gx'
     H = 'h'
     HAT = '^'
     HOME = '<home>'
-    I = 'i'
+    I = 'i'  # noqa: E741
     J = 'j'
     K = 'k'
     L = 'l'
@@ -235,7 +236,7 @@ class seqs:
     M = 'm'
     MINUS = '-'
     N = 'n'
-    O = 'o'
+    O = 'o'  # noqa: E741
     OCTOTHORP = '#'
     P = 'p'
     PAGE_DOWN = 'pagedown'

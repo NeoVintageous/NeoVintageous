@@ -70,12 +70,14 @@ PAIRS = {
 
 def is_at_punctuation(view, pt):
     next_char = view.substr(pt)
-    # FIXME: Wrong if pt is at '\t'.
+
+    # FIXME Wrong if pt is at '\t'
     return (not (is_at_word(view, pt) or next_char.isspace() or next_char == '\n') and next_char.isprintable())
 
 
 def is_at_word(view, pt):
     next_char = view.substr(pt)
+
     return (next_char.isalnum() or next_char == '_')
 
 
@@ -91,14 +93,13 @@ def get_punctuation_region(view, pt):
 
 
 def get_space_region(view, pt):
-    end = view.find_by_class(pt, forward=True,
-                             classes=ANCHOR_NEXT_WORD_BOUNDARY)
+    end = view.find_by_class(pt, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
+
     return sublime.Region(previous_word_end(view, pt + 1), end)
 
 
 def previous_word_end(view, pt):
-    return view.find_by_class(pt, forward=False,
-                              classes=ANCHOR_PREVIOUS_WORD_BOUNDARY)
+    return view.find_by_class(pt, forward=False, classes=ANCHOR_PREVIOUS_WORD_BOUNDARY)
 
 
 def next_word_start(view, pt):
@@ -106,9 +107,10 @@ def next_word_start(view, pt):
         # Skip all punctuation surrounding the caret and any trailing spaces.
         end = get_punctuation_region(view, pt).b
         if view.substr(end) in (' ', '\n'):
-            end = view.find_by_class(end, forward=True,
-                                     classes=ANCHOR_NEXT_WORD_BOUNDARY)
+            end = view.find_by_class(end, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
+
             return end
+
     elif is_at_space(view, pt):
         # Skip all spaces surrounding the cursor and the text word.
         end = get_space_region(view, pt).b
@@ -118,30 +120,34 @@ def next_word_start(view, pt):
                 forward=True,
                 classes=CLASS_WORD_END | CLASS_PUNCTUATION_END | CLASS_LINE_END
             )
+
             return end
 
     # Skip the word under the caret and any trailing spaces.
-    return view.find_by_class(pt, forward=True,
-                              classes=ANCHOR_NEXT_WORD_BOUNDARY)
+    return view.find_by_class(pt, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
 
 
 def current_word_start(view, pt):
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).a
+
     elif is_at_space(view, pt):
         return get_space_region(view, pt).a
+
     return view.word(pt).a
 
 
 def current_word_end(view, pt):
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).b
+
     elif is_at_space(view, pt):
         return get_space_region(view, pt).b
+
     return view.word(pt).b
 
 
-# https://neovim.io/doc/user/motion.html#word
+# https://vimhelp.appspot.com/motion.txt.html#word
 # Used for motions in operations like daw and caw
 def a_word(view, pt, inclusive=True, count=1):
     assert count > 0
@@ -206,7 +212,7 @@ def big_word_start(view, pt):
     return pt + 1
 
 
-# https://neovim.io/doc/user/motion.html#WORD
+# https://vimhelp.appspot.com/motion.txt.html#WORD
 # Used for motions in operations like daW and caW
 def a_big_word(view, pt, inclusive=False, count=1):
     start, end = None, pt
@@ -460,6 +466,7 @@ def find_paragraph_text_object(view, s, inclusive=True, count=1):
         b2, end = find_inner_paragraph(view, e1) if inclusive else (b1, e1)
         if begin is None:
             begin = b1
+
     return sublime.Region(begin, end)
 
 
@@ -489,6 +496,7 @@ def find_inner_paragraph(view, initial_loc):
             p = 0
             break
         p = line.begin() - 1
+
     begin = p + 1 if p > 0 else p
 
     # To get the value for end, we do the same thing, this time searching forward.
@@ -559,6 +567,7 @@ def find_indent_text_object(view, s, inclusive=True):
         def should_break_on_line(line_content):
             if break_on_empty_lines and not line_content.strip():
                 return True
+
             return "pattern_match" if pattern.match(line_content) else False
     else:
         def should_break_on_line(line_content):
@@ -650,7 +659,9 @@ def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
     region = view.find(pattern, start, sublime.IGNORECASE)
     if region.a == -1:
         return None, None, None
+
     match = re.search(pattern, view.substr(region))
+
     return (region, match.group(1), match.group(0).startswith('</'))
 
 
@@ -660,7 +671,9 @@ def previous_begin_tag(view, pattern, start=0, end=0):
                                   sublime.IGNORECASE)
     if not region:
         return None, None, None
+
     match = re.search(RX_ANY_TAG, view.substr(region))
+
     return (region, match.group(1), match.group(0)[1] != '/')
 
 
@@ -690,6 +703,7 @@ def find_containing_tag(view, start):
     # BUG: fails if start < first begin tag
     # TODO: Should not select tags in PCDATA sections.
     _, closest_tag = get_closest_tag(view, start)
+
     if not closest_tag:
         return None, None, None
 
@@ -700,6 +714,7 @@ def find_containing_tag(view, start):
         'pattern': RX_ANY_TAG,
         'start': start,
     }
+
     end_region, tag_name = next_unbalanced_tag(view,
                                                search=next_end_tag,
                                                search_args=search_forward_args,
@@ -713,6 +728,7 @@ def find_containing_tag(view, start):
         'start': 0,
         'end': end_region.a
     }
+
     begin_region, _ = next_unbalanced_tag(view,
                                           search=previous_begin_tag,
                                           search_args=search_backward_args,
@@ -734,11 +750,8 @@ def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags
     if not is_end_tag:
         tags.append(tag)
         search_args.update(restart_at(region))
-        return next_unbalanced_tag(view,
-                                   search,
-                                   search_args,
-                                   restart_at,
-                                   tags)
+
+        return next_unbalanced_tag(view, search, search_args, restart_at, tags)
 
     if not tags or (tag not in tags):
         return region, tag
@@ -747,8 +760,5 @@ def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags
         continue
 
     search_args.update(restart_at(region))
-    return next_unbalanced_tag(view,
-                               search,
-                               search_args,
-                               restart_at,
-                               tags)
+
+    return next_unbalanced_tag(view, search, search_args, restart_at, tags)
