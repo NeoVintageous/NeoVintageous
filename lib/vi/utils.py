@@ -232,10 +232,6 @@ def restoring_sels(view):
         view.sel().add(s)
 
 
-def show_ipanel(window, caption='', initial_text='', on_done=None, on_change=None, on_cancel=None):
-    return window.show_input_panel(caption, initial_text, on_done, on_change, on_cancel)
-
-
 def new_inclusive_region(a, b):
     """Create region that includes the char at @a or @b depending on new region's orientation."""
     if a <= b:

@@ -30,7 +30,6 @@ from NeoVintageous.lib.vi.utils import gluing_undo_groups
 from NeoVintageous.lib.vi.utils import mark_as_widget
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
-from NeoVintageous.lib.vi.utils import show_ipanel
 
 
 __all__ = [
@@ -477,11 +476,12 @@ class ViColonInput(WindowCommand):
         FsCompletion.invalidate()
 
         v = mark_as_widget(
-            show_ipanel(
-                self.window,
+            self.window.show_input_panel(
+                caption='',
                 initial_text=self.adjust_initial_text(initial_text),
                 on_done=self.on_done,
-                on_change=self.on_change
+                on_change=self.on_change,
+                on_cancel=None
             )
         )
 
