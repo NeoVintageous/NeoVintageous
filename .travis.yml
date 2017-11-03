@@ -7,9 +7,14 @@ env:
         - SUBLIME_TEXT_VERSION="3"
 
 matrix:
+    allow_failures:
+        - python: "3.6"
+    fast_finish: true
     include:
         - os: linux
           python: 3.3
+        - os: linux
+          python: 3.6
         - os: osx
           language: generic
 
