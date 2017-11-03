@@ -84,7 +84,7 @@ def _to_json_type(v):
 
     try:
         return eval(v, {}, {})
-    except:
+    except Exception:
         raise ValueError("Could not convert to JSON type.")
 
 

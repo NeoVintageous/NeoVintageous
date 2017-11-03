@@ -2340,7 +2340,7 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
                 else:
                     self.view.run_command('insert_snippet', {'contents': str(rv[0])})
                     state.reset()
-            except:
+            except Exception:
                 nvim.status_message('invalid expression')
                 on_cancel()
 

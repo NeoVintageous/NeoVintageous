@@ -472,7 +472,7 @@ class State(object):
             # Make sure we show the first caret on the screen, but don't show
             # its surroundings.
             view.show(view.sel()[0], False)
-        except:
+        except Exception:
             pass
 
     def reset(self):
