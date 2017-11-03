@@ -1,3 +1,4 @@
+# DEPRECATED These tests can be removed when the functional tests are merged.
 from NeoVintageous.tests import unittest
 
 
@@ -76,9 +77,11 @@ class Test_cs(unittest.ViewTestCase):
             self.state.mode = unittest.INTERNAL_NORMAL_MODE
 
             replace_what, expected = data
-            self.view.run_command('_neovintageous_surround_cs', {
+            self.view.run_command('_neovintageous_surround', {
+                'action': 'cs',
                 'mode': unittest.INTERNAL_NORMAL_MODE,
-                'replace_what': replace_what
+                'target': replace_what[0],
+                'replacement': replace_what[1]
             })
 
             self.assertContent(expected, 'failed at {0}'.format(i))
@@ -114,7 +117,8 @@ class Test_ds(unittest.ViewTestCase):
             self.select(7)
             self.state.mode = unittest.INTERNAL_NORMAL_MODE
 
-            self.view.run_command('_neovintageous_surround_ds', {
+            self.view.run_command('_neovintageous_surround', {
+                'action': 'ds',
                 'mode': unittest.INTERNAL_NORMAL_MODE,
                 'target': target
             })
