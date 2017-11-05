@@ -45,7 +45,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         # number with whitespace like this:
         # $ echo hi ho | wc -w
         #        2
-        self.assertContentMatches(r"\s*2\nbbb\nccc")
+        self.assertContentRegex(r"\s*2\nbbb\nccc")
 
     @skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_command_is_escaped_correctly(self):
@@ -77,28 +77,28 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
             'command_line': '.! wc -w'
         })
 
-        self.assertContentMatches(r"aaa\n\s*3\nccc")
+        self.assertContentRegex(r"aaa\n\s*3\nccc")
 
     @skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_filter_command_with_multiple_options_through_shell(self):
         self.write("a\none two\nb")
         self.select(2)
         self.view.run_command('ex_shell_out', {'command_line': '.! wc -m'})
-        self.assertContentMatches(r'a\n\s*8\nb')
+        self.assertContentRegex(r'a\n\s*8\nb')
 
         self.write("a\none two\nb")
         self.select(2)
         self.view.run_command('ex_shell_out', {'command_line': '.! wc -w -m'})
-        self.assertContentMatches(r'a\n\s*2\s+8\nb')
+        self.assertContentRegex(r'a\n\s*2\s+8\nb')
 
         self.write("a\none two\nb")
         self.select(2)
         self.view.run_command('ex_shell_out', {'command_line': '.! wc -l -w -m'})
-        self.assertContentMatches(r'a\n\s*1\s*2\s+8\nb')
+        self.assertContentRegex(r'a\n\s*1\s*2\s+8\nb')
 
     @skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_filter_piped_command_through_shell(self):
         self.write("a\none two\nb")
         self.select(2)
         self.view.run_command('ex_shell_out', {'command_line': '.! echo "one two" | wc -w -m'})
-        self.assertContentMatches(r'\s*2\s*8')
+        self.assertContentRegex(r'\s*2\s*8')

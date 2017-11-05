@@ -102,8 +102,8 @@ class ViewTestCase(TestCase):
     def assertContent(self, expected, msg=None):
         self.assertEqual(self.content(), expected, msg)
 
-    def assertContentMatches(self, regex, msg=None):
-        self.assertRegex(self.content(), regex, msg)
+    def assertContentRegex(self, expected, msg=None):
+        self.assertRegex(self.content(), expected, msg)
 
     def assertSize(self, expected):
         self.assertEqual(expected, self.view.size())
