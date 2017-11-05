@@ -4104,10 +4104,6 @@ N	pattern.txt	/*N*
 N%	motion.txt	/*N%*
 N:	cmdline.txt	/*N:*
 N<Del>	various.txt	/*N<Del>*
-NEOVINTAGEOUS-ABOLISH	neovintageous.txt	/*NEOVINTAGEOUS-ABOLISH*
-NEOVINTAGEOUS-COMMENTARY	neovintageous.txt	/*NEOVINTAGEOUS-COMMENTARY*
-NEOVINTAGEOUS-SURROUND	neovintageous.txt	/*NEOVINTAGEOUS-SURROUND*
-NEOVINTAGEOUS-UNIMPAIRED	neovintageous.txt	/*NEOVINTAGEOUS-UNIMPAIRED*
 NFA	pattern.txt	/*NFA*
 NL-used-for-Nul	pattern.txt	/*NL-used-for-Nul*
 NetUserPass()	pi_netrw.txt	/*NetUserPass()*
@@ -6648,9 +6644,11 @@ nasm.vim	syntax.txt	/*nasm.vim*
 navigation	motion.txt	/*navigation*
 ncf.vim	syntax.txt	/*ncf.vim*
 neovintageous	neovintageous.txt	/*neovintageous*
+neovintageous-abolish	neovintageous.txt	/*neovintageous-abolish*
 neovintageous-autocomplete-navigation	neovintageous.txt	/*neovintageous-autocomplete-navigation*
 neovintageous-capslock	neovintageous.txt	/*neovintageous-capslock*
 neovintageous-command-palette	neovintageous.txt	/*neovintageous-command-palette*
+neovintageous-commentary	neovintageous.txt	/*neovintageous-commentary*
 neovintageous-disable-arrow-keys	neovintageous.txt	/*neovintageous-disable-arrow-keys*
 neovintageous-escape	neovintageous.txt	/*neovintageous-escape*
 neovintageous-intro	neovintageous.txt	/*neovintageous-intro*
@@ -6667,7 +6665,9 @@ neovintageous-search-highlighting	neovintageous.txt	/*neovintageous-search-highl
 neovintageous-set-option	neovintageous.txt	/*neovintageous-set-option*
 neovintageous-sidebar-navigation	neovintageous.txt	/*neovintageous-sidebar-navigation*
 neovintageous-splits	neovintageous.txt	/*neovintageous-splits*
+neovintageous-surround	neovintageous.txt	/*neovintageous-surround*
 neovintageous-toggle	neovintageous.txt	/*neovintageous-toggle*
+neovintageous-unimpaired	neovintageous.txt	/*neovintageous-unimpaired*
 neovintageous.txt	neovintageous.txt	/*neovintageous.txt*
 netreadfixup	pi_netrw.txt	/*netreadfixup*
 netrw	pi_netrw.txt	/*netrw*

@@ -194,6 +194,8 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 # ^^^^^^ markup.raw.inline
 . CTRL-{char}
 # ^^^^^^^^^^^ markup.raw.inline
+. CTRL-W_s
+# ^^^^^^^^ markup.raw.inline
 . CTRL-Break
 # ^^^^^^^^^^ markup.raw.inline
 . CTRL-Del

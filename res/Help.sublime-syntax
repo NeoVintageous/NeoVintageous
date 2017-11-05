@@ -27,6 +27,9 @@ contexts:
     - match: CTRL-SHIFT-[a-zA-Z]+
       scope: markup.raw.inline.neovintageous
 
+    - match: CTRL-[A-Z]_[a-z]
+      scope: markup.raw.inline.neovintageous
+
     - match: CTRL-[a-zA-Z]+
       scope: markup.raw.inline.neovintageous
 

@@ -56,29 +56,41 @@ CTRL-K                  Move up in overlay or previous Auto-complete.
 
 JUMPING TO DIFFS                                    *neovintageous-jumpto-diffs*
 
-|[c|                    Jump backwards to the previous start of a change.
-                        Requires:
-                            https://github.com/jisaacks/GitGutter
+[c                      Jump backwards to the previous start of a change.
+
+                        Requires: https://github.com/jisaacks/GitGutter
+
                         To disable GitGutter wrapping: >
                             git_gutter_next_prev_change_wrap: false
+                        <
 
-|]c|                    Jump forwards to the next start of a change.
-                        Requires:
-                            https://github.com/jisaacks/GitGutter
+                        Also see |[c|.
+
+]c                      Jump forwards to the next start of a change.
+
+                        Requires: https://github.com/jisaacks/GitGutter
+
                         To disable wrapping: >
                             git_gutter_next_prev_change_wrap: false
+                        <
+
+                        Also see |]c|.
 
 ==============================================================================
 
 OPENING A SPLIT WINDOW                                    *neovintageous-splits*
 
-|CTRL-W_s|              Split current window in two.
-                        Requires:
-                            https://github.com/SublimeText/Origami
+CTRL-W_s                Split current window in two.
 
-|CTRL-W_v|              Split current window in two (vertically).
-                        Requires:
-                            https://github.com/SublimeText/Origami
+                        Requires: https://github.com/SublimeText/Origami
+
+                        Also see |CTRL-W_s|.
+
+CTRL-W_v                Split current window in two (vertically).
+
+                        Requires: https://github.com/SublimeText/Origami
+
+                        Also see |CTRL-W_v|.
 
 ==============================================================================
 
@@ -280,52 +292,45 @@ implemented.
 
 ------------------------------------------------------------------------------
 
-ABOLISH                                                  *NEOVINTAGEOUS-ABOLISH*
+ABOLISH                                                  *neovintageous-abolish*
 
 Currently only the coercion commands are support. See |abolish-coercion|.
 
 ------------------------------------------------------------------------------
 
-COMMENTARY                                            *NEOVINTAGEOUS-COMMENTARY*
+COMMENTARY                                            *neovintageous-commentary*
 
 Comment stuff out. Then uncomment it later. See |commentary|.
 
 ------------------------------------------------------------------------------
 
-SURROUND                                                *NEOVINTAGEOUS-SURROUND*
+SURROUND                                                *neovintageous-surround*
 
 A plugin for deleting, changing, and adding "surroundings". See |surround|.
 
 ------------------------------------------------------------------------------
 
-UNIMPAIRED                                            *NEOVINTAGEOUS-UNIMPAIRED*
+UNIMPAIRED                                            *neovintageous-unimpaired*
 
-This plugin provides several pairs of bracket maps.
+This plugin provides several pairs of bracket maps. See |unimpaired|.
 
 Next and previous
 
-                                                        |[l|
 [l                      Jump to the [count] previous error.
-                        Requires:
-                            https://github.com/SublimeLinter/SublimeLinter3
 
-                        See |[l|.
+                        Requires: https://github.com/SublimeLinter/SublimeLinter3
 
-                                                        |]l|
+                        Also see |[l|.
+
 ]l                      Jump to the [count] next error.
-                        Requires:
-                            https://github.com/SublimeLinter/SublimeLinter3
 
-                        See |]l|.
+                        Requires: https://github.com/SublimeLinter/SublimeLinter3
 
-Line operations
+                        Also see |]l|.
 
-All |unimpaired-lines| operations are supported.
+|unimpaired-lines| are supported i.e |[<Space>|, |]<Space>|, |[e| and |]e|.
 
 Option toggling
-
-Some toggles that make sense in Sublime Text are supported, plus some extra ones
-specific to neovintageous.
 
 On      Off     Toggle  Option
 |[oc|   |]oc|   |=oc|   'cursorline'
@@ -335,8 +340,6 @@ On      Off     Toggle  Option
 *[ot*   *]ot*   *cot*   'sidebar' {Neovintageous specific}
 |[os|   |]os|   |=os|   'spell'
 |[ow|   |]ow|   |=ow|   'wrap'
-
-See |unimpaired|.
 
 ==============================================================================
 
@@ -412,35 +415,42 @@ Preferences > Key Bindings: >
 
 5. Options summary                                *neovintageous-option-summary*
 
+
                                                        *'vintageous_autoindent'*
 'vintageous_autoindent'                 boolean (default: true)
                                         See 'autoindent'.
         Enable auto indentation.
+
 
                                               *'vintageous_enable_cmdline_mode'*
 'vintageous_enable_cmdline_mode'        boolean (default: true)
                                         {Neovintageous specific}
         Enable : and ex commands.
 
+
                                                   *'vintageous_enable_surround'*
 'vintageous_enable_surround'            boolean (default: true)
                                         {Neovintageous specific}
         Enable the |surround| plugin.
+
 
                                                          *'vintageous_hlsearch'*
 'vintageous_hlsearch'                   boolean (default: true)
                                         See 'hlsearch'.
         Highlight searches in '/', '?', etc.
 
+
                                                        *'vintageous_ignorecase'*
 'vintageous_ignorecase'                 boolean (default: true)
                                         See 'ignorecase'.
         Ignore case in '/', '?', '*', and '#'.
 
+
                                                         *'vintageous_incsearch'*
 'vintageous_incsearch'                  boolean (default: true)
                                         See 'incsearch'.
         Apply search patterns incrementally as they are typed.
+
 
                                                             *'vintageous_magic'*
 'vintageous_magic'                      boolean (default: false)
@@ -448,30 +458,36 @@ Preferences > Key Bindings: >
         Use regular expressions in '/' and '?' otherwise uses smart case,
         interpret pattern literally, and ignore case.
 
+
                                                          *'vintageous_modeline'*
 'vintageous_modeline'                   boolean (default: false)
                                         See 'modeline'.
         Enable |modeline|.
+
 
                                    *'vintageous_reset_mode_when_switching_tabs'*
 'vintageous_reset_mode_when_switching_tabs'     boolean (default: true)
                                                 {Neovintageous specific}
         Reset to normal mode when a tab is activated.
 
+
                                                     *'vintageous_use_ctrl_keys'*
 'vintageous_use_ctrl_keys'              boolean (default: false)
                                         {Neovintageous specific}
         Enable key bindings prefaced by the CTRL modifier.
+
 
                                                 *'vintageous_use_sys_clipboard'*
 'vintageous_use_sys_clipboard'          boolean (default: false)
                                         {Neovintageous specific}
         Propagate copy actions to the system clipboard.
 
+
                                                        *'vintageous_visualbell'*
 'vintageous_visualbell'                 boolean (default: true)
                                         {Neovintageous specific}
         Enable visual bell.
+
 
                                                        *'vintageous_visualyank'*
 'vintageous_visualyank'                 boolean (default: true)
