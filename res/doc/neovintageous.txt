@@ -137,21 +137,25 @@ Also see |vimrc-intro|.
 
 The following |:map-special-keys| are supported:
 
-|<leader>| |mapleader|
+                                |<Leader>| |mapleader|
 
 The following |:map-commands| are supported:
 
-|:map|
-|:nmap|
-|:omap|
-|:vmap|
-|:noremap|
-|:nnoremap|
-|:onoremap|
-|:vnoremap|
+{lhs}   means left-hand-side
+{rhs}   means right-hand-side
 
-        *Note that currently the remap commands are aliased to the map commands,
-        this is a known issue and hopefully will be fixed in the future.
+:map        {lhs} {rhs}         |:map|
+:nmap       {lhs} {rhs}         |:nmap|
+:omap       {lhs} {rhs}         |:omap|
+:vmap       {lhs} {rhs}         |:vmap|
+
+:noremap    {lhs} {rhs}         |:noremap|
+:nnoremap   {lhs} {rhs}         |:nnoremap|
+:onoremap   {lhs} {rhs}         |:onoremap|
+:vnoremap   {lhs} {rhs}         |:vnoremap|
+
+Note: the remap commands are currently aliased to the map commands, this is a
+known issue and hopefully will be fixed in the future.
 
 Mapping to Command-line mode commands is supported for basic use-cases: >
     :command<CR>
@@ -188,25 +192,30 @@ Here is an example |vintageousrc| file: >
     nnoremap <C-k> <C-w>k
 
     " Stop the highlighting
-    " The :nohlsearch ex command is currently not
-    " supported. Pressing Esc is workaround.
+    " The :nohlsearch command is currently not
+    " supported. Pressing Esc is a workaround.
     nnoremap <C-l> <Esc>
 
     " Select entire buffer
-    nnoremap <leader>vaa ggvGg_
-    nnoremap <leader>Vaa ggVG
+    nnoremap <leader>va ggvGg_
+    nnoremap <leader>Va ggVG
 
-    " Sorting
-    nnoremap <leader>s vip<F9>o^<Esc>^8<C-y>
-
-    " Open
+    " Open - <leader>o{char}
     nnoremap <leader>oc :OpenCommandPalette<CR>
-    nnoremap <leader>op :OpenPreferences<CR>
+    nnoremap <leader>og :ShowGoto<CR>
     nnoremap <leader>on :NeovintageousOpenMyRcFile<CR>
+    nnoremap <leader>op :OpenPreferences<CR>
+    nnoremap <leader>os :GotoSymbolInProject<CR>
+
+    " The :sort command is currently not
+    " supported. This mapping is a workaround.
+    nnoremap <leader>ss vip<F9>o^<Esc>^8<C-y>
 
     " Test plugin
     " https://github.com/gerardroche/sublime-test
     " https://github.com/gerardroche/sublime-phpunit
+    " https://github.com/gerardroche/sublime-color-scheme-unit
+    " https://github.com/randy3k/UnitTesting
     nnoremap <leader>t :TestNearest<CR>
     nnoremap <leader>T :TestFile<CR>
     nnoremap <leader>a :TestSuite<CR>
@@ -226,6 +235,12 @@ Two custom commands are used in the above mappings: >
                 'overlay': 'command_palette'
             })
 
+    class ShowGotoCommand(sublime_plugin.WindowCommand):
+        def run(self):
+            self.window.run_command('show_overlay', {
+                'overlay': 'goto',
+                'text': '@'
+            })
 
     class OpenPreferencesCommand(sublime_plugin.WindowCommand):
         def run(self):
@@ -267,6 +282,8 @@ to normal mode, etc. If you press Esc while in select mode, you will return to
 normal mode, but multiple carets won't be destroyed. If you press Esc a second
 time, you will be left with one single caret in normal mode.
 
+==============================================================================
+
 MODELINE                                                *neovintageous-modeline*
 
 A feature comparative to Vim |modeline|: a number of lines at the beginning and
@@ -285,7 +302,7 @@ PLUGINS OUT-OF-THE-BOX                                   *neovintageous-plugins*
 Summary of the plugins are provided out-of-the-box.
 
 Some plugin features may only be partially supported and some features may
-depend on third party plugins. Those details are indecated below.
+depend on third party plugins. Those details are indicated below.
 
 Please open issues about missing features that you would like too see
 implemented.
@@ -347,13 +364,13 @@ OPTIONS                                                  *neovintageous-options*
 
 1. Setting options                                    *neovintageous-set-option*
 
-Preferences > Settings: >
+Menu > Preferences > Settings: >
 
     {
         "vintageous_use_ctrl_keys": true
     }
 
-Project > Edit Project: >
+Menu > Project > Edit Project: >
 
     {
         "settings": {
@@ -385,7 +402,7 @@ terminal: >
 
 4. Mapping jj, jk, CTRL-[, etc. to Esc                    *neovintageous-escape*
 
-Preferences > Key Bindings: >
+Menu > Preferences > Key Bindings: >
 
     # jj -> Esc
     {
@@ -562,13 +579,13 @@ Add as many of the following key bindings as you would like to disable: >
 
 Then enable the custom setting used in the keymaps:
 
-Preferences > Settings: >
+Menu > Preferences > Settings: >
 
     {
         "neovintageous_disable_arrow_keys": true
     }
 
-Project > Edit Project: >
+Menu > Project > Edit Project: >
 
     {
         "settings": {
