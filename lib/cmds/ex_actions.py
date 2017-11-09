@@ -1338,7 +1338,6 @@ class ExCquit(ViWindowCommandBase):
 class ExExit(ViWindowCommandBase):
 
     def run(self, command_line=''):
-        assert command_line, 'expected non-empty command line'
         if self._view.is_dirty():
             self.window.run_command('save')
 
