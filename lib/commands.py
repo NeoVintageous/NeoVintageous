@@ -199,12 +199,13 @@ class PressKey(ViWindowCommandBase):
 
                 _logger.debug('@press_key running user mapping keys=%s, command=%s' % (new_keys, command))
 
-                # Support for basic Command-line mode mappings
-                # `:command<CR>` maps to ex command.
-                # `:UserCommand<CR>` maps to Sublime Text command (starts with uppercase).
+                # Support for basic Command-line mode mappings:
+                #
+                # `:Command<CR>` maps to Sublime Text command (starts with uppercase letter).
+                # `:command<CR>` maps to Command-line mode command.
 
                 if ':' in new_keys:
-                    match = re.match('^\\:(?P<cmd_line_command>[a-zA-Z0-9_]+)\\<CR\\>', new_keys)
+                    match = re.match('^\\:(?P<cmd_line_command>[a-zA-Z][a-zA-Z_]*)\\<CR\\>', new_keys)
                     if match:
                         cmd_line_command = match.group('cmd_line_command')
                         if cmd_line_command[0].isupper():
@@ -223,7 +224,7 @@ class PressKey(ViWindowCommandBase):
                     if ':' == new_keys:
                         return self.window.run_command('vi_colon_input')
 
-                    return nvim.console_message('invalid command line mapping %s -> %s (only `:name<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
+                    return nvim.console_message('invalid command line mapping %s -> %s (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
 
                 self.window.run_command('process_notation', {'keys': new_keys, 'check_user_mappings': False})
 
