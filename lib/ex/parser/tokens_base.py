@@ -1,3 +1,4 @@
+
 # TODO REVIEW Do we actually need these IDs?
 
 TOKEN_EOF = -1
@@ -73,6 +74,16 @@ TOKEN_COMMAND_HELP = 59
 
 
 class Token():
+
+    # Args:
+    #   :token_type (int):
+    #   :content (str):
+    #
+    # Todo:
+    #   Look into getting rid of token_types and content, I don't think they are
+    #   used for anything. They can probably be inferred by the extending class
+    #   name.
+
     def __init__(self, token_type, content):
         self.token_type = token_type
         self.content = content
@@ -96,20 +107,35 @@ class TokenOfRange(Token):
 
 
 class TokenOfCommand(Token):
+
+    # Args:
+    #   :params (dict): Default is {}.
+    #   :forced (bool): Indicates if the '!' (bang) character was placed
+    #       immediatley after the command. The '!' (bang) character after an
+    #       Ex command makes a command behave in a different way. The '!'
+    #       should be placed immediately after the command, without any
+    #       blanks in between. If you insert blanks the '!' will be seen as
+    #       an argument for the command, which has a different meaning. For
+    #       example:
+    #           :w! name        Write the current buffer to file "name",
+    #                           overwriting any existing file.
+    #           :w !name        Send the current buffer as standard input to
+    #                           command "name".
+    #
+    # Attributes:
+    #   :addressable (bool): Indicates if the command accepts ranges.
+    #   :cooperates (bool): Indicates if the command cooperates with :global.
+    #       XXX: It seems that, in Vim, some ex commands work well with :global
+    #       and others ignore global's ranges. However, according to the docs,
+    #       all ex commands should work with :global ranges?
+    #   :target_command (str): The name of the Sublime Text command to execute.
+
     def __init__(self, params, *args, forced=False, **kwargs):
         self.params = params or {}
-        # Indicates whether ! was passed on the command line (if the command
-        # accepts it.)
         self.forced = forced
-        # Set to `True` in subclass if the command accepts ranges.
         self.addressable = False
-        # The name of the Sublime Text command that ultimately executes.
-        self.target_command = None
-        # Indicates whether this command cooperates with :global.
-        # XXX: It seems that, in Vim, some ex commands work well with :global
-        # and others ignore global's ranges. However, according to the docs,
-        # all ex commands should work with :global ranges?
         self.cooperates_with_global = False
+        self.target_command = None
 
         super().__init__(*args, **kwargs)
 

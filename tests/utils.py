@@ -65,7 +65,7 @@ class ViewTestCase(TestCase):
         #
         # Args:
         #   selections (int|tuple|Region|list<int|tuple|Region>): *int* and
-        #   *tuple* are converted to *Region*.
+        #       *tuple* are converted to *Region*.
         #
         # Usage:
         #   >>> class TestExampleAssertSelection(ViewTestCase):

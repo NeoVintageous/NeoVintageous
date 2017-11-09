@@ -14,6 +14,10 @@ __all__ = [
 ]
 
 
+# TODO Should `[l` and `]l` (goto error) be a motion i.e. should a command like
+# `d[l` delete from cursor to the next lint error?
+
+
 @register(seq='[l', modes=(NORMAL_MODE, VISUAL_MODE))
 class _UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, state):

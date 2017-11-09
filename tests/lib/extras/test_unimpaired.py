@@ -1,3 +1,5 @@
+# DEPRECATED These tests can be removed when the functional tests are merged.
+
 from NeoVintageous.tests.utils import ViewTestCase
 
 

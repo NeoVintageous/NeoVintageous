@@ -20,7 +20,7 @@ from .tokens import TokenSemicolon
 from .tokens_base import TokenOfCommand
 
 
-class ParserState(object):
+class ParserState():
     def __init__(self, source):
         self.scanner = Scanner(source)
         self.is_range_start_line_parsed = False
@@ -30,10 +30,18 @@ class ParserState(object):
         return next(self.tokens)
 
 
-# The parser works its way through the command line by passing the current
-# state to the next parsing function. It stops when no parsing funcion is
-# returned from the previous one.
 def parse_command_line(source):
+
+    # The parser works its way through the command line by passing the current
+    # state to the next parsing function. It stops when no parsing funcion is
+    # returned from the previous one.
+    #
+    # Args:
+    #   :source (str):
+    #
+    # Returns:
+    #   CommandLineNode
+
     state = ParserState(source)
     parse_func = parse_line_ref
     # Create empty command line.

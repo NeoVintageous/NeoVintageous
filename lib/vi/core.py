@@ -86,6 +86,11 @@ class ViCommandMixin(object):
         state.xpos = xpos
 
     def outline_target(self):
+
+        # TODO rework 'vintageous_visualyank' feature to be more similar
+        # to https://github.com/machakann/vim-highlightedyank
+        # See http://vimcasts.org/episodes/neovim-eyecandy/#shownotes
+
         prefs = sublime.load_settings('Preferences.sublime-settings')
         if prefs.get('vintageous_visualyank') is False:
             return

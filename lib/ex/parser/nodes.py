@@ -16,7 +16,7 @@ from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import row_at
 
 
-class Node(object):
+class Node():
     pass
 
 
@@ -164,13 +164,17 @@ class RangeNode(Node):
 
 
 class CommandLineNode(Node):
+
+    # Args:
+    #   :line_range (RangeNode):
+    #   :command (TokenOfCommand):
+
     def __init__(self, line_range, command):
-        # A RangeNode
         self.line_range = line_range
-        # A TokenOfCommand
         self.command = command
 
     def __str__(self):
+        # TODO return '{0}{1}' because if there's no range then it returns ", command*" which looks mangled
         return '{0}, {1}'.format(str(self.line_range), str(self.command))
 
     def validate(self):

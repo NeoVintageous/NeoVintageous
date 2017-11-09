@@ -183,6 +183,7 @@ class NeoVintageousEvents(EventListener):
     def __init__(self):
         self._on_deactivate_callback_timer = None
 
+    # TODO Refactor, cleanup and optimise on_query_context()
     def on_query_context(self, view, key, operator, operand, match_all):
         # Called when determining to trigger a key binding with the given
         # context key. If the plugin knows how to respond to the context, it
@@ -207,6 +208,7 @@ class NeoVintageousEvents(EventListener):
 
         return self._CACHED_COMPLETIONS
 
+    # TODO Refactor, cleanup and optimise on_text_command()
     def on_text_command(self, view, command, args):
         if command == 'drag_select':
             state = State(view)
