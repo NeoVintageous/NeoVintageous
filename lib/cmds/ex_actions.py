@@ -207,7 +207,9 @@ class ExHelp(ViWindowCommandBase):
             nvim.console_message('finished initializing help tags')
 
         if subject not in self._tags:
-            return nvim.message('E149: Sorry, no help for %s' % subject)
+            subject = ':' + subject
+            if subject not in self._tags:
+                return nvim.message('E149: Sorry, no help for %s' % subject[1:])
 
         tag = self._tags[subject]
 
