@@ -207,7 +207,9 @@ class ExHelp(ViWindowCommandBase):
             nvim.console_message('finished initializing help tags')
 
         if subject not in self._tags:
-            return nvim.message('E149: Sorry, no help for %s' % subject)
+            subject = ':' + subject
+            if subject not in self._tags:
+                return nvim.message('E149: Sorry, no help for %s' % subject[1:])
 
         tag = self._tags[subject]
 
@@ -1336,7 +1338,6 @@ class ExCquit(ViWindowCommandBase):
 class ExExit(ViWindowCommandBase):
 
     def run(self, command_line=''):
-        assert command_line, 'expected non-empty command line'
         if self._view.is_dirty():
             self.window.run_command('save')
 

@@ -1695,23 +1695,6 @@ class StFindPrevResult(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_Z_BIG_Z, modes=_MODES_ACTION)
-class ViQuit(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': 'ex_quit',
-            'action_args': {
-                'forced': True,
-                'count': state.count
-            }
-        }
-
-
 @keys.assign(seq=seqs.G_BIG_H, modes=_MODES_ACTION)
 class ViEnterSelectModeForSearch(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -2054,8 +2037,7 @@ class ViExitEditor(ViOperatorDef):
         return {
             'action': 'ex_quit',
             'action_args': {
-                'forced': True,
-                'count': state.count
+                'command_line': 'q!'
             }
         }
 
@@ -2069,10 +2051,7 @@ class ViCloseFile(ViOperatorDef):
     def translate(self, state):
         return {
             'action': 'ex_exit',
-            'action_args': {
-                'mode': state.mode,
-                'count': state.count
-            }
+            'action_args': {}
         }
 
 
