@@ -2170,9 +2170,10 @@ class _vi_modify_numbers(ViTextCommandBase):
             self.view.sel().add(Region(self.view.text_point(row, col)))
 
 
-# Active in select mode. Clears multiple selections and returns to normal mode.
-# Should be more convenient than having to reach for Esc.
 class _vi_select_big_j(IrreversibleTextCommand):
+
+    # Clears multiple selections and returns to normal mode. Should be more
+    # convenient than having to reach for Esc.
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2191,12 +2192,7 @@ class _vi_big_j(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def run(self, edit, mode=None, separator=' ', count=1):
-
-        # jsodc_join is better when joining comments
-        # self.view.run_command('jsdocs_join')
-        # return
-
+    def run(self, edit, mode=None, count=1, dont_insert_or_remove_spaces=False):
         sels = self.view.sel()
         s = Region(sels[0].a, sels[-1].b)
         if mode == modes.INTERNAL_NORMAL:
@@ -2232,16 +2228,15 @@ class _vi_big_j(ViTextCommandBase):
         text_to_join = self.view.substr(Region(start, end))
         lines = text_to_join.split('\n')
 
-        if separator:
-            # J
+        if not dont_insert_or_remove_spaces:  # J
             joined_text = lines[0]
+
             for line in lines[1:]:
                 line = line.lstrip()
                 if joined_text and joined_text[-1] not in self.WHITE_SPACE:
                     line = ' ' + line
                 joined_text += line
-        else:
-            # gJ
+        else:  # gJ
             joined_text = ''.join(lines)
 
         self.view.replace(edit, Region(start, end), joined_text)

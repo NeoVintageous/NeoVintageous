@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: `gJ`
 * Fixed: `gx` should ignore trailing full stops
 * Fixed: `gx` doesn't work on markdown links
 * Fixed: `vintageousrc` mapping should not accept unescaped pipe characters
