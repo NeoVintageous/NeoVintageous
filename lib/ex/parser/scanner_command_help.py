@@ -16,4 +16,9 @@ class TokenHelp(TokenOfCommand):
 
 
 def scan_command_help(state):
-    return None, [TokenHelp(state.expect_match(r'\s*(?P<subject>.+)?$').groupdict()), TokenEof()]
+    match = state.expect_match(r'(?P<bang>!)?\s*(?P<subject>.+)?$').groupdict()
+
+    params = {'subject': match['subject']}
+    bang = bool(match['bang'])
+
+    return None, [TokenHelp(params, forced=bang), TokenEof()]

@@ -183,6 +183,8 @@ class ExHelp(ViWindowCommandBase):
 
         subject = parsed.command.subject
         if not subject:
+            if parsed.command.forced:
+                return nvim.message('E478: Don\'t panic!')
             subject = 'help.txt'
 
         subject = subject.lower()
