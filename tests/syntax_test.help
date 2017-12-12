@@ -268,6 +268,15 @@ https://example.com/1/2
     *Note ...
     ^^^^^^^^^ markup.inserted
 
+Inline `code` ...
+#      ^^^^^^ markup.raw.inline
+
+Inline code `:messages` ...
+#           ^^^^^^^^^^^ markup.raw.inline
+
+Inline `code with space` ...
+#      ^^^^^^^^^^^^^^^^^ markup.raw.inline
+
 >
     code...
     # ^^^^^ markup.raw.block
@@ -286,8 +295,48 @@ Text at zero column terminates code block
 Text: >
     # ^ markup.raw.block
     code...
-    # ^^^^^ markup.raw.block
+    # ^ markup.raw.block
     <
 
     Previous < character should terminate code block
     # ^ -markup.raw
+
+                            *E140*  >
+  #                         ^^^^^^^^ -markup.raw
+  #                                 ^ markup.raw.block
+  code...
+  # ^ markup.raw.block
+
+When using
+# ^^^^^^^^ -markup.raw
+":3,10w!".
+# ^^^^^^^^ -markup.raw
+>
+
+  code...
+  # ^ markup.raw.block
+
+Messages
+# ^^^^^^ -markup.raw
+
+>
+
+    <xml>
+    # ^^^ markup.raw.block
+
+....
+# ^^ -markup.raw
+
+...text: >
+    # ^^^ -markup.raw.block
+    #    ^ markup.raw.block
+    code...
+    # ^ markup.raw.block
+<   Text: >
+    # ^^^^ -markup.raw.block
+    #     ^ markup.raw.block
+    code...
+    # ^ markup.raw.block
+
+Text
+# ^ -markup.raw.block
