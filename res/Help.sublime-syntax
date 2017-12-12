@@ -21,7 +21,7 @@ contexts:
     - match: \<[^\>\s]+\>
       scope: markup.raw.inline.neovintageous
 
-    - match: \`[a-z]+\`
+    - match: \`[^`]+\`
       scope: markup.raw.inline.neovintageous
 
     - match: CTRL-SHIFT-[a-zA-Z]+
@@ -70,23 +70,10 @@ contexts:
     - match: \=|-{78}
       scope: comment.neovintageous
 
-    - match: ^\>$
+    - match: \>$
       push:
         - meta_scope: markup.raw.block.neovintageous
-        - match: ^\s*\<$
-          pop: true
-
-    - match: (?<=\:\s)\>$
-      push:
-        - meta_scope: markup.raw.block.neovintageous
-        # - match: (^(?=[^\s]))
-        - match: (^\s*\<$|^(?=[^\s]))
-          pop: true
-
-    - match: (?<=\:\s)\>$
-      push:
-        - meta_scope: markup.raw.block.neovintageous
-        - match: ^\s*\<$
+        - match: ^(?=[^\s<])|^\s*\<$|^\<
           pop: true
 
     - match: ^([A-Z\-\s]+)\s+(\*[^\*]+\*)$

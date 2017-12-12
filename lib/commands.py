@@ -85,7 +85,7 @@ class _neovintageous_help_goto(ViWindowCommandBase):
         if len(subject) < 3:
             return
 
-        match = re.match('^\'[a-z_]+\'|\|[^\s\|]+\|$', subject)
+        match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
         if match:
             subject = subject.strip('|')
             # TODO Refactor ex_help code into a reusable middle layer so that

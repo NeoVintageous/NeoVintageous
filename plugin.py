@@ -85,7 +85,16 @@ def plugin_loaded():
 
     try:
         _exception = None
-        init_state(sublime.active_window().active_view(), new_session=True)
+
+        window = sublime.active_window()
+        if not window:
+            raise Exception('active window not found')
+
+        view = window.active_view()
+        if not view:
+            raise Exception('active view not found')
+
+        init_state(view, new_session=True)
     except Exception as e:
         _exception = e
         import traceback
