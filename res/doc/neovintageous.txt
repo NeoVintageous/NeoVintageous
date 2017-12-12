@@ -344,6 +344,7 @@ Option toggling
 On      Off     Toggle  Option
 |[oa|   |]oa|   |coa|   'menu' {Neovintageous specific}
 |[oc|   |]oc|   |coc|   'cursorline'
+|[oe|   |]oe|   |coe|   'statusbar' {Neovintageous specific}
 |[ol|   |]ol|   |col|   'list'
 *[om*   *]om*   *com*   'minimap' {Neovintageous specific}
 |[on|   |]on|   |con|   'number'

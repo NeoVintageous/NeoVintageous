@@ -283,6 +283,19 @@ def _sidebar_option(view, flag=None):
             window.set_sidebar_visible(False)
 
 
+def _statusbar_option(view, flag=None):
+    window = view.window()
+    is_visible = window.is_status_bar_visible()
+    if flag is None:
+        window.set_status_bar_visible(not is_visible)
+    elif flag:
+        if not is_visible:
+            window.set_status_bar_visible(True)
+    else:
+        if is_visible:
+            window.set_status_bar_visible(False)
+
+
 # Used by the _toggle_option() function
 # Values:
 # * None means the option is not implemented
@@ -303,6 +316,7 @@ _OPTIONS = {
     'relativenumber': None,
     'sidebar': _sidebar_option,  # non standard i.e. not in the original Unimpaired plugin
     'spell': 'spell_check',
+    'statusbar': _statusbar_option,  # non standard i.e. not in the original Unimpaired plugin
     'virtualedit': None,
     'wrap': 'word_wrap'
 }
@@ -312,6 +326,7 @@ _OPTION_ALIASES = {
     'a': 'menu',  # non standard i.e. not in the original Unimpaired plugin
     'b': 'background',
     'c': 'cursorline',
+    'e': 'statusbar',  # non standard i.e. not in the original Unimpaired plugin
     'd': 'diff',
     'h': 'hlsearch',
     'i': 'ignorecase',
