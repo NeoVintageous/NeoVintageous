@@ -1,12 +1,290 @@
 import unittest
 
 from NeoVintageous.lib.window import WindowAPI
+from NeoVintageous.lib.window import _set_layout_group_height
+from NeoVintageous.lib.window import _set_layout_group_width
+from NeoVintageous.lib.window import _set_layout_groups_size_equal
+
+# +-+-+
+# |0|1|
+# | +-+
+# | |2|
+# +-+-+
+LAYOUT_CELLS_3_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 1, 2], [1, 0, 2, 1], [1, 1, 2, 2]]}  # noqa: E501
+
+# +-+-+
+# |0|1|
+# +-+-+
+# | |2|
+# | +-+
+# | |3|
+# +-+-+
+LAYOUT_CELLS_4_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.33, 0.66, 1.0], 'cells': [[0, 0, 1, 3], [1, 0, 2, 1], [1, 1, 2, 2], [1, 2, 2, 3]]}  # noqa: E501
+
+# +-+-+
+# |0|1|
+# | +-+
+# | |2|
+# +-+ |
+# |4| |
+# +-+ |
+# |3| |
+# +-+-+
+LAYOUT_CELLS_5_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.25, 0.5, 0.75, 1.0], 'cells': [[0, 0, 1, 2], [1, 0, 2, 1], [1, 1, 2, 4], [0, 3, 1, 4], [0, 2, 1, 3]]}  # noqa: E501
+
+# +-------+
+# |0      |
+# +-+-+-+-+
+# |1|2|3|4|
+# +-+-+-+-+
+LAYOUT_CELLS_5_VARIANT_2 = {'cols': [0.0, 0.5, 0.75, 0.875, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 4, 1], [0, 1, 1, 2], [1, 1, 2, 2], [2, 1, 3, 2], [3, 1, 4, 2]]}  # noqa: E501
+
+LAYOUT_COLS_2 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
+LAYOUT_COLS_2_LEFT_SMALL = {'cols': [0.0, 0.025, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
+LAYOUT_COLS_2_RIGHT_SMALL = {'cols': [0.0, 0.7, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
+LAYOUT_COLS_3 = {'cols': [0.0, 0.33, 0.66, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]]}  # noqa: E501
+LAYOUT_EMPTY = {'cols': [], 'rows': [], 'cells': []}
+LAYOUT_GRID_4 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]]}  # noqa: E501
+LAYOUT_ROWS_2 = {'cols': [0.0, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}
+LAYOUT_ROWS_2_ABOVE_SMALL = {'cols': [0.0, 1.0], 'rows': [0.0, 0.23782383419689118, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}  # noqa: E501
+LAYOUT_ROWS_2_BELOW_SMALL = {'cols': [0.0, 1.0], 'rows': [0.0, 0.83782383419689118, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}  # noqa: E501
+LAYOUT_ROWS_3 = {'cols': [0.0, 1.0], 'rows': [0.0, 0.33, 0.66, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2], [0, 2, 1, 3]]}  # noqa: E501
+LAYOUT_SINGLE = {'cols': [0.0, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1]]}
 
 
+class TestSetLayoutGroupSize(unittest.TestCase):
+
+    def test_height(self):
+        # Negative tests: layouts with no rows shouldn't change.
+        self.assertEqual(LAYOUT_SINGLE, _set_layout_group_height(LAYOUT_SINGLE.copy(), group=0))
+        self.assertEqual(LAYOUT_COLS_2, _set_layout_group_height(LAYOUT_COLS_2.copy(), group=0))
+        self.assertEqual(LAYOUT_COLS_2, _set_layout_group_height(LAYOUT_COLS_2.copy(), group=1))
+        self.assertEqual(LAYOUT_COLS_3, _set_layout_group_height(LAYOUT_COLS_3.copy(), group=0))
+        self.assertEqual(LAYOUT_COLS_3, _set_layout_group_height(LAYOUT_COLS_3.copy(), group=1))
+        self.assertEqual(LAYOUT_COLS_3, _set_layout_group_height(LAYOUT_COLS_3.copy(), group=2))
+
+        # Rows: 2
+        expected = LAYOUT_ROWS_2.copy()
+        expected['rows'] = [0.0, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_ROWS_2.copy(), group=0))
+        expected['rows'] = [0.0, 0.057, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_ROWS_2.copy(), group=1))
+
+        # Rows: 2 (above small)
+        expected = LAYOUT_ROWS_2_ABOVE_SMALL.copy()
+        expected['rows'] = [0.0, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_ROWS_2_ABOVE_SMALL.copy(), group=0))
+        expected['rows'] = [0.0, 0.057, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_ROWS_2_ABOVE_SMALL.copy(), group=1))
+
+        # Rows: 2 (already correct layout)
+        expected = LAYOUT_ROWS_2.copy()
+        expected['rows'] = [0.0, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(expected.copy(), group=0))
+        expected['rows'] = [0.0, 0.057, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(expected.copy(), group=1))
+
+        # Rows: 3
+        expected = LAYOUT_ROWS_3.copy()
+        expected['rows'] = [0.0, 0.886, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_ROWS_3.copy(), group=0))
+        expected['rows'] = [0.0, 0.057, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_ROWS_3.copy(), group=1))
+        expected['rows'] = [0.0, 0.057, 0.114, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_ROWS_3.copy(), group=2))
+
+        # Rows: 3 (already correct layout)
+        expected = LAYOUT_ROWS_3.copy()
+        expected['rows'] = [0.0, 0.886, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(expected.copy(), group=0))
+
+        # Grid: 4
+        expected = LAYOUT_GRID_4.copy()
+        expected['rows'] = [0.0, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_GRID_4.copy(), group=0))
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_GRID_4.copy(), group=1))
+        expected['rows'] = [0.0, 0.057, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_GRID_4.copy(), group=2))
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_GRID_4.copy(), group=3))
+
+        # Cells: 3
+        expected = LAYOUT_CELLS_3_VARIANT_1.copy()
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_3_VARIANT_1.copy(), group=0))
+        expected['rows'] = [0.0, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_3_VARIANT_1.copy(), group=1))
+        expected['rows'] = [0.0, 0.057, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_3_VARIANT_1.copy(), group=2))
+
+        # Cells: 5 (variant 1)
+        expected = LAYOUT_CELLS_5_VARIANT_1.copy()
+        expected['rows'] = [0.0, 0.829, 0.886, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_1.copy(), group=0))
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_1.copy(), group=1))
+        expected['rows'] = [0.0, 0.057, 0.886, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_1.copy(), group=2))
+        expected['rows'] = [0.0, 0.057, 0.114, 0.171, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_1.copy(), group=3))
+        expected['rows'] = [0.0, 0.057, 0.114, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_1.copy(), group=4))
+
+        # Cells: 5 (variant 2)
+        expected = LAYOUT_CELLS_5_VARIANT_2.copy()
+        expected['rows'] = [0.0, 0.943, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_2.copy(), group=0))
+        expected['rows'] = [0.0, 0.057, 1.0]
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_2.copy(), group=1))
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_2.copy(), group=2))
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_2.copy(), group=3))
+        self.assertEqual(expected, _set_layout_group_height(LAYOUT_CELLS_5_VARIANT_2.copy(), group=4))
+
+    def test_width(self):
+        # Negative tests: layouts with no columns shouldn't change.
+        self.assertEqual(LAYOUT_SINGLE, _set_layout_group_width(LAYOUT_SINGLE.copy(), group=0))
+        self.assertEqual(LAYOUT_ROWS_2, _set_layout_group_width(LAYOUT_ROWS_2.copy(), group=0))
+        self.assertEqual(LAYOUT_ROWS_2, _set_layout_group_width(LAYOUT_ROWS_2.copy(), group=1))
+        self.assertEqual(LAYOUT_ROWS_3, _set_layout_group_width(LAYOUT_ROWS_3.copy(), group=0))
+        self.assertEqual(LAYOUT_ROWS_3, _set_layout_group_width(LAYOUT_ROWS_3.copy(), group=1))
+        self.assertEqual(LAYOUT_ROWS_3, _set_layout_group_width(LAYOUT_ROWS_3.copy(), group=2))
+
+        # Columns: 2
+        expected = LAYOUT_COLS_2.copy()
+        expected['cols'] = [0.0, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_COLS_2.copy(), group=0))
+        expected['cols'] = [0.0, 0.02, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_COLS_2.copy(), group=1))
+
+        # Columns: 2 (left small)
+        expected = LAYOUT_COLS_2_LEFT_SMALL.copy()
+        expected['cols'] = [0.0, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_COLS_2_LEFT_SMALL.copy(), group=0))
+        expected['cols'] = [0.0, 0.02, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_COLS_2_LEFT_SMALL.copy(), group=1))
+
+        # Columns: 2 (already correct layout)
+        expected = LAYOUT_COLS_2.copy()
+        expected['cols'] = [0.0, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(expected.copy(), group=0))
+        expected['cols'] = [0.0, 0.02, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(expected.copy(), group=1))
+
+        # Columns: 3
+        expected = LAYOUT_COLS_3.copy()
+        expected['cols'] = [0.0, 0.96, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_COLS_3.copy(), group=0))
+        expected['cols'] = [0.0, 0.02, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_COLS_3.copy(), group=1))
+        expected['cols'] = [0.0, 0.02, 0.04, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_COLS_3.copy(), group=2))
+
+        # Columns: 3 (already correct layout)
+        expected = LAYOUT_COLS_3.copy()
+        expected['cols'] = [0.0, 0.96, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(expected.copy(), group=0))
+
+        # Grid: 4
+        expected = LAYOUT_GRID_4.copy()
+        expected['cols'] = [0.0, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_GRID_4.copy(), group=0))
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_GRID_4.copy(), group=2))
+        expected['cols'] = [0.0, 0.02, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_GRID_4.copy(), group=1))
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_GRID_4.copy(), group=3))
+
+        # Cells: 3
+        expected = LAYOUT_CELLS_3_VARIANT_1.copy()
+        expected['cols'] = [0.0, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_3_VARIANT_1.copy(), group=0))
+        expected['cols'] = [0.0, 0.02, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_3_VARIANT_1.copy(), group=1))
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_3_VARIANT_1.copy(), group=2))
+
+        # Cells: 5 (variant 1)
+        expected = LAYOUT_CELLS_5_VARIANT_1.copy()
+        expected['cols'] = [0.0, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_1.copy(), group=0))
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_1.copy(), group=3))
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_1.copy(), group=4))
+        expected['cols'] = [0.0, 0.02, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_1.copy(), group=1))
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_1.copy(), group=2))
+
+        # Cells: 5 (variant 2)
+        expected = LAYOUT_CELLS_5_VARIANT_2.copy()
+        expected['cols'] = [0.0, 0.5, 0.75, 0.875, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_2.copy(), group=0))
+        expected['cols'] = [0.0, 0.94, 0.96, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_2.copy(), group=1))
+        expected['cols'] = [0.0, 0.02, 0.96, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_2.copy(), group=2))
+        expected['cols'] = [0.0, 0.02, 0.04, 0.98, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_2.copy(), group=3))
+        expected['cols'] = [0.0, 0.02, 0.04, 0.06, 1.0]
+        self.assertEqual(expected, _set_layout_group_width(LAYOUT_CELLS_5_VARIANT_2.copy(), group=4))
+
+
+class TestResizeGroupsAlmostEqually(unittest.TestCase):
+
+    def test_size(self):
+        # Negative tests: layouts with no rows or columns shouldn't change.
+        self.assertEqual(LAYOUT_SINGLE, _set_layout_groups_size_equal(LAYOUT_SINGLE.copy()))
+
+        # Negative tests: layouts that are already equally sized shouldn't change
+        self.assertEqual(LAYOUT_COLS_2, _set_layout_groups_size_equal(LAYOUT_COLS_2.copy()))
+        self.assertEqual(LAYOUT_COLS_3, _set_layout_groups_size_equal(LAYOUT_COLS_3.copy()))
+        self.assertEqual(LAYOUT_ROWS_2, _set_layout_groups_size_equal(LAYOUT_ROWS_2.copy()))
+        self.assertEqual(LAYOUT_ROWS_3, _set_layout_groups_size_equal(LAYOUT_ROWS_3.copy()))
+        self.assertEqual(LAYOUT_GRID_4, _set_layout_groups_size_equal(LAYOUT_GRID_4.copy()))
+        self.assertEqual(LAYOUT_CELLS_3_VARIANT_1, _set_layout_groups_size_equal(LAYOUT_CELLS_3_VARIANT_1.copy()))
+
+        # Columns: 2
+        self.assertEqual(LAYOUT_COLS_2, _set_layout_groups_size_equal(LAYOUT_COLS_2_LEFT_SMALL.copy()))
+        self.assertEqual(LAYOUT_COLS_2, _set_layout_groups_size_equal(LAYOUT_COLS_2_RIGHT_SMALL.copy()))
+
+        # Rows: 2
+        self.assertEqual(LAYOUT_ROWS_2, _set_layout_groups_size_equal(LAYOUT_ROWS_2_ABOVE_SMALL.copy()))
+        self.assertEqual(LAYOUT_ROWS_2, _set_layout_groups_size_equal(LAYOUT_ROWS_2_BELOW_SMALL.copy()))
+
+        # Grid: 4
+        expected = LAYOUT_GRID_4.copy()
+        layout = LAYOUT_GRID_4.copy()
+        layout['cols'] = [0.0, 0.3, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout.copy()))
+        layout['cols'] = [0.0, 0.9, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout.copy()))
+        layout['rows'] = [0.0, 0.6, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout.copy()))
+        layout['rows'] = [0.0, 0.2, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout.copy()))
+
+        # Cells: 3 (variant 1)
+        expected = LAYOUT_CELLS_3_VARIANT_1.copy()
+        layout = LAYOUT_CELLS_3_VARIANT_1.copy()
+        layout['cols'] = [0.0, 0.3, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout.copy()))
+        layout['cols'] = [0.0, 0.8, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout.copy()))
+        layout['rows'] = [0.0, 0.4, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout.copy()))
+
+        # Cells: 4 (variant 1)
+        expected = LAYOUT_CELLS_4_VARIANT_1.copy()
+        layout = LAYOUT_CELLS_4_VARIANT_1.copy()
+        layout['rows'] = [0.0, 0.5, 0.75, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout))
+        layout['rows'] = [0.0, 0.7, 0.8, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout))
+        layout['cols'] = [0.0, 0.2, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout))
+        layout['cols'] = [0.0, 0.33, 1.0]
+        self.assertEqual(expected, _set_layout_groups_size_equal(layout))
+
+
+# TODO use Python Mock instead
 class MockView():
     pass
 
 
+# TODO use Python Mock instead
 class MockWindow():
 
     def __init__(self):
