@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+### Fixed
+
+* Fixed: Unimpaired toggles (documentation)
+
 ## 1.4.1 - 2017-11-09
 
 ### Fixed

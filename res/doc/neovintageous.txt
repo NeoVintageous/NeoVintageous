@@ -350,13 +350,13 @@ Next and previous
 Option toggling
 
 On      Off     Toggle  Option
-|[oc|   |]oc|   |=oc|   'cursorline'
-|[ol|   |]ol|   |=ol|   'list'
-*[om*   *]om*   *=om*   'minimap' {Neovintageous specific}
-|[on|   |]on|   |=on|   'number'
+|[oc|   |]oc|   |coc|   'cursorline'
+|[ol|   |]ol|   |col|   'list'
+*[om*   *]om*   *com*   'minimap' {Neovintageous specific}
+|[on|   |]on|   |con|   'number'
 *[ot*   *]ot*   *cot*   'sidebar' {Neovintageous specific}
-|[os|   |]os|   |=os|   'spell'
-|[ow|   |]ow|   |=ow|   'wrap'
+|[os|   |]os|   |cos|   'spell'
+|[ow|   |]ow|   |cow|   'wrap'
 
 ==============================================================================
 
