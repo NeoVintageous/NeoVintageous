@@ -67,3 +67,26 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line('onoremap x yz'))
         self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line('snoremap x yz'))
         self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line('vnoremap x yz'))
+
+    def test_unescaped_pipe_character_is_invalid(self):
+        tests = (
+            'map |',
+            'map | |',
+            'map || ||',
+            'map x |',
+            'map | y',
+            'map abc x|y',
+            'map x|y abc',
+        )
+
+        for test in tests:
+            self.assertEquals((None, None), _parse_line(test))
+
+    def test_escaped_pipe_character_is_valid(self):
+        tests = (
+            'map x \\|',
+            'map x a\\|c'
+        )
+
+        for test in tests:
+            self.assertNotEqual((None, None), _parse_line(test))
