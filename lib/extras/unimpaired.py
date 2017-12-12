@@ -244,6 +244,19 @@ def _list_option(view, flag=None):
     _set_value_option(view, 'draw_white_space', 'all', 'selection', flag)
 
 
+def _menu_option(view, flag=None):
+    window = view.window()
+    is_visible = window.is_menu_visible()
+    if flag is None:
+        window.set_menu_visible(not is_visible)
+    elif flag:
+        if not is_visible:
+            window.set_menu_visible(True)
+    else:
+        if is_visible:
+            window.set_menu_visible(False)
+
+
 def _minimap_option(view, flag=None):
     window = view.window()
     is_visible = window.is_minimap_visible()
@@ -284,6 +297,7 @@ _OPTIONS = {
     'hlsearch': None,
     'ignorecase': None,
     'list': _list_option,
+    'menu': _menu_option,  # non standard i.e. not in the original Unimpaired plugin
     'minimap': _minimap_option,  # non standard i.e. not in the original Unimpaired plugin
     'number': 'line_numbers',
     'relativenumber': None,
@@ -295,6 +309,7 @@ _OPTIONS = {
 
 
 _OPTION_ALIASES = {
+    'a': 'menu',  # non standard i.e. not in the original Unimpaired plugin
     'b': 'background',
     'c': 'cursorline',
     'd': 'diff',
