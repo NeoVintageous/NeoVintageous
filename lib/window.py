@@ -1,6 +1,5 @@
 from sublime import Region
 
-
 from NeoVintageous.lib import nvim
 
 
@@ -33,6 +32,144 @@ _LAYOUT_THREE_ROW = {
     'rows': [0.0, 0.33, 0.66, 1.0],
     'cols': [0.0, 1.0]
 }
+
+
+def _set_layout_group_height(layout, group, height=None):
+    # Set current group highest (default: highest possible).
+    #
+    # TODO implement set to {height}, currently sets to default highest possible
+    #
+    # Args:
+    #   :layout (dict):
+    #   :group (int):
+    #   :height (int, optional): Defaults to highest possible.
+    #
+    # Returns:
+    #   dict
+
+    row_count = len(layout['rows'])
+    if row_count < 3:
+        # The layout only has one column so there is no work to do because the
+        # height is already as high as possible.
+        return layout
+
+    cell = layout['cells'][group]
+
+    y1 = cell[1]
+    y2 = cell[3]
+
+    if y1 == 0 and y2 == (row_count - 1):
+        # The group cell is already as high as possible.
+        return layout
+
+    # The minimal width that other windows will be resize to (accounts for some
+    # tab size which is why it is greater than the min_width equivalent in the
+    # _set_layout_group_width function).
+    # TODO In Vim I think the setting 'winminheight' is used as the min width.
+    # The default in Vim for that setting is 1.
+    min_height = 0.057
+
+    rows = []
+    rows.append(0.0)
+    for i in range(1, row_count - 1):
+        if y1 >= i:
+            rows.append(0.0 + (min_height * i))
+        else:
+            rows.append(1.0 - (min_height * (row_count - i - 1)))
+    rows.append(1.0)
+
+    layout['rows'] = rows
+
+    return layout
+
+
+def _set_layout_group_width(layout, group, width=None):
+    # Set current group width (default: widest possible).
+    #
+    # TODO implement set to {width}, currently sets to default widest possible
+    #
+    # Args:
+    #   :layout (dict):
+    #   :group (int):
+    #   :width (int, optional): Defaults to widest possible.
+    #
+    # Returns:
+    #   dict
+
+    col_count = len(layout['cols'])
+    if col_count < 3:
+        # The layout only has one row so there is no work to do because the
+        # width is already as wide as possible.
+        return layout
+
+    cell = layout['cells'][group]
+
+    x1 = cell[0]
+    x2 = cell[2]
+
+    if x1 == 0 and x2 == (col_count - 1):
+        # The group cell is already as wide as possible.
+        return layout
+
+    # The minimal width that other windows will be resize to.
+    # TODO In Vim I think the setting 'winminwidth' is used as the min width.
+    # The default in Vim for that setting is 20.
+    min_width = 0.02
+
+    cols = []
+    cols.append(0.0)
+    for i in range(1, col_count - 1):
+        if x1 >= i:
+            cols.append(0.0 + (min_width * i))
+        else:
+            cols.append(1.0 - (min_width * (col_count - i - 1)))
+    cols.append(1.0)
+
+    layout['cols'] = cols
+
+    return layout
+
+
+# TODO could implement settings similar to vim
+# window resizing e.g. 'winheight', 'winwidth',
+# 'winfixheight', and 'winfixwidth'
+def _set_layout_groups_size_equal(layout):
+    # Make all groups (almost) equally high and wide.
+    #
+    # Uses 'winheight' and 'winwidth' for the current window.  Windows with
+    # 'winfixheight' set keep their height and windows with 'winfixwidth' set
+    # keep their width.
+    cell_count = len(layout['cells'])
+    col_count = len(layout['cols'])
+    row_count = len(layout['rows'])
+
+    if col_count == 2 and row_count == 2:
+        return layout
+
+    if cell_count == 4 and col_count == 3 and row_count == 3:
+        # Special case for Grid with 4 cells. Works around
+        # some complicated layout issues.
+        return {
+            'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]],
+            'cols': [0.0, 0.5, 1.0],
+            'rows': [0.0, 0.5, 1.0]
+        }
+
+    def equalise(count):
+        size = round(1.0 / (count - 1), 2)
+        vals = [0.0]
+        for i in range(1, count - 1):
+            vals.append(round(size * i, 2))
+        vals.append(1.0)
+        return vals
+
+    if col_count > 2:
+        layout['cols'] = equalise(col_count)
+
+    if row_count > 2:
+        layout['rows'] = equalise(row_count)
+
+    return layout
 
 
 class WindowAPI():
@@ -396,77 +533,31 @@ class WindowAPI():
 
         return group_num
 
-    # TODO implement set to n, currently sets to default highest possible
     def set_current_group_height_to_n(self, n=None):
-        """Set current group height to N (default: highest possible)."""
-        layout = self.window.layout()
+        # Set current group height to N (default: highest possible).
+        #
+        # TODO implement set to n, currently sets to default highest possible
+        #
+        # Args:
+        #   :n (int):
+        return self.window.set_layout(
+            _set_layout_group_height(
+                self.window.layout(),
+                self.window.active_group(),
+                n))
 
-        row_len = len(layout['rows'])
-        if row_len < 3:
-            return
-
-        current_group_num = self.window.active_group()
-        min_group_height = 0.06
-        start = 0.0
-        end = 1.0
-
-        rows = []
-        rows.append(0.0)
-
-        for i in range(row_len - 2):
-            if i < current_group_num:
-                n = start + min_group_height
-                rows.append(n)
-                start = n
-
-        for i in range(row_len - 2):
-            if i >= current_group_num:
-                n = end - min_group_height
-                rows.append(n)
-                end = n
-
-        rows.append(1.0)
-        rows.sort()
-
-        layout['rows'] = rows
-
-        self.window.set_layout(layout)
-
-    # TODO implement set to n, currently sets to default widest possible
     def set_current_group_width_to_n(self, n=None):
-        """Set current group width to N (default: widest possible)."""
-        layout = self.window.layout()
-
-        col_len = len(layout['cols'])
-        if col_len < 3:
-            return
-
-        current_group_num = self.window.active_group()
-        min_group_width = 0.04
-        start = 0.0
-        end = 1.0
-
-        cols = []
-        cols.append(0.0)
-
-        for i in range(col_len - 2):
-            if i < current_group_num:
-                n = start + min_group_width
-                cols.append(n)
-                start = n
-
-        for i in range(col_len - 2):
-            if i >= current_group_num:
-                n = end - min_group_width
-                cols.append(n)
-                end = n
-
-        cols.append(1.0)
-        cols.sort()
-
-        layout['cols'] = cols
-
-        self.window.set_layout(layout)
+        # Set current group width to N (default: widest possible)
+        #
+        # TODO implement set to n, currently sets to default widest possible
+        #
+        # Args:
+        #   :n (int):
+        return self.window.set_layout(
+            _set_layout_group_width(
+                self.window.layout(),
+                self.window.active_group(),
+                n))
 
     # TODO decrease_current_group_height_by_n()
     def decrease_current_group_height_by_n(self, n=1):
@@ -484,37 +575,18 @@ class WindowAPI():
     def increase_current_group_width_by_n(self, n=1):
         pass
 
-    # TODO could implement settings similar to vim
-    # window resizing e.g. 'winheight', 'winwidth',
-    # 'winfixheight', and 'winfixwidth'
     def resize_groups_almost_equally(self):
-        """
-        Make all groups (almost) equally high and wide.
-
-        Uses 'winheight' and 'winwidth' for the current window.  Windows with
-        'winfixheight' set keep their height and windows with 'winfixwidth' set
-        keep their width.
-        """
-        layout = self.window.layout()
-        col_count = len(layout['cols'])
-        row_count = len(layout['rows'])
-
-        def equalise(count):
-            size = round(1.0 / (count - 1), 2)
-            vals = [0.0]
-            for i in range(1, count - 1):
-                vals.append(round(size * i, 2))
-            vals.append(1.0)
-            return vals
-
-        if col_count > 2:
-            layout['cols'] = equalise(col_count)
-
-        if row_count > 2:
-            layout['rows'] = equalise(row_count)
-
-        if col_count > 2 or row_count > 2:
-            self.window.set_layout(layout)
+        # Make all groups (almost) equally high and wide.
+        #
+        # Uses 'winheight' and 'winwidth' for the current window.  Windows with
+        # 'winfixheight' set keep their height and windows with 'winfixwidth'
+        # set keep their width.
+        #
+        # TODO could implement settings similar to vim window resizing e.g.
+        # 'winheight', 'winwidth', 'winfixheight', and 'winfixwidth'
+        return self.window.set_layout(
+            _set_layout_groups_size_equal(
+                self.window.layout()))
 
     def split_current_view_in_two(self, n=None):
         """
