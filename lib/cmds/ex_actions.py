@@ -82,7 +82,6 @@ __all__ = [
     'ExTabonlyCommand',
     'ExTabOpenCommand',
     'ExTabprevCommand',
-    'ExTextCommandBase',
     'ExUnabbreviate',
     'ExUnmap',
     'ExUnvsplit',
