@@ -65,7 +65,7 @@ _EX_HISTORY = {
 
 
 # TODO Add status messages e.g. for no docs found, etc.
-class _neovintageous_help_goto(ViWindowCommandBase):
+class _neovintageous_help_goto(WindowCommand):
     def run(self):
         view = self.window.active_view()
         pt = view.sel()[0]

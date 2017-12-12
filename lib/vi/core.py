@@ -126,6 +126,7 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
     pass
 
 
+# DEPRECATED TODO REMOVE
 class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
     """
     Base class form some window commands.
