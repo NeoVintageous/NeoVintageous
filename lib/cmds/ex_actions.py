@@ -216,7 +216,7 @@ class ExHelp(ViWindowCommandBase):
             tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
 
         if not doc_resources:
-            return nvim.message('no help file found for %s' % tag[0])
+            return nvim.message('Sorry, help file "%s" not found' % tag[0])
 
         # TODO REFACTOR into reusable api
         def window_find_open_view(window, name):
