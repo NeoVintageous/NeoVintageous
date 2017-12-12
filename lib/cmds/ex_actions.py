@@ -196,7 +196,7 @@ class ExHelp(ViWindowCommandBase):
             if not tags_resources:
                 return nvim.message('tags file not found')
 
-            tags_matcher = re.compile('^([^\s]+)\s+([^\s]+)\s+(.+)$')
+            tags_matcher = re.compile('^([^\\s]+)\\s+([^\\s]+)\\s+(.+)$')
             tags_resource = load_resource(tags_resources[0])
             for line in tags_resource.split('\n'):
                 if line:
