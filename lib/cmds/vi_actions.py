@@ -2277,6 +2277,25 @@ class _vi_gx(IrreversibleTextCommand):
         )
     """
 
+    def _url(regex, text):
+        match = re.match(regex, text)
+        if match:
+            url = match.group('url')
+
+            # Remove end of line full stop character.
+            url = url.rstrip('.')
+
+            # Remove closing tag markdown link e.g. [title](url)
+            url = url.rstrip(')')
+
+            # Remove closing tag markdown image e.g. ![alt](url)]
+            if url[-2:] == ')]':
+                url = url[:-2]
+
+            return url
+
+        return None
+
     def run(self, mode=None, count=None):
         if len(self.view.sel()) != 1:
             return
@@ -2285,9 +2304,8 @@ class _vi_gx(IrreversibleTextCommand):
         line = self.view.line(sel)
         text = self.view.substr(line)
 
-        m = re.match(self.URL_REGEX, text)
-        if m:
-            url = m.group('url')
+        url = self.__class__._url(self.URL_REGEX, text)
+        if url:
             webbrowser.open_new_tab(url)
 
 

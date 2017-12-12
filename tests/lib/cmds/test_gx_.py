@@ -1,25 +1,22 @@
 import re
-
-from NeoVintageous.tests.utils import ViewTestCase
+from unittest import TestCase
 
 from NeoVintageous.lib.cmds.vi_actions import _vi_gx as command
 
 URL_REGEX = re.compile(command.URL_REGEX)
 
 
-class gx(ViewTestCase):
+class Test_gx(TestCase):
 
     def assertMatch(self, expected, text):
-        r = re.match(URL_REGEX, text)
-        self.assertIsNotNone(r)
-        self.assertEqual(expected, r.group('url'))
+        self.assertEqual(expected, command._url(URL_REGEX, text))
 
     def test_invalid(self):
-        self.assertEqual(None, re.match(URL_REGEX, ''))
-        self.assertEqual(None, re.match(URL_REGEX, 'http'))
-        self.assertEqual(None, re.match(URL_REGEX, 'http://.com'))
+        self.assertMatch(None, '')
+        self.assertMatch(None, 'http')
+        self.assertMatch(None, 'http://.com')
 
-    def test_x(self):
+    def test_basic(self):
         self.assertMatch('http://example.com', 'http://example.com')
         self.assertMatch('https://example.com', 'https://example.com')
 
@@ -34,3 +31,16 @@ class gx(ViewTestCase):
         self.assertMatch('http://example.com/x/y.html#x-y', 'http://example.com/x/y.html#x-y _xxx_')
         self.assertMatch('http://example.com/x/y?a=b&c=42', 'http://example.com/x/y?a=b&c=42 _xxx_')
         self.assertMatch('http://example.com/x/y?a=b&c=42', 'http://example.com/x/y?a=b&c=42 _xxx_')
+
+    def test_trailing_stop_is_ignored(self):
+        self.assertMatch('http://example.com', 'http://example.com.')
+
+    def test_trailing_parens_are_ignored(self):
+        self.assertMatch('http://example.com', 'http://example.com)')
+        self.assertMatch('http://example.com', 'http://example.com).')
+
+    def test_markdown_links(self):
+        # basic
+        self.assertMatch('http://example.com', '[title](http://example.com)')
+        # image
+        self.assertMatch('https://example.com', '[![Alt](https://example.com)]')
