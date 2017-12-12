@@ -611,18 +611,22 @@ class ViJoinLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-
         if state.mode == modes.SELECT:
-            # Exits select mode.
-            cmd['action'] = '_vi_select_big_j'
-            cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-            return cmd
-
-        cmd['action'] = '_vi_big_j'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+            return {
+                'action': '_vi_select_big_j',
+                'action_args': {
+                    'mode': state.mode,
+                    'count': state.count
+                }
+            }
+        else:
+            return {
+                'action': '_vi_big_j',
+                'action_args': {
+                    'mode': state.mode,
+                    'count': state.count
+                }
+            }
 
 
 @keys.assign(seq=seqs.CTRL_X, modes=_MODES_ACTION)
@@ -673,11 +677,11 @@ class ViJoinLinesNoSeparator(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_g_big_j',
+            'action': '_vi_big_j',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'separator': None
+                'dont_insert_or_remove_spaces': True
             }
         }
 

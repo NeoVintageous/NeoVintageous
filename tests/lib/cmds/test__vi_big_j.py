@@ -1,3 +1,5 @@
+# DEPRECATED These tests can be removed when the functional tests are merged.
+
 from collections import namedtuple
 
 from NeoVintageous.tests.utils import ViewTestCase
@@ -48,7 +50,8 @@ class Test__vi_big_j(ViewTestCase):
         for (i, data) in enumerate(TESTS):
             # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.initial_text)
-            self.select([self._R(*region) for region in data.regions])
+            regions = [self._R(*region) for region in data.regions]
+            self.select(regions)
 
             self.view.run_command('_vi_big_j', data.cmd_params)
 
