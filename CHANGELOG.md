@@ -8,6 +8,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Added: Use new GitGutter API
 
+### Fixed
+
+* Fixed: Unimpaired toggles (documentation)
+
 ## 1.4.1 - 2017-11-09
 
 ### Fixed
