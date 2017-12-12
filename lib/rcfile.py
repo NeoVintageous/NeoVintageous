@@ -81,8 +81,23 @@ def _parse_line(line):
                     cmd_line = cmd_line.replace(cmd, _TMP_CMD_ALIASES[cmd])
                     cmd = _TMP_CMD_ALIASES[cmd]
 
+                # By default, mapping the character '|' (bar) should be escaped
+                # with a slash or '<Bar>' used instead. Neovintageous currently
+                # doesn't support '<Bar>' and internally doesn't require the bar
+                # character to be escaped, but in order not to break backwards
+                # compatibility in the future, this piece of code checks that
+                # the mapping escapes the bar character correctly. This piece of
+                # code can be removed when this is fixed in the core. See :help
+                # map_bar for more details.
+                if '|' in cmd_line:
+                    if '|' in cmd_line.replace('\\|', ''):
+                        raise Exception('E488: Trailing characters: {}'.format(line.rstrip()))
+                    cmd_line = cmd_line.replace('\\|', '|')
+
                 return ('ex_' + cmd, {'command_line': cmd_line})
     except Exception:
-        _logger.exception('bad command in rcfile: \'%s\'', line.rstrip())
+        msg = 'error detected while processing \'{}\' at line \'{}\''.format(file_name(), line.rstrip())
+        nvim.message(msg)
+        _logger.exception(msg)
 
     return None, None

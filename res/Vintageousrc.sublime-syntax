@@ -9,13 +9,20 @@ scope: source.vintageousrc
 hidden: true
 contexts:
   main:
+
     - match: "^\\s*\".*"
       scope: comment.line.vintageourc
+
     - match: \b((n|o|s|v)?(nore)?map|let)\b
       scope: keyword.control.vintageourc
-    - match: \b(map(local)?leader)\b
-      scope: variable.language.vintageourc
+
+    - match: \b(map(?:local)?leader)(=).*
+      captures:
+        1: variable.language.vintageourc
+        2: keyword.operator.assignment.vintageourc
+
     - match: \<[A-Za-z0-9-]+\>
       scope: storage.type.vintageourc
-    - match: "="
-      scope: keyword.operator.assignment.vintageourc
+
+    - match: (?<!\\)\|
+      scope: invalid.vintageourc

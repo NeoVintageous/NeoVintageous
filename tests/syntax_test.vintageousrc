@@ -57,3 +57,30 @@ snoremap x y
 " ^ keyword.control
 vnoremap x y
 " ^ keyword.control
+
+nnoremap <leader>= <C-w>=
+" ^^^^^^ keyword.control
+"        ^^^^^^^^ storage.type
+"                ^ -storage
+"                ^ -keyword
+"                  ^^^^^ storage.type
+"                       ^ -storage
+"                       ^ -keyword
+
+nnoremap <leader>\| <C-w>\|
+" ^^^^^^ keyword.control
+"        ^^^^^^^^ storage.type
+"                ^^ -storage
+"                ^^ -keyword
+"                   ^^^^^ storage.type
+"                        ^^ -storage
+"                        ^^ -keyword
+nnoremap <leader>| <C-w>|
+"                ^ invalid
+"                       ^ invalid
+nnoremap <leader>w| <C-w>w|
+"                 ^ invalid
+"                         ^ invalid
+nnoremap <leader>|| <C-w>||
+"                ^^ invalid
+"                        ^^ invalid
