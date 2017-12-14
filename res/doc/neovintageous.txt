@@ -70,15 +70,21 @@ JUMPING TO DIFFS                                    *neovintageous-jumpto-diffs*
 
 ==============================================================================
 
-OPENING A SPLIT WINDOW                                    *neovintageous-splits*
+OPENING A WINDOW                                  *neovintageous-opening-window*
+                                                  *neovintageous-splits*
 
-CTRL-W_s                Split current window in two.
+CTRL-W s
+CTRL-W S
+:sp[lit] [file]         Split current window in two. The result is two
+                        viewports on the same file.
 
                         Requires: https://github.com/SublimeText/Origami
 
                         Also see |CTRL-W_s|.
 
-CTRL-W_v                Split current window in two (vertically).
+CTRL-W v
+CTRL-W CTRL-V
+:vs[plit] [file]        Like |:split|, but split vertically.
 
                         Requires: https://github.com/SublimeText/Origami
 

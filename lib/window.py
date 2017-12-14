@@ -589,18 +589,9 @@ class WindowAPI():
             _set_layout_groups_size_equal(
                 self.window.layout()))
 
+    # DEPRECATED Use window_split() instead
     def split_current_view_in_two(self, n=None):
-        """
-        Split current view in two.
-
-        The result is two viewports on the same file.  Make new view N high
-        (default is to use half the height of the current window).  Rduces the
-        current view height to create room (and others, if the 'equalalways'
-        option is set, 'eadirection' isn't "hor", and one of the is higher than
-        the current or the new view).
-        """
-        self.window.run_command('create_pane', {'direction': 'down'})
-        self.window.run_command('clone_file_to_pane', {'direction': 'down'})
+        window_split(self.window)
 
     def split_current_view_in_two_vertically(self, n=None):
         self.window.run_command('create_pane', {'direction': 'right'})
@@ -615,3 +606,20 @@ class WindowAPI():
         'equalalways' option is set and 'eadirection' isn't "hor").
         """
         self.window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
+
+
+def window_split(window, file=None):
+    # Split current view in two.
+    #
+    # The result is two viewports on the same file.
+    #
+    # TODO: Accept argument to make new view N high (default is to use half the
+    # height of the current window).  Rduces the current view height to create
+    # room (and others, if the 'equalalways' option is set, 'eadirection' isn't
+    # "hor", and one of the is higher than the current or the new view).
+    if file:
+        window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
+        window.open_file(file)
+    else:
+        window.run_command('create_pane', {'direction': 'down'})
+        window.run_command('clone_file_to_pane', {'direction': 'down'})

@@ -35,6 +35,7 @@ from NeoVintageous.lib.vi.utils import has_dirty_buffers
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.vi.utils import row_at
+from NeoVintageous.lib.window import window_split
 from NeoVintageous.lib.window import WindowAPI
 
 
@@ -75,6 +76,7 @@ __all__ = [
     'ExShell',
     'ExShellOut',
     'ExSmap',
+    'ExSplit',
     'ExSubstitute',
     'ExTabfirstCommand',
     'ExTablastCommand',
@@ -1541,6 +1543,7 @@ class ExCddCommand(WindowCommand, WindowCommandMixin):
             nvim.exception_message(nvim.Error(nvim.E_CANT_FIND_DIR_IN_CDPATH))
 
 
+# TODO Refactor like ExSplit
 # https://vimhelp.appspot.com/windows.txt.html#:vsplit
 class ExVsplit(WindowCommand, WindowCommandMixin):
 
@@ -1565,34 +1568,47 @@ class ExVsplit(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         parsed = parse_command_line(command_line)
 
-        file_name = parsed.command.params['file_name']
+        file = parsed.command.params['file']
 
         groups = self.window.num_groups()
         if groups >= ExVsplit._MAX_SPLITS:
-            nvim.console_message('Can\'t create more groups')
-            nvim.status_message('Can\'t create more groups')
-            return
+            return nvim.message('Can\'t create more groups')
 
         old_view = self._view
-        pos = ":{0}:{1}".format(*old_view.rowcol(old_view.sel()[0].b))
-        current_file_name = old_view.file_name() + pos
+        pos = ''
+        current_file_name = None
+        if old_view and old_view.file_name():
+            pos = ':{0}:{1}'.format(*old_view.rowcol(old_view.sel()[0].b))
+            current_file_name = old_view.file_name() + pos
+
         self.window.run_command('set_layout', ExVsplit.LAYOUT_DATA[groups + 1])
 
-        # TODO: rename this param.
-        if file_name:
-            existing = self.window.find_open_file(file_name)
+        if file:
+            existing = self.window.find_open_file(file)
             pos = ''
             if existing:
-                pos = ":{0}:{1}".format(*existing.rowcol(existing.sel()[0].b))
-            self.open_file(file_name + pos)
-            return
+                pos = ':{0}:{1}'.format(*existing.rowcol(existing.sel()[0].b))
 
-        # No file name provided; clone current view into new group.
-        self.open_file(current_file_name)
+            return self.open_file(file + pos)
 
-    def open_file(self, file_name):
-        flags = (FORCE_GROUP | ENCODED_POSITION)
-        self.window.open_file(file_name, group=(self.window.num_groups() - 1), flags=flags)
+        if current_file_name:
+            self.open_file(current_file_name)
+        else:
+            self.window.new_file()
+
+    def open_file(self, file):
+        self.window.open_file(
+            file,
+            group=(self.window.num_groups() - 1),
+            flags=(FORCE_GROUP | ENCODED_POSITION)
+        )
+
+
+# https://vimhelp.appspot.com/windows.txt.html#:split
+class ExSplit(WindowCommand, WindowCommandMixin):
+
+    def run(self, command_line=''):
+        window_split(self.window, parse_command_line(command_line).command.params['file'])
 
 
 class ExUnvsplit(WindowCommand, WindowCommandMixin):

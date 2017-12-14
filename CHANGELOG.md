@@ -2,13 +2,20 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## Unreleased (1.5.0)
 
 ### Added
 
+* Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/245): `:sp[lit] [file]`
 * Added: Unimpaired statusbar toggles on: `[oe`, off: `]oe`, and toggle `coe`
 * Added: Unimpaired menu toggles on: `[oa`, off: `]oa`, and toggle `coa`
 * Added: Use new GitGutter API
+
+### Fixed
+
+* Fixed [#254](https://github.com/NeoVintageous/NeoVintageous/issues/245): `:vs[plit] [file]` TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+
+## Unreleased (1.4.2)
 
 ### Fixed
 

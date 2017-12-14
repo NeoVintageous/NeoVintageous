@@ -37,6 +37,7 @@ from .scanner_command_set_local import scan_command_set_local
 from .scanner_command_shell import scan_command_shell
 from .scanner_command_shell_out import scan_command_shell_out
 from .scanner_command_smap import scan_command_smap
+from .scanner_command_split import scan_command_split
 from .scanner_command_substitute import scan_command_substitute
 from .scanner_command_tab_first import scan_command_tab_first
 from .scanner_command_tab_last import scan_command_tab_last
@@ -98,6 +99,7 @@ patterns[r'se(?:t)?(?=$|\s)'] = scan_command_set
 patterns[r'setl(?:ocal)?'] = scan_command_set_local
 patterns[r'sh(?:ell)?'] = scan_command_shell
 patterns[r'sm(?:ap)?'] = scan_command_smap
+patterns[r'sp(?:lit)?'] = scan_command_split
 patterns[r'tabfir(?:st)?'] = scan_command_tab_first
 patterns[r'tabl(?:ast)?'] = scan_command_tab_last
 patterns[r'tabn(?:ext)?'] = scan_command_tab_next

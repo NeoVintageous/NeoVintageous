@@ -17,9 +17,8 @@ def scan_command_vsplit(state):
     state.skip(' ')
     state.ignore()
 
-    # TODO Rename file_name -> file
     params = {
-        'file_name': None
+        'file': None
     }
 
     if state.consume() == EOF:
@@ -27,6 +26,6 @@ def scan_command_vsplit(state):
 
     state.backup()
 
-    params['file_name'] = state.match(r'.+$').group(0).strip()
+    params['file'] = state.match(r'.+$').group(0).strip()
 
     return None, [TokenCommandVsplit(params), TokenEof()]
