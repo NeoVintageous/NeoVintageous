@@ -1,17 +1,22 @@
-"""Scanner state."""
 import re
 
 
 EOF = '__EOF__'
 
 
-class ScannerState(object):
+class ScannerState():
+
+    # Args:
+    #   :source: The string to be scanned.
+    #
+    # Attributes:
+    #   :source (str): The string to be scanned.
+    #   :position (int): The current scan position. Default is 0.
+    #   :start (int): The most recent scan start. Default is 0.
+
     def __init__(self, source):
-        # the string to be scanned
         self.source = source
-        # current scan position
         self.position = 0
-        # most recent scan start
         self.start = 0
 
     def consume(self):

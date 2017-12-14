@@ -15,9 +15,17 @@ from .tokens import TokenSemicolon
 from NeoVintageous.lib import nvim
 
 
-# TODO: make this a function. We don't need state.
-class Scanner(object):
-    """Produce ex command-line tokens from a string."""
+class Scanner():
+    # Produce ex command-line tokens from a string.
+    #
+    # Args:
+    #   :source (str):
+    #
+    # Attributes:
+    #   :state (ScannerState):
+    #
+    # Todo:
+    #   Make this class a function. We don't need a state object reference.
 
     def __init__(self, source):
         self.state = ScannerState(source)
@@ -43,11 +51,13 @@ class Scanner(object):
 
 
 def scan_range(state):
-    """
-    Produce tokens found in a command line range.
+    # Produce tokens found in a command line range.
+    #
+    # https://vimhelp.appspot.com/cmdline.txt.html#cmdline-ranges
+    #
+    # Args:
+    #   :state (ScannerState):
 
-    https://vimhelp.appspot.com/cmdline.txt.html#cmdline-ranges
-    """
     c = state.consume()
 
     if c == EOF:

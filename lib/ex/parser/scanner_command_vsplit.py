@@ -17,6 +17,7 @@ def scan_command_vsplit(state):
     state.skip(' ')
     state.ignore()
 
+    # TODO Rename file_name -> file
     params = {
         'file_name': None
     }

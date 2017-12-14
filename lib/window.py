@@ -172,6 +172,7 @@ def _set_layout_groups_size_equal(layout):
     return layout
 
 
+# TODO Refactor into descrete functional api instead of a class
 class WindowAPI():
 
     def __init__(self, window):

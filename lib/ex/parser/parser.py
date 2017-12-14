@@ -1,8 +1,6 @@
 """Parsing for the Vim command line."""
 
-# ////////////////////////////////////////////////////////////////////////////
-# Some imports at the bottom to avoid circular refs.
-# ////////////////////////////////////////////////////////////////////////////
+# IMPORTANT! Some imports are at the bottom to avoid circular refs.
 
 from .nodes import CommandLineNode
 from .nodes import RangeNode
@@ -21,6 +19,9 @@ from .tokens_base import TokenOfCommand
 
 
 class ParserState():
+    # Args:
+    #   :source (str):
+
     def __init__(self, source):
         self.scanner = Scanner(source)
         self.is_range_start_line_parsed = False
@@ -31,7 +32,6 @@ class ParserState():
 
 
 def parse_command_line(source):
-
     # The parser works its way through the command line by passing the current
     # state to the next parsing function. It stops when no parsing funcion is
     # returned from the previous one.
@@ -57,6 +57,7 @@ def parse_command_line(source):
 def init_line_range(command_line):
     if command_line.line_range:
         return
+
     command_line.line_range = RangeNode()
 
 
@@ -237,5 +238,5 @@ def process_dot(state, command_line):
         return parse_line_ref, command_line
 
 
-# avoid circular ref: some subscanners import parse_command_line()
+# IMPORTANT! Avoid circular refs. Some subscanners import parse_command_line()
 from .scanner import Scanner  # FIXME # noqa: E402
