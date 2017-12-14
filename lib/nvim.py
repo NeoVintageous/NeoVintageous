@@ -66,7 +66,7 @@ def console_message(msg):
 
 
 def status_message(msg):
-    _status_message(msg)
+    _status_message(str(msg))
 
 
 def message(msg):
