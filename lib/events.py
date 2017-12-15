@@ -234,6 +234,19 @@ class NeoVintageousEvents(EventListener):
                         ]
                     })
 
+    def on_post_text_command(self, view, command, args):
+        # This fixes issues where the xpos is not updated after a mouse click
+        # moves the cursor position. These issues look like they could be
+        # compounded by issues in the _vi_adjust_carets command. See
+        # on_post_save(). The xpos only needs to be updated on single mouse
+        # click.
+        if command == 'drag_select':
+            if set(args) == {'event'}:
+                if set(args['event']) == {'x', 'y', 'button'}:
+                    if args['event']['button'] == 1:
+                        state = State(view)
+                        state.update_xpos(force=True)
+
     def on_load(self, view):
         if view.settings().get('vintageous_modeline', False):
             modeline(view)
