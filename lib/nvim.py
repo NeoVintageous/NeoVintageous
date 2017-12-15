@@ -47,7 +47,7 @@ class Error(Exception):
         E_INVALID_ARGUMENT: "Invalid argument.",
         E_NO_BANG_ALLOWED: 'No ! allowed.',
         E_NO_RANGE_ALLOWED: 'No range allowed.',
-        E_TRAILING_CHARS: 'Traling characters.',
+        E_TRAILING_CHARS: 'Trailing characters.',
         E_UNKNOWN_COMMAND: 'Not an editor command.',
         E_EMPTY_BUFFER: 'Empty buffer.',
     }

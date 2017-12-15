@@ -973,9 +973,7 @@ class ExSubstitute(TextCommand):
             count = 0  # FIXME # noqa: F841
 
         if not pattern:
-            nvim.status_message('no previous pattern available')
-            nvim.console_message('no previous pattern available')
-            return
+            return nvim.status_message('E33: No previous substitute regular expression')
 
         ExSubstitute._last_pattern = pattern
         ExSubstitute._last_replacement = replacement
