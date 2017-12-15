@@ -12,7 +12,6 @@ from .tokens import TokenPercent
 from .tokens import TokenSearchBackward
 from .tokens import TokenSearchForward
 from .tokens import TokenSemicolon
-from NeoVintageous.lib import nvim
 
 
 class Scanner():
@@ -188,6 +187,6 @@ def scan_command(state):
 
             return subscanner(state)
 
-    state.expect(EOF, lambda: nvim.Error(nvim.E_UNKNOWN_COMMAND))
+    state.expect(EOF, lambda: Exception("E492: Not an editor command"))
 
     return None, [TokenEof()]

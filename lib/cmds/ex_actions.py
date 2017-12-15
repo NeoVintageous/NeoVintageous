@@ -183,7 +183,8 @@ class ExHelp(WindowCommand, WindowCommandMixin):
         subject = parsed.command.subject
         if not subject:
             if parsed.command.forced:
-                return nvim.message('E478: Don\'t panic!')
+                return nvim.message("E478: Don't panic!")
+
             subject = 'help.txt'
 
         subject = subject.lower()
@@ -285,8 +286,8 @@ class ExShellOut(TextCommand):
 
         if shell_cmd == '!':
             if not self._last_command:
-                nvim.status_message('no previous command')
-                return
+                return nvim.status_message('no previous command')
+
             shell_cmd = self._last_command
 
         # TODO: store only successful commands.
@@ -315,7 +316,7 @@ class ExShellOut(TextCommand):
                                                    'scroll_to_end': True})
                 self.view.window().run_command("show_panel", {"panel": "output.vi_out"})
         except NotImplementedError:
-            nvim.not_implemented_message('not implemented')
+            nvim.message('not implemented')
 
 
 class ExShell(WindowCommand, WindowCommandMixin):
@@ -339,31 +340,33 @@ class ExShell(WindowCommand, WindowCommandMixin):
             term = self.view.settings().get('VintageousEx_linux_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
-                nvim.status_message('not terminal name found')
-                return
+                return nvim.status_message('not terminal name found')
+
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
                 nvim.console_message(e)
                 nvim.status_message('error while executing command through shell')
                 return
+
         elif platform() == 'osx':
             term = self.view.settings().get('VintageousEx_osx_terminal')
             term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
             if not term:
-                nvim.status_message('not terminal name found')
-                return
+                return nvim.status_message('not terminal name found')
+
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
                 nvim.console_message(e)
                 nvim.status_message('error while executing command through shell')
                 return
+
         elif platform() == 'windows':
             self.open_shell(['cmd.exe', '/k']).wait()
         else:
             # XXX OSX (make check explicit)
-            nvim.not_implemented_message('not implemented')
+            nvim.message('not implemented')
 
 
 # https://vimhelp.appspot.com/insert.txt.html#:r
@@ -403,14 +406,13 @@ class ExReadShellOut(TextCommand):
                 rv = p.communicate()[0].decode(cp)[:-2].strip()
                 self.view.insert(edit, target_point, rv.strip() + '\n')
             else:
-                nvim.not_implemented_message('not implemented')
+                nvim.message('not implemented')
         # Read a file into the current view.
         else:
             # According to Vim's help, :r should read the current file's content
             # if no file name is given, but Vim doesn't do that.
             # TODO: implement reading a file into the buffer.
-            nvim.not_implemented_message('not implemented')
-            return
+            return nvim.message('not implemented')
 
 
 # https://vimhelp.appspot.com/windows.txt.html#:ls
@@ -462,8 +464,8 @@ class ExMap(WindowCommand, WindowCommandMixin):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
         if not (parsed.command.keys and parsed.command.command):
-            nvim.not_implemented_message('showing mappings not implemented')
-            return
+            return nvim.message('showing mappings not implemented')
+
         mappings = Mappings(self.state)
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
         mappings.add(modes.OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
@@ -585,8 +587,7 @@ class ExAbbreviate(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
 
         if not (parsed.command.short and parsed.command.full):
-            nvim.not_implemented_message(':abbreviate not fully implemented')
-            return
+            return nvim.message(':abbreviate not fully implemented')
 
         abbrev.Store().set(parsed.command.short, parsed.command.full)
 
@@ -629,12 +630,10 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
 
         if parsed.command.options:
-            nvim.not_implemented_message('++opt isn\'t implemented for :write')
-            return
+            return nvim.message('++opt isn\'t implemented for :write')
 
         if parsed.command.command:
-            nvim.not_implemented_message('!cmd not implememted for :write')
-            return
+            return nvim.message('!cmd not implememted for :write')
 
         if not self._view:
             return
@@ -644,23 +643,21 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
             return
 
         if parsed.command.command:
-            nvim.not_implemented_message('!cmd isn\'t implemented for :write')
-            return
+            return nvim.message('!cmd isn\'t implemented for :write')
 
         if parsed.command.target_file:
             self.do_write(parsed)
             return
 
         if not self._view.file_name():
-            nvim.exception_message(nvim.Error(nvim.E_NO_FILE_NAME))
-            return
+            return nvim.message("E32: No file name")
 
         read_only = (self.check_is_readonly(self._view.file_name()) or self._view.is_read_only())
 
         if read_only and not parsed.command.forced:
             utils.blink()
-            nvim.exception_message(nvim.Error(nvim.E_READONLY_FILE))
-            return
+
+            return nvim.message("E45: 'readonly' option is set (add ! to override)")
 
         self.window.run_command('save')
 
@@ -717,16 +714,16 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
         fname = parsed_command.command.target_file
 
         if not parsed_command.command.forced and not os.path.exists(fname):
-            nvim.exception_message(nvim.Error(nvim.E_CANT_WRITE_FILE))
-            return
+            return nvim.message("E212: Can't open file for writing: %s" % fname)
 
         try:
             with open(fname, 'at') as f:
                 text = self._view.substr(r)
                 f.write(text)
+
             # TODO: make this `show_info` instead.
-            nvim.status_message('Appended to ' + os.path.abspath(fname))
-            return
+            return nvim.status_message('Appended to ' + os.path.abspath(fname))
+
         except IOError as e:
             nvim.console_message('could not write file')
             nvim.console_message('--------------------')
@@ -740,13 +737,13 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
         if not ex_command.command.forced:
             if os.path.exists(fname):
                 utils.blink()
-                nvim.exception_message(nvim.Error(nvim.E_FILE_EXISTS))
-                return
+
+                return nvim.message("E13: File exists (add ! to override)")
 
             if self.check_is_readonly(fname):
                 utils.blink()
-                nvim.exception_message(nvim.Error(nvim.E_READONLY_FILE))
-                return
+
+                return nvim.message("E45: 'readonly' option is set (add ! to override)")
 
         region = None
         if ex_command.line_range.is_empty:
@@ -763,13 +760,14 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
             with open(expanded_path, 'wt') as f:
                 text = self._view.substr(region)
                 f.write(text)
+
             # FIXME: Does this do what we think it does?
             self._view.retarget(expanded_path)
             self.window.run_command('save')
 
         except IOError as e:
             # TODO: Add logging.
-            nvim.exception_message(nvim.Error(nvim.E_CANT_WRITE_FILE))
+            nvim.message("E212: Can't open file for writing: %s" % fname)
             nvim.console_message('----------------------------------------------')
             nvim.console_message(e)
             nvim.console_message('----------------------------------------------')
@@ -789,6 +787,7 @@ class ExWriteAll(WindowCommand, WindowCommandMixin):
         for v in (v for v in self.window.views() if v.file_name()):
             if v.is_read_only() and not forced:
                 continue
+
             v.run_command('save')
 
 
@@ -841,14 +840,12 @@ class ExMove(ExTextCommandBase):
         move_command = parse_command_line(command_line)
 
         if move_command.command.address is None:
-            nvim.exception_message(nvim.Error(nvim.E_INVALID_ADDRESS))
-            return
+            return nvim.message("E14: Invalid address")
 
         source = move_command.line_range.resolve(self.view)
 
         if any(s.contains(source) for s in self.view.sel()):
-            nvim.exception_message(nvim.Error(nvim.E_CANT_MOVE_LINES_ONTO_THEMSELVES))
-            return
+            return nvim.message("E134: Move lines into themselves")
 
         destination = move_command.command.address.resolve(self.view)
 
@@ -884,8 +881,7 @@ class ExCopy(ExTextCommandBase):
         unresolved = parsed.command.calculate_address()
 
         if unresolved is None:
-            nvim.exception_message(nvim.Error(nvim.E_INVALID_ADDRESS))
-            return
+            return nvim.message("E14: Invalid address")
 
         # TODO: how do we signal row 0?
         target_region = unresolved.resolve(self.view)
@@ -921,8 +917,7 @@ class ExOnly(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
 
         if not parsed.command.forced and has_dirty_buffers(self.window):
-                nvim.exception_message(nvim.Error(nvim.E_OTHER_BUFFER_HAS_CHANGES))
-                return
+            return nvim.message("E445: Other window contains changes")
 
         current_id = self._view.id()
 
@@ -1117,9 +1112,7 @@ class ExGlobal(WindowCommand, WindowCommandMixin):
             matches = find_all_in_range(self._view, pattern, global_range.begin(), global_range.end())
         except Exception as e:
             msg = "(global): %s ... in pattern '%s'" % (str(e), pattern)
-            nvim.status_message(msg)
-            nvim.console_message(msg)
-            return
+            return nvim.message(msg)
 
         if not matches or not parsed.command.subcommand.cooperates_with_global:
             return
@@ -1141,8 +1134,7 @@ class ExPrint(WindowCommand, WindowCommandMixin):
         assert command_line, 'expected non-empty command line'
 
         if self._view.size() == 0:
-            nvim.exception_message(nvim.Error(nvim.E_EMPTY_BUFFER))
-            return
+            return nvim.message("E749: empty buffer")
 
         parsed = parse_command_line(command_line)
 
@@ -1200,12 +1192,10 @@ class ExQuitCommand(WindowCommand, WindowCommandMixin):
             view.set_scratch(True)
 
         if view.is_dirty() and not quit_command.command.forced:
-            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
-            return
+            return nvim.message("E37: No write since last change")
 
         if not view.file_name() and not quit_command.command.forced:
-            nvim.exception_message(nvim.Error(nvim.E_NO_FILE_NAME))
-            return
+            return nvim.message("E32: No file name")
 
         self.window.run_command('close')
 
@@ -1231,9 +1221,9 @@ class ExQuitAllCommand(WindowCommand, WindowCommandMixin):
             for v in self.window.views():
                 if v.is_dirty():
                     v.set_scratch(True)
+
         elif has_dirty_buffers(self.window):
-            nvim.status_message('there are unsaved changes!')
-            return
+            return nvim.status_message('there are unsaved changes!')
 
         self.window.run_command('close_all')
         self.window.run_command('exit')
@@ -1248,14 +1238,13 @@ class ExWriteAndQuitCommand(WindowCommand, WindowCommandMixin):
 
         # TODO: implement this
         if parsed.command.forced:
-            nvim.not_implemented_message('not implemented')
-            return
+            return nvim.message('not implemented')
+
         if self._view.is_read_only():
-            nvim.status_message('can\'t write a read-only buffer')
-            return
+            return nvim.status_message("can't write a read-only buffer")
+
         if not self._view.file_name():
-            nvim.status_message('can\'t save a file without name')
-            return
+            return nvim.status_message("can't save a file without name")
 
         self.window.run_command('save')
         self.window.run_command('ex_quit', {'command_line': 'quit'})
@@ -1285,14 +1274,11 @@ class ExEdit(WindowCommand, WindowCommandMixin):
             file_name = os.path.expanduser(os.path.expandvars(parsed.command.file_name))
 
             if self._view.is_dirty() and not parsed.command.forced:
-                nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
-                return
+                return nvim.message("E37: No write since last change")
 
             if os.path.isdir(file_name):
                 # TODO Open a file-manager in a buffer
-                nvim.status_message('Cannot open directory')
-                nvim.console_message('Cannot open directory')
-                return
+                return nvim.message('Cannot open directory')
 
             if not os.path.isabs(file_name):
                 file_name = os.path.join(
@@ -1312,18 +1298,16 @@ class ExEdit(WindowCommand, WindowCommandMixin):
                 set_timeout(lambda: nvim.status_message(msg), 150)
                 return
 
-            nvim.not_implemented_message('not implemented case for :edit ({0})'.format(command_line))
-            return
+            return nvim.message('not implemented case for :edit ({0})'.format(command_line))
 
         if parsed.command.forced or not self._view.is_dirty():
             self._view.run_command('revert')
             return
 
         if self._view.is_dirty():
-            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
-            return
+            return nvim.message("E37: No write since last change")
 
-        nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
+        nvim.message("E37: No write since last change")
 
 
 # https://vimhelp.appspot.com/quickfix.txt.html#:cquit
@@ -1476,8 +1460,7 @@ class ExCdCommand(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
 
         if self._view.is_dirty() and not parsed.command.forced:
-            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
-            return
+            return nvim.message("E37: No write since last change")
 
         if not parsed.command.path:
             self.state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
@@ -1495,8 +1478,7 @@ class ExCdCommand(WindowCommand, WindowCommandMixin):
 
         path = os.path.realpath(os.path.expandvars(os.path.expanduser(parsed.command.path)))
         if not os.path.exists(path):
-            nvim.exception_message(nvim.Error(nvim.E_CANT_FIND_DIR_IN_CDPATH))
-            return
+            return nvim.message("E344: Can't find directory \"%s\" in cdpath" % path)
 
         self.state.settings.vi['_cmdline_cd'] = path
         self._view.run_command('ex_print_working_dir')
@@ -1525,8 +1507,7 @@ class ExCddCommand(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
 
         if self._view.is_dirty() and not parsed.command.forced:
-            nvim.exception_message(nvim.Error(nvim.E_UNSAVED_CHANGES))
-            return
+            return nvim.message("E37: No write since last change")
 
         path = os.path.dirname(self._view.file_name())
 
@@ -1534,7 +1515,7 @@ class ExCddCommand(WindowCommand, WindowCommandMixin):
             self.state.settings.vi['_cmdline_cd'] = path
             nvim.status_message(path)
         except IOError:
-            nvim.exception_message(nvim.Error(nvim.E_CANT_FIND_DIR_IN_CDPATH))
+            nvim.message("E344: Can't find directory \"%s\" in cdpath" % path)
 
 
 # TODO Refactor like ExSplit
@@ -1632,8 +1613,8 @@ class ExSetLocal(WindowCommand, WindowCommandMixin):
         value = parsed.command.value
 
         if option.endswith('?'):
-            nvim.not_implemented_message('not implemented')
-            return
+            return nvim.message('not implemented')
+
         try:
             set_local(self._view, option, value)
         except KeyError:
@@ -1653,8 +1634,8 @@ class ExSet(WindowCommand, WindowCommandMixin):
         value = parsed.command.value
 
         if option.endswith('?'):
-            nvim.not_implemented_message('not implemented')
-            return
+            return nvim.message('not implemented')
+
         try:
             set_global(self._view, option, value)
         except KeyError:
@@ -1679,14 +1660,14 @@ class ExWriteAndQuitAll(WindowCommand, WindowCommandMixin):
         assert command_line, 'expected non-empty command line'
 
         if not all(v.file_name() for v in self.window.views()):
-            nvim.exception_message(nvim.Error(nvim.E_NO_FILE_NAME))
             utils.blink()
-            return
+
+            return nvim.message("E32: No file name")
 
         if any(v.is_read_only() for v in self.window.views()):
-            nvim.exception_message(nvim.Error(nvim.E_READONLY_FILE))
             utils.blink()
-            return
+
+            return nvim.message("E45: 'readonly' option is set (add ! to override)")
 
         self.window.run_command('save_all')
 

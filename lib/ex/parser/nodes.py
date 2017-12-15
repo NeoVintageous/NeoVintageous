@@ -1,7 +1,6 @@
 from sublime import Region
 
 
-from NeoVintageous.lib import nvim
 from NeoVintageous.lib.ex.parser.tokens import TokenDigits
 from NeoVintageous.lib.ex.parser.tokens import TokenDollar
 from NeoVintageous.lib.ex.parser.tokens import TokenDot
@@ -187,4 +186,4 @@ class CommandLineNode(Node):
             return
 
         if not self.command.addressable and not self.line_range.is_empty:
-            raise nvim.Error(nvim.E_NO_RANGE_ALLOWED)
+            raise Exception("E481: No range allowed")

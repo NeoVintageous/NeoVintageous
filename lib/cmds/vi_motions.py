@@ -1791,8 +1791,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
                                       times=count)
 
         if not found:
-            nvim.console_message('Pattern not found')
-            return
+            return nvim.console_message('Pattern not found')
 
         regions_transformer(self.view, f)
         self.hilite(search_string)

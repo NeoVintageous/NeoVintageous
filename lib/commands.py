@@ -523,10 +523,8 @@ class ViColonInput(WindowCommand):
                 parsed_new.command = TokenCommandGoto()
 
             self.window.run_command(parsed_new.command.target_command, {'command_line': cmd_line[1:]})
-        except nvim.Error as ve:
-            nvim.exception_message(ve)
         except Exception as e:
-            nvim.not_implemented_message(str(e) + ' ' + "(%s)" % cmd_line)
+            nvim.message(str(e) + ' ' + "(%s)" % cmd_line)
 
 
 class ViColonRepeatLast(WindowCommand):
@@ -788,8 +786,7 @@ class TabControlCommand(ViWindowCommandBase):
 
             group = self.window.views_in_group(group_index)
             if any(view.is_dirty() for view in group):
-                nvim.exception_message(nvim.Error(nvim.E_OTHER_BUFFER_HAS_CHANGES))
-                return
+                return nvim.message("E445: Other window contains changes")
 
             for view in group:
                 if view.id() == self._view.id():
@@ -801,5 +798,4 @@ class TabControlCommand(ViWindowCommandBase):
             self.window.focus_view(self._view)
 
         else:
-            nvim.console_message('unknown tab control command')
-            nvim.status_message('unknown tab control command')
+            return nvim.message('unknown tab control command')

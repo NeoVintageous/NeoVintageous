@@ -253,16 +253,14 @@ class WindowAPI():
             return
 
         if do_not_close_if_last and len(self.window.views()) < 2:
-            nvim.status_message('cannot close last view')
-            return
+            return nvim.status_message('cannot close last view')
 
         if current_view.is_dirty():
             dirty_buffer_message = 'No write since last change'
             if current_view.file_name() is not None:
                 dirty_buffer_message += ' for buffer "%s"' % current_view.file_name()
 
-            nvim.status_message(dirty_buffer_message)
-            return
+            return nvim.status_message(dirty_buffer_message)
 
         current_view.close()
 

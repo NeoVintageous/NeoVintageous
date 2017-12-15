@@ -2,8 +2,6 @@ from .state import EOF
 from .tokens import TokenEof
 from .tokens_base import TOKEN_COMMAND_FILE
 from .tokens_base import TokenOfCommand
-
-from NeoVintageous.lib import nvim
 from NeoVintageous.lib import ex
 
 
@@ -22,8 +20,8 @@ def scan_command_file(state):
 
     bang = bang == '!'
     if not bang:
-        raise nvim.Error(nvim.E_TRAILING_CHARS)
+        raise Exception("E488: Trailing characters")
 
-    state.expect(EOF, on_error=lambda: nvim.Error(nvim.E_TRAILING_CHARS))
+    state.expect(EOF, on_error=lambda: Exception("E488: Trailing characters"))
 
     return None, [TokenCommandFile(forced=bang == '!'), TokenEof()]

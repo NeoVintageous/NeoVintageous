@@ -1666,8 +1666,7 @@ class _vi_p(ViTextCommandBase):
         register = register or '"'
         fragments = state.registers[register]
         if not fragments:
-            nvim.console_message('Nothing in register "')
-            return
+            return nvim.console_message('Nothing in register "')
 
         if state.mode == modes.VISUAL:
             prev_text = state.registers.get_selected_text(self)
@@ -2401,8 +2400,7 @@ class _vi_at(IrreversibleTextCommand):
                 cmds = State.macro_registers[name]
                 State.macro_steps = cmds
             except ValueError as e:
-                nvim.console_message('error: %s' % e)
-                return
+                return nvim.console_message('error: %s' % e)
 
         state = State(self.view)
         for cmd, args in cmds:
