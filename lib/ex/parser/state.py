@@ -20,14 +20,19 @@ class ScannerState():
         self.start = 0
 
     def consume(self):
-        """Consumes one character from `source`."""
+        # Consume one character from source.
+        #
+        # Returns:
+        #   str: One character or EOF constant ("__EOF__") if no characters left
+        #       in source.
         if self.position >= len(self.source):
             return EOF
 
-        rv = self.source[self.position]
+        c = self.source[self.position]
+
         self.position += 1
 
-        return rv
+        return c
 
     def backup(self):
         """Backs up scanner position by 1 character."""

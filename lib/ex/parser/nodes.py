@@ -168,6 +168,10 @@ class CommandLineNode(Node):
     # Args:
     #   :line_range (RangeNode):
     #   :command (TokenOfCommand):
+    #
+    # Attributes:
+    #   :line_range (RangeNode):
+    #   :command (TokenOfCommand):
 
     def __init__(self, line_range, command):
         self.line_range = line_range

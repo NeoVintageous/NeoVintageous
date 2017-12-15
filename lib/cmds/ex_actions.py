@@ -950,7 +950,6 @@ class ExSubstitute(TextCommand):
     _last_replacement = ''
 
     def run(self, edit, command_line=''):
-
         if not command_line:
             raise ValueError('no command line passed; that seems wrong')
 

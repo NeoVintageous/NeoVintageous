@@ -19,8 +19,14 @@ from .tokens_base import TokenOfCommand
 
 
 class ParserState():
+
     # Args:
     #   :source (str):
+    #
+    # Attributes:
+    #   :scanner (Scanner):
+    #   :is_range_start_line_parsed (bool): Default is false.
+    #   :tokens:
 
     def __init__(self, source):
         self.scanner = Scanner(source)
@@ -44,7 +50,6 @@ def parse_command_line(source):
 
     state = ParserState(source)
     parse_func = parse_line_ref
-    # Create empty command line.
     command_line = CommandLineNode(None, None)
     while True:
         parse_func, command_line = parse_func(state, command_line)

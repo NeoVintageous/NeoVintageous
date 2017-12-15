@@ -57,6 +57,9 @@ def scan_range(state):
     #
     # Args:
     #   :state (ScannerState):
+    #
+    # Returns:
+    #   tuple
 
     c = state.consume()
 
@@ -175,9 +178,15 @@ def scan_offset(state):
 
 
 def scan_command(state):
+    # Args:
+    #   :state (ScannerState):
+    #
+    # Returns:
+    #   tuple
     for (pattern, subscanner) in subscanners.patterns.items():
         if state.match(pattern):
             state.ignore()
+
             return subscanner(state)
 
     state.expect(EOF, lambda: nvim.Error(nvim.E_UNKNOWN_COMMAND))
