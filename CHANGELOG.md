@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: "Traling characters" Status message typo
 * Fixed: `:s[ubstitute]` No previous substitute error message is incorrect
 * Fixed: [#226](https://github.com/NeoVintageous/NeoVintageous/issues/226): Mouse does not reset cursor column
 * Fixed: `C-w _` (set current group height as high as possible) doesn't always work correctly
