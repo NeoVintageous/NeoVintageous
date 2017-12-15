@@ -75,7 +75,11 @@ def scan_command_substitute_params(state):
             break
 
         if c == EOF:
-            raise ValueError("bad command: {0}".format(state.source))
+            state.start += 1
+            params['replacement'] = state.emit()
+            state.consume()
+            state.ignore()
+            break
 
     if state.match(r'\s*[&cegiInp#lr]+'):
         params['flags'] = list(state.emit().strip())
