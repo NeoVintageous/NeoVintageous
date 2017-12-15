@@ -19,6 +19,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: [#226](https://github.com/NeoVintageous/NeoVintageous/issues/226): Mouse does not reset cursor column
 * Fixed: `C-w _` (set current group height as high as possible) doesn't always work correctly
 * Fixed: `C-w |` (set current group width as wide as possible) doesn't always work correctly
 * Fixed: `C-w =` (resize all groups equally) doesn't always work correctly
