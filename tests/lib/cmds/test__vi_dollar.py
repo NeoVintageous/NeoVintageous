@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 
 def first_sel(self):
@@ -12,41 +12,41 @@ region_data = namedtuple('region_data', 'regions')
 
 TESTS_INTERNAL_NORMAL = (
     # NORMAL mode
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[(0, 0), (0, 0)]], cmd_params={'mode': ViewTestCase.NORMAL_MODE},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[(0, 0), (0, 0)]], cmd_params={'mode': unittest.NORMAL_MODE},  # noqa: E241,E501
               expected=region_data([(0, 2), (0, 2)]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[(0, 0), (0, 0)]], cmd_params={'mode': ViewTestCase.NORMAL_MODE, 'count': 5},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[(0, 0), (0, 0)]], cmd_params={'mode': unittest.NORMAL_MODE, 'count': 5},  # noqa: E241,E501
               expected=region_data([18, 18]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 4]], cmd_params={'mode': ViewTestCase.NORMAL_MODE, 'count': 1},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 4]], cmd_params={'mode': unittest.NORMAL_MODE, 'count': 1},  # noqa: E241,E501
               expected=region_data([4, 4]), actual_func=first_sel, msg='should not move on empty line'),
 
     # VISUAL mode
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 1]], cmd_params={'mode': ViewTestCase.VISUAL_MODE},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 1]], cmd_params={'mode': unittest.VISUAL_MODE},  # noqa: E241,E501
               expected=region_data([0, 4]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[0, 1]], cmd_params={'mode': ViewTestCase.VISUAL_MODE, 'count': 5},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[0, 1]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 5},  # noqa: E241,E501
               expected=region_data([0, 20]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 5]], cmd_params={'mode': ViewTestCase.VISUAL_MODE, 'count': 1},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 5]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 1},  # noqa: E241,E501
               expected=region_data([4, 5]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[6, 1]], cmd_params={'mode': ViewTestCase.VISUAL_MODE, 'count': 1},  # FIXME # noqa: E501,E241
-              expected=region_data([6, 3]), actual_func=first_sel, msg='can move in visual mode with reversed sel no cross over'),  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[6, 1]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 1},  # noqa: E241,E501
+              expected=region_data([6, 3]), actual_func=first_sel, msg='can move in visual mode with reversed sel no cross over'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[3, 2]], cmd_params={'mode': ViewTestCase.VISUAL_MODE, 'count': 1},  # FIXME # noqa: E501,E241
-              expected=region_data([2, 4]), actual_func=first_sel, msg='can move in visual mode with reversed sel at eol'),  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[3, 2]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 1},  # noqa: E241,E501
+              expected=region_data([2, 4]), actual_func=first_sel, msg='can move in visual mode with reversed sel at eol'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[5, 4]], cmd_params={'mode': ViewTestCase.VISUAL_MODE, 'count': 2},  # FIXME # noqa: E501,E241
-              expected=region_data([4, 8]), actual_func=first_sel, msg='can move in visual mode with revesed sel cross over'),  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[5, 4]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 2},  # noqa: E241,E501
+              expected=region_data([4, 8]), actual_func=first_sel, msg='can move in visual mode with revesed sel cross over'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\nabc\n'), regions=[[0, 4]], cmd_params={'mode': ViewTestCase.VISUAL_LINE_MODE, 'count': 1},  # FIXME # noqa: E501,E241
-              expected=region_data([0, 4]), actual_func=first_sel, msg='can move in visual mode with revesed sel cross over'),  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\nabc\n'), regions=[[0, 4]], cmd_params={'mode': unittest.VISUAL_LINE_MODE, 'count': 1},  # noqa: E241,E501
+              expected=region_data([0, 4]), actual_func=first_sel, msg='can move in visual mode with revesed sel cross over'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 0]], cmd_params={'mode': ViewTestCase.INTERNAL_NORMAL_MODE},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL_MODE},  # noqa: E241,E501
               expected=region_data([0, 4]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\nabc\nabc\n', regions=[[0, 0]], cmd_params={'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 3},  # FIXME # noqa: E501,E241
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\nabc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 3},  # noqa: E241,E501
               expected=region_data([0, 12]), actual_func=first_sel, msg=''),
 )
 
@@ -54,7 +54,7 @@ TESTS_INTERNAL_NORMAL = (
 TESTS = TESTS_INTERNAL_NORMAL
 
 
-class Test__vi_dollar(ViewTestCase):
+class Test__vi_dollar(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):

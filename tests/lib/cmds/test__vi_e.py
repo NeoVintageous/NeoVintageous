@@ -1,13 +1,13 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 
-class Test__vi_e_InNormalMode(ViewTestCase):
+class Test__vi_e_InNormalMode(unittest.ViewTestCase):
 
     def test_move_to_end_of_word__on_last_line(self):
         self.write('abc\nabc\nabc')
         self.select(8)
 
-        self.view.run_command('_vi_e', {'mode': self.NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_e', {'mode': unittest.NORMAL_MODE, 'count': 1})
 
         self.assertSelection(10)
 
@@ -15,7 +15,7 @@ class Test__vi_e_InNormalMode(ViewTestCase):
         self.write('abc\nabc   \nabc')
         self.select(6)
 
-        self.view.run_command('_vi_e', {'mode': self.NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_e', {'mode': unittest.NORMAL_MODE, 'count': 1})
 
         self.assertSelection(13)
 
@@ -23,21 +23,21 @@ class Test__vi_e_InNormalMode(ViewTestCase):
         self.write('abc\nabc\nabc   ')
         self.select(8)
 
-        self.view.run_command('_vi_e', {'mode': self.NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_e', {'mode': unittest.NORMAL_MODE, 'count': 1})
 
         self.assertSelection(10)
 
-        self.view.run_command('_vi_e', {'mode': self.NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_e', {'mode': unittest.NORMAL_MODE, 'count': 1})
 
         self.assertSelection(13)
 
 
-class Test__vi_e_InVisualMode(ViewTestCase):
+class Test__vi_e_InVisualMode(unittest.ViewTestCase):
 
     def test_move_to_end_of_word__on_last_line2(self):
         self.write('abc abc abc')
         self.select((0, 2))
 
-        self.view.run_command('_vi_e', {'mode': self.VISUAL_MODE, 'count': 3})
+        self.view.run_command('_vi_e', {'mode': unittest.VISUAL_MODE, 'count': 3})
 
         self.assertSelection((0, 11))

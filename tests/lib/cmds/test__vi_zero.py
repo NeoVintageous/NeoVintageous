@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 
 def first_sel(self):
@@ -10,15 +10,15 @@ def first_sel(self):
 test_data = namedtuple('test_data', 'initial_text regions cmd_params expected actual_func msg')
 
 TESTS = (
-    test_data('abc', [[(0, 2), (0, 2)]], {'mode': ViewTestCase.NORMAL_MODE}, [(0, 0), (0, 0)], first_sel, ''),
-    test_data('abc', [[(0, 2), (0, 2)]], {'mode': ViewTestCase.INTERNAL_NORMAL_MODE}, [(0, 2), (0, 0)], first_sel, ''),
-    test_data('abc\nabc', [[(0, 2), (1, 3)]], {'mode': ViewTestCase.VISUAL_MODE}, [(0, 2), (1, 1)], first_sel, ''),
-    test_data('abc\nabc', [[(1, 3), (0, 2)]], {'mode': ViewTestCase.VISUAL_MODE}, [(1, 3), (0, 0)], first_sel, ''),
+    test_data('abc', [[(0, 2), (0, 2)]], {'mode': unittest.NORMAL_MODE}, [(0, 0), (0, 0)], first_sel, ''),
+    test_data('abc', [[(0, 2), (0, 2)]], {'mode': unittest.INTERNAL_NORMAL_MODE}, [(0, 2), (0, 0)], first_sel, ''),
+    test_data('abc\nabc', [[(0, 2), (1, 3)]], {'mode': unittest.VISUAL_MODE}, [(0, 2), (1, 1)], first_sel, ''),
+    test_data('abc\nabc', [[(1, 3), (0, 2)]], {'mode': unittest.VISUAL_MODE}, [(1, 3), (0, 0)], first_sel, ''),
     # TODO: Test multiple sels.
 )
 
 
-class Test__vi_zero(ViewTestCase):
+class Test__vi_zero(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):

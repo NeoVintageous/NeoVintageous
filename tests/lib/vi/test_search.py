@@ -1,13 +1,13 @@
 from sublime import LITERAL
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.search import find_wrapping
 from NeoVintageous.lib.vi.search import reverse_search
 from NeoVintageous.lib.vi.search import reverse_search_by_pt
 
 
-class TestFindWrapping(ViewTestCase):
+class TestFindWrapping(unittest.ViewTestCase):
 
     def test_can_wrap_around_buffer(self):
         self.write('xxx\naaa aaa xxx aaa')
@@ -25,7 +25,7 @@ class TestFindWrapping(ViewTestCase):
         self.assertEqual(self.Region(12, 15), find_wrapping(self.view, 'xxx', 4, self.view.size()))
 
 
-class TestReverseSearchByPt(ViewTestCase):
+class TestReverseSearchByPt(unittest.ViewTestCase):
 
     def test_found_literal_returns_region(self):
         self.write('abc')
@@ -62,7 +62,7 @@ class TestReverseSearchByPt(ViewTestCase):
         self.assertEqual(None, reverse_search_by_pt(self.view, 'a', start=0, end=0, flags=LITERAL))
 
 
-class TestReverseSearch(ViewTestCase):
+class TestReverseSearch(unittest.ViewTestCase):
 
     def test_found_literal_returns_region(self):
         self.write('abc')

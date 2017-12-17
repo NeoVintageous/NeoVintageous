@@ -1,10 +1,10 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import big_word_start
 from NeoVintageous.lib.vi.text_objects import big_word_end
 
 
-class TestIssue280(ViewTestCase):
+class TestIssue280(unittest.ViewTestCase):
 
     def test_big_word_guards_against_runaway_loops(self):
         self.write("a bc_ x")

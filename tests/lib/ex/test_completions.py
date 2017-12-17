@@ -1,10 +1,10 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.ex.completions import wants_fs_completions
 from NeoVintageous.lib.ex.completions import wants_setting_completions
 
 
-class TestCompletions(ViewTestCase):
+class TestCompletions(unittest.ViewTestCase):
 
     def test_wants_setting_completions(self):
         self.assertFalse(wants_setting_completions('foobar'))

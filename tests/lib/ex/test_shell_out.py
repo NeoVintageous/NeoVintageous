@@ -1,11 +1,9 @@
-from unittest import skipIf
-
 from sublime import platform
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 
-class TestExShellOutNoInput(ViewTestCase):
+class TestExShellOutNoInput(unittest.ViewTestCase):
 
     def tearDown(self):
         # XXX: Ugly hack to make sure that the output panels created in these
@@ -30,9 +28,9 @@ class TestExShellOutNoInput(ViewTestCase):
         self.assertEqual(expected, actual)
 
 
-class TestExShellOutFilterThroughShell(ViewTestCase):
+class TestExShellOutFilterThroughShell(unittest.ViewTestCase):
 
-    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_simple_filter_through_shell(self):
         self.write("two words\nbbb\nccc")
         self.select(2)
@@ -47,7 +45,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         #        2
         self.assertContentRegex(r"\s*2\nbbb\nccc")
 
-    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_command_is_escaped_correctly(self):
         self.write('this gets replaced')
         self.select(2)
@@ -57,7 +55,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         })
         self.assertContent('"one" \'two\'\n')
 
-    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_text_is_escaped_correctly_when_passed_to_command(self):
         line = 'this "contains" \'quotes\' "; false; echo "\n'
         self.write(line)
@@ -68,7 +66,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         })
         self.assertContent(line)
 
-    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_multiple_filter_through_shell(self):
         self.write("aaa\nthree short words\nccc")
         self.select(10)
@@ -79,7 +77,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
 
         self.assertContentRegex(r"aaa\n\s*3\nccc")
 
-    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_filter_command_with_multiple_options_through_shell(self):
         self.write("a\none two\nb")
         self.select(2)
@@ -96,7 +94,7 @@ class TestExShellOutFilterThroughShell(ViewTestCase):
         self.view.run_command('ex_shell_out', {'command_line': '.! wc -l -w -m'})
         self.assertContentRegex(r'a\n\s*1\s*2\s+8\nb')
 
-    @skipIf(platform() == 'windows', 'Test does not work on Windows')
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_filter_piped_command_through_shell(self):
         self.write("a\none two\nb")
         self.select(2)

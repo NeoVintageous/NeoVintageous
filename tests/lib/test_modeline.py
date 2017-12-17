@@ -1,9 +1,9 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.modeline import modeline
 
 
-class TestModeline(ViewTestCase):
+class TestModeline(unittest.ViewTestCase):
 
     def test_modeline(self):
         self.settings().set('translate_tab_to_spaces', True)

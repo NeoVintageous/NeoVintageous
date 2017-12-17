@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from sublime import Region
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import find_prev_lone_bracket
 from NeoVintageous.lib.vi.text_objects import find_next_lone_bracket
@@ -18,31 +18,31 @@ test = namedtuple('simple_test', 'content start brackets expected msg')
 
 TESTS = (
     test(content='aaa', start=1, brackets=('\\{', '\\}'), expected=None, msg='should return none'),
-    test(content='a{a}a', start=1, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find bracket at caret position'),  # FIXME # noqa: E501
+    test(content='a{a}a', start=1, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find bracket at caret position'),  # noqa: E501
     test(content='{aa}a', start=1, brackets=('\\{', '\\}'), expected=Region(0, 1), msg='should find bracket at BOF'),
-    test(content='bbb{aa}a', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find brackets after caret'),  # FIXME # noqa: E501
-    test(content='a{bc', start=3, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find unbalanced bracket before caret'),  # FIXME # noqa: E501
+    test(content='bbb{aa}a', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find brackets after caret'),  # noqa: E501
+    test(content='a{bc', start=3, brackets=('\\{', '\\}'), expected=Region(1, 2), msg='should find unbalanced bracket before caret'),  # noqa: E501
 
-    test(content='foo {bar {foo} bar}', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from RHS'),  # FIXME # noqa: E501
-    test(content='foo {bar {foo} bar}', start=7, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from LHS'),  # FIXME # noqa: E501
-    test(content='foo {bar {foo} bar}', start=13, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner bracket'),  # FIXME # noqa: E501
+    test(content='foo {bar {foo} bar}', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from RHS'),  # noqa: E501
+    test(content='foo {bar {foo} bar}', start=7, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer bracket from LHS'),  # noqa: E501
+    test(content='foo {bar {foo} bar}', start=13, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner bracket'),  # noqa: E501
 
-    test(content='foo {bar {foo} bar', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer if unbalanced outer'),  # FIXME # noqa: E501
-    test(content='foo {bar {foo} bar', start=12, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner if unbalanced outer'),  # FIXME # noqa: E501
-    test(content='foo {bar {foo} bar', start=4, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find bracket at caret position'),  # FIXME # noqa: E501
+    test(content='foo {bar {foo} bar', start=16, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find outer if unbalanced outer'),  # noqa: E501
+    test(content='foo {bar {foo} bar', start=12, brackets=('\\{', '\\}'), expected=Region(9, 10), msg='should find inner if unbalanced outer'),  # noqa: E501
+    test(content='foo {bar {foo} bar', start=4, brackets=('\\{', '\\}'), expected=Region(4, 5), msg='should find bracket at caret position'),  # noqa: E501
 
-    test(content='a\\{bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # FIXME # noqa: E501
+    test(content='a\\{bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # noqa: E501
     test(content='a\\{bc', start=3, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket'),
 )
 
 TESTS_NEXT_BRACKET = (
-    test(content='a\\}bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # FIXME # noqa: E501
+    test(content='a\\}bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # noqa: E501
     test(content='a\\}bc', start=0, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket'),
-    test(content='foo {bar foo bar}', start=16, brackets=('\\{', '\\}'), expected=Region(16, 17), msg='should find next bracket at caret position'),  # FIXME # noqa: E501
+    test(content='foo {bar foo bar}', start=16, brackets=('\\{', '\\}'), expected=Region(16, 17), msg='should find next bracket at caret position'),  # noqa: E501
 )
 
 
-class Test_previous_bracket(ViewTestCase):
+class Test_previous_bracket(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
@@ -54,7 +54,7 @@ class Test_previous_bracket(ViewTestCase):
             self.assertEqual(data.expected, actual, "failed at test index {0}: {1}".format(i, data.msg))
 
 
-class Test_next_bracket(ViewTestCase):
+class Test_next_bracket(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS_NEXT_BRACKET):
@@ -66,7 +66,7 @@ class Test_next_bracket(ViewTestCase):
             self.assertEqual(data.expected, actual, "failed at test index {0}: {1}".format(i, data.msg))
 
 
-class TestIsAtSpace(ViewTestCase):
+class TestIsAtSpace(unittest.ViewTestCase):
 
     def test_basic(self):
         self.write('a bc .,: d')
@@ -82,7 +82,7 @@ class TestIsAtSpace(ViewTestCase):
         self.assertFalse(is_at_space(self.view, 9))
 
 
-class TestIsAtPunctuation(ViewTestCase):
+class TestIsAtPunctuation(unittest.ViewTestCase):
 
     def test_is_at_punctuation(self):
         self.write('a bc .,: d\nx\ty')
@@ -164,7 +164,7 @@ class TestIsAtPunctuation(ViewTestCase):
         self.assertFalse(is_at_punctuation(self.view, 4))
 
 
-class TestAWord(ViewTestCase):
+class TestAWord(unittest.ViewTestCase):
 
     def test_returns_full_word(self):
         self.write('foo bar baz\n')
@@ -245,7 +245,7 @@ class TestAWord(ViewTestCase):
         self.assertRegion('34 ', a_word(self.view, 14))
 
 
-class TestABigWordStart(ViewTestCase):
+class TestABigWordStart(unittest.ViewTestCase):
 
     def test_basic(self):
         self.write('xyz x._a1     xx')
@@ -271,7 +271,7 @@ class TestABigWordStart(ViewTestCase):
         self.assertEqual(14, big_word_start(self.view, 15))
 
 
-class TestABigWordEnd(ViewTestCase):
+class TestABigWordEnd(unittest.ViewTestCase):
 
     def test_basic(self):
         self.write('xyz x._a1     xx')
@@ -297,7 +297,7 @@ class TestABigWordEnd(ViewTestCase):
         self.assertEqual(16, big_word_end(self.view, 15))
 
 
-class TestABigWord(ViewTestCase):
+class TestABigWord(unittest.ViewTestCase):
 
     def test_returns_full_words(self):
         self.write('a baz bA.__ eol')

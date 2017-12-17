@@ -1,13 +1,13 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 
-class Test__vi_g_g_InNormalMode(ViewTestCase):
+class Test__vi_g_g_InNormalMode(unittest.ViewTestCase):
 
     def test_can_move_in_normal_mode(self):
         self.write('abc\nabc')
         self.select(5)
 
-        self.view.run_command('_vi_gg', {'mode': self.NORMAL_MODE})
+        self.view.run_command('_vi_gg', {'mode': unittest.NORMAL_MODE})
 
         self.assertSelection(0)
 
@@ -15,18 +15,18 @@ class Test__vi_g_g_InNormalMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select(5)
 
-        self.view.run_command('_vi_gg', {'mode': self.NORMAL_MODE})
+        self.view.run_command('_vi_gg', {'mode': unittest.NORMAL_MODE})
 
         self.assertSelection(0)
 
 
-class Test__vi_g_g_InVisualMode(ViewTestCase):
+class Test__vi_g_g_InVisualMode(unittest.ViewTestCase):
 
     def test_can_move_in_visual_mode(self):
         self.write('abc\nabc\n')
         self.select((1, 2))
 
-        self.view.run_command('_vi_gg', {'mode': self.VISUAL_MODE})
+        self.view.run_command('_vi_gg', {'mode': unittest.VISUAL_MODE})
 
         self.assertSelection((2, 0))
 
@@ -34,29 +34,29 @@ class Test__vi_g_g_InVisualMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select((2, 1))
 
-        self.view.run_command('_vi_gg', {'mode': self.VISUAL_MODE})
+        self.view.run_command('_vi_gg', {'mode': unittest.VISUAL_MODE})
 
         self.assertSelection((2, 0))
 
 
-class Test__vi_g_g_InInternalNormalMode(ViewTestCase):
+class Test__vi_g_g_InInternalNormalMode(unittest.ViewTestCase):
 
     def test_can_move_in_mode_internal_normal(self):
         self.write('abc\nabc\n')
         self.select(1)
 
-        self.view.run_command('_vi_gg', {'mode': self.INTERNAL_NORMAL_MODE})
+        self.view.run_command('_vi_gg', {'mode': unittest.INTERNAL_NORMAL_MODE})
 
         self.assertSelection((4, 0))
 
 
-class Test__vi_g_g_InVisualLineMode(ViewTestCase):
+class Test__vi_g_g_InVisualLineMode(unittest.ViewTestCase):
 
     def test_can_move_in_mode_visual_line(self):
         self.write('abc\nabc\n')
         self.select((0, 4))
 
-        self.view.run_command('_vi_gg', {'mode': self.VISUAL_LINE_MODE})
+        self.view.run_command('_vi_gg', {'mode': unittest.VISUAL_LINE_MODE})
 
         self.assertSelection((0, 4))
 
@@ -64,6 +64,6 @@ class Test__vi_g_g_InVisualLineMode(ViewTestCase):
         self.write('abc\nabc\n')
         self.select((4, 8))
 
-        self.view.run_command('_vi_gg', {'mode': self.VISUAL_LINE_MODE})
+        self.view.run_command('_vi_gg', {'mode': unittest.VISUAL_LINE_MODE})
 
         self.assertSelection((0, 8))

@@ -10,7 +10,10 @@ from NeoVintageous.lib.window import _set_layout_groups_size_equal
 # | +-+
 # | |2|
 # +-+-+
-LAYOUT_CELLS_3_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 1, 2], [1, 0, 2, 1], [1, 1, 2, 2]]}  # noqa: E501
+LAYOUT_CELLS_3_VARIANT_1 = {
+    'cols': [0.0, 0.5, 1.0],
+    'rows': [0.0, 0.5, 1.0],
+    'cells': [[0, 0, 1, 2], [1, 0, 2, 1], [1, 1, 2, 2]]}
 
 # +-+-+
 # |0|1|
@@ -19,7 +22,10 @@ LAYOUT_CELLS_3_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.5, 1.0], 'c
 # | +-+
 # | |3|
 # +-+-+
-LAYOUT_CELLS_4_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.33, 0.66, 1.0], 'cells': [[0, 0, 1, 3], [1, 0, 2, 1], [1, 1, 2, 2], [1, 2, 2, 3]]}  # noqa: E501
+LAYOUT_CELLS_4_VARIANT_1 = {
+    'cols': [0.0, 0.5, 1.0],
+    'rows': [0.0, 0.33, 0.66, 1.0],
+    'cells': [[0, 0, 1, 3], [1, 0, 2, 1], [1, 1, 2, 2], [1, 2, 2, 3]]}
 
 # +-+-+
 # |0|1|
@@ -30,26 +36,75 @@ LAYOUT_CELLS_4_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.33, 0.66, 1
 # +-+ |
 # |3| |
 # +-+-+
-LAYOUT_CELLS_5_VARIANT_1 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.25, 0.5, 0.75, 1.0], 'cells': [[0, 0, 1, 2], [1, 0, 2, 1], [1, 1, 2, 4], [0, 3, 1, 4], [0, 2, 1, 3]]}  # noqa: E501
+LAYOUT_CELLS_5_VARIANT_1 = {
+    'cols': [0.0, 0.5, 1.0],
+    'rows': [0.0, 0.25, 0.5, 0.75, 1.0],
+    'cells': [[0, 0, 1, 2], [1, 0, 2, 1], [1, 1, 2, 4], [0, 3, 1, 4], [0, 2, 1, 3]]}
 
 # +-------+
 # |0      |
 # +-+-+-+-+
 # |1|2|3|4|
 # +-+-+-+-+
-LAYOUT_CELLS_5_VARIANT_2 = {'cols': [0.0, 0.5, 0.75, 0.875, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 4, 1], [0, 1, 1, 2], [1, 1, 2, 2], [2, 1, 3, 2], [3, 1, 4, 2]]}  # noqa: E501
+LAYOUT_CELLS_5_VARIANT_2 = {
+    'cols': [0.0, 0.5, 0.75, 0.875, 1.0],
+    'rows': [0.0, 0.5, 1.0],
+    'cells': [[0, 0, 4, 1], [0, 1, 1, 2], [1, 1, 2, 2], [2, 1, 3, 2], [3, 1, 4, 2]]}
 
-LAYOUT_COLS_2 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
-LAYOUT_COLS_2_LEFT_SMALL = {'cols': [0.0, 0.025, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
-LAYOUT_COLS_2_RIGHT_SMALL = {'cols': [0.0, 0.7, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
-LAYOUT_COLS_3 = {'cols': [0.0, 0.33, 0.66, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]]}  # noqa: E501
-LAYOUT_EMPTY = {'cols': [], 'rows': [], 'cells': []}
-LAYOUT_GRID_4 = {'cols': [0.0, 0.5, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]]}  # noqa: E501
-LAYOUT_ROWS_2 = {'cols': [0.0, 1.0], 'rows': [0.0, 0.5, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}
-LAYOUT_ROWS_2_ABOVE_SMALL = {'cols': [0.0, 1.0], 'rows': [0.0, 0.23782383419689118, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}  # noqa: E501
-LAYOUT_ROWS_2_BELOW_SMALL = {'cols': [0.0, 1.0], 'rows': [0.0, 0.83782383419689118, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}  # noqa: E501
-LAYOUT_ROWS_3 = {'cols': [0.0, 1.0], 'rows': [0.0, 0.33, 0.66, 1.0], 'cells': [[0, 0, 1, 1], [0, 1, 1, 2], [0, 2, 1, 3]]}  # noqa: E501
-LAYOUT_SINGLE = {'cols': [0.0, 1.0], 'rows': [0.0, 1.0], 'cells': [[0, 0, 1, 1]]}
+LAYOUT_COLS_2 = {
+    'cols': [0.0, 0.5, 1.0],
+    'rows': [0.0, 1.0],
+    'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
+
+LAYOUT_COLS_2_LEFT_SMALL = {
+    'cols': [0.0, 0.025, 1.0],
+    'rows': [0.0, 1.0],
+    'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
+
+LAYOUT_COLS_2_RIGHT_SMALL = {
+    'cols': [0.0, 0.7, 1.0],
+    'rows': [0.0, 1.0],
+    'cells': [[0, 0, 1, 1], [1, 0, 2, 1]]}
+
+LAYOUT_COLS_3 = {
+    'cols': [0.0, 0.33, 0.66, 1.0],
+    'rows': [0.0, 1.0],
+    'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]]}
+
+LAYOUT_EMPTY = {
+    'cols': [],
+    'rows': [],
+    'cells': []}
+
+LAYOUT_GRID_4 = {
+    'cols': [0.0, 0.5, 1.0],
+    'rows': [0.0, 0.5, 1.0],
+    'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]]}
+
+LAYOUT_ROWS_2 = {
+    'cols': [0.0, 1.0],
+    'rows': [0.0, 0.5, 1.0],
+    'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}
+
+LAYOUT_ROWS_2_ABOVE_SMALL = {
+    'cols': [0.0, 1.0],
+    'rows': [0.0, 0.23782383419689118, 1.0],
+    'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}
+
+LAYOUT_ROWS_2_BELOW_SMALL = {
+    'cols': [0.0, 1.0],
+    'rows': [0.0, 0.83782383419689118, 1.0],
+    'cells': [[0, 0, 1, 1], [0, 1, 1, 2]]}
+
+LAYOUT_ROWS_3 = {
+    'cols': [0.0, 1.0],
+    'rows': [0.0, 0.33, 0.66, 1.0],
+    'cells': [[0, 0, 1, 1], [0, 1, 1, 2], [0, 2, 1, 3]]}
+
+LAYOUT_SINGLE = {
+    'cols': [0.0, 1.0],
+    'rows': [0.0, 1.0],
+    'cells': [[0, 0, 1, 1]]}
 
 
 class TestSetLayoutGroupSize(unittest.TestCase):
@@ -378,26 +433,31 @@ class TestSublimeWindowApi(unittest.TestCase):
             {
                 'layout': LAYOUT_FOOBAR_COLS_AND_ROWS,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None,
+                     'count': [1, 2, 3, 4, 5]}
                 ]
             },
             {
                 'layout': LAYOUT_EMPTY_COLS_AND_ROWS,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None,
+                     'count': [1, 2, 3, 4, 5]}
                 ]
             },
             {
                 'layout': LAYOUT_SINGLE_CELL,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': None, 'above': None,
+                     'count': [1, 2, 3, 4, 5]}
                 ]
             },
             {
                 'layout': LAYOUT_TWO_COLUMN,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': 1, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]},  # FIXME # noqa: E501
-                    {'active_group': 1, 'left': 0, 'right': None, 'below': None, 'above': None, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': 1, 'below': None, 'above': None,
+                     'count': [1, 2, 3, 4, 5]},
+                    {'active_group': 1, 'left': 0, 'right': None, 'below': None, 'above': None,
+                     'count': [1, 2, 3, 4, 5]}
                 ]
             },
             {
@@ -413,8 +473,10 @@ class TestSublimeWindowApi(unittest.TestCase):
             {
                 'layout': LAYOUT_TWO_ROW,
                 'tests': [
-                    {'active_group': 0, 'left': None, 'right': None, 'below': 1, 'above': None, 'count': [1, 2, 3, 4, 5]},  # FIXME # noqa: E501
-                    {'active_group': 1, 'left': None, 'right': None, 'below': None, 'above': 0, 'count': [1, 2, 3, 4, 5]}  # FIXME # noqa: E501
+                    {'active_group': 0, 'left': None, 'right': None, 'below': 1, 'above': None,
+                     'count': [1, 2, 3, 4, 5]},
+                    {'active_group': 1, 'left': None, 'right': None, 'below': None, 'above': 0,
+                     'count': [1, 2, 3, 4, 5]}
                 ]
             },
             {

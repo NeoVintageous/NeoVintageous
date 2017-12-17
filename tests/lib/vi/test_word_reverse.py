@@ -1,9 +1,9 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import word_reverse
 
 
-class Test_word_reverse(ViewTestCase):
+class Test_word_reverse(unittest.ViewTestCase):
 
     def test_find_word_start_from_the_middle_of_a_word(self):
         self.write('abc')

@@ -1,16 +1,14 @@
-import unittest
+from NeoVintageous.tests import unittest
 
-from NeoVintageous.lib.ex.parser.nodes import RangeNode
 from NeoVintageous.lib.ex.parser.nodes import CommandLineNode
-from NeoVintageous.lib.ex.parser.tokens import TokenDigits
-from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
-from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
-from NeoVintageous.lib.ex.parser.tokens import TokenPercent
-from NeoVintageous.lib.ex.parser.tokens import TokenOffset
-from NeoVintageous.lib.ex.parser.tokens import TokenMark
+from NeoVintageous.lib.ex.parser.nodes import RangeNode
 from NeoVintageous.lib.ex.parser.scanner_command_substitute import TokenCommandSubstitute
-
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.lib.ex.parser.tokens import TokenDigits
+from NeoVintageous.lib.ex.parser.tokens import TokenMark
+from NeoVintageous.lib.ex.parser.tokens import TokenOffset
+from NeoVintageous.lib.ex.parser.tokens import TokenPercent
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
 
 
 class TestRangeNode(unittest.TestCase):
@@ -42,7 +40,7 @@ class TestCommandLineNode(unittest.TestCase):
         self.assertEqual(command, node.command)
 
 
-class TestRangeNodeResolveNotation(ViewTestCase):
+class TestRangeNodeResolveNotation(unittest.ViewTestCase):
 
     def test_returs_current_line_if_range_is_empty(self):
         self.write('''aaa aaa
@@ -124,7 +122,7 @@ ddd ddd
         self._assertRegionsEqual(self.Region(0, 32), region)
 
 
-class Tests_SearchForward(ViewTestCase):
+class Tests_SearchForward(unittest.ViewTestCase):
 
     def test_can_search_forward(self):
         self.write('''aaa aaa
@@ -169,7 +167,7 @@ fff cat
         self._assertRegionsEqual(self.Region(40, 48), region)
 
 
-class Tests_SearchBackward(ViewTestCase):
+class Tests_SearchBackward(unittest.ViewTestCase):
 
     def test_can_search_backward(self):
         self.write('''aaa aaa
@@ -216,7 +214,7 @@ fff fff
         self._assertRegionsEqual(self.Region(16, 24), region)
 
 
-class Tests_Line0(ViewTestCase):
+class Tests_Line0(unittest.ViewTestCase):
 
     def test_can_calculate_visual_start(self):
         self.write('''xxx xxx
@@ -229,7 +227,7 @@ bbb bbb
         self._assertRegionsEqual(self.Region(-1, -1), region)
 
 
-class Tests_Marks(ViewTestCase):
+class Tests_Marks(unittest.ViewTestCase):
 
     def test_can_calculate_visual_start(self):
         self.write('''xxx xxx

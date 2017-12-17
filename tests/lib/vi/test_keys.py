@@ -1,5 +1,5 @@
 from collections import namedtuple
-from unittest import TestCase
+import unittest
 
 from NeoVintageous.lib.vi.utils import translate_char
 from NeoVintageous.lib.vi.keys import to_bare_command_name
@@ -33,7 +33,7 @@ _TESTS_TOKENIZER = (
 )
 
 
-class TestKeySequenceTokenizerTokenizeOne(TestCase):
+class TestKeySequenceTokenizerTokenizeOne(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
@@ -67,7 +67,7 @@ _TESTS_ITER_TOKENIZE = (
 )
 
 
-class TestKeySequenceTokenizerIterTokenize(TestCase):
+class TestKeySequenceTokenizerIterTokenize(unittest.TestCase):
 
     def parse(self, input_):
         tokenizer = KeySequenceTokenizer(input_)
@@ -95,7 +95,7 @@ _COMMAND_NAME_TESTS = (
 )
 
 
-class TestToBareCommandName(TestCase):
+class TestToBareCommandName(unittest.TestCase):
 
     def transform(self, input_):
         return to_bare_command_name(input_)
@@ -116,7 +116,7 @@ _TRANLATION_TESTS = (
 )
 
 
-class TestTranslateChar(TestCase):
+class TestTranslateChar(unittest.TestCase):
 
     def test_all(self):
         for (i, t) in enumerate(_TRANLATION_TESTS):
@@ -384,7 +384,7 @@ _TESTS_KNOWN_SEQUENCES = (
 )
 
 
-class TestKeySequenceNames(TestCase):
+class TestKeySequenceNames(unittest.TestCase):
 
     def test_all(self):
         for (i, data) in enumerate(_TESTS_KNOWN_SEQUENCES):

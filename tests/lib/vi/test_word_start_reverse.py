@@ -1,9 +1,9 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import word_end_reverse
 
 
-class Test_word_end_reverse(ViewTestCase):
+class Test_word_end_reverse(unittest.ViewTestCase):
 
     def test_go_to_bof_from_first_word(self):
         self.write('abc')

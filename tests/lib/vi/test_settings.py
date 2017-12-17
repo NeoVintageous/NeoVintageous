@@ -1,4 +1,4 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.settings import _opt_bool_parser
 from NeoVintageous.lib.vi.settings import _opt_rulers_parser
@@ -16,7 +16,7 @@ from NeoVintageous.lib.vi.settings import _VintageSettings
 from NeoVintageous.lib.vi.settings import SettingsManager
 
 
-class TestSublimeSettings(ViewTestCase):
+class TestSublimeSettings(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -41,7 +41,7 @@ class TestSublimeSettings(ViewTestCase):
         self.assertEqual(self.setts['foo'], None)
 
 
-class TestVintageSettings(ViewTestCase):
+class TestVintageSettings(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -66,7 +66,7 @@ class TestVintageSettings(ViewTestCase):
         self.assertEqual(self.setts['foo'], None)
 
 
-class TestSettingsManager(ViewTestCase):
+class TestSettingsManager(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -85,7 +85,7 @@ class TestSettingsManager(ViewTestCase):
         self.assertEqual(self.settsman.view['foo'], 100)
 
 
-class TestViEditorSettings(ViewTestCase):
+class TestViEditorSettings(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()

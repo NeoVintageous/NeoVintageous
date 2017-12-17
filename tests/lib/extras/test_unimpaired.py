@@ -1,9 +1,9 @@
 # DEPRECATED These tests can be removed when the functional tests are merged.
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 
-class TestUnimpaired__square_bracket____space__(ViewTestCase):
+class TestUnimpaired__square_bracket____space__(unittest.ViewTestCase):
 
     def test_blank_down(self):
         self.write('aaa\nbbb\nccc')
@@ -62,7 +62,7 @@ class TestUnimpaired__square_bracket____space__(ViewTestCase):
         self.assertSelection(11)
 
 
-class TestUnimpaired__square_bracket__e(ViewTestCase):
+class TestUnimpaired__square_bracket__e(unittest.ViewTestCase):
 
     def test_move_down(self):
         self.write('111\n222\n333\n444')

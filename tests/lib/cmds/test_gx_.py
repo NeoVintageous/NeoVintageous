@@ -1,15 +1,15 @@
 import re
-from unittest import TestCase
+import unittest
 
-from NeoVintageous.lib.cmds.vi_actions import _vi_gx as command
-
-URL_REGEX = re.compile(command.URL_REGEX)
+from NeoVintageous.lib.cmds.vi_actions import _vi_gx
 
 
-class Test_gx(TestCase):
+class Test_gx(unittest.TestCase):
+
+    URL_REGEX = re.compile(_vi_gx.URL_REGEX)
 
     def assertMatch(self, expected, text):
-        self.assertEqual(expected, command._url(URL_REGEX, text))
+        self.assertEqual(expected, _vi_gx._url(self.URL_REGEX, text))
 
     def test_invalid(self):
         self.assertMatch(None, '')

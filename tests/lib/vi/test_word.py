@@ -1,10 +1,10 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.units import next_word_start
 from NeoVintageous.lib.vi.units import word_starts
 
 
-class Test_next_word_start_InNormalMode_FromWhitespace(ViewTestCase):
+class Test_next_word_start_InNormalMode_FromWhitespace(unittest.ViewTestCase):
 
     def test_to_word_start(self):
         self.write('  foo bar\n')
@@ -73,7 +73,7 @@ class Test_next_word_start_InNormalMode_FromWhitespace(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 0), 3)
 
 
-class Test_next_word_start_InNormalMode_FromWordStart(ViewTestCase):
+class Test_next_word_start_InNormalMode_FromWordStart(unittest.ViewTestCase):
 
     def test_to_word_start(self):
         self.write('foo bar\n')
@@ -142,7 +142,7 @@ class Test_next_word_start_InNormalMode_FromWordStart(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 0), 4)
 
 
-class Test_next_word_start_InNormalMode_FromWord(ViewTestCase):
+class Test_next_word_start_InNormalMode_FromWord(unittest.ViewTestCase):
 
     def test_to_word_start(self):
         self.write('foo bar\n')
@@ -211,7 +211,7 @@ class Test_next_word_start_InNormalMode_FromWord(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 1), 4)
 
 
-class Test_next_word_start_InNormalMode_FromPunctuationStart(ViewTestCase):
+class Test_next_word_start_InNormalMode_FromPunctuationStart(unittest.ViewTestCase):
 
     def test_to_word_start(self):
         self.write(':foo\n')
@@ -280,7 +280,7 @@ class Test_next_word_start_InNormalMode_FromPunctuationStart(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 0), 2)
 
 
-class Test_next_word_start_InNormalMode_FromEmptyLine(ViewTestCase):
+class Test_next_word_start_InNormalMode_FromEmptyLine(unittest.ViewTestCase):
 
     def test_to_word_start(self):
         self.write('\nfoo\n')
@@ -349,7 +349,7 @@ class Test_next_word_start_InNormalMode_FromEmptyLine(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 0), 1)
 
 
-class Test_next_word_start_InNormalMode_FromPunctuation(ViewTestCase):
+class Test_next_word_start_InNormalMode_FromPunctuation(unittest.ViewTestCase):
 
     def test_to_word_start(self):
         self.write('::foo\n')
@@ -418,7 +418,7 @@ class Test_next_word_start_InNormalMode_FromPunctuation(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 1), 3)
 
 
-class Test_next_word_start_InInternalNormalMode_FromWhitespace(ViewTestCase):
+class Test_next_word_start_InInternalNormalMode_FromWhitespace(unittest.ViewTestCase):
 
     def test_to_whitespace_line(self):
         self.write('  \n  ')
@@ -433,7 +433,7 @@ class Test_next_word_start_InInternalNormalMode_FromWhitespace(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 0, internal=True), 2)
 
 
-class Test_next_word_start_InInternalNormalMode_FromWordStart(ViewTestCase):
+class Test_next_word_start_InInternalNormalMode_FromWordStart(unittest.ViewTestCase):
 
     def test_to_whitespace_line(self):
         self.write('foo\n  ')
@@ -448,7 +448,7 @@ class Test_next_word_start_InInternalNormalMode_FromWordStart(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 0, internal=True), 3)
 
 
-class Test_next_word_start_InInternalNormalMode_FromWord(ViewTestCase):
+class Test_next_word_start_InInternalNormalMode_FromWord(unittest.ViewTestCase):
 
     def test_to_whitespace_line(self):
         self.write('foo\n  ')
@@ -463,7 +463,7 @@ class Test_next_word_start_InInternalNormalMode_FromWord(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 1, internal=True), 3)
 
 
-class Test_next_word_start_InInternalNormalMode_FromPunctuationStart(ViewTestCase):
+class Test_next_word_start_InInternalNormalMode_FromPunctuationStart(unittest.ViewTestCase):
 
     def test_to_whitespace_line(self):
         self.write('.\n  ')
@@ -478,7 +478,7 @@ class Test_next_word_start_InInternalNormalMode_FromPunctuationStart(ViewTestCas
         self.assertEqual(next_word_start(self.view, 0, internal=True), 1)
 
 
-class Test_next_word_start_InInternalNormalMode_FromPunctuation(ViewTestCase):
+class Test_next_word_start_InInternalNormalMode_FromPunctuation(unittest.ViewTestCase):
 
     def test_to_whitespace_line(self):
         self.write('::\n  ')
@@ -493,7 +493,7 @@ class Test_next_word_start_InInternalNormalMode_FromPunctuation(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 1, internal=True), 2)
 
 
-class Test_next_word_start_InInternalNormalMode_FromEmptyLine(ViewTestCase):
+class Test_next_word_start_InInternalNormalMode_FromEmptyLine(unittest.ViewTestCase):
 
     def test_to_whitespace_line(self):
         self.write('\n  ')
@@ -508,7 +508,7 @@ class Test_next_word_start_InInternalNormalMode_FromEmptyLine(ViewTestCase):
         self.assertEqual(next_word_start(self.view, 0, internal=True), 2)
 
 
-class Test_words_InNormalMode(ViewTestCase):
+class Test_words_InNormalMode(unittest.ViewTestCase):
 
     def test_move1(self):
         self.write('foo bar\n')
@@ -532,7 +532,7 @@ class Test_words_InNormalMode(ViewTestCase):
 # We can assume the stuff tested for normal mode applies to internal normal mode, so we
 # don't bother with that. Instead, we only test the differing behavior when advancing by
 # word starts in internal normal.
-class Test_words_InInternalNormalMode_FromEmptyLine(ViewTestCase):
+class Test_words_InInternalNormalMode_FromEmptyLine(unittest.ViewTestCase):
 
     def test_move1_to_line_with_leading_white_space(self):
         self.write('\n bar\n')
@@ -568,7 +568,7 @@ class Test_words_InInternalNormalMode_FromEmptyLine(ViewTestCase):
 # We can assume the stuff tested for normal mode applies to internal normal mode, so we
 # don't bother with that. Instead, we only test the differing behavior when advancing by
 # word starts in internal normal.
-class Test_words_InInternalNormalMode_FromOneWordLine(ViewTestCase):
+class Test_words_InInternalNormalMode_FromOneWordLine(unittest.ViewTestCase):
 
     def test_move1_to_eol(self):
         self.write('foo\n')
@@ -619,7 +619,7 @@ class Test_words_InInternalNormalMode_FromOneWordLine(ViewTestCase):
         self.assertEqual(word_starts(self.view, 0, internal=True, count=2), 12)
 
 
-class Test_words_InInternalNormalMode_FromOneCharLongWord(ViewTestCase):
+class Test_words_InInternalNormalMode_FromOneCharLongWord(unittest.ViewTestCase):
 
     def test_move1_to_eol(self):
         self.write('x\n')
@@ -628,7 +628,7 @@ class Test_words_InInternalNormalMode_FromOneCharLongWord(ViewTestCase):
         self.assertEqual(word_starts(self.view, 0, internal=True, count=1), 1)
 
 
-class Test_words_InInternalNormalMode_FromLine(ViewTestCase):
+class Test_words_InInternalNormalMode_FromLine(unittest.ViewTestCase):
 
     def test_move2_to_eol(self):
         self.write('foo bar\n')

@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import find_paragraph_text_object
 
@@ -48,7 +48,7 @@ ALL_CASES = (
 )
 
 
-class Test_find_paragraph_text_object(ViewTestCase):
+class Test_find_paragraph_text_object(unittest.ViewTestCase):
 
     def runTests(self, data):
 

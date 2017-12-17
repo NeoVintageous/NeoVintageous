@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 
 def first_sel(self):
@@ -11,20 +11,20 @@ test_data = namedtuple('test_data', 'initial_text regions cmd_params expected ac
 
 
 TESTS_NORMAL_MODE_SINGLE_SEL = (
-    test_data(initial_text='abc',     regions=[[(0, 2), (0, 2)]], cmd_params={'mode': ViewTestCase.NORMAL_MODE},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # FIXME # noqa: E501,E241
-    test_data(initial_text='abc abc', regions=[[(0, 4), (0, 4)]], cmd_params={'mode': ViewTestCase.NORMAL_MODE},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # FIXME # noqa: E501,E241
-    test_data(initial_text='abc a',   regions=[[(0, 4), (0, 4)]], cmd_params={'mode': ViewTestCase.NORMAL_MODE},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # FIXME # noqa: E501,E241
+    test_data(initial_text='abc',     regions=[[(0, 2), (0, 2)]], cmd_params={'mode': unittest.NORMAL_MODE},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E241,E501
+    test_data(initial_text='abc abc', regions=[[(0, 4), (0, 4)]], cmd_params={'mode': unittest.NORMAL_MODE},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E241,E501
+    test_data(initial_text='abc a',   regions=[[(0, 4), (0, 4)]], cmd_params={'mode': unittest.NORMAL_MODE},  expected=[(0, 0), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E241,E501
 )
 
 TESTS_VISUAL_MODE_SINGLE_SEL_START_LEN_1 = (
-    test_data(initial_text='abc',   regions=[[(0, 2), (0, 3)]], cmd_params={'mode': ViewTestCase.VISUAL_MODE},  expected=[(0, 3), (0, 0)], actual_func=first_sel,  msg=''),  # FIXME # noqa: E501,E241
-    test_data(initial_text='abc a', regions=[[(0, 4), (0, 5)]], cmd_params={'mode': ViewTestCase.VISUAL_MODE},  expected=[(0, 5), (0, 0)], actual_func=first_sel,  msg=''),  # FIXME # noqa: E501,E241
+    test_data(initial_text='abc',   regions=[[(0, 2), (0, 3)]], cmd_params={'mode': unittest.VISUAL_MODE},  expected=[(0, 3), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E241,E501
+    test_data(initial_text='abc a', regions=[[(0, 4), (0, 5)]], cmd_params={'mode': unittest.VISUAL_MODE},  expected=[(0, 5), (0, 0)], actual_func=first_sel,  msg=''),  # noqa: E241,E501
 )
 
 TESTS = TESTS_NORMAL_MODE_SINGLE_SEL + TESTS_VISUAL_MODE_SINGLE_SEL_START_LEN_1
 
 
-class Test__vi_b(ViewTestCase):
+class Test__vi_b(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):

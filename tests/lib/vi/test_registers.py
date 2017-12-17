@@ -1,10 +1,9 @@
-import unittest
 from unittest import mock
 import builtins
 
 import sublime
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import registers
@@ -70,7 +69,7 @@ class TestCaseRegistersConstants(unittest.TestCase):
                           registers.REG_VALID_NAMES))
 
 
-class TestCaseRegisters(ViewTestCase):
+class TestCaseRegisters(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -247,7 +246,7 @@ class TestCaseRegisters(ViewTestCase):
         self.assertEqual(self.regs.get(registers.REG_SMALL_DELETE), ['foo'])
 
 
-class Test_get_selected_text(ViewTestCase):
+class Test_get_selected_text(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -364,7 +363,7 @@ class Test_get_selected_text(ViewTestCase):
         self.assertEqual(rv, ["\n\n\n", "\n\n\n"])
 
 
-class Test_yank(ViewTestCase):
+class Test_yank(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()

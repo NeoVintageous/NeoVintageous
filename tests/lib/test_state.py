@@ -1,24 +1,23 @@
 import os
-import unittest
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import cmd_defs
 
 
-class TestState(ViewTestCase):
+class TestState(unittest.ViewTestCase):
 
     def test_is_in_any_visual_mode(self):
         self.assertEqual(self.state.in_any_visual_mode(), False)
 
-        self.state.mode = self.NORMAL_MODE
+        self.state.mode = unittest.NORMAL_MODE
         self.assertEqual(self.state.in_any_visual_mode(), False)
-        self.state.mode = self.VISUAL_MODE
+        self.state.mode = unittest.VISUAL_MODE
         self.assertEqual(self.state.in_any_visual_mode(), True)
-        self.state.mode = self.VISUAL_LINE_MODE
+        self.state.mode = unittest.VISUAL_LINE_MODE
         self.assertEqual(self.state.in_any_visual_mode(), True)
-        self.state.mode = self.VISUAL_BLOCK_MODE
+        self.state.mode = unittest.VISUAL_BLOCK_MODE
         self.assertEqual(self.state.in_any_visual_mode(), True)
 
     @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
@@ -33,7 +32,7 @@ class TestState(ViewTestCase):
         self.assertEqual(s.sequence, '')
         self.assertEqual(s.partial_sequence, '')
         # TODO(guillermooo): This one fails in AppVeyor, but not locally.
-        self.assertEqual(s.mode, self.NORMAL_MODE)
+        self.assertEqual(s.mode, unittest.NORMAL_MODE)
         self.assertEqual(s.action, None)
         self.assertEqual(s.motion, None)
         self.assertEqual(s.action_count, '')
@@ -54,30 +53,30 @@ class TestState(ViewTestCase):
         self.assertTrue(self.state.must_scroll_into_view())
 
 
-class TestStateModeSwitching(ViewTestCase):
+class TestStateModeSwitching(unittest.ViewTestCase):
     # TODO(guillermooo): Disable this only on CI server via env vars?
     @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def test_enter_normal_mode(self):
-        self.assertEqual(self.state.mode, self.NORMAL_MODE)
-        self.state.mode = self.UNKNOWN_MODE
-        self.assertNotEqual(self.state.mode, self.NORMAL_MODE)
+        self.assertEqual(self.state.mode, unittest.NORMAL_MODE)
+        self.state.mode = unittest.UNKNOWN_MODE
+        self.assertNotEqual(self.state.mode, unittest.NORMAL_MODE)
         self.state.enter_normal_mode()
-        self.assertEqual(self.state.mode, self.NORMAL_MODE)
+        self.assertEqual(self.state.mode, unittest.NORMAL_MODE)
 
     @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def test_enter_visual_mode(self):
-        self.assertEqual(self.state.mode, self.NORMAL_MODE)
+        self.assertEqual(self.state.mode, unittest.NORMAL_MODE)
         self.state.enter_visual_mode()
-        self.assertEqual(self.state.mode, self.VISUAL_MODE)
+        self.assertEqual(self.state.mode, unittest.VISUAL_MODE)
 
     @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def test_enter_insert_mode(self):
-        self.assertEqual(self.state.mode, self.NORMAL_MODE)
+        self.assertEqual(self.state.mode, unittest.NORMAL_MODE)
         self.state.enter_insert_mode()
-        self.assertEqual(self.state.mode, self.INSERT_MODE)
+        self.assertEqual(self.state.mode, unittest.INSERT_MODE)
 
 
-class TestStateResettingState(ViewTestCase):
+class TestStateResettingState(unittest.ViewTestCase):
 
     def test_reset_sequence(self):
         self.state.sequence = 'x'
@@ -113,7 +112,7 @@ class TestStateResettingState(ViewTestCase):
         self.assertEqual(self.state.must_capture_register_name, False)
 
 
-class TestStateResettingVolatileData(ViewTestCase):
+class TestStateResettingVolatileData(unittest.ViewTestCase):
 
     def test_reset_volatile_data(self):
         self.state.glue_until_normal_mode = True
@@ -129,7 +128,7 @@ class TestStateResettingVolatileData(ViewTestCase):
         self.assertTrue(self.state.reset_during_init)
 
 
-class TestStateCounts(ViewTestCase):
+class TestStateCounts(unittest.ViewTestCase):
 
     def test_can_retrieve_good_action_count(self):
         self.state.action_count = '10'
@@ -164,45 +163,45 @@ class TestStateCounts(ViewTestCase):
         self.assertEqual(self.state.count, 100)
 
 
-class TestStateModeNames(ViewTestCase):
+class TestStateModeNames(unittest.ViewTestCase):
 
     def test_mode_name(self):
-        self.assertEqual(self.COMMAND_LINE_MODE, 'mode_command_line')
-        self.assertEqual(self.INSERT_MODE, 'mode_insert')
-        self.assertEqual(self.INTERNAL_NORMAL_MODE, 'mode_internal_normal')
-        self.assertEqual(self.NORMAL_MODE, 'mode_normal')
-        self.assertEqual(self.OPERATOR_PENDING_MODE, 'mode_operator_pending')
-        self.assertEqual(self.VISUAL_MODE, 'mode_visual')
-        self.assertEqual(self.VISUAL_BLOCK_MODE, 'mode_visual_block')
-        self.assertEqual(self.VISUAL_LINE_MODE, 'mode_visual_line')
+        self.assertEqual(unittest.COMMAND_LINE_MODE, 'mode_command_line')
+        self.assertEqual(unittest.INSERT_MODE, 'mode_insert')
+        self.assertEqual(unittest.INTERNAL_NORMAL_MODE, 'mode_internal_normal')
+        self.assertEqual(unittest.NORMAL_MODE, 'mode_normal')
+        self.assertEqual(unittest.OPERATOR_PENDING_MODE, 'mode_operator_pending')
+        self.assertEqual(unittest.VISUAL_MODE, 'mode_visual')
+        self.assertEqual(unittest.VISUAL_BLOCK_MODE, 'mode_visual_block')
+        self.assertEqual(unittest.VISUAL_LINE_MODE, 'mode_visual_line')
 
 
-class TestStateRunnability(ViewTestCase):
+class TestStateRunnability(unittest.ViewTestCase):
 
     def test_can_run_action(self):
         self.assertEqual(self.state.can_run_action(), None)
 
-        self.state.mode = self.VISUAL_MODE
+        self.state.mode = unittest.VISUAL_MODE
         self.assertEqual(self.state.can_run_action(), None)
 
         self.state.action = cmd_defs.ViDeleteByChars()
-        self.state.mode = self.VISUAL_MODE
+        self.state.mode = unittest.VISUAL_MODE
         self.assertEqual(self.state.can_run_action(), True)
 
         self.state.action = cmd_defs.ViDeleteLine()
-        self.state.mode = self.VISUAL_MODE
+        self.state.mode = unittest.VISUAL_MODE
         self.assertEqual(self.state.can_run_action(), True)
 
-        self.state.mode = self.NORMAL_MODE
+        self.state.mode = unittest.NORMAL_MODE
         self.state.action = cmd_defs.ViDeleteByChars()
         self.assertEqual(self.state.can_run_action(), None)
 
-        self.state.mode = self.NORMAL_MODE
+        self.state.mode = unittest.NORMAL_MODE
         self.state.action = cmd_defs.ViDeleteLine()
         self.assertEqual(self.state.can_run_action(), True)
 
     def test_runnable_if_action_and_motion_available(self):
-        self.state.mode = self.NORMAL_MODE
+        self.state.mode = unittest.NORMAL_MODE
         self.state.action = cmd_defs.ViDeleteLine()
         self.state.motion = cmd_defs.ViMoveRightByChars()
         self.assertEqual(self.state.runnable(), True)
@@ -213,29 +212,29 @@ class TestStateRunnability(ViewTestCase):
         self.assertRaises(ValueError, self.state.runnable)
 
     def test_runnable_if_motion_available(self):
-        self.state.mode = self.NORMAL_MODE
+        self.state.mode = unittest.NORMAL_MODE
         self.state.motion = cmd_defs.ViMoveRightByChars()
         self.assertEqual(self.state.runnable(), True)
 
-        self.state.mode = self.OPERATOR_PENDING_MODE
+        self.state.mode = unittest.OPERATOR_PENDING_MODE
         self.state.motion = cmd_defs.ViMoveRightByChars()
         self.assertRaises(ValueError, self.state.runnable)
 
     def test_runnable_if_action_available(self):
-        self.state.mode = self.NORMAL_MODE
+        self.state.mode = unittest.NORMAL_MODE
         self.state.action = cmd_defs.ViDeleteLine()
         self.assertEqual(self.state.runnable(), True)
 
         self.state.action = cmd_defs.ViDeleteByChars()
         self.assertEqual(self.state.runnable(), False)
 
-        self.state.mode = self.OPERATOR_PENDING_MODE
+        self.state.mode = unittest.OPERATOR_PENDING_MODE
         # ensure we can run the action
         self.state.action = cmd_defs.ViDeleteLine()
         self.assertRaises(ValueError, self.state.runnable)
 
 
-class TestStateSetCommand(ViewTestCase):
+class TestStateSetCommand(unittest.ViewTestCase):
 
     def test_raise_error_if_unknown_command_type(self):
         fake_command = {'type': 'foo'}
@@ -247,12 +246,12 @@ class TestStateSetCommand(ViewTestCase):
         self.assertRaises(ValueError, self.state.set_command, cmd_defs.ViMoveRightByChars())
 
     def test_changes_mode_for_lone_motion(self):
-        self.state.mode = self.OPERATOR_PENDING_MODE
+        self.state.mode = unittest.OPERATOR_PENDING_MODE
 
         motion = cmd_defs.ViMoveRightByChars()
         self.state.set_command(motion)
 
-        self.assertEqual(self.state.mode, self.NORMAL_MODE)
+        self.assertEqual(self.state.mode, unittest.NORMAL_MODE)
 
     def test_raises_error_if_too_many_actions(self):
         self.state.motion = cmd_defs.ViDeleteLine()
@@ -264,4 +263,4 @@ class TestStateSetCommand(ViewTestCase):
 
         self.state.set_command(operator)
 
-        self.assertEqual(self.state.mode, self.OPERATOR_PENDING_MODE)
+        self.assertEqual(self.state.mode, unittest.OPERATOR_PENDING_MODE)

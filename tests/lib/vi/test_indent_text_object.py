@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from sublime import Region
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import find_indent_text_object
 
@@ -47,7 +47,7 @@ a_python_fn'''.lstrip()),
 )
 
 
-class Test_indent(ViewTestCase):
+class Test_indent(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS_INDENT):

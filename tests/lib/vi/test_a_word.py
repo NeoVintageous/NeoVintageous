@@ -1,10 +1,10 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import a_word
 
 
 # TODO remove: these tests have been moved to lib.vi.test_text_text_objects; i don't want to include this refactor in a bugfix # noqa: E501
-class Test_a_word_InInternalNormalMode_Inclusive(ViewTestCase):
+class Test_a_word_InInternalNormalMode_Inclusive(unittest.ViewTestCase):
 
     def test_returns_full_word__count_one(self):
         self.write('foo bar baz\n')

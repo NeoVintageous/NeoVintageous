@@ -1,8 +1,6 @@
 from collections import namedtuple
 
-from sublime import Region
-
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi import registers
 
@@ -13,30 +11,30 @@ TESTS = (
     # INTERNAL NORMAL MODE
     test_data(content='abc',
               regions=[[(0, 0), (0, 0)]],
-              in_register=['xxx'], params={'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1},
-              expected=('xxxabc', Region(2, 2)), msg='failed in {0}'),
+              in_register=['xxx'], params={'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 1},
+              expected=('xxxabc', unittest.Region(2, 2)), msg='failed in {0}'),
 
     # INTERNAL NORMAL MODE - linewise
     test_data(content='abc',
               regions=[[(0, 0), (0, 0)]],
-              in_register=['xxx\n'], params={'mode': ViewTestCase.INTERNAL_NORMAL_MODE, 'count': 1},
-              expected=('xxx\nabc', Region(0, 0)), msg='failed in {0}'),
+              in_register=['xxx\n'], params={'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 1},
+              expected=('xxx\nabc', unittest.Region(0, 0)), msg='failed in {0}'),
 
     # VISUAL MODE
     test_data(content='abc',
               regions=[[(0, 0), (0, 3)]],
-              in_register=['xxx'], params={'mode': ViewTestCase.VISUAL_MODE, 'count': 1},
-              expected=('xxx', Region(2, 2)), msg='failed in {0}'),
+              in_register=['xxx'], params={'mode': unittest.VISUAL_MODE, 'count': 1},
+              expected=('xxx', unittest.Region(2, 2)), msg='failed in {0}'),
 
     # VISUAL MODE - linewise
     test_data(content='aaa bbb ccc',
               regions=[[(0, 4), (0, 7)]],
-              in_register=['xxx\n'], params={'mode': ViewTestCase.VISUAL_MODE, 'count': 1},
-              expected=('aaa \nxxx\n ccc', Region(5, 5)), msg='failed in {0}'),
+              in_register=['xxx\n'], params={'mode': unittest.VISUAL_MODE, 'count': 1},
+              expected=('aaa \nxxx\n ccc', unittest.Region(5, 5)), msg='failed in {0}'),
 )
 
 
-class Test__vi_big_p(ViewTestCase):
+class Test__vi_big_p(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):

@@ -1,6 +1,6 @@
 import sublime
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.ex.ex_location import get_line_nr
 from NeoVintageous.lib.ex.ex_location import find_eol
@@ -553,7 +553,7 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 """
 
 
-class TestHelpers(ViewTestCase):
+class TestHelpers(unittest.ViewTestCase):
 
     def test_get_correct_line_number(self):
         self.write(TEST_CONTENT)
@@ -572,7 +572,7 @@ class TestHelpers(ViewTestCase):
             self.assertEquals(actual, expected)
 
 
-class TestSearchHelpers(ViewTestCase):
+class TestSearchHelpers(unittest.ViewTestCase):
 
     def selectLine(self, line_nr):
         pt = self.view.text_point(line_nr - 1, 0)

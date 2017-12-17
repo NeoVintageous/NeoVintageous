@@ -1,9 +1,9 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.state import State
 
 
-class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
+class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(unittest.ViewTestCase):
 
     def test_can_delete_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -46,7 +46,7 @@ class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(ViewTestCase)
         self.assertContent('abc\nabc\nabc')
 
 
-class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTestCase):
+class Test_ex_delete_Deleting_InNormalMode_MultipleLines(unittest.ViewTestCase):
 
     def test_can_delete_two_lines(self):
         self.write('abc\nxxx\nxxx\nabc\nabc')
@@ -74,7 +74,7 @@ class Test_ex_delete_Deleting_InNormalMode_MultipleLines(ViewTestCase):
 
 
 # TODO: test with multiple selections.
-class Test_ex_delete_InNormalMode_CaretPosition(ViewTestCase):
+class Test_ex_delete_InNormalMode_CaretPosition(unittest.ViewTestCase):
 
     def test_can_reposition_caret(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -85,7 +85,7 @@ class Test_ex_delete_InNormalMode_CaretPosition(ViewTestCase):
         self.assertSelection(4)
 
 
-class Test_ex_delete_ModeTransition(ViewTestCase):
+class Test_ex_delete_ModeTransition(unittest.ViewTestCase):
 
     def test_from_normal_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -116,5 +116,5 @@ class Test_ex_delete_ModeTransition(ViewTestCase):
         state = State(self.view)
         actual_mode = state.mode
 
-        self.assertEqual(actual_mode, self.NORMAL_MODE)
+        self.assertEqual(actual_mode, unittest.NORMAL_MODE)
         self.assertNotEqual(expected_mode, actual_mode)

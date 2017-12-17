@@ -1,4 +1,4 @@
-from unittest import TestCase
+import unittest
 
 from NeoVintageous.lib.vi.variables import _DEFAULTS
 from NeoVintageous.lib.vi.variables import _SPECIAL_STRINGS
@@ -8,7 +8,7 @@ from NeoVintageous.lib.vi.variables import get
 from NeoVintageous.lib.vi.variables import is_key_name
 
 
-class TestVariables(TestCase):
+class TestVariables(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

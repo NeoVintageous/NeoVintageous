@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from sublime import Region
 
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.text_objects import find_line_text_object
 
@@ -16,7 +16,7 @@ TESTS_INDENT = (
 )
 
 
-class Test_line(ViewTestCase):
+class Test_line(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS_INDENT):

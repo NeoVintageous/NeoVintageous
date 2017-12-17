@@ -1,9 +1,9 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.state import State
 
 
-class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
+class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(unittest.ViewTestCase):
 
     def test_can_copy_default_line_range(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -46,7 +46,7 @@ class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(ViewTestCase):
         self.assertContent('abc\nxxx\nxxx\nabc\nabc')
 
 
-class Test_ex_copy_Copying_InNormalMode_MultipleLines(ViewTestCase):
+class Test_ex_copy_Copying_InNormalMode_MultipleLines(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -94,7 +94,7 @@ class Test_ex_copy_Copying_InNormalMode_MultipleLines(ViewTestCase):
         self.assertContent('abc\nxxx\nxxx\nxxx\nxxx\nabc\nabc')
 
 
-class Test_ex_copy_InNormalMode_CaretPosition(ViewTestCase):
+class Test_ex_copy_InNormalMode_CaretPosition(unittest.ViewTestCase):
 
     def test_can_reposition_caret(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -105,7 +105,7 @@ class Test_ex_copy_InNormalMode_CaretPosition(ViewTestCase):
         self.assertSelection(12)
 
 
-class Test_ex_copy_ModeTransition(ViewTestCase):
+class Test_ex_copy_ModeTransition(unittest.ViewTestCase):
 
     def test_from_normal_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -121,7 +121,7 @@ class Test_ex_copy_ModeTransition(ViewTestCase):
 
         state = State(self.view)
         new_mode = state.mode
-        self.assertEqual(prev_mode, new_mode, self.NORMAL_MODE)
+        self.assertEqual(prev_mode, new_mode, unittest.NORMAL_MODE)
 
     def test_from_visual_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
@@ -136,4 +136,4 @@ class Test_ex_copy_ModeTransition(ViewTestCase):
         state = State(self.view)
         new_mode = state.mode
         self.assertNotEqual(prev_mode, new_mode)
-        self.assertEqual(new_mode, self.NORMAL_MODE)
+        self.assertEqual(new_mode, unittest.NORMAL_MODE)

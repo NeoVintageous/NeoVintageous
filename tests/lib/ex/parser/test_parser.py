@@ -1,16 +1,24 @@
 import unittest
 
 from NeoVintageous.lib.ex.parser.parser import parse_command_line
-from NeoVintageous.lib.ex.parser.tokens import TokenDot
-from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
-from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
-from NeoVintageous.lib.ex.parser.tokens import TokenDollar
+from NeoVintageous.lib.ex.parser.parser import ParserState
+from NeoVintageous.lib.ex.parser.tokens import TokenComma
 from NeoVintageous.lib.ex.parser.tokens import TokenDigits
-from NeoVintageous.lib.ex.parser.tokens import TokenPercent
+from NeoVintageous.lib.ex.parser.tokens import TokenDollar
+from NeoVintageous.lib.ex.parser.tokens import TokenDot
 from NeoVintageous.lib.ex.parser.tokens import TokenMark
 from NeoVintageous.lib.ex.parser.tokens import TokenOffset
-from NeoVintageous.lib.ex.parser.tokens import TokenComma
+from NeoVintageous.lib.ex.parser.tokens import TokenPercent
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchBackward
+from NeoVintageous.lib.ex.parser.tokens import TokenSearchForward
 from NeoVintageous.lib.ex.parser.tokens import TokenSemicolon
+
+
+class TestParserState(unittest.TestCase):
+
+    def test_can_instantiate(self):
+        parser_state = ParserState("foobar")
+        self.assertEqual(parser_state.scanner.state.source, "foobar")
 
 
 class TestParseLineRef(unittest.TestCase):

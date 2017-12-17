@@ -1,11 +1,12 @@
-from NeoVintageous.tests.utils import ViewTestCase
+from NeoVintageous.tests import unittest
+
 from NeoVintageous.lib.extras.unimpaired import _set_bool_option
 from NeoVintageous.lib.extras.unimpaired import _set_value_option
 from NeoVintageous.lib.extras.unimpaired import _list_option
 from NeoVintageous.lib.extras.unimpaired import _minimap_option
 
 
-class TestToggleOption(ViewTestCase):
+class TestToggleOption(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
