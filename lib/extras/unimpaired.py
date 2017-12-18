@@ -14,10 +14,6 @@ __all__ = [
 ]
 
 
-# TODO Should `[l` and `]l` (goto error) be a motion i.e. should a command like
-# `d[l` delete from cursor to the next lint error?
-
-
 @register(seq='[l', modes=(NORMAL_MODE, VISUAL_MODE))
 class _UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, state):
@@ -157,6 +153,15 @@ class _UnimpairedToggleOff(_BaseToggleDef):
 
 def _context_previous(view, count):
     for i in range(count):
+        # SublimeLinter uses Sublime Text build results which uses next_result
+        # and prev_result commands. It doesn't work too well e.g. the jumps are
+        # not based on cursor position. It also doesn't work under some
+        # conditions e.g. conflicts with other build systems. There is no way to
+        # workaround these issues.
+        # https://github.com/SublimeLinter/SublimeLinter3/issues/659
+        view.window().run_command('prev_result')
+
+        # DEPRECATED This is an old SublimeLinter API
         view.run_command('sublimelinter_goto_error', {
             'direction': 'previous'
         })
@@ -164,6 +169,15 @@ def _context_previous(view, count):
 
 def _context_next(view, count):
     for i in range(count):
+        # SublimeLinter uses Sublime Text build results which uses next_result
+        # and prev_result commands. It doesn't work too well e.g. the jumps are
+        # not based on cursor position. It also doesn't work under some
+        # conditions e.g. conflicts with other build systems. There is no way to
+        # workaround these issues.
+        # https://github.com/SublimeLinter/SublimeLinter3/issues/659
+        view.window().run_command('next_result')
+
+        # DEPRECATED This is an old SublimeLinter API
         view.run_command('sublimelinter_goto_error', {
             'direction': 'next'
         })
