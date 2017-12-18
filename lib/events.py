@@ -225,9 +225,9 @@ class NeoVintageousEvents(EventListener):
                     })
 
             elif state.mode == _NORMAL_MODE:
-                # TODO(guillermooo): Dragging the mouse does not seem to
-                # fire a different event than simply clicking. This makes it
-                # hard to update the xpos.
+                # TODO Dragging the mouse does not seem to fire a different
+                # event than simply clicking. This makes it hard to update the
+                # xpos.
                 if args.get('extend') or (args.get('by') == 'words'):
                     return ('sequence', {
                         'commands': [

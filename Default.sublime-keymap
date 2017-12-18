@@ -140,7 +140,8 @@
     { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true},  "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    // Autocomplete: ctrl+n (down), ctrl+p (up) [aliases: ctrl+j/ctrl+p] TODO Add control operand constraint (it doesn't look like ST currently supports a control constraint for autocomplete).
+    // Autocomplete: ctrl+n (down), ctrl+p (up) [aliases: ctrl+j/ctrl+p]
+    // TODO Add control operand constraint (it doesn't look like ST currently supports a control constraint for autocomplete).
     {"keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true},   "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false},  "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true},   "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},

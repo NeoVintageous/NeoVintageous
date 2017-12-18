@@ -1,5 +1,3 @@
-# TODO needs cleanup of noqa's
-
 _jump_list = []
 _jump_list_index = -1
 _current_latest = 1

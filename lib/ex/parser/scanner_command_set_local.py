@@ -19,6 +19,7 @@ class TokenSet(TokenOfCommand):
         return self.params['option']
 
 
+# TODO [enhancement] Implement other options.
 def scan_command_set_local(state):
     params = {
         'option': None,
@@ -28,7 +29,6 @@ def scan_command_set_local(state):
     state.skip(' ')
     state.ignore()
 
-    # TODO(guillermooo): implement other options.
     m = state.expect_match(r'(?P<option>.+?)(?:[:=](?P<value>.+?))?$')
     params.update(m.groupdict())
 

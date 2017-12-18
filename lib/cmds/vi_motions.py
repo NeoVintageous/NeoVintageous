@@ -782,8 +782,8 @@ class _vi_dollar(ViMotionCommand):
                 return Region(eol if view.line(eol).empty() else (eol - 1))
 
             elif mode == modes.VISUAL:
-                # TODO(guillermooo): is this really a special case? can we not
-                # include this case in .resize_visual_region()?
+                # TODO is this really a special case? can we not include this
+                # case in .resize_visual_region()?
                 # Perhaps we should always ensure that a minimal visual sel
                 # was always such that .a < .b?
                 if (s.a == eol) and not view.line(eol).empty():
@@ -791,8 +791,7 @@ class _vi_dollar(ViMotionCommand):
                 return resize_visual_region(s, eol)
 
             elif mode == modes.INTERNAL_NORMAL:
-                # TODO(guillermooo): perhaps create a
-                # .is_linewise_motion() helper?
+                # TODO perhaps create a .is_linewise_motion() helper?
                 if get_bol(view, s.a) == s.a:
                     return Region(s.a, eol + 1)
                 return Region(s.a, eol)
@@ -941,7 +940,7 @@ class _vi_right_brace(ViMotionCommand):
 
                 return resize_visual_region(s, next_start)
 
-            # TODO(guillermooo): delete previous ws in remaining start line
+            # TODO Delete previous ws in remaining start line.
             elif mode == modes.INTERNAL_NORMAL:
                 par_begin = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if par_begin == (self.view.size() - 1):

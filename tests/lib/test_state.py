@@ -31,7 +31,7 @@ class TestState(unittest.ViewTestCase):
 
         self.assertEqual(s.sequence, '')
         self.assertEqual(s.partial_sequence, '')
-        # TODO(guillermooo): This one fails in AppVeyor, but not locally.
+        # TODO This one fails in AppVeyor, but not locally.
         self.assertEqual(s.mode, unittest.NORMAL_MODE)
         self.assertEqual(s.action, None)
         self.assertEqual(s.motion, None)
@@ -54,7 +54,7 @@ class TestState(unittest.ViewTestCase):
 
 
 class TestStateModeSwitching(unittest.ViewTestCase):
-    # TODO(guillermooo): Disable this only on CI server via env vars?
+    # TODO Disable this only on CI server via env vars?
     @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def test_enter_normal_mode(self):
         self.assertEqual(self.state.mode, unittest.NORMAL_MODE)

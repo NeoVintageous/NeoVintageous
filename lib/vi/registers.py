@@ -20,8 +20,8 @@ REG_SPECIAL = (REG_UNNAMED, REG_SMALL_DELETE, REG_BLACK_HOLE,
                REG_SYS_CLIPBOARD_1, REG_SYS_CLIPBOARD_2)
 REG_ALL = REG_SPECIAL + REG_VALID_NUMBERS + REG_VALID_NAMES
 
-# todo(guillermo): There are more.
-# todo(guillermo): "* and "+ don't do what they should in linux
+# TODO There are more.
+# TODO "* and "+ don't do what they should in linux.
 
 
 def init_register_data():
@@ -36,7 +36,7 @@ def init_register_data():
 _REGISTER_DATA = init_register_data()
 
 
-# todo(guillermooo): Subclass dict properly.
+# TODO Subclass dict properly.
 class Registers(object):
     """
     Registers hold global data used mainly by yank, delete and paste.
@@ -77,7 +77,7 @@ class Registers(object):
         assert isinstance(values, list)
         # Coerce all values into strings.
         values = [str(v) for v in values]
-        # todo(guillermo): could be made a decorator.
+        # TODO could be made a decorator.
         _REGISTER_DATA[REG_UNNAMED] = values
 
     def _maybe_set_sys_clipboard(self, name, value):

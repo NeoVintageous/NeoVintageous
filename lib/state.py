@@ -85,7 +85,7 @@ class State(object):
         This property is *VOLATILE*; it shouldn't be persisted between
         sessions.
         """
-        # TODO(guillermooo): Rename self.settings.vi to self.settings.local
+        # TODO Rename self.settings.vi to self.settings.local
         return self.settings.vi['_vintageous_processing_notation'] or False
 
     @processing_notation.setter
@@ -434,7 +434,7 @@ class State(object):
         self.mode = modes.VISUAL_BLOCK
 
     def reset_sequence(self):
-        # TODO(guillermooo): When is_recording, we could store the .sequence
+        # TODO When is_recording, we could store the .sequence
         # and replay that, but we can't easily translate key presses in insert
         # mode to a NeoVintageous-friendly notation. A hybrid approach may work:
         # use a plain string for any command-mode-based mode, and native ST
@@ -467,17 +467,15 @@ class State(object):
     def scroll_into_view(self):
         try:
             view = sublime.active_window().active_view()
-            # TODO(guillermooo): Maybe some commands should show their
-            # surroundings too?
             # Make sure we show the first caret on the screen, but don't show
             # its surroundings.
+            # TODO Maybe some commands should show their surroundings too?
             view.show(view.sel()[0], False)
         except Exception:
             pass
 
     def reset(self):
-        # TODO: Remove this when we've ported all commands. This is here for
-        # retrocompatibility.
+        # TODO Remove this when we've ported all commands. This is here for retrocompatibility.
         self.reset_command_data()
 
     def reset_command_data(self):

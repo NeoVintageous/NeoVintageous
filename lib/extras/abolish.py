@@ -1,5 +1,3 @@
-# A port of https://github.com/tpope/vim-abolish
-
 import re
 
 from sublime_plugin import TextCommand
@@ -13,6 +11,9 @@ from NeoVintageous.lib.plugin import ViOperatorDef
 __all__ = [
     '_neovintageous_abolish_command'
 ]
+
+
+# A port of https://github.com/tpope/vim-abolish.
 
 
 def _coerce_to_mixedcase(string):

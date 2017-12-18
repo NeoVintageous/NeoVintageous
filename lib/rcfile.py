@@ -53,7 +53,8 @@ def _run():
         _logger.debug('rcfile not found')
 
 
-_PARSE_LINE_PATTERN = re.compile('^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')  # FIXME # noqa: E501
+_PARSE_LINE_PATTERN = re.compile(
+    '^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
 
 
 # TODO Properly implement map, nmap, vmap and omap

@@ -337,7 +337,7 @@ class _vi_a(ViTextCommandBase):
             return
 
         regions_transformer(self.view, f)
-        # TODO(guillermooo): derive this class from ViTextCommandBase ???
+        # TODO derive this class from ViTextCommandBase ???
         self.view.window().run_command('_enter_insert_mode', {
             'mode': mode,
             'count': state.normal_insert_count
@@ -479,7 +479,11 @@ class _enter_normal_mode(ViTextCommandBase):
 
         state.update_xpos(force=True)
 
-        status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()  # FIXME # noqa: E501
+        # TODO [review] Why we need to clear the status message; perhaps there's
+        # a better api e.g. nvim.update_status_line() i.e. distinguishing
+        # between a normal nvim.status_message() and a
+        # nvim.update_status_line().
+        status_message('')
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
@@ -581,7 +585,7 @@ class _enter_visual_mode(ViTextCommandBase):
     def run(self, edit, mode=None):
         state = self.state
 
-        # TODO(guillermooo): If all selections are non-zero-length, we may be
+        # TODO If all selections are non-zero-length, we may be
         # looking at a pseudo-visual selection, like the ones that are
         # created pressing Alt+Enter when using ST's built-in search dialog.
         # What shall we really do in that case?
@@ -789,7 +793,7 @@ class _vi_dd(ViTextCommandBase):
         self.state.registers.yank(self, register, operation='delete')
         self.view.run_command('right_delete')
         set_sel()
-        # TODO(guillermooo): deleting last line leaves the caret at \n
+        # TODO deleting last line leaves the caret at \n
 
 
 # https://vimhelp.appspot.com/change.txt.html#cc
@@ -2379,7 +2383,7 @@ class _vi_q(IrreversibleTextCommand):
             _vi_q._register_name = None
             return
 
-        # TODO(guillermooo): What happens when we change views?
+        # TODO What happens when we change views?
         state.start_recording()
         _vi_q._register_name = name
 
@@ -2389,7 +2393,7 @@ class _vi_at(IrreversibleTextCommand):
         super().__init__(*args, **kwargs)
 
     def run(self, name=None, mode=None, count=1):
-        # TODO(guillermooo): Do we need to glue all these edits?
+        # TODO Do we need to glue all these edits?
         cmds = State.macro_steps
         if name != '@':
             try:
@@ -2401,7 +2405,7 @@ class _vi_at(IrreversibleTextCommand):
 
         state = State(self.view)
         for cmd, args in cmds:
-            # TODO(guillermooo): Is this robust enough?
+            # TODO Is this robust enough?
             if 'xpos' in args:
                 state.update_xpos(force=True)
                 args['xpos'] = State(self.view).xpos

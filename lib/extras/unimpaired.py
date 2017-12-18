@@ -1,5 +1,3 @@
-# https://github.com/tpope/vim-unimpaired
-
 from sublime_plugin import TextCommand
 
 from NeoVintageous.lib.plugin import inputs
@@ -12,6 +10,9 @@ from NeoVintageous.lib.plugin import VISUAL_MODE
 __all__ = [
     '_neovintageous_unimpaired_command'
 ]
+
+
+# A post of https://github.com/tpope/vim-unimpaired.
 
 
 @register(seq='[l', modes=(NORMAL_MODE, VISUAL_MODE))

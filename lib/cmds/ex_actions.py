@@ -943,6 +943,7 @@ class ExDoubleAmpersand(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/change.txt.html#:substitute
+# TODO [enhancement] Implement count.
 class ExSubstitute(TextCommand):
 
     _last_pattern = None
@@ -953,14 +954,9 @@ class ExSubstitute(TextCommand):
         if not command_line:
             raise ValueError('no command line passed; that seems wrong')
 
-        # ST commands only accept Json-encoded parameters.
-        # We parse the command line again because the alternative is to
-        # serialize the parsed command line before calling this command.
-        # Parsing twice seems simpler.
         parsed = parse_command_line(command_line)
         pattern = parsed.command.pattern
         replacement = parsed.command.replacement
-        count = parsed.command.count
         flags = parsed.command.flags
 
         # :s
@@ -969,7 +965,6 @@ class ExSubstitute(TextCommand):
             replacement = ExSubstitute._last_replacement
             # TODO: Don't we have to reuse the previous flags?
             flags = []
-            count = 0  # FIXME # noqa: F841
 
         if not pattern:
             return nvim.status_message('E33: No previous substitute regular expression')
@@ -988,7 +983,6 @@ class ExSubstitute(TextCommand):
             nvim.console_message('[regex error]: %s ... in pattern \'%s\'' % (e.message, pattern))
             return
 
-        # TODO: Implement 'count'
         replace_count = 0 if (flags and 'g' in flags) else 1
 
         target_region = parsed.line_range.resolve(self.view)
@@ -1080,7 +1074,7 @@ class ExGlobal(WindowCommand, WindowCommandMixin):
     'FOO'matches: `:10,20g/FOO/delete`.
 
     This command replaces all instances of 'old' with 'NEW' in every line where
-    'XXX' matches: `:g:XXX:s!old!NEW!g`.
+    'ABC' matches: `:g:ABC:s!old!NEW!g`.
     """
 
     _most_recent_pat = None
@@ -1349,7 +1343,7 @@ class ExListRegisters(WindowCommand, WindowCommandMixin):
             lines_display = '... [+{0}]'.format(line_count - 1)
             return lines_display if line_count > 1 else ''
 
-        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
+        parse_command_line(command_line)
 
         # TODO: implement arguments.
 
@@ -1414,9 +1408,7 @@ class ExTabnextCommand(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
-        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
-
+        parse_command_line(command_line)
         self.window.run_command("tab_control", {"command": "next"}, )
 
 
@@ -1425,9 +1417,7 @@ class ExTabprevCommand(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
-        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
-
+        parse_command_line(command_line)
         self.window.run_command("tab_control", {"command": "prev"}, )
 
 
@@ -1436,9 +1426,7 @@ class ExTablastCommand(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
-        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
-
+        parse_command_line(command_line)
         self.window.run_command("tab_control", {"command": "last"}, )
 
 
@@ -1447,9 +1435,7 @@ class ExTabfirstCommand(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
-        parsed = parse_command_line(command_line)  # FIXME # noqa: F841
-
+        parse_command_line(command_line)
         self.window.run_command("tab_control", {"command": "first"}, )
 
 
@@ -1458,9 +1444,7 @@ class ExTabonlyCommand(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         parsed = parse_command_line(command_line)
-
         self.window.run_command("tab_control", {"command": "only", "forced": parsed.command.forced})
 
 

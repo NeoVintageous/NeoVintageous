@@ -1,12 +1,12 @@
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi import inputs
+from NeoVintageous.lib.vi import keys
+from NeoVintageous.lib.vi import utils
+from NeoVintageous.lib.vi.cmd_base import ViMotionDef
+from NeoVintageous.lib.vi.cmd_base import ViOperatorDef
 from NeoVintageous.lib.vi.inputs import input_types
 from NeoVintageous.lib.vi.inputs import parser_def
-from NeoVintageous.lib.vi import inputs
-from NeoVintageous.lib.vi import utils
-from NeoVintageous.lib.vi.cmd_base import ViOperatorDef
-from NeoVintageous.lib.vi.cmd_base import ViMotionDef
-from NeoVintageous.lib.vi import keys
 from NeoVintageous.lib.vi.keys import seqs
+from NeoVintageous.lib.vi.utils import modes
 
 
 _MODES_MOTION = (
@@ -241,7 +241,6 @@ class ViUndo(ViOperatorDef):
         }
 
 
-# TODO: Maybe this is duplicated.
 @keys.assign(seq=seqs.U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
 class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -582,7 +581,6 @@ class ViInvertCaseByChars(ViOperatorDef):
         }
 
 
-# TODO: Duplicated.
 @keys.assign(seq=seqs.G_BIG_U, modes=_MODES_ACTION)
 class ViChangeToUpperCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1461,7 +1459,6 @@ class ViRepeat(ViOperatorDef):
         return cmd
 
 
-# TODO: Implement <C-r>
 @keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
 class ViOpenRegisterFromInsertMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1496,27 +1493,6 @@ class ViScrollByLinesUp(ViOperatorDef):
         }
 
 
-# TODO: Implement U.
-@keys.assign(seq=seqs.BIG_U, modes=[modes.NORMAL])
-class ViUndoLineChanges(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        cmd = {}
-
-        if state.mode in (modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK):
-            cmd['action'] = '_xxx_disabled'
-            cmd['action_args'] = {'count': state.count, 'mode': state.mode}
-
-            return cmd
-
-        return {}
-
-
-# TODO: Maybe this is duplicated.
 @keys.assign(seq=seqs.BIG_U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
 class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -2770,7 +2746,7 @@ class ViGotoClosingBracket(ViMotionDef):
         return cmd
 
 
-# TODO: Revise this.
+# TODO [review]
 @keys.assign(seq=seqs.PERCENT, modes=_MODES_MOTION)
 class ViGotoLinesPercent(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -3035,9 +3011,8 @@ class ViFindWord(ViMotionDef):
 
 @keys.assign(seq=seqs.OCTOTHORP, modes=_MODES_MOTION)
 class ViReverseFindWord(ViMotionDef):
-
     # Trivia: Octothorp seems to be a symbol used in maps to represent a
-    #         small village surrounded by eight fields.
+    # small village surrounded by eight fields.
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3061,12 +3036,13 @@ class ViReverseFindWord(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_W, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.G, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.Z, modes=_MODES_MOTION)
-# Non-standard
+# Non-standard modes:
 @keys.assign(seq=seqs.CTRL_DOT, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_SHIFT_DOT, modes=_MODES_MOTION)
-# TODO: This is called a 'submode' in the vim docs.
+# XXX: This is called a 'submode' in the vim docs:
 @keys.assign(seq=seqs.CTRL_X, modes=[modes.INSERT])
-class ViOpenNameSpace(ViMotionDef):  # FIXME: This should not be a motion.
+# TODO This should not be a motion.
+class ViOpenNameSpace(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -3239,7 +3215,6 @@ class ViSearchCharForward(ViMotionDef):
         return cmd
 
 
-# TODO: rename to "vi_a_text_object".
 @keys.assign(seq=seqs.A, modes=[modes.OPERATOR_PENDING, modes.VISUAL, modes.VISUAL_BLOCK])
 class ViATextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
@@ -3512,9 +3487,10 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         }
 
 
-# TODO gc is non standard and looks like it based on
-# https://github.com/tpope/vim-commentary it should probably be moved to the
-# extras directory as an extras plugin.
+# TODO gc is a non-standard Vim command. It looks like it based on
+# vim-commentary. It should be refactored into an out-of-the-box
+# plugin like the surround, unimpaired, abolish, etc. plugins.
+# See https://github.com/tpope/vim-commentary.
 @keys.assign(seq=seqs.GC, modes=_MODES_ACTION)
 class ViToggleCommentByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):

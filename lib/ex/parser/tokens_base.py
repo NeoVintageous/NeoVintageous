@@ -80,10 +80,9 @@ class Token():
     #   :token_type (int):
     #   :content (str):
     #
-    # Todo:
-    #   Look into getting rid of token_types and content, I don't think they are
-    #   used for anything. They can probably be inferred by the extending class
-    #   name.
+    # TODO [refactor] Look into getting rid of token_types and content, I don't
+    #   think they are used for anything. They can probably be inferred by the
+    #   extending class name.
 
     def __init__(self, token_type, content):
         self.token_type = token_type
