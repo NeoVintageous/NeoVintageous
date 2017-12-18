@@ -241,10 +241,13 @@ def _set_value_option(view, key, on_value, off_value, flag=None):
 
 
 def _list_option(view, flag=None):
-    # TODO instead of toggle between "all" and "selection" toggle between "all"
-    # and whatever the user default is Set to "none" to turn off drawing white
-    # space, "selection" to draw only the white space within the selection, and
-    # "all" to draw all white space.
+    # TODO [enhancement] Add option to set default for "off". i.e. instead of
+    # toggling between "all" (on) and "selection" (off), which is the current
+    # behaviour, toggle between "all" (on) and whatever the user default for
+    # "off" is. For example the user might have "off" set to "none" or
+    # "selection" (the default in sublime). "selection" means that whitepspace
+    # characters are visible in selected text, "none" means whitespace
+    # characters are never visible.
     _set_value_option(view, 'draw_white_space', 'all', 'selection', flag)
 
 
@@ -300,11 +303,10 @@ def _statusbar_option(view, flag=None):
             window.set_status_bar_visible(False)
 
 
-# Used by the _toggle_option() function
-# Values:
-# * None means the option is not implemented
-# * A string means the option is a boolean option
-# * A function means it is a complex option
+# Used by the _toggle_option() function.
+# * None: means the option is not implemented.
+# * str: means the option is a boolean option.
+# * function: means it is a complex option.
 _OPTIONS = {
     'background': None,
     'crosshairs': None,
@@ -326,6 +328,7 @@ _OPTIONS = {
 }
 
 
+# These aliases are mapped to _OPTIONS.
 _OPTION_ALIASES = {
     'a': 'menu',  # non standard i.e. not in the original Unimpaired plugin
     'b': 'background',
@@ -366,8 +369,7 @@ def _toggle_option(view, key, value=None):
 
 
 class _neovintageous_unimpaired_command(TextCommand):
-    # TODO refactor to use standard *kwargs and *args instead of value param
-    def run(self, edit, action, value=None, mode=None, count=1):
+    def run(self, edit, action, mode=None, count=1, **kwargs):
         if action == 'move_down':
             # Exchange the current line with [count] lines below it
             _move_down(self.view, count)
@@ -387,10 +389,10 @@ class _neovintageous_unimpaired_command(TextCommand):
             # Go to the previous [count] SCM conflict marker or diff/patch hunk
             _context_previous(self.view, count)
         elif action == 'toggle_option':
-            _toggle_option(self.view, value)
+            _toggle_option(self.view, kwargs.get('value'))
         elif action == 'enable_option':
-            _toggle_option(self.view, value, True)
+            _toggle_option(self.view, kwargs.get('value'), True)
         elif action == 'disable_option':
-            _toggle_option(self.view, value, False)
+            _toggle_option(self.view, kwargs.get('value'), False)
         else:
             raise ValueError('unknown action')
