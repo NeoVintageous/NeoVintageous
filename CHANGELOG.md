@@ -15,7 +15,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Fixed [#254](https://github.com/NeoVintageous/NeoVintageous/issues/245): `:vs[plit] [file]` TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 
-## Unreleased (1.4.2)
+## 1.4.2 - 2017-12-19
 
 ### Fixed
 
