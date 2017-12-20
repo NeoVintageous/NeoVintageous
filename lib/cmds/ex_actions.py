@@ -207,9 +207,18 @@ class ExHelp(WindowCommand, WindowCommandMixin):
             nvim.console_message('finished initializing help tags')
 
         if subject not in self._tags:
-            subject = ':' + subject
-            if subject not in self._tags:
-                return nvim.message('E149: Sorry, no help for %s' % subject[1:])
+            # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
+            # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
+            # example is `:help copy` will look for "copy" then ":copy".
+            found = False
+            for m in (':', 'c_', 'i_', 'v_', '-', '/'):
+                _subject = m + subject
+                if _subject in self._tags:
+                    found = True
+                    subject = _subject
+
+            if not found:
+                return nvim.message('E149: Sorry, no help for %s' % subject)
 
         tag = self._tags[subject]
 
