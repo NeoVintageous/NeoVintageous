@@ -1,5 +1,5 @@
 {
-    // Enable key bindings prefaced by the CTRL modifier.
+    // Enable key bindings prefaced by the control-key.
     // {not in Vim}
     "vintageous_use_ctrl_keys": false,
 
@@ -58,5 +58,10 @@
     "vintageous_ignorecase": true,
 
     // Port of https://github.com/tpope/vim-surround
-    "vintageous_enable_surround": true
+    "vintageous_enable_surround": true,
+
+    // Enable key bindings prefaced by the super-key, otherwise known as the
+    // command-key in OSX, and as the windows-key in Windows.
+    // {not in Vim}
+    "vintageous_use_super_keys": false
 }

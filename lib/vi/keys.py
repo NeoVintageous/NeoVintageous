@@ -69,6 +69,10 @@ class seqs:
     CC = 'cc'
     COLON = ':'
     COMMA = ','
+    COMMAND_BIG_B = '<D-B>'
+    COMMAND_BIG_F = '<D-F>'
+    COMMAND_BIG_P = '<D-P>'
+    COMMAND_P = '<D-p>'
     CTRL_0 = '<C-0>'
     CTRL_1 = '<C-1>'
     CTRL_2 = '<C-2>'
@@ -468,7 +472,7 @@ class KeySequenceTokenizer(object):
             if c == EOF:
                 raise ValueError("expected '>' at index {0}".format(self.idx))
 
-            elif (c.lower() in ('c', 's', 'm')) and (self.peek_one() == '-'):
+            elif (c.lower() in ('c', 's', 'm', 'd')) and (self.peek_one() == '-'):
                 if c.lower() in modifiers.lower():
                     raise ValueError('invalid modifier sequence: {0}'.format(self.source))
 

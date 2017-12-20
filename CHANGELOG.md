@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Support for super-keys `<D-...>` (also known as command-keys on OSX and window-keys on Windows)
 * Added: Scope `highlighted.yank` when highlighting yanks to allow color scheme customisation
 * Added: Switching windows using windowing commands no longer suddenly scrolls view (UX)
 * Added: `:sunmap`

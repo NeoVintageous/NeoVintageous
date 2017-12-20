@@ -1279,6 +1279,7 @@ class StToggleSidebar(ViOperatorDef):
         }
 
 
+@keys.assign(seq=seqs.COMMAND_BIG_B, modes=_MODES_ACTION)
 @keys.assign(seq=seqs.CTRL_SHIFT_B, modes=_MODES_ACTION)
 class StShowBuildSystemsMenu(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1295,6 +1296,7 @@ class StShowBuildSystemsMenu(ViOperatorDef):
         }
 
 
+@keys.assign(seq=seqs.COMMAND_BIG_F, modes=_MODES_ACTION)
 @keys.assign(seq=seqs.CTRL_BIG_F, modes=_MODES_ACTION)
 class StFinInFiles(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1735,6 +1737,7 @@ class ViEnterVisualBlockMode(ViOperatorDef):
         }
 
 
+@keys.assign(seq=seqs.COMMAND_P, modes=_MODES_ACTION)
 @keys.assign(seq=seqs.CTRL_P, modes=_MODES_ACTION)
 class StShowGotoAnything(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1795,6 +1798,7 @@ class StShowSwitchProject(ViOperatorDef):
         }
 
 
+@keys.assign(seq=seqs.COMMAND_BIG_P, modes=_MODES_ACTION)
 @keys.assign(seq=seqs.CTRL_BIG_P, modes=_MODES_ACTION)
 class StShowCommandPalette(ViOperatorDef):
     def __init__(self, *args, **kwargs):

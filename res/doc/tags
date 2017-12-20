@@ -941,6 +941,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_modeline'	neovintageous.txt	/*'vintageous_modeline'*
 'vintageous_modelines'	neovintageous.txt	/*'vintageous_modelines'*
 'vintageous_reset_mode_when_switching_tabs'	neovintageous.txt	/*'vintageous_reset_mode_when_switching_tabs'*
+'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
 'vintageous_use_ctrl_keys'	neovintageous.txt	/*'vintageous_use_ctrl_keys'*
 'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
 'vintageous_use_sys_clipboard'	neovintageous.txt	/*'vintageous_use_sys_clipboard'*
