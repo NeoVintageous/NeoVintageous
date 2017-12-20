@@ -488,10 +488,16 @@ Menu > Preferences > Key Bindings: >
         Reset to normal mode when a tab is activated.
 
 
+                                        *'vintageous_use_command_or_super_keys'*
+'vintageous_use_command_or_super_keys'  boolean (default: false)
+                                        {Neovintageous specific}
+        Enable key bindings prefaced by the command-key or super-key.
+
+
                                                     *'vintageous_use_ctrl_keys'*
 'vintageous_use_ctrl_keys'              boolean (default: false)
                                         {Neovintageous specific}
-        Enable key bindings prefaced by the CTRL modifier.
+        Enable key bindings prefaced by the ctrl-key.
 
 
                                                 *'vintageous_use_sys_clipboard'*
