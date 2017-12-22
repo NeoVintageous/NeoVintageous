@@ -86,22 +86,27 @@ def plugin_loaded():
     try:
         _exception = None
 
-        window = sublime.active_window()
-        if not window:
-            raise Exception('active window not found')
+        view = sublime.active_window().active_view()
+        # We can't always expect a valid view to be returned from
+        # Window.active_view(), especially at startup e.g. at startup, if the
+        # active view is an image (e.g. a .png, or a .jpg, etc.) then
+        # active_view() will return None; this is most likely a bug in Sublime
+        # Text (true for build 3154).
+        if view:
+            init_state(view, new_session=True)
 
-        view = window.active_view()
-        if not view:
-            raise Exception('active view not found')
-
-        init_state(view, new_session=True)
     except Exception as e:
         _exception = e
         import traceback
         traceback.print_exc()
 
     if _EXCEPTION or _exception:
-        _cleanup_views()
+
+        try:
+            _cleanup_views()
+        except Exception:
+            import traceback
+            traceback.print_exc()
 
         if isinstance(_EXCEPTION, ImportError) or isinstance(_exception, ImportError):
             if pc_event == 'post_upgrade':
@@ -118,7 +123,7 @@ def plugin_loaded():
                 message = "An error occurred trying to load NeoVintageous. "\
                           "Please restart Sublime Text."
 
-        print('NeoVintageous: ' + message)
+        print('NeoVintageous:', message)
         sublime.message_dialog(message)
 
 
