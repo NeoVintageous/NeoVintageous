@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.4.3 - 2017-12-22
+
+### Fixed
+
+* Fixed [#297](https://github.com/NeoVintageous/NeoVintageous/issues/297): An occurred trying load NeoVintageous
+
 ## 1.4.2 - 2017-12-19
 
 ### Fixed

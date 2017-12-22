@@ -17,7 +17,6 @@ from NeoVintageous.lib.vi.settings import SettingsManager
 from NeoVintageous.lib.vi.utils import directions
 from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import input_types
-from NeoVintageous.lib.vi.utils import is_ignored
 from NeoVintageous.lib.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.lib.vi.utils import is_view
 from NeoVintageous.lib.vi.utils import modes
@@ -790,20 +789,17 @@ class State(object):
 
 
 def init_state(view, new_session=False):
-    """
-    Initialize global data.
-
-    Runs at startup and every time a view gets activated, loaded, etc.
-
-    @new_session
-      Whether we're starting up Sublime Text. If so, volatile data must be
-      wiped.
-    """
-    _logger.debug('newsession=%s for view=[id=%d,file=\'%s\']', new_session, view.id(), view.file_name())
+    # Initialise view state.
+    #
+    # Runs at startup and every time a view gets activated, loaded, etc.
+    #
+    # Args:
+    #   :view (sublime.View):
+    #   :new_session (bool): Whether we're starting up Sublime Text. If so,
+    #       volatile data must be wiped, and vintageousrc file must be loaded.
 
     if not is_view(view):
-        # Abort if we got a widget, panel...
-        _logger.debug('ignore view=[id=%d]', view.id())
+        # Abort if we got a console, widget, panel...
         try:
             # XXX: All this seems to be necessary here.
             if not is_ignored_but_command_mode(view):
@@ -811,15 +807,8 @@ def init_state(view, new_session=False):
                 view.settings().set('inverse_caret_state', False)
 
             view.settings().erase('vintage')
-
-            if is_ignored(view):
-                # Someone has intentionally disabled NeoVintageous, so let the user know.
-                nvim.status_message('vim emulation disabled for the current view')
-
-        except AttributeError:
-            _logger.exception('exception; probably received the console view')
         except Exception:
-            _logger.exception('error initializing view')
+            _logger.exception('error initialising irregular view i.e. console, widget, panel, etc.')
         finally:
             return
 
