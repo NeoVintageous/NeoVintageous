@@ -19,7 +19,12 @@ matrix:
           language: generic
 
 before_install:
-    - curl -OL https://raw.githubusercontent.com/randy3k/UnitTesting/master/sbin/travis.sh
+    - curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/travis.sh
+    # Enable GUI. See https://docs.travis-ci.com/user/gui-and-headless-browsers.
+    - if [ "$TRAVIS_OS_NAME" == "linux"  ]; then
+            export DISPLAY=:99.0;
+            sh -e /etc/init.d/xvfb start;
+      fi
 
 install:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
@@ -39,7 +44,7 @@ install:
 script:
     - sh travis.sh run_tests --coverage
     - sh travis.sh run_syntax_tests
-    - flake8 --statistics
+    - flake8
 
 after_success:
     - coveralls
