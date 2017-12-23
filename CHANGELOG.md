@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased (1.4.4)
+
+* Fixed [#129](https://github.com/NeoVintageous/NeoVintageous/issues/129): Failing tests when ST hasn't got focus
+
 ## 1.4.3 - 2017-12-22
 
 ### Fixed
