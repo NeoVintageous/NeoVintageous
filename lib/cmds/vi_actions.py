@@ -230,11 +230,22 @@ class _vi_gq(ViTextCommandBase):
         wrap_lines = wrap_command()
 
         if mode in (modes.VISUAL, modes.VISUAL_LINE):
+            sel = tuple(self.view.sel())
+
             # TODO: ST seems to always reformat whole paragraphs with 'wrap_lines'.
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
             self.view.run_command(wrap_lines)
+
+            self.view.sel().clear()
+            for s in sel:
+                # Cursors should move to the first non-blank character of the line.
+                line = self.view.line(s.begin())
+                first_non_ws_char_region = self.view.find('[^\\s]', line.begin())
+                self.view.sel().add(first_non_ws_char_region.begin())
+
             self.enter_normal_mode(mode)
+
             return
 
         elif mode == modes.INTERNAL_NORMAL:
@@ -249,7 +260,14 @@ class _vi_gq(ViTextCommandBase):
                 self.save_sel()
                 self.view.run_command(wrap_lines)
                 self.view.sel().clear()
-                self.view.sel().add_all(self.old_sel)
+
+                if 'is_jump' in motion and motion['is_jump']:
+                    # Cursors should move to end position of motion (exclusive-linewise).
+                    self.view.sel().add_all(self.old_sel)
+                else:
+                    # Cursors should move to start position of motion.
+                    for s in self.old_sel:
+                        self.view.sel().add(s.begin())
             else:
                 utils.blink()
 
