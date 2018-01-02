@@ -2117,11 +2117,12 @@ class _vi_zz(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
-# Base class for Ctrl-x and Ctrl-a
+# https://vimhelp.appspot.com/scroll.txt.html#CTRL-A
+# https://vimhelp.appspot.com/scroll.txt.html#CTRL-X
 class _vi_modify_numbers(ViTextCommandBase):
 
-    DIGIT_PAT = re.compile('(\D+?)?(-)?(\d+)(\D+)?')
-    NUM_PAT = re.compile('\d')
+    DIGIT_PAT = re.compile('(\\D+?)?(-)?(\\d+)(\\D+)?')
+    NUM_PAT = re.compile('\\d')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2138,11 +2139,11 @@ class _vi_modify_numbers(ViTextCommandBase):
         # Modify selections that are inside a number already.
         for i, r in enumerate(regions):
             a = r.b
-            if self.view.substr(r.b).isdigit():
-                while self.view.substr(a).isdigit():
-                    a -= 1
-                regions[i] = Region(a)
+            while self.view.substr(a).isdigit():
+                a -= 1
+            a += 1
 
+            regions[i] = Region(a)
         lines = [self.view.substr(Region(r.b, self.view.line(r.b).b)) for r in regions]
         matches = [_vi_modify_numbers.NUM_PAT.search(text) for text in lines]
         if all(matches):
@@ -2150,20 +2151,22 @@ class _vi_modify_numbers(ViTextCommandBase):
         return []
 
     def run(self, edit, count=1, mode=None, subtract=False):
+        # TODO Implement {Visual}CTRL-A
+        # TODO Implement {Visual}CTRL-X
         if mode != modes.INTERNAL_NORMAL:
             return
 
-        # TODO: Deal with octal, hex notations.
-        # TODO: Improve detection of numbers.
-        regs = list(self.view.sel())
+        # TODO Implement CTRL-A and CTRL-X  octal, hex, etc. numbers
 
+        regs = list(self.view.sel())
         pts = self.find_next_num(regs)
+
         if not pts:
             utils.blink()
             return
 
-        count = count if not subtract else -count
         end_sels = []
+        count = count if not subtract else -count
         for pt in reversed(pts):
             sign, num, tail = self.get_editable_data(pt)
 

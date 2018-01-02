@@ -26,6 +26,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased (1.4.4)
 
+* Fixed: `CTRL-a` and `CTRL-x` doesn't work in column one or between lines
 * Fixed: Update to latest vimdocs
 * Fixed: `:map` doesn't work in visual block or visual line mode
 * Fixed: Remove unused setting
