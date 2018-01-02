@@ -13,16 +13,36 @@ import sublime
 
 try:
     _EXCEPTION = None
+
     from .lib.state import init_state
-    from .lib.commands import *             # noqa: F401,F403
-    from .lib.cmds.ex_actions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
-    from .lib.cmds.ex_motions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
-    from .lib.cmds.vi_actions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
-    from .lib.cmds.vi_motions import *      # noqa: F401,F403 TODO maybe put commands into one file (lib.commands)
-    from .lib.extras.surround import *      # noqa: F401,F403,E501 TODO maybe put commands into one file (lib.extras) (not lib.plugins see f29727)
-    from .lib.extras.unimpaired import *    # noqa: F401,F403,E501 TODO maybe put commands into one file (lib.extras) (not lib.plugins see f29727)
-    from .lib.extras.abolish import *       # noqa: F401,F403,E501 TODO maybe put commands into one file (lib.extras) (not lib.plugins see f29727)
-    from .lib.events import NeoVintageousEvents  # noqa: F401,E501 TODO lib.events should use __all__ and use import * like the commands above
+
+    from .lib.commands import *  # noqa: F401,F403
+
+    # TODO Organise all commands into a single module e.g. lib.commands.
+    from .lib.cmds.ex_actions import *  # noqa: F401,F403
+    from .lib.cmds.ex_motions import *  # noqa: F401,F403
+    from .lib.cmds.vi_actions import *  # noqa: F401,F403
+    from .lib.cmds.vi_motions import *  # noqa: F401,F403
+
+    # Why are the plugins in a directory named "extra" rather than "plugins"?
+    # The plugins were not placed in a directory named "plugins" because of a
+    # bug in Sublime Text that caused loading issues with anything named
+    # "plugins" e.g. modules, sub-modules, attributes, classes, functions. See
+    # https://github.com/NeoVintageous/NeoVintageous/commit/f29727. This issue
+    # has since been fixed in Sublime Text (build 3153). See
+    # https://github.com/SublimeTextIssues/Core/issues/1991.
+    # TODO Organise plugins into a directory named "plugs".
+    # TODO Organise plugins into a directory named "plugins" (requires Sublime
+    # Text build >= 3153).
+    # See https://github.com/SublimeTextIssues/Core/issues/1991.
+    from .lib.extras.surround import *      # noqa: F401,F403
+    from .lib.extras.unimpaired import *    # noqa: F401,F403
+    from .lib.extras.abolish import *       # noqa: F401,F403
+
+    # TODO [review] Should events be imported ala `from .lib.events import *`
+    # like the commands and plugins above?
+    from .lib.events import NeoVintageousEvents  # noqa: F401
+
 except Exception as e:
     _EXCEPTION = e
     import traceback
