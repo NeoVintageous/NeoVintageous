@@ -57,7 +57,7 @@ def _cleanup_views():
             settings = view.settings()
             settings.set('command_mode', False)
             settings.set('inverse_caret_state', False)
-            # TODO should the "vintage" setting be erased too? i.e. v.settings().erase('vintage')
+            settings.erase('vintage')
 
 
 def plugin_loaded():
@@ -87,11 +87,13 @@ def plugin_loaded():
         _exception = None
 
         view = sublime.active_window().active_view()
+
         # We can't always expect a valid view to be returned from
-        # Window.active_view(), especially at startup e.g. at startup, if the
-        # active view is an image (e.g. a .png, or a .jpg, etc.) then
-        # active_view() will return None; this is most likely a bug in Sublime
-        # Text (true for build 3154).
+        # `sublime.Window.active_view()`, especially at startup, e.g. at startup
+        # if the active view is an image then `sublime.Window.active_view()`
+        # will return None, because images are not represented by a
+        # `sublime.View`, but by a `sublime.Sheet`.
+        # See https://github.com/SublimeTextIssues/Core/issues/2116.
         if view:
             init_state(view, new_session=True)
 

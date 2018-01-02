@@ -5,7 +5,6 @@ import webbrowser
 from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
-from sublime import status_message
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
@@ -478,12 +477,7 @@ class _enter_normal_mode(ViTextCommandBase):
             self.view.sel().add_all(new_sels)
 
         state.update_xpos(force=True)
-
-        # TODO [review] Why we need to clear the status message; perhaps there's
-        # a better api e.g. nvim.update_status_line() i.e. distinguishing
-        # between a normal nvim.status_message() and a
-        # nvim.update_status_line().
-        status_message('')
+        state.reset_status()
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
@@ -2284,11 +2278,18 @@ class _vi_gx(IrreversibleTextCommand):
             # Remove end of line full stop character.
             url = url.rstrip('.')
 
-            # Remove closing tag markdown link e.g. [title](url)
+            # Remove closing tag markdown link e.g. `[title](url)`.
             url = url.rstrip(')')
 
-            # Remove closing tag markdown image e.g. ![alt](url)]
+            # Remove closing tag markdown image e.g. `![alt](url)]`.
             if url[-2:] == ')]':
+                url = url[:-2]
+
+            # Remove trailing quote marks e.g. `"url"`, `'url'`.
+            url = url.rstrip('"\'')
+
+            # Remove trailing quote-comma marks e.g. `"url",`, `'url',`.
+            if url[-2:] == '",' or url[-2:] == '\',':
                 url = url[:-2]
 
             return url

@@ -58,9 +58,5 @@
     "vintageous_ignorecase": true,
 
     // Port of https://github.com/tpope/vim-surround
-    "vintageous_enable_surround": true,
-
-    // Enable surround.vim plugin pair opener spaces, otherwise the pair closes
-    // have spaces.
-    "vintageous_surround_spaces": false
+    "vintageous_enable_surround": true
 }

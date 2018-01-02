@@ -20,6 +20,14 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased (1.4.4)
 
+* Fixed: Update to latest vimdocs
+* Fixed: `:map` doesn't work in visual block or visual line mode
+* Fixed: Remove unused setting
+* Fixed: Settings should be erased when cleaning up views
+* Fixed: `gx` in quoted urls
+* Fixed: `gg` and `G` jump history forwards `CTRL-i` and backwards `CTRL-o`
+* Fixed [#298](https://github.com/NeoVintageous/NeoVintageous/issues/298): `gd` can't jump back with `CTRL-o`
+* Fixed [#241](https://github.com/NeoVintageous/NeoVintageous/issues/241): Leaving Insert mode still shows as being in Insert mode
 * Fixed [#129](https://github.com/NeoVintageous/NeoVintageous/issues/129): Failing tests when ST hasn't got focus
 
 ## 1.4.3 - 2017-12-22

@@ -69,6 +69,8 @@ class _neovintageous_help_goto(WindowCommand):
     def run(self):
         view = self.window.active_view()
         pt = view.sel()[0]
+        # scope_name() needs to striped due to a bug in ST:
+        # See https://github.com/SublimeTextIssues/Core/issues/657.
         scope = view.scope_name(pt.begin()).rstrip()
 
         # TODO Fix jumptags scopes (rename them to less generic scopes)
