@@ -127,16 +127,15 @@ https://github.com/NeoVintageous/ToggleNeoVintageous
 
 VINTAGEOUSRC                                                      *vintageousrc*
 
-A file that contains initialization commands is called a "vintageousrc" file.
-It is comparative to the |vimrc| file, "vintageousrc" is a Neovintageous
-specific  name. The file is located at "Packages/User/.vintageousrc" and is read
-during startup. It can be opened and reloaded via the Command Palette.
+A file that contains initialization commands is called a "vintageousrc" file
+(the "rc" stands for runtime configuration). It is comparative to the |vimrc|
+file ("vintageousrc" is a Neovintageous specific name).
 
-Also see |vimrc-intro|.
+The file is located at "Packages/User/.vintageousrc" and is read by
+NeoVintageous during startup. It can be opened and reloaded via the Command
+Palette. See |neovintageous-command-palette|.
 
-The following |:map-special-keys| are supported:
-
-                                |<Leader>| |mapleader|
+The |mapleader| special key is supported.
 
 The following |:map-commands| are supported:
 
@@ -153,10 +152,10 @@ The following |:map-commands| are supported:
 :onoremap   {lhs} {rhs}         |:onoremap|
 :vnoremap   {lhs} {rhs}         |:vnoremap|
 
-Note: the remap commands are currently aliased to the map commands, this is a
-known issue and hopefully will be fixed in the future.
+Note: the "remap" commands are currently aliased to the map commands, this is a
+known issue and hopefully will be fixed in a future release.
 
-Mapping to Command-line mode commands is supported for basic use-cases: >
+Mapping to Command-line mode commands is supported in basic use-cases: >
     :command<CR>
 
 Mapping to Sublime Text commands is supported for basic use-cases. The command
@@ -190,21 +189,35 @@ Here is an example |vintageousrc| file: >
     nnoremap <C-j> <C-w>j
     nnoremap <C-k> <C-w>k
 
-    " Stop the highlighting
-    " The :nohlsearch command is currently not
-    " supported. Pressing Esc is a workaround.
+    " Clear highlighting. The :nohlsearch command is currently not supported. Using
+    " the Esc key is a workaround.
     nnoremap <C-l> <Esc>
 
-    " Select entire buffer
+    " Yank and paste using system clipboard.
+    noremap <leader>y "+y
+    noremap <leader>Y "+Y
+    noremap <leader>p "+p
+    noremap <leader>P "+P
+    noremap <leader>yy "+Y
+
+    " Select entire buffer.
     nnoremap <leader>va ggvGg_
     nnoremap <leader>Va ggVG
 
-    " Open - <leader>o{char}
-    nnoremap <leader>oc :OpenCommandPalette<CR>
-    nnoremap <leader>og :ShowGoto<CR>
-    nnoremap <leader>on :NeovintageousOpenMyRcFile<CR>
-    nnoremap <leader>op :OpenPreferences<CR>
-    nnoremap <leader>os :GotoSymbolInProject<CR>
+    " Goto symbols.
+    nnoremap <leader>m :GotoSymbolInProject<CR>
+    nnoremap <leader>f :GotoSymbolInFile<CR>
+
+    " Edit preferences.
+    nnoremap <leader>ep :OpenPreferences<CR>
+    nnoremap <leader>en :NeovintageousOpenMyRcFile<CR>
+
+    " Some window command aliases. This is especially useful if you don't like to
+    " enable ctrl-key key bindings ('vintageous_use_ctrl_keys' setting).
+    nnoremap <leader>_ <C-w>_
+    nnoremap <leader>\| <C-w>\|
+    nnoremap <leader>= <C-w>=
+    nnoremap <leader>. <C-w>_<C-w>\|
 
     " The :sort command is currently not
     " supported. This mapping is a workaround.
@@ -228,13 +241,7 @@ Two custom commands are used in the above mappings: >
     import sublime
     import sublime_plugin
 
-    class OpenCommandPaletteCommand(sublime_plugin.WindowCommand):
-        def run(self):
-            self.window.run_command('show_overlay', {
-                'overlay': 'command_palette'
-            })
-
-    class ShowGotoCommand(sublime_plugin.WindowCommand):
+    class GotoSymbolInFileCommand(sublime_plugin.WindowCommand):
         def run(self):
             self.window.run_command('show_overlay', {
                 'overlay': 'goto',
