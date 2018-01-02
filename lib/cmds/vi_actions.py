@@ -5,7 +5,6 @@ import webbrowser
 from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
-from sublime import status_message
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
@@ -478,8 +477,7 @@ class _enter_normal_mode(ViTextCommandBase):
             self.view.sel().add_all(new_sels)
 
         state.update_xpos(force=True)
-
-        status_message('')  # TODO Review why we need to clear the status message; perhaps there's a better api e.g. nvim.update_status_line() i.e. distinguishing between a normal nvim.status_message() and a nvim.update_status_line()  # FIXME # noqa: E501
+        state.reset_status()
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
