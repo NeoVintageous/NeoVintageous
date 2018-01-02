@@ -260,7 +260,7 @@ def _list_option(view, flag=None):
     # toggling between "all" (on) and "selection" (off), which is the current
     # behaviour, toggle between "all" (on) and whatever the user default for
     # "off" is. For example the user might have "off" set to "none" or
-    # "selection" (the default in sublime). "selection" means that whitepspace
+    # "selection" (the default in sublime). "selection" means that whitespace
     # characters are visible in selected text, "none" means whitespace
     # characters are never visible.
     _set_value_option(view, 'draw_white_space', 'all', 'selection', flag)
