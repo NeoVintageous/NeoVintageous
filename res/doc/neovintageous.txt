@@ -176,7 +176,7 @@ Here is an example |vintageousrc| file: >
     nnoremap <space> :
 
     " Toggle the side bar.
-    nnoremap <leader>d :ToggleSideBar<CR>
+    nnoremap <leader>d :NeovintageousToggleSideBar<CR>
 
     " " Make j and k work file linewise instead of screen linewise.
     " nnoremap j gj
@@ -258,6 +258,24 @@ Two custom commands are used in the above mappings: >
                     'Preferences.sublime-settings'
                 )
             })
+
+To create a mapping to toggle the side bar when the side bar has focus add this
+key binding to your Sublime Text Key Bindings (modify to the keys to reflect
+whatever mapping you used in your `vintageousrc` to toggle the side bar. In the
+example above we used `<leader>d`, and since we defined our leader key as a
+comma (`,`) then we create a comparative mapping for when the side bar has
+focus i.e. `,d`):
+
+`Menu > Preferences > Key Bindings`:
+
+>
+    {
+        "keys": [",", "d"],
+        "command": "neovintageous_toggle_side_bar",
+        "context": [
+            { "key": "control", "operand": "sidebar_tree" }
+        ]
+    },
 
 ==============================================================================
 

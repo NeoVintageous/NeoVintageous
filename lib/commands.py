@@ -43,6 +43,7 @@ __all__ = [
     'FsCompletion',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
+    'NeovintageousToggleSideBarCommand',
     'PressKey',
     'ProcessNotation',
     'Sequence',
@@ -710,6 +711,18 @@ class NeovintageousReloadMyRcFileCommand(WindowCommand):
         rcfile.reload()
 
         nvim.status_message('rc file reloaded')
+
+
+class NeovintageousToggleSideBarCommand(WindowCommand):
+
+    def run(self, **kwargs):
+        self.window.run_command('toggle_side_bar')
+
+        # is_sidebar_visible() api requires >= 3115.
+        if self.window.is_sidebar_visible():
+            self.window.run_command('focus_side_bar')
+        else:
+            self.window.focus_group(self.window.active_group())
 
 
 class _vi_slash_on_parser_done(WindowCommand):
