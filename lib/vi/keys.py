@@ -286,13 +286,15 @@ class seqs:
 
 
 def seq_to_command(state, seq, mode=None):
-    """Return the command definition mapped to @seq.
-
-    Returns a 'missing' command if none is found.
-
-    @mode
-        Forces the use of this mode instead of the global state's.
-    """
+    # Return the command definition mapped to seq.
+    #
+    # Args:
+    #   seq (str): The command sequence.
+    #   mode (str): Forces the use of this mode instead of the global state's.
+    #
+    # Returns:
+    #   Mapping:
+    #   ViMissingCommandDef: If not found.
     mode = mode or state.mode
 
     _logger.info('mode = \'%s\', seq = \'%s\'', mode, seq)
@@ -519,8 +521,13 @@ class KeySequenceTokenizer(object):
 
 
 def to_bare_command_name(seq):
-    """Strip register and count data from @seq."""
-    # Special case.
+    # Args:
+    #   seq (str): The command sequence.
+    #
+    # Return:
+    #   str: The command sequence with register and counts strips e.g. 2daw ->
+    #       daw, "a2d2aw -> daw, etc. The special case '0' is returned
+    #       unmodified.
     if seq == '0':
         return seq
 

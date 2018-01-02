@@ -1,11 +1,11 @@
 from collections import namedtuple
 import unittest
 
-from NeoVintageous.lib.vi.utils import translate_char
-from NeoVintageous.lib.vi.keys import to_bare_command_name
+from NeoVintageous.lib.vi import variables
 from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.keys import seqs
-from NeoVintageous.lib.vi import variables
+from NeoVintageous.lib.vi.keys import to_bare_command_name
+from NeoVintageous.lib.vi.utils import translate_char
 
 
 _TESTS_TOKENIZER = (
@@ -79,31 +79,22 @@ class TestKeySequenceTokenizerIterTokenize(unittest.TestCase):
             self.assertEqual(self.parse(input_), expected, "{0} - {1}".format(i, msg))
 
 
-_COMMAND_NAME_TESTS = (
-    ('daw', 'daw', ''),
-    ('2daw', 'daw', ''),
-    ('d2aw', 'daw', ''),
-    ('2d2aw', 'daw', ''),
-    ('"a2d2aw', 'daw', ''),
-    ('"12d2aw', 'daw', ''),
-    ('<f7>', '<f7>', ''),
-    ('10<f7>', '<f7>', ''),
-    ('"a10<f7>', '<f7>', ''),
-    ('"a10<f7>', '<f7>', ''),
-    ('"210<f7>', '<f7>', ''),
-    ('0', '0', ''),
-)
-
-
 class TestToBareCommandName(unittest.TestCase):
 
-    def transform(self, input_):
-        return to_bare_command_name(input_)
-
-    def test_all(self):
-        for (i, t) in enumerate(_COMMAND_NAME_TESTS):
-            input_, expected, msg = t
-            self.assertEqual(self.transform(input_), expected, "{0} - {1}".format(i, msg))
+    def test_to_bare_command_name(self):
+        self.assertEquals('daw', to_bare_command_name('daw'))
+        self.assertEquals('daw', to_bare_command_name('2daw'))
+        self.assertEquals('daw', to_bare_command_name('d2aw'))
+        self.assertEquals('daw', to_bare_command_name('2d2aw'))
+        self.assertEquals('daw', to_bare_command_name('"a2d2aw'))
+        self.assertEquals('daw', to_bare_command_name('"12d2aw'))
+        self.assertEquals('<f7>', to_bare_command_name('<f7>'))
+        self.assertEquals('<f7>', to_bare_command_name('10<f7>'))
+        self.assertEquals('<f7>', to_bare_command_name('"a10<f7>'))
+        self.assertEquals('<f7>', to_bare_command_name('"a10<f7>'))
+        self.assertEquals('<f7>', to_bare_command_name('"210<f7>'))
+        self.assertEquals('0', to_bare_command_name('0'))
+        self.assertEquals('dd', to_bare_command_name('d2d'))
 
 
 _TRANLATION_TESTS = (

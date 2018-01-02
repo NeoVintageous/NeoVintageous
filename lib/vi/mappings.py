@@ -66,6 +66,12 @@ class Mappings(object):
         pass
 
     def expand_first(self, seq):
+        # Args:
+        #   seq (str)
+        #
+        # Returns:
+        #   Mapping
+        #   None
         head = ''
 
         keys, mapped_to = self._find_full_match(self.state.mode, seq)
@@ -104,26 +110,27 @@ class Mappings(object):
             return True
 
     def resolve(self, sequence=None, mode=None, check_user_mappings=True):
-        """
-        Look at the current global state and return the command mapped to the available sequence.
+        # Look at the current global state and return the command mapped to the available sequence.
+        #
+        # Args:
+        #   sequence (str): The command sequence. If a sequence is passed, it is
+        #       used instead of the global state's. This is necessary for some
+        #       commands that aren't name spaces but act as them (for example,
+        #       ys from the surround plugin).
+        #   mode (str): If different than None, it will be used instead of the
+        #       global state's. This is necessary when we are in operator
+        #       pending mode and we receive a new action. By combining the
+        #       existing action's name with name of the action just received we
+        #       could find a new action.
+        #   check_user_mappings (bool):
+        #
+        # Returns:
+        #   Mapping:
+        #   ViMissingCommandDef: If not found.
 
-        It may be a 'missing' command.
-
-        @sequence
-            If a @sequence is passed, it is used instead of the global state's.
-            This is necessary for some commands that aren't name spaces but act
-            as them (for example, ys from the surround plugin).
-        @mode
-            If different than `None`, it will be used instead of the global
-            state's. This is necessary when we are in operator pending mode
-            and we receive a new action. By combining the existing action's
-            name with name of the action just received we could find a new
-            action.
-
-            For example, this is the case of g~~.
-        """
-        # we usually need to look at the partial sequence, but some commands do weird things,
-        # like ys, which isn't a namespace but behaves as such sometimes.
+        # We usually need to look at the partial sequence, but some commands do
+        # weird things, like ys, which isn't a namespace but behaves as such
+        # sometimes.
         seq = sequence or self.state.partial_sequence
         seq = to_bare_command_name(seq)
 
