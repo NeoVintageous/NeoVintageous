@@ -2278,11 +2278,18 @@ class _vi_gx(IrreversibleTextCommand):
             # Remove end of line full stop character.
             url = url.rstrip('.')
 
-            # Remove closing tag markdown link e.g. [title](url)
+            # Remove closing tag markdown link e.g. `[title](url)`.
             url = url.rstrip(')')
 
-            # Remove closing tag markdown image e.g. ![alt](url)]
+            # Remove closing tag markdown image e.g. `![alt](url)]`.
             if url[-2:] == ')]':
+                url = url[:-2]
+
+            # Remove trailing quote marks e.g. `"url"`, `'url'`.
+            url = url.rstrip('"\'')
+
+            # Remove trailing quote-comma marks e.g. `"url",`, `'url',`.
+            if url[-2:] == '",' or url[-2:] == '\',':
                 url = url[:-2]
 
             return url

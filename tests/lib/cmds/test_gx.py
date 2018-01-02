@@ -40,7 +40,15 @@ class Test_gx(TestCase):
         self.assertMatch('http://example.com', 'http://example.com).')
 
     def test_markdown_links(self):
-        # basic
         self.assertMatch('http://example.com', '[title](http://example.com)')
-        # image
+
+    def test_markdown_images(self):
         self.assertMatch('https://example.com', '[![Alt](https://example.com)]')
+
+    def test_quoted_urls(self):
+        self.assertMatch('http://example.com', '"http://example.com"')
+        self.assertMatch('http://example.com', '\'http://example.com\'')
+
+    def test_urls_within_strings_within_lists_with_trailing_comma__inception__(self):
+        self.assertMatch('http://example.com', '"http://example.com",')
+        self.assertMatch('http://example.com', '\'http://example.com\',')
