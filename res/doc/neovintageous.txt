@@ -22,6 +22,7 @@ Neovintageous                              *neovintageous* *neovintageous-intro*
 10. Options                 |neovintageous-options|
 11. Search highlighting     |neovintageous-search-highlighting|
 12. Disable arrow keys      |neovintageous-disable-arrow-keys|
+13. Default options         |neovintageous-default-options|
 
 Neovintageous is an emulation of Vim: feature-parity is ongoing effort.
 
@@ -604,3 +605,33 @@ Menu > Project > Edit Project: >
             "neovintageous_disable_arrow_keys": true
         }
     }
+
+==============================================================================
+
+DEFAULT OPTIONS                                  *neovintageous-default-options*
+
+If you compare a fresh install of Vim to NeoVintageous you might find unexpected
+functionality. This is in part because NeoVintageous assumes some Vim options
+that may not be default in an out-of-the-box Vim installation.
+
+Here are some Vim options that NeoVintageous assumes as default:
+
+>
+
+    " Use Vim settings, rather than Vi settings (much better!).
+    " This must be first, because it changes other options as a side effect.
+    " Avoid side effects when it was already reset.
+    if &compatible
+      set nocompatible
+    endif
+
+    " In many terminal emulators the mouse works just fine.  By enabling it you
+    " can position the cursor, Visually select and scroll with the mouse.
+    if has('mouse')
+      set mouse=a
+    endif
+
+    " Allow backspacing over everything in insert mode.
+    set backspace=indent,eol,start
+
+    set showcmd     " display incomplete commands
