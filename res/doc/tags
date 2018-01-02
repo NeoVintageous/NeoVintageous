@@ -942,6 +942,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_modelines'	neovintageous.txt	/*'vintageous_modelines'*
 'vintageous_reset_mode_when_switching_tabs'	neovintageous.txt	/*'vintageous_reset_mode_when_switching_tabs'*
 'vintageous_use_ctrl_keys'	neovintageous.txt	/*'vintageous_use_ctrl_keys'*
+'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
 'vintageous_use_sys_clipboard'	neovintageous.txt	/*'vintageous_use_sys_clipboard'*
 'vintageous_visualbell'	neovintageous.txt	/*'vintageous_visualbell'*
 'vintageous_visualyank'	neovintageous.txt	/*'vintageous_visualyank'*
@@ -3656,6 +3657,8 @@ E5009	pi_health.txt	/*E5009*
 E501	intro.txt	/*E501*
 E502	editing.txt	/*E502*
 E503	editing.txt	/*E503*
+E5030	eval.txt	/*E5030*
+E5031	eval.txt	/*E5031*
 E504	editing.txt	/*E504*
 E505	editing.txt	/*E505*
 E506	editing.txt	/*E506*
@@ -3675,6 +3678,7 @@ E519	options.txt	/*E519*
 E52	syntax.txt	/*E52*
 E520	options.txt	/*E520*
 E521	options.txt	/*E521*
+E5210	channel.txt	/*E5210*
 E523	options.txt	/*E523*
 E524	options.txt	/*E524*
 E525	options.txt	/*E525*
@@ -6760,6 +6764,7 @@ neovintageous-autocomplete-navigation	neovintageous.txt	/*neovintageous-autocomp
 neovintageous-capslock	neovintageous.txt	/*neovintageous-capslock*
 neovintageous-command-palette	neovintageous.txt	/*neovintageous-command-palette*
 neovintageous-commentary	neovintageous.txt	/*neovintageous-commentary*
+neovintageous-default-options	neovintageous.txt	/*neovintageous-default-options*
 neovintageous-disable-arrow-keys	neovintageous.txt	/*neovintageous-disable-arrow-keys*
 neovintageous-escape	neovintageous.txt	/*neovintageous-escape*
 neovintageous-intro	neovintageous.txt	/*neovintageous-intro*
