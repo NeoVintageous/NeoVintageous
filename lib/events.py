@@ -228,6 +228,7 @@ class NeoVintageousEvents(EventListener):
                 # TODO Dragging the mouse does not seem to fire a different
                 # event than simply clicking. This makes it hard to update the
                 # xpos.
+                # See https://github.com/SublimeTextIssues/Core/issues/2117.
                 if args.get('extend') or (args.get('by') == 'words'):
                     return ('sequence', {
                         'commands': [
@@ -239,9 +240,10 @@ class NeoVintageousEvents(EventListener):
     def on_post_text_command(self, view, command, args):
         # This fixes issues where the xpos is not updated after a mouse click
         # moves the cursor position. These issues look like they could be
-        # compounded by issues in the _vi_adjust_carets command. See
-        # on_post_save(). The xpos only needs to be updated on single mouse
-        # click.
+        # compounded by Sublime Text issues (see on_post_save() and the
+        # _workaround_st_eol_cursor_issue command). The xpos only needs to be
+        # updated on single mouse click.
+        # See https://github.com/SublimeTextIssues/Core/issues/2117.
         if command == 'drag_select':
             if set(args) == {'event'}:
                 if set(args['event']) == {'x', 'y', 'button'}:
