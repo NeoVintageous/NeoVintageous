@@ -458,6 +458,8 @@ class ExMap(ViWindowCommandBase):
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
         mappings.add(modes.OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
         mappings.add(modes.VISUAL, parsed.command.keys, parsed.command.command)
+        mappings.add(modes.VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
+        mappings.add(modes.VISUAL_LINE, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:unmap
@@ -465,14 +467,16 @@ class ExUnmap(ViWindowCommandBase):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        unmap = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.NORMAL, unmap.command.keys)
-            mappings.remove(modes.OPERATOR_PENDING, unmap.command.keys)
-            mappings.remove(modes.VISUAL, unmap.command.keys)
+            mappings.remove(modes.NORMAL, parsed.command.keys)
+            mappings.remove(modes.OPERATOR_PENDING, parsed.command.keys)
+            mappings.remove(modes.VISUAL, parsed.command.keys)
+            mappings.remove(modes.VISUAL_BLOCK, parsed.command.keys)
+            mappings.remove(modes.VISUAL_LINE, parsed.command.keys)
         except KeyError:
-            nvim.status_message('mapping not found')
+            nvim.status_message('Mapping not found')
 
 
 # https://vimhelp.appspot.com/map.txt.html#:nmap

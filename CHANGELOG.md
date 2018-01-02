@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased (1.4.4)
 
+* Fixed: `:map` doesn't work in visual block or visual line mode
 * Fixed: Remove unused setting
 * Fixed: Settings should be erased when cleaning up views
 * Fixed: `gx` in quoted urls
