@@ -78,6 +78,7 @@ __all__ = [
     'ExSmap',
     'ExSplit',
     'ExSubstitute',
+    'ExSunmap',
     'ExTabfirstCommand',
     'ExTablastCommand',
     'ExTabnextCommand',
@@ -546,6 +547,19 @@ class ExSmap(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         mappings.add(modes.SELECT, parsed.command.keys, parsed.command.command)
+
+
+# https://vimhelp.appspot.com/map.txt.html#:sunmap
+class ExSunmap(WindowCommand, WindowCommandMixin):
+
+    def run(self, command_line=''):
+        assert command_line, 'expected non-empty command line'
+        parsed = parse_command_line(command_line)
+        mappings = Mappings(self.state)
+        try:
+            mappings.remove(modes.SELECT, parsed.command.keys)
+        except KeyError:
+            nvim.status_message('Mapping not found')
 
 
 # https://vimhelp.appspot.com/map.txt.html#:vmap

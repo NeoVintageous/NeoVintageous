@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `:sunmap`
 * Added: `vintageousrc` (documentation); see `:h neovintageous`
 * Added: Default vim options (documentation); see `:h neovintageous`
 * Added: `:help {subject}` now uses basic heuristic to find a relevant help topic if `{subject}` is not found

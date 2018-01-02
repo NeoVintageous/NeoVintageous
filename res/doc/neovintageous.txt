@@ -145,11 +145,13 @@ The following |:map-commands| are supported:
 :map        {lhs} {rhs}         |:map|
 :nmap       {lhs} {rhs}         |:nmap|
 :omap       {lhs} {rhs}         |:omap|
+:smap       {lhs} {rhs}         |:smap|
 :vmap       {lhs} {rhs}         |:vmap|
 
 :noremap    {lhs} {rhs}         |:noremap|
 :nnoremap   {lhs} {rhs}         |:nnoremap|
 :onoremap   {lhs} {rhs}         |:onoremap|
+:snoremap   {lhs} {rhs}         |:snoremap|
 :vnoremap   {lhs} {rhs}         |:vnoremap|
 
 Note: the "remap" commands are currently aliased to the map commands, this is a
