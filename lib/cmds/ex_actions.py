@@ -465,7 +465,7 @@ class ExMap(WindowCommand, WindowCommandMixin):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
         if not (parsed.command.keys and parsed.command.command):
-            return nvim.message('showing mappings not implemented')
+            return nvim.status_message('Listing key mappings is not implemented')
 
         mappings = Mappings(self.state)
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
@@ -498,6 +498,9 @@ class ExNmap(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
+        if not (parsed.command.keys and parsed.command.command):
+            return nvim.status_message('Listing key mappings is not implemented')
+
         mappings = Mappings(self.state)
         mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
 
@@ -507,12 +510,12 @@ class ExNunmap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        nunmap_command = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.NORMAL, nunmap_command.command.keys)
+            mappings.remove(modes.NORMAL, parsed.command.keys)
         except KeyError:
-            nvim.status_message('mapping not found')
+            nvim.status_message('Mapping not found')
 
 
 # https://vimhelp.appspot.com/map.txt.html#:omap
@@ -520,10 +523,12 @@ class ExOmap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        omap_command = parse_command_line(command_line)
-        keys, command = (omap_command.command.keys, omap_command.command.command)
+        parsed = parse_command_line(command_line)
+        if not (parsed.command.keys and parsed.command.command):
+            return nvim.status_message('Listing key mappings is not implemented')
+
         mappings = Mappings(self.state)
-        mappings.add(modes.OPERATOR_PENDING, keys, command)
+        mappings.add(modes.OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:ounmap
@@ -531,12 +536,12 @@ class ExOunmap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        ounmap_command = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.OPERATOR_PENDING, ounmap_command.command.keys)
+            mappings.remove(modes.OPERATOR_PENDING, parsed.command.keys)
         except KeyError:
-            nvim.status_message('mapping not found')
+            nvim.status_message('Mapping not found')
 
 
 # https://vimhelp.appspot.com/map.txt.html#:smap
@@ -545,6 +550,9 @@ class ExSmap(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
+        if not (parsed.command.keys and parsed.command.command):
+            return nvim.status_message('Listing key mappings is not implemented')
+
         mappings = Mappings(self.state)
         mappings.add(modes.SELECT, parsed.command.keys, parsed.command.command)
 
@@ -567,12 +575,14 @@ class ExVmap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        vmap_command = parse_command_line(command_line)
-        keys, command = (vmap_command.command.keys, vmap_command.command.command)
+        parsed = parse_command_line(command_line)
+        if not (parsed.command.keys and parsed.command.command):
+            return nvim.status_message('Listing key mappings is not implemented')
+
         mappings = Mappings(self.state)
-        mappings.add(modes.VISUAL, keys, command)
-        mappings.add(modes.VISUAL_LINE, keys, command)
-        mappings.add(modes.VISUAL_BLOCK, keys, command)
+        mappings.add(modes.VISUAL, parsed.command.keys, parsed.command.command)
+        mappings.add(modes.VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
+        mappings.add(modes.VISUAL_LINE, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:vunmap
@@ -580,14 +590,14 @@ class ExVunmap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
-        vunmap_command = parse_command_line(command_line)
+        parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.VISUAL, vunmap_command.command.keys)
-            mappings.remove(modes.VISUAL_LINE, vunmap_command.command.keys)
-            mappings.remove(modes.VISUAL_BLOCK, vunmap_command.command.keys)
+            mappings.remove(modes.VISUAL, parsed.command.keys)
+            mappings.remove(modes.VISUAL_BLOCK, parsed.command.keys)
+            mappings.remove(modes.VISUAL_LINE, parsed.command.keys)
         except KeyError:
-            nvim.status_message('mapping  not found')
+            nvim.status_message('Mapping not found')
 
 
 # https://vimhelp.appspot.com/map.txt.html#:abbreviate
