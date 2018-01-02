@@ -35,7 +35,7 @@ from NeoVintageous.lib.vi.utils import regions_transformer
 __all__ = [
     '_neovintageous_help_goto',
     '_vi_add_to_jump_list',
-    '_vi_adjust_carets',
+    '_workaround_st_eol_cursor_issue',
     '_vi_question_mark_on_parser_done',
     '_vi_slash_on_parser_done',
     'ClearCmdlineHistoryIndex',
@@ -728,7 +728,15 @@ class _vi_question_mark_on_parser_done(WindowCommand):
         state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
-class _vi_adjust_carets(TextCommand):
+class _workaround_st_eol_cursor_issue(TextCommand):
+
+    # Tries to workaround some of the Sublime Text issues where the cursor caret
+    # is positioned, off-by-one, at the end of line i.e. the caret positions
+    # itself at >>>eol| |<<< instead of >>>eo|l|<<<. In some cases, the cursor
+    # positions itself at >>>eol| |<<<, and then a second later,  moves to the
+    # correct position >>>eo|l|<<< e.g. a left mouse click after the end of a
+    # line. Some of these issues can't be worked-around e.g. the mouse click
+    # issue described above.
 
     def run(self, edit, mode=None):
         def f(view, s):

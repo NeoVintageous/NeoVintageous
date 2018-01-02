@@ -261,7 +261,7 @@ class NeoVintageousEvents(EventListener):
 
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.
-        view.run_command('_vi_adjust_carets', {'mode': State(view).mode})
+        view.run_command('_workaround_st_eol_cursor_issue', {'mode': State(view).mode})
 
     def on_close(self, view):
         settings.destroy(view)

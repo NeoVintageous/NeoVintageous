@@ -557,7 +557,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         regions_transformer(self.view, f)
 
         self.view.erase_regions('vi_search')
-        self.view.run_command('_vi_adjust_carets', {'mode': mode})
+        self.view.run_command('_workaround_st_eol_cursor_issue', {'mode': mode})
 
 
 class _enter_select_mode(ViWindowCommandBase):
@@ -960,7 +960,7 @@ class _vi_d(ViTextCommandBase):
         state.registers.yank(self, register, operation='delete')
 
         self.view.run_command('left_delete')
-        self.view.run_command('_vi_adjust_carets')
+        self.view.run_command('_workaround_st_eol_cursor_issue')
 
         self.enter_normal_mode(mode)
 
