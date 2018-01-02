@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased (1.4.4)
 
+* Fixed: Settings should be erased when cleaning up views
 * Fixed: `gx` in quoted urls
 * Fixed: `gg` and `G` jump history forwards `CTRL-i` and backwards `CTRL-o`
 * Fixed [#298](https://github.com/NeoVintageous/NeoVintageous/issues/298): `gd` can't jump back with `CTRL-o`
