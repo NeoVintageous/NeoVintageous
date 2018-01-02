@@ -16,6 +16,10 @@ from .tokens import TokenSearchBackward
 from .tokens import TokenSearchForward
 from .tokens import TokenSemicolon
 from .tokens_base import TokenOfCommand
+from NeoVintageous.lib.nvim import get_logger
+
+
+_log = get_logger(__name__)
 
 
 class ParserState():
@@ -55,6 +59,8 @@ def parse_command_line(source):
         parse_func, command_line = parse_func(state, command_line)
         if parse_func is None:
             command_line.validate()
+
+            _log.debug('cmdline command {}'.format(command_line))
 
             return command_line
 

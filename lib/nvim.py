@@ -50,10 +50,12 @@ class _LogFormatter(logging.Formatter):
 
 
 def _init_logger():
+    level = logging.DEBUG
     formatter = _LogFormatter('%(asctime)s %(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s')
+    file = _log_file()
 
     logger = logging.getLogger('NeoVintageous')
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(level)
 
     # Stream handler
     stream_handler = logging.StreamHandler()
@@ -61,19 +63,18 @@ def _init_logger():
     logger.addHandler(stream_handler)
 
     # File handler
-    log_file = _log_file()
-    if log_file:
+    if file:
         file_handler = RotatingFileHandler(
-            log_file,
+            file,
             maxBytes=10000000,  # 10000000 = 10MB
             backupCount=2
         )
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
-        logger.debug('debug log file: \'{}\''.format(log_file))
+        logger.debug('debug log file: \'{}\''.format(file))
     else:
-        console_message('could not create log file \'{}\''.format(log_file))
+        console_message('could not create log file \'{}\''.format(file))
 
 
 class _NullLogger():
@@ -97,6 +98,9 @@ class _NullLogger():
         pass
 
 
+# This avoids needless overhead of initialising the logger for 80% of users that
+# will never need logging. If the debug environment is not set then a null
+# logger used.
 if _DEBUG:
     _init_logger()
 

@@ -729,24 +729,26 @@ class State(object):
 
             self.add_macro_step(action_cmd['action'], args)
 
+            _logger.info('run command (action + motion) %s %s', action_cmd['action'], args)
             sublime.active_window().run_command(action_cmd['action'], args)
             if not self.non_interactive:
                 if self.action.repeatable:
                     self.repeat_data = ('vi', str(self.sequence), self.mode, None)
+
             self.reset_command_data()
+
             return
 
         if self.motion:
             motion_cmd = self.motion.translate(self)
             _logger.debug('lone motion cmd \'%s\'', motion_cmd)
 
-            self.add_macro_step(motion_cmd['motion'],
-                                motion_cmd['motion_args'])
+            self.add_macro_step(motion_cmd['motion'], motion_cmd['motion_args'])
 
             # We know that all motions are subclasses of ViTextCommandBase,
             # so it's safe to call them from the current view.
-            self.view.run_command(motion_cmd['motion'],
-                                  motion_cmd['motion_args'])
+            _logger.info('run command (motion) %s %s', motion_cmd['motion'], motion_cmd['motion_args'])
+            self.view.run_command(motion_cmd['motion'], motion_cmd['motion_args'])
 
         if self.action:
             action_cmd = self.action.translate(self)
@@ -774,13 +776,13 @@ class State(object):
             action = self.action
 
             self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
+
+            _logger.info('run command (action) %s %s', action_cmd['action'], action_cmd['action_args'])
             sublime.active_window().run_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
                     self.repeat_data = ('vi', seq, self.mode, visual_repeat_data)
-
-        _logger.debug('run command action=%s, motion=%s', self.action, self.motion)
 
         if self.mode == modes.INTERNAL_NORMAL:
             self.enter_normal_mode()

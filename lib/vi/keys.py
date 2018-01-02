@@ -301,8 +301,6 @@ def seq_to_command(state, seq, mode=None):
     #   ViMissingCommandDef: If not found.
     mode = mode or state.mode
 
-    _logger.info('mode = \'%s\', seq = \'%s\'', mode, seq)
-
     command = None
 
     if state.mode in plugin.mappings:
