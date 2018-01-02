@@ -234,6 +234,8 @@ class ExHelp(ViWindowCommandBase):
             help_view.set_scratch(True)
             help_view.set_name(help_view_name)
             help_view.settings().set('auto_indent', False)
+            help_view.settings().set('rulers', [])
+            help_view.settings().set('indent_guide_options', [])
             help_view.settings().set('smart_indent', False)
             help_view.settings().set('translate_tabs_to_spaces', False)
             help_view.settings().set('trim_automatic_white_space', False)
