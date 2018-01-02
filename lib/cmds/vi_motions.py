@@ -738,7 +738,9 @@ class _vi_go_to_line(ViMotionCommand):
                 return Region(s.a, view.full_line(dest).b)
             return s
 
+        self.view.window().run_command('_vi_add_to_jump_list')
         regions_transformer(self.view, f)
+        self.view.window().run_command('_vi_add_to_jump_list')
 
         # FIXME: Bringing the selections into view will be undesirable in many cases. Maybe we
         # should have an optional .scroll_selections_into_view() step during command execution.
@@ -2069,14 +2071,21 @@ class _vi_go_to_symbol(ViMotionCommand):
             # Global symbol; simply open the file; not a motion.
             # TODO: Perhaps must be a motion if the target file happens to be
             #       the current one?
+            self.view.window().run_command('_vi_add_to_jump_list')
             self.view.window().open_file(
                 location[0] + ':' + ':'.join([str(x) for x in location[2]]),
-                ENCODED_POSITION)
+                ENCODED_POSITION
+            )
+            self.view.window().run_command('_vi_add_to_jump_list')
+
             return
 
         # Local symbol; select.
         location = self.view.text_point(*location)
+
+        self.view.window().run_command('_vi_add_to_jump_list')
         regions_transformer(self.view, f)
+        self.view.window().run_command('_vi_add_to_jump_list')
 
 
 class _vi_gm(ViMotionCommand):
