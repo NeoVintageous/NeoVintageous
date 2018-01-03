@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Selections are now cleared when leaving a view (UX)
 * Added: `NeovintageousToggleSideBar` command
 * Added: Support for super-keys `<D-...>` (also known as command-keys on OSX and window-keys on Windows)
 * Added: Scope `highlighted.yank` when highlighting yanks to allow color scheme customisation

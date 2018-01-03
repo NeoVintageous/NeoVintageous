@@ -262,4 +262,24 @@ class NeoVintageousEvents(EventListener):
         settings.destroy(view)
 
     def on_activated(self, view):
+
+        # Clear any visual selections in the view we are leaving. This mirrors
+        # Vim behaviour. We can't put this functionality in the
+        # view.on_deactivate() event, because that event is triggered when the
+        # user right button clicks the view with the mouse, and we don't want
+        # visual selections to be cleared on mouse right button clicks.
+        window = view.window()
+        if window:
+            active_group = window.active_group()
+            for group in range(window.num_groups()):
+                if group != active_group:
+                    other_view = window.active_view_in_group(group)
+                    if other_view and other_view != view:
+                        sel = other_view.sel()
+                        if len(sel) > 0:
+                            sels_begin_at_pt = sel[0].begin()
+                            sel.clear()
+                            sel.add(sels_begin_at_pt)
+
+        # Initialise view state.
         init_state(view)
