@@ -157,14 +157,14 @@ The following |:map-commands| are supported:
 Note: the "remap" commands are currently aliased to the map commands, this is a
 known issue and hopefully will be fixed in a future release.
 
-Mapping to Command-line mode commands is supported in basic use-cases: >
-    :command<CR>
+Mapping to built-in Command-line mode commands is supported for basic use-cases
+using the format `command<CR>`. For example to map to the built-in Command-line
+mode command `:w` use `:w<CR>`.
 
 Mapping to Sublime Text commands is supported for basic use-cases. The command
 must start an Uppercase letter to avoid confusion with built-in Command-line
-mode commands. The command is converted to snake_case. For example to map to
-the Sublime Text command "toggle_side_bar": >
-    :ToggleSideBar<CR>
+mode commands. The command is converted to snake_case. For example to map to the
+Sublime Text command "toggle_side_bar" use `:ToggleSideBar<CR>`.
 
 Here is an example |vintageousrc| file: >
 
@@ -191,9 +191,12 @@ Here is an example |vintageousrc| file: >
     nnoremap <C-j> <C-w>j
     nnoremap <C-k> <C-w>k
 
-    " Clear highlighting. The :nohlsearch command is currently not supported. Using
-    " the Esc key is a workaround.
+    " Clear highlighting. The :nohlsearch command is currently not supported.
+    " Using the Esc key is a workaround.
     nnoremap <C-l> <Esc>
+
+    " Saving.
+    nnoremap <C-s> :w<CR>
 
     " Yank and paste using system clipboard.
     noremap <leader>y "+y
@@ -206,35 +209,31 @@ Here is an example |vintageousrc| file: >
     nnoremap <leader>va ggvGg_
     nnoremap <leader>Va ggVG
 
-    " Goto symbols.
-    nnoremap <leader>m :GotoSymbolInProject<CR>
+    " Goto to symbols.
     nnoremap <leader>f :GotoSymbolInFile<CR>
+    nnoremap <leader>m :GotoSymbolInProject<CR>
 
     " Edit preferences.
     nnoremap <leader>ep :OpenPreferences<CR>
     nnoremap <leader>en :NeovintageousOpenMyRcFile<CR>
 
-    " Some window command aliases. This is especially useful if you don't like to
-    " enable ctrl-key key bindings ('vintageous_use_ctrl_keys' setting).
+    " Some window command aliases. This is especially useful if you don't like
+    " to enable ctrl-key key bindings ('vintageous_use_ctrl_keys' setting).
     nnoremap <leader>_ <C-w>_
     nnoremap <leader>\| <C-w>\|
     nnoremap <leader>= <C-w>=
     nnoremap <leader>. <C-w>_<C-w>\|
 
-    " The :sort command is currently not
-    " supported. This mapping is a workaround.
-    nnoremap <leader>ss vip<F9>o^<Esc>^8<C-y>
-
-    " Test plugin
-    " https://github.com/gerardroche/sublime-test
-    " https://github.com/gerardroche/sublime-phpunit
-    " https://github.com/gerardroche/sublime-color-scheme-unit
-    " https://github.com/randy3k/UnitTesting
+    " Test plugin.
+    " See https://github.com/gerardroche/sublime-test.
+    " See https://github.com/gerardroche/sublime-phpunit.
+    " See https://github.com/gerardroche/sublime-color-scheme-unit.
+    " See https://github.com/randy3k/UnitTesting.
     nnoremap <leader>t :TestNearest<CR>
     nnoremap <leader>T :TestFile<CR>
     nnoremap <leader>a :TestSuite<CR>
     nnoremap <leader>l :TestLast<CR>
-    nnoremap <leader>g :TestVisit<CR>
+    nnoremap <leader>gg :TestVisit<CR>
 
 Two custom commands are used in the above mappings: >
 
@@ -353,9 +352,10 @@ Next and previous
 
                         Also see |]l|.
 
-|unimpaired-lines| are supported i.e |[<Space>|, |]<Space>|, |[e| and |]e|.
+All |unimpaired-lines| commands are supported i.e |[<Space>|, |]<Space>|, |[e|
+and |]e|.
 
-Option toggling
+Option toggling is supported, with some NeoVintageous specific additions.
 
 On      Off     Toggle  Option
 |[oa|   |]oa|   |coa|   'menu' {Neovintageous specific}
@@ -374,13 +374,13 @@ OPTIONS                                                  *neovintageous-options*
 
 1. Setting options                                    *neovintageous-set-option*
 
-Menu > Preferences > Settings: >
+`Menu > Preferences > Settings`: >
 
     {
         "vintageous_use_ctrl_keys": true
     }
 
-Menu > Project > Edit Project: >
+`Menu > Project > Edit Project`: >
 
     {
         "settings": {
@@ -412,7 +412,7 @@ terminal: >
 
 4. Mapping jj, jk, CTRL-[, etc. to Esc                    *neovintageous-escape*
 
-Menu > Preferences > Key Bindings: >
+`Menu > Preferences > Key Bindings`: >
 
     # jj -> Esc
     {
@@ -602,13 +602,13 @@ Add as many of the following key bindings as you would like to disable: >
 
 Then enable the custom setting used in the keymaps:
 
-Menu > Preferences > Settings: >
+`Menu > Preferences > Settings`: >
 
     {
         "neovintageous_disable_arrow_keys": true
     }
 
-Menu > Project > Edit Project: >
+`Menu > Project > Edit Project`: >
 
     {
         "settings": {
