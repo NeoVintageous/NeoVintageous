@@ -11,7 +11,10 @@ from sublime import Region
 
 
 from NeoVintageous.lib import nvim
+from NeoVintageous.lib.commands import _nv_cmdline_handle_key
+from NeoVintageous.lib.history import history_update
 from NeoVintageous.lib.state import State
+from NeoVintageous.lib.ui import ui_cmdline_prompt
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import units
 from NeoVintageous.lib.vi import utils
@@ -31,7 +34,6 @@ from NeoVintageous.lib.vi.text_objects import word_end_reverse
 from NeoVintageous.lib.vi.text_objects import word_reverse
 from NeoVintageous.lib.vi.utils import directions
 from NeoVintageous.lib.vi.utils import get_bol
-from NeoVintageous.lib.vi.utils import mark_as_widget
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 from NeoVintageous.lib.vi.utils import resize_visual_region
@@ -212,24 +214,30 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
 
 class _vi_slash(ViMotionCommand, BufferSearchBase):
-    """Collects input for the / motion."""
 
     def run(self, default=''):
         self.state.reset_during_init = False
 
-        # TODO: re-enable this.
-        # on_change = self.on_change if state.settings.vi['incsearch'] else None
-        on_change = self.on_change
+        # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
 
-        mark_as_widget(self.view.window().show_input_panel(
-            '',
-            default,
-            self.on_done,
-            on_change,
-            self.on_cancel
-        ))
+        ui_cmdline_prompt(
+            self.view.window(),
+            initial_text='/' + default,
+            on_done=self.on_done,
+            on_change=self.on_change,
+            on_cancel=self.on_cancel)
 
     def on_done(self, s):
+        if len(s) <= 1:
+            return
+
+        if s[0] != '/':
+            return
+
+        history_update(s)
+        _nv_cmdline_handle_key.reset_last_history_index()
+        s = s[1:]
+
         state = self.state
         state.sequence += s + '<CR>'
         self.view.erase_regions('vi_inc_search')
@@ -241,6 +249,17 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         state.eval()
 
     def on_change(self, s):
+        if s == '':
+            return self._force_cancel()
+
+        if len(s) <= 1:
+            return
+
+        if s[0] != '/':
+            return self._force_cancel()
+
+        s = s[1:]
+
         state = self.state
         flags = self.calculate_flags()
         self.view.erase_regions('vi_inc_search')
@@ -259,10 +278,15 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             if not self.view.visible_region().contains(next_hit.b):
                 self.view.show(next_hit.b)
 
+    def _force_cancel(self):
+        self.on_cancel()
+        self.view.window().run_command('hide_panel', {'cancel': True})
+
     def on_cancel(self):
         state = self.state
         self.view.erase_regions('vi_inc_search')
         state.reset_command_data()
+        _nv_cmdline_handle_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
@@ -1805,17 +1829,27 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
     def run(self, default=''):
         self.state.reset_during_init = False
-        state = self.state
-        on_change = self.on_change if state.settings.vi['incsearch'] else None
-        mark_as_widget(self.view.window().show_input_panel(
-            '',
-            default,
-            self.on_done,
-            on_change,
-            self.on_cancel
-        ))
+
+        # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
+
+        ui_cmdline_prompt(
+            self.view.window(),
+            initial_text='?' + default,
+            on_done=self.on_done,
+            on_change=self.on_change,
+            on_cancel=self.on_cancel)
 
     def on_done(self, s):
+        if len(s) <= 1:
+            return
+
+        if s[0] != '?':
+            return
+
+        history_update(s)
+        _nv_cmdline_handle_key.reset_last_history_index()
+        s = s[1:]
+
         state = self.state
         state.sequence += s + '<CR>'
         self.view.erase_regions('vi_inc_search')
@@ -1827,6 +1861,17 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         state.eval()
 
     def on_change(self, s):
+        if s == '':
+            return self._force_cancel()
+
+        if len(s) <= 1:
+            return
+
+        if s[0] != '?':
+            return self._force_cancel()
+
+        s = s[1:]
+
         flags = self.calculate_flags()
         self.view.erase_regions('vi_inc_search')
         state = self.state
@@ -1845,10 +1890,15 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             if not self.view.visible_region().contains(occurrence):
                 self.view.show(occurrence)
 
+    def _force_cancel(self):
+        self.on_cancel()
+        self.view.window().run_command('hide_panel', {'cancel': True})
+
     def on_cancel(self):
         self.view.erase_regions('vi_inc_search')
         state = self.state
         state.reset_command_data()
+        _nv_cmdline_handle_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])

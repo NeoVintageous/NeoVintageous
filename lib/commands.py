@@ -1,6 +1,7 @@
 import os
 import re
 
+from sublime import CLASS_WORD_START
 from sublime import Region
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
@@ -14,8 +15,13 @@ from NeoVintageous.lib.ex.completions import parse
 from NeoVintageous.lib.ex.completions import parse_for_setting
 from NeoVintageous.lib.ex.parser.parser import parse_command_line
 from NeoVintageous.lib.ex.parser.scanner_command_goto import TokenCommandGoto
+from NeoVintageous.lib.history import history_get
+from NeoVintageous.lib.history import history_get_type
+from NeoVintageous.lib.history import history_len
+from NeoVintageous.lib.history import history_update
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
+from NeoVintageous.lib.ui import ui_cmdline_prompt
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import mappings
@@ -26,19 +32,19 @@ from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.keys import to_bare_command_name
 from NeoVintageous.lib.vi.mappings import Mappings
 from NeoVintageous.lib.vi.settings import iter_settings
+from NeoVintageous.lib.vi.utils import bell
 from NeoVintageous.lib.vi.utils import gluing_undo_groups
-from NeoVintageous.lib.vi.utils import mark_as_widget
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
 
 __all__ = [
     '_neovintageous_help_goto',
+    '_nv_cmdline_handle_key',
     '_vi_add_to_jump_list',
     '_workaround_st_eol_cursor_issue',
     '_vi_question_mark_on_parser_done',
     '_vi_slash_on_parser_done',
-    'CycleCmdlineHistory',
     'FsCompletion',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
@@ -48,20 +54,12 @@ __all__ = [
     'Sequence',
     'TabControlCommand',
     'ViColonInput',
-    'ViColonRepeatLast',
     'ViSettingCompletion',
     'WriteFsCompletion'
 ]
 
 
 _logger = nvim.get_logger(__name__)
-
-
-_EX_HISTORY_MAX_LENGTH = 20
-_EX_HISTORY = {
-    'cmdline': [],
-    'searches': []
-}
 
 
 # TODO Add status messages e.g. for no docs found, etc.
@@ -93,16 +91,6 @@ class _neovintageous_help_goto(WindowCommand):
             # TODO Refactor ex_help code into a reusable middle layer so that
             # this command doesn't have to call the ex command.
             self.window.run_command('ex_help', {'command_line': 'help ' + subject})
-
-
-def _update_command_line_history(slot_name, item):
-    if len(_EX_HISTORY[slot_name]) >= _EX_HISTORY_MAX_LENGTH:
-        _EX_HISTORY[slot_name] = _EX_HISTORY[slot_name][1:]
-
-    if item in _EX_HISTORY[slot_name]:
-        _EX_HISTORY[slot_name].pop(_EX_HISTORY[slot_name].index(item))
-
-    _EX_HISTORY[slot_name].append(item)
 
 
 class PressKey(ViWindowCommandBase):
@@ -450,14 +438,10 @@ class ProcessNotation(ViWindowCommandBase):
 
 
 class ViColonInput(WindowCommand):
-    # Indicates whether the user issued the call.
     interactive_call = True
 
     def is_enabled(self):
         return bool(self.window.active_view())
-
-    def __init__(self, window):
-        WindowCommand.__init__(self, window)
 
     def adjust_initial_text(self, text):
         state = State(self.window.active_view())
@@ -478,25 +462,26 @@ class ViColonInput(WindowCommand):
 
         FsCompletion.invalidate()
 
-        v = mark_as_widget(
-            self.window.show_input_panel(
-                caption='',
-                initial_text=self.adjust_initial_text(initial_text),
-                on_done=self.on_done,
-                on_change=self.on_change,
-                on_cancel=self.on_cancel
-            )
-        )
-
-        v.set_syntax_file('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
-        v.settings().set('gutter', False)
-        v.settings().set('rulers', [])
-        v.settings().set('auto_match_enabled', False)
+        ui_cmdline_prompt(
+            self.window,
+            initial_text=self.adjust_initial_text(initial_text),
+            on_done=self.on_done,
+            on_change=self.on_change,
+            on_cancel=self.on_cancel)
 
         state = State(self.window.active_view())
         state.reset_during_init = False
 
     def on_change(self, s):
+        if s == '':
+            return self._force_cancel()
+
+        if len(s) <= 1:
+            return
+
+        if s[0] != ':':
+            return self._force_cancel()
+
         if ViColonInput.interactive_call:
             cmd, prefix, only_dirs = parse(s)
             if cmd:
@@ -513,56 +498,115 @@ class ViColonInput(WindowCommand):
         ViColonInput.interactive_call = True
 
     def on_done(self, cmd_line):
-        if ViColonInput.interactive_call:
-            _update_command_line_history('cmdline', cmd_line)
+        if len(cmd_line) <= 1:
+            return
 
-        self._clear_history_index()
+        if cmd_line[0] != ':':
+            return
+
+        if ViColonInput.interactive_call:
+            history_update(cmd_line)
+
+        _nv_cmdline_handle_key.reset_last_history_index()
 
         try:
             parsed_new = parse_command_line(cmd_line[1:])
-
             if not parsed_new.command:
                 parsed_new.command = TokenCommandGoto()
 
-            self.window.run_command(parsed_new.command.target_command, {'command_line': cmd_line[1:]})
+            self.window.run_command(parsed_new.command.target_command, {
+                'command_line': cmd_line[1:]})
         except Exception as e:
             nvim.message(str(e) + ' ' + "(%s)" % cmd_line)
 
+    def _force_cancel(self):
+        self.on_cancel()
+        self.window.run_command('hide_panel', {'cancel': True})
+
     def on_cancel(self):
-        self._clear_history_index()
-
-    def _clear_history_index(self):
-        CycleCmdlineHistory.HISTORY_INDEX = None
+        _nv_cmdline_handle_key.reset_last_history_index()
 
 
-class ViColonRepeatLast(WindowCommand):
-    def is_enabled(self):
-        return ((len(self.window.views()) > 0) and (len(_EX_HISTORY['cmdline']) > 0))
+class _nv_cmdline_handle_key(TextCommand):
 
-    def run(self):
-        self.window.run_command('vi_colon_input', {'cmd_line': _EX_HISTORY['cmdline'][-1]})
+    LAST_HISTORY_ITEM_INDEX = None
 
+    def run(self, edit, key):
+        if self.view.size() == 0:
+            raise RuntimeError('expected a non-empty command-line')
 
-class CycleCmdlineHistory(TextCommand):
-    HISTORY_INDEX = None
-
-    def run(self, edit, backwards=False):
-        if not _EX_HISTORY['cmdline']:
+        if self.view.size() == 1 and key not in ('<up>', '<C-n>', '<down>', '<C-p>', '<C-c>', '<C-[>'):
             return
 
-        if CycleCmdlineHistory.HISTORY_INDEX is None:
-            CycleCmdlineHistory.HISTORY_INDEX = -1 if backwards else 0
+        if key in ('<up>', '<C-p>'):
+            self._next_history(edit, backwards=True)
+        elif key in ('<down>', '<C-n>'):
+            self._next_history(edit, backwards=False)
+        elif key in ('<C-b>', '<home>'):
+            # Begin of command line.
+            self.view.sel().clear()
+            self.view.sel().add(1)
+        elif key in ('<C-c>', '<C-[>'):
+            self.view.window().run_command('hide_panel', {'cancel': True})
+        elif key in ('<C-e>', '<end>'):
+            # End of command line.
+            self.view.sel().clear()
+            self.view.sel().add(self.view.size())
+        elif key == '<C-u>':
+            # delete all characters left of the cursor
+            self.view.erase(edit, Region(1, self.view.sel()[0].end()))
+        elif key == '<C-w>':
+            word_region = self.view.word(self.view.sel()[0].begin())
+            word_region = self.view.expand_by_class(self.view.sel()[0].begin(), CLASS_WORD_START)
+            word_start_pt = word_region.begin()
+            caret_end_pt = self.view.sel()[0].end()
+            word_part_region = Region(max(word_start_pt, 1), caret_end_pt)
+            self.view.erase(edit, word_part_region)
         else:
-            CycleCmdlineHistory.HISTORY_INDEX += -1 if backwards else 1
+            raise NotImplementedError('unknown key')
 
-        if (
-            CycleCmdlineHistory.HISTORY_INDEX == len(_EX_HISTORY['cmdline']) or
-            CycleCmdlineHistory.HISTORY_INDEX < -len(_EX_HISTORY['cmdline'])
-        ):
-            CycleCmdlineHistory.HISTORY_INDEX = -1 if backwards else 0
+    def _next_history(self, edit, backwards):
+        if self.view.size() == 0:
+            raise RuntimeError('expected a non-empty command-line')
 
-        self.view.erase(edit, Region(0, self.view.size()))
-        self.view.insert(edit, 0, _EX_HISTORY['cmdline'][CycleCmdlineHistory.HISTORY_INDEX])
+        firstc = self.view.substr(0)
+        if not history_get_type(firstc):
+            raise RuntimeError('expected a valid command-line')
+
+        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX is None:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
+        else:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
+
+        count = history_len(firstc)
+        if count == 0:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
+
+            return bell()
+
+        if abs(_nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX) > count:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -count
+
+            return bell()
+
+        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX >= 0:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = 0
+
+            if self.view.size() > 1:
+                return self.view.erase(edit, Region(1, self.view.size()))
+            else:
+                return bell()
+
+        if self.view.size() > 1:
+            self.view.erase(edit, Region(1, self.view.size()))
+
+        item = history_get(firstc, _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX)
+        if item:
+            self.view.insert(edit, 1, item)
+
+    @staticmethod
+    def reset_last_history_index():
+        _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
 
 
 class WriteFsCompletion(TextCommand):

@@ -184,7 +184,6 @@ class NeoVintageousEvents(EventListener):
         # context key. If the plugin knows how to respond to the context, it
         # should return either True of False. If the context is unknown, it
         # should return None.
-
         return _Context(view).query(key, operator, operand, match_all)
 
     def on_query_completions(self, view, prefix, locations):

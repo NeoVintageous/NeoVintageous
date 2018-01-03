@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0">
 <dict>
+    <!--
+        DEPRECATED Command-line-mode.hidden-tmLanguage
+        TODO Remove this syntax and bump Sublime Text requirement. To remove
+        requires whatever version of Sublime Text introduced the new syntax
+        format i.e. .sublime-syntax.
+    -->
     <key>name</key>
     <string>Command-line mode (NeoVintageous)</string>
     <key>scopeName</key>

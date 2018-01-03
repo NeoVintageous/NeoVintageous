@@ -292,6 +292,14 @@ def gluing_undo_groups(view, state):
     state.processing_notation = False
 
 
+def bell():
+    # TODO Implement bell. See :h 'belloff'.
+    # 'belloff' defaults to 'all' in Neovim.
+    # See https://github.com/neovim/neovim/issues/2676.
+    # print('ring bell')
+    pass
+
+
 def blink(times=4, delay=55):
     prefs = load_settings('Preferences.sublime-settings')
     if prefs.get('vintageous_visualbell') is False:

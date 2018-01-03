@@ -20,7 +20,6 @@ try:
 
     # TODO Organise all commands into a single module e.g. lib.commands.
     from .lib.cmds.ex_actions import *  # noqa: F401,F403
-    from .lib.cmds.ex_motions import *  # noqa: F401,F403
     from .lib.cmds.vi_actions import *  # noqa: F401,F403
     from .lib.cmds.vi_motions import *  # noqa: F401,F403
 

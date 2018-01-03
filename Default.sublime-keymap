@@ -56,25 +56,39 @@
     {"keys": ["tab"],       "command": "fs_completion",                         "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_fs_completion"}] },
     {"keys": ["tab"],       "command": "vi_setting_completion",                 "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] },
 
-    {"keys": ["up"],        "command": "cycle_cmdline_history", "args": {"backwards": true},    "context": [{"key": "vi_is_cmdline"}]},
-    {"keys": ["up"],        "command": "press_key", "args": {"key": "<up>"},                    "context": [{"key": "vi_command_mode_aware"}]},
+    // Command-line editing.
+    // TODO handle Command-line <Backspace> key.
+    // TODO handle Command-line <Tab> key.
+    // TODO handle Command-line CTRL-h key.
+    {"keys": ["ctrl+["], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-[>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["ctrl+b"], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-b>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["ctrl+c"], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-c>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["ctrl+e"], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-e>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["ctrl+n"], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-n>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["ctrl+p"], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-p>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["ctrl+u"], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-u>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["ctrl+w"], "command": "_nv_cmdline_handle_key", "args": {"key": "<C-w>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["down"],   "command": "_nv_cmdline_handle_key", "args": {"key": "<down>"}, "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["end"],    "command": "_nv_cmdline_handle_key", "args": {"key": "<end>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["home"],   "command": "_nv_cmdline_handle_key", "args": {"key": "<home>"}, "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["up"],     "command": "_nv_cmdline_handle_key", "args": {"key": "<up>"},   "context": [{ "key": "selector", "operand": "text.excmdline"}]},
 
-    {"keys": ["down"],      "command": "cycle_cmdline_history",                 "context": [{"key": "vi_is_cmdline"}]},
+    // Up-down motions.
+    {"keys": ["up"],        "command": "press_key", "args": {"key": "<up>"},    "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["down"],      "command": "press_key", "args": {"key": "<down>"},  "context": [{"key": "vi_command_mode_aware"}]},
-
-    {"keys": ["left"],      "command": "press_key", "args": {"key": "<left>"},  "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["right"],     "command": "press_key", "args": {"key": "<right>"}, "context": [{"key": "vi_command_mode_aware"}]},
-
-    {"keys": ["backspace"], "command": "press_key", "args": {"key": "<bs>"},    "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["end"],       "command": "press_key", "args": {"key": "<end>"},   "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["home"],      "command": "press_key", "args": {"key": "<home>"},  "context": [{"key": "vi_command_mode_aware"}]},
 
-    // Sidebar: h (left), j (down), k (up), and l (right)
+    // Left-right motions.
+    {"keys": ["left"],      "command": "press_key", "args": {"key": "<left>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["right"],     "command": "press_key", "args": {"key": "<right>"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["backspace"], "command": "press_key", "args": {"key": "<bs>"},    "context": [{"key": "vi_command_mode_aware"}]},
+
+    // Sidebar left-down-up-right motions.
     {"keys": ["h"], "command": "move", "args": {"by": "characters", "forward": false},  "context": [{"key": "control", "operand": "sidebar_tree"}]},
     {"keys": ["j"], "command": "move", "args": {"by": "lines", "forward": true},        "context": [{"key": "control", "operand": "sidebar_tree"}]},
     {"keys": ["k"], "command": "move", "args": {"by": "lines", "forward": false},       "context": [{"key": "control", "operand": "sidebar_tree"}]},
     {"keys": ["l"], "command": "move", "args": {"by": "characters", "forward": true},   "context": [{"key": "control", "operand": "sidebar_tree"}]},
-    // --
 
     {"keys": ["a"], "command": "press_key", "args": {"key": "a"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["b"], "command": "press_key", "args": {"key": "b"}, "context": [{"key": "vi_command_mode_aware"}]},
