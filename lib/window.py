@@ -453,6 +453,24 @@ class WindowAPI():
         nth_group_number = self._get_nth_group_number_in_direction_of_current_one(direction, n)
         if nth_group_number is None:
             return
+
+        # If the cursor is not visible in the view we are moving to, then move
+        # the cursor to the top of the visible area of the view (instead of
+        # scrolling the view to show the cursor). This prevents the view we are
+        # moving to suddenly scrolling, which can be unexpected and is arguably
+        # bad UX. The functionaility now works closer to how Vim works. The main
+        # difference in Vim is that the cursor never leaves the  visible areas
+        # in the first place, it just doesn't happen e.g. when you scroll with
+        # the mouse in Vim, Vim moves the cursor along with the scrolling
+        # visible area so the cursor is always visible, it never disappears from
+        # the visible areas.
+        view = self.window.active_view_in_group(nth_group_number)
+        if view:
+            visible_region = view.visible_region()
+            if not view.visible_region().contains(view.sel()[0]):
+                view.sel().clear()
+                view.sel().add(visible_region.begin())
+
         self.window.focus_group(nth_group_number)
 
     # TODO implement cursor position to select between alternatives

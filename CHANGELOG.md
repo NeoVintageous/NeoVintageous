@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Switching windows using windowing commands no longer suddenly scrolls view (UX)
 * Added: `:sunmap`
 * Added: `vintageousrc` (documentation); see `:h neovintageous`
 * Added: Default vim options (documentation); see `:h neovintageous`
