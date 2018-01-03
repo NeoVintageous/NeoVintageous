@@ -1,5 +1,3 @@
-from threading import Timer
-
 from sublime import OP_EQUAL
 from sublime import OP_NOT_EQUAL
 from sublime_plugin import EventListener
@@ -180,9 +178,6 @@ class NeoVintageousEvents(EventListener):
     _CACHED_COMPLETIONS = []
     _CACHED_COMPLETION_PREFIXES = []
 
-    def __init__(self):
-        self._on_deactivate_callback_timer = None
-
     # TODO Refactor, cleanup and optimise on_query_context()
     def on_query_context(self, view, key, operator, operand, match_all):
         # Called when determining to trigger a key binding with the given
@@ -267,16 +262,4 @@ class NeoVintageousEvents(EventListener):
         settings.destroy(view)
 
     def on_activated(self, view):
-        if self._on_deactivate_callback_timer:
-            # Switching to a different view; enter normal mode
-            init_state(view)
-            self._on_deactivate_callback_timer.cancel()
-        else:  # Switching back from another application; Ignore
-            pass
-
-    def _on_deactivate_callback(self):
-        self._on_deactivate_callback_timer = None
-
-    def on_deactivated(self, view):
-        self._on_deactivate_callback_timer = Timer(0.25, self._on_deactivate_callback)
-        self._on_deactivate_callback_timer.start()
+        init_state(view)
