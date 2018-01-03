@@ -24,6 +24,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Unmap commands don't unmap visual mappings
+* Can't unmap mappings with special keys e.g. `<leader>`
+* Running tests shouldn't resets user vintageousrc mappings
 * Fixed [#156](https://github.com/NeoVintageous/NeoVintageous/issues/156): `SHIFT-v` then `CTRL-b` doesn't work
 * Fixed: Help views should be read only
 * Fixed: Unknown registers raise an exception

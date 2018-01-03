@@ -80,10 +80,43 @@ def is_view(view):
     ))
 
 
+COMMAND_LINE_MODE = 'mode_command_line'
+INSERT_MODE = 'mode_insert'
+
+# NeoVintageous always runs actions based on selections. Some Vim commands,
+# however, behave differently depending on whether the current mode is NORMAL
+# or VISUAL. To differentiate NORMAL mode operations (involving only an
+# action, or a motion plus an action) from VISUAL mode, we need to add an
+# additional mode for handling selections that won't interfere with the actual
+# VISUAL mode.
+#
+# This is _MODE_INTERNAL_NORMAL's job. We consider _MODE_INTERNAL_NORMAL a
+# pseudomode, because global state's .mode property should never set to it,
+# yet it's set in vi_cmd_data often.
+#
+# Note that for pure motions we still use plain NORMAL mode.
+INTERNAL_NORMAL_MODE = 'mode_internal_normal'
+
+NORMAL_MODE = 'mode_normal'
+OPERATOR_PENDING_MODE = 'mode_operator_pending'
+VISUAL_MODE = 'mode_visual'
+VISUAL_BLOCK_MODE = 'mode_visual_block'
+VISUAL_LINE_MODE = 'mode_visual_line'
+UNKNOWN_MODE = 'mode_unknown'
+REPLACE_MODE = 'mode_replace'
+
+# The mode you enter when giving i a count
+NORMAL_INSERT_MODE = 'mode_normal_insert'
+
+SELECT_MODE = 'mode_select'
+CTRL_X_MODE = 'mode_control_x'
+
+
+# DEPRECATED Vim modes class constants are deprecated, use the module level constants.
+# TODO [refactor] Vim modes class contants.
 # Use strings because we need to pass modes as arguments in
 # Default.sublime-keymap and it's more readable.
 class modes:
-    """Vim modes."""
 
     COMMAND_LINE = 'mode_command_line'
     INSERT = 'mode_insert'

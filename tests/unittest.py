@@ -1,3 +1,4 @@
+from unittest import mock  # noqa: F401
 from unittest import skipIf  # noqa: F401
 from unittest import TestCase  # noqa: F401
 import unittest

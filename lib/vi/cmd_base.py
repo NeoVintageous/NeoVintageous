@@ -1,6 +1,14 @@
-class cmd_types:
-    """Types of command."""
 
+CMD_TYPE_MOTION = 1
+CMD_TYPE_ACTION = 2
+CMD_TYPE_ANY = 3
+CMD_TYPE_OTHER = 4
+CMD_TYPE_USER = 5
+CMD_TYPE_OPEN_NAME_SPACE = 6
+
+
+# DEPRECATED TODO [refactor] into module level constants.
+class cmd_types:
     MOTION = 1
     ACTION = 2
     ANY = 3
