@@ -278,13 +278,5 @@ class NeoVintageousEvents(EventListener):
         self._on_deactivate_callback_timer = None
 
     def on_deactivated(self, view):
-
-        # TODO Review clearing the cmdline history, does it need to be an event?
-        # Because views load asynchronously, do not restore history index
-        # .on_activated(), but here instead. Otherwise, the .score_selector()
-        # call won't yield the desired results.
-        if view.score_selector(0, 'text.excmdline') > 0:
-            view.run_command('clear_cmdline_history_index')
-
         self._on_deactivate_callback_timer = Timer(0.25, self._on_deactivate_callback)
         self._on_deactivate_callback_timer.start()

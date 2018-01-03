@@ -38,7 +38,6 @@ __all__ = [
     '_workaround_st_eol_cursor_issue',
     '_vi_question_mark_on_parser_done',
     '_vi_slash_on_parser_done',
-    'ClearCmdlineHistoryIndex',
     'CycleCmdlineHistory',
     'FsCompletion',
     'NeovintageousOpenMyRcFileCommand',
@@ -485,7 +484,7 @@ class ViColonInput(WindowCommand):
                 initial_text=self.adjust_initial_text(initial_text),
                 on_done=self.on_done,
                 on_change=self.on_change,
-                on_cancel=None
+                on_cancel=self.on_cancel
             )
         )
 
@@ -517,6 +516,8 @@ class ViColonInput(WindowCommand):
         if ViColonInput.interactive_call:
             _update_command_line_history('cmdline', cmd_line)
 
+        self._clear_history_index()
+
         try:
             parsed_new = parse_command_line(cmd_line[1:])
 
@@ -526,6 +527,12 @@ class ViColonInput(WindowCommand):
             self.window.run_command(parsed_new.command.target_command, {'command_line': cmd_line[1:]})
         except Exception as e:
             nvim.message(str(e) + ' ' + "(%s)" % cmd_line)
+
+    def on_cancel(self):
+        self._clear_history_index()
+
+    def _clear_history_index(self):
+        CycleCmdlineHistory.HISTORY_INDEX = None
 
 
 class ViColonRepeatLast(WindowCommand):
@@ -556,11 +563,6 @@ class CycleCmdlineHistory(TextCommand):
 
         self.view.erase(edit, Region(0, self.view.size()))
         self.view.insert(edit, 0, _EX_HISTORY['cmdline'][CycleCmdlineHistory.HISTORY_INDEX])
-
-
-class ClearCmdlineHistoryIndex(TextCommand):
-    def run(self, edit):
-        CycleCmdlineHistory.HISTORY_INDEX = None
 
 
 class WriteFsCompletion(TextCommand):
