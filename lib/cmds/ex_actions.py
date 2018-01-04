@@ -174,7 +174,7 @@ class ExGoto(WindowCommand, WindowCommandMixin):
 # https://vimhelp.appspot.com/help.txt.html
 class ExHelp(WindowCommand, WindowCommandMixin):
 
-    _tags = {}
+    _tags_cache = {}
 
     def run(self, command_line):
         parsed = parse_command_line(command_line)
@@ -190,7 +190,7 @@ class ExHelp(WindowCommand, WindowCommandMixin):
 
         subject = subject.lower()
 
-        if not self._tags:
+        if not self._tags_cache:
             nvim.console_message('initializing help tags...')
 
             tags_resources = [r for r in find_resources(
@@ -204,25 +204,25 @@ class ExHelp(WindowCommand, WindowCommandMixin):
             for line in tags_resource.split('\n'):
                 if line:
                     match = tags_matcher.match(line)
-                    self._tags[match.group(1).lower()] = (match.group(2), match.group(3))
+                    self._tags_cache[match.group(1).lower()] = (match.group(2), match.group(3))
 
             nvim.console_message('finished initializing help tags')
 
-        if subject not in self._tags:
+        if subject not in self._tags_cache:
             # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
             # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
             # example is `:help copy` will look for "copy" then ":copy".
             found = False
             for m in (':', 'c_', 'i_', 'v_', '-', '/'):
                 _subject = m + subject
-                if _subject in self._tags:
+                if _subject in self._tags_cache:
                     found = True
                     subject = _subject
 
             if not found:
                 return nvim.message('E149: Sorry, no help for %s' % subject)
 
-        tag = self._tags[subject]
+        tag = self._tags_cache[subject]
 
         doc_resources = [r for r in find_resources(
             tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
@@ -230,49 +230,55 @@ class ExHelp(WindowCommand, WindowCommandMixin):
         if not doc_resources:
             return nvim.message('Sorry, help file "%s" not found' % tag[0])
 
-        # TODO REFACTOR into reusable api
+        # TODO [refactor] into reusable api
         def window_find_open_view(window, name):
             for view in self.window.views():
                 if view.name() == name:
                     return view
 
         help_view_name = '%s [vim help]' % (tag[0])
-        help_view = window_find_open_view(self.window, help_view_name)
-        if help_view:
-            self.window.focus_view(help_view)
+        view = window_find_open_view(self.window, help_view_name)
+        if view:
+            self.window.focus_view(view)
 
-        if not help_view:
-            help_view = self.window.new_file()
-            help_view.set_scratch(True)
-            help_view.set_name(help_view_name)
-            help_view.settings().set('auto_indent', False)
-            help_view.settings().set('rulers', [])
-            help_view.settings().set('indent_guide_options', [])
-            help_view.settings().set('smart_indent', False)
-            help_view.settings().set('translate_tabs_to_spaces', False)
-            help_view.settings().set('trim_automatic_white_space', False)
-            help_view.settings().set('tab_size', 8)
-            help_view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
-            help_view.run_command('insert', {'characters': load_resource(doc_resources[0])})
+        if not view:
+            view = self.window.new_file()
+            view.set_scratch(True)
+            view.set_name(help_view_name)
+
+            settings = view.settings()
+            settings.set('auto_complete', False)
+            settings.set('auto_indent', False)
+            settings.set('auto_match_enabled', False)
+            settings.set('draw_centered', False)
+            settings.set('draw_indent_guides', False)
+            settings.set('line_numbers', False)
+            settings.set('match_selection', False)
+            settings.set('rulers', [])
+            settings.set('scroll_past_end', False)
+            settings.set('smart_indent', False)
+            settings.set('tab_size', 8)
+            settings.set('translate_tabs_to_spaces', False)
+            settings.set('trim_automatic_white_space', False)
+            settings.set('word_wrap', False)
+
+            view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
+            view.run_command('insert', {'characters': load_resource(doc_resources[0])})
+            view.set_read_only(True)
 
         # Format the tag so that we can
         # do a literal search rather
         # than regular expression.
-        tag_region = help_view.find(tag[1].lstrip('/'), 0, LITERAL)
+        tag_region = view.find(tag[1].lstrip('/'), 0, LITERAL)
 
         # Add one point so that the cursor is
         # on the tag rather than the tag
         # punctuation star character.
         c_pt = tag_region.begin() + 1
 
-        help_view.sel().clear()
-        help_view.sel().add(c_pt)
-        help_view.show(c_pt, False)
-
-        # TODO fix scrolloff properly in the core for all commands
-        # help_view.run_command('scroll_lines', {
-        #     'amount': help_view.settings().get('vintageous_scrolloff')
-        # })
+        view.sel().clear()
+        view.sel().add(c_pt)
+        view.show(c_pt, False)
 
 
 # https://vimhelp.appspot.com/various.txt.html#:%21

@@ -24,6 +24,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: Help views should be read only
 * Fixed: Unknown registers raise an exception
 * Fixed: `gc{motion}` leaves cursor at wrong place
 * Fixed: `gcc` leaves cursor at wrong place
