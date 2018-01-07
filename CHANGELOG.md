@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased (1.4.4)
+## 1.4.4 - 2018-01-07
 
 * Fixed: Error trying to Open My Rc File first time
 * Fixed: Help files shouldn't display rulers or indent guides
