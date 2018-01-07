@@ -25,7 +25,7 @@ def open(window):
     file = file_name()
 
     if not os.path.exists(file):
-        with open(file, 'w'):
+        with _open(file, 'w'):
             pass
 
     window.open_file(file)
