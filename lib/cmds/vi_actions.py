@@ -2122,11 +2122,15 @@ class _vi_modify_numbers(ViTextCommandBase):
         # Modify selections that are inside a number already.
         for i, r in enumerate(regions):
             a = r.b
+
             while self.view.substr(a).isdigit():
                 a -= 1
-            a += 1
+
+            if a != r.b:
+                a += 1
 
             regions[i] = Region(a)
+
         lines = [self.view.substr(Region(r.b, self.view.line(r.b).b)) for r in regions]
         matches = [_vi_modify_numbers.NUM_PAT.search(text) for text in lines]
         if all(matches):
