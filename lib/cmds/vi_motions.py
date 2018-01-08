@@ -516,6 +516,11 @@ class _vi_j(ViMotionCommand):
                     # TODO: Match Vim's behavior.
                     next_line = self.view.line(self.view.text_point(row + 1, 0))
                     if next_line.empty() or self.view.rowcol(next_line.b)[1] < rect_b:
+                        # TODO Fix Visual block select stops at empty lines.
+                        # See https://github.com/NeoVintageous/NeoVintageous/issues/227.
+                        # self.view.sel().add(next_line.begin())
+                        # TODO Fix Visual Block does not work across multiple indentation levels.
+                        # See https://github.com/NeoVintageous/NeoVintageous/issues/195.
                         return
 
                     max_size = max(r.size() for r in self.view.sel())
