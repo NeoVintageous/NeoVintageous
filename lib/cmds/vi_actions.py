@@ -932,8 +932,7 @@ class _vi_d(ViTextCommandBase):
         def reverse(view, s):
             return Region(s.end(), s.begin())
 
-        if mode not in (modes.INTERNAL_NORMAL, modes.VISUAL,
-                        modes.VISUAL_LINE):
+        if mode not in (modes.INTERNAL_NORMAL, modes.VISUAL, modes.VISUAL_LINE):
             raise ValueError('wrong mode')
 
         if mode == modes.INTERNAL_NORMAL and not motion:
@@ -948,12 +947,14 @@ class _vi_d(ViTextCommandBase):
             if not self.has_sel_changed():
                 utils.blink()
                 self.enter_normal_mode(mode)
+
                 return
 
             # If the target's an empty pair of quotes, don't delete.
             # FIXME: This won't work well with multiple sels.
             if all(s.empty() for s in self.view.sel()):
                 self.enter_normal_mode(mode)
+
                 return
 
         state = self.state
@@ -966,8 +967,16 @@ class _vi_d(ViTextCommandBase):
 
         # XXX: abstract this out for all types of selections.
         def advance_to_text_start(view, s):
-            pt = utils.next_non_white_space_char(self.view, s.b)
-            return Region(pt)
+            if motion:
+                if 'motion' in motion:
+                    if motion['motion'] == '_vi_e':
+                        return Region(s.begin())
+                    elif motion['motion'] == '_vi_dollar':
+                        return Region(s.begin())
+                    elif motion['motion'] == '_vi_find_in_line':
+                        return Region(s.begin())
+
+            return Region(utils.next_non_white_space_char(self.view, s.b))
 
         if mode == modes.INTERNAL_NORMAL:
             regions_transformer(self.view, advance_to_text_start)

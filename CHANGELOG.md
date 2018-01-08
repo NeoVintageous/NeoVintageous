@@ -20,6 +20,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#296](https://github.com/NeoVintageous/NeoVintageous/issues/296): `de` leaves cursor at wrong place
+* Fixed [#295](https://github.com/NeoVintageous/NeoVintageous/issues/295): `df{char}` leaves cursor at wrong place
+* Fixed: `df$` leaves cursor at wrong place
 * Fixed: `gq` cursor position after operation
 * Fixed: Mapping command status messages
 * Fixed: Error message typos and grammar
