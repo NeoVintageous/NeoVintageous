@@ -1923,16 +1923,23 @@ class _vi_big_e(ViMotionCommand):
 
 class _vi_ctrl_f(ViMotionCommand):
     def run(self, mode=None, count=1):
-        def extend_to_full_line(view, s):
-            return view.full_line(s.b)
-
         if mode == modes.NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True})
         if mode == modes.VISUAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
         elif mode == modes.VISUAL_LINE:
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
-            regions_transformer(self.view, extend_to_full_line)
+            new_sels = []
+            for sel in self.view.sel():
+                line = self.view.full_line(sel.b)
+                if sel.b > sel.a:
+                    new_sels.append(Region(sel.a, line.end()))
+                else:
+                    new_sels.append(Region(sel.a, line.begin()))
+            if new_sels:
+                self.view.sel().clear()
+                self.view.sel().add_all(new_sels)
+
         elif mode == modes.VISUAL_BLOCK:
             return
 
