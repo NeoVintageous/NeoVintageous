@@ -22,7 +22,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed: `gq` cursor position after operation
 * Fixed: Mapping command status messages
 * Fixed: Error message typos and grammar
-* Fixed [#254](https://github.com/NeoVintageous/NeoVintageous/issues/245): `:vs[plit] [file]` TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+* Fixed [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:vs[plit] [file]` TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 
 ## 1.4.4 - 2018-01-07
 
