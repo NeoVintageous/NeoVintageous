@@ -7,6 +7,12 @@ from sublime import set_timeout
 from sublime_plugin import TextCommand
 
 
+# TODO [refactor] I assume "INMEDIATE" is a typo, should be "IMMEDIATE"?
+INPUT_INMEDIATE = 1
+INPUT_VIA_PANEL = 2
+INPUT_AFTER_MOTION = 3
+
+
 def has_dirty_buffers(window):
     for v in window.views():
         if v.is_dirty():
@@ -140,14 +146,6 @@ class modes:
             return 'Mode ^X'
         else:
             return 'REALLY UNKNOWN'
-
-
-class input_types:
-    """Types of input parsers."""
-
-    INMEDIATE = 1
-    VIA_PANEL = 2
-    AFTER_MOTION = 3
 
 
 class jump_directions:
@@ -359,10 +357,15 @@ def last_row(view):
 
 
 def translate_char(char):
-    # FIXME: What happens to keys like <home>, <up>, etc? We shouln't be
-    #        able to use those in some contexts, like as arguments to f, t...
-
+    # Args:
+    #   char (str):
+    #
+    # Returns:
+    #   str
     lchar = char.lower()
+
+    # FIXME What happens to keys like <home>, <up>, etc? We shouln't be
+    # able to use those in some contexts, like as arguments to f, t...
 
     if lchar in ('<enter>', '<cr>'):
         return '\n'

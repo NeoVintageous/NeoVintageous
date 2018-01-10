@@ -3,9 +3,10 @@ from NeoVintageous.lib.vi import keys
 from NeoVintageous.lib.vi import utils
 from NeoVintageous.lib.vi.cmd_base import ViMotionDef
 from NeoVintageous.lib.vi.cmd_base import ViOperatorDef
-from NeoVintageous.lib.vi.inputs import input_types
 from NeoVintageous.lib.vi.inputs import parser_def
 from NeoVintageous.lib.vi.keys import seqs
+from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE
+from NeoVintageous.lib.vi.utils import INPUT_VIA_PANEL
 from NeoVintageous.lib.vi.utils import modes
 
 
@@ -1582,7 +1583,7 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -1614,7 +1615,7 @@ class ViToggleMacroRecorder(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -2398,7 +2399,7 @@ class ViGotoExactMarkXpos(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -2573,7 +2574,7 @@ class ViGotoMark(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -2664,7 +2665,7 @@ class ViGotoOpeningBracket(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -2725,7 +2726,7 @@ class ViGotoClosingBracket(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3114,7 +3115,7 @@ class ViReplaceCharacters(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3149,7 +3150,7 @@ class ViSetMark(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3186,7 +3187,7 @@ class ViSearchCharForward(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3230,7 +3231,7 @@ class ViATextObject(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3267,7 +3268,7 @@ class ViITextObject(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3306,7 +3307,7 @@ class ViSearchCharBackward(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=input_types.INMEDIATE)
+                                       type=INPUT_INMEDIATE)
 
     @property
     def accept_input(self):
@@ -3347,7 +3348,7 @@ class ViSearchForward(ViMotionDef):
         self.updates_xpos = True
         self.input_parser = parser_def(command='_vi_slash',
                                        interactive_command='_vi_slash',
-                                       type=input_types.VIA_PANEL,
+                                       type=INPUT_VIA_PANEL,
                                        on_done=None,
                                        input_param='default')
 
@@ -3406,7 +3407,7 @@ class ViSearchBackward(ViMotionDef):
         self.updates_xpos = True
         self.input_parser = parser_def(command='_vi_question_mark',
                                        interactive_command='_vi_question_mark',
-                                       type=input_types.VIA_PANEL,
+                                       type=INPUT_VIA_PANEL,
                                        on_done=None,
                                        input_param='default')
 

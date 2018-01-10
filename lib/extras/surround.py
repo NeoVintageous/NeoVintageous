@@ -4,6 +4,8 @@ from sublime import LITERAL
 from sublime import Region
 from sublime_plugin import TextCommand
 
+from NeoVintageous.lib.plugin import INPUT_AFTER_MOTION
+from NeoVintageous.lib.plugin import INPUT_INMEDIATE
 from NeoVintageous.lib.plugin import inputs
 from NeoVintageous.lib.plugin import INTERNAL_NORMAL_MODE
 from NeoVintageous.lib.plugin import NORMAL_MODE
@@ -13,8 +15,6 @@ from NeoVintageous.lib.plugin import ViOperatorDef
 from NeoVintageous.lib.plugin import VISUAL_BLOCK_MODE
 from NeoVintageous.lib.plugin import VISUAL_MODE
 from NeoVintageous.lib.vi.core import ViTextCommandBase
-from NeoVintageous.lib.vi.inputs import input_types
-from NeoVintageous.lib.vi.inputs import parser_def
 from NeoVintageous.lib.vi.search import reverse_search
 from NeoVintageous.lib.vi.utils import regions_transformer
 from NeoVintageous.lib.vi.utils import translate_char
@@ -39,12 +39,12 @@ class _surround_ys(ViOperatorDef):
         self.updates_xpos = True
         self.repeatable = True
         self.motion_required = True
-        self.input_parser = parser_def(
+        self.input_parser = inputs.parser_def(
             command=inputs.one_char,
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=input_types.AFTER_MOTION
+            type=INPUT_AFTER_MOTION
         )
 
     @property
@@ -76,12 +76,12 @@ class _surround_S(_surround_ys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
-        self.input_parser = parser_def(
+        self.input_parser = inputs.parser_def(
             command=inputs.one_char,
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=input_types.INMEDIATE
+            type=INPUT_INMEDIATE
         )
 
 
@@ -92,12 +92,12 @@ class _surround_ds(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-        self.input_parser = parser_def(
+        self.input_parser = inputs.parser_def(
             command=inputs.one_char,
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=input_types.INMEDIATE
+            type=INPUT_INMEDIATE
         )
 
     # TODO Fix ds should not accept input
@@ -133,12 +133,12 @@ class _surround_cs(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-        self.input_parser = parser_def(
+        self.input_parser = inputs.parser_def(
             command=inputs.one_char,
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=input_types.INMEDIATE
+            type=INPUT_INMEDIATE
         )
 
     @property

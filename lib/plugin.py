@@ -1,7 +1,10 @@
-from NeoVintageous.lib.vi.utils import modes
-from NeoVintageous.lib.vi.cmd_base import ViOperatorDef  # noqa: F401
-from NeoVintageous.lib.vi.cmd_base import ViMotionDef  # noqa: F401
 from NeoVintageous.lib.vi import inputs  # noqa: F401
+from NeoVintageous.lib.vi.cmd_base import ViMotionDef  # noqa: F401
+from NeoVintageous.lib.vi.cmd_base import ViOperatorDef  # noqa: F401
+from NeoVintageous.lib.vi.utils import INPUT_AFTER_MOTION  # noqa: F401
+from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE  # noqa: F401
+from NeoVintageous.lib.vi.utils import INPUT_VIA_PANEL  # noqa: F401
+from NeoVintageous.lib.vi.utils import modes
 
 
 NORMAL_MODE = modes.NORMAL

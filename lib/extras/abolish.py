@@ -2,6 +2,7 @@ import re
 
 from sublime_plugin import TextCommand
 
+from NeoVintageous.lib.plugin import INPUT_INMEDIATE
 from NeoVintageous.lib.plugin import inputs
 from NeoVintageous.lib.plugin import NORMAL_MODE
 from NeoVintageous.lib.plugin import register
@@ -94,7 +95,7 @@ class _AbolishCoercions(ViOperatorDef):
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=inputs.input_types.INMEDIATE
+            type=INPUT_INMEDIATE
         )
 
     @property

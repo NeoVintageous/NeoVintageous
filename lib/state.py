@@ -16,7 +16,9 @@ from NeoVintageous.lib.vi.registers import Registers
 from NeoVintageous.lib.vi.settings import SettingsManager
 from NeoVintageous.lib.vi.utils import directions
 from NeoVintageous.lib.vi.utils import first_sel
-from NeoVintageous.lib.vi.utils import input_types
+from NeoVintageous.lib.vi.utils import INPUT_AFTER_MOTION
+from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE
+from NeoVintageous.lib.vi.utils import INPUT_VIA_PANEL
 from NeoVintageous.lib.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.lib.vi.utils import is_view
 from NeoVintageous.lib.vi.utils import modes
@@ -381,14 +383,15 @@ class State(object):
                 return True
 
             return (self.action.accept_input and
-                    self.action.input_parser.type == input_types.AFTER_MOTION)
+                    self.action.input_parser.type == INPUT_AFTER_MOTION)
+
 
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
         if (isinstance(self.action, cmd_defs.ViToggleMacroRecorder) and self.is_recording):
             return False
 
-        if (self.action and self.action.accept_input and self.action.input_parser.type == input_types.INMEDIATE):
+        if (self.action and self.action.accept_input and self.action.input_parser.type == INPUT_INMEDIATE):
             return True
 
         if self.motion:
@@ -542,7 +545,7 @@ class State(object):
 
         If needed, it runs the input-panel-based parser.
         """
-        if command.input_parser.type == input_types.VIA_PANEL:
+        if command.input_parser.type == INPUT_VIA_PANEL:
             if self.non_interactive:
                 return False
             sublime.active_window().run_command(command.input_parser.command)

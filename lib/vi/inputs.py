@@ -1,6 +1,7 @@
 from collections import namedtuple
 
-from NeoVintageous.lib.vi.utils import input_types
+from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE
+from NeoVintageous.lib.vi.utils import INPUT_VIA_PANEL
 from NeoVintageous.lib.vi.utils import translate_char
 
 
@@ -11,13 +12,25 @@ def get(state, name):
     parser_func = globals().get(name, None)
     if parser_func is None:
         raise ValueError('parser name unknown')
+
     return parser_func(state)
 
 
+# TODO [refactor] Rename parameter name to something more descriptive.
 def one_char(in_):
-    """Any input (character) satisfies this parser."""
-    in_ = translate_char(in_)
-    return len(in_) == 1
+    # Any input (character) satisfies this parser.
+    #
+    # Args:
+    #   in_ (str):
+    #
+    # Returns
+    #   bool: True if in_ is one character in length, False otherwise.
+    return len(translate_char(in_)) == 1
+
+
+# TODO [refactor] Maybe refactoring the required {state} parameter of all the
+# following functions, because none of them require the {state}. Some of the
+# functions require a boolean "interactive" parameter.
 
 
 def vi_f(state):
@@ -25,7 +38,7 @@ def vi_f(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_big_f(state):
@@ -33,7 +46,7 @@ def vi_big_f(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_big_t(state):
@@ -41,7 +54,7 @@ def vi_big_t(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_t(state):
@@ -49,16 +62,16 @@ def vi_t(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
-# TODO: rename to "vi_a_text_object".
+# TODO [refactor] Rename to "vi_a_text_object".
 def vi_inclusive_text_object(state):
     return parser_def(command=one_char,
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_exclusive_text_object(state):
@@ -66,7 +79,7 @@ def vi_exclusive_text_object(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_m(state):
@@ -74,7 +87,7 @@ def vi_m(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_q(state):
@@ -82,7 +95,7 @@ def vi_q(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_at(state):
@@ -90,7 +103,7 @@ def vi_at(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_a_text_object(state):
@@ -98,7 +111,7 @@ def vi_a_text_object(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_i_text_object(state):
@@ -106,7 +119,7 @@ def vi_i_text_object(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_quote(state):
@@ -114,7 +127,7 @@ def vi_quote(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_r(state):
@@ -122,7 +135,7 @@ def vi_r(state):
                       interactive_command=None,
                       input_param=None,
                       on_done='_vi_r_on_parser_done',
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_backtick(state):
@@ -130,7 +143,7 @@ def vi_backtick(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_left_square_bracket(state):
@@ -138,44 +151,56 @@ def vi_left_square_bracket(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=input_types.INMEDIATE)
+                      type=INPUT_INMEDIATE)
 
 
 def vi_slash(state):
-    """Parse should always be used non-interactively.
-
-    / usually collects its input from an input panel.
-    """
+    # Parse should always be used non-interactively.
+    #
+    # '/' usually collects its input from an input panel.
+    #
     # Any input is valid; we're never satisfied.
+    #
+    # Args:
+    #   state (NeoVintageous.lib.State):
+    #
+    # Returns:
+    #   A named 5-tuple.
     if state.non_interactive:
         return parser_def(command=lambda x: False,
                           interactive_command='_vi_slash',
-                          type=input_types.INMEDIATE,
+                          type=INPUT_INMEDIATE,
                           on_done='_vi_slash_on_parser_done',
                           input_param='key')
     else:
         return parser_def(command='_vi_slash',
                           interactive_command='_vi_slash',
-                          type=input_types.VIA_PANEL,
+                          type=INPUT_VIA_PANEL,
                           on_done=None,
                           input_param='default')
 
 
 def vi_question_mark(state):
-    """Parser should always be used non-interactively.
-
-    ? usually collects its input from an input panel.
-    """
+    # Parser should always be used non-interactively.
+    #
+    # '?' usually collects its input from an input panel.
+    #
     # Any input is valid; we're never satisfied.
+    #
+    # Args:
+    #   state (NeoVintageous.lib.State):
+    #
+    # Returns:
+    #   A named 5-tuple.
     if state.non_interactive:
         return parser_def(command=lambda x: False,
                           interactive_command='_vi_question_mark',
-                          type=input_types.INMEDIATE,
+                          type=INPUT_INMEDIATE,
                           on_done='_vi_question_mark_on_parser_done',
                           input_param='key')
     else:
         return parser_def(command='_vi_question_mark',
                           interactive_command='_vi_question_mark',
-                          type=input_types.VIA_PANEL,
+                          type=INPUT_VIA_PANEL,
                           on_done=None,
                           input_param='default')
