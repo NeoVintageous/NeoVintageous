@@ -86,18 +86,21 @@ class ViCommandMixin(object):
         state.xpos = xpos
 
     def outline_target(self):
-
         # TODO rework 'vintageous_visualyank' feature to be more similar
         # to https://github.com/machakann/vim-highlightedyank
         # See http://vimcasts.org/episodes/neovim-eyecandy/#shownotes
 
-        prefs = sublime.load_settings('Preferences.sublime-settings')
-        if prefs.get('vintageous_visualyank') is False:
+        if not self._view.settings().get('vintageous_visualyank'):
             return
 
         sels = list(self._view.sel())
         sublime.set_timeout(lambda: self._view.erase_regions('vi_yy_target'), 350)
-        self._view.add_regions('vi_yy_target', sels, 'comment', '', sublime.DRAW_NO_FILL)
+        self._view.add_regions(
+            'vi_yy_target',
+            sels,
+            'comment highlighted.yank',
+            '',
+            sublime.DRAW_NO_FILL)
 
 
 class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):

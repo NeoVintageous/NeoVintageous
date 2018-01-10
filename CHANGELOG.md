@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: Scope `highlighted.yank` when highlighting yanks to allow color scheme customisation
 * Added: Switching windows using windowing commands no longer suddenly scrolls view (UX)
 * Added: `:sunmap`
 * Added: `vintageousrc` (documentation); see `:h neovintageous`
