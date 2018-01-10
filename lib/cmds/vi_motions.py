@@ -2143,6 +2143,14 @@ class _vi_left_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
         self.view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
 
+        # TODO Refactor set position cursor after operation into reusable api.
+        line = self.view.line(self.view.sel()[0].b)
+        if line.size() > 0:
+            pt = self.view.find('^\\s*', line.begin()).end()
+            if pt != line.begin():
+                self.view.sel().clear()
+                self.view.sel().add(pt)
+
 
 class _vi_right_square_bracket(ViMotionCommand):
     BRACKETS = {
@@ -2176,3 +2184,11 @@ class _vi_right_square_bracket(ViMotionCommand):
 class _vi_right_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
         self.view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})
+
+        # TODO Refactor set position cursor after operation into reusable api.
+        line = self.view.line(self.view.sel()[0].b)
+        if line.size() > 0:
+            pt = self.view.find('^\\s*', line.begin()).end()
+            if pt != line.begin():
+                self.view.sel().clear()
+                self.view.sel().add(pt)
