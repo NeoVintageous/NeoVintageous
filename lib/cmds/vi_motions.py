@@ -1875,6 +1875,8 @@ class _vi_repeat_buffer_search(ViMotionCommand):
             'search_string': search_string
         })
 
+        self.view.show(self.view.sel(), show_surrounds=True)
+
 
 class _vi_n(ViMotionCommand):
     # TODO: This is a jump.
