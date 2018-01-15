@@ -152,7 +152,7 @@ class PressKey(ViWindowCommandBase):
 
         if state.must_collect_input:
             _logger.debug('@press_key collecting input...')
-            state.process_user_input2(key)
+            state.process_input(key)
             if state.runnable():
                 _logger.debug('@press_key state holds a complete command')
                 if do_eval:

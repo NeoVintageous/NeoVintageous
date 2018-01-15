@@ -551,7 +551,7 @@ class State(object):
             return True
         return False
 
-    def process_user_input2(self, key):
+    def process_input(self, key):
         assert self.must_collect_input, "call only if input is required"
 
         _logger.debug('process input key \'%s\'', key)
