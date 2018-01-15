@@ -12,7 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added: Default vim options (documentation); see `:h neovintageous`
 * Added: `:help {subject}` now uses basic heuristic to find a relevant help topic if `{subject}` is not found
 * Added: Support for 'vintageous_modelines' option; defaults to 5
-* Added: Use new SublimeLinter API
+* Added: Support new SublimeLinter API
 * Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/245): `:sp[lit] [file]`
 * Added: Unimpaired statusbar toggles on: `[oe`, off: `]oe`, and toggle `coe`
 * Added: Unimpaired menu toggles on: `[oa`, off: `]oa`, and toggle `coa`
