@@ -118,5 +118,5 @@ def do_modeline(view):
         else:
             try:
                 setter(name, _to_json_type(value))
-            except ValueError as e:
+            except ValueError:
                 message('Error detected while processing modelines: option = {}'.format(name))
