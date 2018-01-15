@@ -24,6 +24,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: `gc{motion}` leaves cursor at wrong place
 * Fixed: `gcc` leaves cursor at wrong place
 * Fixed: Repeat searches (`n`/`N`) should scroll and show surrounds
 * Fixed: Goto next/prev change cursor position after motion (Unimpaired)

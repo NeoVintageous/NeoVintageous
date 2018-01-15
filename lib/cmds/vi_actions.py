@@ -2779,6 +2779,17 @@ class _vi_gc(ViTextCommandBase):
         self.view.run_command('toggle_comment', {'block': False})
 
         regions_transformer(self.view, f)
+
+        line = self.view.line(self.view.sel()[0].begin())
+        pt = line.begin()
+
+        if line.size() > 0:
+            line = self.view.find('^\\s*', line.begin())
+            pt = line.end()
+
+        self.view.sel().clear()
+        self.view.sel().add(pt)
+
         self.enter_normal_mode(mode)
 
 
