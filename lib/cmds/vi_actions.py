@@ -2823,6 +2823,7 @@ class _vi_gcc_action(ViTextCommandBase):
                                                          white_space=' \t')
 
                 return Region(pt, pt)
+
             return s
 
         self.view.run_command('_vi_gcc_motion', {'mode': mode, 'count': count})
@@ -2830,10 +2831,17 @@ class _vi_gcc_action(ViTextCommandBase):
         state = self.state
         state.registers.yank(self)
 
-        row = [self.view.rowcol(s.begin())[0] for s in self.view.sel()][0]
+        line = self.view.line(self.view.sel()[0].begin())
+        pt = line.begin()
+
+        if line.size() > 0:
+            line = self.view.find('^\\s*', line.begin())
+            pt = line.end()
+
         regions_transformer_reversed(self.view, f)
+
         self.view.sel().clear()
-        self.view.sel().add(Region(self.view.text_point(row, 0)))
+        self.view.sel().add(pt)
 
 
 class _vi_gcc_motion(ViTextCommandBase):

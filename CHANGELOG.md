@@ -24,6 +24,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: `gcc` leaves cursor at wrong place
 * Fixed: Repeat searches (`n`/`N`) should scroll and show surrounds
 * Fixed: Goto next/prev change cursor position after motion (Unimpaired)
 * Fixed [#285](https://github.com/NeoVintageous/NeoVintageous/issues/285): Page down `CTRL-f` does not work correctly in Visual Line mode
