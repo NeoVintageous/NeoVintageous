@@ -2433,6 +2433,9 @@ class _vi_at(IrreversibleTextCommand):
             try:
                 cmds = State.macro_registers[name]
                 State.macro_steps = cmds
+            except KeyError:
+                # TODO Should emit bell (if enabled) because no register
+                pass
             except ValueError as e:
                 return nvim.console_message('error: %s' % e)
 
