@@ -8,7 +8,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Added: Selections are now cleared when leaving a view (UX)
 * Added: `NeovintageousToggleSideBar` command
-* Added: Support for super-keys `<D-...>` (also known as command-keys on OSX and window-keys on Windows)
+* Added [#286](https://github.com/NeoVintageous/NeoVintageous/issues/286): Support for super-keys `<D-...>` (also known as command-keys on OSX and window-keys on Windows)
 * Added: Scope `highlighted.yank` when highlighting yanks to allow color scheme customisation
 * Added: Switching windows using windowing commands no longer suddenly scrolls view (UX)
 * Added: `:sunmap`
@@ -17,7 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added: `:help {subject}` now uses basic heuristic to find a relevant help topic if `{subject}` is not found
 * Added: Support for 'vintageous_modelines' option; defaults to 5
 * Added: Support new SublimeLinter API
-* Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/245): `:sp[lit] [file]`
+* Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:sp[lit] [file]`
 * Added: Unimpaired statusbar toggles on: `[oe`, off: `]oe`, and toggle `coe`
 * Added: Unimpaired menu toggles on: `[oa`, off: `]oa`, and toggle `coa`
 * Added: Use new GitGutter API
