@@ -24,6 +24,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#156](https://github.com/NeoVintageous/NeoVintageous/issues/156): `SHIFT-v` then `CTRL-b` doesn't work
 * Fixed: Help views should be read only
 * Fixed: Unknown registers raise an exception
 * Fixed: `gc{motion}` leaves cursor at wrong place
