@@ -2354,7 +2354,6 @@ class ViMoveHalfScreenUp(ViMotionDef):
 
 
 @keys.assign(seq=seqs.CTRL_F, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.PAGE_UP, modes=_MODES_MOTION)
 class ViMoveScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2372,7 +2371,6 @@ class ViMoveScreenDown(ViMotionDef):
 
 
 @keys.assign(seq=seqs.CTRL_B, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.PAGE_DOWN, modes=_MODES_MOTION)
 class ViMoveScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
