@@ -1932,7 +1932,7 @@ class _vi_ctrl_f(ViMotionCommand):
     def run(self, mode=None, count=1):
         if mode == modes.NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True})
-        if mode == modes.VISUAL:
+        elif mode == modes.VISUAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
         elif mode == modes.VISUAL_LINE:
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
