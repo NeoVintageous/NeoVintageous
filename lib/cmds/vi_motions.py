@@ -1936,6 +1936,7 @@ class _vi_ctrl_f(ViMotionCommand):
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
         elif mode == modes.VISUAL_LINE:
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
+
             new_sels = []
             for sel in self.view.sel():
                 line = self.view.full_line(sel.b)
@@ -1943,6 +1944,7 @@ class _vi_ctrl_f(ViMotionCommand):
                     new_sels.append(Region(sel.a, line.end()))
                 else:
                     new_sels.append(Region(sel.a, line.begin()))
+
             if new_sels:
                 self.view.sel().clear()
                 self.view.sel().add_all(new_sels)
@@ -1956,6 +1958,7 @@ class _vi_ctrl_b(ViMotionCommand):
             self.view.run_command('move', {'by': 'pages', 'forward': False, 'extend': True})
         elif mode == modes.VISUAL_LINE:
             self.view.run_command('move', {'by': 'pages', 'forward': False, 'extend': True})
+
             new_sels = []
             for sel in self.view.sel():
                 line = self.view.full_line(sel.b)
@@ -1963,11 +1966,10 @@ class _vi_ctrl_b(ViMotionCommand):
                     new_sels.append(Region(sel.a, line.end()))
                 else:
                     new_sels.append(Region(sel.a, line.begin()))
+
             if new_sels:
                 self.view.sel().clear()
                 self.view.sel().add_all(new_sels)
-        elif mode != modes.NORMAL:
-            return
 
 
 class _vi_enter(ViMotionCommand):
