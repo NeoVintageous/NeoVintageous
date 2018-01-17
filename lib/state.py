@@ -385,7 +385,6 @@ class State(object):
             return (self.action.accept_input and
                     self.action.input_parser.type == INPUT_AFTER_MOTION)
 
-
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
         if (isinstance(self.action, cmd_defs.ViToggleMacroRecorder) and self.is_recording):
