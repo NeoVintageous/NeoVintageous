@@ -21,8 +21,8 @@ from NeoVintageous.lib.vi.utils import translate_char
 
 
 __all__ = [
-    '_neovintageous_surround_command',
-    '_neovintageous_surround_ys_command'
+    '_nv_surround_command',
+    '_nv_surround_ys_command'
 ]
 
 
@@ -62,7 +62,7 @@ class _surround_ys(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_neovintageous_surround_ys',
+            'action': '_nv_surround_ys',
             'action_args': {
                 'mode': state.mode,
                 'surround_with': self.inp
@@ -117,7 +117,7 @@ class _surround_ds(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_neovintageous_surround',
+            'action': '_nv_surround',
             'action_args': {
                 'action': 'ds',
                 'mode': state.mode,
@@ -155,7 +155,7 @@ class _surround_cs(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_neovintageous_surround',
+            'action': '_nv_surround',
             'action_args': {
                 'action': 'cs',
                 'mode': state.mode,
@@ -177,7 +177,7 @@ def _regions_transformer_reversed(view, f):
     view.sel().add_all(new)
 
 
-class _neovintageous_surround_command(TextCommand):
+class _nv_surround_command(TextCommand):
     def run(self, edit, **kwargs):
         action = kwargs.get('action')
         if action == 'cs':
@@ -188,8 +188,8 @@ class _neovintageous_surround_command(TextCommand):
             raise Exception('unknown action')
 
 
-# TODO [refactor] to use _neovintageous_surround proxy command
-class _neovintageous_surround_ys_command(ViTextCommandBase):
+# TODO [refactor] to use _nv_surround proxy command
+class _nv_surround_ys_command(ViTextCommandBase):
 
     _pairs = {
         ')': ('(', ')'),

@@ -9,7 +9,7 @@ from NeoVintageous.lib.plugin import VISUAL_MODE
 
 
 __all__ = [
-    '_neovintageous_unimpaired_command'
+    '_nv_unimpaired_command'
 ]
 
 
@@ -20,7 +20,7 @@ __all__ = [
 class _UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
@@ -33,7 +33,7 @@ class _UnimpairedContextPrevious(ViOperatorDef):
 class _UnimpairedContextNext(ViOperatorDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
@@ -46,7 +46,7 @@ class _UnimpairedContextNext(ViOperatorDef):
 class _UnimpairedBlankUp(ViOperatorDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
@@ -59,7 +59,7 @@ class _UnimpairedBlankUp(ViOperatorDef):
 class _UnimpairedBlankDown(ViOperatorDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
@@ -72,7 +72,7 @@ class _UnimpairedBlankDown(ViOperatorDef):
 class _UnimpairedMoveUp(ViOperatorDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
@@ -85,7 +85,7 @@ class _UnimpairedMoveUp(ViOperatorDef):
 class _UnimpairedMoveDown(ViOperatorDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
@@ -121,7 +121,7 @@ class _BaseToggleDef(ViOperatorDef):
 class _UnimpairedToggle(_BaseToggleDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'action': 'toggle_option',
                 'value': self.inp
@@ -133,7 +133,7 @@ class _UnimpairedToggle(_BaseToggleDef):
 class _UnimpairedToggleOn(_BaseToggleDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'action': 'enable_option',
                 'value': self.inp
@@ -145,7 +145,7 @@ class _UnimpairedToggleOn(_BaseToggleDef):
 class _UnimpairedToggleOff(_BaseToggleDef):
     def translate(self, state):
         return {
-            'action': '_neovintageous_unimpaired',
+            'action': '_nv_unimpaired',
             'action_args': {
                 'action': 'disable_option',
                 'value': self.inp
@@ -382,7 +382,7 @@ def _toggle_option(view, key, value=None):
         option(view, value)
 
 
-class _neovintageous_unimpaired_command(TextCommand):
+class _nv_unimpaired_command(TextCommand):
     def run(self, edit, action, mode=None, count=1, **kwargs):
         if action == 'move_down':
             # Exchange the current line with [count] lines below it

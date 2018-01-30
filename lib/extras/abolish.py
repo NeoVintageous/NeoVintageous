@@ -10,7 +10,7 @@ from NeoVintageous.lib.plugin import ViOperatorDef
 
 
 __all__ = [
-    '_neovintageous_abolish_command'
+    '_nv_abolish_command'
 ]
 
 
@@ -109,14 +109,14 @@ class _AbolishCoercions(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_neovintageous_abolish',
+            'action': '_nv_abolish',
             'action_args': {
                 'to': self.inp
             }
         }
 
 
-class _neovintageous_abolish_command(TextCommand):
+class _nv_abolish_command(TextCommand):
     def run(self, edit, to=None, mode=None):
 
         if to in _ALIASES:
