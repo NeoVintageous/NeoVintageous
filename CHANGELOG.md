@@ -26,6 +26,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added: Unimpaired menu toggles on: `[oa`, off: `]oa`, and toggle `coa`
 * Added: Use new GitGutter API
 
+### Removed
+
+* Removed: Unused `vintageous_enable_cmdline_mode` setting
+
 ### Fixed
 
 * Fixed: Visual ex mode commands should enter normal mode after operation

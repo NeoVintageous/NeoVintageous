@@ -1,230 +1,118 @@
-import sublime
+from sublime import OP_EQUAL
+from sublime import OP_NOT_EQUAL
+from sublime import OP_NOT_REGEX_CONTAINS
+from sublime import OP_NOT_REGEX_MATCH
+from sublime import OP_REGEX_CONTAINS
+from sublime import OP_REGEX_MATCH
 
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.events import _Context
-from NeoVintageous.lib.state import State
-
-
-class MockState():
-    def __init__(self, mode):
-        self.mode = mode
-
-
-class MockContext(_Context):
-
-    def __init__(self, view):
-        super().__init__(view)
-        self.state = None
-
-    def create_state(self):
-        if self.state is None:
-            self.state = State(self.view)
-        return self.state
 
 
 class TestKeyContext(unittest.ViewTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.context = MockContext(self.view)
-
-    def test_doesnt_handle_invalid_keys(self):
-        self.assertIsNone(self.context.query('foobar', sublime.OP_EQUAL, True, True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_EQUAL, True, False))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_EQUAL, False, False))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_EQUAL, False, True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_EQUAL, True, True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_EQUAL, True, False))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_EQUAL, False, False))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_EQUAL, False, True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_REGEX_MATCH, '.*', True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_REGEX_MATCH, '.*', True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_REGEX_CONTAINS, '.*', True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_REGEX_CONTAINS, '.*', False))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_REGEX_CONTAINS, '.*', True))
-        self.assertIsNone(self.context.query('foobar', sublime.OP_NOT_REGEX_CONTAINS, '.*', False))
-
-    def test_vi_mode_normal(self):
-        self.context.state = MockState(unittest.NORMAL_INSERT_MODE)
-        self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertFalse(self.context.query('vi_mode_normal', sublime.OP_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_EQUAL, False, False))
-        self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_NOT_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_normal', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(unittest.NORMAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_normal', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_normal', sublime.OP_EQUAL, False, False))
-        self.assertFalse(self.context.query('vi_mode_normal', sublime.OP_NOT_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_normal', sublime.OP_NOT_EQUAL, False, False))
-
-    def test_vi_mode_insert(self):
-        self.context.state = MockState(unittest.NORMAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertFalse(self.context.query('vi_mode_insert', sublime.OP_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_EQUAL, False, False))
-        self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_NOT_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_insert', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(unittest.INSERT_MODE)
-        self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_insert', sublime.OP_EQUAL, False, False))
-        self.assertFalse(self.context.query('vi_mode_insert', sublime.OP_NOT_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_insert', sublime.OP_NOT_EQUAL, False, False))
-
-    def test_vi_mode_visual(self):
-        self.context.state = MockState(unittest.NORMAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertFalse(self.context.query('vi_mode_visual', sublime.OP_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_EQUAL, False, False))
-        self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_NOT_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_visual', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(unittest.VISUAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_visual', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_visual', sublime.OP_EQUAL, False, False))
-        self.assertFalse(self.context.query('vi_mode_visual', sublime.OP_NOT_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_visual', sublime.OP_NOT_EQUAL, False, False))
-
-    def test_vi_mode_normal_insert(self):
-        self.context.state = MockState(unittest.NORMAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertFalse(self.context.query('vi_mode_normal_insert', sublime.OP_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_EQUAL, False, False))
-        self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(unittest.NORMAL_INSERT_MODE)
-        self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_normal_insert', sublime.OP_EQUAL, False, False))
-        self.assertFalse(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_normal_insert', sublime.OP_NOT_EQUAL, False, False))
-
-    def test_vi_mode_visual_block(self):
-        self.context.state = MockState(unittest.NORMAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertFalse(self.context.query('vi_mode_visual_block', sublime.OP_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_EQUAL, False, False))
-        self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_NOT_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_visual_block', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(unittest.VISUAL_BLOCK_MODE)
-        self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_visual_block', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_visual_block', sublime.OP_EQUAL, False, False))
-        self.assertFalse(self.context.query('vi_mode_visual_block', sublime.OP_NOT_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_visual_block', sublime.OP_NOT_EQUAL, False, False))
-
-    def test_vi_mode_visual_line(self):
-        self.context.state = MockState(unittest.NORMAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertFalse(self.context.query('vi_mode_visual_line', sublime.OP_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_EQUAL, False, False))
-        self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_NOT_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_visual_line', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(unittest.VISUAL_LINE_MODE)
-        self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_visual_line', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_visual_line', sublime.OP_EQUAL, False, False))
-        self.assertFalse(self.context.query('vi_mode_visual_line', sublime.OP_NOT_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_visual_line', sublime.OP_NOT_EQUAL, False, False))
-
-    def test_vi_mode_select(self):
-        self.context.state = MockState(unittest.NORMAL_MODE)
-        self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertFalse(self.context.query('vi_mode_select', sublime.OP_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_select', sublime.OP_EQUAL, False, False))
-        self.assertTrue(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, False, False))
-        self.context.state = MockState(unittest.SELECT_MODE)
-        self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_REGEX_MATCH, '.*', False))
-        self.assertIsNone(self.context.query('vi_mode_select', sublime.OP_NOT_REGEX_MATCH, '.*', False))
-        self.assertTrue(self.context.query('vi_mode_select', sublime.OP_EQUAL, True, False))
-        self.assertFalse(self.context.query('vi_mode_select', sublime.OP_EQUAL, False, False))
-        self.assertFalse(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, True, False))
-        self.assertTrue(self.context.query('vi_mode_select', sublime.OP_NOT_EQUAL, False, False))
-
-    def test_vi_enable_cmdline_mode(self):
-        self.view.settings().set('vintageous_enable_cmdline_mode', False)
-        self.assertFalse(self.context.query('vi_enable_cmdline_mode', sublime.OP_EQUAL, True, False))
-        self.view.settings().set('vintageous_enable_cmdline_mode', True)
-        self.assertTrue(self.context.query('vi_enable_cmdline_mode', sublime.OP_EQUAL, True, False))
+    def test_should_not_handle_invalid_key(self):
+        context = _Context(self.view)
+        self.assertEqual(None, context.query('foobar', OP_EQUAL, True, True))
+        self.assertEqual(None, context.query('foobar', OP_EQUAL, True, False))
+        self.assertEqual(None, context.query('foobar', OP_EQUAL, False, False))
+        self.assertEqual(None, context.query('foobar', OP_EQUAL, False, True))
+        self.assertEqual(None, context.query('foobar', OP_NOT_EQUAL, True, True))
+        self.assertEqual(None, context.query('foobar', OP_NOT_EQUAL, True, False))
+        self.assertEqual(None, context.query('foobar', OP_NOT_EQUAL, False, False))
+        self.assertEqual(None, context.query('foobar', OP_NOT_EQUAL, False, True))
+        self.assertEqual(None, context.query('foobar', OP_REGEX_MATCH, '.*', True))
+        self.assertEqual(None, context.query('foobar', OP_REGEX_MATCH, '.*', False))
+        self.assertEqual(None, context.query('foobar', OP_NOT_REGEX_MATCH, '.*', True))
+        self.assertEqual(None, context.query('foobar', OP_NOT_REGEX_MATCH, '.*', False))
+        self.assertEqual(None, context.query('foobar', OP_REGEX_CONTAINS, '.*', True))
+        self.assertEqual(None, context.query('foobar', OP_REGEX_CONTAINS, '.*', False))
+        self.assertEqual(None, context.query('foobar', OP_NOT_REGEX_CONTAINS, '.*', True))
+        self.assertEqual(None, context.query('foobar', OP_NOT_REGEX_CONTAINS, '.*', False))
 
     def test_vi_is_cmdline(self):
-        self.assertFalse(self.context.query('vi_is_cmdline', sublime.OP_EQUAL, True, False))
+        self.assertFalse(_Context(self.view).query('vi_is_cmdline', OP_EQUAL, True, False))
         self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
-        self.assertTrue(self.context.query('vi_is_cmdline', sublime.OP_EQUAL, True, False))
+        self.assertTrue(_Context(self.view).query('vi_is_cmdline', OP_EQUAL, True, False))
 
     def test_vi_cmdline_at_fs_completion(self):
-        self.assertFalse(self.context.query('vi_cmdline_at_fs_completion', sublime.OP_EQUAL, True, False))
+        self.assertFalse(_Context(self.view).query('vi_cmdline_at_fs_completion', OP_EQUAL, True, False))
 
         self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
-        self.assertFalse(self.context.query('vi_cmdline_at_fs_completion', sublime.OP_EQUAL, True, False))
+        self.assertFalse(_Context(self.view).query('vi_cmdline_at_fs_completion', OP_EQUAL, True, False))
 
         self.write(':write ')
-        self.assertTrue(self.context.query('vi_cmdline_at_fs_completion', sublime.OP_EQUAL, True, False))
+        self.assertTrue(_Context(self.view).query('vi_cmdline_at_fs_completion', OP_EQUAL, True, False))
 
     def test_vi_cmdline_at_setting_completion(self):
-        self.assertFalse(self.context.query('vi_cmdline_at_setting_completion', sublime.OP_EQUAL, True, False))
+        self.assertFalse(_Context(self.view).query('vi_cmdline_at_setting_completion', OP_EQUAL, True, False))
 
         self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
-        self.assertFalse(self.context.query('vi_cmdline_at_setting_completion', sublime.OP_EQUAL, True, False))
+        self.assertFalse(_Context(self.view).query('vi_cmdline_at_setting_completion', OP_EQUAL, True, False))
 
         self.write(':set ')
-        self.assertTrue(self.context.query('vi_cmdline_at_setting_completion', sublime.OP_EQUAL, True, False))
+        self.assertTrue(_Context(self.view).query('vi_cmdline_at_setting_completion', OP_EQUAL, True, False))
 
         self.view.assign_syntax('Packages/NeoVintageous/tests/fixtures/res/Command-line mode foobar.sublime-syntax')
-        self.assertFalse(self.context.query('vi_cmdline_at_setting_completion', sublime.OP_EQUAL, True, False))
+        self.assertFalse(_Context(self.view).query('vi_cmdline_at_setting_completion', OP_EQUAL, True, False))
 
-    def test_vi_is_view(self):
-        self.assertTrue(self.context.query('vi_is_view', sublime.OP_EQUAL, True, False))
+    def test_vi_command_mode_aware_can_return_true(self):
+        self.settings().set('command_mode', True)
+        self.assertTrue(_Context(self.view).query('vi_command_mode_aware', OP_EQUAL, True, True))
+        self.settings().set('command_mode', False)
+        self.assertTrue(_Context(self.view).query('vi_command_mode_aware', OP_EQUAL, False, True))
 
-        self.context.state = State(self.view.window().create_output_panel('test'))
+    def test_vi_command_mode_aware_can_return_false(self):
+        self.settings().set('command_mode', False)
+        self.assertFalse(_Context(self.view).query('vi_command_mode_aware', OP_EQUAL, True, True))
+        self.settings().set('command_mode', True)
+        self.assertFalse(_Context(self.view).query('vi_command_mode_aware', OP_EQUAL, False, True))
 
-        self.assertFalse(self.context.query('vi_is_view', sublime.OP_EQUAL, True, False))
+    def test_vi_command_mode_aware_can_return_false_for_panels(self):
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', True)
+        self.assertFalse(_Context(panel).query('vi_command_mode_aware', OP_EQUAL, True, True))
 
-    def test_vi_command_mode_aware(self):
-        self.view.settings().set('command_mode', True)
-        self.assertTrue(self.context.query('vi_command_mode_aware', sublime.OP_EQUAL, True, False))
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', False)
+        self.assertFalse(_Context(panel).query('vi_command_mode_aware', OP_EQUAL, True, True))
 
-        self.view.settings().set('command_mode', False)
-        self.assertFalse(self.context.query('vi_command_mode_aware', sublime.OP_EQUAL, True, False))
+    def test_vi_command_mode_aware_can_return_true_for_panels(self):
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', True)
+        self.assertTrue(_Context(panel).query('vi_command_mode_aware', OP_EQUAL, False, True))
 
-        self.context.state = State(self.view.window().create_output_panel('test'))
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', False)
+        self.assertTrue(_Context(panel).query('vi_command_mode_aware', OP_EQUAL, False, True))
 
-        self.view.settings().set('command_mode', True)
-        self.assertFalse(self.context.query('vi_command_mode_aware', sublime.OP_EQUAL, True, False))
+    def test_vi_insert_mode_aware_can_return_true(self):
+        self.settings().set('command_mode', False)
+        self.assertTrue(_Context(self.view).query('vi_insert_mode_aware', OP_EQUAL, True, True))
+        self.settings().set('command_mode', True)
+        self.assertTrue(_Context(self.view).query('vi_insert_mode_aware', OP_EQUAL, False, True))
 
-        self.view.settings().set('command_mode', False)
-        self.assertFalse(self.context.query('vi_command_mode_aware', sublime.OP_EQUAL, True, False))
+    def test_vi_insert_mode_aware_can_return_false(self):
+        self.settings().set('command_mode', True)
+        self.assertFalse(_Context(self.view).query('vi_insert_mode_aware', OP_EQUAL, True, True))
+        self.settings().set('command_mode', False)
+        self.assertFalse(_Context(self.view).query('vi_insert_mode_aware', OP_EQUAL, False, True))
 
-    def test_vi_insert_mode_aware(self):
+    def test_vi_insert_mode_aware_can_return_false_for_panels(self):
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', False)
+        self.assertFalse(_Context(panel).query('vi_insert_mode_aware', OP_EQUAL, True, True))
 
-        self.view.settings().set('command_mode', True)
-        self.assertFalse(self.context.query('vi_insert_mode_aware', sublime.OP_EQUAL, True, False))
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', True)
+        self.assertFalse(_Context(panel).query('vi_insert_mode_aware', OP_EQUAL, True, True))
 
-        self.view.settings().set('command_mode', False)
-        self.assertTrue(self.context.query('vi_insert_mode_aware', sublime.OP_EQUAL, True, False))
+    def test_vi_insert_mode_aware_can_return_true_for_panels(self):
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', False)
+        self.assertTrue(_Context(panel).query('vi_insert_mode_aware', OP_EQUAL, False, True))
 
-        self.context.state = State(self.view.window().create_output_panel('test'))
-
-        self.view.settings().set('command_mode', True)
-        self.assertFalse(self.context.query('vi_insert_mode_aware', sublime.OP_EQUAL, True, False))
-
-        self.view.settings().set('command_mode', False)
-        self.assertFalse(self.context.query('vi_insert_mode_aware', sublime.OP_EQUAL, True, False))
+        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel.settings().set('command_mode', True)
+        self.assertTrue(_Context(panel).query('vi_insert_mode_aware', OP_EQUAL, False, True))

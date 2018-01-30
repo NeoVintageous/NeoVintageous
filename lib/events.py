@@ -20,36 +20,43 @@ _VISUAL_LINE_MODE = modes.VISUAL_LINE
 _INSERT_MODE = modes.INSERT
 _VISUAL_MODE = modes.VISUAL
 _NORMAL_MODE = modes.NORMAL
+
+
 _COMPLETIONS = sorted([x[0] for x in command_names])
 
 
-class _Context(object):
+class _Context:
 
     def __init__(self, view):
         self.view = view
 
-    def create_state(self):
-        return State(self.view)
-
-    def vi_is_view(self, key, operator, operand, match_all):
-        return self._check(is_view(self.create_state().view), operator, operand, match_all)
-
+    # TODO [refactor] Simplify the call to _check() by inlining/containing the logic.
+    # TODO This is a dependency for creating custom keymaps see :h
+    # neovintageous. However, we should create a generic "mode" context e.g.
+    # psuedo code: is context neovintageous_mode equal to visual. Also see other
+    # mode aware context methods.
     def vi_command_mode_aware(self, key, operator, operand, match_all):
-        in_command_mode = self.create_state().view.settings().get('command_mode')
-        vi_is_view = self.vi_is_view(key, operator, operand, match_all)
+        _is_command_mode = self.view.settings().get('command_mode')
+        _is_view = is_view(self.view)
 
-        return self._check(in_command_mode and vi_is_view, operator, operand, match_all)
+        return self._check((_is_command_mode and _is_view), operator, operand, match_all)
 
+    # TODO [refactor] Simplify the call to _check() by inlining/containing the logic.
+    # TODO This is a dependency for creating custom keymaps see :h
+    # neovintageous. However, we should create a generic "mode" context e.g.
+    # psuedo code: is context neovintageous_mode equal to visual. Also see other
+    # mode aware context methods.
     def vi_insert_mode_aware(self, key, operator, operand, match_all):
-        in_command_mode = self.create_state().view.settings().get('command_mode')
-        vi_is_view = self.vi_is_view(key, operator, operand, match_all)
+        _is_command_mode = self.view.settings().get('command_mode')
+        _is_view = is_view(self.view)
 
-        return self._check(not in_command_mode and vi_is_view, operator, operand, match_all)
+        return self._check((not _is_command_mode and _is_view), operator, operand, match_all)
 
+    # TODO [refactor] Some completion keymaps depend on the "text.excmdline" so
+    # remove this and use built-in scope selector context in the keymap
+    # definition.
     def vi_is_cmdline(self, key, operator, operand, match_all):
-        return self._check(
-            self.create_state().view.score_selector(0, 'text.excmdline') != 0, operator, operand, match_all
-        )
+        return self._check((self.view.score_selector(0, 'text.excmdline') != 0), operator, operand, match_all)
 
     def vi_cmdline_at_fs_completion(self, key, operator, operand, match_all):
         if self.view.score_selector(0, 'text.excmdline') != 0:
@@ -76,48 +83,6 @@ class _Context(object):
                     return value
                 elif operand is False:
                     return not value
-
-    def vi_enable_cmdline_mode(self, key, operator, operand, match_all):
-        return self._check(
-            self.create_state().settings.view['vintageous_enable_cmdline_mode'], operator, operand, match_all
-        )
-
-    def vi_mode_normal_insert(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == _NORMAL_INSERT_MODE, operator, operand, match_all)
-
-    def vi_mode_visual_block(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == _VISUAL_BLOCK_MODE, operator, operand, match_all)
-
-    def vi_mode_select(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == _SELECT_MODE, operator, operand, match_all)
-
-    def vi_mode_visual_line(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == _VISUAL_LINE_MODE, operator, operand, match_all)
-
-    def vi_mode_insert(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == _INSERT_MODE, operator, operand, match_all)
-
-    def vi_mode_visual(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == _VISUAL_MODE, operator, operand, match_all)
-
-    def vi_mode_normal(self, key, operator, operand, match_all):
-        return self._check(self.create_state().mode == _NORMAL_MODE, operator, operand, match_all)
-
-    def vi_mode_normal_or_visual(self, key, operator, operand, match_all):
-        # XXX: This context is used to disable some keys for VISUALLINE.
-        # However, this is hiding some problems in visual transformers that might not be dealing
-        # correctly with VISUALLINE.
-        normal = self.vi_mode_normal(key, operator, operand, match_all)
-        visual = self.vi_mode_visual(key, operator, operand, match_all)
-        visual = visual or self.vi_mode_visual_block(key, operator, operand, match_all)
-
-        return self._check((normal or visual), operator, operand, match_all)
-
-    def vi_mode_normal_or_any_visual(self, key, operator, operand, match_all):
-        normal_or_visual = self.vi_mode_normal_or_visual(key, operator, operand, match_all)
-        visual_line = self.vi_mode_visual_line(key, operator, operand, match_all)
-
-        return self._check((normal_or_visual or visual_line), operator, operand, match_all)
 
     def query(self, key, operator, operand, match_all):
         # Called when determining to trigger a key binding with the given

@@ -932,7 +932,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'viewoptions'	options.txt	/*'viewoptions'*
 'viminfo'	deprecated.txt	/*'viminfo'*
 'vintageous_autoindent'	neovintageous.txt	/*'vintageous_autoindent'*
-'vintageous_enable_cmdline_mode'	neovintageous.txt	/*'vintageous_enable_cmdline_mode'*
 'vintageous_enable_surround'	neovintageous.txt	/*'vintageous_enable_surround'*
 'vintageous_hlsearch'	neovintageous.txt	/*'vintageous_hlsearch'*
 'vintageous_ignorecase'	neovintageous.txt	/*'vintageous_ignorecase'*

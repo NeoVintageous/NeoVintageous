@@ -467,12 +467,6 @@ terminal: >
         Enable auto indentation.
 
 
-                                              *'vintageous_enable_cmdline_mode'*
-'vintageous_enable_cmdline_mode'        boolean (default: true)
-                                        {Neovintageous specific}
-        Enable : and ex commands.
-
-
                                                   *'vintageous_enable_surround'*
 'vintageous_enable_surround'            boolean (default: true)
                                         {Neovintageous specific}
