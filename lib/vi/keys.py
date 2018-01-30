@@ -1,13 +1,9 @@
 import re
 
-from NeoVintageous.lib import nvim
 from NeoVintageous.lib import plugin
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import variables
 from NeoVintageous.lib.vi.utils import modes
-
-
-_logger = nvim.get_logger(__name__)
 
 
 class mapping_scopes:
