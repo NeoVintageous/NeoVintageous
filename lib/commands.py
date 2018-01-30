@@ -34,17 +34,16 @@ from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.keys import to_bare_command_name
 from NeoVintageous.lib.vi.mappings import Mappings
 from NeoVintageous.lib.vi.settings import iter_settings
-from NeoVintageous.lib.vi.utils import bell
 from NeoVintageous.lib.vi.utils import gluing_undo_groups
 from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import regions_transformer
 
 
 __all__ = [
-    '_neovintageous_help_goto',
     '_nv_cmdline_handle_key',
+    '_nv_fix_st_eol_caret',
+    '_nv_goto_help',
     '_vi_add_to_jump_list',
-    '_workaround_st_eol_cursor_issue',
     '_vi_question_mark_on_parser_done',
     '_vi_slash_on_parser_done',
     'FsCompletion',
@@ -64,8 +63,110 @@ __all__ = [
 _logger = nvim.get_logger(__name__)
 
 
+class _nv_cmdline_handle_key(TextCommand):
+
+    LAST_HISTORY_ITEM_INDEX = None
+
+    def run(self, edit, key):
+        if self.view.size() == 0:
+            raise RuntimeError('expected a non-empty command-line')
+
+        if self.view.size() == 1 and key not in ('<up>', '<C-n>', '<down>', '<C-p>', '<C-c>', '<C-[>'):
+            return
+
+        if key in ('<up>', '<C-p>'):
+            self._next_history(edit, backwards=True)
+        elif key in ('<down>', '<C-n>'):
+            self._next_history(edit, backwards=False)
+        elif key in ('<C-b>', '<home>'):
+            # Begin of command line.
+            self.view.sel().clear()
+            self.view.sel().add(1)
+        elif key in ('<C-c>', '<C-[>'):
+            self.view.window().run_command('hide_panel', {'cancel': True})
+        elif key in ('<C-e>', '<end>'):
+            # End of command line.
+            self.view.sel().clear()
+            self.view.sel().add(self.view.size())
+        elif key == '<C-u>':
+            # delete all characters left of the cursor
+            self.view.erase(edit, Region(1, self.view.sel()[0].end()))
+        elif key == '<C-w>':
+            word_region = self.view.word(self.view.sel()[0].begin())
+            word_region = self.view.expand_by_class(self.view.sel()[0].begin(), CLASS_WORD_START)
+            word_start_pt = word_region.begin()
+            caret_end_pt = self.view.sel()[0].end()
+            word_part_region = Region(max(word_start_pt, 1), caret_end_pt)
+            self.view.erase(edit, word_part_region)
+        else:
+            raise NotImplementedError('unknown key')
+
+    def _next_history(self, edit, backwards):
+        if self.view.size() == 0:
+            raise RuntimeError('expected a non-empty command-line')
+
+        firstc = self.view.substr(0)
+        if not history_get_type(firstc):
+            raise RuntimeError('expected a valid command-line')
+
+        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX is None:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
+        else:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
+
+        count = history_len(firstc)
+        if count == 0:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
+
+            return ui_bell()
+
+        if abs(_nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX) > count:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -count
+
+            return ui_bell()
+
+        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX >= 0:
+            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = 0
+
+            if self.view.size() > 1:
+                return self.view.erase(edit, Region(1, self.view.size()))
+            else:
+                return ui_bell()
+
+        if self.view.size() > 1:
+            self.view.erase(edit, Region(1, self.view.size()))
+
+        item = history_get(firstc, _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX)
+        if item:
+            self.view.insert(edit, 1, item)
+
+    @staticmethod
+    def reset_last_history_index():  # type: () -> None
+        _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
+
+
+class _nv_fix_st_eol_caret(TextCommand):
+
+    # Tries to workaround some of the Sublime Text issues where the cursor caret
+    # is positioned, off-by-one, at the end of line i.e. the caret positions
+    # itself at >>>eol| |<<< instead of >>>eo|l|<<<. In some cases, the cursor
+    # positions itself at >>>eol| |<<<, and then a second later,  moves to the
+    # correct position >>>eo|l|<<< e.g. a left mouse click after the end of a
+    # line. Some of these issues can't be worked-around e.g. the mouse click
+    # issue described above.
+
+    def run(self, edit, mode=None):
+        def f(view, s):
+            if mode in (modes.NORMAL, modes.INTERNAL_NORMAL):
+                if ((view.substr(s.b) == '\n' or s.b == view.size()) and not view.line(s.b).empty()):
+                    return Region(s.b - 1)
+            return s
+
+        regions_transformer(self.view, f)
+
+
 # TODO Add status messages e.g. for no docs found, etc.
-class _neovintageous_help_goto(WindowCommand):
+class _nv_goto_help(WindowCommand):
     def run(self):
         view = self.window.active_view()
         pt = view.sel()[0]
@@ -545,88 +646,6 @@ class ViColonInput(WindowCommand):
         _nv_cmdline_handle_key.reset_last_history_index()
 
 
-class _nv_cmdline_handle_key(TextCommand):
-
-    LAST_HISTORY_ITEM_INDEX = None
-
-    def run(self, edit, key):
-        if self.view.size() == 0:
-            raise RuntimeError('expected a non-empty command-line')
-
-        if self.view.size() == 1 and key not in ('<up>', '<C-n>', '<down>', '<C-p>', '<C-c>', '<C-[>'):
-            return
-
-        if key in ('<up>', '<C-p>'):
-            self._next_history(edit, backwards=True)
-        elif key in ('<down>', '<C-n>'):
-            self._next_history(edit, backwards=False)
-        elif key in ('<C-b>', '<home>'):
-            # Begin of command line.
-            self.view.sel().clear()
-            self.view.sel().add(1)
-        elif key in ('<C-c>', '<C-[>'):
-            self.view.window().run_command('hide_panel', {'cancel': True})
-        elif key in ('<C-e>', '<end>'):
-            # End of command line.
-            self.view.sel().clear()
-            self.view.sel().add(self.view.size())
-        elif key == '<C-u>':
-            # delete all characters left of the cursor
-            self.view.erase(edit, Region(1, self.view.sel()[0].end()))
-        elif key == '<C-w>':
-            word_region = self.view.word(self.view.sel()[0].begin())
-            word_region = self.view.expand_by_class(self.view.sel()[0].begin(), CLASS_WORD_START)
-            word_start_pt = word_region.begin()
-            caret_end_pt = self.view.sel()[0].end()
-            word_part_region = Region(max(word_start_pt, 1), caret_end_pt)
-            self.view.erase(edit, word_part_region)
-        else:
-            raise NotImplementedError('unknown key')
-
-    def _next_history(self, edit, backwards):
-        if self.view.size() == 0:
-            raise RuntimeError('expected a non-empty command-line')
-
-        firstc = self.view.substr(0)
-        if not history_get_type(firstc):
-            raise RuntimeError('expected a valid command-line')
-
-        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX is None:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
-        else:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
-
-        count = history_len(firstc)
-        if count == 0:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
-
-            return bell()
-
-        if abs(_nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX) > count:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -count
-
-            return bell()
-
-        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX >= 0:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = 0
-
-            if self.view.size() > 1:
-                return self.view.erase(edit, Region(1, self.view.size()))
-            else:
-                return bell()
-
-        if self.view.size() > 1:
-            self.view.erase(edit, Region(1, self.view.size()))
-
-        item = history_get(firstc, _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX)
-        if item:
-            self.view.insert(edit, 1, item)
-
-    @staticmethod
-    def reset_last_history_index():
-        _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
-
-
 class WriteFsCompletion(TextCommand):
     def run(self, edit, cmd, completion):
         if self.view.score_selector(0, 'text.excmdline') == 0:
@@ -647,7 +666,7 @@ class FsCompletion(TextCommand):
     items = None
 
     @staticmethod
-    def invalidate():
+    def invalidate():  # type: () -> None
         FsCompletion.prefix = ''
         FsCompletion.frozen_dir = ''
         FsCompletion.is_stale = True
@@ -715,7 +734,7 @@ class ViSettingCompletion(TextCommand):
     items = None
 
     @staticmethod
-    def invalidate():
+    def invalidate():  # type: () -> None
         ViSettingCompletion.prefix = ''
         ViSettingCompletion.is_stale = True
         ViSettingCompletion.items = None
@@ -803,26 +822,6 @@ class _vi_question_mark_on_parser_done(WindowCommand):
         state = State(self.window.active_view())
         state.motion = cmd_defs.ViSearchBackwardImpl()
         state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
-
-
-class _workaround_st_eol_cursor_issue(TextCommand):
-
-    # Tries to workaround some of the Sublime Text issues where the cursor caret
-    # is positioned, off-by-one, at the end of line i.e. the caret positions
-    # itself at >>>eol| |<<< instead of >>>eo|l|<<<. In some cases, the cursor
-    # positions itself at >>>eol| |<<<, and then a second later,  moves to the
-    # correct position >>>eo|l|<<< e.g. a left mouse click after the end of a
-    # line. Some of these issues can't be worked-around e.g. the mouse click
-    # issue described above.
-
-    def run(self, edit, mode=None):
-        def f(view, s):
-            if mode in (modes.NORMAL, modes.INTERNAL_NORMAL):
-                if ((view.substr(s.b) == '\n' or s.b == view.size()) and not view.line(s.b).empty()):
-                    return Region(s.b - 1)
-            return s
-
-        regions_transformer(self.view, f)
 
 
 class Sequence(TextCommand):

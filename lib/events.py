@@ -235,7 +235,7 @@ class NeoVintageousEvents(EventListener):
         # This fixes issues where the xpos is not updated after a mouse click
         # moves the cursor position. These issues look like they could be
         # compounded by Sublime Text issues (see on_post_save() and the
-        # _workaround_st_eol_cursor_issue command). The xpos only needs to be
+        # _nv_fix_st_eol_caret command). The xpos only needs to be
         # updated on single mouse click.
         # See https://github.com/SublimeTextIssues/Core/issues/2117.
         if command == 'drag_select':
@@ -255,7 +255,7 @@ class NeoVintageousEvents(EventListener):
 
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.
-        view.run_command('_workaround_st_eol_cursor_issue', {'mode': State(view).mode})
+        view.run_command('_nv_fix_st_eol_caret', {'mode': State(view).mode})
 
     def on_close(self, view):
         settings.destroy(view)

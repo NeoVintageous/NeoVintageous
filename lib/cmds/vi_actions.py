@@ -558,7 +558,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         regions_transformer(self.view, f)
 
         self.view.erase_regions('vi_search')
-        self.view.run_command('_workaround_st_eol_cursor_issue', {'mode': mode})
+        self.view.run_command('_nv_fix_st_eol_caret', {'mode': mode})
 
 
 class _enter_select_mode(ViWindowCommandBase):
@@ -650,6 +650,7 @@ class _enter_visual_mode_impl(ViTextCommandBase):
                 # Only extend .b by 1 if we're looking at empty sels.
                 if not view.has_non_empty_selection_region():
                     end += 1
+
                 return Region(s.a, end)
 
         regions_transformer(self.view, f)
@@ -960,7 +961,7 @@ class _vi_d(ViTextCommandBase):
         state.registers.yank(self, register, operation='delete')
 
         self.view.run_command('left_delete')
-        self.view.run_command('_workaround_st_eol_cursor_issue')
+        self.view.run_command('_nv_fix_st_eol_caret')
 
         self.enter_normal_mode(mode)
 
