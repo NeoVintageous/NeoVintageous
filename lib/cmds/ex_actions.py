@@ -1309,28 +1309,40 @@ class ExEdit(WindowCommand, WindowCommandMixin):
                 return nvim.message("E37: No write since last change")
 
             if os.path.isdir(file_name):
-                # TODO Open a file-manager in a buffer
+                # TODO :edit Open a file-manager in a buffer
                 return nvim.message('Cannot open directory')
 
+            def get_file_path():
+                file_name = self._view.file_name()
+                if file_name:
+                    file_dir = os.path.dirname(file_name)
+                    if os.path.isdir(file_dir):
+                        return file_dir
+
+                    file_dir = self.state.settings.vi['_cmdline_cd']
+                    if os.path.isdir(file_dir):
+                        return file_dir
+
             if not os.path.isabs(file_name):
-                file_name = os.path.join(
-                    self.state.settings.vi['_cmdline_cd'],
-                    file_name
-                )
+                file_path = get_file_path()
+                if file_path:
+                    file_name = os.path.join(file_path, file_name)
+                else:
+                    return nvim.message("could not find a parent directory")
+
+            self.window.open_file(file_name)
 
             if not os.path.exists(file_name):
-                msg = '"{0}" [New File]'.format(os.path.basename(file_name))
                 parent = os.path.dirname(file_name)
                 if parent and not os.path.exists(parent):
-                    msg = '"{0}" [New DIRECTORY]'.format(parsed.command.file_name)
-                self.window.open_file(file_name)
+                    msg = '"{}" [New DIRECTORY]'.format(parsed.command.file_name)
+                else:
+                    msg = '"{}" [New File]'.format(os.path.basename(file_name))
 
                 # Give ST some time to load the new view.
-                nvim.console_message(msg)
                 set_timeout(lambda: nvim.status_message(msg), 150)
-                return
 
-            return nvim.message('not implemented case for :edit ({0})'.format(command_line))
+            return
 
         if parsed.command.forced or not self._view.is_dirty():
             self._view.run_command('revert')

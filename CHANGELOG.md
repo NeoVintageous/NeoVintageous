@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added: `:edit {file}` command
 * Added [#288](https://github.com/NeoVintageous/NeoVintageous/issues/288): Command-line editing command: `<C-b>`, `<C-e>`, `<C-n>`, `<C-p>`, `<C-u>`, and `<C-w>`
 * Added [#279](https://github.com/NeoVintageous/NeoVintageous/issues/279): `CTRL-C` and `CTRL-[` should exit Command-line mode
 * Added [#12](https://github.com/NeoVintageous/NeoVintageous/issues/12): Command-line search history for `/` and `?` (current session only)
