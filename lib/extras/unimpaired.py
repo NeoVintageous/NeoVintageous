@@ -155,12 +155,13 @@ class _UnimpairedToggleOff(_BaseToggleDef):
 
 def _context_previous(view, count):
     window = view.window()
-    for i in range(count):
-        if window:
-            window.run_command('sublime_linter_goto_error', {
-                'direction': 'previous'
-            })
+    if window:
+        window.run_command('sublime_linter_goto_error', {
+            'direction': 'previous',
+            'count': count
+        })
 
+    for i in range(count):
         # DEPRECATED This is an old SublimeLinter API. If this command is not
         # available then running it will do nothing.
         view.run_command('sublimelinter_goto_error', {
@@ -170,12 +171,13 @@ def _context_previous(view, count):
 
 def _context_next(view, count):
     window = view.window()
-    for i in range(count):
-        if window:
-            window.run_command('sublime_linter_goto_error', {
-                'direction': 'next'
-            })
+    if window:
+        window.run_command('sublime_linter_goto_error', {
+            'direction': 'next',
+            'count': count
+        })
 
+    for i in range(count):
         # DEPRECATED This is an old SublimeLinter API. If this command is not
         # available then running it will do nothing.
         view.run_command('sublimelinter_goto_error', {
