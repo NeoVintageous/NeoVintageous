@@ -135,6 +135,9 @@ class ViewTestCase(unittest.TestCase):
         #       failure.
         self.assertRegex(self.content(), expected, msg)
 
+    def assertNormalMode(self):
+        self.assertEquals(self.state.mode, NORMAL_MODE)
+
     def assertRegion(self, expected, actual):
         # Test that *actual* and *expected* are equal.
         #

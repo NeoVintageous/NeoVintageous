@@ -140,7 +140,7 @@ class ExTextCommandBase(TextCommand):
     def set_mode(self):
         state = State(self.view)
         state.enter_normal_mode()
-        self.view.run_command('vi_enter_normal_mode')
+        self.view.run_command('_enter_normal_mode')
 
     def run(self, edit, *args, **kwargs):
         self.serialize_sel()

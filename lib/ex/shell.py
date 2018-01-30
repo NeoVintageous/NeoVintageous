@@ -51,6 +51,6 @@ def filter_thru_shell(view, edit, regions, cmd):
         accumulated_delta += len(rv) - r_shifted.size()
 
     # Switch to normal mode and move cursor(s) to beginning of replacement(s)
-    view.run_command('vi_enter_normal_mode')
+    view.run_command('_enter_normal_mode')
     view.sel().clear()
     view.sel().add_all(new_points)

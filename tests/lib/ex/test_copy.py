@@ -1,7 +1,5 @@
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.lib.state import State
-
 
 class Test_ex_copy_Copying_InNormalMode_SingleLine_DefaultStart(unittest.ViewTestCase):
 
@@ -100,8 +98,9 @@ class Test_ex_copy_InNormalMode_CaretPosition(unittest.ViewTestCase):
         self.write('abc\nxxx\nabc\nabc')
         self.select(4)
 
-        self.view.run_command('ex_copy', {'command_line': 'copy3'})
+        self.view.run_command('ex_copy', {'command_line': 'copy 3'})
 
+        self.assertContent('abc\nxxx\nabc\nxxx\nabc')
         self.assertSelection(12)
 
 
@@ -111,29 +110,14 @@ class Test_ex_copy_ModeTransition(unittest.ViewTestCase):
         self.write('abc\nxxx\nabc\nabc')
         self.select(4)
 
-        state = State(self.view)
-        state.enter_normal_mode()
+        self.view.run_command('ex_copy', {'command_line': 'copy 3'})
 
-        self.view.run_command('vi_enter_normal_mode')
-        prev_mode = state.mode
-
-        self.view.run_command('ex_copy', {'address': '3'})
-
-        state = State(self.view)
-        new_mode = state.mode
-        self.assertEqual(prev_mode, new_mode, unittest.NORMAL_MODE)
+        self.assertNormalMode()
 
     def test_from_visual_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select((4, 5))
 
-        state = State(self.view)
-        state.enter_visual_mode()
-        prev_mode = state.mode
+        self.view.run_command('ex_copy', {'command_line': 'copy 3'})
 
-        self.view.run_command('ex_copy', {'command_line': 'copy3'})
-
-        state = State(self.view)
-        new_mode = state.mode
-        self.assertNotEqual(prev_mode, new_mode)
-        self.assertEqual(new_mode, unittest.NORMAL_MODE)
+        self.assertNormalMode()

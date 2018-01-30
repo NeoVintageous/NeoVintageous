@@ -27,6 +27,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: Visual ex mode commands should enter normal mode after operation
 * Fixed: Ex mode shell command error (Windows)
 * Fixed: Unmap commands don't unmap visual mappings
 * Fixed: Can't unmap mappings with special keys e.g. `<leader>`

@@ -1,7 +1,5 @@
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.lib.state import State
-
 
 class Test_ex_delete_Deleting_InNormalMode_SingleLine_DefaultStart(unittest.ViewTestCase):
 
@@ -91,30 +89,14 @@ class Test_ex_delete_ModeTransition(unittest.ViewTestCase):
         self.write('abc\nxxx\nabc\nabc')
         self.select(4)
 
-        state = State(self.view)
-        state.enter_normal_mode()
-
-        self.view.run_command('vi_enter_normal_mode')
-        expected_mode = state.mode
-
         self.view.run_command('ex_delete', {'command_line': '2delete'})
 
-        state = State(self.view)
-        actual_mode = state.mode
-        self.assertEqual(expected_mode, actual_mode)
+        self.assertNormalMode()
 
     def test_from_visual_mode_to_normal_mode(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select((4, 5))
 
-        state = State(self.view)
-        state.enter_visual_mode()
-        expected_mode = state.mode
-
         self.view.run_command('ex_delete', {'command_line': "'<,'>delete"})
 
-        state = State(self.view)
-        actual_mode = state.mode
-
-        self.assertEqual(actual_mode, unittest.NORMAL_MODE)
-        self.assertNotEqual(expected_mode, actual_mode)
+        self.assertNormalMode()
