@@ -165,11 +165,6 @@ class modes:
             return 'REALLY UNKNOWN'
 
 
-class jump_directions:
-    FORWARD = 1
-    BACK = 0
-
-
 def regions_transformer(view, f):
     sels = list(view.sel())
     new = []
