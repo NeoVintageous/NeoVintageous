@@ -14,6 +14,7 @@ from NeoVintageous.lib import nvim
 from NeoVintageous.lib.commands import _nv_cmdline_handle_key
 from NeoVintageous.lib.history import history_update
 from NeoVintageous.lib.state import State
+from NeoVintageous.lib.ui import ui_blink
 from NeoVintageous.lib.ui import ui_cmdline_prompt
 from NeoVintageous.lib.vi import cmd_defs
 from NeoVintageous.lib.vi import units
@@ -699,8 +700,7 @@ class _vi_k_select(ViMotionCommand):
     def run(self, count=1, mode=None):
         # FIXME: It isn't working.
         if mode != modes.SELECT:
-            utils.blink()
-            return
+            return ui_blink()
 
         for i in range(count):
             self.view.window().run_command('soft_undo')
@@ -2174,8 +2174,7 @@ class _vi_gm(ViMotionCommand):
             return Region(min(row_start + mid_pt, line.b - 1))
 
         if mode != modes.NORMAL:
-            utils.blink()
-            return
+            return ui_blink()
 
         regions_transformer(self.view, advance)
 
@@ -2197,13 +2196,11 @@ class _vi_left_square_bracket(ViMotionCommand):
 
         if mode != modes.NORMAL:
             self.enter_normal_mode(mode=mode)
-            utils.blink()
-            return
+            return ui_blink()
 
         brackets = self.BRACKETS.get(char)
         if brackets is None:
-            utils.blink()
-            return
+            return ui_blink()
 
         regions_transformer(self.view, move)
 
@@ -2238,14 +2235,13 @@ class _vi_right_square_bracket(ViMotionCommand):
             return s
 
         if mode != modes.NORMAL:
-            utils.blink()
+            ui_blink()
             self.enter_normal_mode(mode=mode)
             return
 
         brackets = self.BRACKETS.get(char)
         if brackets is None:
-            utils.blink()
-            return
+            return ui_blink()
 
         regions_transformer(self.view, move)
 

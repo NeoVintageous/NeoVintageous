@@ -21,6 +21,8 @@ from NeoVintageous.lib.history import history_len
 from NeoVintageous.lib.history import history_update
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
+from NeoVintageous.lib.ui import ui_bell
+from NeoVintageous.lib.ui import ui_blink
 from NeoVintageous.lib.ui import ui_cmdline_prompt
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import cmd_defs
@@ -259,7 +261,7 @@ class PressKey(ViWindowCommandBase):
 
             if isinstance(command, cmd_base.ViMissingCommandDef):
                 _logger.debug('unmapped sequence %s', state.sequence)
-                utils.blink()
+                ui_blink()
                 state.mode = modes.NORMAL
                 state.reset_command_data()
                 return
@@ -417,7 +419,7 @@ class ProcessNotation(ViWindowCommandBase):
             motion_data = state.motion.translate(state) or None
 
             if motion_data is None:
-                utils.blink()
+                ui_blink()
                 state.reset_command_data()
                 return
 
@@ -448,7 +450,7 @@ class ProcessNotation(ViWindowCommandBase):
                 )
         except IndexError:
             _logger.debug('[process_notation] could not find a command to collect more user input')
-            utils.blink()
+            ui_blink()
         finally:
             self.state.non_interactive = False
 

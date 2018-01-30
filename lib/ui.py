@@ -1,3 +1,82 @@
+from sublime import active_window
+from sublime import set_timeout
+from sublime import load_settings
+
+
+def ui_bell():
+    # TODO Implement bell. See :h 'belloff'.
+    # 'belloff' defaults to 'all' in Neovim.
+    # See https://github.com/neovim/neovim/issues/2676.
+
+    window = active_window()
+
+    view = window.active_view()
+    if not view:
+        return
+
+    # WIP feature toggle.
+    enabled = view.settings().get('vintageous_wips', False)
+    if not enabled:
+        return
+
+    belloff = view.settings().get('vintageous_belloff', 'all')
+    if belloff == 'all':
+        return
+
+    # TODO How to make the bell theme adaptive i.e. work nice in light AND dark
+    # color schemes.
+    theme = 'Packages/NeoVintageous/res/Bell.tmTheme'
+
+    duration = int(0.3 * 1000)
+
+    if view.settings().get('vintageous_wips_bell_all_active_views', True):
+        views = []
+        for group in range(window.num_groups()):
+            view = window.active_view_in_group(group)
+            if view:
+                settings = view.settings()
+                settings.set('color_scheme', theme)
+                views.append(view)
+
+        def remove_bell():
+            for view in views:
+                view.settings().erase('color_scheme')
+
+        set_timeout(remove_bell, duration)
+
+    else:
+        settings = view.settings()
+
+        def remove_bell():
+            settings.erase('color_scheme')
+
+        settings.set('color_scheme', theme)
+        set_timeout(remove_bell, duration)
+
+
+# [refactor] Rework this to use the ui_bell().
+# [refactor] Rework this to require a view or settings object.
+def ui_blink(times=4, delay=55):
+    prefs = load_settings('Preferences.sublime-settings')
+    if prefs.get('vintageous_visualbell') is False:
+        return
+
+    view = active_window().active_view()
+    if not view:
+        return
+
+    settings = view.settings()
+    # Ensure we leave the setting as we found it.
+    times = times if (times % 2) == 0 else times + 1
+
+    def do_blink():
+        nonlocal times
+        if times > 0:
+            settings.set('highlight_line', not settings.get('highlight_line'))
+            times -= 1
+            set_timeout(do_blink, delay)
+
+    do_blink()
 
 
 def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):

@@ -22,6 +22,7 @@ from NeoVintageous.lib.ex.parser.parser import parse_command_line
 from NeoVintageous.lib.ex.plat.windows import get_oem_cp
 from NeoVintageous.lib.ex.plat.windows import get_startup_info
 from NeoVintageous.lib.state import State
+from NeoVintageous.lib.ui import ui_blink
 from NeoVintageous.lib.vi import abbrev
 from NeoVintageous.lib.vi import utils
 from NeoVintageous.lib.vi.core import ViCommandMixin as WindowCommandMixin
@@ -687,7 +688,7 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
         read_only = (self.check_is_readonly(self._view.file_name()) or self._view.is_read_only())
 
         if read_only and not parsed.command.forced:
-            utils.blink()
+            ui_blink()
 
             return nvim.message("E45: 'readonly' option is set (add ! to override)")
 
@@ -768,12 +769,12 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
 
         if not ex_command.command.forced:
             if os.path.exists(fname):
-                utils.blink()
+                ui_blink()
 
                 return nvim.message("E13: File exists (add ! to override)")
 
             if self.check_is_readonly(fname):
-                utils.blink()
+                ui_blink()
 
                 return nvim.message("E45: 'readonly' option is set (add ! to override)")
 
@@ -1704,12 +1705,12 @@ class ExWriteAndQuitAll(WindowCommand, WindowCommandMixin):
         assert command_line, 'expected non-empty command line'
 
         if not all(v.file_name() for v in self.window.views()):
-            utils.blink()
+            ui_blink()
 
             return nvim.message("E32: No file name")
 
         if any(v.is_read_only() for v in self.window.views()):
-            utils.blink()
+            ui_blink()
 
             return nvim.message("E45: 'readonly' option is set (add ! to override)")
 

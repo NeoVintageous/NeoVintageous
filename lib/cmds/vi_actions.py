@@ -8,6 +8,7 @@ from sublime import Region
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.state import State
+from NeoVintageous.lib.ui import ui_blink
 from NeoVintageous.lib.vi import search
 from NeoVintageous.lib.vi import units
 from NeoVintageous.lib.vi import utils
@@ -163,7 +164,7 @@ class _vi_g_big_u(ViTextCommandBase):
             if self.has_sel_changed():
                 regions_transformer(self.view, f)
             else:
-                utils.blink()
+                ui_blink()
         else:
                 regions_transformer(self.view, f)
 
@@ -199,7 +200,7 @@ class _vi_gu(ViTextCommandBase):
             if self.has_sel_changed():
                 regions_transformer(self.view, f)
             else:
-                utils.blink()
+                ui_blink()
         else:
                 regions_transformer(self.view, f)
 
@@ -269,7 +270,7 @@ class _vi_gq(ViTextCommandBase):
                     for s in self.old_sel:
                         self.view.sel().add(s.begin())
             else:
-                utils.blink()
+                ui_blink()
 
             self.enter_normal_mode(mode)
 
@@ -637,7 +638,8 @@ class _enter_visual_mode_impl(ViTextCommandBase):
                 return Region(s.a, s.b)
             else:
                 if s.empty() and (s.b == self.view.size()):
-                    utils.blink()
+                    ui_blink()
+
                     return s
 
                 # Extending from s.a to s.b because we may be looking at
@@ -668,8 +670,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
         if mode in (modes.NORMAL, modes.INTERNAL_NORMAL):
             # Abort if we are at EOF -- no newline char to hold on to.
             if any(s.b == self.view.size() for s in self.view.sel()):
-                utils.blink()
-                return
+                return ui_blink()
 
         self.view.run_command('_enter_visual_line_mode_impl', {'mode': mode})
         state.enter_visual_line_mode()
@@ -744,12 +745,10 @@ class _vi_dot(ViWindowCommandBase):
             state.restore_visual_data(visual_data)
         elif not visual_data and (mode == modes.VISUAL):
             # Can't repeat normal mode commands in visual mode.
-            utils.blink()
-            return
+            return ui_blink()
         elif mode not in (modes.VISUAL, modes.VISUAL_LINE, modes.NORMAL,
                           modes.INTERNAL_NORMAL, modes.INSERT):
-            utils.blink()
-            return
+            return ui_blink()
 
         if type_ == 'vi':
             self.window.run_command('process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
@@ -880,7 +879,7 @@ class _vi_yy(ViTextCommandBase):
             self.view.sel().add_all(list(self.old_sel))
 
         if mode != modes.INTERNAL_NORMAL:
-            utils.blink()
+            ui_blink()
             raise ValueError('wrong mode')
 
         self.save_sel()
@@ -945,7 +944,7 @@ class _vi_d(ViTextCommandBase):
 
             # The motion has failed, so abort.
             if not self.has_sel_changed():
-                utils.blink()
+                ui_blink()
                 self.enter_normal_mode(mode)
 
                 return
@@ -1281,7 +1280,7 @@ class _vi_s(ViTextCommandBase):
                         modes.VISUAL_BLOCK,
                         modes.INTERNAL_NORMAL):
             # error?
-            utils.blink()
+            ui_blink()
             self.enter_normal_mode(mode)
 
         self.save_sel()
@@ -1324,13 +1323,12 @@ class _vi_x(ViTextCommandBase):
                         modes.VISUAL_BLOCK,
                         modes.INTERNAL_NORMAL):
             # error?
-            utils.blink()
+            ui_blink()
             self.enter_normal_mode(mode)
 
         if mode == modes.INTERNAL_NORMAL:
             if all(self.view.line(s.b).empty() for s in self.view.sel()):
-                utils.blink()
-                return
+                return ui_blink()
 
         abort = False
 
@@ -1492,8 +1490,7 @@ class _vi_greater_than(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (modes.VISUAL, modes.VISUAL_LINE):
-            utils.blink()
-            return
+            return ui_blink()
 
         for i in range(count):
             self.view.run_command('indent')
@@ -1515,8 +1512,7 @@ class _vi_less_than(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (modes.VISUAL, modes.VISUAL_LINE):
-            utils.blink()
-            return
+            return ui_blink()
 
         for i in range(count):
             self.view.run_command('unindent')
@@ -1536,8 +1532,7 @@ class _vi_equal(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (modes.VISUAL, modes.VISUAL_LINE):
-            utils.blink()
-            return
+            return ui_blink()
 
         self.view.run_command('reindent', {'force_indent': False})
 
@@ -2175,8 +2170,7 @@ class _vi_modify_numbers(ViTextCommandBase):
         pts = self.find_next_num(regs)
 
         if not pts:
-            utils.blink()
-            return
+            return ui_blink()
 
         end_sels = []
         count = count if not subtract else -count
@@ -2473,8 +2467,8 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
             if self.view.line(first.end() - 1).empty():
                 self.enter_normal_mode(mode)
-                utils.blink()
-                return
+
+                return ui_blink()
 
             self.view.sel().clear()
             lhs_edge = self.view.rowcol(first.b)[1]  # FIXME # noqa: F841
@@ -2576,7 +2570,7 @@ class _vi_g_tilde(ViTextCommandBase):
             self.view.run_command(motion['motion'], motion['motion_args'])
 
             if not self.has_sel_changed():
-                utils.blink()
+                ui_blink()
                 self.enter_normal_mode(mode)
                 return
 
@@ -2694,7 +2688,7 @@ class _vi_g_big_h(ViWindowCommandBase):
             self.state.display_status()
             return
 
-        utils.blink()
+        ui_blink()
         nvim.status_message('no available search matches')
         self.state.reset_command_data()
 
@@ -2728,8 +2722,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         assert mode == modes.INSERT, 'bad mode'
 
         if (len(self.view.sel()) > 1 or not self.view.sel()[0].empty()):
-            utils.blink()
-            return
+            return ui_blink()
 
         s = self.view.sel()[0]
         line_begin = self.view.text_point(utils.row_at(self.view, s.b), 0)
@@ -2741,7 +2734,8 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
             state.reset_during_init = False
             state.reset_command_data()
             return
-        utils.blink()
+
+        ui_blink()
 
     def show_matches(self, items):
         self.view.window().show_quick_panel(items, self.replace, MONOSPACE_FONT)
@@ -2776,8 +2770,7 @@ class _vi_gc(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (modes.VISUAL, modes.VISUAL_LINE):
-            utils.blink()
-            return
+            return ui_blink()
 
         self.view.run_command('toggle_comment', {'block': False})
 
@@ -2807,8 +2800,7 @@ class _vi_g_big_c(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (modes.VISUAL, modes.VISUAL_LINE):
-            utils.blink()
-            return
+            return ui_blink()
 
         self.view.run_command('toggle_comment', {'block': True})
 
