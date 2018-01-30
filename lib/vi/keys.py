@@ -523,6 +523,8 @@ class KeySequenceTokenizer(object):
 
 
 def to_bare_command_name(seq):
+    # type: (str) -> str
+    #
     # Args:
     #   seq (str): The command sequence.
     #

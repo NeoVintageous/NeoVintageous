@@ -11,6 +11,7 @@ except ImportError:
 
     if plat.HOST_PLATFORM == plat.WINDOWS:
         raise EnvironmentError("ctypes module missing for Windows.")
+
     ctypes = None
 
 
@@ -18,6 +19,7 @@ def get_startup_info():
     # Hide the child process window.
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
     return startupinfo
 
 
@@ -53,6 +55,7 @@ def filter_region(view, txt, command):
                              startupinfo=get_startup_info())
 
         out, err = p.communicate()
+
         return (out or err).decode(get_oem_cp()).replace('\r\n', '\n')[:-1].strip()
     finally:
         os.remove(script.name)
@@ -61,4 +64,5 @@ def filter_region(view, txt, command):
 
 def get_oem_cp():
     codepage = ctypes.windll.kernel32.GetOEMCP()
+
     return str(codepage)

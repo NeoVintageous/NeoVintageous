@@ -14,12 +14,14 @@ INPUT_AFTER_MOTION = 3
 
 
 def has_dirty_buffers(window):
+    # type: (...) -> bool
     for v in window.views():
         if v.is_dirty():
             return True
 
 
 def is_ignored(view):
+    # type: (...) -> bool
     """
     Return `True` if the view wants to be ignored.
 
@@ -30,6 +32,7 @@ def is_ignored(view):
 
 
 def is_ignored_but_command_mode(view):
+    # type: (...) -> str
     """
     Return `True` if the view wants to be ignored.
 
@@ -49,10 +52,13 @@ def is_widget(view):
 
 
 def is_console(view):
-    return (getattr(view, 'settings') is None)  # XXX: Is this reliable?
+    # type: (...) -> bool
+    # TODO [review] Is this reliable?
+    return (getattr(view, 'settings') is None)
 
 
 def is_view(view):
+    # type: (...) -> bool
     return not any((
         is_widget(view),
         is_console(view),
@@ -245,7 +251,9 @@ def restoring_sels(view):
 
 
 def new_inclusive_region(a, b):
-    """Create region that includes the char at @a or @b depending on new region's orientation."""
+    # type: (int, int) -> Region
+    # Create region that includes the char at a or b depending on new region's
+    # orientation.
     if a <= b:
         return Region(a, b + 1)
     else:
@@ -253,14 +261,17 @@ def new_inclusive_region(a, b):
 
 
 def row_at(view, pt):
+    # type: (...) -> int
     return view.rowcol(pt)[0]
 
 
 def col_at(view, pt):
+    # type: (...) -> int
     return view.rowcol(pt)[1]
 
 
 def row_to_pt(view, row, col=0):
+    # type: (...) -> str
     return view.text_point(row, col)
 
 
@@ -380,52 +391,60 @@ class IrreversibleTextCommand(TextCommand):
 
 
 def next_non_white_space_char(view, pt, white_space='\t '):
+    # type: (...) -> int
     while (view.substr(pt) in white_space) and (pt <= view.size()):
         pt += 1
+
     return pt
 
 
 def previous_non_white_space_char(view, pt, white_space='\t \n'):
+    # type: (...) -> int
     while view.substr(pt) in white_space and pt > 0:
         pt -= 1
+
     return pt
 
 
 # deprecated
 def previous_white_space_char(view, pt, white_space='\t '):
+    # type: (...) -> int
     while pt >= 0 and view.substr(pt) not in white_space:
         pt -= 1
+
     return pt
 
 
 def move_backward_while(view, pt, func):
+    # type: (...) -> int
     while (pt >= 0) and func(pt):
         pt -= 1
+
     return pt
 
 
 def is_at_eol(view, reg):
+    # type: (...) -> bool
     return view.line(reg.b).b == reg.b
 
 
 def is_at_bol(view, reg):
+    # type: (...) -> bool
     return view.line(reg.b).a == reg.b
 
 
 def first_row(view):
+    # type: (...) -> int
     return view.rowcol(0)[0]
 
 
 def last_row(view):
+    # type: (...) -> int
     return view.rowcol(view.size())[0]
 
 
 def translate_char(char):
-    # Args:
-    #   char (str):
-    #
-    # Returns:
-    #   str
+    # type: (str) -> str
     lchar = char.lower()
 
     # FIXME What happens to keys like <home>, <up>, etc? We shouln't be
@@ -465,6 +484,7 @@ def first_sel(view):
 
 
 def get_sel(view, i=0):
+    # type: (...) -> int
     return view.sel()[i]
 
 

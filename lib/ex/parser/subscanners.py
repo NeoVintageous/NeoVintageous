@@ -57,7 +57,7 @@ from .scanner_command_write_and_quit_all import scan_command_write_and_quit_all
 from .scanner_command_yank import scan_command_yank
 
 
-patterns = OrderedDict()
+patterns = OrderedDict()  # type: OrderedDict
 
 # TODO: compile regexes. ??
 # IMPORTANT: Order matters. WHY? WHY? WHY?

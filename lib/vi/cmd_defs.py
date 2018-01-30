@@ -74,21 +74,25 @@ class ViInsertLineAfter(ViOperatorDef):
         self.updates_xpos = False
 
     def translate(self, state):
-        cmd = {}
-
         # XXX: Create a separate command?
         if state.mode in (modes.VISUAL, modes.VISUAL_LINE):
-            cmd['action'] = '_vi_visual_o'
-            cmd['action_args'] = {'mode': state.mode, 'count': 1}
-
+            return {
+                'action': '_vi_visual_o',
+                'action_args': {
+                    'mode': state.mode,
+                    'count': 1
+                }
+            }
         else:
             state.glue_until_normal_mode = True
 
-            cmd = {}
-            cmd['action'] = '_vi_o'
-            cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+            return {
+                'action': '_vi_o',
+                'action_args': {
+                    'mode': state.mode,
+                    'count': state.count
+                }
+            }
 
 
 @keys.assign(seq=seqs.X, modes=_MODES_ACTION)
@@ -159,11 +163,13 @@ class ViReindent(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_equal'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
-
-        return cmd
+        return {
+            'action': '_vi_equal',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
 
 @keys.assign(seq=seqs.GREATER_THAN, modes=_MODES_ACTION)
@@ -327,14 +333,13 @@ class ViChangeToUpperCaseByLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_g_big_u_big_u'
-        cmd['action_args'] = {
-            'mode': state.mode,
-            'count': state.count
+        return {
+            'action': '_vi_g_big_u_big_u',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
         }
-
-        return cmd
 
 
 @keys.assign(seq=seqs.CC, modes=_MODES_ACTION)
@@ -550,17 +555,16 @@ class ViSubstituteByLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_big_s_action'
-        cmd['action_args'] = {
-            'mode': state.mode,
-            'count': 1,
-            'register': state.register
-        }
-
         state.glue_until_normal_mode = True
 
-        return cmd
+        return {
+            'action': '_vi_big_s_action',
+            'action_args': {
+                'mode': state.mode,
+                'count': 1,
+                'register': state.register
+            }
+        }
 
 
 @keys.assign(seq=seqs.G_TILDE, modes=_MODES_ACTION)

@@ -859,6 +859,7 @@ class State(object):
 
 
 def init_state(view, new_session=False):
+    # type: (...) -> None
     # Initialise view state.
     #
     # Runs at startup and every time a view gets activated, loaded, etc.

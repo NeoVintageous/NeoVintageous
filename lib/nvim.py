@@ -9,14 +9,17 @@ _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 
 
 def console_message(msg):
+    # type (str): -> None
     print('NeoVintageous:', msg)
 
 
 def status_message(msg):
+    # type (str): -> None
     _status_message(msg)
 
 
 def message(msg):
+    # type: (str) -> str
     status_message(msg)
     console_message(msg)
 
