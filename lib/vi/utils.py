@@ -16,6 +16,8 @@ def has_dirty_buffers(window):
         if v.is_dirty():
             return True
 
+    return False
+
 
 def is_ignored(view):
     # type: (...) -> bool
