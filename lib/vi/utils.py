@@ -42,29 +42,10 @@ def is_ignored_but_command_mode(view):
 
 
 def is_widget(view):
-    settings = view.settings()
+    # type: (...) -> bool
+    get = view.settings().get
 
-    return (settings.get('is_widget') or settings.get('is_vintageous_widget'))
-
-
-def mark_as_widget(view):
-    """
-    Mark @view as a widget so we can later inspect that attribute.
-
-    For example, when hiding panels in _vi_enter_normal_mode.
-
-    Used prominently by '/', '?' and ':'.
-
-    XXX: This doesn't always work as we expect. For example, changing
-         settings to a panel created instants before does not make those
-         settings visible when the panel is activated. Investigate.
-         We still need this so that contexts will ignore widgets, though.
-         However, the fact that they are widgets should suffice to disable
-         Vim keys for them...
-    """
-    view.settings().set('is_vintageous_widget', True)
-
-    return view
+    return get('is_widget') or get('is_vintageous_widget')
 
 
 def is_console(view):
