@@ -320,16 +320,6 @@ mappings = {
 }
 
 
-# TODO: Add a timeout for ambiguous cmd_base.
-# Key sequence to command mapping. Mappings are set by the user.
-#
-# Returns a partial definition containing the user-pressed keys so that we
-# can replay the command exactly as it was typed in.
-user_mappings = {
-    # 'jkl': dict(name='dd', type=cmd_types.USER),
-}
-
-
 EOF = -2
 
 
