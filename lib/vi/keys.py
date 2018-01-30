@@ -6,17 +6,6 @@ from NeoVintageous.lib.vi import variables
 from NeoVintageous.lib.vi.utils import modes
 
 
-class mapping_scopes:
-    """Scopes for mappings."""
-
-    DEFAULT = 0
-    USER = 1
-    PLUGIN = 2
-    NAME_SPACE = 3
-    LEADER = 4
-    LOCAL_LEADER = 5
-
-
 class seqs:
     """
     Vim's built-in key sequences plus Sublime Text 3 staple commands.
