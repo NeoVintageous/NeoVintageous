@@ -7,7 +7,8 @@ import tempfile
 try:
     import ctypes
 except ImportError:
-    import plat
+    from NeoVintageous.lib.ex import plat
+
     if plat.HOST_PLATFORM == plat.WINDOWS:
         raise EnvironmentError("ctypes module missing for Windows.")
     ctypes = None
