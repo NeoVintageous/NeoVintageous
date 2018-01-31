@@ -32,7 +32,8 @@ from NeoVintageous.lib.vi.text_objects import get_closest_tag
 from NeoVintageous.lib.vi.text_objects import get_text_object_region
 from NeoVintageous.lib.vi.text_objects import word_end_reverse
 from NeoVintageous.lib.vi.text_objects import word_reverse
-from NeoVintageous.lib.vi.utils import directions
+from NeoVintageous.lib.vi.utils import DIRECTION_DOWN
+from NeoVintageous.lib.vi.utils import DIRECTION_UP
 from NeoVintageous.lib.vi.utils import get_bol
 from NeoVintageous.lib.vi.utils import INTERNAL_NORMAL
 from NeoVintageous.lib.vi.utils import NORMAL
@@ -522,13 +523,13 @@ class _vi_j(ViMotionCommand):
 
         if mode == VISUAL_BLOCK:
             if len(self.view.sel()) == 1:
-                state.visual_block_direction = directions.DOWN
+                state.visual_block_direction = DIRECTION_DOWN
 
             # Don't do anything if we have reversed selections.
             if any((r.b < r.a) for r in self.view.sel()):
                 return
 
-            if state.visual_block_direction == directions.DOWN:
+            if state.visual_block_direction == DIRECTION_DOWN:
                 for i in range(count):
                     # FIXME: When there are multiple rectangular selections, S3 considers sel 0 to be the
                     # active one in all cases, so we can't know the 'direction' of such a selection and,
@@ -661,13 +662,13 @@ class _vi_k(ViMotionCommand):
 
         if mode == VISUAL_BLOCK:
             if len(self.view.sel()) == 1:
-                state.visual_block_direction = directions.UP
+                state.visual_block_direction = DIRECTION_UP
 
             # Don't do anything if we have reversed selections.
             if any((r.b < r.a) for r in self.view.sel()):
                 return
 
-            if state.visual_block_direction == directions.UP:
+            if state.visual_block_direction == DIRECTION_UP:
 
                 for i in range(count):
                     rect_b = max(self.view.rowcol(r.b - 1)[1] for r in self.view.sel())

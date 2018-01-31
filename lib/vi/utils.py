@@ -36,6 +36,13 @@ INPUT_VIA_PANEL = 2
 INPUT_AFTER_MOTION = 3
 
 
+DIRECTION_NONE = 0
+DIRECTION_UP = 1
+DIRECTION_DOWN = 2
+DIRECTION_LEFT = 3
+DIRECTION_RIGHT = 4
+
+
 def has_dirty_buffers(window):
     # type: (...) -> bool
     for v in window.views():
@@ -47,25 +54,14 @@ def has_dirty_buffers(window):
 
 def is_ignored(view):
     # type: (...) -> bool
-    """
-    Return `True` if the view wants to be ignored.
-
-    Useful for external plugins that don't want NeoVintageous to be active for
-    specific views.
-    """
+    # Useful for external plugins to disable NeoVintageous for specific views.
     return view.settings().get('__vi_external_disable', False)
 
 
 def is_ignored_but_command_mode(view):
-    # type: (...) -> str
-    """
-    Return `True` if the view wants to be ignored.
-
-    Useful for external plugins that don't want NeoVintageous to be active for
-    specific views.
-
-    Differs from is_ignored() in that only keys should be disabled.
-    """
+    # type: (...) -> bool
+    # Useful for external plugins to disable NeoVintageous for specific views.
+    # Differs from is_ignored() in that only keys should be disabled.
     return view.settings().get('__vi_external_disable_keys', False)
 
 
@@ -123,13 +119,16 @@ def to_friendly_name(mode):
 
 
 def regions_transformer(view, f):
+    # type: (...) -> None
     sels = list(view.sel())
     new = []
     for sel in sels:
         region = f(view, sel)
         if not isinstance(region, Region):
             raise TypeError('Region required')
+
         new.append(region)
+
     view.sel().clear()
     view.sel().add_all(new)
 
@@ -141,7 +140,8 @@ def regions_transformer(view, f):
 #       regions_transformer() is newer but this function was
 #       looks like it was never updated.
 def regions_transformer_reversed(view, f):
-    """Apply @f to every selection region in ``view`` and replaces the existing selections."""
+    # type: (...) -> None
+    # Apply f to every selection region in view and replace existing selections.
     sels = reversed(list(view.sel()))
 
     new_sels = []
@@ -154,15 +154,10 @@ def regions_transformer_reversed(view, f):
 
 
 def resolve_insertion_point_at_b(region):
-    """
-    Return the insertion point closest to @region.b for a visual region.
-
-    For non-visual regions, the insertion point is always any of the region's
-    ends, so using this function is pointless.
-
-    @region
-      A Sublime Text region.
-    """
+    # type: (Region) -> int
+    # Return the insertion point closest to region.b for a visual region.
+    # For non-visual regions, the insertion point is always any of the region's
+    # ends, so using this function is pointless.
     if region.a < region.b:
         return (region.b - 1)
 
@@ -170,15 +165,10 @@ def resolve_insertion_point_at_b(region):
 
 
 def resolve_insertion_point_at_a(region):
-    """
-    Return the actual insertion point closest to @region.a for a visual region.
-
-    For non-visual regions, the insertion point is always any of the region's
-    ends, so using this function is pointless.
-
-    @region
-      A Sublime Text region.
-    """
+    # type: (Region) -> int
+    # Return the actual insertion point closest to region.a for a visual region.
+    # For non-visual regions, the insertion point is always any of the region's
+    # ends, so using this function is pointless.
     if region.size() == 0:
         raise TypeError('not a visual region')
 
@@ -201,7 +191,7 @@ def restoring_sels(view):
 
 def new_inclusive_region(a, b):
     # type: (int, int) -> Region
-    # Create region that includes the char at a or b depending on new region's
+    # Create a region that includes the char at a or b depending on new region's
     # orientation.
     if a <= b:
         return Region(a, b + 1)
@@ -285,7 +275,7 @@ def previous_non_white_space_char(view, pt, white_space='\t \n'):
     return pt
 
 
-# deprecated
+# DEPRECATED
 def previous_white_space_char(view, pt, white_space='\t '):
     # type: (...) -> int
     while pt >= 0 and view.substr(pt) not in white_space:
@@ -351,69 +341,71 @@ def restoring_sel(view):
 
 
 def last_sel(view):
+    # type: (...) -> Region
     return get_sel(view, -1)
 
 
 def second_sel(view):
+    # type: (...) -> Region
     return get_sel(view, 1)
 
 
 def first_sel(view):
+    # type: (...) -> Region
     return get_sel(view, 0)
 
 
 def get_sel(view, i=0):
-    # type: (...) -> int
+    # type: (...) -> Region
     return view.sel()[i]
 
 
 def get_eol(view, pt, inclusive=False):
+    # type: (...) -> int
     if not inclusive:
         return view.line(pt).end()
+
     return view.full_line(pt).end()
 
 
 def get_bol(view, pt):
+    # type: (...) -> int
     return view.line(pt).a
 
 
 def replace_sel(view, new_sel):
+    # type: (...) -> None
     if new_sel is None or new_sel == []:
         raise ValueError('no new_sel')
+
     view.sel().clear()
     if isinstance(new_sel, list):
         view.sel().add_all(new_sel)
         return
+
     view.sel().add(new_sel)
 
 
-class directions:
-    NONE = 0
-    UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
-
-
 def resize_visual_region(r, b):
-    """
-    Define a new visual mode region.
-
-    Returns a region where x.a != x.b.
-
-    @r
-      Existing region.
-    @b
-      New end point.
-    """
+    # type: (Region, int) -> Region
+    # Define a new visual mode region.
+    #
+    # Args:
+    #   r (Region): Existing region.
+    #   b (int): New end point.
+    #
+    # Returns:
+    #   Region: Where x.a != x.b (XXX what does this mean?).
     if b < r.a:
         if r.b > r.a:
             return Region(r.a + 1, b)
+
         return Region(r.a, b)
 
     if b > r.a:
         if r.b < r.a:
             return Region(r.a - 1, b + 1)
+
         return Region(r.a, b + 1)
 
     return Region(b, b + 1)

@@ -16,7 +16,7 @@ from NeoVintageous.lib.vi.macros import MacroRegisters
 from NeoVintageous.lib.vi.marks import Marks
 from NeoVintageous.lib.vi.registers import Registers
 from NeoVintageous.lib.vi.settings import SettingsManager
-from NeoVintageous.lib.vi.utils import directions
+from NeoVintageous.lib.vi.utils import DIRECTION_DOWN
 from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import INPUT_AFTER_MOTION
 from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE
@@ -137,50 +137,59 @@ class State(object):
 
     @property
     def last_char_search_command(self):
-        """
-        ',' and ';' change directions depending on which of 'f' or 't' was the previous command.
-
-        Returns the name of the last character search command, namely: 'vi_f',
-        'vi_t', 'vi_big_f' or 'vi_big_t'.
-        """
+        # type: () -> str
+        # ',' and ';' change directions depending on which of 'f' or 't' was the previous command.
+        #
+        # Returns:
+        #   str: The name of the last character search command, namely: 'vi_f',
+        #       'vi_t', 'vi_big_f' or 'vi_big_t'.
         name = self.settings.window['_vintageous_last_char_search_command']
+
         return name or 'vi_f'
 
     @last_char_search_command.setter
     def last_char_search_command(self, value):
+        # type: (str) -> None
         self.settings.window['_vintageous_last_char_search_command'] = value
 
     @property
     def last_buffer_search_command(self):
-        """
-        'n' and 'N' change directions depending on which of '/' or '?' was the previous command.
-
-        Returns the name of the last character search command, namely:
-        'vi_slash', 'vi_question_mark', 'vi_star', 'vi_octothorp'
-        """
+        # type: (str) -> str
+        # 'n' and 'N' change directions depending on which of '/' or '?' was the previous command.
+        # Returns:
+        #   str: The name of the last character search command, namely:
+        #       'vi_slash', 'vi_question_mark', 'vi_star', 'vi_octothorp'.
         name = self.settings.window['_vintageous_last_buffer_search_command']
+
         return name or 'vi_slash'
 
     @last_buffer_search_command.setter
     def last_buffer_search_command(self, value):
+        # type: (str) -> None
         self.settings.window['_vintageous_last_buffer_search_command'] = value
 
     @property
     def must_capture_register_name(self):
-        """Return `True` if `State` is expecting a register name next."""
+        # type: () -> bool
+        # Returns:
+        #   True if State is expecting a register name next, False otherwise.
         return self.settings.vi['must_capture_register_name'] or False
 
     @must_capture_register_name.setter
     def must_capture_register_name(self, value):
+        # type: (bool) -> None
         self.settings.vi['must_capture_register_name'] = value
 
     @property
     def last_buffer_search(self):
-        """Return the last string used by buffer search commands '/' or '?'."""
+        # type: () -> str
+        # Returns:
+        #   The last string used by buffer search commands '/' or '?'.
         return self.settings.window['_vintageous_last_buffer_search'] or ''
 
     @last_buffer_search.setter
     def last_buffer_search(self, value):
+        # type: (str) -> None
         self.settings.window['_vintageous_last_buffer_search'] = value
 
     @property
@@ -372,7 +381,6 @@ class State(object):
     def xpos(self):
         # type: () -> int
         # Accessor for the current xpos for carets.
-        #
         # Returns:
         #   int: Default is 0.
         return self.settings.vi['xpos'] or 0
@@ -387,10 +395,9 @@ class State(object):
     def visual_block_direction(self):
         # type: () -> int
         # Accessor for the visual block direction for current selection.
-        #
         # Returns:
-        #   int: Default is constant representing direction DOWN.
-        return self.settings.vi['visual_block_direction'] or directions.DOWN
+        #   int: Representing direction, default is DOWN.
+        return self.settings.vi['visual_block_direction'] or DIRECTION_DOWN
 
     @visual_block_direction.setter
     def visual_block_direction(self, value):
@@ -402,7 +409,6 @@ class State(object):
     def register(self):
         # type: () -> str
         # Accessor for the current open register (as requested by the user).
-        #
         # Returns:
         #   str: Default is '"'.
         return self.settings.vi['register'] or '"'
@@ -418,7 +424,7 @@ class State(object):
     def must_collect_input(self):
         # type: () -> bool
         # Returns:
-        #   bool: True if the current status must collect input, False otherwise.
+        #   True if the current status must collect input, False otherwise.
         motion = self.motion
         action = self.action
 
