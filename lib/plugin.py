@@ -4,23 +4,24 @@ from NeoVintageous.lib.vi.cmd_base import ViOperatorDef  # noqa: F401
 from NeoVintageous.lib.vi.utils import INPUT_AFTER_MOTION  # noqa: F401
 from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE  # noqa: F401
 from NeoVintageous.lib.vi.utils import INPUT_VIA_PANEL  # noqa: F401
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import INTERNAL_NORMAL  # noqa: F401
+from NeoVintageous.lib.vi.utils import NORMAL  # noqa: F401
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING  # noqa: F401
+from NeoVintageous.lib.vi.utils import SELECT  # noqa: F401
+from NeoVintageous.lib.vi.utils import VISUAL  # noqa: F401
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK  # noqa: F401
+from NeoVintageous.lib.vi.utils import VISUAL_LINE  # noqa: F401
 
-
-NORMAL_MODE = modes.NORMAL
-VISUAL_MODE = modes.VISUAL
-VISUAL_BLOCK_MODE = modes.VISUAL_BLOCK
-OPERATOR_PENDING_MODE = modes.OPERATOR_PENDING
-INTERNAL_NORMAL_MODE = modes.INTERNAL_NORMAL
 
 mappings = {
-    modes.NORMAL: {},
-    modes.OPERATOR_PENDING: {},
-    modes.VISUAL: {},
-    modes.VISUAL_LINE: {},
-    modes.VISUAL_BLOCK: {},
-    modes.SELECT: {},
+    NORMAL: {},
+    OPERATOR_PENDING: {},
+    SELECT: {},
+    VISUAL_BLOCK: {},
+    VISUAL_LINE: {},
+    VISUAL: {}
 }
+
 
 classes = {}
 

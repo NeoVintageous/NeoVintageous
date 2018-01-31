@@ -33,9 +33,14 @@ from NeoVintageous.lib.vi.settings import set_local
 from NeoVintageous.lib.vi.utils import adding_regions
 from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import has_dirty_buffers
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import NORMAL
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.vi.utils import row_at
+from NeoVintageous.lib.vi.utils import SELECT
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 from NeoVintageous.lib.window import window_split
 from NeoVintageous.lib.window import WindowAPI
 
@@ -477,11 +482,11 @@ class ExMap(WindowCommand, WindowCommandMixin):
             return nvim.status_message('Listing key mappings is not implemented')
 
         mappings = Mappings(self.state)
-        mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
-        mappings.add(modes.OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
-        mappings.add(modes.VISUAL, parsed.command.keys, parsed.command.command)
-        mappings.add(modes.VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
-        mappings.add(modes.VISUAL_LINE, parsed.command.keys, parsed.command.command)
+        mappings.add(NORMAL, parsed.command.keys, parsed.command.command)
+        mappings.add(OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
+        mappings.add(VISUAL, parsed.command.keys, parsed.command.command)
+        mappings.add(VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
+        mappings.add(VISUAL_LINE, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:unmap
@@ -492,11 +497,11 @@ class ExUnmap(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.NORMAL, parsed.command.keys)
-            mappings.remove(modes.OPERATOR_PENDING, parsed.command.keys)
-            mappings.remove(modes.VISUAL, parsed.command.keys)
-            mappings.remove(modes.VISUAL_BLOCK, parsed.command.keys)
-            mappings.remove(modes.VISUAL_LINE, parsed.command.keys)
+            mappings.remove(NORMAL, parsed.command.keys)
+            mappings.remove(OPERATOR_PENDING, parsed.command.keys)
+            mappings.remove(VISUAL, parsed.command.keys)
+            mappings.remove(VISUAL_BLOCK, parsed.command.keys)
+            mappings.remove(VISUAL_LINE, parsed.command.keys)
         except KeyError:
             nvim.status_message('Mapping not found')
 
@@ -511,7 +516,7 @@ class ExNmap(WindowCommand, WindowCommandMixin):
             return nvim.status_message('Listing key mappings is not implemented')
 
         mappings = Mappings(self.state)
-        mappings.add(modes.NORMAL, parsed.command.keys, parsed.command.command)
+        mappings.add(NORMAL, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:nunmap
@@ -522,7 +527,7 @@ class ExNunmap(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.NORMAL, parsed.command.keys)
+            mappings.remove(NORMAL, parsed.command.keys)
         except KeyError:
             nvim.status_message('Mapping not found')
 
@@ -537,7 +542,7 @@ class ExOmap(WindowCommand, WindowCommandMixin):
             return nvim.status_message('Listing key mappings is not implemented')
 
         mappings = Mappings(self.state)
-        mappings.add(modes.OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
+        mappings.add(OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:ounmap
@@ -548,7 +553,7 @@ class ExOunmap(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.OPERATOR_PENDING, parsed.command.keys)
+            mappings.remove(OPERATOR_PENDING, parsed.command.keys)
         except KeyError:
             nvim.status_message('Mapping not found')
 
@@ -563,7 +568,7 @@ class ExSmap(WindowCommand, WindowCommandMixin):
             return nvim.status_message('Listing key mappings is not implemented')
 
         mappings = Mappings(self.state)
-        mappings.add(modes.SELECT, parsed.command.keys, parsed.command.command)
+        mappings.add(SELECT, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:sunmap
@@ -574,7 +579,7 @@ class ExSunmap(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.SELECT, parsed.command.keys)
+            mappings.remove(SELECT, parsed.command.keys)
         except KeyError:
             nvim.status_message('Mapping not found')
 
@@ -589,9 +594,9 @@ class ExVmap(WindowCommand, WindowCommandMixin):
             return nvim.status_message('Listing key mappings is not implemented')
 
         mappings = Mappings(self.state)
-        mappings.add(modes.VISUAL, parsed.command.keys, parsed.command.command)
-        mappings.add(modes.VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
-        mappings.add(modes.VISUAL_LINE, parsed.command.keys, parsed.command.command)
+        mappings.add(VISUAL, parsed.command.keys, parsed.command.command)
+        mappings.add(VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
+        mappings.add(VISUAL_LINE, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:vunmap
@@ -602,9 +607,9 @@ class ExVunmap(WindowCommand, WindowCommandMixin):
         parsed = parse_command_line(command_line)
         mappings = Mappings(self.state)
         try:
-            mappings.remove(modes.VISUAL, parsed.command.keys)
-            mappings.remove(modes.VISUAL_BLOCK, parsed.command.keys)
-            mappings.remove(modes.VISUAL_LINE, parsed.command.keys)
+            mappings.remove(VISUAL, parsed.command.keys)
+            mappings.remove(VISUAL_BLOCK, parsed.command.keys)
+            mappings.remove(VISUAL_LINE, parsed.command.keys)
         except KeyError:
             nvim.status_message('Mapping not found')
 

@@ -3,17 +3,31 @@ from unittest import skipIf  # noqa: F401
 from unittest import TestCase  # noqa: F401
 import unittest
 
-# Use aliases to indicate that they are not public testing API's.
+# Use aliases to indicate that they are not public testing APIs.
 from sublime import active_window as _active_window
 from sublime import Region
 
-# Use aliases to indicate that they are not public testing API's.
+# Use aliases to indicate that they are not public testing APIs.
 from NeoVintageous.lib.state import State as _State
-from NeoVintageous.lib.vi.utils import modes as _modes
+
+from NeoVintageous.lib.vi.utils import COMMAND_LINE  # noqa: F401
+from NeoVintageous.lib.vi.utils import CTRL_X  # noqa: F401
+from NeoVintageous.lib.vi.utils import INSERT  # noqa: F401
+from NeoVintageous.lib.vi.utils import INTERNAL_NORMAL  # noqa: F401
+from NeoVintageous.lib.vi.utils import NORMAL  # noqa: F401
+from NeoVintageous.lib.vi.utils import NORMAL_INSERT  # noqa: F401
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING  # noqa: F401
+from NeoVintageous.lib.vi.utils import REPLACE  # noqa: F401
+from NeoVintageous.lib.vi.utils import SELECT  # noqa: F401
+from NeoVintageous.lib.vi.utils import UNKNOWN  # noqa: F401
+from NeoVintageous.lib.vi.utils import VISUAL  # noqa: F401
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK  # noqa: F401
+from NeoVintageous.lib.vi.utils import VISUAL_LINE  # noqa: F401
 
 
-# DEPRECATED Use newer API's
+# DEPRECATED Use newer APIs.
 def _make_region(view, a, b=None):
+    # type: (...) -> Region
     try:
         pt_a = view.text_point(*a)
         pt_b = view.text_point(*b)
@@ -33,19 +47,6 @@ def _make_region(view, a, b=None):
         return Region(a)
 
 
-COMMAND_LINE_MODE = _modes.COMMAND_LINE
-INSERT_MODE = _modes.INSERT
-INTERNAL_NORMAL_MODE = _modes.INTERNAL_NORMAL
-NORMAL_MODE = _modes.NORMAL
-NORMAL_INSERT_MODE = _modes.NORMAL_INSERT
-OPERATOR_PENDING_MODE = _modes.OPERATOR_PENDING
-SELECT_MODE = _modes.SELECT
-UNKNOWN_MODE = _modes.UNKNOWN
-VISUAL_BLOCK_MODE = _modes.VISUAL_BLOCK
-VISUAL_LINE_MODE = _modes.VISUAL_LINE
-VISUAL_MODE = _modes.VISUAL
-
-
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -57,6 +58,7 @@ class ViewTestCase(unittest.TestCase):
             self.view.close()
 
     def content(self):
+        # type: () -> str
         return self.view.substr(Region(0, self.view.size()))
 
     def Region(self, a, b=None):
@@ -114,6 +116,7 @@ class ViewTestCase(unittest.TestCase):
         return self.view.settings()
 
     def write(self, text):
+        # type: (str) -> None
         self.view.run_command('_neovintageous_test_write', {'text': text})
 
     def assertContent(self, expected, msg=None):
@@ -136,7 +139,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertRegex(self.content(), expected, msg)
 
     def assertNormalMode(self):
-        self.assertEquals(self.state.mode, NORMAL_MODE)
+        self.assertEquals(self.state.mode, NORMAL)
 
     def assertRegion(self, expected, actual):
         # Test that *actual* and *expected* are equal.
@@ -217,18 +220,16 @@ class ViewTestCase(unittest.TestCase):
         #   expected (int): Expected number of characters in view.
         self.assertEqual(expected, self.view.size())
 
-    # DEPRECATED Try to avoid using this, it will eventually be removed in favour
-    # of something better.
+    # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
     def state(self):
         return _State(self.view)
 
-    # DEPRECATED Use newer API's e.g. self.Region().
+    # DEPRECATED Use newer APIs e.g. self.Region(), unittest.Region.
     def _R(self, a, b=None):
         return _make_region(self.view, a, b)
 
-    # DEPRECATED Use newer API's e.g. assertRegion().
-    #   assertSelection(), and assertContent()
+    # DEPRECATED Use newer APIs e.g. assertRegion(), assertSelection(), and assertContent().
     def _assertRegionsEqual(self, expected_region, actual_region, msg=None):
         # Test that regions covers the exact same region. Does not take region
         # orientation into account.

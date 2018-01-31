@@ -9,17 +9,17 @@ _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 
 
 def console_message(msg):
-    # type (str): -> None
+    # type: (str) -> None
     print('NeoVintageous:', msg)
 
 
 def status_message(msg):
-    # type (str): -> None
+    # type: (str) -> None
     _status_message(msg)
 
 
 def message(msg):
-    # type: (str) -> str
+    # type: (str) -> None
     status_message(msg)
     console_message(msg)
 
@@ -81,6 +81,8 @@ if _DEBUG:
             logger.debug('debug log file: \'{}\''.format(file))
         else:
             console_message('could not create log file \'{}\''.format(file))
+
+        logger.debug('logger initialised')
 
     _init_logger()
 

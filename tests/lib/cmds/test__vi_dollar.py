@@ -12,41 +12,41 @@ region_data = namedtuple('region_data', 'regions')
 
 TESTS_INTERNAL_NORMAL = (
     # NORMAL mode
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[(0, 0), (0, 0)]], cmd_params={'mode': unittest.NORMAL_MODE},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[(0, 0), (0, 0)]], cmd_params={'mode': unittest.NORMAL},  # noqa: E241,E501
               expected=region_data([(0, 2), (0, 2)]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[(0, 0), (0, 0)]], cmd_params={'mode': unittest.NORMAL_MODE, 'count': 5},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[(0, 0), (0, 0)]], cmd_params={'mode': unittest.NORMAL, 'count': 5},  # noqa: E241,E501
               expected=region_data([18, 18]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 4]], cmd_params={'mode': unittest.NORMAL_MODE, 'count': 1},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 4]], cmd_params={'mode': unittest.NORMAL, 'count': 1},  # noqa: E241,E501
               expected=region_data([4, 4]), actual_func=first_sel, msg='should not move on empty line'),
 
     # VISUAL mode
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 1]], cmd_params={'mode': unittest.VISUAL_MODE},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 1]], cmd_params={'mode': unittest.VISUAL},  # noqa: E241,E501
               expected=region_data([0, 4]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[0, 1]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 5},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\n' * 10), regions=[[0, 1]], cmd_params={'mode': unittest.VISUAL, 'count': 5},  # noqa: E241,E501
               expected=region_data([0, 20]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 5]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 1},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\n\nabc\n'), regions=[[4, 5]], cmd_params={'mode': unittest.VISUAL, 'count': 1},  # noqa: E241,E501
               expected=region_data([4, 5]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[6, 1]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 1},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[6, 1]], cmd_params={'mode': unittest.VISUAL, 'count': 1},  # noqa: E241,E501
               expected=region_data([6, 3]), actual_func=first_sel, msg='can move in visual mode with reversed sel no cross over'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[3, 2]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 1},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[3, 2]], cmd_params={'mode': unittest.VISUAL, 'count': 1},  # noqa: E241,E501
               expected=region_data([2, 4]), actual_func=first_sel, msg='can move in visual mode with reversed sel at eol'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[5, 4]], cmd_params={'mode': unittest.VISUAL_MODE, 'count': 2},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\n'), regions=[[5, 4]], cmd_params={'mode': unittest.VISUAL, 'count': 2},  # noqa: E241,E501
               expected=region_data([4, 8]), actual_func=first_sel, msg='can move in visual mode with revesed sel cross over'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\nabc\n'), regions=[[0, 4]], cmd_params={'mode': unittest.VISUAL_LINE_MODE, 'count': 1},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text=('abc\nabc\nabc\n'), regions=[[0, 4]], cmd_params={'mode': unittest.VISUAL_LINE, 'count': 1},  # noqa: E241,E501
               expected=region_data([0, 4]), actual_func=first_sel, msg='can move in visual mode with revesed sel cross over'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL_MODE},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL},  # noqa: E241,E501
               expected=region_data([0, 4]), actual_func=first_sel, msg=''),
 
-    test_data(cmd='_vi_dollar', initial_text='abc\nabc\nabc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 3},  # noqa: E241,E501
+    test_data(cmd='_vi_dollar', initial_text='abc\nabc\nabc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL, 'count': 3},  # noqa: E241,E501
               expected=region_data([0, 12]), actual_func=first_sel, msg=''),
 )
 

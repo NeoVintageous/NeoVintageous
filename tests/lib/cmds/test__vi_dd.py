@@ -7,6 +7,6 @@ class Test__vi_dd_InNormalMode(unittest.ViewTestCase):
         self.write('abc\nabc\nabc')
         self.select(8)
 
-        self.view.run_command('_vi_dd', {'mode': unittest.INTERNAL_NORMAL_MODE})
+        self.view.run_command('_vi_dd', {'mode': unittest.INTERNAL_NORMAL})
 
         self.assertContent('abc\nabc')

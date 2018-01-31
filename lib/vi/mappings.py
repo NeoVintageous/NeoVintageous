@@ -3,13 +3,13 @@ from NeoVintageous.lib.vi.cmd_base import CMD_TYPE_USER
 from NeoVintageous.lib.vi.keys import KeySequenceTokenizer
 from NeoVintageous.lib.vi.keys import seq_to_command
 from NeoVintageous.lib.vi.keys import to_bare_command_name
-from NeoVintageous.lib.vi.utils import INSERT_MODE
-from NeoVintageous.lib.vi.utils import NORMAL_MODE
-from NeoVintageous.lib.vi.utils import OPERATOR_PENDING_MODE
-from NeoVintageous.lib.vi.utils import SELECT_MODE
-from NeoVintageous.lib.vi.utils import VISUAL_BLOCK_MODE
-from NeoVintageous.lib.vi.utils import VISUAL_LINE_MODE
-from NeoVintageous.lib.vi.utils import VISUAL_MODE
+from NeoVintageous.lib.vi.utils import INSERT
+from NeoVintageous.lib.vi.utils import NORMAL
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING
+from NeoVintageous.lib.vi.utils import SELECT
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 from NeoVintageous.lib.vi.variables import expand_keys
 
 
@@ -24,14 +24,14 @@ _STATUS_COMPLETE = 2
 
 
 _mappings = {
-    INSERT_MODE: {},
-    NORMAL_MODE: {},
-    OPERATOR_PENDING_MODE: {},
-    SELECT_MODE: {},
-    VISUAL_BLOCK_MODE: {},
-    VISUAL_LINE_MODE: {},
-    VISUAL_MODE: {}
-}  # type: dict
+    INSERT: {},
+    NORMAL: {},
+    OPERATOR_PENDING: {},
+    SELECT: {},
+    VISUAL_BLOCK: {},
+    VISUAL_LINE: {},
+    VISUAL: {}
+}
 
 
 class Mapping:
@@ -81,7 +81,7 @@ class Mappings:
 
             # FIXME Possibly related to #46. We're not returning the view's
             # current mode. The command implementing > will incorrectly get mode
-            # VISUAL when issued from VISUAL_BLOCK_MODE e.g with `:vmap > >gv`.
+            # VISUAL when issued from VISUAL_BLOCK e.g with `:vmap > >gv`.
             # See https://github.com/NeoVintageous/NeoVintageous/issues/46.
 
             name = [x for x in partials if x == seq][0]

@@ -4,7 +4,7 @@ from sublime_plugin import TextCommand
 
 from NeoVintageous.lib.plugin import INPUT_INMEDIATE
 from NeoVintageous.lib.plugin import inputs
-from NeoVintageous.lib.plugin import NORMAL_MODE
+from NeoVintageous.lib.plugin import NORMAL
 from NeoVintageous.lib.plugin import register
 from NeoVintageous.lib.plugin import ViOperatorDef
 
@@ -84,7 +84,7 @@ _ALIASES = {
 }
 
 
-@register(seq='cr', modes=(NORMAL_MODE,))
+@register(seq='cr', modes=(NORMAL,))
 class _AbolishCoercions(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

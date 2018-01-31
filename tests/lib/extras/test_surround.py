@@ -21,12 +21,12 @@ class Test_ys(unittest.ViewTestCase):
         for (i, data) in enumerate(self.dataProvider()):
             self.write('dog cat turkey')
             self.select((4, 7))
-            self.state.mode = unittest.VISUAL_MODE
+            self.state.mode = unittest.VISUAL
 
             surround_with, expected = data
 
             self.view.run_command('_nv_surround_ys', {
-                'mode': unittest.VISUAL_MODE,
+                'mode': unittest.VISUAL,
                 'surround_with': surround_with
             })
 
@@ -37,16 +37,16 @@ class Test_ys(unittest.ViewTestCase):
         for (i, data) in enumerate(self.dataProvider()):
             self.write('dog cat turkey')
             self.select(4)
-            self.state.mode = unittest.INTERNAL_NORMAL_MODE
+            self.state.mode = unittest.INTERNAL_NORMAL
 
             motion = {}
             motion['motion'] = '_vi_e'
-            motion['motion_args'] = {'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 1}
+            motion['motion_args'] = {'mode': unittest.INTERNAL_NORMAL, 'count': 1}
 
             surround_with, expected = data
 
             self.view.run_command('_nv_surround_ys', {
-                'mode': unittest.INTERNAL_NORMAL_MODE,
+                'mode': unittest.INTERNAL_NORMAL,
                 'surround_with': surround_with,
                 'motion': motion
             })
@@ -74,12 +74,12 @@ class Test_cs(unittest.ViewTestCase):
         for (i, data) in enumerate(self.dataProvider()):
             self.write('dog (cat) turkey')
             self.select(5)
-            self.state.mode = unittest.INTERNAL_NORMAL_MODE
+            self.state.mode = unittest.INTERNAL_NORMAL
 
             replace_what, expected = data
             self.view.run_command('_nv_surround', {
                 'action': 'cs',
-                'mode': unittest.INTERNAL_NORMAL_MODE,
+                'mode': unittest.INTERNAL_NORMAL,
                 'target': replace_what[0],
                 'replacement': replace_what[1]
             })
@@ -115,11 +115,11 @@ class Test_ds(unittest.ViewTestCase):
             text, target, expected = data
             self.write(text)
             self.select(7)
-            self.state.mode = unittest.INTERNAL_NORMAL_MODE
+            self.state.mode = unittest.INTERNAL_NORMAL
 
             self.view.run_command('_nv_surround', {
                 'action': 'ds',
-                'mode': unittest.INTERNAL_NORMAL_MODE,
+                'mode': unittest.INTERNAL_NORMAL,
                 'target': target
             })
 
@@ -141,7 +141,7 @@ class Test_big_s(unittest.ViewTestCase):
             self.select([self._R(*region) for region in regions])
 
             self.view.run_command('_nv_surround_ys', {
-                'mode': unittest.VISUAL_MODE,
+                'mode': unittest.VISUAL,
                 'surround_with': surround_with
             })
 

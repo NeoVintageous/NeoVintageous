@@ -3,7 +3,13 @@ import re
 from NeoVintageous.lib import plugin
 from NeoVintageous.lib.vi import cmd_base
 from NeoVintageous.lib.vi import variables
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import INSERT
+from NeoVintageous.lib.vi.utils import NORMAL
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING
+from NeoVintageous.lib.vi.utils import SELECT
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 
 
 class seqs:
@@ -309,13 +315,13 @@ def seq_to_command(state, seq, mode=None):
 # 'key sequence' is a sequence of key presses.
 #
 mappings = {
-    modes.INSERT: {},
-    modes.NORMAL: {},
-    modes.VISUAL: {},
-    modes.OPERATOR_PENDING: {},
-    modes.VISUAL_LINE: {},
-    modes.VISUAL_BLOCK: {},
-    modes.SELECT: {},
+    INSERT: {},
+    NORMAL: {},
+    VISUAL: {},
+    OPERATOR_PENDING: {},
+    VISUAL_LINE: {},
+    VISUAL_BLOCK: {},
+    SELECT: {},
     '_missing': dict(name='_missing')
 }
 

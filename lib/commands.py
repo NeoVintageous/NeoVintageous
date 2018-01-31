@@ -35,8 +35,16 @@ from NeoVintageous.lib.vi.keys import to_bare_command_name
 from NeoVintageous.lib.vi.mappings import Mappings
 from NeoVintageous.lib.vi.settings import iter_settings
 from NeoVintageous.lib.vi.utils import gluing_undo_groups
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import INSERT
+from NeoVintageous.lib.vi.utils import INTERNAL_NORMAL
+from NeoVintageous.lib.vi.utils import NORMAL
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING
 from NeoVintageous.lib.vi.utils import regions_transformer
+from NeoVintageous.lib.vi.utils import REPLACE
+from NeoVintageous.lib.vi.utils import SELECT
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 
 
 __all__ = [
@@ -157,9 +165,10 @@ class _nv_fix_st_eol_caret(TextCommand):
 
     def run(self, edit, mode=None):
         def f(view, s):
-            if mode in (modes.NORMAL, modes.INTERNAL_NORMAL):
+            if mode in (NORMAL, INTERNAL_NORMAL):
                 if ((view.substr(s.b) == '\n' or s.b == view.size()) and not view.line(s.b).empty()):
                     return Region(s.b - 1)
+
             return s
 
         regions_transformer(self.view, f)
@@ -222,10 +231,10 @@ class PressKey(ViWindowCommandBase):
         # If the user has made selections with the mouse, we may be in an
         # inconsistent state. Try to remedy that.
         if (state.view.has_non_empty_selection_region() and
-            state.mode not in (modes.VISUAL,
-                               modes.VISUAL_LINE,
-                               modes.VISUAL_BLOCK,
-                               modes.SELECT)):
+            state.mode not in (VISUAL,
+                               VISUAL_LINE,
+                               VISUAL_BLOCK,
+                               SELECT)):
                 init_state(state.view)
 
         if key.lower() == '<esc>':
@@ -289,7 +298,7 @@ class PressKey(ViWindowCommandBase):
                 _logger.debug('evaluating user mapping...')
 
                 new_keys = command.mapping
-                if state.mode == modes.OPERATOR_PENDING:
+                if state.mode == OPERATOR_PENDING:
                     new_keys = state.sequence[:-len(state.partial_sequence)] + command.mapping
                 reg = state.register
                 acount = state.action_count
@@ -300,7 +309,7 @@ class PressKey(ViWindowCommandBase):
                 state.action_count = acount
 
                 # TODO REVIEW *Not* setting the mode seems to fix some issues with commands like :snoremap
-                # state.mode = modes.NORMAL
+                # state.mode = NORMAL
 
                 _logger.info('user mapping %s -> %s', key, new_keys)
 
@@ -346,7 +355,7 @@ class PressKey(ViWindowCommandBase):
             _logger.info('found missing command...')
 
             bare_seq = to_bare_command_name(state.sequence)
-            if state.mode == modes.OPERATOR_PENDING:
+            if state.mode == OPERATOR_PENDING:
                 # We might be looking at a command like 'dd'. The first 'd' is
                 # mapped for normal mode, but the second is missing in
                 # operator pending mode, so we get a missing command. Try to
@@ -355,7 +364,7 @@ class PressKey(ViWindowCommandBase):
                 # Exclude user mappings, since they've already been given a
                 # chance to evaluate.
                 command = key_mappings.resolve(sequence=bare_seq,
-                                               mode=modes.NORMAL,
+                                               mode=NORMAL,
                                                check_user_mappings=False)
             else:
                 command = key_mappings.resolve(sequence=bare_seq)
@@ -363,11 +372,11 @@ class PressKey(ViWindowCommandBase):
             if isinstance(command, cmd_base.ViMissingCommandDef):
                 _logger.debug('unmapped sequence %s', state.sequence)
                 ui_blink()
-                state.mode = modes.NORMAL
+                state.mode = NORMAL
                 state.reset_command_data()
                 return
 
-        if (state.mode == modes.OPERATOR_PENDING and isinstance(command, cmd_defs.ViOperatorDef)):
+        if (state.mode == OPERATOR_PENDING and isinstance(command, cmd_defs.ViOperatorDef)):
             _logger.info('found operator pending...')
             # TODO: This may be unreachable code by now. ???
             # we're expecting a motion, but we could still get an action.
@@ -375,7 +384,7 @@ class PressKey(ViWindowCommandBase):
             # remove counts
             action_seq = to_bare_command_name(state.sequence)
             _logger.debug('action sequence %s', action_seq)
-            command = key_mappings.resolve(sequence=action_seq, mode=modes.NORMAL)
+            command = key_mappings.resolve(sequence=action_seq, mode=NORMAL)
             # TODO: Make _missing a command.
             if isinstance(command, cmd_base.ViMissingCommandDef):
                 _logger.debug('unmapped sequence %s', state.sequence)
@@ -383,11 +392,11 @@ class PressKey(ViWindowCommandBase):
                 return
 
             if not command['motion_required']:
-                state.mode = modes.NORMAL
+                state.mode = NORMAL
 
         state.set_command(command)
 
-        if state.mode == modes.OPERATOR_PENDING:
+        if state.mode == OPERATOR_PENDING:
             state.reset_partial_sequence()
 
         if do_eval:
@@ -402,7 +411,7 @@ class PressKey(ViWindowCommandBase):
                 state.action_count += key
                 return True
 
-        if (state.action and (state.mode == modes.OPERATOR_PENDING) and key.isdigit()):
+        if (state.action and (state.mode == OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or state.motion_count):
                 _logger.debug('@press_key motion count digit \'%s\'', key)
                 state.motion_count += key
@@ -452,8 +461,8 @@ class ProcessNotation(ViWindowCommandBase):
                 # means there are no more leading motions. Break out of here.
                 _logger.debug('[process_notation] first action found in \'%s\'', state.sequence)
                 state.reset_command_data()
-                if state.mode == modes.OPERATOR_PENDING:
-                    state.mode = modes.NORMAL
+                if state.mode == OPERATOR_PENDING:
+                    state.mode = NORMAL
                 break
 
             elif state.runnable():
@@ -491,7 +500,7 @@ class ProcessNotation(ViWindowCommandBase):
                             self.window.run_command('_enter_normal_mode')
                             continue
 
-                        elif state.mode not in (modes.INSERT, modes.REPLACE):
+                        elif state.mode not in (INSERT, REPLACE):
                             self.window.run_command('press_key', {
                                 'key': key,
                                 'repeat_count': repeat_count,
@@ -564,7 +573,7 @@ class ViColonInput(WindowCommand):
 
     def adjust_initial_text(self, text):
         state = State(self.window.active_view())
-        if state.mode in (modes.VISUAL, modes.VISUAL_LINE):
+        if state.mode in (VISUAL, VISUAL_LINE):
             text = ":'<,'>" + text[1:]
 
         return text

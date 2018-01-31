@@ -7,7 +7,7 @@ class Test__vi_slash_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(0)
 
-        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(4)
 
@@ -15,7 +15,7 @@ class Test__vi_slash_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(25)
 
-        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(4)
 
@@ -23,7 +23,7 @@ class Test__vi_slash_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(22)
 
-        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(4)
 
@@ -31,7 +31,7 @@ class Test__vi_slash_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(27)
 
-        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(4)
 
@@ -42,7 +42,7 @@ class Test__vi_question_mark_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(0)
 
-        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(20)
 
@@ -50,7 +50,7 @@ class Test__vi_question_mark_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(25)
 
-        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(20)
 
@@ -58,7 +58,7 @@ class Test__vi_question_mark_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(12)
 
-        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(4)
 
@@ -66,6 +66,6 @@ class Test__vi_question_mark_InNormalMode(unittest.ViewTestCase):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(27)
 
-        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL_MODE, 'search_string': 'abc'})
+        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
 
         self.assertSelection(20)

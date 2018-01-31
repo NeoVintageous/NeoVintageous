@@ -7,13 +7,13 @@ from sublime_plugin import TextCommand
 from NeoVintageous.lib.plugin import INPUT_AFTER_MOTION
 from NeoVintageous.lib.plugin import INPUT_INMEDIATE
 from NeoVintageous.lib.plugin import inputs
-from NeoVintageous.lib.plugin import INTERNAL_NORMAL_MODE
-from NeoVintageous.lib.plugin import NORMAL_MODE
-from NeoVintageous.lib.plugin import OPERATOR_PENDING_MODE
+from NeoVintageous.lib.plugin import INTERNAL_NORMAL
+from NeoVintageous.lib.plugin import NORMAL
+from NeoVintageous.lib.plugin import OPERATOR_PENDING
 from NeoVintageous.lib.plugin import register
 from NeoVintageous.lib.plugin import ViOperatorDef
-from NeoVintageous.lib.plugin import VISUAL_BLOCK_MODE
-from NeoVintageous.lib.plugin import VISUAL_MODE
+from NeoVintageous.lib.plugin import VISUAL
+from NeoVintageous.lib.plugin import VISUAL_BLOCK
 from NeoVintageous.lib.vi.core import ViTextCommandBase
 from NeoVintageous.lib.vi.search import reverse_search
 from NeoVintageous.lib.vi.utils import regions_transformer
@@ -30,7 +30,7 @@ __all__ = [
 # Initially based on https://github.com/guillermooo/Vintageous_Plugin_Surround.
 
 
-@register(seq='ys', modes=(NORMAL_MODE,))
+@register(seq='ys', modes=(NORMAL,))
 class _surround_ys(ViOperatorDef):
 
     def __init__(self, *args, **kwargs):
@@ -70,7 +70,7 @@ class _surround_ys(ViOperatorDef):
         }
 
 
-@register(seq='S', modes=(VISUAL_MODE, VISUAL_BLOCK_MODE))
+@register(seq='S', modes=(VISUAL, VISUAL_BLOCK))
 class _surround_S(_surround_ys):
 
     def __init__(self, *args, **kwargs):
@@ -85,7 +85,7 @@ class _surround_S(_surround_ys):
         )
 
 
-@register(seq='ds', modes=(NORMAL_MODE, OPERATOR_PENDING_MODE))
+@register(seq='ds', modes=(NORMAL, OPERATOR_PENDING))
 class _surround_ds(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -126,7 +126,7 @@ class _surround_ds(ViOperatorDef):
         }
 
 
-@register(seq='cs', modes=(NORMAL_MODE, OPERATOR_PENDING_MODE))
+@register(seq='cs', modes=(NORMAL, OPERATOR_PENDING))
 class _surround_cs(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -202,10 +202,10 @@ class _nv_surround_ys_command(ViTextCommandBase):
 
     def run(self, edit, mode=None, surround_with='"', count=1, motion=None):
         def f(view, s):
-            if mode == INTERNAL_NORMAL_MODE:
+            if mode == INTERNAL_NORMAL:
                 self.surround(edit, s, surround_with)
                 return Region(s.begin())
-            elif mode in (VISUAL_MODE, VISUAL_BLOCK_MODE):
+            elif mode in (VISUAL, VISUAL_BLOCK):
                 self.surround(edit, s, surround_with)
                 return Region(s.begin())
 
@@ -215,7 +215,7 @@ class _nv_surround_ys_command(ViTextCommandBase):
             self.enter_normal_mode(mode)
             raise ValueError('motion required')
 
-        if mode == INTERNAL_NORMAL_MODE:
+        if mode == INTERNAL_NORMAL:
             self.view.run_command(motion['motion'], motion['motion_args'])
 
         if surround_with:
@@ -259,7 +259,7 @@ def _rfind(view, sub, start, end, flags=0):
 # TODO Add punctuation aliases
 def _do_surround_cs(view, edit, target, replacement, mode=None):
     def _f(view, s):
-        if mode == INTERNAL_NORMAL_MODE:
+        if mode == INTERNAL_NORMAL:
             if len(target) != 1:
                 # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
                 return s
@@ -318,7 +318,7 @@ def _do_surround_cs(view, edit, target, replacement, mode=None):
 
 def _do_surround_ds(view, edit, target, mode=None):
     def _f(view, s):
-        if mode == INTERNAL_NORMAL_MODE:
+        if mode == INTERNAL_NORMAL:
             if len(target) != 1:
                 # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
                 return s

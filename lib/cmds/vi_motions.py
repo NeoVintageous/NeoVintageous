@@ -9,7 +9,6 @@ from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
 
-
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib.commands import _nv_cmdline_handle_key
 from NeoVintageous.lib.history import history_update
@@ -35,13 +34,18 @@ from NeoVintageous.lib.vi.text_objects import word_end_reverse
 from NeoVintageous.lib.vi.text_objects import word_reverse
 from NeoVintageous.lib.vi.utils import directions
 from NeoVintageous.lib.vi.utils import get_bol
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import INTERNAL_NORMAL
+from NeoVintageous.lib.vi.utils import NORMAL
 from NeoVintageous.lib.vi.utils import regions_transformer
 from NeoVintageous.lib.vi.utils import resize_visual_region
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_a
 from NeoVintageous.lib.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.lib.vi.utils import row_at
 from NeoVintageous.lib.vi.utils import row_to_pt
+from NeoVintageous.lib.vi.utils import SELECT
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 
 
 __all__ = [
@@ -111,7 +115,7 @@ class _vi_find_in_line(ViMotionCommand):
         # @character is under the caret, nothing happens.
 
         def f(view, s):
-            if mode == modes.VISUAL_LINE:
+            if mode == VISUAL_LINE:
                 raise ValueError(
                     'this operator is not valid in mode {}'.format(mode))
 
@@ -141,12 +145,11 @@ class _vi_find_in_line(ViMotionCommand):
             if not inclusive:
                 target_pos = target_pos - 1
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(target_pos)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, target_pos + 1)
-            # For visual modes...
-            else:
+            else:  # For visual modes...
                 new_a = resolve_insertion_point_at_a(s)
                 return utils.new_inclusive_region(new_a, target_pos)
 
@@ -168,7 +171,7 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
     def run(self, char=None, mode=None, count=1, inclusive=True, skipping=False):
         def f(view, s):
-            if mode == modes.VISUAL_LINE:
+            if mode == VISUAL_LINE:
                 raise ValueError(
                     'this operator is not valid in mode {}'.format(mode))
 
@@ -197,12 +200,11 @@ class _vi_reverse_find_in_line(ViMotionCommand):
             if not inclusive:
                 target_pos = target_pos + 1
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(target_pos)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(b, target_pos)
-            # For visual modes...
-            else:
+            else:  # For visual modes...
                 new_a = resolve_insertion_point_at_a(s)
                 return utils.new_inclusive_region(new_a, target_pos)
 
@@ -271,7 +273,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
                                  flags=flags,
                                  times=state.count)
         if next_hit:
-            if state.mode == modes.VISUAL:
+            if state.mode == VISUAL:
                 next_hit = Region(self.view.sel()[0].a, next_hit.a + 1)
 
             self.view.add_regions('vi_inc_search', [next_hit], 'string.search', '', DRAW_NO_OUTLINE)
@@ -296,16 +298,16 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string='', mode=None, count=1):
         def f(view, s):
-            if mode == modes.VISUAL:
+            if mode == VISUAL:
                 return Region(s.a, match.a + 1)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, match.a)
 
-            elif mode == modes.NORMAL:
+            elif mode == NORMAL:
                 return Region(match.a, match.a)
 
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 return Region(s.a, view.full_line(match.b - 1).b)
 
             return s
@@ -333,19 +335,19 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
 class _vi_l(ViMotionCommand):
     def run(self, mode=None, count=None):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 if view.line(s.b).empty():
                     return s
 
                 x_limit = min(view.line(s.b).b - 1, s.b + count, view.size())
                 return Region(x_limit, x_limit)
 
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL:
                 x_limit = min(view.line(s.b).b, s.b + count)
                 x_limit = max(0, x_limit)
                 return Region(s.a, x_limit)
 
-            if mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            if mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     x_limit = min(view.full_line(s.b - 1).b, s.b + count)
                     return Region(s.a, x_limit)
@@ -369,15 +371,15 @@ class _vi_l(ViMotionCommand):
 class _vi_h(ViMotionCommand):
     def run(self, count=1, mode=None):
         def f(view, s):
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL:
                 x_limit = max(view.line(s.b).a, s.b - count)
                 return Region(s.a, x_limit)
 
             # TODO: Split handling of the two modes for clarity.
-            elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            elif mode in (VISUAL, VISUAL_BLOCK):
 
                 if s.a < s.b:
-                    if mode == modes.VISUAL_BLOCK and self.view.rowcol(s.b - 1)[1] == baseline:
+                    if mode == VISUAL_BLOCK and self.view.rowcol(s.b - 1)[1] == baseline:
                         return s
 
                     x_limit = max(view.line(s.b - 1).a + 1, s.b - count)
@@ -390,7 +392,7 @@ class _vi_h(ViMotionCommand):
                     x_limit = max(view.line(s.b).a, s.b - count)
                     return Region(s.a, x_limit)
 
-            elif mode == modes.NORMAL:
+            elif mode == NORMAL:
                 x_limit = max(view.line(s.b).a, s.b - count)
                 return Region(x_limit, x_limit)
 
@@ -406,7 +408,7 @@ class _vi_h(ViMotionCommand):
         #
         #  Only lines 11 and 12 should move when we press h.
         baseline = 0
-        if mode == modes.VISUAL_BLOCK:
+        if mode == VISUAL_BLOCK:
             sel = self.view.sel()[0]
             if sel.a < sel.b:
                 min_ = min(self.view.rowcol(r.b - 1)[1] for r in self.view.sel())
@@ -460,7 +462,7 @@ class _vi_j(ViMotionCommand):
     def run(self, count=1, mode=None, xpos=0, no_translation=False):
         def f(view, s):
             nonlocal xpos
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
                 invisible_rows = self.folded_rows(view.line(s.b).b + 1)
@@ -474,13 +476,13 @@ class _vi_j(ViMotionCommand):
 
                 return Region(pt)
 
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
                 return Region(view.line(s.a).a, view.full_line(target_pt).b)
 
-            if mode == modes.VISUAL:
+            if mode == VISUAL:
                 exact_position = s.b - 1 if (s.a < s.b) else s.b
                 current_row = view.rowcol(exact_position)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
@@ -496,7 +498,7 @@ class _vi_j(ViMotionCommand):
 
                 return Region(s.a, target_pt + xpos)
 
-            if mode == modes.VISUAL_LINE:
+            if mode == VISUAL_LINE:
                 if s.a < s.b:
                     current_row = view.rowcol(s.b - 1)[0]
                     target_row = min(current_row + count, view.rowcol(view.size())[0])
@@ -518,7 +520,7 @@ class _vi_j(ViMotionCommand):
 
         state = State(self.view)
 
-        if mode == modes.VISUAL_BLOCK:
+        if mode == VISUAL_BLOCK:
             if len(self.view.sel()) == 1:
                 state.visual_block_direction = directions.DOWN
 
@@ -598,7 +600,7 @@ class _vi_k(ViMotionCommand):
     def run(self, count=1, mode=None, xpos=0, no_translation=False):
         def f(view, s):
             nonlocal xpos
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row - count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
@@ -611,14 +613,14 @@ class _vi_k(ViMotionCommand):
 
                 return Region(pt)
 
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row - count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
 
                 return Region(view.full_line(s.a).b, view.line(target_pt).a)
 
-            if mode == modes.VISUAL:
+            if mode == VISUAL:
                 exact_position = s.b - 1 if (s.a < s.b) else s.b
                 current_row = view.rowcol(exact_position)[0]
                 target_row = max(current_row - count, 0)
@@ -637,7 +639,7 @@ class _vi_k(ViMotionCommand):
 
                 return Region(s.a, end)
 
-            if mode == modes.VISUAL_LINE:
+            if mode == VISUAL_LINE:
                 if s.a < s.b:
                     current_row = view.rowcol(s.b - 1)[0]
                     target_row = min(current_row - count, view.rowcol(view.size())[0])
@@ -657,7 +659,7 @@ class _vi_k(ViMotionCommand):
 
         state = State(self.view)
 
-        if mode == modes.VISUAL_BLOCK:
+        if mode == VISUAL_BLOCK:
             if len(self.view.sel()) == 1:
                 state.visual_block_direction = directions.UP
 
@@ -686,7 +688,7 @@ class _vi_k(ViMotionCommand):
                 self.view.show(new_region, False)
                 return
 
-            elif modes.SELECT:
+            elif SELECT:
                 # Must remove last selection.
                 self.view.sel().subtract(self.view.sel()[-1])
                 return
@@ -699,7 +701,7 @@ class _vi_k(ViMotionCommand):
 class _vi_k_select(ViMotionCommand):
     def run(self, count=1, mode=None):
         # FIXME: It isn't working.
-        if mode != modes.SELECT:
+        if mode != SELECT:
             return ui_blink()
 
         for i in range(count):
@@ -710,16 +712,16 @@ class _vi_k_select(ViMotionCommand):
 class _vi_gg(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(0)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 if s.a < s.b:
                     return Region(s.a + 1, 0)
                 else:
                     return Region(s.a, 0)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(view.full_line(s.b).b, 0)
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 if s.a < s.b:
                     return Region(0, s.b)
                 else:
@@ -737,10 +739,10 @@ class _vi_go_to_line(ViMotionCommand):
         dest = self.view.text_point(line - 1, 0)
 
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 non_ws = utils.next_non_white_space_char(view, dest)
                 return Region(non_ws, non_ws)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 start_line = view.full_line(s.a)
                 dest_line = view.full_line(dest)
                 if start_line.a == dest_line.a:
@@ -749,7 +751,7 @@ class _vi_go_to_line(ViMotionCommand):
                     return Region(start_line.a, dest_line.b)
                 else:
                     return Region(start_line.b, dest_line.a)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 if dest < s.a and s.a < s.b:
                     return Region(s.a + 1, dest)
                 elif dest < s.a:
@@ -757,7 +759,7 @@ class _vi_go_to_line(ViMotionCommand):
                 elif dest > s.b and s.a > s.b:
                     return Region(s.a - 1, dest + 1)
                 return Region(s.a, dest + 1)
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 if dest < s.a and s.a < s.b:
                     return Region(view.full_line(s.a).b, dest)
                 elif dest < s.a:
@@ -779,18 +781,18 @@ class _vi_go_to_line(ViMotionCommand):
 class _vi_big_g(ViMotionCommand):
     def run(self, mode=None, count=None):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = eof
                 if not view.line(eof).empty():
                     pt = utils.previous_non_white_space_char(view, eof - 1, white_space='\n')
                 return Region(pt, pt)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 return Region(s.a, eof)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 begin = view.line(s.b).a
                 begin = max(0, begin - 1)
                 return Region(begin, eof)
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 return Region(s.a, eof)
 
             return s
@@ -809,10 +811,10 @@ class _vi_dollar(ViMotionCommand):
                 target = row_to_pt(view, row_at(view, target) + (count - 1))
             eol = view.line(target).b
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(eol if view.line(eol).empty() else (eol - 1))
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 # TODO is this really a special case? can we not include this
                 # case in .resize_visual_region()?
                 # Perhaps we should always ensure that a minimal visual sel
@@ -821,13 +823,13 @@ class _vi_dollar(ViMotionCommand):
                     return Region(s.a - 1, eol + 1)
                 return resize_visual_region(s, eol)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 # TODO perhaps create a .is_linewise_motion() helper?
                 if get_bol(view, s.a) == s.a:
                     return Region(s.a, eol + 1)
                 return Region(s.a, eol)
 
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 # TODO: Implement this. Not too useful, though.
                 return s
 
@@ -839,13 +841,13 @@ class _vi_dollar(ViMotionCommand):
 class _vi_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = units.word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
                     pt = utils.previous_non_white_space_char(view, pt - 1, white_space='\n')
 
                 return Region(pt, pt)
-            elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            elif mode in (VISUAL, VISUAL_BLOCK):
                 start = (s.b - 1) if (s.a < s.b) else s.b
                 pt = units.word_starts(view, start=start, count=count)
 
@@ -858,7 +860,7 @@ class _vi_w(ViMotionCommand):
 
                 return Region(s.a, pt + 1)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 a = s.a
                 pt = units.word_starts(view, start=s.b, count=count,
                                        internal=True)
@@ -876,14 +878,14 @@ class _vi_w(ViMotionCommand):
 class _vi_big_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = units.big_word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
                     pt = utils.previous_non_white_space_char(view, pt - 1,
                                                              white_space='\n')
                 return Region(pt, pt)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 pt = units.big_word_starts(view, start=s.b - 1, count=count)
                 if s.a > s.b and pt >= s.a:
                     return Region(s.a - 1, pt + 1)
@@ -893,7 +895,7 @@ class _vi_big_w(ViMotionCommand):
                     pt -= 1
                 return Region(s.a, pt + 1)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 a = s.a
                 pt = units.big_word_starts(view,
                                            start=s.b,
@@ -912,11 +914,11 @@ class _vi_big_w(ViMotionCommand):
 class _vi_e(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = units.word_ends(view, start=s.b, count=count)
                 return Region(pt - 1)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 pt = units.word_ends(view, start=s.b - 1, count=count)
                 if (s.a > s.b) and (pt >= s.a):
                     return Region(s.a - 1, pt)
@@ -924,7 +926,7 @@ class _vi_e(ViMotionCommand):
                     return Region(s.a, pt)
                 return Region(s.a, pt)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 a = s.a
                 pt = units.word_ends(view,
                                      start=s.b,
@@ -941,11 +943,11 @@ class _vi_e(ViMotionCommand):
 class _vi_zero(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(view.line(s.b).a)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, view.line(s.b).a)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 if s.a < s.b:
                     return Region(s.a, view.line(s.b - 1).a + 1)
                 else:
@@ -958,12 +960,12 @@ class _vi_zero(ViMotionCommand):
 class _vi_right_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 par_begin = units.next_paragraph_start(view, s.b, count)
                 # find the next non-empty row if needed
                 return Region(par_begin)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 next_start = units.next_paragraph_start(view,
                                                         s.b,
                                                         count,
@@ -972,7 +974,7 @@ class _vi_right_brace(ViMotionCommand):
                 return resize_visual_region(s, next_start)
 
             # TODO Delete previous ws in remaining start line.
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 par_begin = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if par_begin == (self.view.size() - 1):
                     return Region(s.a, self.view.size())
@@ -980,7 +982,7 @@ class _vi_right_brace(ViMotionCommand):
                     return Region(s.a, par_begin)
                 return Region(s.a, par_begin - 1)
 
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 par_begin = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if s.a <= s.b:
                     return Region(s.a, par_begin + 1)
@@ -1001,19 +1003,19 @@ class _vi_left_brace(ViMotionCommand):
             start = utils.previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
             par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 next_start = units.prev_paragraph_start(view, s.b, count)
                 return Region(next_start)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 next_start = units.prev_paragraph_start(view, s.b, count)
                 return resize_visual_region(s, next_start)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 next_start = units.prev_paragraph_start(view, s.b, count)
                 return Region(s.a, next_start)
 
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 if s.a <= s.b:
                     if par_as_region.a < s.a:
                         return Region(view.full_line(s.a).b, par_as_region.a)
@@ -1069,7 +1071,7 @@ class _vi_percent(ViMotionCommand):
                     else:
                         return self.find_balanced_opening_bracket(bracket_pt, brackets)
 
-                if mode == modes.VISUAL:
+                if mode == VISUAL:
                     found = find_bracket_location(s)
                     if found is not None:
                         # Offset by 1 if s.a was upperbound but begin is not
@@ -1082,20 +1084,20 @@ class _vi_percent(ViMotionCommand):
 
                         return Region(begin, end)
 
-                if mode == modes.VISUAL_LINE:
+                if mode == VISUAL_LINE:
                     # TODO: Improve handling of s.a < s.b and s.a > s.b cases.
                     a = find_bracket_location(s)
                     if a is not None:
                         a = self.view.full_line(a).b
                         return Region(s.begin(), a)
 
-                elif mode == modes.NORMAL:
+                elif mode == NORMAL:
                     a = find_bracket_location(s)
                     if a is not None:
                         return Region(a, a)
 
                 # TODO: According to Vim we must swallow brackets in this case.
-                elif mode == modes.INTERNAL_NORMAL:
+                elif mode == INTERNAL_NORMAL:
                     found = find_bracket_location(s)
                     if found is not None:
                         if found < s.a:
@@ -1207,12 +1209,12 @@ class _vi_percent(ViMotionCommand):
 class _vi_big_h(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 non_ws = utils.next_non_white_space_char(view, target)
                 return Region(non_ws, non_ws)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a + 1, target)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 new_target = utils.next_non_white_space_char(view, target)
                 return Region(s.a + 1, new_target)
             else:
@@ -1231,14 +1233,14 @@ class _vi_big_h(ViMotionCommand):
 class _vi_big_l(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 non_ws = utils.next_non_white_space_char(view, target)
                 return Region(non_ws, non_ws)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 if s.b >= target:
                     return Region(s.a + 1, target)
                 return Region(s.a, target)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 if s.b >= target:
                     new_target = utils.next_non_white_space_char(view, target)
                     return Region(s.a + 1, new_target)
@@ -1261,14 +1263,14 @@ class _vi_big_l(ViMotionCommand):
 class _vi_big_m(ViMotionCommand):
     def run(self, count=None, extend=False, mode=None):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 non_ws = utils.next_non_white_space_char(view, target)
                 return Region(non_ws, non_ws)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 if s.b >= target:
                     return Region(s.a + 1, target)
                 return Region(s.a, target)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 if s.b >= target:
                     new_target = utils.next_non_white_space_char(view, target)
                     return Region(s.a + 1, new_target)
@@ -1294,7 +1296,7 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
             pattern = self.build_pattern(query)
             flags = self.calculate_flags()
 
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL:
                 match = find_wrapping(view,
                                       term=pattern,
                                       start=view.word(s.end()).end(),
@@ -1310,14 +1312,14 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
                                       times=1)
 
             if match:
-                if mode == modes.INTERNAL_NORMAL:
+                if mode == INTERNAL_NORMAL:
                     return Region(s.a, match.begin())
-                elif mode == modes.VISUAL:
+                elif mode == VISUAL:
                     return Region(s.a, match.begin())
-                elif mode == modes.NORMAL:
+                elif mode == NORMAL:
                     return Region(match.begin(), match.begin())
 
-            elif mode == modes.NORMAL:
+            elif mode == NORMAL:
                 pt = view.word(s.end()).begin()
                 return Region(pt)
 
@@ -1343,7 +1345,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
             pattern = self.build_pattern(query)
             flags = self.calculate_flags()
 
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL:
                 match = reverse_find_wrapping(view,
                                               term=pattern,
                                               start=0,
@@ -1359,14 +1361,14 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
                                               times=1)
 
             if match:
-                if mode == modes.INTERNAL_NORMAL:
+                if mode == INTERNAL_NORMAL:
                     return Region(s.b, match.begin())
-                elif mode == modes.VISUAL:
+                elif mode == VISUAL:
                     return Region(s.b, match.begin())
-                elif mode == modes.NORMAL:
+                elif mode == NORMAL:
                     return Region(match.begin(), match.begin())
 
-            elif mode == modes.NORMAL:
+            elif mode == NORMAL:
                 pt = utils.previous_white_space_char(view, s.b)
                 return Region(pt + 1)
 
@@ -1390,15 +1392,15 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 class _vi_b(ViMotionCommand):
     def run(self, mode=None, count=1):
         def do_motion(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = word_reverse(self.view, s.b, count)
                 return Region(pt)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 pt = word_reverse(self.view, s.b, count)
                 return Region(s.a, pt)
 
-            elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count)
                     if pt < s.a:
@@ -1417,15 +1419,15 @@ class _vi_big_b(ViMotionCommand):
     # TODO: Reimplement this.
     def run(self, count=1, mode=None):
         def do_motion(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = word_reverse(self.view, s.b, count, big=True)
                 return Region(pt)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 pt = word_reverse(self.view, s.b, count, big=True)
                 return Region(s.a, pt)
 
-            elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count, big=True)
                     if pt < s.a:
@@ -1458,11 +1460,11 @@ class _vi_underscore(ViMotionCommand):
 
             bol = self.view.text_point(target_row, 0)
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
                 return Region(bol)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 # TODO: differentiate between 'd' and 'c'
                 begin = self.view.line(b).a
                 target_row_bol = self.view.text_point(target_row, 0)
@@ -1475,7 +1477,7 @@ class _vi_underscore(ViMotionCommand):
                 else:
                     return Region(begin, end + 1)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
                 return utils.new_inclusive_region(a, bol)
             else:
@@ -1496,13 +1498,13 @@ class _vi_hat(ViMotionCommand):
             bol = self.view.line(b).a
             bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(bol)
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 # The character at the "end" of the region is skipped in both
                 # forward and reverse cases, so unlike other regions, no need to add 1 to it
                 return Region(a, bol)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 return utils.new_inclusive_region(a, bol)
             else:
                 return s
@@ -1512,26 +1514,26 @@ class _vi_hat(ViMotionCommand):
 
 class _vi_gj(ViMotionCommand):
     def run(self, mode=None, count=1):
-        if mode == modes.NORMAL:
+        if mode == NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': False})
-        elif mode == modes.VISUAL:
+        elif mode == VISUAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': True})
-        elif mode == modes.INTERNAL_NORMAL:
+        elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': False})
 
 
 class _vi_gk(ViMotionCommand):
     def run(self, mode=None, count=1):
-        if mode == modes.NORMAL:
+        if mode == NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
-        elif mode == modes.VISUAL:
+        elif mode == VISUAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': True})
-        elif mode == modes.INTERNAL_NORMAL:
+        elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
 
@@ -1539,11 +1541,11 @@ class _vi_gk(ViMotionCommand):
 class _vi_g__(ViMotionCommand):
     def run(self, count=1, mode=None):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 eol = view.line(s.b).b
                 return Region(eol - 1, eol - 1)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 eol = None
                 if s.a < s.b:
                     eol = view.line(s.b - 1).b
@@ -1554,7 +1556,7 @@ class _vi_g__(ViMotionCommand):
                         return Region(s.a - 1, eol)
                     return Region(s.a, eol)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 eol = view.line(s.b).b
                 return Region(s.a, eol)
 
@@ -1582,16 +1584,16 @@ class _vi_ctrl_u(ViMotionCommand):
     def run(self, mode=None, count=None):
 
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return previous
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 return Region(s.a, previous.b)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, previous.b)
 
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 return Region(s.a, self.view.full_line(previous.b).b)
 
             return s
@@ -1620,16 +1622,16 @@ class _vi_ctrl_d(ViMotionCommand):
     def run(self, mode=None, extend=False, count=None):
 
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return next
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 return Region(s.a, next.b)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, next.b)
 
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 return Region(s.a, self.view.full_line(next.b).b)
 
             return s
@@ -1648,11 +1650,11 @@ class _vi_pipe(ViMotionCommand):
 
     def run(self, mode=None, count=None):
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = self.col_to_pt(pt=s.b, nr=count)
                 return Region(pt, pt)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 pt = self.col_to_pt(pt=s.b - 1, nr=count)
                 if s.a < s.b:
                     if pt < s.a:
@@ -1665,7 +1667,7 @@ class _vi_pipe(ViMotionCommand):
                     else:
                         return Region(s.a, pt)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 pt = self.col_to_pt(pt=s.b, nr=count)
                 if s.a < s.b:
                     return Region(s.a, pt)
@@ -1680,10 +1682,10 @@ class _vi_pipe(ViMotionCommand):
 class _vi_ge(ViMotionCommand):
     def run(self, mode=None, count=1):
         def to_word_end(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = word_end_reverse(view, s.b, count)
                 return Region(pt)
-            elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_end_reverse(view, s.b - 1, count)
                     if pt > s.a:
@@ -1699,10 +1701,10 @@ class _vi_ge(ViMotionCommand):
 class _vi_g_big_e(ViMotionCommand):
     def run(self, mode=None, count=1):
         def to_word_end(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = word_end_reverse(view, s.b, count, big=True)
                 return Region(pt)
-            elif mode in (modes.VISUAL, modes.VISUAL_BLOCK):
+            elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_end_reverse(view, s.b - 1, count, big=True)
                     if pt > s.a:
@@ -1733,13 +1735,13 @@ class _vi_left_paren(ViMotionCommand):
             # TODO: must skip empty paragraphs.
             sen = self.find_previous_sentence_end(s)
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(sen.a, sen.a)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 return Region(s.a + 1, sen.a + 1)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, sen.a + 1)
 
             return s
@@ -1771,15 +1773,15 @@ class _vi_right_paren(ViMotionCommand):
             # TODO: must skip empty paragraphs.
             sen = self.find_next_sentence_end(s)
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 target = min(sen.b, view.size() - 1)
                 return Region(target, target)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 # TODO: Must encompass new line char too?
                 return Region(s.a, sen.b)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, sen.b)
 
             return s
@@ -1791,16 +1793,16 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string, mode=None, count=1, extend=False):
         def f(view, s):
             # FIXME: readjust carets if we searched for '\n'.
-            if mode == modes.VISUAL:
+            if mode == VISUAL:
                 return Region(s.end(), found.a)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.end(), found.a)
 
-            elif mode == modes.NORMAL:
+            elif mode == NORMAL:
                 return Region(found.a, found.a)
 
-            elif mode == modes.VISUAL_LINE:
+            elif mode == VISUAL_LINE:
                 # FIXME: Ensure that the very first ? search excludes the current line.
                 return Region(s.end(), view.full_line(found.a).a)
 
@@ -1882,7 +1884,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
                                            flags=flags,
                                            times=state.count)
         if occurrence:
-            if state.mode == modes.VISUAL:
+            if state.mode == VISUAL:
                 occurrence = Region(self.view.sel()[0].a, occurrence.a)
 
             self.view.add_regions('vi_inc_search', [occurrence], 'string.search', '', DRAW_NO_OUTLINE)
@@ -1949,13 +1951,13 @@ class _vi_big_e(ViMotionCommand):
 
             pt = units.word_ends(view, b, count=count, big=True)
 
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(pt - 1)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, pt)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 start = s.a
                 if s.b < s.a:
                     start = s.a - 1
@@ -1966,7 +1968,7 @@ class _vi_big_e(ViMotionCommand):
                     return Region(start + 1, end)
 
             # Untested
-            elif mode == modes.VISUAL_BLOCK:
+            elif mode == VISUAL_BLOCK:
                 if s.a > s.b:
                     if pt > s.a:
                         return Region(s.a - 1, pt)
@@ -1980,11 +1982,11 @@ class _vi_big_e(ViMotionCommand):
 
 class _vi_ctrl_f(ViMotionCommand):
     def run(self, mode=None, count=1):
-        if mode == modes.NORMAL:
+        if mode == NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True})
-        elif mode == modes.VISUAL:
+        elif mode == VISUAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
-        elif mode == modes.VISUAL_LINE:
+        elif mode == VISUAL_LINE:
             self.view.run_command('move', {'by': 'pages', 'forward': True, 'extend': True})
 
             new_sels = []
@@ -2002,11 +2004,11 @@ class _vi_ctrl_f(ViMotionCommand):
 
 class _vi_ctrl_b(ViMotionCommand):
     def run(self, mode=None, count=1):
-        if mode == modes.NORMAL:
+        if mode == NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': False})
-        elif mode == modes.VISUAL:
+        elif mode == VISUAL:
             self.view.run_command('move', {'by': 'pages', 'forward': False, 'extend': True})
-        elif mode == modes.VISUAL_LINE:
+        elif mode == VISUAL_LINE:
             self.view.run_command('move', {'by': 'pages', 'forward': False, 'extend': True})
 
             new_sels = []
@@ -2027,11 +2029,11 @@ class _vi_enter(ViMotionCommand):
         self.view.run_command('_vi_j', {'mode': mode, 'count': count})
 
         def advance(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = utils.next_non_white_space_char(view, s.b,
                                                      white_space=' \t')
                 return Region(pt)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 if s.a < s.b:
                     pt = utils.next_non_white_space_char(view, s.b - 1,
                                                          white_space=' \t')
@@ -2049,11 +2051,11 @@ class _vi_minus(ViMotionCommand):
         self.view.run_command('_vi_k', {'mode': mode, 'count': count})
 
         def advance(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 pt = utils.next_non_white_space_char(view, s.b,
                                                      white_space=' \t')
                 return Region(pt)
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 if s.a < s.b:
                     pt = utils.next_non_white_space_char(view, s.b - 1,
                                                          white_space=' \t')
@@ -2075,7 +2077,7 @@ class _vi_select_text_object(ViMotionCommand):
     def run(self, text_object=None, mode=None, count=1, extend=False, inclusive=False):
         def f(view, s):
             # TODO: Vim seems to swallow the delimiters if you give this command.
-            if mode == modes.INTERNAL_NORMAL:
+            if mode == INTERNAL_NORMAL:
 
                 # TODO: For the ( object, we have to abort the editing command
                 # completely if no match was found. We could signal this to
@@ -2084,7 +2086,7 @@ class _vi_select_text_object(ViMotionCommand):
                                               inclusive=inclusive,
                                               count=count)
 
-            if mode == modes.VISUAL:
+            if mode == VISUAL:
                 return get_text_object_region(view, s, text_object,
                                               inclusive=inclusive,
                                               count=count)
@@ -2123,13 +2125,13 @@ class _vi_go_to_symbol(ViMotionCommand):
     def run(self, count=1, mode=None, globally=False):
 
         def f(view, s):
-            if mode == modes.NORMAL:
+            if mode == NORMAL:
                 return Region(location, location)
 
-            elif mode == modes.VISUAL:
+            elif mode == VISUAL:
                 return Region(s.a + 1, location)
 
-            elif mode == modes.INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.a, location)
 
             return s
@@ -2173,7 +2175,7 @@ class _vi_gm(ViMotionCommand):
             row_start = row_to_pt(self.view, row_at(self.view, s.b))
             return Region(min(row_start + mid_pt, line.b - 1))
 
-        if mode != modes.NORMAL:
+        if mode != NORMAL:
             return ui_blink()
 
         regions_transformer(self.view, advance)
@@ -2194,7 +2196,7 @@ class _vi_left_square_bracket(ViMotionCommand):
                 return Region(reg.a)
             return s
 
-        if mode != modes.NORMAL:
+        if mode != NORMAL:
             self.enter_normal_mode(mode=mode)
             return ui_blink()
 
@@ -2234,7 +2236,7 @@ class _vi_right_square_bracket(ViMotionCommand):
                 return Region(reg.a)
             return s
 
-        if mode != modes.NORMAL:
+        if mode != NORMAL:
             ui_blink()
             self.enter_normal_mode(mode=mode)
             return

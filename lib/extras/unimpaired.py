@@ -2,10 +2,10 @@ from sublime_plugin import TextCommand
 
 from NeoVintageous.lib.plugin import INPUT_INMEDIATE
 from NeoVintageous.lib.plugin import inputs
-from NeoVintageous.lib.plugin import NORMAL_MODE
+from NeoVintageous.lib.plugin import NORMAL
 from NeoVintageous.lib.plugin import register
 from NeoVintageous.lib.plugin import ViOperatorDef
-from NeoVintageous.lib.plugin import VISUAL_MODE
+from NeoVintageous.lib.plugin import VISUAL
 
 
 __all__ = [
@@ -16,7 +16,7 @@ __all__ = [
 # A post of https://github.com/tpope/vim-unimpaired.
 
 
-@register(seq='[l', modes=(NORMAL_MODE, VISUAL_MODE))
+@register(seq='[l', modes=(NORMAL, VISUAL))
 class _UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, state):
         return {
@@ -29,7 +29,7 @@ class _UnimpairedContextPrevious(ViOperatorDef):
         }
 
 
-@register(seq=']l', modes=(NORMAL_MODE, VISUAL_MODE))
+@register(seq=']l', modes=(NORMAL, VISUAL))
 class _UnimpairedContextNext(ViOperatorDef):
     def translate(self, state):
         return {
@@ -42,7 +42,7 @@ class _UnimpairedContextNext(ViOperatorDef):
         }
 
 
-@register(seq='[<space>', modes=(NORMAL_MODE,))
+@register(seq='[<space>', modes=(NORMAL,))
 class _UnimpairedBlankUp(ViOperatorDef):
     def translate(self, state):
         return {
@@ -55,7 +55,7 @@ class _UnimpairedBlankUp(ViOperatorDef):
         }
 
 
-@register(seq=']<space>', modes=(NORMAL_MODE,))
+@register(seq=']<space>', modes=(NORMAL,))
 class _UnimpairedBlankDown(ViOperatorDef):
     def translate(self, state):
         return {
@@ -68,7 +68,7 @@ class _UnimpairedBlankDown(ViOperatorDef):
         }
 
 
-@register(seq='[e', modes=(NORMAL_MODE,))
+@register(seq='[e', modes=(NORMAL,))
 class _UnimpairedMoveUp(ViOperatorDef):
     def translate(self, state):
         return {
@@ -81,7 +81,7 @@ class _UnimpairedMoveUp(ViOperatorDef):
         }
 
 
-@register(seq=']e', modes=(NORMAL_MODE,))
+@register(seq=']e', modes=(NORMAL,))
 class _UnimpairedMoveDown(ViOperatorDef):
     def translate(self, state):
         return {
@@ -117,7 +117,7 @@ class _BaseToggleDef(ViOperatorDef):
         return True
 
 
-@register(seq='co', modes=(NORMAL_MODE,))
+@register(seq='co', modes=(NORMAL,))
 class _UnimpairedToggle(_BaseToggleDef):
     def translate(self, state):
         return {
@@ -129,7 +129,7 @@ class _UnimpairedToggle(_BaseToggleDef):
         }
 
 
-@register(seq='[o', modes=(NORMAL_MODE,))
+@register(seq='[o', modes=(NORMAL,))
 class _UnimpairedToggleOn(_BaseToggleDef):
     def translate(self, state):
         return {
@@ -141,7 +141,7 @@ class _UnimpairedToggleOn(_BaseToggleDef):
         }
 
 
-@register(seq=']o', modes=(NORMAL_MODE,))
+@register(seq=']o', modes=(NORMAL,))
 class _UnimpairedToggleOff(_BaseToggleDef):
     def translate(self, state):
         return {

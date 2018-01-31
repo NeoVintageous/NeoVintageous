@@ -7,7 +7,7 @@ class Test__vi_visual_o_InNormalMode(unittest.ViewTestCase):
         self.write('abc')
         self.select((2, 0))
 
-        self.view.run_command('_vi_visual_o', {'mode': unittest.NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': unittest.NORMAL, 'count': 1})
 
         self.assertSelection((2, 0))
 
@@ -18,7 +18,7 @@ class Test__vi_visual_o_InInternalNormalMode(unittest.ViewTestCase):
         self.write('abc')
         self.select((2, 0))
 
-        self.view.run_command('_vi_visual_o', {'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': unittest.INTERNAL_NORMAL, 'count': 1})
 
         self.assertSelection((2, 0))
 
@@ -29,7 +29,7 @@ class Test__vi_visual_o_InVisualMode(unittest.ViewTestCase):
         self.write('abc')
         self.select((0, 2))
 
-        self.view.run_command('_vi_visual_o', {'mode': unittest.VISUAL_MODE, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': unittest.VISUAL, 'count': 1})
 
         self.assertSelection((2, 0))
 
@@ -40,6 +40,6 @@ class Test__vi_visual_o_InVisualLineMode(unittest.ViewTestCase):
         self.write('abc\ndef')
         self.select((0, 4))
 
-        self.view.run_command('_vi_visual_o', {'mode': unittest.VISUAL_LINE_MODE, 'count': 1})
+        self.view.run_command('_vi_visual_o', {'mode': unittest.VISUAL_LINE, 'count': 1})
 
         self.assertSelection((4, 0))

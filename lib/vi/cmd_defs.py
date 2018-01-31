@@ -7,23 +7,19 @@ from NeoVintageous.lib.vi.inputs import parser_def
 from NeoVintageous.lib.vi.keys import seqs
 from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE
 from NeoVintageous.lib.vi.utils import INPUT_VIA_PANEL
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import INSERT
+from NeoVintageous.lib.vi.utils import NORMAL
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING
+from NeoVintageous.lib.vi.utils import SELECT
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 
 
-_MODES_MOTION = (
-    modes.NORMAL,
-    modes.OPERATOR_PENDING,
-    modes.VISUAL,
-    modes.VISUAL_LINE,
-    modes.VISUAL_BLOCK
-)
+_MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
-_MODES_ACTION = (
-    modes.NORMAL,
-    modes.VISUAL,
-    modes.VISUAL_LINE,
-    modes.VISUAL_BLOCK
-)
+
+_MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
 @keys.assign(seq=seqs.D, modes=_MODES_ACTION)
@@ -75,7 +71,7 @@ class ViInsertLineAfter(ViOperatorDef):
 
     def translate(self, state):
         # XXX: Create a separate command?
-        if state.mode in (modes.VISUAL, modes.VISUAL_LINE):
+        if state.mode in (VISUAL, VISUAL_LINE):
             return {
                 'action': '_vi_visual_o',
                 'action_args': {
@@ -232,7 +228,7 @@ class ViChangeByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.U, modes=[modes.NORMAL])
+@keys.assign(seq=seqs.U, modes=[NORMAL])
 class ViUndo(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -248,7 +244,7 @@ class ViUndo(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
+@keys.assign(seq=seqs.U, modes=[VISUAL, VISUAL_LINE, VISUAL_BLOCK])
 class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -605,7 +601,7 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_J, modes=_MODES_ACTION + (modes.SELECT,))
+@keys.assign(seq=seqs.BIG_J, modes=_MODES_ACTION + (SELECT,))
 class ViJoinLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -614,7 +610,7 @@ class ViJoinLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        if state.mode == modes.SELECT:
+        if state.mode == SELECT:
             return {
                 'action': '_vi_select_big_j',
                 'action_args': {
@@ -1500,7 +1496,7 @@ class ViScrollByLinesUp(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_U, modes=[modes.VISUAL, modes.VISUAL_LINE, modes.VISUAL_BLOCK])
+@keys.assign(seq=seqs.BIG_U, modes=[VISUAL, VISUAL_LINE, VISUAL_BLOCK])
 class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1760,7 +1756,7 @@ class StShowGotoAnything(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GA, modes=(modes.NORMAL,))
+@keys.assign(seq=seqs.GA, modes=(NORMAL,))
 class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1772,7 +1768,7 @@ class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.J, modes=(modes.SELECT,))
+@keys.assign(seq=seqs.J, modes=(SELECT,))
 class ViAddSelection(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1875,7 +1871,7 @@ class StFocusSideBar(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.I, modes=_MODES_ACTION + (modes.SELECT,))
+@keys.assign(seq=seqs.I, modes=_MODES_ACTION + (SELECT,))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1895,8 +1891,8 @@ class ViEnterInserMode(ViOperatorDef):
 
 
 @keys.assign(seq=seqs.ESC, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_C, modes=_MODES_ACTION + (modes.SELECT,))
-@keys.assign(seq=seqs.CTRL_LEFT_SQUARE_BRACKET, modes=_MODES_ACTION + (modes.SELECT,))
+@keys.assign(seq=seqs.CTRL_C, modes=_MODES_ACTION + (SELECT,))
+@keys.assign(seq=seqs.CTRL_LEFT_SQUARE_BRACKET, modes=_MODES_ACTION + (SELECT,))
 class ViEnterNormalMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1934,14 +1930,14 @@ class ViInsertAfterChar(ViOperatorDef):
         cmd['action'] = '_vi_a'
         cmd['action_args'] = {'mode': state.mode, 'count': 1}
 
-        if state.mode != modes.SELECT:
+        if state.mode != SELECT:
             state.glue_until_normal_mode = True
             state.normal_insert_count = state.count
 
         return cmd
 
 
-@keys.assign(seq=seqs.BIG_A, modes=_MODES_ACTION + (modes.SELECT,))
+@keys.assign(seq=seqs.BIG_A, modes=_MODES_ACTION + (SELECT,))
 class ViInsertAtEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1952,7 +1948,7 @@ class ViInsertAtEol(ViOperatorDef):
         cmd['action'] = '_vi_big_a'
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
 
-        if state.mode != modes.SELECT:
+        if state.mode != SELECT:
             state.glue_until_normal_mode = True
 
         return cmd
@@ -1969,7 +1965,7 @@ class ViInsertAtBol(ViOperatorDef):
         cmd['action'] = '_vi_big_i'
         cmd['action_args'] = {'mode': state.mode, 'count': state.count}
 
-        if state.mode != modes.SELECT:
+        if state.mode != SELECT:
             state.glue_until_normal_mode = True
 
         return cmd
@@ -2078,7 +2074,7 @@ class ViGotoSymbolInProject(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.K, modes=(modes.SELECT,))
+@keys.assign(seq=seqs.K, modes=(SELECT,))
 class ViDeselectInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2086,7 +2082,7 @@ class ViDeselectInstance(ViOperatorDef):
 
     def translate(self, state):
         # Non-standard
-        if state.mode != modes.SELECT:
+        if state.mode != SELECT:
             raise ValueError(
                 'bad mode, expected mode_select, got {0}'.format(state.mode))
 
@@ -2096,7 +2092,7 @@ class ViDeselectInstance(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.L, modes=(modes.SELECT,))
+@keys.assign(seq=seqs.L, modes=(SELECT,))
 class ViSkipInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2104,7 +2100,7 @@ class ViSkipInstance(ViOperatorDef):
 
     def translate(self, state):
         # Non-standard
-        if state.mode != modes.SELECT:
+        if state.mode != SELECT:
             raise ValueError(
                 'bad mode, expected mode_select, got {0}'.format(state.mode))
 
@@ -2843,7 +2839,7 @@ class ViMoveLeftByChars(ViMotionDef):
     def translate(self, state):
         cmd = {}
 
-        if state.mode == modes.SELECT:
+        if state.mode == SELECT:
             cmd['motion'] = 'find_under_expand_skip'
             cmd['motion_args'] = {}
 
@@ -3047,7 +3043,7 @@ class ViReverseFindWord(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_DOT, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_SHIFT_DOT, modes=_MODES_MOTION)
 # XXX: This is called a 'submode' in the vim docs:
-@keys.assign(seq=seqs.CTRL_X, modes=[modes.INSERT])
+@keys.assign(seq=seqs.CTRL_X, modes=[INSERT])
 # TODO This should not be a motion.
 class ViOpenNameSpace(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -3222,7 +3218,7 @@ class ViSearchCharForward(ViMotionDef):
         return cmd
 
 
-@keys.assign(seq=seqs.A, modes=[modes.OPERATOR_PENDING, modes.VISUAL, modes.VISUAL_BLOCK])
+@keys.assign(seq=seqs.A, modes=[OPERATOR_PENDING, VISUAL, VISUAL_BLOCK])
 class ViATextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3259,7 +3255,7 @@ class ViATextObject(ViMotionDef):
         return cmd
 
 
-@keys.assign(seq=seqs.I, modes=[modes.OPERATOR_PENDING, modes.VISUAL, modes.VISUAL_BLOCK])
+@keys.assign(seq=seqs.I, modes=[OPERATOR_PENDING, VISUAL, VISUAL_BLOCK])
 class ViITextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3460,7 +3456,7 @@ class ViSearchBackwardImpl(ViMotionDef):
         return cmd
 
 
-@keys.assign(seq=seqs.CTRL_X_CTRL_L, modes=[modes.INSERT])
+@keys.assign(seq=seqs.CTRL_X_CTRL_L, modes=[INSERT])
 class ViInsertLineWithCommonPrefix(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

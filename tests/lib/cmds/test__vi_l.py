@@ -7,7 +7,7 @@ class Test__vi_l_InNormalMode(unittest.ViewTestCase):
         self.write('abc')
         self.select(0)
 
-        self.view.run_command('_vi_l', {'mode': unittest.NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': unittest.NORMAL, 'count': 1})
 
         self.assertSelection(1)
 
@@ -15,7 +15,7 @@ class Test__vi_l_InNormalMode(unittest.ViewTestCase):
         self.write('foo bar baz')
         self.select(0)
 
-        self.view.run_command('_vi_l', {'mode': unittest.NORMAL_MODE, 'count': 10})
+        self.view.run_command('_vi_l', {'mode': unittest.NORMAL, 'count': 10})
 
         self.assertSelection(10)
 
@@ -23,7 +23,7 @@ class Test__vi_l_InNormalMode(unittest.ViewTestCase):
         self.write('abc')
         self.select(0)
 
-        self.view.run_command('_vi_l', {'mode': unittest.NORMAL_MODE, 'count': 10000})
+        self.view.run_command('_vi_l', {'mode': unittest.NORMAL, 'count': 10000})
 
         self.assertSelection(2)
 
@@ -34,7 +34,7 @@ class Test__vi_l_InInternalNormalMode(unittest.ViewTestCase):
         self.write('abc')
         self.select(0)
 
-        self.view.run_command('_vi_l', {'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': unittest.INTERNAL_NORMAL, 'count': 1})
 
         self.assertSelection((0, 1))
 
@@ -42,7 +42,7 @@ class Test__vi_l_InInternalNormalMode(unittest.ViewTestCase):
         self.write('foo bar baz')
         self.select(0)
 
-        self.view.run_command('_vi_l', {'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 10})
+        self.view.run_command('_vi_l', {'mode': unittest.INTERNAL_NORMAL, 'count': 10})
 
         self.assertSelection((0, 10))
 
@@ -50,7 +50,7 @@ class Test__vi_l_InInternalNormalMode(unittest.ViewTestCase):
         self.write('abc')
         self.select(0)
 
-        self.view.run_command('_vi_l', {'mode': unittest.INTERNAL_NORMAL_MODE, 'count': 10000})
+        self.view.run_command('_vi_l', {'mode': unittest.INTERNAL_NORMAL, 'count': 10000})
 
         self.assertSelection((0, 3))
 
@@ -61,7 +61,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('abc')
         self.select((0, 1))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 1})
 
         self.assertSelection((0, 2))
 
@@ -69,7 +69,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('abc')
         self.select((2, 0))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 1})
 
         self.assertSelection((2, 1))
 
@@ -77,7 +77,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('abc')
         self.select((1, 0))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 1})
 
         self.assertSelection((0, 2))
 
@@ -85,7 +85,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('foo bar baz')
         self.select((5, 0))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 5})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 5})
 
         self.assertSelection((4, 6))
 
@@ -93,7 +93,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('foo\nbar\n')
         self.select((5, 1))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 1})
 
         self.assertSelection((5, 2))
 
@@ -101,7 +101,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('foo\nbar\n')
         self.select((5, 3))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 1})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 1})
 
         self.assertSelection((5, 3))
 
@@ -109,7 +109,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('foo\nbar\n')
         self.select((5, 3))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 100})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 100})
 
         self.assertSelection((5, 3))
 
@@ -117,7 +117,7 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('foo bar fuzz buzz')
         self.select((0, 1))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 10})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 10})
 
         self.assertSelection((0, 11))
 
@@ -125,6 +125,6 @@ class Test__vi_l_InVisualMode(unittest.ViewTestCase):
         self.write('abc\n')
         self.select((0, 1))
 
-        self.view.run_command('_vi_l', {'mode': unittest.VISUAL_MODE, 'count': 10000})
+        self.view.run_command('_vi_l', {'mode': unittest.VISUAL, 'count': 10000})
 
         self.assertSelection((0, 4))

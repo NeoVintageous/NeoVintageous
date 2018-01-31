@@ -1,17 +1,17 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.lib.vi.mappings import CMD_TYPE_USER
-from NeoVintageous.lib.vi.mappings import INSERT_MODE
+from NeoVintageous.lib.vi.mappings import INSERT
 from NeoVintageous.lib.vi.mappings import Mapping
 from NeoVintageous.lib.vi.mappings import _STATUS_COMPLETE
 from NeoVintageous.lib.vi.mappings import _STATUS_INCOMPLETE
 from NeoVintageous.lib.vi.mappings import Mappings
-from NeoVintageous.lib.vi.mappings import NORMAL_MODE
-from NeoVintageous.lib.vi.mappings import OPERATOR_PENDING_MODE
-from NeoVintageous.lib.vi.mappings import SELECT_MODE
-from NeoVintageous.lib.vi.mappings import VISUAL_BLOCK_MODE
-from NeoVintageous.lib.vi.mappings import VISUAL_LINE_MODE
-from NeoVintageous.lib.vi.mappings import VISUAL_MODE
+from NeoVintageous.lib.vi.mappings import NORMAL
+from NeoVintageous.lib.vi.mappings import OPERATOR_PENDING
+from NeoVintageous.lib.vi.mappings import SELECT
+from NeoVintageous.lib.vi.mappings import VISUAL_BLOCK
+from NeoVintageous.lib.vi.mappings import VISUAL_LINE
+from NeoVintageous.lib.vi.mappings import VISUAL
 
 
 # We need to patch the mappings storage dictionary so that out tests don't mess
@@ -61,54 +61,54 @@ class TestMappings(unittest.TestCase):
     @_patch_mappings
     def test_defaults(self, _mappings):
         self.assertEquals(_mappings, {
-            INSERT_MODE: {},
-            NORMAL_MODE: {},
-            OPERATOR_PENDING_MODE: {},
-            SELECT_MODE: {},
-            VISUAL_BLOCK_MODE: {},
-            VISUAL_LINE_MODE: {},
-            VISUAL_MODE: {},
+            INSERT: {},
+            NORMAL: {},
+            OPERATOR_PENDING: {},
+            SELECT: {},
+            VISUAL_BLOCK: {},
+            VISUAL_LINE: {},
+            VISUAL: {},
         })
 
     @_patch_mappings
     def test_can_add(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
-        mappings.add(unittest.INSERT_MODE, 'A', 'B')
-        mappings.add(unittest.NORMAL_MODE, 'C', 'D')
-        mappings.add(unittest.NORMAL_MODE, 'C2', 'D2')
-        mappings.add(unittest.NORMAL_MODE, 'C3', 'D3')
-        mappings.add(unittest.NORMAL_MODE, 'A', 'B')
-        mappings.add(unittest.OPERATOR_PENDING_MODE, 'E', 'F')
-        mappings.add(unittest.SELECT_MODE, 'G', 'H')
-        mappings.add(unittest.VISUAL_BLOCK_MODE, 'I', 'J')
-        mappings.add(unittest.VISUAL_BLOCK_MODE, 'I2', 'J2')
-        mappings.add(unittest.VISUAL_BLOCK_MODE, 'K', 'L')
-        mappings.add(unittest.VISUAL_LINE_MODE, 'K', 'L')
-        mappings.add(unittest.VISUAL_MODE, 'M', 'N')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
+        mappings.add(unittest.INSERT, 'A', 'B')
+        mappings.add(unittest.NORMAL, 'C', 'D')
+        mappings.add(unittest.NORMAL, 'C2', 'D2')
+        mappings.add(unittest.NORMAL, 'C3', 'D3')
+        mappings.add(unittest.NORMAL, 'A', 'B')
+        mappings.add(unittest.OPERATOR_PENDING, 'E', 'F')
+        mappings.add(unittest.SELECT, 'G', 'H')
+        mappings.add(unittest.VISUAL_BLOCK, 'I', 'J')
+        mappings.add(unittest.VISUAL_BLOCK, 'I2', 'J2')
+        mappings.add(unittest.VISUAL_BLOCK, 'K', 'L')
+        mappings.add(unittest.VISUAL_LINE, 'K', 'L')
+        mappings.add(unittest.VISUAL, 'M', 'N')
 
         self.assertEquals(_mappings, {
-            INSERT_MODE: {'A': {'name': 'B', 'type': CMD_TYPE_USER}},
-            NORMAL_MODE: {
+            INSERT: {'A': {'name': 'B', 'type': CMD_TYPE_USER}},
+            NORMAL: {
                 'C': {'name': 'D', 'type': CMD_TYPE_USER},
                 'C2': {'name': 'D2', 'type': CMD_TYPE_USER},
                 'C3': {'name': 'D3', 'type': CMD_TYPE_USER},
                 'A': {'name': 'B', 'type': CMD_TYPE_USER},
             },
-            OPERATOR_PENDING_MODE: {'E': {'name': 'F', 'type': CMD_TYPE_USER}},
-            SELECT_MODE: {'G': {'name': 'H', 'type': CMD_TYPE_USER}},
-            VISUAL_BLOCK_MODE: {
+            OPERATOR_PENDING: {'E': {'name': 'F', 'type': CMD_TYPE_USER}},
+            SELECT: {'G': {'name': 'H', 'type': CMD_TYPE_USER}},
+            VISUAL_BLOCK: {
                 'I': {'name': 'J', 'type': CMD_TYPE_USER},
                 'I2': {'name': 'J2', 'type': CMD_TYPE_USER},
                 'K': {'name': 'L', 'type': CMD_TYPE_USER},
             },
-            VISUAL_LINE_MODE: {'K': {'name': 'L', 'type': CMD_TYPE_USER}},
-            VISUAL_MODE: {'M': {'name': 'N', 'type': CMD_TYPE_USER}},
+            VISUAL_LINE: {'K': {'name': 'L', 'type': CMD_TYPE_USER}},
+            VISUAL: {'M': {'name': 'N', 'type': CMD_TYPE_USER}},
         })
 
     @_patch_mappings
     def test_add_raises_exception(self, _mappings):
         expected = _mappings.copy()
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
 
         with self.assertRaises(KeyError):
             mappings.add('foobar', 'X', 'Y')
@@ -116,54 +116,54 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(_mappings, expected)
 
         # Should not raise exception (protect against false positive).
-        mappings.add(unittest.INSERT_MODE, 'A', 'B')
+        mappings.add(unittest.INSERT, 'A', 'B')
 
     @_patch_mappings
     def test_can_remove(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
-        mappings.add(unittest.INSERT_MODE, 'A', 'B')
-        mappings.add(unittest.INSERT_MODE, 'C', 'D')
-        mappings.add(unittest.INSERT_MODE, 'E', 'F')
-        mappings.add(unittest.NORMAL_MODE, 'A', 'B')
-        mappings.add(unittest.NORMAL_MODE, 'C', 'D')
-        mappings.add(unittest.NORMAL_MODE, 'E', 'F')
-        mappings.remove(unittest.INSERT_MODE, 'C')
-        mappings.remove(unittest.NORMAL_MODE, 'E')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
+        mappings.add(unittest.INSERT, 'A', 'B')
+        mappings.add(unittest.INSERT, 'C', 'D')
+        mappings.add(unittest.INSERT, 'E', 'F')
+        mappings.add(unittest.NORMAL, 'A', 'B')
+        mappings.add(unittest.NORMAL, 'C', 'D')
+        mappings.add(unittest.NORMAL, 'E', 'F')
+        mappings.remove(unittest.INSERT, 'C')
+        mappings.remove(unittest.NORMAL, 'E')
 
         self.assertEquals(_mappings, {
-            INSERT_MODE: {
+            INSERT: {
                 'A': {'name': 'B', 'type': CMD_TYPE_USER},
                 'E': {'name': 'F', 'type': CMD_TYPE_USER},
             },
-            NORMAL_MODE: {
+            NORMAL: {
                 'A': {'name': 'B', 'type': CMD_TYPE_USER},
                 'C': {'name': 'D', 'type': CMD_TYPE_USER},
             },
-            OPERATOR_PENDING_MODE: {},
-            SELECT_MODE: {},
-            VISUAL_BLOCK_MODE: {},
-            VISUAL_LINE_MODE: {},
-            VISUAL_MODE: {},
+            OPERATOR_PENDING: {},
+            SELECT: {},
+            VISUAL_BLOCK: {},
+            VISUAL_LINE: {},
+            VISUAL: {},
         })
 
     @_patch_mappings
     def test_remove_raises_exception(self, _mappings):
         expected = _mappings.copy()
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
 
         with self.assertRaises(KeyError, msg='mapping not found'):
             mappings.remove('foobar', 'foobar')
 
         with self.assertRaises(KeyError, msg='mapping not found'):
-            mappings.remove(unittest.INSERT_MODE, 'foobar')
+            mappings.remove(unittest.INSERT, 'foobar')
 
-        mappings.add(unittest.INSERT_MODE, 'X', 'Y')
+        mappings.add(unittest.INSERT, 'X', 'Y')
 
         with self.assertRaises(KeyError, msg='mapping not found'):
-            mappings.remove(unittest.INSERT_MODE, 'foobar')
+            mappings.remove(unittest.INSERT, 'foobar')
 
         # Should not raise exception (protect against false positive).
-        mappings.remove(unittest.INSERT_MODE, 'X')
+        mappings.remove(unittest.INSERT, 'X')
 
         self.assertEqual(_mappings, expected)
 
@@ -171,10 +171,10 @@ class TestMappings(unittest.TestCase):
     @unittest.mock.patch('NeoVintageous.lib.vi.variables._DEFAULTS', {'mapleader': '\\'})
     @unittest.mock.patch('NeoVintageous.lib.vi.variables._VARIABLES', {})
     def test_add_expands_keys(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
-        mappings.add(unittest.NORMAL_MODE, '<leader>d', ':NeovintageousToggleSideBar<CR>')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
+        mappings.add(unittest.NORMAL, '<leader>d', ':NeovintageousToggleSideBar<CR>')
 
-        self.assertEqual(_mappings[unittest.NORMAL_MODE], {
+        self.assertEqual(_mappings[unittest.NORMAL], {
             '\\d': {'name': ':NeovintageousToggleSideBar<CR>', 'type': CMD_TYPE_USER}
         })
 
@@ -182,46 +182,46 @@ class TestMappings(unittest.TestCase):
     @unittest.mock.patch('NeoVintageous.lib.vi.variables._DEFAULTS', {'mapleader': '\\'})
     @unittest.mock.patch('NeoVintageous.lib.vi.variables._VARIABLES', {})
     def test_can_remove_expanded_keys(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
 
-        mappings.add(unittest.NORMAL_MODE, '<leader>d', ':NeovintageousToggleSideBar<CR>')
-        mappings.remove(unittest.NORMAL_MODE, '\\d')
+        mappings.add(unittest.NORMAL, '<leader>d', ':NeovintageousToggleSideBar<CR>')
+        mappings.remove(unittest.NORMAL, '\\d')
 
-        self.assertEqual(_mappings[unittest.NORMAL_MODE], {})
+        self.assertEqual(_mappings[unittest.NORMAL], {})
 
-        mappings.add(unittest.NORMAL_MODE, '<leader>d', ':NeovintageousToggleSideBar<CR>')
-        mappings.remove(unittest.NORMAL_MODE, '<leader>d')
+        mappings.add(unittest.NORMAL, '<leader>d', ':NeovintageousToggleSideBar<CR>')
+        mappings.remove(unittest.NORMAL, '<leader>d')
 
-        self.assertEqual(_mappings[unittest.NORMAL_MODE], {})
+        self.assertEqual(_mappings[unittest.NORMAL], {})
 
     @_patch_mappings
     def test_can_clear(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
-        mappings.add(unittest.NORMAL_MODE, 'X', 'Y')
-        mappings.add(unittest.INSERT_MODE, 'X', 'Y')
-        mappings.add(unittest.NORMAL_MODE, 'X', 'Y')
-        mappings.add(unittest.OPERATOR_PENDING_MODE, 'X', 'Y')
-        mappings.add(unittest.SELECT_MODE, 'X', 'Y')
-        mappings.add(unittest.VISUAL_BLOCK_MODE, 'X', 'Y')
-        mappings.add(unittest.VISUAL_LINE_MODE, 'X', 'Y')
-        mappings.add(unittest.VISUAL_MODE, 'X', 'Y')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
+        mappings.add(unittest.NORMAL, 'X', 'Y')
+        mappings.add(unittest.INSERT, 'X', 'Y')
+        mappings.add(unittest.NORMAL, 'X', 'Y')
+        mappings.add(unittest.OPERATOR_PENDING, 'X', 'Y')
+        mappings.add(unittest.SELECT, 'X', 'Y')
+        mappings.add(unittest.VISUAL_BLOCK, 'X', 'Y')
+        mappings.add(unittest.VISUAL_LINE, 'X', 'Y')
+        mappings.add(unittest.VISUAL, 'X', 'Y')
         mappings.clear()
 
         self.assertEquals(_mappings, {
-            INSERT_MODE: {},
-            NORMAL_MODE: {},
-            OPERATOR_PENDING_MODE: {},
-            SELECT_MODE: {},
-            VISUAL_BLOCK_MODE: {},
-            VISUAL_LINE_MODE: {},
-            VISUAL_MODE: {},
+            INSERT: {},
+            NORMAL: {},
+            OPERATOR_PENDING: {},
+            SELECT: {},
+            VISUAL_BLOCK: {},
+            VISUAL_LINE: {},
+            VISUAL: {},
         })
 
     @_patch_mappings
     def test_expand_first(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
 
-        mappings.add(unittest.NORMAL_MODE, 'G', 'G_')
+        mappings.add(unittest.NORMAL, 'G', 'G_')
         mapping = mappings.expand_first('G')
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.head, 'G')
@@ -230,7 +230,7 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.sequence, 'G')
         self.assertEqual(mapping.status, _STATUS_COMPLETE)
 
-        mappings.add(unittest.NORMAL_MODE, '<C-m>', 'daw')
+        mappings.add(unittest.NORMAL, '<C-m>', 'daw')
         mapping = mappings.expand_first('<C-m>')
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.head, '<C-m>')
@@ -239,7 +239,7 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.sequence, '<C-m>')
         self.assertEqual(mapping.status, _STATUS_COMPLETE)
 
-        mappings.add(unittest.NORMAL_MODE, '<C-m>', 'daw')
+        mappings.add(unittest.NORMAL, '<C-m>', 'daw')
         mapping = mappings.expand_first('<C-m>x')
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.head, '<C-m>')
@@ -248,7 +248,7 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.sequence, '<C-m>x')
         self.assertEqual(mapping.status, _STATUS_COMPLETE)
 
-        mappings.add(unittest.NORMAL_MODE, 'xxA', 'daw')
+        mappings.add(unittest.NORMAL, 'xxA', 'daw')
         mapping = mappings.expand_first('xx')
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.head, 'xx')
@@ -259,130 +259,130 @@ class TestMappings(unittest.TestCase):
 
     @_patch_mappings
     def test_expand_first_returns_none_when_not_found(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
         self.assertIsNone(mappings.expand_first(''))
         self.assertIsNone(mappings.expand_first('G'))
         self.assertIsNone(mappings.expand_first('foobar'))
 
     @_patch_mappings
     def test_get_mapped_seqs(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
 
-        self.assertEqual(mappings._get_mapped_seqs(unittest.NORMAL_MODE), [])
+        self.assertEqual(mappings._get_mapped_seqs(unittest.NORMAL), [])
 
-        mappings.add(unittest.NORMAL_MODE, 'B', 'Y')
-        mappings.add(unittest.NORMAL_MODE, 'C', 'Z')
-        mappings.add(unittest.NORMAL_MODE, 'A', 'X')
-        mappings.add(unittest.INSERT_MODE, 'J', 'K')
-        mappings.add(unittest.INSERT_MODE, 'I', 'L')
-        mappings.add(unittest.VISUAL_MODE, 'M', 'N')
+        mappings.add(unittest.NORMAL, 'B', 'Y')
+        mappings.add(unittest.NORMAL, 'C', 'Z')
+        mappings.add(unittest.NORMAL, 'A', 'X')
+        mappings.add(unittest.INSERT, 'J', 'K')
+        mappings.add(unittest.INSERT, 'I', 'L')
+        mappings.add(unittest.VISUAL, 'M', 'N')
 
         # Should be sorted.
-        self.assertEqual(mappings._get_mapped_seqs(unittest.NORMAL_MODE), ['A', 'B', 'C'])
-        self.assertEqual(mappings._get_mapped_seqs(unittest.INSERT_MODE), ['I', 'J'])
-        self.assertEqual(mappings._get_mapped_seqs(unittest.VISUAL_MODE), ['M'])
-        self.assertEqual(mappings._get_mapped_seqs(unittest.SELECT_MODE), [])
+        self.assertEqual(mappings._get_mapped_seqs(unittest.NORMAL), ['A', 'B', 'C'])
+        self.assertEqual(mappings._get_mapped_seqs(unittest.INSERT), ['I', 'J'])
+        self.assertEqual(mappings._get_mapped_seqs(unittest.VISUAL), ['M'])
+        self.assertEqual(mappings._get_mapped_seqs(unittest.SELECT), [])
 
     @_patch_mappings
     def test_find_partial_match(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
 
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, ''), [])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'foobar'), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, ''), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'foobar'), [])
 
-        mappings.add(unittest.NORMAL_MODE, 'x', 'y')
+        mappings.add(unittest.NORMAL, 'x', 'y')
 
         # XXX Should this really accept empty string?
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, ''), ['x'])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'x'), ['x'])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, ''), ['x'])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'x'), ['x'])
 
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, ' '), [])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'x '), [])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, ' x'), [])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'y'), [])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'xy'), [])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'foobar'), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, ' '), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'x '), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, ' x'), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'y'), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'xy'), [])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'foobar'), [])
 
-        mappings.add(unittest.NORMAL_MODE, 'yc', 'g')
-        mappings.add(unittest.NORMAL_MODE, 'yd', 'g')
-        mappings.add(unittest.NORMAL_MODE, 'ya', 'g')
-        mappings.add(unittest.NORMAL_MODE, 'yb', 'g')
+        mappings.add(unittest.NORMAL, 'yc', 'g')
+        mappings.add(unittest.NORMAL, 'yd', 'g')
+        mappings.add(unittest.NORMAL, 'ya', 'g')
+        mappings.add(unittest.NORMAL, 'yb', 'g')
 
         # Should be case-sensitive.
-        mappings.add(unittest.NORMAL_MODE, 'Y', 'g')
-        mappings.add(unittest.NORMAL_MODE, 'Ya', 'g')
+        mappings.add(unittest.NORMAL, 'Y', 'g')
+        mappings.add(unittest.NORMAL, 'Ya', 'g')
 
         # Should also be sorted.
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'y'),
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'y'),
                          ['ya', 'yb', 'yc', 'yd'])
 
         # XXX Should this really accept empty string?
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, ''),
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, ''),
                          ['Y', 'Ya', 'x', 'ya', 'yb', 'yc', 'yd'])
 
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'yd'), ['yd'])
-        self.assertEqual(mappings._find_partial_match(unittest.NORMAL_MODE, 'x'), ['x'])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'yd'), ['yd'])
+        self.assertEqual(mappings._find_partial_match(unittest.NORMAL, 'x'), ['x'])
 
     @_patch_mappings
     def test_find_full_match(self, _mappings):
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE))
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL))
 
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, ''), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'foobar'), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, ''), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'foobar'), (None, None))
 
-        mappings.add(unittest.NORMAL_MODE, 'xc', 'y')
-        mappings.add(unittest.NORMAL_MODE, 'xd', 'abc')
-        mappings.add(unittest.NORMAL_MODE, 'xa', 'y')
-        mappings.add(unittest.NORMAL_MODE, 'xb', 'y')
+        mappings.add(unittest.NORMAL, 'xc', 'y')
+        mappings.add(unittest.NORMAL, 'xd', 'abc')
+        mappings.add(unittest.NORMAL, 'xa', 'y')
+        mappings.add(unittest.NORMAL, 'xb', 'y')
 
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, ''), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, ' '), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'foobar'), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'x'), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'xdd'), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'xd '), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, ' xd'), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, ''), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, ' '), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'foobar'), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'x'), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'xdd'), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'xd '), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, ' xd'), (None, None))
 
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'xd'),
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'xd'),
                          ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
 
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'xd'),
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'xd'),
                          ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
 
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'xd'),
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'xd'),
                          ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
 
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'xd'),
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'xd'),
                          ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
 
-        mappings.add(unittest.NORMAL_MODE, 'bbc', 'y')
-        mappings.add(unittest.NORMAL_MODE, 'bbd', 'y')
-        mappings.add(unittest.NORMAL_MODE, 'bbb', 'cde')
-        mappings.add(unittest.NORMAL_MODE, 'bba', 'y')
+        mappings.add(unittest.NORMAL, 'bbc', 'y')
+        mappings.add(unittest.NORMAL, 'bbd', 'y')
+        mappings.add(unittest.NORMAL, 'bbb', 'cde')
+        mappings.add(unittest.NORMAL, 'bba', 'y')
 
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, ''), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'b'), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'bb'), (None, None))
-        self.assertEqual(mappings._find_full_match(unittest.NORMAL_MODE, 'bbb'),
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, ''), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'b'), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'bb'), (None, None))
+        self.assertEqual(mappings._find_full_match(unittest.NORMAL, 'bbb'),
                          ('bbb', {'name': 'cde', 'type': CMD_TYPE_USER}))
 
     @_patch_mappings
     def test_incomplete_user_mapping(self, _mappings):
 
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE, partial_sequence='a'))
-        mappings.add(unittest.NORMAL_MODE, 'aa', 'y')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL, partial_sequence='a'))
+        mappings.add(unittest.NORMAL, 'aa', 'y')
         self.assertEqual(mappings.incomplete_user_mapping(), True)
 
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE, partial_sequence='b'))
-        mappings.add(unittest.NORMAL_MODE, 'b', 'y')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL, partial_sequence='b'))
+        mappings.add(unittest.NORMAL, 'b', 'y')
         self.assertFalse(mappings.incomplete_user_mapping())
 
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE, partial_sequence='c'))
-        mappings.add(unittest.NORMAL_MODE, 'c', 'y')
-        mappings.add(unittest.NORMAL_MODE, 'cc', 'y')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL, partial_sequence='c'))
+        mappings.add(unittest.NORMAL, 'c', 'y')
+        mappings.add(unittest.NORMAL, 'cc', 'y')
         self.assertFalse(mappings.incomplete_user_mapping())
 
-        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL_MODE, partial_sequence='dd'))
-        mappings.add(unittest.NORMAL_MODE, 'd', 'y')
-        mappings.add(unittest.NORMAL_MODE, 'ddd', 'y')
+        mappings = Mappings(unittest.mock.Mock(mode=unittest.NORMAL, partial_sequence='dd'))
+        mappings.add(unittest.NORMAL, 'd', 'y')
+        mappings.add(unittest.NORMAL, 'ddd', 'y')
         self.assertEquals(mappings.incomplete_user_mapping(), True)

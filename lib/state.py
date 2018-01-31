@@ -21,9 +21,19 @@ from NeoVintageous.lib.vi.utils import first_sel
 from NeoVintageous.lib.vi.utils import INPUT_AFTER_MOTION
 from NeoVintageous.lib.vi.utils import INPUT_INMEDIATE
 from NeoVintageous.lib.vi.utils import INPUT_VIA_PANEL
+from NeoVintageous.lib.vi.utils import INSERT
+from NeoVintageous.lib.vi.utils import INTERNAL_NORMAL
 from NeoVintageous.lib.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.lib.vi.utils import is_view
-from NeoVintageous.lib.vi.utils import modes
+from NeoVintageous.lib.vi.utils import NORMAL
+from NeoVintageous.lib.vi.utils import OPERATOR_PENDING
+from NeoVintageous.lib.vi.utils import REPLACE
+from NeoVintageous.lib.vi.utils import SELECT
+from NeoVintageous.lib.vi.utils import to_friendly_name
+from NeoVintageous.lib.vi.utils import UNKNOWN
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 from NeoVintageous.lib.vi.variables import Variables
 
 
@@ -241,7 +251,7 @@ class State(object):
         # It isn't guaranteed that the underlying view's .sel() will be in a
         # consistent state (for example, that it will at least have one non-
         # empty region in visual mode.
-        return self.settings.vi['mode'] or modes.UNKNOWN
+        return self.settings.vi['mode'] or UNKNOWN
 
     @mode.setter
     def mode(self, value):
@@ -455,25 +465,25 @@ class State(object):
         self.settings.vi['recording'] = value
 
     def enter_normal_mode(self):
-        self.mode = modes.NORMAL
+        self.mode = NORMAL
 
     def enter_visual_mode(self):
-        self.mode = modes.VISUAL
+        self.mode = VISUAL
 
     def enter_visual_line_mode(self):
-        self.mode = modes.VISUAL_LINE
+        self.mode = VISUAL_LINE
 
     def enter_insert_mode(self):
-        self.mode = modes.INSERT
+        self.mode = INSERT
 
     def enter_replace_mode(self):
-        self.mode = modes.REPLACE
+        self.mode = REPLACE
 
     def enter_select_mode(self):
-        self.mode = modes.SELECT
+        self.mode = SELECT
 
     def enter_visual_block_mode(self):
-        self.mode = modes.VISUAL_BLOCK
+        self.mode = VISUAL_BLOCK
 
     def reset_sequence(self):
         # TODO When is_recording, we could store the .sequence
@@ -496,15 +506,16 @@ class State(object):
     def reset_status(self):
         # type: () -> None
         self.view.erase_status('vim-seq')
-        if self.mode == modes.NORMAL:
+        if self.mode == NORMAL:
             self.view.erase_status('vim-mode')
 
     def display_status(self):
         # type: () -> None
-        mode_name = modes.to_friendly_name(self.mode)
+        mode_name = to_friendly_name(self.mode)
         if mode_name:
             mode_name = '-- {} --'.format(mode_name) if mode_name else ''
             self.view.set_status('vim-mode', mode_name)
+
         self.view.set_status('vim-seq', self.sequence)
 
     def must_scroll_into_view(self):
@@ -645,8 +656,8 @@ class State(object):
                 raise ValueError('too many motions')
             self.motion = command
 
-            if self.mode == modes.OPERATOR_PENDING:
-                self.mode = modes.NORMAL
+            if self.mode == OPERATOR_PENDING:
+                self.mode = NORMAL
 
             self._set_parsers(command)
 
@@ -657,7 +668,7 @@ class State(object):
             self.action = command
 
             if (self.action.motion_required and not self.in_any_visual_mode()):
-                self.mode = modes.OPERATOR_PENDING
+                self.mode = OPERATOR_PENDING
 
             self._set_parsers(command)
 
@@ -665,9 +676,7 @@ class State(object):
             raise ValueError('unexpected command type')
 
     def in_any_visual_mode(self):
-        return (self.mode in (modes.VISUAL,
-                              modes.VISUAL_LINE,
-                              modes.VISUAL_BLOCK))
+        return (self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 
     def can_run_action(self):
         action = self.action
@@ -681,7 +690,7 @@ class State(object):
         #
         # Returns:
         #   3-tuple (lines, chars, mode)
-        if self.mode not in (modes.VISUAL, modes.VISUAL_LINE):
+        if self.mode not in (VISUAL, VISUAL_LINE):
             return
 
         first = first_sel(self.view)
@@ -699,24 +708,23 @@ class State(object):
         rows, chars, old_mode = data
         first = first_sel(self.view)
 
-        if old_mode == modes.VISUAL:
+        if old_mode == VISUAL:
             if rows > 0:
-                end = self.view.text_point(utils.row_at(self.view, first.b) +
-                                           rows, chars)
+                end = self.view.text_point(utils.row_at(self.view, first.b) + rows, chars)
             else:
                 end = first.b + chars
 
             self.view.sel().add(sublime.Region(first.b, end))
-            self.mode = modes.VISUAL
+            self.mode = VISUAL
 
-        elif old_mode == modes.VISUAL_LINE:
+        elif old_mode == VISUAL_LINE:
             rows, _, old_mode = data
             begin = self.view.line(first.b).a
             end = self.view.text_point(utils.row_at(self.view, begin) +
                                        (rows - 1), 0)
             end = self.view.full_line(end).b
             self.view.sel().add(sublime.Region(begin, end))
-            self.mode = modes.VISUAL_LINE
+            self.mode = VISUAL_LINE
 
     def start_recording(self):
         self.is_recording = True
@@ -747,18 +755,21 @@ class State(object):
             return False
 
         if self.action and self.motion:
-            if self.mode != modes.NORMAL:
+            if self.mode != NORMAL:
                 raise ValueError('wrong mode')
+
             return True
 
         if self.can_run_action():
-            if self.mode == modes.OPERATOR_PENDING:
+            if self.mode == OPERATOR_PENDING:
                 raise ValueError('wrong mode')
+
             return True
 
         if self.motion:
-            if self.mode == modes.OPERATOR_PENDING:
+            if self.mode == OPERATOR_PENDING:
                 raise ValueError('wrong mode')
+
             return True
 
         return False
@@ -773,15 +784,15 @@ class State(object):
             action_cmd = self.action.translate(self)
             motion_cmd = self.motion.translate(self)
             _logger.debug('full command, switching to internal normal mode...')
-            self.mode = modes.INTERNAL_NORMAL
+            self.mode = INTERNAL_NORMAL
 
             # TODO: Make a requirement that motions and actions take a
             # 'mode' param.
             if 'mode' in action_cmd['action_args']:
-                action_cmd['action_args']['mode'] = modes.INTERNAL_NORMAL
+                action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
             if 'mode' in motion_cmd['motion_args']:
-                motion_cmd['motion_args']['mode'] = modes.INTERNAL_NORMAL
+                motion_cmd['motion_args']['mode'] = INTERNAL_NORMAL
 
             args = action_cmd['action_args']
             args['count'] = 1
@@ -821,13 +832,14 @@ class State(object):
         if self.action:
             action_cmd = self.action.translate(self)
             _logger.debug('lone action cmd %s', action_cmd)
-            if self.mode == modes.NORMAL:
+            if self.mode == NORMAL:
                 _logger.debug('switch to internal normal mode')
-                self.mode = modes.INTERNAL_NORMAL
+                self.mode = INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
-                    action_cmd['action_args']['mode'] = modes.INTERNAL_NORMAL
-            elif self.mode in (modes.VISUAL, modes.VISUAL_LINE):
+                    action_cmd['action_args']['mode'] = INTERNAL_NORMAL
+
+            elif self.mode in (VISUAL, VISUAL_LINE):
                 self.view.add_regions('visual_sel', list(self.view.sel()))
 
             # Some commands, like 'i' or 'a', open a series of edits that
@@ -852,7 +864,7 @@ class State(object):
                 if action.repeatable:
                     self.repeat_data = ('vi', seq, self.mode, visual_repeat_data)
 
-        if self.mode == modes.INTERNAL_NORMAL:
+        if self.mode == INTERNAL_NORMAL:
             self.enter_normal_mode()
 
         self.reset_command_data()
@@ -900,34 +912,34 @@ def init_state(view, new_session=False):
     # first loading a file.
     # If the mode is unknown, it might be a new file. Let normal mode setup
     # continue.
-    if not reset and (state.mode not in (modes.NORMAL, modes.UNKNOWN)):
+    if not reset and (state.mode not in (NORMAL, UNKNOWN)):
         return
 
     # If we have no selections, add one.
     if len(state.view.sel()) == 0:
         state.view.sel().add(sublime.Region(0))
 
-    if state.mode in (modes.VISUAL, modes.VISUAL_LINE):
+    if state.mode in (VISUAL, VISUAL_LINE):
         # TODO: Don't we need to pass a mode here?
         view.window().run_command('_enter_normal_mode', {'from_init': True})
 
-    elif state.mode in (modes.INSERT, modes.REPLACE):
+    elif state.mode in (INSERT, REPLACE):
         # TODO: Don't we need to pass a mode here?
         view.window().run_command('_enter_normal_mode', {'from_init': True})
 
     elif (view.has_non_empty_selection_region() and
-          state.mode != modes.VISUAL):
+          state.mode != VISUAL):
             # Runs, for example, when we've performed a search via ST3 search
             # panel and we've pressed 'Find All'. In this case, we want to
             # ensure a consistent state for multiple selections.
             # TODO: We could end up with multiple selections in other ways
             #       that bypass init_state.
-            state.mode = modes.VISUAL
+            state.mode = VISUAL
 
     else:
         # This may be run when we're coming from cmdline mode.
         pseudo_visual = view.has_non_empty_selection_region()
-        mode = modes.VISUAL if pseudo_visual else state.mode
+        mode = VISUAL if pseudo_visual else state.mode
         # TODO: Maybe the above should be handled by State?
         state.enter_normal_mode()
         view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})

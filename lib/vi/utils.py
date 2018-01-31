@@ -4,6 +4,32 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 
+# XXX The modes Use strings because we need to pass modes as arguments in
+# Default.sublime-keymap and it's more readable.
+COMMAND_LINE = 'mode_command_line'
+CTRL_X = 'mode_control_x'
+INSERT = 'mode_insert'
+# NeoVintageous always runs actions based on selections. Some Vim commands,
+# however, behave differently depending on whether the current mode is NORMAL or
+# VISUAL. To differentiate NORMAL mode operations (involving only an action, or
+# a motion plus an action) from VISUAL mode, we need to add an additional mode
+# for handling selections that won't interfere with the actual VISUAL mode.
+# This is INTERNAL_NORMAL's job. We consider INTERNAL_NORMAL a pseudomode,
+# because global state's .mode property should never set to it, yet it's set in
+# vi_cmd_data often.
+# Note that for pure motions we still use plain NORMAL mode.
+INTERNAL_NORMAL = 'mode_internal_normal'
+NORMAL = 'mode_normal'
+NORMAL_INSERT = 'mode_normal_insert'  # The mode you enter when giving i a count
+OPERATOR_PENDING = 'mode_operator_pending'
+REPLACE = 'mode_replace'
+SELECT = 'mode_select'
+UNKNOWN = 'mode_unknown'
+VISUAL = 'mode_visual'
+VISUAL_BLOCK = 'mode_visual_block'
+VISUAL_LINE = 'mode_visual_line'
+
+
 # TODO [refactor] I assume "INMEDIATE" is a typo, should be "IMMEDIATE"?
 INPUT_INMEDIATE = 1
 INPUT_VIA_PANEL = 2
@@ -66,105 +92,34 @@ def is_view(view):
     ))
 
 
-COMMAND_LINE_MODE = 'mode_command_line'
-INSERT_MODE = 'mode_insert'
+def to_friendly_name(mode):
+    # type: (int) -> str
+    if mode == INSERT:
+        return 'INSERT'
+    if mode == INTERNAL_NORMAL:
+        return ''
+    if mode == NORMAL:
+        return ''
+    if mode == OPERATOR_PENDING:
+        return ''
+    if mode == VISUAL:
+        return 'VISUAL'
+    if mode == VISUAL_BLOCK:
+        return 'VISUAL BLOCK'
+    if mode == VISUAL_LINE:
+        return 'VISUAL LINE'
+    if mode == UNKNOWN:
+        return 'UNKNOWN'
+    if mode == REPLACE:
+        return 'REPLACE'
+    if mode == NORMAL_INSERT:
+        return 'INSERT'
+    if mode == SELECT:
+        return 'SELECT'
+    if mode == CTRL_X:
+        return 'Mode ^X'
 
-# NeoVintageous always runs actions based on selections. Some Vim commands,
-# however, behave differently depending on whether the current mode is NORMAL
-# or VISUAL. To differentiate NORMAL mode operations (involving only an
-# action, or a motion plus an action) from VISUAL mode, we need to add an
-# additional mode for handling selections that won't interfere with the actual
-# VISUAL mode.
-#
-# This is _MODE_INTERNAL_NORMAL's job. We consider _MODE_INTERNAL_NORMAL a
-# pseudomode, because global state's .mode property should never set to it,
-# yet it's set in vi_cmd_data often.
-#
-# Note that for pure motions we still use plain NORMAL mode.
-INTERNAL_NORMAL_MODE = 'mode_internal_normal'
-
-NORMAL_MODE = 'mode_normal'
-OPERATOR_PENDING_MODE = 'mode_operator_pending'
-VISUAL_MODE = 'mode_visual'
-VISUAL_BLOCK_MODE = 'mode_visual_block'
-VISUAL_LINE_MODE = 'mode_visual_line'
-UNKNOWN_MODE = 'mode_unknown'
-REPLACE_MODE = 'mode_replace'
-
-# The mode you enter when giving i a count
-NORMAL_INSERT_MODE = 'mode_normal_insert'
-
-SELECT_MODE = 'mode_select'
-CTRL_X_MODE = 'mode_control_x'
-
-
-# DEPRECATED Vim modes class constants are deprecated, use the module level constants.
-# TODO [refactor] Vim modes class contants.
-# Use strings because we need to pass modes as arguments in
-# Default.sublime-keymap and it's more readable.
-class modes:
-
-    COMMAND_LINE = 'mode_command_line'
-    INSERT = 'mode_insert'
-
-    # NeoVintageous always runs actions based on selections. Some Vim commands,
-    # however, behave differently depending on whether the current mode is NORMAL
-    # or VISUAL. To differentiate NORMAL mode operations (involving only an
-    # action, or a motion plus an action) from VISUAL mode, we need to add an
-    # additional mode for handling selections that won't interfere with the actual
-    # VISUAL mode.
-    #
-    # This is _MODE_INTERNAL_NORMAL's job. We consider _MODE_INTERNAL_NORMAL a
-    # pseudomode, because global state's .mode property should never set to it,
-    # yet it's set in vi_cmd_data often.
-    #
-    # Note that for pure motions we still use plain NORMAL mode.
-    INTERNAL_NORMAL = 'mode_internal_normal'
-
-    NORMAL = 'mode_normal'
-    OPERATOR_PENDING = 'mode_operator_pending'
-    VISUAL = 'mode_visual'
-    VISUAL_BLOCK = 'mode_visual_block'
-    VISUAL_LINE = 'mode_visual_line'
-    UNKNOWN = 'mode_unknown'
-    REPLACE = 'mode_replace'
-
-    # The mode you enter when giving i a count
-    NORMAL_INSERT = 'mode_normal_insert'
-
-    SELECT = 'mode_select'
-    CTRL_X = 'mode_control_x'
-
-    @staticmethod
-    def to_friendly_name(mode):
-        # if name == COMMAND_LINE:
-            # return 'INSERT'
-        if mode == modes.INSERT:
-            return 'INSERT'
-        if mode == modes.INTERNAL_NORMAL:
-            return ''
-        if mode == modes.NORMAL:
-            return ''
-        if mode == modes.OPERATOR_PENDING:
-            return ''
-        if mode == modes.VISUAL:
-            return 'VISUAL'
-        if mode == modes.VISUAL_BLOCK:
-            return 'VISUAL BLOCK'
-        if mode == modes.VISUAL_LINE:
-            return 'VISUAL LINE'
-        if mode == modes.UNKNOWN:
-            return 'UNKNOWN'
-        if mode == modes.REPLACE:
-            return 'REPLACE'
-        if mode == modes.NORMAL_INSERT:
-            return 'INSERT'
-        if mode == modes.SELECT:
-            return 'SELECT'
-        if mode == modes.CTRL_X:
-            return 'Mode ^X'
-        else:
-            return 'REALLY UNKNOWN'
+    return 'REALLY UNKNOWN'
 
 
 def regions_transformer(view, f):

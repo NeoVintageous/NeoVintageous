@@ -9,17 +9,11 @@ from NeoVintageous.lib.modeline import do_modeline
 from NeoVintageous.lib.state import init_state
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.vi import settings
-from NeoVintageous.lib.vi.utils import modes
 from NeoVintageous.lib.vi.utils import is_view
-
-
-_NORMAL_INSERT_MODE = modes.NORMAL_INSERT
-_VISUAL_BLOCK_MODE = modes.VISUAL_BLOCK
-_SELECT_MODE = modes.SELECT
-_VISUAL_LINE_MODE = modes.VISUAL_LINE
-_INSERT_MODE = modes.INSERT
-_VISUAL_MODE = modes.VISUAL
-_NORMAL_MODE = modes.NORMAL
+from NeoVintageous.lib.vi.utils import NORMAL
+from NeoVintageous.lib.vi.utils import VISUAL
+from NeoVintageous.lib.vi.utils import VISUAL_BLOCK
+from NeoVintageous.lib.vi.utils import VISUAL_LINE
 
 
 _COMPLETIONS = sorted([x[0] for x in command_names])
@@ -172,7 +166,7 @@ class NeoVintageousEvents(EventListener):
         if command == 'drag_select':
             state = State(view)
 
-            if state.mode in (_VISUAL_MODE, _VISUAL_LINE_MODE, _VISUAL_BLOCK_MODE):
+            if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
                     return
                 elif not args.get('extend'):
@@ -183,7 +177,7 @@ class NeoVintageousEvents(EventListener):
                         ]
                     })
 
-            elif state.mode == _NORMAL_MODE:
+            elif state.mode == NORMAL:
                 # TODO Dragging the mouse does not seem to fire a different
                 # event than simply clicking. This makes it hard to update the
                 # xpos.
