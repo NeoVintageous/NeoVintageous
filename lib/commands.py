@@ -6,8 +6,6 @@ from sublime import Region
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
-from Default.history_list import get_jump_history
-
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib import rcfile
 from NeoVintageous.lib.ex.completions import iter_paths
@@ -51,7 +49,6 @@ __all__ = [
     '_nv_cmdline_handle_key',
     '_nv_fix_st_eol_caret',
     '_nv_goto_help',
-    '_vi_add_to_jump_list',
     '_vi_question_mark_on_parser_done',
     '_vi_slash_on_parser_done',
     'FsCompletion',
@@ -781,12 +778,6 @@ class ViSettingCompletion(TextCommand):
                 })
             except StopIteration:
                 return
-
-
-# TODO Refactor jumplist and history into descrete module
-class _vi_add_to_jump_list(WindowCommand):
-    def run(self):
-        get_jump_history(self.window.id()).push_selection(self.window.active_view())
 
 
 class NeovintageousOpenMyRcFileCommand(WindowCommand):

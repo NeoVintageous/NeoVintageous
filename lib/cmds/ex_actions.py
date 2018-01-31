@@ -21,6 +21,7 @@ from NeoVintageous.lib.ex import shell
 from NeoVintageous.lib.ex.parser.parser import parse_command_line
 from NeoVintageous.lib.ex.plat.windows import get_oem_cp
 from NeoVintageous.lib.ex.plat.windows import get_startup_info
+from NeoVintageous.lib.jumplist import jumplist_update
 from NeoVintageous.lib.state import State
 from NeoVintageous.lib.ui import ui_blink
 from NeoVintageous.lib.vi import abbrev
@@ -171,9 +172,9 @@ class ExGoto(WindowCommand, WindowCommandMixin):
         self.enter_normal_mode(mode=self.state.mode)
         self.state.enter_normal_mode()
 
-        self.window.run_command('_vi_add_to_jump_list')
+        jumplist_update(self.window.active_view())
         self.window.run_command('_vi_go_to_line', {'line': line_nr, 'mode': self.state.mode})
-        self.window.run_command('_vi_add_to_jump_list')
+        jumplist_update(self.window.active_view())
         self._view.show(self._view.sel()[0])
 
 
