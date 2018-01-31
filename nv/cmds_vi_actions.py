@@ -6,7 +6,9 @@ from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
 
-from NeoVintageous.nv import nvim
+from NeoVintageous.nv.nvim import console_message
+from NeoVintageous.nv.nvim import get_logger
+from NeoVintageous.nv.nvim import status_message
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
@@ -139,7 +141,7 @@ __all__ = [
 ]
 
 
-_logger = nvim.get_logger(__name__)
+_log = get_logger(__name__)
 
 
 # https://vimhelp.appspot.com/change.txt.html#gU
@@ -505,7 +507,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
-        _logger.debug('enter normal mode from mode \'%s\'', mode)
+        _log.debug('enter normal mode from mode \'%s\'', mode)
 
         def f(view, s):
             if mode == INSERT:
@@ -733,7 +735,7 @@ class _vi_dot(ViWindowCommandBase):
             state.mode = NORMAL
 
         if repeat_data is None:
-            _logger.debug('[_vi_dot] nothing to repeat')
+            _log.debug('[_vi_dot] nothing to repeat')
             return
 
         # TODO: Find out if the user actually meant '1'.
@@ -741,7 +743,7 @@ class _vi_dot(ViWindowCommandBase):
             count = None
 
         type_, seq_or_cmd, old_mode, visual_data = repeat_data
-        _logger.debug('[_vi_dot] type=\'%s\', seq or cmd=\'%s\', old mode=\'%s\'', type_, seq_or_cmd, old_mode)
+        _log.debug('[_vi_dot] type=\'%s\', seq or cmd=\'%s\', old mode=\'%s\'', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
             state.restore_visual_data(visual_data)
@@ -1683,7 +1685,7 @@ class _vi_p(ViTextCommandBase):
         register = register or '"'
         fragments = state.registers[register]
         if not fragments:
-            return nvim.console_message('Nothing in register "')
+            return console_message('Nothing in register "')
 
         if state.mode == VISUAL:
             prev_text = state.registers.get_selected_text(self)
@@ -1818,7 +1820,7 @@ class _vi_ga(ViWindowCommandBase):
             c_oct = oct(c_ord)
             c_not = character_to_notation(c_str)
 
-            nvim.status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
+            status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#gt
@@ -2381,7 +2383,7 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
                     self.view.run_command('insert_snippet', {'contents': str(rv[0])})
                     state.reset()
             except Exception:
-                nvim.status_message('invalid expression')
+                status_message('invalid expression')
                 on_cancel()
 
         def on_cancel():
@@ -2426,7 +2428,7 @@ class _vi_at(IrreversibleTextCommand):
                 # TODO Should emit bell (if enabled) because no register
                 pass
             except ValueError as e:
-                return nvim.console_message('error: %s' % e)
+                return console_message('error: %s' % e)
 
         state = State(self.view)
         for cmd, args in cmds:
@@ -2684,7 +2686,7 @@ class _vi_g_big_h(ViWindowCommandBase):
             return
 
         ui_blink()
-        nvim.status_message('no available search matches')
+        status_message('no available search matches')
         self.state.reset_command_data()
 
 

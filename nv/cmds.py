@@ -6,7 +6,6 @@ from sublime import Region
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
-from NeoVintageous.nv import nvim
 from NeoVintageous.nv import rcfile
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse
@@ -17,6 +16,10 @@ from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
+from NeoVintageous.nv.nvim import console_message
+from NeoVintageous.nv.nvim import get_logger
+from NeoVintageous.nv.nvim import message
+from NeoVintageous.nv.nvim import status_message
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
@@ -65,7 +68,7 @@ __all__ = [
 ]
 
 
-_logger = nvim.get_logger(__name__)
+_log = get_logger(__name__)
 
 
 class _nv_cmdline_handle_key(TextCommand):
@@ -222,7 +225,7 @@ class PressKey(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
-        _logger.info('key evt: %s repeat_count=%s do_eval=%s check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
+        _log.info('key evt: %s repeat_count=%s do_eval=%s check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
         # If the user has made selections with the mouse, we may be in an
@@ -244,19 +247,19 @@ class PressKey(ViWindowCommandBase):
         state.display_status()
 
         if state.must_capture_register_name:
-            _logger.debug('capturing register name...')
+            _log.debug('capturing register name...')
             state.register = key
             state.partial_sequence = ''
 
             return
 
         if state.must_collect_input:
-            _logger.debug('collecting input...')
+            _log.debug('collecting input...')
             state.process_input(key)
             if state.runnable():
-                _logger.debug('state is runnable')
+                _log.debug('state is runnable')
                 if do_eval:
-                    _logger.debug('evaluating state...')
+                    _log.debug('evaluating state...')
                     state.eval()
                     state.reset_command_data()
 
@@ -266,7 +269,7 @@ class PressKey(ViWindowCommandBase):
             state.action_count = str(repeat_count)
 
         if self._handle_count(state, key, repeat_count):
-            _logger.debug('handled count')
+            _log.debug('handled count')
 
             return
 
@@ -274,14 +277,14 @@ class PressKey(ViWindowCommandBase):
 
         key_mappings = Mappings(state)
         if check_user_mappings and key_mappings.incomplete_user_mapping():
-            _logger.debug('found incomplete mapping')
+            _log.debug('found incomplete mapping')
 
             return
 
         command = key_mappings.resolve(check_user_mappings=check_user_mappings)
 
         if isinstance(command, cmd_defs.ViOpenRegister):
-            _logger.debug('opening register...')
+            _log.debug('opening register...')
             state.must_capture_register_name = True
 
             return
@@ -289,10 +292,10 @@ class PressKey(ViWindowCommandBase):
         # XXX: This doesn't seem to be correct. If we are in OPERATOR_PENDING mode, we should
         # most probably not have to wipe the state.
         if isinstance(command, mappings.Mapping):
-            _logger.debug('found user mapping...')
+            _log.debug('found user mapping...')
 
             if do_eval:
-                _logger.debug('evaluating user mapping...')
+                _log.debug('evaluating user mapping...')
 
                 new_keys = command.mapping
                 if state.mode == OPERATOR_PENDING:
@@ -308,7 +311,7 @@ class PressKey(ViWindowCommandBase):
                 # TODO REVIEW *Not* setting the mode seems to fix some issues with commands like :snoremap
                 # state.mode = NORMAL
 
-                _logger.info('user mapping %s -> %s', key, new_keys)
+                _log.info('user mapping %s -> %s', key, new_keys)
 
                 # Support for basic Command-line mode mappings:
                 #
@@ -335,7 +338,7 @@ class PressKey(ViWindowCommandBase):
                     if ':' == new_keys:
                         return self.window.run_command('vi_colon_input')
 
-                    return nvim.console_message('invalid command line mapping %s -> %s (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
+                    return console_message('invalid command line mapping %s -> %s (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
 
                 self.window.run_command('process_notation', {'keys': new_keys, 'check_user_mappings': False})
 
@@ -344,12 +347,12 @@ class PressKey(ViWindowCommandBase):
         if isinstance(command, cmd_defs.ViOpenNameSpace):
             # Keep collecting input to complete the sequence. For example, we
             # may have typed 'g'
-            _logger.info('opening namespace')
+            _log.info('opening namespace')
 
             return
 
         elif isinstance(command, cmd_base.ViMissingCommandDef):
-            _logger.info('found missing command...')
+            _log.info('found missing command...')
 
             bare_seq = to_bare_command_name(state.sequence)
             if state.mode == OPERATOR_PENDING:
@@ -367,24 +370,24 @@ class PressKey(ViWindowCommandBase):
                 command = key_mappings.resolve(sequence=bare_seq)
 
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.debug('unmapped sequence %s', state.sequence)
+                _log.debug('unmapped sequence %s', state.sequence)
                 ui_blink()
                 state.mode = NORMAL
                 state.reset_command_data()
                 return
 
         if (state.mode == OPERATOR_PENDING and isinstance(command, cmd_defs.ViOperatorDef)):
-            _logger.info('found operator pending...')
+            _log.info('found operator pending...')
             # TODO: This may be unreachable code by now. ???
             # we're expecting a motion, but we could still get an action.
             # For example, dd, g~g~ or g~~
             # remove counts
             action_seq = to_bare_command_name(state.sequence)
-            _logger.debug('action sequence %s', action_seq)
+            _log.debug('action sequence %s', action_seq)
             command = key_mappings.resolve(sequence=action_seq, mode=NORMAL)
             # TODO: Make _missing a command.
             if isinstance(command, cmd_base.ViMissingCommandDef):
-                _logger.debug('unmapped sequence %s', state.sequence)
+                _log.debug('unmapped sequence %s', state.sequence)
                 state.reset_command_data()
                 return
 
@@ -397,20 +400,20 @@ class PressKey(ViWindowCommandBase):
             state.reset_partial_sequence()
 
         if do_eval:
-            _logger.info('evaluating state...')
+            _log.info('evaluating state...')
             state.eval()
 
     def _handle_count(self, state, key, repeat_count):
         """Return True if the processing of the current key needs to stop."""
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
-                _logger.debug('@press_key action count digit \'%s\'', key)
+                _log.debug('@press_key action count digit \'%s\'', key)
                 state.action_count += key
                 return True
 
         if (state.action and (state.mode == OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or state.motion_count):
-                _logger.debug('@press_key motion count digit \'%s\'', key)
+                _log.debug('@press_key motion count digit \'%s\'', key)
                 state.motion_count += key
                 return True
 
@@ -434,7 +437,7 @@ class ProcessNotation(ViWindowCommandBase):
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         state = self.state
-        _logger.debug('process notation keys \'%s\', mode \'%s\'', keys, state.mode)
+        _log.debug('process notation keys \'%s\', mode \'%s\'', keys, state.mode)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -456,7 +459,7 @@ class ProcessNotation(ViWindowCommandBase):
             if state.action:
                 # The last key press has caused an action to be primed. That
                 # means there are no more leading motions. Break out of here.
-                _logger.debug('[process_notation] first action found in \'%s\'', state.sequence)
+                _log.debug('[process_notation] first action found in \'%s\'', state.sequence)
                 state.reset_command_data()
                 if state.mode == OPERATOR_PENDING:
                     state.mode = NORMAL
@@ -484,9 +487,9 @@ class ProcessNotation(ViWindowCommandBase):
                 state.non_interactive = False
                 return
 
-            _logger.debug('[process_notation] original seq/leading motions: %s/%s', keys, leading_motions)
+            _log.debug('[process_notation] original seq/leading motions: %s/%s', keys, leading_motions)
             keys = keys[len(leading_motions):]
-            _logger.debug('[process_notation] seq stripped to \'%s\'', keys)
+            _log.debug('[process_notation] seq stripped to \'%s\'', keys)
 
         if not (state.motion and not state.action):
             with gluing_undo_groups(self.window.active_view(), state):
@@ -519,7 +522,7 @@ class ProcessNotation(ViWindowCommandBase):
         # We'll reach this point if we have a command that requests input
         # whose input parser isn't satistied. For example, `/foo`. Note that
         # `/foo<CR>`, on the contrary, would have satisfied the parser.
-        _logger.debug('[process_notation] unsatisfied parser action=\'%s\', motion=\'%s\'', state.action, state.motion)
+        _log.debug('[process_notation] unsatisfied parser action=\'%s\', motion=\'%s\'', state.action, state.motion)
         if (state.action and state.motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
@@ -556,7 +559,7 @@ class ProcessNotation(ViWindowCommandBase):
                     {parser_def.input_param: command._inp}
                 )
         except IndexError:
-            _logger.debug('[process_notation] could not find a command to collect more user input')
+            _log.debug('[process_notation] could not find a command to collect more user input')
             ui_blink()
         finally:
             self.state.non_interactive = False
@@ -642,7 +645,7 @@ class ViColonInput(WindowCommand):
             self.window.run_command(parsed_new.command.target_command, {
                 'command_line': cmd_line[1:]})
         except Exception as e:
-            nvim.message(str(e) + ' ' + "(%s)" % cmd_line)
+            message(str(e) + ' ' + "(%s)" % cmd_line)
 
     def _force_cancel(self):
         self.on_cancel()
@@ -793,7 +796,7 @@ class NeovintageousReloadMyRcFileCommand(WindowCommand):
     def run(self):
         rcfile.reload()
 
-        nvim.status_message('rc file reloaded')
+        status_message('rc file reloaded')
 
 
 class NeovintageousToggleSideBarCommand(WindowCommand):
@@ -870,7 +873,7 @@ class TabControlCommand(ViWindowCommandBase):
 
             group = self.window.views_in_group(group_index)
             if any(view.is_dirty() for view in group):
-                return nvim.message("E445: Other window contains changes")
+                return message("E445: Other window contains changes")
 
             for view in group:
                 if view.id() == self._view.id():
@@ -882,4 +885,4 @@ class TabControlCommand(ViWindowCommandBase):
             self.window.focus_view(self._view)
 
         else:
-            return nvim.message('unknown tab control command')
+            return message('unknown tab control command')

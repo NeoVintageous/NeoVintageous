@@ -9,10 +9,10 @@ from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
 
-from NeoVintageous.nv import nvim
 from NeoVintageous.nv.cmds import _nv_cmdline_handle_key
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.nvim import console_message
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
@@ -1824,7 +1824,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
                                       times=count)
 
         if not found:
-            return nvim.console_message('Pattern not found')
+            return console_message('Pattern not found')
 
         regions_transformer(self.view, f)
         self.hilite(search_string)

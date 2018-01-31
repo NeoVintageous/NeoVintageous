@@ -4,9 +4,10 @@ from collections import Counter
 from sublime import active_window
 from sublime import Region
 
-from NeoVintageous.nv import nvim
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv import rcfile
+from NeoVintageous.nv.nvim import console_message
+from NeoVintageous.nv.nvim import get_logger
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi import utils
@@ -38,7 +39,7 @@ from NeoVintageous.nv.vi.utils import VISUAL_LINE
 from NeoVintageous.nv.vi.variables import Variables
 
 
-_logger = nvim.get_logger(__name__)
+_log = get_logger(__name__)
 
 
 class State(object):
@@ -237,7 +238,7 @@ class State(object):
     @sequence.setter
     def sequence(self, value):
         # type: (str) -> None
-        _logger.debug('sequence %s', value)
+        _log.debug('sequence %s', value)
         self.settings.vi['sequence'] = value
 
     @property
@@ -250,7 +251,7 @@ class State(object):
     @partial_sequence.setter
     def partial_sequence(self, value):
         # type: (str) -> None
-        _logger.debug('partial sequence %s', value)
+        _log.debug('partial sequence %s', value)
         self.settings.vi['partial_sequence'] = value
 
     @property
@@ -331,7 +332,7 @@ class State(object):
         #       "native" commands are executed via sublime.run_command().
         assert isinstance(value, tuple) or isinstance(value, list), 'bad call'
         assert len(value) == 4, 'bad call'
-        _logger.debug('set repeat data: %s', value)
+        _log.debug('set repeat data: %s', value)
         self.settings.vi['repeat_data'] = value
 
     @property
@@ -417,7 +418,7 @@ class State(object):
     @register.setter
     def register(self, value):
         assert len(str(value)) == 1, '`value` must be a character'
-        _logger.debug('register %s', value)
+        _log.debug('register %s', value)
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
@@ -502,7 +503,7 @@ class State(object):
 
     def reset_partial_sequence(self):
         # type: () -> None
-        _logger.debug('reset partial sequence')
+        _log.debug('reset partial sequence')
         self.partial_sequence = ''
 
     def reset_register_data(self):
@@ -599,8 +600,8 @@ class State(object):
                 xpos = (self.view.rowcol(pos)[1] +
                         ((counter['\t'] * tab_size) - counter['\t']))
             except Exception as e:
-                nvim.console_message(e)
-                _logger.exception('error setting xpos; default to 0')
+                console_message(e)
+                _log.exception('error setting xpos; default to 0')
                 self.xpos = 0
                 return
             else:
@@ -622,7 +623,7 @@ class State(object):
 
     def process_input(self, key):
         # type: (str) -> bool
-        _logger.info('process input key %s', key)
+        _log.info('process input key %s', key)
 
         motion = self.motion
         if motion and motion.accept_input:
@@ -790,7 +791,7 @@ class State(object):
         if self.action and self.motion:
             action_cmd = self.action.translate(self)
             motion_cmd = self.motion.translate(self)
-            _logger.debug('full command, switching to internal normal mode...')
+            _log.debug('full command, switching to internal normal mode...')
             self.mode = INTERNAL_NORMAL
 
             # TODO: Make a requirement that motions and actions take a
@@ -806,7 +807,7 @@ class State(object):
             # let the action run the motion within its edit object so that
             # we don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
-            _logger.debug('motion cmd %s, action cmd %s', motion_cmd, action_cmd)
+            _log.debug('motion cmd %s, action cmd %s', motion_cmd, action_cmd)
 
             if self.glue_until_normal_mode and not self.processing_notation:
                 # We need to tell Sublime Text now that it should group
@@ -815,7 +816,7 @@ class State(object):
 
             self.add_macro_step(action_cmd['action'], args)
 
-            _logger.info('run command (action + motion) %s %s', action_cmd['action'], args)
+            _log.info('run command (action + motion) %s %s', action_cmd['action'], args)
             active_window().run_command(action_cmd['action'], args)
             if not self.non_interactive:
                 if self.action.repeatable:
@@ -827,20 +828,20 @@ class State(object):
 
         if self.motion:
             motion_cmd = self.motion.translate(self)
-            _logger.debug('lone motion cmd %s', motion_cmd)
+            _log.debug('lone motion cmd %s', motion_cmd)
 
             self.add_macro_step(motion_cmd['motion'], motion_cmd['motion_args'])
 
             # We know that all motions are subclasses of ViTextCommandBase,
             # so it's safe to call them from the current view.
-            _logger.info('run command (motion) %s %s', motion_cmd['motion'], motion_cmd['motion_args'])
+            _log.info('run command (motion) %s %s', motion_cmd['motion'], motion_cmd['motion_args'])
             self.view.run_command(motion_cmd['motion'], motion_cmd['motion_args'])
 
         if self.action:
             action_cmd = self.action.translate(self)
-            _logger.debug('lone action cmd %s', action_cmd)
+            _log.debug('lone action cmd %s', action_cmd)
             if self.mode == NORMAL:
-                _logger.debug('switch to internal normal mode')
+                _log.debug('switch to internal normal mode')
                 self.mode = INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
@@ -864,7 +865,7 @@ class State(object):
 
             self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
 
-            _logger.info('run command (action) %s %s', action_cmd['action'], action_cmd['action_args'])
+            _log.info('run command (action) %s %s', action_cmd['action'], action_cmd['action_args'])
             active_window().run_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
@@ -898,7 +899,7 @@ def init_state(view, new_session=False):
 
             view.settings().erase('vintage')
         except Exception:
-            _logger.exception('error initialising irregular view i.e. console, widget, panel, etc.')
+            _log.exception('error initialising irregular view i.e. console, widget, panel, etc.')
         finally:
             return
 

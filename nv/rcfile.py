@@ -3,10 +3,11 @@ import re
 
 import sublime
 
-from NeoVintageous.nv import nvim
+from NeoVintageous.nv.nvim import get_logger
+from NeoVintageous.nv.nvim import message
 
 
-_logger = nvim.get_logger(__name__)
+_log = get_logger(__name__)
 
 # Why is the builtin open function being aliased? In a nutshell: so that this
 # module can provide a succinct and concise api for opening the rcfile e.g.
@@ -40,17 +41,19 @@ def reload():
 
 
 def _run():
-    _logger.debug('run \'%s\'', file_name())
+    _log.debug('run \'%s\'', file_name())
+
     try:
         window = sublime.active_window()
         with _open(file_name(), 'r') as f:
             for line in f:
                 cmd, args = _parse_line(line)
                 if cmd:
-                    _logger.debug('run command \'%s\' with args %s', cmd, args)
+                    _log.debug('run command \'%s\' with args %s', cmd, args)
                     window.run_command(cmd, args)
+
     except FileNotFoundError:
-        _logger.debug('rcfile not found')
+        _log.debug('rcfile not found')
 
 
 _PARSE_LINE_PATTERN = re.compile(
@@ -98,7 +101,7 @@ def _parse_line(line):
                 return ('ex_' + cmd, {'command_line': cmd_line})
     except Exception:
         msg = 'error detected while processing \'{}\' at line \'{}\''.format(file_name(), line.rstrip())
-        nvim.message(msg)
-        _logger.exception(msg)
+        message(msg)
+        _log.exception(msg)
 
     return None, None

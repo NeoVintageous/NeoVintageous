@@ -2,7 +2,7 @@ from sublime import DRAW_NO_FILL
 from sublime import set_timeout
 import sublime_plugin
 
-from NeoVintageous.nv import nvim
+from NeoVintageous.nv.nvim import console_message
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
 
@@ -81,7 +81,7 @@ class ViCommandMixin(object):
         try:
             xpos = self._view.rowcol(self._view.sel()[0].b)[1]
         except Exception as e:
-            nvim.console_message(e)
+            console_message(e)
             raise ValueError('could not set xpos')
 
         state.xpos = xpos
