@@ -14,33 +14,31 @@ import sublime
 try:
     _EXCEPTION = None
 
-    from .lib.state import init_state
+    from .nv.state import init_state
 
-    from .lib.commands import *  # noqa: F401,F403
+    from .nv.cmds import *  # noqa: F401,F403
 
-    # TODO Organise all commands into a single module e.g. lib.commands.
-    from .lib.cmds.ex_actions import *  # noqa: F401,F403
-    from .lib.cmds.vi_actions import *  # noqa: F401,F403
-    from .lib.cmds.vi_motions import *  # noqa: F401,F403
+    # TODO Organise all commands into a single module (i.e. .nv.cmds).
+    from .nv.cmds_ex import *  # noqa: F401,F403
+    from .nv.cmds_vi_actions import *  # noqa: F401,F403
+    from .nv.cmds_vi_motions import *  # noqa: F401,F403
 
-    # Why are the plugins in a directory named "extra" rather than "plugins"?
-    # The plugins were not placed in a directory named "plugins" because of a
-    # bug in Sublime Text that caused loading issues with anything named
-    # "plugins" e.g. modules, sub-modules, attributes, classes, functions. See
-    # https://github.com/NeoVintageous/NeoVintageous/commit/f29727. This issue
-    # has since been fixed in Sublime Text (build 3153). See
-    # https://github.com/SublimeTextIssues/Core/issues/1991.
-    # TODO Organise plugins into a directory named "plugs".
-    # TODO Organise plugins into a directory named "plugins" (requires Sublime
-    # Text build >= 3153).
+    # Why not put all the plugins in a directory named "plugins"? The plugins
+    # were not placed into a directory named "plugins" because of a bug in
+    # Sublime Text that causes loading issues with anything named "plugins" i.e.
+    # module names, attribute names, class names, functions, etc.
+    # See https://github.com/NeoVintageous/NeoVintageous/commit/f29727.
+    # This issue has since been fixed in Sublime Text build 3153.
     # See https://github.com/SublimeTextIssues/Core/issues/1991.
-    from .lib.extras.surround import *      # noqa: F401,F403
-    from .lib.extras.unimpaired import *    # noqa: F401,F403
-    from .lib.extras.abolish import *       # noqa: F401,F403
+    # Note that if the plugins are moved into a directory named "plugins" at a
+    # later time, then remember to bump the minimum Sublime Text version
+    # requirement to 3153.
+    from .nv.plugin_surround import *      # noqa: F401,F403
+    from .nv.plugin_unimpaired import *    # noqa: F401,F403
+    from .nv.plugin_abolish import *       # noqa: F401,F403
 
-    # TODO [review] Should events be imported ala `from .lib.events import *`
-    # like the commands and plugins above?
-    from .lib.events import NeoVintageousEvents  # noqa: F401
+    # TODO [review] Should events be imported using "*" idiom i.e. `from .nv.events import *`?
+    from .nv.events import NeoVintageousEvents  # noqa: F401
 
 except Exception as e:
     _EXCEPTION = e

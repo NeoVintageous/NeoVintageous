@@ -8,21 +8,21 @@ from sublime import active_window as _active_window
 from sublime import Region
 
 # Use aliases to indicate that they are not public testing APIs.
-from NeoVintageous.lib.state import State as _State
+from NeoVintageous.nv.state import State as _State
 
-from NeoVintageous.lib.vi.utils import COMMAND_LINE  # noqa: F401
-from NeoVintageous.lib.vi.utils import CTRL_X  # noqa: F401
-from NeoVintageous.lib.vi.utils import INSERT  # noqa: F401
-from NeoVintageous.lib.vi.utils import INTERNAL_NORMAL  # noqa: F401
-from NeoVintageous.lib.vi.utils import NORMAL  # noqa: F401
-from NeoVintageous.lib.vi.utils import NORMAL_INSERT  # noqa: F401
-from NeoVintageous.lib.vi.utils import OPERATOR_PENDING  # noqa: F401
-from NeoVintageous.lib.vi.utils import REPLACE  # noqa: F401
-from NeoVintageous.lib.vi.utils import SELECT  # noqa: F401
-from NeoVintageous.lib.vi.utils import UNKNOWN  # noqa: F401
-from NeoVintageous.lib.vi.utils import VISUAL  # noqa: F401
-from NeoVintageous.lib.vi.utils import VISUAL_BLOCK  # noqa: F401
-from NeoVintageous.lib.vi.utils import VISUAL_LINE  # noqa: F401
+from NeoVintageous.nv.vi.utils import COMMAND_LINE  # noqa: F401
+from NeoVintageous.nv.vi.utils import CTRL_X  # noqa: F401
+from NeoVintageous.nv.vi.utils import INSERT  # noqa: F401
+from NeoVintageous.nv.vi.utils import INTERNAL_NORMAL  # noqa: F401
+from NeoVintageous.nv.vi.utils import NORMAL  # noqa: F401
+from NeoVintageous.nv.vi.utils import NORMAL_INSERT  # noqa: F401
+from NeoVintageous.nv.vi.utils import OPERATOR_PENDING  # noqa: F401
+from NeoVintageous.nv.vi.utils import REPLACE  # noqa: F401
+from NeoVintageous.nv.vi.utils import SELECT  # noqa: F401
+from NeoVintageous.nv.vi.utils import UNKNOWN  # noqa: F401
+from NeoVintageous.nv.vi.utils import VISUAL  # noqa: F401
+from NeoVintageous.nv.vi.utils import VISUAL_BLOCK  # noqa: F401
+from NeoVintageous.nv.vi.utils import VISUAL_LINE  # noqa: F401
 
 
 # DEPRECATED Use newer APIs.
