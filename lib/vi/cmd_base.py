@@ -7,17 +7,7 @@ CMD_TYPE_USER = 5
 CMD_TYPE_OPEN_NAME_SPACE = 6
 
 
-# DEPRECATED TODO [refactor] into module level constants.
-class cmd_types:
-    MOTION = 1
-    ACTION = 2
-    ANY = 3
-    OTHER = 4
-    USER = 5
-    OPEN_NAME_SPACE = 6
-
-
-class ViCommandDefBase(object):
+class ViCommandDefBase:
     """Base class for all Vim commands."""
 
     _serializable = ['_inp', ]
@@ -98,7 +88,7 @@ class ViMotionDef(ViCommandDefBase):
         super().__init__(*args, **kwargs)
         self.updates_xpos = False
         self.scroll_into_view = False
-        self.type = cmd_types.MOTION
+        self.type = CMD_TYPE_MOTION
 
 
 class ViOperatorDef(ViCommandDefBase):
@@ -109,5 +99,5 @@ class ViOperatorDef(ViCommandDefBase):
         self.updates_xpos = False
         self.scroll_into_view = False
         self.motion_required = False
-        self.type = cmd_types.ACTION
+        self.type = CMD_TYPE_ACTION
         self.repeatable = False
