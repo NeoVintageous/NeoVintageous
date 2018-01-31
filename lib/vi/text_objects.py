@@ -1,13 +1,14 @@
 import re
 
-import sublime
-from sublime import CLASS_WORD_START
-from sublime import CLASS_WORD_END
-from sublime import CLASS_PUNCTUATION_START
-from sublime import CLASS_PUNCTUATION_END
+from sublime import CLASS_EMPTY_LINE
 from sublime import CLASS_LINE_END
 from sublime import CLASS_LINE_START
-from sublime import CLASS_EMPTY_LINE
+from sublime import CLASS_PUNCTUATION_END
+from sublime import CLASS_PUNCTUATION_START
+from sublime import CLASS_WORD_END
+from sublime import CLASS_WORD_START
+from sublime import IGNORECASE
+from sublime import Region
 
 from NeoVintageous.lib.vi import units
 from NeoVintageous.lib.vi import utils
@@ -89,13 +90,13 @@ def get_punctuation_region(view, pt):
     start = view.find_by_class(pt + 1, forward=False, classes=CLASS_PUNCTUATION_START)
     end = view.find_by_class(pt, forward=True, classes=CLASS_PUNCTUATION_END)
 
-    return sublime.Region(start, end)
+    return Region(start, end)
 
 
 def get_space_region(view, pt):
     end = view.find_by_class(pt, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
 
-    return sublime.Region(previous_word_end(view, pt + 1), end)
+    return Region(previous_word_end(view, pt + 1), end)
 
 
 def previous_word_end(view, pt):
@@ -166,12 +167,12 @@ def a_word(view, pt, inclusive=True, count=1):
         if count > 1 and view.substr(end) == '\n':
             end += 1
 
-        return sublime.Region(start, end)
+        return Region(start, end)
 
     for x in range(count):
         end = current_word_end(view, end)
 
-    return sublime.Region(start, end)
+    return Region(start, end)
 
 
 def big_word_end(view, pt):
@@ -229,18 +230,22 @@ def a_big_word(view, pt, inclusive=False, count=1):
         if is_at_punctuation(view, end):
             if start is None:
                 start = big_word_start(view, end)
+
             end = big_word_end(view, end)
+
             if inclusive and is_at_space(view, end):
                 end = get_space_region(view, end).b
 
         else:
             if start is None:
                 start = big_word_start(view, end)
+
             end = big_word_end(view, end)
+
             if inclusive and is_at_space(view, end):
                 end = get_space_region(view, end).b
 
-    return sublime.Region(start, end)
+    return Region(start, end)
 
 
 def get_text_object_region(view, s, text_object, inclusive=False, count=1):
@@ -252,9 +257,9 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
     if type_ == TAG:
         begin_tag, end_tag, _ = find_containing_tag(view, s.b)
         if inclusive:
-            return sublime.Region(begin_tag.a, end_tag.b)
+            return Region(begin_tag.a, end_tag.b)
         else:
-            return sublime.Region(begin_tag.b, end_tag.a)
+            return Region(begin_tag.b, end_tag.a)
 
     if type_ == PARAGRAPH:
         return find_paragraph_text_object(view, s, inclusive=inclusive, count=count)
@@ -268,79 +273,79 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
             return s
 
         if inclusive:
-            return sublime.Region(opening.a, closing.b)
-        return sublime.Region(opening.a + 1, closing.b - 1)
+            return Region(opening.a, closing.b)
+
+        return Region(opening.a + 1, closing.b - 1)
 
     if type_ == QUOTE:
         # Vim only operates on the current line.
         line = view.line(s)
-        # FIXME: Escape sequences like \" are probably syntax-dependant.
-        prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delims[0],
-                                          start=line.a, end=s.b)
 
-        next_quote = find_in_range(view, r'(?<!\\\\)' + delims[0],
-                                   start=s.b, end=line.b)
+        # FIXME: Escape sequences like \" are probably syntax-dependant.
+        prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delims[0], start=line.a, end=s.b)
+        next_quote = find_in_range(view, r'(?<!\\\\)' + delims[0], start=s.b, end=line.b)
 
         if next_quote and not prev_quote:
             prev_quote = next_quote
-            next_quote = find_in_range(view, r'(?<!\\\\)' + delims[0],
-                                       start=prev_quote.b, end=line.b)
+            next_quote = find_in_range(view, r'(?<!\\\\)' + delims[0], start=prev_quote.b, end=line.b)
 
         if not (prev_quote and next_quote):
             return s
 
         if inclusive:
-            return sublime.Region(prev_quote.a, next_quote.b)
-        return sublime.Region(prev_quote.a + 1, next_quote.b - 1)
+            return Region(prev_quote.a, next_quote.b)
+
+        return Region(prev_quote.a + 1, next_quote.b - 1)
 
     if type_ == WORD:
         w = a_word(view, s.b, inclusive=inclusive, count=count)
         if not w:
             return s
+
         if s.size() <= 1:
             return w
-        return sublime.Region(s.a, w.b)
+
+        return Region(s.a, w.b)
 
     if type_ == BIG_WORD:
         w = a_big_word(view, s.b, inclusive=inclusive, count=count)
         if not w:
             return s
+
         if s.size() <= 1:
             return w
-        return sublime.Region(s.a, w.b)
+
+        return Region(s.a, w.b)
 
     if type_ == SENTENCE:
         # FIXME: This doesn't work well.
         # TODO: Improve this.
-        sentence_start = view.find_by_class(s.b,
-                                            forward=False,
-                                            classes=sublime.CLASS_EMPTY_LINE)
-        sentence_start_2 = reverse_search_by_pt(view, r'[.?!:]\s+|[.?!:]$',
-                                                start=0,
-                                                end=s.b)
+        sentence_start = view.find_by_class(s.b, forward=False, classes=CLASS_EMPTY_LINE)
+        sentence_start_2 = reverse_search_by_pt(view, r'[.?!:]\s+|[.?!:]$', start=0, end=s.b)
         if sentence_start_2:
             sentence_start = (sentence_start + 1 if (sentence_start > sentence_start_2.b) else sentence_start_2.b)
         else:
             sentence_start = sentence_start + 1
-        sentence_end = find_in_range(view, r'([.?!:)](?=\s))|([.?!:)]$)',
-                                     start=s.b,
-                                     end=view.size())
+
+        sentence_end = find_in_range(view, r'([.?!:)](?=\s))|([.?!:)]$)', start=s.b, end=view.size())
 
         if not (sentence_end):
             return s
 
         if inclusive:
-            return sublime.Region(sentence_start, sentence_end.b)
+            return Region(sentence_start, sentence_end.b)
         else:
-            return sublime.Region(sentence_start, sentence_end.b)
+            return Region(sentence_start, sentence_end.b)
 
     if type_ == INDENT:
         start, end = find_indent_text_object(view, s, inclusive)
-        return sublime.Region(start, end)
+
+        return Region(start, end)
 
     if type_ == LINE:
         start, end = find_line_text_object(view, s)
-        return sublime.Region(start, end)
+
+        return Region(start, end)
 
     return s
 
@@ -355,7 +360,7 @@ def find_next_lone_bracket(view, start, items, unbalanced=0):
             items[1],
             start=new_start,
             end=view.size(),
-            flags=sublime.IGNORECASE
+            flags=IGNORECASE
         )
 
         if next_closing_bracket is None:
@@ -366,7 +371,7 @@ def find_next_lone_bracket(view, start, items, unbalanced=0):
             next_closing_bracket = find_in_range(view, items[1],
                                                  start=next_closing_bracket.end(),
                                                  end=view.size(),
-                                                 flags=sublime.IGNORECASE)
+                                                 flags=IGNORECASE)
             if next_closing_bracket is None:
                 return
 
@@ -380,9 +385,10 @@ def find_next_lone_bracket(view, start, items, unbalanced=0):
         next_opening_bracket = find_in_range(view, items[0],
                                              start=start,
                                              end=next_closing_bracket.b,
-                                             flags=sublime.IGNORECASE)
+                                             flags=IGNORECASE)
         if not next_opening_bracket:
             break
+
         nested += 1
         start = next_opening_bracket.end()
 
@@ -401,21 +407,21 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
     # XXX: refactor this
     if view.substr(start) == tags[0][1] if len(tags[0]) > 1 else tags[0]:
         if not unbalanced and view.substr(start - 1) != '\\':
-            return sublime.Region(start, start + 1)
+            return Region(start, start + 1)
 
     new_start = start
     for i in range(unbalanced or 1):
         prev_opening_bracket = reverse_search_by_pt(view, tags[0],
                                                     start=0,
                                                     end=new_start,
-                                                    flags=sublime.IGNORECASE)
+                                                    flags=IGNORECASE)
 
         if prev_opening_bracket is None:
             # Check whether the caret is exactly at a bracket.
             # Tag names may be escaped, so slice them.
             if (i == 0 and view.substr(start) == tags[0][-1] and
                view.substr(start - 1) != '\\'):
-                    return sublime.Region(start, start + 1)
+                    return Region(start, start + 1)
             # Unbalanced tags; nothing we can do.
             return
 
@@ -425,7 +431,7 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
                 tags[0],
                 start=0,
                 end=prev_opening_bracket.begin(),
-                flags=sublime.IGNORECASE
+                flags=IGNORECASE
             )
 
             if prev_opening_bracket is None:
@@ -439,9 +445,10 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
                                                     tags[1],
                                                     start=prev_opening_bracket.a,
                                                     end=start,
-                                                    flags=sublime.IGNORECASE)
+                                                    flags=IGNORECASE)
         if not next_closing_bracket:
             break
+
         nested += 1
         start = next_closing_bracket.begin()
 
@@ -467,7 +474,7 @@ def find_paragraph_text_object(view, s, inclusive=True, count=1):
         if begin is None:
             begin = b1
 
-    return sublime.Region(begin, end)
+    return Region(begin, end)
 
 
 def find_inner_paragraph(view, initial_loc):
@@ -495,6 +502,7 @@ def find_inner_paragraph(view, initial_loc):
         elif line.begin() == 0:
             p = 0
             break
+
         p = line.begin() - 1
 
     begin = p + 1 if p > 0 else p
@@ -505,9 +513,12 @@ def find_inner_paragraph(view, initial_loc):
         line = view.line(p)
         if is_whitespace(line) != iws:
             break
+
         p = line.end() + 1
+
         if p >= view.size():
             break
+
     end = p
 
     return (begin, end)
@@ -522,10 +533,10 @@ def find_indent_text_object(view, s, inclusive=True):
     start_line_content = view.substr(start_line)
 
     # Do nothing when the line is whitespace-only
-    if re.match("^\s*$", start_line_content):
+    if re.match("^\\s*$", start_line_content):
         return (s.a, s.b)
 
-    whitespace = re.match("\s*", start_line_content).group(0)
+    whitespace = re.match("\\s*", start_line_content).group(0)
     whitespace_length = len(whitespace)
 
     # From http://vim.wikia.com/wiki/Indent_text_object:
@@ -542,7 +553,7 @@ def find_indent_text_object(view, s, inclusive=True):
             # the selection will be delimited by lines with
             # an indent that is less than the original line;
             # blank lines will be SELECTED.
-            pattern = "\s{0," + str(whitespace_length - 1) + "}\S"
+            pattern = "\\s{0," + str(whitespace_length - 1) + "}\\S"
             break_on_empty_lines = False
     else:
         # "i"
@@ -558,7 +569,7 @@ def find_indent_text_object(view, s, inclusive=True):
             # an indent that is less than the original line;
             # blank lines will be IGNORED and thus,
             # become the delimiter if one is encountered.
-            pattern = "\s{0," + str(whitespace_length - 1) + "}\S"
+            pattern = "\\s{0," + str(whitespace_length - 1) + "}\\S"
             break_on_empty_lines = True
 
     if pattern:
@@ -583,7 +594,9 @@ def find_indent_text_object(view, s, inclusive=True):
         elif line.begin() == 0:
             p = 0
             break
+
         p = line.begin() - 1
+
     begin = p + 1 if p > 0 else p
 
     # To get the value for end, we do the same thing, this time searching forward.
@@ -593,9 +606,12 @@ def find_indent_text_object(view, s, inclusive=True):
         line_content = view.substr(line)
         if should_break_on_line(line_content):
             break
+
         p = line.end() + 1
+
         if p >= view.size():
             break
+
     end = p - 1
 
     return (begin, end)
@@ -609,7 +625,7 @@ def find_line_text_object(view, s):
     begin = line.begin()
     end = line.end()
 
-    whitespace_match = re.match("\s+", line_content)
+    whitespace_match = re.match("\\s+", line_content)
     if whitespace_match:
         begin = begin + len(whitespace_match.group(0))
 
@@ -628,6 +644,7 @@ def word_reverse(view, pt, count=1, big=False):
             # Skip over punctuation characters.
             while not ((view.substr(t - 1) in '\n\t ') or (t <= 0)):
                 t -= 1
+
     return t
 
 
@@ -649,6 +666,7 @@ def word_end_reverse(view, pt, count=1, big=False):
             pass
         else:
             t = view.find_by_class(t, forward=False, classes=WORD_END_REVERSE_STOPS)
+
         if t == 0:
             break
 
@@ -656,7 +674,7 @@ def word_end_reverse(view, pt, count=1, big=False):
 
 
 def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
-    region = view.find(pattern, start, sublime.IGNORECASE)
+    region = view.find(pattern, start, IGNORECASE)
     if region.a == -1:
         return None, None, None
 
@@ -667,8 +685,7 @@ def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
 
 def previous_begin_tag(view, pattern, start=0, end=0):
     assert pattern, 'bad call'
-    region = reverse_search_by_pt(view, RX_ANY_TAG, start, end,
-                                  sublime.IGNORECASE)
+    region = reverse_search_by_pt(view, RX_ANY_TAG, start, end, IGNORECASE)
     if not region:
         return None, None, None
 

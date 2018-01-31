@@ -1,7 +1,8 @@
 import os
 from collections import Counter
 
-import sublime
+from sublime import active_window
+from sublime import Region
 
 from NeoVintageous.lib import nvim
 from NeoVintageous.lib import plugin
@@ -539,7 +540,7 @@ class State(object):
     def scroll_into_view(self):
         # type: () -> None
         try:
-            view = sublime.active_window().active_view()
+            view = active_window().active_view()
             # Make sure we show the first caret on the screen, but don't show
             # its surroundings.
             # TODO Maybe some commands should show their surroundings too?
@@ -592,7 +593,7 @@ class State(object):
                     if sel.a < sel.b:
                         pos -= 1
                 # ============================================================
-                r = sublime.Region(self.view.line(pos).a, pos)
+                r = Region(self.view.line(pos).a, pos)
                 counter = Counter(self.view.substr(r))
                 tab_size = self.view.settings().get('tab_size')
                 xpos = (self.view.rowcol(pos)[1] +
@@ -617,7 +618,7 @@ class State(object):
             if self.non_interactive:
                 return
 
-            sublime.active_window().run_command(command.input_parser.command)
+            active_window().run_command(command.input_parser.command)
 
     def process_input(self, key):
         # type: (str) -> bool
@@ -720,7 +721,7 @@ class State(object):
             else:
                 end = first.b + chars
 
-            self.view.sel().add(sublime.Region(first.b, end))
+            self.view.sel().add(Region(first.b, end))
             self.mode = VISUAL
 
         elif old_mode == VISUAL_LINE:
@@ -729,7 +730,7 @@ class State(object):
             end = self.view.text_point(utils.row_at(self.view, begin) +
                                        (rows - 1), 0)
             end = self.view.full_line(end).b
-            self.view.sel().add(sublime.Region(begin, end))
+            self.view.sel().add(Region(begin, end))
             self.mode = VISUAL_LINE
 
     def start_recording(self):
@@ -810,12 +811,12 @@ class State(object):
             if self.glue_until_normal_mode and not self.processing_notation:
                 # We need to tell Sublime Text now that it should group
                 # all the next edits until we enter normal mode again.
-                sublime.active_window().run_command('mark_undo_groups_for_gluing')
+                active_window().run_command('mark_undo_groups_for_gluing')
 
             self.add_macro_step(action_cmd['action'], args)
 
             _logger.info('run command (action + motion) %s %s', action_cmd['action'], args)
-            sublime.active_window().run_command(action_cmd['action'], args)
+            active_window().run_command(action_cmd['action'], args)
             if not self.non_interactive:
                 if self.action.repeatable:
                     self.repeat_data = ('vi', str(self.sequence), self.mode, None)
@@ -855,7 +856,7 @@ class State(object):
             # iXXX<Esc>llaYYY<Esc>, where we want to group the whole
             # sequence instead.
             if self.glue_until_normal_mode and not self.processing_notation:
-                sublime.active_window().run_command('mark_undo_groups_for_gluing')
+                active_window().run_command('mark_undo_groups_for_gluing')
 
             seq = self.sequence
             visual_repeat_data = self.get_visual_repeat_data()
@@ -864,7 +865,7 @@ class State(object):
             self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
 
             _logger.info('run command (action) %s %s', action_cmd['action'], action_cmd['action_args'])
-            sublime.active_window().run_command(action_cmd['action'], action_cmd['action_args'])
+            active_window().run_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
@@ -923,7 +924,7 @@ def init_state(view, new_session=False):
 
     # If we have no selections, add one.
     if len(state.view.sel()) == 0:
-        state.view.sel().add(sublime.Region(0))
+        state.view.sel().add(Region(0))
 
     if state.mode in (VISUAL, VISUAL_LINE):
         # TODO: Don't we need to pass a mode here?

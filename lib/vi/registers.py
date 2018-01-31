@@ -1,6 +1,7 @@
 import itertools
 
-import sublime
+from sublime import get_clipboard
+from sublime import set_clipboard
 
 
 REG_UNNAMED = '"'
@@ -90,7 +91,7 @@ class Registers(object):
                 if len(value) > 1:
                     self.view.run_command('copy')
                 else:
-                    sublime.set_clipboard(value[0])
+                    set_clipboard(value[0])
 
     def set(self, name, values):
         """
@@ -156,7 +157,7 @@ class Registers(object):
             except AttributeError:
                 return ''
         elif name in REG_SYS_CLIPBOARD_ALL:
-            return [sublime.get_clipboard()]
+            return [get_clipboard()]
         elif ((name not in (REG_UNNAMED, REG_SMALL_DELETE)) and
                 (name in REG_SPECIAL)):
             return
@@ -164,7 +165,7 @@ class Registers(object):
         # clipboard.
         elif ((name == REG_UNNAMED) and
               (self.settings.view['vintageous_use_sys_clipboard'] is True)):
-            return [sublime.get_clipboard()]
+            return [get_clipboard()]
 
         # If the expression register holds a value and we're requesting the
         # unnamed register, return the expression register and clear it

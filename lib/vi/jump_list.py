@@ -3,6 +3,9 @@ _jump_list_index = -1
 _current_latest = 1
 
 
+# TODO [review] This module looks unused???
+
+
 class JumpList(object):
     def __init__(self, state):
         self.state = state

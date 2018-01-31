@@ -1,6 +1,9 @@
 import re
 
-import sublime
+from sublime import DRAW_NO_OUTLINE
+from sublime import IGNORECASE
+from sublime import LITERAL
+from sublime import Region
 import sublime_plugin
 
 
@@ -15,7 +18,7 @@ def find_all_in_range(view, term, start, end, flags=0):
     while True:
         m = find_in_range(view, term, start, end, flags)
 
-        if m == sublime.Region(-1, -1):
+        if m == Region(-1, -1):
             return matches
 
         if not m:
@@ -120,8 +123,8 @@ def reverse_search(view, term, start, end, flags=0):
 
         middle_line = view.full_line(view.text_point(middle_row, 0))
 
-        lo_region = sublime.Region(lo_line.a, middle_line.b)
-        hi_region = sublime.Region(middle_line.b, min(hi_line.b, end))
+        lo_region = Region(lo_line.a, middle_line.b)
+        hi_region = Region(middle_line.b, min(hi_line.b, end))
 
         if find_in_range(view, term, hi_region.a, hi_region.b, flags):
             lo_line = view.full_line(middle_line.b)
@@ -154,8 +157,8 @@ def reverse_search_by_pt(view, term, start, end, flags=0):
 
         middle_line = view.full_line(view.text_point(middle_row, 0))
 
-        lo_region = sublime.Region(lo_line.a, middle_line.b)
-        hi_region = sublime.Region(middle_line.b, min(hi_line.b, end))
+        lo_region = Region(lo_line.a, middle_line.b)
+        hi_region = Region(middle_line.b, min(hi_line.b, end))
 
         if find_in_range(view, term, hi_region.a, hi_region.b, flags):
             lo_line = view.full_line(middle_line.b)
@@ -169,6 +172,7 @@ def reverse_search_by_pt(view, term, start, end, flags=0):
             return find_last_in_range(view, term, max(hi_line.a, start), min(hi_line.b, end), flags)
 
 
+# TODO [refactor] Move to commands module
 class BufferSearchBase(sublime_plugin.TextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -177,10 +181,10 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         # TODO: Implement smartcase?
         flags = 0
         if self.view.settings().get('vintageous_magic') is False:
-            flags |= sublime.LITERAL
+            flags |= LITERAL
 
         if self.view.settings().get('vintageous_ignorecase') is True:
-            flags |= sublime.IGNORECASE
+            flags |= IGNORECASE
 
         return flags
 
@@ -201,16 +205,17 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         # if State(self.view).settings.vi['hlsearch'] == False:
         #     return
 
-        self.view.add_regions('vi_search', regs, 'string.search.occurrence', '', sublime.DRAW_NO_OUTLINE)
+        self.view.add_regions('vi_search', regs, 'string.search.occurrence', '', DRAW_NO_OUTLINE)
 
 
+# TODO [refactor] Move to commands module
 class ExactWordBufferSearchBase(BufferSearchBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def calculate_flags(self):
         if self.view.settings().get('vintageous_ignorecase') is True:
-            return sublime.IGNORECASE
+            return IGNORECASE
         return 0
 
     def get_query(self):

@@ -1,4 +1,4 @@
-import sublime
+from sublime import Region
 
 # store: window, view, rowcol
 
@@ -6,8 +6,10 @@ _MARKS = {}
 
 
 class Marks(object):
+
     def __get__(self, instance, owner):
         self.state = instance
+
         return self
 
     def add(self, name, view):
@@ -36,6 +38,7 @@ class Marks(object):
                 rowcol_encoded = ':'.join(str(i) for i in rowcol)
             else:
                 rowcol_encoded = ':'.join(str(i) for i in (rowcol[0], 0))
+
             fname = view.file_name()
 
             # Marks set in the same view as the current one are returned as regions. Marks in other
@@ -43,7 +46,8 @@ class Marks(object):
             if view and view.view_id == self.state.view.view_id:
                 if not exact:
                     rowcol = (rowcol[0], 0)
-                return sublime.Region(view.text_point(*rowcol))
+
+                return Region(view.text_point(*rowcol))
             else:
                 # FIXME: Remove buffers when they are closed.
                 if fname:

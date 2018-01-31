@@ -1,4 +1,5 @@
-import sublime
+from sublime import DRAW_NO_FILL
+from sublime import set_timeout
 import sublime_plugin
 
 from NeoVintageous.lib import nvim
@@ -94,15 +95,11 @@ class ViCommandMixin(object):
             return
 
         sels = list(self._view.sel())
-        sublime.set_timeout(lambda: self._view.erase_regions('vi_yy_target'), 350)
-        self._view.add_regions(
-            'vi_yy_target',
-            sels,
-            'comment highlighted.yank',
-            '',
-            sublime.DRAW_NO_FILL)
+        set_timeout(lambda: self._view.erase_regions('vi_yy_target'), 350)
+        self._view.add_regions('vi_yy_target', sels, 'comment highlighted.yank', '', DRAW_NO_FILL)
 
 
+# TODO [refactor] Move to commands module
 class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
     """
     Base class form motion and action commands.
@@ -121,6 +118,7 @@ class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
         super().__init__(*args, **kwargs)
 
 
+# TODO [refactor] Move to commands module
 # Due to MRO in Python subclasses, IrreversibleTextCommand must come first so
 # that the modified .run_() method is found first.
 class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
@@ -130,6 +128,7 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
 
 
 # DEPRECATED TODO REMOVE
+# TODO [refactor] Move to commands module
 class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
     """
     Base class form some window commands.
