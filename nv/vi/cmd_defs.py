@@ -5,15 +5,15 @@ from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.inputs import parser_def
 from NeoVintageous.nv.vi.keys import seqs
-from NeoVintageous.nv.vi.utils import INPUT_INMEDIATE
-from NeoVintageous.nv.vi.utils import INPUT_VIA_PANEL
-from NeoVintageous.nv.vi.utils import INSERT
-from NeoVintageous.nv.vi.utils import NORMAL
-from NeoVintageous.nv.vi.utils import OPERATOR_PENDING
-from NeoVintageous.nv.vi.utils import SELECT
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
+from NeoVintageous.nv.vim import INPUT_INMEDIATE
+from NeoVintageous.nv.vim import INPUT_VIA_PANEL
+from NeoVintageous.nv.vim import INSERT
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import OPERATOR_PENDING
+from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 _MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)

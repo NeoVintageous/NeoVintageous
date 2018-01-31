@@ -4,45 +4,6 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 
-# XXX The modes Use strings because we need to pass modes as arguments in
-# Default.sublime-keymap and it's more readable.
-COMMAND_LINE = 'mode_command_line'
-CTRL_X = 'mode_control_x'
-INSERT = 'mode_insert'
-# NeoVintageous always runs actions based on selections. Some Vim commands,
-# however, behave differently depending on whether the current mode is NORMAL or
-# VISUAL. To differentiate NORMAL mode operations (involving only an action, or
-# a motion plus an action) from VISUAL mode, we need to add an additional mode
-# for handling selections that won't interfere with the actual VISUAL mode.
-# This is INTERNAL_NORMAL's job. We consider INTERNAL_NORMAL a pseudomode,
-# because global state's .mode property should never set to it, yet it's set in
-# vi_cmd_data often.
-# Note that for pure motions we still use plain NORMAL mode.
-INTERNAL_NORMAL = 'mode_internal_normal'
-NORMAL = 'mode_normal'
-NORMAL_INSERT = 'mode_normal_insert'  # The mode you enter when giving i a count
-OPERATOR_PENDING = 'mode_operator_pending'
-REPLACE = 'mode_replace'
-SELECT = 'mode_select'
-UNKNOWN = 'mode_unknown'
-VISUAL = 'mode_visual'
-VISUAL_BLOCK = 'mode_visual_block'
-VISUAL_LINE = 'mode_visual_line'
-
-
-# TODO [refactor] I assume "INMEDIATE" is a typo, should be "IMMEDIATE"?
-INPUT_INMEDIATE = 1
-INPUT_VIA_PANEL = 2
-INPUT_AFTER_MOTION = 3
-
-
-DIRECTION_NONE = 0
-DIRECTION_UP = 1
-DIRECTION_DOWN = 2
-DIRECTION_LEFT = 3
-DIRECTION_RIGHT = 4
-
-
 def has_dirty_buffers(window):
     # type: (...) -> bool
     for v in window.views():
@@ -86,36 +47,6 @@ def is_view(view):
         is_ignored(view),
         is_ignored_but_command_mode(view)
     ))
-
-
-def to_friendly_name(mode):
-    # type: (int) -> str
-    if mode == INSERT:
-        return 'INSERT'
-    if mode == INTERNAL_NORMAL:
-        return ''
-    if mode == NORMAL:
-        return ''
-    if mode == OPERATOR_PENDING:
-        return ''
-    if mode == VISUAL:
-        return 'VISUAL'
-    if mode == VISUAL_BLOCK:
-        return 'VISUAL BLOCK'
-    if mode == VISUAL_LINE:
-        return 'VISUAL LINE'
-    if mode == UNKNOWN:
-        return 'UNKNOWN'
-    if mode == REPLACE:
-        return 'REPLACE'
-    if mode == NORMAL_INSERT:
-        return 'INSERT'
-    if mode == SELECT:
-        return 'SELECT'
-    if mode == CTRL_X:
-        return 'Mode ^X'
-
-    return 'REALLY UNKNOWN'
 
 
 def regions_transformer(view, f):

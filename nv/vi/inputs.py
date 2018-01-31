@@ -1,8 +1,8 @@
 from collections import namedtuple
 
-from NeoVintageous.nv.vi.utils import INPUT_INMEDIATE
-from NeoVintageous.nv.vi.utils import INPUT_VIA_PANEL
 from NeoVintageous.nv.vi.utils import translate_char
+from NeoVintageous.nv.vim import INPUT_INMEDIATE
+from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 
 
 parser_def = namedtuple('parsed_def', 'command interactive_command input_param on_done type')

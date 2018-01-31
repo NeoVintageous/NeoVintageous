@@ -1,16 +1,16 @@
 from NeoVintageous.nv.vi import inputs  # noqa: F401
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef  # noqa: F401
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef  # noqa: F401
-from NeoVintageous.nv.vi.utils import INPUT_AFTER_MOTION  # noqa: F401
-from NeoVintageous.nv.vi.utils import INPUT_INMEDIATE  # noqa: F401
-from NeoVintageous.nv.vi.utils import INPUT_VIA_PANEL  # noqa: F401
-from NeoVintageous.nv.vi.utils import INTERNAL_NORMAL  # noqa: F401
-from NeoVintageous.nv.vi.utils import NORMAL  # noqa: F401
-from NeoVintageous.nv.vi.utils import OPERATOR_PENDING  # noqa: F401
-from NeoVintageous.nv.vi.utils import SELECT  # noqa: F401
-from NeoVintageous.nv.vi.utils import VISUAL  # noqa: F401
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK  # noqa: F401
-from NeoVintageous.nv.vi.utils import VISUAL_LINE  # noqa: F401
+from NeoVintageous.nv.vim import INPUT_AFTER_MOTION  # noqa: F401
+from NeoVintageous.nv.vim import INPUT_INMEDIATE  # noqa: F401
+from NeoVintageous.nv.vim import INPUT_VIA_PANEL  # noqa: F401
+from NeoVintageous.nv.vim import INTERNAL_NORMAL  # noqa: F401
+from NeoVintageous.nv.vim import NORMAL  # noqa: F401
+from NeoVintageous.nv.vim import OPERATOR_PENDING  # noqa: F401
+from NeoVintageous.nv.vim import SELECT  # noqa: F401
+from NeoVintageous.nv.vim import VISUAL  # noqa: F401
+from NeoVintageous.nv.vim import VISUAL_BLOCK  # noqa: F401
+from NeoVintageous.nv.vim import VISUAL_LINE  # noqa: F401
 
 
 mappings = {

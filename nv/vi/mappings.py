@@ -1,15 +1,15 @@
-from NeoVintageous.nv.nvim import get_logger
+from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vi.cmd_base import CMD_TYPE_USER
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import seq_to_command
 from NeoVintageous.nv.vi.keys import to_bare_command_name
-from NeoVintageous.nv.vi.utils import INSERT
-from NeoVintageous.nv.vi.utils import NORMAL
-from NeoVintageous.nv.vi.utils import OPERATOR_PENDING
-from NeoVintageous.nv.vi.utils import SELECT
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
+from NeoVintageous.nv.vim import INSERT
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import OPERATOR_PENDING
+from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vi.variables import expand_keys
 
 

@@ -3,8 +3,8 @@ import re
 
 import sublime
 
-from NeoVintageous.nv.nvim import get_logger
-from NeoVintageous.nv.nvim import message
+from NeoVintageous.nv.vim import get_logger
+from NeoVintageous.nv.vim import message
 
 
 _log = get_logger(__name__)

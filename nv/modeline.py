@@ -2,7 +2,7 @@ import re
 
 from sublime import Region
 
-from NeoVintageous.nv.nvim import message
+from NeoVintageous.nv.vim import message
 
 
 _MODELINES_MAX_LINE_LEN = 80

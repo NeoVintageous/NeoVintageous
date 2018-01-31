@@ -16,10 +16,6 @@ from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
-from NeoVintageous.nv.nvim import console_message
-from NeoVintageous.nv.nvim import get_logger
-from NeoVintageous.nv.nvim import message
-from NeoVintageous.nv.nvim import status_message
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
@@ -36,16 +32,20 @@ from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.mappings import Mappings
 from NeoVintageous.nv.vi.settings import iter_settings
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
-from NeoVintageous.nv.vi.utils import INSERT
-from NeoVintageous.nv.vi.utils import INTERNAL_NORMAL
-from NeoVintageous.nv.vi.utils import NORMAL
-from NeoVintageous.nv.vi.utils import OPERATOR_PENDING
 from NeoVintageous.nv.vi.utils import regions_transformer
-from NeoVintageous.nv.vi.utils import REPLACE
-from NeoVintageous.nv.vi.utils import SELECT
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
+from NeoVintageous.nv.vim import console_message
+from NeoVintageous.nv.vim import get_logger
+from NeoVintageous.nv.vim import INSERT
+from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import message
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import OPERATOR_PENDING
+from NeoVintageous.nv.vim import REPLACE
+from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import status_message
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 __all__ = [

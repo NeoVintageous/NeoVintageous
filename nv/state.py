@@ -6,8 +6,6 @@ from sublime import Region
 
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv import rcfile
-from NeoVintageous.nv.nvim import console_message
-from NeoVintageous.nv.nvim import get_logger
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi import utils
@@ -18,25 +16,27 @@ from NeoVintageous.nv.vi.macros import MacroRegisters
 from NeoVintageous.nv.vi.marks import Marks
 from NeoVintageous.nv.vi.registers import Registers
 from NeoVintageous.nv.vi.settings import SettingsManager
-from NeoVintageous.nv.vi.utils import DIRECTION_DOWN
 from NeoVintageous.nv.vi.utils import first_sel
-from NeoVintageous.nv.vi.utils import INPUT_AFTER_MOTION
-from NeoVintageous.nv.vi.utils import INPUT_INMEDIATE
-from NeoVintageous.nv.vi.utils import INPUT_VIA_PANEL
-from NeoVintageous.nv.vi.utils import INSERT
-from NeoVintageous.nv.vi.utils import INTERNAL_NORMAL
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
-from NeoVintageous.nv.vi.utils import NORMAL
-from NeoVintageous.nv.vi.utils import OPERATOR_PENDING
-from NeoVintageous.nv.vi.utils import REPLACE
-from NeoVintageous.nv.vi.utils import SELECT
-from NeoVintageous.nv.vi.utils import to_friendly_name
-from NeoVintageous.nv.vi.utils import UNKNOWN
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
 from NeoVintageous.nv.vi.variables import Variables
+from NeoVintageous.nv.vim import console_message
+from NeoVintageous.nv.vim import DIRECTION_DOWN
+from NeoVintageous.nv.vim import get_logger
+from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
+from NeoVintageous.nv.vim import INPUT_INMEDIATE
+from NeoVintageous.nv.vim import INPUT_VIA_PANEL
+from NeoVintageous.nv.vim import INSERT
+from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import mode_to_friendly_name
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import OPERATOR_PENDING
+from NeoVintageous.nv.vim import REPLACE
+from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import UNKNOWN
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 _log = get_logger(__name__)
@@ -519,7 +519,7 @@ class State(object):
 
     def display_status(self):
         # type: () -> None
-        mode_name = to_friendly_name(self.mode)
+        mode_name = mode_to_friendly_name(self.mode)
         if mode_name:
             mode_name = '-- {} --'.format(mode_name) if mode_name else ''
             self.view.set_status('vim-mode', mode_name)

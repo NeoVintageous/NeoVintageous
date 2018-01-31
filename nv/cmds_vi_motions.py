@@ -12,7 +12,6 @@ from sublime import Region
 from NeoVintageous.nv.cmds import _nv_cmdline_handle_key
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
-from NeoVintageous.nv.nvim import console_message
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
@@ -33,21 +32,22 @@ from NeoVintageous.nv.vi.text_objects import get_closest_tag
 from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vi.text_objects import word_end_reverse
 from NeoVintageous.nv.vi.text_objects import word_reverse
-from NeoVintageous.nv.vi.utils import DIRECTION_DOWN
-from NeoVintageous.nv.vi.utils import DIRECTION_UP
 from NeoVintageous.nv.vi.utils import get_bol
-from NeoVintageous.nv.vi.utils import INTERNAL_NORMAL
-from NeoVintageous.nv.vi.utils import NORMAL
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import resize_visual_region
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import row_to_pt
-from NeoVintageous.nv.vi.utils import SELECT
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
+from NeoVintageous.nv.vim import console_message
+from NeoVintageous.nv.vim import DIRECTION_DOWN
+from NeoVintageous.nv.vim import DIRECTION_UP
+from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 __all__ = [

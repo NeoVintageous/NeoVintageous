@@ -21,9 +21,6 @@ from NeoVintageous.nv.ex.parser.parser import parse_command_line
 from NeoVintageous.nv.ex.plat.windows import get_oem_cp
 from NeoVintageous.nv.ex.plat.windows import get_startup_info
 from NeoVintageous.nv.jumplist import jumplist_update
-from NeoVintageous.nv.nvim import console_message
-from NeoVintageous.nv.nvim import message
-from NeoVintageous.nv.nvim import status_message
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import abbrev
@@ -36,14 +33,17 @@ from NeoVintageous.nv.vi.settings import set_local
 from NeoVintageous.nv.vi.utils import adding_regions
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import has_dirty_buffers
-from NeoVintageous.nv.vi.utils import NORMAL
-from NeoVintageous.nv.vi.utils import OPERATOR_PENDING
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
-from NeoVintageous.nv.vi.utils import SELECT
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
+from NeoVintageous.nv.vim import console_message
+from NeoVintageous.nv.vim import message
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import OPERATOR_PENDING
+from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import status_message
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import window_split
 from NeoVintageous.nv.window import WindowAPI
 

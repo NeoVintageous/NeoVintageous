@@ -10,10 +10,10 @@ from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi.utils import is_view
-from NeoVintageous.nv.vi.utils import NORMAL
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 _COMPLETIONS = sorted([x[0] for x in command_names])

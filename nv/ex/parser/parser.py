@@ -16,7 +16,7 @@ from .tokens import TokenSearchBackward
 from .tokens import TokenSearchForward
 from .tokens import TokenSemicolon
 from .tokens_base import TokenOfCommand
-from NeoVintageous.nv.nvim import get_logger
+from NeoVintageous.nv.vim import get_logger
 
 
 _log = get_logger(__name__)

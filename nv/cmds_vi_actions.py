@@ -6,9 +6,6 @@ from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
 
-from NeoVintageous.nv.nvim import console_message
-from NeoVintageous.nv.nvim import get_logger
-from NeoVintageous.nv.nvim import status_message
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
@@ -18,19 +15,22 @@ from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.registers import REG_EXPRESSION
 from NeoVintageous.nv.vi.utils import first_sel
-from NeoVintageous.nv.vi.utils import INSERT
-from NeoVintageous.nv.vi.utils import INTERNAL_NORMAL
 from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
 from NeoVintageous.nv.vi.utils import is_view
-from NeoVintageous.nv.vi.utils import NORMAL
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
-from NeoVintageous.nv.vi.utils import SELECT
-from NeoVintageous.nv.vi.utils import UNKNOWN
-from NeoVintageous.nv.vi.utils import VISUAL
-from NeoVintageous.nv.vi.utils import VISUAL_BLOCK
-from NeoVintageous.nv.vi.utils import VISUAL_LINE
+from NeoVintageous.nv.vim import console_message
+from NeoVintageous.nv.vim import get_logger
+from NeoVintageous.nv.vim import INSERT
+from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import status_message
+from NeoVintageous.nv.vim import UNKNOWN
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import WindowAPI
 
 

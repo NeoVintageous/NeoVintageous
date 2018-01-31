@@ -2,9 +2,9 @@ from sublime import DRAW_NO_FILL
 from sublime import set_timeout
 import sublime_plugin
 
-from NeoVintageous.nv.nvim import console_message
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
+from NeoVintageous.nv.vim import console_message
 
 
 class ViCommandMixin(object):

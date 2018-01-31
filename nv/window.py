@@ -1,6 +1,6 @@
 from sublime import Region
 
-from NeoVintageous.nv.nvim import status_message
+from NeoVintageous.nv.vim import status_message
 
 
 _LAYOUT_SINGLE_CELL = {
