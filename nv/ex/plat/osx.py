@@ -10,5 +10,4 @@ def run_and_read(view, cmd):
 
 
 def filter_region(view, text, command):
-    return unixlike.filter_region(
-        view, text, command, 'VintageousEx_osx_shell')
+    return unixlike.filter_region(view, text, command, 'VintageousEx_osx_shell')

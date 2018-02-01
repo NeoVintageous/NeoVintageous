@@ -811,6 +811,7 @@ class _vi_dollar(ViMotionCommand):
             target = resolve_insertion_point_at_b(s)
             if count > 1:
                 target = row_to_pt(view, row_at(view, target) + (count - 1))
+
             eol = view.line(target).b
 
             if mode == NORMAL:
@@ -823,12 +824,14 @@ class _vi_dollar(ViMotionCommand):
                 # was always such that .a < .b?
                 if (s.a == eol) and not view.line(eol).empty():
                     return Region(s.a - 1, eol + 1)
+
                 return resize_visual_region(s, eol)
 
             elif mode == INTERNAL_NORMAL:
                 # TODO perhaps create a .is_linewise_motion() helper?
                 if get_bol(view, s.a) == s.a:
                     return Region(s.a, eol + 1)
+
                 return Region(s.a, eol)
 
             elif mode == VISUAL_LINE:
@@ -849,6 +852,7 @@ class _vi_w(ViMotionCommand):
                     pt = utils.previous_non_white_space_char(view, pt - 1, white_space='\n')
 
                 return Region(pt, pt)
+
             elif mode in (VISUAL, VISUAL_BLOCK):
                 start = (s.b - 1) if (s.a < s.b) else s.b
                 pt = units.word_starts(view, start=start, count=count)
@@ -864,11 +868,9 @@ class _vi_w(ViMotionCommand):
 
             elif mode == INTERNAL_NORMAL:
                 a = s.a
-                pt = units.word_starts(view, start=s.b, count=count,
-                                       internal=True)
-                if (not view.substr(view.line(s.a)).strip() and
-                   view.line(s.b) != view.line(pt)):
-                        a = view.line(s.a).a
+                pt = units.word_starts(view, start=s.b, count=count, internal=True)
+                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
+                    a = view.line(s.a).a
 
                 return Region(a, pt)
 
@@ -883,8 +885,8 @@ class _vi_big_w(ViMotionCommand):
             if mode == NORMAL:
                 pt = units.big_word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
-                    pt = utils.previous_non_white_space_char(view, pt - 1,
-                                                             white_space='\n')
+                    pt = utils.previous_non_white_space_char(view, pt - 1, white_space='\n')
+
                 return Region(pt, pt)
 
             elif mode == VISUAL:
@@ -895,17 +897,15 @@ class _vi_big_w(ViMotionCommand):
                     return Region(s.a, pt)
                 elif (view.size() == pt):
                     pt -= 1
+
                 return Region(s.a, pt + 1)
 
             elif mode == INTERNAL_NORMAL:
                 a = s.a
-                pt = units.big_word_starts(view,
-                                           start=s.b,
-                                           count=count,
-                                           internal=True)
-                if (not view.substr(view.line(s.a)).strip() and
-                   view.line(s.b) != view.line(pt)):
-                        a = view.line(s.a).a
+                pt = units.big_word_starts(view, start=s.b, count=count, internal=True)
+                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
+                    a = view.line(s.a).a
+
                 return Region(a, pt)
 
             return s
@@ -926,17 +926,17 @@ class _vi_e(ViMotionCommand):
                     return Region(s.a - 1, pt)
                 elif (s.a > s.b):
                     return Region(s.a, pt)
+
                 return Region(s.a, pt)
 
             elif mode == INTERNAL_NORMAL:
                 a = s.a
-                pt = units.word_ends(view,
-                                     start=s.b,
-                                     count=count)
-                if (not view.substr(view.line(s.a)).strip() and
-                   view.line(s.b) != view.line(pt)):
-                        a = view.line(s.a).a
+                pt = units.word_ends(view, start=s.b, count=count)
+                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
+                    a = view.line(s.a).a
+
                 return Region(a, pt)
+
             return s
 
         regions_transformer(self.view, f)
@@ -954,6 +954,7 @@ class _vi_zero(ViMotionCommand):
                     return Region(s.a, view.line(s.b - 1).a + 1)
                 else:
                     return Region(s.a, view.line(s.b).a)
+
             return s
 
         regions_transformer(self.view, f)
@@ -968,10 +969,7 @@ class _vi_right_brace(ViMotionCommand):
                 return Region(par_begin)
 
             elif mode == VISUAL:
-                next_start = units.next_paragraph_start(view,
-                                                        s.b,
-                                                        count,
-                                                        skip_empty=count > 1)
+                next_start = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
 
                 return resize_visual_region(s, next_start)
 
@@ -982,6 +980,7 @@ class _vi_right_brace(ViMotionCommand):
                     return Region(s.a, self.view.size())
                 if view.substr(s.a - 1) == '\n' or s.a == 0:
                     return Region(s.a, par_begin)
+
                 return Region(s.a, par_begin - 1)
 
             elif mode == VISUAL_LINE:
@@ -991,6 +990,7 @@ class _vi_right_brace(ViMotionCommand):
                 else:
                     if par_begin > s.a:
                         return Region(view.line(s.a - 1).a, par_begin + 1)
+
                     return Region(s.a, par_begin)
 
             return s

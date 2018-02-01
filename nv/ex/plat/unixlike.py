@@ -35,4 +35,5 @@ def filter_region(view, text, command, shell_setting_name):
     # Pass in text as input; this saves us from having to deal with quoting
     # stuff.
     out, _ = p.communicate(text.encode('utf-8'))
+
     return out.decode('utf-8', errors='backslashreplace')

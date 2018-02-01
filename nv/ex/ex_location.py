@@ -40,6 +40,7 @@ def find_line(view, start=0, end=-1, target=0):
             hi = find_bol(view, middle) - 1
         else:
             return view.full_line(middle)
+
     return -1
 
 
@@ -65,6 +66,7 @@ def reverse_search(view, what, start=0, end=-1, flags=0):
     """Do binary search to find `what` walking backwards in the buffer."""
     if end == -1:
         end = view.size()
+
     end = find_eol(view, view.line(end).a)
 
     last_match = None
@@ -83,6 +85,7 @@ def reverse_search(view, what, start=0, end=-1, flags=0):
         # Don't search forever the same line.
         if last_match and line.contains(last_match):
             match = find_last_match(view, what, lo, hi, flags=flags)
+
             return view.rowcol(match.begin())[0] + 1
 
         last_match = sublime.Region(line.begin(), line.end())
@@ -91,9 +94,11 @@ def reverse_search(view, what, start=0, end=-1, flags=0):
 def calculate_relative_ref(view, where, start_line=None):
     if where == '$':
         return view.rowcol(view.size())[0] + 1
+
     if where == '.':
         if start_line:
             return view.rowcol(view.text_point(start_line, 0))[0] + 1
+
         return view.rowcol(view.sel()[0].begin())[0] + 1
 
 
@@ -104,9 +109,12 @@ def search(view, what, start_line=None, flags=0):
         start = view.text_point(start_line, 0)
     else:
         start = view.sel()[0].begin()
+
     reg = view.find(what, start, flags)
+
     if reg is not None:
         row = (view.rowcol(reg.begin())[0] + 1)
     else:
         row = calculate_relative_ref(view, '.', start_line=start_line)
+
     return row

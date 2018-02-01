@@ -2,6 +2,7 @@ import glob
 import os
 import re
 
+
 RX_CMD_LINE_CD = re.compile(r'^(?P<cmd>:\s*cd!?)\s+(?P<path>.*)$')
 RX_CMD_LINE_WRITE = re.compile(r'^(?P<cmd>:\s*w(?:rite)?!?)\s+(?P<path>.*)$')
 RX_CMD_LINE_EDIT = re.compile(r'^(?P<cmd>:\s*e(?:dit)?!?)\s+(?P<path>.*)$')
@@ -65,6 +66,7 @@ def parse(text):
         found = pattern.search(text)
         if found:
             return found.groupdict()['cmd'], found.groupdict()['path'], only_dirs
+
     return (None, None, None)
 
 
@@ -86,6 +88,7 @@ def parse_for_setting(text):
         found = pattern.search(text)
         if found:
             return found.groupdict()['cmd'], found.groupdict().get('setting'), None
+
     return (None, None, None)
 
 

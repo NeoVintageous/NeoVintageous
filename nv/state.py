@@ -546,7 +546,7 @@ class State(object):
             # its surroundings.
             # TODO Maybe some commands should show their surroundings too?
             view.show(view.sel()[0], False)
-        except Exception:
+        except Exception:  # FIXME exception is too broad!
             pass
 
     def reset(self):
