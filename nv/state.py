@@ -156,7 +156,7 @@ class State(object):
 
     @property
     def last_buffer_search_command(self):
-        # type: (str) -> str
+        # type: () -> str
         # 'n' and 'N' change directions depending on which of '/' or '?' was the previous command.
         # Returns:
         #   str: The name of the last character search command, namely:
@@ -600,7 +600,7 @@ class State(object):
                 xpos = (self.view.rowcol(pos)[1] +
                         ((counter['\t'] * tab_size) - counter['\t']))
             except Exception as e:
-                console_message(e)
+                console_message(str(e))
                 _log.exception('error setting xpos; default to 0')
                 self.xpos = 0
                 return

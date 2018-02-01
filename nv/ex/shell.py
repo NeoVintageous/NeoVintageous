@@ -1,4 +1,4 @@
-import sublime
+from sublime import Region
 
 import NeoVintageous.nv.ex.plat as plat
 import NeoVintageous.nv.ex.plat.linux  # FIXME # noqa: F401
@@ -44,7 +44,7 @@ def filter_thru_shell(view, edit, regions, cmd):
     accumulated_delta = 0
     new_points = []
     for r in regions:
-        r_shifted = sublime.Region(r.begin() + accumulated_delta, r.end() + accumulated_delta)
+        r_shifted = Region(r.begin() + accumulated_delta, r.end() + accumulated_delta)
         rv = filter_func(view, view.substr(r_shifted), cmd).rstrip() + '\n'
         view.replace(edit, r_shifted, rv)
         new_points.append(r_shifted.a)

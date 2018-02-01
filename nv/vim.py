@@ -33,7 +33,7 @@ VISUAL_LINE = 'mode_visual_line'
 
 
 def mode_to_friendly_name(mode):
-    # type: (int) -> str
+    # type: (str) -> str
     if mode == INSERT:
         return 'INSERT'
     if mode == INTERNAL_NORMAL:

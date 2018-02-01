@@ -54,8 +54,8 @@ def ui_bell():
         set_timeout(remove_bell, duration)
 
 
-# [refactor] Rework this to use the ui_bell().
-# [refactor] Rework this to require a view or settings object.
+# TODO [refactor] Rework this to use the ui_bell().
+# TODO [refactor] Rework this to require a view or settings object.
 def ui_blink(times=4, delay=55):
     prefs = load_settings('Preferences.sublime-settings')
     if prefs.get('vintageous_visualbell') is False:

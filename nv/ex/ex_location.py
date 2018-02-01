@@ -1,18 +1,21 @@
-import sublime
+from sublime import Region
 
 
 def get_line_nr(view, point):
+    # type: (...) -> int
     """Return 1-based line number for `point`."""
     return view.rowcol(point)[0] + 1
 
 
 # TODO: Move this to sublime_lib; make it accept a point or a region.
 def find_eol(view, point):
+    # type: (...) -> int
     return view.line(point).end()
 
 
 # TODO: Move this to sublime_lib; make it accept a point or a region.
 def find_bol(view, point):
+    # type: (...) -> int
     return view.line(point).begin()
 
 
@@ -88,7 +91,7 @@ def reverse_search(view, what, start=0, end=-1, flags=0):
 
             return view.rowcol(match.begin())[0] + 1
 
-        last_match = sublime.Region(line.begin(), line.end())
+        last_match = Region(line.begin(), line.end())
 
 
 def calculate_relative_ref(view, where, start_line=None):

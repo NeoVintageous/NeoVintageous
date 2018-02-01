@@ -1,4 +1,7 @@
-import sublime
+from NeoVintageous.tests.unittest import Region
+
+
+# TODO [refactor] This code needs to be removed or refactored into tests.unittest module.
 
 
 def select_point(view, left_end, right_end=None):
@@ -6,7 +9,7 @@ def select_point(view, left_end, right_end=None):
         right_end = left_end
 
     view.sel().clear()
-    view.sel().add(sublime.Region(left_end, right_end))
+    view.sel().add(Region(left_end, right_end))
 
 
 def select_eof(view):

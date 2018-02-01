@@ -1,7 +1,8 @@
 from unittest import mock
 import builtins
 
-import sublime
+from sublime import get_clipboard
+from sublime import set_clipboard
 
 from NeoVintageous.tests import unittest
 
@@ -73,7 +74,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        sublime.set_clipboard('')
+        set_clipboard('')
         registers._REGISTER_DATA = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
@@ -140,7 +141,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
     def test_setting_register_sets_clipboard_if_needed(self):
         self.regs.settings.view['vintageous_use_sys_clipboard'] = True
         self.regs.set('a', [100])
-        self.assertEqual(sublime.get_clipboard(), '100')
+        self.assertEqual(get_clipboard(), '100')
 
     def test_can_append_to_single_value(self):
         self.regs.set('a', ['foo'])
@@ -172,7 +173,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
         self.regs.settings.view['vintageous_use_sys_clipboard'] = True
         self.regs.set('a', ['foo'])
         self.regs.append_to('A', ['bar'])
-        self.assertEqual(sublime.get_clipboard(), 'foobar')
+        self.assertEqual(get_clipboard(), 'foobar')
 
     def test_get_default_to_unnamed_register(self):
         registers._REGISTER_DATA['"'] = ['foo']
@@ -197,7 +198,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
 
     def test_get_sys_clipboard_always_if_requested(self):
         self.regs.settings.view['vintageous_use_sys_clipboard'] = True
-        sublime.set_clipboard('foo')
+        set_clipboard('foo')
         self.assertEqual(self.regs.get(), ['foo'])
 
     def test_getting_expression_register_clears_expression_register(self):
@@ -250,7 +251,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        sublime.set_clipboard('')
+        set_clipboard('')
         registers._REGISTER_DATA = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
@@ -284,7 +285,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def test_can_synthetize_new_line_at_eof(self):
         self.regs.view.substr.return_value = "AAA"
-        self.regs.view.sel.return_value = [sublime.Region(10, 10), sublime.Region(10, 10)]
+        self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
         self.regs.view.size.return_value = 0
 
         class vi_cmd_data:
@@ -296,7 +297,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def test_doesnt_synthetize_new_line_at_eof_if_not_needed(self):
         self.regs.view.substr.return_value = "AAA\n"
-        self.regs.view.sel.return_value = [sublime.Region(10, 10), sublime.Region(10, 10)]
+        self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
         self.regs.view.size.return_value = 0
 
         class vi_cmd_data:
@@ -308,7 +309,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def test_doesnt_synthetize_new_line_at_eof_if_not_at_eof(self):
         self.regs.view.substr.return_value = "AAA"
-        self.regs.view.sel.return_value = [sublime.Region(10, 10), sublime.Region(10, 10)]
+        self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
         self.regs.view.size.return_value = 100
 
         class vi_cmd_data:
@@ -320,7 +321,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def test_can_yank_linewise(self):
         self.regs.view.substr.return_value = "AAA"
-        self.regs.view.sel.return_value = [sublime.Region(10, 10), sublime.Region(10, 10)]
+        self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
         class vi_cmd_data:
             _synthetize_new_line_at_eof = False
@@ -331,7 +332,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def test_does_not_yank_linewise_if_non_empty_string_followed_by_new_line(self):
         self.regs.view.substr.return_value = "AAA\n"
-        self.regs.view.sel.return_value = [sublime.Region(10, 10), sublime.Region(10, 10)]
+        self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
         class vi_cmd_data:
             _synthetize_new_line_at_eof = False
@@ -342,7 +343,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def test_yank_linewise_if_empty_string_followed_by_new_line(self):
         self.regs.view.substr.return_value = "\n"
-        self.regs.view.sel.return_value = [sublime.Region(10, 10), sublime.Region(10, 10)]
+        self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
         class vi_cmd_data:
             _synthetize_new_line_at_eof = False
@@ -353,7 +354,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def test_yank_linewise_if_two_trailing_new_lines(self):
         self.regs.view.substr.return_value = "\n\n"
-        self.regs.view.sel.return_value = [sublime.Region(10, 10), sublime.Region(10, 10)]
+        self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
         class vi_cmd_data:
             _synthetize_new_line_at_eof = False
@@ -367,7 +368,7 @@ class Test_yank(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        sublime.set_clipboard('')
+        set_clipboard('')
         registers._REGISTER_DATA = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')

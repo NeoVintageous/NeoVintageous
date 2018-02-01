@@ -96,7 +96,6 @@ def resolve_insertion_point_at_b(region):
 
 
 def resolve_insertion_point_at_a(region):
-    # type: (Region) -> int
     # Return the actual insertion point closest to region.a for a visual region.
     # For non-visual regions, the insertion point is always any of the region's
     # ends, so using this function is pointless.
@@ -136,12 +135,11 @@ def row_at(view, pt):
 
 
 def col_at(view, pt):
-    # type: (...) -> int
     return view.rowcol(pt)[1]
 
 
 def row_to_pt(view, row, col=0):
-    # type: (...) -> str
+    # type: (...) -> int
     return view.text_point(row, col)
 
 

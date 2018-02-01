@@ -1,5 +1,3 @@
-import sublime
-
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.ex.ex_location import get_line_nr
@@ -577,13 +575,13 @@ class TestSearchHelpers(unittest.ViewTestCase):
     def selectLine(self, line_nr):
         pt = self.view.text_point(line_nr - 1, 0)
         self.view.sel().clear()
-        self.view.sel().add(sublime.Region(pt, pt))
+        self.view.sel().add(self.Region(pt, pt))
 
     def test_forward_search(self):
         self.write(TEST_CONTENT)
         self.selectLine(1)
         values = (
-            (find_line(self.view, target=30), sublime.Region(1668, 1679)),
+            (find_line(self.view, target=30), self.Region(1668, 1679)),
             (find_line(self.view, target=1000), -1),
         )
 
@@ -606,7 +604,7 @@ class TestSearchHelpers(unittest.ViewTestCase):
         self.write(TEST_CONTENT)
         self.selectLine(1)
         values = (
-            (find_last_match(self.view, 'Lorem', 0, 1200), sublime.Region(913, 918)),
+            (find_last_match(self.view, 'Lorem', 0, 1200), self.Region(913, 918)),
         )
 
         for actual, expected in values:

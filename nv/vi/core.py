@@ -81,7 +81,7 @@ class ViCommandMixin(object):
         try:
             xpos = self._view.rowcol(self._view.sel()[0].b)[1]
         except Exception as e:
-            console_message(e)
+            console_message(str(e))
             raise ValueError('could not set xpos')
 
         state.xpos = xpos

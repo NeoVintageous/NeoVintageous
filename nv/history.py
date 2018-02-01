@@ -53,7 +53,7 @@ _storage = {
         'num': 0,
         'items': {}
     }
-}  # type: dict
+}
 
 
 def _char2type(char):

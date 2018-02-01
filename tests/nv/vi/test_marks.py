@@ -1,5 +1,3 @@
-import sublime
-
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.state import State
@@ -30,7 +28,7 @@ class MarksTests(unittest.ViewTestCase):
         super().setUp()
         marks._MARKS = {}
         self.view.sel().clear()
-        self.view.sel().add(sublime.Region(0, 0))
+        self.view.sel().add(self.Region(0, 0))
         self.marks = State(self.view).marks
 
     def test_can_set_mark(self):
@@ -43,14 +41,14 @@ class MarksTests(unittest.ViewTestCase):
     def test_can_retrieve_mark_in_the_current_buffer_as_tuple(self):
         self.marks.add('a', self.view)
         # The caret's at the beginning of the buffer.
-        self.assertEqual(self.marks.get_as_encoded_address('a'), sublime.Region(0, 0))
+        self.assertEqual(self.marks.get_as_encoded_address('a'), self.Region(0, 0))
 
     def test_can_retrieve_mark_in_the_current_buffer_as_tuple2(self):
         self.write(''.join(('foo bar\n') * 10))
         self.view.sel().clear()
-        self.view.sel().add(sublime.Region(30, 30))
+        self.view.sel().add(self.Region(30, 30))
         self.marks.add('a', self.view)
-        self.assertEqual(self.marks.get_as_encoded_address('a'), sublime.Region(24, 24))
+        self.assertEqual(self.marks.get_as_encoded_address('a'), self.Region(24, 24))
 
     def test_can_retrieve_mark_in_a_different_buffer_as_encoded_mark(self):
         view = View(id_=self.view.view_id + 1, fname=r'C:\foo.txt')

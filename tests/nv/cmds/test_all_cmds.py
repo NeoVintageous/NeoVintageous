@@ -1,9 +1,11 @@
-import os
-import glob
-import unittest
 from collections import defaultdict
+import glob
+import os
+import unittest
 
-import sublime
+from sublime import active_window
+
+from NeoVintageous.tests.unittest import Region
 
 
 _path_to_test_specs = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
@@ -67,7 +69,7 @@ def _process_notation(text, sel_start_token='^', sel_end_token='$'):
             if start is None:
                 start = pos - deletions
             else:
-                selections.append(sublime.Region(start, pos - deletions))
+                selections.append(Region(start, pos - deletions))
                 start = None
             deletions += 1
         elif c == sel_end_token:
@@ -76,7 +78,7 @@ def _process_notation(text, sel_start_token='^', sel_end_token='$'):
             if start is None:
                 start = pos - deletions
             else:
-                selections.append(sublime.Region(start, pos - deletions))
+                selections.append(Region(start, pos - deletions))
                 start = None
             deletions += 1
         else:
@@ -140,7 +142,7 @@ class CommandTest(object):
 
         after_sels, after_text = _process_notation(self.after_text)
 
-        runner.assertEqual(view.substr(sublime.Region(0, view.size())), after_text, self.message)
+        runner.assertEqual(view.substr(Region(0, view.size())), after_text, self.message)
 
         runner.assertEqual(list(view.sel()), after_sels, self.message)
 
@@ -188,7 +190,8 @@ class CommandTestCase(unittest.TestCase):
     def reset(self):
         if getattr(self, "view", None):
             self.view.close()
-        self.view = sublime.active_window().new_file()
+
+        self.view = active_window().new_file()
         self.view.set_scratch(True)
 
     def set_sels(self, sels):
