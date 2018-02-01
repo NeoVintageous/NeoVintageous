@@ -331,9 +331,15 @@ class PressKey(ViWindowCommandBase):
 
                                 return string.lower()
 
-                            return self.window.run_command(_coerce_to_snakecase(cmd_line_command))
+                            command = _coerce_to_snakecase(cmd_line_command)
+                            command_args = {}
                         else:
-                            return self.window.run_command('vi_colon_input', {'cmd_line': ':' + cmd_line_command})
+                            command = 'vi_colon_input'
+                            command_args = {'cmd_line': ':' + cmd_line_command}
+
+                        _log.info('run command -> %s %s', command, command_args)
+
+                        return self.window.run_command(command, command_args)
 
                     if ':' == new_keys:
                         return self.window.run_command('vi_colon_input')
