@@ -83,23 +83,42 @@ class _nv_cmdline_handle_key(TextCommand):
             return
 
         if key in ('<up>', '<C-p>'):
+            # Recall older command-line from history, whose beginning matches
+            # the current command-line.
             self._next_history(edit, backwards=True)
+
         elif key in ('<down>', '<C-n>'):
+            # Recall more recent command-line from history, whose beginning
+            # matches the current command-line.
             self._next_history(edit, backwards=False)
+
         elif key in ('<C-b>', '<home>'):
-            # Begin of command line.
+            # Cursor to beginning of command-line.
             self.view.sel().clear()
             self.view.sel().add(1)
+
         elif key in ('<C-c>', '<C-[>'):
+            # Quit command-line without executing.
             self.view.window().run_command('hide_panel', {'cancel': True})
+
         elif key in ('<C-e>', '<end>'):
-            # End of command line.
+            # Cursor to end of command-line.
             self.view.sel().clear()
             self.view.sel().add(self.view.size())
+
+        elif key == '<C-h>':
+            # Delete the character in front of the cursor.
+            pt_end = self.view.sel()[0].b
+            pt_begin = pt_end - 1
+            self.view.erase(edit, Region(pt_begin, pt_end))
+
         elif key == '<C-u>':
-            # delete all characters left of the cursor
+            # Remove all characters between the cursor position and the
+            # beginning of the line.
             self.view.erase(edit, Region(1, self.view.sel()[0].end()))
+
         elif key == '<C-w>':
+            # Delete the |word| before the cursor.
             word_region = self.view.word(self.view.sel()[0].begin())
             word_region = self.view.expand_by_class(self.view.sel()[0].begin(), CLASS_WORD_START)
             word_start_pt = word_region.begin()
