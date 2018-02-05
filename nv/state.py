@@ -542,14 +542,12 @@ class State(object):
 
     def scroll_into_view(self):
         # type: () -> None
-        try:
-            view = active_window().active_view()
+        view = active_window().active_view()
+        if view:
             # Make sure we show the first caret on the screen, but don't show
             # its surroundings.
             # TODO Maybe some commands should show their surroundings too?
             view.show(view.sel()[0], False)
-        except Exception:  # FIXME exception is too broad!
-            pass
 
     def reset(self):
         # type: () -> None
