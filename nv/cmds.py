@@ -16,23 +16,28 @@ from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
+from NeoVintageous.nv.mappings import Mapping
+from NeoVintageous.nv.mappings import mappings_is_incomplete
+from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
-from NeoVintageous.nv.vi import cmd_base
-from NeoVintageous.nv.vi import cmd_defs
-from NeoVintageous.nv.vi import mappings
-from NeoVintageous.nv.vi import utils
+from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
+from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
+from NeoVintageous.nv.vi.cmd_defs import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
+from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import key_names
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
-from NeoVintageous.nv.vi.mappings import Mappings
 from NeoVintageous.nv.vi.settings import iter_settings
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import regions_transformer
+from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
@@ -295,15 +300,14 @@ class PressKey(ViWindowCommandBase):
 
         state.partial_sequence += key
 
-        key_mappings = Mappings(state)
-        if check_user_mappings and key_mappings.incomplete_user_mapping():
+        if check_user_mappings and mappings_is_incomplete(state.mode, state.partial_sequence):
             _log.debug('found incomplete mapping')
 
             return
 
-        command = key_mappings.resolve(check_user_mappings=check_user_mappings)
+        command = mappings_resolve(state, check_user_mappings=check_user_mappings)
 
-        if isinstance(command, cmd_defs.ViOpenRegister):
+        if isinstance(command, ViOpenRegister):
             _log.debug('opening register...')
             state.must_capture_register_name = True
 
@@ -311,7 +315,7 @@ class PressKey(ViWindowCommandBase):
 
         # XXX: This doesn't seem to be correct. If we are in OPERATOR_PENDING mode, we should
         # most probably not have to wipe the state.
-        if isinstance(command, mappings.Mapping):
+        if isinstance(command, Mapping):
             _log.debug('found user mapping...')
 
             if do_eval:
@@ -367,14 +371,14 @@ class PressKey(ViWindowCommandBase):
 
             return
 
-        if isinstance(command, cmd_defs.ViOpenNameSpace):
+        if isinstance(command, ViOpenNameSpace):
             # Keep collecting input to complete the sequence. For example, we
             # may have typed 'g'
             _log.info('opening namespace')
 
             return
 
-        elif isinstance(command, cmd_base.ViMissingCommandDef):
+        elif isinstance(command, ViMissingCommandDef):
             _log.info('found missing command...')
 
             bare_seq = to_bare_command_name(state.sequence)
@@ -386,20 +390,18 @@ class PressKey(ViWindowCommandBase):
                 #
                 # Exclude user mappings, since they've already been given a
                 # chance to evaluate.
-                command = key_mappings.resolve(sequence=bare_seq,
-                                               mode=NORMAL,
-                                               check_user_mappings=False)
+                command = mappings_resolve(state, sequence=bare_seq, mode=NORMAL, check_user_mappings=False)
             else:
-                command = key_mappings.resolve(sequence=bare_seq)
+                command = mappings_resolve(state, sequence=bare_seq)
 
-            if isinstance(command, cmd_base.ViMissingCommandDef):
+            if isinstance(command, ViMissingCommandDef):
                 _log.debug('unmapped sequence %s', state.sequence)
-                ui_blink()
                 state.mode = NORMAL
                 state.reset_command_data()
-                return
 
-        if (state.mode == OPERATOR_PENDING and isinstance(command, cmd_defs.ViOperatorDef)):
+                return ui_blink()
+
+        if (state.mode == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
             _log.info('found operator pending...')
             # TODO: This may be unreachable code by now. ???
             # we're expecting a motion, but we could still get an action.
@@ -407,9 +409,9 @@ class PressKey(ViWindowCommandBase):
             # remove counts
             action_seq = to_bare_command_name(state.sequence)
             _log.debug('action sequence %s', action_seq)
-            command = key_mappings.resolve(sequence=action_seq, mode=NORMAL)
+            command = mappings_resolve(state, sequence=action_seq, mode=NORMAL)
             # TODO: Make _missing a command.
-            if isinstance(command, cmd_base.ViMissingCommandDef):
+            if isinstance(command, ViMissingCommandDef):
                 _log.debug('unmapped sequence %s', state.sequence)
                 state.reset_command_data()
                 return
@@ -486,6 +488,7 @@ class ProcessNotation(ViWindowCommandBase):
                 state.reset_command_data()
                 if state.mode == OPERATOR_PENDING:
                     state.mode = NORMAL
+
                 break
 
             elif state.runnable():
@@ -531,10 +534,12 @@ class ProcessNotation(ViWindowCommandBase):
                             })
                         else:
                             self.window.run_command('insert', {
-                                'characters': utils.translate_char(key)
+                                'characters': translate_char(key)
                             })
+
                     if not state.must_collect_input:
                         return
+
                 finally:
                     state.non_interactive = False
                     # Ensure we set the full command for '.' to use, but don't
@@ -552,13 +557,14 @@ class ProcessNotation(ViWindowCommandBase):
             motion_data = state.motion.translate(state) or None
 
             if motion_data is None:
-                ui_blink()
                 state.reset_command_data()
-                return
+
+                return ui_blink()
 
             motion_data['motion_args']['default'] = state.motion._inp
-            self.window.run_command(motion_data['motion'],
-                                    motion_data['motion_args'])
+
+            self.window.run_command(motion_data['motion'], motion_data['motion_args'])
+
             return
 
         self.collect_input()
@@ -838,7 +844,7 @@ class _vi_slash_on_parser_done(WindowCommand):
 
     def run(self, key=None):
         state = State(self.window.active_view())
-        state.motion = cmd_defs.ViSearchForwardImpl()
+        state.motion = ViSearchForwardImpl()
         state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
@@ -846,7 +852,7 @@ class _vi_question_mark_on_parser_done(WindowCommand):
 
     def run(self, key=None):
         state = State(self.window.active_view())
-        state.motion = cmd_defs.ViSearchBackwardImpl()
+        state.motion = ViSearchBackwardImpl()
         state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 

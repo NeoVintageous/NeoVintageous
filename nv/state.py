@@ -447,6 +447,8 @@ class State(object):
         if motion:
             return (motion and motion.accept_input)
 
+        return False
+
     @property
     def must_update_xpos(self):
         # Returns:

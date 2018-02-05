@@ -21,12 +21,13 @@ from NeoVintageous.nv.ex.parser.parser import parse_command_line
 from NeoVintageous.nv.ex.plat.windows import get_oem_cp
 from NeoVintageous.nv.ex.plat.windows import get_startup_info
 from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.mappings import mappings_add
+from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import abbrev
 from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.core import ViCommandMixin as WindowCommandMixin
-from NeoVintageous.nv.vi.mappings import Mappings
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
@@ -239,7 +240,6 @@ class ExHelp(WindowCommand, WindowCommandMixin):
         if not doc_resources:
             return message('Sorry, help file "%s" not found' % tag[0])
 
-        # TODO [refactor] into reusable api
         def window_find_open_view(window, name):
             for view in self.window.views():
                 if view.name() == name:
@@ -484,12 +484,11 @@ class ExMap(WindowCommand, WindowCommandMixin):
         if not (parsed.command.keys and parsed.command.command):
             return status_message('Listing key mappings is not implemented')
 
-        mappings = Mappings(self.state)
-        mappings.add(NORMAL, parsed.command.keys, parsed.command.command)
-        mappings.add(OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
-        mappings.add(VISUAL, parsed.command.keys, parsed.command.command)
-        mappings.add(VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
-        mappings.add(VISUAL_LINE, parsed.command.keys, parsed.command.command)
+        mappings_add(NORMAL, parsed.command.keys, parsed.command.command)
+        mappings_add(OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
+        mappings_add(VISUAL, parsed.command.keys, parsed.command.command)
+        mappings_add(VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
+        mappings_add(VISUAL_LINE, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:unmap
@@ -498,13 +497,13 @@ class ExUnmap(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        mappings = Mappings(self.state)
+
         try:
-            mappings.remove(NORMAL, parsed.command.keys)
-            mappings.remove(OPERATOR_PENDING, parsed.command.keys)
-            mappings.remove(VISUAL, parsed.command.keys)
-            mappings.remove(VISUAL_BLOCK, parsed.command.keys)
-            mappings.remove(VISUAL_LINE, parsed.command.keys)
+            mappings_remove(NORMAL, parsed.command.keys)
+            mappings_remove(OPERATOR_PENDING, parsed.command.keys)
+            mappings_remove(VISUAL, parsed.command.keys)
+            mappings_remove(VISUAL_BLOCK, parsed.command.keys)
+            mappings_remove(VISUAL_LINE, parsed.command.keys)
         except KeyError:
             status_message('Mapping not found')
 
@@ -518,8 +517,7 @@ class ExNmap(WindowCommand, WindowCommandMixin):
         if not (parsed.command.keys and parsed.command.command):
             return status_message('Listing key mappings is not implemented')
 
-        mappings = Mappings(self.state)
-        mappings.add(NORMAL, parsed.command.keys, parsed.command.command)
+        mappings_add(NORMAL, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:nunmap
@@ -528,9 +526,9 @@ class ExNunmap(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        mappings = Mappings(self.state)
+
         try:
-            mappings.remove(NORMAL, parsed.command.keys)
+            mappings_remove(NORMAL, parsed.command.keys)
         except KeyError:
             status_message('Mapping not found')
 
@@ -544,8 +542,7 @@ class ExOmap(WindowCommand, WindowCommandMixin):
         if not (parsed.command.keys and parsed.command.command):
             return status_message('Listing key mappings is not implemented')
 
-        mappings = Mappings(self.state)
-        mappings.add(OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
+        mappings_add(OPERATOR_PENDING, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:ounmap
@@ -554,9 +551,9 @@ class ExOunmap(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        mappings = Mappings(self.state)
+
         try:
-            mappings.remove(OPERATOR_PENDING, parsed.command.keys)
+            mappings_remove(OPERATOR_PENDING, parsed.command.keys)
         except KeyError:
             status_message('Mapping not found')
 
@@ -570,8 +567,7 @@ class ExSmap(WindowCommand, WindowCommandMixin):
         if not (parsed.command.keys and parsed.command.command):
             return status_message('Listing key mappings is not implemented')
 
-        mappings = Mappings(self.state)
-        mappings.add(SELECT, parsed.command.keys, parsed.command.command)
+        mappings_add(SELECT, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:sunmap
@@ -580,9 +576,9 @@ class ExSunmap(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        mappings = Mappings(self.state)
+
         try:
-            mappings.remove(SELECT, parsed.command.keys)
+            mappings_remove(SELECT, parsed.command.keys)
         except KeyError:
             status_message('Mapping not found')
 
@@ -596,10 +592,9 @@ class ExVmap(WindowCommand, WindowCommandMixin):
         if not (parsed.command.keys and parsed.command.command):
             return status_message('Listing key mappings is not implemented')
 
-        mappings = Mappings(self.state)
-        mappings.add(VISUAL, parsed.command.keys, parsed.command.command)
-        mappings.add(VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
-        mappings.add(VISUAL_LINE, parsed.command.keys, parsed.command.command)
+        mappings_add(VISUAL, parsed.command.keys, parsed.command.command)
+        mappings_add(VISUAL_BLOCK, parsed.command.keys, parsed.command.command)
+        mappings_add(VISUAL_LINE, parsed.command.keys, parsed.command.command)
 
 
 # https://vimhelp.appspot.com/map.txt.html#:vunmap
@@ -608,11 +603,11 @@ class ExVunmap(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        mappings = Mappings(self.state)
+
         try:
-            mappings.remove(VISUAL, parsed.command.keys)
-            mappings.remove(VISUAL_BLOCK, parsed.command.keys)
-            mappings.remove(VISUAL_LINE, parsed.command.keys)
+            mappings_remove(VISUAL, parsed.command.keys)
+            mappings_remove(VISUAL_BLOCK, parsed.command.keys)
+            mappings_remove(VISUAL_LINE, parsed.command.keys)
         except KeyError:
             status_message('Mapping not found')
 
