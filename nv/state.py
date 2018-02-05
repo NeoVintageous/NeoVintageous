@@ -612,16 +612,11 @@ class State(object):
     def _set_parsers(self, command):
         # type: (ViCommandDefBase) -> None
         if command.accept_input:
-            # TODO Refactor parser via panel
-            self._run_parser_via_panel(command)
+            if command.input_parser.type == INPUT_VIA_PANEL:
+                if self.non_interactive:
+                    return
 
-    def _run_parser_via_panel(self, command):
-        # type: (ViCommandDefBase) -> None
-        if command.input_parser.type == INPUT_VIA_PANEL:
-            if self.non_interactive:
-                return
-
-            active_window().run_command(command.input_parser.command)
+                active_window().run_command(command.input_parser.command)
 
     def process_input(self, key):
         # type: (str) -> bool
