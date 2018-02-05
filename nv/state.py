@@ -842,7 +842,7 @@ class State(object):
                 if 'mode' in action_cmd['action_args']:
                     action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
-            elif self.mode in (VISUAL, VISUAL_LINE):
+            elif self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 self.view.add_regions('visual_sel', list(self.view.sel()))
 
             # Some commands, like 'i' or 'a', open a series of edits that
