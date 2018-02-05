@@ -363,7 +363,7 @@ class ExShell(WindowCommand, WindowCommandMixin):
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
-                console_message(e)
+                console_message(str(e))
                 status_message('error while executing command through shell')
                 return
 
@@ -376,7 +376,7 @@ class ExShell(WindowCommand, WindowCommandMixin):
             try:
                 self.open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
-                console_message(e)
+                console_message(str(e))
                 status_message('error while executing command through shell')
                 return
 
@@ -411,7 +411,7 @@ class ExReadShellOut(TextCommand):
                 try:
                     p = subprocess.Popen([the_shell, '-c', parsed.command.command], stdout=subprocess.PIPE)
                 except Exception as e:
-                    console_message(e)
+                    console_message(str(e))
                     status_message('error while executing command through shell')
                     return
                 self.view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
@@ -768,7 +768,7 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
         except IOError as e:
             console_message('could not write file')
             console_message('--------------------')
-            console_message(e)
+            console_message(str(e))
             console_message('--------------------')
             return
 
@@ -810,7 +810,7 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
             # TODO: Add logging.
             message("E212: Can't open file for writing: %s" % fname)
             console_message('----------------------------------------------')
-            console_message(e)
+            console_message(str(e))
             console_message('----------------------------------------------')
 
 
@@ -1028,9 +1028,7 @@ class ExSubstitute(TextCommand):
         try:
             compiled_rx = re.compile(pattern, flags=computed_flags)
         except Exception as e:
-            status_message('bad pattern \'%s\'' % (e.message, pattern))
-            console_message('[regex error]: %s ... in pattern \'%s\'' % (e.message, pattern))
-            return
+            return message('[regex error]: %s ... in pattern \'%s\'' % (str(e), pattern))
 
         replace_count = 0 if (flags and 'g' in flags) else 1
 
