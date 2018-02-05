@@ -54,7 +54,7 @@ class TestKeyContext(unittest.ViewTestCase):
         self.write(':set ')
         self.assertTrue(_Context(self.view).query('vi_cmdline_at_setting_completion', OP_EQUAL, True, False))
 
-        self.view.assign_syntax('Packages/NeoVintageous/tests/fixtures/res/Command-line mode foobar.sublime-syntax')
+        self.view.assign_syntax('Packages/NeoVintageous/tests/fixtures/Command-line mode foobar.sublime-syntax')
         self.assertFalse(_Context(self.view).query('vi_cmdline_at_setting_completion', OP_EQUAL, True, False))
 
     def test_vi_command_mode_aware_can_return_true(self):
