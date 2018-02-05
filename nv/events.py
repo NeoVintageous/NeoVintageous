@@ -79,39 +79,6 @@ class _Context:
                     return not value
 
     def query(self, key, operator, operand, match_all):
-        # Called when determining to trigger a key binding with the given
-        # context key.
-        #
-        # If the plugin knows how to respond to the context, it should return
-        # either True of False.
-        #
-        # If the context is unknown, should return None.
-        #
-        # operator is one of:
-        #
-        #     sublime.OP_EQUAL: Is the value of the context equal to the
-        #                       operand?
-        #
-        #     sublime.OP_NOT_EQUAL: Is the value of the context not equal to
-        #                           the operand?
-        #
-        #     sublime.OP_REGEX_MATCH: Does the value of the context match the
-        #                             regex given in operand?
-        #
-        #     sublime.OP_NOT_REGEX_MATCH: Does the value of the context not
-        #                                 match the regex given in operand?
-        #
-        #     sublime.OP_REGEX_CONTAINS: Does the value of the context contain
-        #                                a substring matching the regex given
-        #                                in operand?
-        #
-        #     sublime.OP_NOT_REGEX_CONTAINS: Does the value of the context not
-        #                                    contain a substring matching the
-        #                                    regex given in operand?
-        #
-        # match_all should be used if the context relates to the selections:
-        # does every selection have to match (match_all == True), or is at least
-        # one matching enough then (match_all == False).
         func = getattr(self, key, None)
         if func:
             return func(key, operator, operand, match_all)

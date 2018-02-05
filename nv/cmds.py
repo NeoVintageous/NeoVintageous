@@ -328,9 +328,6 @@ class PressKey(ViWindowCommandBase):
                 state.motion_count = mcount
                 state.action_count = acount
 
-                # TODO REVIEW *Not* setting the mode seems to fix some issues with commands like :snoremap
-                # state.mode = NORMAL
-
                 _log.info('user mapping %s -> %s', key, new_keys)
 
                 # Support for basic Command-line mode mappings:
