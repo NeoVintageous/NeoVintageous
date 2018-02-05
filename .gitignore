@@ -10,8 +10,8 @@
 *$py.class
 
 # Sublime Text
-/*.sublime-workspace
-/*.sublime-package
+*.sublime-workspace
+*.sublime-package
 
 # VIM
 [._]*.s[a-w][a-z]
@@ -23,9 +23,6 @@ Session.vim
 tags
 
 # Project
-!/lib/
-!/tests/lib/
 !/res/doc/tags
 /covhtml/
-/dist/
 /tmp/

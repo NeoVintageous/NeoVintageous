@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import sublime
+from sublime import load_resource
 
 
 class TestDocs(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestDocs(unittest.TestCase):
 
                 exception = False
                 try:
-                    sublime.load_resource(resource)
+                    load_resource(resource)
                 except Exception as e:
                     exception = e
 
