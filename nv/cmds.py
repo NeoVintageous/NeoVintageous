@@ -193,7 +193,6 @@ class _nv_fix_st_eol_caret(TextCommand):
         regions_transformer(self.view, f)
 
 
-# TODO Add status messages e.g. for no docs found, etc.
 class _nv_goto_help(WindowCommand):
     def run(self):
         view = self.window.active_view()
@@ -214,7 +213,7 @@ class _nv_goto_help(WindowCommand):
         subject = view.substr(view.extract_scope(pt.begin()))
 
         if len(subject) < 3:
-            return
+            return message('E149: Sorry, no help for %s' % subject)
 
         match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
         if match:
@@ -222,6 +221,8 @@ class _nv_goto_help(WindowCommand):
             # TODO Refactor ex_help code into a reusable middle layer so that
             # this command doesn't have to call the ex command.
             self.window.run_command('ex_help', {'command_line': 'help ' + subject})
+        else:
+            return message('E149: Sorry, no help for %s' % subject)
 
 
 class PressKey(ViWindowCommandBase):
