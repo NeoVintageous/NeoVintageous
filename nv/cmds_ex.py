@@ -67,12 +67,12 @@ __all__ = [
     'ExHelp',
     'ExLet',
     'ExListRegisters',
-    'ExMap',
+    'ExNoremap',
     'ExMove',
     'ExNew',
-    'ExNmap',
+    'ExNnoremap',
     'ExNunmap',
-    'ExOmap',
+    'ExOnoremap',
     'ExOnly',
     'ExOunmap',
     'ExPrint',
@@ -85,7 +85,7 @@ __all__ = [
     'ExSetLocal',
     'ExShell',
     'ExShellOut',
-    'ExSmap',
+    'ExSnoremap',
     'ExSplit',
     'ExSubstitute',
     'ExSunmap',
@@ -98,7 +98,7 @@ __all__ = [
     'ExUnabbreviate',
     'ExUnmap',
     'ExUnvsplit',
-    'ExVmap',
+    'ExVnoremap',
     'ExVsplit',
     'ExVunmap',
     'ExWriteAll',
@@ -475,8 +475,8 @@ class ExPromptSelectOpenFile(WindowCommand, WindowCommandMixin):
         return [leaf, path]
 
 
-# https://vimhelp.appspot.com/map.txt.html#:map
-class ExMap(WindowCommand, WindowCommandMixin):
+# https://vimhelp.appspot.com/map.txt.html#:noremap
+class ExNoremap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -508,8 +508,8 @@ class ExUnmap(WindowCommand, WindowCommandMixin):
             status_message('Mapping not found')
 
 
-# https://vimhelp.appspot.com/map.txt.html#:nmap
-class ExNmap(WindowCommand, WindowCommandMixin):
+# https://vimhelp.appspot.com/map.txt.html#:nnoremap
+class ExNnoremap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -533,8 +533,8 @@ class ExNunmap(WindowCommand, WindowCommandMixin):
             status_message('Mapping not found')
 
 
-# https://vimhelp.appspot.com/map.txt.html#:omap
-class ExOmap(WindowCommand, WindowCommandMixin):
+# https://vimhelp.appspot.com/map.txt.html#:onoremap
+class ExOnoremap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -558,8 +558,8 @@ class ExOunmap(WindowCommand, WindowCommandMixin):
             status_message('Mapping not found')
 
 
-# https://vimhelp.appspot.com/map.txt.html#:smap
-class ExSmap(WindowCommand, WindowCommandMixin):
+# https://vimhelp.appspot.com/map.txt.html#:snoremap
+class ExSnoremap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -583,8 +583,8 @@ class ExSunmap(WindowCommand, WindowCommandMixin):
             status_message('Mapping not found')
 
 
-# https://vimhelp.appspot.com/map.txt.html#:vmap
-class ExVmap(WindowCommand, WindowCommandMixin):
+# https://vimhelp.appspot.com/map.txt.html#:vnoremap
+class ExVnoremap(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'

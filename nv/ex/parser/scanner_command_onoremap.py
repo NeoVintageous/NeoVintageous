@@ -1,14 +1,14 @@
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_OMAP
+from .tokens_base import TOKEN_COMMAND_ONOREMAP
 from .tokens_base import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('omap', 'om')
-class TokenCommandOmap(TokenOfCommand):
+@ex.command('onoremap', 'ono')
+class TokenCommandOnoremap(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_OMAP, 'omap', *args, **kwargs)
-        self.target_command = 'ex_omap'
+        super().__init__(params, TOKEN_COMMAND_ONOREMAP, 'onoremap', *args, **kwargs)
+        self.target_command = 'ex_onoremap'
 
     @property
     def keys(self):
@@ -19,7 +19,7 @@ class TokenCommandOmap(TokenOfCommand):
         return self.params['command']
 
 
-def scan_command_omap(state):
+def scan_command_onoremap(state):
     params = {
         'keys': None,
         'command': None,
@@ -30,4 +30,4 @@ def scan_command_omap(state):
     if m:
         params.update(m.groupdict())
 
-    return None, [TokenCommandOmap(params), TokenEof()]
+    return None, [TokenCommandOnoremap(params), TokenEof()]

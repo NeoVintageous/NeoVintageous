@@ -1,14 +1,14 @@
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_MAP
+from .tokens_base import TOKEN_COMMAND_VNOREMAP
 from .tokens_base import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('map', 'map')
-class TokenCommandMap(TokenOfCommand):
+@ex.command('vnoremap', 'vn')
+class TokenCommandVnoremap(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_MAP, 'map', *args, **kwargs)
-        self.target_command = 'ex_map'
+        super().__init__(params, TOKEN_COMMAND_VNOREMAP, 'vnoremap', *args, **kwargs)
+        self.target_command = 'ex_vnoremap'
 
     @property
     def keys(self):
@@ -19,7 +19,7 @@ class TokenCommandMap(TokenOfCommand):
         return self.params['command']
 
 
-def scan_command_map(state):
+def scan_command_vnoremap(state):
     params = {
         'keys': None,
         'command': None,
@@ -30,4 +30,4 @@ def scan_command_map(state):
     if m:
         params.update(m.groupdict())
 
-    return None, [TokenCommandMap(params), TokenEof()]
+    return None, [TokenCommandVnoremap(params), TokenEof()]

@@ -18,12 +18,12 @@ from .scanner_command_file import scan_command_file
 from .scanner_command_global import scan_command_global
 from .scanner_command_help import scan_command_help
 from .scanner_command_let import scan_command_let
-from .scanner_command_map import scan_command_map
+from .scanner_command_noremap import scan_command_noremap
 from .scanner_command_move import scan_command_move
 from .scanner_command_new import scan_command_new
-from .scanner_command_nmap import scan_command_nmap
+from .scanner_command_nnoremap import scan_command_nnoremap
 from .scanner_command_nunmap import scan_command_nunmap
-from .scanner_command_omap import scan_command_omap
+from .scanner_command_onoremap import scan_command_onoremap
 from .scanner_command_only import scan_command_only
 from .scanner_command_ounmap import scan_command_ounmap
 from .scanner_command_print import scan_command_print
@@ -36,7 +36,7 @@ from .scanner_command_set import scan_command_set
 from .scanner_command_set_local import scan_command_set_local
 from .scanner_command_shell import scan_command_shell
 from .scanner_command_shell_out import scan_command_shell_out
-from .scanner_command_smap import scan_command_smap
+from .scanner_command_snoremap import scan_command_snoremap
 from .scanner_command_split import scan_command_split
 from .scanner_command_substitute import scan_command_substitute
 from .scanner_command_tab_first import scan_command_tab_first
@@ -47,7 +47,7 @@ from .scanner_command_tab_prev import scan_command_tab_prev
 from .scanner_command_unabbreviate import scan_command_unabbreviate
 from .scanner_command_unmap import scan_command_unmap
 from .scanner_command_unvsplit import scan_command_unvsplit
-from .scanner_command_vmap import scan_command_vmap
+from .scanner_command_vnoremap import scan_command_vnoremap
 from .scanner_command_vsplit import scan_command_vsplit
 from .scanner_command_vunmap import scan_command_vunmap
 from .scanner_command_write import scan_command_write
@@ -81,11 +81,11 @@ patterns[r'^cdd'] = scan_command_cdd
 patterns[r'e(?:dit)?(?= |$)?'] = scan_command_edit
 patterns[r'let\s'] = scan_command_let
 patterns[r'm(?:ove)?(?=[^a]|$)'] = scan_command_move
-patterns[r'map'] = scan_command_map
+patterns[r'no(?:remap)'] = scan_command_noremap
 patterns[r'new'] = scan_command_new
-patterns[r'nm(?:ap)?'] = scan_command_nmap
+patterns[r'nn(?:oremap)?'] = scan_command_nnoremap
 patterns[r'nun(?:map)?'] = scan_command_nunmap
-patterns[r'om(?:ap)?'] = scan_command_omap
+patterns[r'ono(?:remap)?'] = scan_command_onoremap
 patterns[r'on(?:ly)?(?=!$|$)'] = scan_command_only
 patterns[r'ounm(?:ap)?'] = scan_command_ounmap
 patterns[r'p(?:rint)?$'] = scan_command_print
@@ -98,7 +98,7 @@ patterns[r's(?:ubstitute)?(?=[%&:/=]|$)'] = scan_command_substitute
 patterns[r'se(?:t)?(?=$|\s)'] = scan_command_set
 patterns[r'setl(?:ocal)?'] = scan_command_set_local
 patterns[r'sh(?:ell)?'] = scan_command_shell
-patterns[r'sm(?:ap)?'] = scan_command_smap
+patterns[r'snor(?:emap)?'] = scan_command_snoremap
 patterns[r'sp(?:lit)?'] = scan_command_split
 patterns[r'tabfir(?:st)?'] = scan_command_tab_first
 patterns[r'tabl(?:ast)?'] = scan_command_tab_last
@@ -109,7 +109,7 @@ patterns[r'tabr(?:ewind)?'] = scan_command_tab_first
 patterns[r'una(?:bbreviate)?'] = scan_command_unabbreviate
 patterns[r'unm(?:ap)?'] = scan_command_unmap
 patterns[r'unvsplit$'] = scan_command_unvsplit
-patterns[r'vm(?:ap)?'] = scan_command_vmap
+patterns[r'vn(?:oremap)?'] = scan_command_vnoremap
 patterns[r'vu(?:nmap)?'] = scan_command_vunmap
 patterns[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = scan_command_write
 patterns[r'wqa(?:ll)?'] = scan_command_write_and_quit_all

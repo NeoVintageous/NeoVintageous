@@ -56,19 +56,15 @@ def _run():
         _log.debug('rcfile not found')
 
 
-_PARSE_LINE_PATTERN = re.compile(
+_parse_line_pattern = re.compile(
     '^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
 
-
-# TODO Properly implement map, nmap, vmap and omap
-# Currently map, nmap, vmap, and omap work the same as
-# noremap, nnoremap, vnoremap, and onoremap.
-_TMP_CMD_ALIASES = {
-    'noremap': 'map',
-    'nnoremap': 'nmap',
-    'onoremap': 'omap',
-    'snoremap': 'smap',
-    'vnoremap': 'vmap'
+_recursive_mapping_alts = {
+    'map': 'nnnoremap',
+    'nmap': 'nnoremap',
+    'smap': 'snoremap',
+    'vmap': 'vnoremap',
+    'omap': 'onoremap'
 }
 
 
@@ -76,14 +72,14 @@ def _parse_line(line):
     try:
         line = line.rstrip()
         if line:
-            match = _PARSE_LINE_PATTERN.match(line)
+            match = _parse_line_pattern.match(line)
             if match:
                 cmd_line = match.group('command_line')
                 cmd = match.group('cmd')
 
-                if cmd in _TMP_CMD_ALIASES:
-                    cmd_line = cmd_line.replace(cmd, _TMP_CMD_ALIASES[cmd])
-                    cmd = _TMP_CMD_ALIASES[cmd]
+                if cmd in _recursive_mapping_alts:
+                    raise Exception('Recursive mapping commands not allowed, use the "{}" command instead'
+                                    .format(_recursive_mapping_alts[cmd]))
 
                 # By default, mapping the character '|' (bar) should be escaped
                 # with a slash or '<Bar>' used instead. Neovintageous currently

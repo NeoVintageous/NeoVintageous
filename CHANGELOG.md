@@ -28,6 +28,16 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Removed
 
+* Removed: Recursive mappings commands `:map`, `:nmap`, `:omap`, `:smap`, `:vmap` have been removed. Use the non recursive commands instead. These were because they were not implemented as recursive mappings, and replacing them now may prevent some potential problems in the future if the recursive commands are implemented. Here is a table of the old and new commands:
+
+  Recursive command | Non recursive command
+  ----------------- | ---------------------
+  `map` | `[no]remap`
+  `nmap` | `[nn]oremap`
+  `omap` | `[ono]remap`
+  `smap` | `[snor]emap`
+  `vmap` | `[vn]oremap`
+
 * Removed: Unused `vintageous_enable_cmdline_mode` setting
 
 ### Fixed

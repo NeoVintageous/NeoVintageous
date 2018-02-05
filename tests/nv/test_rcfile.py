@@ -1,31 +1,37 @@
 import unittest
 
 from NeoVintageous.nv.rcfile import _parse_line
-from NeoVintageous.nv.rcfile import _PARSE_LINE_PATTERN
+from NeoVintageous.nv.rcfile import _parse_line_pattern
 
 
 class TestRcfile(unittest.TestCase):
 
-    def test_parse_regex(self):
-        self.assertIsNone(_PARSE_LINE_PATTERN.match(''))
-        self.assertIsNone(_PARSE_LINE_PATTERN.match('foo'))
-        self.assertIsNone(_PARSE_LINE_PATTERN.match('" comment'))
-        self.assertIsNone(_PARSE_LINE_PATTERN.match('"map x y'))
-        self.assertIsNone(_PARSE_LINE_PATTERN.match('" map x y'))
-        self.assertIsNone(_PARSE_LINE_PATTERN.match('" let mapleader=,'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('let mapleader=,'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('map x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('nmap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('omap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('smap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vmap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('noremap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('nnoremap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('onoremap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('snoremap x y'))
-        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vnoremap x y'))
+    def test_regex_does_not_match_empty_line(self):
+        self.assertIsNone(_parse_line_pattern.match(''))
 
-    def test_parse_line_return_none(self):
+    def test_regex_does_not_match_comments(self):
+        self.assertIsNone(_parse_line_pattern.match('" comment'))
+        self.assertIsNone(_parse_line_pattern.match('"map x y'))
+        self.assertIsNone(_parse_line_pattern.match('" map x y'))
+        self.assertIsNone(_parse_line_pattern.match('" let mapleader=,'))
+
+    def test_regex_does_not_match_plain_text(self):
+        self.assertIsNone(_parse_line_pattern.match('foo'))
+
+    def test_regex_matches_valid_commands(self):
+        self.assertIsNotNone(_parse_line_pattern.match('let mapleader=,'))
+        self.assertIsNotNone(_parse_line_pattern.match('map x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('nmap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('omap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('smap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('vmap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('noremap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('nnoremap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('onoremap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('snoremap x y'))
+        self.assertIsNotNone(_parse_line_pattern.match('vnoremap x y'))
+
+    def test_parse_line_return_none_for_non_commands(self):
         self.assertEquals((None, None), _parse_line(''))
         self.assertEquals((None, None), _parse_line('"'))
         self.assertEquals((None, None), _parse_line('foobar'))
@@ -34,49 +40,56 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals((None, None), _parse_line('":map x zy'))
         self.assertEquals((None, None), _parse_line('zap x zy'))
 
-    def test_parse_line_returns_command_and_arguments(self):
+    def test_parse_line_returns_valid_commands(self):
         self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line(':let mapleader=,'))
-        self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line(':map x yz'))
-        self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line(':nmap x yz'))
-        self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line(':omap x yz'))
-        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line(':smap x yz'))
-        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line(':vmap x yz'))
-        # The *noremap commands are not properly implemented. They are currently
-        # aliased to the regulat *map commands.
-        self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line(':noremap x yz'))
-        self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line(':nnoremap x yz'))
-        self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line(':onoremap x yz'))
-        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line(':snoremap x yz'))
-        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line(':vnoremap x yz'))
+        self.assertEquals(('ex_noremap', {'command_line': 'noremap x yz'}), _parse_line(':noremap x yz'))
+        self.assertEquals(('ex_nnoremap', {'command_line': 'nnoremap x yz'}), _parse_line(':nnoremap x yz'))
+        self.assertEquals(('ex_onoremap', {'command_line': 'onoremap x yz'}), _parse_line(':onoremap x yz'))
+        self.assertEquals(('ex_snoremap', {'command_line': 'snoremap x yz'}), _parse_line(':snoremap x yz'))
+        self.assertEquals(('ex_vnoremap', {'command_line': 'vnoremap x yz'}), _parse_line(':vnoremap x yz'))
+
+    def test_parse_line_colon_prefix_should_be_optional(self):
+        self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line('let mapleader=,'))
+        self.assertEquals(('ex_noremap', {'command_line': 'noremap x yz'}), _parse_line('noremap x yz'))
+        self.assertEquals(('ex_nnoremap', {'command_line': 'nnoremap x yz'}), _parse_line('nnoremap x yz'))
+        self.assertEquals(('ex_onoremap', {'command_line': 'onoremap x yz'}), _parse_line('onoremap x yz'))
+        self.assertEquals(('ex_snoremap', {'command_line': 'snoremap x yz'}), _parse_line('snoremap x yz'))
+        self.assertEquals(('ex_vnoremap', {'command_line': 'vnoremap x yz'}), _parse_line('vnoremap x yz'))
 
     def test_parse_line_strips_trailing_whitespace(self):
-        self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line(':let mapleader=,    '))
-        self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line(':map x yz  '))
+        self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line('let mapleader=,    '))
+        self.assertEquals(('ex_noremap', {'command_line': 'noremap x yz'}), _parse_line('noremap x yz  '))
 
-    def test_parse_line_colon_prefix_is_optional(self):
-        self.assertEquals(('ex_let', {'command_line': 'let mapleader=,'}), _parse_line('let mapleader=,'))
-        self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line('map x yz'))
-        self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line('nmap x yz'))
-        self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line('omap x yz'))
-        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line('smap x yz'))
-        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line('vmap x yz'))
-        # The *noremap commands are not properly implemented. They are currently
-        # aliased to the regulat *map commands.
-        self.assertEquals(('ex_map', {'command_line': 'map x yz'}), _parse_line('noremap x yz'))
-        self.assertEquals(('ex_nmap', {'command_line': 'nmap x yz'}), _parse_line('nnoremap x yz'))
-        self.assertEquals(('ex_omap', {'command_line': 'omap x yz'}), _parse_line('onoremap x yz'))
-        self.assertEquals(('ex_smap', {'command_line': 'smap x yz'}), _parse_line('snoremap x yz'))
-        self.assertEquals(('ex_vmap', {'command_line': 'vmap x yz'}), _parse_line('vnoremap x yz'))
+    def test_parse_line_returns_none_for_recursive_mapping_commands(self):
+
+        # The recursive mapping commands are disabled, and will emit an error
+        # message to the user because:
+        # * They were not implement correctly in the first place.
+        # * Avoid potential problems in the future such as recursive mappings
+        #   being implemented in the future causing user mappings which worked
+        #   fine, but now cause a hange due the mapping now being recursive.
+
+        self.assertEquals((None, None), _parse_line(':map x yz'))
+        self.assertEquals((None, None), _parse_line(':nmap x yz'))
+        self.assertEquals((None, None), _parse_line(':omap x yz'))
+        self.assertEquals((None, None), _parse_line(':smap x yz'))
+        self.assertEquals((None, None), _parse_line(':vmap x yz'))
+
+        self.assertEquals((None, None), _parse_line('map x yz'))
+        self.assertEquals((None, None), _parse_line('nmap x yz'))
+        self.assertEquals((None, None), _parse_line('omap x yz'))
+        self.assertEquals((None, None), _parse_line('smap x yz'))
+        self.assertEquals((None, None), _parse_line('vmap x yz'))
 
     def test_unescaped_pipe_character_is_invalid(self):
         tests = (
-            'map |',
-            'map | |',
-            'map || ||',
-            'map x |',
-            'map | y',
-            'map abc x|y',
-            'map x|y abc',
+            'noremap |',
+            'noremap | |',
+            'noremap || ||',
+            'noremap x |',
+            'noremap | y',
+            'noremap abc x|y',
+            'noremap x|y abc'
         )
 
         for test in tests:
@@ -84,8 +97,8 @@ class TestRcfile(unittest.TestCase):
 
     def test_escaped_pipe_character_is_valid(self):
         tests = (
-            'map x \\|',
-            'map x a\\|c'
+            'noremap x \\|',
+            'noremap x a\\|c'
         )
 
         for test in tests:
