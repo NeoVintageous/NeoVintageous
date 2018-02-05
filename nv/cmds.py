@@ -199,7 +199,7 @@ class _nv_goto_help(WindowCommand):
         pt = view.sel()[0]
         # scope_name() needs to striped due to a bug in ST:
         # See https://github.com/SublimeTextIssues/Core/issues/657.
-        scope = view.scope_name(pt.begin()).rstrip()
+        scope = view.scope_name(pt.b).rstrip()
 
         # TODO Fix jumptags scopes (rename them to less generic scopes)
         jumptag_scopes = [
@@ -210,7 +210,7 @@ class _nv_goto_help(WindowCommand):
         if scope not in jumptag_scopes:
             return
 
-        subject = view.substr(view.extract_scope(pt.begin()))
+        subject = view.substr(view.extract_scope(pt.b))
 
         if len(subject) < 3:
             return message('E149: Sorry, no help for %s' % subject)
