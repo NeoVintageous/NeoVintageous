@@ -2,33 +2,37 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased (1.5.0)
+## 1.5.0 - 2018-02-06
 
 ### Added
 
 * Added: `:edit {file}` command
-* Added [#288](https://github.com/NeoVintageous/NeoVintageous/issues/288): Command-line editing command: `<C-b>`, `<C-e>`, `<C-h>`, `<C-n>`, `<C-p>`, `<C-u>`, and `<C-w>`
-* Added [#279](https://github.com/NeoVintageous/NeoVintageous/issues/279): `CTRL-C` and `CTRL-[` should exit Command-line mode
-* Added [#12](https://github.com/NeoVintageous/NeoVintageous/issues/12): Command-line search history for `/` and `?` (current session only)
-* Added: Selections are now cleared when leaving a view (UX)
+* Added [#288](https://github.com/NeoVintageous/NeoVintageous/issues/288): Command-line editing commands: `<C-b>`, `<C-e>`, `<C-h>`, `<C-n>`, `<C-p>`, `<C-u>`, and `<C-w>`
+* Added [#279](https://github.com/NeoVintageous/NeoVintageous/issues/279): `CTRL-c` and `CTRL-[` should exit Command-line mode
+* Added [#12](https://github.com/NeoVintageous/NeoVintageous/issues/12): Command-line search history with `/` and `?` (current session only)
+* Added: Selections are now cleared when leaving a the current view (UX)
 * Added: `NeovintageousToggleSideBar` command
-* Added [#286](https://github.com/NeoVintageous/NeoVintageous/issues/286): Support for super-keys `<D-...>` (also known as command-keys on OSX and window-keys on Windows)
-* Added: Scope `highlighted.yank` when highlighting yanks to allow color scheme customisation
+* Added [#286](https://github.com/NeoVintageous/NeoVintageous/issues/286): Support for super-keys `<D-...>` (known as command-keys on OSX, and window-keys on Windows) (disabled by default)
+* Added: `highlighted.yank` scope to highlighted yank regions to allow color scheme customisation
 * Added: Switching windows using windowing commands no longer suddenly scrolls view (UX)
-* Added: `:sunmap`
-* Added: `vintageousrc` (documentation); see `:h neovintageous`
-* Added: Default vim options (documentation); see `:h neovintageous`
-* Added: `:help {subject}` now uses basic heuristic to find a relevant help topic if `{subject}` is not found
-* Added: Support for 'vintageous_modelines' option; defaults to 5
-* Added: Support new SublimeLinter API
-* Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:sp[lit] [file]`
-* Added: Unimpaired statusbar toggles on: `[oe`, off: `]oe`, and toggle `coe`
-* Added: Unimpaired menu toggles on: `[oa`, off: `]oa`, and toggle `coa`
-* Added: Use new GitGutter API
+* Added: `:sunm[ap]` command
+* Added: `:help {subject}` command now uses basic heuristics to find a relevant help topic if a subject is not found
+* Added: Support for `'vintageous_modelines'` option (defaults to `5`)
+* Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:sp[lit] [file]` command
+* Added: Unimpaired status bar toggle `coe` (also toggle on `[oe`, and toggle off `]oe`)
+* Added: Unimpaired menu toggle `coa` (also toggle on `[oa`, and toggle off `]oa`)
+* Added: Support for the new SublimeLinter API using the Unimpaired goto to error commands `]l` and `[l`
+* Added: Support for the new GitGutter API using the Unimpaired goto change commands `]c` and `[c`
+* Added: `vintageousrc` (documentation)
+* Added: Default vim options (documentation)
 
 ### Removed
 
-* Removed: Recursive mappings commands `:map`, `:nmap`, `:omap`, `:smap`, `:vmap` have been removed. Use the non recursive commands instead. These were because they were not implemented as recursive mappings, and replacing them now may prevent some potential problems in the future if the recursive commands are implemented. Here is a table of the old and new commands:
+* Removed: Recursive mappings commands `:map`, `:nmap`, `:omap`, `:smap`, `:vmap`. Use the non recursive commands instead.
+
+  The recursive mappings were removed because they were not implemented as recursive mappings, and removing them now in preference of the non-recursive may prevent some potential problems in the future if the recursive mapping commands are ever implemented.
+
+  Here is a table of the recursive, which have been removed, and the non recursive mapping commands that you can use instead:
 
   Recursive command | Non recursive command
   ----------------- | ---------------------
@@ -61,7 +65,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed: `gq` cursor position after operation
 * Fixed: Mapping command status messages
 * Fixed: Error message typos and grammar
-* Fixed [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:vs[plit] [file]` TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+* Fixed [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:vs[plit] [file]` raises a TypeError
 
 ## 1.4.4 - 2018-01-07
 
