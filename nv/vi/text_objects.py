@@ -70,6 +70,7 @@ PAIRS = {
 
 
 def is_at_punctuation(view, pt):
+    # type: (...) -> bool
     next_char = view.substr(pt)
 
     # FIXME Wrong if pt is at '\t'
@@ -77,16 +78,19 @@ def is_at_punctuation(view, pt):
 
 
 def is_at_word(view, pt):
+    # type: (...) -> bool
     next_char = view.substr(pt)
 
     return (next_char.isalnum() or next_char == '_')
 
 
 def is_at_space(view, pt):
+    # type: (...) -> bool
     return view.substr(pt).isspace()
 
 
 def get_punctuation_region(view, pt):
+    # type: (...) -> Region
     start = view.find_by_class(pt + 1, forward=False, classes=CLASS_PUNCTUATION_START)
     end = view.find_by_class(pt, forward=True, classes=CLASS_PUNCTUATION_END)
 
@@ -94,16 +98,19 @@ def get_punctuation_region(view, pt):
 
 
 def get_space_region(view, pt):
+    # type: (...) -> Region
     end = view.find_by_class(pt, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
 
     return Region(previous_word_end(view, pt + 1), end)
 
 
 def previous_word_end(view, pt):
+    # type: (...) -> int
     return view.find_by_class(pt, forward=False, classes=ANCHOR_PREVIOUS_WORD_BOUNDARY)
 
 
 def next_word_start(view, pt):
+    # type: (...) -> int
     if is_at_punctuation(view, pt):
         # Skip all punctuation surrounding the caret and any trailing spaces.
         end = get_punctuation_region(view, pt).b
@@ -129,6 +136,7 @@ def next_word_start(view, pt):
 
 
 def current_word_start(view, pt):
+    # type: (...) -> int
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).a
 
@@ -139,6 +147,7 @@ def current_word_start(view, pt):
 
 
 def current_word_end(view, pt):
+    # type: (...) -> int
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).b
 
@@ -151,6 +160,7 @@ def current_word_end(view, pt):
 # https://vimhelp.appspot.com/motion.txt.html#word
 # Used for motions in operations like daw and caw
 def a_word(view, pt, inclusive=True, count=1):
+    # type: (...) -> Region
     assert count > 0
     start = current_word_start(view, pt)
     end = pt
@@ -176,6 +186,7 @@ def a_word(view, pt, inclusive=True, count=1):
 
 
 def big_word_end(view, pt):
+    # type: (...) -> int
     prev = pt
     while True:
         if is_at_punctuation(view, pt):
@@ -195,6 +206,7 @@ def big_word_end(view, pt):
 
 
 def big_word_start(view, pt):
+    # type: (...) -> int
     prev = pt
     while True:
         if is_at_punctuation(view, pt):
@@ -216,6 +228,7 @@ def big_word_start(view, pt):
 # https://vimhelp.appspot.com/motion.txt.html#WORD
 # Used for motions in operations like daW and caW
 def a_big_word(view, pt, inclusive=False, count=1):
+    # type: (...) -> Region
     start, end = None, pt
     for x in range(count):
         if is_at_space(view, end):
@@ -249,6 +262,7 @@ def a_big_word(view, pt, inclusive=False, count=1):
 
 
 def get_text_object_region(view, s, text_object, inclusive=False, count=1):
+    # type: (...) -> Region
     try:
         delims, type_ = PAIRS[text_object]
     except KeyError:
@@ -462,6 +476,7 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
 
 
 def find_paragraph_text_object(view, s, inclusive=True, count=1):
+    # type: (...) -> Region
     # In Vim, `vip` will select an inner paragraph -- all the lines having the
     # same whitespace status of the current location. And a `vap` will select
     # both the current inner paragraph (either whitespace or not) and the next
