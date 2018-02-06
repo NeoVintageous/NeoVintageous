@@ -2,6 +2,67 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased (1.5.0)
+
+### Added
+
+* Added: `:edit {file}` command
+* Added [#288](https://github.com/NeoVintageous/NeoVintageous/issues/288): Command-line editing command: `<C-b>`, `<C-e>`, `<C-h>`, `<C-n>`, `<C-p>`, `<C-u>`, and `<C-w>`
+* Added [#279](https://github.com/NeoVintageous/NeoVintageous/issues/279): `CTRL-C` and `CTRL-[` should exit Command-line mode
+* Added [#12](https://github.com/NeoVintageous/NeoVintageous/issues/12): Command-line search history for `/` and `?` (current session only)
+* Added: Selections are now cleared when leaving a view (UX)
+* Added: `NeovintageousToggleSideBar` command
+* Added [#286](https://github.com/NeoVintageous/NeoVintageous/issues/286): Support for super-keys `<D-...>` (also known as command-keys on OSX and window-keys on Windows)
+* Added: Scope `highlighted.yank` when highlighting yanks to allow color scheme customisation
+* Added: Switching windows using windowing commands no longer suddenly scrolls view (UX)
+* Added: `:sunmap`
+* Added: `vintageousrc` (documentation); see `:h neovintageous`
+* Added: Default vim options (documentation); see `:h neovintageous`
+* Added: `:help {subject}` now uses basic heuristic to find a relevant help topic if `{subject}` is not found
+* Added: Support for 'vintageous_modelines' option; defaults to 5
+* Added: Support new SublimeLinter API
+* Added [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:sp[lit] [file]`
+* Added: Unimpaired statusbar toggles on: `[oe`, off: `]oe`, and toggle `coe`
+* Added: Unimpaired menu toggles on: `[oa`, off: `]oa`, and toggle `coa`
+* Added: Use new GitGutter API
+
+### Removed
+
+* Removed: Recursive mappings commands `:map`, `:nmap`, `:omap`, `:smap`, `:vmap` have been removed. Use the non recursive commands instead. These were because they were not implemented as recursive mappings, and replacing them now may prevent some potential problems in the future if the recursive commands are implemented. Here is a table of the old and new commands:
+
+  Recursive command | Non recursive command
+  ----------------- | ---------------------
+  `map` | `[no]remap`
+  `nmap` | `[nn]oremap`
+  `omap` | `[ono]remap`
+  `smap` | `[snor]emap`
+  `vmap` | `[vn]oremap`
+
+* Removed: Unused `vintageous_enable_cmdline_mode` setting
+
+### Fixed
+
+* Fixed: Visual ex mode commands should enter normal mode after operation
+* Fixed: Ex mode shell command error (Windows)
+* Fixed: Unmap commands don't unmap visual mappings
+* Fixed: Can't unmap mappings with special keys e.g. `<leader>`
+* Fixed: Running tests shouldn't resets user vintageousrc mappings
+* Fixed [#156](https://github.com/NeoVintageous/NeoVintageous/issues/156): `SHIFT-v` then `CTRL-b` doesn't work
+* Fixed: Help views should be read only
+* Fixed: Unknown registers raise an exception
+* Fixed: `gc{motion}` leaves cursor at wrong place
+* Fixed: `gcc` leaves cursor at wrong place
+* Fixed: Repeat searches (`n`/`N`) should scroll and show surrounds
+* Fixed: Goto next/prev change cursor position after motion (Unimpaired)
+* Fixed [#285](https://github.com/NeoVintageous/NeoVintageous/issues/285): Page down `CTRL-f` does not work correctly in Visual Line mode
+* Fixed [#296](https://github.com/NeoVintageous/NeoVintageous/issues/296): `de` leaves cursor at wrong place
+* Fixed [#295](https://github.com/NeoVintageous/NeoVintageous/issues/295): `df{char}` leaves cursor at wrong place
+* Fixed: `df$` leaves cursor at wrong place
+* Fixed: `gq` cursor position after operation
+* Fixed: Mapping command status messages
+* Fixed: Error message typos and grammar
+* Fixed [#254](https://github.com/NeoVintageous/NeoVintageous/issues/254): `:vs[plit] [file]` TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+
 ## 1.4.4 - 2018-01-07
 
 * Fixed: Error trying to Open My Rc File first time

@@ -1,31 +1,26 @@
 {
-    // Enable key bindings prefaced by the CTRL modifier.
-    // {not in Vim}
-    "vintageous_use_ctrl_keys": false,
-
-    // Highlight searches in '/', '?', etc.
-    // https://vimhelp.appspot.com/options.txt.html#%27hlsearch%27
-    "vintageous_hlsearch": true,
-
-    // Apply search patterns incrementally as they are typed.
-    // https://vimhelp.appspot.com/options.txt.html#%27incsearch%27
-    "vintageous_incsearch": true,
+    // Enable auto indentation.
+    // https://vimhelp.appspot.com/options.txt.html#%27autoindent%27
+    "vintageous_autoindent": true,
 
     // Enable ':' and ex commands.
     // {not in Vim}
     "vintageous_enable_cmdline_mode": true,
 
-    // Reset to normal mode when a tab is activated.
-    // {not in Vim}
-    "vintageous_reset_mode_when_switching_tabs": true,
+    // Port of https://github.com/tpope/vim-surround
+    "vintageous_enable_surround": true,
 
-    // Enable auto indentation.
-    // https://vimhelp.appspot.com/options.txt.html#%27autoindent%27
-    "vintageous_autoindent": true,
+    // Highlight searches in '/', '?', etc.
+    // https://vimhelp.appspot.com/options.txt.html#%27hlsearch%27
+    "vintageous_hlsearch": true,
 
-    // Propagate copy actions to the system clipboard.
-    // {not in Vim}
-    "vintageous_use_sys_clipboard": false,
+    // Ignore case in search patterns ('/', '?', '*', and '#').
+    // https://vimhelp.appspot.com/options.txt.html#'ignorecase'
+    "vintageous_ignorecase": true,
+
+    // Apply search patterns incrementally as they are typed.
+    // https://vimhelp.appspot.com/options.txt.html#%27incsearch%27
+    "vintageous_incsearch": true,
 
     // Changes the special characters that can be used in search patterns. Use
     // regular expressions in '/' and '?' otherwise uses smart case, interpret
@@ -36,6 +31,15 @@
     // Enable modeline feature.
     // https://vimhelp.appspot.com/options.txt.html#'modeline'
     "vintageous_modeline": false,
+
+    // If 'vintageous_modeline' is on 'vintageous_modelines' gives the number of
+    // lines that is checked for set commands.
+    // https://vimhelp.appspot.com/options.txt.html#'modelines'
+    "vintageous_modelines": 5,
+
+    // Reset to normal mode when a tab is activated.
+    // {not in Vim}
+    "vintageous_reset_mode_when_switching_tabs": true,
 
     // {currently only works in a few situations}
     // Minimal number of screen lines to keep above and below the cursor.
@@ -48,10 +52,16 @@
     // https://vimhelp.appspot.com/options.txt.html#'sidescrolloff'
     "vintageous_sidescrolloff": 5,
 
-    // Ignore case in search patterns ('/', '?', '*', and '#').
-    // https://vimhelp.appspot.com/options.txt.html#'ignorecase'
-    "vintageous_ignorecase": true,
+    // Enable key bindings prefaced by the control-key.
+    // {not in Vim}
+    "vintageous_use_ctrl_keys": false,
 
-    // Port of https://github.com/tpope/vim-surround
-    "vintageous_enable_surround": true
+    // Enable key bindings prefaced by the super-key, otherwise known as the
+    // command-key in OSX, and as the windows-key in Windows.
+    // {not in Vim}
+    "vintageous_use_super_keys": false,
+
+    // Propagate copy actions to the system clipboard.
+    // {not in Vim}
+    "vintageous_use_sys_clipboard": false
 }

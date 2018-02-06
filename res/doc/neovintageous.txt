@@ -22,6 +22,7 @@ Neovintageous                              *neovintageous* *neovintageous-intro*
 10. Options                 |neovintageous-options|
 11. Search highlighting     |neovintageous-search-highlighting|
 12. Disable arrow keys      |neovintageous-disable-arrow-keys|
+13. Default options         |neovintageous-default-options|
 
 Neovintageous is an emulation of Vim: feature-parity is ongoing effort.
 
@@ -60,33 +61,31 @@ JUMPING TO DIFFS                                    *neovintageous-jumpto-diffs*
 
                         Requires: https://github.com/jisaacks/GitGutter
 
-                        To disable GitGutter wrapping: >
-                            git_gutter_next_prev_change_wrap: false
-                        <
-
                         Also see |[c|.
 
 ]c                      Jump forwards to the next start of a change.
 
                         Requires: https://github.com/jisaacks/GitGutter
 
-                        To disable wrapping: >
-                            git_gutter_next_prev_change_wrap: false
-                        <
-
                         Also see |]c|.
 
 ==============================================================================
 
-OPENING A SPLIT WINDOW                                    *neovintageous-splits*
+OPENING A WINDOW                                  *neovintageous-opening-window*
+                                                  *neovintageous-splits*
 
-CTRL-W_s                Split current window in two.
+CTRL-W s
+CTRL-W S
+:sp[lit] [file]         Split current window in two. The result is two
+                        viewports on the same file.
 
                         Requires: https://github.com/SublimeText/Origami
 
                         Also see |CTRL-W_s|.
 
-CTRL-W_v                Split current window in two (vertically).
+CTRL-W v
+CTRL-W CTRL-V
+:vs[plit] [file]        Like |:split|, but split vertically.
 
                         Requires: https://github.com/SublimeText/Origami
 
@@ -128,16 +127,15 @@ https://github.com/NeoVintageous/ToggleNeoVintageous
 
 VINTAGEOUSRC                                                      *vintageousrc*
 
-A file that contains initialization commands is called a "vintageousrc" file.
-It is comparative to the |vimrc| file, "vintageousrc" is a Neovintageous
-specific  name. The file is located at "Packages/User/.vintageousrc" and is read
-during startup. It can be opened and reloaded via the Command Palette.
+A file that contains initialization commands is called a "vintageousrc" file
+(the "rc" stands for runtime configuration). It is comparative to the |vimrc|
+file ("vintageousrc" is a Neovintageous specific name).
 
-Also see |vimrc-intro|.
+The file is located at "Packages/User/.vintageousrc" and is read by
+NeoVintageous during startup. It can be opened and reloaded via the Command
+Palette. See |neovintageous-command-palette|.
 
-The following |:map-special-keys| are supported:
-
-                                |<Leader>| |mapleader|
+The |mapleader| special key is supported.
 
 The following |:map-commands| are supported:
 
@@ -147,24 +145,26 @@ The following |:map-commands| are supported:
 :map        {lhs} {rhs}         |:map|
 :nmap       {lhs} {rhs}         |:nmap|
 :omap       {lhs} {rhs}         |:omap|
+:smap       {lhs} {rhs}         |:smap|
 :vmap       {lhs} {rhs}         |:vmap|
 
 :noremap    {lhs} {rhs}         |:noremap|
 :nnoremap   {lhs} {rhs}         |:nnoremap|
 :onoremap   {lhs} {rhs}         |:onoremap|
+:snoremap   {lhs} {rhs}         |:snoremap|
 :vnoremap   {lhs} {rhs}         |:vnoremap|
 
-Note: the remap commands are currently aliased to the map commands, this is a
-known issue and hopefully will be fixed in the future.
+Note: the "remap" commands are currently aliased to the map commands, this is a
+known issue and hopefully will be fixed in a future release.
 
-Mapping to Command-line mode commands is supported for basic use-cases: >
-    :command<CR>
+Mapping to built-in Command-line mode commands is supported for basic use-cases
+using the format `command<CR>`. For example to map to the built-in Command-line
+mode command `:w` use `:w<CR>`.
 
 Mapping to Sublime Text commands is supported for basic use-cases. The command
 must start an Uppercase letter to avoid confusion with built-in Command-line
-mode commands. The command is converted to snake_case. For example to map to
-the Sublime Text command "toggle_side_bar": >
-    :ToggleSideBar<CR>
+mode commands. The command is converted to snake_case. For example to map to the
+Sublime Text command "toggle_side_bar" use `:ToggleSideBar<CR>`.
 
 Here is an example |vintageousrc| file: >
 
@@ -176,7 +176,7 @@ Here is an example |vintageousrc| file: >
     nnoremap <space> :
 
     " Toggle the side bar.
-    nnoremap <leader>d :ToggleSideBar<CR>
+    nnoremap <leader>d :NeovintageousToggleSideBar<CR>
 
     " " Make j and k work file linewise instead of screen linewise.
     " nnoremap j gj
@@ -191,36 +191,55 @@ Here is an example |vintageousrc| file: >
     nnoremap <C-j> <C-w>j
     nnoremap <C-k> <C-w>k
 
-    " Stop the highlighting
-    " The :nohlsearch command is currently not
-    " supported. Pressing Esc is a workaround.
+    " Clear highlighting. The :nohlsearch command is currently not supported.
+    " Using the Esc key is a workaround.
     nnoremap <C-l> <Esc>
 
-    " Select entire buffer
+    " Saving.
+    nnoremap <C-s> :w<CR>
+
+    " Yank and paste using system clipboard.
+    noremap <leader>y "+y
+    noremap <leader>Y "+Y
+    noremap <leader>p "+p
+    noremap <leader>P "+P
+    noremap <leader>yy "+Y
+
+    " Select entire buffer.
     nnoremap <leader>va ggvGg_
     nnoremap <leader>Va ggVG
 
-    " Open - <leader>o{char}
-    nnoremap <leader>oc :OpenCommandPalette<CR>
-    nnoremap <leader>og :ShowGoto<CR>
-    nnoremap <leader>on :NeovintageousOpenMyRcFile<CR>
-    nnoremap <leader>op :OpenPreferences<CR>
-    nnoremap <leader>os :GotoSymbolInProject<CR>
+    " Maintain Visual Mode after shifting > and <.
+    " Notice that '<lt>' is used to represent a real '<', because like a
+    " backslash, it needs to be escaped. See `:h <>`.
+    vnoremap <lt> <lt>gv
+    vnoremap > >gv
 
-    " The :sort command is currently not
-    " supported. This mapping is a workaround.
-    nnoremap <leader>ss vip<F9>o^<Esc>^8<C-y>
+    " Goto to symbols.
+    nnoremap <leader>f :GotoSymbolInFile<CR>
+    nnoremap <leader>m :GotoSymbolInProject<CR>
 
-    " Test plugin
-    " https://github.com/gerardroche/sublime-test
-    " https://github.com/gerardroche/sublime-phpunit
-    " https://github.com/gerardroche/sublime-color-scheme-unit
-    " https://github.com/randy3k/UnitTesting
+    " Edit preferences.
+    nnoremap <leader>ep :OpenPreferences<CR>
+    nnoremap <leader>en :NeovintageousOpenMyRcFile<CR>
+
+    " Some window command aliases. This is especially useful if you don't like
+    " to enable ctrl-key key bindings ('vintageous_use_ctrl_keys' setting).
+    nnoremap <leader>_ <C-w>_
+    nnoremap <leader>\| <C-w>\|
+    nnoremap <leader>= <C-w>=
+    nnoremap <leader>. <C-w>_<C-w>\|
+
+    " Test plugin.
+    " See https://github.com/gerardroche/sublime-test.
+    " See https://github.com/gerardroche/sublime-phpunit.
+    " See https://github.com/gerardroche/sublime-color-scheme-unit.
+    " See https://github.com/randy3k/UnitTesting.
     nnoremap <leader>t :TestNearest<CR>
     nnoremap <leader>T :TestFile<CR>
     nnoremap <leader>a :TestSuite<CR>
     nnoremap <leader>l :TestLast<CR>
-    nnoremap <leader>g :TestVisit<CR>
+    nnoremap <leader>gg :TestVisit<CR>
 
 Two custom commands are used in the above mappings: >
 
@@ -229,13 +248,7 @@ Two custom commands are used in the above mappings: >
     import sublime
     import sublime_plugin
 
-    class OpenCommandPaletteCommand(sublime_plugin.WindowCommand):
-        def run(self):
-            self.window.run_command('show_overlay', {
-                'overlay': 'command_palette'
-            })
-
-    class ShowGotoCommand(sublime_plugin.WindowCommand):
+    class GotoSymbolInFileCommand(sublime_plugin.WindowCommand):
         def run(self):
             self.window.run_command('show_overlay', {
                 'overlay': 'goto',
@@ -251,6 +264,24 @@ Two custom commands are used in the above mappings: >
                     'Preferences.sublime-settings'
                 )
             })
+
+To create a mapping to toggle the side bar when the side bar has focus add this
+key binding to your Sublime Text Key Bindings (modify to the keys to reflect
+whatever mapping you used in your `vintageousrc` to toggle the side bar. In the
+example above we used `<leader>d`, and since we defined our leader key as a
+comma (`,`) then we create a comparative mapping for when the side bar has
+focus i.e. `,d`):
+
+`Menu > Preferences > Key Bindings`:
+
+>
+    {
+        "keys": [",", "d"],
+        "command": "neovintageous_toggle_side_bar",
+        "context": [
+            { "key": "control", "operand": "sidebar_tree" }
+        ]
+    },
 
 ==============================================================================
 
@@ -345,12 +376,15 @@ Next and previous
 
                         Also see |]l|.
 
-|unimpaired-lines| are supported i.e |[<Space>|, |]<Space>|, |[e| and |]e|.
+All |unimpaired-lines| commands are supported i.e |[<Space>|, |]<Space>|, |[e|
+and |]e|.
 
-Option toggling
+Option toggling is supported, with some NeoVintageous specific additions.
 
 On      Off     Toggle  Option
+|[oa|   |]oa|   |coa|   'menu' {Neovintageous specific}
 |[oc|   |]oc|   |coc|   'cursorline'
+|[oe|   |]oe|   |coe|   'statusbar' {Neovintageous specific}
 |[ol|   |]ol|   |col|   'list'
 *[om*   *]om*   *com*   'minimap' {Neovintageous specific}
 |[on|   |]on|   |con|   'number'
@@ -364,13 +398,13 @@ OPTIONS                                                  *neovintageous-options*
 
 1. Setting options                                    *neovintageous-set-option*
 
-Menu > Preferences > Settings: >
+`Menu > Preferences > Settings`: >
 
     {
         "vintageous_use_ctrl_keys": true
     }
 
-Menu > Project > Edit Project: >
+`Menu > Project > Edit Project`: >
 
     {
         "settings": {
@@ -402,7 +436,7 @@ terminal: >
 
 4. Mapping jj, jk, CTRL-[, etc. to Esc                    *neovintageous-escape*
 
-Menu > Preferences > Key Bindings: >
+`Menu > Preferences > Key Bindings`: >
 
     # jj -> Esc
     {
@@ -439,12 +473,6 @@ Menu > Preferences > Key Bindings: >
         Enable auto indentation.
 
 
-                                              *'vintageous_enable_cmdline_mode'*
-'vintageous_enable_cmdline_mode'        boolean (default: true)
-                                        {Neovintageous specific}
-        Enable : and ex commands.
-
-
                                                   *'vintageous_enable_surround'*
 'vintageous_enable_surround'            boolean (default: true)
                                         {Neovintageous specific}
@@ -478,8 +506,14 @@ Menu > Preferences > Key Bindings: >
 
                                                          *'vintageous_modeline'*
 'vintageous_modeline'                   boolean (default: false)
-                                        See 'modeline'.
-        Enable |modeline|.
+
+        See 'modeline'.
+
+
+                                                        *'vintageous_modelines'*
+'vintageous_modelines'                  number (default 5)
+
+        See 'modelines'.
 
 
                                    *'vintageous_reset_mode_when_switching_tabs'*
@@ -488,16 +522,17 @@ Menu > Preferences > Key Bindings: >
         Reset to normal mode when a tab is activated.
 
 
-                                        *'vintageous_use_command_or_super_keys'*
-'vintageous_use_command_or_super_keys'  boolean (default: false)
-                                        {Neovintageous specific}
-        Enable key bindings prefaced by the command-key or super-key.
-
-
                                                     *'vintageous_use_ctrl_keys'*
 'vintageous_use_ctrl_keys'              boolean (default: false)
                                         {Neovintageous specific}
         Enable key bindings prefaced by the ctrl-key.
+
+
+                                                   *'vintageous_use_super_keys'*
+'vintageous_use_super_keys'  boolean (default: false)
+                                        {Neovintageous specific}
+        Enable key bindings prefaced by the super-key, otherwise known as the
+        command-key in OSX, and as the windows-key in Windows.
 
 
                                                 *'vintageous_use_sys_clipboard'*
@@ -585,16 +620,46 @@ Add as many of the following key bindings as you would like to disable: >
 
 Then enable the custom setting used in the keymaps:
 
-Menu > Preferences > Settings: >
+`Menu > Preferences > Settings`: >
 
     {
         "neovintageous_disable_arrow_keys": true
     }
 
-Menu > Project > Edit Project: >
+`Menu > Project > Edit Project`: >
 
     {
         "settings": {
             "neovintageous_disable_arrow_keys": true
         }
     }
+
+==============================================================================
+
+DEFAULT OPTIONS                                  *neovintageous-default-options*
+
+If you compare a fresh install of Vim to NeoVintageous you might find unexpected
+functionality. This is in part because NeoVintageous assumes some Vim options
+that may not be default in an out-of-the-box Vim installation.
+
+Here are some Vim options that NeoVintageous assumes as default:
+
+>
+
+    " Use Vim settings, rather than Vi settings (much better!).
+    " This must be first, because it changes other options as a side effect.
+    " Avoid side effects when it was already reset.
+    if &compatible
+      set nocompatible
+    endif
+
+    " In many terminal emulators the mouse works just fine.  By enabling it you
+    " can position the cursor, Visually select and scroll with the mouse.
+    if has('mouse')
+      set mouse=a
+    endif
+
+    " Allow backspacing over everything in insert mode.
+    set backspace=indent,eol,start
+
+    set showcmd     " display incomplete commands
