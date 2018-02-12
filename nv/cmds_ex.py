@@ -761,11 +761,7 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
             return status_message('Appended to ' + os.path.abspath(fname))
 
         except IOError as e:
-            console_message('could not write file')
-            console_message('--------------------')
-            console_message(str(e))
-            console_message('--------------------')
-            return
+            return message('could not write file {}'.format(str(e)))
 
     def do_write(self, ex_command):
         fname = ex_command.command.target_file
@@ -803,10 +799,7 @@ class ExWriteFile(WindowCommand, WindowCommandMixin):
 
         except IOError as e:
             # TODO: Add logging.
-            message("E212: Can't open file for writing: %s" % fname)
-            console_message('----------------------------------------------')
-            console_message(str(e))
-            console_message('----------------------------------------------')
+            return message("E212: Can't open file for writing: {}".format(fname))
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:wa
