@@ -5,7 +5,7 @@ from sublime import active_window
 from sublime import Region
 
 from NeoVintageous.nv import plugin
-from NeoVintageous.nv import rcfile
+from NeoVintageous.nv import rc
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi import utils
@@ -951,7 +951,7 @@ def init_state(view, new_session=False):
 
     if new_session:
         state.reset_volatile_data()
-        rcfile.load()
+        rc.load()
 
         # TODO is setting the cwd for cmdline necessary?
         cmdline_cd = os.path.dirname(view.file_name()) if view.file_name() else os.getcwd()

@@ -1,7 +1,7 @@
 import unittest
 
-from NeoVintageous.nv.rcfile import _parse_line
-from NeoVintageous.nv.rcfile import _parse_line_pattern
+from NeoVintageous.nv.rc import _parse_line
+from NeoVintageous.nv.rc import _parse_line_pattern
 
 
 class TestRcfile(unittest.TestCase):

@@ -6,7 +6,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
-from NeoVintageous.nv import rcfile
+from NeoVintageous.nv import rc
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse
 from NeoVintageous.nv.ex.completions import parse_for_setting
@@ -816,14 +816,14 @@ class NeovintageousOpenMyRcFileCommand(WindowCommand):
     """A command that opens the the user runtime configuration file."""
 
     def run(self):
-        rcfile.open(self.window)
+        rc.open(self.window)
 
 
 class NeovintageousReloadMyRcFileCommand(WindowCommand):
     """A command that reloads the user runtime configuration file."""
 
     def run(self):
-        rcfile.reload()
+        rc.reload()
 
         status_message('rc file reloaded')
 
