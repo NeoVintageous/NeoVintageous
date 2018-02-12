@@ -58,17 +58,17 @@ __all__ = [
     '_nv_cmdline_feed_key',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
+    '_nv_fs_completion',
     '_nv_goto_help',
+    '_nv_setting_completion',
+    '_nv_write_fs_completion',
     '_vi_question_mark_on_parser_done',
     '_vi_slash_on_parser_done',
-    'FsCompletion',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
     'NeovintageousToggleSideBarCommand',
     'ProcessNotation',
     'Sequence',
-    'ViSettingCompletion',
-    'WriteFsCompletion'
 ]
 
 
@@ -614,7 +614,7 @@ class _nv_cmdline(WindowCommand):
         else:
             _nv_cmdline.interactive_call = True
 
-        FsCompletion.invalidate()
+        _nv_fs_completion.invalidate()
 
         ui_cmdline_prompt(
             self.window,
@@ -639,12 +639,12 @@ class _nv_cmdline(WindowCommand):
         if _nv_cmdline.interactive_call:
             cmd, prefix, only_dirs = parse(s)
             if cmd:
-                FsCompletion.prefix = prefix
-                FsCompletion.is_stale = True
+                _nv_fs_completion.prefix = prefix
+                _nv_fs_completion.is_stale = True
             cmd, prefix, _ = parse_for_setting(s)
             if cmd:
-                ViSettingCompletion.prefix = prefix
-                ViSettingCompletion.is_stale = True
+                _nv_setting_completion.prefix = prefix
+                _nv_setting_completion.is_stale = True
 
             if not cmd:
                 return
@@ -685,7 +685,7 @@ class _nv_cmdline(WindowCommand):
         _nv_cmdline_feed_key.reset_last_history_index()
 
 
-class WriteFsCompletion(TextCommand):
+class _nv_write_fs_completion(TextCommand):
     def run(self, edit, cmd, completion):
         if self.view.score_selector(0, 'text.excmdline') == 0:
             return
@@ -697,7 +697,7 @@ class WriteFsCompletion(TextCommand):
         self.view.sel().add(Region(self.view.size()))
 
 
-class FsCompletion(TextCommand):
+class _nv_fs_completion(TextCommand):
     # Last user-provided path string.
     prefix = ''
     frozen_dir = ''
@@ -706,67 +706,67 @@ class FsCompletion(TextCommand):
 
     @staticmethod
     def invalidate():  # type: () -> None
-        FsCompletion.prefix = ''
-        FsCompletion.frozen_dir = ''
-        FsCompletion.is_stale = True
-        FsCompletion.items = None
+        _nv_fs_completion.prefix = ''
+        _nv_fs_completion.frozen_dir = ''
+        _nv_fs_completion.is_stale = True
+        _nv_fs_completion.items = None
 
     def run(self, edit):
         if self.view.score_selector(0, 'text.excmdline') == 0:
             return
 
         state = State(self.view)
-        FsCompletion.frozen_dir = (FsCompletion.frozen_dir or
-                                   (state.settings.vi['_cmdline_cd'] + '/'))
+        _nv_fs_completion.frozen_dir = (_nv_fs_completion.frozen_dir or
+                                        (state.settings.vi['_cmdline_cd'] + '/'))
 
         cmd, prefix, only_dirs = parse(self.view.substr(self.view.line(0)))
         if not cmd:
             return
 
-        if not (FsCompletion.prefix or FsCompletion.items) and prefix:
-            FsCompletion.prefix = prefix
-            FsCompletion.is_stale = True
+        if not (_nv_fs_completion.prefix or _nv_fs_completion.items) and prefix:
+            _nv_fs_completion.prefix = prefix
+            _nv_fs_completion.is_stale = True
 
         if prefix == '..':
-            FsCompletion.prefix = '../'
-            self.view.run_command('write_fs_completion', {
+            _nv_fs_completion.prefix = '../'
+            self.view.run_command('_nv_write_fs_completion', {
                 'cmd': cmd,
                 'completion': '../'
             })
 
         if prefix == '~':
             path = os.path.expanduser(prefix) + '/'
-            FsCompletion.prefix = path
-            self.view.run_command('write_fs_completion', {
+            _nv_fs_completion.prefix = path
+            self.view.run_command('_nv_write_fs_completion', {
                 'cmd': cmd,
                 'completion': path
             })
 
             return
 
-        if (not FsCompletion.items) or FsCompletion.is_stale:
-            FsCompletion.items = iter_paths(from_dir=FsCompletion.frozen_dir,
-                                            prefix=FsCompletion.prefix,
-                                            only_dirs=only_dirs)
-            FsCompletion.is_stale = False
+        if (not _nv_fs_completion.items) or _nv_fs_completion.is_stale:
+            _nv_fs_completion.items = iter_paths(from_dir=_nv_fs_completion.frozen_dir,
+                                                 prefix=_nv_fs_completion.prefix,
+                                                 only_dirs=only_dirs)
+            _nv_fs_completion.is_stale = False
 
         try:
-            self.view.run_command('write_fs_completion', {
+            self.view.run_command('_nv_write_fs_completion', {
                 'cmd': cmd,
-                'completion': next(FsCompletion.items)
+                'completion': next(_nv_fs_completion.items)
             })
         except StopIteration:
-            FsCompletion.items = iter_paths(prefix=FsCompletion.prefix,
-                                            from_dir=FsCompletion.frozen_dir,
-                                            only_dirs=only_dirs)
+            _nv_fs_completion.items = iter_paths(prefix=_nv_fs_completion.prefix,
+                                                 from_dir=_nv_fs_completion.frozen_dir,
+                                                 only_dirs=only_dirs)
 
-            self.view.run_command('write_fs_completion', {
+            self.view.run_command('_nv_write_fs_completion', {
                 'cmd': cmd,
-                'completion': FsCompletion.prefix
+                'completion': _nv_fs_completion.prefix
             })
 
 
-class ViSettingCompletion(TextCommand):
+class _nv_setting_completion(TextCommand):
     # Last user-provided path string.
     prefix = ''
     is_stale = False
@@ -774,9 +774,9 @@ class ViSettingCompletion(TextCommand):
 
     @staticmethod
     def invalidate():  # type: () -> None
-        ViSettingCompletion.prefix = ''
-        ViSettingCompletion.is_stale = True
-        ViSettingCompletion.items = None
+        _nv_setting_completion.prefix = ''
+        _nv_setting_completion.is_stale = True
+        _nv_setting_completion.items = None
 
     def run(self, edit):
         if self.view.score_selector(0, 'text.excmdline') == 0:
@@ -786,28 +786,28 @@ class ViSettingCompletion(TextCommand):
         if not cmd:
             return
 
-        if (ViSettingCompletion.prefix is None) and prefix:
-            ViSettingCompletion.prefix = prefix
-            ViSettingCompletion.is_stale = True
-        elif ViSettingCompletion.prefix is None:
-            ViSettingCompletion.items = iter_settings('')
-            ViSettingCompletion.is_stale = False
+        if (_nv_setting_completion.prefix is None) and prefix:
+            _nv_setting_completion.prefix = prefix
+            _nv_setting_completion.is_stale = True
+        elif _nv_setting_completion.prefix is None:
+            _nv_setting_completion.items = iter_settings('')
+            _nv_setting_completion.is_stale = False
 
-        if not ViSettingCompletion.items or ViSettingCompletion.is_stale:
-            ViSettingCompletion.items = iter_settings(ViSettingCompletion.prefix)
-            ViSettingCompletion.is_stale = False
+        if not _nv_setting_completion.items or _nv_setting_completion.is_stale:
+            _nv_setting_completion.items = iter_settings(_nv_setting_completion.prefix)
+            _nv_setting_completion.is_stale = False
 
         try:
-            self.view.run_command('write_fs_completion', {
+            self.view.run_command('_nv_write_fs_completion', {
                 'cmd': cmd,
-                'completion': next(ViSettingCompletion.items)
+                'completion': next(_nv_setting_completion.items)
             })
         except StopIteration:
             try:
-                ViSettingCompletion.items = iter_settings(ViSettingCompletion.prefix)
-                self.view.run_command('write_fs_completion', {
+                _nv_setting_completion.items = iter_settings(_nv_setting_completion.prefix)
+                self.view.run_command('_nv_write_fs_completion', {
                     'cmd': cmd,
-                    'completion': next(ViSettingCompletion.items)
+                    'completion': next(_nv_setting_completion.items)
                 })
             except StopIteration:
                 return
