@@ -31,6 +31,7 @@ from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.window import window_tab_control
 from NeoVintageous.nv.window import WindowAPI
 
 
@@ -1831,9 +1832,9 @@ class _vi_gt(ViWindowCommandBase):
 
     def run(self, count=0, mode=None):
         if count > 0:
-            self.window.run_command('tab_control', {'command': 'goto', 'index': count})
+            window_tab_control(self.window, command='goto', index=count)
         else:
-            self.window.run_command('tab_control', {'command': 'next'})
+            window_tab_control(self.window, command='next')
 
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
@@ -1844,7 +1845,7 @@ class _vi_g_big_t(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
-        self.window.run_command('tab_control', {'command': 'prev'})
+        window_tab_control(self.window, command='prev')
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 

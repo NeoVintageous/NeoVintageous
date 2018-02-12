@@ -45,6 +45,7 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import window_split
+from NeoVintageous.nv.window import window_tab_control
 from NeoVintageous.nv.window import WindowAPI
 
 
@@ -1472,10 +1473,7 @@ class ExYank(TextCommand):
 class ExTabOpenCommand(WindowCommand):
 
     def run(self, file_name=None):
-        self.window.run_command('tab_control', {
-            'command': 'open',
-            'file_name': file_name
-        })
+        window_tab_control(self.window, command='open', file_name=file_name)
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabnext
@@ -1484,7 +1482,7 @@ class ExTabnextCommand(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parse_command_line(command_line)
-        self.window.run_command("tab_control", {"command": "next"}, )
+        window_tab_control(self.window, command='next')
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabprevious
@@ -1493,7 +1491,7 @@ class ExTabprevCommand(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parse_command_line(command_line)
-        self.window.run_command("tab_control", {"command": "prev"}, )
+        window_tab_control(self.window, command='prev')
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tablast
@@ -1502,7 +1500,7 @@ class ExTablastCommand(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parse_command_line(command_line)
-        self.window.run_command("tab_control", {"command": "last"}, )
+        window_tab_control(self.window, command='last')
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabfirst
@@ -1511,7 +1509,7 @@ class ExTabfirstCommand(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parse_command_line(command_line)
-        self.window.run_command("tab_control", {"command": "first"}, )
+        window_tab_control(self.window, command='first')
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabonly
@@ -1520,7 +1518,7 @@ class ExTabonlyCommand(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        self.window.run_command("tab_control", {"command": "only", "forced": parsed.command.forced})
+        window_tab_control(self.window, command='only', forced=parsed.command.forced)
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:cd
