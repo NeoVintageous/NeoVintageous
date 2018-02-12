@@ -9,7 +9,7 @@ from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
 
-from NeoVintageous.nv.cmds import _nv_cmdline_handle_key
+from NeoVintageous.nv.cmds import _nv_cmdline_feed_key
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
@@ -240,7 +240,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             return
 
         history_update(s)
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
         s = s[1:]
 
         state = self.state
@@ -291,7 +291,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         state = self.state
         self.view.erase_regions('vi_inc_search')
         state.reset_command_data()
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
@@ -1852,7 +1852,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             return
 
         history_update(s)
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
         s = s[1:]
 
         state = self.state
@@ -1903,7 +1903,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         self.view.erase_regions('vi_inc_search')
         state = self.state
         state.reset_command_data()
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])

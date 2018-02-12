@@ -55,7 +55,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 
 __all__ = [
     '_nv_cmdline',
-    '_nv_cmdline_handle_key',
+    '_nv_cmdline_feed_key',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
     '_nv_goto_help',
@@ -75,7 +75,7 @@ __all__ = [
 _log = get_logger(__name__)
 
 
-class _nv_cmdline_handle_key(TextCommand):
+class _nv_cmdline_feed_key(TextCommand):
 
     LAST_HISTORY_ITEM_INDEX = None
 
@@ -140,24 +140,24 @@ class _nv_cmdline_handle_key(TextCommand):
         if not history_get_type(firstc):
             raise RuntimeError('expected a valid command-line')
 
-        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX is None:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
+        if _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX is None:
+            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
         else:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
+            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
 
         count = history_len(firstc)
         if count == 0:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
+            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
             return ui_bell()
 
-        if abs(_nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX) > count:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = -count
+        if abs(_nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX) > count:
+            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -count
 
             return ui_bell()
 
-        if _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX >= 0:
-            _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = 0
+        if _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX >= 0:
+            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = 0
 
             if self.view.size() > 1:
                 return self.view.erase(edit, Region(1, self.view.size()))
@@ -167,13 +167,13 @@ class _nv_cmdline_handle_key(TextCommand):
         if self.view.size() > 1:
             self.view.erase(edit, Region(1, self.view.size()))
 
-        item = history_get(firstc, _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX)
+        item = history_get(firstc, _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX)
         if item:
             self.view.insert(edit, 1, item)
 
     @staticmethod
     def reset_last_history_index():  # type: () -> None
-        _nv_cmdline_handle_key.LAST_HISTORY_ITEM_INDEX = None
+        _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
 
 class _nv_fix_st_eol_caret(TextCommand):
@@ -661,7 +661,7 @@ class _nv_cmdline(WindowCommand):
         if _nv_cmdline.interactive_call:
             history_update(cmd_line)
 
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
 
         try:
             parsed = parse_command_line(cmd_line[1:])
@@ -682,7 +682,7 @@ class _nv_cmdline(WindowCommand):
         self.window.run_command('hide_panel', {'cancel': True})
 
     def on_cancel(self):
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
 
 
 class WriteFsCompletion(TextCommand):
