@@ -35,6 +35,10 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('<c-m-.>'), '<C-M-.>', 'ctrl-alt-period key')
         self.assertEqual(tokenize_one('<tab>'), '<tab>', 'tab key')
         self.assertEqual(tokenize_one('<Leader>'), '\\', 'leader key')
+        self.assertEqual(tokenize_one('<D-a>'), '<D-a>', 'super key')
+        self.assertEqual(tokenize_one('<d-a>'), '<D-a>', 'super key')
+        self.assertEqual(tokenize_one('<D-A>'), '<D-A>', 'super key')
+        self.assertEqual(tokenize_one('<d-A>'), '<D-A>', 'super key')
 
     @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {}, clear=True)
     def test_iter_tokenize(self):
@@ -50,6 +54,9 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(iter_tokenize('<DoWn>abc.'), ['<down>', 'a', 'b', 'c', '.'])
         self.assertEqual(iter_tokenize('0<down>'), ['0', '<down>'])
         self.assertEqual(iter_tokenize('<c-m-.>'), ['<C-M-.>'])
+        self.assertEqual(iter_tokenize('<d-i>i.'), ['<D-i>', 'i', '.'])
+        self.assertEqual(iter_tokenize('<d-i><c-i>'), ['<D-i>', '<C-i>'])
+        self.assertEqual(iter_tokenize('<d-i><c-d>'), ['<D-i>', '<C-d>'])
 
 
 class TestFunctions(unittest.TestCase):
