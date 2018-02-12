@@ -1,5 +1,3 @@
-import os
-
 from sublime import Region
 
 from NeoVintageous.nv.vim import status_message
@@ -651,17 +649,7 @@ def window_tab_control(window, command, file_name=None, forced=False, index=None
     view_count = len(window.views_in_group(window.active_group()))
     (group_index, view_index) = window.get_view_index(view)
 
-    if command == 'open':
-        if not file_name:  # TODO: file completion
-            window.run_command('show_overlay', {
-                'overlay': 'goto',
-                'show_files': True,
-            })
-        else:
-            cur_dir = os.path.dirname(view.file_name())
-            window.open_file(os.path.join(cur_dir, file_name))
-
-    elif command == 'next':
+    if command == 'next':
         window.run_command('select_by_index', {'index': (view_index + 1) % view_count})
 
     elif command == 'prev':

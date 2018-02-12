@@ -93,7 +93,6 @@ __all__ = [
     'ExTablastCommand',
     'ExTabnextCommand',
     'ExTabonlyCommand',
-    'ExTabOpenCommand',
     'ExTabprevCommand',
     'ExUnabbreviate',
     'ExUnmap',
@@ -1468,12 +1467,6 @@ class ExYank(TextCommand):
         # TODO: o_O?
         if register == '"':
             state.registers['0'] = [text]
-
-
-class ExTabOpenCommand(WindowCommand):
-
-    def run(self, file_name=None):
-        window_tab_control(self.window, command='open', file_name=file_name)
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabnext
