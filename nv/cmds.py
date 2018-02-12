@@ -55,6 +55,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 
 __all__ = [
     '_nv_cmdline_handle_key',
+    '_nv_feed_key',
     '_nv_fix_st_eol_caret',
     '_nv_goto_help',
     '_vi_question_mark_on_parser_done',
@@ -63,7 +64,6 @@ __all__ = [
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
     'NeovintageousToggleSideBarCommand',
-    'PressKey',
     'ProcessNotation',
     'Sequence',
     'TabControlCommand',
@@ -230,26 +230,24 @@ class _nv_goto_help(WindowCommand):
             return message('E149: Sorry, no help for %s' % subject)
 
 
-class PressKey(ViWindowCommandBase):
-    """
-    Interact with the global state each time a key is pressed.
+class _nv_feed_key(ViWindowCommandBase):
 
-    @key
-        Key pressed.
-    @repeat_count
-        Count to be used when repeating through the '.' command.
-    @do_eval
-        Whether to evaluate the global state when it's in a runnable
-        state. Most of the time, the default value of `True` should be
-        used. Set to `False` when you want to manually control
-        the global state's evaluation. For example, this is what the
-        PressKey command does.
-    """
+    # Interact with the global state each time a key is pressed.
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
+        # Args:
+        #   key (str): Key pressed.
+        #   repeat_count (int): Count to be used when repeating through the '.' command.
+        #   do_eval (bool): Whether to evaluate the global state when it's in a
+        #       runnable state. Most of the time, the default value of `True` should
+        #       be used. Set to `False` when you want to manually control the global
+        #       state's evaluation. For example, this is what the _nv_feed_key
+        #       command does.
+        #   check_user_mappings (bool):
+        # type: (str, int, bool, bool) -> None
         _log.info('key evt: %s repeat_count=%s do_eval=%s check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
@@ -432,13 +430,13 @@ class PressKey(ViWindowCommandBase):
         """Return True if the processing of the current key needs to stop."""
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
-                _log.debug('@press_key action count digit \'%s\'', key)
+                _log.debug('action count digit %s', key)
                 state.action_count += key
                 return True
 
         if (state.action and (state.mode == OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or state.motion_count):
-                _log.debug('@press_key motion count digit \'%s\'', key)
+                _log.debug('motion count digit %s', key)
                 state.motion_count += key
                 return True
 
@@ -475,7 +473,7 @@ class ProcessNotation(ViWindowCommandBase):
         # undo history, but store the full sequence for '.' to use.
         leading_motions = ''
         for key in KeySequenceTokenizer(keys).iter_tokenize():
-            self.window.run_command('press_key', {
+            self.window.run_command('_nv_feed_key', {
                 'key': key,
                 'do_eval': False,
                 'repeat_count': repeat_count,
@@ -527,7 +525,7 @@ class ProcessNotation(ViWindowCommandBase):
                             continue
 
                         elif state.mode not in (INSERT, REPLACE):
-                            self.window.run_command('press_key', {
+                            self.window.run_command('_nv_feed_key', {
                                 'key': key,
                                 'repeat_count': repeat_count,
                                 'check_user_mappings': check_user_mappings
