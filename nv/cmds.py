@@ -667,14 +667,18 @@ class ViColonInput(WindowCommand):
         _nv_cmdline_handle_key.reset_last_history_index()
 
         try:
-            parsed_new = parse_command_line(cmd_line[1:])
-            if not parsed_new.command:
-                parsed_new.command = TokenCommandGoto()
+            parsed = parse_command_line(cmd_line[1:])
+            if not parsed.command:
+                parsed.command = TokenCommandGoto()
 
-            self.window.run_command(parsed_new.command.target_command, {
-                'command_line': cmd_line[1:]})
+            cmd = parsed.command.target_command
+            args = {'command_line': cmd_line[1:]}
+
+            _log.debug('run command %s %s', cmd, args)
+            self.window.run_command(cmd, args)
         except Exception as e:
-            message(str(e) + ' ' + "(%s)" % cmd_line)
+            message('{} ({})'.format(str(e), cmd_line))
+            _log.exception('{}'.format(cmd_line))
 
     def _force_cancel(self):
         self.on_cancel()
