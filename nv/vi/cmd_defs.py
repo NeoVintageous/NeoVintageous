@@ -1979,7 +1979,7 @@ class ViEnterCommandLineMode(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': 'vi_colon_input',
+            'action': '_nv_cmdline',
             'action_args': {}
         }
 

@@ -54,6 +54,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 __all__ = [
+    '_nv_cmdline',
     '_nv_cmdline_handle_key',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
@@ -66,7 +67,6 @@ __all__ = [
     'NeovintageousToggleSideBarCommand',
     'ProcessNotation',
     'Sequence',
-    'ViColonInput',
     'ViSettingCompletion',
     'WriteFsCompletion'
 ]
@@ -352,7 +352,7 @@ class _nv_feed_key(ViWindowCommandBase):
                             command = _coerce_to_snakecase(cmd_line_command)
                             command_args = {}
                         else:
-                            command = 'vi_colon_input'
+                            command = '_nv_cmdline'
                             command_args = {'cmd_line': ':' + cmd_line_command}
 
                         _log.info('run command -> %s %s', command, command_args)
@@ -360,7 +360,7 @@ class _nv_feed_key(ViWindowCommandBase):
                         return self.window.run_command(command, command_args)
 
                     if ':' == new_keys:
-                        return self.window.run_command('vi_colon_input')
+                        return self.window.run_command('_nv_cmdline')
 
                     return console_message('invalid command line mapping %s -> %s (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
 
@@ -591,7 +591,7 @@ class ProcessNotation(ViWindowCommandBase):
             self.state.non_interactive = False
 
 
-class ViColonInput(WindowCommand):
+class _nv_cmdline(WindowCommand):
     interactive_call = True
 
     def is_enabled(self):
@@ -608,11 +608,11 @@ class ViColonInput(WindowCommand):
         if cmd_line:
             # The caller has provided a command, to we're not in interactive
             # mode -- just run the command.
-            ViColonInput.interactive_call = False
+            _nv_cmdline.interactive_call = False
             self.on_done(cmd_line)
             return
         else:
-            ViColonInput.interactive_call = True
+            _nv_cmdline.interactive_call = True
 
         FsCompletion.invalidate()
 
@@ -636,7 +636,7 @@ class ViColonInput(WindowCommand):
         if s[0] != ':':
             return self._force_cancel()
 
-        if ViColonInput.interactive_call:
+        if _nv_cmdline.interactive_call:
             cmd, prefix, only_dirs = parse(s)
             if cmd:
                 FsCompletion.prefix = prefix
@@ -649,7 +649,7 @@ class ViColonInput(WindowCommand):
             if not cmd:
                 return
 
-        ViColonInput.interactive_call = True
+        _nv_cmdline.interactive_call = True
 
     def on_done(self, cmd_line):
         if len(cmd_line) <= 1:
@@ -658,7 +658,7 @@ class ViColonInput(WindowCommand):
         if cmd_line[0] != ':':
             return
 
-        if ViColonInput.interactive_call:
+        if _nv_cmdline.interactive_call:
             history_update(cmd_line)
 
         _nv_cmdline_handle_key.reset_last_history_index()
@@ -690,7 +690,7 @@ class WriteFsCompletion(TextCommand):
         if self.view.score_selector(0, 'text.excmdline') == 0:
             return
 
-        ViColonInput.interactive_call = False
+        _nv_cmdline.interactive_call = False
 
         self.view.sel().clear()
         self.view.replace(edit, Region(0, self.view.size()), cmd + ' ' + completion)
