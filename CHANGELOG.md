@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#304](https://github.com/NeoVintageous/NeoVintageous/issues/304): `:s/$/foo/gc` causes infinite loop
+* Fixed [#210](https://github.com/NeoVintageous/NeoVintageous/issues/210): `:%s/$/,/` not working as expected
 * Fixed: `:shell` error
 
 ## 1.5.0 - 2018-02-06

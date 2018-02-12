@@ -1046,6 +1046,7 @@ class _vi_percent(ViMotionCommand):
         if any([self.view.substr(pt) in p for p in self.pairs]):
             return None
 
+        # TODO [bug] Looks like get_closes_tag can return None which causes an error.
         _, tag = get_closest_tag(self.view, pt)
         if tag.contains(pt):
             begin_tag, end_tag, _ = find_containing_tag(self.view, pt)

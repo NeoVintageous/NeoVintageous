@@ -1014,28 +1014,66 @@ class ExSubstitute(TextCommand):
         computed_flags |= re.IGNORECASE if ('i' in flags) else 0
 
         try:
-            compiled_rx = re.compile(pattern, flags=computed_flags)
+            compiled_pattern = re.compile(pattern, flags=computed_flags)
         except Exception as e:
-            return message('[regex error]: %s ... in pattern \'%s\'' % (str(e), pattern))
+            return message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
+
+        target_region = parsed.line_range.resolve(self.view)
+        if target_region.empty():
+            return status_message('E486: Pattern not found: {}'.format(pattern))
 
         replace_count = 0 if (flags and 'g' in flags) else 1
 
-        target_region = parsed.line_range.resolve(self.view)
-
         if 'c' in flags:
-            self.replace_confirming(edit, pattern, compiled_rx, replacement, replace_count, target_region)
-            return
+            return self.replace_confirming(edit, pattern, compiled_pattern, replacement, replace_count, target_region)
 
-        line_text = self.view.substr(target_region)
-        new_text = re.sub(compiled_rx, replacement, line_text, count=replace_count)
-        self.view.replace(edit, target_region, new_text)
+        lines = self.view.lines(target_region)
+        if not lines:
+            return status_message('E486: Pattern not found: {}'.format(pattern))
 
-    def replace_confirming(self, edit, pattern, compiled_rx, replacement,
+        new_lines = []
+        dirty = False
+        for line in lines:
+            line_str = self.view.substr(line)
+            new_line_str = re.sub(compiled_pattern, replacement, line_str, count=replace_count)
+            new_lines.append(new_line_str)
+            if new_line_str != line_str:
+                dirty = True
+
+        new_region_text = '\n'.join(new_lines)
+        if self.view.size() > line.end():
+            new_region_text += '\n'
+
+        if not dirty:
+            return status_message('E486: Pattern not found: {}'.format(pattern))
+
+        # Reposition cursor before replacing target region so that the cursor
+        # will auto adjust in sync with the replacement.
+        self.view.sel().clear()
+        self.view.sel().add(line.begin())
+
+        self.view.replace(edit, target_region, new_region_text)
+
+        # TODO Refactor set position cursor after operation into reusable api.
+        # Put cursor on first non-whitespace char of current line.
+        line = self.view.line(self.view.sel()[0].b)
+        if line.size() > 0:
+            pt = self.view.find('^\\s*', line.begin()).end()
+            self.view.sel().clear()
+            self.view.sel().add(pt)
+
+        self.view.run_command('_enter_normal_mode')
+
+    def replace_confirming(self, edit, pattern, compiled_pattern, replacement,
                            replace_count, target_region):
+
         last_row = row_at(self.view, target_region.b - 1)
         start = target_region.begin()
 
         while True:
+            if start >= self.view.size():
+                break
+
             match = self.view.find(pattern, start)
 
             # no match or match out of range -- stop
@@ -1049,10 +1087,10 @@ class ExSubstitute(TextCommand):
                 self.view.show(match.a, True)
                 if ok_cancel_dialog("Confirm replacement?"):
                     text = self.view.substr(match)
-                    substituted = re.sub(compiled_rx, replacement, text, count=replace_count)
+                    substituted = re.sub(compiled_pattern, replacement, text, count=replace_count)
                     self.view.replace(edit, match, substituted)
 
-            start = match.b + (self.view.size() - size_before)
+            start = match.b + (self.view.size() - size_before) + 1
 
 
 # https://vimhelp.appspot.com/change.txt.html#:delete
