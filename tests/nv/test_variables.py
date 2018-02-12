@@ -1,11 +1,11 @@
 from unittest import mock
 import unittest
 
-from NeoVintageous.nv.vi.variables import _defaults as _defaults_struct_
-from NeoVintageous.nv.vi.variables import _special_strings as _special_strings_struct_
-from NeoVintageous.nv.vi.variables import expand_keys
-from NeoVintageous.nv.vi.variables import get
-from NeoVintageous.nv.vi.variables import is_key_name
+from NeoVintageous.nv.variables import _defaults as _defaults_struct_
+from NeoVintageous.nv.variables import _special_strings as _special_strings_struct_
+from NeoVintageous.nv.variables import expand_keys
+from NeoVintageous.nv.variables import get
+from NeoVintageous.nv.variables import is_key_name
 
 
 class TestVariables(unittest.TestCase):
@@ -18,11 +18,11 @@ class TestVariables(unittest.TestCase):
         self.assertTrue(is_key_name('<LocalLeader>'))
         self.assertEqual(_defaults_struct_[_special_strings_struct_['<localleader>']], '\\')
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testpresent>': 'testpresentvalue'})
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testpresent>': 'testpresentvalue'})
     def test_is_key_name_returns_true_when_present(self):
         self.assertTrue(is_key_name('<testpresent>'))
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testpresent>': 'testpresentvalue'})
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testpresent>': 'testpresentvalue'})
     def test_is_key_name_is_case_insensitive(self):
         self.assertTrue(is_key_name('<testpresent>'))
         self.assertTrue(is_key_name('<TESTPRESENT>'))
@@ -35,14 +35,14 @@ class TestVariables(unittest.TestCase):
     def test_get_returns_none_if_key_is_not_present(self):
         self.assertIsNone(get('<TestNotPresent>'))
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {'x': 'y'})
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testget>': 'x'})
+    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'y'})
     def test_get_returns_default_value(self):
         self.assertEqual(get('<TestGet>'), 'y')
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {'x': 'foobar'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {'x': 'y'})
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testget>': 'x'})
+    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'foobar'})
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
     def test_get_returns_variable_value_if_set(self):
         self.assertEqual(get('<TestGet>'), 'y')
 
@@ -59,14 +59,14 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('x<TestNotPresent>y', expand_keys('x<TestNotPresent>y'))
         self.assertEqual('<TestNotPresent><TestNotPresent>', expand_keys('<TestNotPresent><TestNotPresent>'))
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {}, clear=True)
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {}, clear=True)
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testget>': 'x'})
+    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {}, clear=True)
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
     def test_expand_keys_protect_against_infinite_loop(self):
         self.assertEqual('<TestGet>', expand_keys('<TestGet>'))
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {'x': 'y'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testget>': 'x'})
+    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'y'})
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testget>': 'x'})
     def test_expand_keys_expands_to_default(self):
         self.assertEqual('y', expand_keys('<TestGet>'))
         self.assertEqual('yz', expand_keys('<TestGet>z'))
@@ -76,9 +76,9 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('1y2y3', expand_keys('1<TestGet>2<TestGet>3'))
         self.assertEqual('42Gyy:Fizz<Enter>ysiw', expand_keys('42G<TestGet><TestGet>:Fizz<Enter><TestGet>siw'))
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {'x': 'foobar'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {'x': 'y'})
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testget>': 'x'})
+    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'foobar'})
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
     def test_expand_keys_expands_to_variable_if_set(self):
         self.assertEqual('y', expand_keys('<TestGet>'))
         self.assertEqual('yz', expand_keys('<TestGet>z'))
@@ -88,9 +88,9 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('1y2y3', expand_keys('1<TestGet>2<TestGet>3'))
         self.assertEqual('42Gyy:Fizz<Enter>ysiw', expand_keys('42G<TestGet><TestGet>:Fizz<Enter><TestGet>siw'))
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testx>': 'testx', '<testy>': 'testy'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {'testx': 'foobar'})
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {'testx': 'x', 'testy': 'y'})
+    @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testx>': 'testx', '<testy>': 'testy'})
+    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'testx': 'foobar'})
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'testx': 'x', 'testy': 'y'})
     def test_expand_keys_expands_all_keys_in_seq(self):
         self.assertEqual('x', expand_keys('<TestX>'))
         self.assertEqual('y', expand_keys('<TestY>'))

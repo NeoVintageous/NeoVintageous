@@ -9,7 +9,7 @@ from NeoVintageous.nv.vi.utils import translate_char
 
 class TestKeySequenceTokenizer(unittest.TestCase):
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {}, clear=True)
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
     def test_tokenize_one(self):
         def tokenize_one(source):
             return KeySequenceTokenizer(source).tokenize_one()
@@ -40,7 +40,7 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('<D-A>'), '<D-A>', 'super key')
         self.assertEqual(tokenize_one('<d-A>'), '<D-A>', 'super key')
 
-    @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {}, clear=True)
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
     def test_iter_tokenize(self):
         def iter_tokenize(source):
             return list(KeySequenceTokenizer(source).iter_tokenize())

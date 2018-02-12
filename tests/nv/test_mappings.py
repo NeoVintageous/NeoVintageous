@@ -171,8 +171,8 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(_mappings, expected)
 
     @_patch_mappings
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._defaults', {'mapleader': '\\'})
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._variables', {})
+    @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': '\\'})
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_add_expands_keys(self, _mappings):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousToggleSideBar<CR>')
 
@@ -181,8 +181,8 @@ class TestMappings(unittest.TestCase):
         })
 
     @_patch_mappings
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._defaults', {'mapleader': '\\'})
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._variables', {})
+    @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': '\\'})
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_can_remove_expanded_keys(self, _mappings):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousToggleSideBar<CR>')
         mappings_remove(unittest.NORMAL, '\\d')

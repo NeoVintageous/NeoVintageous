@@ -17,6 +17,7 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import shell
+from NeoVintageous.nv import variables
 from NeoVintageous.nv.ex.parser.parser import parse_command_line
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.mappings import mappings_add
@@ -25,7 +26,6 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import abbrev
 from NeoVintageous.nv.vi import utils
-from NeoVintageous.nv.vi import variables
 from NeoVintageous.nv.vi.core import ViCommandMixin as WindowCommandMixin
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import set_global
