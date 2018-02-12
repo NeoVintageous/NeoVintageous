@@ -59,6 +59,12 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('x<TestNotPresent>y', expand_keys('x<TestNotPresent>y'))
         self.assertEqual('<TestNotPresent><TestNotPresent>', expand_keys('<TestNotPresent><TestNotPresent>'))
 
+    @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testget>': 'x'})
+    @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {}, clear=True)
+    @mock.patch.dict('NeoVintageous.nv.vi.variables._variables', {}, clear=True)
+    def test_expand_keys_protect_against_infinite_loop(self):
+        self.assertEqual('<TestGet>', expand_keys('<TestGet>'))
+
     @mock.patch.dict('NeoVintageous.nv.vi.variables._defaults', {'x': 'y'})
     @mock.patch.dict('NeoVintageous.nv.vi.variables._special_strings', {'<testget>': 'x'})
     def test_expand_keys_expands_to_default(self):
