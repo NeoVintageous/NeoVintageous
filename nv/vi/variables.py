@@ -1,26 +1,26 @@
 
-_SPECIAL_STRINGS = {
+_special_strings = {
     '<leader>': 'mapleader',
     '<localleader>': 'maplocalleader',
 }
 
 
-_DEFAULTS = {
+_defaults = {
     'mapleader': '\\',
     'maplocalleader': '\\'
 }
 
 
-_VARIABLES = {
-}
+_variables = {}
 
 
 def expand_keys(seq):
+    # type: (str) -> str
     seq_lower = seq.lower()
-    for key, key_value, in _SPECIAL_STRINGS.items():
+    for key, key_value, in _special_strings.items():
         while key in seq_lower:
             index = seq_lower.index(key)
-            value = _VARIABLES.get(key_value, _DEFAULTS.get(key_value))
+            value = _variables.get(key_value, _defaults.get(key_value))
             if value:
                 seq = seq[:index] + value + seq[index + len(key):]
                 seq_lower = seq.lower()
@@ -37,30 +37,18 @@ def expand_keys(seq):
 
 
 def is_key_name(name):
-    return name.lower() in _SPECIAL_STRINGS
+    # type: (str) -> bool
+    return name.lower() in _special_strings
 
 
 def get(name):
+    # type: (str) -> str
     name = name.lower()
-    name = _SPECIAL_STRINGS.get(name, name)
+    name = _special_strings.get(name, name)
 
-    return _VARIABLES.get(name, _DEFAULTS.get(name))
-
-
-def set_(name, value):
-    _VARIABLES[name] = value
+    return _variables.get(name, _defaults.get(name))
 
 
-class Variables(object):
-
-    def __get__(self, instance, owner):
-        self.view = instance.view
-        self.settings = instance.settings
-
-        return self
-
-    def get(self, name):
-        return get(name)
-
-    def set(self, name, value):
-        return set_(name, value)
+def set(name, value):
+    # type: (...) -> None
+    _variables[name] = value

@@ -19,7 +19,6 @@ from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
-from NeoVintageous.nv.vi.variables import Variables
 from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import get_logger
@@ -60,7 +59,6 @@ class State(object):
     registers = Registers()
     macro_registers = MacroRegisters()
     marks = Marks()
-    variables = Variables()
     macro_steps = []
 
     def __init__(self, view):

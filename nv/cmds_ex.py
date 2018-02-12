@@ -27,6 +27,7 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import abbrev
 from NeoVintageous.nv.vi import utils
+from NeoVintageous.nv.vi import variables
 from NeoVintageous.nv.vi.core import ViCommandMixin as WindowCommandMixin
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import set_global
@@ -1727,7 +1728,7 @@ class ExLet(WindowCommand, WindowCommandMixin):
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
-        self.state.variables.set(parsed.command.variable_name, parsed.command.variable_value)
+        variables.set(parsed.command.variable_name, parsed.command.variable_value)
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:wqall
