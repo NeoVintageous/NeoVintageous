@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+### Fixed
+
+* Fixed: `:shell` error
+
 ## 1.5.0 - 2018-02-06
 
 ### Added

@@ -320,8 +320,7 @@ class ExShellOut(TextCommand):
                     cmd=shell_cmd
                 )
             else:
-                # TODO: Read output into output panel.
-                # shell.run_and_wait(self.view, shell_cmd)
+                # TODO Read output into output panel.
                 out = shell.run_and_read(self.view, shell_cmd)
 
                 output_view = self.view.window().create_output_panel('vi_out')
@@ -337,54 +336,55 @@ class ExShellOut(TextCommand):
             message('not implemented')
 
 
+# TODO [refactor] shell commands to use common os nv.ex.shell commands
 class ExShell(WindowCommand, WindowCommandMixin):
     """
-    Ex command(s): :shell.
+    This command starts a shell.
 
-    Opens a shell at the current view's directory. Sublime Text keeps a virtual
-    current directory that most of the time will be out of sync with the actual
-    current directory. The virtual current directory is always set to the
+    When the shell exits (after the "exit" command) you return to Sublime Text.
+    The name for the shell command comes from:
+
+    * VintageousEx_linux_terminal setting on Linux
+    * VintageousEx_osx_terminal setting on OSX
+
+    The shell is opened at the active view directory. Sublime Text keeps a
+    virtual current directory that most of the time will be out of sync with the
+    actual current directory. The virtual current directory is always set to the
     current view's directory, but it isn't accessible through the API.
     """
 
-    def open_shell(self, command):
-        return subprocess.Popen(command, cwd=os.getcwd())
-
     @_changing_cd
     def run(self, command_line=''):
-        assert command_line, 'expected non-empty command line'
-
+        assert command_line, 'expected non-command line'
         if platform() == 'linux':
-            term = self.view.settings().get('VintageousEx_linux_terminal')
-            term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
+            term = self._view.settings().get('VintageousEx_linux_terminal')
+            term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
             if not term:
-                return status_message('not terminal name found')
+                return message('terminal not found')
 
             try:
-                self.open_shell([term, '-e', 'bash']).wait()
+                self._open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
-                console_message(str(e))
-                status_message('error while executing command through shell')
-                return
+                return message('error executing command through shell {}'.format(e))
 
         elif platform() == 'osx':
-            term = self.view.settings().get('VintageousEx_osx_terminal')
-            term = term or os.environ.get('COLORTERM') or os.environ.get("TERM")
+            term = self._view.settings().get('VintageousEx_osx_terminal')
+            term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
             if not term:
-                return status_message('not terminal name found')
+                return message('terminal not found')
 
             try:
-                self.open_shell([term, '-e', 'bash']).wait()
+                self._open_shell([term, '-e', 'bash']).wait()
             except Exception as e:
-                console_message(str(e))
-                status_message('error while executing command through shell')
-                return
+                return message('error executing command through shell {}'.format(e))
 
         elif platform() == 'windows':
-            self.open_shell(['cmd.exe', '/k']).wait()
+            self._open_shell(['cmd.exe', '/k']).wait()
         else:
-            # XXX OSX (make check explicit)
             message('not implemented')
+
+    def _open_shell(self, command):
+        return subprocess.Popen(command, cwd=os.getcwd())
 
 
 # https://vimhelp.appspot.com/insert.txt.html#:r
