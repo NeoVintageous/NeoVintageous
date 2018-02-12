@@ -16,10 +16,8 @@ from sublime import set_timeout
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
-from NeoVintageous.nv.ex import shell
+from NeoVintageous.nv import shell
 from NeoVintageous.nv.ex.parser.parser import parse_command_line
-from NeoVintageous.nv.ex.plat.windows import get_oem_cp
-from NeoVintageous.nv.ex.plat.windows import get_startup_info
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
@@ -389,45 +387,47 @@ class ExShell(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/insert.txt.html#:r
+# TODO [review] This command looks unused
+# TODO [refactor] shell commands to use common os nv.ex.shell commands
 class ExReadShellOut(TextCommand):
 
     @_changing_cd
     def run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         parsed = parse_command_line(command_line)
-
         r = parsed.line_range.resolve(self.view)
-
         target_point = min(r.end(), self.view.size())
 
         if parsed.command.command:
             if platform() == 'linux':
                 # TODO: make shell command configurable.
-                the_shell = self.view.settings().get('linux_shell')
-                the_shell = the_shell or os.path.expandvars("$SHELL")
-                if not the_shell:
-                    status_message('no shell name found')
-                    return
+                shell_cmd = self.view.settings().get('linux_shell')
+                shell_cmd = shell_cmd or os.path.expandvars("$SHELL")
+                if not shell_cmd:
+                    return message('no shell found')
+
                 try:
-                    p = subprocess.Popen([the_shell, '-c', parsed.command.command], stdout=subprocess.PIPE)
+                    p = subprocess.Popen([shell_cmd, '-c', parsed.command.command], stdout=subprocess.PIPE)
                 except Exception as e:
-                    console_message(str(e))
-                    status_message('error while executing command through shell')
-                    return
+                    return message('error executing command through shell {}'.format(e))
+
                 self.view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
 
             elif platform() == 'windows':
+                # TODO [refactor] shell commands to use common os nv.ex.shell commands
+                from NeoVintageous.nv.shell_windows import get_oem_cp
+                from NeoVintageous.nv.shell_windows import get_startup_info
                 p = subprocess.Popen(['cmd.exe', '/C', parsed.command.command],
                                      stdout=subprocess.PIPE,
                                      startupinfo=get_startup_info())
                 cp = 'cp' + get_oem_cp()
                 rv = p.communicate()[0].decode(cp)[:-2].strip()
                 self.view.insert(edit, target_point, rv.strip() + '\n')
+
             else:
                 message('not implemented')
-        # Read a file into the current view.
         else:
+            # Read a file into the current view.
             # According to Vim's help, :r should read the current file's content
             # if no file name is given, but Vim doesn't do that.
             # TODO: implement reading a file into the buffer.

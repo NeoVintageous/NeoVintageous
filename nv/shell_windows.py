@@ -1,16 +1,14 @@
-import subprocess
-from subprocess import PIPE
 import os
+import subprocess
 import tempfile
 
 
 try:
     import ctypes
 except ImportError:
-    from NeoVintageous.nv.ex import plat
-
-    if plat.HOST_PLATFORM == plat.WINDOWS:
-        raise EnvironmentError("ctypes module missing for Windows.")
+    from sublime import platform
+    if platform() == 'windows':
+        raise EnvironmentError('ctypes module missing for Windows.')
 
     ctypes = None
 
@@ -23,16 +21,24 @@ def get_startup_info():
     return startupinfo
 
 
+def get_oem_cp():
+    # type: (...) -> str
+    return str(ctypes.windll.kernel32.GetOEMCP())
+
+
 def run_and_wait(view, cmd):
+    # type: (...) -> None
     subprocess.Popen(['cmd.exe', '/c', cmd + '&& pause']).wait()
 
 
 def run_and_read(view, cmd):
+    # type: (...) -> str
     out, err = subprocess.Popen(['cmd.exe', '/c', cmd],
-                                stdout=PIPE,
-                                stderr=PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
                                 shell=True,
                                 startupinfo=get_startup_info()).communicate()
+
     try:
         return (out or err).decode(get_oem_cp()).replace('\r\n', '\n')
     except AttributeError:
@@ -40,6 +46,7 @@ def run_and_read(view, cmd):
 
 
 def filter_region(view, txt, command):
+    # type: (...) -> str
     try:
         contents = tempfile.NamedTemporaryFile(suffix='.txt', delete=False)
         contents.write(txt.encode('utf-8'))
@@ -50,8 +57,8 @@ def filter_region(view, txt, command):
         script.close()
 
         p = subprocess.Popen([script.name],
-                             stdout=PIPE,
-                             stderr=PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
                              startupinfo=get_startup_info())
 
         out, err = p.communicate()
@@ -60,9 +67,3 @@ def filter_region(view, txt, command):
     finally:
         os.remove(script.name)
         os.remove(contents.name)
-
-
-def get_oem_cp():
-    codepage = ctypes.windll.kernel32.GetOEMCP()
-
-    return str(codepage)
