@@ -1,6 +1,6 @@
+from .tokens import TOKEN_COMMAND_SHELL_OUT
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_SHELL_OUT
-from .tokens_base import TokenOfCommand
+from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 

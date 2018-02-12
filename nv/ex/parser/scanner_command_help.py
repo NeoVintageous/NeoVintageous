@@ -1,6 +1,6 @@
+from .tokens import TOKEN_COMMAND_HELP
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_HELP
-from .tokens_base import TokenOfCommand
+from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 

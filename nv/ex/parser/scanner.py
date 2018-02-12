@@ -26,6 +26,7 @@ class Scanner():
     # TODO Make this class a function. We don't need a state object reference.
 
     def __init__(self, source):
+        # type: (str) -> None
         self.state = ScannerState(source)
 
     def scan(self):

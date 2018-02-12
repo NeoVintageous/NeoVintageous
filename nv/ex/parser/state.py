@@ -4,7 +4,7 @@ import re
 EOF = '__EOF__'
 
 
-class ScannerState():
+class ScannerState:
 
     # Args:
     #   :source: The string to be scanned.
@@ -15,11 +15,13 @@ class ScannerState():
     #   :start (int): The most recent scan start. Default is 0.
 
     def __init__(self, source):
+        # type: (str) -> None
         self.source = source
         self.position = 0
         self.start = 0
 
     def consume(self):
+        # type: () -> str
         # Consume one character from source.
         #
         # Returns:
@@ -35,14 +37,17 @@ class ScannerState():
         return c
 
     def backup(self):
+        # type: () -> None
         """Backs up scanner position by 1 character."""
         self.position -= 1
 
     def ignore(self):
+        # type: () -> None
         """Discards the current span of characters that would normally be `.emit()`ted."""
         self.start = self.position
 
     def emit(self):
+        # type: () -> str
         """
         Return the `source` substring spanning from [`start`, `position`).
 
@@ -54,6 +59,7 @@ class ScannerState():
         return content
 
     def skip(self, character):
+        # type: (str) -> None
         """Consumes @character while it matches."""
         while True:
             c = self.consume()
@@ -64,6 +70,7 @@ class ScannerState():
             self.backup()
 
     def skip_run(self, characters):
+        # type: (str) -> None
         """Skips @characters while there's a match."""
         while True:
             c = self.consume()
@@ -74,6 +81,7 @@ class ScannerState():
             self.backup()
 
     def expect(self, item, on_error=None):
+        # type: (...) -> str
         """
         Require @item to match at the current `position`.
 
@@ -96,16 +104,15 @@ class ScannerState():
 
     def expect_match(self, pattern, on_error=None):
         """
-        Require @item to match at the current `position`.
+        Require item to match at the current position.
 
-        Raises a ValueError if @item does not match.
+        Raises a ValueError if item does not match.
 
-        @pattern
-          A regular expression.
+        Args:
+            pattern (str): A regular expression.
+            on_error (Callable): A function that returns an error. The error
+                returned overrides the default ValueError.
 
-        @on_error
-          A function that returns an error. The error returned overrides the
-          default ValueError.
         """
         m = re.compile(pattern).match(self.source, self.position)
         if m:
@@ -119,11 +126,13 @@ class ScannerState():
         raise on_error()
 
     def peek(self, item):
+        # type: (str) -> bool
         """
-        Return `True` if @item matches at the current position.
+        Return True if item matches at the current position, False otherwise.
 
-        @item
-          A string.
+        Args:
+            item (str):
+
         """
         return self.source[self.position:self.position + len(item)] == item
 
@@ -134,8 +143,9 @@ class ScannerState():
         The current `position` will advance as many characters as the match's
         length.
 
-        @pattern
-          A regular expression.
+        Args:
+            pattern (str): A regular expression.
+
         """
         m = re.compile(pattern).match(self.source, self.position)
         if m:

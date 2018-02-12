@@ -1,6 +1,5 @@
 from sublime import Region
 
-
 from NeoVintageous.nv.ex.parser.tokens import TokenDigits
 from NeoVintageous.nv.ex.parser.tokens import TokenDollar
 from NeoVintageous.nv.ex.parser.tokens import TokenDot

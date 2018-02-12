@@ -1,7 +1,7 @@
 from .state import EOF
+from .tokens import TOKEN_COMMAND_EDIT
 from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_EDIT
-from .tokens_base import TokenOfCommand
+from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 

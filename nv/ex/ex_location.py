@@ -106,6 +106,7 @@ def calculate_relative_ref(view, where, start_line=None):
 
 
 def search(view, what, start_line=None, flags=0):
+    # type: (...) -> int
     # TODO: don't make start_line default to the first sel's begin(). It's
     # confusing. ???
     if start_line:

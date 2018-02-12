@@ -10,12 +10,12 @@ from .tokens import TokenDollar
 from .tokens import TokenDot
 from .tokens import TokenEof
 from .tokens import TokenMark
+from .tokens import TokenOfCommand
 from .tokens import TokenOffset
 from .tokens import TokenPercent
 from .tokens import TokenSearchBackward
 from .tokens import TokenSearchForward
 from .tokens import TokenSemicolon
-from .tokens_base import TokenOfCommand
 from NeoVintageous.nv.vim import get_logger
 
 
@@ -33,6 +33,7 @@ class ParserState():
     #   :tokens:
 
     def __init__(self, source):
+        # type: (str) -> None
         self.scanner = Scanner(source)
         self.is_range_start_line_parsed = False
         self.tokens = self.scanner.scan()
@@ -66,6 +67,7 @@ def parse_command_line(source):
 
 
 def init_line_range(command_line):
+    # type: (CommandLineNode) -> None
     if command_line.line_range:
         return
 
@@ -236,17 +238,17 @@ def process_offset(token, state, command_line):
 
 
 def process_dot(state, command_line):
-        init_line_range(command_line)
-        if not state.is_range_start_line_parsed:
-            if command_line.line_range.start and isinstance(command_line.line_range.start[-1], TokenOffset):
-                raise ValueError('bad range {0}'.format(state.scanner.state.source))
-            command_line.line_range.start.append(TokenDot())
-        else:
-            if command_line.line_range.end and isinstance(command_line.line_range.end[-1], TokenOffset):
-                raise ValueError('bad range {0}'.format(state.scanner.source))
-            command_line.line_range.end.append(TokenDot())
+    init_line_range(command_line)
+    if not state.is_range_start_line_parsed:
+        if command_line.line_range.start and isinstance(command_line.line_range.start[-1], TokenOffset):
+            raise ValueError('bad range {0}'.format(state.scanner.state.source))
+        command_line.line_range.start.append(TokenDot())
+    else:
+        if command_line.line_range.end and isinstance(command_line.line_range.end[-1], TokenOffset):
+            raise ValueError('bad range {0}'.format(state.scanner.source))
+        command_line.line_range.end.append(TokenDot())
 
-        return parse_line_ref, command_line
+    return parse_line_ref, command_line
 
 
 # IMPORTANT! Avoid circular refs. Some subscanners import parse_command_line()

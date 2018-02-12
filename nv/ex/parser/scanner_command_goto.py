@@ -1,5 +1,5 @@
-from .tokens_base import TOKEN_COMMAND_GOTO
-from .tokens_base import TokenOfCommand
+from .tokens import TOKEN_COMMAND_GOTO
+from .tokens import TokenOfCommand
 
 
 # This command cannot be scanned.

@@ -1,7 +1,7 @@
-from .tokens import TokenEof
-from .tokens_base import TOKEN_COMMAND_COPY
-from .tokens_base import TokenOfCommand
 from .parser import parse_command_line
+from .tokens import TOKEN_COMMAND_COPY
+from .tokens import TokenEof
+from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
