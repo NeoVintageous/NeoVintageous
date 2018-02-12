@@ -19,12 +19,12 @@ from NeoVintageous.nv.history import history_nr
 
 # We need to patch the entries storage dictionary so that out tests don't mess
 # up our userland entries, which would obviously be bad.
-from NeoVintageous.nv.history import _storage as __storage_struct__
+from NeoVintageous.nv.history import _storage as _storage_struct_
 
 
 # Reusable mappings test patcher (also passes a clean storage structure to tests).
 _patch_storage = unittest.mock.patch('NeoVintageous.nv.history._storage',
-                                     new_callable=lambda: {k: {'num': 0, 'items': {}} for k in __storage_struct__})
+                                     new_callable=lambda: {k: {'num': 0, 'items': {}} for k in _storage_struct_})
 
 
 _patch_max_items = lambda n: unittest.mock.patch('NeoVintageous.nv.history._MAX_ITEMS', n)  # noqa: E731

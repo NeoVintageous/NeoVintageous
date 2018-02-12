@@ -21,13 +21,8 @@ def _create_expected(params):
 class TestScanCommanSubstitute(unittest.TestCase):
 
     def test_none(self):
-        self.assertEqual(
-            _create_expected(None),
-            _scan('', 0, 0))
-
-        self.assertEqual(
-            _create_expected(None),
-            _scan('s'))
+        self.assertEqual(_create_expected(None), _scan('', 0, 0))
+        self.assertEqual(_create_expected(None), _scan('s'))
 
     def test_raises_exception(self):
         with self.assertRaisesRegex(ValueError, 'bad command'):
@@ -44,7 +39,8 @@ class TestScanCommanSubstitute(unittest.TestCase):
                 'count': 1,
                 'flags': [],
             }),
-            _scan('s/abc/def/'))
+            _scan('s/abc/def/')
+        )
 
     def test_basic_with_offset_start_and_position(self):
         self.assertEqual(
@@ -54,7 +50,8 @@ class TestScanCommanSubstitute(unittest.TestCase):
                 'count': 1,
                 'flags': ['g'],
             }),
-            _scan('1,$s/cmd/shell_cmd/g', 4, 4))
+            _scan('1,$s/cmd/shell_cmd/g', 4, 4)
+        )
 
     def test_empty(self):
         self.assertEqual(
@@ -64,7 +61,8 @@ class TestScanCommanSubstitute(unittest.TestCase):
                 'count': 1,
                 'flags': [],
             }),
-            _scan('s///'))
+            _scan('s///')
+        )
 
     def test_flags(self):
         self.assertEqual(
@@ -83,7 +81,8 @@ class TestScanCommanSubstitute(unittest.TestCase):
                 'count': 1,
                 'flags': ['i']
             }),
-            _scan('s/abc/def/i'))
+            _scan('s/abc/def/i')
+        )
 
         self.assertEqual(
             _create_expected({
@@ -92,7 +91,8 @@ class TestScanCommanSubstitute(unittest.TestCase):
                 'count': 1,
                 'flags': ['g', 'i']
             }),
-            _scan('s/abc/def/gi'))
+            _scan('s/abc/def/gi')
+        )
 
     def test_closing_delimiter_is_not_required(self):
         self.assertEqual(
@@ -102,4 +102,5 @@ class TestScanCommanSubstitute(unittest.TestCase):
                 'count': 1,
                 'flags': []
             }),
-            _scan('s/abc/def'))
+            _scan('s/abc/def')
+        )
