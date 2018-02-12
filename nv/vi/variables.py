@@ -24,6 +24,14 @@ def expand_keys(seq):
             if value:
                 seq = seq[:index] + value + seq[index + len(key):]
                 seq_lower = seq.lower()
+            else:
+
+                # XXX This is a safe guard against infinite loop. Ideally
+                # special keys that have no default or variable values should
+                # just be replaced as-is, that will require reworking this
+                # function.
+
+                return seq
 
     return seq
 
