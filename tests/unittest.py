@@ -117,7 +117,7 @@ class ViewTestCase(unittest.TestCase):
 
     def write(self, text):
         # type: (str) -> None
-        self.view.run_command('_neovintageous_test_write', {'text': text})
+        self.view.run_command('_nv_test_write', {'text': text})
 
     def assertContent(self, expected, msg=None):
         # Test that view contents and *expected* are equal.
@@ -145,9 +145,9 @@ class ViewTestCase(unittest.TestCase):
         # Test that *actual* and *expected* are equal.
         #
         # Args:
-        #   expected (str|int|tuple|Region): Expected region. *int* and *tuple*
-        #       are converted to *Region*. If *str*, then *actual* is converted
-        #       to a *str* before testing if both are equal.
+        #   expected (str|int|tuple|Region): If the expected value is a str,
+        #       int, or a tuple, it will be converted to a Region before
+        #       evaluating against the actual value.
         #   actual (Region): Actual region.
         if isinstance(expected, str):
             self.assertEqual(expected, self.view.substr(actual))
