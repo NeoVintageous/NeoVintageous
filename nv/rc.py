@@ -30,8 +30,8 @@ def open(window):
     file = _file_name()
 
     if not os.path.exists(file):
-        with builtins.open(file, 'w'):
-            pass
+        with builtins.open(file, 'w') as f:
+            f.write('" Type :h vintageousrc for help.\n')
 
     window.open_file(file)
 
