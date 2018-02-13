@@ -14,14 +14,14 @@ import sublime
 try:
     _EXCEPTION = None
 
-    from .nv.state import init_state
+    from NeoVintageous.nv.state import init_state
 
-    from .nv.cmds import *  # noqa: F401,F403
+    from NeoVintageous.nv.cmds import *  # noqa: F401,F403
 
     # TODO Organise all commands into a single module (i.e. .nv.cmds).
-    from .nv.cmds_ex import *  # noqa: F401,F403
-    from .nv.cmds_vi_actions import *  # noqa: F401,F403
-    from .nv.cmds_vi_motions import *  # noqa: F401,F403
+    from NeoVintageous.nv.cmds_ex import *  # noqa: F401,F403
+    from NeoVintageous.nv.cmds_vi_actions import *  # noqa: F401,F403
+    from NeoVintageous.nv.cmds_vi_motions import *  # noqa: F401,F403
 
     # Why not put all the plugins in a directory named "plugins"? The plugins
     # were not placed into a directory named "plugins" because of a bug in
@@ -33,12 +33,12 @@ try:
     # Note that if the plugins are moved into a directory named "plugins" at a
     # later time, then remember to bump the minimum Sublime Text version
     # requirement to 3153.
-    from .nv.plugin_surround import *      # noqa: F401,F403
-    from .nv.plugin_unimpaired import *    # noqa: F401,F403
-    from .nv.plugin_abolish import *       # noqa: F401,F403
+    from NeoVintageous.nv.plugin_surround import *      # noqa: F401,F403
+    from NeoVintageous.nv.plugin_unimpaired import *    # noqa: F401,F403
+    from NeoVintageous.nv.plugin_abolish import *       # noqa: F401,F403
 
     # TODO [review] Should events be imported using "*" idiom i.e. `from .nv.events import *`?
-    from .nv.events import NeoVintageousEvents  # noqa: F401
+    from NeoVintageous.nv.events import NeoVintageousEvents  # noqa: F401
 
 except Exception as e:
     _EXCEPTION = e
