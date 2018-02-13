@@ -1,7 +1,5 @@
-"""Parsing for the Vim command line."""
 
 # IMPORTANT! Some imports are at the bottom to avoid circular refs.
-
 from .nodes import CommandLineNode
 from .nodes import RangeNode
 from .tokens import TokenComma

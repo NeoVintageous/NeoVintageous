@@ -1,19 +1,19 @@
 import unittest
 
-from NeoVintageous.nv.ex.parser.scanner import Scanner
-from NeoVintageous.nv.ex.parser.scanner_command_substitute import TokenCommandSubstitute
-from NeoVintageous.nv.ex.parser.scanner_command_write import TokenCommandWrite
-from NeoVintageous.nv.ex.parser.tokens import TokenComma
-from NeoVintageous.nv.ex.parser.tokens import TokenDigits
-from NeoVintageous.nv.ex.parser.tokens import TokenDollar
-from NeoVintageous.nv.ex.parser.tokens import TokenDot
-from NeoVintageous.nv.ex.parser.tokens import TokenEof
-from NeoVintageous.nv.ex.parser.tokens import TokenMark
-from NeoVintageous.nv.ex.parser.tokens import TokenOffset
-from NeoVintageous.nv.ex.parser.tokens import TokenPercent
-from NeoVintageous.nv.ex.parser.tokens import TokenSearchBackward
-from NeoVintageous.nv.ex.parser.tokens import TokenSearchForward
-from NeoVintageous.nv.ex.parser.tokens import TokenSemicolon
+from NeoVintageous.nv.ex.scanner import Scanner
+from NeoVintageous.nv.ex.scanner import TokenComma
+from NeoVintageous.nv.ex.scanner import TokenDigits
+from NeoVintageous.nv.ex.scanner import TokenDollar
+from NeoVintageous.nv.ex.scanner import TokenDot
+from NeoVintageous.nv.ex.scanner import TokenEof
+from NeoVintageous.nv.ex.scanner import TokenMark
+from NeoVintageous.nv.ex.scanner import TokenOffset
+from NeoVintageous.nv.ex.scanner import TokenPercent
+from NeoVintageous.nv.ex.scanner import TokenSearchBackward
+from NeoVintageous.nv.ex.scanner import TokenSearchForward
+from NeoVintageous.nv.ex.scanner import TokenSemicolon
+from NeoVintageous.nv.ex.scanner_command_substitute import TokenCommandSubstitute
+from NeoVintageous.nv.ex.scanner_command_write import TokenCommandWrite
 
 
 class TestScanner(unittest.TestCase):
@@ -70,6 +70,7 @@ class TestScanner(unittest.TestCase):
     def test_can_scan_empty_range(self):
         scanner = Scanner("s")
         tokens = list(scanner.scan())
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandSubstitute(None), TokenEof()], tokens)
         self.assertEqual(1, scanner.state.position)
 
@@ -106,18 +107,21 @@ class TestScannerCommandName(unittest.TestCase):
     def test_can_instantiate(self):
         scanner = Scanner("substitute")
         tokens = list(scanner.scan())
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandSubstitute(params=None), TokenEof()], tokens)
 
     def test_can_scan_substitute_paramaters(self):
         scanner = Scanner("substitute:foo:bar:")
         tokens = list(scanner.scan())
         params = {"search_term": "foo", "replacement": "bar", "flags": [], "count": 1}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandSubstitute(params), TokenEof()], tokens)
 
     def test_can_scan_substitute_paramaters_with_flags(self):
         scanner = Scanner("substitute:foo:bar:r")
         tokens = list(scanner.scan())
         params = {"search_term": "foo", "replacement": "bar", "flags": ['r'], "count": 1}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandSubstitute(params), TokenEof()], tokens)
 
     def test_scan_can_fail_if_substitute_paramaters_flags_have_wrong_order(self):
@@ -128,12 +132,14 @@ class TestScannerCommandName(unittest.TestCase):
         scanner = Scanner("substitute:foo:bar: 10")
         tokens = list(scanner.scan())
         params = {"search_term": "foo", "replacement": "bar", "flags": [], "count": 10}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandSubstitute(params), TokenEof()], tokens)
 
     def test_can_scan_substitute_paramater_with_range(self):
         scanner = Scanner(r'%substitute:foo:bar: 10')
         tokens = list(scanner.scan())
         params = {"search_term": "foo", "replacement": "bar", "flags": [], "count": 10}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenPercent(), TokenCommandSubstitute(params), TokenEof()], tokens)
 
 
@@ -151,112 +157,132 @@ class TestScannerWriteCommand(unittest.TestCase):
         scanner = Scanner("write")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_instantiate_alias(self):
         scanner = Scanner("w")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_plus_plus_bin(self):
         scanner = Scanner("w ++bin")
         tokens = list(scanner.scan())
         params = {'++': 'binary', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
         scanner = Scanner("w ++binary")
         tokens = list(scanner.scan())
         params = {'++': 'binary', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_plus_plus_nobin(self):
         scanner = Scanner("w ++nobinary")
         tokens = list(scanner.scan())
         params = {'++': 'nobinary', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
         scanner = Scanner("w ++nobin")
         tokens = list(scanner.scan())
         params = {'++': 'nobinary', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_plus_plus_fileformat(self):
         scanner = Scanner("w ++fileformat")
         tokens = list(scanner.scan())
         params = {'++': 'fileformat', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
         scanner = Scanner("w ++ff")
         tokens = list(scanner.scan())
         params = {'++': 'fileformat', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_plus_plus_fileencoding(self):
         scanner = Scanner("w ++fileencoding")
         tokens = list(scanner.scan())
         params = {'++': 'fileencoding', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
         scanner = Scanner("w ++enc")
         tokens = list(scanner.scan())
         params = {'++': 'fileencoding', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_plus_plus_bad(self):
         scanner = Scanner("w ++bad")
         tokens = list(scanner.scan())
         params = {'++': 'bad', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
         scanner = Scanner("w ++fileformat")
         tokens = list(scanner.scan())
         params = {'++': 'fileformat', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_plus_plus_edit(self):
         scanner = Scanner("w ++edit")
         tokens = list(scanner.scan())
         params = {'++': 'edit', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
         scanner = Scanner("w ++fileformat")
         tokens = list(scanner.scan())
         params = {'++': 'fileformat', 'file_name': '', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_redirection(self):
         scanner = Scanner("w>>")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': '', '>>': True, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_redirection_followed_by_filename(self):
         scanner = Scanner("w>>foo.txt")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': 'foo.txt', '>>': True, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_redirection_followed_by_filename_separated(self):
         scanner = Scanner("w>> foo.txt")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': 'foo.txt', '>>': True, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_command(self):
         scanner = Scanner("w !dostuff")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': '', '>>': False, 'cmd': 'dostuff'}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_command_absorbs_every_thing(self):
         scanner = Scanner("w !dostuff here")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': '', '>>': False, 'cmd': 'dostuff here'}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)
 
     def test_can_parse_command_and_detect_file_name(self):
         scanner = Scanner("w foo.txt")
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': 'foo.txt', '>>': False, 'cmd': ''}
+        # TODO Use a mock token command instead of introducing dependency.
         self.assertEqual([TokenCommandWrite(params), TokenEof()], tokens)

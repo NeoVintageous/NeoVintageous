@@ -143,6 +143,10 @@ class TokenOfCommand(Token):
         super().__init__(*args, **kwargs)
 
     def __eq__(self, other):
+
+        # TODO [bug] ??? Comparison of commands that differ in attributes like
+        # forced are currently evaluated as the same.
+
         return super().__eq__(other) and other.params == self.params
 
     def __str__(self):

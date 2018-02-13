@@ -1,5 +1,7 @@
 from sublime import Region
 
+# TODO [refactor] This module looks unused.
+
 
 def get_line_nr(view, point):
     # type: (...) -> int

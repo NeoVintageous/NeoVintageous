@@ -1,17 +1,17 @@
 import unittest
 
-from NeoVintageous.nv.ex.parser.parser import parse_command_line
-from NeoVintageous.nv.ex.parser.parser import ParserState
-from NeoVintageous.nv.ex.parser.tokens import TokenComma
-from NeoVintageous.nv.ex.parser.tokens import TokenDigits
-from NeoVintageous.nv.ex.parser.tokens import TokenDollar
-from NeoVintageous.nv.ex.parser.tokens import TokenDot
-from NeoVintageous.nv.ex.parser.tokens import TokenMark
-from NeoVintageous.nv.ex.parser.tokens import TokenOffset
-from NeoVintageous.nv.ex.parser.tokens import TokenPercent
-from NeoVintageous.nv.ex.parser.tokens import TokenSearchBackward
-from NeoVintageous.nv.ex.parser.tokens import TokenSearchForward
-from NeoVintageous.nv.ex.parser.tokens import TokenSemicolon
+from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.parser import ParserState
+from NeoVintageous.nv.ex.parser import TokenComma
+from NeoVintageous.nv.ex.parser import TokenDigits
+from NeoVintageous.nv.ex.parser import TokenDollar
+from NeoVintageous.nv.ex.parser import TokenDot
+from NeoVintageous.nv.ex.parser import TokenMark
+from NeoVintageous.nv.ex.parser import TokenOffset
+from NeoVintageous.nv.ex.parser import TokenPercent
+from NeoVintageous.nv.ex.parser import TokenSearchBackward
+from NeoVintageous.nv.ex.parser import TokenSearchForward
+from NeoVintageous.nv.ex.parser import TokenSemicolon
 
 
 class TestParserState(unittest.TestCase):

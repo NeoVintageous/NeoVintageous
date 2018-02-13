@@ -1,5 +1,3 @@
-"""Centralizes all subscanners for ex commands."""
-
 from collections import OrderedDict
 
 from .scanner_command_abbreviate import scan_command_abbreviate
@@ -57,10 +55,8 @@ from .scanner_command_write_and_quit_all import scan_command_write_and_quit_all
 from .scanner_command_yank import scan_command_yank
 
 
-patterns = OrderedDict()  # type: OrderedDict
-
 # TODO: compile regexes. ??
-# IMPORTANT: Order matters. WHY? WHY? WHY?
+patterns = OrderedDict()
 patterns[r'!(?=.+)'] = scan_command_shell_out
 patterns[r'&&?'] = scan_command_double_ampersand
 patterns[r'ab(?:breviate)?'] = scan_command_abbreviate

@@ -1,14 +1,14 @@
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.ex.parser.nodes import CommandLineNode
-from NeoVintageous.nv.ex.parser.nodes import RangeNode
-from NeoVintageous.nv.ex.parser.scanner_command_substitute import TokenCommandSubstitute
-from NeoVintageous.nv.ex.parser.tokens import TokenDigits
-from NeoVintageous.nv.ex.parser.tokens import TokenMark
-from NeoVintageous.nv.ex.parser.tokens import TokenOffset
-from NeoVintageous.nv.ex.parser.tokens import TokenPercent
-from NeoVintageous.nv.ex.parser.tokens import TokenSearchBackward
-from NeoVintageous.nv.ex.parser.tokens import TokenSearchForward
+from NeoVintageous.nv.ex.nodes import CommandLineNode
+from NeoVintageous.nv.ex.nodes import RangeNode
+from NeoVintageous.nv.ex.nodes import TokenDigits
+from NeoVintageous.nv.ex.nodes import TokenMark
+from NeoVintageous.nv.ex.nodes import TokenOffset
+from NeoVintageous.nv.ex.nodes import TokenPercent
+from NeoVintageous.nv.ex.nodes import TokenSearchBackward
+from NeoVintageous.nv.ex.nodes import TokenSearchForward
+from NeoVintageous.nv.ex.scanner_command_substitute import TokenCommandSubstitute
 
 
 class TestRangeNode(unittest.TestCase):
@@ -34,6 +34,7 @@ class TestCommandLineNode(unittest.TestCase):
         range_node = RangeNode("foo", "bar", False)
         range_node.start_offset = [10]
         range_node.end_offset = [10]
+        # TODO Use a mock token command instead of introducing dependency.
         command = TokenCommandSubstitute({})
         node = CommandLineNode(range_node, command)
         self.assertEqual(range_node, node.line_range)

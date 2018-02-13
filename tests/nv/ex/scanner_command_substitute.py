@@ -1,9 +1,9 @@
 import unittest
 
-from NeoVintageous.nv.ex.parser.state import ScannerState
-from NeoVintageous.nv.ex.parser.scanner_command_substitute import scan_command_substitute
-from NeoVintageous.nv.ex.parser.scanner_command_substitute import TokenCommandSubstitute
-from NeoVintageous.nv.ex.parser.scanner_command_substitute import TokenEof
+from NeoVintageous.nv.ex.scanner_command_substitute import scan_command_substitute
+from NeoVintageous.nv.ex.scanner_command_substitute import TokenCommandSubstitute
+from NeoVintageous.nv.ex.scanner_command_substitute import TokenEof
+from NeoVintageous.nv.ex.state import ScannerState
 
 
 def _scan(source, start=1, position=1):

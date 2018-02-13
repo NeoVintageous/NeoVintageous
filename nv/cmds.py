@@ -10,8 +10,8 @@ from NeoVintageous.nv import rc
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse
 from NeoVintageous.nv.ex.completions import parse_for_setting
-from NeoVintageous.nv.ex.parser.parser import parse_command_line
-from NeoVintageous.nv.ex.parser.scanner_command_goto import TokenCommandGoto
+from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.scanner_command_goto import TokenCommandGoto
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
@@ -258,7 +258,6 @@ class _nv_feed_key(ViWindowCommandBase):
         #       state's evaluation. For example, this is what the _nv_feed_key
         #       command does.
         #   check_user_mappings (bool):
-        # type: (str, int, bool, bool) -> None
         _log.info('key evt: %s repeat_count=%s do_eval=%s check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
