@@ -16,31 +16,23 @@ try:
 
     from NeoVintageous.nv.state import init_state
 
-    from NeoVintageous.nv.cmds import *  # noqa: F401,F403
-
+    # Commands.
     # TODO Organise all commands into a single module (i.e. .nv.cmds).
+    from NeoVintageous.nv.cmds import *  # noqa: F401,F403
     from NeoVintageous.nv.cmds_ex import *  # noqa: F401,F403
     from NeoVintageous.nv.cmds_vi_actions import *  # noqa: F401,F403
     from NeoVintageous.nv.cmds_vi_motions import *  # noqa: F401,F403
 
-    # Why not put all the plugins in a directory named "plugins"? The plugins
-    # were not placed into a directory named "plugins" because of a bug in
-    # Sublime Text that causes loading issues with anything named "plugins" i.e.
-    # module names, attribute names, class names, functions, etc.
-    # See https://github.com/NeoVintageous/NeoVintageous/commit/f29727.
-    # This issue has since been fixed in Sublime Text build 3153.
-    # See https://github.com/SublimeTextIssues/Core/issues/1991.
-    # Note that if the plugins are moved into a directory named "plugins" at a
-    # later time, then remember to bump the minimum Sublime Text version
-    # requirement to 3153.
-    from NeoVintageous.nv.plugin_surround import *      # noqa: F401,F403
-    from NeoVintageous.nv.plugin_unimpaired import *    # noqa: F401,F403
-    from NeoVintageous.nv.plugin_abolish import *       # noqa: F401,F403
+    # Plugins.
+    from NeoVintageous.nv.plugin_surround import *  # noqa: F401,F403
+    from NeoVintageous.nv.plugin_unimpaired import *  # noqa: F401,F403
+    from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
 
-    # TODO [review] Should events be imported using "*" idiom i.e. `from .nv.events import *`?
+    # Events.
+    # TODO [review] Should events be imported using glob idiom i.e. from .nv.events import *?
     from NeoVintageous.nv.events import NeoVintageousEvents  # noqa: F401
 
-except Exception as e:
+except Exception as e:  # pragma: no cover
     _EXCEPTION = e
     import traceback
     traceback.print_exc()
@@ -90,13 +82,13 @@ def plugin_loaded():
             pc_event = 'post_upgrade'
     except ImportError:
         pass  # Package Control isn't available
-    except Exception:
+    except Exception:  # pragma: no cover
         import traceback
         traceback.print_exc()
 
     try:
         _update_ignored_packages()
-    except Exception:
+    except Exception:  # pragma: no cover
         import traceback
         traceback.print_exc()
 
@@ -114,12 +106,12 @@ def plugin_loaded():
         if view:
             init_state(view, new_session=True)
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         _exception = e
         import traceback
         traceback.print_exc()
 
-    if _EXCEPTION or _exception:
+    if _EXCEPTION or _exception:  # pragma: no cover
 
         try:
             _cleanup_views()
@@ -150,6 +142,6 @@ def plugin_unloaded():
 
     try:
         _cleanup_views()
-    except Exception:
+    except Exception:  # pragma: no cover
         import traceback
         traceback.print_exc()
