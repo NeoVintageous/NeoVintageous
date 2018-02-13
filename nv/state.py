@@ -88,17 +88,14 @@ class State(object):
 
     @property
     def processing_notation(self):
-        """
-        Indicate whether `ProcessNotation` is running.
-
-        Indicates whether `ProcessNotation` is running a command and is grouping
-        all edits in one single undo step. That is, we are running a non-
-        interactive sequence of commands.
-
-        This property is *VOLATILE*; it shouldn't be persisted between
-        sessions.
-        """
-        # TODO Rename self.settings.vi to self.settings.local
+        # Indicate whether _nv_process_notation is running.
+        #
+        # Indicates whether _nv_process_notation is running a command and is
+        # grouping all edits in one single undo step. That is, we are running a
+        # non- interactive sequence of commands.
+        #
+        # This property is *VOLATILE*; it shouldn't be persisted between
+        # sessions.
         return self.settings.vi['_vintageous_processing_notation'] or False
 
     @processing_notation.setter
@@ -108,15 +105,13 @@ class State(object):
     # FIXME: This property seems to do the same as processing_notation.
     @property
     def non_interactive(self):
-        """
-        Indicate whether `ProcessNotation` is running.
-
-        Indicates whether `ProcessNotation` is running a command and no
-        interactive prompts should be used (for example, by the '/' motion.)
-
-        This property is *VOLATILE*; it shouldn't be persisted between
-        sessions.
-        """
+        # Indicate whether _nv_process_notation is running.
+        #
+        # Indicates whether _nv_process_notation is running a command and no
+        # interactive prompts should be used (for example, by the '/' motion.)
+        #
+        # This property is *VOLATILE*; it shouldn't be persisted between
+        # sessions.
         return self.settings.vi['_vintageous_non_interactive'] or False
 
     @non_interactive.setter
@@ -323,11 +318,10 @@ class State(object):
     @repeat_data.setter
     def repeat_data(self, value):
         # Store data structure for repeat ('.') to use.
-        #
         # Args:
         #   tuple (type, cmd_name_or_key_seq, mode): Type may be "vi" or
-        #       "native" ("vi" commands are executed via ProcessNotation, while
-        #       "native" commands are executed via sublime.run_command().
+        #       "native" ("vi" commands are executed via _nv_process_notation,
+        #       "while "native" commands are executed via sublime.run_command().
         assert isinstance(value, tuple) or isinstance(value, list), 'bad call'
         assert len(value) == 4, 'bad call'
         _log.debug('set repeat data: %s', value)
@@ -843,12 +837,12 @@ class State(object):
             elif self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 self.view.add_regions('visual_sel', list(self.view.sel()))
 
-            # Some commands, like 'i' or 'a', open a series of edits that
-            # need to be grouped together unless we are gluing a larger
-            # sequence through ProcessNotation. For example, aFOOBAR<Esc> should
-            # be grouped atomically, but not inside a sequence like
-            # iXXX<Esc>llaYYY<Esc>, where we want to group the whole
-            # sequence instead.
+            # Some commands, like 'i' or 'a', open a series of edits that need
+            # to be grouped together unless we are gluing a larger sequence
+            # through _nv_process_notation. For example, aFOOBAR<Esc> should be
+            # grouped atomically, but not inside a sequence like
+            # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
+            # instead.
             if self.glue_until_normal_mode and not self.processing_notation:
                 active_window().run_command('mark_undo_groups_for_gluing')
 

@@ -60,6 +60,7 @@ __all__ = [
     '_nv_fix_st_eol_caret',
     '_nv_fs_completion',
     '_nv_goto_help',
+    '_nv_process_notation',
     '_nv_run_cmds',
     '_nv_setting_completion',
     '_nv_write_fs_completion',
@@ -67,8 +68,7 @@ __all__ = [
     '_vi_slash_on_parser_done',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
-    'NeovintageousToggleSideBarCommand',
-    'ProcessNotation'
+    'NeovintageousToggleSideBarCommand'
 ]
 
 
@@ -198,6 +198,7 @@ class _nv_fix_st_eol_caret(TextCommand):
 
 
 class _nv_goto_help(WindowCommand):
+
     def run(self):
         view = self.window.active_view()
         pt = view.sel()[0]
@@ -375,7 +376,7 @@ class _nv_feed_key(ViWindowCommandBase):
 
                     return console_message('invalid command line mapping %s -> %s (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
 
-                self.window.run_command('process_notation', {'keys': new_keys, 'check_user_mappings': False})
+                self.window.run_command('_nv_process_notation', {'keys': new_keys, 'check_user_mappings': False})
 
             return
 
@@ -451,26 +452,23 @@ class _nv_feed_key(ViWindowCommandBase):
                 return True
 
 
-class ProcessNotation(ViWindowCommandBase):
-    """
-    Runs sequences of keys representing Vim commands.
+class _nv_process_notation(ViWindowCommandBase):
 
-    For example: fngU5l
-
-    @keys
-        Key sequence to be run.
-    @repeat_count
-        Count to be applied when repeating through the '.' command.
-    @check_user_mappings
-        Whether user mappings should be consulted to expand key sequences.
-    """
+    # Runs sequences of keys representing Vim commands.
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
+        # type: (str, int, bool) -> None
+        # Args:
+        #   keys (str): Key sequence to be run.
+        #   repeat_count (int): Count to be applied when repeating through the
+        #       '.' command.
+        #   check_user_mappings (bool): Whether user mappings should be
+        #       consulted to expand key sequences.
         state = self.state
-        _log.debug('process notation keys \'%s\', mode \'%s\'', keys, state.mode)
+        _log.debug('process notation keys %s for mode %s', keys, state.mode)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -492,7 +490,7 @@ class ProcessNotation(ViWindowCommandBase):
             if state.action:
                 # The last key press has caused an action to be primed. That
                 # means there are no more leading motions. Break out of here.
-                _log.debug('[process_notation] first action found in \'%s\'', state.sequence)
+                _log.debug('first action found in %s', state.sequence)
                 state.reset_command_data()
                 if state.mode == OPERATOR_PENDING:
                     state.mode = NORMAL
@@ -521,9 +519,9 @@ class ProcessNotation(ViWindowCommandBase):
                 state.non_interactive = False
                 return
 
-            _log.debug('[process_notation] original seq/leading motions: %s/%s', keys, leading_motions)
+            _log.debug('original keys/leading-motions: %s/%s', keys, leading_motions)
             keys = keys[len(leading_motions):]
-            _log.debug('[process_notation] seq stripped to \'%s\'', keys)
+            _log.debug('keys stripped to %s', keys)
 
         if not (state.motion and not state.action):
             with gluing_undo_groups(self.window.active_view(), state):
@@ -550,15 +548,17 @@ class ProcessNotation(ViWindowCommandBase):
 
                 finally:
                     state.non_interactive = False
-                    # Ensure we set the full command for '.' to use, but don't
-                    # store '.' alone.
+                    # Ensure we set the full command for "." to use, but don't
+                    # store "." alone.
                     if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
-                            state.repeat_data = ('vi', (leading_motions + keys), initial_mode, None)
+                        state.repeat_data = ('vi', (leading_motions + keys), initial_mode, None)
 
-        # We'll reach this point if we have a command that requests input
-        # whose input parser isn't satistied. For example, `/foo`. Note that
+        # We'll reach this point if we have a command that requests input whose
+        # input parser isn't satistied. For example, `/foo`. Note that
         # `/foo<CR>`, on the contrary, would have satisfied the parser.
-        _log.debug('[process_notation] unsatisfied parser action=\'%s\', motion=\'%s\'', state.action, state.motion)
+
+        _log.debug('unsatisfied parser action = %s, motion=%s', state.action, state.motion)
+
         if (state.action and state.motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
@@ -596,7 +596,7 @@ class ProcessNotation(ViWindowCommandBase):
                     {parser_def.input_param: command._inp}
                 )
         except IndexError:
-            _log.debug('[process_notation] could not find a command to collect more user input')
+            _log.debug('could not find a command to collect more user input')
             ui_blink()
         finally:
             self.state.non_interactive = False
