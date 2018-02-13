@@ -132,37 +132,32 @@ class NeoVintageousEvents(EventListener):
     def on_text_command(self, view, command, args):
         if command == 'drag_select':
             state = State(view)
+            mode = state.mode
 
-            if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+            if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
                     return
                 elif args.get('by') == 'lines':
-                    return ('sequence', {
-                        'commands': [
-                            ['drag_select', args],
-                            ['_enter_visual_line_mode', {'mode': state.mode}]
-                        ]
-                    })
+                    return ('_nv_run_cmds', {'commands': [
+                        ['drag_select', args],
+                        ['_enter_visual_line_mode', {'mode': state.mode}]
+                    ]})
                 elif not args.get('extend'):
-                    return ('sequence', {
-                        'commands': [
-                            ['drag_select', args],
-                            ['_enter_normal_mode', {'mode': state.mode}]
-                        ]
-                    })
+                    return ('_nv_run_cmds', {'commands': [
+                        ['drag_select', args],
+                        ['_enter_normal_mode', {'mode': mode}]
+                    ]})
 
-            elif state.mode == NORMAL:
+            elif mode == NORMAL:
                 # TODO Dragging the mouse does not seem to fire a different
                 # event than simply clicking. This makes it hard to update the
                 # xpos.
                 # See https://github.com/SublimeTextIssues/Core/issues/2117.
                 if args.get('extend') or (args.get('by') == 'words'):
-                    return ('sequence', {
-                        'commands': [
-                            ['drag_select', args],
-                            ['_enter_visual_mode', {'mode': state.mode}]
-                        ]
-                    })
+                    return ('_nv_run_cmds', {'commands': [
+                        ['drag_select', args],
+                        ['_enter_visual_mode', {'mode': mode}]
+                    ]})
 
     def on_post_text_command(self, view, command, args):
         # This fixes issues where the xpos is not updated after a mouse click

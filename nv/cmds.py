@@ -60,6 +60,7 @@ __all__ = [
     '_nv_fix_st_eol_caret',
     '_nv_fs_completion',
     '_nv_goto_help',
+    '_nv_run_cmds',
     '_nv_setting_completion',
     '_nv_write_fs_completion',
     '_vi_question_mark_on_parser_done',
@@ -67,8 +68,7 @@ __all__ = [
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
     'NeovintageousToggleSideBarCommand',
-    'ProcessNotation',
-    'Sequence',
+    'ProcessNotation'
 ]
 
 
@@ -227,6 +227,17 @@ class _nv_goto_help(WindowCommand):
             self.window.run_command('ex_help', {'command_line': 'help ' + subject})
         else:
             return message('E149: Sorry, no help for %s' % subject)
+
+
+class _nv_run_cmds(TextCommand):
+
+    def run(self, edit, commands):
+        # Runs multple commands.
+        #
+        # Args:
+        #   commands (list): A list of commands.
+        for cmd, args in commands:
+            self.view.run_command(cmd, args)
 
 
 class _nv_feed_key(ViWindowCommandBase):
@@ -855,11 +866,3 @@ class _vi_question_mark_on_parser_done(WindowCommand):
         state = State(self.window.active_view())
         state.motion = ViSearchBackwardImpl()
         state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
-
-
-class Sequence(TextCommand):
-    """Required so that mark_undo_groups_for_gluing and friends work."""
-
-    def run(self, edit, commands):
-        for cmd, args in commands:
-            self.view.run_command(cmd, args)
