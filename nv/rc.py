@@ -1,3 +1,4 @@
+import builtins
 import os
 import re
 
@@ -9,24 +10,27 @@ from NeoVintageous.nv.vim import message
 
 _log = get_logger(__name__)
 
-# Why is the builtin open function being aliased? In a nutshell: so that this
-# module can provide a succinct and concise api for opening the rcfile e.g.
-# from lib import rcfile; rcfile.open(window). The builtin open function is used
-# within the module so an open function definition would conflict with the
-# builtin so the builtin is aliased for later use before the module level open
-# function is defined.
-_open = __builtins__['open']
+_parse_line_pattern = re.compile(
+    '^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
+
+_recursive_mapping_alts = {
+    'map': 'nnnoremap',
+    'nmap': 'nnoremap',
+    'smap': 'snoremap',
+    'vmap': 'vnoremap',
+    'omap': 'onoremap'
+}
 
 
-def file_name():
+def _file_name():
     return os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
 
 
 def open(window):
-    file = file_name()
+    file = _file_name()
 
     if not os.path.exists(file):
-        with _open(file, 'w'):
+        with builtins.open(file, 'w'):
             pass
 
     window.open_file(file)
@@ -41,31 +45,19 @@ def reload():
 
 
 def _run():
-    _log.debug('run \'%s\'', file_name())
+    _log.debug('run %s', _file_name())
 
     try:
         window = sublime.active_window()
-        with _open(file_name(), 'r') as f:
+        with builtins.open(_file_name(), 'r') as f:
             for line in f:
                 cmd, args = _parse_line(line)
                 if cmd:
-                    _log.debug('run command \'%s\' with args %s', cmd, args)
+                    _log.debug('run command %s %s', cmd, args)
                     window.run_command(cmd, args)
 
     except FileNotFoundError:
         _log.debug('rcfile not found')
-
-
-_parse_line_pattern = re.compile(
-    '^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
-
-_recursive_mapping_alts = {
-    'map': 'nnnoremap',
-    'nmap': 'nnoremap',
-    'smap': 'snoremap',
-    'vmap': 'vnoremap',
-    'omap': 'onoremap'
-}
 
 
 def _parse_line(line):
@@ -96,7 +88,7 @@ def _parse_line(line):
 
                 return ('ex_' + cmd, {'command_line': cmd_line})
     except Exception:
-        msg = 'error detected while processing \'{}\' at line \'{}\''.format(file_name(), line.rstrip())
+        msg = 'error detected while processing {} at line {}'.format(_file_name(), line.rstrip())
         message(msg)
         _log.exception(msg)
 

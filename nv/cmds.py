@@ -825,19 +825,17 @@ class _nv_setting_completion(TextCommand):
 
 
 class NeovintageousOpenMyRcFileCommand(WindowCommand):
-    """A command that opens the the user runtime configuration file."""
 
     def run(self):
         rc.open(self.window)
 
 
 class NeovintageousReloadMyRcFileCommand(WindowCommand):
-    """A command that reloads the user runtime configuration file."""
 
     def run(self):
         rc.reload()
 
-        status_message('rc file reloaded')
+        status_message('runtime configuation file reloaded')
 
 
 class NeovintageousToggleSideBarCommand(WindowCommand):
