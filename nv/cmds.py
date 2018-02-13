@@ -7,11 +7,11 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
+from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse
 from NeoVintageous.nv.ex.completions import parse_for_setting
 from NeoVintageous.nv.ex.parser import parse_command_line
-from NeoVintageous.nv.ex.scanner_command_goto import TokenCommandGoto
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len

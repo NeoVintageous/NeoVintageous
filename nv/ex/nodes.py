@@ -180,7 +180,9 @@ class CommandLineNode(Node):
         return '{0}, {1}'.format(str(self.line_range), str(self.command))
 
     def validate(self):
-        """Raise an error for known conditions."""
+        # type: () -> None
+        # Raise an error for known conditions.
+
         if not (self.command and self.line_range):
             return
 

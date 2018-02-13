@@ -1,5 +1,6 @@
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.ex.cmd_substitute import TokenCommandSubstitute
 from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.nodes import TokenDigits
@@ -8,7 +9,9 @@ from NeoVintageous.nv.ex.nodes import TokenOffset
 from NeoVintageous.nv.ex.nodes import TokenPercent
 from NeoVintageous.nv.ex.nodes import TokenSearchBackward
 from NeoVintageous.nv.ex.nodes import TokenSearchForward
-from NeoVintageous.nv.ex.scanner_command_substitute import TokenCommandSubstitute
+
+
+# TODO [refactor] ex.nodes tests
 
 
 class TestRangeNode(unittest.TestCase):

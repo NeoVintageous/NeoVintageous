@@ -181,12 +181,12 @@ def scan_command(state):
     #   :state (ScannerState):
     #
     # Returns:
-    #   tuple
-    for (pattern, subscanner) in subscanners.patterns.items():
-        if state.match(pattern):
+    #   Tuple[None, list(TokenEof)]
+    for route, command in subscanners.patterns.items():
+        if state.match(route):
             state.ignore()
 
-            return subscanner(state)
+            return command(state)
 
     state.expect(EOF, lambda: Exception("E492: Not an editor command"))
 
