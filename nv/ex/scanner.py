@@ -1,6 +1,6 @@
-from . import subscanners
-from .state import EOF
-from .state import ScannerState
+from . import scanner_commands
+from .scanner_state import EOF
+from .scanner_state import ScannerState
 from .tokens import TokenComma
 from .tokens import TokenDigits
 from .tokens import TokenDollar
@@ -182,7 +182,7 @@ def scan_command(state):
     #
     # Returns:
     #   Tuple[None, list(TokenEof)]
-    for route, command in subscanners.patterns.items():
+    for route, command in scanner_commands.routes.items():
         if state.match(route):
             state.ignore()
 

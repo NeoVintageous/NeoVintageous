@@ -1,4 +1,4 @@
-from .state import EOF
+from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_TAB_ONLY
 from .tokens import TokenEof
 from .tokens import TokenOfCommand

@@ -98,6 +98,7 @@ class ScannerState:
         if c != item:
             if on_error:
                 raise on_error()
+
             raise ValueError('expected {0}, got {1} instead'.format(item, c))
 
         return c

@@ -1,7 +1,7 @@
 import unittest
 
-from NeoVintageous.nv.ex.state import EOF
-from NeoVintageous.nv.ex.state import ScannerState
+from NeoVintageous.nv.ex.scanner_state import EOF
+from NeoVintageous.nv.ex.scanner_state import ScannerState
 
 
 class TestScannerState(unittest.TestCase):

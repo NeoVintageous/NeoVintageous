@@ -249,5 +249,5 @@ def process_dot(state, command_line):
     return parse_line_ref, command_line
 
 
-# IMPORTANT! Avoid circular refs. Some subscanners import parse_command_line()
+# IMPORTANT! Avoid circular refs. Some scanner_commands import parse_command_line()
 from .scanner import Scanner  # FIXME # noqa: E402
