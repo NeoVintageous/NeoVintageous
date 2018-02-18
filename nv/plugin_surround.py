@@ -16,7 +16,6 @@ from NeoVintageous.nv.plugin import VISUAL
 from NeoVintageous.nv.plugin import VISUAL_BLOCK
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.search import reverse_search
-from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import translate_char
 
 
@@ -165,16 +164,17 @@ class _surround_cs(ViOperatorDef):
         }
 
 
-def _regions_transformer_reversed(view, f):
+def _rsynced_regions_transformer(view, f):
     sels = reversed(list(view.sel()))
-    new = []
+    view_sel = view.sel()
     for sel in sels:
-        region = f(view, sel)
-        if not isinstance(region, Region):
+        view_sel.subtract(sel)
+
+        new_sel = f(view, sel)
+        if not isinstance(new_sel, Region):
             raise TypeError('sublime.Region required')
-        new.append(region)
-    view.sel().clear()
-    view.sel().add_all(new)
+
+        view_sel.add(new_sel)
 
 
 class _nv_surround_command(TextCommand):
@@ -219,7 +219,7 @@ class _nv_surround_ys_command(ViTextCommandBase):
             self.view.run_command(motion['motion'], motion['motion_args'])
 
         if surround_with:
-            _regions_transformer_reversed(self.view, f)
+            _rsynced_regions_transformer(self.view, f)
 
         self.enter_normal_mode(mode)
 
@@ -313,7 +313,7 @@ def _do_surround_cs(view, edit, target, replacement, mode=None):
         return s
 
     if target and replacement:
-        regions_transformer(view, _f)
+        _rsynced_regions_transformer(view, _f)
 
 
 def _do_surround_ds(view, edit, target, mode=None):
@@ -447,4 +447,4 @@ def _do_surround_ds(view, edit, target, mode=None):
         return s
 
     if target:
-        regions_transformer(view, _f)
+        _rsynced_regions_transformer(view, _f)
