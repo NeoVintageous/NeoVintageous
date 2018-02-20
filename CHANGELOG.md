@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## 1.5.1 - 2018-02-20
 
 ### Fixed
 
