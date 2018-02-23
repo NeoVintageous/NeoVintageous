@@ -28,8 +28,6 @@ from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.cmd_defs import ViOperatorDef
-from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
-from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import key_names
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
@@ -66,8 +64,6 @@ __all__ = [
     '_nv_run_cmds',
     '_nv_setting_completion',
     '_nv_write_fs_completion',
-    '_vi_question_mark_on_parser_done',
-    '_vi_slash_on_parser_done',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
     'NeovintageousToggleSideBarCommand'
@@ -857,19 +853,3 @@ class NeovintageousToggleSideBarCommand(WindowCommand):
             self.window.run_command('focus_side_bar')
         else:
             self.window.focus_group(self.window.active_group())
-
-
-class _vi_slash_on_parser_done(WindowCommand):
-
-    def run(self, key=None):
-        state = State(self.window.active_view())
-        state.motion = ViSearchForwardImpl()
-        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
-
-
-class _vi_question_mark_on_parser_done(WindowCommand):
-
-    def run(self, key=None):
-        state = State(self.window.active_view())
-        state.motion = ViSearchBackwardImpl()
-        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)

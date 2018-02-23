@@ -8,6 +8,7 @@ from sublime import DRAW_NO_OUTLINE
 from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
+from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.cmds import _nv_cmdline_feed_key
 from NeoVintageous.nv.history import history_update
@@ -18,6 +19,8 @@ from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
+from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
+from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.core import ViMotionCommand
 from NeoVintageous.nv.vi.search import BufferSearchBase
 from NeoVintageous.nv.vi.search import ExactWordBufferSearchBase
@@ -94,6 +97,7 @@ __all__ = [
     '_vi_pipe',
     '_vi_question_mark',
     '_vi_question_mark_impl',
+    '_vi_question_mark_on_parser_done',
     '_vi_repeat_buffer_search',
     '_vi_reverse_find_in_line',
     '_vi_right_brace',
@@ -104,6 +108,7 @@ __all__ = [
     '_vi_shift_enter',
     '_vi_slash',
     '_vi_slash_impl',
+    '_vi_slash_on_parser_done',
     '_vi_star',
     '_vi_underscore',
     '_vi_w',
@@ -332,6 +337,14 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
 
         regions_transformer(self.view, f)
         self.hilite(search_string)
+
+
+class _vi_slash_on_parser_done(WindowCommand):
+
+    def run(self, key=None):
+        state = State(self.window.active_view())
+        state.motion = ViSearchForwardImpl()
+        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
 class _vi_l(ViMotionCommand):
@@ -1907,6 +1920,14 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
+
+
+class _vi_question_mark_on_parser_done(WindowCommand):
+
+    def run(self, key=None):
+        state = State(self.window.active_view())
+        state.motion = ViSearchBackwardImpl()
+        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):
