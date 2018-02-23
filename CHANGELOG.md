@@ -55,11 +55,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
   Recursive command | Non recursive command
   ----------------- | ---------------------
-  `map` | `[no]remap`
-  `nmap` | `[nn]oremap`
-  `omap` | `[ono]remap`
-  `smap` | `[snor]emap`
-  `vmap` | `[vn]oremap`
+  `map` | `noremap`
+  `nmap` | `nnoremap`
+  `omap` | `onoremap`
+  `smap` | `snoremap`
+  `vmap` | `vnoremap`
 
 * Removed: Unused `vintageous_enable_cmdline_mode` setting
 
