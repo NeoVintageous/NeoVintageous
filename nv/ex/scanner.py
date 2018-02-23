@@ -1,5 +1,4 @@
 from . import scanner_commands
-from .scanner_state import EOF
 from .scanner_state import ScannerState
 from .tokens import TokenComma
 from .tokens import TokenDigits
@@ -62,7 +61,7 @@ def scan_range(state):
 
     c = state.consume()
 
-    if c == EOF:
+    if c == state.EOF:
         return None, [TokenEof()]
 
     if c == '.':
@@ -117,7 +116,7 @@ def scan_digits(state):
     while True:
         c = state.consume()
         if not c.isdigit():
-            if c == EOF:
+            if c == state.EOF:
                 return None, [TokenDigits(state.emit()), TokenEof()]
 
             state.backup()
@@ -140,7 +139,7 @@ def scan_search(state):
 
             return scan_range, [token(content)]
 
-        elif c == EOF:
+        elif c == state.EOF:
             raise ValueError('unclosed search pattern: {0}'.format(state.source))
 
 
@@ -158,7 +157,7 @@ def scan_offset(state):
     while True:
         c = state.consume()
 
-        if c == EOF:
+        if c == state.EOF:
             state.ignore()
 
             return None, [TokenOffset(list(map(to_int, offsets))), TokenEof()]
@@ -188,6 +187,6 @@ def scan_command(state):
 
             return command(state)
 
-    state.expect(EOF, lambda: Exception("E492: Not an editor command"))
+    state.expect_eof(lambda: Exception("E492: Not an editor command"))
 
     return None, [TokenEof()]

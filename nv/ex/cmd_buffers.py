@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_BUFFERS
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -16,7 +15,7 @@ class TokenCommandBuffers(TokenOfCommand):
 
 def scan_cmd_buffers(state):
     try:
-        state.expect(EOF)
+        state.expect_eof()
     except ValueError:
         raise Exception("E488: Trailing characters")
 

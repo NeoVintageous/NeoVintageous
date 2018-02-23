@@ -1,14 +1,10 @@
 import re
 
 
-EOF = '__EOF__'
-
-
 class ScannerState:
 
-    # Args:
-    #   :source: The string to be scanned.
-    #
+    EOF = '__EOF__'
+
     # Attributes:
     #   :source (str): The string to be scanned.
     #   :position (int): The current scan position. Default is 0.
@@ -16,6 +12,8 @@ class ScannerState:
 
     def __init__(self, source):
         # type: (str) -> None
+        # Args:
+        #   source (str): The string to be scanned.
         self.source = source
         self.position = 0
         self.start = 0
@@ -28,7 +26,7 @@ class ScannerState:
         #   str: One character or EOF constant ("__EOF__") if no characters left
         #       in source.
         if self.position >= len(self.source):
-            return EOF
+            return self.EOF
 
         c = self.source[self.position]
 
@@ -63,10 +61,10 @@ class ScannerState:
         """Consumes @character while it matches."""
         while True:
             c = self.consume()
-            if c == EOF or c != character:
+            if c == self.EOF or c != character:
                 break
 
-        if c != EOF:
+        if c != self.EOF:
             self.backup()
 
     def skip_run(self, characters):
@@ -74,10 +72,10 @@ class ScannerState:
         """Skips @characters while there's a match."""
         while True:
             c = self.consume()
-            if c == EOF or c not in characters:
+            if c == self.EOF or c not in characters:
                 break
 
-        if c != EOF:
+        if c != self.EOF:
             self.backup()
 
     def expect(self, item, on_error=None):
@@ -99,9 +97,13 @@ class ScannerState:
             if on_error:
                 raise on_error()
 
+            # TODO Use domain specific exception.
             raise ValueError('expected {0}, got {1} instead'.format(item, c))
 
         return c
+
+    def expect_eof(self, on_error=None):
+        return self.expect(self.EOF, on_error)
 
     def expect_match(self, pattern, on_error=None):
         """

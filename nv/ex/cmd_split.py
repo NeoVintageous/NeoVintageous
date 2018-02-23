@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_SPLIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -17,7 +16,7 @@ def scan_cmd_split(state):
     state.ignore()
     params = {'file': None}
 
-    if state.consume() == EOF:
+    if state.consume() == state.EOF:
         return None, [TokenCommandSplit(params), TokenEof()]
 
     state.backup()

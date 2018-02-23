@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_CQUIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -13,6 +12,6 @@ class TokenCquit(TokenOfCommand):
 
 
 def scan_cmd_cquit(state):
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenCquit(), TokenEof()]

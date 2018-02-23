@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_DOUBLE_AMPERSAND
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -23,6 +22,6 @@ def scan_cmd_double_ampersand(state):
     params['flags'] = list(m.group(1)) if m.group(1) else []
     params['count'] = m.group(2) or ''
 
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenDoubleAmpersand(params), TokenEof()]

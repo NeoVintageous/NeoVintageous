@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_FILE
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -14,13 +13,13 @@ class TokenCommandFile(TokenOfCommand):
 
 def scan_cmd_file(state):
     bang = state.consume()
-    if bang == EOF:
+    if bang == state.EOF:
         return None, [TokenCommandFile(), TokenEof()]
 
     bang = bang == '!'
     if not bang:
         raise Exception("E488: Trailing characters")
 
-    state.expect(EOF, on_error=lambda: Exception("E488: Trailing characters"))
+    state.expect_eof(on_error=lambda: Exception("E488: Trailing characters"))
 
     return None, [TokenCommandFile(forced=bang == '!'), TokenEof()]

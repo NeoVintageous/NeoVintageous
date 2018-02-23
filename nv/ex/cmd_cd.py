@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_CD
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -36,9 +35,9 @@ def scan_cmd_cd(state):
     c = state.consume()
     if c == '-':
         params['-'] = '-'
-        state.expect(EOF)
+        state.expect_eof()
         raise NotImplementedError('parameter not implemented')
-    elif c != EOF:
+    elif c != state.EOF:
         state.backup()
         m = state.match(r'(?P<path>.+?)\s*$')
         params.update(m.groupdict())

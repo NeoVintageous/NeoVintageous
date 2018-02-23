@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_ONLY
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -16,10 +15,10 @@ def scan_cmd_only(state):
     bang = state.consume()
     if bang == '!':
         state.ignore()
-        state.expect(EOF)
+        state.expect_eof()
 
         return None, [TokenCommandOnly(forced=True), TokenEof()]
 
-    assert bang == EOF, 'trailing characters'
+    assert bang == state.EOF, 'trailing characters'
 
     return None, [TokenCommandOnly(), TokenEof()]

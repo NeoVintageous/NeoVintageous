@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_WRITE
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -46,7 +45,7 @@ def scan_cmd_write(state):
     }
 
     bang = state.consume()
-    if bang == EOF:
+    if bang == state.EOF:
         return None, [TokenCommandWrite(params), TokenEof()]
 
     if bang != '!':
@@ -58,7 +57,7 @@ def scan_cmd_write(state):
 
     while True:
         c = state.consume()
-        if c == EOF:
+        if c == state.EOF:
             # TODO: forced?
             return None, [TokenCommandWrite(params, forced=bang), TokenEof()]
 
@@ -96,6 +95,6 @@ def scan_cmd_write(state):
             state.skip(' ')
             state.ignore()
 
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenCommandWrite(params, forced=bang == '!'), TokenEof()]

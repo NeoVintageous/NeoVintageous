@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_PRINT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -37,7 +36,7 @@ def scan_cmd_print(state):
         state.skip(' ')
         state.ignore()
 
-        if c == EOF:
+        if c == state.EOF:
             return None, [TokenCommandPrint(params), TokenEof()]
 
         if c.isdigit():
@@ -48,7 +47,7 @@ def scan_cmd_print(state):
         m = state.expect_match(r'[l#p]+')
         params['flags'] = list(m.group(0))
         state.ignore()
-        state.expect(EOF)
+        state.expect_eof()
         break
 
     return None, [TokenCommandPrint(params), TokenEof()]

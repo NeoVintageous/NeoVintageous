@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_REGISTERS
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -22,7 +21,7 @@ def scan_cmd_register(state):
 
     while True:
         c = state.consume()
-        if c == EOF:
+        if c == state.EOF:
             return None, [TokenCommandRegisters(params), TokenEof()]
         elif c.isalpha() or c.isdigit():
             params['names'].append(c)

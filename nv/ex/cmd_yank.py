@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_YANK
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -6,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('yank', 'y')
-class TokenYank(TokenOfCommand):
+class TokenCommandYank(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_YANK, 'yank', *args, **kwargs)
         self.addressable = True
@@ -31,8 +30,8 @@ def scan_cmd_yank(state):
     state.ignore()
 
     c = state.consume()
-    if c == EOF:
-        return None, [TokenYank(params), TokenEof()]
+    if c == state.EOF:
+        return None, [TokenCommandYank(params), TokenEof()]
 
     state.backup()
     state.skip(' ')
@@ -44,4 +43,4 @@ def scan_cmd_yank(state):
     if params['count']:
         raise NotImplementedError('parameter not implemented')
 
-    return None, [TokenYank(params), TokenEof()]
+    return None, [TokenCommandYank(params), TokenEof()]

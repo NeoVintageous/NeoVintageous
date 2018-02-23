@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_CDD
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -6,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('cdd', 'cdd')
-class TokenCdd(TokenOfCommand):
+class TokenCommandCdd(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__({}, TOKEN_COMMAND_CDD, 'cdd', *args, **kwargs)
         self.target_command = 'ex_cdd'
@@ -14,13 +13,13 @@ class TokenCdd(TokenOfCommand):
 
 def scan_cmd_cdd(state):
     c = state.consume()
-    if c == EOF:
-        return None, [TokenCdd(), TokenEof()]
+    if c == state.EOF:
+        return None, [TokenCommandCdd(), TokenEof()]
 
     bang = c == '!'
     if not bang:
         state.backup()
 
-    state.expect(EOF)
+    state.expect_eof()
 
-    return None, [TokenCdd(forced=bang), TokenEof()]
+    return None, [TokenCommandCdd(forced=bang), TokenEof()]

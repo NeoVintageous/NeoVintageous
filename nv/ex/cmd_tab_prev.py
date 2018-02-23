@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_TAB_PREV
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -6,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('tabprev', 'tabp')
-class TokenTabPrev(TokenOfCommand):
+class TokenCommandTabPrev(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__([], TOKEN_COMMAND_TAB_PREV, 'tabprev', *args, **kwargs)
         self.target_command = 'ex_tabprev'
@@ -14,9 +13,9 @@ class TokenTabPrev(TokenOfCommand):
 
 def scan_cmd_tab_prev(state):
     c = state.consume()
-    if c == EOF:
-        return None, [TokenTabPrev(), TokenEof()]
+    if c == state.EOF:
+        return None, [TokenCommandTabPrev(), TokenEof()]
 
     bang = c == '!'
 
-    return None, [TokenTabPrev(forced=bang), TokenEof()]
+    return None, [TokenCommandTabPrev(forced=bang), TokenEof()]

@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_READ_SHELL_OUT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -66,6 +65,6 @@ def scan_cmd_read_shell_out(state):
         m = state.match(r'(?P<file_name>.+)$')
         params.update(m.groupdict())
 
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenReadShellOut(params), TokenEof()]

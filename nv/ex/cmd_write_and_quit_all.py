@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_WRITE_AND_QUIT_ALL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -48,6 +47,6 @@ def scan_cmd_write_and_quit_all(state):
         params['++'] = plus_plus_translations.get(name, name)
         state.ignore()
 
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenCommandWriteAndQuitAll(params), TokenEof()]

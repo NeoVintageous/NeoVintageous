@@ -1,6 +1,5 @@
 import unittest
 
-from NeoVintageous.nv.ex.scanner_state import EOF
 from NeoVintageous.nv.ex.scanner_state import ScannerState
 
 
@@ -24,7 +23,7 @@ class TestScannerState(unittest.TestCase):
         state = ScannerState('a')
         state.consume()
 
-        self.assertEqual(EOF, state.consume())
+        self.assertEqual(state.EOF, state.consume())
         self.assertEqual(1, state.position)
 
     def test_consuming_stops_at_eof(self):
@@ -34,7 +33,7 @@ class TestScannerState(unittest.TestCase):
         b = state.consume()
         c = state.consume()
 
-        self.assertEqual([EOF, EOF, EOF], [a, b, c])
+        self.assertEqual([state.EOF, state.EOF, state.EOF], [a, b, c])
         self.assertEqual(1, state.position)
         self.assertEqual(0, state.start)
 
@@ -66,7 +65,7 @@ class TestScannerState(unittest.TestCase):
         state.skip("a")
 
         self.assertEqual(2, state.position)
-        self.assertEqual(EOF, state.consume())
+        self.assertEqual(state.EOF, state.consume())
 
     def test_skip_run_works(self):
         state = ScannerState("aafoo")
@@ -80,7 +79,7 @@ class TestScannerState(unittest.TestCase):
         state.skip_run("af")
 
         self.assertEqual(3, state.position)
-        self.assertEqual(EOF, state.consume())
+        self.assertEqual(state.EOF, state.consume())
 
     def test_emit(self):
         state = ScannerState('abcdef')
@@ -125,6 +124,20 @@ class TestScannerState(unittest.TestCase):
         state = ScannerState('foo')
         self.assertRaises(ValueError, state.expect_match, 'x')
 
+    def test_expect_eof(self):
+        state = ScannerState('')
+        self.assertEqual(state.EOF, state.expect_eof())
+
+    def test_expect_eof_exception(self):
+        state = ScannerState('x')
+        self.assertRaisesRegex(ValueError, 'expected __EOF__, got x instead', state.expect_eof)
+
+        state = ScannerState('foo')
+        self.assertRaisesRegex(ValueError, 'expected __EOF__, got f instead', state.expect_eof)
+
+        state = ScannerState(' ')
+        self.assertRaisesRegex(ValueError, 'expected __EOF__, got   instead', state.expect_eof)
+
     def test_peek_can_succeed(self):
         state = ScannerState('abc')
         self.assertTrue(state.peek('abc'))
@@ -141,4 +154,4 @@ class TestScannerState(unittest.TestCase):
 
         self.assertTrue(state.match(r'\d{3}'))
         self.assertEqual(6, state.position)
-        self.assertEqual(EOF, state.consume())
+        self.assertEqual(state.EOF, state.consume())

@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_WRITE_AND_QUIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -14,7 +13,7 @@ plus_plus_translations = {
 
 
 @ex.command('wq', 'wq')
-class TokenWriteAndQuit(TokenOfCommand):
+class TokenCommandWriteAndQuit(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_WRITE_AND_QUIT, 'wq', *args, **kwargs)
         self.target_command = 'ex_write_and_quit'
@@ -27,8 +26,8 @@ def scan_cmd_write_and_quit(state):
     }
 
     c = state.consume()
-    if c == EOF:
-        return None, [TokenWriteAndQuit(params), TokenEof()]
+    if c == state.EOF:
+        return None, [TokenCommandWriteAndQuit(params), TokenEof()]
 
     bang = True if c == '!' else False
     if not bang:
@@ -51,10 +50,10 @@ def scan_cmd_write_and_quit(state):
         state.ignore()
         raise NotImplementedError('param not implemented')
 
-    if c == EOF:
-        return None, [TokenWriteAndQuit(params), TokenEof()]
+    if c == state.EOF:
+        return None, [TokenCommandWriteAndQuit(params), TokenEof()]
 
     m = state.expect_match(r'.+$')
     params['file'] = m.group(0).strip()
 
-    return None, [TokenWriteAndQuit(params), TokenEof()]
+    return None, [TokenCommandWriteAndQuit(params), TokenEof()]

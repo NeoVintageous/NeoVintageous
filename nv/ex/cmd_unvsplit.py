@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_UNVSPLIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -13,6 +12,6 @@ class TokenCommandUnvsplit(TokenOfCommand):
 
 
 def scan_cmd_unvsplit(state):
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenCommandUnvsplit(), TokenEof()]

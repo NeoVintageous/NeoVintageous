@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_SUBSTITUTE
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -50,7 +49,7 @@ def _scan_cmd_substitute_params(state):
             state.consume()
             break
 
-        if c == EOF:
+        if c == state.EOF:
             raise ValueError("bad command: {0}".format(state.source))
 
     while True:
@@ -63,7 +62,7 @@ def _scan_cmd_substitute_params(state):
             state.ignore()
             break
 
-        if c == EOF:
+        if c == state.EOF:
             state.start += 1
             params['replacement'] = state.emit()
             state.consume()
@@ -83,7 +82,7 @@ def _scan_cmd_substitute_params(state):
 
     state.skip(' ')
     state.ignore()
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenCommandSubstitute(params), TokenEof()]
 
@@ -91,7 +90,7 @@ def _scan_cmd_substitute_params(state):
 def scan_cmd_substitute(state):
     delim = state.consume()
 
-    if delim == EOF:
+    if delim == state.EOF:
         return None, [TokenCommandSubstitute(None), TokenEof()]
 
     return _scan_cmd_substitute_params(state)

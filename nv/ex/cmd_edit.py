@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_EDIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -14,7 +13,7 @@ plus_plus_translations = {
 
 
 @ex.command('edit', 'e')
-class TokenEdit(TokenOfCommand):
+class TokenCommandEdit(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_EDIT, 'edit', *args, **kwargs)
         self.target_command = 'ex_edit'
@@ -45,8 +44,8 @@ def scan_cmd_edit(state):
     }
 
     c = state.consume()
-    if c == EOF:
-        return None, [TokenEdit(params), TokenEof()]
+    if c == state.EOF:
+        return None, [TokenCommandEdit(params), TokenEof()]
 
     bang = c == '!'
     if not bang:
@@ -55,8 +54,8 @@ def scan_cmd_edit(state):
     while True:
         c = state.consume()
 
-        if c == EOF:
-            return None, [TokenEdit(params, forced=bang), TokenEof()]
+        if c == state.EOF:
+            return None, [TokenCommandEdit(params, forced=bang), TokenEof()]
 
         if c == '+':
             k = state.consume()
@@ -101,4 +100,4 @@ def scan_cmd_edit(state):
             raise NotImplementedError('param not implemented')
             continue
 
-    return None, [TokenEdit(params, forced=bang), TokenEof()]
+    return None, [TokenCommandEdit(params, forced=bang), TokenEof()]

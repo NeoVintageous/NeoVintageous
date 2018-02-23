@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_EXIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -29,7 +28,7 @@ def scan_cmd_exit(state):
 
     bang = state.consume()
 
-    if bang == EOF:
+    if bang == state.EOF:
         return None, [TokenCommandExit(params), TokenEof()]
 
     bang = bang == '!'
@@ -42,7 +41,7 @@ def scan_cmd_exit(state):
     while True:
         c = state.consume()
 
-        if c == EOF:
+        if c == state.EOF:
             return None, [TokenCommandExit(params, forced=bang), TokenEof()]
 
         if c == '+':
@@ -67,6 +66,6 @@ def scan_cmd_exit(state):
             state.skip(' ')
             state.ignore()
 
-    state.expect(EOF)
+    state.expect_eof()
 
     return None, [TokenCommandExit(params, forced=bang == '!'), TokenEof()]

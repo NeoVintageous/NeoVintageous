@@ -1,4 +1,3 @@
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_ABBREVIATE
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -29,7 +28,8 @@ def scan_cmd_abbreviate(state):
     state.expect(' ')
     state.skip(' ')
     state.ignore()
-    if state.consume() == EOF:
+
+    if state.consume() == state.EOF:
         return None, [TokenCommandAbbreviate({}), TokenEof()]
 
     state.backup()

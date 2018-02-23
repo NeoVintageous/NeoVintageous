@@ -1,5 +1,4 @@
 from .parser import parse_command_line
-from .scanner_state import EOF
 from .tokens import TOKEN_COMMAND_GLOBAL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -40,7 +39,7 @@ def scan_cmd_global(state):
     while True:
         c = state.consume()
 
-        if c == EOF:
+        if c == state.EOF:
             raise ValueError('unexpected EOF in: ' + state.source)
 
         if c == sep:
