@@ -14,7 +14,7 @@ from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import row_at
 
 
-class Node():
+class Node:
     pass
 
 
@@ -22,6 +22,10 @@ class RangeNode(Node):
     """Represents a Vim line range."""
 
     def __init__(self, start=None, end=None, separator=None):
+        # Args:
+        #   start (list):
+        #   end (list):
+        #   separator (str):
         self.start = start or []
         self.end = end or []
         self.separator = separator
@@ -55,11 +59,10 @@ class RangeNode(Node):
         """
         return not any((self.start, self.end, self.separator))
 
-    def resolve_notation(self, view, token, current):
-        """Return a line number."""
+    def _resolve_line_number(self, view, token, current):
+        # type: (...) -> int
         if isinstance(token, TokenDot):
-            pt = view.text_point(current, 0)
-            return row_at(view, pt)
+            return row_at(view, view.text_point(current, 0))
 
         if isinstance(token, TokenDigits):
             return max(int(str(token)) - 1, -1)
@@ -74,27 +77,26 @@ class RangeNode(Node):
             return current + sum(token.content)
 
         if isinstance(token, TokenSearchForward):
-            start_pt = view.text_point(current, 0)
-            match = view.find(str(token)[1:-1], start_pt)
+            match = view.find(str(token)[1:-1], view.text_point(current, 0))
             if not match:
                 raise ValueError('pattern not found')
 
             return row_at(view, match.a)
 
         if isinstance(token, TokenSearchBackward):
-            start_pt = view.text_point(current, 0)
-            match = reverse_search_by_pt(view, str(token)[1:-1], 0, start_pt)
+            match = reverse_search_by_pt(view, str(token)[1:-1], 0, view.text_point(current, 0))
             if not match:
                 raise ValueError('pattern not found')
 
             return row_at(view, match.a)
 
         if isinstance(token, TokenMark):
-            return self.resolve_mark(view, token)
+            return self._resolve_mark(view, token)
 
         raise NotImplementedError()
 
-    def resolve_mark(self, view, token):
+    def _resolve_mark(self, view, token):
+        # type: (...) -> int
         if token.content == '<':
             sel = list(view.sel())[0]
             view.sel().clear()
@@ -115,7 +117,7 @@ class RangeNode(Node):
 
         raise NotImplementedError()
 
-    def resolve_line_reference(self, view, line_reference, current=0):
+    def _resolve_line_reference(self, view, line_reference, current=0):
         """
         Calculate the line offset determined by @line_reference.
 
@@ -136,7 +138,7 @@ class RangeNode(Node):
                 if isinstance(token, TokenSearchForward):
                     current += 1
 
-            current = self.resolve_notation(view, token, current)
+            current = self._resolve_line_number(view, token, current)
 
             last_token = token
 
@@ -144,7 +146,7 @@ class RangeNode(Node):
 
     def resolve(self, view):
         """Return a representing the Vim line range that the ex command should operate on."""
-        start = self.resolve_line_reference(view, self.start or [TokenDot()])
+        start = self._resolve_line_reference(view, self.start or [TokenDot()])
 
         if not self.separator:
             if start == -1:
@@ -156,22 +158,17 @@ class RangeNode(Node):
             return view.full_line(view.text_point(start, 0))
 
         new_start = start if self.separator == ';' else 0
-        end = self.resolve_line_reference(view, self.end or [TokenDot()], current=new_start)
+        end = self._resolve_line_reference(view, self.end or [TokenDot()], current=new_start)
 
         return view.full_line(Region(view.text_point(start, 0), view.text_point(end, 0)))
 
 
 class CommandLineNode(Node):
 
-    # Args:
-    #   :line_range (RangeNode):
-    #   :command (TokenOfCommand):
-    #
-    # Attributes:
-    #   :line_range (RangeNode):
-    #   :command (TokenOfCommand):
-
     def __init__(self, line_range, command):
+        # Args:
+        #   :line_range (RangeNode):
+        #   :command (TokenOfCommand):
         self.line_range = line_range
         self.command = command
 
@@ -182,7 +179,6 @@ class CommandLineNode(Node):
     def validate(self):
         # type: () -> None
         # Raise an error for known conditions.
-
         if not (self.command and self.line_range):
             return
 
