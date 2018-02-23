@@ -13,17 +13,14 @@ plus_plus_translations = {
 
 
 @ex.command('new', 'new')
-class TokenNew(TokenOfCommand):
+class TokenCommandNew(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_NEW, 'new', *args, **kwargs)
         self.target_command = 'ex_new'
 
 
 def scan_cmd_new(state):
-    params = {
-        '++': None,
-        'cmd': None,
-    }
+    params = {'++': None, 'cmd': None}
 
     state.skip(' ')
     state.ignore()
@@ -50,4 +47,4 @@ def scan_cmd_new(state):
         params['cmd'] = m.group(0).strip()
         raise NotImplementedError(':new not fully implemented')
 
-    return None, [TokenNew(params), TokenEof()]
+    return None, [TokenCommandNew(params), TokenEof()]

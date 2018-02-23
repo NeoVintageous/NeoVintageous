@@ -12,9 +12,10 @@ class TokenCommandSplit(TokenOfCommand):
 
 
 def scan_cmd_split(state):
+    params = {'file': None}
+
     state.skip(' ')
     state.ignore()
-    params = {'file': None}
 
     if state.consume() == state.EOF:
         return None, [TokenCommandSplit(params), TokenEof()]

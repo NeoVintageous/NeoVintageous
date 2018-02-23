@@ -20,10 +20,7 @@ class TokenCommandAbbreviate(TokenOfCommand):
 
 
 def scan_cmd_abbreviate(state):
-    params = {
-        'short': None,
-        'full': None,
-    }
+    params = {'short': None, 'full': None}
 
     state.expect(' ')
     state.skip(' ')

@@ -20,10 +20,7 @@ class TokenCommandNnoremap(TokenOfCommand):
 
 
 def scan_cmd_nnoremap(state):
-    params = {
-        'keys': None,
-        'command': None,
-    }
+    params = {'keys': None, 'command': None}
 
     m = state.match(r'\s*(?P<keys>.+?)\s+(?P<command>.+?)\s*$')
     if m:

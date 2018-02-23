@@ -5,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('shell', 'shell')
-class TokenShell(TokenOfCommand):
+class TokenCommandShell(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__({}, TOKEN_COMMAND_SHELL, 'shell', *args, **kwargs)
         self.target_command = 'ex_shell'
@@ -14,4 +14,4 @@ class TokenShell(TokenOfCommand):
 def scan_cmd_shell(state):
     state.expect_eof()
 
-    return None, [TokenShell(), TokenEof()]
+    return None, [TokenCommandShell(), TokenEof()]

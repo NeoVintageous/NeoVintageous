@@ -5,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('pwd', 'pwd')
-class TokenPrintWorkingDir(TokenOfCommand):
+class TokenCommandPrintWorkingDir(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__({}, TOKEN_COMMAND_PRINT_WORKING_DIR, 'pwd', *args, **kwargs)
         self.target_command = 'ex_print_working_dir'
@@ -14,4 +14,4 @@ class TokenPrintWorkingDir(TokenOfCommand):
 def scan_cmd_print_working_dir(state):
     state.expect_eof()
 
-    return None, [TokenPrintWorkingDir(), TokenEof()]
+    return None, [TokenCommandPrintWorkingDir(), TokenEof()]

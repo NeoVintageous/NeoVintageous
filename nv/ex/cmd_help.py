@@ -5,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('help', 'h')
-class TokenHelp(TokenOfCommand):
+class TokenCommandHelp(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_HELP, 'help', *args, **kwargs)
         self.target_command = 'ex_help'
@@ -20,4 +20,4 @@ def scan_cmd_help(state):
     params = {'subject': match['subject']}
     bang = bool(match['bang'])
 
-    return None, [TokenHelp(params, forced=bang), TokenEof()]
+    return None, [TokenCommandHelp(params, forced=bang), TokenEof()]

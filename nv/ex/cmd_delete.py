@@ -21,10 +21,7 @@ class TokenCommandDelete(TokenOfCommand):
 
 
 def scan_cmd_delete(state):
-    params = {
-        'register': '"',
-        'count': None,
-    }
+    params = {'register': '"', 'count': None}
 
     state.skip(' ')
     state.ignore()

@@ -19,12 +19,8 @@ class TokenCommandLet(TokenOfCommand):
         return self.params['value']
 
 
-# TODO [enhancement] Implement other options.
 def scan_cmd_let(state):
-    params = {
-        'name': None,
-        'value': None,
-    }
+    params = {'name': None, 'value': None}
 
     m = state.expect_match(
         r'(?P<name>.+?)\s*=\s*(?P<value>.+?)\s*$',

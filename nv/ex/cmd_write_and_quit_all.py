@@ -26,9 +26,7 @@ class TokenCommandWriteAndQuitAll(TokenOfCommand):
 
 
 def scan_cmd_write_and_quit_all(state):
-    params = {
-        '++': '',
-    }
+    params = {'++': ''}
 
     state.skip(' ')
     state.ignore()

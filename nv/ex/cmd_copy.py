@@ -6,7 +6,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('copy', 'co')
-class TokenCopy(TokenOfCommand):
+class TokenCommandCopy(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_COPY, 'copy', *args, **kwargs)
         self.addressable = True
@@ -29,11 +29,8 @@ class TokenCopy(TokenOfCommand):
 
 
 def scan_cmd_copy(state):
-    params = {
-        'address': None
-    }
-
+    params = {'address': None}
     m = state.expect_match(r'\s*(?P<address>.+?)\s*$')
     params.update(m.groupdict())
 
-    return None, [TokenCopy(params), TokenEof()]
+    return None, [TokenCommandCopy(params), TokenEof()]

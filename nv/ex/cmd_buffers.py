@@ -17,6 +17,7 @@ def scan_cmd_buffers(state):
     try:
         state.expect_eof()
     except ValueError:
+        # TODO Use a special domain exception for exceptions raised in scans.
         raise Exception("E488: Trailing characters")
 
     return None, [TokenCommandBuffers(), TokenEof()]

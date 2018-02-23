@@ -20,10 +20,7 @@ class TokenCommandOnoremap(TokenOfCommand):
 
 
 def scan_cmd_onoremap(state):
-    params = {
-        'keys': None,
-        'command': None,
-    }
+    params = {'keys': None, 'command': None}
 
     m = state.match(r'\s*(?P<keys>.+?)\s+(?P<command>.+?)\s*$')
     if m:

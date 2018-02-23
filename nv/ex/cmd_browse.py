@@ -5,16 +5,14 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('browse', 'bro')
-class TokenBrowse(TokenOfCommand):
+class TokenCommandBrowse(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_BROWSE, 'browse', *args, **kwargs)
         self.target_command = 'ex_browse'
 
 
 def scan_cmd_browse(state):
-    params = {
-        'cmd': None,
-    }
+    params = {'cmd': None}
 
     state.skip(' ')
     state.ignore()
@@ -25,4 +23,4 @@ def scan_cmd_browse(state):
     if params['cmd']:
         raise NotImplementedError('parameter not implemented')
 
-    return None, [TokenBrowse(params), TokenEof()]
+    return None, [TokenCommandBrowse(params), TokenEof()]

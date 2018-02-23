@@ -5,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('!', '!')
-class TokenShellOut(TokenOfCommand):
+class TokenCommandShellOut(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_SHELL_OUT, '!', *args, **kwargs)
         self.addressable = True
@@ -17,11 +17,9 @@ class TokenShellOut(TokenOfCommand):
 
 
 def scan_cmd_shell_out(state):
-    params = {
-        'cmd': None,
-    }
+    params = {'cmd': None}
 
     m = state.expect_match(r'(?P<cmd>.+)$')
     params.update(m.groupdict())
 
-    return None, [TokenShellOut(params), TokenEof()]
+    return None, [TokenCommandShellOut(params), TokenEof()]

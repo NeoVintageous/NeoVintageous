@@ -16,9 +16,7 @@ class TokenCommandNunmap(TokenOfCommand):
 
 
 def scan_cmd_nunmap(state):
-    params = {
-        'keys': None,
-    }
+    params = {'keys': None}
 
     m = state.match(r'\s*(?P<keys>.+?)\s*$')
     if m:

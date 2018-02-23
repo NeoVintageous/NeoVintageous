@@ -22,9 +22,7 @@ class TokenCommandExit(TokenOfCommand):
 
 
 def scan_cmd_exit(state):
-    params = {
-        'file_name': '',
-    }
+    params = {'file_name': ''}
 
     bang = state.consume()
 

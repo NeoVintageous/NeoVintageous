@@ -12,12 +12,10 @@ class TokenCommandRegisters(TokenOfCommand):
 
 
 def scan_cmd_register(state):
+    params = {'names': []}
+
     state.skip(' ')
     state.ignore()
-
-    params = {
-        'names': []
-    }
 
     while True:
         c = state.consume()

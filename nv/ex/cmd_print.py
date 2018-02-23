@@ -25,10 +25,7 @@ class TokenCommandPrint(TokenOfCommand):
 
 
 def scan_cmd_print(state):
-    params = {
-        'count': '',
-        'flags': [],
-    }
+    params = {'count': '', 'flags': []}
 
     while True:
         c = state.consume()

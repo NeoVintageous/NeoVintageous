@@ -5,7 +5,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('cd', 'cd')
-class TokenCd(TokenOfCommand):
+class TokenCommandCd(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_CD, 'cd', *args, **kwargs)
         self.target_command = 'ex_cd'
@@ -20,10 +20,7 @@ class TokenCd(TokenOfCommand):
 
 
 def scan_cmd_cd(state):
-    params = {
-        'path': None,
-        '-': None,
-    }
+    params = {'path': None, '-': None}
 
     bang = state.consume() == '!'
     if not bang:
@@ -42,4 +39,4 @@ def scan_cmd_cd(state):
         m = state.match(r'(?P<path>.+?)\s*$')
         params.update(m.groupdict())
 
-    return None, [TokenCd(params, forced=bang), TokenEof()]
+    return None, [TokenCommandCd(params, forced=bang), TokenEof()]

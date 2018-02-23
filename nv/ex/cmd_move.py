@@ -6,7 +6,7 @@ from NeoVintageous.nv import ex
 
 
 @ex.command('move', 'm')
-class TokenMove(TokenOfCommand):
+class TokenCommandMove(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_MOVE, 'move', *args, **kwargs)
         self.addressable = True
@@ -18,9 +18,7 @@ class TokenMove(TokenOfCommand):
 
 
 def scan_cmd_move(state):
-    params = {
-        'address': None
-    }
+    params = {'address': None}
 
     state.skip(' ')
     state.ignore()
@@ -30,4 +28,4 @@ def scan_cmd_move(state):
         address_command_line = m.group(0).strip() or '.'
         params['address'] = parse_command_line(address_command_line).line_range
 
-    return None, [TokenMove(params), TokenEof()]
+    return None, [TokenCommandMove(params), TokenEof()]
