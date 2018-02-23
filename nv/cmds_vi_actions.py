@@ -36,7 +36,6 @@ from NeoVintageous.nv.window import WindowAPI
 
 
 __all__ = [
-    '__replace_line',
     '_enter_insert_mode',
     '_enter_normal_mode',
     '_enter_normal_mode_impl',
@@ -2740,21 +2739,11 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         self.view.window().show_quick_panel(items, self.replace, MONOSPACE_FONT)
 
     def replace(self, s):
-        self.view.run_command('__replace_line', {'with_what': self._matches[s]})
+        self.view.run_command('_nv_replace_line', {'with_what': self._matches[s]})
         del self.__dict__['_matches']
         pt = self.view.sel()[0].b
         self.view.sel().clear()
         self.view.sel().add(Region(pt))
-
-
-class __replace_line(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, edit, with_what):
-        b = self.view.line(self.view.sel()[0].b).a
-        pt = utils.next_non_white_space_char(self.view, b, white_space=' \t')
-        self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
 
 
 # https://vimhelp.appspot.com/change.txt.html#gc

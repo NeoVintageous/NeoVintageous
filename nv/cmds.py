@@ -36,6 +36,7 @@ from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.settings import iter_settings
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
+from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import console_message
@@ -61,6 +62,7 @@ __all__ = [
     '_nv_fs_completion',
     '_nv_goto_help',
     '_nv_process_notation',
+    '_nv_replace_line',
     '_nv_run_cmds',
     '_nv_setting_completion',
     '_nv_write_fs_completion',
@@ -599,6 +601,14 @@ class _nv_process_notation(ViWindowCommandBase):
             ui_blink()
         finally:
             self.state.non_interactive = False
+
+
+class _nv_replace_line(TextCommand):
+
+    def run(self, edit, with_what):
+        b = self.view.line(self.view.sel()[0].b).a
+        pt = next_non_white_space_char(self.view, b, white_space=' \t')
+        self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
 
 
 class _nv_cmdline(WindowCommand):
