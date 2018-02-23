@@ -8,7 +8,7 @@ from NeoVintageous.nv import ex
 @ex.command('unvsplit', 'unvsplit')
 class TokenCommandUnvsplit(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_UNVSPLIT, 'vsplit', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_UNVSPLIT, 'unvsplit', *args, **kwargs)
         self.target_command = 'ex_unvsplit'
 
 

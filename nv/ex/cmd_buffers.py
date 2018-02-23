@@ -10,7 +10,7 @@ from NeoVintageous.nv import ex
 @ex.command('ls', 'ls')
 class TokenCommandBuffers(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_BUFFERS, 'write', *args, **kwargs)
+        super().__init__({}, TOKEN_COMMAND_BUFFERS, 'buffers', *args, **kwargs)
         self.target_command = 'ex_prompt_select_open_file'
 
 

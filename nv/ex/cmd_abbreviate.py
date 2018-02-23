@@ -8,7 +8,7 @@ from NeoVintageous.nv import ex
 @ex.command('abbreviate', 'ab')
 class TokenCommandAbbreviate(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_ABBREVIATE, 'write', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_ABBREVIATE, 'abbreviate', *args, **kwargs)
         self.target_command = 'ex_abbreviate'
 
     @property
