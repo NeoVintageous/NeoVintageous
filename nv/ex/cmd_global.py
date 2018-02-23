@@ -1,4 +1,3 @@
-from .parser import parse_command_line
 from .tokens import TOKEN_COMMAND_GLOBAL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -22,15 +21,13 @@ class TokenCommandGlobal(TokenOfCommand):
 
 
 def scan_cmd_global(state):
-    params = {
-        'pattern': None,
-        'subcommand': parse_command_line('print').command
-    }
+    params = {'pattern': None, 'subcommand': None}
 
     c = state.consume()
 
     bang = c == '!'
     sep = c if not bang else c.consume()
+
     # TODO: we're probably missing legal separators.
     assert c in '!:?/\\&$', 'bad separator'
 
@@ -44,13 +41,15 @@ def scan_cmd_global(state):
 
         if c == sep:
             state.backup()
+
             params['pattern'] = state.emit()
+
             state.consume()
             state.ignore()
             break
 
     command = state.match(r'.*$').group(0).strip()
-    command = parse_command_line(command).command or params['subcommand']
-    params['subcommand'] = command
+    if command:
+        params['subcommand'] = command
 
     return None, [TokenCommandGlobal(params, forced=bang), TokenEof()]

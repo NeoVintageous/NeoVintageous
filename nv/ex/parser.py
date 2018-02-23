@@ -2,6 +2,7 @@
 # IMPORTANT! Some imports are at the bottom to avoid circular refs.
 from .nodes import CommandLineNode
 from .nodes import RangeNode
+from .scanner import Scanner
 from .tokens import TokenComma
 from .tokens import TokenDigits
 from .tokens import TokenDollar
@@ -246,7 +247,3 @@ def _process_dot(state, command_line):
         command_line.line_range.end.append(TokenDot())
 
     return _parse_line_ref, command_line
-
-
-# IMPORTANT! Avoid circular refs. Some scanner_commands import parse_command_line()
-from .scanner import Scanner  # FIXME # noqa: E402

@@ -1,4 +1,3 @@
-from .parser import parse_command_line
 from .tokens import TOKEN_COMMAND_COPY
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
@@ -15,17 +14,6 @@ class TokenCommandCopy(TokenOfCommand):
     @property
     def address(self):
         return self.params['address']
-
-    def calculate_address(self):
-        # TODO: must calc only the first line ref?
-        calculated = parse_command_line(self.address)
-        if calculated is None:
-            return None
-
-        assert calculated.command is None, 'bad address'
-        assert calculated.line_range.separator is None, 'bad address'
-
-        return calculated.line_range
 
 
 def scan_cmd_copy(state):

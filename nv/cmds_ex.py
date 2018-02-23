@@ -868,17 +868,15 @@ class ExMove(ExTextCommandBase):
         assert command_line, 'expected non-empty command line'
 
         move_command = parse_command_line(command_line)
-
         if move_command.command.address is None:
             return message("E14: Invalid address")
 
         source = move_command.line_range.resolve(self.view)
-
         if any(s.contains(source) for s in self.view.sel()):
             return message("E134: Move lines into themselves")
 
-        destination = move_command.command.address.resolve(self.view)
-
+        parsed_address_command = parse_command_line(move_command.command.address).line_range
+        destination = parsed_address_command.resolve(self.view)
         if destination == source:
             return
 
@@ -905,10 +903,23 @@ class ExCopy(ExTextCommandBase):
 
     def run_ex_command(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
-
         parsed = parse_command_line(command_line)
 
-        unresolved = parsed.command.calculate_address()
+        def calculate_address(command):
+            # TODO: must calc only the first line ref?
+            calculated = parse_command_line(command.address)
+            if calculated is None:
+                return None
+
+            assert calculated.command is None, 'bad address'
+            assert calculated.line_range.separator is None, 'bad address'
+
+            return calculated.line_range
+
+        try:
+            unresolved = calculate_address(parsed.command)
+        except Exception:
+            return message("E14: Invalid address")
 
         if unresolved is None:
             return message("E14: Invalid address")
@@ -916,7 +927,6 @@ class ExCopy(ExTextCommandBase):
         # TODO: how do we signal row 0?
         target_region = unresolved.resolve(self.view)
 
-        address = None
         if target_region == Region(-1, -1):
             address = 0
         else:
@@ -1154,12 +1164,9 @@ class ExGlobal(WindowCommand, WindowCommandMixin):
     _most_recent_pat = None
 
     def run(self, command_line=''):
-
         assert command_line, 'expected non-empty command_line'
-
         parsed = parse_command_line(command_line)
 
-        global_range = None
         if parsed.line_range.is_empty:
             global_range = Region(0, self._view.size())
         else:
@@ -1171,8 +1178,11 @@ class ExGlobal(WindowCommand, WindowCommandMixin):
         else:
             pattern = ExGlobal._most_recent_pat
 
-        # Should default to 'print'
-        subcmd = parsed.command.subcommand
+        subcommand = parsed.command.subcommand
+        if not subcommand:
+            subcommand = 'print'
+
+        parsed_subcommand = parse_command_line(subcommand).command
 
         try:
             matches = find_all_in_range(self._view, pattern, global_range.begin(), global_range.end())
@@ -1180,15 +1190,17 @@ class ExGlobal(WindowCommand, WindowCommandMixin):
             msg = "(global): %s ... in pattern '%s'" % (str(e), pattern)
             return message(msg)
 
-        if not matches or not parsed.command.subcommand.cooperates_with_global:
+        if not matches or not parsed_subcommand.cooperates_with_global:
             return
 
         matches = [self._view.full_line(r.begin()) for r in matches]
         matches = [[r.a, r.b] for r in matches]
-        self.window.run_command(subcmd.target_command, {
-            'command_line': str(subcmd),
-            # Ex commands cooperating with :global must accept this additional
-            # parameter.
+
+        # Note: ex commands cooperating with :global must accept an additional
+        # global_lines parameter.
+
+        self.window.run_command(parsed_subcommand.target_command, {
+            'command_line': str(parsed_subcommand),
             'global_lines': matches,
         })
 
