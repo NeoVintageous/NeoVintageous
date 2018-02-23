@@ -136,6 +136,13 @@ class NeoVintageousEvents(EventListener):
             if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
                     return
+                elif args.get('by') == 'lines':
+                    return ('sequence', {
+                        'commands': [
+                            ['drag_select', args],
+                            ['_enter_visual_line_mode', {'mode': state.mode}]
+                        ]
+                    })
                 elif not args.get('extend'):
                     return ('sequence', {
                         'commands': [
