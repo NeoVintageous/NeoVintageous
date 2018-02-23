@@ -66,14 +66,13 @@ __all__ = [
     'ExGoto',
     'ExHelp',
     'ExLet',
-    'ExListRegisters',
-    'ExNoremap',
     'ExMove',
     'ExNew',
     'ExNnoremap',
+    'ExNoremap',
     'ExNunmap',
-    'ExOnoremap',
     'ExOnly',
+    'ExOnoremap',
     'ExOunmap',
     'ExPrint',
     'ExPrintWorkingDir',
@@ -81,6 +80,7 @@ __all__ = [
     'ExQuitAllCommand',
     'ExQuitCommand',
     'ExReadShellOut',
+    'ExRegisters',
     'ExSet',
     'ExSetLocal',
     'ExShell',
@@ -1411,7 +1411,7 @@ class ExExit(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/change.txt.html#:registers
-class ExListRegisters(WindowCommand, WindowCommandMixin):
+class ExRegisters(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line):
         def show_lines(line_count):

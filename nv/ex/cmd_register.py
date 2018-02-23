@@ -9,7 +9,7 @@ from NeoVintageous.nv import ex
 class TokenCommandRegisters(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_REGISTERS, 'registers', *args, **kwargs)
-        self.target_command = 'ex_list_registers'
+        self.target_command = 'ex_registers'
 
 
 def scan_cmd_register(state):
