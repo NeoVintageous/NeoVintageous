@@ -209,12 +209,6 @@ Here is an example |vintageousrc| file: >
     nnoremap <leader>va ggvGg_
     nnoremap <leader>Va ggVG
 
-    " Maintain Visual Mode after shifting > and <.
-    " Notice that '<lt>' is used to represent a real '<', because like a
-    " backslash, it needs to be escaped. See `:h <>`.
-    vnoremap <lt> <lt>gv
-    vnoremap > >gv
-
     " Goto to symbols.
     nnoremap <leader>f :GotoSymbolInFile<CR>
     nnoremap <leader>m :GotoSymbolInProject<CR>
