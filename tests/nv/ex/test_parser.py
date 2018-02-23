@@ -1,7 +1,7 @@
 import unittest
 
+from NeoVintageous.nv.ex.parser import _ParserState
 from NeoVintageous.nv.ex.parser import parse_command_line
-from NeoVintageous.nv.ex.parser import ParserState
 from NeoVintageous.nv.ex.parser import TokenComma
 from NeoVintageous.nv.ex.parser import TokenDigits
 from NeoVintageous.nv.ex.parser import TokenDollar
@@ -17,7 +17,7 @@ from NeoVintageous.nv.ex.parser import TokenSemicolon
 class TestParserState(unittest.TestCase):
 
     def test_can_instantiate(self):
-        parser_state = ParserState("foobar")
+        parser_state = _ParserState("foobar")
         self.assertEqual(parser_state.scanner.state.source, "foobar")
 
 
