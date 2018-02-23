@@ -15,14 +15,18 @@ def has_dirty_buffers(window):
 
 def is_ignored(view):
     # type: (...) -> bool
+
     # Useful for external plugins to disable NeoVintageous for specific views.
+
     return view.settings().get('__vi_external_disable', False)
 
 
 def is_ignored_but_command_mode(view):
     # type: (...) -> bool
-    # Useful for external plugins to disable NeoVintageous for specific views.
-    # Differs from is_ignored() in that only keys should be disabled.
+
+    # Useful for third party plugins to disable vim emulation for specific
+    # views. Differs from is_ignored() in that only keys should be disabled.
+
     return view.settings().get('__vi_external_disable_keys', False)
 
 
@@ -72,7 +76,9 @@ def regions_transformer(view, f):
 #       looks like it was never updated.
 def regions_transformer_reversed(view, f):
     # type: (...) -> None
+
     # Apply f to every selection region in view and replace existing selections.
+
     sels = reversed(list(view.sel()))
 
     new_sels = []
@@ -86,9 +92,11 @@ def regions_transformer_reversed(view, f):
 
 def resolve_insertion_point_at_b(region):
     # type: (Region) -> int
-    # Return the insertion point closest to region.b for a visual region.
-    # For non-visual regions, the insertion point is always any of the region's
+
+    # Return the insertion point closest to region.b for a visual region. For
+    # non-visual regions, the insertion point is always any of the region's
     # ends, so using this function is pointless.
+
     if region.a < region.b:
         return (region.b - 1)
 
@@ -96,9 +104,12 @@ def resolve_insertion_point_at_b(region):
 
 
 def resolve_insertion_point_at_a(region):
+    # type: (Region) -> int
+
     # Return the actual insertion point closest to region.a for a visual region.
     # For non-visual regions, the insertion point is always any of the region's
     # ends, so using this function is pointless.
+
     if region.size() == 0:
         raise TypeError('not a visual region')
 
@@ -108,21 +119,25 @@ def resolve_insertion_point_at_a(region):
         return region.a - 1
 
 
-# TODO REVIEW this function looks unused; it was refactored from an obsolete module
+# TODO [review] this function looks unused; it was refactored from an obsolete module.
 @contextmanager
 def restoring_sels(view):
     old_sels = list(view.sel())
     yield
     view.sel().clear()
     for s in old_sels:
-        # XXX: If the buffer has changed in the meantime, this won't work well.
+
+        # TODO [review] Race-condition? If the buffer has changed in the
+        # meantime, this won't work well.
+
         view.sel().add(s)
 
 
 def new_inclusive_region(a, b):
     # type: (int, int) -> Region
-    # Create a region that includes the char at a or b depending on new region's
-    # orientation.
+
+    # Create a region that includes the char at a or b depending on orientation.
+
     if a <= b:
         return Region(a, b + 1)
     else:
@@ -153,23 +168,23 @@ def gluing_undo_groups(view, state):
 
 
 class IrreversibleTextCommand(TextCommand):
-    """Base class.
 
-    The undo stack will ignore commands derived from this class. This is
-    useful to prevent global state management commands from shadowing
-    commands performing edits to the buffer, which are the important ones
-    to keep in the undo history.
-    """
+    # Base class. The undo stack will ignore commands derived from this class.
+    # This is useful to prevent global state management commands from shadowing
+    # commands performing edits to the buffer, which are the important ones to
+    # keep in the undo history.
 
     def __init__(self, view):
         TextCommand.__init__(self, view)
 
     def run_(self, edit_token, args):
-        # We discard the edit_token because we don't want an IrreversibleTextCommand
-        # to be added to the undo stack, but Sublime Text seems to still require
-        # us to begin..end the token. If we removed those calls, the caret
-        # would blink while motion keys were pressed, because --apparently--
-        # we'd have an unclosed edit object around.
+
+        # We discard the edit_token because we don't want an
+        # IrreversibleTextCommand to be added to the undo stack, but Sublime
+        # Text seems to still require us to begin..end the token. If we removed
+        # those calls, the caret would blink while motion keys were pressed,
+        # because --apparently-- we'd have an unclosed edit object around.
+
         args = self.filter_args(args)
         if args:
             edit = self.view.begin_edit(edit_token, self.name(), args)
@@ -204,7 +219,7 @@ def previous_non_white_space_char(view, pt, white_space='\t \n'):
     return pt
 
 
-# DEPRECATED
+# TODO [review] DEPRECATED; Refactor and remove.
 def previous_white_space_char(view, pt, white_space='\t '):
     # type: (...) -> int
     while pt >= 0 and view.substr(pt) not in white_space:
@@ -245,7 +260,7 @@ def translate_char(char):
     # type: (str) -> str
     lchar = char.lower()
 
-    # FIXME What happens to keys like <home>, <up>, etc? We shouln't be
+    # TODO [bug] ??? What happens to keys like <home>, <up>, etc? We shouln't be
     # able to use those in some contexts, like as arguments to f, t...
 
     if lchar in ('<enter>', '<cr>'):
