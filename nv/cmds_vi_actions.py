@@ -1183,7 +1183,7 @@ class _vi_big_d(ViTextCommandBase):
         regions_transformer(self.view, f)
 
         state = self.state
-        state.registers.yank(self)
+        state.registers.yank(self, register, operation='delete')
 
         self.view.run_command('left_delete')
 
