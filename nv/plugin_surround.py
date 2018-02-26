@@ -365,7 +365,7 @@ def _do_surround_ds(view, edit, target, mode=None):
             if target in noop:
                 return s  # TODO [review] should a message be displayed or logged e.g. status, console?
 
-            valid_targets = '\'"`b()B{}r[]a<>t.,-_'
+            valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/'
             if target not in valid_targets:
                 return s  # TODO [review] should an exception be raised, or message displayed or logged e.g. status console?  # noqa: E501
 

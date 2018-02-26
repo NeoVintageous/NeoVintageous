@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed: Add missing delete surround punctuation marks `;:@#~*\\/` e.g. `ds@`, `ds*`, etc.
 * Fixed [#307](https://github.com/NeoVintageous/NeoVintageous/issues/307): Change surround tag `cst<{tagname}>`
 * Fixed [#307](https://github.com/NeoVintageous/NeoVintageous/issues/307): Change surround tag `cstt{tagname}>` ("t" an alias for "<")
 * Fixed [#307](https://github.com/NeoVintageous/NeoVintageous/issues/307): Change surround tag `cst{replacement}`
