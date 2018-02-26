@@ -2,7 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## Unreleased (1.6.0)
+
+* Fixed [#150](https://github.com/NeoVintageous/NeoVintageous/issues/150): Remove lines with regular expression
+* Fixed [#148](https://github.com/NeoVintageous/NeoVintageous/issues/148): `:$` does not go to last line
+* Fixed [#87](https://github.com/NeoVintageous/NeoVintageous/issues/87): Double front slash doesn't escape properly
+
+## Unreleased (1.5.2)
 
 ### Fixed
 
@@ -16,9 +22,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#307](https://github.com/NeoVintageous/NeoVintageous/issues/307): Change surround tag `cs{target}t{tagname}>` ("t" is alias for "<")
 * Fixed [#136](https://github.com/NeoVintageous/NeoVintageous/issues/136): Saving to named register with `D` doesn't work
 * Fixed [#306](https://github.com/NeoVintageous/NeoVintageous/issues/306): Triple-clicking doesn't select a line
-* Fixed [#150](https://github.com/NeoVintageous/NeoVintageous/issues/150): Remove lines with regular expression
-* Fixed [#148](https://github.com/NeoVintageous/NeoVintageous/issues/148): `:$` does not go to last line
-* Fixed [#87](https://github.com/NeoVintageous/NeoVintageous/issues/87): Double front slash doesn't escape properly
 
 ## 1.5.1 - 2018-02-20
 
