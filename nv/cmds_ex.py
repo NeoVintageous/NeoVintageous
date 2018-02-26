@@ -1413,27 +1413,37 @@ class ExExit(WindowCommand, WindowCommandMixin):
 class ExListRegisters(WindowCommand, WindowCommandMixin):
 
     def run(self, command_line):
-        def show_lines(line_count):
-            lines_display = '... [+{0}]'.format(line_count - 1)
-            return lines_display if line_count > 1 else ''
-
         parse_command_line(command_line)
 
-        # TODO: implement arguments.
+        def truncate(string, truncate_at):
+            if len(string) > truncate_at:
+                return string[0:truncate_at] + ' ...'
 
-        pairs = [(k, v) for (k, v) in self.state.registers.to_dict().items() if v]
-        pairs = [(k, repr(v[0]), len(v)) for (k, v) in pairs]
-        pairs = ['"{0}  {1}  {2}'.format(k, v, show_lines(lines)) for (k, v, lines) in pairs]
+            return string
 
-        self.window.show_quick_panel(pairs, self.on_done, flags=MONOSPACE_FONT)
+        items = []
+        for k, v in self.state.registers.to_dict().items():
+            if v:
+                if len(v) > 0 and v[0]:
+                    lines = v[0].splitlines()
+                    value = '^J'.join(lines)
+
+                    # The splitlines function will remove a final newline, if
+                    # present. So joining the lines with the join-line indicator
+                    # (^J) may be missing a final join-line indicator.
+                    if len(''.join(lines)) < len(v[0]):
+                        value += '^J'
+
+                    items.append('"{}   {}'.format(k, truncate(value, 78)))
+
+        if items:
+            self.window.show_quick_panel(sorted(items), self.on_done, flags=MONOSPACE_FONT)
 
     def on_done(self, idx):
-        """Save selected value to `"` register."""
         if idx == -1:
             return
 
-        value = list(self.state.registers.to_dict().values())[idx]
-        self.state.registers['"'] = [value]
+        self.state.registers['"'] = [list(self.state.registers.to_dict().values())[idx]]
 
 
 # https://vimhelp.appspot.com/windows.txt.html#:new
