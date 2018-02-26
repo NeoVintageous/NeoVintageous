@@ -39,9 +39,13 @@ class Test_ys(unittest.ViewTestCase):
             self.select(4)
             self.state.mode = unittest.INTERNAL_NORMAL
 
-            motion = {}
-            motion['motion'] = '_vi_e'
-            motion['motion_args'] = {'mode': unittest.INTERNAL_NORMAL, 'count': 1}
+            motion = {
+                'motion': '_vi_e',
+                'motion_args': {
+                    'mode': unittest.INTERNAL_NORMAL,
+                    'count': 1
+                }
+            }
 
             surround_with, expected = data
 
@@ -68,6 +72,8 @@ class Test_cs(unittest.ViewTestCase):
             ('){', 'dog { cat } turkey'),
             (')}', 'dog {cat} turkey'),
             (')>', 'dog <cat> turkey'),
+            (')<a>', 'dog <a>cat</a> turkey'),
+            (')tdiv>', 'dog <div>cat</div> turkey'),
         )
 
     def test_all_internal_normal_mode(self):
@@ -81,7 +87,7 @@ class Test_cs(unittest.ViewTestCase):
                 'action': 'cs',
                 'mode': unittest.INTERNAL_NORMAL,
                 'target': replace_what[0],
-                'replacement': replace_what[1]
+                'replacement': replace_what[1:]
             })
 
             self.assertContent(expected, 'failed at {0}'.format(i))

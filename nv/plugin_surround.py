@@ -142,7 +142,21 @@ class _surround_cs(ViOperatorDef):
 
     @property
     def accept_input(self):
-        return len(self.inp) != 2
+        # Requires at least two characters (target and replacement).
+
+        # A tag replacement is indicated by "<" ("t" is an alias for "<"). Tag
+        # replacements can accept more than one character. A tag name is
+        # terminated by ">".
+
+        if len(self.inp) > 1 and self.inp[1] in ('t', '<'):
+            # Guard against runaway input collecting.
+            if len(self.inp) > 20:
+                return False
+
+            # Terminates input collecting for tag.
+            return not self.inp.endswith('>')
+
+        return len(self.inp) < 2
 
     def accept(self, key):
         self._inp += translate_char(key)
@@ -159,7 +173,7 @@ class _surround_cs(ViOperatorDef):
                 'action': 'cs',
                 'mode': state.mode,
                 'target': self.inp[0],
-                'replacement': self.inp[1]
+                'replacement': self.inp[1:]
             }
         }
 
@@ -255,52 +269,71 @@ def _rfind(view, sub, start, end, flags=0):
     return res
 
 
-# TODO Fix cst<x> <div>x</div> -> cst<p> |<p>x</p>
 # TODO Add punctuation aliases
 def _do_surround_cs(view, edit, target, replacement, mode=None):
+    # Targets are always one character.
+    if len(target) != 1:
+        # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
+        return
+
+    # Replacements must be one character long, except for tags which must be at
+    # least three character long.
+    if len(replacement) >= 3:
+        if replacement[0] not in ('t', '<') or not replacement.endswith('>'):
+            return  # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
+    elif len(replacement) != 1:
+        return  # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
+
+    target_pairs = {
+        ')': ('(', ')'),
+        '(': ('(', ')'),
+        ']': ('[', ']'),
+        '[': ('[', ']'),
+        '}': ('{', '}'),
+        '{': ('{', '}'),
+        '>': ('<', '>'),
+    }
+
+    replacement_pairs = {
+        ')': ('(', ')'),
+        '(': ('( ', ' )'),
+        ']': ('[', ']'),
+        '[': ('[ ', ' ]'),
+        '}': ('{', '}'),
+        '{': ('{ ', ' }'),
+        '>': ('<', '>'),
+    }
+
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
-            if len(target) != 1:
-                # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
-                return s
-
-            if len(replacement) != 1:
-                # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
-                return s
-
-            target_pairs = {
-                ')': ('(', ')'),
-                '(': ('(', ')'),
-                ']': ('[', ']'),
-                '[': ('[', ']'),
-                '}': ('{', '}'),
-                '{': ('{', '}'),
-                '>': ('<', '>'),
-            }
-
-            replacement_pairs = {
-                ')': ('(', ')'),
-                '(': ('( ', ' )'),
-                ']': ('[', ']'),
-                '[': ('[ ', ' ]'),
-                '}': ('{', '}'),
-                '{': ('{ ', ' }'),
-                '>': ('<', '>'),
-            }
-
             old = target
             new = replacement
             open_, close_ = target_pairs.get(old, (old, old))
             new_open, new_close = replacement_pairs.get(new, (new, new))
 
-            if len(open_) == 1 and open_ == 't':
-                open_, close_ = ('<.*?>', '</.*?>')
+            # Replacements > 1 are always tags, and the first character could be
+            # "t", which is an alias for "<".
+            if len(replacement) > 1:
+                new_open = '<' + new_open[1:]
+
+            # Replacements > 1 are always tags, and the first character could be
+            # "t", which is an alias for "<".
+            if len(replacement) > 1:
+                new_close = '</' + new_close[1:]
+
+            if open_ == 't':
+                open_, close_ = ('<[^>\\/]+>', '<\\/[^>]+>')
                 next_ = view.find(close_, s.b)
-                prev_ = reverse_search(view, open_, end=s.b, start=0)
+                if next_:
+                    prev_ = reverse_search(view, open_, end=next_.begin(), start=0)
+                else:
+                    prev_ = None
             else:
-                # brute force
                 next_ = view.find(close_, s.b, flags=LITERAL)
-                prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
+                if next_:
+                    prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
+                else:
+                    next_ = None
 
             if not (next_ and prev_):
                 return s
@@ -320,8 +353,7 @@ def _do_surround_ds(view, edit, target, mode=None):
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
             if len(target) != 1:
-                # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
-                return s
+                return s  # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
 
             # The *target* letters w, W, s, and p correspond to a |word|, a
             # |WORD|, a |sentence|, and a |paragraph| respectively.  These are
@@ -331,18 +363,11 @@ def _do_surround_ds(view, edit, target, mode=None):
 
             noop = 'wWsp'
             if target in noop:
-                # TODO [review] should a message be displayed or logged e.g. status, console?
-                return s
+                return s  # TODO [review] should a message be displayed or logged e.g. status, console?
 
             valid_targets = '\'"`b()B{}r[]a<>t.,-_'
             if target not in valid_targets:
-                # TODO [review] should an exception be raised, or message displayed or logged e.g. status console?
-                return s
-
-            # Three quote marks are only searched for on the current line.
-            # quote_marks = '\'"`'
-
-            # punctuation_mark_aliases = 'bBra'
+                return s  # TODO [review] should an exception be raised, or message displayed or logged e.g. status console?  # noqa: E501
 
             # All marks, except punctuation marks, are only searched for on the
             # current line.
