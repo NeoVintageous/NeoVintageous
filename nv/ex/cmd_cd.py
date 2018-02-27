@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_CD
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('cd', 'cd')
 class TokenCommandCd(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_CD, 'cd', *args, **kwargs)

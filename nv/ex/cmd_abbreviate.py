@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_ABBREVIATE
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('abbreviate', 'ab')
 class TokenCommandAbbreviate(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_ABBREVIATE, 'abbreviate', *args, **kwargs)

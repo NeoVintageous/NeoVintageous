@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_SPLIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('split', 'sp')
 class TokenCommandSplit(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_SPLIT, 'split', *args, **kwargs)

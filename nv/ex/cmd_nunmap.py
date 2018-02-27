@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_NUNMAP
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('nunmap', 'nun')
 class TokenCommandNunmap(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_NUNMAP, 'nunmap', *args, **kwargs)

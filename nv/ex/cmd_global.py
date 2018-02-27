@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_GLOBAL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('global', 'g')
 class TokenCommandGlobal(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_GLOBAL, 'global', *args, **kwargs)

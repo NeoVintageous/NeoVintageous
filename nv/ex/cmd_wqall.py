@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_WQALL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
-
-plus_plus_translations = {
+_plus_plus_translations = {
     'ff': 'fileformat',
     'bin': 'binary',
     'enc': 'fileencoding',
@@ -29,8 +27,6 @@ plus_plus_translations = {
 }
 
 
-@ex.command('wqall', 'wqa')
-@ex.command('xall', 'xa')
 class TokenCommandWqall(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_WQALL, 'wqall', *args, **kwargs)
@@ -59,7 +55,7 @@ def scan_cmd_wqall(state):
             lambda: Exception("E474: Invalid argument"))
 
         name = m.group(0)
-        params['++'] = plus_plus_translations.get(name, name)
+        params['++'] = _plus_plus_translations.get(name, name)
         state.ignore()
 
     state.expect_eof()

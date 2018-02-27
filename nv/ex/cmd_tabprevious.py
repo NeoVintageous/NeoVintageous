@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_TABPREVIOUS
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('tabprevious', 'tabp')
 class TokenCommandTabPrevious(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__([], TOKEN_COMMAND_TABPREVIOUS, 'tabprevious', *args, **kwargs)

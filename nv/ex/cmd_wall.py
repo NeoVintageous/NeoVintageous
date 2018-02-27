@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_WALL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('wall', 'wa')
 class TokenCommandWallCommand(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__({}, TOKEN_COMMAND_WALL, 'wall', *args, **kwargs)

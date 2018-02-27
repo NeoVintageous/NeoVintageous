@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_COPY
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('copy', 'co')
 class TokenCommandCopy(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_COPY, 'copy', *args, **kwargs)

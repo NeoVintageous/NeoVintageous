@@ -18,11 +18,8 @@
 from .tokens import TOKEN_COMMAND_TABFIRST
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('tabfirst', 'tabfir')
-@ex.command('tabrewind', 'tabr')
 class TokenCommandTabFirst(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__([], TOKEN_COMMAND_TABFIRST, 'tabfirst', *args, **kwargs)

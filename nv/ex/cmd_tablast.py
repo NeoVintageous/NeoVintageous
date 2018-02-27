@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_TABLAST
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('tablast', 'tabl')
 class TokenCommandTabLast(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__([], TOKEN_COMMAND_TABLAST, 'tablast', *args, **kwargs)

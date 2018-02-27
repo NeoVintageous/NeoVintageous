@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_YANK
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('yank', 'y')
 class TokenCommandYank(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_YANK, 'yank', *args, **kwargs)
@@ -38,10 +36,7 @@ class TokenCommandYank(TokenOfCommand):
 
 
 def scan_cmd_yank(state):
-    params = {
-        'register': '"',
-        'count': None,
-    }
+    params = {'register': '"', 'count': None}
 
     state.skip(' ')
     state.ignore()

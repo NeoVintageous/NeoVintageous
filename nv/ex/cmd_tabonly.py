@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_TABONLY
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('tabonly', 'tabo')
 class TokenCommandTabOnly(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__([], TOKEN_COMMAND_TABONLY, 'tabonly', *args, **kwargs)

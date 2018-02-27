@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_TABNEXT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('tabnext', 'tabn')
 class TokenCommandTabNext(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__([], TOKEN_COMMAND_TABNEXT, 'tabnext', *args, **kwargs)

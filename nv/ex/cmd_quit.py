@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_QUIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('quit', 'q')
 class TokenCommandQuit(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__({}, TOKEN_COMMAND_QUIT, 'quit', *args, **kwargs)

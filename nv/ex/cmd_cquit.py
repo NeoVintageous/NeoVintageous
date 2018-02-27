@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_CQUIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('cquit', 'cq')
 class TokenCommandCquit(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__({}, TOKEN_COMMAND_CQUIT, 'cquit', *args, **kwargs)

@@ -18,12 +18,8 @@
 from .tokens import TOKEN_COMMAND_BUFFERS
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('buffers', 'buffers')
-@ex.command('files', 'files')
-@ex.command('ls', 'ls')
 class TokenCommandBuffers(TokenOfCommand):
     def __init__(self, *args, **kwargs):
         super().__init__({}, TOKEN_COMMAND_BUFFERS, 'buffers', *args, **kwargs)

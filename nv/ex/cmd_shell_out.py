@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_SHELL_OUT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('!', '!')
 class TokenCommandShellOut(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_SHELL_OUT, '!', *args, **kwargs)

@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_NOREMAP
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
 
-@ex.command('noremap', 'no')
 class TokenCommandNoremap(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_NOREMAP, 'noremap', *args, **kwargs)

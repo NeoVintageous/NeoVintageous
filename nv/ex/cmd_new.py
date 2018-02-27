@@ -18,10 +18,8 @@
 from .tokens import TOKEN_COMMAND_NEW
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
-from NeoVintageous.nv import ex
 
-
-plus_plus_translations = {
+_plus_plus_translations = {
     'ff': 'fileformat',
     'bin': 'binary',
     'enc': 'fileencoding',
@@ -29,7 +27,6 @@ plus_plus_translations = {
 }
 
 
-@ex.command('new', 'new')
 class TokenCommandNew(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
         super().__init__(params, TOKEN_COMMAND_NEW, 'new', *args, **kwargs)
@@ -54,7 +51,7 @@ def scan_cmd_new(state):
             lambda: Exception("E474: Invalid argument"))
 
         name = m.group(0)
-        params['++'] = plus_plus_translations.get(name, name)
+        params['++'] = _plus_plus_translations.get(name, name)
         state.ignore()
 
         raise NotImplementedError(':new not fully implemented')
