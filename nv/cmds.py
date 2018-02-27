@@ -80,7 +80,6 @@ __all__ = [
     '_nv_process_notation',
     '_nv_replace_line',
     '_nv_run_cmds',
-    '_nv_run_ex_cmd',
     '_nv_setting_completion',
     '_nv_write_fs_completion',
     'NeovintageousOpenMyRcFileCommand',
@@ -254,12 +253,6 @@ class _nv_run_cmds(TextCommand):
         #   commands (list): A list of commands.
         for cmd, args in commands:
             self.view.run_command(cmd, args)
-
-
-class _nv_run_ex_cmd(WindowCommand):
-
-    def run(self, cmd, args=None):
-        run_ex_command(self.window, cmd, args)
 
 
 class _nv_feed_key(ViWindowCommandBase):

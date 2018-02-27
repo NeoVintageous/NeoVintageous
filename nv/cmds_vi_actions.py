@@ -42,6 +42,7 @@ from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import run_ex_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import UNKNOWN
@@ -75,9 +76,12 @@ __all__ = [
     '_vi_big_p',
     '_vi_big_s_action',
     '_vi_big_x',
+    '_vi_big_z_big_q',
+    '_vi_big_z_big_z',
     '_vi_c',
     '_vi_cc',
     '_vi_ctrl_e',
+    '_vi_ctrl_g',
     '_vi_ctrl_r',
     '_vi_ctrl_r_equal',
     '_vi_ctrl_right_square_bracket',
@@ -1618,6 +1622,22 @@ class _vi_big_x(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+class _vi_big_z_big_q(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        run_ex_command(self.window, 'quit', {'command_line': 'q!'})
+
+
+class _vi_big_z_big_z(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        run_ex_command(self.window, 'exit')
+
+
 class _vi_big_p(ViTextCommandBase):
     _can_yank = True
     _synthetize_new_line_at_eof = True
@@ -2366,6 +2386,14 @@ class _vi_ctrl_e(ViTextCommandBase):
         extend = True if mode == VISUAL else False
 
         self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
+
+
+class _vi_ctrl_g(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        run_ex_command(self.window, 'file')
 
 
 # https://vimhelp.appspot.com/scroll.txt.html#CTRL-Y

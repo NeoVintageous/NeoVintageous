@@ -2027,10 +2027,8 @@ class ViShowFileStatus(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_nv_run_ex_cmd',
-            'action_args': {
-                'cmd': 'file'
-            }
+            'action': '_vi_ctrl_g',
+            'action_args': {}
         }
 
 
@@ -2042,13 +2040,8 @@ class ViExitEditor(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_nv_run_ex_cmd',
-            'action_args': {
-                'cmd': 'quit',
-                'args': {
-                    'command_line': 'q!'
-                }
-            }
+            'action': '_vi_big_z_big_q',
+            'action_args': {}
         }
 
 
@@ -2060,10 +2053,8 @@ class ViCloseFile(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_nv_run_ex_cmd',
-            'action_args': {
-                'cmd': 'exit'
-            }
+            'action': '_vi_big_z_big_z',
+            'action_args': {}
         }
 
 
