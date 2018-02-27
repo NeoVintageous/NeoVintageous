@@ -20,11 +20,11 @@ import unittest
 from NeoVintageous.nv.ex.cmd_buffers import scan_cmd_buffers
 from NeoVintageous.nv.ex.cmd_buffers import TokenCommandBuffers
 from NeoVintageous.nv.ex.cmd_buffers import TokenEof
-from NeoVintageous.nv.ex.scanner_state import ScannerState
+from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
 def _scan_cmd_buffers(source):
-    return scan_cmd_buffers(ScannerState(source))
+    return scan_cmd_buffers(_ScannerState(source))
 
 
 class Test_scan_cmd_buffers(unittest.TestCase):

@@ -16,7 +16,6 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# IMPORTANT! Some imports are at the bottom to avoid circular refs.
 from .nodes import CommandLineNode
 from .nodes import RangeNode
 from .scanner import Scanner

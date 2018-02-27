@@ -20,11 +20,11 @@ import unittest
 from NeoVintageous.nv.ex.cmd_close import scan_cmd_close
 from NeoVintageous.nv.ex.cmd_close import TokenCommandClose
 from NeoVintageous.nv.ex.cmd_close import TokenEof
-from NeoVintageous.nv.ex.scanner_state import ScannerState
+from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
 def _scan_cmd_close(source):
-    return scan_cmd_close(ScannerState(source))
+    return scan_cmd_close(_ScannerState(source))
 
 
 class Test_scan_cmd_close(unittest.TestCase):

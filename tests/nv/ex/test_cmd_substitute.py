@@ -20,11 +20,11 @@ import unittest
 from NeoVintageous.nv.ex.cmd_substitute import scan_cmd_substitute
 from NeoVintageous.nv.ex.cmd_substitute import TokenCommandSubstitute
 from NeoVintageous.nv.ex.cmd_substitute import TokenEof
-from NeoVintageous.nv.ex.scanner_state import ScannerState
+from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
 def _scan_cmd_substitute(source):
-    return scan_cmd_substitute(ScannerState(source))
+    return scan_cmd_substitute(_ScannerState(source))
 
 
 class Test_scan_cmd_substitute(unittest.TestCase):

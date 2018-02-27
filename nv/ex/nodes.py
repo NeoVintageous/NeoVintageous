@@ -36,7 +36,8 @@ class Node:
 
 
 class RangeNode(Node):
-    """Represents a Vim line range."""
+
+    # Represents a Vim line range.
 
     def __init__(self, start=None, end=None, separator=None):
         # Args:
@@ -64,12 +65,12 @@ class RangeNode(Node):
 
     @property
     def is_empty(self):
-        """
-        Indicate whether this range has ever been defined.
+        # type: () -> bool
 
-        For example, in interactive mode, if `true`, it means that the user
-        hasn't provided any line range on the command line.
-        """
+        # Indicate whether this range has ever been defined. For example, in
+        # interactive mode, if `true`, it means that the user hasn't provided
+        # any line range on the command line.
+
         return not any((self.start, self.end, self.separator))
 
     def _resolve_line_number(self, view, token, current):
@@ -131,6 +132,7 @@ class RangeNode(Node):
         raise NotImplementedError()
 
     def _resolve_line_reference(self, view, line_reference, current=0):
+        # type: (...) -> int
         """
         Calculate the line offset determined by @line_reference.
 
@@ -158,7 +160,11 @@ class RangeNode(Node):
         return current
 
     def resolve(self, view):
-        """Return a representing the Vim line range that the ex command should operate on."""
+        # type: (...) -> Region
+
+        # Return a representing the Vim line range that the ex command should
+        # operate on.
+
         start = self._resolve_line_reference(view, self.start or [TokenDot()])
 
         if not self.separator:

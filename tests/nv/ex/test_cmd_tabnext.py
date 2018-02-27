@@ -20,11 +20,11 @@ import unittest
 from NeoVintageous.nv.ex.cmd_tabnext import scan_cmd_tabnext
 from NeoVintageous.nv.ex.cmd_tabnext import TokenCommandTabNext
 from NeoVintageous.nv.ex.cmd_tabnext import TokenEof
-from NeoVintageous.nv.ex.scanner_state import ScannerState
+from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
 def _scan_cmd_tabnext(source):
-    return scan_cmd_tabnext(ScannerState(source))
+    return scan_cmd_tabnext(_ScannerState(source))
 
 
 class Test_scan_cmd_tab_next(unittest.TestCase):

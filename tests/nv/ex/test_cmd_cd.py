@@ -20,11 +20,11 @@ import unittest
 from NeoVintageous.nv.ex.cmd_cd import scan_cmd_cd
 from NeoVintageous.nv.ex.cmd_cd import TokenCommandCd
 from NeoVintageous.nv.ex.cmd_cd import TokenEof
-from NeoVintageous.nv.ex.scanner_state import ScannerState
+from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
 def _scan_cmd_cd(source):
-    return scan_cmd_cd(ScannerState(source))
+    return scan_cmd_cd(_ScannerState(source))
 
 
 class Test_scan_cmd_cd(unittest.TestCase):

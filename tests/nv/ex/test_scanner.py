@@ -20,6 +20,7 @@ import unittest
 from NeoVintageous.nv.ex.cmd_substitute import TokenCommandSubstitute
 from NeoVintageous.nv.ex.cmd_write import TokenCommandWrite
 from NeoVintageous.nv.ex.scanner import Scanner
+from NeoVintageous.nv.ex.scanner import _ScannerState
 from NeoVintageous.nv.ex.scanner import TokenComma
 from NeoVintageous.nv.ex.scanner import TokenDigits
 from NeoVintageous.nv.ex.scanner import TokenDollar
@@ -31,6 +32,160 @@ from NeoVintageous.nv.ex.scanner import TokenPercent
 from NeoVintageous.nv.ex.scanner import TokenSearchBackward
 from NeoVintageous.nv.ex.scanner import TokenSearchForward
 from NeoVintageous.nv.ex.scanner import TokenSemicolon
+
+
+class TestScannerState(unittest.TestCase):
+
+    def test_defaults(self):
+        state = _ScannerState('abc')
+
+        self.assertEqual('abc', state.source)
+        self.assertEqual(0, state.position)
+        self.assertEqual(0, state.start)
+
+    def test_can_consume(self):
+        state = _ScannerState('abc')
+
+        self.assertEqual('a', state.consume())
+        self.assertEqual(1, state.position)
+        self.assertEqual(0, state.start)
+
+    def test_consuming_reaches_eof(self):
+        state = _ScannerState('a')
+        state.consume()
+
+        self.assertEqual(state.EOF, state.consume())
+        self.assertEqual(1, state.position)
+
+    def test_consuming_stops_at_eof(self):
+        state = _ScannerState('a')
+        state.consume()
+        a = state.consume()
+        b = state.consume()
+        c = state.consume()
+
+        self.assertEqual([state.EOF, state.EOF, state.EOF], [a, b, c])
+        self.assertEqual(1, state.position)
+        self.assertEqual(0, state.start)
+
+    def test_backup_works(self):
+        state = _ScannerState('abc')
+        state.consume()
+        state.consume()
+        state.backup()
+
+        self.assertEqual('b', state.consume())
+        self.assertEqual(2, state.position)
+        self.assertEqual(0, state.start)
+
+        state.backup()
+
+        self.assertEqual('b', state.consume())
+        self.assertEqual(2, state.position)
+        self.assertEqual(0, state.start)
+
+    def test_skip_works(self):
+        state = _ScannerState("aafoo")
+        state.skip("a")
+
+        self.assertEqual(2, state.position)
+        self.assertEqual('f', state.consume())
+
+    def test_skip_stops_at_eof(self):
+        state = _ScannerState("aa")
+        state.skip("a")
+
+        self.assertEqual(2, state.position)
+        self.assertEqual(state.EOF, state.consume())
+
+    def test_skip_run_works(self):
+        state = _ScannerState("aafoo")
+        state.skip_run("af")
+
+        self.assertEqual(3, state.position)
+        self.assertEqual('o', state.consume())
+
+    def test_skip_run__stops_at_eof(self):
+        state = _ScannerState("aaf")
+        state.skip_run("af")
+
+        self.assertEqual(3, state.position)
+        self.assertEqual(state.EOF, state.consume())
+
+    def test_emit(self):
+        state = _ScannerState('abcdef')
+        state.consume()
+        state.consume()
+        state.consume()
+
+        self.assertEqual('abc', state.emit())
+        self.assertEqual(3, state.start)
+        self.assertEqual(3, state.position)
+
+    def test_skip_then_emit(self):
+        state = _ScannerState("aabb")
+        state.skip("a")
+
+        self.assertEqual('aa', state.emit())
+        self.assertEqual(2, state.start)
+        self.assertEqual(2, state.position)
+
+    def test_ignore_works(self):
+        state = _ScannerState("aabb")
+        state.skip("a")
+        state.ignore()
+
+        self.assertEqual(2, state.start)
+        self.assertEqual(2, state.position)
+
+    def test_expect_can_succeed(self):
+        state = _ScannerState('abc')
+        self.assertEqual('a', state.expect('a'))
+
+    def test_expect_can_fail(self):
+        state = _ScannerState('foo')
+        self.assertRaises(ValueError, state.expect, 'x')
+
+    def test_expect_match_can_succeed(self):
+        state = _ScannerState('foo')
+        c = state.expect_match('fo{2}')
+        self.assertEqual('foo', c.group(0))
+
+    def test_expect_match_can_fail(self):
+        state = _ScannerState('foo')
+        self.assertRaises(ValueError, state.expect_match, 'x')
+
+    def test_expect_eof(self):
+        state = _ScannerState('')
+        self.assertEqual(state.EOF, state.expect_eof())
+
+    def test_expect_eof_exception(self):
+        state = _ScannerState('x')
+        self.assertRaisesRegex(ValueError, 'expected __EOF__, got x instead', state.expect_eof)
+
+        state = _ScannerState('foo')
+        self.assertRaisesRegex(ValueError, 'expected __EOF__, got f instead', state.expect_eof)
+
+        state = _ScannerState(' ')
+        self.assertRaisesRegex(ValueError, 'expected __EOF__, got   instead', state.expect_eof)
+
+    def test_peek_can_succeed(self):
+        state = _ScannerState('abc')
+        self.assertTrue(state.peek('abc'))
+
+    def test_peek_can_fail(self):
+        state = _ScannerState('foo')
+        self.assertFalse(state.peek('fxo'))
+
+    def test_match_can_succeed(self):
+        state = _ScannerState('foo123')
+        state.consume()
+        state.consume()
+        state.consume()
+
+        self.assertTrue(state.match(r'\d{3}'))
+        self.assertEqual(6, state.position)
+        self.assertEqual(state.EOF, state.consume())
 
 
 class TestScanner(unittest.TestCase):
