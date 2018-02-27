@@ -54,10 +54,6 @@ class RangeNode(Node):
             ''.join(str(x) for x in self.end),
         )
 
-    def __rpr__(self):
-        return ('RangeNode<{0}(start:{1}, end:{2}, separator:{3}]>'
-                .format(self.__class__.__name__, self.start, self.end, self.separator))
-
     def __eq__(self, other):
         if not isinstance(other, RangeNode):
             return False
@@ -190,12 +186,13 @@ class CommandLineNode(Node):
         self.command = command
 
     def __str__(self):
-        # TODO return '{0}{1}' because if there's no range then it returns ", command*" which looks mangled
-        return '{0}, {1}'.format(str(self.line_range), str(self.command))
+        return '{}{}'.format(str(self.line_range), str(self.command))
 
     def validate(self):
         # type: () -> None
+
         # Raise an error for known conditions.
+
         if not (self.command and self.line_range):
             return
 

@@ -17,20 +17,20 @@
 
 import unittest
 
-from NeoVintageous.nv.ex.cmd_tab_next import scan_cmd_tab_next
-from NeoVintageous.nv.ex.cmd_tab_next import TokenCommandTabNext
-from NeoVintageous.nv.ex.cmd_tab_next import TokenEof
+from NeoVintageous.nv.ex.cmd_tabnext import scan_cmd_tabnext
+from NeoVintageous.nv.ex.cmd_tabnext import TokenCommandTabNext
+from NeoVintageous.nv.ex.cmd_tabnext import TokenEof
 from NeoVintageous.nv.ex.scanner_state import ScannerState
 
 
-def _scan_cmd_tab_next(source):
-    return scan_cmd_tab_next(ScannerState(source))
+def _scan_cmd_tabnext(source):
+    return scan_cmd_tabnext(ScannerState(source))
 
 
 class Test_scan_cmd_tab_next(unittest.TestCase):
 
     def assertScanEqual(self, actual, expected):
-        actual = _scan_cmd_tab_next(actual)
+        actual = _scan_cmd_tabnext(actual)
         expected = (None, [TokenCommandTabNext(**expected), TokenEof()])
 
         self.assertEqual(actual, expected)

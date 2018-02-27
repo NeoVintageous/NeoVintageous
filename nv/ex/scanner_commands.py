@@ -42,33 +42,33 @@ from .cmd_only import scan_cmd_only
 from .cmd_onoremap import scan_cmd_onoremap
 from .cmd_ounmap import scan_cmd_ounmap
 from .cmd_print import scan_cmd_print
-from .cmd_print_working_dir import scan_cmd_print_working_dir
+from .cmd_pwd import scan_cmd_pwd
+from .cmd_qall import scan_cmd_qall
 from .cmd_quit import scan_cmd_quit
-from .cmd_quit_all import scan_cmd_quit_all
-from .cmd_read_shell_out import scan_cmd_read_shell_out
-from .cmd_register import scan_cmd_register
+from .cmd_read import scan_cmd_read
+from .cmd_registers import scan_cmd_registers
 from .cmd_set import scan_cmd_set
-from .cmd_set_local import scan_cmd_set_local
+from .cmd_setlocal import scan_cmd_setlocal
 from .cmd_shell import scan_cmd_shell
 from .cmd_shell_out import scan_cmd_shell_out
 from .cmd_snoremap import scan_cmd_snoremap
 from .cmd_split import scan_cmd_split
 from .cmd_substitute import scan_cmd_substitute
-from .cmd_tab_first import scan_cmd_tab_first
-from .cmd_tab_last import scan_cmd_tab_last
-from .cmd_tab_next import scan_cmd_tab_next
-from .cmd_tab_only import scan_cmd_tab_only
-from .cmd_tab_prev import scan_cmd_tab_prev
+from .cmd_tabfirst import scan_cmd_tabfirst
+from .cmd_tablast import scan_cmd_tablast
+from .cmd_tabnext import scan_cmd_tabnext
+from .cmd_tabonly import scan_cmd_tabonly
+from .cmd_tabprevious import scan_cmd_tabprevious
 from .cmd_unabbreviate import scan_cmd_unabbreviate
 from .cmd_unmap import scan_cmd_unmap
 from .cmd_unvsplit import scan_cmd_unvsplit
 from .cmd_vnoremap import scan_cmd_vnoremap
 from .cmd_vsplit import scan_cmd_vsplit
 from .cmd_vunmap import scan_cmd_vunmap
+from .cmd_wall import scan_cmd_wall
+from .cmd_wq import scan_cmd_wq
+from .cmd_wqall import scan_cmd_wqall
 from .cmd_write import scan_cmd_write
-from .cmd_write_all import scan_cmd_write_all
-from .cmd_write_and_quit import scan_cmd_write_and_quit
-from .cmd_write_and_quit_all import scan_cmd_write_and_quit_all
 from .cmd_yank import scan_cmd_yank
 
 
@@ -102,31 +102,31 @@ routes[r'ono(?:remap)?'] = scan_cmd_onoremap
 routes[r'on(?:ly)?(?=!$|$)'] = scan_cmd_only
 routes[r'ounm(?:ap)?'] = scan_cmd_ounmap
 routes[r'p(?:rint)?$'] = scan_cmd_print
-routes[r'pwd?$'] = scan_cmd_print_working_dir
+routes[r'pwd?$'] = scan_cmd_pwd
 routes[r'q(?!a)(?:uit)?'] = scan_cmd_quit
-routes[r'qa(?:ll)?'] = scan_cmd_quit_all
-routes[r'r(?!eg)(?:ead)?'] = scan_cmd_read_shell_out
-routes[r'reg(?:isters)?(?=\s+[a-z0-9]+$|$)'] = scan_cmd_register
+routes[r'qa(?:ll)?'] = scan_cmd_qall
+routes[r'r(?!eg)(?:ead)?'] = scan_cmd_read
+routes[r'reg(?:isters)?(?=\s+[a-z0-9]+$|$)'] = scan_cmd_registers
 routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = scan_cmd_substitute
 routes[r'se(?:t)?(?=$|\s)'] = scan_cmd_set
-routes[r'setl(?:ocal)?'] = scan_cmd_set_local
+routes[r'setl(?:ocal)?'] = scan_cmd_setlocal
 routes[r'sh(?:ell)?'] = scan_cmd_shell
 routes[r'snor(?:emap)?'] = scan_cmd_snoremap
 routes[r'sp(?:lit)?'] = scan_cmd_split
-routes[r'tabfir(?:st)?'] = scan_cmd_tab_first
-routes[r'tabl(?:ast)?'] = scan_cmd_tab_last
-routes[r'tabn(?:ext)?'] = scan_cmd_tab_next
-routes[r'tabo(?:nly)?'] = scan_cmd_tab_only
-routes[r'tabp(?:revious)?'] = scan_cmd_tab_prev
-routes[r'tabr(?:ewind)?'] = scan_cmd_tab_first
+routes[r'tabfir(?:st)?'] = scan_cmd_tabfirst
+routes[r'tabl(?:ast)?'] = scan_cmd_tablast
+routes[r'tabn(?:ext)?'] = scan_cmd_tabnext
+routes[r'tabo(?:nly)?'] = scan_cmd_tabonly
+routes[r'tabp(?:revious)?'] = scan_cmd_tabprevious
+routes[r'tabr(?:ewind)?'] = scan_cmd_tabfirst
 routes[r'una(?:bbreviate)?'] = scan_cmd_unabbreviate
 routes[r'unm(?:ap)?'] = scan_cmd_unmap
 routes[r'unvsplit$'] = scan_cmd_unvsplit
 routes[r'vn(?:oremap)?'] = scan_cmd_vnoremap
 routes[r'vu(?:nmap)?'] = scan_cmd_vunmap
 routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = scan_cmd_write
-routes[r'wqa(?:ll)?'] = scan_cmd_write_and_quit_all
-routes[r'xa(?:ll)?'] = scan_cmd_write_and_quit_all
-routes[r'wa(?:ll)?'] = scan_cmd_write_all
-routes[r'wq(?=[^a-zA-Z]|$)?'] = scan_cmd_write_and_quit
+routes[r'wqa(?:ll)?'] = scan_cmd_wqall
+routes[r'xa(?:ll)?'] = scan_cmd_wqall
+routes[r'wa(?:ll)?'] = scan_cmd_wall
+routes[r'wq(?=[^a-zA-Z]|$)?'] = scan_cmd_wq
 routes[r'y(?:ank)?'] = scan_cmd_yank

@@ -62,6 +62,7 @@ from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
+from NeoVintageous.nv.vim import run_ex_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
@@ -79,6 +80,7 @@ __all__ = [
     '_nv_process_notation',
     '_nv_replace_line',
     '_nv_run_cmds',
+    '_nv_run_ex_cmd',
     '_nv_setting_completion',
     '_nv_write_fs_completion',
     'NeovintageousOpenMyRcFileCommand',
@@ -238,10 +240,7 @@ class _nv_goto_help(WindowCommand):
 
         match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
         if match:
-            subject = subject.strip('|')
-            # TODO Refactor ex_help code into a reusable middle layer so that
-            # this command doesn't have to call the ex command.
-            self.window.run_command('ex_help', {'command_line': 'help ' + subject})
+            run_ex_command(self.window, 'help', {'command_line': 'help ' + subject.strip('|')})
         else:
             return message('E149: Sorry, no help for %s' % subject)
 
@@ -249,12 +248,18 @@ class _nv_goto_help(WindowCommand):
 class _nv_run_cmds(TextCommand):
 
     def run(self, edit, commands):
-        # Runs multple commands.
+        # Run a list of commands one after the other.
         #
         # Args:
         #   commands (list): A list of commands.
         for cmd, args in commands:
             self.view.run_command(cmd, args)
+
+
+class _nv_run_ex_cmd(WindowCommand):
+
+    def run(self, cmd, args=None):
+        run_ex_command(self.window, cmd, args)
 
 
 class _nv_feed_key(ViWindowCommandBase):
@@ -356,7 +361,7 @@ class _nv_feed_key(ViWindowCommandBase):
                 state.motion_count = mcount
                 state.action_count = acount
 
-                _log.info('user mapping %s -> %s', key, new_keys)
+                _log.info('found user mapping %s -> %s', key, new_keys)
 
                 # Support for basic Command-line mode mappings:
                 #
@@ -639,6 +644,7 @@ class _nv_cmdline(WindowCommand):
         return text
 
     def run(self, initial_text=':', cmd_line=''):
+        _log.debug('cmdline.run initial_text = %s cmd_line = %s', initial_text, cmd_line)
         if cmd_line:
             # The caller has provided a command, to we're not in interactive
             # mode -- just run the command.
@@ -702,11 +708,8 @@ class _nv_cmdline(WindowCommand):
             if not parsed.command:
                 parsed.command = TokenCommandGoto()
 
-            cmd = parsed.command.target_command
-            args = {'command_line': cmd_line[1:]}
-
-            _log.debug('run command %s %s', cmd, args)
-            self.window.run_command(cmd, args)
+            _log.debug('cmdline.done parsed %s (%s)', parsed.command.target_command, parsed)
+            run_ex_command(self.window, parsed.command.target_command, {'command_line': cmd_line[1:]})
         except Exception as e:
             message('{} ({})'.format(str(e), cmd_line))
             _log.exception('{}'.format(cmd_line))

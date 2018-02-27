@@ -15,30 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_REGISTERS
+from .tokens import TOKEN_COMMAND_SETLOCAL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('registers', 'reg')
-class TokenCommandRegisters(TokenOfCommand):
+@ex.command('setlocal', 'setlocal')
+class TokenCommandSetlocal(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_REGISTERS, 'registers', *args, **kwargs)
-        self.target_command = 'ex_registers'
+        super().__init__(params, TOKEN_COMMAND_SETLOCAL, 'setlocal', *args, **kwargs)
+        self.target_command = 'ex_setlocal'
+
+    @property
+    def value(self):
+        return self.params['value']
+
+    @property
+    def option(self):
+        return self.params['option']
 
 
-def scan_cmd_register(state):
-    params = {'names': []}
+def scan_cmd_setlocal(state):
+    params = {'option': None, 'value': None}
 
     state.skip(' ')
     state.ignore()
 
-    while True:
-        c = state.consume()
-        if c == state.EOF:
-            return None, [TokenCommandRegisters(params), TokenEof()]
-        elif c.isalpha() or c.isdigit():
-            params['names'].append(c)
-        else:
-            raise ValueError('wrong arguments')
+    m = state.expect_match(r'(?P<option>.+?)(?:[:=](?P<value>.+?))?$')
+    params.update(m.groupdict())
+
+    return None, [TokenCommandSetlocal(params), TokenEof()]

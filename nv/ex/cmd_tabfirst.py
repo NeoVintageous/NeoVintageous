@@ -15,34 +15,29 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_SET_LOCAL
+from .tokens import TOKEN_COMMAND_TABFIRST
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('setlocal', 'setlocal')
-class TokenCommandSet(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_SET_LOCAL, 'setlocal', *args, **kwargs)
-        self.target_command = 'ex_set_local'
-
-    @property
-    def value(self):
-        return self.params['value']
-
-    @property
-    def option(self):
-        return self.params['option']
+@ex.command('tabfirst', 'tabfir')
+@ex.command('tabrewind', 'tabr')
+class TokenCommandTabFirst(TokenOfCommand):
+    def __init__(self, *args, **kwargs):
+        super().__init__([], TOKEN_COMMAND_TABFIRST, 'tabfirst', *args, **kwargs)
+        self.target_command = 'ex_tabfirst'
 
 
-def scan_cmd_set_local(state):
-    params = {'option': None, 'value': None}
+def scan_cmd_tabfirst(state):
+    c = state.consume()
+    if c == state.EOF:
+        return None, [TokenCommandTabFirst(), TokenEof()]
 
-    state.skip(' ')
-    state.ignore()
+    # TODO [bug] ":command" followed by character that is not "!"  shouldn't be
+    # valid e.g. the ":close" command should run when !:closex". There are a
+    # bunch of commands that have this bug.
 
-    m = state.expect_match(r'(?P<option>.+?)(?:[:=](?P<value>.+?))?$')
-    params.update(m.groupdict())
+    bang = c == '!'
 
-    return None, [TokenCommandSet(params), TokenEof()]
+    return None, [TokenCommandTabFirst(forced=bang), TokenEof()]

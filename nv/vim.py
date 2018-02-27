@@ -162,7 +162,7 @@ if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
 
-            logger.debug('debug log file: \'{}\''.format(file))
+            logger.debug('debug log file: %s', file)
         else:
             console_message('could not create log file \'{}\''.format(file))
 
@@ -200,3 +200,19 @@ else:
 
     def get_logger(name):
         return _NullLogger()
+
+
+_log = get_logger(__name__)
+
+
+def run_ex_command(window, cmd, args=None):
+    _log.debug('run ex command -> %s with %s', cmd, args)
+
+    # TODO [refactor] Temporary bc logic.
+    if not cmd.startswith('ex_'):
+        cmd = 'ex_' + cmd
+
+    if args is None:
+        args = {'command_line': cmd[3:]}
+
+    window.run_command(cmd, args)

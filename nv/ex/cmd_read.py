@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_WRITE_AND_QUIT
+from .tokens import TOKEN_COMMAND_READ
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
@@ -29,48 +29,59 @@ plus_plus_translations = {
 }
 
 
-@ex.command('wq', 'wq')
-class TokenCommandWriteAndQuit(TokenOfCommand):
+@ex.command('read', 'r')
+class TokenCommandRead(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_WRITE_AND_QUIT, 'wq', *args, **kwargs)
-        self.target_command = 'ex_write_and_quit'
+        super().__init__(params, TOKEN_COMMAND_READ, 'read', *args, **kwargs)
+        self.target_command = 'ex_read'
+
+    @property
+    def command(self):
+        return self.params['cmd']
+
+    @property
+    def file_name(self):
+        return self.params['file_name']
+
+    @property
+    def plusplus(self):
+        return self.params['++']
 
 
-def scan_cmd_write_and_quit(state):
+def scan_cmd_read(state):
     params = {
-        '++': None,
-        'file': None,
+        'cmd': None,
+        '++': [],
+        'file_name': None,
     }
 
-    c = state.consume()
-    if c == state.EOF:
-        return None, [TokenCommandWriteAndQuit(params), TokenEof()]
-
-    bang = True if c == '!' else False
-    if not bang:
-        state.backup()
+    state.skip(' ')
+    state.ignore()
 
     c = state.consume()
+
     if c == '+':
         state.expect('+')
         state.ignore()
-
         # TODO: expect_match should work with emit()
         # https://vimhelp.appspot.com/editing.txt.html#[++opt]
         m = state.expect_match(
             r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
             lambda: Exception("E474: Invalid argument"))
-
         name = m.group(0)
         params['++'] = plus_plus_translations.get(name, name)
-
         state.ignore()
-        raise NotImplementedError('param not implemented')
+        raise NotImplementedError('++opt not implemented')
 
-    if c == state.EOF:
-        return None, [TokenCommandWriteAndQuit(params), TokenEof()]
+    elif c == '!':
+        m = state.match(r'(?P<cmd>.+)')
+        params.update(m.groupdict())
 
-    m = state.expect_match(r'.+$')
-    params['file'] = m.group(0).strip()
+    else:
+        state.backup()
+        m = state.match(r'(?P<file_name>.+)$')
+        params.update(m.groupdict())
 
-    return None, [TokenCommandWriteAndQuit(params), TokenEof()]
+    state.expect_eof()
+
+    return None, [TokenCommandRead(params), TokenEof()]

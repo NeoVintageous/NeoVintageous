@@ -15,20 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_WRITE_ALL
+from .tokens import TOKEN_COMMAND_QALL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('wall', 'wa')
-class TokenCommandWriteAllCommand(TokenOfCommand):
+@ex.command('qall', 'qa')
+class TokenCommandQall(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_WRITE_ALL, 'write_all', *args, **kwargs)
-        self.target_command = 'ex_write_all'
+        super().__init__({}, TOKEN_COMMAND_QALL, 'qall', *args, **kwargs)
+        self.target_command = 'ex_qall'
 
 
-def scan_cmd_write_all(state):
+def scan_cmd_qall(state):
     bang = state.consume() == '!'
 
     # TODO [bug] ":command" followed by character that is not "!"  shouldn't be
@@ -37,4 +37,4 @@ def scan_cmd_write_all(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandWriteAllCommand(forced=bang), TokenEof()]
+    return None, [TokenCommandQall(forced=bang), TokenEof()]

@@ -15,20 +15,30 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_PRINT_WORKING_DIR
+from .tokens import TOKEN_COMMAND_REGISTERS
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('pwd', 'pwd')
-class TokenCommandPrintWorkingDir(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_PRINT_WORKING_DIR, 'pwd', *args, **kwargs)
-        self.target_command = 'ex_print_working_dir'
+@ex.command('registers', 'reg')
+class TokenCommandRegisters(TokenOfCommand):
+    def __init__(self, params, *args, **kwargs):
+        super().__init__(params, TOKEN_COMMAND_REGISTERS, 'registers', *args, **kwargs)
+        self.target_command = 'ex_registers'
 
 
-def scan_cmd_print_working_dir(state):
-    state.expect_eof()
+def scan_cmd_registers(state):
+    params = {'names': []}
 
-    return None, [TokenCommandPrintWorkingDir(), TokenEof()]
+    state.skip(' ')
+    state.ignore()
+
+    while True:
+        c = state.consume()
+        if c == state.EOF:
+            return None, [TokenCommandRegisters(params), TokenEof()]
+        elif c.isalpha() or c.isdigit():
+            params['names'].append(c)
+        else:
+            raise ValueError('wrong arguments')

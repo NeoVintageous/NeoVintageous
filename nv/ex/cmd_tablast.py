@@ -15,26 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_QUIT_ALL
+from .tokens import TOKEN_COMMAND_TABLAST
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('quall', 'qa')
-class TokenCommandQuitAll(TokenOfCommand):
+@ex.command('tablast', 'tabl')
+class TokenCommandTabLast(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_QUIT_ALL, 'qall', *args, **kwargs)
-        self.target_command = 'ex_quit_all'
+        super().__init__([], TOKEN_COMMAND_TABLAST, 'tablast', *args, **kwargs)
+        self.target_command = 'ex_tablast'
 
 
-def scan_cmd_quit_all(state):
-    bang = state.consume() == '!'
+def scan_cmd_tablast(state):
+    c = state.consume()
+    if c == state.EOF:
+        return None, [TokenCommandTabLast(), TokenEof()]
 
-    # TODO [bug] ":command" followed by character that is not "!"  shouldn't be
-    # valid e.g. the ":close" command should run when !:closex". There are a
-    # bunch of commands that have this bug.
+    bang = c == '!'
 
-    state.expect_eof()
-
-    return None, [TokenCommandQuitAll(forced=bang), TokenEof()]
+    return None, [TokenCommandTabLast(forced=bang), TokenEof()]

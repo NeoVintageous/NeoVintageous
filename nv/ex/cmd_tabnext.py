@@ -15,29 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_TAB_FIRST
+from .tokens import TOKEN_COMMAND_TABNEXT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('tabfirst', 'tabfir')
-@ex.command('tabrewind', 'tabr')
-class TokenCommandTabFirst(TokenOfCommand):
+@ex.command('tabnext', 'tabn')
+class TokenCommandTabNext(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__([], TOKEN_COMMAND_TAB_FIRST, 'tabfirst', *args, **kwargs)
-        self.target_command = 'ex_tabfirst'
+        super().__init__([], TOKEN_COMMAND_TABNEXT, 'tabnext', *args, **kwargs)
+        self.target_command = 'ex_tabnext'
 
 
-def scan_cmd_tab_first(state):
+def scan_cmd_tabnext(state):
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandTabFirst(), TokenEof()]
-
-    # TODO [bug] ":command" followed by character that is not "!"  shouldn't be
-    # valid e.g. the ":close" command should run when !:closex". There are a
-    # bunch of commands that have this bug.
+        return None, [TokenCommandTabNext(), TokenEof()]
 
     bang = c == '!'
 
-    return None, [TokenCommandTabFirst(forced=bang), TokenEof()]
+    return None, [TokenCommandTabNext(forced=bang), TokenEof()]

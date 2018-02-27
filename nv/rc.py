@@ -23,6 +23,7 @@ import sublime
 
 from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import message
+from NeoVintageous.nv.vim import run_ex_command
 
 
 _log = get_logger(__name__)
@@ -40,6 +41,7 @@ _recursive_mapping_alts = {
 
 
 def _file_name():
+    # TODO Rename .vintageousrc file -> .neovintageousrc
     return os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
 
 
@@ -70,9 +72,7 @@ def _run():
             for line in f:
                 cmd, args = _parse_line(line)
                 if cmd:
-                    _log.debug('run command %s %s', cmd, args)
-                    window.run_command(cmd, args)
-
+                    run_ex_command(window, cmd, args)
     except FileNotFoundError:
         _log.debug('rcfile not found')
 

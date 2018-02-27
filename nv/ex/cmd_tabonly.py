@@ -15,24 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_TAB_PREV
+from .tokens import TOKEN_COMMAND_TABONLY
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
 
 
-@ex.command('tabprev', 'tabp')
-class TokenCommandTabPrev(TokenOfCommand):
+@ex.command('tabonly', 'tabo')
+class TokenCommandTabOnly(TokenOfCommand):
     def __init__(self, *args, **kwargs):
-        super().__init__([], TOKEN_COMMAND_TAB_PREV, 'tabprev', *args, **kwargs)
-        self.target_command = 'ex_tabprev'
+        super().__init__([], TOKEN_COMMAND_TABONLY, 'tabonly', *args, **kwargs)
+        self.target_command = 'ex_tabonly'
 
 
-def scan_cmd_tab_prev(state):
+def scan_cmd_tabonly(state):
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandTabPrev(), TokenEof()]
+        return None, [TokenCommandTabOnly(), TokenEof()]
 
     bang = c == '!'
 
-    return None, [TokenCommandTabPrev(forced=bang), TokenEof()]
+    return None, [TokenCommandTabOnly(forced=bang), TokenEof()]

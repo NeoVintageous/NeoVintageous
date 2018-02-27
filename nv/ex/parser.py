@@ -57,15 +57,12 @@ class _ParserState:
 
 def parse_command_line(source):
     # type: (str) -> CommandLineNode
+
     # The parser works its way through the command line by passing the current
     # state to the next parsing function. It stops when no parsing funcion is
     # returned from the previous one.
-    #
-    # Args:
-    #   :source (str):
-    #
-    # Returns:
-    #   CommandLineNode
+
+    _log.debug('parsing source >>>%s<<<', source)
 
     state = _ParserState(source)
     parse_func = _parse_line_ref
@@ -75,7 +72,7 @@ def parse_command_line(source):
         if parse_func is None:
             command_line.validate()
 
-            _log.debug('cmdline command {}'.format(command_line))
+            _log.debug('parsed %s', command_line)
 
             return command_line
 

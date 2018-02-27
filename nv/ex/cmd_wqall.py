@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_WRITE_AND_QUIT_ALL
+from .tokens import TOKEN_COMMAND_WQALL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 from NeoVintageous.nv import ex
@@ -31,18 +31,18 @@ plus_plus_translations = {
 
 @ex.command('wqall', 'wqa')
 @ex.command('xall', 'xa')
-class TokenCommandWriteAndQuitAll(TokenOfCommand):
+class TokenCommandWqall(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_WRITE_AND_QUIT_ALL, 'wqall', *args, **kwargs)
+        super().__init__(params, TOKEN_COMMAND_WQALL, 'wqall', *args, **kwargs)
         self.addressable = True
-        self.target_command = 'ex_write_and_quit_all'
+        self.target_command = 'ex_wqall'
 
     @property
     def options(self):
         return self.params['++']
 
 
-def scan_cmd_write_and_quit_all(state):
+def scan_cmd_wqall(state):
     params = {'++': ''}
 
     state.skip(' ')
@@ -64,4 +64,4 @@ def scan_cmd_write_and_quit_all(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandWriteAndQuitAll(params), TokenEof()]
+    return None, [TokenCommandWqall(params), TokenEof()]

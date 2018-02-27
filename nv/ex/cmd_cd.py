@@ -38,8 +38,13 @@ class TokenCommandCd(TokenOfCommand):
 
 def scan_cmd_cd(state):
     params = {'path': None, '-': None}
+    bang = False
 
-    bang = state.consume() == '!'
+    c = state.consume()
+    if c == state.EOF:
+        return None, [TokenCommandCd(params, forced=bang), TokenEof()]
+
+    bang = c == '!'
     if not bang:
         state.backup()
 
@@ -47,13 +52,14 @@ def scan_cmd_cd(state):
     state.ignore()
 
     c = state.consume()
+    if c == state.EOF:
+        return None, [TokenCommandCd(params, forced=bang), TokenEof()]
+
     if c == '-':
-        params['-'] = '-'
-        state.expect_eof()
         raise NotImplementedError('parameter not implemented')
-    elif c != state.EOF:
-        state.backup()
-        m = state.match(r'(?P<path>.+?)\s*$')
-        params.update(m.groupdict())
+
+    state.backup()
+    m = state.match(r'(?P<path>.+?)\s*$')
+    params.update(m.groupdict())
 
     return None, [TokenCommandCd(params, forced=bang), TokenEof()]
