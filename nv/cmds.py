@@ -24,6 +24,7 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
+from NeoVintageous.nv.cmds_ex import do_ex_command
 from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse
@@ -62,7 +63,6 @@ from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
-from NeoVintageous.nv.vim import run_ex_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
@@ -239,7 +239,7 @@ class _nv_goto_help(WindowCommand):
 
         match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
         if match:
-            run_ex_command(self.window, 'help', {'command_line': 'help ' + subject.strip('|')})
+            do_ex_command(self.window, 'help', {'command_line': 'help ' + subject.strip('|')})
         else:
             return message('E149: Sorry, no help for %s' % subject)
 
@@ -624,11 +624,14 @@ class _nv_replace_line(TextCommand):
 
 
 class _nv_cmdline(WindowCommand):
+
     interactive_call = True
 
     def is_enabled(self):
+        # TODO refactor into a text command as the view is always required?
         return bool(self.window.active_view())
 
+    # TODO [refactor]
     def adjust_initial_text(self, text):
         state = State(self.window.active_view())
         if state.mode in (VISUAL, VISUAL_LINE):
@@ -636,17 +639,23 @@ class _nv_cmdline(WindowCommand):
 
         return text
 
+    # TODO [review] initial_text argument looks unused.
     def run(self, initial_text=':', cmd_line=''):
         _log.debug('cmdline.run initial_text = %s cmd_line = %s', initial_text, cmd_line)
+
         if cmd_line:
-            # The caller has provided a command, to we're not in interactive
-            # mode -- just run the command.
+
+            # The caller has provided a command (non-interactive mode), so run
+            # the command without a prompt.
+            # TODO [review] Non-interactive mode looks unused?
+
             _nv_cmdline.interactive_call = False
-            self.on_done(cmd_line)
-            return
+
+            return self.on_done(cmd_line)
         else:
             _nv_cmdline.interactive_call = True
 
+        # TODO There has got to be a better way to handle fs ("file system"?) completions.
         _nv_fs_completion.invalidate()
 
         ui_cmdline_prompt(
@@ -654,8 +663,10 @@ class _nv_cmdline(WindowCommand):
             initial_text=self.adjust_initial_text(initial_text),
             on_done=self.on_done,
             on_change=self.on_change,
-            on_cancel=self.on_cancel)
+            on_cancel=self.on_cancel
+        )
 
+        # TODO [refactor] can this be moved obove the call to ui_cmdline_prompt()?
         state = State(self.window.active_view())
         state.reset_during_init = False
 
@@ -702,7 +713,7 @@ class _nv_cmdline(WindowCommand):
                 parsed.command = TokenCommandGoto()
 
             _log.debug('cmdline.done parsed %s (%s)', parsed.command.target_command, parsed)
-            run_ex_command(self.window, parsed.command.target_command, {'command_line': cmd_line[1:]})
+            do_ex_command(self.window, parsed.command.target_command, {'command_line': cmd_line[1:]})
         except Exception as e:
             message('{} ({})'.format(str(e), cmd_line))
             _log.exception('{}'.format(cmd_line))

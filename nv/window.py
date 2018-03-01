@@ -17,7 +17,6 @@
 
 from sublime import Region
 
-from NeoVintageous.nv.vim import run_ex_command
 from NeoVintageous.nv.vim import status_message
 
 
@@ -694,7 +693,9 @@ def window_tab_control(window, command, file_name=None, index=None):
             window.focus_view(group_view)
 
             # TODO [review] Probably doesn't need use :quit (just close the view).
-            run_ex_command(window, 'quit')
+            from NeoVintageous.nv.cmds_ex import do_ex_command
+
+            do_ex_command(window, 'quit')
 
         window.focus_view(view)
 

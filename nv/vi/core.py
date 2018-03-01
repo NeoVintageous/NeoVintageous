@@ -25,11 +25,9 @@ from NeoVintageous.nv.vim import console_message
 
 
 class ViCommandMixin(object):
-    """
-    Provide functionality needed by most vim commands.
 
-    Intended to be used with TextCommand and WindowCommand classes.
-    """
+    # Provide functionality needed by some vim commands. Intended to be used
+    # with TextCommand and WindowCommand classes.
 
     @property
     def _view(self):

@@ -23,6 +23,7 @@ from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
 
+from NeoVintageous.nv.cmds_ex import do_ex_command
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
@@ -42,7 +43,6 @@ from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
-from NeoVintageous.nv.vim import run_ex_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import UNKNOWN
@@ -1627,7 +1627,7 @@ class _vi_big_z_big_q(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        run_ex_command(self.window, 'quit', {'command_line': 'q!'})
+        do_ex_command(self.window, 'quit', {'command_line': 'q!'})
 
 
 class _vi_big_z_big_z(ViWindowCommandBase):
@@ -1635,7 +1635,7 @@ class _vi_big_z_big_z(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        run_ex_command(self.window, 'exit')
+        do_ex_command(self.window, 'exit')
 
 
 class _vi_big_p(ViTextCommandBase):
@@ -2393,7 +2393,7 @@ class _vi_ctrl_g(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        run_ex_command(self.window, 'file')
+        do_ex_command(self.window, 'file')
 
 
 # https://vimhelp.appspot.com/scroll.txt.html#CTRL-Y

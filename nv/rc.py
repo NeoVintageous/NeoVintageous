@@ -23,7 +23,6 @@ import sublime
 
 from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import message
-from NeoVintageous.nv.vim import run_ex_command
 
 
 _log = get_logger(__name__)
@@ -66,13 +65,15 @@ def reload():
 def _run():
     _log.debug('run %s', _file_name())
 
+    from NeoVintageous.nv.cmds_ex import do_ex_command
+
     try:
         window = sublime.active_window()
         with builtins.open(_file_name(), 'r') as f:
             for line in f:
                 cmd, args = _parse_line(line)
                 if cmd:
-                    run_ex_command(window, cmd, args)
+                    do_ex_command(window, cmd, args)
     except FileNotFoundError:
         _log.debug('rcfile not found')
 

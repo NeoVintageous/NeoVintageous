@@ -19,6 +19,7 @@ import os
 import re
 import stat
 import subprocess
+import sys
 
 from sublime import ENCODED_POSITION
 from sublime import find_resources
@@ -31,7 +32,6 @@ from sublime import platform
 from sublime import Region
 from sublime import set_timeout
 from sublime_plugin import TextCommand
-from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import shell
 from NeoVintageous.nv import variables
@@ -43,7 +43,7 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import abbrev
 from NeoVintageous.nv.vi import utils
-from NeoVintageous.nv.vi.core import ViCommandMixin as WindowCommandMixin
+from NeoVintageous.nv.vi.core import ViCommandMixin
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
@@ -53,10 +53,10 @@ from NeoVintageous.nv.vi.utils import has_dirty_buffers
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vim import console_message
+from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
-from NeoVintageous.nv.vim import run_ex_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
@@ -66,64 +66,11 @@ from NeoVintageous.nv.window import window_split
 from NeoVintageous.nv.window import window_tab_control
 from NeoVintageous.nv.window import WindowAPI
 
-
 __all__ = [
-    'ExAbbreviate',
-    'ExBrowse',
-    'ExCd',
-    'ExCdd',
-    'ExClose',
-    'ExCopy',
-    'ExCquit',
-    'ExDelete',
-    'ExDoubleAmpersand',
-    'ExEdit',
-    'ExExit',
-    'ExFile',
-    'ExGlobal',
-    'ExGoto',
-    'ExHelp',
-    'ExLet',
-    'ExMove',
-    'ExNew',
-    'ExNnoremap',
-    'ExNoremap',
-    'ExNunmap',
-    'ExOnly',
-    'ExOnoremap',
-    'ExOunmap',
-    'ExPrint',
-    'ExPromptSelectOpenFile',
-    'ExPwd',
-    'ExQuit',
-    'ExQall',
-    'ExRead',
-    'ExRegisters',
-    'ExSet',
-    'ExSetlocal',
-    'ExShell',
-    'ExShellOut',
-    'ExSnoremap',
-    'ExSplit',
-    'ExSubstitute',
-    'ExSunmap',
-    'ExTabfirst',
-    'ExTablast',
-    'ExTabnext',
-    'ExTabonly',
-    'ExTabprevious',
-    'ExUnabbreviate',
-    'ExUnmap',
-    'ExUnvsplit',
-    'ExVnoremap',
-    'ExVsplit',
-    'ExVunmap',
-    'ExWq',
-    'ExWall',
-    'ExWqall',
-    'ExWrite',
-    'ExYank'
+    '_nv_run_ex_text_cmd'
 ]
+
+_log = get_logger(__name__)
 
 
 def _changing_cd(f, *args, **kwargs):
@@ -147,36 +94,93 @@ def _changing_cd(f, *args, **kwargs):
     return inner
 
 
-class ExTextCommandBase(TextCommand):
+class _ExWindowCommand:
+    def __init__(self, window):
+        self.window = window
 
-    def serialize_sel(self):
+
+class _ExTextCommand:
+    def __init__(self, view):
+        self.view = view
+
+
+# TODO [refactor]
+class _ExTextCommandBase(_ExTextCommand):
+
+    def _serialize_sel(self):
         sels = [(r.a, r.b) for r in list(self.view.sel())]
         self.view.settings().set('ex_data', {'prev_sel': sels})
 
-    def deserialize_sel(self, name='next_sel'):
+    def _deserialize_sel(self, name='next_sel'):
         return self.view.settings().get('ex_data')[name] or []
 
-    def set_sel(self):
-        sel = self.deserialize_sel()
+    def _set_sel(self):
+        sel = self._deserialize_sel()
         self.view.sel().clear()
         self.view.sel().add_all([Region(b) for (a, b) in sel])
 
     def set_next_sel(self, data):
         self.view.settings().set('ex_data', {'next_sel': data})
 
-    def set_mode(self):
+    def _set_mode(self):
         state = State(self.view)
         state.enter_normal_mode()
         self.view.run_command('_enter_normal_mode')
 
     def run(self, edit, *args, **kwargs):
-        self.serialize_sel()
-        self.run_ex_command(edit, *args, **kwargs)
-        self.set_sel()
-        self.set_mode()
+        self._serialize_sel()
+        self._run(edit, *args, **kwargs)
+        self._set_sel()
+        self._set_mode()
 
 
-class ExGoto(WindowCommand, WindowCommandMixin):
+# TODO [refactor] into _nv_cmdline non-interactive command
+class _nv_run_ex_text_cmd(TextCommand):
+    def run(self, edit, name, *args, **kwargs):
+        _log.debug('_nv_run_ex_text_cmd -> %s with %s %s in %s %s', name, args, kwargs, self.view.id(), self.view.file_name())  # noqa: E501
+        mod = sys.modules[__name__]
+        ex_cmd = getattr(mod, name, None)
+        ex_cmd(self.view).run(edit, *args, **kwargs)
+
+
+# TODO [refactor]
+def do_ex_command(window, name, args=None):
+    _log.debug('do ex command -> %s %s', name, args)
+
+    name = name.title().replace('_', '')
+    if not name.startswith('Ex'):
+        name = 'Ex' + name
+
+    if args is None:
+        # XXX default to cmd name for the moment.
+        args = {'command_line': name[2:].lower()}
+
+    mod = sys.modules[__name__]
+    ex_cmd = getattr(mod, name, None)
+
+    if ex_cmd:
+        if issubclass(ex_cmd, _ExWindowCommand):
+            _log.debug('prepared ex window command -> %s %s %s', name, args, ex_cmd)
+            ex_cmd(window).run(**args)
+
+        elif issubclass(ex_cmd, _ExTextCommand):
+
+            # Text commands need edit tokens and they can only be created by
+            # Sublime Text commands, so we need to wrap the command in a ST text
+            # command.
+
+            args['name'] = name
+
+            _log.debug('prepared ex text command -> %s %s %s', name, args, ex_cmd)
+
+            window.run_command('_nv_run_ex_text_cmd', args)
+        else:
+            raise RuntimeError('unknown ex cmd type {}'.format(ex_cmd))
+    else:
+        raise RuntimeError('unknown ex cmd {}'.format(name))
+
+
+class ExGoto(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line):
         if not command_line:
@@ -199,7 +203,7 @@ class ExGoto(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/help.txt.html
-class ExHelp(WindowCommand, WindowCommandMixin):
+class ExHelp(_ExWindowCommand, ViCommandMixin):
 
     _tags_cache = {}
 
@@ -309,7 +313,7 @@ class ExHelp(WindowCommand, WindowCommandMixin):
 
 # https://vimhelp.appspot.com/various.txt.html#:%21
 # https://vimhelp.appspot.com/various.txt.html#:%21%21
-class ExShellOut(TextCommand):
+class ExShellOut(_ExTextCommand):
     _last_command = None
 
     @_changing_cd
@@ -354,7 +358,7 @@ class ExShellOut(TextCommand):
 
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
-class ExShell(WindowCommand, WindowCommandMixin):
+class ExShell(_ExWindowCommand, ViCommandMixin):
     """
     This command starts a shell.
 
@@ -407,7 +411,7 @@ class ExShell(WindowCommand, WindowCommandMixin):
 # https://vimhelp.appspot.com/insert.txt.html#:r
 # TODO [review] This command looks unused
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
-class ExRead(TextCommand):
+class ExRead(_ExTextCommand):
 
     @_changing_cd
     def run(self, edit, command_line=''):
@@ -453,7 +457,7 @@ class ExRead(TextCommand):
 
 
 # https://vimhelp.appspot.com/windows.txt.html#:ls
-class ExPromptSelectOpenFile(WindowCommand, WindowCommandMixin):
+class ExPromptSelectOpenFile(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         self.file_names = [self._get_view_info(view) for view in self.window.views()]
@@ -495,7 +499,7 @@ class ExPromptSelectOpenFile(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:noremap
-class ExNoremap(WindowCommand, WindowCommandMixin):
+class ExNoremap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -511,7 +515,7 @@ class ExNoremap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:unmap
-class ExUnmap(WindowCommand, WindowCommandMixin):
+class ExUnmap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -528,7 +532,7 @@ class ExUnmap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:nnoremap
-class ExNnoremap(WindowCommand, WindowCommandMixin):
+class ExNnoremap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -540,7 +544,7 @@ class ExNnoremap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:nunmap
-class ExNunmap(WindowCommand, WindowCommandMixin):
+class ExNunmap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -553,7 +557,7 @@ class ExNunmap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:onoremap
-class ExOnoremap(WindowCommand, WindowCommandMixin):
+class ExOnoremap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -565,7 +569,7 @@ class ExOnoremap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:ounmap
-class ExOunmap(WindowCommand, WindowCommandMixin):
+class ExOunmap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -578,7 +582,7 @@ class ExOunmap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:snoremap
-class ExSnoremap(WindowCommand, WindowCommandMixin):
+class ExSnoremap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -590,7 +594,7 @@ class ExSnoremap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:sunmap
-class ExSunmap(WindowCommand, WindowCommandMixin):
+class ExSunmap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -603,7 +607,7 @@ class ExSunmap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:vnoremap
-class ExVnoremap(WindowCommand, WindowCommandMixin):
+class ExVnoremap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -617,7 +621,7 @@ class ExVnoremap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:vunmap
-class ExVunmap(WindowCommand, WindowCommandMixin):
+class ExVunmap(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -632,7 +636,7 @@ class ExVunmap(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:abbreviate
-class ExAbbreviate(WindowCommand, WindowCommandMixin):
+class ExAbbreviate(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         if not command_line:
@@ -652,7 +656,7 @@ class ExAbbreviate(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/map.txt.html#:unabbreviate
-class ExUnabbreviate(WindowCommand, WindowCommandMixin):
+class ExUnabbreviate(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -666,7 +670,7 @@ class ExUnabbreviate(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:pwd
-class ExPwd(WindowCommand, WindowCommandMixin):
+class ExPwd(_ExWindowCommand, ViCommandMixin):
 
     @_changing_cd
     def run(self, command_line=''):
@@ -675,7 +679,7 @@ class ExPwd(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:write
-class ExWrite(WindowCommand, WindowCommandMixin):
+class ExWrite(_ExWindowCommand, ViCommandMixin):
 
     @_changing_cd
     def run(self, command_line=''):
@@ -822,7 +826,7 @@ class ExWrite(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:wa
-class ExWall(WindowCommand, WindowCommandMixin):
+class ExWall(_ExWindowCommand, ViCommandMixin):
 
     @_changing_cd
     def run(self, command_line=''):
@@ -840,7 +844,7 @@ class ExWall(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:file
-class ExFile(WindowCommand, WindowCommandMixin):
+class ExFile(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         # XXX figure out what the right params are. vim's help seems to be
@@ -880,9 +884,9 @@ class ExFile(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/change.txt.html#:move
-class ExMove(ExTextCommandBase):
+class ExMove(_ExTextCommandBase):
 
-    def run_ex_command(self, edit, command_line=''):
+    def _run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
 
         move_command = parse_command_line(command_line)
@@ -917,9 +921,9 @@ class ExMove(ExTextCommandBase):
 
 
 # https://vimhelp.appspot.com/change.txt.html#:copy
-class ExCopy(ExTextCommandBase):
+class ExCopy(_ExTextCommandBase):
 
-    def run_ex_command(self, edit, command_line=''):
+    def _run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
 
@@ -966,7 +970,7 @@ class ExCopy(ExTextCommandBase):
 
 # TODO Unify with CTRL-W CTRL-O
 # https://vimhelp.appspot.com/windows.txt.html#:only
-class ExOnly(WindowCommand, WindowCommandMixin):
+class ExOnly(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -987,7 +991,7 @@ class ExOnly(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/change.txt.html#:&&
-class ExDoubleAmpersand(WindowCommand, WindowCommandMixin):
+class ExDoubleAmpersand(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -999,12 +1003,12 @@ class ExDoubleAmpersand(WindowCommand, WindowCommandMixin):
             parsed.command.params['count'],
         )
 
-        run_ex_command(self.window, 'substitute', {'command_line': new_command_line.strip()})
+        do_ex_command(self.window, 'substitute', {'command_line': new_command_line.strip()})
 
 
 # https://vimhelp.appspot.com/change.txt.html#:substitute
 # TODO [enhancement] Implement count.
-class ExSubstitute(TextCommand):
+class ExSubstitute(_ExTextCommand):
 
     _last_pattern = None
     _last_flags = []
@@ -1117,7 +1121,7 @@ class ExSubstitute(TextCommand):
 
 
 # https://vimhelp.appspot.com/change.txt.html#:delete
-class ExDelete(ExTextCommandBase):
+class ExDelete(_ExTextCommandBase):
 
     def select(self, regions, register):
         self.view.sel().clear()
@@ -1135,7 +1139,7 @@ class ExDelete(ExTextCommandBase):
             state = State(self.view)
             state.registers[register] = [text]
 
-    def run_ex_command(self, edit, command_line=''):
+    def _run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
         parsed = parse_command_line(command_line)
 
@@ -1148,7 +1152,7 @@ class ExDelete(ExTextCommandBase):
         self.set_next_sel([(r.a, r.a)])
 
 
-class ExGlobal(WindowCommand, WindowCommandMixin):
+class ExGlobal(_ExWindowCommand, ViCommandMixin):
 
     # At the time of writing, the only command that supports :global is the
     # "print" command e.g. print all lines matching \d+ into new buffer:
@@ -1195,14 +1199,14 @@ class ExGlobal(WindowCommand, WindowCommandMixin):
         matches = [self._view.full_line(r.begin()) for r in matches]
         matches = [[r.a, r.b] for r in matches]
 
-        run_ex_command(self.window, parsed_subcommand.target_command, {
+        do_ex_command(self.window, parsed_subcommand.target_command, {
             'command_line': str(parsed_subcommand),
             'global_lines': matches
         })
 
 
 # https://vimhelp.appspot.com/various.txt.html#:print
-class ExPrint(WindowCommand, WindowCommandMixin):
+class ExPrint(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line='', global_lines=None):
         assert command_line, 'expected non-empty command line'
@@ -1244,7 +1248,7 @@ class ExPrint(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/windows.txt.html#:close
-class ExClose(WindowCommand, WindowCommandMixin):
+class ExClose(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1254,7 +1258,7 @@ class ExClose(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:q
-class ExQuit(WindowCommand, WindowCommandMixin):
+class ExQuit(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1280,11 +1284,11 @@ class ExQuit(WindowCommand, WindowCommandMixin):
         # FIXME: Probably doesn't work as expected.
         # Close the current group if there aren't any views left in it.
         if not self.window.views_in_group(self.window.active_group()):
-            run_ex_command(self.window, 'unvsplit')
+            do_ex_command(self.window, 'unvsplit')
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:qa
-class ExQall(WindowCommand, WindowCommandMixin):
+class ExQall(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1303,7 +1307,7 @@ class ExQall(WindowCommand, WindowCommandMixin):
         self.window.run_command('exit')
 
 
-class ExWq(WindowCommand, WindowCommandMixin):
+class ExWq(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1320,11 +1324,11 @@ class ExWq(WindowCommand, WindowCommandMixin):
             return status_message("can't save a file without name")
 
         self.window.run_command('save')
-        run_ex_command(self.window, 'quit')
+        do_ex_command(self.window, 'quit')
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:browse
-class ExBrowse(WindowCommand, WindowCommandMixin):
+class ExBrowse(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line):
         assert command_line, 'expected a non-empty command line'
@@ -1335,7 +1339,7 @@ class ExBrowse(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:edit
-class ExEdit(WindowCommand, WindowCommandMixin):
+class ExEdit(_ExWindowCommand, ViCommandMixin):
 
     @_changing_cd
     def run(self, command_line=''):
@@ -1396,7 +1400,7 @@ class ExEdit(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/quickfix.txt.html#:cquit
-class ExCquit(WindowCommand, WindowCommandMixin):
+class ExCquit(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command_line'
@@ -1405,7 +1409,7 @@ class ExCquit(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:exit
-class ExExit(WindowCommand, WindowCommandMixin):
+class ExExit(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         if self._view.is_dirty():
@@ -1418,7 +1422,7 @@ class ExExit(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/change.txt.html#:registers
-class ExRegisters(WindowCommand, WindowCommandMixin):
+class ExRegisters(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line):
         parse_command_line(command_line)
@@ -1455,7 +1459,7 @@ class ExRegisters(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/windows.txt.html#:new
-class ExNew(WindowCommand, WindowCommandMixin):
+class ExNew(_ExWindowCommand, ViCommandMixin):
 
     @_changing_cd
     def run(self, command_line=''):
@@ -1464,7 +1468,7 @@ class ExNew(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/windows.txt.html#:yank
-class ExYank(TextCommand):
+class ExYank(_ExTextCommand):
 
     def run(self, edit, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1487,7 +1491,7 @@ class ExYank(TextCommand):
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabnext
-class ExTabnext(WindowCommand, WindowCommandMixin):
+class ExTabnext(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1496,7 +1500,7 @@ class ExTabnext(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabprevious
-class ExTabprevious(WindowCommand, WindowCommandMixin):
+class ExTabprevious(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1505,7 +1509,7 @@ class ExTabprevious(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tablast
-class ExTablast(WindowCommand, WindowCommandMixin):
+class ExTablast(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1514,7 +1518,7 @@ class ExTablast(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabfirst
-class ExTabfirst(WindowCommand, WindowCommandMixin):
+class ExTabfirst(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1523,7 +1527,7 @@ class ExTabfirst(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/tabpage.txt.html#:tabonly
-class ExTabonly(WindowCommand, WindowCommandMixin):
+class ExTabonly(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1532,7 +1536,7 @@ class ExTabonly(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:cd
-class ExCd(WindowCommand, WindowCommandMixin):
+class ExCd(_ExWindowCommand, ViCommandMixin):
 
     # XXX Currently behaves as on Unix systems for all platforms.
 
@@ -1547,7 +1551,7 @@ class ExCd(WindowCommand, WindowCommandMixin):
         if not parsed.command.path:
             self.state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
 
-            return run_ex_command(self.window, 'pwd')
+            return do_ex_command(self.window, 'pwd')
 
         # TODO: It seems there a few symbols that are always substituted when they represent a
         # filename. We should have a global method of substiting them.
@@ -1555,7 +1559,7 @@ class ExCd(WindowCommand, WindowCommandMixin):
             fname = self._view.file_name()
             if fname:
                 self.state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
-                run_ex_command(self.window, 'pwd')
+                do_ex_command(self.window, 'pwd')
 
             return
 
@@ -1564,10 +1568,10 @@ class ExCd(WindowCommand, WindowCommandMixin):
             return message("E344: Can't find directory \"%s\" in cdpath" % path)
 
         self.state.settings.vi['_cmdline_cd'] = path
-        run_ex_command(self.window, 'pwd')
+        do_ex_command(self.window, 'pwd')
 
 
-class ExCdd(WindowCommand, WindowCommandMixin):
+class ExCdd(_ExWindowCommand, ViCommandMixin):
 
     # Non-standard command to change the current directory to the active view's
     # directory. In Sublime Text, the current directory doesn't follow the
@@ -1594,7 +1598,7 @@ class ExCdd(WindowCommand, WindowCommandMixin):
 
 # TODO Refactor like ExSplit
 # https://vimhelp.appspot.com/windows.txt.html#:vsplit
-class ExVsplit(WindowCommand, WindowCommandMixin):
+class ExVsplit(_ExWindowCommand, ViCommandMixin):
 
     _MAX_SPLITS = 4
 
@@ -1654,13 +1658,13 @@ class ExVsplit(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/windows.txt.html#:split
-class ExSplit(WindowCommand, WindowCommandMixin):
+class ExSplit(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         window_split(self.window, parse_command_line(command_line).command.params['file'])
 
 
-class ExUnvsplit(WindowCommand, WindowCommandMixin):
+class ExUnvsplit(_ExWindowCommand, ViCommandMixin):
     """Non-standard Vim :unvsplit command."""
 
     def run(self, command_line=''):
@@ -1678,7 +1682,7 @@ class ExUnvsplit(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/options.txt.html#:setlocal
-class ExSetlocal(WindowCommand, WindowCommandMixin):
+class ExSetlocal(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1698,7 +1702,7 @@ class ExSetlocal(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/options.txt.html#:set
-class ExSet(WindowCommand, WindowCommandMixin):
+class ExSet(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1719,7 +1723,7 @@ class ExSet(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/eval.txt.html#:let
-class ExLet(WindowCommand, WindowCommandMixin):
+class ExLet(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'
@@ -1728,7 +1732,7 @@ class ExLet(WindowCommand, WindowCommandMixin):
 
 
 # https://vimhelp.appspot.com/editing.txt.html#:wqall
-class ExWqall(WindowCommand, WindowCommandMixin):
+class ExWqall(_ExWindowCommand, ViCommandMixin):
 
     def run(self, command_line=''):
         assert command_line, 'expected non-empty command line'

@@ -242,6 +242,7 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
 class _vi_slash(ViMotionCommand, BufferSearchBase):
 
+    # TODO [review] The default argument looks unused.
     def run(self, default=''):
         self.state.reset_during_init = False
 
@@ -1866,6 +1867,8 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 
 
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
+
+    # TODO [review] The default argument looks unused.
     def run(self, default=''):
         self.state.reset_during_init = False
 
