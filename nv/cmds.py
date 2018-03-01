@@ -650,6 +650,7 @@ class _nv_cmdline(WindowCommand):
         _nv_fs_completion.invalidate()
 
         state = State(self.window.active_view())
+        state.reset_during_init = False
 
         # FIXME Missing visual block mode check
         if state.mode in (VISUAL, VISUAL_LINE):
@@ -664,9 +665,6 @@ class _nv_cmdline(WindowCommand):
             on_change=self.on_change,
             on_cancel=self.on_cancel
         )
-
-        # TODO [refactor] can this be moved obove the call to ui_cmdline_prompt()?
-        state.reset_during_init = False
 
     def on_change(self, s):
         if s == '':
