@@ -2403,6 +2403,15 @@ class _vi_q(IrreversibleTextCommand):
     def run(self, name=None, mode=None, count=1):
         state = State(self.view)
 
+        # TODO [refactor] state.is_recording, state.start_recording
+        # TODO [refactor] State.macro_registers
+
+        # TODO Fix macro registers get broken when invalid registers given, or
+        # if recording macros are left "unclosed" (not stopped) e.g. if a
+        # recording macro is not stopped before closing ST then macros don't
+        # work on the next, similarly, trying to use an invalid register like
+        # "#" breaks macro registers.
+
         if state.is_recording:
             State.macro_registers[_vi_q._register_name] = list(State.macro_steps)
             state.stop_recording()
@@ -2419,6 +2428,9 @@ class _vi_at(IrreversibleTextCommand):
         super().__init__(*args, **kwargs)
 
     def run(self, name=None, mode=None, count=1):
+        # TODO [refactor] State.macro_steps
+        # TODO [refactor] State.macro_registers
+
         # TODO Do we need to glue all these edits?
         cmds = State.macro_steps
         if name != '@':
@@ -2442,6 +2454,11 @@ class _vi_at(IrreversibleTextCommand):
                 motion = args.get('motion')
                 motion['motion_args']['xpos'] = State(self.view).xpos
                 args['motion'] = motion
+
+            # TODO [refactor] Remove need for _nv_run_cmds
+            if cmd == 'sequence':
+                cmd = '_nv_run_cmds'
+
             self.view.run_command(cmd, args)
 
 
