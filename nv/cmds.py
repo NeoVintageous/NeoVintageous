@@ -631,17 +631,8 @@ class _nv_cmdline(WindowCommand):
         # TODO refactor into a text command as the view is always required?
         return bool(self.window.active_view())
 
-    # TODO [refactor]
-    def adjust_initial_text(self, text):
-        state = State(self.window.active_view())
-        if state.mode in (VISUAL, VISUAL_LINE):
-            text = ":'<,'>" + text[1:]
-
-        return text
-
-    # TODO [review] initial_text argument looks unused.
-    def run(self, initial_text=':', cmd_line=''):
-        _log.debug('cmdline.run initial_text = %s cmd_line = %s', initial_text, cmd_line)
+    def run(self, cmd_line=''):
+        _log.debug('cmdline.run cmd_line = %s', cmd_line)
 
         if cmd_line:
 
@@ -658,16 +649,23 @@ class _nv_cmdline(WindowCommand):
         # TODO There has got to be a better way to handle fs ("file system"?) completions.
         _nv_fs_completion.invalidate()
 
+        state = State(self.window.active_view())
+
+        # FIXME Missing visual block mode check
+        if state.mode in (VISUAL, VISUAL_LINE):
+            initial_text = ":'<,'>"
+        else:
+            initial_text = ':'
+
         ui_cmdline_prompt(
             self.window,
-            initial_text=self.adjust_initial_text(initial_text),
+            initial_text=initial_text,
             on_done=self.on_done,
             on_change=self.on_change,
             on_cancel=self.on_cancel
         )
 
         # TODO [refactor] can this be moved obove the call to ui_cmdline_prompt()?
-        state = State(self.window.active_view())
         state.reset_during_init = False
 
     def on_change(self, s):
