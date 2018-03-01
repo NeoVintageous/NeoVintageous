@@ -183,27 +183,27 @@ class TokenOfRange(Token):
 
 class TokenEof(Token):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_EOF, '__EOF__', *args, **kwargs)
+        super().__init__(_TOKEN_EOF, '__EOF__')
 
 
 class TokenDollar(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_DOLLAR, '$', *args, **kwargs)
+        super().__init__(_TOKEN_DOLLAR, '$')
 
 
 class TokenComma(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_COMMA, ',', *args, **kwargs)
+        super().__init__(_TOKEN_COMMA, ',')
 
 
 class TokenSemicolon(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_SEMICOLON, ';', *args, **kwargs)
+        super().__init__(_TOKEN_SEMICOLON, ';')
 
 
 class TokenOffset(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_OFFSET, content, *args, **kwargs)
+        super().__init__(_TOKEN_OFFSET, content)
 
     def __str__(self):
         offsets = []
@@ -215,12 +215,12 @@ class TokenOffset(TokenOfRange):
 
 class TokenPercent(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_PERCENT, '%', *args, **kwargs)
+        super().__init__(_TOKEN_PERCENT, '%')
 
 
 class TokenDot(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_DOT, '.', *args, **kwargs)
+        super().__init__(_TOKEN_DOT, '.')
 
 
 class TokenOfSearch(TokenOfRange):
@@ -229,7 +229,7 @@ class TokenOfSearch(TokenOfRange):
 
 class TokenSearchForward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_SEARCH_FORWARD, content, *args, **kwargs)
+        super().__init__(_TOKEN_SEARCH_FORWARD, content)
 
     def __str__(self):
         return '/{0}/'.format(self.content)
@@ -237,7 +237,7 @@ class TokenSearchForward(TokenOfSearch):
 
 class TokenSearchBackward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_SEARCH_BACKWARD, content, *args, **kwargs)
+        super().__init__(_TOKEN_SEARCH_BACKWARD, content)
 
     def __str__(self):
         return '?{0}?'.format(self.content)
@@ -245,12 +245,12 @@ class TokenSearchBackward(TokenOfSearch):
 
 class TokenDigits(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_DIGITS, content, *args, **kwargs)
+        super().__init__(_TOKEN_DIGITS, content)
 
 
 class TokenMark(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_MARK, content, *args, **kwargs)
+        super().__init__(_TOKEN_MARK, content)
 
     def __str__(self):
         return "'{}".format(self.content)
