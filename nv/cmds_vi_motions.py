@@ -242,15 +242,14 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
 class _vi_slash(ViMotionCommand, BufferSearchBase):
 
-    # TODO [review] The default argument looks unused.
-    def run(self, default=''):
+    def run(self):
         self.state.reset_during_init = False
 
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
 
         ui_cmdline_prompt(
             self.view.window(),
-            initial_text='/' + default,
+            initial_text='/',
             on_done=self.on_done,
             on_change=self.on_change,
             on_cancel=self.on_cancel)
@@ -1868,15 +1867,14 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
-    # TODO [review] The default argument looks unused.
-    def run(self, default=''):
+    def run(self):
         self.state.reset_during_init = False
 
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
 
         ui_cmdline_prompt(
             self.view.window(),
-            initial_text='?' + default,
+            initial_text='?',
             on_done=self.on_done,
             on_change=self.on_change,
             on_cancel=self.on_cancel)
