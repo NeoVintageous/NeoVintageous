@@ -27,7 +27,7 @@ from NeoVintageous.nv import rc
 from NeoVintageous.nv.cmds_ex import do_ex_command
 from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
 from NeoVintageous.nv.ex.completions import iter_paths
-from NeoVintageous.nv.ex.completions import parse
+from NeoVintageous.nv.ex.completions import parse_for_fs
 from NeoVintageous.nv.ex.completions import parse_for_setting
 from NeoVintageous.nv.ex.parser import parse_command_line
 from NeoVintageous.nv.history import history_get
@@ -676,7 +676,7 @@ class _nv_cmdline(WindowCommand):
             return self._force_cancel()
 
         if _nv_cmdline.interactive_call:
-            cmd, prefix, only_dirs = parse(s)
+            cmd, prefix, only_dirs = parse_for_fs(s)
             if cmd:
                 _nv_fs_completion.prefix = prefix
                 _nv_fs_completion.is_stale = True
@@ -755,7 +755,7 @@ class _nv_fs_completion(TextCommand):
         _nv_fs_completion.frozen_dir = (_nv_fs_completion.frozen_dir or
                                         (state.settings.vi['_cmdline_cd'] + '/'))
 
-        cmd, prefix, only_dirs = parse(self.view.substr(self.view.line(0)))
+        cmd, prefix, only_dirs = parse_for_fs(self.view.substr(self.view.line(0)))
         if not cmd:
             return
 
