@@ -8,7 +8,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#148](https://github.com/NeoVintageous/NeoVintageous/issues/148): `:$` does not go to last line
 * Fixed [#87](https://github.com/NeoVintageous/NeoVintageous/issues/87): Double front slash doesn't escape properly
 
-## Unreleased (1.5.2)
+## 1.5.2 - 2018-03-03
 
 ### Fixed
 
