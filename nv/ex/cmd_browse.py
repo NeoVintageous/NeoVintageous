@@ -27,6 +27,7 @@ class TokenCommandBrowse(TokenOfCommand):
 
 
 def scan_cmd_browse(state):
+    # TODO [review] "cmd" param looks unused.
     params = {'cmd': None}
 
     state.skip(' ')

@@ -29,13 +29,23 @@ class TokenCommandUnmap(TokenOfCommand):
     def keys(self):
         return self.params['keys']
 
+    # TODO [refactor] looks unused. Other unmap commands are probably the same.
     @property
     def command(self):
         return self.params['command']
 
 
+# TODO [refactor] All the map related scan functions can probably be consolidated into one scanner. They either parse one key (unmap commands), or command and key.  # noqa: E501
 def scan_cmd_unmap(state):
     params = {'keys': None}
+
+    # TODO [refactor] Some commands require certain arguments e.g "keys" is a
+    # required argument for the unmap ex command. Currently the do_ex_command
+    # (may have  been refactored into another name), passes params to the ex
+    # commands, and None is valid argument, but in the case of this command
+    # it's a required argument, so rather than the ex command deal with the
+    # invalid argument, it should be dealt with a) either here, or b) by the
+    # command runner.
 
     m = state.match(r'\s*(?P<keys>.+?)\s*$')
     if m:

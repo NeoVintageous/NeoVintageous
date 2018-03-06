@@ -34,6 +34,7 @@ class TokenCommandWq(TokenOfCommand):
 
 
 def scan_cmd_wq(state):
+    # TODO [review] None of the prams looks used
     params = {
         '++': None,
         'file': None,

@@ -47,6 +47,7 @@ class TokenCommandSubstitute(TokenOfCommand):
 def _scan_cmd_substitute_params(state):
     state.backup()
     delim = state.consume()
+    # TODO [refactor] Rename search_term -> pattern
     params = {
         "search_term": None,
         "replacement": None,

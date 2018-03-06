@@ -51,6 +51,7 @@ class TokenCommandWrite(TokenOfCommand):
 
 
 def scan_cmd_write(state):
+    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
     params = {
         '++': '',
         'file_name': '',

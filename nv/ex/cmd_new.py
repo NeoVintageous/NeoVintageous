@@ -34,6 +34,7 @@ class TokenCommandNew(TokenOfCommand):
 
 
 def scan_cmd_new(state):
+    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
     params = {'++': None, 'cmd': None}
 
     state.skip(' ')

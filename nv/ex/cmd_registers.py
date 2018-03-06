@@ -27,6 +27,7 @@ class TokenCommandRegisters(TokenOfCommand):
 
 
 def scan_cmd_registers(state):
+    # TODO [review] "names" param looks unused by ex_registers
     params = {'names': []}
 
     state.skip(' ')

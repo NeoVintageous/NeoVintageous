@@ -25,7 +25,7 @@ from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
 from NeoVintageous.nv.cmds_ex import do_ex_command
-from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
+# from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse_for_fs
 from NeoVintageous.nv.ex.completions import parse_for_setting
@@ -362,10 +362,10 @@ class _nv_feed_key(ViWindowCommandBase):
                 # `:command<CR>` maps to Command-line mode command.
 
                 if ':' in new_keys:
-                    match = re.match('^\\:(?P<cmd_line_command>[a-zA-Z][a-zA-Z_]*)\\<CR\\>', new_keys)
+                    match = re.match('^\\:(?P<cmdline>[a-zA-Z][a-zA-Z_]*)\\<CR\\>', new_keys)
                     if match:
-                        cmd_line_command = match.group('cmd_line_command')
-                        if cmd_line_command[0].isupper():
+                        cmdline = match.group('cmdline')
+                        if cmdline[0].isupper():
                             # run regular sublime text command
                             def _coerce_to_snakecase(string):
                                 string = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', string)
@@ -374,11 +374,12 @@ class _nv_feed_key(ViWindowCommandBase):
 
                                 return string.lower()
 
-                            command = _coerce_to_snakecase(cmd_line_command)
+                            command = _coerce_to_snakecase(cmdline)
                             command_args = {}
                         else:
+                            # TODO skip _nv_cmdline and call do_ex_command directly
                             command = '_nv_cmdline'
-                            command_args = {'cmd_line': ':' + cmd_line_command}
+                            command_args = {'cmdline': ':' + cmdline}
 
                         _log.info('run command -> %s %s', command, command_args)
 
@@ -631,10 +632,10 @@ class _nv_cmdline(WindowCommand):
         # TODO refactor into a text command as the view is always required?
         return bool(self.window.active_view())
 
-    def run(self, cmd_line=''):
-        _log.debug('cmdline.run cmd_line = %s', cmd_line)
+    def run(self, cmdline=None):
+        _log.debug('cmdline.run cmdline = %s', cmdline)
 
-        if cmd_line:
+        if cmdline:
 
             # The caller has provided a command (non-interactive mode), so run
             # the command without a prompt.
@@ -642,7 +643,7 @@ class _nv_cmdline(WindowCommand):
 
             _nv_cmdline.interactive_call = False
 
-            return self.on_done(cmd_line)
+            return self.on_done(cmdline)
         else:
             _nv_cmdline.interactive_call = True
 
@@ -690,28 +691,34 @@ class _nv_cmdline(WindowCommand):
 
         _nv_cmdline.interactive_call = True
 
-    def on_done(self, cmd_line):
-        if len(cmd_line) <= 1:
+    def on_done(self, cmdline):
+        if len(cmdline) <= 1:
             return
 
-        if cmd_line[0] != ':':
+        if cmdline[0] != ':':
             return
 
         if _nv_cmdline.interactive_call:
-            history_update(cmd_line)
+            history_update(cmdline)
 
         _nv_cmdline_feed_key.reset_last_history_index()
 
         try:
-            parsed = parse_command_line(cmd_line[1:])
+            parsed = parse_command_line(cmdline[1:])
             if not parsed.command:
-                parsed.command = TokenCommandGoto()
+                # FIXME Fix default command
+                # print('use default command')
+                # parsed.command = TokenCommandGoto()
+                return
 
-            _log.debug('cmdline.done parsed %s (%s)', parsed.command.target_command, parsed)
-            do_ex_command(self.window, parsed.command.target_command, {'command_line': cmd_line[1:]})
+            do_ex_command(
+                self.window,
+                parsed.command.target_command,
+                {'command_line': cmdline[1:]}
+            )
         except Exception as e:
-            message('{} ({})'.format(str(e), cmd_line))
-            _log.exception('{}'.format(cmd_line))
+            message('{} ({})'.format(str(e), cmdline))
+            _log.exception('{}'.format(cmdline))
 
     def _force_cancel(self):
         self.on_cancel()

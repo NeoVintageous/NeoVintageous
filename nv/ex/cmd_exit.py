@@ -35,6 +35,7 @@ class TokenCommandExit(TokenOfCommand):
 
 
 def scan_cmd_exit(state):
+    # TODO [review] file_name param looks unused by the ex_exit
     params = {'file_name': ''}
 
     bang = state.consume()

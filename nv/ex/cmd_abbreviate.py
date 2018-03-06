@@ -34,6 +34,7 @@ class TokenCommandAbbreviate(TokenOfCommand):
         return self.params['full']
 
 
+# TODO Fix borken :abbreviate scanner
 def scan_cmd_abbreviate(state):
     params = {'short': None, 'full': None}
 

@@ -35,6 +35,7 @@ class TokenCommandCd(TokenOfCommand):
 
 
 def scan_cmd_cd(state):
+    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
     params = {'path': None, '-': None}
     bang = False
 

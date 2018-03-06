@@ -25,10 +25,14 @@ class TokenCommandLet(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_LET, 'let', *args, **kwargs)
         self.target_command = 'ex_let'
 
+    # All properties in command tokens are now deprecated and can eventually be removed.
+
+    # TODO Looks unused now that ExLet uses params
     @property
     def variable_name(self):
         return self.params['name']
 
+    # TODO Looks unused now that ExLet uses params
     @property
     def variable_value(self):
         return self.params['value']

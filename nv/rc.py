@@ -28,7 +28,7 @@ from NeoVintageous.nv.vim import message
 _log = get_logger(__name__)
 
 _parse_line_pattern = re.compile(
-    '^(?::)?(?P<command_line>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
+    '^(?::)?(?P<cmdline>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
 
 _recursive_mapping_alts = {
     'map': 'nnnoremap',
@@ -84,7 +84,7 @@ def _parse_line(line):
         if line:
             match = _parse_line_pattern.match(line)
             if match:
-                cmd_line = match.group('command_line')
+                cmdline = match.group('cmdline')
                 cmd = match.group('cmd')
 
                 if cmd in _recursive_mapping_alts:
@@ -99,12 +99,13 @@ def _parse_line(line):
                 # the mapping escapes the bar character correctly. This piece of
                 # code can be removed when this is fixed in the core. See :help
                 # map_bar for more details.
-                if '|' in cmd_line:
-                    if '|' in cmd_line.replace('\\|', ''):
+                if '|' in cmdline:
+                    if '|' in cmdline.replace('\\|', ''):
                         raise Exception('E488: Trailing characters: {}'.format(line.rstrip()))
-                    cmd_line = cmd_line.replace('\\|', '|')
 
-                return ('ex_' + cmd, {'command_line': cmd_line})
+                    cmdline = cmdline.replace('\\|', '|')
+
+                return ('ex_' + cmd, {'command_line': cmdline})
     except Exception:
         msg = 'error detected while processing {} at line {}'.format(_file_name(), line.rstrip())
         message(msg)
