@@ -41,10 +41,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See [CHANGELOG.md](CHANGELOG.md).
 
-## Acknowledgement
+## Acknowledgements
 
 Neovintageous is a fork of the discontinued [Vintageous](https://github.com/guillermooo/Vintageous) plugin.
 
 ## License
 
-Released under the [MIT License](LICENSE).
+Released under the [GPL-3.0-or-later License](LICENSE).
