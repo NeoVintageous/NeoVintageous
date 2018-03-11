@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import inspect
 import os
 import re
 import stat
@@ -43,7 +44,6 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import abbrev
 from NeoVintageous.nv.vi import utils
-from NeoVintageous.nv.vi.core import ViCommandMixin
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
@@ -66,19 +66,25 @@ from NeoVintageous.nv.window import window_split
 from NeoVintageous.nv.window import window_tab_control
 from NeoVintageous.nv.window import WindowAPI
 
+
 __all__ = [
     '_nv_run_ex_text_cmd'
 ]
+
 
 _log = get_logger(__name__)
 
 
 def _changing_cd(f, *args, **kwargs):
     def inner(*args, **kwargs):
+        # TODO [review] State dependency
         try:
             state = State(args[0].view)
         except AttributeError:
-            state = State(args[0].window.active_view())
+            try:
+                state = State(args[0].window.active_view())
+            except AttributeError:
+                state = State(args[0].active_view())
 
         old = os.getcwd()
         try:
@@ -92,11 +98,6 @@ def _changing_cd(f, *args, **kwargs):
             os.chdir(old)
 
     return inner
-
-
-class _ExWindowCommand:
-    def __init__(self, window):
-        self.window = window
 
 
 class _ExTextCommand:
@@ -126,6 +127,7 @@ class _ExTextCommandBase(_ExTextCommand):
     def _set_mode(self):
         state = State(self.view)
         state.enter_normal_mode()
+        # TODO [review] enter normal mode depedendency
         self.view.run_command('_enter_normal_mode')
 
     def run(self, edit, *args, **kwargs):
@@ -172,7 +174,7 @@ def do_ex_command(window, name, args=None):
     if ex_cmd:
         _log.debug('prepared ex command -> %s %s %s', name, args, ex_cmd)
 
-        if issubclass(ex_cmd, _ExWindowCommand):
+        if inspect.isfunction(ex_cmd):
             parsed = parse_command_line(args['command_line'])
 
             # We don't want the ex commands using this.
@@ -181,14 +183,14 @@ def do_ex_command(window, name, args=None):
             args.update(parsed.command.params)
 
             try:
-                ex_cmd(window).run(
+                ex_cmd(
+                    window,
                     line_range=parsed.line_range,
                     forceit=parsed.command.forced,
                     **args
                 )
             except TypeError:
                 raise  # TODO e.g. possible exception 'TypeError'> run() missing 1 required positional argument: 'name'  # noqa: E501
-
         elif issubclass(ex_cmd, _ExTextCommand):
             # Text commands need edit tokens and they can only be created by
             # Sublime Text commands, so we need to wrap the command in a ST text
@@ -201,128 +203,128 @@ def do_ex_command(window, name, args=None):
         raise RuntimeError('unknown ex cmd {}'.format(name))
 
 
-class ExGoto(_ExWindowCommand, ViCommandMixin):
+def ExGoto(window, line_range, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-    def run(self, line_range, *args, **kwargs):
-        r = line_range.resolve(self._view)
-        line_nr = row_at(self._view, r.a) + 1
+    r = line_range.resolve(view)
+    line_nr = row_at(view, r.a) + 1
 
-        # TODO: .enter_normal_mode has access to self.state.mode
-        self.enter_normal_mode(mode=self.state.mode)
-        self.state.enter_normal_mode()
+    # TODO [review] State dependency
+    state = State(view)
 
-        jumplist_update(self.window.active_view())
-        self.window.run_command('_vi_go_to_line', {'line': line_nr, 'mode': self.state.mode})
-        jumplist_update(self.window.active_view())
-        self._view.show(self._view.sel()[0])
+    # TODO [review] enter normal mode depedendency
+    window.run_command('_enter_normal_mode', {'mode': state.mode})
+    state.enter_normal_mode()
 
-
-# https://vimhelp.appspot.com/help.txt.html
-class ExHelp(_ExWindowCommand, ViCommandMixin):
-
-    _tags_cache = {}
-
-    def run(self, subject=None, forceit=False, *args, **kwargs):
-        if not subject:
-            subject = 'help.txt'
-
-            if forceit:
-                return message("E478: Don't panic!")
-
-        subject = subject.lower()
-
-        if not self._tags_cache:
-            console_message('initializing help tags...')
-
-            tags_resources = [r for r in find_resources(
-                'tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
-
-            if not tags_resources:
-                return message('tags file not found')
-
-            tags_matcher = re.compile('^([^\\s]+)\\s+([^\\s]+)\\s+(.+)$')
-            tags_resource = load_resource(tags_resources[0])
-            for line in tags_resource.split('\n'):
-                if line:
-                    match = tags_matcher.match(line)
-                    self._tags_cache[match.group(1).lower()] = (match.group(2), match.group(3))
-
-            console_message('finished initializing help tags')
-
-        if subject not in self._tags_cache:
-            # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
-            # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
-            # example is `:help copy` will look for "copy" then ":copy".
-            found = False
-            for m in (':', 'c_', 'i_', 'v_', '-', '/'):
-                _subject = m + subject
-                if _subject in self._tags_cache:
-                    found = True
-                    subject = _subject
-
-            if not found:
-                return message('E149: Sorry, no help for %s' % subject)
-
-        tag = self._tags_cache[subject]
-
-        doc_resources = [r for r in find_resources(
-            tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
-
-        if not doc_resources:
-            return message('Sorry, help file "%s" not found' % tag[0])
-
-        def window_find_open_view(window, name):
-            for view in self.window.views():
-                if view.name() == name:
-                    return view
-
-        help_view_name = '%s [vim help]' % (tag[0])
-        view = window_find_open_view(self.window, help_view_name)
-        if view:
-            self.window.focus_view(view)
-
-        if not view:
-            view = self.window.new_file()
-            view.set_scratch(True)
-            view.set_name(help_view_name)
-
-            settings = view.settings()
-            settings.set('auto_complete', False)
-            settings.set('auto_indent', False)
-            settings.set('auto_match_enabled', False)
-            settings.set('draw_centered', False)
-            settings.set('draw_indent_guides', False)
-            settings.set('line_numbers', False)
-            settings.set('match_selection', False)
-            settings.set('rulers', [])
-            settings.set('scroll_past_end', False)
-            settings.set('smart_indent', False)
-            settings.set('tab_size', 8)
-            settings.set('translate_tabs_to_spaces', False)
-            settings.set('trim_automatic_white_space', False)
-            settings.set('word_wrap', False)
-
-            view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
-            view.run_command('insert', {'characters': load_resource(doc_resources[0])})
-            view.set_read_only(True)
-
-        # Format the tag so that we can
-        # do a literal search rather
-        # than regular expression.
-        tag_region = view.find(tag[1].lstrip('/'), 0, LITERAL)
-
-        # Add one point so that the cursor is
-        # on the tag rather than the tag
-        # punctuation star character.
-        c_pt = tag_region.begin() + 1
-
-        view.sel().clear()
-        view.sel().add(c_pt)
-        view.show(c_pt, False)
+    jumplist_update(view)
+    window.run_command('_vi_go_to_line', {'line': line_nr, 'mode': state.mode})
+    jumplist_update(view)
+    view.show(view.sel()[0])
 
 
-# https://vimhelp.appspot.com/various.txt.html#:%21
-# https://vimhelp.appspot.com/various.txt.html#:%21%21
+_ex_help_tags_cache = {}
+
+
+def ExHelp(window, subject=None, forceit=False, *args, **kwargs):
+    if not subject:
+        subject = 'help.txt'
+
+        if forceit:
+            return message("E478: Don't panic!")
+
+    subject = subject.lower()
+
+    if not _ex_help_tags_cache:
+        console_message('initializing help tags...')
+
+        tags_resources = [r for r in find_resources(
+            'tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
+
+        if not tags_resources:
+            return message('tags file not found')
+
+        tags_matcher = re.compile('^([^\\s]+)\\s+([^\\s]+)\\s+(.+)$')
+        tags_resource = load_resource(tags_resources[0])
+        for line in tags_resource.split('\n'):
+            if line:
+                match = tags_matcher.match(line)
+                _ex_help_tags_cache[match.group(1).lower()] = (match.group(2), match.group(3))
+
+        console_message('finished initializing help tags')
+
+    if subject not in _ex_help_tags_cache:
+        # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
+        # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
+        # example is `:help copy` will look for "copy" then ":copy".
+        found = False
+        for m in (':', 'c_', 'i_', 'v_', '-', '/'):
+            _subject = m + subject
+            if _subject in _ex_help_tags_cache:
+                found = True
+                subject = _subject
+
+        if not found:
+            return message('E149: Sorry, no help for %s' % subject)
+
+    tag = _ex_help_tags_cache[subject]
+
+    doc_resources = [r for r in find_resources(
+        tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
+
+    if not doc_resources:
+        return message('Sorry, help file "%s" not found' % tag[0])
+
+    def window_find_open_view(window, name):
+        for view in window.views():
+            if view.name() == name:
+                return view
+
+    help_view_name = '%s [vim help]' % (tag[0])
+    view = window_find_open_view(window, help_view_name)
+    if view:
+        window.focus_view(view)
+
+    if not view:
+        view = window.new_file()
+        view.set_scratch(True)
+        view.set_name(help_view_name)
+
+        settings = view.settings()
+        settings.set('auto_complete', False)
+        settings.set('auto_indent', False)
+        settings.set('auto_match_enabled', False)
+        settings.set('draw_centered', False)
+        settings.set('draw_indent_guides', False)
+        settings.set('line_numbers', False)
+        settings.set('match_selection', False)
+        settings.set('rulers', [])
+        settings.set('scroll_past_end', False)
+        settings.set('smart_indent', False)
+        settings.set('tab_size', 8)
+        settings.set('translate_tabs_to_spaces', False)
+        settings.set('trim_automatic_white_space', False)
+        settings.set('word_wrap', False)
+
+        view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
+        view.run_command('insert', {'characters': load_resource(doc_resources[0])})
+        view.set_read_only(True)
+
+    # Format the tag so that we can
+    # do a literal search rather
+    # than regular expression.
+    tag_region = view.find(tag[1].lstrip('/'), 0, LITERAL)
+
+    # Add one point so that the cursor is
+    # on the tag rather than the tag
+    # punctuation star character.
+    c_pt = tag_region.begin() + 1
+
+    view.sel().clear()
+    view.sel().add(c_pt)
+    view.show(c_pt, False)
+
+
 class ExShellOut(_ExTextCommand):
     _last_command = None
 
@@ -354,62 +356,57 @@ class ExShellOut(_ExTextCommand):
                 output_view.settings().set("gutter", False)
                 output_view.settings().set("scroll_past_end", False)
                 output_view = self.view.window().create_output_panel('vi_out')
-                output_view.run_command('append', {'characters': out,
-                                                   'force': True,
-                                                   'scroll_to_end': True})
+                output_view.run_command('append', {'characters': out, 'force': True, 'scroll_to_end': True})
                 self.view.window().run_command("show_panel", {"panel": "output.vi_out"})
         except NotImplementedError:
             message('not implemented')
 
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
-class ExShell(_ExWindowCommand, ViCommandMixin):
+# This command starts a shell. When the shell exits (after the "exit" command)
+# you return to Sublime Text. The name for the shell command comes from:
+# * VintageousEx_linux_terminal setting on Linux
+# * VintageousEx_osx_terminal setting on OSX
+# The shell is opened at the active view directory. Sublime Text keeps a virtual
+# current directory that most of the time will be out of sync with the actual
+# current directory. The virtual current directory is always set to the current
+# view's directory, but it isn't accessible through the API.
+@_changing_cd
+def ExShell(window, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-    # This command starts a shell. When the shell exits (after the "exit"
-    # command) you return to Sublime Text. The name for the shell command comes
-    # from:
-    # * VintageousEx_linux_terminal setting on Linux
-    # * VintageousEx_osx_terminal setting on OSX
-    # The shell is opened at the active view directory. Sublime Text keeps a
-    # virtual current directory that most of the time will be out of sync with
-    # the actual current directory. The virtual current directory is always set
-    # to the current view's directory, but it isn't accessible through the API.
-
-    @_changing_cd
-    def run(self, *args, **kwargs):
-
-        if platform() == 'linux':
-            term = self._view.settings().get('VintageousEx_linux_terminal')
-            term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
-            if not term:
-                return message('terminal not found')
-
-            try:
-                self._open_shell([term, '-e', 'bash']).wait()
-            except Exception as e:
-                return message('error executing command through shell {}'.format(e))
-
-        elif platform() == 'osx':
-            term = self._view.settings().get('VintageousEx_osx_terminal')
-            term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
-            if not term:
-                return message('terminal not found')
-
-            try:
-                self._open_shell([term, '-e', 'bash']).wait()
-            except Exception as e:
-                return message('error executing command through shell {}'.format(e))
-
-        elif platform() == 'windows':
-            self._open_shell(['cmd.exe', '/k']).wait()
-        else:
-            message('not implemented')
-
-    def _open_shell(self, command):
+    def _open_shell(command):
         return subprocess.Popen(command, cwd=os.getcwd())
 
+    if platform() == 'linux':
+        term = view.settings().get('VintageousEx_linux_terminal')
+        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
+        if not term:
+            return message('terminal not found')
 
-# https://vimhelp.appspot.com/insert.txt.html#:r
+        try:
+            _open_shell([term, '-e', 'bash']).wait()
+        except Exception as e:
+            return message('error executing command through shell {}'.format(e))
+
+    elif platform() == 'osx':
+        term = view.settings().get('VintageousEx_osx_terminal')
+        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
+        if not term:
+            return message('terminal not found')
+
+        try:
+            _open_shell([term, '-e', 'bash']).wait()
+        except Exception as e:
+            return message('error executing command through shell {}'.format(e))
+
+    elif platform() == 'windows':
+        _open_shell(['cmd.exe', '/k']).wait()
+    else:
+        message('not implemented')
+
+
 # TODO [review] This command looks unused
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
 class ExRead(_ExTextCommand):
@@ -455,40 +452,23 @@ class ExRead(_ExTextCommand):
             return message('not implemented')
 
 
-# https://vimhelp.appspot.com/windows.txt.html#:ls
-class ExPromptSelectOpenFile(_ExWindowCommand):
-
-    def run(self, *args, **kwargs):
-        self.file_names = [self._get_view_info(view) for view in self.window.views()]
-        self.view_ids = [view.id() for view in self.window.views()]
-        self.window.show_quick_panel(self.file_names, self.on_done)
-
-    def on_done(self, index):
-        if index == -1:
-            return
-
-        sought_id = self.view_ids[index]
-        for view in self.window.views():
-            # TODO: Start looking in current group.
-            if view.id() == sought_id:
-                self.window.focus_view(view)
-
-    def _get_view_info(self, v):
-        path = v.file_name()
+def ExPromptSelectOpenFile(window, *args, **kwargs):
+    def _get_view_info(view):
+        path = view.file_name()
         if path:
             parent, leaf = os.path.split(path)
             parent = os.path.basename(parent)
             path = os.path.join(parent, leaf)
         else:
-            path = v.name() or str(v.buffer_id())
-            leaf = v.name() or 'untitled'
+            path = view.name() or str(view.buffer_id())
+            leaf = view.name() or 'untitled'
 
         status = []
-        if not v.file_name():
+        if not view.file_name():
             status.append("t")
-        if v.is_dirty():
+        if view.is_dirty():
             status.append("*")
-        if v.is_read_only():
+        if view.is_read_only():
             status.append("r")
 
         if status:
@@ -496,368 +476,324 @@ class ExPromptSelectOpenFile(_ExWindowCommand):
 
         return [leaf, path]
 
+    file_names = [_get_view_info(view) for view in window.views()]
+    view_ids = [view.id() for view in window.views()]
 
-# TODO All the map related commands can probably be refactored into one command
-# with a parameter that detimines what action to take.
-# https://vimhelp.appspot.com/map.txt.html#:noremap
-class ExNoremap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, command, *args, **kwargs):
-        if not (keys and command):
-
-            # TODO [refactor] Instead of calling status_message(), raise a
-            # NotImplemented exception instead, and let the command runner
-            # handle it. All other commands should do the same in cases like
-            # this.
-
-            return status_message('Listing key mappings is not implemented')
-
-        # TODO The mappings functions are not used much. Generally, they are
-        # used in ex map related commands, and in the rc file. As such, the
-        # module is good candidate for refactoring into a descrete module like
-        # the rc module e.g. mappings.add(), mappings.remove(), etc.
-
-        # TODO The mappings functions could probably accept a list of modes.
-
-        mappings_add(NORMAL, keys, command)
-        mappings_add(OPERATOR_PENDING, keys, command)
-        mappings_add(VISUAL, keys, command)
-        mappings_add(VISUAL_BLOCK, keys, command)
-        mappings_add(VISUAL_LINE, keys, command)
-
-
-# https://vimhelp.appspot.com/map.txt.html#:unmap
-class ExUnmap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, *args, **kwargs):
-        try:
-            mappings_remove(NORMAL, keys)
-            mappings_remove(OPERATOR_PENDING, keys)
-            mappings_remove(VISUAL, keys)
-            mappings_remove(VISUAL_BLOCK, keys)
-            mappings_remove(VISUAL_LINE, keys)
-        except KeyError:
-            status_message('Mapping not found')
-
-
-# https://vimhelp.appspot.com/map.txt.html#:nnoremap
-class ExNnoremap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, command, *args, **kwargs):
-        if not (keys and command):
-            return status_message('Listing key mappings is not implemented')
-
-        mappings_add(NORMAL, keys, command)
-
-
-# https://vimhelp.appspot.com/map.txt.html#:nunmap
-class ExNunmap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, *args, **kwargs):
-        try:
-            mappings_remove(NORMAL, keys)
-        except KeyError:
-            status_message('Mapping not found')
-
-
-# https://vimhelp.appspot.com/map.txt.html#:onoremap
-class ExOnoremap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, command, *args, **kwargs):
-        if not (keys and command):
-            return status_message('Listing key mappings is not implemented')
-
-        mappings_add(OPERATOR_PENDING, keys, command)
-
-
-# https://vimhelp.appspot.com/map.txt.html#:ounmap
-class ExOunmap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, *args, **kwargs):
-        try:
-            mappings_remove(OPERATOR_PENDING, keys)
-        except KeyError:
-            status_message('Mapping not found')
-
-
-# https://vimhelp.appspot.com/map.txt.html#:snoremap
-class ExSnoremap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, command, *args, **kwargs):
-        if not (keys and command):
-            return status_message('Listing key mappings is not implemented')
-
-        mappings_add(SELECT, keys, command)
-
-
-# https://vimhelp.appspot.com/map.txt.html#:sunmap
-class ExSunmap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, *args, **kwargs):
-        try:
-            mappings_remove(SELECT, keys)
-        except KeyError:
-            status_message('Mapping not found')
-
-
-# https://vimhelp.appspot.com/map.txt.html#:vnoremap
-class ExVnoremap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, command, *args, **kwargs):
-        if not (keys and command):
-            return status_message('Listing key mappings is not implemented')
-
-        mappings_add(VISUAL, keys, command)
-        mappings_add(VISUAL_BLOCK, keys, command)
-        mappings_add(VISUAL_LINE, keys, command)
-
-
-# https://vimhelp.appspot.com/map.txt.html#:vunmap
-class ExVunmap(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, keys, *args, **kwargs):
-        try:
-            mappings_remove(VISUAL, keys)
-            mappings_remove(VISUAL_BLOCK, keys)
-            mappings_remove(VISUAL_LINE, keys)
-        except KeyError:
-            status_message('Mapping not found')
-
-
-# https://vimhelp.appspot.com/map.txt.html#:abbreviate
-class ExAbbreviate(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, short=None, full=None, *args, **kwargs):
-        if short is None and full is None:
-            self.show_abbreviations()
+    def on_done(index):
+        if index == -1:
             return
 
-        if not (short and full):
-            return message(':abbreviate not fully implemented')
+        sought_id = view_ids[index]
+        for view in window.views():
+            # TODO: Start looking in current group.
+            if view.id() == sought_id:
+                window.focus_view(view)
 
-        abbrev.Store().set(short, full)
-
-    def show_abbreviations(self):
-        abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
-        self.window.show_quick_panel(abbrevs, None, flags=MONOSPACE_FONT)
-
-
-# https://vimhelp.appspot.com/map.txt.html#:unabbreviate
-class ExUnabbreviate(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, lhs, *args, **kwargs):
-        if lhs:
-            return
-
-        abbrev.Store().erase(lhs)
+    window.show_quick_panel(file_names, on_done)
 
 
-# TODO [review] Is ViCommandMixin required for this command? Review all other commands too.
-# https://vimhelp.appspot.com/editing.txt.html#:pwd
-class ExPwd(_ExWindowCommand, ViCommandMixin):
+# TODO All the map related commands can probably be refactored into one command with a parameter that detimines what action to take.  # noqa: E501
+# TODO Make window argument optional (review other ex commands too)
+def ExNoremap(window, keys, command, *args, **kwargs):
+    if not (keys and command):
+        # TODO [refactor] Instead of calling status_message(), raise a
+        # NotImplemented exception instead, and let the command runner handle
+        # it. All other commands should do the same in cases like this.
+        return status_message('Listing key mappings is not implemented')
 
-    @_changing_cd
-    def run(self, *args, **kwargs):
-        status_message(os.getcwd())
+    mappings_add(NORMAL, keys, command)
+    mappings_add(OPERATOR_PENDING, keys, command)
+    mappings_add(VISUAL, keys, command)
+    mappings_add(VISUAL_BLOCK, keys, command)
+    mappings_add(VISUAL_LINE, keys, command)
 
 
-# https://vimhelp.appspot.com/editing.txt.html#:write
-class ExWrite(_ExWindowCommand, ViCommandMixin):
+def ExUnmap(window, keys, *args, **kwargs):
+    try:
+        mappings_remove(NORMAL, keys)
+        mappings_remove(OPERATOR_PENDING, keys)
+        mappings_remove(VISUAL, keys)
+        mappings_remove(VISUAL_BLOCK, keys)
+        mappings_remove(VISUAL_LINE, keys)
+    except KeyError:
+        status_message('Mapping not found')
 
-    @_changing_cd
-    def run(self, file_name, cmd, forceit, line_range, *args, **kwargs):
 
-        # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
-        options = kwargs.get('++')
-        appends = kwargs.get('>>')
+def ExNnoremap(window, keys, command, *args, **kwargs):
+    if not (keys and command):
+        return status_message('Listing key mappings is not implemented')
 
-        if options:
-            return message('++opt isn\'t implemented for :write')
+    mappings_add(NORMAL, keys, command)
 
-        if cmd:
-            return message('!cmd not implememted for :write')
 
-        if not self._view:
-            return
+def ExNunmap(window, keys, *args, **kwargs):
+    try:
+        mappings_remove(NORMAL, keys)
+    except KeyError:
+        status_message('Mapping not found')
 
-        if appends:
-            self.do_append(file_name, forceit, line_range)
-            return
 
-        if cmd:
-            return message('!cmd isn\'t implemented for :write')
+def ExOnoremap(window, keys, command, *args, **kwargs):
+    if not (keys and command):
+        return status_message('Listing key mappings is not implemented')
 
-        if file_name:
-            self.do_write(file_name, forceit, line_range)
-            return
+    mappings_add(OPERATOR_PENDING, keys, command)
 
-        if not self._view.file_name():
-            return message("E32: No file name")
 
-        read_only = (self.check_is_readonly(self._view.file_name()) or self._view.is_read_only())
+def ExOunmap(window, keys, *args, **kwargs):
+    try:
+        mappings_remove(OPERATOR_PENDING, keys)
+    except KeyError:
+        status_message('Mapping not found')
 
-        if read_only and not forceit:
-            ui_blink()
 
-            return message("E45: 'readonly' option is set (add ! to override)")
+def ExSnoremap(window, keys, command, *args, **kwargs):
+    if not (keys and command):
+        return status_message('Listing key mappings is not implemented')
 
-        self.window.run_command('save')
+    mappings_add(SELECT, keys, command)
 
-    def check_is_readonly(self, fname):
-        """
-        Return `True` if @fname is read-only on the filesystem.
 
-        @fname
-          Path to a file.
-        """
+def ExSunmap(window, keys, *args, **kwargs):
+    try:
+        mappings_remove(SELECT, keys)
+    except KeyError:
+        status_message('Mapping not found')
+
+
+def ExVnoremap(window, keys, command, *args, **kwargs):
+    if not (keys and command):
+        return status_message('Listing key mappings is not implemented')
+
+    mappings_add(VISUAL, keys, command)
+    mappings_add(VISUAL_BLOCK, keys, command)
+    mappings_add(VISUAL_LINE, keys, command)
+
+
+def ExVunmap(self, keys, *args, **kwargs):
+    try:
+        mappings_remove(VISUAL, keys)
+        mappings_remove(VISUAL_BLOCK, keys)
+        mappings_remove(VISUAL_LINE, keys)
+    except KeyError:
+        status_message('Mapping not found')
+
+
+# TODO [review] Looks broken or not implemented properly
+def ExAbbreviate(window, short=None, full=None, *args, **kwargs):
+    if short is None and full is None:
+        def _show_abbreviations():
+            abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
+            window.show_quick_panel(abbrevs, None, flags=MONOSPACE_FONT)
+
+        return _show_abbreviations()
+
+    if not (short and full):
+        return message(':abbreviate not fully implemented')
+
+    abbrev.Store().set(short, full)
+
+
+# TODO [review] Looks broken or not implemented properly
+def ExUnabbreviate(window, lhs, *args, **kwargs):
+    if lhs:
+        return
+
+    abbrev.Store().erase(lhs)
+
+
+@_changing_cd
+def ExPwd(window, *args, **kwargs):
+    status_message(os.getcwd())
+
+
+@_changing_cd
+def ExWrite(window, file_name, cmd, forceit, line_range, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
+
+    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
+    options = kwargs.get('++')
+    appends = kwargs.get('>>')
+
+    if options:
+        return message('++opt isn\'t implemented for :write')
+
+    if cmd:
+        return message('!cmd not implememted for :write')
+
+    if not view:
+        return
+
+    def _check_is_readonly(fname):
+        # type: (str) -> bool
         if not fname:
-            return
+            return False
 
         try:
-            mode = os.stat(fname)
-            read_only = (stat.S_IMODE(mode.st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+            return (stat.S_IMODE(os.stat(fname).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
         except FileNotFoundError:
-            return
+            return False
 
-        return read_only
+        return False
 
-    def do_append(self, file_name, forceit, line_range):
-        if file_name:
-            self.do_append_to_file(file_name, forceit, line_range)
-            return
+    if appends:
+        def _do_append_to_file(view, file_name, forceit, line_range):
+            r = None
+            if line_range.is_empty:
+                # If the user didn't provide any range data, Vim writes whe whole buffer.
+                r = Region(0, view.size())
+            else:
+                r = line_range.resolve(view)
 
-        r = None
-        if line_range.is_empty:
-            # If the user didn't provide any range data, Vim appends whe whole buffer.
-            r = Region(0, self._view.size())
-        else:
-            r = line_range.resolve(self._view)
+            if not forceit and not os.path.exists(file_name):
+                return message("E212: Can't open file for writing: %s" % file_name)
 
-        text = self._view.substr(r)
-        text = text if text.startswith('\n') else '\n' + text
+            try:
+                with open(file_name, 'at') as f:
+                    text = view.substr(r)
+                    f.write(text)
 
-        location = resolve_insertion_point_at_b(first_sel(self._view))
+                # TODO: make this `show_info` instead.
+                return status_message('Appended to ' + os.path.abspath(file_name))
 
-        self._view.run_command('append', {'characters': text})
+            except IOError as e:
+                return message('could not write file {}'.format(str(e)))
 
-        utils.replace_sel(self._view, Region(self._view.line(location).a))
+        def _do_append(view, file_name, forceit, line_range):
+            if file_name:
+                return _do_append_to_file(view, file_name, forceit, line_range)
 
-        self.enter_normal_mode(mode=self.state.mode)
-        self.state.enter_normal_mode()
+            r = None
+            if line_range.is_empty:
+                # If the user didn't provide any range data, Vim appends whe whole buffer.
+                r = Region(0, view.size())
+            else:
+                r = line_range.resolve(view)
 
-    def do_append_to_file(self, file_name, forceit, line_range):
-        r = None
-        if line_range.is_empty:
-            # If the user didn't provide any range data, Vim writes whe whole buffer.
-            r = Region(0, self._view.size())
-        else:
-            r = line_range.resolve(self._view)
+            text = view.substr(r)
+            text = text if text.startswith('\n') else '\n' + text
 
-        if not forceit and not os.path.exists(file_name):
-            return message("E212: Can't open file for writing: %s" % file_name)
+            location = resolve_insertion_point_at_b(first_sel(view))
 
-        try:
-            with open(file_name, 'at') as f:
-                text = self._view.substr(r)
-                f.write(text)
+            view.run_command('append', {'characters': text})
 
-            # TODO: make this `show_info` instead.
-            return status_message('Appended to ' + os.path.abspath(file_name))
+            utils.replace_sel(view, Region(view.line(location).a))
 
-        except IOError as e:
-            return message('could not write file {}'.format(str(e)))
+            # TODO [review] State dependency
+            state = State(view)
 
-    def do_write(self, file_name, forceit, line_range):
-        fname = file_name
+            # TODO [review] enter normal mode depedendency
+            window.run_command('_enter_normal_mode', {'mode': state.mode})
+            state.enter_normal_mode()
 
-        if not forceit:
-            if os.path.exists(fname):
-                ui_blink()
+        return _do_append(view, file_name, forceit, line_range)
 
-                return message("E13: File exists (add ! to override)")
+    if cmd:
+        return message('!cmd isn\'t implemented for :write')
 
-            if self.check_is_readonly(fname):
-                ui_blink()
+    if file_name:
+        def _do_write(window, view, file_name, forceit, line_range):
+            fname = file_name
 
-                return message("E45: 'readonly' option is set (add ! to override)")
+            if not forceit:
+                if os.path.exists(fname):
+                    ui_blink()
 
-        region = None
-        if line_range.is_empty:
-            # If the user didn't provide any range data, Vim writes whe whole buffer.
-            region = Region(0, self._view.size())
-        else:
-            region = line_range.resolve(self._view)
+                    return message("E13: File exists (add ! to override)")
 
-        assert region is not None, "range cannot be None"
+                if _check_is_readonly(fname):
+                    ui_blink()
 
-        try:
-            expanded_path = os.path.expandvars(os.path.expanduser(fname))
-            expanded_path = os.path.abspath(expanded_path)
-            with open(expanded_path, 'wt') as f:
-                text = self._view.substr(region)
-                f.write(text)
+                    return message("E45: 'readonly' option is set (add ! to override)")
 
-            # FIXME: Does this do what we think it does?
-            self._view.retarget(expanded_path)
-            self.window.run_command('save')
+            region = None
+            if line_range.is_empty:
+                # If the user didn't provide any range data, Vim writes whe whole buffer.
+                region = Region(0, view.size())
+            else:
+                region = line_range.resolve(view)
 
-        except IOError as e:
-            # TODO: Add logging.
-            return message("E212: Can't open file for writing: {}".format(fname))
+            assert region is not None, "range cannot be None"
 
+            try:
+                expanded_path = os.path.expandvars(os.path.expanduser(fname))
+                expanded_path = os.path.abspath(expanded_path)
+                with open(expanded_path, 'wt') as f:
+                    text = view.substr(region)
+                    f.write(text)
 
-# https://vimhelp.appspot.com/editing.txt.html#:wa
-class ExWall(_ExWindowCommand, ViCommandMixin):
+                # FIXME: Does this do what we think it does?
+                view.retarget(expanded_path)
+                window.run_command('save')
 
-    @_changing_cd
-    def run(self, forceit=False, *args, **kwargs):
-        # TODO read-only views don't get properly saved.
-        for v in (v for v in self.window.views() if v.file_name()):
-            if v.is_read_only() and not forceit:
-                continue
+            except IOError as e:
+                # TODO: Add logging.
+                return message("E212: Can't open file for writing: {}".format(fname))
 
-            v.run_command('save')
+        return _do_write(window, view, file_name, forceit, line_range)
 
+    if not view.file_name():
+        return message("E32: No file name")
 
-# https://vimhelp.appspot.com/editing.txt.html#:file
-class ExFile(_ExWindowCommand, ViCommandMixin):
+    read_only = (_check_is_readonly(view.file_name()) or view.is_read_only())
 
-    def run(self, *args, **kwargs):
-        if self._view.file_name():
-            fname = self._view.file_name()
-        else:
-            fname = 'untitled'
+    if read_only and not forceit:
+        ui_blink()
 
-        attrs = ''
-        if self._view.is_read_only():
-            attrs = 'readonly'
+        return message("E45: 'readonly' option is set (add ! to override)")
 
-        if self._view.is_dirty():
-            attrs = 'modified'
-
-        lines = 'no lines in the buffer'
-        if self._view.rowcol(self._view.size())[0]:
-            lines = self._view.rowcol(self._view.size())[0] + 1
-
-        # fixme: doesn't calculate the buffer's % correctly
-        if not isinstance(lines, str):
-            vr = self._view.visible_region()
-            start_row, end_row = self._view.rowcol(vr.begin())[0], self._view.rowcol(vr.end())[0]
-            mid = (start_row + end_row + 2) / 2
-            percent = float(mid) / lines * 100.0
-
-        msg = '"' + fname + '"'
-        if attrs:
-            msg += " [%s]" % attrs
-        if isinstance(lines, str):
-            msg += " -- %s --" % lines
-        else:
-            msg += " %d line(s) --%d%%--" % (lines, int(percent))
-
-        status_message('%s' % msg)
+    window.run_command('save')
 
 
-# https://vimhelp.appspot.com/change.txt.html#:move
+@_changing_cd
+def ExWall(window, forceit=False, *args, **kwargs):
+    # TODO read-only views don't get properly saved.
+    for v in (v for v in window.views() if v.file_name()):
+        if v.is_read_only() and not forceit:
+            continue
+
+        v.run_command('save')
+
+
+def ExFile(window, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
+
+    if view.file_name():
+        fname = view.file_name()
+    else:
+        fname = 'untitled'
+
+    attrs = ''
+    if view.is_read_only():
+        attrs = 'readonly'
+
+    if view.is_dirty():
+        attrs = 'modified'
+
+    lines = 'no lines in the buffer'
+    if view.rowcol(view.size())[0]:
+        lines = view.rowcol(view.size())[0] + 1
+
+    # fixme: doesn't calculate the buffer's % correctly
+    if not isinstance(lines, str):
+        vr = view.visible_region()
+        start_row, end_row = view.rowcol(vr.begin())[0], view.rowcol(vr.end())[0]
+        mid = (start_row + end_row + 2) / 2
+        percent = float(mid) / lines * 100.0
+
+    msg = '"' + fname + '"'
+    if attrs:
+        msg += " [%s]" % attrs
+    if isinstance(lines, str):
+        msg += " -- %s --" % lines
+    else:
+        msg += " %d line(s) --%d%%--" % (lines, int(percent))
+
+    status_message('%s' % msg)
+
+
 class ExMove(_ExTextCommandBase):
 
     def _run(self, edit, address, line_range, *args, **kwargs):
@@ -892,7 +828,6 @@ class ExMove(_ExTextCommandBase):
         self.set_next_sel([[destination.a, destination.a]])
 
 
-# https://vimhelp.appspot.com/change.txt.html#:copy
 class ExCopy(_ExTextCommandBase):
 
     def _run(self, edit, address, line_range, *args, **kwargs):
@@ -939,40 +874,33 @@ class ExCopy(_ExTextCommandBase):
 
 
 # TODO Unify with CTRL-W CTRL-O
-# https://vimhelp.appspot.com/windows.txt.html#:only
-class ExOnly(_ExWindowCommand, ViCommandMixin):
+def ExOnly(window, forceit=False, *args, **kwargs):
+    if not forceit and has_dirty_buffers(window):
+        return message("E445: Other window contains changes")
 
-    def run(self, forceit=False, *args, **kwargs):
-        if not forceit and has_dirty_buffers(self.window):
-            return message("E445: Other window contains changes")
+    current_id = window.active_view().id()
+    for view in window.views():
+        if view.id() == current_id:
+            continue
 
-        current_id = self._view.id()
-        for view in self.window.views():
-            if view.id() == current_id:
-                continue
+        if view.is_dirty():
+            view.set_scratch(True)
 
-            if view.is_dirty():
-                view.set_scratch(True)
-
-            view.close()
+        view.close()
 
 
-# https://vimhelp.appspot.com/change.txt.html#:&&
-class ExDoubleAmpersand(_ExWindowCommand, ViCommandMixin):
+def ExDoubleAmpersand(window, flags, count, line_range, *args, **kwargs):
+    # TODO [review] don't use str(line_range) as the content will be unexpected
+    new_command_line = '{0}substitute///{1} {2}'.format(
+        str(line_range),
+        ''.join(flags),
+        count
+    )
 
-    def run(self, flags, count, line_range, *args, **kwargs):
-        # TODO [review] don't use str(line_range) as the content will be unexpected
-        new_command_line = '{0}substitute///{1} {2}'.format(
-            str(line_range),
-            ''.join(flags),
-            count
-        )
-
-        do_ex_command(self.window, 'substitute', {'command_line': new_command_line.strip()})
+    # TODO [refactor] Use command directly
+    do_ex_command(window, 'substitute', {'command_line': new_command_line.strip()})
 
 
-# https://vimhelp.appspot.com/change.txt.html#:substitute
-# TODO [enhancement] Implement count.
 class ExSubstitute(_ExTextCommand):
 
     _last_pattern = None
@@ -1049,6 +977,7 @@ class ExSubstitute(_ExTextCommand):
             self.view.sel().clear()
             self.view.sel().add(pt)
 
+        # TODO [review] enter normal mode depedendency
         self.view.run_command('_enter_normal_mode')
 
     def replace_confirming(self, edit, pattern, compiled_pattern, replacement,
@@ -1080,7 +1009,6 @@ class ExSubstitute(_ExTextCommand):
             start = match.b + (self.view.size() - size_before) + 1
 
 
-# https://vimhelp.appspot.com/change.txt.html#:delete
 class ExDelete(_ExTextCommandBase):
 
     def select(self, regions, register):
@@ -1109,302 +1037,298 @@ class ExDelete(_ExTextCommandBase):
         self.set_next_sel([(r.a, r.a)])
 
 
-class ExGlobal(_ExWindowCommand, ViCommandMixin):
-
-    # At the time of writing, the only command that supports :global is the
-    # "print" command e.g. print all lines matching \d+ into new buffer:
-    #
-    #   :%global/\d+/print
-
-    _most_recent_pat = None
-
-    def run(self, pattern, subcommand, line_range, *args, **kwargs):
-        if line_range.is_empty:
-            global_range = Region(0, self._view.size())
-        else:
-            global_range = line_range.resolve(self._view)
-
-        if pattern:
-            ExGlobal._most_recent_pat = pattern
-        else:
-            pattern = ExGlobal._most_recent_pat
-
-        if not subcommand:
-            subcommand = 'print'
-
-        parsed_subcommand = parse_command_line(subcommand).command
-
-        try:
-            matches = find_all_in_range(self._view, pattern, global_range.begin(), global_range.end())
-        except Exception as e:
-            return message("(global): %s ... in pattern '%s'" % (str(e), pattern))
-
-        # The cooperates_with_global attribute indicates if the command supports
-        # the :global command. This is special flag, because all ex commands
-        # don't yet support a global_lines argument. See TokenOfCommand. At time
-        # of writing, the only command that supports the global_lines argument
-        # is the "print" command e.g. print all lines matching \d+ into new
-        # buffer: ":%global/\d+/print".
-        if not matches or not parsed_subcommand.cooperates_with_global:
-            return message("command does not support :global")
-
-        matches = [self._view.full_line(r.begin()) for r in matches]
-        matches = [[r.a, r.b] for r in matches]
-
-        do_ex_command(self.window, parsed_subcommand.target_command, {
-            'command_line': str(parsed_subcommand),
-            'global_lines': matches
-        })
+_ex_global_most_recent_pat = None
 
 
-# https://vimhelp.appspot.com/various.txt.html#:print
-class ExPrint(_ExWindowCommand, ViCommandMixin):
+# At the time of writing, the only command that supports :global is the
+# "print" command e.g. print all lines matching \d+ into new buffer:
+#   :%global/\d+/print
+def ExGlobal(window, pattern, subcommand, line_range, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-    def run(self, flags, line_range, global_lines=None, *args, **kwargs):
-        if self._view.size() == 0:
-            return message("E749: empty buffer")
+    if line_range.is_empty:
+        global_range = Region(0, view.size())
+    else:
+        global_range = line_range.resolve(view)
 
-        r = line_range.resolve(self._view)
-        lines = self.get_lines(r, global_lines)
+    global _ex_global_most_recent_pat
+    if pattern:
+        _ex_global_most_recent_pat = pattern
+    else:
+        pattern = _ex_global_most_recent_pat
 
-        display = self.window.new_file()
-        display.set_scratch(True)
+    if not subcommand:
+        subcommand = 'print'
 
-        if 'l' in flags:
-            display.settings().set('draw_white_space', 'all')
+    parsed_subcommand = parse_command_line(subcommand).command
 
-        for (text, row) in lines:
-            characters = ''
-            if '#' in flags:
-                characters = "{} {}".format(row, text).lstrip()
-            else:
-                characters = text.lstrip()
+    try:
+        matches = find_all_in_range(view, pattern, global_range.begin(), global_range.end())
+    except Exception as e:
+        return message("(global): %s ... in pattern '%s'" % (str(e), pattern))
 
-            display.run_command('append', {'characters': characters})
+    # The cooperates_with_global attribute indicates if the command supports
+    # the :global command. This is special flag, because all ex commands
+    # don't yet support a global_lines argument. See TokenOfCommand. At time
+    # of writing, the only command that supports the global_lines argument
+    # is the "print" command e.g. print all lines matching \d+ into new
+    # buffer: ":%global/\d+/print".
+    if not matches or not parsed_subcommand.cooperates_with_global:
+        return message("command does not support :global")
 
-    def get_lines(self, parsed_range, global_lines):
+    matches = [view.full_line(r.begin()) for r in matches]
+    matches = [[r.a, r.b] for r in matches]
+
+    # TODO [refactor] Use command directly
+    do_ex_command(window, parsed_subcommand.target_command, {
+        'command_line': str(parsed_subcommand),
+        'global_lines': matches
+    })
+
+
+def ExPrint(window, flags, line_range, global_lines=None, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
+
+    if view.size() == 0:
+        return message("E749: empty buffer")
+
+    def _get_lines(view, parsed_range, global_lines):
         # FIXME: this is broken.
         # If :global called us, ignore the parsed range.
         if global_lines:
-            return [(self._view.substr(Region(a, b)), row_at(self._view, a)) for (a, b) in global_lines]
+            return [(view.substr(Region(a, b)), row_at(view, a)) for (a, b) in global_lines]
 
         # FIXME This is broken.
         to_display = []
-        for line in self._view.full_line(parsed_range):
-            text = self._view.substr(line)
-            to_display.append((text, row_at(self._view, line.begin())))
+        for line in view.full_line(parsed_range):
+            text = view.substr(line)
+            to_display.append((text, row_at(view, line.begin())))
 
         return to_display
 
+    lines = _get_lines(view, line_range.resolve(view), global_lines)
+
+    display = window.new_file()
+    display.set_scratch(True)
+
+    if 'l' in flags:
+        display.settings().set('draw_white_space', 'all')
+
+    for (text, row) in lines:
+        characters = ''
+        if '#' in flags:
+            characters = "{} {}".format(row, text).lstrip()
+        else:
+            characters = text.lstrip()
+
+        display.run_command('append', {'characters': characters})
+
 
 # TODO [refactor] into window module
-# https://vimhelp.appspot.com/windows.txt.html#:close
-class ExClose(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, forceit=False, *args, **kwargs):
-        # TODO [refactor] WindowAPI.close_current_view() into a window.function
-        WindowAPI(self.window).close_current_view(not forceit)
+def ExClose(window, forceit=False, *args, **kwargs):
+    WindowAPI(window).close_current_view(not forceit)
 
 
 # TODO [refactor] into window module
-# https://vimhelp.appspot.com/editing.txt.html#:q
-class ExQuit(_ExWindowCommand, ViCommandMixin):
+def ExQuit(window, forceit=False, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-    def run(self, forceit=False, *args, **kwargs):
-        view = self._view
-        if forceit:
-            view.set_scratch(True)
+    if forceit:
+        view.set_scratch(True)
+
+    if view.is_dirty() and not forceit:
+        return message("E37: No write since last change")
+
+    if not view.file_name() and not forceit:
+        return message("E32: No file name")
+
+    window.run_command('close')
+
+    if len(window.views()) == 0:
+        return window.run_command('close')
+
+    # FIXME Probably doesn't work as expected.
+
+    if not window.views_in_group(window.active_group()):
+        # TODO [refactor] Use ex command directly
+        do_ex_command(window, 'unvsplit')
+
+
+# TODO [refactor] into window module
+def ExQall(window, forceit=False, *args, **kwargs):
+    if forceit:
+        for view in window.views():
+            if view.is_dirty():
+                view.set_scratch(True)
+    elif has_dirty_buffers(window):
+        # TODO [review] [easypick] status message
+        return status_message('there are unsaved changes!')
+
+    window.run_command('close_all')
+    window.run_command('exit')
+
+
+# TODO [refactor] into window module
+def ExWq(window, forceit=False, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
+
+    if forceit:
+        # TODO raise not implemented exception and make the command runner handle it.
+        return message('not implemented')
+
+    if view.is_read_only():
+        return status_message("can't write a read-only buffer")
+
+    if not view.file_name():
+        return status_message("can't save a file without name")
+
+    window.run_command('save')
+
+# TODO [refactor] Use ex command directly
+    do_ex_command(window, 'quit')
+
+
+def ExBrowse(window, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
+
+    # TODO [review] State dependency
+    state = State(view)
+
+    window.run_command('prompt_open_file', {
+        'initial_directory': state.settings.vi['_cmdline_cd']
+    })
+
+
+@_changing_cd
+def ExEdit(window, file_name, cmd, forceit=False, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
+
+    # TODO [refactor] file_name_arg
+    file_name_arg = file_name
+    if file_name_arg:
+        file_name = os.path.expanduser(os.path.expandvars(file_name_arg))
 
         if view.is_dirty() and not forceit:
             return message("E37: No write since last change")
 
-        if not view.file_name() and not forceit:
-            return message("E32: No file name")
+        if os.path.isdir(file_name):
+            # TODO :edit Open a file-manager in a buffer
+            return message('Cannot open directory')
 
-        self.window.run_command('close')
+        def get_file_path():
+            file_name = view.file_name()
+            if file_name:
+                file_dir = os.path.dirname(file_name)
+                if os.path.isdir(file_dir):
+                    return file_dir
 
-        if len(self.window.views()) == 0:
-            self.window.run_command('close')
-            return
+                # TODO [review] State dependency
+                state = State(view)
 
-        # FIXME: Probably doesn't work as expected.
+                file_dir = state.settings.vi['_cmdline_cd']
+                if os.path.isdir(file_dir):
+                    return file_dir
 
-        # Close the current group if there aren't any views left in it.
-        if not self.window.views_in_group(self.window.active_group()):
-            do_ex_command(self.window, 'unvsplit')
+        if not os.path.isabs(file_name):
+            file_path = get_file_path()
+            if file_path:
+                file_name = os.path.join(file_path, file_name)
+            else:
+                return message("could not find a parent directory")
 
+        window.open_file(file_name)
 
-# TODO [refactor] into window module
-# https://vimhelp.appspot.com/editing.txt.html#:qa
-class ExQall(_ExWindowCommand, ViCommandMixin):
+        if not os.path.exists(file_name):
+            parent = os.path.dirname(file_name)
+            if parent and not os.path.exists(parent):
+                msg = '"{}" [New DIRECTORY]'.format(file_name_arg)
+            else:
+                msg = '"{}" [New File]'.format(os.path.basename(file_name))
 
-    def run(self, forceit=False, *args, **kwargs):
-        if forceit:
-            for v in self.window.views():
-                if v.is_dirty():
-                    v.set_scratch(True)
+            # Give ST some time to load the new view.
+            set_timeout(lambda: status_message(msg), 150)
 
-        elif has_dirty_buffers(self.window):
-            return status_message('there are unsaved changes!')
+        return
 
-        self.window.run_command('close_all')
-        self.window.run_command('exit')
+    if forceit or not view.is_dirty():
+        view.run_command('revert')
+        return
 
+    if view.is_dirty():
+        return message("E37: No write since last change")
 
-# TODO [refactor] into window module
-class ExWq(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, forceit=False, *args, **kwargs):
-        if forceit:
-            # TODO raise not implemented exception and make the command runner handle it.
-            return message('not implemented')
-
-        if self._view.is_read_only():
-            return status_message("can't write a read-only buffer")
-
-        if not self._view.file_name():
-            return status_message("can't save a file without name")
-
-        self.window.run_command('save')
-
-        do_ex_command(self.window, 'quit')
-
-
-# https://vimhelp.appspot.com/editing.txt.html#:browse
-class ExBrowse(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, *args, **kwargs):
-        self.window.run_command('prompt_open_file', {
-            'initial_directory': self.state.settings.vi['_cmdline_cd']
-        })
-
-
-# https://vimhelp.appspot.com/editing.txt.html#:edit
-class ExEdit(_ExWindowCommand, ViCommandMixin):
-
-    @_changing_cd
-    def run(self, file_name, cmd, forceit=False, *args, **kwargs):
-        # TODO [refactor] file_name_arg
-        file_name_arg = file_name
-        if file_name_arg:
-            file_name = os.path.expanduser(os.path.expandvars(file_name_arg))
-
-            if self._view.is_dirty() and not forceit:
-                return message("E37: No write since last change")
-
-            if os.path.isdir(file_name):
-                # TODO :edit Open a file-manager in a buffer
-                return message('Cannot open directory')
-
-            def get_file_path():
-                file_name = self._view.file_name()
-                if file_name:
-                    file_dir = os.path.dirname(file_name)
-                    if os.path.isdir(file_dir):
-                        return file_dir
-
-                    file_dir = self.state.settings.vi['_cmdline_cd']
-                    if os.path.isdir(file_dir):
-                        return file_dir
-
-            if not os.path.isabs(file_name):
-                file_path = get_file_path()
-                if file_path:
-                    file_name = os.path.join(file_path, file_name)
-                else:
-                    return message("could not find a parent directory")
-
-            self.window.open_file(file_name)
-
-            if not os.path.exists(file_name):
-                parent = os.path.dirname(file_name)
-                if parent and not os.path.exists(parent):
-                    msg = '"{}" [New DIRECTORY]'.format(file_name_arg)
-                else:
-                    msg = '"{}" [New File]'.format(os.path.basename(file_name))
-
-                # Give ST some time to load the new view.
-                set_timeout(lambda: status_message(msg), 150)
-
-            return
-
-        if forceit or not self._view.is_dirty():
-            self._view.run_command('revert')
-            return
-
-        if self._view.is_dirty():
-            return message("E37: No write since last change")
-
-        message("E37: No write since last change")
+    message("E37: No write since last change")
 
 
 # TODO [refactor] into window module
-# https://vimhelp.appspot.com/quickfix.txt.html#:cquit
-class ExCquit(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, *args, **kwargs):
-        self.window.run_command('exit')
+def ExCquit(window, *args, **kwargs):
+    window.run_command('exit')
 
 
 # TODO [refactor] into window module
-# https://vimhelp.appspot.com/editing.txt.html#:exit
-class ExExit(_ExWindowCommand, ViCommandMixin):
+def ExExit(window, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-    def run(self, *args, **kwargs):
-        if self._view.is_dirty():
-            self.window.run_command('save')
+    if view.is_dirty():
+        window.run_command('save')
 
-        self.window.run_command('close')
+    window.run_command('close')
 
-        if len(self.window.views()) == 0:
-            self.window.run_command('exit')
+    if len(window.views()) == 0:
+        window.run_command('exit')
 
 
-# https://vimhelp.appspot.com/change.txt.html#:registers
-class ExRegisters(_ExWindowCommand, ViCommandMixin):
+def ExRegisters(window, *args, **kwargs):
+    def _truncate(string, truncate_at):
+        if len(string) > truncate_at:
+            return string[0:truncate_at] + ' ...'
 
-    def run(self, *args, **kwargs):
-        def truncate(string, truncate_at):
-            if len(string) > truncate_at:
-                return string[0:truncate_at] + ' ...'
+        return string
 
-            return string
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-        items = []
-        for k, v in self.state.registers.to_dict().items():
-            if v:
-                if len(v) > 0 and v[0]:
-                    lines = v[0].splitlines()
-                    value = '^J'.join(lines)
+    # TODO [review] State dependency
+    state = State(view)
 
-                    # The splitlines function will remove a final newline, if
-                    # present. So joining the lines with the join-line indicator
-                    # (^J) may be missing a final join-line indicator.
-                    if len(''.join(lines)) < len(v[0]):
-                        value += '^J'
+    items = []
+    for k, v in state.registers.to_dict().items():
+        if v:
+            if len(v) > 0 and v[0]:
+                lines = v[0].splitlines()
+                value = '^J'.join(lines)
 
-                    items.append('"{}   {}'.format(k, truncate(value, 78)))
+                # The splitlines function will remove a final newline, if
+                # present. So joining the lines with the join-line indicator
+                # (^J) may be missing a final join-line indicator.
+                if len(''.join(lines)) < len(v[0]):
+                    value += '^J'
 
-        if items:
-            self.window.show_quick_panel(sorted(items), self.on_done, flags=MONOSPACE_FONT)
+                items.append('"{}   {}'.format(k, _truncate(value, 78)))
 
-    def on_done(self, idx):
+    def on_done(idx):
         if idx == -1:
             return
 
-        self.state.registers['"'] = [list(self.state.registers.to_dict().values())[idx]]
+        state.registers['"'] = [list(state.registers.to_dict().values())[idx]]
+
+    if items:
+        window.show_quick_panel(sorted(items), on_done, flags=MONOSPACE_FONT)
 
 
 # TODO [refactor] into window module
-# https://vimhelp.appspot.com/windows.txt.html#:new
-class ExNew(_ExWindowCommand, ViCommandMixin):
-
-    @_changing_cd
-    def run(self, *args, **kwargs):
-        self.window.run_command('new_file')
+@_changing_cd
+def ExNew(window, *args, **kwargs):
+    window.run_command('new_file')
 
 
-# https://vimhelp.appspot.com/windows.txt.html#:yank
 class ExYank(_ExTextCommand):
 
     def run(self, edit, register, count, line_range, *args, **kwargs):
@@ -1422,113 +1346,96 @@ class ExYank(_ExTextCommand):
             state.registers['0'] = [text]
 
 
-# TODO [refactor] All the "tab" related ex commands can probably be refactored into a single command with actions # noqa: E501
+def ExTabnext(window, *args, **kwargs):
+    window_tab_control(window, command='next')
 
 
-# https://vimhelp.appspot.com/tabpage.txt.html#:tabnext
-class ExTabnext(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, *args, **kwargs):
-        # TODO [review] The window related command e.g window_tab_control(), are
-        # not used often, at least some of them. Those that are only meant to be
-        # used once or twice in the lifecycle of a request can probably be
-        # refactored into a  descrete module e.g. windows.tab_control(...).
-        window_tab_control(self.window, command='next')
+def ExTabprevious(window, *args, **kwargs):
+    window_tab_control(window, command='prev')
 
 
-# https://vimhelp.appspot.com/tabpage.txt.html#:tabprevious
-class ExTabprevious(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, *args, **kwargs):
-        window_tab_control(self.window, command='prev')
+def ExTablast(window, *args, **kwargs):
+    window_tab_control(window, command='last')
 
 
-# https://vimhelp.appspot.com/tabpage.txt.html#:tablast
-class ExTablast(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, *args, **kwargs):
-        window_tab_control(self.window, command='last')
+def ExTabfirst(window, *args, **kwargs):
+    window_tab_control(window, command='first')
 
 
-# https://vimhelp.appspot.com/tabpage.txt.html#:tabfirst
-class ExTabfirst(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, *args, **kwargs):
-        window_tab_control(self.window, command='first')
+def ExTabonly(window, *args, **kwargs):
+    window_tab_control(window, command='only')
 
 
-# https://vimhelp.appspot.com/tabpage.txt.html#:tabonly
-class ExTabonly(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, *args, **kwargs):
-        window_tab_control(self.window, command='only')
-
-
-# https://vimhelp.appspot.com/editing.txt.html#:cd
-class ExCd(_ExWindowCommand, ViCommandMixin):
-
+@_changing_cd
+def ExCd(window, path=None, forceit=False, *args, **kwargs):
     # XXX Currently behaves as on Unix systems for all platforms.
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-    @_changing_cd
-    def run(self, path=None, forceit=False, *args, **kwargs):
-        if self._view.is_dirty() and not forceit:
-            return message("E37: No write since last change")
+    if view.is_dirty() and not forceit:
+        return message("E37: No write since last change")
 
-        if not path:
-            self.state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
+    # TODO [review] State dependency
+    state = State(view)
 
-            return do_ex_command(self.window, 'pwd')
+    if not path:
+        state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
 
-        # TODO: It seems there a few symbols that are always substituted when they represent a
-        # filename. We should have a global method of substiting them.
-        if path == '%:h':
-            fname = self._view.file_name()
-            if fname:
-                self.state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
+        # TODO [refactor] Use command directly
+        return do_ex_command(window, 'pwd')
 
-                do_ex_command(self.window, 'pwd')
+    # TODO: It seems there a few symbols that are always substituted when they represent a
+    # filename. We should have a global method of substiting them.
+    if path == '%:h':
+        fname = view.file_name()
+        if fname:
+            state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
 
-            return
+            # TODO [refactor] Use command directly
+            do_ex_command(window, 'pwd')
 
-        path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
-        if not os.path.exists(path):
-            return message("E344: Can't find directory \"%s\" in cdpath" % path)
+        return
 
-        self.state.settings.vi['_cmdline_cd'] = path
+    path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
+    if not os.path.exists(path):
+        return message("E344: Can't find directory \"%s\" in cdpath" % path)
 
-        do_ex_command(self.window, 'pwd')
+    state.settings.vi['_cmdline_cd'] = path
+
+    # TODO [refactor] Use command directly
+    do_ex_command(window, 'pwd')
 
 
-class ExCdd(_ExWindowCommand, ViCommandMixin):
+# Non-standard command to change the current directory to the active view's
+# directory. In Sublime Text, the current directory doesn't follow the
+# active view, so it's convenient to be able to align both easily.
+# XXX: Is the above still true?
+# XXX: This command may be removed at any time.
+def ExCdd(window, forceit=False, *args, **kwargs):
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-    # Non-standard command to change the current directory to the active view's
-    # directory. In Sublime Text, the current directory doesn't follow the
-    # active view, so it's convenient to be able to align both easily.
-    # XXX: Is the above still true?
-    # XXX: This command may be removed at any time.
+    if view.is_dirty() and not forceit:
+        return message("E37: No write since last change")
 
-    def run(self, forceit=False, *args, **kwargs):
-        if self._view.is_dirty() and not forceit:
-            return message("E37: No write since last change")
+    path = os.path.dirname(view.file_name())
 
-        path = os.path.dirname(self._view.file_name())
+    try:
+        # TODO [review] State dependency
+        state = State(view)
 
-        try:
-            self.state.settings.vi['_cmdline_cd'] = path
-            status_message(path)
-        except IOError:
-            message("E344: Can't find directory \"%s\" in cdpath" % path)
+        state.settings.vi['_cmdline_cd'] = path
+        status_message(path)
+    except IOError:
+        message("E344: Can't find directory \"%s\" in cdpath" % path)
 
 
 # TODO [refactor] into window module
 # TODO Refactor like ExSplit
-# https://vimhelp.appspot.com/windows.txt.html#:vsplit
-class ExVsplit(_ExWindowCommand, ViCommandMixin):
+def ExVsplit(window, file=None, *args, **kwargs):
+    max_splits = 4
 
-    _MAX_SPLITS = 4
-
-    # TODO Refactor variable access into reusable function because it's also used by ExUnvsplit
-    LAYOUT_DATA = {
+    layout_data = {
         1: {"cells": [[0, 0, 1, 1]],
             "rows": [0.0, 1.0],
             "cols": [0.0, 1.0]},
@@ -1543,121 +1450,122 @@ class ExVsplit(_ExWindowCommand, ViCommandMixin):
             "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
     }
 
-    def run(self, file=None, *args, **kwargs):
-        groups = self.window.num_groups()
-        if groups >= ExVsplit._MAX_SPLITS:
-            return message('Can\'t create more groups')
+    groups = window.num_groups()
+    if groups >= max_splits:
+        return message('Can\'t create more groups')
 
-        old_view = self._view
+    # TODO [review] active_view dependency
+    view = window.active_view()
+
+    old_view = view
+    pos = ''
+    current_file_name = None
+    if old_view and old_view.file_name():
+        pos = ':{0}:{1}'.format(*old_view.rowcol(old_view.sel()[0].b))
+        current_file_name = old_view.file_name() + pos
+
+    window.run_command('set_layout', layout_data[groups + 1])
+
+    def open_file(window, file):
+        window.open_file(file, group=(window.num_groups() - 1), flags=(FORCE_GROUP | ENCODED_POSITION))
+
+    if file:
+        existing = window.find_open_file(file)
         pos = ''
-        current_file_name = None
-        if old_view and old_view.file_name():
-            pos = ':{0}:{1}'.format(*old_view.rowcol(old_view.sel()[0].b))
-            current_file_name = old_view.file_name() + pos
+        if existing:
+            pos = ':{0}:{1}'.format(*existing.rowcol(existing.sel()[0].b))
 
-        self.window.run_command('set_layout', ExVsplit.LAYOUT_DATA[groups + 1])
+        return open_file(window, file + pos)
 
-        if file:
-            existing = self.window.find_open_file(file)
-            pos = ''
-            if existing:
-                pos = ':{0}:{1}'.format(*existing.rowcol(existing.sel()[0].b))
-
-            return self.open_file(file + pos)
-
-        if current_file_name:
-            self.open_file(current_file_name)
-        else:
-            self.window.new_file()
-
-    def open_file(self, file):
-        self.window.open_file(
-            file,
-            group=(self.window.num_groups() - 1),
-            flags=(FORCE_GROUP | ENCODED_POSITION)
-        )
+    if current_file_name:
+        open_file(window, current_file_name)
+    else:
+        window.new_file()
 
 
 # TODO Unify with <C-w>s
-# https://vimhelp.appspot.com/windows.txt.html#:split
-class ExSplit(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, file=None, *args, **kwargs):
-        window_split(self.window, file)
+def ExSplit(window, file=None, *args, **kwargs):
+    window_split(window, file)
 
 
 # TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
-class ExUnvsplit(_ExWindowCommand, ViCommandMixin):
+# Non-standard Vim :unvsplit command
+def ExUnvsplit(window, *args, **kwargs):
+    groups = window.num_groups()
+    if groups == 1:
+        return status_message("can't delete more groups")
 
-    # Non-standard Vim :unvsplit command
+    # If we don't do this, cloned views will be moved to the previous group and
+    # kept around. We want to close them instead.
 
-    def run(self, *args, **kwargs):
-        groups = self.window.num_groups()
-        if groups == 1:
-            return status_message("can't delete more groups")
+    layout_data = {
+        1: {"cells": [[0, 0, 1, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 1.0]},
+        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.5, 1.0]},
+        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.33, 0.66, 1.0]},
+        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
+    }
 
-        # If we don't do this, cloned views will be moved to the previous group
-        # and kept around. We want to close them instead.
-
-        self.window.run_command('close')
-        self.window.run_command('set_layout', ExVsplit.LAYOUT_DATA[groups - 1])
-
-
-# https://vimhelp.appspot.com/options.txt.html#:setlocal
-class ExSetlocal(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, option, value, *args, **kwargs):
-        if option.endswith('?'):
-            return message('not implemented')
-
-        try:
-            set_local(self._view, option, value)
-        except KeyError:
-            status_message('no such option')
-        except ValueError:
-            status_message('invalid value for option')
+    window.run_command('close')
+    window.run_command('set_layout', layout_data[groups - 1])
 
 
-# https://vimhelp.appspot.com/options.txt.html#:set
-class ExSet(_ExWindowCommand, ViCommandMixin):
+def ExSetlocal(window, option, value, *args, **kwargs):
+    if option.endswith('?'):
+        return message('not implemented')
 
-    def run(self, option, value, *args, **kwargs):
-        if option.endswith('?'):
-            return message('not implemented')
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-        try:
-            set_global(self._view, option, value)
-        except KeyError:
-            status_message('no such option')
-        except ValueError:
-            status_message('invalid value for option')
-
-
-# https://vimhelp.appspot.com/eval.txt.html#:let
-class ExLet(_ExWindowCommand, ViCommandMixin):
-
-    def run(self, name, value, *args, **kwargs):
-        variables.set(name, value)
+    try:
+        set_local(view, option, value)
+    except KeyError:
+        status_message('no such option')
+    except ValueError:
+        status_message('invalid value for option')
 
 
-# https://vimhelp.appspot.com/editing.txt.html#:wqall
-class ExWqall(_ExWindowCommand, ViCommandMixin):
+def ExSet(window, option, value, *args, **kwargs):
+    if option.endswith('?'):
+        return message('not implemented')
 
-    def run(self, *args, **kwargs):
-        if not all(v.file_name() for v in self.window.views()):
-            ui_blink()
+    # TODO [review] active_view dependency
+    view = window.active_view()
 
-            return message("E32: No file name")
+    try:
+        set_global(view, option, value)
+    except KeyError:
+        status_message('no such option')
+    except ValueError:
+        status_message('invalid value for option')
 
-        if any(v.is_read_only() for v in self.window.views()):
-            ui_blink()
 
-            return message("E45: 'readonly' option is set (add ! to override)")
+def ExLet(window, name, value, *args, **kwargs):
+    variables.set(name, value)
 
-        self.window.run_command('save_all')
 
-        # TODO Remove assert statements
-        assert not any(v.is_dirty() for v in self.window.views())
+def ExWqall(window, *args, **kwargs):
+    if not all(view.file_name() for view in window.views()):
+        ui_blink()
 
-        self.window.run_command('close_all')
-        self.window.run_command('exit')
+        return message("E32: No file name")
+
+    if any(view.is_read_only() for view in window.views()):
+        ui_blink()
+
+        return message("E45: 'readonly' option is set (add ! to override)")
+
+    window.run_command('save_all')
+
+    # TODO Remove assert statements
+    assert not any(view.is_dirty() for view in window.views())
+
+    window.run_command('close_all')
+    window.run_command('exit')
