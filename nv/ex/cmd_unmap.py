@@ -25,15 +25,6 @@ class TokenCommandUnmap(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_UNMAP, 'unmap', *args, **kwargs)
         self.target_command = 'ex_unmap'
 
-    @property
-    def keys(self):
-        return self.params['keys']
-
-    # TODO [refactor] looks unused. Other unmap commands are probably the same.
-    @property
-    def command(self):
-        return self.params['command']
-
 
 # TODO [refactor] All the map related scan functions can probably be consolidated into one scanner. They either parse one key (unmap commands), or command and key.  # noqa: E501
 def scan_cmd_unmap(state):

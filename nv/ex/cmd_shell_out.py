@@ -26,11 +26,6 @@ class TokenCommandShellOut(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_shell_out'
 
-    # TODO Remove obsolete properties
-    @property
-    def command(self):
-        return self.params['cmd']
-
 
 def scan_cmd_shell_out(state):
     params = {'cmd': None}

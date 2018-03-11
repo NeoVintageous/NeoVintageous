@@ -26,14 +26,6 @@ class TokenCommandGlobal(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_global'
 
-    @property
-    def pattern(self):
-        return self.params['pattern']
-
-    @property
-    def subcommand(self):
-        return self.params['subcommand']
-
 
 def scan_cmd_global(state):
     params = {'pattern': None, 'subcommand': None}

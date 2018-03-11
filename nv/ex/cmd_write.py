@@ -33,22 +33,6 @@ class TokenCommandWrite(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_write'
 
-    @property
-    def options(self):
-        return self.params['++']
-
-    @property
-    def target_file(self):
-        return self.params['file_name']
-
-    @property
-    def appends(self):
-        return self.params['>>']
-
-    @property
-    def command(self):
-        return self.params['cmd']
-
 
 def scan_cmd_write(state):
     # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501

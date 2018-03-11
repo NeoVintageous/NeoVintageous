@@ -25,10 +25,6 @@ class TokenCommandVunmap(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_VUNMAP, 'vunmap', *args, **kwargs)
         self.target_command = 'ex_vunmap'
 
-    @property
-    def keys(self):
-        return self.params['keys']
-
 
 def scan_cmd_vunmap(state):
     params = {'keys': None}

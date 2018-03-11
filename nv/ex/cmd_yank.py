@@ -26,14 +26,6 @@ class TokenCommandYank(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_yank'
 
-    @property
-    def register(self):
-        return self.params['register']
-
-    @property
-    def count(self):
-        return self.params['count']
-
 
 def scan_cmd_yank(state):
     params = {'register': '"', 'count': None}

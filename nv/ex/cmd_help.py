@@ -25,10 +25,6 @@ class TokenCommandHelp(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_HELP, 'help', *args, **kwargs)
         self.target_command = 'ex_help'
 
-    @property
-    def subject(self):
-        return self.params['subject']
-
 
 def scan_cmd_help(state):
     match = state.expect_match(r'(?P<bang>!)?\s*(?P<subject>.+)?$').groupdict()

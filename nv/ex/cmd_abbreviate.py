@@ -25,14 +25,6 @@ class TokenCommandAbbreviate(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_ABBREVIATE, 'abbreviate', *args, **kwargs)
         self.target_command = 'ex_abbreviate'
 
-    @property
-    def short(self):
-        return self.params['short']
-
-    @property
-    def full(self):
-        return self.params['full']
-
 
 # TODO Fix borken :abbreviate scanner
 def scan_cmd_abbreviate(state):

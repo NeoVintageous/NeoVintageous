@@ -25,14 +25,6 @@ class TokenCommandSnoremap(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_SNOREMAP, 'snoremap', *args, **kwargs)
         self.target_command = 'ex_snoremap'
 
-    @property
-    def keys(self):
-        return self.params['keys']
-
-    @property
-    def command(self):
-        return self.params['command']
-
 
 def scan_cmd_snoremap(state):
     params = {'keys': None, 'command': None}

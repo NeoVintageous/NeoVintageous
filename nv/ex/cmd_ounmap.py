@@ -25,10 +25,6 @@ class TokenCommandOunmap(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_OUNMAP, 'ounmap', *args, **kwargs)
         self.target_command = 'ex_ounmap'
 
-    @property
-    def keys(self):
-        return self.params['keys']
-
 
 def scan_cmd_ounmap(state):
     params = {'keys': None}

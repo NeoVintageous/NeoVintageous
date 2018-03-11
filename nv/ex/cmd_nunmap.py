@@ -25,10 +25,6 @@ class TokenCommandNunmap(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_NUNMAP, 'nunmap', *args, **kwargs)
         self.target_command = 'ex_nunmap'
 
-    @property
-    def keys(self):
-        return self.params['keys']
-
 
 def scan_cmd_nunmap(state):
     params = {'keys': None}

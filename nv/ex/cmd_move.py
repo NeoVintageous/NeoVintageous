@@ -26,10 +26,6 @@ class TokenCommandMove(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_move'
 
-    @property
-    def address(self):
-        return self.params['address']
-
 
 def scan_cmd_move(state):
     params = {'address': None}

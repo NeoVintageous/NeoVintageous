@@ -25,14 +25,6 @@ class TokenCommandCd(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_CD, 'cd', *args, **kwargs)
         self.target_command = 'ex_cd'
 
-    @property
-    def path(self):
-        return self.params['path']
-
-    @property
-    def must_go_back(self):
-        return self.params['-']
-
 
 def scan_cmd_cd(state):
     # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501

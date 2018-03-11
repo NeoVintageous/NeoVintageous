@@ -27,17 +27,9 @@ class TokenCommandPrint(TokenOfCommand):
         self.cooperates_with_global = True
         self.target_command = 'ex_print'
 
-    # TODO [review] This should be redundant. The base token str cast should be enough.
+    # TODO [review] This should be redundant. The base token str cast should be enough. NOTE: The exGlobal command has dep. on this.  # noqa: E501
     def __str__(self):
-        return "{0} {1} {2}".format(self.content, ''.join(self.flags), self.count).strip()
-
-    @property
-    def count(self):
-        return self.params['count']
-
-    @property
-    def flags(self):
-        return self.params['flags']
+        return "{0} {1} {2}".format(self.content, ''.join(self.params['flags']), self.params['count']).strip()
 
 
 def scan_cmd_print(state):

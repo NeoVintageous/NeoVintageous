@@ -32,22 +32,6 @@ class TokenCommandEdit(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_EDIT, 'edit', *args, **kwargs)
         self.target_command = 'ex_edit'
 
-    @property
-    def plusplus(self):
-        return self.params['++']
-
-    @property
-    def command(self):
-        return self.params['cmd']
-
-    @property
-    def file_name(self):
-        return self.params['file_name']
-
-    @property
-    def count(self):
-        return self.params['count']
-
 
 def scan_cmd_edit(state):
     # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501

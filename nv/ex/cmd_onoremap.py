@@ -25,14 +25,6 @@ class TokenCommandOnoremap(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_ONOREMAP, 'onoremap', *args, **kwargs)
         self.target_command = 'ex_onoremap'
 
-    @property
-    def keys(self):
-        return self.params['keys']
-
-    @property
-    def command(self):
-        return self.params['command']
-
 
 def scan_cmd_onoremap(state):
     params = {'keys': None, 'command': None}

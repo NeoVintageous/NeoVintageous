@@ -32,18 +32,6 @@ class TokenCommandRead(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_READ, 'read', *args, **kwargs)
         self.target_command = 'ex_read'
 
-    @property
-    def command(self):
-        return self.params['cmd']
-
-    @property
-    def file_name(self):
-        return self.params['file_name']
-
-    @property
-    def plusplus(self):
-        return self.params['++']
-
 
 def scan_cmd_read(state):
     params = {

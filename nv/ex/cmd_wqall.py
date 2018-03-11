@@ -33,10 +33,6 @@ class TokenCommandWqall(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_wqall'
 
-    @property
-    def options(self):
-        return self.params['++']
-
 
 def scan_cmd_wqall(state):
     params = {'++': ''}

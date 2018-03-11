@@ -26,10 +26,6 @@ class TokenCommandCopy(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_copy'
 
-    @property
-    def address(self):
-        return self.params['address']
-
 
 def scan_cmd_copy(state):
     params = {'address': None}

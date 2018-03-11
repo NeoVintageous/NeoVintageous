@@ -26,14 +26,6 @@ class TokenCommandDelete(TokenOfCommand):
         self.addressable = True
         self.target_command = 'ex_delete'
 
-    @property
-    def register(self):
-        return self.params['register']
-
-    @property
-    def count(self):
-        return self.params['count']
-
 
 def scan_cmd_delete(state):
     params = {'register': '"', 'count': None}

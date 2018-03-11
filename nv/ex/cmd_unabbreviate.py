@@ -25,10 +25,6 @@ class TokenCommandUnabbreviate(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_UNABBREVIATE, 'unabbreviate', *args, **kwargs)
         self.target_command = 'ex_unabbreviate'
 
-    @property
-    def short(self):
-        return self.params['lhs']
-
 
 def scan_cmd_unabbreviate(state):
     params = {'lhs': None}

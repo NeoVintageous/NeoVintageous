@@ -25,14 +25,6 @@ class TokenCommandVnoremap(TokenOfCommand):
         super().__init__(params, TOKEN_COMMAND_VNOREMAP, 'vnoremap', *args, **kwargs)
         self.target_command = 'ex_vnoremap'
 
-    @property
-    def keys(self):
-        return self.params['keys']
-
-    @property
-    def command(self):
-        return self.params['command']
-
 
 def scan_cmd_vnoremap(state):
     params = {'keys': None, 'command': None}
