@@ -117,8 +117,10 @@
     {"keys": ["x"], "command": "_nv_feed_key", "args": {"key": "x"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["y"], "command": "_nv_feed_key", "args": {"key": "y"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["z"], "command": "_nv_feed_key", "args": {"key": "z"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["ä"], "command": "_nv_feed_key", "args": {"key": "ä"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ç"], "command": "_nv_feed_key", "args": {"key": "ç"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ñ"], "command": "_nv_feed_key", "args": {"key": "ñ"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["ö"], "command": "_nv_feed_key", "args": {"key": "ö"}, "context": [{"key": "vi_command_mode_aware"}]},
 
     {"keys": ["A"], "command": "_nv_feed_key", "args": {"key": "A"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["B"], "command": "_nv_feed_key", "args": {"key": "B"}, "context": [{"key": "vi_command_mode_aware"}]},
@@ -146,8 +148,10 @@
     {"keys": ["X"], "command": "_nv_feed_key", "args": {"key": "X"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Y"], "command": "_nv_feed_key", "args": {"key": "Y"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Z"], "command": "_nv_feed_key", "args": {"key": "Z"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["Ä"], "command": "_nv_feed_key", "args": {"key": "Ä"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ç"], "command": "_nv_feed_key", "args": {"key": "Ç"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ñ"], "command": "_nv_feed_key", "args": {"key": "Ñ"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["Ö"], "command": "_nv_feed_key", "args": {"key": "Ö"}, "context": [{"key": "vi_command_mode_aware"}]},
 
     // Overlay: ctrl+n (down), ctrl+p (up) [aliases: ctrl+j/ctrl+k]
     { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true},  "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},

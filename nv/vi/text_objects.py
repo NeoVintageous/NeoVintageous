@@ -436,7 +436,7 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
     # duplicating code.
 
     # XXX: refactor this
-    if view.substr(start) == tags[0][1] if len(tags[0]) > 1 else tags[0]:
+    if view.substr(start) == (tags[0][1] if len(tags[0]) > 1 else tags[0]):
         if not unbalanced and view.substr(start - 1) != '\\':
             return Region(start, start + 1)
 

@@ -336,7 +336,7 @@ implemented.
 
 ABOLISH                                                  *neovintageous-abolish*
 
-Currently only the coercion commands are support. See |abolish-coercion|.
+Currently only the coercion commands are supported. See |abolish-coercion|.
 
 ------------------------------------------------------------------------------
 
