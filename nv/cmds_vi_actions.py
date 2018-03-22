@@ -2449,17 +2449,19 @@ class _vi_at(IrreversibleTextCommand):
                 return console_message('error: %s' % e)
 
         state = State(self.view)
-        for cmd, args in cmds:
-            # TODO Is this robust enough?
-            if 'xpos' in args:
-                state.update_xpos(force=True)
-                args['xpos'] = State(self.view).xpos
-            elif args.get('motion') and 'xpos' in args.get('motion'):
-                state.update_xpos(force=True)
-                motion = args.get('motion')
-                motion['motion_args']['xpos'] = State(self.view).xpos
-                args['motion'] = motion
-            self.view.run_command(cmd, args)
+
+        for i in range(count):
+            for cmd, args in cmds:
+                # TODO Is this robust enough?
+                if 'xpos' in args:
+                    state.update_xpos(force=True)
+                    args['xpos'] = State(self.view).xpos
+                elif args.get('motion') and 'xpos' in args.get('motion'):
+                    state.update_xpos(force=True)
+                    motion = args.get('motion')
+                    motion['motion_args']['xpos'] = State(self.view).xpos
+                    args['motion'] = motion
+                self.view.run_command(cmd, args)
 
 
 class _enter_visual_block_mode(ViTextCommandBase):
