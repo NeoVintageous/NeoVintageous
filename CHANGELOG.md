@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.5.3 - Unreleased
 
+* Fixed [#51](https://github.com/NeoVintageous/NeoVintageous/issues/51): Can't map umlauts
 * Fixed [#144](https://github.com/NeoVintageous/NeoVintageous/issues/144): Can't repeat macros
 * Fixed [#170](https://github.com/NeoVintageous/NeoVintageous/issues/170): `<` text object not finding the opening bracket correctly
 
