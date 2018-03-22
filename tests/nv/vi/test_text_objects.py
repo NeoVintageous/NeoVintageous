@@ -46,6 +46,10 @@ TESTS = (
     test(content='foo {bar {foo} bar', start=12, brackets=('\\{', '\\}'), expected=unittest.Region(9, 10), msg='should find inner if unbalanced outer'),  # noqa: E501
     test(content='foo {bar {foo} bar', start=4, brackets=('\\{', '\\}'), expected=unittest.Region(4, 5), msg='should find bracket at caret position'),  # noqa: E501
 
+    test(content='foo <bar <foo> bar>', start=16, brackets=('<', '>'), expected=unittest.Region(4, 5), msg='should find outer angle bracket from RHS'),  # noqa: E501
+    test(content='foo <bar <foo> bar>', start=7, brackets=('<', '>'), expected=unittest.Region(4, 5), msg='should find outer angle bracket from LHS'),  # noqa: E501
+    test(content='foo <bar <foo> bar>', start=13, brackets=('<', '>'), expected=unittest.Region(9, 10), msg='should find inner angle bracket'),  # noqa: E501
+
     test(content='a\\{bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # noqa: E501
     test(content='a\\{bc', start=3, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket'),
 )
