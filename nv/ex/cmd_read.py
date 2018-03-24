@@ -19,13 +19,6 @@ from .tokens import TOKEN_COMMAND_READ
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 
-_plus_plus_translations = {
-    'ff': 'fileformat',
-    'bin': 'binary',
-    'enc': 'fileencoding',
-    'nobin': 'nobinary',
-}
-
 
 class TokenCommandRead(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
@@ -54,7 +47,15 @@ def scan_cmd_read(state):
             r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
             lambda: Exception("E474: Invalid argument"))
         name = m.group(0)
-        params['++'] = _plus_plus_translations.get(name, name)
+
+        plus_plus_translations = {
+            'ff': 'fileformat',
+            'bin': 'binary',
+            'enc': 'fileencoding',
+            'nobin': 'nobinary',
+        }
+
+        params['++'] = plus_plus_translations.get(name, name)
         state.ignore()
         raise NotImplementedError('++opt not implemented')
 

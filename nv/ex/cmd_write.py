@@ -19,13 +19,6 @@ from .tokens import TOKEN_COMMAND_WRITE
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 
-_plus_plus_translations = {
-    'ff': 'fileformat',
-    'bin': 'binary',
-    'enc': 'fileencoding',
-    'nobin': 'nobinary',
-}
-
 
 class TokenCommandWrite(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
@@ -54,6 +47,13 @@ def scan_cmd_write(state):
     state.skip(' ')
     state.ignore()
 
+    plus_plus_translations = {
+        'ff': 'fileformat',
+        'bin': 'binary',
+        'enc': 'fileencoding',
+        'nobin': 'nobinary'
+    }
+
     while True:
         c = state.consume()
         if c == state.EOF:
@@ -70,7 +70,7 @@ def scan_cmd_write(state):
                 lambda: Exception("E474: Invalid argument"))
 
             name = m.group(0)
-            params['++'] = _plus_plus_translations.get(name, name)
+            params['++'] = plus_plus_translations.get(name, name)
             state.ignore()
             continue
 

@@ -19,13 +19,6 @@ from .tokens import TOKEN_COMMAND_WQ
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 
-_plus_plus_translations = {
-    'ff': 'fileformat',
-    'bin': 'binary',
-    'enc': 'fileencoding',
-    'nobin': 'nobinary',
-}
-
 
 class TokenCommandWq(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
@@ -60,7 +53,15 @@ def scan_cmd_wq(state):
             lambda: Exception("E474: Invalid argument"))
 
         name = m.group(0)
-        params['++'] = _plus_plus_translations.get(name, name)
+
+        plus_plus_translations = {
+            'ff': 'fileformat',
+            'bin': 'binary',
+            'enc': 'fileencoding',
+            'nobin': 'nobinary',
+        }
+
+        params['++'] = plus_plus_translations.get(name, name)
 
         state.ignore()
         raise NotImplementedError('param not implemented')

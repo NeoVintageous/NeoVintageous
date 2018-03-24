@@ -19,13 +19,6 @@ from .tokens import TOKEN_COMMAND_EXIT
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 
-_plus_plus_translations = {
-    'ff': 'fileformat',
-    'bin': 'binary',
-    'enc': 'fileencoding',
-    'nobin': 'nobinary',
-}
-
 
 class TokenCommandExit(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
@@ -50,6 +43,13 @@ def scan_cmd_exit(state):
     state.skip(' ')
     state.ignore()
 
+    plus_plus_translations = {
+        'ff': 'fileformat',
+        'bin': 'binary',
+        'enc': 'fileencoding',
+        'nobin': 'nobinary'
+    }
+
     while True:
         c = state.consume()
 
@@ -67,7 +67,7 @@ def scan_cmd_exit(state):
                 lambda: Exception("E474: Invalid argument"))
 
             name = m.group(0)
-            params['++'] = _plus_plus_translations.get(name, name)
+            params['++'] = plus_plus_translations.get(name, name)
 
             state.ignore()
             continue

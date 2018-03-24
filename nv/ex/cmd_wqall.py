@@ -19,13 +19,6 @@ from .tokens import TOKEN_COMMAND_WQALL
 from .tokens import TokenEof
 from .tokens import TokenOfCommand
 
-_plus_plus_translations = {
-    'ff': 'fileformat',
-    'bin': 'binary',
-    'enc': 'fileencoding',
-    'nobin': 'nobinary',
-}
-
 
 class TokenCommandWqall(TokenOfCommand):
     def __init__(self, params, *args, **kwargs):
@@ -51,7 +44,15 @@ def scan_cmd_wqall(state):
             lambda: Exception("E474: Invalid argument"))
 
         name = m.group(0)
-        params['++'] = _plus_plus_translations.get(name, name)
+
+        plus_plus_translations = {
+            'ff': 'fileformat',
+            'bin': 'binary',
+            'enc': 'fileencoding',
+            'nobin': 'nobinary'
+        }
+
+        params['++'] = plus_plus_translations.get(name, name)
         state.ignore()
 
     state.expect_eof()
