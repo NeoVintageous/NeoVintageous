@@ -2461,6 +2461,7 @@ class _vi_at(IrreversibleTextCommand):
                 return console_message('error: %s' % e)
 
         state = State(self.view)
+
         for i in range(count):
             for cmd, args in cmds:
                 # TODO Is this robust enough?
@@ -2472,10 +2473,6 @@ class _vi_at(IrreversibleTextCommand):
                     motion = args.get('motion')
                     motion['motion_args']['xpos'] = State(self.view).xpos
                     args['motion'] = motion
-
-                # TODO [refactor] Remove need for _nv_run_cmds
-                if cmd == 'sequence':
-                    cmd = '_nv_run_cmds'
 
                 self.view.run_command(cmd, args)
 

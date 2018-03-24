@@ -83,7 +83,8 @@ __all__ = [
     '_nv_write_fs_completion',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
-    'NeovintageousToggleSideBarCommand'
+    'NeovintageousToggleSideBarCommand',
+    'SequenceCommand'
 ]
 
 
@@ -870,3 +871,15 @@ class NeovintageousToggleSideBarCommand(WindowCommand):
             self.window.run_command('focus_side_bar')
         else:
             self.window.focus_group(self.window.active_group())
+
+
+# DEPRECATED Use _nv_run_cmds instead
+class SequenceCommand(TextCommand):
+
+    def run(self, edit, commands):
+        # Run a list of commands one after the other.
+        #
+        # Args:
+        #   commands (list): A list of commands.
+        for cmd, args in commands:
+            self.view.run_command(cmd, args)
