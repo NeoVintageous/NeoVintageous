@@ -276,11 +276,15 @@ def _scan_range(state):
 
         return _scan_range, [TokenDollar()]
 
-    if c in ',;':
-        token = TokenComma if c == ',' else TokenSemicolon
+    if c == ',':
         state.emit()
 
-        return _scan_range, [token()]
+        return _scan_range, [TokenComma()]
+
+    if c in ';':
+        state.emit()
+
+        return _scan_range, [TokenSemicolon()]
 
     if c == "'":
         return _scan_mark(state)
