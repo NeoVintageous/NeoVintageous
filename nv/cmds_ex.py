@@ -77,14 +77,18 @@ _log = get_logger(__name__)
 
 def _changing_cd(f, *args, **kwargs):
     def inner(*args, **kwargs):
-        # TODO [review] State dependency
-        try:
-            state = State(args[0].view)
-        except AttributeError:
+        view = kwargs.get('view', None)
+        if not view:
             try:
-                state = State(args[0].window.active_view())
+                view = args[0].view
             except AttributeError:
-                state = State(args[0].active_view())
+                try:
+                    view = args[0].window.active_view()
+                except AttributeError:
+                    view = args[0].active_view()
+
+        # TODO [review] State dependency
+        state = State(view)
 
         old = os.getcwd()
         try:
@@ -100,41 +104,53 @@ def _changing_cd(f, *args, **kwargs):
     return inner
 
 
-class _ExTextCommand:
-    def __init__(self, view):
-        self.view = view
+def _set_next_selection(view, data):
+    view.settings().set('ex_data', {'next_sel': data})
 
 
-# TODO [refactor] into a decorator
-class _ExTextCommandBase(_ExTextCommand):
+def _serialize_deserialize(f, *args, **kwargs):
+    def inner(*args, **kwargs):
+        # TODO [refactor]
+        view = kwargs.get('view', None)
+        if not view:
+            window = kwargs.get('window', None)
+            if window:
+                view = window.active_view()
+            else:
+                if len(args) > 0:
+                    window = args[0]
+                    view = window.active_view()
 
-    def _serialize_sel(self):
-        sels = [(r.a, r.b) for r in list(self.view.sel())]
-        self.view.settings().set('ex_data', {'prev_sel': sels})
+        #
+        # Serialize
+        #
 
-    def _deserialize_sel(self, name='next_sel'):
-        return self.view.settings().get('ex_data')[name] or []
+        sels = [(r.a, r.b) for r in list(view.sel())]
+        view.settings().set('ex_data', {'prev_sel': sels})
 
-    def _set_sel(self):
-        sel = self._deserialize_sel()
-        self.view.sel().clear()
-        self.view.sel().add_all([Region(b) for (a, b) in sel])
+        f(*args, **kwargs)
 
-    # TODO [refactor] into module function so dependencies on this class can be removed
-    def set_next_sel(self, data):
-        self.view.settings().set('ex_data', {'next_sel': data})
+        #
+        # Set selection
+        #
 
-    def _set_mode(self):
-        state = State(self.view)
+        # Deserialise
+        sel = view.settings().get('ex_data')['next_sel'] or []
+
+        view.sel().clear()
+        view.sel().add_all([Region(b) for (a, b) in sel])
+
+        #
+        # Set mode
+        #
+
+        # TODO [review] State dependency
+        state = State(view)
         state.enter_normal_mode()
         # TODO [review] enter normal mode depedendency
-        self.view.run_command('_enter_normal_mode')
+        view.run_command('_enter_normal_mode')
 
-    def run(self, edit, *args, **kwargs):
-        self._serialize_sel()
-        self._run(edit, *args, **kwargs)
-        self._set_sel()
-        self._set_mode()
+    return inner
 
 
 # TODO [refactor] into _nv_cmdline non-interactive command
@@ -142,19 +158,18 @@ class _nv_run_ex_text_cmd(TextCommand):
     def run(self, edit, name, command_line, *args, **kwargs):
         _log.debug('_nv_run_ex_text_cmd -> %s with %s %s in %s %s', name, args, kwargs, self.view.id(), self.view.file_name())  # noqa: E501
 
+        parsed = parse_command_line(command_line)
         module = sys.modules[__name__]
         ex_cmd = getattr(module, name, None)
-        parsed = parse_command_line(command_line)
+        parsed.command.params.update(kwargs)
 
-        try:
-            ex_cmd(self.view).run(
+        if ex_cmd:
+            ex_cmd(
+                view=self.view,
                 edit=edit,
                 line_range=parsed.line_range,
-                forceit=parsed.command.forced,
                 **parsed.command.params
             )
-        except TypeError:
-            raise  # TODO e.g. possible exception 'TypeError'> run() missing 1 required positional argument: 'name'  # noqa: E501
 
 
 # TODO [refactor]
@@ -175,28 +190,49 @@ def do_ex_command(window, name, args=None):
         _log.debug('prepared ex command -> %s %s %s', name, args, ex_cmd)
 
         if inspect.isfunction(ex_cmd):
-            parsed = parse_command_line(args['command_line'])
+            text_command = False
+            for p in inspect.signature(ex_cmd).parameters:
+                if p in ('view', 'edit'):
+                    text_command = True
+                    break
 
-            # We don't want the ex commands using this.
-            del args['command_line']
+            if text_command:
+                # Text commands need edit tokens and they can only be created by
+                # Sublime Text commands, so we need to wrap the command in a ST text
+                # command.
+                args['name'] = name
+                window.run_command('_nv_run_ex_text_cmd', args)
+            else:
+                try:
+                    parsed = parse_command_line(args['command_line'])
 
-            args.update(parsed.command.params)
+                    params = args.copy()
+                    # We don't want the ex commands using this.
+                    del params['command_line']
+                    params.update(parsed.command.params)
 
-            try:
-                ex_cmd(
-                    window,
-                    line_range=parsed.line_range,
-                    forceit=parsed.command.forced,
-                    **args
-                )
-            except TypeError:
-                raise  # TODO e.g. possible exception 'TypeError'> run() missing 1 required positional argument: 'name'  # noqa: E501
-        elif issubclass(ex_cmd, _ExTextCommand):
-            # Text commands need edit tokens and they can only be created by
-            # Sublime Text commands, so we need to wrap the command in a ST text
-            # command.
-            args['name'] = name
-            window.run_command('_nv_run_ex_text_cmd', args)
+                    try:
+                        ex_cmd(
+                            window,
+                            line_range=parsed.line_range,
+                            forceit=parsed.command.forced,
+                            **params
+                        )
+                    except TypeError as e:
+                        # TODO Handle exceptions better? Example exceptions:
+                        # * 'TypeError'> run() missing 1 required positional argument: 'name'
+                        # * TypeError ... missing 1 required positional argument: 'edit'
+                        raise
+                except TypeError as e:
+                    if 'missing 1 required positional argument: \'edit\'' in str(e):
+                        # Text commands need edit tokens and they can only be created by
+                        # Sublime Text commands, so we need to wrap the command in a ST text
+                        # command.
+                        args['name'] = name
+                        window.run_command('_nv_run_ex_text_cmd', args)
+                        return
+
+                    raise
         else:
             raise RuntimeError('unknown ex cmd type {}'.format(ex_cmd))
     else:
@@ -325,41 +361,41 @@ def ExHelp(window, subject=None, forceit=False, *args, **kwargs):
     view.show(c_pt, False)
 
 
-class ExShellOut(_ExTextCommand):
-    _last_command = None
+_ex_shell_last_command = None
 
-    @_changing_cd
-    def run(self, edit, cmd, line_range, *args, **kwargs):
-        if cmd == '!':
-            if not self._last_command:
-                return status_message('no previous command')
 
-            cmd = self._last_command
+@_changing_cd
+def ExShellOut(view, edit, cmd, line_range, *args, **kwargs):
+    global _ex_shell_last_command
 
-        # TODO: store only successful commands.
-        self._last_command = cmd
+    if cmd == '!':
+        if not _ex_shell_last_command:
+            return status_message('E34: No previous command')
 
-        try:
-            if not line_range.is_empty:
-                shell.filter_thru_shell(
-                    view=self.view,
-                    edit=edit,
-                    regions=[line_range.resolve(self.view)],
-                    cmd=cmd
-                )
-            else:
-                # TODO Read output into output panel.
-                out = shell.run_and_read(self.view, cmd)
+        cmd = _ex_shell_last_command
 
-                output_view = self.view.window().create_output_panel('vi_out')
-                output_view.settings().set("line_numbers", False)
-                output_view.settings().set("gutter", False)
-                output_view.settings().set("scroll_past_end", False)
-                output_view = self.view.window().create_output_panel('vi_out')
-                output_view.run_command('append', {'characters': out, 'force': True, 'scroll_to_end': True})
-                self.view.window().run_command("show_panel", {"panel": "output.vi_out"})
-        except NotImplementedError:
-            message('not implemented')
+    # TODO: store only successful commands.
+    _ex_shell_last_command = cmd
+
+    try:
+        if not line_range.is_empty:
+            shell.filter_thru_shell(
+                view=view,
+                edit=edit,
+                regions=[line_range.resolve(view)],
+                cmd=cmd
+            )
+        else:
+            output = shell.run_and_read(view, cmd)
+            output_view = view.window().create_output_panel('vi_out')
+            output_view.settings().set("line_numbers", False)
+            output_view.settings().set("gutter", False)
+            output_view.settings().set("scroll_past_end", False)
+            output_view = view.window().create_output_panel('vi_out')
+            output_view.run_command('append', {'characters': output, 'force': True, 'scroll_to_end': True})
+            view.window().run_command("show_panel", {"panel": "output.vi_out"})
+    except NotImplementedError:
+        message('not implemented')
 
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
@@ -409,47 +445,45 @@ def ExShell(window, *args, **kwargs):
 
 # TODO [review] This command looks unused
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
-class ExRead(_ExTextCommand):
+@_changing_cd
+def ExRead(view, edit, cmd, line_range, *args, **kwargs):
+    r = line_range.resolve(view)
+    target_point = min(r.end(), view.size())
 
-    @_changing_cd
-    def run(self, edit, cmd, line_range, *args, **kwargs):
-        r = line_range.resolve(self.view)
-        target_point = min(r.end(), self.view.size())
+    if cmd:
+        if platform() == 'linux':
+            # TODO: make shell command configurable.
+            shell_cmd = view.settings().get('linux_shell')
+            shell_cmd = shell_cmd or os.path.expandvars("$SHELL")
+            if not shell_cmd:
+                return message('no shell found')
 
-        if cmd:
-            if platform() == 'linux':
-                # TODO: make shell command configurable.
-                shell_cmd = self.view.settings().get('linux_shell')
-                shell_cmd = shell_cmd or os.path.expandvars("$SHELL")
-                if not shell_cmd:
-                    return message('no shell found')
+            try:
+                p = subprocess.Popen([shell_cmd, '-c', cmd], stdout=subprocess.PIPE)
+            except Exception as e:
+                return message('error executing command through shell {}'.format(e))
 
-                try:
-                    p = subprocess.Popen([shell_cmd, '-c', cmd], stdout=subprocess.PIPE)
-                except Exception as e:
-                    return message('error executing command through shell {}'.format(e))
+            view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
 
-                self.view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
+        elif platform() == 'windows':
+            # TODO [refactor] shell commands to use common os nv.ex.shell commands
+            from NeoVintageous.nv.shell_windows import get_oem_cp
+            from NeoVintageous.nv.shell_windows import get_startup_info
+            p = subprocess.Popen(['cmd.exe', '/C', cmd],
+                                 stdout=subprocess.PIPE,
+                                 startupinfo=get_startup_info())
+            cp = 'cp' + get_oem_cp()
+            rv = p.communicate()[0].decode(cp)[:-2].strip()
+            view.insert(edit, target_point, rv.strip() + '\n')
 
-            elif platform() == 'windows':
-                # TODO [refactor] shell commands to use common os nv.ex.shell commands
-                from NeoVintageous.nv.shell_windows import get_oem_cp
-                from NeoVintageous.nv.shell_windows import get_startup_info
-                p = subprocess.Popen(['cmd.exe', '/C', cmd],
-                                     stdout=subprocess.PIPE,
-                                     startupinfo=get_startup_info())
-                cp = 'cp' + get_oem_cp()
-                rv = p.communicate()[0].decode(cp)[:-2].strip()
-                self.view.insert(edit, target_point, rv.strip() + '\n')
-
-            else:
-                return message('not implemented')
         else:
-            # Read a file into the current view.
-            # According to Vim's help, :r should read the current file's content
-            # if no file name is given, but Vim doesn't do that.
-            # TODO: implement reading a file into the buffer.
             return message('not implemented')
+    else:
+        # Read a file into the current view.
+        # According to Vim's help, :r should read the current file's content
+        # if no file name is given, but Vim doesn't do that.
+        # TODO: implement reading a file into the buffer.
+        return message('not implemented')
 
 
 def ExPromptSelectOpenFile(window, *args, **kwargs):
@@ -492,8 +526,6 @@ def ExPromptSelectOpenFile(window, *args, **kwargs):
     window.show_quick_panel(file_names, on_done)
 
 
-# TODO All the map related commands can probably be refactored into one command with a parameter that detimines what action to take.  # noqa: E501
-# TODO Make window argument optional (review other ex commands too)
 def ExNoremap(window, keys, command, *args, **kwargs):
     if not (keys and command):
         # TODO [refactor] Instead of calling status_message(), raise a
@@ -794,83 +826,84 @@ def ExFile(window, *args, **kwargs):
     status_message('%s' % msg)
 
 
-class ExMove(_ExTextCommandBase):
+@_serialize_deserialize
+def ExMove(view, edit, address, line_range, *args, **kwargs):
+    # Move the lines given by [range] to below the line given by {address}.
+    if address is None:
+        return message("E14: Invalid address")
 
-    def _run(self, edit, address, line_range, *args, **kwargs):
-        if address is None:
-            return message("E14: Invalid address")
+    source = line_range.resolve(view)
+    if any(s.contains(source) for s in view.sel()):
+        return message("E134: Move lines into themselves")
 
-        source = line_range.resolve(self.view)
-        if any(s.contains(source) for s in self.view.sel()):
-            return message("E134: Move lines into themselves")
+    # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
+    parsed_address_command = parse_command_line(address).line_range
+    destination = parsed_address_command.resolve(view)
+    if destination == source:
+        return
 
-        # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
-        parsed_address_command = parse_command_line(address).line_range
-        destination = parsed_address_command.resolve(self.view)
-        if destination == source:
-            return
+    text = view.substr(source)
+    if destination.end() >= view.size():
+        text = '\n' + text.rstrip()
 
-        text = self.view.substr(source)
-        if destination.end() >= self.view.size():
-            text = '\n' + text.rstrip()
+    if destination == Region(-1):
+        destination = Region(0)
 
-        if destination == Region(-1):
-            destination = Region(0)
+    if destination.end() < source.begin():
+        view.erase(edit, source)
+        view.insert(edit, destination.end(), text)
+        _set_next_selection(view, [[destination.a, destination.b]])
+        return
 
-        if destination.end() < source.begin():
-            self.view.erase(edit, source)
-            self.view.insert(edit, destination.end(), text)
-            self.set_next_sel([[destination.a, destination.b]])
-            return
-
-        self.view.insert(edit, destination.end(), text)
-        self.view.erase(edit, source)
-        self.set_next_sel([[destination.a, destination.a]])
+    view.insert(edit, destination.end(), text)
+    view.erase(edit, source)
+    _set_next_selection(view, [[destination.a, destination.a]])
 
 
-class ExCopy(_ExTextCommandBase):
+@_serialize_deserialize
+def ExCopy(view, edit, address, line_range, *args, **kwargs):
+    # Copy the lines given by [range] to below the line given by {address}.
+    def _calculate_address(address):
+        # TODO: must calc only the first line ref?
+        # TODO [refactor] parsing the address
+        calculated = parse_command_line(address)
+        if calculated is None:
+            return None
 
-    def _run(self, edit, address, line_range, *args, **kwargs):
-        def calculate_address(address):
-            # TODO: must calc only the first line ref?
-            # TODO [refactor] parsing the address
-            calculated = parse_command_line(address)
-            if calculated is None:
-                return None
+        # TODO Refactor and remove assertions
+        assert calculated.command is None, 'bad address'
+        assert calculated.line_range.separator is None, 'bad address'
 
-            assert calculated.command is None, 'bad address'
-            assert calculated.line_range.separator is None, 'bad address'
+        return calculated.line_range
 
-            return calculated.line_range
+    try:
+        unresolved = _calculate_address(address)
+    except Exception:
+        return message("E14: Invalid address")
 
-        try:
-            unresolved = calculate_address(address)
-        except Exception:
-            return message("E14: Invalid address")
+    if unresolved is None:
+        return message("E14: Invalid address")
 
-        if unresolved is None:
-            return message("E14: Invalid address")
+    # TODO: how do we signal row 0?
+    target_region = unresolved.resolve(view)
 
-        # TODO: how do we signal row 0?
-        target_region = unresolved.resolve(self.view)
+    if target_region == Region(-1, -1):
+        address = 0
+    else:
+        row = utils.row_at(view, target_region.begin()) + 1
+        address = view.text_point(row, 0)
 
-        if target_region == Region(-1, -1):
-            address = 0
-        else:
-            row = utils.row_at(self.view, target_region.begin()) + 1
-            address = self.view.text_point(row, 0)
+    source = line_range.resolve(view)
+    text = view.substr(source)
 
-        source = line_range.resolve(self.view)
-        text = self.view.substr(source)
+    if address >= view.size():
+        address = view.size()
+        text = '\n' + text[:-1]
 
-        if address >= self.view.size():
-            address = self.view.size()
-            text = '\n' + text[:-1]
+    view.insert(edit, address, text)
 
-        self.view.insert(edit, address, text)
-
-        cursor_dest = self.view.line(address + len(text) - 1).begin()
-        self.set_next_sel([(cursor_dest, cursor_dest)])
+    cursor_dest = view.line(address + len(text) - 1).begin()
+    _set_next_selection(view, [(cursor_dest, cursor_dest)])
 
 
 # TODO Unify with CTRL-W CTRL-O
@@ -901,140 +934,144 @@ def ExDoubleAmpersand(window, flags, count, line_range, *args, **kwargs):
     do_ex_command(window, 'substitute', {'command_line': new_command_line.strip()})
 
 
-class ExSubstitute(_ExTextCommand):
+_ex_substitute_last_pattern = None
+_ex_substitute_last_replacement = ''
 
-    _last_pattern = None
-    _last_flags = []
-    _last_replacement = ''
 
-    # TODO [refactor] Rename param "search_term" -> "pattern"
-    def run(self, edit, search_term, replacement, flags, count, line_range, *args, **kwargs):
-        pattern = search_term
+# TODO [refactor] Rename param "search_term" -> "pattern"
+def ExSubstitute(view, edit, line_range, search_term=None, replacement='', flags=0, count=1, *args, **kwargs):
+    pattern = search_term
 
-        # :s
-        if not pattern:
-            pattern = ExSubstitute._last_pattern
-            replacement = ExSubstitute._last_replacement
-            # TODO: Don't we have to reuse the previous flags?
-            flags = []
+    global _ex_substitute_last_pattern, _ex_substitute_last_replacement
 
+    # Repeat last :substitute with same search pattern and substitute string,
+    # but without the same flags.
+    if not pattern:
+        pattern = _ex_substitute_last_pattern
         if not pattern:
             return status_message('E33: No previous substitute regular expression')
 
-        ExSubstitute._last_pattern = pattern
-        ExSubstitute._last_replacement = replacement
-        ExSubstitute._last_flags = flags
+        replacement = _ex_substitute_last_replacement
 
-        computed_flags = re.MULTILINE
-        computed_flags |= re.IGNORECASE if ('i' in flags) else 0
+    if not pattern:
+        return status_message('No substitute regular expression')
 
-        try:
-            compiled_pattern = re.compile(pattern, flags=computed_flags)
-        except Exception as e:
-            return message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
+    if replacement is None:
+        return status_message('No substitute replacement string')
 
-        target_region = line_range.resolve(self.view)
-        if target_region.empty():
-            return status_message('E486: Pattern not found: {}'.format(pattern))
+    _ex_substitute_last_pattern = pattern
+    _ex_substitute_last_replacement = replacement
 
-        replace_count = 0 if (flags and 'g' in flags) else 1
+    computed_flags = re.MULTILINE
+    computed_flags |= re.IGNORECASE if ('i' in flags) else 0
 
-        if 'c' in flags:
-            return self.replace_confirming(edit, pattern, compiled_pattern, replacement, replace_count, target_region)
+    try:
+        compiled_pattern = re.compile(pattern, flags=computed_flags)
+    except Exception as e:
+        return message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
 
-        lines = self.view.lines(target_region)
-        if not lines:
-            return status_message('E486: Pattern not found: {}'.format(pattern))
+    target_region = line_range.resolve(view)
+    if target_region.empty():
+        return status_message('E486: Pattern not found: {}'.format(pattern))
 
-        new_lines = []
-        dirty = False
-        for line in lines:
-            line_str = self.view.substr(line)
-            new_line_str = re.sub(compiled_pattern, replacement, line_str, count=replace_count)
-            new_lines.append(new_line_str)
-            if new_line_str != line_str:
-                dirty = True
+    replace_count = 0 if (flags and 'g' in flags) else 1
 
-        new_region_text = '\n'.join(new_lines)
-        if self.view.size() > line.end():
-            new_region_text += '\n'
+    if 'c' in flags:
 
-        if not dirty:
-            return status_message('E486: Pattern not found: {}'.format(pattern))
+        def _replace_confirming(view, edit, pattern, compiled_pattern,
+                                replacement, replace_count, target_region):
 
-        # Reposition cursor before replacing target region so that the cursor
-        # will auto adjust in sync with the replacement.
-        self.view.sel().clear()
-        self.view.sel().add(line.begin())
+            last_row = row_at(view, target_region.b - 1)
+            start = target_region.begin()
 
-        self.view.replace(edit, target_region, new_region_text)
+            while True:
+                if start >= view.size():
+                    break
 
-        # TODO Refactor set position cursor after operation into reusable api.
-        # Put cursor on first non-whitespace char of current line.
-        line = self.view.line(self.view.sel()[0].b)
-        if line.size() > 0:
-            pt = self.view.find('^\\s*', line.begin()).end()
-            self.view.sel().clear()
-            self.view.sel().add(pt)
+                match = view.find(pattern, start)
 
-        # TODO [review] enter normal mode depedendency
-        self.view.run_command('_enter_normal_mode')
+                # no match or match out of range -- stop
+                if (match == Region(-1)) or (row_at(view, match.a) > last_row):
+                    view.show(first_sel(view).begin())
+                    return
 
-    def replace_confirming(self, edit, pattern, compiled_pattern, replacement,
-                           replace_count, target_region):
+                size_before = view.size()
 
-        last_row = row_at(self.view, target_region.b - 1)
-        start = target_region.begin()
+                with adding_regions(view, 's_confirm', [match], 'comment'):
+                    view.show(match.a, True)
+                    if ok_cancel_dialog("Confirm replacement?"):
+                        text = view.substr(match)
+                        substituted = re.sub(compiled_pattern, replacement, text, count=replace_count)
+                        view.replace(edit, match, substituted)
 
-        while True:
-            if start >= self.view.size():
-                break
+                start = match.b + (view.size() - size_before) + 1
 
-            match = self.view.find(pattern, start)
+        return _replace_confirming(view, edit, pattern, compiled_pattern, replacement, replace_count, target_region)
 
-            # no match or match out of range -- stop
-            if (match == Region(-1)) or (row_at(self.view, match.a) > last_row):
-                self.view.show(first_sel(self.view).begin())
-                return
+    lines = view.lines(target_region)
+    if not lines:
+        return status_message('E486: Pattern not found: {}'.format(pattern))
 
-            size_before = self.view.size()
+    new_lines = []
+    dirty = False
+    for line in lines:
+        line_str = view.substr(line)
+        new_line_str = re.sub(compiled_pattern, replacement, line_str, count=replace_count)
+        new_lines.append(new_line_str)
+        if new_line_str != line_str:
+            dirty = True
 
-            with adding_regions(self.view, 's_confirm', [match], 'comment'):
-                self.view.show(match.a, True)
-                if ok_cancel_dialog("Confirm replacement?"):
-                    text = self.view.substr(match)
-                    substituted = re.sub(compiled_pattern, replacement, text, count=replace_count)
-                    self.view.replace(edit, match, substituted)
+    new_region_text = '\n'.join(new_lines)
+    if view.size() > line.end():
+        new_region_text += '\n'
 
-            start = match.b + (self.view.size() - size_before) + 1
+    if not dirty:
+        return status_message('E486: Pattern not found: {}'.format(pattern))
+
+    # Reposition cursor before replacing target region so that the cursor
+    # will auto adjust in sync with the replacement.
+    view.sel().clear()
+    view.sel().add(line.begin())
+
+    view.replace(edit, target_region, new_region_text)
+
+    # TODO Refactor set position cursor after operation into reusable api.
+    # Put cursor on first non-whitespace char of current line.
+    line = view.line(view.sel()[0].b)
+    if line.size() > 0:
+        pt = view.find('^\\s*', line.begin()).end()
+        view.sel().clear()
+        view.sel().add(pt)
+
+    # TODO [review] enter normal mode depedendency
+    view.run_command('_enter_normal_mode')
 
 
-class ExDelete(_ExTextCommandBase):
+@_serialize_deserialize
+def ExDelete(view, edit, register, line_range, *args, **kwargs):
+    r = line_range.resolve(view)
+    if r == Region(-1, -1):
+        r = view.full_line(0)
 
-    def select(self, regions, register):
-        self.view.sel().clear()
+    def _select(view, regions, register):
+        view.sel().clear()
         to_store = []
         for r in regions:
-            self.view.sel().add(r)
+            view.sel().add(r)
             if register:
-                to_store.append(self.view.substr(self.view.full_line(r)))
+                to_store.append(view.substr(view.full_line(r)))
 
         if register:
             text = ''.join(to_store)
             if not text.endswith('\n'):
                 text = text + '\n'
 
-            state = State(self.view)
+            state = State(view)
             state.registers[register] = [text]
 
-    def _run(self, edit, register, line_range, *args, **kwargs):
-        r = line_range.resolve(self.view)
-        if r == Region(-1, -1):
-            r = self.view.full_line(0)
-
-        self.select([r], register)
-        self.view.erase(edit, r)
-        self.set_next_sel([(r.a, r.a)])
+    _select(view, [r], register)
+    view.erase(edit, r)
+    _set_next_selection(view, [(r.a, r.a)])
 
 
 _ex_global_most_recent_pat = None
@@ -1329,21 +1366,19 @@ def ExNew(window, *args, **kwargs):
     window.run_command('new_file')
 
 
-class ExYank(_ExTextCommand):
+def ExYank(view, register, line_range, *args, **kwargs):
+    line_range = line_range.resolve(view)
 
-    def run(self, edit, register, count, line_range, *args, **kwargs):
-        line_range = line_range.resolve(self.view)
+    if not register:
+        register = '"'
 
-        if not register:
-            register = '"'
+    text = view.substr(line_range)
 
-        text = self.view.substr(line_range)
-
-        state = State(self.view)
-        state.registers[register] = [text]
-        # TODO: o_O?
-        if register == '"':
-            state.registers['0'] = [text]
+    state = State(view)
+    state.registers[register] = [text]
+    # TODO: o_O?
+    if register == '"':
+        state.registers['0'] = [text]
 
 
 def ExTabnext(window, *args, **kwargs):
