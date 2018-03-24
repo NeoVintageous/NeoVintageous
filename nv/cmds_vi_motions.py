@@ -1366,7 +1366,9 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
             # Ensure n and N can repeat this search later.
             state.last_buffer_search = query
 
+        jumplist_update(self.view)
         regions_transformer(self.view, f)
+        jumplist_update(self.view)
 
         if not search_string:
             state.last_buffer_search_command = 'vi_star'
@@ -1415,8 +1417,10 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
             # Ensure n and N can repeat this search later.
             state.last_buffer_search = query
 
+        jumplist_update(self.view)
         start_sel = self.view.sel()[0]
         regions_transformer(self.view, f)
+        jumplist_update(self.view)
 
         if not search_string:
             state.last_buffer_search_command = 'vi_octothorp'

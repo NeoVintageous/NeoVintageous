@@ -10,10 +10,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#148](https://github.com/NeoVintageous/NeoVintageous/issues/148): `:$` does not go to last line
 * Fixed [#87](https://github.com/NeoVintageous/NeoVintageous/issues/87): Double front slash doesn't escape properly
 
-## 1.5.3 - Unreleased
+## 1.5.3 - 2018-03-24
 
-## Fixed
+### Fixed
 
+* Fixed [#36](https://github.com/NeoVintageous/NeoVintageous/issues/36) `*` and `#` jump history doesn't work
 * Fixed [#51](https://github.com/NeoVintageous/NeoVintageous/issues/51): Can't map umlauts
 * Fixed [#144](https://github.com/NeoVintageous/NeoVintageous/issues/144): Can't repeat macros
 * Fixed [#170](https://github.com/NeoVintageous/NeoVintageous/issues/170): `<` text object not finding the opening bracket correctly
