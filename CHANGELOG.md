@@ -2,7 +2,9 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.5.3 - Unreleased
+## 1.5.3 - 2018-03-24
+
+### Fixed
 
 * Fixed [#36](https://github.com/NeoVintageous/NeoVintageous/issues/36) `*` and `#` jump history doesn't work
 * Fixed [#51](https://github.com/NeoVintageous/NeoVintageous/issues/51): Can't map umlauts
