@@ -67,9 +67,9 @@ def scan_cmd_wq(state):
         raise NotImplementedError('param not implemented')
 
     if c == state.EOF:
-        return None, [TokenCommandWq(params), TokenEof()]
+        return None, [TokenCommandWq(params, forced=bang), TokenEof()]
 
     m = state.expect_match(r'.+$')
     params['file'] = m.group(0).strip()
 
-    return None, [TokenCommandWq(params), TokenEof()]
+    return None, [TokenCommandWq(params, forced=bang), TokenEof()]
