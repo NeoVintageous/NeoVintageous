@@ -340,8 +340,7 @@ def ExHelp(window, subject=None, forceit=False, *args, **kwargs):
     view = window_find_open_view(window, help_view_name)
     if view:
         window.focus_view(view)
-
-    if not view:
+    else:
         view = window.new_file()
         view.set_scratch(True)
         view.set_name(help_view_name)
