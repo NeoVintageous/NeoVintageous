@@ -81,20 +81,9 @@ def _changing_cd(f, *args, **kwargs):
 
     @wraps(f)
     def inner(*args, **kwargs):
-        view = kwargs.get('view', None)
+        view = kwargs.get('view')
         if not view:
-            window = kwargs.get('window', None)
-            if window:
-                view = window.active_view()
-
-            if not view:
-                try:
-                    view = args[0].view
-                except AttributeError:
-                    try:
-                        view = args[0].window.active_view()
-                    except AttributeError:
-                        view = args[0].active_view()
+            raise RuntimeError('view is required')
 
         # TODO [review] State dependency
         state = State(view)
@@ -121,16 +110,9 @@ def _serialize_deserialize(f, *args, **kwargs):
 
     @wraps(f)
     def inner(*args, **kwargs):
-        # TODO [refactor]
-        view = kwargs.get('view', None)
+        view = kwargs.get('view')
         if not view:
-            window = kwargs.get('window', None)
-            if window:
-                view = window.active_view()
-            else:
-                if len(args) > 0:
-                    window = args[0]
-                    view = window.active_view()
+            raise RuntimeError('view is required')
 
         #
         # Serialize
