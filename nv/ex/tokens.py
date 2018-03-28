@@ -121,8 +121,7 @@ class Token:
         if not isinstance(other, Token):
             return False
 
-        return (other.content == self.content and
-                other.token_type == self.token_type)
+        return other.__dict__ == self.__dict__
 
 
 class TokenOfCommand(Token):
@@ -165,13 +164,6 @@ class TokenOfCommand(Token):
         self.target_command = None
 
         super().__init__(*args, **kwargs)
-
-    def __eq__(self, other):
-
-        # TODO [bug] ??? Comparison of commands that differ in attributes like
-        # forced are currently evaluated as the same.
-
-        return super().__eq__(other) and other.params == self.params
 
     def __str__(self):
         return '{0} {1}'.format(self.content, self.params)
