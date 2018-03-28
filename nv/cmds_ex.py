@@ -213,7 +213,7 @@ def do_ex_command(window, name, args=None):
 
                     try:
                         ex_cmd(
-                            window,
+                            window=window,
                             line_range=parsed.line_range,
                             forceit=parsed.command.forced,
                             **params
@@ -526,7 +526,7 @@ def ExPromptSelectOpenFile(window, *args, **kwargs):
     window.show_quick_panel(file_names, on_done)
 
 
-def ExNoremap(window, keys, command, *args, **kwargs):
+def ExNoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         # TODO [refactor] Instead of calling status_message(), raise a
         # NotImplemented exception instead, and let the command runner handle
@@ -540,7 +540,7 @@ def ExNoremap(window, keys, command, *args, **kwargs):
     mappings_add(VISUAL_LINE, keys, command)
 
 
-def ExUnmap(window, keys, *args, **kwargs):
+def ExUnmap(keys, *args, **kwargs):
     try:
         mappings_remove(NORMAL, keys)
         mappings_remove(OPERATOR_PENDING, keys)
@@ -551,49 +551,49 @@ def ExUnmap(window, keys, *args, **kwargs):
         status_message('Mapping not found')
 
 
-def ExNnoremap(window, keys, command, *args, **kwargs):
+def ExNnoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(NORMAL, keys, command)
 
 
-def ExNunmap(window, keys, *args, **kwargs):
+def ExNunmap(keys, *args, **kwargs):
     try:
         mappings_remove(NORMAL, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ExOnoremap(window, keys, command, *args, **kwargs):
+def ExOnoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(OPERATOR_PENDING, keys, command)
 
 
-def ExOunmap(window, keys, *args, **kwargs):
+def ExOunmap(keys, *args, **kwargs):
     try:
         mappings_remove(OPERATOR_PENDING, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ExSnoremap(window, keys, command, *args, **kwargs):
+def ExSnoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(SELECT, keys, command)
 
 
-def ExSunmap(window, keys, *args, **kwargs):
+def ExSunmap(keys, *args, **kwargs):
     try:
         mappings_remove(SELECT, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ExVnoremap(window, keys, command, *args, **kwargs):
+def ExVnoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
@@ -627,7 +627,7 @@ def ExAbbreviate(window, short=None, full=None, *args, **kwargs):
 
 
 # TODO [review] Looks broken or not implemented properly
-def ExUnabbreviate(window, lhs, *args, **kwargs):
+def ExUnabbreviate(lhs, *args, **kwargs):
     if lhs:
         return
 
@@ -635,7 +635,7 @@ def ExUnabbreviate(window, lhs, *args, **kwargs):
 
 
 @_changing_cd
-def ExPwd(window, *args, **kwargs):
+def ExPwd(*args, **kwargs):
     status_message(os.getcwd())
 
 
@@ -1582,7 +1582,7 @@ def ExSet(window, option, value, *args, **kwargs):
         status_message('invalid value for option')
 
 
-def ExLet(window, name, value, *args, **kwargs):
+def ExLet(name, value, *args, **kwargs):
     variables.set(name, value)
 
 
