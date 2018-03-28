@@ -941,16 +941,8 @@ def ExOnly(window, forceit=False, *args, **kwargs):
         view.close()
 
 
-def ExDoubleAmpersand(window, flags, count, line_range, *args, **kwargs):
-    # TODO [review] don't use str(line_range) as the content will be unexpected
-    new_command_line = '{0}substitute///{1} {2}'.format(
-        str(line_range),
-        ''.join(flags),
-        count
-    )
-
-    # TODO [refactor] Use command directly
-    do_ex_command(window, 'substitute', {'command_line': new_command_line.strip()})
+def ExDoubleAmpersand(view, edit, flags, count, line_range, *args, **kwargs):
+    ExSubstitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range)
 
 
 _ex_substitute_last_pattern = None
