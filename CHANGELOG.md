@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#322](https://github.com/NeoVintageous/NeoVintageous/issues/322): `:print` doesn't work
 * Fixed [#320](https://github.com/NeoVintageous/NeoVintageous/issues/320): `:move`  `KeyError: 'next_sel'` when address is the same as current line
 * Fixed [#321](https://github.com/NeoVintageous/NeoVintageous/issues/321): Entering cmdline-mode from Visual Block mode doesn't work
 * Fixed [#319](https://github.com/NeoVintageous/NeoVintageous/issues/319): `:cd` should change the current directory to the home directory

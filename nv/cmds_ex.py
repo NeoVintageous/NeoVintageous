@@ -1142,14 +1142,12 @@ def ExPrint(window, flags, line_range, global_lines=None, *args, **kwargs):
         return message("E749: empty buffer")
 
     def _get_lines(view, parsed_range, global_lines):
-        # FIXME: this is broken.
         # If :global called us, ignore the parsed range.
         if global_lines:
             return [(view.substr(Region(a, b)), row_at(view, a)) for (a, b) in global_lines]
 
-        # FIXME This is broken.
         to_display = []
-        for line in view.full_line(parsed_range):
+        for line in view.lines(parsed_range):
             text = view.substr(line)
             to_display.append((text, row_at(view, line.begin())))
 
@@ -1163,12 +1161,16 @@ def ExPrint(window, flags, line_range, global_lines=None, *args, **kwargs):
     if 'l' in flags:
         display.settings().set('draw_white_space', 'all')
 
-    for (text, row) in lines:
+    for i, (text, row) in enumerate(lines):
         characters = ''
         if '#' in flags:
             characters = "{} {}".format(row, text).lstrip()
         else:
             characters = text.lstrip()
+
+        if not global_lines:
+            if i < len(lines) - 1:
+                characters += '\n'
 
         display.run_command('append', {'characters': characters})
 
