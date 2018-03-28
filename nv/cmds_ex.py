@@ -610,7 +610,7 @@ def ExVnoremap(keys, command, *args, **kwargs):
     mappings_add(VISUAL_LINE, keys, command)
 
 
-def ExVunmap(self, keys, *args, **kwargs):
+def ExVunmap(keys, *args, **kwargs):
     try:
         mappings_remove(VISUAL, keys)
         mappings_remove(VISUAL_BLOCK, keys)
