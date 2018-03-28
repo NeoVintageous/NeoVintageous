@@ -239,7 +239,8 @@ class _nv_goto_help(WindowCommand):
 
         match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
         if match:
-            do_ex_command(self.window, 'help', {'command_line': 'help ' + subject.strip('|')})
+            # TODO [refactor] Use ex_help command directly
+            do_ex_command(self.window, 'help', {'subject': subject.strip('|')})
         else:
             return message('E149: Sorry, no help for %s' % subject)
 

@@ -1199,11 +1199,8 @@ def ExQuit(window, forceit=False, *args, **kwargs):
     if len(window.views()) == 0:
         return window.run_command('close')
 
-    # FIXME Probably doesn't work as expected.
-
     if not window.views_in_group(window.active_group()):
-        # TODO [refactor] Use ex command directly
-        do_ex_command(window, 'unvsplit')
+        ExUnvsplit(window)
 
 
 # TODO [refactor] into window module
@@ -1237,8 +1234,7 @@ def ExWq(window, forceit=False, *args, **kwargs):
 
     window.run_command('save')
 
-# TODO [refactor] Use ex command directly
-    do_ex_command(window, 'quit')
+    ExQuit(window)
 
 
 def ExBrowse(window, *args, **kwargs):
@@ -1428,8 +1424,7 @@ def ExCd(window, path=None, forceit=False, *args, **kwargs):
     if not path:
         state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
 
-        # TODO [refactor] Use command directly
-        return do_ex_command(window, 'pwd')
+        return ExPwd(window)
 
     # TODO: It seems there a few symbols that are always substituted when they represent a
     # filename. We should have a global method of substiting them.
@@ -1438,8 +1433,7 @@ def ExCd(window, path=None, forceit=False, *args, **kwargs):
         if fname:
             state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
 
-            # TODO [refactor] Use command directly
-            do_ex_command(window, 'pwd')
+            ExPwd(window)
 
         return
 
@@ -1449,8 +1443,7 @@ def ExCd(window, path=None, forceit=False, *args, **kwargs):
 
     state.settings.vi['_cmdline_cd'] = path
 
-    # TODO [refactor] Use command directly
-    do_ex_command(window, 'pwd')
+    ExPwd(window)
 
 
 # Non-standard command to change the current directory to the active view's

@@ -1627,7 +1627,7 @@ class _vi_big_z_big_q(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self):
-        do_ex_command(self.window, 'quit', {'command_line': 'q!'})
+        do_ex_command(self.window, 'quit', {'forceit': True})
 
 
 class _vi_big_z_big_z(ViWindowCommandBase):
