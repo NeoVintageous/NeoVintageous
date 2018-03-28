@@ -27,7 +27,12 @@ class TokenCommandSubstitute(TokenOfCommand):
         self.target_command = 'ex_substitute'
 
 
-def _scan_cmd_substitute_params(state):
+def scan_cmd_substitute(state):
+    delim = state.consume()
+
+    if delim == state.EOF:
+        return None, [TokenCommandSubstitute(None), TokenEof()]
+
     state.backup()
     delim = state.consume()
     # TODO [refactor] Rename search_term -> pattern
@@ -84,12 +89,3 @@ def _scan_cmd_substitute_params(state):
     state.expect_eof()
 
     return None, [TokenCommandSubstitute(params), TokenEof()]
-
-
-def scan_cmd_substitute(state):
-    delim = state.consume()
-
-    if delim == state.EOF:
-        return None, [TokenCommandSubstitute(None), TokenEof()]
-
-    return _scan_cmd_substitute_params(state)
