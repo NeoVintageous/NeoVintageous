@@ -174,14 +174,15 @@ class _nv_run_ex_text_cmd(TextCommand):
 def do_ex_command(window, name, args=None):
     _log.debug('do ex command -> %s %s', name, args)
 
-    name = name.title().replace('_', '')
-    if not name.startswith('Ex'):
-        name = 'Ex' + name
+    name = name.lower()
+    if not name.startswith('ex_'):
+        name = 'ex_' + name
 
     if args is None:
-        args = {'command_line': name[2:].lower()}
-    elif 'command_line' not in args:
-        args['command_line'] = name[2:].lower()
+        args = {}
+
+    if 'command_line' not in args:
+        args['command_line'] = name[3:].lower()
 
     module = sys.modules[__name__]
     ex_cmd = getattr(module, name, None)
@@ -236,7 +237,7 @@ def do_ex_command(window, name, args=None):
         _log.debug('finished ex window command')
 
 
-def ExGoto(window, view, line_range, *args, **kwargs):
+def ex_goto(window, view, line_range, *args, **kwargs):
     r = line_range.resolve(view)
     line_nr = row_at(view, r.a) + 1
 
@@ -256,7 +257,7 @@ def ExGoto(window, view, line_range, *args, **kwargs):
 _ex_help_tags_cache = {}
 
 
-def ExHelp(window, subject=None, forceit=False, *args, **kwargs):
+def ex_help(window, subject=None, forceit=False, *args, **kwargs):
     if not subject:
         subject = 'help.txt'
 
@@ -358,7 +359,7 @@ _ex_shell_last_command = None
 
 
 @_changing_cd
-def ExShellOut(view, edit, cmd, line_range, *args, **kwargs):
+def ex_shell_out(view, edit, cmd, line_range, *args, **kwargs):
     global _ex_shell_last_command
 
     if cmd == '!':
@@ -401,7 +402,7 @@ def ExShellOut(view, edit, cmd, line_range, *args, **kwargs):
 # current directory. The virtual current directory is always set to the current
 # view's directory, but it isn't accessible through the API.
 @_changing_cd
-def ExShell(view, *args, **kwargs):
+def ex_shell(view, *args, **kwargs):
 
     def _open_shell(command):
         return subprocess.Popen(command, cwd=os.getcwd())
@@ -437,7 +438,7 @@ def ExShell(view, *args, **kwargs):
 # TODO [review] This command looks unused
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
 @_changing_cd
-def ExRead(view, edit, cmd, line_range, *args, **kwargs):
+def ex_read(view, edit, cmd, line_range, *args, **kwargs):
     r = line_range.resolve(view)
     target_point = min(r.end(), view.size())
 
@@ -477,7 +478,7 @@ def ExRead(view, edit, cmd, line_range, *args, **kwargs):
         return message('not implemented')
 
 
-def ExPromptSelectOpenFile(window, *args, **kwargs):
+def ex_prompt_select_open_file(window, *args, **kwargs):
     def _get_view_info(view):
         path = view.file_name()
         if path:
@@ -517,7 +518,7 @@ def ExPromptSelectOpenFile(window, *args, **kwargs):
     window.show_quick_panel(file_names, on_done)
 
 
-def ExNoremap(keys, command, *args, **kwargs):
+def ex_noremap(keys, command, *args, **kwargs):
     if not (keys and command):
         # TODO [refactor] Instead of calling status_message(), raise a
         # NotImplemented exception instead, and let the command runner handle
@@ -531,7 +532,7 @@ def ExNoremap(keys, command, *args, **kwargs):
     mappings_add(VISUAL_LINE, keys, command)
 
 
-def ExUnmap(keys, *args, **kwargs):
+def ex_unmap(keys, *args, **kwargs):
     try:
         mappings_remove(NORMAL, keys)
         mappings_remove(OPERATOR_PENDING, keys)
@@ -542,49 +543,49 @@ def ExUnmap(keys, *args, **kwargs):
         status_message('Mapping not found')
 
 
-def ExNnoremap(keys, command, *args, **kwargs):
+def ex_nnoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(NORMAL, keys, command)
 
 
-def ExNunmap(keys, *args, **kwargs):
+def ex_nunmap(keys, *args, **kwargs):
     try:
         mappings_remove(NORMAL, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ExOnoremap(keys, command, *args, **kwargs):
+def ex_onoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(OPERATOR_PENDING, keys, command)
 
 
-def ExOunmap(keys, *args, **kwargs):
+def ex_ounmap(keys, *args, **kwargs):
     try:
         mappings_remove(OPERATOR_PENDING, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ExSnoremap(keys, command, *args, **kwargs):
+def ex_snoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(SELECT, keys, command)
 
 
-def ExSunmap(keys, *args, **kwargs):
+def ex_sunmap(keys, *args, **kwargs):
     try:
         mappings_remove(SELECT, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ExVnoremap(keys, command, *args, **kwargs):
+def ex_vnoremap(keys, command, *args, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
@@ -593,7 +594,7 @@ def ExVnoremap(keys, command, *args, **kwargs):
     mappings_add(VISUAL_LINE, keys, command)
 
 
-def ExVunmap(keys, *args, **kwargs):
+def ex_vunmap(keys, *args, **kwargs):
     try:
         mappings_remove(VISUAL, keys)
         mappings_remove(VISUAL_BLOCK, keys)
@@ -603,7 +604,7 @@ def ExVunmap(keys, *args, **kwargs):
 
 
 # TODO [review] Looks broken or not implemented properly
-def ExAbbreviate(window, short=None, full=None, *args, **kwargs):
+def ex_abbreviate(window, short=None, full=None, *args, **kwargs):
     if short is None and full is None:
         def _show_abbreviations():
             abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
@@ -618,7 +619,7 @@ def ExAbbreviate(window, short=None, full=None, *args, **kwargs):
 
 
 # TODO [review] Looks broken or not implemented properly
-def ExUnabbreviate(lhs, *args, **kwargs):
+def ex_unabbreviate(lhs, *args, **kwargs):
     if lhs:
         return
 
@@ -626,12 +627,12 @@ def ExUnabbreviate(lhs, *args, **kwargs):
 
 
 @_changing_cd
-def ExPwd(*args, **kwargs):
+def ex_pwd(*args, **kwargs):
     status_message(os.getcwd())
 
 
 @_changing_cd
-def ExWrite(window, view, file_name, cmd, forceit, line_range, *args, **kwargs):
+def ex_write(window, view, file_name, cmd, forceit, line_range, *args, **kwargs):
     # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     options = kwargs.get('++')
     appends = kwargs.get('>>')
@@ -767,7 +768,7 @@ def ExWrite(window, view, file_name, cmd, forceit, line_range, *args, **kwargs):
 
 
 @_changing_cd
-def ExWall(window, forceit=False, *args, **kwargs):
+def ex_wall(window, forceit=False, *args, **kwargs):
     # TODO read-only views don't get properly saved.
     for v in (v for v in window.views() if v.file_name()):
         if v.is_read_only() and not forceit:
@@ -776,7 +777,7 @@ def ExWall(window, forceit=False, *args, **kwargs):
         v.run_command('save')
 
 
-def ExFile(view, *args, **kwargs):
+def ex_file(view, *args, **kwargs):
     if view.file_name():
         fname = view.file_name()
     else:
@@ -812,7 +813,7 @@ def ExFile(view, *args, **kwargs):
 
 
 @_serialize_deserialize
-def ExMove(view, edit, address, line_range, *args, **kwargs):
+def ex_move(view, edit, address, line_range, *args, **kwargs):
     # Move the lines given by [range] to below the line given by {address}.
     if address is None:
         return message("E14: Invalid address")
@@ -846,7 +847,7 @@ def ExMove(view, edit, address, line_range, *args, **kwargs):
 
 
 @_serialize_deserialize
-def ExCopy(view, edit, address, line_range, *args, **kwargs):
+def ex_copy(view, edit, address, line_range, *args, **kwargs):
     # Copy the lines given by [range] to below the line given by {address}.
     def _calculate_address(address):
         # TODO: must calc only the first line ref?
@@ -892,7 +893,7 @@ def ExCopy(view, edit, address, line_range, *args, **kwargs):
 
 
 # TODO Unify with CTRL-W CTRL-O
-def ExOnly(window, view, forceit=False, *args, **kwargs):
+def ex_only(window, view, forceit=False, *args, **kwargs):
     if not forceit and has_dirty_buffers(window):
         return message("E445: Other window contains changes")
 
@@ -907,8 +908,8 @@ def ExOnly(window, view, forceit=False, *args, **kwargs):
         view.close()
 
 
-def ExDoubleAmpersand(view, edit, flags, count, line_range, *args, **kwargs):
-    ExSubstitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, *args, **kwargs)
+def ex_double_ampersand(view, edit, flags, count, line_range, *args, **kwargs):
+    ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, *args, **kwargs)
 
 
 _ex_substitute_last_pattern = None
@@ -916,7 +917,7 @@ _ex_substitute_last_replacement = ''
 
 
 # TODO [refactor] Rename param "search_term" -> "pattern"
-def ExSubstitute(view, edit, line_range, search_term=None, replacement='', flags=0, count=1, *args, **kwargs):
+def ex_substitute(view, edit, line_range, search_term=None, replacement='', flags=0, count=1, *args, **kwargs):
     pattern = search_term
 
     global _ex_substitute_last_pattern, _ex_substitute_last_replacement
@@ -1025,7 +1026,7 @@ def ExSubstitute(view, edit, line_range, search_term=None, replacement='', flags
 
 
 @_serialize_deserialize
-def ExDelete(view, edit, register, line_range, *args, **kwargs):
+def ex_delete(view, edit, register, line_range, *args, **kwargs):
     r = line_range.resolve(view)
     if r == Region(-1, -1):
         r = view.full_line(0)
@@ -1058,7 +1059,7 @@ _ex_global_most_recent_pat = None
 # "print" command e.g. print all lines matching \d+ into new buffer:
 #   :%global/\d+/print
 # TODO [refactor] Rename "subcommand" -> "cmd"
-def ExGlobal(window, view, pattern, subcommand, line_range, *args, **kwargs):
+def ex_global(window, view, pattern, subcommand, line_range, *args, **kwargs):
     if line_range.is_empty:
         global_range = Region(0, view.size())
     else:
@@ -1097,7 +1098,7 @@ def ExGlobal(window, view, pattern, subcommand, line_range, *args, **kwargs):
     do_ex_command(window, parsed_subcommand.target_command, parsed_subcommand.params)
 
 
-def ExPrint(window, view, flags, line_range, global_lines=None, *args, **kwargs):
+def ex_print(window, view, flags, line_range, global_lines=None, *args, **kwargs):
     if view.size() == 0:
         return message("E749: empty buffer")
 
@@ -1136,12 +1137,12 @@ def ExPrint(window, view, flags, line_range, global_lines=None, *args, **kwargs)
 
 
 # TODO [refactor] into window module
-def ExClose(window, forceit=False, *args, **kwargs):
+def ex_close(window, forceit=False, *args, **kwargs):
     WindowAPI(window).close_current_view(not forceit)
 
 
 # TODO [refactor] into window module
-def ExQuit(window, view, forceit=False, *args, **kwargs):
+def ex_quit(window, view, forceit=False, *args, **kwargs):
     if forceit:
         view.set_scratch(True)
 
@@ -1157,11 +1158,11 @@ def ExQuit(window, view, forceit=False, *args, **kwargs):
         return window.run_command('close')
 
     if not window.views_in_group(window.active_group()):
-        ExUnvsplit(window=window, view=view, forceit=forceit, *args, **kwargs)
+        ex_unvsplit(window=window, view=view, forceit=forceit, *args, **kwargs)
 
 
 # TODO [refactor] into window module
-def ExQall(window, forceit=False, *args, **kwargs):
+def ex_qall(window, forceit=False, *args, **kwargs):
     if forceit:
         for view in window.views():
             if view.is_dirty():
@@ -1175,7 +1176,7 @@ def ExQall(window, forceit=False, *args, **kwargs):
 
 
 # TODO [refactor] into window module
-def ExWq(window, view, forceit=False, *args, **kwargs):
+def ex_wq(window, view, forceit=False, *args, **kwargs):
     if forceit:
         # TODO raise not implemented exception and make the command runner handle it.
         return message('not implemented')
@@ -1188,10 +1189,10 @@ def ExWq(window, view, forceit=False, *args, **kwargs):
 
     window.run_command('save')
 
-    ExQuit(window=window, view=view, forceit=forceit, *args, **kwargs)
+    ex_quit(window=window, view=view, forceit=forceit, *args, **kwargs)
 
 
-def ExBrowse(window, view, *args, **kwargs):
+def ex_browse(window, view, *args, **kwargs):
     # TODO [review] State dependency
     state = State(view)
 
@@ -1201,7 +1202,7 @@ def ExBrowse(window, view, *args, **kwargs):
 
 
 @_changing_cd
-def ExEdit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
+def ex_edit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
     # TODO [refactor] file_name_arg
     file_name_arg = file_name
     if file_name_arg:
@@ -1260,12 +1261,12 @@ def ExEdit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
 
 
 # TODO [refactor] into window module
-def ExCquit(window, *args, **kwargs):
+def ex_cquit(window, *args, **kwargs):
     window.run_command('exit')
 
 
 # TODO [refactor] into window module
-def ExExit(window, view, *args, **kwargs):
+def ex_exit(window, view, *args, **kwargs):
     if view.is_dirty():
         window.run_command('save')
 
@@ -1275,7 +1276,7 @@ def ExExit(window, view, *args, **kwargs):
         window.run_command('exit')
 
 
-def ExRegisters(window, view, *args, **kwargs):
+def ex_registers(window, view, *args, **kwargs):
     def _truncate(string, truncate_at):
         if len(string) > truncate_at:
             return string[0:truncate_at] + ' ...'
@@ -1312,11 +1313,11 @@ def ExRegisters(window, view, *args, **kwargs):
 
 # TODO [refactor] into window module
 @_changing_cd
-def ExNew(window, *args, **kwargs):
+def ex_new(window, *args, **kwargs):
     window.run_command('new_file')
 
 
-def ExYank(view, register, line_range, *args, **kwargs):
+def ex_yank(view, register, line_range, *args, **kwargs):
     line_range = line_range.resolve(view)
 
     if not register:
@@ -1331,28 +1332,28 @@ def ExYank(view, register, line_range, *args, **kwargs):
         state.registers['0'] = [text]
 
 
-def ExTabnext(window, *args, **kwargs):
+def ex_tabnext(window, *args, **kwargs):
     window_tab_control(window, command='next')
 
 
-def ExTabprevious(window, *args, **kwargs):
+def ex_tabprevious(window, *args, **kwargs):
     window_tab_control(window, command='prev')
 
 
-def ExTablast(window, *args, **kwargs):
+def ex_tablast(window, *args, **kwargs):
     window_tab_control(window, command='last')
 
 
-def ExTabfirst(window, *args, **kwargs):
+def ex_tabfirst(window, *args, **kwargs):
     window_tab_control(window, command='first')
 
 
-def ExTabonly(window, *args, **kwargs):
+def ex_tabonly(window, *args, **kwargs):
     window_tab_control(window, command='only')
 
 
 @_changing_cd
-def ExCd(window, view, path=None, forceit=False, *args, **kwargs):
+def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
     # XXX Currently behaves as on Unix systems for all platforms.
     if view.is_dirty() and not forceit:
         return message("E37: No write since last change")
@@ -1363,7 +1364,7 @@ def ExCd(window, view, path=None, forceit=False, *args, **kwargs):
     if not path:
         state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
 
-        return ExPwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+        return ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
 
     # TODO: It seems there a few symbols that are always substituted when they represent a
     # filename. We should have a global method of substiting them.
@@ -1372,7 +1373,7 @@ def ExCd(window, view, path=None, forceit=False, *args, **kwargs):
         if fname:
             state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
 
-            ExPwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+            ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
 
         return
 
@@ -1382,7 +1383,7 @@ def ExCd(window, view, path=None, forceit=False, *args, **kwargs):
 
     state.settings.vi['_cmdline_cd'] = path
 
-    ExPwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+    ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
 
 
 # Non-standard command to change the current directory to the active view's
@@ -1390,7 +1391,7 @@ def ExCd(window, view, path=None, forceit=False, *args, **kwargs):
 # active view, so it's convenient to be able to align both easily.
 # XXX: Is the above still true?
 # XXX: This command may be removed at any time.
-def ExCdd(view, forceit=False, *args, **kwargs):
+def ex_cdd(view, forceit=False, *args, **kwargs):
     if view.is_dirty() and not forceit:
         return message("E37: No write since last change")
 
@@ -1408,7 +1409,7 @@ def ExCdd(view, forceit=False, *args, **kwargs):
 
 # TODO [refactor] into window module
 # TODO Refactor like ExSplit
-def ExVsplit(window, view, file=None, *args, **kwargs):
+def ex_vsplit(window, view, file=None, *args, **kwargs):
     max_splits = 4
 
     layout_data = {
@@ -1457,13 +1458,13 @@ def ExVsplit(window, view, file=None, *args, **kwargs):
 
 
 # TODO Unify with <C-w>s
-def ExSplit(window, file=None, *args, **kwargs):
+def ex_split(window, file=None, *args, **kwargs):
     window_split(window, file)
 
 
 # TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
 # Non-standard Vim :unvsplit command
-def ExUnvsplit(window, *args, **kwargs):
+def ex_unvsplit(window, *args, **kwargs):
     groups = window.num_groups()
     if groups == 1:
         return status_message("can't delete more groups")
@@ -1490,7 +1491,7 @@ def ExUnvsplit(window, *args, **kwargs):
     window.run_command('set_layout', layout_data[groups - 1])
 
 
-def ExSetlocal(view, option, value, *args, **kwargs):
+def ex_setlocal(view, option, value, *args, **kwargs):
     if option.endswith('?'):
         return message('not implemented')
 
@@ -1502,7 +1503,7 @@ def ExSetlocal(view, option, value, *args, **kwargs):
         status_message('invalid value for option')
 
 
-def ExSet(view, option, value, *args, **kwargs):
+def ex_set(view, option, value, *args, **kwargs):
     if option.endswith('?'):
         return message('not implemented')
 
@@ -1514,11 +1515,11 @@ def ExSet(view, option, value, *args, **kwargs):
         status_message('invalid value for option')
 
 
-def ExLet(name, value, *args, **kwargs):
+def ex_let(name, value, *args, **kwargs):
     variables.set(name, value)
 
 
-def ExWqall(window, *args, **kwargs):
+def ex_wqall(window, *args, **kwargs):
     if not all(view.file_name() for view in window.views()):
         ui_blink()
 
