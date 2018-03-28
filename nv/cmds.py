@@ -652,8 +652,7 @@ class _nv_cmdline(WindowCommand):
         state = State(self.window.active_view())
         state.reset_during_init = False
 
-        # FIXME Missing visual block mode check
-        if state.mode in (VISUAL, VISUAL_LINE):
+        if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             initial_text = ":'<,'>"
         else:
             initial_text = ':'

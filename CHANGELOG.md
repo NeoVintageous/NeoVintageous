@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#321](https://github.com/NeoVintageous/NeoVintageous/issues/321): Entering cmdline-mode from Visual Block mode doesn't work
 * Fixed [#319](https://github.com/NeoVintageous/NeoVintageous/issues/319): `:cd` should change the current directory to the home directory
 * Fixed [#150](https://github.com/NeoVintageous/NeoVintageous/issues/150): Remove lines with regular expression
 * Fixed [#148](https://github.com/NeoVintageous/NeoVintageous/issues/148): `:$` does not go to last line
