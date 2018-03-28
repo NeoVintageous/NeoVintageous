@@ -79,13 +79,18 @@ def _changing_cd(f, *args, **kwargs):
     def inner(*args, **kwargs):
         view = kwargs.get('view', None)
         if not view:
-            try:
-                view = args[0].view
-            except AttributeError:
+            window = kwargs.get('window', None)
+            if window:
+                view = window.active_view()
+
+            if not view:
                 try:
-                    view = args[0].window.active_view()
+                    view = args[0].view
                 except AttributeError:
-                    view = args[0].active_view()
+                    try:
+                        view = args[0].window.active_view()
+                    except AttributeError:
+                        view = args[0].active_view()
 
         # TODO [review] State dependency
         state = State(view)
