@@ -140,10 +140,16 @@ def _serialize_deserialize(f, *args, **kwargs):
         #
 
         # Deserialise
-        sel = view.settings().get('ex_data')['next_sel'] or []
+        ex_data = view.settings().get('ex_data')
+        if 'next_sel' in ex_data:
+            next_sel = ex_data['next_sel']
+        else:
+            next_sel = []
 
-        view.sel().clear()
-        view.sel().add_all([Region(b) for (a, b) in sel])
+        if next_sel:
+            print('adding next selection: ', next_sel)
+            view.sel().clear()
+            view.sel().add_all([Region(b) for (a, b) in next_sel])
 
         #
         # Set mode
