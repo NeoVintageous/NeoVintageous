@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+
+from functools import wraps
 import inspect
 import os
 import re
@@ -76,6 +78,8 @@ _log = get_logger(__name__)
 
 
 def _changing_cd(f, *args, **kwargs):
+
+    @wraps(f)
     def inner(*args, **kwargs):
         view = kwargs.get('view', None)
         if not view:
@@ -114,6 +118,8 @@ def _set_next_selection(view, data):
 
 
 def _serialize_deserialize(f, *args, **kwargs):
+
+    @wraps(f)
     def inner(*args, **kwargs):
         # TODO [refactor]
         view = kwargs.get('view', None)
@@ -219,41 +225,27 @@ def do_ex_command(window, name, args=None):
         window.run_command('_nv_run_ex_text_cmd', args)
         _log.debug('finished ex text command')
     else:
-        try:
 
-            parsed = parse_command_line(args['command_line'])
-            params = parsed.command.params
-            params.update(args)
+        parsed = parse_command_line(args['command_line'])
+        params = parsed.command.params
+        params.update(args)
 
-            # We don't want the ex commands using this.
-            if 'command_line' in params:
-                del params['command_line']
+        # We don't want the ex commands using this.
+        if 'command_line' in params:
+            del params['command_line']
 
-            # Passed directly to command.
-            if 'forceit' in params:
-                del params['forceit']
+        # Passed directly to command.
+        if 'forceit' in params:
+            del params['forceit']
 
-            try:
-                _log.debug('try ex command as a window command...')
-                ex_cmd(
-                    window=window,
-                    line_range=parsed.line_range,
-                    forceit=(args['forceit'] if 'forceit' in args else parsed.command.forced),
-                    **params
-                )
-                _log.debug('finished ex window command')
-            except TypeError as e:
-                _log.exception('caught exception trying to ex command as window command')
-                if 'required positional argument' in str(e) and '\'edit\'' in str(e):
-                    _log.debug('caught exception: ex command requires edit, run ex command as a text command')
-                    args['name'] = name
-                    window.run_command('_nv_run_ex_text_cmd', args)
-                    _log.debug('finished ex text command')
-                    return
-                raise
-
-        except Exception as e:
-            raise
+        _log.debug('try ex command as a window command...')
+        ex_cmd(
+            window=window,
+            line_range=parsed.line_range,
+            forceit=(args['forceit'] if 'forceit' in args else parsed.command.forced),
+            **params
+        )
+        _log.debug('finished ex window command')
 
 
 def ExGoto(window, line_range, *args, **kwargs):
