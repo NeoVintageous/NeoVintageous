@@ -1131,11 +1131,10 @@ def ExGlobal(window, pattern, subcommand, line_range, *args, **kwargs):
     matches = [view.full_line(r.begin()) for r in matches]
     matches = [[r.a, r.b] for r in matches]
 
+    parsed_subcommand.params['global_lines'] = matches
+
     # TODO [refactor] Use command directly
-    do_ex_command(window, parsed_subcommand.target_command, {
-        'command_line': str(parsed_subcommand),
-        'global_lines': matches
-    })
+    do_ex_command(window, parsed_subcommand.target_command, parsed_subcommand.params)
 
 
 def ExPrint(window, flags, line_range, global_lines=None, *args, **kwargs):
