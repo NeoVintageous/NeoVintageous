@@ -187,13 +187,15 @@ def do_ex_command(window, name, args=None):
 
     if args is None:
         args = {'command_line': name[2:].lower()}
+    elif 'command_line' not in args:
+        args['command_line'] = name[2:].lower()
 
     module = sys.modules[__name__]
     ex_cmd = getattr(module, name, None)
 
-    if ex_cmd:
-        _log.debug('prepared ex command -> %s %s %s', name, args, ex_cmd)
+    _log.debug('ex command -> %s %s %s', name, args, ex_cmd)
 
+    if ex_cmd:
         if inspect.isfunction(ex_cmd):
             text_command = False
             for p in inspect.signature(ex_cmd).parameters:
@@ -205,38 +207,45 @@ def do_ex_command(window, name, args=None):
                 # Text commands need edit tokens and they can only be created by
                 # Sublime Text commands, so we need to wrap the command in a ST text
                 # command.
+                _log.debug('run ex command as a text command')
                 args['name'] = name
                 window.run_command('_nv_run_ex_text_cmd', args)
+                _log.debug('finished ex text command')
             else:
                 try:
-                    parsed = parse_command_line(args['command_line'])
 
-                    params = args.copy()
+                    parsed = parse_command_line(args['command_line'])
+                    params = parsed.command.params
+                    params.update(args)
+
                     # We don't want the ex commands using this.
-                    del params['command_line']
-                    params.update(parsed.command.params)
+                    if 'command_line' in params:
+                        del params['command_line']
+
+                    # Passed directly to command.
+                    if 'forceit' in params:
+                        del params['forceit']
 
                     try:
+                        _log.debug('try ex command as a window command...')
                         ex_cmd(
                             window=window,
                             line_range=parsed.line_range,
-                            forceit=parsed.command.forced,
+                            forceit=(args['forceit'] if 'forceit' in args else parsed.command.forced),
                             **params
                         )
+                        _log.debug('finished ex window command')
                     except TypeError as e:
-                        # TODO Handle exceptions better? Example exceptions:
-                        # * 'TypeError'> run() missing 1 required positional argument: 'name'
-                        # * TypeError ... missing 1 required positional argument: 'edit'
+                        _log.exception('caught exception trying to ex command as window command')
+                        if 'required positional argument' in str(e) and '\'edit\'' in str(e):
+                            _log.debug('caught exception: ex command requires edit, run ex command as a text command')
+                            args['name'] = name
+                            window.run_command('_nv_run_ex_text_cmd', args)
+                            _log.debug('finished ex text command')
+                            return
                         raise
-                except TypeError as e:
-                    if 'missing 1 required positional argument: \'edit\'' in str(e):
-                        # Text commands need edit tokens and they can only be created by
-                        # Sublime Text commands, so we need to wrap the command in a ST text
-                        # command.
-                        args['name'] = name
-                        window.run_command('_nv_run_ex_text_cmd', args)
-                        return
 
+                except Exception as e:
                     raise
         else:
             raise RuntimeError('unknown ex cmd type {}'.format(ex_cmd))
