@@ -49,10 +49,10 @@ class RangeNode(Node):
         self.separator = separator
 
     def __str__(self):
-        return '{0}{1}{2}'.format(
-            ''.join(str(x) for x in self.start),
+        return '{}{}{}'.format(
+            ' '.join(str(x) for x in self.start),
             str(self.separator) if self.separator else '',
-            ''.join(str(x) for x in self.end),
+            ' '.join(str(x) for x in self.end),
         )
 
     def __eq__(self, other):
@@ -75,11 +75,15 @@ class RangeNode(Node):
 
     def _resolve_line_number(self, view, token, current):
         # type: (...) -> int
+        # Args:
+        #   view (View): The view where the calculation is made.
+        #   token (Token):
+        #   current (int): Line number where we are now.
         if isinstance(token, TokenDot):
             return row_at(view, view.text_point(current, 0))
 
         if isinstance(token, TokenDigits):
-            return max(int(str(token)) - 1, -1)
+            return max(int(token.content) - 1, -1)
 
         if isinstance(token, TokenPercent):
             return row_at(view, view.size())
@@ -91,14 +95,14 @@ class RangeNode(Node):
             return current + sum(token.content)
 
         if isinstance(token, TokenSearchForward):
-            match = view.find(str(token)[1:-1], view.text_point(current, 0))
+            match = view.find(token.content, view.text_point(current, 0))
             if not match:
                 raise ValueError('pattern not found')
 
             return row_at(view, match.a)
 
         if isinstance(token, TokenSearchBackward):
-            match = reverse_search_by_pt(view, str(token)[1:-1], 0, view.text_point(current, 0))
+            match = reverse_search_by_pt(view, token.content, 0, view.text_point(current, 0))
             if not match:
                 raise ValueError('pattern not found')
 
@@ -133,16 +137,10 @@ class RangeNode(Node):
 
     def _resolve_line_reference(self, view, line_reference, current=0):
         # type: (...) -> int
-        """
-        Calculate the line offset determined by @line_reference.
-
-        @view
-          The view where the calculation is made.
-        @line_reference
-          The sequence of tokens defining the line range to be calculated.
-        @current
-          Line number where we are now.
-        """
+        # Args:
+        #   view (View): The view where the calculation is made.
+        #   line_reference (list): The sequence of tokens defining the line range to be calculated.
+        #   current (int): Line number where we are now.
         last_token = None
         # XXX: what happens if there is no selection in the view?
         current = row_at(view, first_sel(view).b)
@@ -192,7 +190,7 @@ class CommandLineNode(Node):
         self.command = command
 
     def __str__(self):
-        return '{}{}'.format(str(self.line_range), str(self.command))
+        return '{} {}'.format(str(self.line_range), str(self.command))
 
     def validate(self):
         # type: () -> None

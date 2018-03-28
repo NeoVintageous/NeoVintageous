@@ -110,11 +110,7 @@ class Token:
 
     def __str__(self):
         # type: () -> str
-        return str(self.content)
-
-    def __repr__(self):
-        # type: () -> str
-        return '<[{0}]({1})>'.format(self.__class__.__name__, self.content)
+        return '{}({})'.format(self.__class__.__name__, self.content)
 
     def __eq__(self, other):
         # type: (object) -> bool
@@ -166,7 +162,7 @@ class TokenOfCommand(Token):
         super().__init__(*args, **kwargs)
 
     def __str__(self):
-        return '{0} {1}'.format(self.content, self.params)
+        return '{} {}'.format(self.content, self.__dict__)
 
 
 class TokenOfRange(Token):
@@ -197,13 +193,6 @@ class TokenOffset(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
         super().__init__(_TOKEN_OFFSET, content)
 
-    def __str__(self):
-        offsets = []
-        for offset in self.content:
-            offsets.append('{0}{1}'.format('' if offset < 0 else '+', offset))
-
-        return ''.join(offsets)
-
 
 class TokenPercent(TokenOfRange):
     def __init__(self, *args, **kwargs):
@@ -223,16 +212,10 @@ class TokenSearchForward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
         super().__init__(_TOKEN_SEARCH_FORWARD, content)
 
-    def __str__(self):
-        return '/{0}/'.format(self.content)
-
 
 class TokenSearchBackward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
         super().__init__(_TOKEN_SEARCH_BACKWARD, content)
-
-    def __str__(self):
-        return '?{0}?'.format(self.content)
 
 
 class TokenDigits(TokenOfRange):
@@ -243,12 +226,6 @@ class TokenDigits(TokenOfRange):
 class TokenMark(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
         super().__init__(_TOKEN_MARK, content)
-
-    def __str__(self):
-        return "'{}".format(self.content)
-
-    def __repr__(self):
-        return "<[{0}]('{1})>".format(self.__class__.__name__, self.content)
 
     @property
     def exact(self):

@@ -51,6 +51,203 @@ class TestRangeNode(unittest.TestCase):
             spec=RangeNode, start=[], end=[], separator=None)))
 
 
+class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
+
+    def test_raises_exception_for_unknown_tokens(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+
+        class _UnknownToken:
+            token_type = -1
+            content = ''
+
+        with self.assertRaises(NotImplementedError):
+            _resolve_line_number(self.view, _UnknownToken(), 0)
+
+    def test_digits(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+
+        self.assertEqual(_resolve_line_number(self.view, TokenDigits('11'), None), 10)
+        self.assertEqual(_resolve_line_number(self.view, TokenDigits('3'), None), 2)
+        self.assertEqual(_resolve_line_number(self.view, TokenDigits('2'), None), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenDigits('1'), None), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenDigits('0'), None), -1)
+        self.assertEqual(_resolve_line_number(self.view, TokenDigits('-1'), None), -1)
+        self.assertEqual(_resolve_line_number(self.view, TokenDigits('-2'), None), -1)
+
+    def test_dollar(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+
+        self.write('')
+        self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 0)
+
+        self.write('1')
+        self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 0)
+
+        self.write('1\n')
+        self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 1)
+
+        self.write('1\n2')
+        self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 1)
+
+        self.write('1\n2\n')
+        self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 2)
+
+        self.write('1\n2\n3\n')
+        self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 3)
+
+    def test_dot(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+        self.write('111\n222\n333\n')
+
+        self.assertEqual(_resolve_line_number(self.view, TokenDot(), 0), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenDot(), 1), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenDot(), 2), 2)
+        self.assertEqual(_resolve_line_number(self.view, TokenDot(), 10), 3, 'should not exceed max line of view')
+
+    def test_mark(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+        self.write('11\n222\n3\n44\n55\n')
+
+        with self.assertRaises(NotImplementedError):
+            _resolve_line_number(self.view, TokenMark(''), None)
+
+        with self.assertRaises(NotImplementedError):
+            _resolve_line_number(self.view, TokenMark('foobar'), None)
+
+        self.select(0)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 0)
+
+        self.select(1)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 0)
+
+        self.select(4)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 1)
+
+        self.select(10)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 3)
+
+        self.select(100)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 4)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 5)
+
+        self.select((0, 1))
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 0)
+
+        self.select((4, 5))
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 1)
+
+        self.select((10, 11))
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 3)
+
+        self.select((0, self.view.size()))
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 4)
+
+        self.select((5, 11))
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('<'), None), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 3)
+
+    def test_offset(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([0]), 0), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([0]), 5), 5)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([1]), 0), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([1]), 1), 2)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([1]), 9), 10)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([1, 2]), 0), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([1, 2]), 7), 10)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([-1]), 0), -1)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([-1]), 1), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([-1]), 6), 5)
+        self.assertEqual(_resolve_line_number(self.view, TokenOffset([-1, -4]), 15), 10)
+
+    def test_percent(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+
+        self.write('')
+        self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 0)
+
+        self.write('1')
+        self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 0)
+
+        self.write('1\n')
+        self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 1)
+
+        self.write('1\n2')
+        self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 1)
+
+        self.write('1\n2\n')
+        self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 2)
+
+        self.write('1\n2\n3\n')
+        self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 3)
+
+    def test_search_backward(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+        self.write('ab\ncd\nx\nabcd\ny\nz\n')
+
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchBackward('foobar'), 0)
+
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchBackward('foobar'), 100)
+
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 100), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 5), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 4), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 3), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 2), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 1), 0)
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchBackward('a'), 0)
+
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('bc'), 5), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('bc'), 4), 3)
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchBackward('bc'), 3)
+
+    def test_search_forward(self):
+        range_node = RangeNode()
+        _resolve_line_number = range_node._resolve_line_number
+        self.write('ab\ncd\nx\nabcd\ny\nz\n')
+
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchForward('foobar'), 0)
+
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchForward('foobar'), 100)
+
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 0), 0)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 1), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 2), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 3), 3)
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchForward('a'), 4)
+
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 0), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 1), 1)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 2), 3)
+        self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 3), 3)
+        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+            _resolve_line_number(self.view, TokenSearchForward('cd'), 4)
+
+
 class TestRangeNodeResolve(unittest.ViewTestCase):
 
     def test_resolve_returns_current_line_if_range_is_empty(self):
