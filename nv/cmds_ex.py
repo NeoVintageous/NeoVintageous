@@ -368,9 +368,6 @@ def ex_shell_out(view, edit, cmd, line_range, *args, **kwargs):
 
         cmd = _ex_shell_last_command
 
-    # TODO: store only successful commands.
-    _ex_shell_last_command = cmd
-
     try:
         if not line_range.is_empty:
             shell.filter_thru_shell(
@@ -388,6 +385,9 @@ def ex_shell_out(view, edit, cmd, line_range, *args, **kwargs):
             output_view = view.window().create_output_panel('vi_out')
             output_view.run_command('append', {'characters': output, 'force': True, 'scroll_to_end': True})
             view.window().run_command("show_panel", {"panel": "output.vi_out"})
+
+        # TODO: store only successful commands.
+        _ex_shell_last_command = cmd
     except NotImplementedError:
         message('not implemented')
 
