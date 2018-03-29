@@ -109,29 +109,22 @@ class RangeNode(Node):
             return row_at(view, match.a)
 
         if isinstance(token, TokenMark):
-            return self._resolve_mark(view, token)
-
-        raise NotImplementedError()
-
-    def _resolve_mark(self, view, token):
-        # type: (...) -> int
-        if token.content == '<':
-            sel = list(view.sel())[0]
-            view.sel().clear()
-            view.sel().add(sel)
-            if sel.a < sel.b:
-                return row_at(view, sel.a)
-            else:
-                return row_at(view, sel.a - 1)
-
-        if token.content == '>':
-            sel = list(view.sel())[0]
-            view.sel().clear()
-            view.sel().add(sel)
-            if sel.a < sel.b:
-                return row_at(view, sel.b - 1)
-            else:
-                return row_at(view, sel.b)
+            if token.content == '<':
+                sel = list(view.sel())[0]
+                view.sel().clear()
+                view.sel().add(sel)
+                if sel.a < sel.b:
+                    return row_at(view, sel.a)
+                else:
+                    return row_at(view, sel.a - 1)
+            elif token.content == '>':
+                sel = list(view.sel())[0]
+                view.sel().clear()
+                view.sel().add(sel)
+                if sel.a < sel.b:
+                    return row_at(view, sel.b - 1)
+                else:
+                    return row_at(view, sel.b)
 
         raise NotImplementedError()
 
