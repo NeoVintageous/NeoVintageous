@@ -18,6 +18,7 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.ex.cmd_substitute import TokenCommandSubstitute
+from NeoVintageous.nv.ex.nodes import _resolve_line_number
 from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.nodes import TokenDigits
@@ -54,9 +55,6 @@ class TestRangeNode(unittest.TestCase):
 class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
 
     def test_raises_exception_for_unknown_tokens(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
-
         class _UnknownToken:
             token_type = -1
             content = ''
@@ -65,9 +63,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
             _resolve_line_number(self.view, _UnknownToken(), 0)
 
     def test_digits(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
-
         self.assertEqual(_resolve_line_number(self.view, TokenDigits('11'), None), 10)
         self.assertEqual(_resolve_line_number(self.view, TokenDigits('3'), None), 2)
         self.assertEqual(_resolve_line_number(self.view, TokenDigits('2'), None), 1)
@@ -77,9 +72,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenDigits('-2'), None), -1)
 
     def test_dollar(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
-
         self.write('')
         self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 0)
 
@@ -99,8 +91,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenDollar(), None), 3)
 
     def test_dot(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
         self.write('111\n222\n333\n')
 
         self.assertEqual(_resolve_line_number(self.view, TokenDot(), 0), 0)
@@ -109,8 +99,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenDot(), 10), 3, 'should not exceed max line of view')
 
     def test_mark(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
         self.write('11\n222\n3\n44\n55\n')
 
         with self.assertRaises(NotImplementedError):
@@ -160,9 +148,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenMark('>'), None), 3)
 
     def test_offset(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
-
         self.assertEqual(_resolve_line_number(self.view, TokenOffset([0]), 0), 0)
         self.assertEqual(_resolve_line_number(self.view, TokenOffset([0]), 5), 5)
         self.assertEqual(_resolve_line_number(self.view, TokenOffset([1]), 0), 1)
@@ -176,9 +161,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenOffset([-1, -4]), 15), 10)
 
     def test_percent(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
-
         self.write('')
         self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 0)
 
@@ -198,8 +180,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenPercent(), None), 3)
 
     def test_search_backward(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
         self.write('ab\ncd\nx\nabcd\ny\nz\n')
 
         with self.assertRaisesRegex(ValueError, 'pattern not found'):
@@ -223,8 +203,6 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
             _resolve_line_number(self.view, TokenSearchBackward('bc'), 3)
 
     def test_search_forward(self):
-        range_node = RangeNode()
-        _resolve_line_number = range_node._resolve_line_number
         self.write('ab\ncd\nx\nabcd\ny\nz\n')
 
         with self.assertRaisesRegex(ValueError, 'pattern not found'):

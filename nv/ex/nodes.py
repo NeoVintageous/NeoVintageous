@@ -35,6 +35,62 @@ class Node:
     pass
 
 
+def _resolve_line_number(view, token, current):
+    # type: (...) -> int
+    # Args:
+    #   view (View): The view where the calculation is made.
+    #   token (Token):
+    #   current (int): Line number where we are now.
+    if isinstance(token, TokenDot):
+        return row_at(view, view.text_point(current, 0))
+
+    if isinstance(token, TokenDigits):
+        return max(int(token.content) - 1, -1)
+
+    if isinstance(token, TokenPercent):
+        return row_at(view, view.size())
+
+    if isinstance(token, TokenDollar):
+        return row_at(view, view.size())
+
+    if isinstance(token, TokenOffset):
+        return current + sum(token.content)
+
+    if isinstance(token, TokenSearchForward):
+        match = view.find(token.content, view.text_point(current, 0))
+        if not match:
+            raise ValueError('pattern not found')
+
+        return row_at(view, match.a)
+
+    if isinstance(token, TokenSearchBackward):
+        match = reverse_search_by_pt(view, token.content, 0, view.text_point(current, 0))
+        if not match:
+            raise ValueError('pattern not found')
+
+        return row_at(view, match.a)
+
+    if isinstance(token, TokenMark):
+        if token.content == '<':
+            sel = list(view.sel())[0]
+            view.sel().clear()
+            view.sel().add(sel)
+            if sel.a < sel.b:
+                return row_at(view, sel.a)
+            else:
+                return row_at(view, sel.a - 1)
+        elif token.content == '>':
+            sel = list(view.sel())[0]
+            view.sel().clear()
+            view.sel().add(sel)
+            if sel.a < sel.b:
+                return row_at(view, sel.b - 1)
+            else:
+                return row_at(view, sel.b)
+
+    raise NotImplementedError()
+
+
 class RangeNode(Node):
 
     # Represents a Vim line range.
@@ -73,61 +129,6 @@ class RangeNode(Node):
 
         return not any((self.start, self.end, self.separator))
 
-    def _resolve_line_number(self, view, token, current):
-        # type: (...) -> int
-        # Args:
-        #   view (View): The view where the calculation is made.
-        #   token (Token):
-        #   current (int): Line number where we are now.
-        if isinstance(token, TokenDot):
-            return row_at(view, view.text_point(current, 0))
-
-        if isinstance(token, TokenDigits):
-            return max(int(token.content) - 1, -1)
-
-        if isinstance(token, TokenPercent):
-            return row_at(view, view.size())
-
-        if isinstance(token, TokenDollar):
-            return row_at(view, view.size())
-
-        if isinstance(token, TokenOffset):
-            return current + sum(token.content)
-
-        if isinstance(token, TokenSearchForward):
-            match = view.find(token.content, view.text_point(current, 0))
-            if not match:
-                raise ValueError('pattern not found')
-
-            return row_at(view, match.a)
-
-        if isinstance(token, TokenSearchBackward):
-            match = reverse_search_by_pt(view, token.content, 0, view.text_point(current, 0))
-            if not match:
-                raise ValueError('pattern not found')
-
-            return row_at(view, match.a)
-
-        if isinstance(token, TokenMark):
-            if token.content == '<':
-                sel = list(view.sel())[0]
-                view.sel().clear()
-                view.sel().add(sel)
-                if sel.a < sel.b:
-                    return row_at(view, sel.a)
-                else:
-                    return row_at(view, sel.a - 1)
-            elif token.content == '>':
-                sel = list(view.sel())[0]
-                view.sel().clear()
-                view.sel().add(sel)
-                if sel.a < sel.b:
-                    return row_at(view, sel.b - 1)
-                else:
-                    return row_at(view, sel.b)
-
-        raise NotImplementedError()
-
     def _resolve_line_reference(self, view, line_reference, current=0):
         # type: (...) -> int
         # Args:
@@ -144,7 +145,7 @@ class RangeNode(Node):
                 if isinstance(token, TokenSearchForward):
                     current += 1
 
-            current = self._resolve_line_number(view, token, current)
+            current = _resolve_line_number(view, token, current)
 
             last_token = token
 
