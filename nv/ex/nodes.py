@@ -91,6 +91,29 @@ def _resolve_line_number(view, token, current):
     raise NotImplementedError()
 
 
+def _resolve_line_reference(view, line_reference, current=0):
+    # type: (...) -> int
+    # Args:
+    #   view (View): The view where the calculation is made.
+    #   line_reference (list): The sequence of tokens defining the line range to be calculated.
+    #   current (int): Line number where we are now.
+    last_token = None
+    # XXX: what happens if there is no selection in the view?
+    current = row_at(view, first_sel(view).b)
+    for token in line_reference:
+        # Make sure a search forward doesn't overlap with
+        # a match obtained right before this search.
+        if isinstance(last_token, TokenOfSearch) and isinstance(token, TokenOfSearch):
+            if isinstance(token, TokenSearchForward):
+                current += 1
+
+        current = _resolve_line_number(view, token, current)
+
+        last_token = token
+
+    return current
+
+
 class RangeNode(Node):
 
     # Represents a Vim line range.
@@ -129,35 +152,13 @@ class RangeNode(Node):
 
         return not any((self.start, self.end, self.separator))
 
-    def _resolve_line_reference(self, view, line_reference, current=0):
-        # type: (...) -> int
-        # Args:
-        #   view (View): The view where the calculation is made.
-        #   line_reference (list): The sequence of tokens defining the line range to be calculated.
-        #   current (int): Line number where we are now.
-        last_token = None
-        # XXX: what happens if there is no selection in the view?
-        current = row_at(view, first_sel(view).b)
-        for token in line_reference:
-            # Make sure a search forward doesn't overlap with a match obtained
-            # right before this search.
-            if isinstance(last_token, TokenOfSearch) and isinstance(token, TokenOfSearch):
-                if isinstance(token, TokenSearchForward):
-                    current += 1
-
-            current = _resolve_line_number(view, token, current)
-
-            last_token = token
-
-        return current
-
     def resolve(self, view):
         # type: (...) -> Region
 
         # Return a representing the Vim line range that the ex command should
         # operate on.
 
-        start = self._resolve_line_reference(view, self.start or [TokenDot()])
+        start = _resolve_line_reference(view, self.start or [TokenDot()])
 
         if not self.separator:
             if start == -1:
@@ -169,7 +170,7 @@ class RangeNode(Node):
             return view.full_line(view.text_point(start, 0))
 
         new_start = start if self.separator == ';' else 0
-        end = self._resolve_line_reference(view, self.end or [TokenDot()], current=new_start)
+        end = _resolve_line_reference(view, self.end or [TokenDot()], current=new_start)
 
         return view.full_line(Region(view.text_point(start, 0), view.text_point(end, 0)))
 
