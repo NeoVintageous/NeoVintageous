@@ -916,14 +916,12 @@ _ex_substitute_last_pattern = None
 _ex_substitute_last_replacement = ''
 
 
-# TODO [refactor] Rename param "search_term" -> "pattern"
-def ex_substitute(view, edit, line_range, search_term=None, replacement='', flags=0, count=1, *args, **kwargs):
-    pattern = search_term
-
+def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0, count=1, *args, **kwargs):
     global _ex_substitute_last_pattern, _ex_substitute_last_replacement
 
-    # Repeat last :substitute with same search pattern and substitute string,
-    # but without the same flags.
+    # Repeat last substitute with same search
+    # pattern and substitute string, but
+    # without the same flags.
     if not pattern:
         pattern = _ex_substitute_last_pattern
         if not pattern:
@@ -1058,8 +1056,7 @@ _ex_global_most_recent_pat = None
 # At the time of writing, the only command that supports :global is the
 # "print" command e.g. print all lines matching \d+ into new buffer:
 #   :%global/\d+/print
-# TODO [refactor] Rename "subcommand" -> "cmd"
-def ex_global(window, view, pattern, subcommand, line_range, *args, **kwargs):
+def ex_global(window, view, pattern, cmd, line_range, *args, **kwargs):
     if line_range.is_empty:
         global_range = Region(0, view.size())
     else:
@@ -1071,10 +1068,10 @@ def ex_global(window, view, pattern, subcommand, line_range, *args, **kwargs):
     else:
         pattern = _ex_global_most_recent_pat
 
-    if not subcommand:
-        subcommand = 'print'
+    if not cmd:
+        cmd = 'print'
 
-    parsed_subcommand = parse_command_line(subcommand).command
+    cmd = parse_command_line(cmd).command
 
     try:
         matches = find_all_in_range(view, pattern, global_range.begin(), global_range.end())
@@ -1087,15 +1084,15 @@ def ex_global(window, view, pattern, subcommand, line_range, *args, **kwargs):
     # of writing, the only command that supports the global_lines argument
     # is the "print" command e.g. print all lines matching \d+ into new
     # buffer: ":%global/\d+/print".
-    if not matches or not parsed_subcommand.cooperates_with_global:
+    if not matches or not cmd.cooperates_with_global:
         return message("command does not support :global")
 
     matches = [view.full_line(r.begin()) for r in matches]
     matches = [[r.a, r.b] for r in matches]
 
-    parsed_subcommand.params['global_lines'] = matches
+    cmd.params['global_lines'] = matches
 
-    do_ex_command(window, parsed_subcommand.target_command, parsed_subcommand.params)
+    do_ex_command(window, cmd.target_command, cmd.params)
 
 
 def ex_print(window, view, flags, line_range, global_lines=None, *args, **kwargs):
@@ -1203,10 +1200,8 @@ def ex_browse(window, view, *args, **kwargs):
 
 @_changing_cd
 def ex_edit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
-    # TODO [refactor] file_name_arg
-    file_name_arg = file_name
-    if file_name_arg:
-        file_name = os.path.expanduser(os.path.expandvars(file_name_arg))
+    if file_name:
+        file_name = os.path.expanduser(os.path.expandvars(file_name))
 
         if view.is_dirty() and not forceit:
             return message("E37: No write since last change")
@@ -1241,23 +1236,22 @@ def ex_edit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
         if not os.path.exists(file_name):
             parent = os.path.dirname(file_name)
             if parent and not os.path.exists(parent):
-                msg = '"{}" [New DIRECTORY]'.format(file_name_arg)
+                msg = '"{}" [New DIRECTORY]'.format(file_name)
             else:
                 msg = '"{}" [New File]'.format(os.path.basename(file_name))
 
             # Give ST some time to load the new view.
             set_timeout(lambda: status_message(msg), 150)
 
-        return
+    else:
 
-    if forceit or not view.is_dirty():
-        view.run_command('revert')
-        return
+        if forceit or not view.is_dirty():
+            return view.run_command('revert')
 
-    if view.is_dirty():
-        return message("E37: No write since last change")
+        if view.is_dirty():
+            return message("E37: No write since last change")
 
-    message("E37: No write since last change")
+        message("E37: No write since last change")
 
 
 # TODO [refactor] into window module

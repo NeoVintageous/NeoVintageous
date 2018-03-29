@@ -283,13 +283,13 @@ class TestScannerCommandName(unittest.TestCase):
     def test_can_scan_substitute_paramaters(self):
         scanner = Scanner("substitute:foo:bar:")
         tokens = list(scanner.scan())
-        params = {"search_term": "foo", "replacement": "bar", "flags": [], "count": 1}
+        params = {"pattern": "foo", "replacement": "bar", "flags": [], "count": 1}
         self.assertEqual([TokenCommandSubstitute(params), TokenEof()], tokens)
 
     def test_can_scan_substitute_paramaters_with_flags(self):
         scanner = Scanner("substitute:foo:bar:r")
         tokens = list(scanner.scan())
-        params = {"search_term": "foo", "replacement": "bar", "flags": ['r'], "count": 1}
+        params = {"pattern": "foo", "replacement": "bar", "flags": ['r'], "count": 1}
         self.assertEqual([TokenCommandSubstitute(params), TokenEof()], tokens)
 
     def test_scan_can_fail_if_substitute_paramaters_flags_have_wrong_order(self):
@@ -299,13 +299,13 @@ class TestScannerCommandName(unittest.TestCase):
     def test_can_scan_substitute_paramaters_with_count(self):
         scanner = Scanner("substitute:foo:bar: 10")
         tokens = list(scanner.scan())
-        params = {"search_term": "foo", "replacement": "bar", "flags": [], "count": 10}
+        params = {"pattern": "foo", "replacement": "bar", "flags": [], "count": 10}
         self.assertEqual([TokenCommandSubstitute(params), TokenEof()], tokens)
 
     def test_can_scan_substitute_paramater_with_range(self):
         scanner = Scanner(r'%substitute:foo:bar: 10')
         tokens = list(scanner.scan())
-        params = {"search_term": "foo", "replacement": "bar", "flags": [], "count": 10}
+        params = {"pattern": "foo", "replacement": "bar", "flags": [], "count": 10}
         self.assertEqual([TokenPercent(), TokenCommandSubstitute(params), TokenEof()], tokens)
 
 

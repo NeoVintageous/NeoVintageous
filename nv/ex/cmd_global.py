@@ -28,7 +28,7 @@ class TokenCommandGlobal(TokenOfCommand):
 
 
 def scan_cmd_global(state):
-    params = {'pattern': None, 'subcommand': None}
+    params = {'pattern': None, 'cmd': None}
 
     c = state.consume()
 
@@ -57,6 +57,6 @@ def scan_cmd_global(state):
 
     command = state.match(r'.*$').group(0).strip()
     if command:
-        params['subcommand'] = command
+        params['cmd'] = command
 
     return None, [TokenCommandGlobal(params, forced=bang), TokenEof()]

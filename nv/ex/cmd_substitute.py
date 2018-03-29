@@ -35,9 +35,8 @@ def scan_cmd_substitute(state):
 
     state.backup()
     delim = state.consume()
-    # TODO [refactor] Rename search_term -> pattern
     params = {
-        "search_term": None,
+        "pattern": None,
         "replacement": None,
         "count": 1,
         "flags": [],
@@ -49,7 +48,7 @@ def scan_cmd_substitute(state):
         if c == delim:
             state.start += 1
             state.backup()
-            params['search_term'] = state.emit()
+            params['pattern'] = state.emit()
             state.consume()
             break
 

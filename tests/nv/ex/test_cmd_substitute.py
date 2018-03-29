@@ -51,7 +51,7 @@ class Test_scan_cmd_substitute(unittest.TestCase):
         self.assertScanEqual(
             '/abc/def/',
             {'params': {
-                'search_term': 'abc',
+                'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': [],
@@ -62,7 +62,7 @@ class Test_scan_cmd_substitute(unittest.TestCase):
         self.assertScanEqual(
             '///',
             {'params': {
-                'search_term': '',
+                'pattern': '',
                 'replacement': '',
                 'count': 1,
                 'flags': [],
@@ -73,7 +73,7 @@ class Test_scan_cmd_substitute(unittest.TestCase):
         self.assertScanEqual(
             '/abc/def/g',
             {'params': {
-                'search_term': 'abc',
+                'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['g']
@@ -83,7 +83,7 @@ class Test_scan_cmd_substitute(unittest.TestCase):
         self.assertScanEqual(
             '/abc/def/i',
             {'params': {
-                'search_term': 'abc',
+                'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['i']
@@ -93,7 +93,7 @@ class Test_scan_cmd_substitute(unittest.TestCase):
         self.assertScanEqual(
             '/abc/def/gi',
             {'params': {
-                'search_term': 'abc',
+                'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['g', 'i']
@@ -104,7 +104,7 @@ class Test_scan_cmd_substitute(unittest.TestCase):
         self.assertScanEqual(
             '/abc/def',
             {'params': {
-                'search_term': 'abc',
+                'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': []
