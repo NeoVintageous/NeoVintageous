@@ -781,14 +781,14 @@ def ex_file(view, *args, **kwargs):
     if view.file_name():
         fname = view.file_name()
     else:
-        fname = 'untitled'
+        fname = '[No Name]'
 
     attrs = ''
     if view.is_read_only():
         attrs = 'readonly'
 
     if view.is_dirty():
-        attrs = 'modified'
+        attrs = 'Modified'
 
     lines = 'no lines in the buffer'
     if view.rowcol(view.size())[0]:
@@ -807,7 +807,7 @@ def ex_file(view, *args, **kwargs):
     if isinstance(lines, str):
         msg += " -- %s --" % lines
     else:
-        msg += " %d line(s) --%d%%--" % (lines, int(percent))
+        msg += " %d line%s --%d%%--" % (lines, ('s' if lines > 1 else ''), int(percent))
 
     status_message('%s' % msg)
 
