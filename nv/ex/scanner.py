@@ -15,62 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from collections import OrderedDict
 import re
 
-from .commands import scan_cmd_abbreviate
-from .commands import scan_cmd_browse
-from .commands import scan_cmd_buffers
-from .commands import scan_cmd_cd
-from .commands import scan_cmd_cdd
-from .commands import scan_cmd_close
-from .commands import scan_cmd_copy
-from .commands import scan_cmd_cquit
-from .commands import scan_cmd_delete
-from .commands import scan_cmd_double_ampersand
-from .commands import scan_cmd_edit
-from .commands import scan_cmd_exit
-from .commands import scan_cmd_file
-from .commands import scan_cmd_global
-from .commands import scan_cmd_help
-from .commands import scan_cmd_let
-from .commands import scan_cmd_move
-from .commands import scan_cmd_new
-from .commands import scan_cmd_nnoremap
-from .commands import scan_cmd_noremap
-from .commands import scan_cmd_nunmap
-from .commands import scan_cmd_only
-from .commands import scan_cmd_onoremap
-from .commands import scan_cmd_ounmap
-from .commands import scan_cmd_print
-from .commands import scan_cmd_pwd
-from .commands import scan_cmd_qall
-from .commands import scan_cmd_quit
-from .commands import scan_cmd_read
-from .commands import scan_cmd_registers
-from .commands import scan_cmd_set
-from .commands import scan_cmd_setlocal
-from .commands import scan_cmd_shell
-from .commands import scan_cmd_shell_out
-from .commands import scan_cmd_snoremap
-from .commands import scan_cmd_split
-from .commands import scan_cmd_substitute
-from .commands import scan_cmd_tabfirst
-from .commands import scan_cmd_tablast
-from .commands import scan_cmd_tabnext
-from .commands import scan_cmd_tabonly
-from .commands import scan_cmd_tabprevious
-from .commands import scan_cmd_unabbreviate
-from .commands import scan_cmd_unmap
-from .commands import scan_cmd_unvsplit
-from .commands import scan_cmd_vnoremap
-from .commands import scan_cmd_vsplit
-from .commands import scan_cmd_vunmap
-from .commands import scan_cmd_wall
-from .commands import scan_cmd_wq
-from .commands import scan_cmd_wqall
-from .commands import scan_cmd_write
-from .commands import scan_cmd_yank
+from .commands import command_routes
 from .tokens import TokenComma
 from .tokens import TokenDigits
 from .tokens import TokenDollar
@@ -381,73 +328,13 @@ def _scan_offset(state):
             return _scan_range, [TokenOffset(list(map(to_int, offsets)))]
 
 
-# TODO: compile regexes. ??
-_routes = OrderedDict()
-_routes[r'!(?=.+)'] = scan_cmd_shell_out
-_routes[r'&&?'] = scan_cmd_double_ampersand
-_routes[r'ab(?:breviate)?'] = scan_cmd_abbreviate
-_routes[r'bro(?:wse)?'] = scan_cmd_browse
-_routes[r'clo(?:se)?'] = scan_cmd_close
-_routes[r'co(?:py)?'] = scan_cmd_copy
-_routes[r'cq(?:uit)?'] = scan_cmd_cquit
-_routes[r'd(?:elete)?'] = scan_cmd_delete
-_routes[r'exi(?:t)?'] = scan_cmd_exit
-_routes[r'f(?:ile)?'] = scan_cmd_file
-_routes[r'g(?:lobal)?(?=[^ ])'] = scan_cmd_global
-_routes[r'h(?:elp)?'] = scan_cmd_help
-_routes[r'(?:ls|files|buffers)!?'] = scan_cmd_buffers
-_routes[r'vs(?:plit)?'] = scan_cmd_vsplit
-_routes[r'x(?:it)?$'] = scan_cmd_exit
-_routes[r'^cd(?=[^d]|$)'] = scan_cmd_cd
-_routes[r'^cdd'] = scan_cmd_cdd
-_routes[r'e(?:dit)?(?= |$)?'] = scan_cmd_edit
-_routes[r'let\s'] = scan_cmd_let
-_routes[r'm(?:ove)?(?=[^a]|$)'] = scan_cmd_move
-_routes[r'no(?:remap)'] = scan_cmd_noremap
-_routes[r'new'] = scan_cmd_new
-_routes[r'nn(?:oremap)?'] = scan_cmd_nnoremap
-_routes[r'nun(?:map)?'] = scan_cmd_nunmap
-_routes[r'ono(?:remap)?'] = scan_cmd_onoremap
-_routes[r'on(?:ly)?(?=!$|$)'] = scan_cmd_only
-_routes[r'ounm(?:ap)?'] = scan_cmd_ounmap
-_routes[r'p(?:rint)?$'] = scan_cmd_print
-_routes[r'pwd?$'] = scan_cmd_pwd
-_routes[r'q(?!a)(?:uit)?'] = scan_cmd_quit
-_routes[r'qa(?:ll)?'] = scan_cmd_qall
-_routes[r'r(?!eg)(?:ead)?'] = scan_cmd_read
-_routes[r'reg(?:isters)?(?=\s+[a-z0-9]+$|$)'] = scan_cmd_registers
-_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = scan_cmd_substitute
-_routes[r'se(?:t)?(?=$|\s)'] = scan_cmd_set
-_routes[r'setl(?:ocal)?'] = scan_cmd_setlocal
-_routes[r'sh(?:ell)?'] = scan_cmd_shell
-_routes[r'snor(?:emap)?'] = scan_cmd_snoremap
-_routes[r'sp(?:lit)?'] = scan_cmd_split
-_routes[r'tabfir(?:st)?'] = scan_cmd_tabfirst
-_routes[r'tabl(?:ast)?'] = scan_cmd_tablast
-_routes[r'tabn(?:ext)?'] = scan_cmd_tabnext
-_routes[r'tabo(?:nly)?'] = scan_cmd_tabonly
-_routes[r'tabp(?:revious)?'] = scan_cmd_tabprevious
-_routes[r'tabr(?:ewind)?'] = scan_cmd_tabfirst
-_routes[r'una(?:bbreviate)?'] = scan_cmd_unabbreviate
-_routes[r'unm(?:ap)?'] = scan_cmd_unmap
-_routes[r'unvsplit$'] = scan_cmd_unvsplit
-_routes[r'vn(?:oremap)?'] = scan_cmd_vnoremap
-_routes[r'vu(?:nmap)?'] = scan_cmd_vunmap
-_routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = scan_cmd_write
-_routes[r'wqa(?:ll)?'] = scan_cmd_wqall
-_routes[r'xa(?:ll)?'] = scan_cmd_wqall
-_routes[r'wa(?:ll)?'] = scan_cmd_wall
-_routes[r'wq(?=[^a-zA-Z]|$)?'] = scan_cmd_wq
-_routes[r'y(?:ank)?'] = scan_cmd_yank
-
-
 def _scan_command(state):
     # Args:
     #   :state (_ScannerState):
     #
     # Returns:
     #   Tuple[None, list(TokenEof)]
-    for route, command in _routes.items():
+    for route, command in command_routes.items():
         if state.match(route):
             state.ignore()
 

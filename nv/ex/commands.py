@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import OrderedDict
+
 from .tokens import TokenCommand
 from .tokens import TokenEof
 
@@ -1249,3 +1251,63 @@ def scan_cmd_yank(state):
     command.params = params
 
     return None, [command, TokenEof()]
+
+
+# TODO: compile regexes. ??
+command_routes = OrderedDict()
+command_routes[r'!(?=.+)'] = scan_cmd_shell_out
+command_routes[r'&&?'] = scan_cmd_double_ampersand
+command_routes[r'ab(?:breviate)?'] = scan_cmd_abbreviate
+command_routes[r'bro(?:wse)?'] = scan_cmd_browse
+command_routes[r'clo(?:se)?'] = scan_cmd_close
+command_routes[r'co(?:py)?'] = scan_cmd_copy
+command_routes[r'cq(?:uit)?'] = scan_cmd_cquit
+command_routes[r'd(?:elete)?'] = scan_cmd_delete
+command_routes[r'exi(?:t)?'] = scan_cmd_exit
+command_routes[r'f(?:ile)?'] = scan_cmd_file
+command_routes[r'g(?:lobal)?(?=[^ ])'] = scan_cmd_global
+command_routes[r'h(?:elp)?'] = scan_cmd_help
+command_routes[r'(?:ls|files|buffers)!?'] = scan_cmd_buffers
+command_routes[r'vs(?:plit)?'] = scan_cmd_vsplit
+command_routes[r'x(?:it)?$'] = scan_cmd_exit
+command_routes[r'^cd(?=[^d]|$)'] = scan_cmd_cd
+command_routes[r'^cdd'] = scan_cmd_cdd
+command_routes[r'e(?:dit)?(?= |$)?'] = scan_cmd_edit
+command_routes[r'let\s'] = scan_cmd_let
+command_routes[r'm(?:ove)?(?=[^a]|$)'] = scan_cmd_move
+command_routes[r'no(?:remap)'] = scan_cmd_noremap
+command_routes[r'new'] = scan_cmd_new
+command_routes[r'nn(?:oremap)?'] = scan_cmd_nnoremap
+command_routes[r'nun(?:map)?'] = scan_cmd_nunmap
+command_routes[r'ono(?:remap)?'] = scan_cmd_onoremap
+command_routes[r'on(?:ly)?(?=!$|$)'] = scan_cmd_only
+command_routes[r'ounm(?:ap)?'] = scan_cmd_ounmap
+command_routes[r'p(?:rint)?$'] = scan_cmd_print
+command_routes[r'pwd?$'] = scan_cmd_pwd
+command_routes[r'q(?!a)(?:uit)?'] = scan_cmd_quit
+command_routes[r'qa(?:ll)?'] = scan_cmd_qall
+command_routes[r'r(?!eg)(?:ead)?'] = scan_cmd_read
+command_routes[r'reg(?:isters)?(?=\s+[a-z0-9]+$|$)'] = scan_cmd_registers
+command_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = scan_cmd_substitute
+command_routes[r'se(?:t)?(?=$|\s)'] = scan_cmd_set
+command_routes[r'setl(?:ocal)?'] = scan_cmd_setlocal
+command_routes[r'sh(?:ell)?'] = scan_cmd_shell
+command_routes[r'snor(?:emap)?'] = scan_cmd_snoremap
+command_routes[r'sp(?:lit)?'] = scan_cmd_split
+command_routes[r'tabfir(?:st)?'] = scan_cmd_tabfirst
+command_routes[r'tabl(?:ast)?'] = scan_cmd_tablast
+command_routes[r'tabn(?:ext)?'] = scan_cmd_tabnext
+command_routes[r'tabo(?:nly)?'] = scan_cmd_tabonly
+command_routes[r'tabp(?:revious)?'] = scan_cmd_tabprevious
+command_routes[r'tabr(?:ewind)?'] = scan_cmd_tabfirst
+command_routes[r'una(?:bbreviate)?'] = scan_cmd_unabbreviate
+command_routes[r'unm(?:ap)?'] = scan_cmd_unmap
+command_routes[r'unvsplit$'] = scan_cmd_unvsplit
+command_routes[r'vn(?:oremap)?'] = scan_cmd_vnoremap
+command_routes[r'vu(?:nmap)?'] = scan_cmd_vunmap
+command_routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = scan_cmd_write
+command_routes[r'wqa(?:ll)?'] = scan_cmd_wqall
+command_routes[r'xa(?:ll)?'] = scan_cmd_wqall
+command_routes[r'wa(?:ll)?'] = scan_cmd_wall
+command_routes[r'wq(?=[^a-zA-Z]|$)?'] = scan_cmd_wq
+command_routes[r'y(?:ank)?'] = scan_cmd_yank
