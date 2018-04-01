@@ -1092,7 +1092,7 @@ class _vi_quote(ViTextCommandBase):
 
     def run(self, edit, mode=None, character=None, count=1):
         def f(view, s):
-            if mode == VISUAL:
+            if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if s.a <= s.b:
                     if address.b < s.b:
                         return Region(s.a + 1, address.b)
