@@ -25,7 +25,7 @@ from NeoVintageous.nv.ex.tokens import TokenEof
 
 
 # TODO Fix broken :abbreviate scanner
-def scan_cmd_abbreviate(state):
+def _ex_route_abbreviate(state):
     command = TokenCommand('abbreviate')
     params = {'short': None, 'full': None}
 
@@ -46,7 +46,7 @@ def scan_cmd_abbreviate(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_browse(state):
+def _ex_route_browse(state):
     command = TokenCommand('browse')
     # TODO [review] "cmd" param looks unused.
     params = {'cmd': None}
@@ -66,7 +66,7 @@ def scan_cmd_browse(state):
 
 
 # TODO [refactor] Rename target from ex_prompt_select_open_file to buffers
-def scan_cmd_buffers(state):
+def _ex_route_buffers(state):
     command = TokenCommand('buffers', target='ex_prompt_select_open_file')
 
     try:
@@ -78,7 +78,7 @@ def scan_cmd_buffers(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_cd(state):
+def _ex_route_cd(state):
     command = TokenCommand('cd')
 
     # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
@@ -119,7 +119,7 @@ def scan_cmd_cd(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_cdd(state):
+def _ex_route_cdd(state):
     command = TokenCommand('cdd')
 
     c = state.consume()
@@ -137,7 +137,7 @@ def scan_cmd_cdd(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_close(state):
+def _ex_route_close(state):
     command = TokenCommand('close')
     bang = state.consume() == '!'
 
@@ -148,7 +148,7 @@ def scan_cmd_close(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_copy(state):
+def _ex_route_copy(state):
     command = TokenCommand('copy')
     command.addressable = True
 
@@ -161,7 +161,7 @@ def scan_cmd_copy(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_cquit(state):
+def _ex_route_cquit(state):
     command = TokenCommand('cquit')
 
     state.expect_eof()
@@ -169,7 +169,7 @@ def scan_cmd_cquit(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_delete(state):
+def _ex_route_delete(state):
     command = TokenCommand('delete')
     command.addressable = True
 
@@ -199,7 +199,7 @@ def scan_cmd_delete(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_double_ampersand(state):
+def _ex_route_double_ampersand(state):
     command = TokenCommand('&&', target='ex_double_ampersand')
     command.addressable = True
 
@@ -217,7 +217,7 @@ def scan_cmd_double_ampersand(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_edit(state):
+def _ex_route_edit(state):
     command = TokenCommand('edit')
     # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     params = {
@@ -302,7 +302,7 @@ def scan_cmd_edit(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_exit(state):
+def _ex_route_exit(state):
     command = TokenCommand('exit')
     command.addressable = True
 
@@ -369,7 +369,7 @@ def scan_cmd_exit(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_file(state):
+def _ex_route_file(state):
     command = TokenCommand('file')
     bang = state.consume()
     if bang == state.EOF:
@@ -386,7 +386,7 @@ def scan_cmd_file(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_global(state):
+def _ex_route_global(state):
     command = TokenCommand('global')
     command.addressable = True
     params = {'pattern': None, 'cmd': None}
@@ -427,7 +427,7 @@ def scan_cmd_global(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_help(state):
+def _ex_route_help(state):
     command = TokenCommand('help')
     match = state.expect_match(r'(?P<bang>!)?\s*(?P<subject>.+)?$').groupdict()
     params = {'subject': match['subject']}
@@ -439,7 +439,7 @@ def scan_cmd_help(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_let(state):
+def _ex_route_let(state):
     command = TokenCommand('let')
     params = {'name': None, 'value': None}
 
@@ -454,7 +454,7 @@ def scan_cmd_let(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_move(state):
+def _ex_route_move(state):
     command = TokenCommand('move')
     command.addressable = True
     params = {'address': None}
@@ -472,7 +472,7 @@ def scan_cmd_move(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_new(state):
+def _ex_route_new(state):
     command = TokenCommand('new')
     # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     params = {'++': None, 'cmd': None}
@@ -515,7 +515,7 @@ def scan_cmd_new(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_nnoremap(state):
+def _ex_route_nnoremap(state):
     command = TokenCommand('nnoremap')
     params = {'keys': None, 'command': None}
 
@@ -528,7 +528,7 @@ def scan_cmd_nnoremap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_noremap(state):
+def _ex_route_noremap(state):
     command = TokenCommand('noremap')
     params = {'keys': None, 'command': None}
 
@@ -541,7 +541,7 @@ def scan_cmd_noremap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_nunmap(state):
+def _ex_route_nunmap(state):
     command = TokenCommand('nunmap')
     params = {'keys': None}
 
@@ -554,7 +554,7 @@ def scan_cmd_nunmap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_only(state):
+def _ex_route_only(state):
     command = TokenCommand('only')
 
     bang = state.consume()
@@ -572,7 +572,7 @@ def scan_cmd_only(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_onoremap(state):
+def _ex_route_onoremap(state):
     command = TokenCommand('onoremap')
     params = {'keys': None, 'command': None}
 
@@ -583,7 +583,7 @@ def scan_cmd_onoremap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_ounmap(state):
+def _ex_route_ounmap(state):
     command = TokenCommand('ounmap')
     params = {'keys': None}
 
@@ -596,7 +596,7 @@ def scan_cmd_ounmap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_print(state):
+def _ex_route_print(state):
     command = TokenCommand('print')
     command.addressable = True
     command.cooperates_with_global = True
@@ -631,7 +631,7 @@ def scan_cmd_print(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_pwd(state):
+def _ex_route_pwd(state):
     command = TokenCommand('pwd')
 
     state.expect_eof()
@@ -639,7 +639,7 @@ def scan_cmd_pwd(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_qall(state):
+def _ex_route_qall(state):
     command = TokenCommand('qall')
     bang = state.consume() == '!'
 
@@ -650,7 +650,7 @@ def scan_cmd_qall(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_quit(state):
+def _ex_route_quit(state):
     command = TokenCommand('quit')
     bang = state.consume() == '!'
 
@@ -661,7 +661,7 @@ def scan_cmd_quit(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_read(state):
+def _ex_route_read(state):
     command = TokenCommand('read')
     params = {
         'cmd': None,
@@ -711,7 +711,7 @@ def scan_cmd_read(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_registers(state):
+def _ex_route_registers(state):
     command = TokenCommand('registers')
     # TODO [review] "names" param looks unused by ex_registers
     params = {'names': []}
@@ -731,7 +731,7 @@ def scan_cmd_registers(state):
             raise ValueError('wrong arguments')
 
 
-def scan_cmd_set(state):
+def _ex_route_set(state):
     command = TokenCommand('set')
     params = {'option': None, 'value': None}
 
@@ -746,7 +746,7 @@ def scan_cmd_set(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_setlocal(state):
+def _ex_route_setlocal(state):
     command = TokenCommand('setlocal')
     params = {'option': None, 'value': None}
 
@@ -761,14 +761,14 @@ def scan_cmd_setlocal(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_shell(state):
+def _ex_route_shell(state):
     command = TokenCommand('shell')
     state.expect_eof()
 
     return None, [command, TokenEof()]
 
 
-def scan_cmd_shell_out(state):
+def _ex_route_shell_out(state):
     command = TokenCommand('!', target='ex_shell_out')
     command.addressable = True
     params = {'cmd': None}
@@ -781,7 +781,7 @@ def scan_cmd_shell_out(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_snoremap(state):
+def _ex_route_snoremap(state):
     command = TokenCommand('snoremap')
     params = {'keys': None, 'command': None}
 
@@ -794,7 +794,7 @@ def scan_cmd_snoremap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_split(state):
+def _ex_route_split(state):
     command = TokenCommand('split')
     params = {'file': None}
 
@@ -815,7 +815,7 @@ def scan_cmd_split(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_substitute(state):
+def _ex_route_substitute(state):
     command = TokenCommand('substitute')
     command.addressable = True
 
@@ -883,7 +883,7 @@ def scan_cmd_substitute(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_tabfirst(state):
+def _ex_route_tabfirst(state):
     command = TokenCommand('tabfirst')
     c = state.consume()
     if c == state.EOF:
@@ -896,7 +896,7 @@ def scan_cmd_tabfirst(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_tablast(state):
+def _ex_route_tablast(state):
     command = TokenCommand('tablast')
     c = state.consume()
     if c == state.EOF:
@@ -909,7 +909,7 @@ def scan_cmd_tablast(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_tabnext(state):
+def _ex_route_tabnext(state):
     command = TokenCommand('tabnext')
     c = state.consume()
     if c == state.EOF:
@@ -922,7 +922,7 @@ def scan_cmd_tabnext(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_tabonly(state):
+def _ex_route_tabonly(state):
     command = TokenCommand('tabonly')
     c = state.consume()
     if c == state.EOF:
@@ -935,7 +935,7 @@ def scan_cmd_tabonly(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_tabprevious(state):
+def _ex_route_tabprevious(state):
     command = TokenCommand('tabprevious')
     c = state.consume()
     if c == state.EOF:
@@ -948,7 +948,7 @@ def scan_cmd_tabprevious(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_unabbreviate(state):
+def _ex_route_unabbreviate(state):
     command = TokenCommand('unabbreviate')
     params = {'lhs': None}
 
@@ -960,7 +960,7 @@ def scan_cmd_unabbreviate(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_unmap(state):
+def _ex_route_unmap(state):
     command = TokenCommand('unmap')
     params = {'keys': None}
 
@@ -981,14 +981,14 @@ def scan_cmd_unmap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_unvsplit(state):
+def _ex_route_unvsplit(state):
     command = TokenCommand('unvsplit')
     state.expect_eof()
 
     return None, [command, TokenEof()]
 
 
-def scan_cmd_vnoremap(state):
+def _ex_route_vnoremap(state):
     command = TokenCommand('vnoremap')
     params = {'keys': None, 'command': None}
 
@@ -1001,7 +1001,7 @@ def scan_cmd_vnoremap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_vsplit(state):
+def _ex_route_vsplit(state):
     command = TokenCommand('vsplit')
     params = {'file': None}
 
@@ -1022,7 +1022,7 @@ def scan_cmd_vsplit(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_vunmap(state):
+def _ex_route_vunmap(state):
     command = TokenCommand('vunmap')
     params = {'keys': None}
 
@@ -1035,7 +1035,7 @@ def scan_cmd_vunmap(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_wall(state):
+def _ex_route_wall(state):
     command = TokenCommand('wall')
     bang = state.consume() == '!'
 
@@ -1046,7 +1046,7 @@ def scan_cmd_wall(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_wq(state):
+def _ex_route_wq(state):
     command = TokenCommand('wq')
     # TODO [review] None of the prams looks used
     params = {
@@ -1104,7 +1104,7 @@ def scan_cmd_wq(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_wqall(state):
+def _ex_route_wqall(state):
     command = TokenCommand('wqall')
     command.addressable = True
     params = {'++': ''}
@@ -1141,7 +1141,7 @@ def scan_cmd_wqall(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_write(state):
+def _ex_route_write(state):
     command = TokenCommand('write')
     command.addressable = True
     # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
@@ -1223,7 +1223,7 @@ def scan_cmd_write(state):
     return None, [command, TokenEof()]
 
 
-def scan_cmd_yank(state):
+def _ex_route_yank(state):
     command = TokenCommand('yank')
     command.addressable = True
 
@@ -1254,60 +1254,60 @@ def scan_cmd_yank(state):
 
 
 # TODO: compile regexes. ??
-command_routes = OrderedDict()
-command_routes[r'!(?=.+)'] = scan_cmd_shell_out
-command_routes[r'&&?'] = scan_cmd_double_ampersand
-command_routes[r'ab(?:breviate)?'] = scan_cmd_abbreviate
-command_routes[r'bro(?:wse)?'] = scan_cmd_browse
-command_routes[r'clo(?:se)?'] = scan_cmd_close
-command_routes[r'co(?:py)?'] = scan_cmd_copy
-command_routes[r'cq(?:uit)?'] = scan_cmd_cquit
-command_routes[r'd(?:elete)?'] = scan_cmd_delete
-command_routes[r'exi(?:t)?'] = scan_cmd_exit
-command_routes[r'f(?:ile)?'] = scan_cmd_file
-command_routes[r'g(?:lobal)?(?=[^ ])'] = scan_cmd_global
-command_routes[r'h(?:elp)?'] = scan_cmd_help
-command_routes[r'(?:ls|files|buffers)!?'] = scan_cmd_buffers
-command_routes[r'vs(?:plit)?'] = scan_cmd_vsplit
-command_routes[r'x(?:it)?$'] = scan_cmd_exit
-command_routes[r'^cd(?=[^d]|$)'] = scan_cmd_cd
-command_routes[r'^cdd'] = scan_cmd_cdd
-command_routes[r'e(?:dit)?(?= |$)?'] = scan_cmd_edit
-command_routes[r'let\s'] = scan_cmd_let
-command_routes[r'm(?:ove)?(?=[^a]|$)'] = scan_cmd_move
-command_routes[r'no(?:remap)'] = scan_cmd_noremap
-command_routes[r'new'] = scan_cmd_new
-command_routes[r'nn(?:oremap)?'] = scan_cmd_nnoremap
-command_routes[r'nun(?:map)?'] = scan_cmd_nunmap
-command_routes[r'ono(?:remap)?'] = scan_cmd_onoremap
-command_routes[r'on(?:ly)?(?=!$|$)'] = scan_cmd_only
-command_routes[r'ounm(?:ap)?'] = scan_cmd_ounmap
-command_routes[r'p(?:rint)?$'] = scan_cmd_print
-command_routes[r'pwd?$'] = scan_cmd_pwd
-command_routes[r'q(?!a)(?:uit)?'] = scan_cmd_quit
-command_routes[r'qa(?:ll)?'] = scan_cmd_qall
-command_routes[r'r(?!eg)(?:ead)?'] = scan_cmd_read
-command_routes[r'reg(?:isters)?(?=\s+[a-z0-9]+$|$)'] = scan_cmd_registers
-command_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = scan_cmd_substitute
-command_routes[r'se(?:t)?(?=$|\s)'] = scan_cmd_set
-command_routes[r'setl(?:ocal)?'] = scan_cmd_setlocal
-command_routes[r'sh(?:ell)?'] = scan_cmd_shell
-command_routes[r'snor(?:emap)?'] = scan_cmd_snoremap
-command_routes[r'sp(?:lit)?'] = scan_cmd_split
-command_routes[r'tabfir(?:st)?'] = scan_cmd_tabfirst
-command_routes[r'tabl(?:ast)?'] = scan_cmd_tablast
-command_routes[r'tabn(?:ext)?'] = scan_cmd_tabnext
-command_routes[r'tabo(?:nly)?'] = scan_cmd_tabonly
-command_routes[r'tabp(?:revious)?'] = scan_cmd_tabprevious
-command_routes[r'tabr(?:ewind)?'] = scan_cmd_tabfirst
-command_routes[r'una(?:bbreviate)?'] = scan_cmd_unabbreviate
-command_routes[r'unm(?:ap)?'] = scan_cmd_unmap
-command_routes[r'unvsplit$'] = scan_cmd_unvsplit
-command_routes[r'vn(?:oremap)?'] = scan_cmd_vnoremap
-command_routes[r'vu(?:nmap)?'] = scan_cmd_vunmap
-command_routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = scan_cmd_write
-command_routes[r'wqa(?:ll)?'] = scan_cmd_wqall
-command_routes[r'xa(?:ll)?'] = scan_cmd_wqall
-command_routes[r'wa(?:ll)?'] = scan_cmd_wall
-command_routes[r'wq(?=[^a-zA-Z]|$)?'] = scan_cmd_wq
-command_routes[r'y(?:ank)?'] = scan_cmd_yank
+ex_routes = OrderedDict()
+ex_routes[r'!(?=.+)'] = _ex_route_shell_out
+ex_routes[r'&&?'] = _ex_route_double_ampersand
+ex_routes[r'ab(?:breviate)?'] = _ex_route_abbreviate
+ex_routes[r'bro(?:wse)?'] = _ex_route_browse
+ex_routes[r'clo(?:se)?'] = _ex_route_close
+ex_routes[r'co(?:py)?'] = _ex_route_copy
+ex_routes[r'cq(?:uit)?'] = _ex_route_cquit
+ex_routes[r'd(?:elete)?'] = _ex_route_delete
+ex_routes[r'exi(?:t)?'] = _ex_route_exit
+ex_routes[r'f(?:ile)?'] = _ex_route_file
+ex_routes[r'g(?:lobal)?(?=[^ ])'] = _ex_route_global
+ex_routes[r'h(?:elp)?'] = _ex_route_help
+ex_routes[r'(?:ls|files|buffers)!?'] = _ex_route_buffers
+ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
+ex_routes[r'x(?:it)?$'] = _ex_route_exit
+ex_routes[r'^cd(?=[^d]|$)'] = _ex_route_cd
+ex_routes[r'^cdd'] = _ex_route_cdd
+ex_routes[r'e(?:dit)?(?= |$)?'] = _ex_route_edit
+ex_routes[r'let\s'] = _ex_route_let
+ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
+ex_routes[r'no(?:remap)'] = _ex_route_noremap
+ex_routes[r'new'] = _ex_route_new
+ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap
+ex_routes[r'nun(?:map)?'] = _ex_route_nunmap
+ex_routes[r'ono(?:remap)?'] = _ex_route_onoremap
+ex_routes[r'on(?:ly)?(?=!$|$)'] = _ex_route_only
+ex_routes[r'ounm(?:ap)?'] = _ex_route_ounmap
+ex_routes[r'p(?:rint)?$'] = _ex_route_print
+ex_routes[r'pwd?$'] = _ex_route_pwd
+ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
+ex_routes[r'qa(?:ll)?'] = _ex_route_qall
+ex_routes[r'r(?!eg)(?:ead)?'] = _ex_route_read
+ex_routes[r'reg(?:isters)?(?=\s+[a-z0-9]+$|$)'] = _ex_route_registers
+ex_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = _ex_route_substitute
+ex_routes[r'se(?:t)?(?=$|\s)'] = _ex_route_set
+ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
+ex_routes[r'sh(?:ell)?'] = _ex_route_shell
+ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
+ex_routes[r'sp(?:lit)?'] = _ex_route_split
+ex_routes[r'tabfir(?:st)?'] = _ex_route_tabfirst
+ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
+ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
+ex_routes[r'tabo(?:nly)?'] = _ex_route_tabonly
+ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
+ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
+ex_routes[r'una(?:bbreviate)?'] = _ex_route_unabbreviate
+ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
+ex_routes[r'unvsplit$'] = _ex_route_unvsplit
+ex_routes[r'vn(?:oremap)?'] = _ex_route_vnoremap
+ex_routes[r'vu(?:nmap)?'] = _ex_route_vunmap
+ex_routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = _ex_route_write
+ex_routes[r'wqa(?:ll)?'] = _ex_route_wqall
+ex_routes[r'xa(?:ll)?'] = _ex_route_wqall
+ex_routes[r'wa(?:ll)?'] = _ex_route_wall
+ex_routes[r'wq(?=[^a-zA-Z]|$)?'] = _ex_route_wq
+ex_routes[r'y(?:ank)?'] = _ex_route_yank

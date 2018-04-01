@@ -28,7 +28,7 @@ from .tokens import TokenPercent
 from .tokens import TokenSearchBackward
 from .tokens import TokenSearchForward
 from .tokens import TokenSemicolon
-from NeoVintageous.nv.ex_routes import command_routes
+from NeoVintageous.nv.ex_routes import ex_routes
 
 
 class _ScannerState:
@@ -334,7 +334,7 @@ def _scan_command(state):
     #
     # Returns:
     #   Tuple[None, list(TokenEof)]
-    for route, command in command_routes.items():
+    for route, command in ex_routes.items():
         if state.match(route):
             state.ignore()
 
