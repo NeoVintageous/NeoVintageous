@@ -34,7 +34,6 @@ from sublime import ok_cancel_dialog
 from sublime import platform
 from sublime import Region
 from sublime import set_timeout
-from sublime_plugin import TextCommand
 
 from NeoVintageous.nv import shell
 from NeoVintageous.nv import variables
@@ -67,11 +66,6 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import window_split
 from NeoVintageous.nv.window import window_tab_control
 from NeoVintageous.nv.window import WindowAPI
-
-
-__all__ = [
-    '_nv_run_ex_text_cmd'
-]
 
 
 _log = get_logger(__name__)
@@ -152,23 +146,24 @@ def _serialize_deserialize(f, *args, **kwargs):
     return inner
 
 
-# TODO [refactor] into _nv_cmdline non-interactive command
-class _nv_run_ex_text_cmd(TextCommand):
-    def run(self, edit, name, command_line, *args, **kwargs):
-        _log.debug('_nv_run_ex_text_cmd -> %s with %s %s in %s %s', name, args, kwargs, self.view.id(), self.view.file_name())  # noqa: E501
+# This command is called from the "_nv_ex_text_cmd" command, which helps work
+# around the issue of gaining access to edit objects. Some ex commands don't
+# need access to an edit object, so they can usually skip this process.
+def do_ex_text_command(self, edit, name, command_line, *args, **kwargs):
+    _log.debug('do ex command (TEXT) -> %s %s %s in %s %s', name, args, kwargs, self.view.id(), self.view.file_name())  # noqa: E501
 
-        parsed = parse_command_line(command_line)
-        module = sys.modules[__name__]
-        ex_cmd = getattr(module, name, None)
-        parsed.command.params.update(kwargs)
+    parsed = parse_command_line(command_line)
+    module = sys.modules[__name__]
+    ex_cmd = getattr(module, name, None)
+    parsed.command.params.update(kwargs)
 
-        if ex_cmd:
-            ex_cmd(
-                view=self.view,
-                edit=edit,
-                line_range=parsed.line_range,
-                **parsed.command.params
-            )
+    if ex_cmd:
+        ex_cmd(
+            view=self.view,
+            edit=edit,
+            line_range=parsed.line_range,
+            **parsed.command.params
+        )
 
 
 def do_ex_command(window, name, args=None):
@@ -205,7 +200,7 @@ def do_ex_command(window, name, args=None):
         # command.
         _log.debug('run ex command as a text command %s %s', name, args)
         args['name'] = name
-        window.run_command('_nv_run_ex_text_cmd', args)
+        window.run_command('_nv_ex_text_cmd', args)
         _log.debug('finished ex text command')
     else:
 

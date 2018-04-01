@@ -25,6 +25,7 @@ from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
 from NeoVintageous.nv.cmds_ex import do_ex_command
+from NeoVintageous.nv.cmds_ex import do_ex_text_command
 # from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse_for_fs
@@ -73,6 +74,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 __all__ = [
     '_nv_cmdline',
     '_nv_cmdline_feed_key',
+    '_nv_ex_text_cmd',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
     '_nv_fs_completion',
@@ -623,6 +625,16 @@ class _nv_replace_line(TextCommand):
         b = self.view.line(self.view.sel()[0].b).a
         pt = next_non_white_space_char(self.view, b, white_space=' \t')
         self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
+
+
+class _nv_ex_text_cmd(TextCommand):
+
+    # This command is required for ex commands that need an Sublime Text edit
+    # object, which can only be accessed via text commands. Some ex commands
+    # don't need access to an edit object, so they can skip this command.
+
+    def run(self, edit, *args, **kwargs):
+        do_ex_text_command(self, edit, *args, **kwargs)
 
 
 class _nv_cmdline(WindowCommand):
