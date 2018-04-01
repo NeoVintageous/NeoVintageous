@@ -582,6 +582,11 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
         regions_transformer(self.view, f)
 
+        if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
+            sel = self.view.sel()[-1]
+            self.view.sel().clear()
+            self.view.sel().add(Region(sel.b))
+
         self.view.erase_regions('vi_search')
         self.view.run_command('_nv_fix_st_eol_caret', {'mode': mode})
 

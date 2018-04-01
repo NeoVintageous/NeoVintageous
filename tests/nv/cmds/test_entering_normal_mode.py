@@ -66,3 +66,17 @@ class TestViEnterNormalModeMulipleSelectionsFromNormalMode(unittest.ViewTestCase
         self.view.run_command('_enter_normal_mode', {'mode': unittest.NORMAL})
 
         self.assertSelection(8)
+
+
+class TestVisualBlock(unittest.ViewTestCase):
+
+    def test_enter_normal_from_visual_block(self):
+        self.write('1111\n2222\n')
+        self.select([(1, 3), (6, 8)])
+
+        State(self.view).mode = unittest.VISUAL_BLOCK
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL_BLOCK})
+
+        self.assertNormalMode()
+        self.assertSelection(7)
