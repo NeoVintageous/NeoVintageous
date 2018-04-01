@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_READ
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandRead(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_READ, 'read', *args, **kwargs)
-        self.target_command = 'ex_read'
+from .tokens import TokenCommand
 
 
 def scan_cmd_read(state):
+    command = TokenCommand('read')
     params = {
         'cmd': None,
         '++': [],
@@ -70,4 +64,6 @@ def scan_cmd_read(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandRead(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

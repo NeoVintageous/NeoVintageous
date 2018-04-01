@@ -15,20 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_PRINT
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandPrint(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_PRINT, 'print', *args, **kwargs)
-        self.addressable = True
-        self.cooperates_with_global = True
-        self.target_command = 'ex_print'
+from .tokens import TokenCommand
 
 
 def scan_cmd_print(state):
+    command = TokenCommand('print')
+    command.addressable = True
+    command.cooperates_with_global = True
+
     # TODO [review] count param looks unused.
     params = {'count': '', 'flags': []}
 
@@ -39,7 +34,9 @@ def scan_cmd_print(state):
         state.ignore()
 
         if c == state.EOF:
-            return None, [TokenCommandPrint(params), TokenEof()]
+            command.params = params
+
+            return None, [command, TokenEof()]
 
         if c.isdigit():
             state.match(r'\d*')
@@ -52,4 +49,6 @@ def scan_cmd_print(state):
         state.expect_eof()
         break
 
-    return None, [TokenCommandPrint(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

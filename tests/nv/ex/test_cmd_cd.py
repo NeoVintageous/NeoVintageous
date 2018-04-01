@@ -18,36 +18,23 @@
 import unittest
 
 from NeoVintageous.nv.ex.cmd_cd import scan_cmd_cd
-from NeoVintageous.nv.ex.cmd_cd import TokenCommandCd
+from NeoVintageous.nv.ex.cmd_cd import TokenCommand
 from NeoVintageous.nv.ex.cmd_cd import TokenEof
 from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
-def _scan_cmd_cd(source):
-    return scan_cmd_cd(_ScannerState(source))
-
-
 class Test_scan_cmd_cd(unittest.TestCase):
 
-    def assertScanEqual(self, actual, expected):
-        actual = _scan_cmd_cd(actual)
-        expected = (None, [TokenCommandCd(**expected), TokenEof()])
-
-        self.assertEqual(actual[1][0].params, expected[1][0].params)
-        self.assertEqual(actual, expected)
-        # Workaround a potential bug, See TokenOfCommand.__eq__().
-        self.assertEqual(actual[1][0].forced, expected[1][0].forced)
-
     def test_can_scan(self):
-        self.assertScanEqual('', {
-            'params': {'-': None, 'path': None}, 'forced': False})
+        actual = scan_cmd_cd(_ScannerState(''))
+        self.assertEqual(actual, (None, [TokenCommand('cd', params={'-': None, 'path': None}), TokenEof()]))
 
-        self.assertScanEqual(' /tmp/foo/bar', {
-            'params': {'-': None, 'path': '/tmp/foo/bar'}, 'forced': False})
+        actual = scan_cmd_cd(_ScannerState(' /tmp/foo/bar'))
+        self.assertEqual(actual, (None, [TokenCommand('cd', params={'-': None, 'path': '/tmp/foo/bar'}, forced=False), TokenEof()]))  # noqa: E501
 
-        self.assertScanEqual('!', {
-            'params': {'-': None, 'path': None}, 'forced': True})
+        actual = scan_cmd_cd(_ScannerState('!'))
+        self.assertEqual(actual, (None, [TokenCommand('cd', params={'-': None, 'path': None}, forced=True), TokenEof()]))  # noqa: E501
 
     def test_not_implemented(self):
-        with self.assertRaisesRegex(Exception, 'parameter not implemented'):
-            _scan_cmd_cd(' -')
+        with self.assertRaises(Exception):
+            scan_cmd_cd(_ScannerState(' -'))

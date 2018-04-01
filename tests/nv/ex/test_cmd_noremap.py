@@ -15,15 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_GOTO
-from .tokens import TokenOfCommand
+import unittest
+
+from NeoVintageous.nv.ex.cmd_noremap import scan_cmd_noremap
+from NeoVintageous.nv.ex.cmd_noremap import TokenCommand
+from NeoVintageous.nv.ex.cmd_noremap import TokenEof
+from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
-# TODO Make this default command separate to normal ex commands
-# This command cannot be scanned.
-# It's the default command when
-# no command is named.
-class TokenCommandGoto(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__([], TOKEN_COMMAND_GOTO, 'goto', *args, **kwargs)
-        self.target_command = 'ex_goto'
+class Test_scan_cmd_noremap(unittest.TestCase):
+
+    def test_can_scan(self):
+        actual = scan_cmd_noremap(_ScannerState('w 2w'))
+        self.assertEqual(actual, (None, [TokenCommand('noremap', params={'keys': 'w', 'command': '2w'}), TokenEof()]))

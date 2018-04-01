@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_GLOBAL
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandGlobal(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_GLOBAL, 'global', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_global'
+from .tokens import TokenCommand
 
 
 def scan_cmd_global(state):
+    command = TokenCommand('global')
+    command.addressable = True
     params = {'pattern': None, 'cmd': None}
 
     c = state.consume()
@@ -36,6 +30,7 @@ def scan_cmd_global(state):
     sep = c if not bang else c.consume()
 
     # TODO: we're probably missing legal separators.
+    # TODO [refactor] and remove assertion
     assert c in '!:?/\\&$', 'bad separator'
 
     state.ignore()
@@ -55,8 +50,11 @@ def scan_cmd_global(state):
             state.ignore()
             break
 
-    command = state.match(r'.*$').group(0).strip()
-    if command:
-        params['cmd'] = command
+    cmd = state.match(r'.*$').group(0).strip()
+    if cmd:
+        params['cmd'] = cmd
 
-    return None, [TokenCommandGlobal(params, forced=bang), TokenEof()]
+    command.params = params
+    command.forced = bang
+
+    return None, [command, TokenEof()]

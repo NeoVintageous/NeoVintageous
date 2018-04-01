@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_UNVSPLIT
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandUnvsplit(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_UNVSPLIT, 'unvsplit', *args, **kwargs)
-        self.target_command = 'ex_unvsplit'
+from .tokens import TokenCommand
 
 
 def scan_cmd_unvsplit(state):
+    command = TokenCommand('unvsplit')
     state.expect_eof()
 
-    return None, [TokenCommandUnvsplit(), TokenEof()]
+    return None, [command, TokenEof()]

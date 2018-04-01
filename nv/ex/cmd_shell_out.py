@@ -15,22 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_SHELL_OUT
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandShellOut(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_SHELL_OUT, '!', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_shell_out'
+from .tokens import TokenCommand
 
 
 def scan_cmd_shell_out(state):
+    command = TokenCommand('!', target='ex_shell_out')
+    command.addressable = True
     params = {'cmd': None}
 
     m = state.expect_match(r'(?P<cmd>.+)$')
     params.update(m.groupdict())
 
-    return None, [TokenCommandShellOut(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

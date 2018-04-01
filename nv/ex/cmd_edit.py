@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_EDIT
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandEdit(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_EDIT, 'edit', *args, **kwargs)
-        self.target_command = 'ex_edit'
+from .tokens import TokenCommand
 
 
 def scan_cmd_edit(state):
-    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
+    command = TokenCommand('edit')
+    # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     params = {
         '++': None,
         'cmd': None,
@@ -37,7 +31,9 @@ def scan_cmd_edit(state):
 
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandEdit(params), TokenEof()]
+        command.params = params
+
+        return None, [command, TokenEof()]
 
     bang = c == '!'
     if not bang:
@@ -54,7 +50,10 @@ def scan_cmd_edit(state):
         c = state.consume()
 
         if c == state.EOF:
-            return None, [TokenCommandEdit(params, forced=bang), TokenEof()]
+            command.params = params
+            command.forced = bang
+
+            return None, [command, TokenEof()]
 
         if c == '+':
             k = state.consume()
@@ -99,4 +98,7 @@ def scan_cmd_edit(state):
             raise NotImplementedError('param not implemented')
             continue
 
-    return None, [TokenCommandEdit(params, forced=bang), TokenEof()]
+    command.params = params
+    command.forced = bang
+
+    return None, [command, TokenEof()]

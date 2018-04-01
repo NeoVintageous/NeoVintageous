@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_WALL
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandWallCommand(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_WALL, 'wall', *args, **kwargs)
-        self.target_command = 'ex_wall'
+from .tokens import TokenCommand
 
 
 def scan_cmd_wall(state):
+    command = TokenCommand('wall')
     bang = state.consume() == '!'
 
     # TODO [bug] ":command" followed by character that is not "!"  shouldn't be
@@ -35,4 +29,6 @@ def scan_cmd_wall(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandWallCommand(forced=bang), TokenEof()]
+    command.forced = bang
+
+    return None, [command, TokenEof()]

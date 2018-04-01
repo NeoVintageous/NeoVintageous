@@ -15,22 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_BUFFERS
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
+from .tokens import TokenCommand
 
 
-class TokenCommandBuffers(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_BUFFERS, 'buffers', *args, **kwargs)
-        self.target_command = 'ex_prompt_select_open_file'
-
-
+# TODO [refactor] Rename target from ex_prompt_select_open_file to buffers
 def scan_cmd_buffers(state):
+    command = TokenCommand('buffers', target='ex_prompt_select_open_file')
+
     try:
         state.expect_eof()
     except ValueError:
         # TODO Use a special domain exception for exceptions raised in scans.
         raise Exception("E488: Trailing characters")
 
-    return None, [TokenCommandBuffers(), TokenEof()]
+    return None, [command, TokenEof()]

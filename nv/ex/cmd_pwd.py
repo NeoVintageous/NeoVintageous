@@ -15,18 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_PWD
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandPwd(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_PWD, 'pwd', *args, **kwargs)
-        self.target_command = 'ex_pwd'
+from .tokens import TokenCommand
 
 
 def scan_cmd_pwd(state):
+    command = TokenCommand('pwd')
+
     state.expect_eof()
 
-    return None, [TokenCommandPwd(), TokenEof()]
+    return None, [command, TokenEof()]

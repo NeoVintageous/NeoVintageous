@@ -15,21 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_CDD
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandCdd(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_CDD, 'cdd', *args, **kwargs)
-        self.target_command = 'ex_cdd'
+from .tokens import TokenCommand
 
 
 def scan_cmd_cdd(state):
+    command = TokenCommand('cdd')
+
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandCdd(), TokenEof()]
+        return None, [command, TokenEof()]
 
     bang = c == '!'
     if not bang:
@@ -37,4 +32,6 @@ def scan_cmd_cdd(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandCdd(forced=bang), TokenEof()]
+    command.forced = bang
+
+    return None, [command, TokenEof()]

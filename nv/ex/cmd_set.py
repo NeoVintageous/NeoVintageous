@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_SET
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandSet(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_SET, 'set', *args, **kwargs)
-        self.target_command = 'ex_set'
+from .tokens import TokenCommand
 
 
 def scan_cmd_set(state):
+    command = TokenCommand('set')
     params = {'option': None, 'value': None}
 
     state.skip(' ')
@@ -35,4 +29,6 @@ def scan_cmd_set(state):
     m = state.expect_match(r'(?P<option>.+?)(?:[:=](?P<value>.+?))?$')
     params.update(m.groupdict())
 
-    return None, [TokenCommandSet(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

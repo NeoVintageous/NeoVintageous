@@ -15,18 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_CQUIT
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandCquit(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_CQUIT, 'cquit', *args, **kwargs)
-        self.target_command = 'ex_cquit'
+from .tokens import TokenCommand
 
 
 def scan_cmd_cquit(state):
+    command = TokenCommand('cquit')
+
     state.expect_eof()
 
-    return None, [TokenCommandCquit(), TokenEof()]
+    return None, [command, TokenEof()]

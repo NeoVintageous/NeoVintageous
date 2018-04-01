@@ -18,95 +18,84 @@
 import unittest
 
 from NeoVintageous.nv.ex.cmd_substitute import scan_cmd_substitute
-from NeoVintageous.nv.ex.cmd_substitute import TokenCommandSubstitute
+from NeoVintageous.nv.ex.cmd_substitute import TokenCommand
 from NeoVintageous.nv.ex.cmd_substitute import TokenEof
 from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
-def _scan_cmd_substitute(source):
-    return scan_cmd_substitute(_ScannerState(source))
-
-
 class Test_scan_cmd_substitute(unittest.TestCase):
 
-    def assertScanEqual(self, actual, expected):
-        actual = _scan_cmd_substitute(actual)
-        expected = None, [TokenCommandSubstitute(**expected), TokenEof()]
-
-        self.assertEqual(actual, expected)
-        # Workaround a potential bug, See TokenOfCommand.__eq__().
-        self.assertEqual(actual[1][0].forced, expected[1][0].forced)
-
     def test_none(self):
-        self.assertScanEqual('', {'params': {}})
+        actual = scan_cmd_substitute(_ScannerState(''))
+        self.assertEqual(actual, (None, [TokenCommand('substitute', addressable=True), TokenEof()]))
 
     def test_raises_exception(self):
         with self.assertRaisesRegex(ValueError, 'bad command'):
-            _scan_cmd_substitute('/')
+            scan_cmd_substitute(_ScannerState('/'))
 
         with self.assertRaisesRegex(ValueError, 'bad command'):
-            _scan_cmd_substitute('/abc')
+            scan_cmd_substitute(_ScannerState('/abc'))
 
     def test_scan_cmd_substitute(self):
-        self.assertScanEqual(
-            '/abc/def/',
-            {'params': {
+        self.assertEqual(
+            scan_cmd_substitute(_ScannerState('/abc/def/')),
+            (None, [TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': [],
-            }}
+            }), TokenEof()])
         )
 
     def test_empty(self):
-        self.assertScanEqual(
-            '///',
-            {'params': {
+        self.assertEqual(
+            scan_cmd_substitute(_ScannerState('///')),
+            (None, [TokenCommand('substitute', addressable=True, params={
                 'pattern': '',
                 'replacement': '',
                 'count': 1,
                 'flags': [],
-            }}
+            }), TokenEof()])
         )
 
     def test_flags(self):
-        self.assertScanEqual(
-            '/abc/def/g',
-            {'params': {
+        self.assertEqual(
+            scan_cmd_substitute(_ScannerState('/abc/def/g')),
+            (None, [TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['g']
-            }}
+            }), TokenEof()])
         )
 
-        self.assertScanEqual(
-            '/abc/def/i',
-            {'params': {
+        self.assertEqual(
+            scan_cmd_substitute(_ScannerState('/abc/def/i')),
+            (None, [TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['i']
-            }}
+            }), TokenEof()])
         )
 
-        self.assertScanEqual(
-            '/abc/def/gi',
-            {'params': {
+        self.assertEqual(
+            scan_cmd_substitute(_ScannerState('/abc/def/gi')),
+            (None, [TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['g', 'i']
-            }}
+            }), TokenEof()])
         )
 
     def test_closing_delimiter_is_not_required(self):
-        self.assertScanEqual(
-            '/abc/def',
-            {'params': {
+        self.assertEqual(
+            scan_cmd_substitute(_ScannerState('/abc/def')),
+            (None, [TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': []
-            }}
+            }), TokenEof()])
         )

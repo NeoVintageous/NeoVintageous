@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_SETLOCAL
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandSetlocal(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_SETLOCAL, 'setlocal', *args, **kwargs)
-        self.target_command = 'ex_setlocal'
+from .tokens import TokenCommand
 
 
 def scan_cmd_setlocal(state):
+    command = TokenCommand('setlocal')
     params = {'option': None, 'value': None}
 
     state.skip(' ')
@@ -35,4 +29,6 @@ def scan_cmd_setlocal(state):
     m = state.expect_match(r'(?P<option>.+?)(?:[:=](?P<value>.+?))?$')
     params.update(m.groupdict())
 
-    return None, [TokenCommandSetlocal(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

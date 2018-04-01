@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_ABBREVIATE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandAbbreviate(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_ABBREVIATE, 'abbreviate', *args, **kwargs)
-        self.target_command = 'ex_abbreviate'
+from .tokens import TokenCommand
 
 
 # TODO Fix borken :abbreviate scanner
 def scan_cmd_abbreviate(state):
+    command = TokenCommand('abbreviate')
     params = {'short': None, 'full': None}
 
     state.expect(' ')
@@ -35,11 +29,13 @@ def scan_cmd_abbreviate(state):
     state.ignore()
 
     if state.consume() == state.EOF:
-        return None, [TokenCommandAbbreviate({}), TokenEof()]
+        return None, [command, TokenEof()]
 
     state.backup()
 
     m = state.match(r'(?P<short>.+?)(?: +(?P<full>.+))?$')
     params.update(m.groupdict())
 
-    return None, [TokenCommandAbbreviate(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_WRITE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandWrite(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_WRITE, 'write', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_write'
+from .tokens import TokenCommand
 
 
 def scan_cmd_write(state):
+    command = TokenCommand('write')
+    command.addressable = True
     # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
     params = {
         '++': '',
@@ -38,7 +32,9 @@ def scan_cmd_write(state):
 
     bang = state.consume()
     if bang == state.EOF:
-        return None, [TokenCommandWrite(params), TokenEof()]
+        command.params = params
+
+        return None, [command, TokenEof()]
 
     if bang != '!':
         bang = False
@@ -58,7 +54,10 @@ def scan_cmd_write(state):
         c = state.consume()
         if c == state.EOF:
             # TODO: forced?
-            return None, [TokenCommandWrite(params, forced=bang), TokenEof()]
+            command.params = params
+            command.forced = bang
+
+            return None, [command, TokenEof()]
 
         if c == '+':
             state.expect('+')
@@ -96,4 +95,7 @@ def scan_cmd_write(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandWrite(params, forced=bang == '!'), TokenEof()]
+    command.params = params
+    command.forced = bang
+
+    return None, [command, TokenEof()]

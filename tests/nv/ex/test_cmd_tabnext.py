@@ -18,26 +18,19 @@
 import unittest
 
 from NeoVintageous.nv.ex.cmd_tabnext import scan_cmd_tabnext
-from NeoVintageous.nv.ex.cmd_tabnext import TokenCommandTabNext
+from NeoVintageous.nv.ex.cmd_tabnext import TokenCommand
 from NeoVintageous.nv.ex.cmd_tabnext import TokenEof
 from NeoVintageous.nv.ex.scanner import _ScannerState
 
 
-def _scan_cmd_tabnext(source):
-    return scan_cmd_tabnext(_ScannerState(source))
-
-
 class Test_scan_cmd_tab_next(unittest.TestCase):
 
-    def assertScanEqual(self, actual, expected):
-        actual = _scan_cmd_tabnext(actual)
-        expected = (None, [TokenCommandTabNext(**expected), TokenEof()])
-
-        self.assertEqual(actual, expected)
-        # Workaround a potential bug, See TokenOfCommand.__eq__().
-        self.assertEqual(actual[1][0].forced, expected[1][0].forced)
-
     def test_can_scan(self):
-        self.assertScanEqual('', {})
-        self.assertScanEqual('', {'forced': False})
-        self.assertScanEqual('!', {'forced': True})
+        actual = scan_cmd_tabnext(_ScannerState(''))
+        self.assertEqual(actual, (None, [TokenCommand('tabnext'), TokenEof()]))
+
+        actual = scan_cmd_tabnext(_ScannerState('!'))
+        self.assertEqual(actual, (None, [TokenCommand('tabnext', forced=True), TokenEof()]))
+
+        actual = scan_cmd_tabnext(_ScannerState(''))
+        self.assertEqual(actual, (None, [TokenCommand('tabnext', forced=False), TokenEof()]))

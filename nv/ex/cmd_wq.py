@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_WQ
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandWq(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_WQ, 'wq', *args, **kwargs)
-        self.target_command = 'ex_wq'
+from .tokens import TokenCommand
 
 
 def scan_cmd_wq(state):
+    command = TokenCommand('wq')
     # TODO [review] None of the prams looks used
     params = {
         '++': None,
@@ -35,7 +29,9 @@ def scan_cmd_wq(state):
 
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandWq(params), TokenEof()]
+        command.params = params
+
+        return None, [command, TokenEof()]
 
     bang = True if c == '!' else False
     if not bang:
@@ -67,9 +63,15 @@ def scan_cmd_wq(state):
         raise NotImplementedError('param not implemented')
 
     if c == state.EOF:
-        return None, [TokenCommandWq(params, forced=bang), TokenEof()]
+        command.params = params
+        command.forced = bang
+
+        return None, [command, TokenEof()]
 
     m = state.expect_match(r'.+$')
     params['file'] = m.group(0).strip()
 
-    return None, [TokenCommandWq(params, forced=bang), TokenEof()]
+    command.params = params
+    command.forced = bang
+
+    return None, [command, TokenEof()]

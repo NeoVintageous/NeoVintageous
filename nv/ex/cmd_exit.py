@@ -15,26 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_EXIT
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandExit(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_EXIT, 'exit', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_exit'
+from .tokens import TokenCommand
 
 
 def scan_cmd_exit(state):
+    command = TokenCommand('exit')
+    command.addressable = True
+
     # TODO [review] file_name param looks unused by the ex_exit
     params = {'file_name': ''}
 
     bang = state.consume()
 
     if bang == state.EOF:
-        return None, [TokenCommandExit(params), TokenEof()]
+        command.params = params
+
+        return None, [command, TokenEof()]
 
     bang = bang == '!'
     if not bang:
@@ -54,7 +51,10 @@ def scan_cmd_exit(state):
         c = state.consume()
 
         if c == state.EOF:
-            return None, [TokenCommandExit(params, forced=bang), TokenEof()]
+            command.params = params
+            command.forced = bang
+
+            return None, [command, TokenEof()]
 
         if c == '+':
             state.expect('+')
@@ -80,4 +80,7 @@ def scan_cmd_exit(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandExit(params, forced=bang == '!'), TokenEof()]
+    command.params = params
+    command.forced = bang
+
+    return None, [command, TokenEof()]

@@ -15,19 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_DOUBLE_AMPERSAND
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandDoubleAmpersand(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_DOUBLE_AMPERSAND, '&&', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_double_ampersand'
+from .tokens import TokenCommand
 
 
 def scan_cmd_double_ampersand(state):
+    command = TokenCommand('&&', target='ex_double_ampersand')
+    command.addressable = True
+
     params = {'flags': [], 'count': ''}
 
     m = state.match(r'\s*([cgr])*\s*(\d*)\s*$')
@@ -37,4 +32,6 @@ def scan_cmd_double_ampersand(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandDoubleAmpersand(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

@@ -15,21 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_TABFIRST
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandTabFirst(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__([], TOKEN_COMMAND_TABFIRST, 'tabfirst', *args, **kwargs)
-        self.target_command = 'ex_tabfirst'
+from .tokens import TokenCommand
 
 
 def scan_cmd_tabfirst(state):
+    command = TokenCommand('tabfirst')
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandTabFirst(), TokenEof()]
+        return None, [command, TokenEof()]
 
     # TODO [bug] ":command" followed by character that is not "!"  shouldn't be
     # valid e.g. the ":close" command should run when !:closex". There are a
@@ -37,4 +31,6 @@ def scan_cmd_tabfirst(state):
 
     bang = c == '!'
 
-    return None, [TokenCommandTabFirst(forced=bang), TokenEof()]
+    command.forced = bang
+
+    return None, [command, TokenEof()]

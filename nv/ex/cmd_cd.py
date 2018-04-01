@@ -15,25 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_CD
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandCd(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_CD, 'cd', *args, **kwargs)
-        self.target_command = 'ex_cd'
+from .tokens import TokenCommand
 
 
 def scan_cmd_cd(state):
-    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
+    command = TokenCommand('cd')
+
+    # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     params = {'path': None, '-': None}
     bang = False
 
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandCd(params, forced=bang), TokenEof()]
+        command.params = params
+        command.forced = bang
+
+        return None, [command, TokenEof()]
 
     bang = c == '!'
     if not bang:
@@ -44,7 +42,10 @@ def scan_cmd_cd(state):
 
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandCd(params, forced=bang), TokenEof()]
+        command.params = params
+        command.forced = bang
+
+        return None, [command, TokenEof()]
 
     if c == '-':
         raise NotImplementedError('parameter not implemented')
@@ -53,4 +54,7 @@ def scan_cmd_cd(state):
     m = state.match(r'(?P<path>.+?)\s*$')
     params.update(m.groupdict())
 
-    return None, [TokenCommandCd(params, forced=bang), TokenEof()]
+    command.params = params
+    command.forced = bang
+
+    return None, [command, TokenEof()]

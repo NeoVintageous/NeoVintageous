@@ -15,19 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_DELETE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandDelete(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_DELETE, 'delete', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_delete'
+from .tokens import TokenCommand
 
 
 def scan_cmd_delete(state):
+    command = TokenCommand('delete')
+    command.addressable = True
+
     params = {'register': '"', 'count': None}
 
     state.skip(' ')
@@ -35,7 +30,9 @@ def scan_cmd_delete(state):
 
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandDelete(params), TokenEof()]
+        command.params = params
+
+        return None, [command, TokenEof()]
 
     state.backup()
     state.skip(' ')
@@ -47,4 +44,6 @@ def scan_cmd_delete(state):
     if params['count']:
         raise NotImplementedError('parameter not implemented')
 
-    return None, [TokenCommandDelete(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

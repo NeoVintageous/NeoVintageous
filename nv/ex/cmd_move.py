@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_MOVE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandMove(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_MOVE, 'move', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_move'
+from .tokens import TokenCommand
 
 
 def scan_cmd_move(state):
+    command = TokenCommand('move')
+    command.addressable = True
     params = {'address': None}
 
     state.skip(' ')
@@ -38,4 +32,6 @@ def scan_cmd_move(state):
         address_command_line = m.group(0).strip() or '.'
         params['address'] = address_command_line
 
-    return None, [TokenCommandMove(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

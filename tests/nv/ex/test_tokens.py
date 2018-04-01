@@ -18,6 +18,7 @@
 import unittest
 
 from NeoVintageous.nv.ex.tokens import Token
+from NeoVintageous.nv.ex.tokens import TokenCommand
 from NeoVintageous.nv.ex.tokens import TokenOfCommand
 from NeoVintageous.nv.ex.tokens import TokenOfRange
 
@@ -43,7 +44,6 @@ class TestToken(unittest.TestCase):
         token_a = Token(42, 'a')
 
         self.assertTrue(token_a == Token(42, 'a'), 'protected against false-positive')
-
         self.assertFalse(token_a == Token(None, None))
         self.assertFalse(token_a == Token(None, 'a'))
         self.assertFalse(token_a == Token(42, None))
@@ -60,6 +60,109 @@ class TestToken(unittest.TestCase):
 
         self.assertFalse(token_a == UnknownTokenType(42, 'a'))
         self.assertFalse(token_a.__eq__(UnknownTokenType(42, 'a')))
+
+
+class TestCommandToken(unittest.TestCase):
+
+    def test_requires_name(self):
+        with self.assertRaisesRegex(TypeError, 'name'):
+            TokenCommand()
+
+    def test_can_create_with_name(self):
+        command = TokenCommand('only')
+        self.assertEqual(command.name, 'only')
+
+        command = TokenCommand(name='only')
+        self.assertEqual(command.name, 'only')
+
+    def test_is_instance_of_token(self):
+        self.assertIsInstance(TokenCommand('only'), Token)
+
+    def test_create_with_name_sets_target(self):
+        command = TokenCommand('only')
+        self.assertEqual(command.name, 'only')
+        self.assertEqual(command.target, 'ex_only')
+
+    def test_create_with_name_sets_content(self):
+        command = TokenCommand('only')
+        self.assertEqual(command.name, 'only')
+        self.assertEqual(command.content, 'only')
+
+    def test_can_set_target(self):
+        command = TokenCommand('a', target='b')
+        self.assertEqual(command.name, 'a')
+        self.assertEqual(command.target, 'b')
+
+    def test_default_attributes(self):
+        command = TokenCommand('only')
+        self.assertEqual(command.name, 'only')
+        self.assertEqual(command.target, 'ex_only')
+        self.assertEqual(command.params, {})
+        self.assertEqual(command.forced, False)
+        self.assertEqual(command.addressable, False)
+        self.assertEqual(command.cooperates_with_global, False)
+
+    def test_can_set_forced(self):
+        self.assertTrue(TokenCommand('x', forced=True).forced)
+        self.assertFalse(TokenCommand('x', forced=False).forced)
+
+        command = TokenCommand('x', forced=False)
+        command.forced = True
+        self.assertTrue(command.forced)
+        command.forced = False
+        self.assertFalse(command.forced)
+
+    def test_can_set_addressable(self):
+        self.assertTrue(TokenCommand('x', addressable=True).addressable)
+        self.assertFalse(TokenCommand('x', addressable=False).addressable)
+
+        command = TokenCommand('x', addressable=False)
+        command.addressable = True
+        self.assertTrue(command.addressable)
+        command.addressable = False
+        self.assertFalse(command.addressable)
+
+    def test_can_set_cooperates_with_global(self):
+        self.assertTrue(TokenCommand('x', cooperates_with_global=True).cooperates_with_global)
+        self.assertFalse(TokenCommand('x', cooperates_with_global=False).cooperates_with_global)
+
+        command = TokenCommand('x', cooperates_with_global=False)
+        command.cooperates_with_global = True
+        self.assertTrue(command.cooperates_with_global)
+        command.cooperates_with_global = False
+        self.assertFalse(command.cooperates_with_global)
+
+    def test_compare(self):
+        command_a1 = TokenCommand('a')
+        command_a2 = TokenCommand('a')
+
+        self.assertTrue(command_a1 == command_a2)
+        self.assertTrue(command_a2 == command_a1)
+        self.assertTrue(command_a1.__eq__(command_a2))
+        self.assertTrue(command_a2.__eq__(command_a1))
+
+        command_a = TokenCommand('a')
+        command_b = TokenCommand('b')
+
+        self.assertFalse(command_a == command_b)
+        self.assertFalse(command_b == command_a)
+        self.assertFalse(command_a.__eq__(command_b))
+        self.assertFalse(command_b.__eq__(command_a))
+
+        command_a = TokenCommand('a', target='x')
+        command_b = TokenCommand('a', target='y')
+
+        self.assertFalse(command_a == command_b)
+
+        command_a1 = TokenCommand('a', forced=False, addressable=True)
+        command_a2 = TokenCommand('a', forced=False, addressable=True)
+
+        self.assertTrue(command_a1 == command_a2)
+
+        command_a1 = TokenCommand('a', forced=True, addressable=True)
+        command_a2 = TokenCommand('a', forced=False, addressable=True)
+
+        self.assertFalse(command_a1 == command_a2)
 
 
 class TestTokenOfCommand(unittest.TestCase):

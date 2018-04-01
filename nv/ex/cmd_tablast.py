@@ -15,22 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_TABLAST
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandTabLast(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__([], TOKEN_COMMAND_TABLAST, 'tablast', *args, **kwargs)
-        self.target_command = 'ex_tablast'
+from .tokens import TokenCommand
 
 
 def scan_cmd_tablast(state):
+    command = TokenCommand('tablast')
     c = state.consume()
     if c == state.EOF:
-        return None, [TokenCommandTabLast(), TokenEof()]
+        return None, [command, TokenEof()]
 
     bang = c == '!'
 
-    return None, [TokenCommandTabLast(forced=bang), TokenEof()]
+    command.forced = bang
+
+    return None, [command, TokenEof()]

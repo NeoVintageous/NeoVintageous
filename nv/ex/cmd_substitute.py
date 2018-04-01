@@ -15,23 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_SUBSTITUTE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandSubstitute(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_SUBSTITUTE, 'substitute', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_substitute'
+from .tokens import TokenCommand
 
 
 def scan_cmd_substitute(state):
+    command = TokenCommand('substitute')
+    command.addressable = True
+
     delim = state.consume()
 
     if delim == state.EOF:
-        return None, [TokenCommandSubstitute(None), TokenEof()]
+        return None, [command, TokenEof()]
 
     state.backup()
     delim = state.consume()
@@ -87,4 +82,6 @@ def scan_cmd_substitute(state):
     state.ignore()
     state.expect_eof()
 
-    return None, [TokenCommandSubstitute(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

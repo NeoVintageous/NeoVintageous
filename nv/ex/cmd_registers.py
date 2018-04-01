@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_REGISTERS
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandRegisters(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_REGISTERS, 'registers', *args, **kwargs)
-        self.target_command = 'ex_registers'
+from .tokens import TokenCommand
 
 
 def scan_cmd_registers(state):
+    command = TokenCommand('registers')
     # TODO [review] "names" param looks unused by ex_registers
     params = {'names': []}
 
@@ -36,7 +30,9 @@ def scan_cmd_registers(state):
     while True:
         c = state.consume()
         if c == state.EOF:
-            return None, [TokenCommandRegisters(params), TokenEof()]
+            command.params = params
+
+            return None, [command, TokenEof()]
         elif c.isalpha() or c.isdigit():
             params['names'].append(c)
         else:

@@ -15,21 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_UNABBREVIATE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandUnabbreviate(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_UNABBREVIATE, 'unabbreviate', *args, **kwargs)
-        self.target_command = 'ex_unabbreviate'
+from .tokens import TokenCommand
 
 
 def scan_cmd_unabbreviate(state):
+    command = TokenCommand('unabbreviate')
     params = {'lhs': None}
 
     m = state.expect_match(r'\s+(?P<lhs>.+?)\s*$')
     params.update(m.groupdict())
 
-    return None, [TokenCommandUnabbreviate(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

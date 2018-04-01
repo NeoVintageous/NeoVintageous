@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_CLOSE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandClose(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_CLOSE, 'close', *args, **kwargs)
-        self.target_command = 'ex_close'
+from .tokens import TokenCommand
 
 
 def scan_cmd_close(state):
+    command = TokenCommand('close')
     bang = state.consume() == '!'
 
     # TODO [bug] ":command" followed by character that is not "!"  shouldn't be
@@ -35,4 +29,6 @@ def scan_cmd_close(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandClose(forced=bang), TokenEof()]
+    command.forced = bang
+
+    return None, [command, TokenEof()]

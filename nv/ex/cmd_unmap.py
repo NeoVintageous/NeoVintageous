@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_UNMAP
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandUnmap(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_UNMAP, 'unmap', *args, **kwargs)
-        self.target_command = 'ex_unmap'
+from .tokens import TokenCommand
 
 
 # TODO [refactor] All the map related scan functions can probably be consolidated into one scanner. They either parse one key (unmap commands), or command and key.  # noqa: E501
 def scan_cmd_unmap(state):
+    command = TokenCommand('unmap')
     params = {'keys': None}
 
     # TODO [refactor] Some commands require certain arguments e.g "keys" is a
@@ -42,4 +36,6 @@ def scan_cmd_unmap(state):
     if m:
         params.update(m.groupdict())
 
-    return None, [TokenCommandUnmap(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

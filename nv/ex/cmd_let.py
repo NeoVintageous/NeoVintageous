@@ -15,18 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_LET
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandLet(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_LET, 'let', *args, **kwargs)
-        self.target_command = 'ex_let'
+from .tokens import TokenCommand
 
 
 def scan_cmd_let(state):
+    command = TokenCommand('let')
     params = {'name': None, 'value': None}
 
     m = state.expect_match(
@@ -35,4 +29,6 @@ def scan_cmd_let(state):
 
     params.update(m.groupdict())
 
-    return None, [TokenCommandLet(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

@@ -34,66 +34,6 @@ _TOKEN_DIGITS = 9
 _TOKEN_MARK = 10
 
 
-TOKEN_COMMAND_ABBREVIATE = 7
-TOKEN_COMMAND_BROWSE = 38
-TOKEN_COMMAND_BUFFERS = 6
-TOKEN_COMMAND_CD = 50
-TOKEN_COMMAND_CDD = 51
-TOKEN_COMMAND_CLOSE = 57
-TOKEN_COMMAND_COPY = 28
-TOKEN_COMMAND_CQUIT = 40
-TOKEN_COMMAND_DELETE = 32
-TOKEN_COMMAND_DOUBLE_AMPERSAND = 30
-TOKEN_COMMAND_EDIT = 39
-TOKEN_COMMAND_EXIT = 41
-TOKEN_COMMAND_FILE = 26
-TOKEN_COMMAND_GLOBAL = 33
-TOKEN_COMMAND_GOTO = 5
-TOKEN_COMMAND_HELP = 59
-TOKEN_COMMAND_LET = 55
-TOKEN_COMMAND_MOVE = 27
-TOKEN_COMMAND_NEW = 42
-TOKEN_COMMAND_NEW_FILE = 25
-TOKEN_COMMAND_NNOREMAP = 14
-TOKEN_COMMAND_NOREMAP = 12
-TOKEN_COMMAND_NUNMAP = 15
-TOKEN_COMMAND_ONLY = 2
-TOKEN_COMMAND_ONOREMAP = 16
-TOKEN_COMMAND_OUNMAP = 17
-TOKEN_COMMAND_PRINT = 34
-TOKEN_COMMAND_PWD = 21
-TOKEN_COMMAND_QALL = 36
-TOKEN_COMMAND_QUIT = 35
-TOKEN_COMMAND_READ = 11
-TOKEN_COMMAND_REGISTERS = 3
-TOKEN_COMMAND_REPLACE_FILE = 23
-TOKEN_COMMAND_SET = 54
-TOKEN_COMMAND_SETLOCAL = 53
-TOKEN_COMMAND_SHELL = 10
-TOKEN_COMMAND_SHELL_OUT = 9
-TOKEN_COMMAND_SNOREMAP = 58
-TOKEN_COMMAND_SPLIT = 60
-TOKEN_COMMAND_SUBSTITUTE = 1
-TOKEN_COMMAND_TABFIRST = 48
-TOKEN_COMMAND_TABLAST = 47
-TOKEN_COMMAND_TABNEXT = 45
-TOKEN_COMMAND_TABONLY = 49
-TOKEN_COMMAND_TABPREVIOUS = 46
-TOKEN_COMMAND_UNABBREVIATE = 20
-TOKEN_COMMAND_UNKNOWN = 0
-TOKEN_COMMAND_UNMAP = 13
-TOKEN_COMMAND_UNVSPLIT = 52
-TOKEN_COMMAND_VNOREMAP = 18
-TOKEN_COMMAND_VSPLIT = 8
-TOKEN_COMMAND_VUNMAP = 19
-TOKEN_COMMAND_WQ = 37
-TOKEN_COMMAND_WRITE = 4
-TOKEN_COMMAND_WALL = 24
-TOKEN_COMMAND_WQALL = 56
-TOKEN_COMMAND_WRITE_FILE = 22
-TOKEN_COMMAND_YANK = 43
-
-
 # TODO [refactor] Look into getting rid of token_types and content, I don't
 #   think they are used for anything. They can probably be inferred by the
 #   extending class name.
@@ -163,6 +103,23 @@ class TokenOfCommand(Token):
 
     def __str__(self):
         return '{} {}'.format(self.content, self.__dict__)
+
+
+class TokenCommand(TokenOfCommand):
+    def __init__(self, name, target=None, params=None, forced=False, addressable=False, cooperates_with_global=False):
+        super().__init__(token_type=100, content=name, forced=forced, params=params)
+
+        if target is None:
+            target = 'ex_' + name
+
+        self.name = name
+        self.target = target
+
+        # FIXME TMP BC
+        self.target_command = target
+
+        self.addressable = addressable
+        self.cooperates_with_global = cooperates_with_global
 
 
 class TokenOfRange(Token):

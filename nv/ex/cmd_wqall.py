@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_WQALL
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandWqall(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_WQALL, 'wqall', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_wqall'
+from .tokens import TokenCommand
 
 
 def scan_cmd_wqall(state):
+    command = TokenCommand('wqall')
+    command.addressable = True
     params = {'++': ''}
 
     state.skip(' ')
@@ -57,4 +51,6 @@ def scan_cmd_wqall(state):
 
     state.expect_eof()
 
-    return None, [TokenCommandWqall(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

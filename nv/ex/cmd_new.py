@@ -15,19 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_NEW
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandNew(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_NEW, 'new', *args, **kwargs)
-        self.target_command = 'ex_new'
+from .tokens import TokenCommand
 
 
 def scan_cmd_new(state):
-    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
+    command = TokenCommand('new')
+    # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     params = {'++': None, 'cmd': None}
 
     state.skip(' ')
@@ -63,4 +57,6 @@ def scan_cmd_new(state):
         params['cmd'] = m.group(0).strip()
         raise NotImplementedError(':new not fully implemented')
 
-    return None, [TokenCommandNew(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

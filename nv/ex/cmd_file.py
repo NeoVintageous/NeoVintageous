@@ -15,21 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_FILE
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandFile(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_FILE, 'file', *args, **kwargs)
-        self.target_command = 'ex_file'
+from .tokens import TokenCommand
 
 
 def scan_cmd_file(state):
+    command = TokenCommand('file')
     bang = state.consume()
     if bang == state.EOF:
-        return None, [TokenCommandFile(), TokenEof()]
+        return None, [command, TokenEof()]
 
     bang = bang == '!'
     if not bang:
@@ -37,4 +31,6 @@ def scan_cmd_file(state):
 
     state.expect_eof(on_error=lambda: Exception("E488: Trailing characters"))
 
-    return None, [TokenCommandFile(forced=bang == '!'), TokenEof()]
+    command.forced = bang
+
+    return None, [command, TokenEof()]

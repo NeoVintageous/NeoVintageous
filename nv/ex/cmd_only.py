@@ -15,25 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_ONLY
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandOnly(TokenOfCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__({}, TOKEN_COMMAND_ONLY, 'only', *args, **kwargs)
-        self.target_command = 'ex_only'
+from .tokens import TokenCommand
 
 
 def scan_cmd_only(state):
+    command = TokenCommand('only')
+
     bang = state.consume()
     if bang == '!':
         state.ignore()
         state.expect_eof()
 
-        return None, [TokenCommandOnly(forced=True), TokenEof()]
+        command.forced = True
 
+        return None, [command, TokenEof()]
+
+    # TODO [refactor] and remove assertion
     assert bang == state.EOF, 'trailing characters'
 
-    return None, [TokenCommandOnly(), TokenEof()]
+    return None, [command, TokenEof()]

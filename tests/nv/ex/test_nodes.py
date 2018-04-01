@@ -17,7 +17,6 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.ex.cmd_substitute import TokenCommandSubstitute
 from NeoVintageous.nv.ex.nodes import _resolve_line_number
 from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
@@ -29,6 +28,7 @@ from NeoVintageous.nv.ex.nodes import TokenOffset
 from NeoVintageous.nv.ex.nodes import TokenPercent
 from NeoVintageous.nv.ex.nodes import TokenSearchBackward
 from NeoVintageous.nv.ex.nodes import TokenSearchForward
+from NeoVintageous.nv.ex.tokens import TokenCommand
 
 
 class TestRangeNode(unittest.TestCase):
@@ -392,7 +392,7 @@ class TestCommandLineNode(unittest.TestCase):
 
     def test_can_instantiate(self):
         range_node = RangeNode("foo", "bar", False)
-        command = TokenCommandSubstitute({})
+        command = TokenCommand('substitute')
         command_line_node = CommandLineNode(range_node, command)
 
         self.assertEqual(range_node, command_line_node.line_range)

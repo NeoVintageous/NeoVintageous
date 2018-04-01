@@ -15,28 +15,26 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_VSPLIT
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandVsplit(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_VSPLIT, 'vsplit', *args, **kwargs)
-        self.target_command = 'ex_vsplit'
+from .tokens import TokenCommand
 
 
 def scan_cmd_vsplit(state):
+    command = TokenCommand('vsplit')
     params = {'file': None}
 
     state.skip(' ')
     state.ignore()
 
     if state.consume() == state.EOF:
-        return None, [TokenCommandVsplit(params), TokenEof()]
+        command.params = params
+
+        return None, [command, TokenEof()]
 
     state.backup()
 
     params['file'] = state.match(r'.+$').group(0).strip()
 
-    return None, [TokenCommandVsplit(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

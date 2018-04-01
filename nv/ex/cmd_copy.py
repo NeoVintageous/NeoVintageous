@@ -15,21 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_COPY
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandCopy(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_COPY, 'copy', *args, **kwargs)
-        self.addressable = True
-        self.target_command = 'ex_copy'
+from .tokens import TokenCommand
 
 
 def scan_cmd_copy(state):
+    command = TokenCommand('copy')
+    command.addressable = True
+
     params = {'address': None}
     m = state.expect_match(r'\s*(?P<address>.+?)\s*$')
     params.update(m.groupdict())
 
-    return None, [TokenCommandCopy(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]

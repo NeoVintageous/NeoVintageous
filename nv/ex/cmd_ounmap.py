@@ -15,22 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from .tokens import TOKEN_COMMAND_OUNMAP
 from .tokens import TokenEof
-from .tokens import TokenOfCommand
-
-
-class TokenCommandOunmap(TokenOfCommand):
-    def __init__(self, params, *args, **kwargs):
-        super().__init__(params, TOKEN_COMMAND_OUNMAP, 'ounmap', *args, **kwargs)
-        self.target_command = 'ex_ounmap'
+from .tokens import TokenCommand
 
 
 def scan_cmd_ounmap(state):
+    command = TokenCommand('ounmap')
     params = {'keys': None}
 
     m = state.match(r'\s*(?P<keys>.+?)\s*$')
     if m:
         params.update(m.groupdict())
 
-    return None, [TokenCommandOunmap(params), TokenEof()]
+    command.params = params
+
+    return None, [command, TokenEof()]
