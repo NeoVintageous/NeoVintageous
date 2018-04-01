@@ -252,6 +252,319 @@ def do_ex_command_default(window, view, line_range, *args, **kwargs):
 _ex_help_tags_cache = {}
 
 
+# TODO [review] Looks broken or not implemented properly
+def ex_abbreviate(window, short=None, full=None, *args, **kwargs):
+    if short is None and full is None:
+        def _show_abbreviations():
+            abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
+            window.show_quick_panel(abbrevs, None, flags=MONOSPACE_FONT)
+
+        return _show_abbreviations()
+
+    if not (short and full):
+        return message(':abbreviate not fully implemented')
+
+    abbrev.Store().set(short, full)
+
+
+def ex_browse(window, view, *args, **kwargs):
+    # TODO [review] State dependency
+    state = State(view)
+
+    window.run_command('prompt_open_file', {
+        'initial_directory': state.settings.vi['_cmdline_cd']
+    })
+
+
+@_changing_cd
+def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
+    # XXX Currently behaves as on Unix systems for all platforms.
+    if view.is_dirty() and not forceit:
+        return message("E37: No write since last change")
+
+    # TODO [review] State dependency
+    state = State(view)
+
+    if not path:
+        state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
+
+        return ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+
+    # TODO: It seems there a few symbols that are always substituted when they represent a
+    # filename. We should have a global method of substiting them.
+    if path == '%:h':
+        fname = view.file_name()
+        if fname:
+            state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
+
+            ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+
+        return
+
+    path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
+    if not os.path.exists(path):
+        return message("E344: Can't find directory \"%s\" in cdpath" % path)
+
+    state.settings.vi['_cmdline_cd'] = path
+
+    ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+
+
+# Non-standard command to change the current directory to the active view's
+# directory. In Sublime Text, the current directory doesn't follow the
+# active view, so it's convenient to be able to align both easily.
+# XXX: Is the above still true?
+# XXX: This command may be removed at any time.
+def ex_cdd(view, forceit=False, *args, **kwargs):
+    if view.is_dirty() and not forceit:
+        return message("E37: No write since last change")
+
+    path = os.path.dirname(view.file_name())
+
+    try:
+        # TODO [review] State dependency
+        state = State(view)
+
+        state.settings.vi['_cmdline_cd'] = path
+        status_message(path)
+    except IOError:
+        message("E344: Can't find directory \"%s\" in cdpath" % path)
+
+
+# TODO [refactor] into window module
+def ex_close(window, forceit=False, *args, **kwargs):
+    WindowAPI(window).close_current_view(not forceit)
+
+
+@_serialize_deserialize
+def ex_copy(view, edit, address, line_range, *args, **kwargs):
+    # Copy the lines given by [range] to below the line given by {address}.
+    def _calculate_address(address):
+        # TODO: must calc only the first line ref?
+        # TODO [refactor] parsing the address
+        calculated = parse_command_line(address)
+        if calculated is None:
+            return None
+
+        # TODO Refactor and remove assertions
+        assert calculated.command is None, 'bad address'
+        assert calculated.line_range.separator is None, 'bad address'
+
+        return calculated.line_range
+
+    try:
+        unresolved = _calculate_address(address)
+    except Exception:
+        return message("E14: Invalid address")
+
+    if unresolved is None:
+        return message("E14: Invalid address")
+
+    # TODO: how do we signal row 0?
+    target_region = unresolved.resolve(view)
+
+    if target_region == Region(-1, -1):
+        address = 0
+    else:
+        row = utils.row_at(view, target_region.begin()) + 1
+        address = view.text_point(row, 0)
+
+    source = line_range.resolve(view)
+    text = view.substr(source)
+
+    if address >= view.size():
+        address = view.size()
+        text = '\n' + text[:-1]
+
+    view.insert(edit, address, text)
+
+    cursor_dest = view.line(address + len(text) - 1).begin()
+    _set_next_selection(view, [(cursor_dest, cursor_dest)])
+
+
+# TODO [refactor] into window module
+def ex_cquit(window, *args, **kwargs):
+    window.run_command('exit')
+
+
+@_serialize_deserialize
+def ex_delete(view, edit, register, line_range, *args, **kwargs):
+    r = line_range.resolve(view)
+    if r == Region(-1, -1):
+        r = view.full_line(0)
+
+    def _select(view, regions, register):
+        view.sel().clear()
+        to_store = []
+        for r in regions:
+            view.sel().add(r)
+            if register:
+                to_store.append(view.substr(view.full_line(r)))
+
+        if register:
+            text = ''.join(to_store)
+            if not text.endswith('\n'):
+                text = text + '\n'
+
+            state = State(view)
+            state.registers[register] = [text]
+
+    _select(view, [r], register)
+    view.erase(edit, r)
+    _set_next_selection(view, [(r.a, r.a)])
+
+
+def ex_double_ampersand(view, edit, flags, count, line_range, *args, **kwargs):
+    ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, *args, **kwargs)
+
+
+@_changing_cd
+def ex_edit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
+    if file_name:
+        file_name = os.path.expanduser(os.path.expandvars(file_name))
+
+        if view.is_dirty() and not forceit:
+            return message("E37: No write since last change")
+
+        if os.path.isdir(file_name):
+            # TODO :edit Open a file-manager in a buffer
+            return message('Cannot open directory')
+
+        def get_file_path():
+            file_name = view.file_name()
+            if file_name:
+                file_dir = os.path.dirname(file_name)
+                if os.path.isdir(file_dir):
+                    return file_dir
+
+                # TODO [review] State dependency
+                state = State(view)
+
+                file_dir = state.settings.vi['_cmdline_cd']
+                if os.path.isdir(file_dir):
+                    return file_dir
+
+        if not os.path.isabs(file_name):
+            file_path = get_file_path()
+            if file_path:
+                file_name = os.path.join(file_path, file_name)
+            else:
+                return message("could not find a parent directory")
+
+        window.open_file(file_name)
+
+        if not os.path.exists(file_name):
+            parent = os.path.dirname(file_name)
+            if parent and not os.path.exists(parent):
+                msg = '"{}" [New DIRECTORY]'.format(file_name)
+            else:
+                msg = '"{}" [New File]'.format(os.path.basename(file_name))
+
+            # Give ST some time to load the new view.
+            set_timeout(lambda: status_message(msg), 150)
+
+    else:
+
+        if forceit or not view.is_dirty():
+            return view.run_command('revert')
+
+        if view.is_dirty():
+            return message("E37: No write since last change")
+
+        message("E37: No write since last change")
+
+
+# TODO [refactor] into window module
+def ex_exit(window, view, *args, **kwargs):
+    if view.is_dirty():
+        window.run_command('save')
+
+    window.run_command('close')
+
+    if len(window.views()) == 0:
+        window.run_command('exit')
+
+
+def ex_file(view, *args, **kwargs):
+    if view.file_name():
+        fname = view.file_name()
+    else:
+        fname = '[No Name]'
+
+    attrs = ''
+    if view.is_read_only():
+        attrs = 'readonly'
+
+    if view.is_dirty():
+        attrs = 'Modified'
+
+    lines = 'no lines in the buffer'
+    if view.rowcol(view.size())[0]:
+        lines = view.rowcol(view.size())[0] + 1
+
+    # fixme: doesn't calculate the buffer's % correctly
+    if not isinstance(lines, str):
+        vr = view.visible_region()
+        start_row, end_row = view.rowcol(vr.begin())[0], view.rowcol(vr.end())[0]
+        mid = (start_row + end_row + 2) / 2
+        percent = float(mid) / lines * 100.0
+
+    msg = '"' + fname + '"'
+    if attrs:
+        msg += " [%s]" % attrs
+    if isinstance(lines, str):
+        msg += " -- %s --" % lines
+    else:
+        msg += " %d line%s --%d%%--" % (lines, ('s' if lines > 1 else ''), int(percent))
+
+    status_message('%s' % msg)
+
+
+_ex_global_most_recent_pat = None
+
+
+# At the time of writing, the only command that supports :global is the
+# "print" command e.g. print all lines matching \d+ into new buffer:
+#   :%global/\d+/print
+def ex_global(window, view, pattern, cmd, line_range, *args, **kwargs):
+    if line_range.is_empty:
+        global_range = Region(0, view.size())
+    else:
+        global_range = line_range.resolve(view)
+
+    global _ex_global_most_recent_pat
+    if pattern:
+        _ex_global_most_recent_pat = pattern
+    else:
+        pattern = _ex_global_most_recent_pat
+
+    if not cmd:
+        cmd = 'print'
+
+    cmd = parse_command_line(cmd).command
+
+    try:
+        matches = find_all_in_range(view, pattern, global_range.begin(), global_range.end())
+    except Exception as e:
+        return message("(global): %s ... in pattern '%s'" % (str(e), pattern))
+
+    # The cooperates_with_global attribute indicates if the command supports
+    # the :global command. This is special flag, because all ex commands
+    # don't yet support a global_lines argument. See TokenOfCommand. At time
+    # of writing, the only command that supports the global_lines argument
+    # is the "print" command e.g. print all lines matching \d+ into new
+    # buffer: ":%global/\d+/print".
+    if not matches or not cmd.cooperates_with_global:
+        return message("command does not support :global")
+
+    matches = [view.full_line(r.begin()) for r in matches]
+    matches = [[r.a, r.b] for r in matches]
+
+    cmd.params['global_lines'] = matches
+
+    do_ex_command(window, cmd.target_command, cmd.params)
+
+
 def ex_help(window, subject=None, forceit=False, *args, **kwargs):
     if not subject:
         subject = 'help.txt'
@@ -350,84 +663,220 @@ def ex_help(window, subject=None, forceit=False, *args, **kwargs):
     view.show(c_pt, False)
 
 
-_ex_shell_last_command = None
+def ex_let(name, value, *args, **kwargs):
+    variables.set(name, value)
 
 
+@_serialize_deserialize
+def ex_move(view, edit, address, line_range, *args, **kwargs):
+    # Move the lines given by [range] to below the line given by {address}.
+    if address is None:
+        return message("E14: Invalid address")
+
+    source = line_range.resolve(view)
+    if any(s.contains(source) for s in view.sel()):
+        return message("E134: Move lines into themselves")
+
+    # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
+    parsed_address_command = parse_command_line(address).line_range
+    destination = parsed_address_command.resolve(view)
+    if destination == source:
+        return
+
+    text = view.substr(source)
+    if destination.end() >= view.size():
+        text = '\n' + text.rstrip()
+
+    if destination == Region(-1):
+        destination = Region(0)
+
+    if destination.end() < source.begin():
+        view.erase(edit, source)
+        view.insert(edit, destination.end(), text)
+        _set_next_selection(view, [[destination.a, destination.b]])
+        return
+
+    view.insert(edit, destination.end(), text)
+    view.erase(edit, source)
+    _set_next_selection(view, [[destination.a, destination.a]])
+
+
+# TODO [refactor] into window module
 @_changing_cd
-def ex_shell_out(view, edit, cmd, line_range, *args, **kwargs):
-    global _ex_shell_last_command
+def ex_new(window, *args, **kwargs):
+    window.run_command('new_file')
 
-    if cmd == '!':
-        if not _ex_shell_last_command:
-            return status_message('E34: No previous command')
 
-        cmd = _ex_shell_last_command
+def ex_nnoremap(keys, command, *args, **kwargs):
+    if not (keys and command):
+        return status_message('Listing key mappings is not implemented')
 
+    mappings_add(NORMAL, keys, command)
+
+
+def ex_noremap(keys, command, *args, **kwargs):
+    if not (keys and command):
+        return status_message('Listing key mappings is not implemented')
+
+    mappings_add(NORMAL, keys, command)
+    mappings_add(OPERATOR_PENDING, keys, command)
+    mappings_add(VISUAL, keys, command)
+    mappings_add(VISUAL_BLOCK, keys, command)
+    mappings_add(VISUAL_LINE, keys, command)
+
+
+def ex_nunmap(keys, *args, **kwargs):
     try:
-        if not line_range.is_empty:
-            shell.filter_thru_shell(
-                view=view,
-                edit=edit,
-                regions=[line_range.resolve(view)],
-                cmd=cmd
-            )
+        mappings_remove(NORMAL, keys)
+    except KeyError:
+        status_message('Mapping not found')
+
+
+# TODO Unify with CTRL-W CTRL-O
+def ex_only(window, view, forceit=False, *args, **kwargs):
+    if not forceit and has_dirty_buffers(window):
+        return message("E445: Other window contains changes")
+
+    current_id = view.id()
+    for view in window.views():
+        if view.id() == current_id:
+            continue
+
+        if view.is_dirty():
+            view.set_scratch(True)
+
+        view.close()
+
+
+def ex_onoremap(keys, command, *args, **kwargs):
+    if not (keys and command):
+        return status_message('Listing key mappings is not implemented')
+
+    mappings_add(OPERATOR_PENDING, keys, command)
+
+
+def ex_ounmap(keys, *args, **kwargs):
+    try:
+        mappings_remove(OPERATOR_PENDING, keys)
+    except KeyError:
+        status_message('Mapping not found')
+
+
+def ex_print(window, view, flags, line_range, global_lines=None, *args, **kwargs):
+    if view.size() == 0:
+        return message("E749: empty buffer")
+
+    def _get_lines(view, parsed_range, global_lines):
+        # If :global called us, ignore the parsed range.
+        if global_lines:
+            return [(view.substr(Region(a, b)), row_at(view, a)) for (a, b) in global_lines]
+
+        to_display = []
+        for line in view.lines(parsed_range):
+            text = view.substr(line)
+            to_display.append((text, row_at(view, line.begin())))
+
+        return to_display
+
+    lines = _get_lines(view, line_range.resolve(view), global_lines)
+
+    display = window.new_file()
+    display.set_scratch(True)
+
+    if 'l' in flags:
+        display.settings().set('draw_white_space', 'all')
+
+    for i, (text, row) in enumerate(lines):
+        characters = ''
+        if '#' in flags:
+            characters = "{} {}".format(row, text).lstrip()
         else:
-            output = shell.run_and_read(view, cmd)
-            output_view = view.window().create_output_panel('vi_out')
-            output_view.settings().set("line_numbers", False)
-            output_view.settings().set("gutter", False)
-            output_view.settings().set("scroll_past_end", False)
-            output_view = view.window().create_output_panel('vi_out')
-            output_view.run_command('append', {'characters': output, 'force': True, 'scroll_to_end': True})
-            view.window().run_command("show_panel", {"panel": "output.vi_out"})
+            characters = text.lstrip()
 
-        # TODO: store only successful commands.
-        _ex_shell_last_command = cmd
-    except NotImplementedError:
-        message('not implemented')
+        if not global_lines:
+            if i < len(lines) - 1:
+                characters += '\n'
+
+        display.run_command('append', {'characters': characters})
 
 
-# TODO [refactor] shell commands to use common os nv.ex.shell commands
-# This command starts a shell. When the shell exits (after the "exit" command)
-# you return to Sublime Text. The name for the shell command comes from:
-# * VintageousEx_linux_terminal setting on Linux
-# * VintageousEx_osx_terminal setting on OSX
-# The shell is opened at the active view directory. Sublime Text keeps a virtual
-# current directory that most of the time will be out of sync with the actual
-# current directory. The virtual current directory is always set to the current
-# view's directory, but it isn't accessible through the API.
+def ex_prompt_select_open_file(window, *args, **kwargs):
+    def _get_view_info(view):
+        path = view.file_name()
+        if path:
+            parent, leaf = os.path.split(path)
+            parent = os.path.basename(parent)
+            path = os.path.join(parent, leaf)
+        else:
+            path = view.name() or str(view.buffer_id())
+            leaf = view.name() or 'untitled'
+
+        status = []
+        if not view.file_name():
+            status.append("t")
+        if view.is_dirty():
+            status.append("*")
+        if view.is_read_only():
+            status.append("r")
+
+        if status:
+            leaf += ' (%s)' % ', '.join(status)
+
+        return [leaf, path]
+
+    file_names = [_get_view_info(view) for view in window.views()]
+    view_ids = [view.id() for view in window.views()]
+
+    def on_done(index):
+        if index == -1:
+            return
+
+        sought_id = view_ids[index]
+        for view in window.views():
+            # TODO: Start looking in current group.
+            if view.id() == sought_id:
+                window.focus_view(view)
+
+    window.show_quick_panel(file_names, on_done)
+
+
 @_changing_cd
-def ex_shell(view, *args, **kwargs):
+def ex_pwd(*args, **kwargs):
+    status_message(os.getcwd())
 
-    def _open_shell(command):
-        return subprocess.Popen(command, cwd=os.getcwd())
 
-    if platform() == 'linux':
-        term = view.settings().get('VintageousEx_linux_terminal')
-        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
-        if not term:
-            return message('terminal not found')
+# TODO [refactor] into window module
+def ex_qall(window, forceit=False, *args, **kwargs):
+    if forceit:
+        for view in window.views():
+            if view.is_dirty():
+                view.set_scratch(True)
+    elif has_dirty_buffers(window):
+        # TODO [review] [easypick] status message
+        return status_message('there are unsaved changes!')
 
-        try:
-            _open_shell([term, '-e', 'bash']).wait()
-        except Exception as e:
-            return message('error executing command through shell {}'.format(e))
+    window.run_command('close_all')
+    window.run_command('exit')
 
-    elif platform() == 'osx':
-        term = view.settings().get('VintageousEx_osx_terminal')
-        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
-        if not term:
-            return message('terminal not found')
 
-        try:
-            _open_shell([term, '-e', 'bash']).wait()
-        except Exception as e:
-            return message('error executing command through shell {}'.format(e))
+# TODO [refactor] into window module
+def ex_quit(window, view, forceit=False, *args, **kwargs):
+    if forceit:
+        view.set_scratch(True)
 
-    elif platform() == 'windows':
-        _open_shell(['cmd.exe', '/k']).wait()
-    else:
-        message('not implemented')
+    if view.is_dirty() and not forceit:
+        return message("E37: No write since last change")
+
+    if not view.file_name() and not forceit:
+        return message("E32: No file name")
+
+    window.run_command('close')
+
+    if len(window.views()) == 0:
+        return window.run_command('close')
+
+    if not window.views_in_group(window.active_group()):
+        ex_unvsplit(window=window, view=view, forceit=forceit, *args, **kwargs)
 
 
 # TODO [review] This command looks unused
@@ -473,58 +922,301 @@ def ex_read(view, edit, cmd, line_range, *args, **kwargs):
         return message('not implemented')
 
 
-def ex_prompt_select_open_file(window, *args, **kwargs):
-    def _get_view_info(view):
-        path = view.file_name()
-        if path:
-            parent, leaf = os.path.split(path)
-            parent = os.path.basename(parent)
-            path = os.path.join(parent, leaf)
-        else:
-            path = view.name() or str(view.buffer_id())
-            leaf = view.name() or 'untitled'
+def ex_registers(window, view, *args, **kwargs):
+    def _truncate(string, truncate_at):
+        if len(string) > truncate_at:
+            return string[0:truncate_at] + ' ...'
 
-        status = []
-        if not view.file_name():
-            status.append("t")
-        if view.is_dirty():
-            status.append("*")
-        if view.is_read_only():
-            status.append("r")
+        return string
 
-        if status:
-            leaf += ' (%s)' % ', '.join(status)
+    # TODO [review] State dependency
+    state = State(view)
 
-        return [leaf, path]
+    items = []
+    for k, v in state.registers.to_dict().items():
+        if v:
+            if len(v) > 0 and v[0]:
+                lines = v[0].splitlines()
+                value = '^J'.join(lines)
 
-    file_names = [_get_view_info(view) for view in window.views()]
-    view_ids = [view.id() for view in window.views()]
+                # The splitlines function will remove a final newline, if
+                # present. So joining the lines with the join-line indicator
+                # (^J) may be missing a final join-line indicator.
+                if len(''.join(lines)) < len(v[0]):
+                    value += '^J'
 
-    def on_done(index):
-        if index == -1:
+                items.append('"{}   {}'.format(k, _truncate(value, 78)))
+
+    def on_done(idx):
+        if idx == -1:
             return
 
-        sought_id = view_ids[index]
-        for view in window.views():
-            # TODO: Start looking in current group.
-            if view.id() == sought_id:
-                window.focus_view(view)
+        state.registers['"'] = [list(state.registers.to_dict().values())[idx]]
 
-    window.show_quick_panel(file_names, on_done)
+    if items:
+        window.show_quick_panel(sorted(items), on_done, flags=MONOSPACE_FONT)
 
 
-def ex_noremap(keys, command, *args, **kwargs):
+def ex_set(view, option, value, *args, **kwargs):
+    if option.endswith('?'):
+        return message('not implemented')
+
+    try:
+        set_global(view, option, value)
+    except KeyError:
+        status_message('no such option')
+    except ValueError:
+        status_message('invalid value for option')
+
+
+def ex_setlocal(view, option, value, *args, **kwargs):
+    if option.endswith('?'):
+        return message('not implemented')
+
+    try:
+        set_local(view, option, value)
+    except KeyError:
+        status_message('no such option')
+    except ValueError:
+        status_message('invalid value for option')
+
+
+# TODO [refactor] shell commands to use common os nv.ex.shell commands
+# This command starts a shell. When the shell exits (after the "exit" command)
+# you return to Sublime Text. The name for the shell command comes from:
+# * VintageousEx_linux_terminal setting on Linux
+# * VintageousEx_osx_terminal setting on OSX
+# The shell is opened at the active view directory. Sublime Text keeps a virtual
+# current directory that most of the time will be out of sync with the actual
+# current directory. The virtual current directory is always set to the current
+# view's directory, but it isn't accessible through the API.
+@_changing_cd
+def ex_shell(view, *args, **kwargs):
+
+    def _open_shell(command):
+        return subprocess.Popen(command, cwd=os.getcwd())
+
+    if platform() == 'linux':
+        term = view.settings().get('VintageousEx_linux_terminal')
+        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
+        if not term:
+            return message('terminal not found')
+
+        try:
+            _open_shell([term, '-e', 'bash']).wait()
+        except Exception as e:
+            return message('error executing command through shell {}'.format(e))
+
+    elif platform() == 'osx':
+        term = view.settings().get('VintageousEx_osx_terminal')
+        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
+        if not term:
+            return message('terminal not found')
+
+        try:
+            _open_shell([term, '-e', 'bash']).wait()
+        except Exception as e:
+            return message('error executing command through shell {}'.format(e))
+
+    elif platform() == 'windows':
+        _open_shell(['cmd.exe', '/k']).wait()
+    else:
+        message('not implemented')
+
+
+_ex_shell_last_command = None
+
+
+@_changing_cd
+def ex_shell_out(view, edit, cmd, line_range, *args, **kwargs):
+    global _ex_shell_last_command
+
+    if cmd == '!':
+        if not _ex_shell_last_command:
+            return status_message('E34: No previous command')
+
+        cmd = _ex_shell_last_command
+
+    try:
+        if not line_range.is_empty:
+            shell.filter_thru_shell(
+                view=view,
+                edit=edit,
+                regions=[line_range.resolve(view)],
+                cmd=cmd
+            )
+        else:
+            output = shell.run_and_read(view, cmd)
+            output_view = view.window().create_output_panel('vi_out')
+            output_view.settings().set("line_numbers", False)
+            output_view.settings().set("gutter", False)
+            output_view.settings().set("scroll_past_end", False)
+            output_view = view.window().create_output_panel('vi_out')
+            output_view.run_command('append', {'characters': output, 'force': True, 'scroll_to_end': True})
+            view.window().run_command("show_panel", {"panel": "output.vi_out"})
+
+        # TODO: store only successful commands.
+        _ex_shell_last_command = cmd
+    except NotImplementedError:
+        message('not implemented')
+
+
+def ex_snoremap(keys, command, *args, **kwargs):
     if not (keys and command):
-        # TODO [refactor] Instead of calling status_message(), raise a
-        # NotImplemented exception instead, and let the command runner handle
-        # it. All other commands should do the same in cases like this.
         return status_message('Listing key mappings is not implemented')
 
-    mappings_add(NORMAL, keys, command)
-    mappings_add(OPERATOR_PENDING, keys, command)
-    mappings_add(VISUAL, keys, command)
-    mappings_add(VISUAL_BLOCK, keys, command)
-    mappings_add(VISUAL_LINE, keys, command)
+    mappings_add(SELECT, keys, command)
+
+
+# TODO Unify with <C-w>s
+def ex_split(window, file=None, *args, **kwargs):
+    window_split(window, file)
+
+
+_ex_substitute_last_pattern = None
+_ex_substitute_last_replacement = ''
+
+
+def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0, count=1, *args, **kwargs):
+    global _ex_substitute_last_pattern, _ex_substitute_last_replacement
+
+    # Repeat last substitute with same search
+    # pattern and substitute string, but
+    # without the same flags.
+    if not pattern:
+        pattern = _ex_substitute_last_pattern
+        if not pattern:
+            return status_message('E33: No previous substitute regular expression')
+
+        replacement = _ex_substitute_last_replacement
+
+    if not pattern:
+        return status_message('No substitute regular expression')
+
+    if replacement is None:
+        return status_message('No substitute replacement string')
+
+    _ex_substitute_last_pattern = pattern
+    _ex_substitute_last_replacement = replacement
+
+    computed_flags = re.MULTILINE
+    computed_flags |= re.IGNORECASE if ('i' in flags) else 0
+
+    try:
+        compiled_pattern = re.compile(pattern, flags=computed_flags)
+    except Exception as e:
+        return message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
+
+    target_region = line_range.resolve(view)
+    if target_region.empty():
+        return status_message('E486: Pattern not found: {}'.format(pattern))
+
+    replace_count = 0 if (flags and 'g' in flags) else 1
+
+    if 'c' in flags:
+
+        def _replace_confirming(view, edit, pattern, compiled_pattern,
+                                replacement, replace_count, target_region):
+
+            last_row = row_at(view, target_region.b - 1)
+            start = target_region.begin()
+
+            while True:
+                if start >= view.size():
+                    break
+
+                match = view.find(pattern, start)
+
+                # no match or match out of range -- stop
+                if (match == Region(-1)) or (row_at(view, match.a) > last_row):
+                    view.show(first_sel(view).begin())
+                    return
+
+                size_before = view.size()
+
+                with adding_regions(view, 's_confirm', [match], 'comment'):
+                    view.show(match.a, True)
+                    if ok_cancel_dialog("Confirm replacement?"):
+                        text = view.substr(match)
+                        substituted = re.sub(compiled_pattern, replacement, text, count=replace_count)
+                        view.replace(edit, match, substituted)
+
+                start = match.b + (view.size() - size_before) + 1
+
+        return _replace_confirming(view, edit, pattern, compiled_pattern, replacement, replace_count, target_region)
+
+    lines = view.lines(target_region)
+    if not lines:
+        return status_message('E486: Pattern not found: {}'.format(pattern))
+
+    new_lines = []
+    dirty = False
+    for line in lines:
+        line_str = view.substr(line)
+        new_line_str = re.sub(compiled_pattern, replacement, line_str, count=replace_count)
+        new_lines.append(new_line_str)
+        if new_line_str != line_str:
+            dirty = True
+
+    new_region_text = '\n'.join(new_lines)
+    if view.size() > line.end():
+        new_region_text += '\n'
+
+    if not dirty:
+        return status_message('E486: Pattern not found: {}'.format(pattern))
+
+    # Reposition cursor before replacing target region so that the cursor
+    # will auto adjust in sync with the replacement.
+    view.sel().clear()
+    view.sel().add(line.begin())
+
+    view.replace(edit, target_region, new_region_text)
+
+    # TODO Refactor set position cursor after operation into reusable api.
+    # Put cursor on first non-whitespace char of current line.
+    line = view.line(view.sel()[0].b)
+    if line.size() > 0:
+        pt = view.find('^\\s*', line.begin()).end()
+        view.sel().clear()
+        view.sel().add(pt)
+
+    # TODO [review] enter normal mode depedendency
+    view.run_command('_enter_normal_mode')
+
+
+def ex_sunmap(keys, *args, **kwargs):
+    try:
+        mappings_remove(SELECT, keys)
+    except KeyError:
+        status_message('Mapping not found')
+
+
+def ex_tabfirst(window, *args, **kwargs):
+    window_tab_control(window, command='first')
+
+
+def ex_tablast(window, *args, **kwargs):
+    window_tab_control(window, command='last')
+
+
+def ex_tabnext(window, *args, **kwargs):
+    window_tab_control(window, command='next')
+
+
+def ex_tabonly(window, *args, **kwargs):
+    window_tab_control(window, command='only')
+
+
+def ex_tabprevious(window, *args, **kwargs):
+    window_tab_control(window, command='prev')
+
+
+# TODO [review] Looks broken or not implemented properly
+def ex_unabbreviate(lhs, *args, **kwargs):
+    if lhs:
+        return
+
+    abbrev.Store().erase(lhs)
 
 
 def ex_unmap(keys, *args, **kwargs):
@@ -538,46 +1230,33 @@ def ex_unmap(keys, *args, **kwargs):
         status_message('Mapping not found')
 
 
-def ex_nnoremap(keys, command, *args, **kwargs):
-    if not (keys and command):
-        return status_message('Listing key mappings is not implemented')
+# TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
+# Non-standard Vim :unvsplit command
+def ex_unvsplit(window, *args, **kwargs):
+    groups = window.num_groups()
+    if groups == 1:
+        return status_message("can't delete more groups")
 
-    mappings_add(NORMAL, keys, command)
+    # If we don't do this, cloned views will be moved to the previous group and
+    # kept around. We want to close them instead.
 
+    layout_data = {
+        1: {"cells": [[0, 0, 1, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 1.0]},
+        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.5, 1.0]},
+        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.33, 0.66, 1.0]},
+        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
+    }
 
-def ex_nunmap(keys, *args, **kwargs):
-    try:
-        mappings_remove(NORMAL, keys)
-    except KeyError:
-        status_message('Mapping not found')
-
-
-def ex_onoremap(keys, command, *args, **kwargs):
-    if not (keys and command):
-        return status_message('Listing key mappings is not implemented')
-
-    mappings_add(OPERATOR_PENDING, keys, command)
-
-
-def ex_ounmap(keys, *args, **kwargs):
-    try:
-        mappings_remove(OPERATOR_PENDING, keys)
-    except KeyError:
-        status_message('Mapping not found')
-
-
-def ex_snoremap(keys, command, *args, **kwargs):
-    if not (keys and command):
-        return status_message('Listing key mappings is not implemented')
-
-    mappings_add(SELECT, keys, command)
-
-
-def ex_sunmap(keys, *args, **kwargs):
-    try:
-        mappings_remove(SELECT, keys)
-    except KeyError:
-        status_message('Mapping not found')
+    window.run_command('close')
+    window.run_command('set_layout', layout_data[groups - 1])
 
 
 def ex_vnoremap(keys, command, *args, **kwargs):
@@ -589,6 +1268,56 @@ def ex_vnoremap(keys, command, *args, **kwargs):
     mappings_add(VISUAL_LINE, keys, command)
 
 
+# TODO [refactor] into window module
+# TODO Refactor like ExSplit
+def ex_vsplit(window, view, file=None, *args, **kwargs):
+    max_splits = 4
+
+    layout_data = {
+        1: {"cells": [[0, 0, 1, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 1.0]},
+        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.5, 1.0]},
+        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.33, 0.66, 1.0]},
+        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
+            "rows": [0.0, 1.0],
+            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
+    }
+
+    groups = window.num_groups()
+    if groups >= max_splits:
+        return message('Can\'t create more groups')
+
+    old_view = view
+    pos = ''
+    current_file_name = None
+    if old_view and old_view.file_name():
+        pos = ':{0}:{1}'.format(*old_view.rowcol(old_view.sel()[0].b))
+        current_file_name = old_view.file_name() + pos
+
+    window.run_command('set_layout', layout_data[groups + 1])
+
+    def open_file(window, file):
+        window.open_file(file, group=(window.num_groups() - 1), flags=(FORCE_GROUP | ENCODED_POSITION))
+
+    if file:
+        existing = window.find_open_file(file)
+        pos = ''
+        if existing:
+            pos = ':{0}:{1}'.format(*existing.rowcol(existing.sel()[0].b))
+
+        return open_file(window, file + pos)
+
+    if current_file_name:
+        open_file(window, current_file_name)
+    else:
+        window.new_file()
+
+
 def ex_vunmap(keys, *args, **kwargs):
     try:
         mappings_remove(VISUAL, keys)
@@ -598,32 +1327,51 @@ def ex_vunmap(keys, *args, **kwargs):
         status_message('Mapping not found')
 
 
-# TODO [review] Looks broken or not implemented properly
-def ex_abbreviate(window, short=None, full=None, *args, **kwargs):
-    if short is None and full is None:
-        def _show_abbreviations():
-            abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
-            window.show_quick_panel(abbrevs, None, flags=MONOSPACE_FONT)
-
-        return _show_abbreviations()
-
-    if not (short and full):
-        return message(':abbreviate not fully implemented')
-
-    abbrev.Store().set(short, full)
-
-
-# TODO [review] Looks broken or not implemented properly
-def ex_unabbreviate(lhs, *args, **kwargs):
-    if lhs:
-        return
-
-    abbrev.Store().erase(lhs)
-
-
 @_changing_cd
-def ex_pwd(*args, **kwargs):
-    status_message(os.getcwd())
+def ex_wall(window, forceit=False, *args, **kwargs):
+    # TODO read-only views don't get properly saved.
+    for v in (v for v in window.views() if v.file_name()):
+        if v.is_read_only() and not forceit:
+            continue
+
+        v.run_command('save')
+
+
+# TODO [refactor] into window module
+def ex_wq(window, view, forceit=False, *args, **kwargs):
+    if forceit:
+        # TODO raise not implemented exception and make the command runner handle it.
+        return message('not implemented')
+
+    if view.is_read_only():
+        return status_message("can't write a read-only buffer")
+
+    if not view.file_name():
+        return status_message("can't save a file without name")
+
+    window.run_command('save')
+
+    ex_quit(window=window, view=view, forceit=forceit, *args, **kwargs)
+
+
+def ex_wqall(window, *args, **kwargs):
+    if not all(view.file_name() for view in window.views()):
+        ui_blink()
+
+        return message("E32: No file name")
+
+    if any(view.is_read_only() for view in window.views()):
+        ui_blink()
+
+        return message("E45: 'readonly' option is set (add ! to override)")
+
+    window.run_command('save_all')
+
+    # TODO Remove assert statements
+    assert not any(view.is_dirty() for view in window.views())
+
+    window.run_command('close_all')
+    window.run_command('exit')
 
 
 @_changing_cd
@@ -762,550 +1510,6 @@ def ex_write(window, view, file_name, cmd, forceit, line_range, *args, **kwargs)
     window.run_command('save')
 
 
-@_changing_cd
-def ex_wall(window, forceit=False, *args, **kwargs):
-    # TODO read-only views don't get properly saved.
-    for v in (v for v in window.views() if v.file_name()):
-        if v.is_read_only() and not forceit:
-            continue
-
-        v.run_command('save')
-
-
-def ex_file(view, *args, **kwargs):
-    if view.file_name():
-        fname = view.file_name()
-    else:
-        fname = '[No Name]'
-
-    attrs = ''
-    if view.is_read_only():
-        attrs = 'readonly'
-
-    if view.is_dirty():
-        attrs = 'Modified'
-
-    lines = 'no lines in the buffer'
-    if view.rowcol(view.size())[0]:
-        lines = view.rowcol(view.size())[0] + 1
-
-    # fixme: doesn't calculate the buffer's % correctly
-    if not isinstance(lines, str):
-        vr = view.visible_region()
-        start_row, end_row = view.rowcol(vr.begin())[0], view.rowcol(vr.end())[0]
-        mid = (start_row + end_row + 2) / 2
-        percent = float(mid) / lines * 100.0
-
-    msg = '"' + fname + '"'
-    if attrs:
-        msg += " [%s]" % attrs
-    if isinstance(lines, str):
-        msg += " -- %s --" % lines
-    else:
-        msg += " %d line%s --%d%%--" % (lines, ('s' if lines > 1 else ''), int(percent))
-
-    status_message('%s' % msg)
-
-
-@_serialize_deserialize
-def ex_move(view, edit, address, line_range, *args, **kwargs):
-    # Move the lines given by [range] to below the line given by {address}.
-    if address is None:
-        return message("E14: Invalid address")
-
-    source = line_range.resolve(view)
-    if any(s.contains(source) for s in view.sel()):
-        return message("E134: Move lines into themselves")
-
-    # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
-    parsed_address_command = parse_command_line(address).line_range
-    destination = parsed_address_command.resolve(view)
-    if destination == source:
-        return
-
-    text = view.substr(source)
-    if destination.end() >= view.size():
-        text = '\n' + text.rstrip()
-
-    if destination == Region(-1):
-        destination = Region(0)
-
-    if destination.end() < source.begin():
-        view.erase(edit, source)
-        view.insert(edit, destination.end(), text)
-        _set_next_selection(view, [[destination.a, destination.b]])
-        return
-
-    view.insert(edit, destination.end(), text)
-    view.erase(edit, source)
-    _set_next_selection(view, [[destination.a, destination.a]])
-
-
-@_serialize_deserialize
-def ex_copy(view, edit, address, line_range, *args, **kwargs):
-    # Copy the lines given by [range] to below the line given by {address}.
-    def _calculate_address(address):
-        # TODO: must calc only the first line ref?
-        # TODO [refactor] parsing the address
-        calculated = parse_command_line(address)
-        if calculated is None:
-            return None
-
-        # TODO Refactor and remove assertions
-        assert calculated.command is None, 'bad address'
-        assert calculated.line_range.separator is None, 'bad address'
-
-        return calculated.line_range
-
-    try:
-        unresolved = _calculate_address(address)
-    except Exception:
-        return message("E14: Invalid address")
-
-    if unresolved is None:
-        return message("E14: Invalid address")
-
-    # TODO: how do we signal row 0?
-    target_region = unresolved.resolve(view)
-
-    if target_region == Region(-1, -1):
-        address = 0
-    else:
-        row = utils.row_at(view, target_region.begin()) + 1
-        address = view.text_point(row, 0)
-
-    source = line_range.resolve(view)
-    text = view.substr(source)
-
-    if address >= view.size():
-        address = view.size()
-        text = '\n' + text[:-1]
-
-    view.insert(edit, address, text)
-
-    cursor_dest = view.line(address + len(text) - 1).begin()
-    _set_next_selection(view, [(cursor_dest, cursor_dest)])
-
-
-# TODO Unify with CTRL-W CTRL-O
-def ex_only(window, view, forceit=False, *args, **kwargs):
-    if not forceit and has_dirty_buffers(window):
-        return message("E445: Other window contains changes")
-
-    current_id = view.id()
-    for view in window.views():
-        if view.id() == current_id:
-            continue
-
-        if view.is_dirty():
-            view.set_scratch(True)
-
-        view.close()
-
-
-def ex_double_ampersand(view, edit, flags, count, line_range, *args, **kwargs):
-    ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, *args, **kwargs)
-
-
-_ex_substitute_last_pattern = None
-_ex_substitute_last_replacement = ''
-
-
-def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0, count=1, *args, **kwargs):
-    global _ex_substitute_last_pattern, _ex_substitute_last_replacement
-
-    # Repeat last substitute with same search
-    # pattern and substitute string, but
-    # without the same flags.
-    if not pattern:
-        pattern = _ex_substitute_last_pattern
-        if not pattern:
-            return status_message('E33: No previous substitute regular expression')
-
-        replacement = _ex_substitute_last_replacement
-
-    if not pattern:
-        return status_message('No substitute regular expression')
-
-    if replacement is None:
-        return status_message('No substitute replacement string')
-
-    _ex_substitute_last_pattern = pattern
-    _ex_substitute_last_replacement = replacement
-
-    computed_flags = re.MULTILINE
-    computed_flags |= re.IGNORECASE if ('i' in flags) else 0
-
-    try:
-        compiled_pattern = re.compile(pattern, flags=computed_flags)
-    except Exception as e:
-        return message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
-
-    target_region = line_range.resolve(view)
-    if target_region.empty():
-        return status_message('E486: Pattern not found: {}'.format(pattern))
-
-    replace_count = 0 if (flags and 'g' in flags) else 1
-
-    if 'c' in flags:
-
-        def _replace_confirming(view, edit, pattern, compiled_pattern,
-                                replacement, replace_count, target_region):
-
-            last_row = row_at(view, target_region.b - 1)
-            start = target_region.begin()
-
-            while True:
-                if start >= view.size():
-                    break
-
-                match = view.find(pattern, start)
-
-                # no match or match out of range -- stop
-                if (match == Region(-1)) or (row_at(view, match.a) > last_row):
-                    view.show(first_sel(view).begin())
-                    return
-
-                size_before = view.size()
-
-                with adding_regions(view, 's_confirm', [match], 'comment'):
-                    view.show(match.a, True)
-                    if ok_cancel_dialog("Confirm replacement?"):
-                        text = view.substr(match)
-                        substituted = re.sub(compiled_pattern, replacement, text, count=replace_count)
-                        view.replace(edit, match, substituted)
-
-                start = match.b + (view.size() - size_before) + 1
-
-        return _replace_confirming(view, edit, pattern, compiled_pattern, replacement, replace_count, target_region)
-
-    lines = view.lines(target_region)
-    if not lines:
-        return status_message('E486: Pattern not found: {}'.format(pattern))
-
-    new_lines = []
-    dirty = False
-    for line in lines:
-        line_str = view.substr(line)
-        new_line_str = re.sub(compiled_pattern, replacement, line_str, count=replace_count)
-        new_lines.append(new_line_str)
-        if new_line_str != line_str:
-            dirty = True
-
-    new_region_text = '\n'.join(new_lines)
-    if view.size() > line.end():
-        new_region_text += '\n'
-
-    if not dirty:
-        return status_message('E486: Pattern not found: {}'.format(pattern))
-
-    # Reposition cursor before replacing target region so that the cursor
-    # will auto adjust in sync with the replacement.
-    view.sel().clear()
-    view.sel().add(line.begin())
-
-    view.replace(edit, target_region, new_region_text)
-
-    # TODO Refactor set position cursor after operation into reusable api.
-    # Put cursor on first non-whitespace char of current line.
-    line = view.line(view.sel()[0].b)
-    if line.size() > 0:
-        pt = view.find('^\\s*', line.begin()).end()
-        view.sel().clear()
-        view.sel().add(pt)
-
-    # TODO [review] enter normal mode depedendency
-    view.run_command('_enter_normal_mode')
-
-
-@_serialize_deserialize
-def ex_delete(view, edit, register, line_range, *args, **kwargs):
-    r = line_range.resolve(view)
-    if r == Region(-1, -1):
-        r = view.full_line(0)
-
-    def _select(view, regions, register):
-        view.sel().clear()
-        to_store = []
-        for r in regions:
-            view.sel().add(r)
-            if register:
-                to_store.append(view.substr(view.full_line(r)))
-
-        if register:
-            text = ''.join(to_store)
-            if not text.endswith('\n'):
-                text = text + '\n'
-
-            state = State(view)
-            state.registers[register] = [text]
-
-    _select(view, [r], register)
-    view.erase(edit, r)
-    _set_next_selection(view, [(r.a, r.a)])
-
-
-_ex_global_most_recent_pat = None
-
-
-# At the time of writing, the only command that supports :global is the
-# "print" command e.g. print all lines matching \d+ into new buffer:
-#   :%global/\d+/print
-def ex_global(window, view, pattern, cmd, line_range, *args, **kwargs):
-    if line_range.is_empty:
-        global_range = Region(0, view.size())
-    else:
-        global_range = line_range.resolve(view)
-
-    global _ex_global_most_recent_pat
-    if pattern:
-        _ex_global_most_recent_pat = pattern
-    else:
-        pattern = _ex_global_most_recent_pat
-
-    if not cmd:
-        cmd = 'print'
-
-    cmd = parse_command_line(cmd).command
-
-    try:
-        matches = find_all_in_range(view, pattern, global_range.begin(), global_range.end())
-    except Exception as e:
-        return message("(global): %s ... in pattern '%s'" % (str(e), pattern))
-
-    # The cooperates_with_global attribute indicates if the command supports
-    # the :global command. This is special flag, because all ex commands
-    # don't yet support a global_lines argument. See TokenOfCommand. At time
-    # of writing, the only command that supports the global_lines argument
-    # is the "print" command e.g. print all lines matching \d+ into new
-    # buffer: ":%global/\d+/print".
-    if not matches or not cmd.cooperates_with_global:
-        return message("command does not support :global")
-
-    matches = [view.full_line(r.begin()) for r in matches]
-    matches = [[r.a, r.b] for r in matches]
-
-    cmd.params['global_lines'] = matches
-
-    do_ex_command(window, cmd.target_command, cmd.params)
-
-
-def ex_print(window, view, flags, line_range, global_lines=None, *args, **kwargs):
-    if view.size() == 0:
-        return message("E749: empty buffer")
-
-    def _get_lines(view, parsed_range, global_lines):
-        # If :global called us, ignore the parsed range.
-        if global_lines:
-            return [(view.substr(Region(a, b)), row_at(view, a)) for (a, b) in global_lines]
-
-        to_display = []
-        for line in view.lines(parsed_range):
-            text = view.substr(line)
-            to_display.append((text, row_at(view, line.begin())))
-
-        return to_display
-
-    lines = _get_lines(view, line_range.resolve(view), global_lines)
-
-    display = window.new_file()
-    display.set_scratch(True)
-
-    if 'l' in flags:
-        display.settings().set('draw_white_space', 'all')
-
-    for i, (text, row) in enumerate(lines):
-        characters = ''
-        if '#' in flags:
-            characters = "{} {}".format(row, text).lstrip()
-        else:
-            characters = text.lstrip()
-
-        if not global_lines:
-            if i < len(lines) - 1:
-                characters += '\n'
-
-        display.run_command('append', {'characters': characters})
-
-
-# TODO [refactor] into window module
-def ex_close(window, forceit=False, *args, **kwargs):
-    WindowAPI(window).close_current_view(not forceit)
-
-
-# TODO [refactor] into window module
-def ex_quit(window, view, forceit=False, *args, **kwargs):
-    if forceit:
-        view.set_scratch(True)
-
-    if view.is_dirty() and not forceit:
-        return message("E37: No write since last change")
-
-    if not view.file_name() and not forceit:
-        return message("E32: No file name")
-
-    window.run_command('close')
-
-    if len(window.views()) == 0:
-        return window.run_command('close')
-
-    if not window.views_in_group(window.active_group()):
-        ex_unvsplit(window=window, view=view, forceit=forceit, *args, **kwargs)
-
-
-# TODO [refactor] into window module
-def ex_qall(window, forceit=False, *args, **kwargs):
-    if forceit:
-        for view in window.views():
-            if view.is_dirty():
-                view.set_scratch(True)
-    elif has_dirty_buffers(window):
-        # TODO [review] [easypick] status message
-        return status_message('there are unsaved changes!')
-
-    window.run_command('close_all')
-    window.run_command('exit')
-
-
-# TODO [refactor] into window module
-def ex_wq(window, view, forceit=False, *args, **kwargs):
-    if forceit:
-        # TODO raise not implemented exception and make the command runner handle it.
-        return message('not implemented')
-
-    if view.is_read_only():
-        return status_message("can't write a read-only buffer")
-
-    if not view.file_name():
-        return status_message("can't save a file without name")
-
-    window.run_command('save')
-
-    ex_quit(window=window, view=view, forceit=forceit, *args, **kwargs)
-
-
-def ex_browse(window, view, *args, **kwargs):
-    # TODO [review] State dependency
-    state = State(view)
-
-    window.run_command('prompt_open_file', {
-        'initial_directory': state.settings.vi['_cmdline_cd']
-    })
-
-
-@_changing_cd
-def ex_edit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
-    if file_name:
-        file_name = os.path.expanduser(os.path.expandvars(file_name))
-
-        if view.is_dirty() and not forceit:
-            return message("E37: No write since last change")
-
-        if os.path.isdir(file_name):
-            # TODO :edit Open a file-manager in a buffer
-            return message('Cannot open directory')
-
-        def get_file_path():
-            file_name = view.file_name()
-            if file_name:
-                file_dir = os.path.dirname(file_name)
-                if os.path.isdir(file_dir):
-                    return file_dir
-
-                # TODO [review] State dependency
-                state = State(view)
-
-                file_dir = state.settings.vi['_cmdline_cd']
-                if os.path.isdir(file_dir):
-                    return file_dir
-
-        if not os.path.isabs(file_name):
-            file_path = get_file_path()
-            if file_path:
-                file_name = os.path.join(file_path, file_name)
-            else:
-                return message("could not find a parent directory")
-
-        window.open_file(file_name)
-
-        if not os.path.exists(file_name):
-            parent = os.path.dirname(file_name)
-            if parent and not os.path.exists(parent):
-                msg = '"{}" [New DIRECTORY]'.format(file_name)
-            else:
-                msg = '"{}" [New File]'.format(os.path.basename(file_name))
-
-            # Give ST some time to load the new view.
-            set_timeout(lambda: status_message(msg), 150)
-
-    else:
-
-        if forceit or not view.is_dirty():
-            return view.run_command('revert')
-
-        if view.is_dirty():
-            return message("E37: No write since last change")
-
-        message("E37: No write since last change")
-
-
-# TODO [refactor] into window module
-def ex_cquit(window, *args, **kwargs):
-    window.run_command('exit')
-
-
-# TODO [refactor] into window module
-def ex_exit(window, view, *args, **kwargs):
-    if view.is_dirty():
-        window.run_command('save')
-
-    window.run_command('close')
-
-    if len(window.views()) == 0:
-        window.run_command('exit')
-
-
-def ex_registers(window, view, *args, **kwargs):
-    def _truncate(string, truncate_at):
-        if len(string) > truncate_at:
-            return string[0:truncate_at] + ' ...'
-
-        return string
-
-    # TODO [review] State dependency
-    state = State(view)
-
-    items = []
-    for k, v in state.registers.to_dict().items():
-        if v:
-            if len(v) > 0 and v[0]:
-                lines = v[0].splitlines()
-                value = '^J'.join(lines)
-
-                # The splitlines function will remove a final newline, if
-                # present. So joining the lines with the join-line indicator
-                # (^J) may be missing a final join-line indicator.
-                if len(''.join(lines)) < len(v[0]):
-                    value += '^J'
-
-                items.append('"{}   {}'.format(k, _truncate(value, 78)))
-
-    def on_done(idx):
-        if idx == -1:
-            return
-
-        state.registers['"'] = [list(state.registers.to_dict().values())[idx]]
-
-    if items:
-        window.show_quick_panel(sorted(items), on_done, flags=MONOSPACE_FONT)
-
-
-# TODO [refactor] into window module
-@_changing_cd
-def ex_new(window, *args, **kwargs):
-    window.run_command('new_file')
-
-
 def ex_yank(view, register, line_range, *args, **kwargs):
     line_range = line_range.resolve(view)
 
@@ -1319,210 +1523,3 @@ def ex_yank(view, register, line_range, *args, **kwargs):
 
     if register == '"':
         state.registers['0'] = [text]
-
-
-def ex_tabnext(window, *args, **kwargs):
-    window_tab_control(window, command='next')
-
-
-def ex_tabprevious(window, *args, **kwargs):
-    window_tab_control(window, command='prev')
-
-
-def ex_tablast(window, *args, **kwargs):
-    window_tab_control(window, command='last')
-
-
-def ex_tabfirst(window, *args, **kwargs):
-    window_tab_control(window, command='first')
-
-
-def ex_tabonly(window, *args, **kwargs):
-    window_tab_control(window, command='only')
-
-
-@_changing_cd
-def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
-    # XXX Currently behaves as on Unix systems for all platforms.
-    if view.is_dirty() and not forceit:
-        return message("E37: No write since last change")
-
-    # TODO [review] State dependency
-    state = State(view)
-
-    if not path:
-        state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
-
-        return ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
-
-    # TODO: It seems there a few symbols that are always substituted when they represent a
-    # filename. We should have a global method of substiting them.
-    if path == '%:h':
-        fname = view.file_name()
-        if fname:
-            state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
-
-            ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
-
-        return
-
-    path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
-    if not os.path.exists(path):
-        return message("E344: Can't find directory \"%s\" in cdpath" % path)
-
-    state.settings.vi['_cmdline_cd'] = path
-
-    ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
-
-
-# Non-standard command to change the current directory to the active view's
-# directory. In Sublime Text, the current directory doesn't follow the
-# active view, so it's convenient to be able to align both easily.
-# XXX: Is the above still true?
-# XXX: This command may be removed at any time.
-def ex_cdd(view, forceit=False, *args, **kwargs):
-    if view.is_dirty() and not forceit:
-        return message("E37: No write since last change")
-
-    path = os.path.dirname(view.file_name())
-
-    try:
-        # TODO [review] State dependency
-        state = State(view)
-
-        state.settings.vi['_cmdline_cd'] = path
-        status_message(path)
-    except IOError:
-        message("E344: Can't find directory \"%s\" in cdpath" % path)
-
-
-# TODO [refactor] into window module
-# TODO Refactor like ExSplit
-def ex_vsplit(window, view, file=None, *args, **kwargs):
-    max_splits = 4
-
-    layout_data = {
-        1: {"cells": [[0, 0, 1, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 1.0]},
-        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
-    }
-
-    groups = window.num_groups()
-    if groups >= max_splits:
-        return message('Can\'t create more groups')
-
-    old_view = view
-    pos = ''
-    current_file_name = None
-    if old_view and old_view.file_name():
-        pos = ':{0}:{1}'.format(*old_view.rowcol(old_view.sel()[0].b))
-        current_file_name = old_view.file_name() + pos
-
-    window.run_command('set_layout', layout_data[groups + 1])
-
-    def open_file(window, file):
-        window.open_file(file, group=(window.num_groups() - 1), flags=(FORCE_GROUP | ENCODED_POSITION))
-
-    if file:
-        existing = window.find_open_file(file)
-        pos = ''
-        if existing:
-            pos = ':{0}:{1}'.format(*existing.rowcol(existing.sel()[0].b))
-
-        return open_file(window, file + pos)
-
-    if current_file_name:
-        open_file(window, current_file_name)
-    else:
-        window.new_file()
-
-
-# TODO Unify with <C-w>s
-def ex_split(window, file=None, *args, **kwargs):
-    window_split(window, file)
-
-
-# TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
-# Non-standard Vim :unvsplit command
-def ex_unvsplit(window, *args, **kwargs):
-    groups = window.num_groups()
-    if groups == 1:
-        return status_message("can't delete more groups")
-
-    # If we don't do this, cloned views will be moved to the previous group and
-    # kept around. We want to close them instead.
-
-    layout_data = {
-        1: {"cells": [[0, 0, 1, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 1.0]},
-        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
-    }
-
-    window.run_command('close')
-    window.run_command('set_layout', layout_data[groups - 1])
-
-
-def ex_setlocal(view, option, value, *args, **kwargs):
-    if option.endswith('?'):
-        return message('not implemented')
-
-    try:
-        set_local(view, option, value)
-    except KeyError:
-        status_message('no such option')
-    except ValueError:
-        status_message('invalid value for option')
-
-
-def ex_set(view, option, value, *args, **kwargs):
-    if option.endswith('?'):
-        return message('not implemented')
-
-    try:
-        set_global(view, option, value)
-    except KeyError:
-        status_message('no such option')
-    except ValueError:
-        status_message('invalid value for option')
-
-
-def ex_let(name, value, *args, **kwargs):
-    variables.set(name, value)
-
-
-def ex_wqall(window, *args, **kwargs):
-    if not all(view.file_name() for view in window.views()):
-        ui_blink()
-
-        return message("E32: No file name")
-
-    if any(view.is_read_only() for view in window.views()):
-        ui_blink()
-
-        return message("E45: 'readonly' option is set (add ! to override)")
-
-    window.run_command('save_all')
-
-    # TODO Remove assert statements
-    assert not any(view.is_dirty() for view in window.views())
-
-    window.run_command('close_all')
-    window.run_command('exit')
