@@ -24,6 +24,7 @@ from NeoVintageous.nv.vi.settings import _SCOPE_VI_WINDOW
 from NeoVintageous.nv.vi.settings import _SCOPE_VIEW
 from NeoVintageous.nv.vi.settings import _SCOPE_WINDOW
 from NeoVintageous.nv.vi.settings import _set_generic_view_setting
+from NeoVintageous.nv.vi.settings import _set_list
 from NeoVintageous.nv.vi.settings import _set_minimap
 from NeoVintageous.nv.vi.settings import _set_sidebar
 from NeoVintageous.nv.vi.settings import _SublimeSettings
@@ -119,6 +120,7 @@ class TestViEditorSettings(unittest.ViewTestCase):
             'incsearch',
             'ignorecase',
             'autoindent',
+            'list',
             'showminimap',
             'rulers',
             'showsidebar',
@@ -141,6 +143,8 @@ class TestViEditorSettings(unittest.ViewTestCase):
                                            parser=None, action=_set_generic_view_setting, negatable=False),
             'showminimap': _vi_user_setting(scope=_SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
                                             parser=None, action=_set_minimap, negatable=True),
+            'list': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False,
+                                     parser=None, action=_set_list, negatable=True),
             'visualbell': _vi_user_setting(scope=_SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True,
                                            parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
             'rulers': _vi_user_setting(scope=_SCOPE_VIEW, values=None, default=[],

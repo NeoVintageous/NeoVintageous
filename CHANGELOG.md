@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased (1.6.0)
 
+## Added
+
+* Added [#70](https://github.com/NeoVintageous/NeoVintageous/issues/70): `:set list` should show whitespace
+
 ## Fixed
 
 * Fixed [#150](https://github.com/NeoVintageous/NeoVintageous/issues/150): Remove lines with regular expression
