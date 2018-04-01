@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-
 from functools import wraps
 import inspect
 import os
@@ -97,6 +96,7 @@ def _changing_cd(f, *args, **kwargs):
 
 
 def _set_next_selection(view, data):
+    # TODO [review] Should this overwrite "ex_data": For example it may contain things like the "prev_sel".
     view.settings().set('ex_data', {'next_sel': data})
 
 
@@ -108,20 +108,15 @@ def _serialize_deserialize(f, *args, **kwargs):
         if not view:
             raise RuntimeError('view is required')
 
-        #
-        # Serialize
-        #
+        # Serialize selection.
 
         sels = [(r.a, r.b) for r in list(view.sel())]
         view.settings().set('ex_data', {'prev_sel': sels})
 
         f(*args, **kwargs)
 
-        #
-        # Set selection
-        #
+        # Deserialise next selection.
 
-        # Deserialise
         ex_data = view.settings().get('ex_data')
         if 'next_sel' in ex_data:
             next_sel = ex_data['next_sel']
@@ -129,13 +124,10 @@ def _serialize_deserialize(f, *args, **kwargs):
             next_sel = []
 
         if next_sel:
-            print('adding next selection: ', next_sel)
             view.sel().clear()
             view.sel().add_all([Region(b) for (a, b) in next_sel])
 
-        #
-        # Set mode
-        #
+        # Enter normal mode.
 
         # TODO [review] State dependency
         state = State(view)
