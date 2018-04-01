@@ -27,7 +27,7 @@ def scan_cmd_global(state):
     c = state.consume()
 
     bang = c == '!'
-    sep = c if not bang else c.consume()
+    sep = c if not bang else state.consume()
 
     # TODO: we're probably missing legal separators.
     # TODO [refactor] and remove assertion

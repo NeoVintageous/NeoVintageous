@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#323](https://github.com/NeoVintageous/NeoVintageous/issues/323): `:g!/222/p` is bailing out with error: 'str' object has no attribute 'consume'
 * Fixed [#153](https://github.com/NeoVintageous/NeoVintageous/issues/153): Cursor gets stuck after a few edit operations
 * Fixed [#322](https://github.com/NeoVintageous/NeoVintageous/issues/322): `:print` doesn't work
 * Fixed [#320](https://github.com/NeoVintageous/NeoVintageous/issues/320): `:move`  `KeyError: 'next_sel'` when address is the same as current line
