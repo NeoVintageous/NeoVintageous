@@ -65,7 +65,7 @@ def reload():
 def _run():
     _log.debug('run %s', _file_name())
 
-    from NeoVintageous.nv.cmds_ex import do_ex_command
+    from NeoVintageous.nv.ex_cmds import do_ex_command
 
     try:
         window = sublime.active_window()

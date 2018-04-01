@@ -17,19 +17,19 @@
 
 import unittest
 
-from NeoVintageous.nv.ex.commands import scan_cmd_buffers
-from NeoVintageous.nv.ex.commands import scan_cmd_cd
-from NeoVintageous.nv.ex.commands import scan_cmd_close
-from NeoVintageous.nv.ex.commands import scan_cmd_exit
-from NeoVintageous.nv.ex.commands import scan_cmd_file
-from NeoVintageous.nv.ex.commands import scan_cmd_global
-from NeoVintageous.nv.ex.commands import scan_cmd_noremap
-from NeoVintageous.nv.ex.commands import scan_cmd_only
-from NeoVintageous.nv.ex.commands import scan_cmd_substitute
-from NeoVintageous.nv.ex.commands import scan_cmd_tabnext
-from NeoVintageous.nv.ex.commands import TokenCommand
-from NeoVintageous.nv.ex.commands import TokenEof
 from NeoVintageous.nv.ex.scanner import _ScannerState
+from NeoVintageous.nv.ex_routes import scan_cmd_buffers
+from NeoVintageous.nv.ex_routes import scan_cmd_cd
+from NeoVintageous.nv.ex_routes import scan_cmd_close
+from NeoVintageous.nv.ex_routes import scan_cmd_exit
+from NeoVintageous.nv.ex_routes import scan_cmd_file
+from NeoVintageous.nv.ex_routes import scan_cmd_global
+from NeoVintageous.nv.ex_routes import scan_cmd_noremap
+from NeoVintageous.nv.ex_routes import scan_cmd_only
+from NeoVintageous.nv.ex_routes import scan_cmd_substitute
+from NeoVintageous.nv.ex_routes import scan_cmd_tabnext
+from NeoVintageous.nv.ex_routes import TokenCommand
+from NeoVintageous.nv.ex_routes import TokenEof
 
 
 class Test_scan_cmd_buffers(unittest.TestCase):

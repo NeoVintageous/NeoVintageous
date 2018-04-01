@@ -17,7 +17,6 @@
 
 import re
 
-from .commands import command_routes
 from .tokens import TokenComma
 from .tokens import TokenDigits
 from .tokens import TokenDollar
@@ -29,6 +28,7 @@ from .tokens import TokenPercent
 from .tokens import TokenSearchBackward
 from .tokens import TokenSearchForward
 from .tokens import TokenSemicolon
+from NeoVintageous.nv.ex_routes import command_routes
 
 
 class _ScannerState:

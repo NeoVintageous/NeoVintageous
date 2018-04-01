@@ -24,9 +24,9 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
-from NeoVintageous.nv.cmds_ex import do_ex_command
-from NeoVintageous.nv.cmds_ex import do_ex_command_default
-from NeoVintageous.nv.cmds_ex import do_ex_text_command
+from NeoVintageous.nv.ex_cmds import do_ex_command
+from NeoVintageous.nv.ex_cmds import do_ex_command_default
+from NeoVintageous.nv.ex_cmds import do_ex_text_command
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse_for_fs
 from NeoVintageous.nv.ex.completions import parse_for_setting

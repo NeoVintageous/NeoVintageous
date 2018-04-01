@@ -17,8 +17,8 @@
 
 from collections import OrderedDict
 
-from .tokens import TokenCommand
-from .tokens import TokenEof
+from NeoVintageous.nv.ex.tokens import TokenCommand
+from NeoVintageous.nv.ex.tokens import TokenEof
 
 
 # TODO [bug] (all commands) ":command" followed by character that is not "!"  shouldn't be # valid e.g. the ":close" command should run when !:closex". There are a # bunch of commands that have this bug.  # noqa: E501

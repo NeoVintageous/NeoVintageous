@@ -693,7 +693,7 @@ def window_tab_control(window, command, file_name=None, index=None):
             window.focus_view(group_view)
 
             # TODO [review] Probably doesn't need use :quit (just close the view).
-            from NeoVintageous.nv.cmds_ex import do_ex_command
+            from NeoVintageous.nv.ex_cmds import do_ex_command
 
             do_ex_command(window, 'quit')
 

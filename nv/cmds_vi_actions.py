@@ -23,7 +23,7 @@ from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
 
-from NeoVintageous.nv.cmds_ex import do_ex_command
+from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
