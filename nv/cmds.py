@@ -25,8 +25,8 @@ from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
 from NeoVintageous.nv.cmds_ex import do_ex_command
+from NeoVintageous.nv.cmds_ex import do_ex_command_default
 from NeoVintageous.nv.cmds_ex import do_ex_text_command
-# from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse_for_fs
 from NeoVintageous.nv.ex.completions import parse_for_setting
@@ -719,16 +719,20 @@ class _nv_cmdline(WindowCommand):
         try:
             parsed = parse_command_line(cmdline[1:])
             if not parsed.command:
-                # FIXME Fix default command
-                # print('use default command')
-                # parsed.command = TokenCommandGoto()
-                return
 
-            do_ex_command(
-                self.window,
-                parsed.command.target_command,
-                {'command_line': cmdline[1:]}
-            )
+                # Default ex command. See :h [range].
+
+                view = self.window.active_view()
+                if not view:
+                    return
+
+                if not parsed.line_range:
+                    return
+
+                do_ex_command_default(window=self.window, view=self.window.active_view(), line_range=parsed.line_range)
+            else:
+                do_ex_command(self.window, parsed.command.target_command, {'command_line': cmdline[1:]})
+
         except Exception as e:
             message('{} ({})'.format(str(e), cmdline))
             _log.exception('{}'.format(cmdline))

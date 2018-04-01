@@ -232,7 +232,7 @@ def do_ex_command(window, name, args=None):
         _log.debug('finished ex window command')
 
 
-def ex_goto(window, view, line_range, *args, **kwargs):
+def do_ex_command_default(window, view, line_range, *args, **kwargs):
     r = line_range.resolve(view)
     line_nr = row_at(view, r.a) + 1
 
