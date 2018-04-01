@@ -794,6 +794,19 @@ def _ex_route_snoremap(state):
     return None, [command, TokenEof()]
 
 
+def _ex_route_sunmap(state):
+    command = TokenCommand('sunmap')
+    params = {'keys': None}
+
+    m = state.match(r'\s*(?P<keys>.+?)\s*$')
+    if m:
+        params.update(m.groupdict())
+
+    command.params = params
+
+    return None, [command, TokenEof()]
+
+
 def _ex_route_split(state):
     command = TokenCommand('split')
     params = {'file': None}
@@ -1294,6 +1307,7 @@ ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
 ex_routes[r'sh(?:ell)?'] = _ex_route_shell
 ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
 ex_routes[r'sp(?:lit)?'] = _ex_route_split
+ex_routes[r'sunm(?:ap)?'] = _ex_route_sunmap
 ex_routes[r'tabfir(?:st)?'] = _ex_route_tabfirst
 ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
 ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
