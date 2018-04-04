@@ -527,6 +527,8 @@ class _enter_normal_mode(ViTextCommandBase):
         state.update_xpos(force=True)
         state.reset_status()
 
+        self.view.run_command('_nv_fix_st_eol_caret', {'mode': state.mode})
+
 
 class _enter_normal_mode_impl(ViTextCommandBase):
     def __init__(self, *args, **kwargs):

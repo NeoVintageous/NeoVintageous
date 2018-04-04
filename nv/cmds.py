@@ -192,6 +192,7 @@ class _nv_cmdline_feed_key(TextCommand):
         _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
 
+# TODO Replace with a functional api that commands can use directly.
 class _nv_fix_st_eol_caret(TextCommand):
 
     # Tries to workaround some of the Sublime Text issues where the cursor caret
@@ -201,12 +202,14 @@ class _nv_fix_st_eol_caret(TextCommand):
     # correct position >>>eo|l|<<< e.g. a left mouse click after the end of a
     # line. Some of these issues can't be worked-around e.g. the mouse click
     # issue described above.
+    # See https://github.com/SublimeTextIssues/Core/issues/2121.
 
     def run(self, edit, mode=None):
         def f(view, s):
             if mode in (NORMAL, INTERNAL_NORMAL):
-                if ((view.substr(s.b) == '\n' or s.b == view.size()) and not view.line(s.b).empty()):
-                    return Region(s.b - 1)
+                pt = s.b
+                if ((view.substr(pt) == '\n' or pt == view.size()) and not view.line(pt).empty()):
+                    return Region(pt - 1)
 
             return s
 

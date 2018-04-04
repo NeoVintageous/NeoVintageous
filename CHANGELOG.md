@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#328](https://github.com/NeoVintageous/NeoVintageous/issues/328): Entering normal mode should not put cursor on EOL character
 * Fixed [#324](https://github.com/NeoVintageous/NeoVintageous/issues/324): Entering Normal mode from Visual Block mode creates multiple selection
 * Fixed [#329](https://github.com/NeoVintageous/NeoVintageous/issues/329): Redo command should not leave cursor on EOL character
 * Fixed [#209](https://github.com/NeoVintageous/NeoVintageous/issues/209): Jumping to mark in visual mode does not work

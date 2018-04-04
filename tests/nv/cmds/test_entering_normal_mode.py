@@ -80,3 +80,43 @@ class TestVisualBlock(unittest.ViewTestCase):
 
         self.assertNormalMode()
         self.assertSelection(7)
+
+
+class TestEnterNormalMode(unittest.ViewTestCase):
+
+    def test_visual_mode_positions_cursor_on_last_character_not_eol_char(self):
+        self.write('ab\n')
+        self.select((1, 3))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(1)
+
+        self.write('ab\n')
+        self.select((3, 1))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(1)
+
+        self.write('abc\ndef\n')
+        self.select((1, 4))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(2)
+
+        self.write('abc\ndef\n')
+        self.select((6, 3))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(2)
