@@ -64,14 +64,14 @@ class TokenOfCommand(Token):
     #       supports the global_lines argument is the "print" command e.g. print
     #       all lines matching \d+ into new buffer: ":%global/\d+/print".
     #
-    #   :target_command (str): The name of the Sublime Text command to execute.
+    #   :target (str): The name of the Sublime Text command to execute.
 
     def __init__(self, params, *args, forced=False, **kwargs):
         self.params = params or {}
         self.forced = forced
         self.addressable = False
         self.cooperates_with_global = False
-        self.target_command = None
+        self.target = None
 
         super().__init__(*args, **kwargs)
 
@@ -88,10 +88,6 @@ class TokenCommand(TokenOfCommand):
 
         self.name = name
         self.target = target
-
-        # FIXME TMP BC
-        self.target_command = target
-
         self.addressable = addressable
         self.cooperates_with_global = cooperates_with_global
 

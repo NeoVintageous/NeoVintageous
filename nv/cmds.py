@@ -731,7 +731,7 @@ class _nv_cmdline(WindowCommand):
 
                 do_ex_command_default(window=self.window, view=self.window.active_view(), line_range=parsed.line_range)
             else:
-                do_ex_command(self.window, parsed.command.target_command, {'command_line': cmdline[1:]})
+                do_ex_command(self.window, parsed.command.target, {'command_line': cmdline[1:]})
 
         except Exception as e:
             message('{} ({})'.format(str(e), cmdline))

@@ -594,7 +594,7 @@ def ex_global(window, view, pattern, cmd, line_range, *args, **kwargs):
 
     cmd.params['global_lines'] = matches
 
-    do_ex_command(window, cmd.target_command, cmd.params)
+    do_ex_command(window, cmd.target, cmd.params)
 
 
 def ex_help(window, subject=None, forceit=False, *args, **kwargs):

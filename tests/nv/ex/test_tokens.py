@@ -208,7 +208,7 @@ class TestTokenOfCommand(unittest.TestCase):
         self.assertEqual(token.forced, False)
         self.assertEqual(token.addressable, False)
         self.assertEqual(token.cooperates_with_global, False)
-        self.assertEqual(token.target_command, None)
+        self.assertEqual(token.target, None)
         self.assertEqual(token.content, 'c')
 
     def test_is_instance_of_token(self):
@@ -255,7 +255,7 @@ class TestTokenOfCommand(unittest.TestCase):
                 self.forced = False
                 self.addressable = False
                 self.cooperates_with_global = False
-                self.target_command = None
+                self.target = None
 
         self.assertFalse(token_a == NotAToken({'a': 'b', 'x': 'y'}, 'c'))
         self.assertFalse(token_a.__eq__(NotAToken({'a': 'b', 'x': 'y'}, 'c')))
@@ -266,7 +266,7 @@ class TestTokenOfCommand(unittest.TestCase):
         self.assertEqual(token_a.forced, False)
         self.assertEqual(token_a.addressable, False)
         self.assertEqual(token_a.cooperates_with_global, False)
-        self.assertEqual(token_a.target_command, None)
+        self.assertEqual(token_a.target, None)
         self.assertEqual(token_a.content, 'c')
 
         token_b = TokenOfCommand({'x': 'y'}, 'c')
@@ -282,7 +282,7 @@ class TestTokenOfCommand(unittest.TestCase):
         self.assertFalse(token_a == token_b)
 
         token_b = TokenOfCommand({'x': 'y'}, 'c')
-        token_b.target_command = 'foobar'
+        token_b.target = 'foobar'
         self.assertFalse(token_a == token_b)
 
 
