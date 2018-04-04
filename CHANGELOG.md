@@ -6,6 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#333](https://github.com/NeoVintageous/NeoVintageous/issues/333): `:ou` (`:ounmap` alias) doesn't work
+* Fixed [#332](https://github.com/NeoVintageous/NeoVintageous/issues/332): `:no` (`:noremap` alias) doesn't work
+* Fixed [#331](https://github.com/NeoVintageous/NeoVintageous/issues/331): `:files` doesn't work
 * Fixed [#325](https://github.com/NeoVintageous/NeoVintageous/issues/325): `:sunmap` doesn't work, prints message E492: Not an editor command
 * Fixed [#324](https://github.com/NeoVintageous/NeoVintageous/issues/324): Entering Normal mode from Visual Block mode creates multiple selection
 * Fixed [#323](https://github.com/NeoVintageous/NeoVintageous/issues/323): `:g!/222/p` is bailing out with error: 'str' object has no attribute 'consume'

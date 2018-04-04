@@ -17,6 +17,7 @@
 
 import unittest
 
+from NeoVintageous.nv.ex.scanner import _scan_command
 from NeoVintageous.nv.ex.scanner import _ScannerState
 from NeoVintageous.nv.ex.scanner import Scanner
 from NeoVintageous.nv.ex.scanner import TokenComma
@@ -431,3 +432,42 @@ class TestScannerWriteCommand(unittest.TestCase):
         tokens = list(scanner.scan())
         params = {'++': '', 'file_name': 'foo.txt', '>>': False, 'cmd': ''}
         self.assertEqual([TokenCommand('write', addressable=True, params=params), TokenEof()], tokens)
+
+
+class Test_scan_command(unittest.TestCase):
+
+    def test_can_scan_commands(self):
+        def assert_command(string, expected):
+            actual = _scan_command(_ScannerState(string))
+            # Do this check so that if assertion fails
+            # we get a diff of the command in the
+            # failure in result.
+            self.assertEqual(actual[1], expected[1])
+            self.assertEqual(actual, expected)
+
+        assert_command('&&', (None, [TokenCommand('&&', target='ex_double_ampersand', params={'flags': [], 'count': ''}, addressable=True), TokenEof()]))  # noqa: E501
+        assert_command('buffers', (None, [TokenCommand('buffers'), TokenEof()]))  # noqa: E501
+        assert_command('cd!', (None, [TokenCommand('cd', params={'path': None, '-': None}, forced=True), TokenEof()]))  # noqa: E501
+        assert_command('cd', (None, [TokenCommand('cd', params={'path': None, '-': None}), TokenEof()]))  # noqa: E501
+        assert_command('clo', (None, [TokenCommand('close'), TokenEof()]))  # noqa: E501
+        assert_command('clos', (None, [TokenCommand('close'), TokenEof()]))  # noqa: E501
+        assert_command('close!', (None, [TokenCommand('close', forced=True), TokenEof()]))  # noqa: E501
+        assert_command('close', (None, [TokenCommand('close'), TokenEof()]))  # noqa: E501
+        assert_command('copy 3', (None, [TokenCommand('copy', params={'address': '3'}, addressable=True), TokenEof()]))  # noqa: E501
+        assert_command('cquit', (None, [TokenCommand('cquit'), TokenEof()]))  # noqa: E501
+        assert_command('delete', (None, [TokenCommand('delete', params={'register': '"', 'count': None}, addressable=True), TokenEof()]))  # noqa: E501
+        assert_command('f', (None, [TokenCommand('file'), TokenEof()]))  # noqa: E501
+        assert_command('file', (None, [TokenCommand('file'), TokenEof()]))  # noqa: E501
+        assert_command('files', (None, [TokenCommand('buffers'), TokenEof()]))  # noqa: E501
+        assert_command('g/foo/print', (None, [TokenCommand('global', params={'pattern': 'foo', 'cmd': 'print'}, addressable=True), TokenEof()]))  # noqa: E501
+        assert_command('global/foo/print', (None, [TokenCommand('global', params={'pattern': 'foo', 'cmd': 'print'}, addressable=True), TokenEof()]))  # noqa: E501
+        assert_command('h intro', (None, [TokenCommand('help', params={'subject': 'intro'}), TokenEof()]))  # noqa: E501
+        assert_command('help intro', (None, [TokenCommand('help', params={'subject': 'intro'}), TokenEof()]))  # noqa: E501
+        assert_command('ls', (None, [TokenCommand('buffers'), TokenEof()]))  # noqa: E501
+        assert_command('nn', (None, [TokenCommand('nnoremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
+        assert_command('nnoremap', (None, [TokenCommand('nnoremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
+        assert_command('no', (None, [TokenCommand('noremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
+        assert_command('noremap', (None, [TokenCommand('noremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
+        assert_command('only', (None, [TokenCommand('only'), TokenEof()]))  # noqa: E501
+        assert_command('ou', (None, [TokenCommand('ounmap', params={'keys': None}), TokenEof()]))  # noqa: E501
+        assert_command('ounmap', (None, [TokenCommand('ounmap', params={'keys': None}), TokenEof()]))  # noqa: E501

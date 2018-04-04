@@ -1276,10 +1276,10 @@ ex_routes[r'co(?:py)?'] = _ex_route_copy
 ex_routes[r'cq(?:uit)?'] = _ex_route_cquit
 ex_routes[r'd(?:elete)?'] = _ex_route_delete
 ex_routes[r'exi(?:t)?'] = _ex_route_exit
+ex_routes[r'(?:files|ls|buffers)!?'] = _ex_route_buffers
 ex_routes[r'f(?:ile)?'] = _ex_route_file
 ex_routes[r'g(?:lobal)?(?=[^ ])'] = _ex_route_global
 ex_routes[r'h(?:elp)?'] = _ex_route_help
-ex_routes[r'(?:ls|files|buffers)!?'] = _ex_route_buffers
 ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
 ex_routes[r'x(?:it)?$'] = _ex_route_exit
 ex_routes[r'^cd(?=[^d]|$)'] = _ex_route_cd
@@ -1287,13 +1287,13 @@ ex_routes[r'^cdd'] = _ex_route_cdd
 ex_routes[r'e(?:dit)?(?= |$)?'] = _ex_route_edit
 ex_routes[r'let\s'] = _ex_route_let
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
-ex_routes[r'no(?:remap)'] = _ex_route_noremap
+ex_routes[r'no(?:remap)?'] = _ex_route_noremap
 ex_routes[r'new'] = _ex_route_new
 ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap
 ex_routes[r'nun(?:map)?'] = _ex_route_nunmap
 ex_routes[r'ono(?:remap)?'] = _ex_route_onoremap
 ex_routes[r'on(?:ly)?(?=!$|$)'] = _ex_route_only
-ex_routes[r'ounm(?:ap)?'] = _ex_route_ounmap
+ex_routes[r'ou(nmap)?'] = _ex_route_ounmap
 ex_routes[r'p(?:rint)?$'] = _ex_route_print
 ex_routes[r'pwd?$'] = _ex_route_pwd
 ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
