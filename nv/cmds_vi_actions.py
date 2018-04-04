@@ -340,16 +340,17 @@ class _vi_ctrl_r(ViWindowCommandBase):
         if change_count_after == change_count_before:
             ui_blink()
 
-        self.correct_xpos()
-
-    # XXX: make this a global 'service'?
-    # XXX: In fact, this may indicate that the redone command is at fault. For example, it seems
-    # that de near EOL does not adjust xpos as it should. In summary: we need to revise commands
-    # and probably remove this here.
-    def correct_xpos(self):
+        # Fix eol issue.
+        # See https://github.com/SublimeTextIssues/Core/issues/2121.
         def f(view, s):
-            if (view.substr(s.b) == '\n' and not view.line(s.b).empty()):
+            pt = s.b
+            char = view.substr(pt)
+            if (char == '\n' and not view.line(pt).empty()):
+                return Region(pt - 1)
+
+            if char == '\x00' and pt == self._view.size():
                 return Region(s.b - 1)
+
             return s
 
         regions_transformer(self._view, f)
