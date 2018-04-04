@@ -55,12 +55,11 @@ class TestRangeNode(unittest.TestCase):
 class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
 
     def test_raises_exception_for_unknown_tokens(self):
-        class _UnknownToken:
-            token_type = -1
+        class Unknown:
             content = ''
 
         with self.assertRaises(NotImplementedError):
-            _resolve_line_number(self.view, _UnknownToken(), 0)
+            _resolve_line_number(self.view, Unknown(), 0)
 
     def test_digits(self):
         self.assertEqual(_resolve_line_number(self.view, TokenDigits('11'), None), 10)

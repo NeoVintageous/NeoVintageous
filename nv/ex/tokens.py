@@ -16,36 +16,10 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# FIXME Some command token constants values are the same as the some _TOKEN* contants.
-# TODO [review] Do we need the token constants?
-
-
-_TOKEN_EOF = -1
-_TOKEN_UNKNOWN = 0
-_TOKEN_DOT = 1
-_TOKEN_DOLLAR = 2
-_TOKEN_SEARCH_FORWARD = 3
-_TOKEN_SEARCH_BACKWARD = 4
-_TOKEN_COMMA = 5
-_TOKEN_SEMICOLON = 6
-_TOKEN_OFFSET = 7
-_TOKEN_PERCENT = 8
-_TOKEN_DIGITS = 9
-_TOKEN_MARK = 10
-
-
-# TODO [refactor] Look into getting rid of token_types and content, I don't
-#   think they are used for anything. They can probably be inferred by the
-#   extending class name.
 class Token:
 
-    # Attributes:
-    #   :token_type (int):
-    #   :content (str):
-
-    def __init__(self, token_type, content):
-        # type: (int, str) -> None
-        self.token_type = token_type
+    def __init__(self, content):
+        # type: (str) -> None
         self.content = content
 
     def __str__(self):
@@ -54,10 +28,10 @@ class Token:
 
     def __eq__(self, other):
         # type: (object) -> bool
-        if not isinstance(other, Token):
-            return False
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
 
-        return other.__dict__ == self.__dict__
+        return False
 
 
 class TokenOfCommand(Token):
@@ -107,7 +81,7 @@ class TokenOfCommand(Token):
 
 class TokenCommand(TokenOfCommand):
     def __init__(self, name, target=None, params=None, forced=False, addressable=False, cooperates_with_global=False):
-        super().__init__(token_type=100, content=name, forced=forced, params=params)
+        super().__init__(content=name, forced=forced, params=params)
 
         if target is None:
             target = 'ex_' + name
@@ -128,37 +102,37 @@ class TokenOfRange(Token):
 
 class TokenEof(Token):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_EOF, '__EOF__')
+        super().__init__('__EOF__')
 
 
 class TokenDollar(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_DOLLAR, '$')
+        super().__init__('$')
 
 
 class TokenComma(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_COMMA, ',')
+        super().__init__(',')
 
 
 class TokenSemicolon(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_SEMICOLON, ';')
+        super().__init__(';')
 
 
 class TokenOffset(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_OFFSET, content)
+        super().__init__(content)
 
 
 class TokenPercent(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_PERCENT, '%')
+        super().__init__('%')
 
 
 class TokenDot(TokenOfRange):
     def __init__(self, *args, **kwargs):
-        super().__init__(_TOKEN_DOT, '.')
+        super().__init__('.')
 
 
 class TokenOfSearch(TokenOfRange):
@@ -167,22 +141,22 @@ class TokenOfSearch(TokenOfRange):
 
 class TokenSearchForward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_SEARCH_FORWARD, content)
+        super().__init__(content)
 
 
 class TokenSearchBackward(TokenOfSearch):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_SEARCH_BACKWARD, content)
+        super().__init__(content)
 
 
 class TokenDigits(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_DIGITS, content)
+        super().__init__(content)
 
 
 class TokenMark(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
-        super().__init__(_TOKEN_MARK, content)
+        super().__init__(content)
 
     @property
     def exact(self):
