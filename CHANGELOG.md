@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Added
 
+* Added [#334](https://github.com/NeoVintageous/NeoVintageous/issues/334): Implement `:tabN[ext]` (`:tabprevious` alias)
 * Added [#330](https://github.com/NeoVintageous/NeoVintageous/issues/330): Implement `:tabc[lose]`
 
 ## Fixed

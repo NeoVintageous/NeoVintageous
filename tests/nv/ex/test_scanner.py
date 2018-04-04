@@ -473,3 +473,5 @@ class Test_scan_command(unittest.TestCase):
         assert_command('ounmap', (None, [TokenCommand('ounmap', params={'keys': None}), TokenEof()]))  # noqa: E501
         assert_command('tabclose', (None, [TokenCommand('tabclose'), TokenEof()]))  # noqa: E501
         assert_command('tabc', (None, [TokenCommand('tabclose'), TokenEof()]))  # noqa: E501
+        assert_command('tabNext', (None, [TokenCommand('tabprevious'), TokenEof()]))  # noqa: E501
+        assert_command('tabN', (None, [TokenCommand('tabprevious'), TokenEof()]))  # noqa: E501

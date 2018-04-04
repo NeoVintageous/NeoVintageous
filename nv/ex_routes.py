@@ -1314,6 +1314,7 @@ ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
 ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
 ex_routes[r'tabo(?:nly)?'] = _ex_route_tabonly
 ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
+ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
 ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
 ex_routes[r'una(?:bbreviate)?'] = _ex_route_unabbreviate
 ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
