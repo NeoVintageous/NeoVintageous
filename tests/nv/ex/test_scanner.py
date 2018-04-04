@@ -471,3 +471,5 @@ class Test_scan_command(unittest.TestCase):
         assert_command('only', (None, [TokenCommand('only'), TokenEof()]))  # noqa: E501
         assert_command('ou', (None, [TokenCommand('ounmap', params={'keys': None}), TokenEof()]))  # noqa: E501
         assert_command('ounmap', (None, [TokenCommand('ounmap', params={'keys': None}), TokenEof()]))  # noqa: E501
+        assert_command('tabclose', (None, [TokenCommand('tabclose'), TokenEof()]))  # noqa: E501
+        assert_command('tabc', (None, [TokenCommand('tabclose'), TokenEof()]))  # noqa: E501

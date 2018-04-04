@@ -413,6 +413,8 @@ class TestRoutes(unittest.TestCase):
         assert_route('substitute')
         assert_route('sunm')
         assert_route('sunmap')
+        assert_route('tabc')
+        assert_route('tabclose')
         assert_route('tabfir')
         assert_route('tabfirst')
         assert_route('tabl')

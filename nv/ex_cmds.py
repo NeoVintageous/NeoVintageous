@@ -1183,6 +1183,10 @@ def ex_sunmap(keys, *args, **kwargs):
         status_message('Mapping not found')
 
 
+def ex_tabclose(window, *args, **kwargs):
+    window_tab_control(window, command='close')
+
+
 def ex_tabfirst(window, *args, **kwargs):
     window_tab_control(window, command='first')
 

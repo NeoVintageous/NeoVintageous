@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased (1.6.0)
 
+## Added
+
+* Added [#330](https://github.com/NeoVintageous/NeoVintageous/issues/330): Implement `:tabc[lose]`
+
 ## Fixed
 
 * Fixed [#333](https://github.com/NeoVintageous/NeoVintageous/issues/333): `:ou` (`:ounmap` alias) doesn't work

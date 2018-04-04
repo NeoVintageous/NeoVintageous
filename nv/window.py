@@ -699,5 +699,8 @@ def window_tab_control(window, command, file_name=None, index=None):
 
         window.focus_view(view)
 
+    elif command == 'close':
+        window.run_command('close_by_index', {'group': group_index, 'index': view_index})
+
     else:
         return status_message('unknown tab control command')

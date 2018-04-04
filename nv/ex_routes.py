@@ -895,15 +895,24 @@ def _ex_route_substitute(state):
     return None, [command, TokenEof()]
 
 
+def _ex_route_tabclose(state):
+    command = TokenCommand('tabclose')
+    c = state.consume()
+    if c == state.EOF:
+        return None, [command, TokenEof()]
+
+    command.forced = c == '!'
+
+    return None, [command, TokenEof()]
+
+
 def _ex_route_tabfirst(state):
     command = TokenCommand('tabfirst')
     c = state.consume()
     if c == state.EOF:
         return None, [command, TokenEof()]
 
-    bang = c == '!'
-
-    command.forced = bang
+    command.forced = c == '!'
 
     return None, [command, TokenEof()]
 
@@ -914,9 +923,7 @@ def _ex_route_tablast(state):
     if c == state.EOF:
         return None, [command, TokenEof()]
 
-    bang = c == '!'
-
-    command.forced = bang
+    command.forced = c == '!'
 
     return None, [command, TokenEof()]
 
@@ -927,9 +934,7 @@ def _ex_route_tabnext(state):
     if c == state.EOF:
         return None, [command, TokenEof()]
 
-    bang = c == '!'
-
-    command.forced = bang
+    command.forced = c == '!'
 
     return None, [command, TokenEof()]
 
@@ -940,9 +945,7 @@ def _ex_route_tabonly(state):
     if c == state.EOF:
         return None, [command, TokenEof()]
 
-    bang = c == '!'
-
-    command.forced = bang
+    command.forced = c == '!'
 
     return None, [command, TokenEof()]
 
@@ -953,9 +956,7 @@ def _ex_route_tabprevious(state):
     if c == state.EOF:
         return None, [command, TokenEof()]
 
-    bang = c == '!'
-
-    command.forced = bang
+    command.forced = c == '!'
 
     return None, [command, TokenEof()]
 
@@ -1307,6 +1308,7 @@ ex_routes[r'sh(?:ell)?'] = _ex_route_shell
 ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
 ex_routes[r'sp(?:lit)?'] = _ex_route_split
 ex_routes[r'sunm(?:ap)?'] = _ex_route_sunmap
+ex_routes[r'tabc(?:lose)?'] = _ex_route_tabclose
 ex_routes[r'tabfir(?:st)?'] = _ex_route_tabfirst
 ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
 ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
