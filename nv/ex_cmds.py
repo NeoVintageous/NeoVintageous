@@ -268,6 +268,46 @@ def ex_browse(window, view, *args, **kwargs):
     })
 
 
+def ex_buffers(window, *args, **kwargs):
+    def _get_view_info(view):
+        path = view.file_name()
+        if path:
+            parent, leaf = os.path.split(path)
+            parent = os.path.basename(parent)
+            path = os.path.join(parent, leaf)
+        else:
+            path = view.name() or str(view.buffer_id())
+            leaf = view.name() or 'untitled'
+
+        status = []
+        if not view.file_name():
+            status.append("t")
+        if view.is_dirty():
+            status.append("*")
+        if view.is_read_only():
+            status.append("r")
+
+        if status:
+            leaf += ' (%s)' % ', '.join(status)
+
+        return [leaf, path]
+
+    file_names = [_get_view_info(view) for view in window.views()]
+    view_ids = [view.id() for view in window.views()]
+
+    def on_done(index):
+        if index == -1:
+            return
+
+        sought_id = view_ids[index]
+        for view in window.views():
+            # TODO: Start looking in current group.
+            if view.id() == sought_id:
+                window.focus_view(view)
+
+    window.show_quick_panel(file_names, on_done)
+
+
 @_changing_cd
 def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
     # XXX Currently behaves as on Unix systems for all platforms.
@@ -790,46 +830,6 @@ def ex_print(window, view, flags, line_range, global_lines=None, *args, **kwargs
                 characters += '\n'
 
         display.run_command('append', {'characters': characters})
-
-
-def ex_prompt_select_open_file(window, *args, **kwargs):
-    def _get_view_info(view):
-        path = view.file_name()
-        if path:
-            parent, leaf = os.path.split(path)
-            parent = os.path.basename(parent)
-            path = os.path.join(parent, leaf)
-        else:
-            path = view.name() or str(view.buffer_id())
-            leaf = view.name() or 'untitled'
-
-        status = []
-        if not view.file_name():
-            status.append("t")
-        if view.is_dirty():
-            status.append("*")
-        if view.is_read_only():
-            status.append("r")
-
-        if status:
-            leaf += ' (%s)' % ', '.join(status)
-
-        return [leaf, path]
-
-    file_names = [_get_view_info(view) for view in window.views()]
-    view_ids = [view.id() for view in window.views()]
-
-    def on_done(index):
-        if index == -1:
-            return
-
-        sought_id = view_ids[index]
-        for view in window.views():
-            # TODO: Start looking in current group.
-            if view.id() == sought_id:
-                window.focus_view(view)
-
-    window.show_quick_panel(file_names, on_done)
 
 
 @_changing_cd

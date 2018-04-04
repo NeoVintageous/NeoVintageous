@@ -36,7 +36,7 @@ class Test_ex_route_buffers(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_buffers(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('buffers', target='ex_prompt_select_open_file'), TokenEof()]))
+        self.assertEqual(actual, (None, [TokenCommand('buffers'), TokenEof()]))
 
     def test_raises_exception(self):
         with self.assertRaisesRegex(Exception, 'E488: Trailing characters'):

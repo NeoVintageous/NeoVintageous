@@ -65,9 +65,8 @@ def _ex_route_browse(state):
     return None, [command, TokenEof()]
 
 
-# TODO [refactor] Rename target from ex_prompt_select_open_file to buffers
 def _ex_route_buffers(state):
-    command = TokenCommand('buffers', target='ex_prompt_select_open_file')
+    command = TokenCommand('buffers')
 
     try:
         state.expect_eof()
