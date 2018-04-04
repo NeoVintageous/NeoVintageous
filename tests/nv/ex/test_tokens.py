@@ -19,12 +19,11 @@ import unittest
 
 from NeoVintageous.nv.ex.tokens import Token
 from NeoVintageous.nv.ex.tokens import TokenCommand
-from NeoVintageous.nv.ex.tokens import TokenPercent
 from NeoVintageous.nv.ex.tokens import TokenDigits
-from NeoVintageous.nv.ex.tokens import TokenMark
 from NeoVintageous.nv.ex.tokens import TokenDollar
-from NeoVintageous.nv.ex.tokens import TokenOfCommand
+from NeoVintageous.nv.ex.tokens import TokenMark
 from NeoVintageous.nv.ex.tokens import TokenOfRange
+from NeoVintageous.nv.ex.tokens import TokenPercent
 
 
 class TestToken(unittest.TestCase):
@@ -199,54 +198,27 @@ class TestCommandToken(unittest.TestCase):
 
         self.assertFalse(command_a1 == command_a2)
 
-
-class TestTokenOfCommand(unittest.TestCase):
-
-    def test_can_instantiate(self):
-        token = TokenOfCommand({}, 'c')
-        self.assertEqual(token.params, {})
-        self.assertEqual(token.forced, False)
-        self.assertEqual(token.addressable, False)
-        self.assertEqual(token.cooperates_with_global, False)
-        self.assertEqual(token.target, None)
-        self.assertEqual(token.content, 'c')
-
-    def test_is_instance_of_token(self):
-        self.assertIsInstance(TokenOfCommand({}, 'c'), Token)
-
-    def test_can_set_forced_attribute(self):
-        self.assertEqual(TokenOfCommand({}, 'c', forced=True).forced, True)
-        self.assertEqual(TokenOfCommand({}, 'c', forced=False).forced, False)
-
-    def test_eq(self):
-        token_a = TokenOfCommand({}, 'content val')
-        token_b = TokenOfCommand({}, 'content val')
-
-        self.assertTrue(token_a == token_b)
-        self.assertTrue(token_a.__eq__(token_b))
-
-        self.assertTrue(token_b == token_a)
-        self.assertTrue(token_b.__eq__(token_a))
-
     def test_eq_params(self):
-        token_a = TokenOfCommand({'a': 'b', 'x': 'y'}, 'c')
-        token_b = TokenOfCommand({'a': 'b', 'x': 'y'}, 'c')
+        token_a = TokenCommand('c', params={'a': 'b', 'x': 'y'})
+        token_b = TokenCommand('c', params={'a': 'b', 'x': 'y'})
 
         self.assertTrue(token_a == token_b)
         self.assertTrue(token_b == token_a)
+
+    def test_name_cannot_be_none(self):
+        with self.assertRaisesRegex(TypeError, "Can't convert 'NoneType' object to str"):
+            TokenCommand(None)
 
     def test_not_eq(self):
-        token_a = TokenOfCommand({'a': 'b', 'x': 'y'}, 'c')
+        token_a = TokenCommand('c', params={'a': 'b', 'x': 'y'})
 
-        self.assertTrue(token_a == TokenOfCommand({'a': 'b', 'x': 'y'}, 'c'), 'protect against false-positive')
-        self.assertFalse(token_a == TokenOfCommand({}, 'c'))
-        self.assertFalse(token_a == TokenOfCommand({'a': 'b', 'x': 'y'}, None))
-        self.assertFalse(token_a == TokenOfCommand({'a': 'b', 'x': 'y'}, 'a'))
-        self.assertFalse(token_a == TokenOfCommand({'a': 'b', 'x': 'y'}, None))
-        self.assertFalse(token_a == TokenOfCommand({'a': 'b', 'x': 'y'}, ''))
-        self.assertFalse(token_a == TokenOfCommand({'a': 'b', 'x': 'y'}, 'foo'))
-        self.assertFalse(token_a == TokenOfCommand({'a': 'b', 'x': 'foobar'}, 'c'))
-        self.assertFalse(token_a == TokenOfCommand({'foo': 'bar'}, 'c'))
+        self.assertTrue(token_a == TokenCommand('c', params={'a': 'b', 'x': 'y'}), 'protect against false-positive')
+        self.assertFalse(token_a == TokenCommand('c', params={}))
+        self.assertFalse(token_a == TokenCommand('a', params={'a': 'b', 'x': 'y'}))
+        self.assertFalse(token_a == TokenCommand('', params={'a': 'b', 'x': 'y'}))
+        self.assertFalse(token_a == TokenCommand('foo', params={'a': 'b', 'x': 'y'}))
+        self.assertFalse(token_a == TokenCommand('c', params={'a': 'b', 'x': 'foobar'}))
+        self.assertFalse(token_a == TokenCommand('c', params={'foo': 'bar'}))
 
         class NotAToken:
             def __init__(self, params, content):
@@ -261,27 +233,27 @@ class TestTokenOfCommand(unittest.TestCase):
         self.assertFalse(token_a.__eq__(NotAToken({'a': 'b', 'x': 'y'}, 'c')))
 
     def test_not_eq_attributes(self):
-        token_a = TokenOfCommand({'x': 'y'}, 'c')
+        token_a = TokenCommand('c', params={'x': 'y'})
         self.assertEqual(token_a.params, {'x': 'y'})
         self.assertEqual(token_a.forced, False)
         self.assertEqual(token_a.addressable, False)
         self.assertEqual(token_a.cooperates_with_global, False)
-        self.assertEqual(token_a.target, None)
+        self.assertEqual(token_a.target, 'ex_c')
         self.assertEqual(token_a.content, 'c')
 
-        token_b = TokenOfCommand({'x': 'y'}, 'c')
+        token_b = TokenCommand('c', params={'x': 'y'})
         token_b.forced = True
         self.assertFalse(token_a == token_b)
 
-        token_b = TokenOfCommand({'x': 'y'}, 'c')
+        token_b = TokenCommand('c', params={'x': 'y'})
         token_b.addressable = True
         self.assertFalse(token_a == token_b)
 
-        token_b = TokenOfCommand({'x': 'y'}, 'c')
+        token_b = TokenCommand('c', params={'x': 'y'})
         token_b.cooperates_with_global = True
         self.assertFalse(token_a == token_b)
 
-        token_b = TokenOfCommand({'x': 'y'}, 'c')
+        token_b = TokenCommand('c', params={'x': 'y'})
         token_b.target = 'foobar'
         self.assertFalse(token_a == token_b)
 

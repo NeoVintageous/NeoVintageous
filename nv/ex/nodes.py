@@ -180,7 +180,7 @@ class CommandLineNode(Node):
     def __init__(self, line_range, command):
         # Args:
         #   :line_range (RangeNode):
-        #   :command (TokenOfCommand):
+        #   :command (TokenCommand):
         self.line_range = line_range
         self.command = command
 

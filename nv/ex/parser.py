@@ -20,12 +20,12 @@ from .nodes import CommandLineNode
 from .nodes import RangeNode
 from .scanner import Scanner
 from .tokens import TokenComma
+from .tokens import TokenCommand
 from .tokens import TokenDigits
 from .tokens import TokenDollar
 from .tokens import TokenDot
 from .tokens import TokenEof
 from .tokens import TokenMark
-from .tokens import TokenOfCommand
 from .tokens import TokenOffset
 from .tokens import TokenPercent
 from .tokens import TokenSearchBackward
@@ -146,7 +146,7 @@ def _parse_line_ref(state, command_line):
 
         return _process_mark(token, state, command_line)
 
-    if isinstance(token, TokenOfCommand):
+    if isinstance(token, TokenCommand):
         _init_line_range(command_line)
         command_line.command = token
 

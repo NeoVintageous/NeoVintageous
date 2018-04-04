@@ -34,62 +34,46 @@ class Token:
         return False
 
 
-class TokenOfCommand(Token):
+class TokenCommand(Token):
 
-    # Args:
-    #   :params (dict): Default is {}.
-    #
-    #   :forced (bool): Indicates if the '!' (bang) character was placed
-    #       immediatley after the command. The '!' (bang) character after an
-    #       Ex command makes a command behave in a different way. The '!'
-    #       should be placed immediately after the command, without any
-    #       blanks in between. If you insert blanks the '!' will be seen as
-    #       an argument for the command, which has a different meaning. For
-    #       example:
-    #           :w! name        Write the current buffer to file "name",
-    #                           overwriting any existing file.
-    #           :w !name        Send the current buffer as standard input to
-    #                           command "name".
-    #
-    # Attributes:
-    #
-    #   :addressable (bool): Indicates if the command accepts ranges.
-    #
-    #   :cooperates_with_global (bool): Indicates if the command cooperates with
-    #       the :global command. This is special flag, because ex commands don't
-    #       yet support a global_lines argument. It seems that, in Vim, some ex
-    #       commands work well with :global and others ignore :global ranges.
-    #       However, according to the docs, all ex commands should work with
-    #       :global ranges. At the time of writing, the only command that
-    #       supports the global_lines argument is the "print" command e.g. print
-    #       all lines matching \d+ into new buffer: ":%global/\d+/print".
-    #
-    #   :target (str): The name of the Sublime Text command to execute.
+    def __init__(self, name, target=None, params=None, forced=False, addressable=False, cooperates_with_global=False):  # noqa: E501
+        # Args:
+        #   :name (str):
+        #   :target (str): The name of the ex command to exectute. Defaults to the
+        #       name prefixed with "ex_".
+        #   :params (dict): Default is {}.
+        #   :forced (bool): Indicates if the '!' (bang) character was placed
+        #       immediatley after the command. The '!' (bang) character after an
+        #       Ex command makes a command behave in a different way. The '!'
+        #       should be placed immediately after the command, without any
+        #       blanks in between. If you insert blanks the '!' will be seen as
+        #       an argument for the command, which has a different meaning. For
+        #       example:
+        #           :w! name        Write the current buffer to file "name",
+        #                           overwriting any existing file.
+        #           :w !name        Send the current buffer as standard input to
+        #                           command "name".
+        #   :addressable (bool): Indicates if the command accepts ranges.
+        #   :cooperates_with_global (bool): Indicates if the command cooperates with
+        #       the :global command. This is special flag, because ex commands don't
+        #       yet support a global_lines argument. It seems that, in Vim, some ex
+        #       commands work well with :global and others ignore :global ranges.
+        #       However, according to the docs, all ex commands should work with
+        #       :global ranges. At the time of writing, the only command that
+        #       supports the global_lines argument is the "print" command e.g. print
+        #       all lines matching \d+ into new buffer: ":%global/\d+/print".
 
-    def __init__(self, params, *args, forced=False, **kwargs):
+        super().__init__(content=name)
+
+        self.name = name
+        self.target = target or 'ex_' + name
         self.params = params or {}
         self.forced = forced
-        self.addressable = False
-        self.cooperates_with_global = False
-        self.target = None
-
-        super().__init__(*args, **kwargs)
+        self.addressable = addressable
+        self.cooperates_with_global = cooperates_with_global
 
     def __str__(self):
         return '{} {}'.format(self.content, self.__dict__)
-
-
-class TokenCommand(TokenOfCommand):
-    def __init__(self, name, target=None, params=None, forced=False, addressable=False, cooperates_with_global=False):
-        super().__init__(content=name, forced=forced, params=params)
-
-        if target is None:
-            target = 'ex_' + name
-
-        self.name = name
-        self.target = target
-        self.addressable = addressable
-        self.cooperates_with_global = cooperates_with_global
 
 
 class TokenOfRange(Token):
