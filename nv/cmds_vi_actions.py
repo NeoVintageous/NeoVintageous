@@ -330,8 +330,15 @@ class _vi_ctrl_r(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
+        change_count_before = self._view.change_count()
+
         for i in range(count):
             self._view.run_command('redo')
+
+        change_count_after = self._view.change_count()
+
+        if change_count_after == change_count_before:
+            ui_blink()
 
         self.correct_xpos()
 

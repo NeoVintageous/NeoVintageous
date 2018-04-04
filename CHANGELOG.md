@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Added
 
+* Added [#327](https://github.com/NeoVintageous/NeoVintageous/issues/327): Redo command (`<C-r>`) should invoke a UI bell if no more redo commands
 * Added [#70](https://github.com/NeoVintageous/NeoVintageous/issues/70): `:set list` should show whitespace
 
 ## Fixed
