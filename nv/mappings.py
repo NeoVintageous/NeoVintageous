@@ -206,6 +206,10 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
         # TODO: We should be able to force a mode here too as, below.
         command = _expand_first(state.mode, seq)
 
+        if not command and state.mode == OPERATOR_PENDING:
+            # Check normal mode for mappings.
+            command = _expand_first(NORMAL, seq)
+
     if not command:
         command = seq_to_command(state, seq, mode=mode)
 
