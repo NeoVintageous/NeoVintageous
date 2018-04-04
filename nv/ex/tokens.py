@@ -157,7 +157,3 @@ class TokenDigits(TokenOfRange):
 class TokenMark(TokenOfRange):
     def __init__(self, content, *args, **kwargs):
         super().__init__(content)
-
-    @property
-    def exact(self):
-        return self.content and self.content.startswith('`')
