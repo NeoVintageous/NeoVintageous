@@ -17,17 +17,17 @@
 
 import re
 
-from .tokens import TokenComma
-from .tokens import TokenDigits
-from .tokens import TokenDollar
-from .tokens import TokenDot
-from .tokens import TokenEof
-from .tokens import TokenMark
-from .tokens import TokenOffset
-from .tokens import TokenPercent
-from .tokens import TokenSearchBackward
-from .tokens import TokenSearchForward
-from .tokens import TokenSemicolon
+from NeoVintageous.nv.ex.tokens import TokenComma
+from NeoVintageous.nv.ex.tokens import TokenDigits
+from NeoVintageous.nv.ex.tokens import TokenDollar
+from NeoVintageous.nv.ex.tokens import TokenDot
+from NeoVintageous.nv.ex.tokens import TokenEof
+from NeoVintageous.nv.ex.tokens import TokenMark
+from NeoVintageous.nv.ex.tokens import TokenOffset
+from NeoVintageous.nv.ex.tokens import TokenPercent
+from NeoVintageous.nv.ex.tokens import TokenSearchBackward
+from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.ex.tokens import TokenSemicolon
 from NeoVintageous.nv.ex_routes import ex_routes
 
 

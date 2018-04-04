@@ -16,21 +16,21 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from .nodes import CommandLineNode
-from .nodes import RangeNode
-from .scanner import Scanner
-from .tokens import TokenComma
-from .tokens import TokenCommand
-from .tokens import TokenDigits
-from .tokens import TokenDollar
-from .tokens import TokenDot
-from .tokens import TokenEof
-from .tokens import TokenMark
-from .tokens import TokenOffset
-from .tokens import TokenPercent
-from .tokens import TokenSearchBackward
-from .tokens import TokenSearchForward
-from .tokens import TokenSemicolon
+from NeoVintageous.nv.ex.nodes import CommandLineNode
+from NeoVintageous.nv.ex.nodes import RangeNode
+from NeoVintageous.nv.ex.scanner import Scanner
+from NeoVintageous.nv.ex.tokens import TokenComma
+from NeoVintageous.nv.ex.tokens import TokenCommand
+from NeoVintageous.nv.ex.tokens import TokenDigits
+from NeoVintageous.nv.ex.tokens import TokenDollar
+from NeoVintageous.nv.ex.tokens import TokenDot
+from NeoVintageous.nv.ex.tokens import TokenEof
+from NeoVintageous.nv.ex.tokens import TokenMark
+from NeoVintageous.nv.ex.tokens import TokenOffset
+from NeoVintageous.nv.ex.tokens import TokenPercent
+from NeoVintageous.nv.ex.tokens import TokenSearchBackward
+from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.ex.tokens import TokenSemicolon
 from NeoVintageous.nv.vim import get_logger
 
 
