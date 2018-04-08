@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#335](https://github.com/NeoVintageous/NeoVintageous/issues/335): Help subjects should be case sensitive e.g. `help L` should open help for L not l
 * Fixed [#333](https://github.com/NeoVintageous/NeoVintageous/issues/333): `:ou` (`:ounmap` alias) doesn't work
 * Fixed [#332](https://github.com/NeoVintageous/NeoVintageous/issues/332): `:no` (`:noremap` alias) doesn't work
 * Fixed [#331](https://github.com/NeoVintageous/NeoVintageous/issues/331): `:files` doesn't work

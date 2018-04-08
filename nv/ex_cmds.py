@@ -604,8 +604,6 @@ def ex_help(window, subject=None, forceit=False, *args, **kwargs):
         if forceit:
             return message("E478: Don't panic!")
 
-    subject = subject.lower()
-
     if not _ex_help_tags_cache:
         console_message('initializing help tags...')
 
@@ -620,7 +618,7 @@ def ex_help(window, subject=None, forceit=False, *args, **kwargs):
         for line in tags_resource.split('\n'):
             if line:
                 match = tags_matcher.match(line)
-                _ex_help_tags_cache[match.group(1).lower()] = (match.group(2), match.group(3))
+                _ex_help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
 
         console_message('finished initializing help tags')
 
@@ -628,12 +626,14 @@ def ex_help(window, subject=None, forceit=False, *args, **kwargs):
         # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
         # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
         # example is `:help copy` will look for "copy" then ":copy".
+        # Also checks lowercase variants e.g. CTRL-K", "c_CTRL-K, etc.
         found = False
-        for m in (':', 'c_', 'i_', 'v_', '-', '/'):
-            _subject = m + subject
-            if _subject in _ex_help_tags_cache:
-                found = True
-                subject = _subject
+        for s in (subject, subject.lower()):
+            for p in (':', 'c_', 'i_', 'v_', '-', '/'):
+                _subject = p + s
+                if _subject in _ex_help_tags_cache:
+                    found = True
+                    subject = _subject
 
         if not found:
             return message('E149: Sorry, no help for %s' % subject)
