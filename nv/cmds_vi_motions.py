@@ -59,6 +59,7 @@ from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import row_to_pt
+from NeoVintageous.nv.vi.utils import show_if_not_visible
 from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
@@ -1373,6 +1374,8 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
         if not search_string:
             state.last_buffer_search_command = 'vi_star'
 
+        show_if_not_visible(self.view)
+
 
 class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
     def run(self, count=1, mode=None, search_string=None):
@@ -1424,6 +1427,8 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 
         if not search_string:
             state.last_buffer_search_command = 'vi_octothorp'
+
+        show_if_not_visible(self.view)
 
 
 class _vi_b(ViMotionCommand):

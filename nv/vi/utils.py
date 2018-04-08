@@ -150,6 +150,13 @@ def restoring_sels(view):
         view.sel().add(s)
 
 
+def show_if_not_visible(view):
+    if view.sel():
+        pt = view.sel()[0].b
+        if not view.visible_region().contains(pt):
+            view.show(pt)
+
+
 def new_inclusive_region(a, b):
     # type: (int, int) -> Region
 
