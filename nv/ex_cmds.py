@@ -626,9 +626,10 @@ def ex_help(window, subject=None, forceit=False, *args, **kwargs):
         # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
         # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
         # example is `:help copy` will look for "copy" then ":copy".
-        # Also checks lowercase variants e.g. CTRL-K", "c_CTRL-K, etc.
+        # Also checks lowercase variants e.g. ctrl-k", "c_ctrl-k, etc., and
+        # uppercase variants e.g. CTRL-K", "C_CTRL-K, etc.
         found = False
-        for s in (subject, subject.lower()):
+        for s in (subject, subject.lower(), subject.upper()):
             for p in (':', 'c_', 'i_', 'v_', '-', '/'):
                 _subject = p + s
                 if _subject in _ex_help_tags_cache:
