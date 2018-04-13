@@ -24,13 +24,13 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
-from NeoVintageous.nv.ex_cmds import do_ex_command
-from NeoVintageous.nv.ex_cmds import do_ex_command_default
-from NeoVintageous.nv.ex_cmds import do_ex_text_command
 from NeoVintageous.nv.ex.completions import iter_paths
 from NeoVintageous.nv.ex.completions import parse_for_fs
 from NeoVintageous.nv.ex.completions import parse_for_setting
-from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex_cmds import do_ex_cmd_edit_wrap
+from NeoVintageous.nv.ex_cmds import do_ex_cmdline
+from NeoVintageous.nv.ex_cmds import do_ex_command
+from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
@@ -56,7 +56,6 @@ from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import translate_char
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -74,7 +73,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 __all__ = [
     '_nv_cmdline',
     '_nv_cmdline_feed_key',
-    '_nv_ex_text_cmd',
+    '_nv_ex_cmd_edit_wrap',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
     '_nv_fs_completion',
@@ -241,7 +240,6 @@ class _nv_goto_help(WindowCommand):
 
         match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
         if match:
-            # TODO [refactor] Use ex_help command directly
             do_ex_command(self.window, 'help', {'subject': subject.strip('|')})
         else:
             return message('E149: Sorry, no help for %s' % subject)
@@ -344,7 +342,7 @@ class _nv_feed_key(ViWindowCommandBase):
             _log.debug('found user mapping...')
 
             if do_eval:
-                _log.debug('evaluating user mapping...')
+                _log.debug('evaluating user mapping (mode=%s)...', state.mode)
 
                 new_keys = command.mapping
                 if state.mode == OPERATOR_PENDING:
@@ -357,41 +355,13 @@ class _nv_feed_key(ViWindowCommandBase):
                 state.motion_count = mcount
                 state.action_count = acount
 
-                _log.info('found user mapping %s -> %s', key, new_keys)
-
-                # Support for basic Command-line mode mappings:
-                #
-                # `:Command<CR>` maps to Sublime Text command (starts with uppercase letter).
-                # `:command<CR>` maps to Command-line mode command.
+                _log.info('user mapping %s -> %s', command.sequence, new_keys)
 
                 if ':' in new_keys:
-                    match = re.match('^\\:(?P<cmdline>[a-zA-Z][a-zA-Z_]*)\\<CR\\>', new_keys)
-                    if match:
-                        cmdline = match.group('cmdline')
-                        if cmdline[0].isupper():
-                            # run regular sublime text command
-                            def _coerce_to_snakecase(string):
-                                string = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', string)
-                                string = re.sub(r"([a-z\d])([A-Z])", r'\1_\2', string)
-                                string = string.replace("-", "_")
-
-                                return string.lower()
-
-                            command = _coerce_to_snakecase(cmdline)
-                            command_args = {}
-                        else:
-                            # TODO skip _nv_cmdline and call do_ex_command directly
-                            command = '_nv_cmdline'
-                            command_args = {'cmdline': ':' + cmdline}
-
-                        _log.info('run command -> %s %s', command, command_args)
-
-                        return self.window.run_command(command, command_args)
-
                     if ':' == new_keys:
                         return self.window.run_command('_nv_cmdline')
 
-                    return console_message('invalid command line mapping %s -> %s (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
+                    return do_ex_user_cmdline(self.window, new_keys)
 
                 self.window.run_command('_nv_process_notation', {'keys': new_keys, 'check_user_mappings': False})
 
@@ -477,7 +447,6 @@ class _nv_process_notation(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
-        # type: (str, int, bool) -> None
         # Args:
         #   keys (str): Key sequence to be run.
         #   repeat_count (int): Count to be applied when repeating through the
@@ -485,11 +454,12 @@ class _nv_process_notation(ViWindowCommandBase):
         #   check_user_mappings (bool): Whether user mappings should be
         #       consulted to expand key sequences.
         state = self.state
-        _log.debug('process notation keys %s for mode %s', keys, state.mode)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
         state.non_interactive = True
+
+        _log.debug('process notation keys %s for initial mode %s', keys, initial_mode)
 
         # First, run any motions coming before the first action. We don't keep
         # these in the undo stack, but they will still be repeated via '.'.
@@ -627,14 +597,15 @@ class _nv_replace_line(TextCommand):
         self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
 
 
-class _nv_ex_text_cmd(TextCommand):
+class _nv_ex_cmd_edit_wrap(TextCommand):
 
-    # This command is required for ex commands that need an Sublime Text edit
-    # object, which can only be accessed via text commands. Some ex commands
-    # don't need access to an edit object, so they can skip this command.
+    # This command is required to wrap ex commands that need a Sublime Text edit
+    # token. Edit tokens can only be obtained from a TextCommand. Some ex
+    # commands don't need an edit token, those commands don't need to be wrapped
+    # by a text command.
 
-    def run(self, edit, *args, **kwargs):
-        do_ex_text_command(self, edit, *args, **kwargs)
+    def run(self, edit, **kwargs):
+        do_ex_cmd_edit_wrap(self, edit, **kwargs)
 
 
 class _nv_cmdline(WindowCommand):
@@ -716,26 +687,7 @@ class _nv_cmdline(WindowCommand):
 
         _nv_cmdline_feed_key.reset_last_history_index()
 
-        try:
-            parsed = parse_command_line(cmdline[1:])
-            if not parsed.command:
-
-                # Default ex command. See :h [range].
-
-                view = self.window.active_view()
-                if not view:
-                    return
-
-                if not parsed.line_range:
-                    return
-
-                do_ex_command_default(window=self.window, view=self.window.active_view(), line_range=parsed.line_range)
-            else:
-                do_ex_command(self.window, parsed.command.target, {'command_line': cmdline[1:]})
-
-        except Exception as e:
-            message('{} ({})'.format(str(e), cmdline))
-            _log.exception('{}'.format(cmdline))
+        do_ex_cmdline(self.window, cmdline)
 
     def _force_cancel(self):
         self.on_cancel()

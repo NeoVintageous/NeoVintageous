@@ -37,12 +37,14 @@ class Token:
 class TokenCommand(Token):
 
     def __init__(self, name, target=None, params=None, forced=False, addressable=False, cooperates_with_global=False):  # noqa: E501
+        # type: (str, str, dict, bool, bool, bool) -> None
+        #
         # Args:
-        #   :name (str):
-        #   :target (str): The name of the ex command to exectute. Defaults to the
-        #       name prefixed with "ex_".
+        #   :name (str): The name of the command.
+        #   :target (str): The name of the ex command to execute. Defaults to
+        #       the name. SHOULD NOT include the prefix "ex_".
         #   :params (dict): Default is {}.
-        #   :forced (bool): Indicates if the '!' (bang) character was placed
+        #   :forced (bool): Indicates if the bang character ! was placed
         #       immediatley after the command. The '!' (bang) character after an
         #       Ex command makes a command behave in a different way. The '!'
         #       should be placed immediately after the command, without any
@@ -54,20 +56,22 @@ class TokenCommand(Token):
         #           :w !name        Send the current buffer as standard input to
         #                           command "name".
         #   :addressable (bool): Indicates if the command accepts ranges.
-        #   :cooperates_with_global (bool): Indicates if the command cooperates with
-        #       the :global command. This is special flag, because ex commands don't
-        #       yet support a global_lines argument. It seems that, in Vim, some ex
-        #       commands work well with :global and others ignore :global ranges.
-        #       However, according to the docs, all ex commands should work with
-        #       :global ranges. At the time of writing, the only command that
-        #       supports the global_lines argument is the "print" command e.g. print
-        #       all lines matching \d+ into new buffer: ":%global/\d+/print".
+        #   :cooperates_with_global (bool): Indicates if the command cooperates
+        #       with the :global command. This is special flag, because ex
+        #       commands don't yet support a global_lines argument. It seems
+        #       that, in Vim, some ex commands work well with :global and others
+        #       ignore :global ranges. However, according to the docs, all ex
+        #       commands should work with :global ranges. At the time of
+        #       writing, the only command that supports the global_lines
+        #       argument is the "print" command e.g. print all lines matching
+        #       \d+ into new buffer: ":%global/\d+/print".
 
         super().__init__(content=name)
 
         self.name = name
-        self.target = target or 'ex_' + name
+        self.target = target or name
         self.params = params or {}
+        # TODO Make forced a param and rename it "forceit", because this is sometimes required by ex commands.
         self.forced = forced
         self.addressable = addressable
         self.cooperates_with_global = cooperates_with_global

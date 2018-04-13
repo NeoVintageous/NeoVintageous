@@ -28,6 +28,7 @@ from NeoVintageous.nv.ex_routes import _ex_route_file
 from NeoVintageous.nv.ex_routes import _ex_route_global
 from NeoVintageous.nv.ex_routes import _ex_route_noremap
 from NeoVintageous.nv.ex_routes import _ex_route_only
+from NeoVintageous.nv.ex_routes import _ex_route_onoremap
 from NeoVintageous.nv.ex_routes import _ex_route_substitute
 from NeoVintageous.nv.ex_routes import _ex_route_tabnext
 from NeoVintageous.nv.ex_routes import ex_routes
@@ -174,6 +175,13 @@ class Test_ex_route_global(unittest.TestCase):
         self.assertEqual(actual, (None, [TokenCommand('global', addressable=True, forced=True, params={'pattern': '111', 'cmd': 'delete'}), TokenEof()]))  # noqa: E501
 
 
+class Test_ex_route_noremap(unittest.TestCase):
+
+    def test_ex_route_noremap(self):
+        actual = _ex_route_noremap(_ScannerState('w 2w'))
+        self.assertEqual(actual, (None, [TokenCommand('noremap', params={'keys': 'w', 'command': '2w'}), TokenEof()]))
+
+
 class Test_ex_route_only(unittest.TestCase):
 
     def test_can_scan(self):
@@ -200,11 +208,11 @@ class Test_ex_route_only(unittest.TestCase):
             _ex_route_only(_ScannerState(' '))
 
 
-class Test_ex_route_noremap(unittest.TestCase):
+class Test_ex_route_onoremap(unittest.TestCase):
 
-    def test_can_scan(self):
-        actual = _ex_route_noremap(_ScannerState('w 2w'))
-        self.assertEqual(actual, (None, [TokenCommand('noremap', params={'keys': 'w', 'command': '2w'}), TokenEof()]))
+    def test_ex_route_onoremap(self):
+        actual = _ex_route_onoremap(_ScannerState('L $'))
+        self.assertEqual(actual, (None, [TokenCommand('onoremap', params={'keys': 'L', 'command': '$'}), TokenEof()]))
 
 
 class Test_ex_route_substitute(unittest.TestCase):

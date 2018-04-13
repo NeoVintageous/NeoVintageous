@@ -456,7 +456,7 @@ class _enter_normal_mode(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('enter normal mode (%s)', mode)
+        _log.debug('enter normal mode (mode=%s)', mode)
         state = self.state
 
         self.view.window().run_command('hide_auto_complete')
@@ -529,7 +529,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
-        _log.debug('enter normal mode (impl) (%s)', mode)
+        _log.debug('enter normal mode (mode=%s) (impl)', mode)
 
         def f(view, s):
             if mode == INSERT:

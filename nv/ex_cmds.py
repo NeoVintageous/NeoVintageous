@@ -36,7 +36,9 @@ from sublime import set_timeout
 
 from NeoVintageous.nv import shell
 from NeoVintageous.nv import variables
+from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.parser import parse_command_line_address
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
@@ -95,7 +97,7 @@ def _changing_cd(f, *args, **kwargs):
     return inner
 
 
-def _set_next_selection(view, data):
+def _set_next_sel(view, data):
     # TODO [review] Should this overwrite "ex_data": For example it may contain things like the "prev_sel".
     view.settings().set('ex_data', {'next_sel': data})
 
@@ -108,14 +110,14 @@ def _serialize_deserialize(f, *args, **kwargs):
         if not view:
             raise RuntimeError('view is required')
 
-        # Serialize selection.
+        # Serialize previous selection.
 
         sels = [(r.a, r.b) for r in list(view.sel())]
         view.settings().set('ex_data', {'prev_sel': sels})
 
         f(*args, **kwargs)
 
-        # Deserialise next selection.
+        # Deserialise and apply next selection.
 
         ex_data = view.settings().get('ex_data')
         if 'next_sel' in ex_data:
@@ -127,125 +129,18 @@ def _serialize_deserialize(f, *args, **kwargs):
             view.sel().clear()
             view.sel().add_all([Region(b) for (a, b) in next_sel])
 
-        # Enter normal mode.
-
+        # Return to enter normal mode.
         # TODO [review] State dependency
         state = State(view)
+        # TODO [review] enter normal mode dependency
         state.enter_normal_mode()
-        # TODO [review] enter normal mode depedendency
         view.run_command('_enter_normal_mode')
 
     return inner
 
 
-# This command is called from the "_nv_ex_text_cmd" command, which helps work
-# around the issue of gaining access to edit objects. Some ex commands don't
-# need access to an edit object, so they can usually skip this process.
-def do_ex_text_command(self, edit, name, command_line, *args, **kwargs):
-    _log.debug('do ex command (TEXT) -> %s %s %s in %s %s', name, args, kwargs, self.view.id(), self.view.file_name())  # noqa: E501
-
-    parsed = parse_command_line(command_line)
-    module = sys.modules[__name__]
-    ex_cmd = getattr(module, name, None)
-    parsed.command.params.update(kwargs)
-
-    if ex_cmd:
-        ex_cmd(
-            view=self.view,
-            edit=edit,
-            line_range=parsed.line_range,
-            **parsed.command.params
-        )
-
-
-def do_ex_command(window, name, args=None):
-    _log.debug('do ex command -> %s %s', name, args)
-
-    name = name.lower()
-    if not name.startswith('ex_'):
-        name = 'ex_' + name
-
-    if args is None:
-        args = {}
-
-    if 'command_line' not in args:
-        args['command_line'] = name[3:].lower()
-
-    module = sys.modules[__name__]
-    ex_cmd = getattr(module, name, None)
-
-    if not ex_cmd:
-        raise RuntimeError('unknown ex cmd {}'.format(name))
-
-    if not inspect.isfunction(ex_cmd):
-        raise RuntimeError('unknown ex cmd type {}'.format(ex_cmd))
-
-    requires_edit_object = False
-    for p in inspect.signature(ex_cmd).parameters:
-        if p == 'edit':
-            requires_edit_object = True
-            break
-
-    if requires_edit_object:
-        # Text commands need edit tokens and they can only be created by
-        # Sublime Text commands, so we need to wrap the command in a ST text
-        # command.
-        _log.debug('run ex command as a text command %s %s', name, args)
-        args['name'] = name
-        window.run_command('_nv_ex_text_cmd', args)
-        _log.debug('finished ex text command')
-    else:
-
-        parsed = parse_command_line(args['command_line'])
-        params = parsed.command.params
-        params.update(args)
-
-        view = window.active_view()
-        if view:
-            params['view'] = view
-
-        # We don't want the ex commands using this.
-        if 'command_line' in params:
-            del params['command_line']
-
-        # Passed directly to command.
-        if 'forceit' in params:
-            del params['forceit']
-
-        _log.debug('run ex command as window command %s %s', name, params)
-
-        ex_cmd(
-            window=window,
-            line_range=parsed.line_range,
-            forceit=(args['forceit'] if 'forceit' in args else parsed.command.forced),
-            **params
-        )
-
-        _log.debug('finished ex window command')
-
-
-def do_ex_command_default(window, view, line_range, *args, **kwargs):
-    r = line_range.resolve(view)
-    line_nr = row_at(view, r.a) + 1
-
-    # TODO [review] State dependency
-    state = State(view)
-
-    # TODO [review] enter normal mode depedendency
-    window.run_command('_enter_normal_mode', {'mode': state.mode})
-    state.enter_normal_mode()
-
-    jumplist_update(view)
-    window.run_command('_vi_go_to_line', {'line': line_nr, 'mode': state.mode})
-    jumplist_update(view)
-    view.show(view.sel()[0])
-
-
-_ex_help_tags_cache = {}
-
-
 # TODO [review] Looks broken or not implemented properly
-def ex_abbreviate(window, short=None, full=None, *args, **kwargs):
+def ex_abbreviate(window, short=None, full=None, **kwargs):
     if short is None and full is None:
         def _show_abbreviations():
             abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
@@ -259,7 +154,7 @@ def ex_abbreviate(window, short=None, full=None, *args, **kwargs):
     abbrev.Store().set(short, full)
 
 
-def ex_browse(window, view, *args, **kwargs):
+def ex_browse(window, view, **kwargs):
     # TODO [review] State dependency
     state = State(view)
 
@@ -268,7 +163,7 @@ def ex_browse(window, view, *args, **kwargs):
     })
 
 
-def ex_buffers(window, *args, **kwargs):
+def ex_buffers(window, **kwargs):
     def _get_view_info(view):
         path = view.file_name()
         if path:
@@ -309,7 +204,7 @@ def ex_buffers(window, *args, **kwargs):
 
 
 @_changing_cd
-def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
+def ex_cd(window, view, path=None, forceit=False, **kwargs):
     # XXX Currently behaves as on Unix systems for all platforms.
     if view.is_dirty() and not forceit:
         return message("E37: No write since last change")
@@ -320,7 +215,7 @@ def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
     if not path:
         state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
 
-        return ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+        return ex_pwd(window=window, view=view, path=path, forceit=forceit, **kwargs)
 
     # TODO: It seems there a few symbols that are always substituted when they represent a
     # filename. We should have a global method of substiting them.
@@ -329,7 +224,7 @@ def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
         if fname:
             state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
 
-            ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+            ex_pwd(window=window, view=view, path=path, forceit=forceit, **kwargs)
 
         return
 
@@ -339,7 +234,7 @@ def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
 
     state.settings.vi['_cmdline_cd'] = path
 
-    ex_pwd(window=window, view=view, path=path, forceit=forceit, *args, **kwargs)
+    ex_pwd(window=window, view=view, path=path, forceit=forceit, **kwargs)
 
 
 # Non-standard command to change the current directory to the active view's
@@ -347,7 +242,7 @@ def ex_cd(window, view, path=None, forceit=False, *args, **kwargs):
 # active view, so it's convenient to be able to align both easily.
 # XXX: Is the above still true?
 # XXX: This command may be removed at any time.
-def ex_cdd(view, forceit=False, *args, **kwargs):
+def ex_cdd(view, forceit=False, **kwargs):
     if view.is_dirty() and not forceit:
         return message("E37: No write since last change")
 
@@ -364,17 +259,17 @@ def ex_cdd(view, forceit=False, *args, **kwargs):
 
 
 # TODO [refactor] into window module
-def ex_close(window, forceit=False, *args, **kwargs):
+def ex_close(window, forceit=False, **kwargs):
     WindowAPI(window).close_current_view(not forceit)
 
 
 @_serialize_deserialize
-def ex_copy(view, edit, address, line_range, *args, **kwargs):
+def ex_copy(view, edit, address, line_range, **kwargs):
     # Copy the lines given by [range] to below the line given by {address}.
     def _calculate_address(address):
         # TODO: must calc only the first line ref?
         # TODO [refactor] parsing the address
-        calculated = parse_command_line(address)
+        calculated = parse_command_line_address(address)
         if calculated is None:
             return None
 
@@ -411,16 +306,16 @@ def ex_copy(view, edit, address, line_range, *args, **kwargs):
     view.insert(edit, address, text)
 
     cursor_dest = view.line(address + len(text) - 1).begin()
-    _set_next_selection(view, [(cursor_dest, cursor_dest)])
+    _set_next_sel(view, [(cursor_dest, cursor_dest)])
 
 
 # TODO [refactor] into window module
-def ex_cquit(window, *args, **kwargs):
+def ex_cquit(window, **kwargs):
     window.run_command('exit')
 
 
 @_serialize_deserialize
-def ex_delete(view, edit, register, line_range, *args, **kwargs):
+def ex_delete(view, edit, register, line_range, **kwargs):
     r = line_range.resolve(view)
     if r == Region(-1, -1):
         r = view.full_line(0)
@@ -443,15 +338,15 @@ def ex_delete(view, edit, register, line_range, *args, **kwargs):
 
     _select(view, [r], register)
     view.erase(edit, r)
-    _set_next_selection(view, [(r.a, r.a)])
+    _set_next_sel(view, [(r.a, r.a)])
 
 
-def ex_double_ampersand(view, edit, flags, count, line_range, *args, **kwargs):
-    ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, *args, **kwargs)
+def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):
+    ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, **kwargs)
 
 
 @_changing_cd
-def ex_edit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
+def ex_edit(window, view, file_name, cmd, forceit=False, **kwargs):
     if file_name:
         file_name = os.path.expanduser(os.path.expandvars(file_name))
 
@@ -507,7 +402,7 @@ def ex_edit(window, view, file_name, cmd, forceit=False, *args, **kwargs):
 
 
 # TODO [refactor] into window module
-def ex_exit(window, view, *args, **kwargs):
+def ex_exit(window, view, **kwargs):
     if view.is_dirty():
         window.run_command('save')
 
@@ -517,7 +412,7 @@ def ex_exit(window, view, *args, **kwargs):
         window.run_command('exit')
 
 
-def ex_file(view, *args, **kwargs):
+def ex_file(view, **kwargs):
     if view.file_name():
         fname = view.file_name()
     else:
@@ -558,7 +453,7 @@ _ex_global_most_recent_pat = None
 # At the time of writing, the only command that supports :global is the
 # "print" command e.g. print all lines matching \d+ into new buffer:
 #   :%global/\d+/print
-def ex_global(window, view, pattern, cmd, line_range, *args, **kwargs):
+def ex_global(window, view, pattern, cmd, line_range, **kwargs):
     if line_range.is_empty:
         global_range = Region(0, view.size())
     else:
@@ -597,7 +492,10 @@ def ex_global(window, view, pattern, cmd, line_range, *args, **kwargs):
     do_ex_command(window, cmd.target, cmd.params)
 
 
-def ex_help(window, subject=None, forceit=False, *args, **kwargs):
+_ex_help_tags_cache = {}
+
+
+def ex_help(window, subject=None, forceit=False, **kwargs):
     if not subject:
         subject = 'help.txt'
 
@@ -618,7 +516,8 @@ def ex_help(window, subject=None, forceit=False, *args, **kwargs):
         for line in tags_resource.split('\n'):
             if line:
                 match = tags_matcher.match(line)
-                _ex_help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
+                if match:
+                    _ex_help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
 
         console_message('finished initializing help tags')
 
@@ -696,12 +595,12 @@ def ex_help(window, subject=None, forceit=False, *args, **kwargs):
     view.show(c_pt, False)
 
 
-def ex_let(name, value, *args, **kwargs):
+def ex_let(name, value, **kwargs):
     variables.set(name, value)
 
 
 @_serialize_deserialize
-def ex_move(view, edit, address, line_range, *args, **kwargs):
+def ex_move(view, edit, address, line_range, **kwargs):
     # Move the lines given by [range] to below the line given by {address}.
     if address is None:
         return message("E14: Invalid address")
@@ -711,7 +610,7 @@ def ex_move(view, edit, address, line_range, *args, **kwargs):
         return message("E134: Move lines into themselves")
 
     # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
-    parsed_address_command = parse_command_line(address).line_range
+    parsed_address_command = parse_command_line_address(address).line_range
     destination = parsed_address_command.resolve(view)
     if destination == source:
         return
@@ -726,28 +625,28 @@ def ex_move(view, edit, address, line_range, *args, **kwargs):
     if destination.end() < source.begin():
         view.erase(edit, source)
         view.insert(edit, destination.end(), text)
-        _set_next_selection(view, [[destination.a, destination.b]])
+        _set_next_sel(view, [[destination.a, destination.b]])
         return
 
     view.insert(edit, destination.end(), text)
     view.erase(edit, source)
-    _set_next_selection(view, [[destination.a, destination.a]])
+    _set_next_sel(view, [[destination.a, destination.a]])
 
 
 # TODO [refactor] into window module
 @_changing_cd
-def ex_new(window, *args, **kwargs):
+def ex_new(window, **kwargs):
     window.run_command('new_file')
 
 
-def ex_nnoremap(keys, command, *args, **kwargs):
+def ex_nnoremap(keys, command, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(NORMAL, keys, command)
 
 
-def ex_noremap(keys, command, *args, **kwargs):
+def ex_noremap(keys, command, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
@@ -758,7 +657,7 @@ def ex_noremap(keys, command, *args, **kwargs):
     mappings_add(VISUAL_LINE, keys, command)
 
 
-def ex_nunmap(keys, *args, **kwargs):
+def ex_nunmap(keys, **kwargs):
     try:
         mappings_remove(NORMAL, keys)
     except KeyError:
@@ -766,7 +665,7 @@ def ex_nunmap(keys, *args, **kwargs):
 
 
 # TODO Unify with CTRL-W CTRL-O
-def ex_only(window, view, forceit=False, *args, **kwargs):
+def ex_only(window, view, forceit=False, **kwargs):
     if not forceit and has_dirty_buffers(window):
         return message("E445: Other window contains changes")
 
@@ -781,21 +680,21 @@ def ex_only(window, view, forceit=False, *args, **kwargs):
         view.close()
 
 
-def ex_onoremap(keys, command, *args, **kwargs):
+def ex_onoremap(keys, command, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(OPERATOR_PENDING, keys, command)
 
 
-def ex_ounmap(keys, *args, **kwargs):
+def ex_ounmap(keys, **kwargs):
     try:
         mappings_remove(OPERATOR_PENDING, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ex_print(window, view, flags, line_range, global_lines=None, *args, **kwargs):
+def ex_print(window, view, flags, line_range, global_lines=None, **kwargs):
     if view.size() == 0:
         return message("E749: empty buffer")
 
@@ -834,12 +733,12 @@ def ex_print(window, view, flags, line_range, global_lines=None, *args, **kwargs
 
 
 @_changing_cd
-def ex_pwd(*args, **kwargs):
+def ex_pwd(**kwargs):
     status_message(os.getcwd())
 
 
 # TODO [refactor] into window module
-def ex_qall(window, forceit=False, *args, **kwargs):
+def ex_qall(window, forceit=False, **kwargs):
     if forceit:
         for view in window.views():
             if view.is_dirty():
@@ -853,7 +752,7 @@ def ex_qall(window, forceit=False, *args, **kwargs):
 
 
 # TODO [refactor] into window module
-def ex_quit(window, view, forceit=False, *args, **kwargs):
+def ex_quit(window, view, forceit=False, **kwargs):
     if forceit:
         view.set_scratch(True)
 
@@ -869,13 +768,13 @@ def ex_quit(window, view, forceit=False, *args, **kwargs):
         return window.run_command('close')
 
     if not window.views_in_group(window.active_group()):
-        ex_unvsplit(window=window, view=view, forceit=forceit, *args, **kwargs)
+        ex_unvsplit(window=window, view=view, forceit=forceit, **kwargs)
 
 
 # TODO [review] This command looks unused
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
 @_changing_cd
-def ex_read(view, edit, cmd, line_range, *args, **kwargs):
+def ex_read(view, edit, cmd, line_range, **kwargs):
     r = line_range.resolve(view)
     target_point = min(r.end(), view.size())
 
@@ -915,7 +814,7 @@ def ex_read(view, edit, cmd, line_range, *args, **kwargs):
         return message('not implemented')
 
 
-def ex_registers(window, view, *args, **kwargs):
+def ex_registers(window, view, **kwargs):
     def _truncate(string, truncate_at):
         if len(string) > truncate_at:
             return string[0:truncate_at] + ' ...'
@@ -950,7 +849,7 @@ def ex_registers(window, view, *args, **kwargs):
         window.show_quick_panel(sorted(items), on_done, flags=MONOSPACE_FONT)
 
 
-def ex_set(view, option, value, *args, **kwargs):
+def ex_set(view, option, value, **kwargs):
     if option.endswith('?'):
         return message('not implemented')
 
@@ -962,7 +861,7 @@ def ex_set(view, option, value, *args, **kwargs):
         status_message('invalid value for option')
 
 
-def ex_setlocal(view, option, value, *args, **kwargs):
+def ex_setlocal(view, option, value, **kwargs):
     if option.endswith('?'):
         return message('not implemented')
 
@@ -984,7 +883,7 @@ def ex_setlocal(view, option, value, *args, **kwargs):
 # current directory. The virtual current directory is always set to the current
 # view's directory, but it isn't accessible through the API.
 @_changing_cd
-def ex_shell(view, *args, **kwargs):
+def ex_shell(view, **kwargs):
 
     def _open_shell(command):
         return subprocess.Popen(command, cwd=os.getcwd())
@@ -1021,7 +920,7 @@ _ex_shell_last_command = None
 
 
 @_changing_cd
-def ex_shell_out(view, edit, cmd, line_range, *args, **kwargs):
+def ex_shell_out(view, edit, cmd, line_range, **kwargs):
     global _ex_shell_last_command
 
     if cmd == '!':
@@ -1054,7 +953,7 @@ def ex_shell_out(view, edit, cmd, line_range, *args, **kwargs):
         message('not implemented')
 
 
-def ex_snoremap(keys, command, *args, **kwargs):
+def ex_snoremap(keys, command, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
@@ -1062,7 +961,7 @@ def ex_snoremap(keys, command, *args, **kwargs):
 
 
 # TODO Unify with <C-w>s
-def ex_split(window, file=None, *args, **kwargs):
+def ex_split(window, file=None, **kwargs):
     window_split(window, file)
 
 
@@ -1070,7 +969,7 @@ _ex_substitute_last_pattern = None
 _ex_substitute_last_replacement = ''
 
 
-def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0, count=1, *args, **kwargs):
+def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0, count=1, **kwargs):
     global _ex_substitute_last_pattern, _ex_substitute_last_replacement
 
     # Repeat last substitute with same search
@@ -1173,50 +1072,50 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0,
         view.sel().clear()
         view.sel().add(pt)
 
-    # TODO [review] enter normal mode depedendency
+    # TODO [review] enter normal mode dependency
     view.run_command('_enter_normal_mode')
 
 
-def ex_sunmap(keys, *args, **kwargs):
+def ex_sunmap(keys, **kwargs):
     try:
         mappings_remove(SELECT, keys)
     except KeyError:
         status_message('Mapping not found')
 
 
-def ex_tabclose(window, *args, **kwargs):
+def ex_tabclose(window, **kwargs):
     window_tab_control(window, command='close')
 
 
-def ex_tabfirst(window, *args, **kwargs):
+def ex_tabfirst(window, **kwargs):
     window_tab_control(window, command='first')
 
 
-def ex_tablast(window, *args, **kwargs):
+def ex_tablast(window, **kwargs):
     window_tab_control(window, command='last')
 
 
-def ex_tabnext(window, *args, **kwargs):
+def ex_tabnext(window, **kwargs):
     window_tab_control(window, command='next')
 
 
-def ex_tabonly(window, *args, **kwargs):
+def ex_tabonly(window, **kwargs):
     window_tab_control(window, command='only')
 
 
-def ex_tabprevious(window, *args, **kwargs):
+def ex_tabprevious(window, **kwargs):
     window_tab_control(window, command='prev')
 
 
 # TODO [review] Looks broken or not implemented properly
-def ex_unabbreviate(lhs, *args, **kwargs):
+def ex_unabbreviate(lhs, **kwargs):
     if lhs:
         return
 
     abbrev.Store().erase(lhs)
 
 
-def ex_unmap(keys, *args, **kwargs):
+def ex_unmap(keys, **kwargs):
     try:
         mappings_remove(NORMAL, keys)
         mappings_remove(OPERATOR_PENDING, keys)
@@ -1229,7 +1128,7 @@ def ex_unmap(keys, *args, **kwargs):
 
 # TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
 # Non-standard Vim :unvsplit command
-def ex_unvsplit(window, *args, **kwargs):
+def ex_unvsplit(window, **kwargs):
     groups = window.num_groups()
     if groups == 1:
         return status_message("can't delete more groups")
@@ -1256,7 +1155,7 @@ def ex_unvsplit(window, *args, **kwargs):
     window.run_command('set_layout', layout_data[groups - 1])
 
 
-def ex_vnoremap(keys, command, *args, **kwargs):
+def ex_vnoremap(keys, command, **kwargs):
     if not (keys and command):
         return status_message('Listing key mappings is not implemented')
 
@@ -1267,7 +1166,7 @@ def ex_vnoremap(keys, command, *args, **kwargs):
 
 # TODO [refactor] into window module
 # TODO Refactor like ExSplit
-def ex_vsplit(window, view, file=None, *args, **kwargs):
+def ex_vsplit(window, view, file=None, **kwargs):
     max_splits = 4
 
     layout_data = {
@@ -1315,7 +1214,7 @@ def ex_vsplit(window, view, file=None, *args, **kwargs):
         window.new_file()
 
 
-def ex_vunmap(keys, *args, **kwargs):
+def ex_vunmap(keys, **kwargs):
     try:
         mappings_remove(VISUAL, keys)
         mappings_remove(VISUAL_BLOCK, keys)
@@ -1325,7 +1224,7 @@ def ex_vunmap(keys, *args, **kwargs):
 
 
 @_changing_cd
-def ex_wall(window, forceit=False, *args, **kwargs):
+def ex_wall(window, forceit=False, **kwargs):
     # TODO read-only views don't get properly saved.
     for v in (v for v in window.views() if v.file_name()):
         if v.is_read_only() and not forceit:
@@ -1335,7 +1234,7 @@ def ex_wall(window, forceit=False, *args, **kwargs):
 
 
 # TODO [refactor] into window module
-def ex_wq(window, view, forceit=False, *args, **kwargs):
+def ex_wq(window, view, forceit=False, **kwargs):
     if forceit:
         # TODO raise not implemented exception and make the command runner handle it.
         return message('not implemented')
@@ -1348,10 +1247,10 @@ def ex_wq(window, view, forceit=False, *args, **kwargs):
 
     window.run_command('save')
 
-    ex_quit(window=window, view=view, forceit=forceit, *args, **kwargs)
+    ex_quit(window=window, view=view, forceit=forceit, **kwargs)
 
 
-def ex_wqall(window, *args, **kwargs):
+def ex_wqall(window, **kwargs):
     if not all(view.file_name() for view in window.views()):
         ui_blink()
 
@@ -1372,7 +1271,7 @@ def ex_wqall(window, *args, **kwargs):
 
 
 @_changing_cd
-def ex_write(window, view, file_name, cmd, forceit, line_range, *args, **kwargs):
+def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
     # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     options = kwargs.get('++')
     appends = kwargs.get('>>')
@@ -1444,7 +1343,7 @@ def ex_write(window, view, file_name, cmd, forceit, line_range, *args, **kwargs)
             # TODO [review] State dependency
             state = State(view)
 
-            # TODO [review] enter normal mode depedendency
+            # TODO [review] enter normal mode dependency
             window.run_command('_enter_normal_mode', {'mode': state.mode})
             state.enter_normal_mode()
 
@@ -1507,7 +1406,7 @@ def ex_write(window, view, file_name, cmd, forceit, line_range, *args, **kwargs)
     window.run_command('save')
 
 
-def ex_yank(view, register, line_range, *args, **kwargs):
+def ex_yank(view, register, line_range, **kwargs):
     line_range = line_range.resolve(view)
 
     if not register:
@@ -1520,3 +1419,260 @@ def ex_yank(view, register, line_range, *args, **kwargs):
 
     if register == '"':
         state.registers['0'] = [text]
+
+
+# Default ex command. See :h [range].
+def _default_ex_cmd(window, view, line_range, **kwargs):
+    _log.debug('default ex cmd %s %s', line_range, kwargs)
+
+    line = row_at(view, line_range.resolve(view).a) + 1
+
+    # TODO [review] State dependency
+    state = State(view)
+
+    # TODO [review] enter normal mode dependency
+    window.run_command('_enter_normal_mode', {'mode': state.mode})
+    state.enter_normal_mode()
+
+    jumplist_update(view)
+    window.run_command('_vi_go_to_line', {'line': line, 'mode': state.mode})
+    jumplist_update(view)
+    view.show(view.sel()[0])
+
+
+def _get_ex_cmd(name):
+    ex_cmd = getattr(sys.modules[__name__], 'ex_' + name, None)
+
+    if not ex_cmd:
+        raise RuntimeError("unknown ex cmd '{}'".format(name))
+
+    # TODO Do we really need this check?
+    if not inspect.isfunction(ex_cmd):
+        raise RuntimeError("unknown ex cmd type '{}'".format(name))
+
+    return ex_cmd
+
+
+# This function is used by the command **_nv_ex_cmd_edit_wrap**. The
+# **_nv_ex_cmd_edit_wrap** command is required to wrap ex commands that need a
+# Sublime Text edit token. Edit tokens can only be obtained from a TextCommand.
+# Some ex commands don't need an edit token, those commands don't need to be
+# wrapped by a text command.
+#
+# Arguments belonging to this function are underscored to avoid collisions with
+# the ex command args in kwargs.
+def do_ex_cmd_edit_wrap(self, edit, _name=None, _line=None, **kwargs):
+    _log.debug('do ex cmd edit wrap _name=%s _line=%s kwargs=%s', _name, _line, kwargs)
+
+    if _name:
+        ex_cmd = _get_ex_cmd(_name)
+        args = kwargs
+
+        window = self.view.window()
+        if window:
+            args['window'] = window
+
+        # TODO [review] This function is wrapped by a Sublime Text command (see
+        # above), which means objects like the RangeNode() can't be passed
+        # through. For the moment it just defaults to an empty RangeNode.
+
+        # TODO [review] Ex commands could probably make the line_range optional.
+
+        ex_cmd(view=self.view, edit=edit, line_range=RangeNode(), **args)
+
+    elif _line:
+        cmdline = parse_command_line(_line[1:])
+        ex_cmd = _get_ex_cmd(cmdline.command.target)
+
+        args = cmdline.command.params
+        if 'forceit' not in args:
+            args['forceit'] = cmdline.command.forced
+
+        args.update(kwargs)
+
+        window = self.view.window()
+        if window:
+            args['window'] = window
+
+        ex_cmd(view=self.view, edit=edit, line_range=cmdline.line_range, **args)
+
+    else:
+        raise RuntimeError('_name or _line is required')
+
+
+def do_ex_command(window, name, args=None):
+    # type: (...) -> None
+    #
+    # Args:
+    #   window (sublime.Window):
+    #   name (str):
+    #   args (dict[str, any]):
+    #
+    # Execute ex commands by name with arguments.
+    #
+    # This is the preferred usage when calling ex commands, because it does a
+    # few sanity checks like ensuring the command receives a valid view or edit
+    # object (if it needs them).
+    #
+    #   do_ex_command(window, 'help', {'subject': 'neovintageous'})
+    #
+    # This is roughly equivalent to running the cmdline command:
+    #
+    #   :help neovintageous
+    #
+    # It's also roughly equivalent to calling the ex command explicitly (though
+    # you should prefer to use *this* function when calling ex commands):
+    #
+    #   ex_help(window=window, subject='neovintageous')
+    #
+    # To see what arguments are available for an ex command, read the relevant
+    # ex command function signature: the commands are located in this module and
+    # are prefixed with "ex_" e.g. ex_help().
+    #
+    # If you want to run an ex command as string see do_ex_cmdline() (though you
+    # should prefer to use *this* function when calling ex commands).
+
+    _log.debug('do ex command %s %s', name, args)
+
+    if args is None:
+        args = {}
+
+    ex_cmd = _get_ex_cmd(name)
+
+    if 'edit' in inspect.signature(ex_cmd).parameters:
+        args['_name'] = name
+
+        return window.run_command('_nv_ex_cmd_edit_wrap', args)
+
+    view = window.active_view()
+    if view:
+        args['view'] = view
+
+    _log.debug('execute ex command: %s %s', name, args)
+
+    # TODO [review] This function is wrapped by a Sublime Text command (see
+    # above), which means objects like the RangeNode() can't be passed through.
+    # For the moment it just defaults to an empty RangeNode.
+
+    # TODO [review] Ex commands could probably make the line_range optional.
+
+    ex_cmd(window=window, line_range=RangeNode(), **args)
+
+
+def do_ex_cmdline(window, line):
+    # type: (...) -> None
+    #
+    # Args:
+    #   window (sublime.Window):
+    #   line (str):
+    #
+    # The line MUST begin with a colon:
+    #
+    #   do_ex_cmdline(window, ':help neovintageous')
+    #
+    # This is roughly equivalent to the method of running ex commands:
+    #
+    #   do_ex_command(window, 'help', {'subject': 'neovintageous'})
+    #
+    # Commands MUST not begin with an underscore. This would be invalid:
+    #
+    #   do_ex_cmdline(window, ':_help neovintageous')
+    #
+    # User Sublime Text commands are supported by beginning the command with an
+    # uppercase letter (the command name is coerced to underscore):
+    #
+    #   do_ex_cmdline(window, ':CommandName')
+    #
+    # This is roughly equivalant to:
+    #
+    #   sublime.window.run('command_name')
+
+    _log.debug('do ex cmdline >>>%s<<<', line)
+
+    if len(line) < 2:
+        raise RuntimeError('cmdline must be at least 2 characters long and begin a colon')
+
+    if line[0] != ':':
+        raise RuntimeError('cmdline must start with a colon')
+
+    if line[1].isupper():
+
+        # Do user Sublime Text command (user Sublime Text
+        # commands begin with an uppercase letter).
+
+        # Coerce to snakecase.
+        # TODO [refactor] coerce cmd to snakecase
+        cmd = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', line[1:])
+        cmd = re.sub(r"([a-z\d])([A-Z])", r'\1_\2', cmd)
+        cmd = cmd.replace('-', '_')
+        cmd = cmd.lower()
+
+        _log.debug('execute user ex command: %s', cmd)
+
+        return window.run_command(cmd)
+
+    cmdline = parse_command_line(line[1:])
+
+    if not cmdline.command:
+
+        # Do default ex command (the default ex command is not associated with
+        # any ex command). See :h [range].
+
+        view = window.active_view()
+        if not view:
+            raise RuntimeError('an active view is required')
+
+        if not cmdline.line_range:
+            # TODO Noop message/Error?
+            return
+
+        return _default_ex_cmd(window=window, view=view, line_range=cmdline.line_range)
+
+    ex_cmd = _get_ex_cmd(cmdline.command.target)
+
+    if 'edit' in inspect.signature(ex_cmd).parameters:
+        # TODO [review] Objects like the RangeNode() can't be passed through
+        # Sublime Text  commands, command args only accept simple data types,
+        # which is why we send the line which will be parsed again by the
+        # wrapper command. Ideally we wouldn't need to parse the line again.
+
+        return window.run_command('_nv_ex_cmd_edit_wrap', {'_line': line})
+
+    args = cmdline.command.params
+
+    view = window.active_view()
+    if view:
+        args['view'] = view
+
+    _log.debug('execute ex command: %s %s', cmdline.command.target, args)
+
+    ex_cmd(window=window, line_range=cmdline.line_range, forceit=cmdline.command.forced, **args)
+
+
+# TODO [refactor] Into do_ex_cmdline() with a param to indicate user cmdline? e.g do_ex_cmdline(window, line, interactive=True).  # noqa: E501
+def do_ex_user_cmdline(window, line):
+    # Args:
+    #   window (Window):
+    #   line (str):
+    #
+    # A user cmdline MUST terminate with a carrage-return (<CR>):
+    #
+    #   do_ex_user_cmdline(window, ':write<CR>')
+    #
+    # Sublime Text commands are supported by beginning the command with an
+    # uppercase letter (the command name will be coerced to underscore):
+    #
+    #   do_ex_user_cmdline(window, ':NeovintageousToggleSideBar<CR>')
+    #
+    # Once the above requirement is satidfied then do_ex_cmdline() is invoked
+    # with the <CR> stripped away.
+
+    _log.debug('do ex user cmdline >>>%s<<<', line)
+
+    match = re.match('^(?P<line>\\:[a-zA-Z][a-zA-Z_]*)\\<CR\\>', line)
+    if not match:
+        return console_message(
+            'invalid command line mapping {} (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)'
+            .format(line))
+
+    do_ex_cmdline(window, match.group('line'))

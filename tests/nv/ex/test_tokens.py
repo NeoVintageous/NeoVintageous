@@ -115,7 +115,7 @@ class TestCommandToken(unittest.TestCase):
     def test_create_with_name_sets_target(self):
         command = TokenCommand('only')
         self.assertEqual(command.name, 'only')
-        self.assertEqual(command.target, 'ex_only')
+        self.assertEqual(command.target, 'only')
 
     def test_create_with_name_sets_content(self):
         command = TokenCommand('only')
@@ -130,7 +130,7 @@ class TestCommandToken(unittest.TestCase):
     def test_default_attributes(self):
         command = TokenCommand('only')
         self.assertEqual(command.name, 'only')
-        self.assertEqual(command.target, 'ex_only')
+        self.assertEqual(command.target, 'only')
         self.assertEqual(command.params, {})
         self.assertEqual(command.forced, False)
         self.assertEqual(command.addressable, False)
@@ -205,10 +205,6 @@ class TestCommandToken(unittest.TestCase):
         self.assertTrue(token_a == token_b)
         self.assertTrue(token_b == token_a)
 
-    def test_name_cannot_be_none(self):
-        with self.assertRaisesRegex(TypeError, "Can't convert 'NoneType' object to str"):
-            TokenCommand(None)
-
     def test_not_eq(self):
         token_a = TokenCommand('c', params={'a': 'b', 'x': 'y'})
 
@@ -238,7 +234,7 @@ class TestCommandToken(unittest.TestCase):
         self.assertEqual(token_a.forced, False)
         self.assertEqual(token_a.addressable, False)
         self.assertEqual(token_a.cooperates_with_global, False)
-        self.assertEqual(token_a.target, 'ex_c')
+        self.assertEqual(token_a.target, 'c')
         self.assertEqual(token_a.content, 'c')
 
         token_b = TokenCommand('c', params={'x': 'y'})

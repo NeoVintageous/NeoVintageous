@@ -199,7 +199,7 @@ def _ex_route_delete(state):
 
 
 def _ex_route_double_ampersand(state):
-    command = TokenCommand('&&', target='ex_double_ampersand')
+    command = TokenCommand('&&', target='double_ampersand')
     command.addressable = True
 
     params = {'flags': [], 'count': ''}
@@ -579,6 +579,8 @@ def _ex_route_onoremap(state):
     if m:
         params.update(m.groupdict())
 
+    command.params = params
+
     return None, [command, TokenEof()]
 
 
@@ -768,7 +770,7 @@ def _ex_route_shell(state):
 
 
 def _ex_route_shell_out(state):
-    command = TokenCommand('!', target='ex_shell_out')
+    command = TokenCommand('!', target='shell_out')
     command.addressable = True
     params = {'cmd': None}
 
@@ -1157,7 +1159,9 @@ def _ex_route_wqall(state):
 def _ex_route_write(state):
     command = TokenCommand('write')
     command.addressable = True
-    # TODO [refactor] params should used keys compatible with **kwargs, see do_ex_command(). Review other scanners too. # noqa: E501
+
+    # TODO [refactor] params should used keys compatible with ex command function keyword arguments. Review other routes too.  # noqa: E501
+
     params = {
         '++': '',
         'file_name': '',

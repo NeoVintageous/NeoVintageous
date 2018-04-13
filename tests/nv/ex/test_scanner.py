@@ -445,7 +445,7 @@ class Test_scan_command(unittest.TestCase):
             self.assertEqual(actual[1], expected[1])
             self.assertEqual(actual, expected)
 
-        assert_command('&&', (None, [TokenCommand('&&', target='ex_double_ampersand', params={'flags': [], 'count': ''}, addressable=True), TokenEof()]))  # noqa: E501
+        assert_command('&&', (None, [TokenCommand('&&', target='double_ampersand', params={'flags': [], 'count': ''}, addressable=True), TokenEof()]))  # noqa: E501
         assert_command('buffers', (None, [TokenCommand('buffers'), TokenEof()]))  # noqa: E501
         assert_command('cd!', (None, [TokenCommand('cd', params={'path': None, '-': None}, forced=True), TokenEof()]))  # noqa: E501
         assert_command('cd', (None, [TokenCommand('cd', params={'path': None, '-': None}), TokenEof()]))  # noqa: E501

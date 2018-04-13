@@ -120,9 +120,9 @@ class RangeNode(Node):
 
     def __init__(self, start=None, end=None, separator=None):
         # Args:
-        #   start (list):
-        #   end (list):
-        #   separator (str):
+        #   start (list[Token]):
+        #   end (list[Token]):
+        #   separator (Token):
         self.start = start or []
         self.end = end or []
         self.separator = separator
@@ -185,7 +185,7 @@ class CommandLineNode(Node):
         self.command = command
 
     def __str__(self):
-        return '{} {}'.format(str(self.line_range), str(self.command))
+        return '{}{}'.format(str(self.line_range), str(self.command) if self.command else '')
 
     def validate(self):
         # type: () -> None

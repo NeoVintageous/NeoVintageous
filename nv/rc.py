@@ -27,8 +27,18 @@ from NeoVintageous.nv.vim import message
 
 _log = get_logger(__name__)
 
+
+# A specific list of ex commands are supported.
+# NOTE: The recursive mapping commands `:map`, `:nmap`, `:omap`, `:smap`,
+# `:vmap` are not supported. They were removed in v1.5. They are included in the
+# parse pattern because a notice is emitted if they are used. Uses should use
+# the non recursive commands instead. The recursive mappings were because they
+# were not implemented as recursive mappings, and replacing them now may prevent
+# some potential problems in the future if the recursive commands are ever
+# implemented.
 _parse_line_pattern = re.compile(
     '^(?::)?(?P<cmdline>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
+
 
 _recursive_mapping_alts = {
     'map': 'nnnoremap',
@@ -40,7 +50,7 @@ _recursive_mapping_alts = {
 
 
 def _file_name():
-    # TODO Rename .vintageousrc file -> .neovintageousrc
+    # TODO v2.0.0 Rename .vintageousrc file -> .neovintageousrc
     return os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
 
 
@@ -65,15 +75,17 @@ def reload():
 def _run():
     _log.debug('run %s', _file_name())
 
-    from NeoVintageous.nv.ex_cmds import do_ex_command
+    from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 
     try:
         window = sublime.active_window()
         with builtins.open(_file_name(), 'r') as f:
             for line in f:
-                cmd, args = _parse_line(line)
-                if cmd:
-                    do_ex_command(window, cmd, args)
+                cmdline = _parse_line(line)
+                if cmdline:
+                    # TODO [review] Should do_ex_cmdline() make the colon optional?
+                    do_ex_cmdline(window, ':' + cmdline)
+
     except FileNotFoundError:
         _log.debug('rcfile not found')
 
@@ -84,12 +96,12 @@ def _parse_line(line):
         if line:
             match = _parse_line_pattern.match(line)
             if match:
-                cmdline = match.group('cmdline')
                 cmd = match.group('cmd')
-
                 if cmd in _recursive_mapping_alts:
-                    raise Exception('Recursive mapping commands not allowed, use the "{}" command instead'
+                    raise Exception('Recursive mapping commands are not allowed, use the "{}" command instead'
                                     .format(_recursive_mapping_alts[cmd]))
+
+                cmdline = match.group('cmdline')
 
                 # By default, mapping the character '|' (bar) should be escaped
                 # with a slash or '<Bar>' used instead. Neovintageous currently
@@ -105,10 +117,10 @@ def _parse_line(line):
 
                     cmdline = cmdline.replace('\\|', '|')
 
-                return ('ex_' + cmd, {'command_line': cmdline})
+                return cmdline
     except Exception:
         msg = 'error detected while processing {} at line {}'.format(_file_name(), line.rstrip())
         message(msg)
         _log.exception(msg)
 
-    return None, None
+    return None
