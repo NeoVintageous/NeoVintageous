@@ -658,13 +658,13 @@ def window_split(window, file=None):
         window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
-def window_tab_control(window, command, file_name=None, forced=False, index=None):
+def window_tab_control(window, command, file_name=None, index=None):
     view = window.active_view()
     if not view:
         return status_message('view not found')
 
     view_count = len(window.views_in_group(window.active_group()))
-    (group_index, view_index) = window.get_view_index(view)
+    group_index, view_index = window.get_view_index(view)
 
     if command == 'next':
         window.run_command('select_by_index', {'index': (view_index + 1) % view_count})
@@ -672,30 +672,35 @@ def window_tab_control(window, command, file_name=None, forced=False, index=None
     elif command == 'prev':
         window.run_command('select_by_index', {'index': (view_index + view_count - 1) % view_count})
 
-    elif command == "last":
+    elif command == 'last':
         window.run_command('select_by_index', {'index': view_count - 1})
 
-    elif command == "first":
+    elif command == 'first':
         window.run_command('select_by_index', {'index': 0})
 
     elif command == 'goto':
         window.run_command('select_by_index', {'index': index - 1})
 
     elif command == 'only':
-        quit_command_line = 'quit' + '' if not forced else '!'
-
         group_views = window.views_in_group(group_index)
         if any(view.is_dirty() for view in group_views):
-            return status_message("E445: Other window contains changes")
+            return status_message('E445: Other window contains changes')
 
         for group_view in group_views:
             if group_view.id() == view.id():
                 continue
 
             window.focus_view(group_view)
-            window.run_command('ex_quit', {'command_line': quit_command_line})
+
+            # TODO [review] Probably doesn't need use :quit (just close the view).
+            from NeoVintageous.nv.ex_cmds import do_ex_command
+
+            do_ex_command(window, 'quit')
 
         window.focus_view(view)
+
+    elif command == 'close':
+        window.run_command('close_by_index', {'group': group_index, 'index': view_index})
 
     else:
         return status_message('unknown tab control command')

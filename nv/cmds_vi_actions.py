@@ -23,6 +23,7 @@ from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
 
+from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
@@ -75,9 +76,12 @@ __all__ = [
     '_vi_big_p',
     '_vi_big_s_action',
     '_vi_big_x',
+    '_vi_big_z_big_q',
+    '_vi_big_z_big_z',
     '_vi_c',
     '_vi_cc',
     '_vi_ctrl_e',
+    '_vi_ctrl_g',
     '_vi_ctrl_r',
     '_vi_ctrl_r_equal',
     '_vi_ctrl_right_square_bracket',
@@ -460,7 +464,7 @@ class _enter_normal_mode(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('enter normal mode (%s)', mode)
+        _log.debug('enter normal mode (mode=%s)', mode)
         state = self.state
 
         self.view.window().run_command('hide_auto_complete')
@@ -535,7 +539,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
-        _log.debug('enter normal mode (impl) (%s)', mode)
+        _log.debug('enter normal mode (mode=%s) (impl)', mode)
 
         def f(view, s):
             if mode == INSERT:
@@ -1633,6 +1637,22 @@ class _vi_big_x(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
+class _vi_big_z_big_q(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        do_ex_command(self.window, 'quit', {'forceit': True})
+
+
+class _vi_big_z_big_z(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        do_ex_command(self.window, 'exit')
+
+
 class _vi_big_p(ViTextCommandBase):
     _can_yank = True
     _synthetize_new_line_at_eof = True
@@ -2381,6 +2401,14 @@ class _vi_ctrl_e(ViTextCommandBase):
         extend = True if mode == VISUAL else False
 
         self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
+
+
+class _vi_ctrl_g(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        do_ex_command(self.window, 'file')
 
 
 # https://vimhelp.appspot.com/scroll.txt.html#CTRL-Y

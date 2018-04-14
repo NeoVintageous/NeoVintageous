@@ -162,7 +162,7 @@ if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
 
-            logger.debug('debug log file: \'{}\''.format(file))
+            logger.debug('debug log file: %s', file)
         else:
             console_message('could not create log file \'{}\''.format(file))
 

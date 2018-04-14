@@ -36,7 +36,6 @@ try:
     # Commands.
     # TODO Organise all commands into a single module (i.e. .nv.cmds).
     from NeoVintageous.nv.cmds import *  # noqa: F401,F403
-    from NeoVintageous.nv.cmds_ex import *  # noqa: F401,F403
     from NeoVintageous.nv.cmds_vi_actions import *  # noqa: F401,F403
     from NeoVintageous.nv.cmds_vi_motions import *  # noqa: F401,F403
 

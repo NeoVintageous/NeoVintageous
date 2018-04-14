@@ -103,7 +103,8 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
         initial_text,
         on_done,
         on_change,
-        on_cancel)
+        on_cancel
+    )
 
     _set = input_panel.settings().set
 

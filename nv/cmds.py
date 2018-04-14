@@ -24,11 +24,13 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
-from NeoVintageous.nv.ex.cmd_goto import TokenCommandGoto  # TODO [refactor] Use a "default" command to encpsulate the dependency # noqa: E501
 from NeoVintageous.nv.ex.completions import iter_paths
-from NeoVintageous.nv.ex.completions import parse
+from NeoVintageous.nv.ex.completions import parse_for_fs
 from NeoVintageous.nv.ex.completions import parse_for_setting
-from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex_cmds import do_ex_cmd_edit_wrap
+from NeoVintageous.nv.ex_cmds import do_ex_cmdline
+from NeoVintageous.nv.ex_cmds import do_ex_command
+from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
@@ -54,7 +56,6 @@ from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import translate_char
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -72,6 +73,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 __all__ = [
     '_nv_cmdline',
     '_nv_cmdline_feed_key',
+    '_nv_ex_cmd_edit_wrap',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
     '_nv_fs_completion',
@@ -241,10 +243,7 @@ class _nv_goto_help(WindowCommand):
 
         match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
         if match:
-            subject = subject.strip('|')
-            # TODO Refactor ex_help code into a reusable middle layer so that
-            # this command doesn't have to call the ex command.
-            self.window.run_command('ex_help', {'command_line': 'help ' + subject})
+            do_ex_command(self.window, 'help', {'subject': subject.strip('|')})
         else:
             return message('E149: Sorry, no help for %s' % subject)
 
@@ -252,7 +251,7 @@ class _nv_goto_help(WindowCommand):
 class _nv_run_cmds(TextCommand):
 
     def run(self, edit, commands):
-        # Runs multple commands.
+        # Run a list of commands one after the other.
         #
         # Args:
         #   commands (list): A list of commands.
@@ -346,7 +345,7 @@ class _nv_feed_key(ViWindowCommandBase):
             _log.debug('found user mapping...')
 
             if do_eval:
-                _log.debug('evaluating user mapping...')
+                _log.debug('evaluating user mapping (mode=%s)...', state.mode)
 
                 new_keys = command.mapping
                 if state.mode == OPERATOR_PENDING:
@@ -359,40 +358,13 @@ class _nv_feed_key(ViWindowCommandBase):
                 state.motion_count = mcount
                 state.action_count = acount
 
-                _log.info('user mapping %s -> %s', key, new_keys)
-
-                # Support for basic Command-line mode mappings:
-                #
-                # `:Command<CR>` maps to Sublime Text command (starts with uppercase letter).
-                # `:command<CR>` maps to Command-line mode command.
+                _log.info('user mapping %s -> %s', command.sequence, new_keys)
 
                 if ':' in new_keys:
-                    match = re.match('^\\:(?P<cmd_line_command>[a-zA-Z][a-zA-Z_]*)\\<CR\\>', new_keys)
-                    if match:
-                        cmd_line_command = match.group('cmd_line_command')
-                        if cmd_line_command[0].isupper():
-                            # run regular sublime text command
-                            def _coerce_to_snakecase(string):
-                                string = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', string)
-                                string = re.sub(r"([a-z\d])([A-Z])", r'\1_\2', string)
-                                string = string.replace("-", "_")
-
-                                return string.lower()
-
-                            command = _coerce_to_snakecase(cmd_line_command)
-                            command_args = {}
-                        else:
-                            command = '_nv_cmdline'
-                            command_args = {'cmd_line': ':' + cmd_line_command}
-
-                        _log.info('run command -> %s %s', command, command_args)
-
-                        return self.window.run_command(command, command_args)
-
                     if ':' == new_keys:
                         return self.window.run_command('_nv_cmdline')
 
-                    return console_message('invalid command line mapping %s -> %s (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)' % (command.head, command.mapping))  # noqa: E501
+                    return do_ex_user_cmdline(self.window, new_keys)
 
                 self.window.run_command('_nv_process_notation', {'keys': new_keys, 'check_user_mappings': False})
 
@@ -478,7 +450,6 @@ class _nv_process_notation(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
-        # type: (str, int, bool) -> None
         # Args:
         #   keys (str): Key sequence to be run.
         #   repeat_count (int): Count to be applied when repeating through the
@@ -486,11 +457,12 @@ class _nv_process_notation(ViWindowCommandBase):
         #   check_user_mappings (bool): Whether user mappings should be
         #       consulted to expand key sequences.
         state = self.state
-        _log.debug('process notation keys %s for mode %s', keys, state.mode)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
         state.non_interactive = True
+
+        _log.debug('process notation keys %s for initial mode %s', keys, initial_mode)
 
         # First, run any motions coming before the first action. We don't keep
         # these in the undo stack, but they will still be repeated via '.'.
@@ -628,40 +600,58 @@ class _nv_replace_line(TextCommand):
         self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
 
 
+class _nv_ex_cmd_edit_wrap(TextCommand):
+
+    # This command is required to wrap ex commands that need a Sublime Text edit
+    # token. Edit tokens can only be obtained from a TextCommand. Some ex
+    # commands don't need an edit token, those commands don't need to be wrapped
+    # by a text command.
+
+    def run(self, edit, **kwargs):
+        do_ex_cmd_edit_wrap(self, edit, **kwargs)
+
+
 class _nv_cmdline(WindowCommand):
+
     interactive_call = True
 
     def is_enabled(self):
+        # TODO refactor into a text command as the view is always required?
         return bool(self.window.active_view())
 
-    def adjust_initial_text(self, text):
-        state = State(self.window.active_view())
-        if state.mode in (VISUAL, VISUAL_LINE):
-            text = ":'<,'>" + text[1:]
+    def run(self, cmdline=None):
+        _log.debug('cmdline.run cmdline = %s', cmdline)
 
-        return text
+        if cmdline:
 
-    def run(self, initial_text=':', cmd_line=''):
-        if cmd_line:
-            # The caller has provided a command, to we're not in interactive
-            # mode -- just run the command.
+            # The caller has provided a command (non-interactive mode), so run
+            # the command without a prompt.
+            # TODO [review] Non-interactive mode looks unused?
+
             _nv_cmdline.interactive_call = False
-            self.on_done(cmd_line)
-            return
+
+            return self.on_done(cmdline)
         else:
             _nv_cmdline.interactive_call = True
 
+        # TODO There has got to be a better way to handle fs ("file system"?) completions.
         _nv_fs_completion.invalidate()
-
-        ui_cmdline_prompt(
-            self.window,
-            initial_text=self.adjust_initial_text(initial_text),
-            on_done=self.on_done,
-            on_change=self.on_change,
-            on_cancel=self.on_cancel)
 
         state = State(self.window.active_view())
         state.reset_during_init = False
+
+        if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+            initial_text = ":'<,'>"
+        else:
+            initial_text = ':'
+
+        ui_cmdline_prompt(
+            self.window,
+            initial_text=initial_text,
+            on_done=self.on_done,
+            on_change=self.on_change,
+            on_cancel=self.on_cancel
+        )
 
     def on_change(self, s):
         if s == '':
@@ -674,7 +664,7 @@ class _nv_cmdline(WindowCommand):
             return self._force_cancel()
 
         if _nv_cmdline.interactive_call:
-            cmd, prefix, only_dirs = parse(s)
+            cmd, prefix, only_dirs = parse_for_fs(s)
             if cmd:
                 _nv_fs_completion.prefix = prefix
                 _nv_fs_completion.is_stale = True
@@ -688,31 +678,19 @@ class _nv_cmdline(WindowCommand):
 
         _nv_cmdline.interactive_call = True
 
-    def on_done(self, cmd_line):
-        if len(cmd_line) <= 1:
+    def on_done(self, cmdline):
+        if len(cmdline) <= 1:
             return
 
-        if cmd_line[0] != ':':
+        if cmdline[0] != ':':
             return
 
         if _nv_cmdline.interactive_call:
-            history_update(cmd_line)
+            history_update(cmdline)
 
         _nv_cmdline_feed_key.reset_last_history_index()
 
-        try:
-            parsed = parse_command_line(cmd_line[1:])
-            if not parsed.command:
-                parsed.command = TokenCommandGoto()
-
-            cmd = parsed.command.target_command
-            args = {'command_line': cmd_line[1:]}
-
-            _log.debug('run command %s %s', cmd, args)
-            self.window.run_command(cmd, args)
-        except Exception as e:
-            message('{} ({})'.format(str(e), cmd_line))
-            _log.exception('{}'.format(cmd_line))
+        do_ex_cmdline(self.window, cmdline)
 
     def _force_cancel(self):
         self.on_cancel()
@@ -756,7 +734,7 @@ class _nv_fs_completion(TextCommand):
         _nv_fs_completion.frozen_dir = (_nv_fs_completion.frozen_dir or
                                         (state.settings.vi['_cmdline_cd'] + '/'))
 
-        cmd, prefix, only_dirs = parse(self.view.substr(self.view.line(0)))
+        cmd, prefix, only_dirs = parse_for_fs(self.view.substr(self.view.line(0)))
         if not cmd:
             return
 

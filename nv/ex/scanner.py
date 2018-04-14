@@ -15,19 +15,158 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from . import scanner_commands
-from .scanner_state import ScannerState
-from .tokens import TokenComma
-from .tokens import TokenDigits
-from .tokens import TokenDollar
-from .tokens import TokenDot
-from .tokens import TokenEof
-from .tokens import TokenMark
-from .tokens import TokenOffset
-from .tokens import TokenPercent
-from .tokens import TokenSearchBackward
-from .tokens import TokenSearchForward
-from .tokens import TokenSemicolon
+import re
+
+from NeoVintageous.nv.ex.tokens import TokenComma
+from NeoVintageous.nv.ex.tokens import TokenDigits
+from NeoVintageous.nv.ex.tokens import TokenDollar
+from NeoVintageous.nv.ex.tokens import TokenDot
+from NeoVintageous.nv.ex.tokens import TokenEof
+from NeoVintageous.nv.ex.tokens import TokenMark
+from NeoVintageous.nv.ex.tokens import TokenOffset
+from NeoVintageous.nv.ex.tokens import TokenPercent
+from NeoVintageous.nv.ex.tokens import TokenSearchBackward
+from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.ex.tokens import TokenSemicolon
+from NeoVintageous.nv.ex_routes import ex_routes
+
+
+class _ScannerState:
+
+    EOF = '__EOF__'
+
+    # Attributes:
+    #   :source (str): The string to be scanned.
+    #   :position (int): The current scan position. Default is 0.
+    #   :start (int): The most recent scan start. Default is 0.
+
+    def __init__(self, source):
+        # type: (str) -> None
+        self.source = source
+        self.position = 0
+        self.start = 0
+
+    def consume(self):
+        # type: () -> str
+        # Returns one character or self.EOF constant ("__EOF__") if no
+        # characters left in source.
+        if self.position >= len(self.source):
+            return self.EOF
+
+        c = self.source[self.position]
+
+        self.position += 1
+
+        return c
+
+    def backup(self):
+        # type: () -> None
+        # Backs up scanner position by one character.
+        self.position -= 1
+
+    def ignore(self):
+        # type: () -> None
+        # Discards characters up to the current poistion such that calls to
+        # emit() will ignore those characters.
+        self.start = self.position
+
+    def emit(self):
+        # type: () -> str
+        # Returns source from start to current position, and advances start to
+        # the current position.
+        content = self.source[self.start:self.position]
+
+        self.ignore()
+
+        return content
+
+    def skip(self, character):
+        # type: (str) -> None
+        # Consumes character while it matches.
+        while True:
+            c = self.consume()
+            if c == self.EOF or c != character:
+                break
+
+        if c != self.EOF:
+            self.backup()
+
+    def skip_run(self, characters):
+        # type: (str) -> None
+        # Skips characters while there's a match.
+        while True:
+            c = self.consume()
+            if c == self.EOF or c not in characters:
+                break
+
+        if c != self.EOF:
+            self.backup()
+
+    def expect(self, item, on_error=None):
+        # type: (...) -> str
+        # Expects item to match at the current position.
+        #
+        # Args:
+        #   item (str): Expected character.
+        #   on_error (callable): A function that returns an error. The error
+        #       returned overrides the default ValueError.
+        #
+        # Raises:
+        #   ValueError: If item does not match.
+        #   on_error (callable): If item does not match.
+        c = self.consume()
+        if c != item:
+            if on_error:
+                raise on_error()
+
+            # TODO Use domain specific exception.
+            raise ValueError('expected {0}, got {1} instead'.format(item, c))
+
+        return c
+
+    def expect_eof(self, on_error=None):
+        return self.expect(self.EOF, on_error)
+
+    def expect_match(self, pattern, on_error=None):
+        # Expects item to match at the current position.
+        #
+        # Args:
+        #     pattern (str): A regular expression.
+        #     on_error (Callable): A function that returns an error. The error
+        #         returned overrides the default ValueError.
+        #
+        # Raises:
+        #   ValueError: If item does not match.
+        #   on_error (callable): If item does not match.
+        m = re.compile(pattern).match(self.source, self.position)
+        if m:
+            self.position += m.end() - m.start()
+
+            return m
+
+        if not on_error:
+            raise ValueError('expected match with \'{0}\', at \'{1}\''.format(pattern, self.source[self.position:]))
+
+        raise on_error()
+
+    def peek(self, item):
+        # type: (str) -> bool
+        # Return True if item matches at the current position, False otherwise.
+        return self.source[self.position:self.position + len(item)] == item
+
+    def match(self, pattern):
+        # Return the match obtained by searching pattern. The current `position`
+        # will advance as many characters as the match's length.
+        #
+        # Args:
+        #     pattern (str): A regular expression.
+        m = re.compile(pattern).match(self.source, self.position)
+        if m:
+            self.position += m.end() - m.start()
+
+            return m
+
+        return
 
 
 class Scanner:
@@ -35,13 +174,13 @@ class Scanner:
     # Produce ex command-line tokens from a string.
     #
     # Attributes:
-    #   :state (ScannerState):
+    #   :state (_ScannerState):
     #
     # TODO Make this class a function. We don't need a state object reference.
 
     def __init__(self, source):
         # type: (str) -> None
-        self.state = ScannerState(source)
+        self.state = _ScannerState(source)
 
     def scan(self):
         # Generate ex command-line tokens for source. The scanner works its way
@@ -64,7 +203,7 @@ def _scan_range(state):
     # https://vimhelp.appspot.com/cmdline.txt.html#cmdline-ranges
     #
     # Args:
-    #   :state (ScannerState):
+    #   :state (_ScannerState):
     #
     # Returns:
     #   tuple
@@ -84,11 +223,15 @@ def _scan_range(state):
 
         return _scan_range, [TokenDollar()]
 
-    if c in ',;':
-        token = TokenComma if c == ',' else TokenSemicolon
+    if c == ',':
         state.emit()
 
-        return _scan_range, [token()]
+        return _scan_range, [TokenComma()]
+
+    if c in ';':
+        state.emit()
+
+        return _scan_range, [TokenSemicolon()]
 
     if c == "'":
         return _scan_mark(state)
@@ -187,11 +330,11 @@ def _scan_offset(state):
 
 def _scan_command(state):
     # Args:
-    #   :state (ScannerState):
+    #   :state (_ScannerState):
     #
     # Returns:
     #   Tuple[None, list(TokenEof)]
-    for route, command in scanner_commands.routes.items():
+    for route, command in ex_routes.items():
         if state.match(route):
             state.ignore()
 

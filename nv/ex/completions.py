@@ -20,34 +20,18 @@ import os
 import re
 
 
-RX_CMD_LINE_CD = re.compile(r'^(?P<cmd>:\s*cd!?)\s+(?P<path>.*)$')
-RX_CMD_LINE_WRITE = re.compile(r'^(?P<cmd>:\s*w(?:rite)?!?)\s+(?P<path>.*)$')
-RX_CMD_LINE_EDIT = re.compile(r'^(?P<cmd>:\s*e(?:dit)?!?)\s+(?P<path>.*)$')
-RX_CMD_LINE_TABEDIT = re.compile(r'^(?P<cmd>:\s*t(?:abedit)?!?)\s+(?P<path>.*)$')
-# convenience, for the people who type tabe not tabedit
-RX_CMD_LINE_TABE = re.compile(r'^(?P<cmd>:\s*t(?:abe)?!?)\s+(?P<path>.*)$')
-RX_CMD_LINE_VSPLIT = re.compile(r'^(?P<cmd>:\s*vs(?:plit)?!?)\s+(?P<path>.*)$')
-
-
-COMPLETIONS_FILE = 1
-COMPLETIONS_DIRECTORY = 2
-
-completion_types = [
-    (RX_CMD_LINE_CD, True),
-    (RX_CMD_LINE_WRITE, True),
-    (RX_CMD_LINE_EDIT, False),
-    (RX_CMD_LINE_TABEDIT, False),
-    (RX_CMD_LINE_TABE, False),
-    (RX_CMD_LINE_VSPLIT, False),
+_completion_types = [
+    (re.compile(r'^(?P<cmd>:\s*cd!?)\s+(?P<path>.*)$'), True),
+    (re.compile(r'^(?P<cmd>:\s*w(?:rite)?!?)\s+(?P<path>.*)$'), True),
+    (re.compile(r'^(?P<cmd>:\s*e(?:dit)?!?)\s+(?P<path>.*)$'), False),
+    (re.compile(r'^(?P<cmd>:\s*t(?:abedit)?!?)\s+(?P<path>.*)$'), False),
+    (re.compile(r'^(?P<cmd>:\s*t(?:abe)?!?)\s+(?P<path>.*)$'), False),
+    (re.compile(r'^(?P<cmd>:\s*vs(?:plit)?!?)\s+(?P<path>.*)$'), False),
 ]
 
-RX_CMD_LINE_SET_LOCAL = re.compile(r'^(?P<cmd>:\s*setl(?:ocal)?\??)\s+(?P<setting>.*)$')
-RX_CMD_LINE_SET_GLOBAL = re.compile(r'^(?P<cmd>:\s*se(?:t)?\??)\s+(?P<setting>.*)$')
-
-
-completion_settings = [
-    (RX_CMD_LINE_SET_LOCAL, None),
-    (RX_CMD_LINE_SET_GLOBAL, None),
+_completion_settings = [
+    (re.compile(r'^(?P<cmd>:\s*setl(?:ocal)?\??)\s+(?P<setting>.*)$'), None),
+    (re.compile(r'^(?P<cmd>:\s*se(?:t)?\??)\s+(?P<setting>.*)$'), None),
 ]
 
 
@@ -77,9 +61,9 @@ def iter_paths(prefix=None, from_dir=None, only_dirs=False):
                 yield path[len(start_at):] + ('' if not os.path.isdir(path) else '/')
 
 
-def parse(text):
+def parse_for_fs(text):
     found = None
-    for (pattern, only_dirs) in completion_types:
+    for (pattern, only_dirs) in _completion_types:
         found = pattern.search(text)
         if found:
             return found.groupdict()['cmd'], found.groupdict()['path'], only_dirs
@@ -87,21 +71,13 @@ def parse(text):
     return (None, None, None)
 
 
-def escape(path):
-    return path.replace(' ', '\\ ')
-
-
-def unescape(path):
-    return path.replace('\\ ', ' ')
-
-
 def wants_fs_completions(text):
-    return parse(text)[0] is not None
+    return parse_for_fs(text)[0] is not None
 
 
 def parse_for_setting(text):
     found = None
-    for (pattern, _) in completion_settings:
+    for (pattern, _) in _completion_settings:
         found = pattern.search(text)
         if found:
             return found.groupdict()['cmd'], found.groupdict().get('setting'), None

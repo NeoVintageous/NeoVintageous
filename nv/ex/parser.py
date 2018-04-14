@@ -16,22 +16,21 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# IMPORTANT! Some imports are at the bottom to avoid circular refs.
-from .nodes import CommandLineNode
-from .nodes import RangeNode
-from .scanner import Scanner
-from .tokens import TokenComma
-from .tokens import TokenDigits
-from .tokens import TokenDollar
-from .tokens import TokenDot
-from .tokens import TokenEof
-from .tokens import TokenMark
-from .tokens import TokenOfCommand
-from .tokens import TokenOffset
-from .tokens import TokenPercent
-from .tokens import TokenSearchBackward
-from .tokens import TokenSearchForward
-from .tokens import TokenSemicolon
+from NeoVintageous.nv.ex.nodes import CommandLineNode
+from NeoVintageous.nv.ex.nodes import RangeNode
+from NeoVintageous.nv.ex.scanner import Scanner
+from NeoVintageous.nv.ex.tokens import TokenComma
+from NeoVintageous.nv.ex.tokens import TokenCommand
+from NeoVintageous.nv.ex.tokens import TokenDigits
+from NeoVintageous.nv.ex.tokens import TokenDollar
+from NeoVintageous.nv.ex.tokens import TokenDot
+from NeoVintageous.nv.ex.tokens import TokenEof
+from NeoVintageous.nv.ex.tokens import TokenMark
+from NeoVintageous.nv.ex.tokens import TokenOffset
+from NeoVintageous.nv.ex.tokens import TokenPercent
+from NeoVintageous.nv.ex.tokens import TokenSearchBackward
+from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.ex.tokens import TokenSemicolon
 from NeoVintageous.nv.vim import get_logger
 
 
@@ -57,15 +56,12 @@ class _ParserState:
 
 def parse_command_line(source):
     # type: (str) -> CommandLineNode
+
     # The parser works its way through the command line by passing the current
     # state to the next parsing function. It stops when no parsing funcion is
     # returned from the previous one.
-    #
-    # Args:
-    #   :source (str):
-    #
-    # Returns:
-    #   CommandLineNode
+
+    _log.debug('parsing source >>>%s<<<', source)
 
     state = _ParserState(source)
     parse_func = _parse_line_ref
@@ -75,9 +71,19 @@ def parse_command_line(source):
         if parse_func is None:
             command_line.validate()
 
-            _log.debug('cmdline command {}'.format(command_line))
+            _log.debug('parsed %s', command_line)
 
             return command_line
+
+
+def parse_command_line_address(address):
+    # type: (str) -> CommandLineNode
+
+    # TODO Refactor parsing address; currently just calls parse_command_line().
+
+    _log.debug('parsing address >>>%s<<<', address)
+
+    return parse_command_line(address)
 
 
 def _init_line_range(command_line):
@@ -150,7 +156,7 @@ def _parse_line_ref(state, command_line):
 
         return _process_mark(token, state, command_line)
 
-    if isinstance(token, TokenOfCommand):
+    if isinstance(token, TokenCommand):
         _init_line_range(command_line)
         command_line.command = token
 

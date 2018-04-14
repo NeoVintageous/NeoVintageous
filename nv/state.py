@@ -36,7 +36,6 @@ from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
@@ -594,7 +593,7 @@ class State(object):
         self.reset_during_init = True
 
     def update_xpos(self, force=False):
-        if self.must_update_xpos or force:
+        if force or self.must_update_xpos:
             try:
                 # TODO: we should check the current mode instead. ============
                 sel = self.view.sel()[0]
@@ -602,19 +601,13 @@ class State(object):
                 if not sel.empty():
                     if sel.a < sel.b:
                         pos -= 1
-                # ============================================================
-                r = Region(self.view.line(pos).a, pos)
-                counter = Counter(self.view.substr(r))
+
+                counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))
                 tab_size = self.view.settings().get('tab_size')
-                xpos = (self.view.rowcol(pos)[1] +
-                        ((counter['\t'] * tab_size) - counter['\t']))
-            except Exception as e:
-                console_message(str(e))
-                _log.exception('error setting xpos; default to 0')
+                self.xpos = (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t']))
+            except Exception:
+                _log.exception('error updating xpos; default to 0')
                 self.xpos = 0
-                return
-            else:
-                self.xpos = xpos
 
     def _set_parsers(self, command):
         # type: (ViCommandDefBase) -> None
