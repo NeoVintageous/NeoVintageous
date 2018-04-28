@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
-
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.state import State
@@ -37,21 +35,48 @@ class TestState(unittest.ViewTestCase):
         self.state.mode = unittest.VISUAL_BLOCK
         self.assertEqual(self.state.in_any_visual_mode(), True)
 
-    # XXX Investigate what it is that causes these tests to fail on CI servers only. They only fail sometimes.
-    @unittest.skipIf(os.environ.get('TRAVIS_OS_NAME', False) == 'osx', 'fails in Travis CI OSX server only')
-    @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
+    def _assertDefaultMode(self, mode):
+        # The default mode assertion can sometimes fail.
+        #
+        # Apparently it can fail on the CI servers aswell as local development
+        # machines, though at the time of writing I wasn't able to reproduce the
+        # issue on the CI servers.
+        #
+        # The issue:
+        #
+        # The default mode is UNKNOWN. The event listener on_activated event
+        # initialises views and part of that initialisation is to set the
+        # default mode to NORMAL.
+        #
+        # An issue arises when the Sublime Text window doesn't have focus e.g.
+        # start a test run, then quickly move the focus to another application
+        # while the tests are run.
+        #
+        # When ST doesn't have focus it doesn't fire the on_activated event. I
+        # assume it's expected ST behaviour e.g. maybe because the when you move
+        # focus away from ST is fires the on_deactivate event on the active
+        # view.
+        #
+        # When the on_activated event is NOT fired for the test view then the
+        # mode will stay in an UNKNOWN state, but when it is fired it is set to
+        # a NORMAL state.
+
+        try:
+            self.assertEqual(mode, unittest.NORMAL)
+        except AssertionError:
+            self.assertEqual(mode, unittest.UNKNOWN)
+
     def test_can_initialize(self):
         s = State(self.view)
-        # Make sure the actual usage of NeoVintageous doesn't change the pristine
-        # state. This isn't great, though.
+        # Make sure the actual usage of NeoVintageous doesn't change the
+        # pristine state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')
         self.view.window().settings().erase('_vintageous_last_character_search')
         self.view.window().settings().erase('_vintageous_last_buffer_search')
 
         self.assertEqual(s.sequence, '')
         self.assertEqual(s.partial_sequence, '')
-        # TODO This one fails in AppVeyor, but not locally.
-        self.assertEqual(s.mode, unittest.NORMAL)
+        self._assertDefaultMode(s.mode)
         self.assertEqual(s.action, None)
         self.assertEqual(s.motion, None)
         self.assertEqual(s.action_count, '')
@@ -71,32 +96,20 @@ class TestState(unittest.ViewTestCase):
         self.state.motion = motion
         self.assertTrue(self.state.must_scroll_into_view())
 
-
-class TestStateModeSwitching(unittest.ViewTestCase):
-
-    # XXX Investigate what it is that causes these tests to fail on CI servers only. They only fail sometimes.
-    @unittest.skipIf(os.environ.get('TRAVIS_OS_NAME', False) == 'osx', 'fails in Travis CI OSX server only')
-    @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def test_enter_normal_mode(self):
-        self.assertEqual(self.state.mode, unittest.NORMAL)
+        self._assertDefaultMode(self.state.mode)
         self.state.mode = unittest.UNKNOWN
         self.assertNotEqual(self.state.mode, unittest.NORMAL)
         self.state.enter_normal_mode()
         self.assertEqual(self.state.mode, unittest.NORMAL)
 
-    # XXX Investigate what it is that causes these tests to fail on CI servers only. They only fail sometimes.
-    @unittest.skipIf(os.environ.get('TRAVIS_OS_NAME', False) == 'osx', 'fails in Travis CI OSX server only')
-    @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def test_enter_visual_mode(self):
-        self.assertEqual(self.state.mode, unittest.NORMAL)
+        self._assertDefaultMode(self.state.mode)
         self.state.enter_visual_mode()
         self.assertEqual(self.state.mode, unittest.VISUAL)
 
-    # XXX Investigate what it is that causes these tests to fail on CI servers only. They only fail sometimes.
-    @unittest.skipIf(os.environ.get('TRAVIS_OS_NAME', False) == 'osx', 'fails in Travis CI OSX server only')
-    @unittest.skipIf(os.environ.get('APPVEYOR', False), 'fails in CI server only')
     def test_enter_insert_mode(self):
-        self.assertEqual(self.state.mode, unittest.NORMAL)
+        self._assertDefaultMode(self.state.mode)
         self.state.enter_insert_mode()
         self.assertEqual(self.state.mode, unittest.INSERT)
 
