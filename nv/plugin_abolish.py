@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+# A port of https://github.com/tpope/vim-abolish.
+
 import re
 
 from sublime_plugin import TextCommand
@@ -29,9 +31,6 @@ from NeoVintageous.nv.plugin import ViOperatorDef
 __all__ = [
     '_nv_abolish_command'
 ]
-
-
-# A port of https://github.com/tpope/vim-abolish.
 
 
 def _coerce_to_mixedcase(string):

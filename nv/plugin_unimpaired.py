@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+# A port of https://github.com/tpope/vim-unimpaired.
+
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import INPUT_INMEDIATE
@@ -28,9 +30,6 @@ from NeoVintageous.nv.plugin import VISUAL
 __all__ = [
     '_nv_unimpaired_command'
 ]
-
-
-# A post of https://github.com/tpope/vim-unimpaired.
 
 
 @register(seq='[l', modes=(NORMAL, VISUAL))

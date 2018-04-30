@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+# A port of https://github.com/tpope/vim-surround.
+# Initially based on https://github.com/guillermooo/Vintageous_Plugin_Surround.
+
 import re
 
 from sublime import LITERAL
@@ -40,10 +43,6 @@ __all__ = [
     '_nv_surround_command',
     '_nv_surround_ys_command'
 ]
-
-
-# A port of https://github.com/tpope/vim-surround.
-# Initially based on https://github.com/guillermooo/Vintageous_Plugin_Surround.
 
 
 @register(seq='ys', modes=(NORMAL,))
