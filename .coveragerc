@@ -1,2 +1,7 @@
 [run]
-omit = */tests/*
+omit =
+    /*/tests/test*
+    /*/tests/nv/*
+    /*/tests/fixtures/*
+    /*/tests/__init__.py
+    /*/tests/commands.py
