@@ -94,30 +94,30 @@ class ViewTestCase(unittest.TestCase):
     def select(self, selections):
         # Create selection in the view.
         #
-        # Existing selections are cleared. Integers are converted to Regions
-        # e.g. `3 -> sublime.Region(3)`, tuples are converted to Regions e.g.
-        # `(3, 5) -> sublime.Region(3, 5)`, and integers and tuples in a list
-        # are also converted to Regions.
-        #
         # Args:
-        #   selections (int|tuple|Region|list<int|tuple|Region>):
+        #   selections (int|tuple|Region|list<int|tuple|Region>)
         #
-        # Usage:
+        # Existing selections are cleared.
         #
-        #   Select a single point:
-        #   >>> self.select(3)
+        # Integers and tuples are converted to Regions:
+        # >>> select(3) is the short for: select(sublime.Region(3))
+        # >>> select((3, 5)) is short for: select(sublime.Region(3, 5))
         #
-        #   Select a region of text e.g. from point 3 to 5:
-        #   >>> self.select((3, 5))
+        # Select a single point:
+        # >>> select(3)
         #
-        #   To make multiple single point selections pass a list of integers:
-        #   >>> self.select([3, 5, 7])
+        # Select a region of text e.g. from point 3 to 5:
+        # >>> select((3, 5))
         #
-        #   To make multiple regions of text:
-        #   >>> self.select([(3, 5), (7, 11)])
+        # Select multiple point selections:
+        # >>> select([3, 5, 7])
         #
-        #   You can also mix points and regions in a list:
-        #   >>> self.select([3, 5, (7, 11), 17, (19, 23)])
+        # Select multiple text selections:
+        # >>> select([(3, 5), (7, 11)])
+        #
+        # Select multiple points, and text selections:
+        # >>> select([3, 5, (7, 11), 17, (19, 23)])
+
         self.view.sel().clear()
 
         if not isinstance(selections, list):
@@ -178,41 +178,28 @@ class ViewTestCase(unittest.TestCase):
     def assertSelection(self, expected):
         # Test that view selection and *expected* are equal.
         #
-        # Integers are converted to Regions e.g. `3 -> sublime.Region(3)`,
-        # tuples are converted to Regions e.g. `(3, 5) -> sublime.Region(3, 5)`,
-        # and integers and tuples in a list are also converted to Regions.
-        #
         # Args:
         #   expected (int|tuple|Region|list<Region>):
         #
-        # Usage:
+        # Integers and tuples are converted to Regions:
+        # >>> assertSelection(3) is the short for: assertSelection(sublime.Region(3))
+        # >>> assertSelection((3, 5)) is short for: assertSelection(sublime.Region(3, 5))
         #
-        #   Assert single point selection:
-        #   >>> self.assertSelection(0)
-        #   # Asserts that the current view has one cursor at point zero.
-        #   >>> self.assertSelection(3)
-        #   # Asserts that the current view has one cursor at point three.
+        # Assert that the view has one point selection:
+        # >>> self.assertSelection(3)
         #
-        #   Assert multiple single point selections:
-        #   >>> self.assertSelection([3, 5, 7])
-        #   # Asserts that the current view has three cursors at points three,
-        #   # five, and seven.
+        # Assert that the view has multiple point selections:
+        # >>> self.assertSelection([3, 5, 7])
         #
-        #   Assert a text area selection:
-        #   >>> self.assertSelection((3, 5))
-        #   # Asserts that the current view has one cursor selection text from
-        #   # point three to five.
+        # Assert that the view has a text area selection:
+        # >>> self.assertSelection((3, 5))
         #
-        #   Assert multiple text are selections:
-        #   >>> self.assertSelection([(3, 5), (7, 9))
-        #   # Asserts that the current view has two cursors selecting text from
-        #   # point three to five, and point seven to nine.
+        # Assert that the view has multiple text selections:
+        # >>> self.assertSelection([(3, 5), (7, 9))
         #
-        #   You can also mix points and regions in a list:
-        #   >>> self.assertSelection([3, 5, (7, 11)])
-        #   # Asserts that the current view has two single point selections at
-        #   # points three, and five, and one region selection from point seven
-        #   # to eleven.
+        # Assert that the view has multiple points, and text selections:
+        # >>> self.assertSelection([3, 5, (7, 11)])
+
         if isinstance(expected, int):
             self.assertEqual([Region(expected)], list(self.view.sel()))
         elif isinstance(expected, tuple):
