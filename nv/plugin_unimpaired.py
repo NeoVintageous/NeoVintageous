@@ -178,13 +178,6 @@ def _context_previous(view, count):
             'count': count
         })
 
-    for i in range(count):
-        # DEPRECATED This is an old SublimeLinter API. If this command is not
-        # available then running it will do nothing.
-        view.run_command('sublimelinter_goto_error', {
-            'direction': 'previous'
-        })
-
 
 def _context_next(view, count):
     window = view.window()
@@ -192,13 +185,6 @@ def _context_next(view, count):
         window.run_command('sublime_linter_goto_error', {
             'direction': 'next',
             'count': count
-        })
-
-    for i in range(count):
-        # DEPRECATED This is an old SublimeLinter API. If this command is not
-        # available then running it will do nothing.
-        view.run_command('sublimelinter_goto_error', {
-            'direction': 'next'
         })
 
 
