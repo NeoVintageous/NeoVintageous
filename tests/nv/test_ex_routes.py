@@ -308,7 +308,7 @@ class Test_ex_route_tabnext(unittest.TestCase):
 
 class TestRoutes(unittest.TestCase):
 
-    def routeMatch(self, string):
+    def _route(self, string):
         matches = []
         for route, command in ex_routes.items():
             match = re.compile(route).match(string)
@@ -318,48 +318,58 @@ class TestRoutes(unittest.TestCase):
         return matches
 
     def test_invalid_routes(self):
-        def assert_no_route(string):
-            self.assertEquals(self.routeMatch(string), [], 'failed asserting no route for {}'.format(string))
 
-        assert_no_route('')
-        assert_no_route('zfoobar')
-        assert_no_route(' ')
-        assert_no_route('$')
+        def assert_not_route(string):
+            self.assertEquals(self._route(string), [], 'failed asserting no route for {}'.format(string))
+
+        assert_not_route('')
+        assert_not_route('zfoobar')
+        assert_not_route(' ')
+        assert_not_route('$')
 
         # TODO assert_no_route('foobar') shouldn't match :file
 
-    def test_routes(self):
+    def test_valid_routes(self):
 
-        def assert_route(string, first=False, name=None):
-            matches = self.routeMatch(string)
-
-            if not first:
-                self.assertEqual(
-                    len(matches), 1,
-                    'expected only one route to match "{}"; found {}'
-                    .format(string, [s[0].group(0) for s in matches]))
-            else:
-                self.assertTrue(
-                    len(matches) > 1,
-                    'expected more than one route to match "{}"; found {}'
-                    .format(string, [s[0].group(0) for s in matches]))
-
-            self.assertEqual(matches[0][0].group(0), string, 'failed for "{}"'.format(string))
+        def assert_route(string_or_strings, first=False, name=None):
+            if isinstance(string_or_strings, str):
+                string_or_strings = [string_or_strings]
 
             if name:
-                expected = '_ex_route_' + name
+                expected_route_name = '_ex_route_' + name
             else:
-                expected = '_ex_route_' + string
+                expected_route_name = '_ex_route_' + string_or_strings[0]
 
-            self.assertEqual(matches[0][2].__name__[0:len(expected)], expected)
+            for string in string_or_strings:
+                matches = self._route(string)
+
+                if not first:
+                    self.assertEqual(
+                        len(matches), 1,
+                        'expected only one route to match "{}"; found {}'
+                        .format(string, [s[0].group(0) for s in matches]))
+                else:
+                    self.assertTrue(
+                        len(matches) > 1,
+                        'expected more than one route to match "{}"; found {}'
+                        .format(string, [s[0].group(0) for s in matches]))
+
+                self.assertEqual(matches[0][0].group(0), string, 'failed for "{}"'.format(string))
+
+                self.assertEqual(matches[0][2].__name__[0:len(expected_route_name)], expected_route_name)
 
         # TODO [review] assert_route('g') works for the command scanner but fails a regex match, why?
         # TODO [review] assert_route('global') works for the command scanner but fails a regex match, why?
 
         assert_route('ab')
         assert_route('abbreviate')
-        assert_route('bro')
-        assert_route('browse')
+        assert_route(['bnext', 'bn'])
+        assert_route(['bNext', 'bN'], name='bprevious')
+        assert_route(['bprevious', 'bp'])
+        assert_route(['bfirst', 'bf'])
+        assert_route(['brewind', 'br'], name='bfirst')
+        assert_route(['blast', 'bl'])
+        assert_route(['browse', 'bro'], first=True)
         assert_route('buffers')
         assert_route('cd')
         assert_route('cdd')

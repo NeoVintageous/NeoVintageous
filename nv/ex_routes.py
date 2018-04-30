@@ -46,6 +46,38 @@ def _ex_route_abbreviate(state):
     return None, [command, TokenEof()]
 
 
+def _ex_route_bfirst(state):
+    command = TokenCommand('bfirst')
+
+    state.expect_eof()
+
+    return None, [command, TokenEof()]
+
+
+def _ex_route_blast(state):
+    command = TokenCommand('blast')
+
+    state.expect_eof()
+
+    return None, [command, TokenEof()]
+
+
+def _ex_route_bnext(state):
+    command = TokenCommand('bnext')
+
+    state.expect_eof()
+
+    return None, [command, TokenEof()]
+
+
+def _ex_route_bprevious(state):
+    command = TokenCommand('bprevious')
+
+    state.expect_eof()
+
+    return None, [command, TokenEof()]
+
+
 def _ex_route_browse(state):
     command = TokenCommand('browse')
     # TODO [review] "cmd" param looks unused.
@@ -1275,7 +1307,13 @@ ex_routes = OrderedDict()
 ex_routes[r'!(?=.+)'] = _ex_route_shell_out
 ex_routes[r'&&?'] = _ex_route_double_ampersand
 ex_routes[r'ab(?:breviate)?'] = _ex_route_abbreviate
+ex_routes[r'bf(?:irst)?'] = _ex_route_bfirst
+ex_routes[r'bl(?:ast)?'] = _ex_route_blast
+ex_routes[r'bn(?:ext)?'] = _ex_route_bnext
+ex_routes[r'bN(?:ext)?'] = _ex_route_bprevious
+ex_routes[r'bp(?:revious)?'] = _ex_route_bprevious
 ex_routes[r'bro(?:wse)?'] = _ex_route_browse
+ex_routes[r'br(?:ewind)?'] = _ex_route_bfirst
 ex_routes[r'clo(?:se)?'] = _ex_route_close
 ex_routes[r'co(?:py)?'] = _ex_route_copy
 ex_routes[r'cq(?:uit)?'] = _ex_route_cquit

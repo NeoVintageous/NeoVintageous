@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Added
 
+* Added [#344](https://github.com/NeoVintageous/NeoVintageous/issues/344): Add buffer commands `:bf[irst]`, `:br[ewind]`, `:bp[revious]`, `:bN[ex]t`, `:bn[ext]`, and `:bl[ast]`
+* Added [#343](https://github.com/NeoVintageous/NeoVintageous/issues/343): Add Unimpaired `[b`, `]b`, `[B`, `]B`, `]t`, `[t`, `]T`, and `[T`
 * Added [#327](https://github.com/NeoVintageous/NeoVintageous/issues/327): Redo command (`<C-r>`) should invoke a UI bell if no more redo commands
 * Added [#70](https://github.com/NeoVintageous/NeoVintageous/issues/70): `:set list` should show whitespace
 * Added [#334](https://github.com/NeoVintageous/NeoVintageous/issues/334): Implement `:tabN[ext]` (`:tabprevious` alias)

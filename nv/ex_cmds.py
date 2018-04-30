@@ -66,6 +66,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import window_split
 from NeoVintageous.nv.window import window_tab_control
+from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import WindowAPI
 
 
@@ -152,6 +153,22 @@ def ex_abbreviate(window, short=None, full=None, **kwargs):
         return message(':abbreviate not fully implemented')
 
     abbrev.Store().set(short, full)
+
+
+def ex_bfirst(window, **kwargs):
+    window_buffer_control(window, action='first')
+
+
+def ex_blast(window, **kwargs):
+    window_buffer_control(window, action='last')
+
+
+def ex_bnext(window, **kwargs):
+    window_buffer_control(window, action='next')
+
+
+def ex_bprevious(window, **kwargs):
+    window_buffer_control(window, action='previous')
 
 
 def ex_browse(window, view, **kwargs):
@@ -1084,27 +1101,27 @@ def ex_sunmap(keys, **kwargs):
 
 
 def ex_tabclose(window, **kwargs):
-    window_tab_control(window, command='close')
+    window_tab_control(window, action='close')
 
 
 def ex_tabfirst(window, **kwargs):
-    window_tab_control(window, command='first')
+    window_tab_control(window, action='first')
 
 
 def ex_tablast(window, **kwargs):
-    window_tab_control(window, command='last')
+    window_tab_control(window, action='last')
 
 
 def ex_tabnext(window, **kwargs):
-    window_tab_control(window, command='next')
+    window_tab_control(window, action='next')
 
 
 def ex_tabonly(window, **kwargs):
-    window_tab_control(window, command='only')
+    window_tab_control(window, action='only')
 
 
 def ex_tabprevious(window, **kwargs):
-    window_tab_control(window, command='prev')
+    window_tab_control(window, action='previous')
 
 
 # TODO [review] Looks broken or not implemented properly

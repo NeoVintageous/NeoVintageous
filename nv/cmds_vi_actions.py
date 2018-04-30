@@ -1883,9 +1883,9 @@ class _vi_gt(ViWindowCommandBase):
 
     def run(self, count=0, mode=None):
         if count > 0:
-            window_tab_control(self.window, command='goto', index=count)
+            window_tab_control(self.window, action='goto', index=count)
         else:
-            window_tab_control(self.window, command='next')
+            window_tab_control(self.window, action='next')
 
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
@@ -1896,7 +1896,8 @@ class _vi_g_big_t(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
-        window_tab_control(self.window, command='prev')
+        window_tab_control(self.window, action='previous')
+
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 

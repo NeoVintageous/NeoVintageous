@@ -322,58 +322,70 @@ view when it's opened. This is easiest to understand with some examples: >
 
 ==============================================================================
 
-PLUGINS OUT-OF-THE-BOX                                   *neovintageous-plugins*
-
-Summary of the plugins are provided out-of-the-box.
-
-Some plugin features may only be partially supported and some features may
-depend on third party plugins. Those details are indicated below.
-
-Please open issues about missing features that you would like too see
-implemented.
+PLUGINS                                                  *neovintageous-plugins*
 
 ------------------------------------------------------------------------------
 
 ABOLISH                                                  *neovintageous-abolish*
 
-Currently only the coercion commands are supported. See |abolish-coercion|.
+The abolish case mutating algorithms are supported, they can be applied to the
+word under the cursor.
+
+See |abolish-coercion|.
 
 ------------------------------------------------------------------------------
 
 COMMENTARY                                            *neovintageous-commentary*
 
-Comment stuff out. Then uncomment it later. See |commentary|.
+Comment stuff out. Then uncomment it later.
+
+See |commentary|.
 
 ------------------------------------------------------------------------------
 
 SURROUND                                                *neovintageous-surround*
 
-A plugin for deleting, changing, and adding "surroundings". See |surround|.
+A plugin for deleting, changing, and adding "surroundings".
+
+See |surround|.
 
 ------------------------------------------------------------------------------
 
 UNIMPAIRED                                            *neovintageous-unimpaired*
 
-This plugin provides several pairs of bracket maps. See |unimpaired|.
+This plugin provides several pairs of bracket maps.
 
-Next and previous
+The following maps all correspond to normal mode commands.  If a count is
+given, it becomes an argument to the command.
+
+[b      |:bprevious|
+]b      |:bnext|
+[B      |:bfirst|
+]B      |:blast|
+[t      |:tprevious|
+]t      |:tnext|
+[T      |:tfirst|
+]T      |:tlast|
+
 
 [l                      Jump to the [count] previous error.
-
-                        Requires: https://github.com/SublimeLinter/SublimeLinter3
-
-                        Also see |[l|.
+                        Requires SublimeLinter:
+                        https://github.com/SublimeLinter/SublimeLinter3
 
 ]l                      Jump to the [count] next error.
+                        Requires SublimeLinter:
+                        https://github.com/SublimeLinter/SublimeLinter3
 
-                        Requires: https://github.com/SublimeLinter/SublimeLinter3
+[<Space>                Add [count] blank lines above the cursor.
 
-                        Also see |]l|.
+]<Space>                Add [count] blank lines below the cursor.
 
-All |unimpaired-lines| commands are supported i.e |[<Space>|, |]<Space>|, |[e|
-and |]e|.
+[e                      Exchange the current line with [count] lines above it.
 
-Option toggling is supported, with some NeoVintageous specific additions.
+]e                      Exchange the current line with [count] lines below it.
+
+Option toggling (some are Neovintageous specific, meaning they are not from
+the original Unimpaired plugin).
 
 On      Off     Toggle  Option
 |[oa|   |]oa|   |coa|   'menu' {Neovintageous specific}

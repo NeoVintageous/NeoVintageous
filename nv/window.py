@@ -658,7 +658,30 @@ def window_split(window, file=None):
         window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
-def window_tab_control(window, command, file_name=None, index=None):
+def window_buffer_control(window, action, count=1):
+    if action == 'next':
+        # TODO Optimise: Avoid running command n times
+        for i in range(count):
+            window.run_command('next_view')
+
+    elif action == 'previous':
+        # TODO Optimise: Avoid running command n times
+        for i in range(count):
+            window.run_command('prev_view')
+
+    elif action == 'first':
+        window.focus_group(0)
+        window.run_command('select_by_index', {'index': 0})
+
+    elif action == 'last':
+        window.focus_group(window.num_groups() - 1)
+        window.run_command('select_by_index', {'index': len(window.views_in_group(window.num_groups() - 1)) - 1})
+
+    else:
+        raise ValueError('unknown buffer control action: %s' % action)
+
+
+def window_tab_control(window, action, count=1, index=None):
     view = window.active_view()
     if not view:
         return status_message('view not found')
@@ -666,22 +689,22 @@ def window_tab_control(window, command, file_name=None, index=None):
     view_count = len(window.views_in_group(window.active_group()))
     group_index, view_index = window.get_view_index(view)
 
-    if command == 'next':
-        window.run_command('select_by_index', {'index': (view_index + 1) % view_count})
+    if action == 'next':
+        window.run_command('select_by_index', {'index': (view_index + count) % view_count})
 
-    elif command == 'prev':
-        window.run_command('select_by_index', {'index': (view_index + view_count - 1) % view_count})
+    elif action == 'previous':
+        window.run_command('select_by_index', {'index': (view_index + view_count - count) % view_count})
 
-    elif command == 'last':
+    elif action == 'last':
         window.run_command('select_by_index', {'index': view_count - 1})
 
-    elif command == 'first':
+    elif action == 'first':
         window.run_command('select_by_index', {'index': 0})
 
-    elif command == 'goto':
+    elif action == 'goto':
         window.run_command('select_by_index', {'index': index - 1})
 
-    elif command == 'only':
+    elif action == 'only':
         group_views = window.views_in_group(group_index)
         if any(view.is_dirty() for view in group_views):
             return status_message('E445: Other window contains changes')
@@ -699,8 +722,8 @@ def window_tab_control(window, command, file_name=None, index=None):
 
         window.focus_view(view)
 
-    elif command == 'close':
+    elif action == 'close':
         window.run_command('close_by_index', {'group': group_index, 'index': view_index})
 
     else:
-        return status_message('unknown tab control command')
+        raise ValueError('unknown tab control action: %s' % action)
