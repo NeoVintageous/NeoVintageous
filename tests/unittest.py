@@ -153,10 +153,25 @@ class ViewTestCase(unittest.TestCase):
         #       contents.
         #   msg (str, optional): If specified, is used as the error message on
         #       failure.
-        self.assertRegex(self.content(), expected, msg)
+        self.assertRegex(self.content(), expected, msg=msg)
+
+    def _assertMode(self, mode):
+        self.assertEquals(self.state.mode, mode)
+
+    def assertInsertMode(self):
+        self._assertMode(INSERT)
 
     def assertNormalMode(self):
-        self.assertEquals(self.state.mode, NORMAL)
+        self._assertMode(NORMAL)
+
+    def assertVisualMode(self):
+        self._assertMode(VISUAL)
+
+    def assertVisualBlockMode(self):
+        self._assertMode(VISUAL_BLOCK)
+
+    def assertVisualLineMode(self):
+        self._assertMode(VISUAL_LINE)
 
     def assertRegion(self, expected, actual):
         # Test that *actual* and *expected* are equal.
