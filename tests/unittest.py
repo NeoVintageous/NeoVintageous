@@ -68,10 +68,10 @@ class ViewTestCase(unittest.TestCase):
 
     def setUp(self):
         self.view = _active_window().new_file()
-        self.view.set_scratch(True)
 
     def tearDown(self):
         if self.view:
+            self.view.set_scratch(True)
             self.view.close()
 
     def content(self):
