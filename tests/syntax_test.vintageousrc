@@ -17,6 +17,9 @@ nnoremap <space> :
 " ^^^^^^ keyword.control
 "        ^^^^^^^ storage.type
 
+nnoremap <Space> :
+"        ^^^^^^^ storage.type
+
 nnoremap <space> : " x
 "                  ^^^ -comment
 
@@ -28,6 +31,18 @@ nnoremap <leader>d :ToggleSideBar<CR>
 nnoremap <leader>d :ToggleSideBar<CR> " x
 "                                     ^^^ -comment
 
+nnoremap <leader><leader> :reg<CR>
+" ^^^^^^ keyword.control
+"        ^^^^^^^^^^^^^^^^ storage.type
+"                             ^^^^ storage.type
+
+nnoremap <leader>n :noremap x y<CR>
+" ^^^^^^ keyword.control
+"        ^^^^^^^^ storage.type
+"                ^^^^^^^^^^^^^^ -keyword
+"                ^^^^^^^^^^^^^^ -storage
+"                              ^^^^ storage.type
+
 nnoremap <C-y> 3<C-y>
 " ^^^^^^ keyword.control
 "        ^^^^^ storage.type
@@ -37,26 +52,54 @@ nnoremap <C-y> 3<C-y> " x
 "                     ^^^ -comment
 
 map x y
-" ^ keyword.control
+" ^^^^^ invalid
+:map x y
+" ^^^^^^ invalid
 nmap x y
-" ^ keyword.control
+" ^^^^^^ invalid
+:nmap x y
+" ^^^^^^^ invalid
 omap x y
-" ^ keyword.control
+" ^^^^^^ invalid
+:omap x y
+" ^^^^^^^ invalid
 smap x y
-" ^ keyword.control
+" ^^^^^^ invalid
+:smap x y
+" ^^^^^^^ invalid
 vmap x y
-" ^ keyword.control
+" ^^^^^^ invalid
+:vmap x y
+" ^^^^^^^ invalid
 
 noremap x y
 " ^ keyword.control
+:noremap x y
+" ^ keyword.control
 nnoremap x y
+" ^ keyword.control
+:nnoremap x y
 " ^ keyword.control
 onoremap x y
 " ^ keyword.control
+:onoremap x y
+" ^ keyword.control
 snoremap x y
+" ^ keyword.control
+:snoremap x y
 " ^ keyword.control
 vnoremap x y
 " ^ keyword.control
+:vnoremap x y
+" ^ keyword.control
+
+ noremap x y
+" ^^^^^^^^^^ -keyword
+" ^^^^^^^^^^ -storage
+
+    noremap x y
+" ^^^^^^^^^^^^^ -keyword
+" ^^^^^^^^^^^^^ -storage
 
 nnoremap <leader>= <C-w>=
 " ^^^^^^ keyword.control
