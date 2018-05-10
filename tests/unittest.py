@@ -396,17 +396,20 @@ class FunctionalTestCase(ViewTestCase):
         #   * i_ - Insert
         #   * v_ - Visual
         #
-        # The default mode is Normal.
+        # The default mode is Internal Normal.
         #
-        # NOTE: This function currently uses a hard-coded map of seq -> cmd, see
+        # NOTE: This function currently uses a **hardcoded** map of sequences to
+        # commands. You may need to add the a sequence to command map value. See
         # the _feedseq2cmd variable.
         #
         # Examples:
         #
         # >>> feed('w')
+        # >>> feed('3w')
         # >>> feed('v_w')
         # >>> feed('<Esc>')
         # >>> feed(':pwd')
+        # >>> feed(':help neovintageous')
 
         if seq == '<Esc>':
             return self.view.window().run_command('_nv_feed_key', {'key': '<esc>'})
@@ -440,9 +443,55 @@ class FunctionalTestCase(ViewTestCase):
 
         self.view.run_command(command, args)
 
+    def eq(self, fixture, feed, expected=None, msg=None):
+        # Args:
+        #   fixture (str):
+        #   feed (str):
+        #   expected (str):
+        #   msg (str):
+        #
+        # The feed and expected can be prefixed to specify a mode:
+        #
+        #   * n_ - Normal
+        #   * i_ - Insert
+        #   * v_ - Visual
+        #   * :<','> - Visual cmdline (only valid for feed)
+        #
+        # The default mode is Normal.
+        #
+        # Examples:
+        #
+        # >>> eq('|Hello world!', 'w', 'Hello |world!')
+        # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
+        # >>> eq('a\nx|y\nb', 'cc', 'i_a\n|\nb')
 
-# Hardcoded map of seq -> cmd. Ideally we wouldn't need this hardcoded map, some
-# internal refactoring and redesign is required.
+        if expected is None:
+            expected = fixture
+
+        if feed[0] in ('v', ':') and (feed[1] == '_' or feed.startswith(':\'<,\'>')):
+            self.vFixture(fixture)
+            self.feed(feed)
+            if expected[:2] == 'n_':
+                self.expects(expected[2:], msg)
+            elif expected[:2] == 'i_':
+                self.expectsI(expected[2:], msg)
+            else:
+                self.expectsV(expected, msg)
+        else:
+            self.fixture(fixture)
+            self.feed(feed)
+            if expected[:2] == 'v_':
+                self.expectsV(expected[2:], msg)
+            elif expected[:2] == 'i_':
+                self.expectsI(expected[2:], msg)
+            else:
+                self.expects(expected, msg)
+
+
+# A hardcoded map of sequences to commands. Ideally we wouldn't need this
+# hardcoded map, some internal refactoring and redesign is required to make that
+# happen. For now make-do with the hardcoded map. Refactoring later should not
+# impact the existing tests.
 _feedseq2cmd = {
 
     'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241

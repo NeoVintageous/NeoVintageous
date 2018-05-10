@@ -480,3 +480,102 @@ class TestFunctionalTestCase(unittest.FunctionalTestCase):
 
         self.instance.feed('e')
         self.view.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 2})
+
+    def test_eq(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b', 'c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expects.assert_called_once_with('c', None)
+
+    def test_eq_expected_is_optional(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expects.assert_called_once_with('a', None)
+
+    def test_eq_expects_v(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsV = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b', 'v_c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expectsV.assert_called_once_with('c', None)
+
+    def test_eq_expects_i(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsI = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b', 'i_c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expectsI.assert_called_once_with('c', None)
+
+    def test_eq_v(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsV = unittest.mock.Mock()
+
+        self.instance.eq('a', 'v_b', 'c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('v_b')
+        self.instance.expectsV.assert_called_once_with('c', None)
+
+    def test_eq_v_expects_n(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', 'v_b', 'n_c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('v_b')
+        self.instance.expects.assert_called_once_with('c', None)
+
+    def test_eq_v_expects_i(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsI = unittest.mock.Mock()
+
+        self.instance.eq('a', 'v_b', 'i_c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('v_b')
+        self.instance.expectsI.assert_called_once_with('c', None)
+
+    def test_eq_cmdline(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', ':b', 'c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with(':b')
+        self.instance.expects.assert_called_once_with('c', None)
+
+    def test_eq_v_cmdline(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsV = unittest.mock.Mock()
+
+        self.instance.eq('a', ':\'<,\'>b', 'c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with(':\'<,\'>b')
+        self.instance.expectsV.assert_called_once_with('c', None)
