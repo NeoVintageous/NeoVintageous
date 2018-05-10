@@ -557,6 +557,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                 # we've just existed from an action.
                 if self.view.has_non_empty_selection_region():
                     self.view.add_regions('visual_sel', list(self.view.sel()))
+                    self.view.settings().set('_nv_visual_sel_mode', mode)
 
                 if s.a < s.b:
                     pt = s.b - 1
@@ -576,6 +577,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                 # we've just existed from an action.
                 if self.view.has_non_empty_selection_region():
                     self.view.add_regions('visual_sel', list(self.view.sel()))
+                    self.view.settings().set('_nv_visual_sel_mode', mode)
 
                 if s.a < s.b:
                     pt = s.b - 1
@@ -2339,7 +2341,18 @@ class _vi_gv(IrreversibleTextCommand):
         if not sels:
             return
 
-        self.view.window().run_command('_enter_visual_mode', {'mode': mode})
+        visual_sel_mode = self.view.settings().get('_nv_visual_sel_mode', mode)
+
+        if visual_sel_mode == VISUAL:
+            cmd = '_enter_visual_mode'
+        elif visual_sel_mode == VISUAL_LINE:
+            cmd = '_enter_visual_line_mode'
+        elif visual_sel_mode == VISUAL_BLOCK:
+            cmd = '_enter_visual_block_mode'
+        else:
+            raise RuntimeError('unexpected visual sel mode')
+
+        self.view.window().run_command(cmd, {'mode': mode})
         self.view.sel().clear()
         self.view.sel().add_all(sels)
 
@@ -2601,6 +2614,8 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
         if not self.view.has_non_empty_selection_region():
             regions_transformer(self.view, f)
+
+        state.display_status()
 
 
 class _vi_select_j(ViWindowCommandBase):

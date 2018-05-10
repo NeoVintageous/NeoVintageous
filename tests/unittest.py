@@ -267,7 +267,7 @@ class ViewTestCase(unittest.TestCase):
         # Args:
         #   expected (str): Expected regular expression that should match view
         #       contents.
-        #   msg (str, optional): If specified, is used as the error message on
+        #   msg (str:optional): If specified, is used as the error message on
         #       failure.
         self.assertRegex(self.content(), expected, msg=msg)
 
@@ -354,6 +354,16 @@ class ViewTestCase(unittest.TestCase):
         # Args:
         #   expected (int): Expected number of characters in view.
         self.assertEqual(expected, self.view.size())
+
+    def assertStatusLineRegex(self, expected, msg=None):
+        # Test that view contents matches (or does not match) *expected*.
+        #
+        # Args:
+        #   expected (str): Expected regular expression that should match view
+        #       contents.
+        #   msg (str:optional): If specified, is used as the error message on
+        #       failure.
+        self.assertRegex(self.view.get_status('vim-mode') + ' ' + self.view.get_status('vim-seq'), expected, msg=msg)
 
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property

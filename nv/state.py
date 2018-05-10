@@ -846,6 +846,7 @@ class State(object):
 
             elif self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 self.view.add_regions('visual_sel', list(self.view.sel()))
+                self.view.settings().set('_nv_visual_sel_mode', self.mode)
 
             # Some commands, like 'i' or 'a', open a series of edits that need
             # to be grouped together unless we are gluing a larger sequence

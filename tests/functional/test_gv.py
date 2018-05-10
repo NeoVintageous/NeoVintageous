@@ -25,3 +25,25 @@ class Test_gv(unittest.FunctionalTestCase):
         self.feed('<Esc>')
         self.feed('gv')
         self.expectsV('a|b\nc|d\n')
+        self.assertStatusLineRegex('-- VISUAL --')
+
+    def test_gv_works_for_visual_line_mode(self):
+        self.vLineFixture('ab\n|cd|\ne\n')
+        self.feed('<Esc>')
+        self.feed('gv')
+        self.expectsVLine('ab\n|cd|\ne\n')
+        self.assertStatusLineRegex('-- VISUAL LINE --')
+
+    def test_gv_works_for_visual_lines_mode(self):
+        self.vLineFixture('ab\n|cd\nef|\ng\n')
+        self.feed('<Esc>')
+        self.feed('gv')
+        self.expectsVLine('ab\n|cd\nef|\ng\n')
+        self.assertStatusLineRegex('-- VISUAL LINE --')
+
+    def test_gv_works_for_visual_block_mode(self):
+        self.vBlockFixture('a\nb|cd|e\nf|gh|i\nj\n')
+        self.feed('<Esc>')
+        self.feed('gv')
+        self.expectsVBlock('a\nb|cd|e\nf|gh|i\nj\n')
+        self.assertStatusLineRegex('-- VISUAL BLOCK --')
