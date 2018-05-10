@@ -136,6 +136,121 @@ class ViewTestCase(unittest.TestCase):
         # type: (str) -> None
         self.view.run_command('_nv_test_write', {'text': text})
 
+    def _fixture(self, text, mode):
+        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
+            self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
+            sels = [i for i, c in enumerate(text) if c == '|']
+            sel_len = len(sels)
+
+            if sel_len == 1:
+                sels.append(sels[0] + 2)
+            elif sel_len % 2 != 0 or sel_len == 0:
+                raise Exception('invalid fixture visual selection')
+
+            if sels:
+                v_sels = []
+                a = None
+                for i, x in enumerate(sels):
+                    if a is None:
+                        a = x - i
+                    else:
+                        v_sels.append(Region(a, x - i))
+                        a = None
+
+                self.view.sel().clear()
+                self.view.sel().add_all(v_sels)
+        else:
+            self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
+            sels = [i for i, c in enumerate(text) if c == '|']
+            if sels:
+                self.view.sel().clear()
+                for i, x in enumerate(sels):
+                    self.view.sel().add(x - i)
+
+        self.state.mode = mode
+
+    def fixture(self, text):
+        # Args:
+        #   text (str)
+        self._fixture(text, NORMAL)
+
+    def iFixture(self, text):
+        # Args:
+        #   text (str)
+        self._fixture(text, INSERT)
+
+    def vFixture(self, text):
+        # Args:
+        #   text (str)
+        self._fixture(text, VISUAL)
+
+    def vLineFixture(self, text):
+        # Args:
+        #   text (str)
+        self._fixture(text, VISUAL_LINE)
+
+    def vBlockFixture(self, text):
+        # Args:
+        #   text (str)
+        self._fixture(text, VISUAL_BLOCK)
+
+    def _expects(self, expected, mode, msg):
+        # Args:
+        #   expected (str)
+        #   mode (str)
+        #   msg (str)
+        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
+            content = list(self.view.substr(Region(0, self.view.size())))
+            counter = 0
+            for sel in self.view.sel():
+                content.insert(sel.begin() + counter, '|')
+                counter += 1
+                if sel.end() != sel.begin():
+                    # TODO should be assert that it looks like
+                    # we're now in normal mode, otherwise visual mode?
+                    content.insert(sel.end() + counter, '|')
+                    counter += 1
+
+            self.assertEquals(''.join(content), expected, msg)
+        else:
+            content = list(self.view.substr(Region(0, self.view.size())))
+            for i, sel in enumerate(self.view.sel()):
+                content.insert(sel.begin() + i, '|')
+
+            self.assertEquals(''.join(content), expected, msg)
+
+        self._assertMode(mode)
+
+    def expects(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._expects(expected, NORMAL, msg)
+
+    def expectsI(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._expects(expected, INSERT, msg)
+
+    def expectsV(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._expects(expected, VISUAL, msg)
+
+    def expectsVLine(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._expects(expected, VISUAL_LINE, msg)
+
+    def expectsVBlock(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._expects(expected, VISUAL_BLOCK, msg)
+
     def assertContent(self, expected, msg=None):
         # Test that view contents and *expected* are equal.
         #
