@@ -499,6 +499,17 @@ _feedseq2cmd = {
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
     'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'cc':           {'command': '_vi_cc'},  # noqa: E241
+    'cr ':          {'command': '_nv_abolish', 'args': {'to': 'spacecase'}},  # noqa: E241
+    'cr-':          {'command': '_nv_abolish', 'args': {'to': 'dashcase'}},  # noqa: E241
+    'cr.':          {'command': '_nv_abolish', 'args': {'to': 'dotcase'}},  # noqa: E241
+    'cr_':          {'command': '_nv_abolish', 'args': {'to': 'snakecase'}},  # noqa: E241
+    'crc':          {'command': '_nv_abolish', 'args': {'to': 'camelcase'}},  # noqa: E241
+    'crk':          {'command': '_nv_abolish', 'args': {'to': 'dashcase'}},  # noqa: E241
+    'crm':          {'command': '_nv_abolish', 'args': {'to': 'mixedcase'}},  # noqa: E241
+    'crs':          {'command': '_nv_abolish', 'args': {'to': 'snakecase'}},  # noqa: E241
+    'crt':          {'command': '_nv_abolish', 'args': {'to': 'titlecase'}},  # noqa: E241
+    'cru':          {'command': '_nv_abolish', 'args': {'to': 'uppercase'}},  # noqa: E241
+    'crU':          {'command': '_nv_abolish', 'args': {'to': 'uppercase'}},  # noqa: E241
     'd$':           {'command': '_vi_d', 'args': {'motion': {'is_jump': True, 'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'd2ft':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 2, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
     'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501
