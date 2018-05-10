@@ -6,6 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Added
 
+* Added [#312](https://github.com/NeoVintageous/NeoVintageous/issues/312): Map commands with arguments e.g. `nnoremap ,f :ShowOverlay overlay=goto text=@<CR>`, `nnoremap ,p :ShowOverlay overlay=goto show_files=true<CR>`
+* Added [#345](https://github.com/NeoVintageous/NeoVintageous/issues/345): Map commands without executing e.g `nnoremap ,r :reg`
+* Added [#346](https://github.com/NeoVintageous/NeoVintageous/issues/346): Map commands with ranges and counts
 * Added [#344](https://github.com/NeoVintageous/NeoVintageous/issues/344): Add buffer commands `:bf[irst]`, `:br[ewind]`, `:bp[revious]`, `:bN[ex]t`, `:bn[ext]`, and `:bl[ast]`
 * Added [#343](https://github.com/NeoVintageous/NeoVintageous/issues/343): Add Unimpaired `[b`, `]b`, `[B`, `]B`, `]t`, `[t`, `]T`, and `[T`
 * Added [#327](https://github.com/NeoVintageous/NeoVintageous/issues/327): Redo command (`<C-r>`) should invoke a UI bell if no more redo commands

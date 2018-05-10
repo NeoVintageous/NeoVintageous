@@ -361,9 +361,6 @@ class _nv_feed_key(ViWindowCommandBase):
                 _log.info('user mapping %s -> %s', command.sequence, new_keys)
 
                 if ':' in new_keys:
-                    if ':' == new_keys:
-                        return self.window.run_command('_nv_cmdline')
-
                     return do_ex_user_cmdline(self.window, new_keys)
 
                 self.window.run_command('_nv_process_notation', {'keys': new_keys, 'check_user_mappings': False})
@@ -619,7 +616,7 @@ class _nv_cmdline(WindowCommand):
         # TODO refactor into a text command as the view is always required?
         return bool(self.window.active_view())
 
-    def run(self, cmdline=None):
+    def run(self, cmdline=None, initial_text=None):
         _log.debug('cmdline.run cmdline = %s', cmdline)
 
         if cmdline:
@@ -640,10 +637,14 @@ class _nv_cmdline(WindowCommand):
         state = State(self.window.active_view())
         state.reset_during_init = False
 
-        if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
-            initial_text = ":'<,'>"
+        if initial_text is None:
+            if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+                initial_text = ":'<,'>"
+            else:
+                initial_text = ':'
         else:
-            initial_text = ':'
+            if initial_text[0] != ':':
+                raise ValueError('initial cmdline text must begin with a colon')
 
         ui_cmdline_prompt(
             self.window,

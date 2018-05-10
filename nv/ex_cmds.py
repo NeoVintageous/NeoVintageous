@@ -1520,34 +1520,35 @@ def do_ex_cmd_edit_wrap(self, edit, _name=None, _line=None, **kwargs):
 def do_ex_command(window, name, args=None):
     # type: (...) -> None
     #
+    # Execute ex commands by name with arguments.
+    #
     # Args:
     #   window (sublime.Window):
     #   name (str):
-    #   args (dict[str, any]):
+    #   args (dict[str, [bool|int|str|dict]]):
     #
-    # Execute ex commands by name with arguments.
+    # This is the preferred api to use when calling ex commands, because it does
+    # several sanity checks e.g. ensures the ex command receives a valid view or
+    # edit object (if it required one).
     #
-    # This is the preferred usage when calling ex commands, because it does a
-    # few sanity checks like ensuring the command receives a valid view or edit
-    # object (if it needs them).
-    #
-    #   do_ex_command(window, 'help', {'subject': 'neovintageous'})
+    # >>> do_ex_command(window, 'help', {'subject': 'neovintageous'})
     #
     # This is roughly equivalent to running the cmdline command:
     #
-    #   :help neovintageous
+    #     :help neovintageous
     #
-    # It's also roughly equivalent to calling the ex command explicitly (though
-    # you should prefer to use *this* function when calling ex commands):
+    # Or calling the ex command explicitly (though you should prefer to use this
+    # api):
     #
     #   ex_help(window=window, subject='neovintageous')
     #
     # To see what arguments are available for an ex command, read the relevant
     # ex command function signature: the commands are located in this module and
-    # are prefixed with "ex_" e.g. ex_help().
+    # are prefixed with "ex_" e.g. ex_help(...), ex_write(...).
     #
-    # If you want to run an ex command as string see do_ex_cmdline() (though you
-    # should prefer to use *this* function when calling ex commands).
+    # If you need to call an ex command as a string value rather than by name
+    # and arguments (though you should prefer to use this api), see the
+    # do_ex_cmdline() function.
 
     _log.debug('do ex command %s %s', name, args)
 
@@ -1576,8 +1577,45 @@ def do_ex_command(window, name, args=None):
     ex_cmd(window=window, line_range=RangeNode(), **args)
 
 
+def _parse_user_cmdline(line):
+    match = re.match('^\\:(?P<cmd>[A-Z][a-zA-Z_]*)(?P<args>(?:\\s[a-zA-Z_]+=[a-zA-Z0-9\n\t@_-]+)+)?$', line)
+    if not match:
+        return None
+
+    command = match.groupdict()
+
+    # TODO Refactor coerce to underscore.
+    cmd = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', command['cmd'])
+    cmd = re.sub(r"([a-z\d])([A-Z])", r'\1_\2', cmd)
+    cmd = cmd.replace("-", "_")
+    cmd = cmd.lower()
+
+    command['cmd'] = cmd
+
+    if command['args']:
+        argsv = re.findall('\\s(?P<name>[a-zA-Z_]+)=(?P<value>[a-zA-Z0-9\n\t@_-]+)', command['args'])
+        if argsv:
+            args = {}
+            for name, value in argsv:
+                if value == 'true':
+                    value = True
+                elif value == 'false':
+                    value = False
+                elif re.match('^(?:-)?[0-9]+$', value):
+                    value = int(value)
+
+                args[name] = value
+
+            if args:
+                command['args'] = args
+
+    return command
+
+
 def do_ex_cmdline(window, line):
     # type: (...) -> None
+    #
+    # Execute ex command as a string (what a user would enter at the cmdline).
     #
     # Args:
     #   window (sublime.Window):
@@ -1585,24 +1623,34 @@ def do_ex_cmdline(window, line):
     #
     # The line MUST begin with a colon:
     #
-    #   do_ex_cmdline(window, ':help neovintageous')
+    # >>> do_ex_cmdline(window, ':help neovintageous')
     #
-    # This is roughly equivalent to the method of running ex commands:
+    # This is roughly equivalent to executing the command via the preferred api:
     #
-    #   do_ex_command(window, 'help', {'subject': 'neovintageous'})
+    # >>> do_ex_command(window, 'help', {'subject': 'neovintageous'})
     #
     # Commands MUST not begin with an underscore. This would be invalid:
     #
-    #   do_ex_cmdline(window, ':_help neovintageous')
+    # >>> do_ex_cmdline(window, ':_help neovintageous')
     #
-    # User Sublime Text commands are supported by beginning the command with an
-    # uppercase letter (the command name is coerced to underscore):
+    # User Sublime Text commands are supported by starting the command name with
+    # an **uppercase letter**. This is to avoid confusion with built-in Ex
+    # commands. The command name is coerced to snake_case before executing:
     #
-    #   do_ex_cmdline(window, ':CommandName')
+    # >>> do_ex_cmdline(window, ':CommandName')
     #
-    # This is roughly equivalant to:
+    # Is roughly equivalant to:
     #
-    #   sublime.window.run('command_name')
+    # >>> sublime.active_window().run('command_name')
+    #
+    # Arguments are accepted in basic use-cases. Values true and false are
+    # converted to boolean, and digits are converted to integers. Examples:
+    #
+    # >>> do_ex_cmdline(window, ':CommandName str=fizz bool=true int=42')
+    #
+    # Is roughly equivalant to:
+    #
+    # >>> sublime.active_window().run('command_name', {'str': 'fizz', 'bool': True, 'int': 42})
 
     _log.debug('do ex cmdline >>>%s<<<', line)
 
@@ -1613,46 +1661,35 @@ def do_ex_cmdline(window, line):
         raise RuntimeError('cmdline must start with a colon')
 
     if line[1].isupper():
+        # Run user command. User commands begin with an uppercase letter.
+        user_command = _parse_user_cmdline(line)
+        if not user_command:
+            # TODO noop message/Error?
+            return
 
-        # Do user Sublime Text command (user Sublime Text
-        # commands begin with an uppercase letter).
+        _log.debug('execute user ex command: %s', user_command)
 
-        # Coerce to snakecase.
-        # TODO [refactor] coerce cmd to snakecase
-        cmd = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', line[1:])
-        cmd = re.sub(r"([a-z\d])([A-Z])", r'\1_\2', cmd)
-        cmd = cmd.replace('-', '_')
-        cmd = cmd.lower()
-
-        _log.debug('execute user ex command: %s', cmd)
-
-        return window.run_command(cmd)
+        return window.run_command(user_command['cmd'], user_command['args'])
 
     cmdline = parse_command_line(line[1:])
 
     if not cmdline.command:
-
-        # Do default ex command (the default ex command is not associated with
-        # any ex command). See :h [range].
-
+        # Do default ex command. The default ex command is not associated with
+        # any ex command. See :h [range].
         view = window.active_view()
         if not view:
-            raise RuntimeError('an active view is required')
+            raise RuntimeError('an active view is required for default ex cmd')
 
         if not cmdline.line_range:
-            # TODO Noop message/Error?
+            # TODO noop message/Error?
             return
 
         return _default_ex_cmd(window=window, view=view, line_range=cmdline.line_range)
 
     ex_cmd = _get_ex_cmd(cmdline.command.target)
 
+    # TODO [review] Objects like the RangeNode() can't be passed through Sublime Text  commands, command args only accept simple data types, which is why we send the line which will be parsed again by the wrapper command. Ideally we wouldn't need to parse the line again.  # noqa: E501
     if 'edit' in inspect.signature(ex_cmd).parameters:
-        # TODO [review] Objects like the RangeNode() can't be passed through
-        # Sublime Text  commands, command args only accept simple data types,
-        # which is why we send the line which will be parsed again by the
-        # wrapper command. Ideally we wouldn't need to parse the line again.
-
         return window.run_command('_nv_ex_cmd_edit_wrap', {'_line': line})
 
     args = cmdline.command.params
@@ -1668,28 +1705,33 @@ def do_ex_cmdline(window, line):
 
 # TODO [refactor] Into do_ex_cmdline() with a param to indicate user cmdline? e.g do_ex_cmdline(window, line, interactive=True).  # noqa: E501
 def do_ex_user_cmdline(window, line):
+    # type: (...) -> None
+    #
+    # Execute an interactive ex command (what a user would use in a mapping).
+    #
     # Args:
     #   window (Window):
     #   line (str):
     #
-    # A user cmdline MUST terminate with a carrage-return (<CR>):
+    # This is almost equivalent to do_ex_cmdline(), except:
     #
-    #   do_ex_user_cmdline(window, ':write<CR>')
+    # * If the line is equal to a colon then the cmdline is invoked with no
+    #   initial text (this is as though the user pressed colon).
     #
-    # Sublime Text commands are supported by beginning the command with an
-    # uppercase letter (the command name will be coerced to underscore):
+    # * If the line does not end with <CR> then the cmdline is invoked with the
+    #   line set as the initial text.
     #
-    #   do_ex_user_cmdline(window, ':NeovintageousToggleSideBar<CR>')
-    #
-    # Once the above requirement is satidfied then do_ex_cmdline() is invoked
-    # with the <CR> stripped away.
+    # Otherwise the trailing <CR> is stripped and the line passed to
+    # do_ex_cmdline().
 
     _log.debug('do ex user cmdline >>>%s<<<', line)
 
-    match = re.match('^(?P<line>\\:[a-zA-Z][a-zA-Z_]*)\\<CR\\>', line)
-    if not match:
-        return console_message(
-            'invalid command line mapping {} (only `:[a-zA-Z][a-zA-Z_]*<CR>` is supported)'
-            .format(line))
+    if line.endswith('<CR>'):
+        do_ex_cmdline(window, line[:-4])
+    else:
+        if ':' == line:
+            return window.run_command('_nv_cmdline')
+        elif line[0] != ':':
+            raise RuntimeError('user cmdline must begin with a colon')
 
-    do_ex_cmdline(window, match.group('line'))
+        return window.run_command('_nv_cmdline', args={'initial_text': line})
