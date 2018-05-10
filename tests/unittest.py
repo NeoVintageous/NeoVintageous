@@ -506,6 +506,9 @@ _feedseq2cmd = {
     'dft':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'e':            {'command': '_vi_e', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'gc':           {'command': '_vi_gc'},  # noqa: E241
+    'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
+    'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
 
 }
