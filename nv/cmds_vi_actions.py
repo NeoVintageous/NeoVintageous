@@ -1512,7 +1512,10 @@ class _vi_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return Region(s.begin())
+            bol = utils.get_bol(view, s.begin())
+            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+
+            return Region(pt)
 
         def indent_from_begin(view, s, level=1):
             block = '\t' if not translate else ' ' * size
@@ -1550,7 +1553,10 @@ class _vi_less_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return Region(s.begin())
+            bol = utils.get_bol(view, s.begin())
+            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+
+            return Region(pt)
 
         # Note: Vim does not unindent in visual block mode.
 
