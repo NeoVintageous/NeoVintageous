@@ -615,6 +615,7 @@ _feedseq2cmd = {
     'gq':           {'command': '_vi_gq', 'args': {'mode': 'mode_visual', 'count': 1}},  # noqa: E241
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
+    'gv':           {'command': '_vi_gv'},  # noqa: E241
     'J':            {'command': '_vi_big_j'},  # noqa: E241
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
     'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241

@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#347](https://github.com/NeoVintageous/NeoVintageous/issues/347): `gv` doesn't work in visual mode
 * Fixed [#336](https://github.com/NeoVintageous/NeoVintageous/issues/336): `*` and `#` should center match on screen if not visible
 * Fixed [#328](https://github.com/NeoVintageous/NeoVintageous/issues/328): Entering normal mode should not put cursor on EOL character
 * Fixed [#324](https://github.com/NeoVintageous/NeoVintageous/issues/324): Entering Normal mode from Visual Block mode creates multiple selection

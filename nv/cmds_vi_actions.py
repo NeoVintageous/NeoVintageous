@@ -552,20 +552,28 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                 return Region(s.b)
 
             if mode == VISUAL:
+                # Save selections for gv. But only if there are non-empty sels.
+                # We might be in visual mode and not have non-empty sels because
+                # we've just existed from an action.
+                if self.view.has_non_empty_selection_region():
+                    self.view.add_regions('visual_sel', list(self.view.sel()))
+
                 if s.a < s.b:
                     pt = s.b - 1
                     if view.line(pt).empty():
                         return Region(pt)
+
                     if view.substr(pt) == '\n':
                         pt -= 1
+
                     return Region(pt)
+
                 return Region(s.b)
 
             if mode in (VISUAL_LINE, VISUAL_BLOCK):
-                # save selections for gv
-                # But only if there are non-empty sels. We might be in visual
-                # mode and not have non-empty sels because we've just existed
-                # from an action.
+                # Save selections for gv. But only if there are non-empty sels.
+                # We might be in visual mode and not have non-empty sels because
+                # we've just existed from an action.
                 if self.view.has_non_empty_selection_region():
                     self.view.add_regions('visual_sel', list(self.view.sel()))
 
@@ -573,6 +581,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                     pt = s.b - 1
                     if (view.substr(pt) == '\n') and not view.line(pt).empty():
                         pt -= 1
+
                     return Region(pt)
                 else:
                     return Region(s.b)
