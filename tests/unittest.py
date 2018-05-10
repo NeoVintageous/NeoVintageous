@@ -25,6 +25,7 @@ from sublime import active_window as _active_window
 from sublime import Region
 
 # Use aliases to indicate that they are not public testing APIs.
+from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.state import State as _State
 
 from NeoVintageous.nv.vim import COMMAND_LINE  # noqa: F401
@@ -374,3 +375,73 @@ class ViewTestCase(unittest.TestCase):
                                          actual_region.end())
 
         self.assertEqual(expected_region, actual_region, msg)
+
+
+_char2mode = {
+    'i': INSERT,
+    'n': NORMAL,
+    'v': VISUAL
+}
+
+
+class FunctionalTestCase(ViewTestCase):
+
+    def feed(self, seq):
+        # Args:
+        #   seq (str): A command sequence e.g. 3w, <C-a>, cs'", :pwd
+        #
+        # The seq can be prefixed to specify a mode:
+        #
+        #   * n_ - Normal
+        #   * i_ - Insert
+        #   * v_ - Visual
+        #
+        # The default mode is Normal.
+        #
+        # NOTE: This function currently uses a hard-coded map of seq -> cmd, see
+        # the _feedseq2cmd variable.
+        #
+        # Examples:
+        #
+        # >>> feed('w')
+        # >>> feed('v_w')
+        # >>> feed('<Esc>')
+        # >>> feed(':pwd')
+
+        if seq == '<Esc>':
+            return self.view.window().run_command('_nv_feed_key', {'key': '<esc>'})
+
+        if seq[0] == ':':
+            return _do_ex_cmdline(self.view.window(), seq)
+
+        seq_args = {}
+
+        if seq[0] in 'vin' and seq[1] == '_':
+            seq_args['mode'] = _char2mode[seq[0]]
+            seq = seq[2:]
+
+        if seq[0].isdigit():
+            seq_args['count'] = int(seq[0])
+            seq = seq[1:]
+
+        try:
+            command = _feedseq2cmd[seq]['command']
+            if 'args' in _feedseq2cmd[seq]:
+                args = _feedseq2cmd[seq]['args'].copy()
+            else:
+                args = {}
+
+            if 'mode' not in args:
+                args['mode'] = INTERNAL_NORMAL
+
+            args.update(seq_args)
+        except KeyError as e:
+            raise KeyError('test command definition not found for feed %s' % str(e)) from None
+
+        self.view.run_command(command, args)
+
+
+# Hardcoded map of seq -> cmd. Ideally we wouldn't need this hardcoded map, some
+# internal refactoring and redesign is required.
+_feedseq2cmd = {
+}

@@ -387,3 +387,96 @@ class TestViewTestCase(unittest.ViewTestCase):
 
         with self.assertRaises(AssertionError):
             self.assertSize(12)
+
+
+class _FunctionalTestCase(unittest.FunctionalTestCase):
+
+    def __init__(self, view):
+        self.view = view
+
+
+_patch_feedseq2cmd = {
+    'b': {'command': 'cmd_b', 'args': {}},
+    'w': {'command': 'cmd_w', 'args': {'mode': 'mode_normal'}},
+    'e': {'command': 'cmd_e', 'args': {'count': 2}},
+    '$': {'command': 'cmd_dollar'},
+    'cs"(': {'command': 'cmd_cs', 'args': {'action': 'cs', 'target': '"', 'replacement': '('}}
+}
+
+
+class TestFunctionalTestCase(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        self.view = unittest.mock.Mock()
+        self.window = unittest.mock.Mock()
+        self.view.window.return_value = self.window
+        self.instance = _FunctionalTestCase(self.view)
+
+    def test_unknown_feed(self):
+        with self.assertRaisesRegex(KeyError, 'test command definition not found for feed \'foobar\''):
+            self.instance.feed('foobar')
+
+    def test_feed_esc(self):
+        self.instance.feed('<Esc>')
+        self.window.run_command.assert_called_once_with('_nv_feed_key', {'key': '<esc>'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    def test_feed_cmdline(self, do_ex_cmdline):
+        self.instance.feed(':')
+        do_ex_cmdline.assert_called_once_with(self.window, ':')
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    def test_feed_cmdline_cmd(self, do_ex_cmdline):
+        self.instance.feed(':pwd')
+        do_ex_cmdline.assert_called_once_with(self.window, ':pwd')
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_b(self):
+        self.instance.feed('b')
+        self.view.run_command.assert_called_once_with('cmd_b', {'mode': 'mode_internal_normal'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_dollar(self):
+        self.instance.feed('$')
+        self.view.run_command.assert_called_once_with('cmd_dollar', {'mode': 'mode_internal_normal'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_cs(self):
+        self.instance.feed('cs"(')
+        self.view.run_command.assert_called_once_with('cmd_cs', {
+            'mode': 'mode_internal_normal', 'action': 'cs', 'target': '"', 'replacement': '('
+        })
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_can_specify_mode(self):
+        self.instance.feed('v_b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_visual'})
+        self.instance.feed('i_b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_insert'})
+        self.instance.feed('n_b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_normal'})
+        self.instance.feed('w')
+        self.view.run_command.assert_called_with('cmd_w', {'mode': 'mode_normal'})
+        self.instance.feed('v_w')
+        self.view.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_can_specify_counts(self):
+        self.instance.feed('3b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_internal_normal', 'count': 3})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_can_override_default_counts(self):
+        self.instance.feed('3e')
+        self.view.run_command.assert_called_once_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 3})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_count_resets_to_default_if_no_count_given(self):
+        self.instance.feed('e')
+        self.view.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 2})
+
+        self.instance.feed('3e')
+        self.view.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 3})
+
+        self.instance.feed('e')
+        self.view.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 2})
