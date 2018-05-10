@@ -15,21 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import unittest
+from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.plugin_abolish import _coerce_to_mixedcase
 from NeoVintageous.nv.plugin_abolish import _coerce_to_camelcase
-from NeoVintageous.nv.plugin_abolish import _coerce_to_snakecase
-from NeoVintageous.nv.plugin_abolish import _coerce_to_uppercase
 from NeoVintageous.nv.plugin_abolish import _coerce_to_dashcase
-from NeoVintageous.nv.plugin_abolish import _coerce_to_spacecase
 from NeoVintageous.nv.plugin_abolish import _coerce_to_dotcase
+from NeoVintageous.nv.plugin_abolish import _coerce_to_mixedcase
+from NeoVintageous.nv.plugin_abolish import _coerce_to_snakecase
+from NeoVintageous.nv.plugin_abolish import _coerce_to_spacecase
 from NeoVintageous.nv.plugin_abolish import _coerce_to_titlecase
+from NeoVintageous.nv.plugin_abolish import _coerce_to_uppercase
 
 
-class TestCoercion(unittest.TestCase):
+class TestAbolish(unittest.TestCase):
 
-    def test_mixedcase(self):
+    def test_coerce_to_mixedcase(self):
         self.assertEquals('', _coerce_to_mixedcase(''))
         self.assertEquals('M', _coerce_to_mixedcase('m'))
         self.assertEquals('Mixed', _coerce_to_mixedcase('Mixed'))
@@ -37,7 +37,7 @@ class TestCoercion(unittest.TestCase):
         self.assertEquals('Mixed', _coerce_to_mixedcase('MIXED'))
         self.assertEquals('MixedCase', _coerce_to_mixedcase('MixedCase'))
 
-    def test_camelcase(self):
+    def test_coerce_to_camelcase(self):
         self.assertEquals('', _coerce_to_camelcase(''))
         self.assertEquals('c', _coerce_to_camelcase('c'))
         self.assertEquals('c', _coerce_to_camelcase('C'))
@@ -51,7 +51,7 @@ class TestCoercion(unittest.TestCase):
         self.assertEquals('mixedCase', _coerce_to_camelcase('MixedCase'))
         self.assertEquals('upperSnakeCase', _coerce_to_camelcase('UPPER_SNAKE_CASE'))
 
-    def test_snakecase(self):
+    def test_coerce_to_snakecase(self):
         self.assertEquals('', _coerce_to_snakecase(''))
         self.assertEquals('s', _coerce_to_snakecase('S'))
         self.assertEquals('snake', _coerce_to_snakecase('snake'))
@@ -70,7 +70,7 @@ class TestCoercion(unittest.TestCase):
         self.assertEquals('free_bsd', _coerce_to_snakecase('FreeBSD'))
         self.assertEquals('html', _coerce_to_snakecase('HTML'))
 
-    def test_uppercase(self):
+    def test_coerce_to_uppercase(self):
         self.assertEquals('', _coerce_to_uppercase(''))
         self.assertEquals('U', _coerce_to_uppercase('u'))
         self.assertEquals('UPPERCASE', _coerce_to_uppercase('UPPERCASE'))
@@ -82,7 +82,7 @@ class TestCoercion(unittest.TestCase):
         self.assertEquals('UPPER_UPPER_CASE', _coerce_to_uppercase('upper_upperCase'))
         self.assertEquals('UPPER_UPPER_CASE', _coerce_to_uppercase('UPPER_upperCase'))
 
-    def test_dashcase(self):
+    def test_coerce_to_dashcase(self):
         self.assertEquals('', _coerce_to_dashcase(''))
         self.assertEquals('dash', _coerce_to_dashcase('dash'))
         self.assertEquals('dash-case', _coerce_to_dashcase('dash-case'))
@@ -90,7 +90,7 @@ class TestCoercion(unittest.TestCase):
         self.assertEquals('camel-case', _coerce_to_dashcase('camelCase'))
         self.assertEquals('title-case', _coerce_to_dashcase('TitleCase'))
 
-    def test_spacecase(self):
+    def test_coerce_to_spacecase(self):
         self.assertEquals('', _coerce_to_spacecase(''))
         self.assertEquals('space', _coerce_to_spacecase('space'))
         self.assertEquals('space case', _coerce_to_spacecase('space case'))
@@ -98,7 +98,7 @@ class TestCoercion(unittest.TestCase):
         self.assertEquals('camel case', _coerce_to_spacecase('camelCase'))
         self.assertEquals('title case', _coerce_to_spacecase('TitleCase'))
 
-    def test_dotcase(self):
+    def test_coerce_to_dotcase(self):
         self.assertEquals('', _coerce_to_dotcase(''))
         self.assertEquals('dot', _coerce_to_dotcase('dot'))
         self.assertEquals('dot.case', _coerce_to_dotcase('dot.case'))
@@ -106,7 +106,7 @@ class TestCoercion(unittest.TestCase):
         self.assertEquals('camel.case', _coerce_to_dotcase('camelCase'))
         self.assertEquals('title.case', _coerce_to_dotcase('TitleCase'))
 
-    def test_titlecase(self):
+    def test_coerce_to_titlecase(self):
         self.assertEquals('', _coerce_to_titlecase(''))
         self.assertEquals('Title', _coerce_to_titlecase('Title'))
         self.assertEquals('Title', _coerce_to_titlecase('title'))

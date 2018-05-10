@@ -82,6 +82,195 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.assertEqual('Hello world!', self.view.substr(Region(0, self.view.size())))
         self.assertEqual([Region(12)], list(self.view.sel()))
 
+    def test_fixture_default_selection_is_eof(self):
+        self.fixture('Hello world!')
+        self.assertEqual('Hello world!', self.view.substr(Region(0, self.view.size())))
+        self.assertEqual([Region(12)], list(self.view.sel()))
+
+    def test_fixture_is_normal_mode(self):
+        self.fixture('Hello world!')
+        self.assertNormalMode()
+
+    def test_fixture_erases_view_before_insert(self):
+        self.fixture('foobar')
+        self.fixture('a')
+        self.assertEqual('a', self.view.substr(Region(0, self.view.size())))
+        self.fixture('b')
+        self.assertEqual('b', self.view.substr(Region(0, self.view.size())))
+
+    def test_fixture_zero_pos_selection(self):
+        self.fixture('|hello world!')
+        self.assertEqual([Region(0)], list(self.view.sel()))
+
+    def test_fixture_middle_pos_selection(self):
+        self.fixture('hello| world!')
+        self.assertEqual([Region(5)], list(self.view.sel()))
+
+    def test_fixture_end_pos_selection(self):
+        self.fixture('hello world|!')
+        self.assertEqual([Region(11)], list(self.view.sel()))
+
+    def test_fixture_multiple_selections(self):
+        self.fixture('h|el|lo world!')
+        self.assertEqual([Region(1), Region(3)], list(self.view.sel()))
+        self.fixture('hell|o |wo|rld!')
+        self.assertEqual([Region(4), Region(6), Region(8)], list(self.view.sel()))
+        self.fixture('hel|lo| w|orld|!')
+        self.assertEqual([Region(3), Region(5), Region(7), Region(11)], list(self.view.sel()))
+
+    def test_ifixture(self):
+        self.iFixture('t|ext')
+        self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
+        self.assertEqual([Region(1)], list(self.view.sel()))
+        self.assertInsertMode()
+
+    def test_vfixture(self):
+        self.vFixture('t|ex|t')
+        self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
+        self.assertEqual([Region(1, 3)], list(self.view.sel()))
+        self.assertVisualMode()
+
+    def test_vfixture_single_selection_expands_one_character(self):
+        self.vFixture('t|ext')
+        self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
+        self.assertEqual([Region(1, 2)], list(self.view.sel()))
+        self.assertVisualMode()
+
+    def test_vfixture_multiple_selection(self):
+        self.vFixture('h|ell|o |worl|d')
+        self.assertEqual([Region(1, 4), Region(6, 10)], list(self.view.sel()))
+        self.assertVisualMode()
+
+    def test_vfixture_raises_exception_if_malformed_visual_selection(self):
+        with self.assertRaisesRegex(Exception, 'invalid fixture visual selection'):
+            self.vFixture('hello world!')
+        with self.assertRaisesRegex(Exception, 'invalid fixture visual selection'):
+            self.vFixture('h|e|l|lo world!')
+        with self.assertRaisesRegex(Exception, 'invalid fixture visual selection'):
+            self.vFixture('h|e|l|lo |w|orld!')
+
+    def test_vline_fixture_sets_visual_line_mode(self):
+        self.vLineFixture('|text|')
+        self.assertVisualLineMode()
+
+    def test_vblock_fixture_sets_visual_block_mode(self):
+        self.vBlockFixture('|text|')
+        self.assertVisualBlockMode()
+
+    def test_expects(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.state.mode = unittest.NORMAL
+
+        self.view.sel().clear()
+        self.expects('hello world')
+
+        self.view.sel().add(0)
+        self.expects('|hello world')
+
+        with self.assertRaises(AssertionError):
+            self.expects('hello world')
+
+        self.view.sel().add(4)
+        self.expects('|hell|o world')
+
+        self.view.sel().clear()
+        self.view.sel().add(6)
+        self.expects('hello |world')
+
+        with self.assertRaises(AssertionError):
+            self.expects('hello world')
+
+        with self.assertRaises(AssertionError):
+            self.expects('hello| world')
+
+        with self.assertRaises(AssertionError):
+            self.expects('hello world|')
+
+        self.view.sel().clear()
+        self.view.sel().add(3)
+        self.view.sel().add(5)
+        self.view.sel().add(7)
+        self.expects('hel|lo| w|orld')
+
+    def test_expects_asserts_normal_mode(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.state.mode = unittest.VISUAL
+        with self.assertRaises(AssertionError):
+            self.expects('hello world|')
+        self.state.mode = unittest.NORMAL
+        self.expects('hello world|')
+
+    def test_expects_i(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.state.mode = unittest.INSERT
+
+        self.view.sel().clear()
+        self.expectsI('hello world')
+
+        self.view.sel().clear()
+        self.view.sel().add(3)
+        self.view.sel().add(5)
+        self.view.sel().add(7)
+        self.expectsI('hel|lo| w|orld')
+
+    def test_expects_i_asserts_insert_mode(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.state.mode = unittest.NORMAL
+        with self.assertRaises(AssertionError):
+            self.expectsI('hello world|')
+        self.state.mode = unittest.INSERT
+        self.expectsI('hello world|')
+
+    def test_expects_v(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.state.mode = unittest.VISUAL
+
+        self.view.sel().clear()
+        self.expectsV('hello world')
+
+        self.view.sel().add(Region(3, 5))
+        self.expectsV('hel|lo| world')
+
+        with self.assertRaises(AssertionError):
+            self.expectsV('|hello| world')
+
+        self.view.sel().add(Region(3, 5))
+        self.view.sel().add(Region(7, 11))
+        self.expectsV('hel|lo| w|orld|')
+
+    def test_expects_v_asserts_visual_mode(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.view.sel().clear()
+        self.view.sel().add(3)
+        self.view.sel().add(5)
+        self.state.mode = unittest.NORMAL
+        with self.assertRaises(AssertionError):
+            self.expectsV('hel|lo| world')
+        self.state.mode = unittest.VISUAL
+        self.expectsV('hel|lo| world')
+
+    def test_expects_vline_asserts_visual_line_mode(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.view.sel().clear()
+        self.view.sel().add(0)
+        self.view.sel().add(11)
+        self.state.mode = unittest.NORMAL
+        with self.assertRaises(AssertionError):
+            self.expectsVLine('|hello world|')
+        self.state.mode = unittest.VISUAL_LINE
+        self.expectsVLine('|hello world|')
+
+    def test_expects_vblock_asserts_visual_block_mode(self):
+        self.view.run_command('insert', {'characters': 'hello world'})
+        self.view.sel().clear()
+        self.view.sel().add(0)
+        self.view.sel().add(11)
+        self.state.mode = unittest.NORMAL
+        with self.assertRaises(AssertionError):
+            self.expectsVBlock('|hello world|')
+        self.state.mode = unittest.VISUAL_BLOCK
+        self.expectsVBlock('|hello world|')
+
     def test_assert_content(self):
         self.view.run_command('insert', {'characters': 'hello world'})
 
@@ -198,3 +387,195 @@ class TestViewTestCase(unittest.ViewTestCase):
 
         with self.assertRaises(AssertionError):
             self.assertSize(12)
+
+
+class _FunctionalTestCase(unittest.FunctionalTestCase):
+
+    def __init__(self, view):
+        self.view = view
+
+
+_patch_feedseq2cmd = {
+    'b': {'command': 'cmd_b', 'args': {}},
+    'w': {'command': 'cmd_w', 'args': {'mode': 'mode_normal'}},
+    'e': {'command': 'cmd_e', 'args': {'count': 2}},
+    '$': {'command': 'cmd_dollar'},
+    'cs"(': {'command': 'cmd_cs', 'args': {'action': 'cs', 'target': '"', 'replacement': '('}}
+}
+
+
+class TestFunctionalTestCase(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        self.view = unittest.mock.Mock()
+        self.window = unittest.mock.Mock()
+        self.view.window.return_value = self.window
+        self.instance = _FunctionalTestCase(self.view)
+
+    def test_unknown_feed(self):
+        with self.assertRaisesRegex(KeyError, 'test command definition not found for feed \'foobar\''):
+            self.instance.feed('foobar')
+
+    def test_feed_esc(self):
+        self.instance.feed('<Esc>')
+        self.window.run_command.assert_called_once_with('_nv_feed_key', {'key': '<esc>'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    def test_feed_cmdline(self, do_ex_cmdline):
+        self.instance.feed(':')
+        do_ex_cmdline.assert_called_once_with(self.window, ':')
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    def test_feed_cmdline_cmd(self, do_ex_cmdline):
+        self.instance.feed(':pwd')
+        do_ex_cmdline.assert_called_once_with(self.window, ':pwd')
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_b(self):
+        self.instance.feed('b')
+        self.view.run_command.assert_called_once_with('cmd_b', {'mode': 'mode_internal_normal'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_dollar(self):
+        self.instance.feed('$')
+        self.view.run_command.assert_called_once_with('cmd_dollar', {'mode': 'mode_internal_normal'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_cs(self):
+        self.instance.feed('cs"(')
+        self.view.run_command.assert_called_once_with('cmd_cs', {
+            'mode': 'mode_internal_normal', 'action': 'cs', 'target': '"', 'replacement': '('
+        })
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_can_specify_mode(self):
+        self.instance.feed('v_b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_visual'})
+        self.instance.feed('i_b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_insert'})
+        self.instance.feed('n_b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_normal'})
+        self.instance.feed('w')
+        self.view.run_command.assert_called_with('cmd_w', {'mode': 'mode_normal'})
+        self.instance.feed('v_w')
+        self.view.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual'})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_can_specify_counts(self):
+        self.instance.feed('3b')
+        self.view.run_command.assert_called_with('cmd_b', {'mode': 'mode_internal_normal', 'count': 3})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_can_override_default_counts(self):
+        self.instance.feed('3e')
+        self.view.run_command.assert_called_once_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 3})
+
+    @unittest.mock.patch('NeoVintageous.tests.unittest._feedseq2cmd', _patch_feedseq2cmd)
+    def test_feed_count_resets_to_default_if_no_count_given(self):
+        self.instance.feed('e')
+        self.view.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 2})
+
+        self.instance.feed('3e')
+        self.view.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 3})
+
+        self.instance.feed('e')
+        self.view.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 2})
+
+    def test_eq(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b', 'c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expects.assert_called_once_with('c', None)
+
+    def test_eq_expected_is_optional(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expects.assert_called_once_with('a', None)
+
+    def test_eq_expects_v(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsV = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b', 'v_c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expectsV.assert_called_once_with('c', None)
+
+    def test_eq_expects_i(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsI = unittest.mock.Mock()
+
+        self.instance.eq('a', 'b', 'i_c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('b')
+        self.instance.expectsI.assert_called_once_with('c', None)
+
+    def test_eq_v(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsV = unittest.mock.Mock()
+
+        self.instance.eq('a', 'v_b', 'c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('v_b')
+        self.instance.expectsV.assert_called_once_with('c', None)
+
+    def test_eq_v_expects_n(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', 'v_b', 'n_c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('v_b')
+        self.instance.expects.assert_called_once_with('c', None)
+
+    def test_eq_v_expects_i(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsI = unittest.mock.Mock()
+
+        self.instance.eq('a', 'v_b', 'i_c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with('v_b')
+        self.instance.expectsI.assert_called_once_with('c', None)
+
+    def test_eq_cmdline(self):
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+
+        self.instance.eq('a', ':b', 'c')
+
+        self.instance.fixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with(':b')
+        self.instance.expects.assert_called_once_with('c', None)
+
+    def test_eq_v_cmdline(self):
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()
+        self.instance.expectsV = unittest.mock.Mock()
+
+        self.instance.eq('a', ':\'<,\'>b', 'c')
+
+        self.instance.vFixture.assert_called_once_with('a')
+        self.instance.feed.assert_called_once_with(':\'<,\'>b')
+        self.instance.expectsV.assert_called_once_with('c', None)

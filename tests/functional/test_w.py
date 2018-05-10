@@ -18,12 +18,12 @@
 from NeoVintageous.tests import unittest
 
 
-class Test__vi_cc(unittest.ViewTestCase):
+class Test_w(unittest.FunctionalTestCase):
 
-    def test_cc(self):
-        self.write('foo bar\nfoo bar\nfoo bar\n')
-        self.select([self._R(*region) for region in [[(0, 0), (1, 0)]]])
+    def test_w(self):
+        self.eq('one |two three', 'w', 'one two |three')
+        self.eq('|one two three', '2w', 'one two |three')
 
-        self.view.run_command('_vi_cc', {'mode': unittest.INTERNAL_NORMAL})
-
-        self.assertContent('foo bar\n\nfoo bar\n')
+    def test_v_w(self):
+        self.eq('one |two three', 'v_w', 'one |two t|hree')
+        self.eq('|one two three', 'v_2w', '|one two t|hree')
