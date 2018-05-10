@@ -6,7 +6,7 @@ $HOME	options.txt	/*$HOME*
 $HOME-windows	options.txt	/*$HOME-windows*
 $MYGVIMRC	gui.txt	/*$MYGVIMRC*
 $MYVIMRC	starting.txt	/*$MYVIMRC*
-$NVIM_LISTEN_ADDRESS	eval.txt	/*$NVIM_LISTEN_ADDRESS*
+$NVIM_LISTEN_ADDRESS	deprecated.txt	/*$NVIM_LISTEN_ADDRESS*
 $NVIM_LOG_FILE	starting.txt	/*$NVIM_LOG_FILE*
 $NVIM_RPLUGIN_MANIFEST	remote_plugin.txt	/*$NVIM_RPLUGIN_MANIFEST*
 $TERM	term.txt	/*$TERM*
@@ -158,14 +158,13 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'cscoperelative'	options.txt	/*'cscoperelative'*
 'cscopetag'	options.txt	/*'cscopetag'*
 'cscopetagorder'	options.txt	/*'cscopetagorder'*
-'cscopeverbose'	options.txt	/*'cscopeverbose'*
+'cscopeverbose'	deprecated.txt	/*'cscopeverbose'*
 'cspc'	options.txt	/*'cspc'*
 'csprg'	options.txt	/*'csprg'*
 'csqf'	options.txt	/*'csqf'*
 'csre'	options.txt	/*'csre'*
 'cst'	options.txt	/*'cst'*
 'csto'	options.txt	/*'csto'*
-'csverb'	options.txt	/*'csverb'*
 'cuc'	options.txt	/*'cuc'*
 'cul'	options.txt	/*'cul'*
 'cursorbind'	options.txt	/*'cursorbind'*
@@ -415,9 +414,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'maxcombine'	options.txt	/*'maxcombine'*
 'maxfuncdepth'	options.txt	/*'maxfuncdepth'*
 'maxmapdepth'	options.txt	/*'maxmapdepth'*
-'maxmem'	options.txt	/*'maxmem'*
 'maxmempattern'	options.txt	/*'maxmempattern'*
-'maxmemtot'	options.txt	/*'maxmemtot'*
 'mco'	options.txt	/*'mco'*
 'mef'	options.txt	/*'mef'*
 'menc'	options.txt	/*'menc'*
@@ -428,10 +425,8 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'mkspellmem'	options.txt	/*'mkspellmem'*
 'ml'	options.txt	/*'ml'*
 'mls'	options.txt	/*'mls'*
-'mm'	options.txt	/*'mm'*
 'mmd'	options.txt	/*'mmd'*
 'mmp'	options.txt	/*'mmp'*
-'mmt'	options.txt	/*'mmt'*
 'mod'	options.txt	/*'mod'*
 'modeline'	options.txt	/*'modeline'*
 'modelines'	options.txt	/*'modelines'*
@@ -490,10 +485,8 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'nocrb'	options.txt	/*'nocrb'*
 'nocscoperelative'	options.txt	/*'nocscoperelative'*
 'nocscopetag'	options.txt	/*'nocscopetag'*
-'nocscopeverbose'	options.txt	/*'nocscopeverbose'*
 'nocsre'	options.txt	/*'nocsre'*
 'nocst'	options.txt	/*'nocst'*
-'nocsverb'	options.txt	/*'nocsverb'*
 'nocuc'	options.txt	/*'nocuc'*
 'nocul'	options.txt	/*'nocul'*
 'nocursorbind'	options.txt	/*'nocursorbind'*
@@ -940,7 +933,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_modeline'	neovintageous.txt	/*'vintageous_modeline'*
 'vintageous_modelines'	neovintageous.txt	/*'vintageous_modelines'*
 'vintageous_reset_mode_when_switching_tabs'	neovintageous.txt	/*'vintageous_reset_mode_when_switching_tabs'*
-'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
 'vintageous_use_ctrl_keys'	neovintageous.txt	/*'vintageous_use_ctrl_keys'*
 'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
 'vintageous_use_sys_clipboard'	neovintageous.txt	/*'vintageous_use_sys_clipboard'*
@@ -1112,6 +1104,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 --embed	channel.txt	/*--embed*
 --headless	starting.txt	/*--headless*
 --help	starting.txt	/*--help*
+--listen	starting.txt	/*--listen*
 --literal	starting.txt	/*--literal*
 --noplugin	starting.txt	/*--noplugin*
 --remote	remote.txt	/*--remote*
@@ -1124,8 +1117,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 --remote-tab-wait-silent	remote.txt	/*--remote-tab-wait-silent*
 --remote-wait	remote.txt	/*--remote-wait*
 --remote-wait-silent	remote.txt	/*--remote-wait-silent*
---serverlist	eval.txt	/*--serverlist*
---servername	eval.txt	/*--servername*
 --startuptime	starting.txt	/*--startuptime*
 --version	starting.txt	/*--version*
 -A	starting.txt	/*-A*
@@ -2243,6 +2234,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 :map-<unique>	map.txt	/*:map-<unique>*
 :map-alt-keys	map.txt	/*:map-alt-keys*
 :map-arguments	map.txt	/*:map-arguments*
+:map-command	map.txt	/*:map-command*
 :map-commands	map.txt	/*:map-commands*
 :map-expression	map.txt	/*:map-expression*
 :map-local	map.txt	/*:map-local*
@@ -2952,6 +2944,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 <CSI>	intro.txt	/*<CSI>*
 <Char->	map.txt	/*<Char->*
 <Char>	map.txt	/*<Char>*
+<Cmd>	map.txt	/*<Cmd>*
 <CursorHold>	autocmd.txt	/*<CursorHold>*
 <D-	intro.txt	/*<D-*
 <Del>	change.txt	/*<Del>*
@@ -3033,19 +3026,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 =	change.txt	/*=*
 ==	change.txt	/*==*
 =P	unimpaired.txt	/*=P*
-=ob	unimpaired.txt	/*=ob*
-=oc	unimpaired.txt	/*=oc*
-=od	unimpaired.txt	/*=od*
-=oh	unimpaired.txt	/*=oh*
-=oi	unimpaired.txt	/*=oi*
-=ol	unimpaired.txt	/*=ol*
-=on	unimpaired.txt	/*=on*
-=or	unimpaired.txt	/*=or*
-=os	unimpaired.txt	/*=os*
-=ou	unimpaired.txt	/*=ou*
-=ov	unimpaired.txt	/*=ov*
-=ow	unimpaired.txt	/*=ow*
-=ox	unimpaired.txt	/*=ox*
 =p	unimpaired.txt	/*=p*
 >	change.txt	/*>*
 >>	change.txt	/*>>*
@@ -3719,6 +3699,7 @@ E55	pattern.txt	/*E55*
 E550	options.txt	/*E550*
 E551	options.txt	/*E551*
 E552	options.txt	/*E552*
+E5520	map.txt	/*E5520*
 E553	quickfix.txt	/*E553*
 E554	pattern.txt	/*E554*
 E555	tagsrch.txt	/*E555*
@@ -3772,6 +3753,7 @@ E607	eval.txt	/*E607*
 E608	eval.txt	/*E608*
 E609	if_cscop.txt	/*E609*
 E61	pattern.txt	/*E61*
+E6100	eval.txt	/*E6100*
 E612	sign.txt	/*E612*
 E613	print.txt	/*E613*
 E614	editing.txt	/*E614*
@@ -4267,6 +4249,8 @@ VimEnter	autocmd.txt	/*VimEnter*
 VimLeave	autocmd.txt	/*VimLeave*
 VimLeavePre	autocmd.txt	/*VimLeavePre*
 VimResized	autocmd.txt	/*VimResized*
+VimResume	autocmd.txt	/*VimResume*
+VimSuspend	autocmd.txt	/*VimSuspend*
 Virtual-Replace-mode	insert.txt	/*Virtual-Replace-mode*
 Visual	visual.txt	/*Visual*
 Visual-mode	visual.txt	/*Visual-mode*
@@ -4364,6 +4348,7 @@ ZZ	editing.txt	/*ZZ*
 [ol	unimpaired.txt	/*[ol*
 [om	neovintageous.txt	/*[om*
 [on	unimpaired.txt	/*[on*
+[op	unimpaired.txt	/*[op*
 [or	unimpaired.txt	/*[or*
 [os	unimpaired.txt	/*[os*
 [ot	neovintageous.txt	/*[ot*
@@ -4432,6 +4417,7 @@ ZZ	editing.txt	/*ZZ*
 ]ol	unimpaired.txt	/*]ol*
 ]om	neovintageous.txt	/*]om*
 ]on	unimpaired.txt	/*]on*
+]op	unimpaired.txt	/*]op*
 ]or	unimpaired.txt	/*]or*
 ]os	unimpaired.txt	/*]os*
 ]ot	neovintageous.txt	/*]ot*
@@ -4863,6 +4849,7 @@ cino-:	indent.txt	/*cino-:*
 cino-=	indent.txt	/*cino-=*
 cino->	indent.txt	/*cino->*
 cino-C	indent.txt	/*cino-C*
+cino-E	indent.txt	/*cino-E*
 cino-J	indent.txt	/*cino-J*
 cino-L	indent.txt	/*cino-L*
 cino-M	indent.txt	/*cino-M*
@@ -5045,12 +5032,11 @@ cscope	if_cscop.txt	/*cscope*
 cscope-commands	if_cscop.txt	/*cscope-commands*
 cscope-find	if_cscop.txt	/*cscope-find*
 cscope-howtouse	if_cscop.txt	/*cscope-howtouse*
-cscope-info	if_cscop.txt	/*cscope-info*
 cscope-intro	if_cscop.txt	/*cscope-intro*
 cscope-limitations	if_cscop.txt	/*cscope-limitations*
 cscope-options	if_cscop.txt	/*cscope-options*
 cscope-suggestions	if_cscop.txt	/*cscope-suggestions*
-cscope-win32	if_cscop.txt	/*cscope-win32*
+cscope-usage	if_cscop.txt	/*cscope-usage*
 cscope_connection()	eval.txt	/*cscope_connection()*
 cscopepathcomp	if_cscop.txt	/*cscopepathcomp*
 cscopeprg	if_cscop.txt	/*cscopeprg*
@@ -5058,7 +5044,6 @@ cscopequickfix	if_cscop.txt	/*cscopequickfix*
 cscoperelative	if_cscop.txt	/*cscoperelative*
 cscopetag	if_cscop.txt	/*cscopetag*
 cscopetagorder	if_cscop.txt	/*cscopetagorder*
-cscopeverbose	if_cscop.txt	/*cscopeverbose*
 csh.vim	syntax.txt	/*csh.vim*
 cspc	if_cscop.txt	/*cspc*
 csprg	if_cscop.txt	/*csprg*
@@ -5066,7 +5051,6 @@ csqf	if_cscop.txt	/*csqf*
 csre	if_cscop.txt	/*csre*
 cst	if_cscop.txt	/*cst*
 csto	if_cscop.txt	/*csto*
-csverb	if_cscop.txt	/*csverb*
 ctags	tagsrch.txt	/*ctags*
 cterm-colors	syntax.txt	/*cterm-colors*
 ctrl	intro.txt	/*ctrl*
@@ -5715,6 +5699,7 @@ g:html_use_css	syntax.txt	/*g:html_use_css*
 g:html_use_encoding	syntax.txt	/*g:html_use_encoding*
 g:html_use_xhtml	syntax.txt	/*g:html_use_xhtml*
 g:html_whole_filler	syntax.txt	/*g:html_whole_filler*
+g:loaded_node_provider	provider.txt	/*g:loaded_node_provider*
 g:loaded_python3_provider	provider.txt	/*g:loaded_python3_provider*
 g:loaded_python_provider	provider.txt	/*g:loaded_python_provider*
 g:loaded_ruby_provider	provider.txt	/*g:loaded_ruby_provider*
@@ -5812,6 +5797,7 @@ g:netrw_winsize	pi_netrw.txt	/*g:netrw_winsize*
 g:netrw_wiw	pi_netrw.txt	/*g:netrw_wiw*
 g:netrw_xstrlen	pi_netrw.txt	/*g:netrw_xstrlen*
 g:no_man_maps	filetype.txt	/*g:no_man_maps*
+g:node_host_prog	provider.txt	/*g:node_host_prog*
 g:python3_host_prog	provider.txt	/*g:python3_host_prog*
 g:python_host_prog	provider.txt	/*g:python_host_prog*
 g:ruby_host_prog	provider.txt	/*g:ruby_host_prog*
@@ -6107,6 +6093,7 @@ hl-MatchParen	syntax.txt	/*hl-MatchParen*
 hl-Menu	syntax.txt	/*hl-Menu*
 hl-ModeMsg	syntax.txt	/*hl-ModeMsg*
 hl-MoreMsg	syntax.txt	/*hl-MoreMsg*
+hl-MsgSeparator	syntax.txt	/*hl-MsgSeparator*
 hl-NonText	syntax.txt	/*hl-NonText*
 hl-Normal	syntax.txt	/*hl-Normal*
 hl-NormalNC	syntax.txt	/*hl-NormalNC*
@@ -6270,6 +6257,7 @@ i_<ScrollWheelRight>	insert.txt	/*i_<ScrollWheelRight>*
 i_<ScrollWheelUp>	insert.txt	/*i_<ScrollWheelUp>*
 i_<Tab>	insert.txt	/*i_<Tab>*
 i_<Up>	insert.txt	/*i_<Up>*
+i_ALT	insert.txt	/*i_ALT*
 i_BS	insert.txt	/*i_BS*
 i_CTRL-<PageDown>	tabpage.txt	/*i_CTRL-<PageDown>*
 i_CTRL-<PageUp>	tabpage.txt	/*i_CTRL-<PageUp>*
@@ -6337,6 +6325,7 @@ i_CTRL-]	insert.txt	/*i_CTRL-]*
 i_CTRL-^	insert.txt	/*i_CTRL-^*
 i_CTRL-_	insert.txt	/*i_CTRL-_*
 i_DEL	insert.txt	/*i_DEL*
+i_META	insert.txt	/*i_META*
 i_Tab	insert.txt	/*i_Tab*
 i_^_CTRL-D	insert.txt	/*i_^_CTRL-D*
 i_backspacing	insert.txt	/*i_backspacing*
@@ -7269,6 +7258,7 @@ progress.vim	syntax.txt	/*progress.vim*
 pronounce	intro.txt	/*pronounce*
 provider	provider.txt	/*provider*
 provider-clipboard	provider.txt	/*provider-clipboard*
+provider-nodejs	provider.txt	/*provider-nodejs*
 provider-python	provider.txt	/*provider-python*
 provider-ruby	provider.txt	/*provider-ruby*
 provider.txt	provider.txt	/*provider.txt*
@@ -7793,6 +7783,7 @@ status-line	windows.txt	/*status-line*
 statusmsg-variable	eval.txt	/*statusmsg-variable*
 stderr-variable	eval.txt	/*stderr-variable*
 stdioopen()	eval.txt	/*stdioopen()*
+stdpath()	eval.txt	/*stdpath()*
 str2float()	eval.txt	/*str2float()*
 str2nr()	eval.txt	/*str2nr()*
 strcasestr()	eval.txt	/*strcasestr()*
@@ -8053,11 +8044,11 @@ undofile()	eval.txt	/*undofile()*
 undotree()	eval.txt	/*undotree()*
 unicode	mbyte.txt	/*unicode*
 unimpaired	unimpaired.txt	/*unimpaired*
+unimpaired-customization	unimpaired.txt	/*unimpaired-customization*
 unimpaired-encoding	unimpaired.txt	/*unimpaired-encoding*
 unimpaired-lines	unimpaired.txt	/*unimpaired-lines*
 unimpaired-next	unimpaired.txt	/*unimpaired-next*
 unimpaired-pasting	unimpaired.txt	/*unimpaired-pasting*
-unimpaired-todo	unimpaired.txt	/*unimpaired-todo*
 unimpaired-toggling	unimpaired.txt	/*unimpaired-toggling*
 unimpaired.txt	unimpaired.txt	/*unimpaired.txt*
 uniq()	eval.txt	/*uniq()*
@@ -8491,7 +8482,20 @@ yaml.vim	syntax.txt	/*yaml.vim*
 yank	change.txt	/*yank*
 year-2000	intro.txt	/*year-2000*
 yo	unimpaired.txt	/*yo*
+yob	unimpaired.txt	/*yob*
+yoc	unimpaired.txt	/*yoc*
+yod	unimpaired.txt	/*yod*
+yoh	unimpaired.txt	/*yoh*
+yoi	unimpaired.txt	/*yoi*
+yol	unimpaired.txt	/*yol*
+yon	unimpaired.txt	/*yon*
+yor	unimpaired.txt	/*yor*
+yos	unimpaired.txt	/*yos*
+you	unimpaired.txt	/*you*
 your-runtime-dir	usr_43.txt	/*your-runtime-dir*
+yov	unimpaired.txt	/*yov*
+yow	unimpaired.txt	/*yow*
+yox	unimpaired.txt	/*yox*
 ys	surround.txt	/*ys*
 yss	surround.txt	/*yss*
 yy	change.txt	/*yy*
