@@ -444,4 +444,7 @@ class FunctionalTestCase(ViewTestCase):
 # Hardcoded map of seq -> cmd. Ideally we wouldn't need this hardcoded map, some
 # internal refactoring and redesign is required.
 _feedseq2cmd = {
+
+    'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+
 }
