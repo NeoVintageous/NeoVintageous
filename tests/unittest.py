@@ -495,7 +495,17 @@ class FunctionalTestCase(ViewTestCase):
 _feedseq2cmd = {
 
     '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
+    '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
     'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'cc':           {'command': '_vi_cc'},  # noqa: E241
+    'd$':           {'command': '_vi_d', 'args': {'motion': {'is_jump': True, 'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
+    'd2ft':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 2, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501
+    'df=':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': '='}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'dft':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
+    'e':            {'command': '_vi_e', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
 
 }
