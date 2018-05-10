@@ -339,7 +339,7 @@ COMMENTARY                                            *neovintageous-commentary*
 
 Comment stuff out. Then uncomment it later.
 
-See |commentary|.
+See |commentary.txt|.
 
 ------------------------------------------------------------------------------
 
@@ -347,7 +347,7 @@ SURROUND                                                *neovintageous-surround*
 
 A plugin for deleting, changing, and adding "surroundings".
 
-See |surround|.
+See |surround.txt|.
 
 ------------------------------------------------------------------------------
 
