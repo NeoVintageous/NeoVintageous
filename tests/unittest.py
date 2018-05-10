@@ -496,5 +496,6 @@ _feedseq2cmd = {
 
     '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'cc':           {'command': '_vi_cc'},  # noqa: E241
 
 }

@@ -18,12 +18,9 @@
 from NeoVintageous.tests import unittest
 
 
-class Test__vi_cc(unittest.ViewTestCase):
+class Test_cc(unittest.FunctionalTestCase):
 
     def test_cc(self):
-        self.write('foo bar\nfoo bar\nfoo bar\n')
-        self.select([self._R(*region) for region in [[(0, 0), (1, 0)]]])
-
-        self.view.run_command('_vi_cc', {'mode': unittest.INTERNAL_NORMAL})
-
-        self.assertContent('foo bar\n\nfoo bar\n')
+        self.eq('|aaa\nbbb\nccc', 'cc', 'i_|\nbbb\nccc')
+        self.eq('aaa\nbb|b\nccc', 'cc', 'i_aaa\n|\nccc')
+        self.eq('aaa\nbbb\n|ccc', 'cc', 'i_aaa\nbbb\n|')
