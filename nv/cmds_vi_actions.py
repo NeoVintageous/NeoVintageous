@@ -2353,6 +2353,15 @@ class _vi_gv(IrreversibleTextCommand):
             cmd = '_enter_visual_mode'
         elif visual_sel_mode == VISUAL_LINE:
             cmd = '_enter_visual_line_mode'
+            for sel in sels:
+                a = self.view.line(sel.a)
+                b = self.view.line(sel.b)
+                if a < b:
+                    sel.a = a.begin()
+                    sel.b = b.end()
+                else:
+                    sel.a = a.end()
+                    sel.b = b.begin()
         elif visual_sel_mode == VISUAL_BLOCK:
             cmd = '_enter_visual_block_mode'
         else:

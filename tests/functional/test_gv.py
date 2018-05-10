@@ -23,6 +23,7 @@ class Test_gv(unittest.FunctionalTestCase):
     def test_gv_works_for_visual_mode(self):
         self.vFixture('a|b\nc|d\n')
         self.feed('<Esc>')
+        self.expects('ab\n|cd\n')
         self.feed('gv')
         self.expectsV('a|b\nc|d\n')
         self.assertStatusLineRegex('-- VISUAL --')
@@ -30,6 +31,7 @@ class Test_gv(unittest.FunctionalTestCase):
     def test_gv_works_for_visual_line_mode(self):
         self.vLineFixture('ab\n|cd|\ne\n')
         self.feed('<Esc>')
+        self.expects('ab\nc|d\ne\n')
         self.feed('gv')
         self.expectsVLine('ab\n|cd|\ne\n')
         self.assertStatusLineRegex('-- VISUAL LINE --')
@@ -37,6 +39,7 @@ class Test_gv(unittest.FunctionalTestCase):
     def test_gv_works_for_visual_lines_mode(self):
         self.vLineFixture('ab\n|cd\nef|\ng\n')
         self.feed('<Esc>')
+        self.expects('ab\ncd\ne|f\ng\n')
         self.feed('gv')
         self.expectsVLine('ab\n|cd\nef|\ng\n')
         self.assertStatusLineRegex('-- VISUAL LINE --')
@@ -44,6 +47,15 @@ class Test_gv(unittest.FunctionalTestCase):
     def test_gv_works_for_visual_block_mode(self):
         self.vBlockFixture('a\nb|cd|e\nf|gh|i\nj\n')
         self.feed('<Esc>')
+        self.expects('a\nbcde\nfg|hi\nj\n')
         self.feed('gv')
         self.expectsVBlock('a\nb|cd|e\nf|gh|i\nj\n')
         self.assertStatusLineRegex('-- VISUAL BLOCK --')
+
+    def test_issue_338(self):
+        self.vLineFixture('1111\n2222\n    |3333\n    4444\n|')
+        self.feed('<Esc>')
+        self.expects('1111\n2222\n    3333\n    444|4\n')
+        self.feed('gv')
+        self.expectsVLine('1111\n2222\n|    3333\n    4444\n|')
+        self.assertStatusLineRegex('-- VISUAL LINE --')
