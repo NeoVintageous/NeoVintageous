@@ -150,7 +150,7 @@ def plugin_loaded():
                 message = "An error occurred trying to load NeoVintageous. "\
                           "Please restart Sublime Text."
 
-        print('NeoVintageous:', message)
+        print('NeoVintageous: ERROR', message)
         sublime.message_dialog(message)
 
 
