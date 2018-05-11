@@ -1824,6 +1824,8 @@ class StShowCommandPalette(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
+        state.reset_during_init = False
+
         return {
             'action': 'show_overlay',
             'action_args': {
