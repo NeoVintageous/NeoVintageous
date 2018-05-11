@@ -531,8 +531,7 @@ class State(object):
         # type: () -> None
         mode_name = mode_to_friendly_name(self.mode)
         if mode_name:
-            mode_name = '-- {} --'.format(mode_name) if mode_name else ''
-            self.view.set_status('vim-mode', mode_name)
+            self.view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
 
         self.view.set_status('vim-seq', self.sequence)
 
