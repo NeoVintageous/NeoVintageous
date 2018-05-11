@@ -459,11 +459,9 @@ class State(object):
 
     @property
     def must_update_xpos(self):
+        # type: () -> bool
         # Returns:
-        #   bool|None: True if motion or action requires xpos update, None
-        #       otherwise.
-        # TODO State.must_update_xpos) should return False by default rather
-        #   than None.
+        #   True if motion/action should update xpos, False otherwise.
         motion = self.motion
         if motion and motion.updates_xpos:
             return True
@@ -471,6 +469,8 @@ class State(object):
         action = self.action
         if action and action.updates_xpos:
             return True
+
+        return False
 
     @property
     def is_recording(self):
