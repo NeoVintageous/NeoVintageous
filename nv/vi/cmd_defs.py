@@ -2097,17 +2097,16 @@ class ViGotoSymbolInProject(ViOperatorDef):
 class ViDeselectInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, state):
-        # Non-standard
-        if state.mode != SELECT:
-            raise ValueError(
-                'bad mode, expected mode_select, got {0}'.format(state.mode))
-
         return {
-            'action': 'soft_undo',
-            'action_args': {}
+            'action': '_vi_select_k',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
         }
 
 

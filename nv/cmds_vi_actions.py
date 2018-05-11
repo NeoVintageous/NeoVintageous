@@ -148,6 +148,7 @@ __all__ = [
     '_vi_s',
     '_vi_select_big_j',
     '_vi_select_j',
+    '_vi_select_k',
     '_vi_tilde',
     '_vi_u',
     '_vi_visual_big_u',
@@ -2643,6 +2644,18 @@ class _vi_select_j(ViWindowCommandBase):
 
         for i in range(count):
             self.window.run_command('find_under_expand')
+
+
+class _vi_select_k(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1, mode=None):
+        if mode != SELECT:
+            raise ValueError('wrong mode')
+
+        for i in range(count):
+            self.window.run_command('soft_undo')
 
 
 # Implemented as if 'notildeopt' was True

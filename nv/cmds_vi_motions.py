@@ -102,7 +102,6 @@ __all__ = [
     '_vi_hat',
     '_vi_j',
     '_vi_k',
-    '_vi_k_select',
     '_vi_l',
     '_vi_left_brace',
     '_vi_left_paren',
@@ -729,17 +728,6 @@ class _vi_k(ViMotionCommand):
                 return
 
         regions_transformer(self.view, f)
-
-
-class _vi_k_select(ViMotionCommand):
-    def run(self, count=1, mode=None):
-        # FIXME: It isn't working.
-        if mode != SELECT:
-            return ui_blink()
-
-        for i in range(count):
-            self.view.window().run_command('soft_undo')
-            return
 
 
 class _vi_gg(ViMotionCommand):
