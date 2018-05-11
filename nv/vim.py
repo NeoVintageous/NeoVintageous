@@ -131,31 +131,33 @@ if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
 
     def _init_logger():
         logger = logging.getLogger('NeoVintageous')
-        logger.setLevel(logging.DEBUG)
 
-        formatter = logging.Formatter('NeoVintageous: %(levelname)-7s [%(filename)s:%(lineno)d] %(message)s')
+        if not logger.hasHandlers():
+            logger.setLevel(logging.DEBUG)
 
-        # Stream handler
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
+            formatter = logging.Formatter('NeoVintageous: %(levelname)-7s [%(filename)s:%(lineno)d] %(message)s')
 
-        # File handler
-        file = _log_file()
-        if file:
-            file_handler = RotatingFileHandler(
-                file,
-                maxBytes=10000000,  # 10000000 = 10MB
-                backupCount=2
-            )
-            file_handler.setFormatter(formatter)
-            logger.addHandler(file_handler)
+            # Stream handler
+            stream_handler = logging.StreamHandler()
+            stream_handler.setFormatter(formatter)
+            logger.addHandler(stream_handler)
 
-            logger.debug('debug log file: %s', file)
-        else:
-            console_message('could not create log file \'{}\''.format(file))
+            # File handler
+            file = _log_file()
+            if file:
+                file_handler = RotatingFileHandler(
+                    file,
+                    maxBytes=10000000,  # 10000000 = 10MB
+                    backupCount=2
+                )
+                file_handler.setFormatter(formatter)
+                logger.addHandler(file_handler)
 
-        logger.debug('logger initialised')
+                logger.debug('debug log file: %s', file)
+            else:
+                console_message('could not create log file \'{}\''.format(file))
+
+            logger.debug('logger initialised')
 
     _init_logger()
 
