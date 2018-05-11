@@ -434,7 +434,7 @@ class State(object):
     def must_collect_input(self):
         # type: () -> bool
         # Returns:
-        #   True if the current status must collect input, False otherwise.
+        #   True if the current status should collect input, False otherwise.
         motion = self.motion
         action = self.action
 
@@ -538,6 +538,8 @@ class State(object):
 
     def must_scroll_into_view(self):
         # type: () -> bool
+        # Returns:
+        #   True if motion/action should scroll into view, False otherwise.
         motion = self.motion
         if motion and motion.scroll_into_view:
             return True
@@ -752,8 +754,7 @@ class State(object):
     def runnable(self):
         # type: () -> bool
         # Returns:
-        #   bool: True if we can run the state data as it is, False otherwise.
-        #
+        #   True if motion/action is in a runnable state, False otherwise.
         # Raises:
         #   ValueError: Wrong mode.
         if self.must_collect_input:
@@ -791,8 +792,7 @@ class State(object):
             _log.debug('full command, switching to internal normal mode...')
             self.mode = INTERNAL_NORMAL
 
-            # TODO: Make a requirement that motions and actions take a
-            # 'mode' param.
+            # TODO Make motions and actions require a 'mode' param.
             if 'mode' in action_cmd['action_args']:
                 action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
@@ -801,14 +801,14 @@ class State(object):
 
             args = action_cmd['action_args']
             args['count'] = 1
-            # let the action run the motion within its edit object so that
-            # we don't need to worry about grouping edits to the buffer.
+            # Let the action run the motion within its edit object so that we
+            # don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
             _log.debug('motion cmd %s, action cmd %s', motion_cmd, action_cmd)
 
             if self.glue_until_normal_mode and not self.processing_notation:
-                # We need to tell Sublime Text now that it should group
-                # all the next edits until we enter normal mode again.
+                # Tell Sublime Text that it should group all the next edits
+                # until we enter normal mode again.
                 active_window().run_command('mark_undo_groups_for_gluing')
 
             self.add_macro_step(action_cmd['action'], args)
@@ -829,9 +829,8 @@ class State(object):
 
             self.add_macro_step(motion_cmd['motion'], motion_cmd['motion_args'])
 
-            # We know that all motions are subclasses of ViTextCommandBase,
-            # so it's safe to call them from the current view.
-            _log.info('run command (motion) %s %s', motion_cmd['motion'], motion_cmd['motion_args'])
+            # All motions are subclasses of ViTextCommandBase, so it's safe to
+            # run the command via the current view.
             self.view.run_command(motion_cmd['motion'], motion_cmd['motion_args'])
 
         if self.action:
@@ -855,6 +854,8 @@ class State(object):
             # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
             # instead.
             if self.glue_until_normal_mode and not self.processing_notation:
+                # Tell Sublime Text that it should group all the next edits
+                # until we enter normal mode again.
                 active_window().run_command('mark_undo_groups_for_gluing')
 
             seq = self.sequence
