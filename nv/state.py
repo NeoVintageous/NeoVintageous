@@ -247,7 +247,7 @@ class State(object):
     @sequence.setter
     def sequence(self, value):
         # type: (str) -> None
-        _log.debug('sequence %s', value)
+        _log.debug('sequence >>>%s<<<', value)
         self.settings.vi['sequence'] = value
 
     @property
@@ -260,7 +260,7 @@ class State(object):
     @partial_sequence.setter
     def partial_sequence(self, value):
         # type: (str) -> None
-        _log.debug('partial sequence %s', value)
+        _log.debug('partial sequence >>>%s<<<', value)
         self.settings.vi['partial_sequence'] = value
 
     @property
@@ -426,7 +426,6 @@ class State(object):
     @register.setter
     def register(self, value):
         assert len(str(value)) == 1, '`value` must be a character'
-        _log.debug('register %s', value)
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
@@ -513,7 +512,6 @@ class State(object):
 
     def reset_partial_sequence(self):
         # type: () -> None
-        _log.debug('reset partial sequence')
         self.partial_sequence = ''
 
     def reset_register_data(self):
@@ -788,14 +786,17 @@ class State(object):
         if self.action and self.motion:
             action_cmd = self.action.translate(self)
             motion_cmd = self.motion.translate(self)
-            _log.debug('full command, switching to internal normal mode...')
+
+            _log.debug('changing to INTERNAL_NORMAL...')
             self.mode = INTERNAL_NORMAL
 
             # TODO Make motions and actions require a 'mode' param.
             if 'mode' in action_cmd['action_args']:
+                _log.debug('action has a mode, changing to INTERNAL_NORMAL...')
                 action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
             if 'mode' in motion_cmd['motion_args']:
+                _log.debug('motion has a mode, changing to INTERNAL_NORMAL...')
                 motion_cmd['motion_args']['mode'] = INTERNAL_NORMAL
 
             args = action_cmd['action_args']
@@ -803,19 +804,21 @@ class State(object):
             # Let the action run the motion within its edit object so that we
             # don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
-            _log.debug('motion cmd %s, action cmd %s', motion_cmd, action_cmd)
 
             if self.glue_until_normal_mode and not self.processing_notation:
                 # Tell Sublime Text that it should group all the next edits
                 # until we enter normal mode again.
+                _log.info('window.run_command() mark_undo_groups_for_gluing')
                 active_window().run_command('mark_undo_groups_for_gluing')
 
             self.add_macro_step(action_cmd['action'], args)
 
-            _log.info('run command (action + motion) %s %s', action_cmd['action'], args)
+            _log.info('window.run_command() %s %s', action_cmd['action'], args)
             active_window().run_command(action_cmd['action'], args)
+
             if not self.non_interactive:
                 if self.action.repeatable:
+                    _log.debug('action is repeatable, setting repeat data...')
                     self.repeat_data = ('vi', str(self.sequence), self.mode, None)
 
             self.reset_command_data()
@@ -824,25 +827,27 @@ class State(object):
 
         if self.motion:
             motion_cmd = self.motion.translate(self)
-            _log.debug('lone motion cmd %s', motion_cmd)
 
             self.add_macro_step(motion_cmd['motion'], motion_cmd['motion_args'])
 
             # All motions are subclasses of ViTextCommandBase, so it's safe to
             # run the command via the current view.
+            _log.info('view.run_command() %s', motion_cmd)
             self.view.run_command(motion_cmd['motion'], motion_cmd['motion_args'])
 
         if self.action:
             action_cmd = self.action.translate(self)
-            _log.debug('lone action cmd %s', action_cmd)
+
             if self.mode == NORMAL:
-                _log.debug('switch to internal normal mode')
+                _log.debug('is NORMAL, changing to INTERNAL_NORMAL...')
                 self.mode = INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
+                    _log.debug('action has a mode, changing to INTERNAL_NORMAL...')
                     action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
             elif self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+                _log.debug('is VISUAL, saving selection...')
                 self.view.add_regions('visual_sel', list(self.view.sel()))
                 self.view.settings().set('_nv_visual_sel_mode', self.mode)
 
@@ -855,6 +860,7 @@ class State(object):
             if self.glue_until_normal_mode and not self.processing_notation:
                 # Tell Sublime Text that it should group all the next edits
                 # until we enter normal mode again.
+                _log.info('window.run_command() mark_undo_groups_for_gluing')
                 active_window().run_command('mark_undo_groups_for_gluing')
 
             seq = self.sequence
@@ -863,14 +869,16 @@ class State(object):
 
             self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
 
-            _log.info('run command (action) %s %s', action_cmd['action'], action_cmd['action_args'])
+            _log.info('window.run_command() %s', action_cmd)
             active_window().run_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
+                    _log.debug('action is repeatable, setting repeat data...')
                     self.repeat_data = ('vi', seq, self.mode, visual_repeat_data)
 
         if self.mode == INTERNAL_NORMAL:
+            _log.debug('is INTERNAL_NORMAL, changing to NORMAL...')
             self.enter_normal_mode()
 
         self.reset_command_data()
@@ -923,6 +931,7 @@ def init_state(view, new_session=False):
 
     # If we have no selections, add one.
     if len(state.view.sel()) == 0:
+        _log.debug('no selection, adding one at 0...')
         state.view.sel().add(Region(0))
 
     if state.mode in (VISUAL, VISUAL_LINE):
