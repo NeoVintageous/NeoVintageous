@@ -113,16 +113,6 @@ def message(msg):
 # dbeug logging functioanility, which 80% of users will never need.
 if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
 
-    class _LogFormatter(logging.Formatter):
-
-        def format(self, record):
-            if not record.msg.startswith(' '):
-                pad_count = 60 - (len(record.name) + len(record.funcName) + len(str(record.lineno)))
-                if pad_count > 0:
-                    record.msg = (' ' * pad_count) + record.msg
-
-            return super().format(record)
-
     def _log_file():
         # Why is sublime.packages_path() not used to build the path?
         # > At importing time, plugins may not call any API functions, with the
@@ -140,12 +130,10 @@ if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
             )
 
     def _init_logger():
-        level = logging.DEBUG
-        formatter = _LogFormatter('%(asctime)s %(levelname)-5s %(name)s@%(funcName)s:%(lineno)d %(message)s')
-        file = _log_file()
-
         logger = logging.getLogger('NeoVintageous')
-        logger.setLevel(level)
+        logger.setLevel(logging.DEBUG)
+
+        formatter = logging.Formatter('NeoVintageous: %(levelname)-7s [%(filename)s:%(lineno)d] %(message)s')
 
         # Stream handler
         stream_handler = logging.StreamHandler()
@@ -153,6 +141,7 @@ if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
         logger.addHandler(stream_handler)
 
         # File handler
+        file = _log_file()
         if file:
             file_handler = RotatingFileHandler(
                 file,
