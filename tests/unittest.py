@@ -390,7 +390,9 @@ class ViewTestCase(unittest.TestCase):
 _char2mode = {
     'i': INSERT,
     'n': NORMAL,
-    'v': VISUAL
+    'v': VISUAL,
+    'l': VISUAL_LINE,
+    'b': VISUAL_BLOCK
 }
 
 
@@ -405,18 +407,21 @@ class FunctionalTestCase(ViewTestCase):
         #   * n_ - Normal
         #   * i_ - Insert
         #   * v_ - Visual
+        #   * l_ - Visual line
+        #   * b_ - Visual block
         #
         # The default mode is Internal Normal.
         #
-        # NOTE: This function currently uses a **hardcoded** map of sequences to
-        # commands. You may need to add the a sequence to command map value. See
-        # the _feedseq2cmd variable.
+        # NOTE: This method currently uses a **hardcoded** map of sequences to
+        # commands (except <Esc> and cmdline sequences). You may need to add the
+        # a sequence to command map value. See the _feedseq2cmd variable.
         #
         # Examples:
         #
         # >>> feed('w')
         # >>> feed('3w')
         # >>> feed('v_w')
+        # >>> feed('v_3w')
         # >>> feed('<Esc>')
         # >>> feed(':pwd')
         # >>> feed(':help neovintageous')
@@ -429,7 +434,7 @@ class FunctionalTestCase(ViewTestCase):
 
         seq_args = {}
 
-        if seq[0] in 'vin' and seq[1] == '_':
+        if seq[0] in 'vinlb' and (len(seq) > 1 and seq[1] == '_'):
             seq_args['mode'] = _char2mode[seq[0]]
             seq = seq[2:]
 
@@ -465,9 +470,14 @@ class FunctionalTestCase(ViewTestCase):
         #   * n_ - Normal
         #   * i_ - Insert
         #   * v_ - Visual
+        #   * l_ - Visual line
+        #   * b_ - Visual block
         #   * :<','> - Visual cmdline (only valid for feed)
         #
-        # The default mode is Normal.
+        # The default mode is Internal Normal.
+        #
+        # When a mode is specified by feed, it iss used as the default mode for
+        # fixture and expected.
         #
         # Examples:
         #
@@ -478,20 +488,43 @@ class FunctionalTestCase(ViewTestCase):
         if expected is None:
             expected = fixture
 
-        if feed[0] in ('v', ':') and (feed[1] == '_' or feed.startswith(':\'<,\'>')):
-            self.vFixture(fixture)
+        if feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>')):
+            if feed[0] == 'l':
+                self.vLineFixture(fixture)
+            elif feed[0] == 'b':
+                self.vBlockFixture(fixture)
+            else:
+                self.vFixture(fixture)
+
             self.feed(feed)
+
             if expected[:2] == 'n_':
                 self.expects(expected[2:], msg)
+            elif expected[:2] == 'l_':
+                self.expectsVLine(expected[2:], msg)
+            elif expected[:2] == 'b_':
+                self.expectsVBlock(expected[2:], msg)
             elif expected[:2] == 'i_':
                 self.expectsI(expected[2:], msg)
+            elif expected[:2] == 'v_':
+                self.expectsV(expected[2:], msg)
+            elif feed[0] == 'l':
+                self.expectsVLine(expected, msg)
+            elif feed[0] == 'b':
+                self.expectsVBlock(expected, msg)
             else:
                 self.expectsV(expected, msg)
         else:
             self.fixture(fixture)
+
             self.feed(feed)
+
             if expected[:2] == 'v_':
                 self.expectsV(expected[2:], msg)
+            elif expected[:2] == 'l_':
+                self.expectsVLine(expected[2:], msg)
+            elif expected[:2] == 'b_':
+                self.expectsVBlock(expected[2:], msg)
             elif expected[:2] == 'i_':
                 self.expectsI(expected[2:], msg)
             else:
