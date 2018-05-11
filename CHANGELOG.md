@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#341](https://github.com/NeoVintageous/NeoVintageous/issues/341): Multi-select should scroll viewport to end of selection
 * Fixed [#273](https://github.com/NeoVintageous/NeoVintageous/issues/273): Sort Lines command sorts whole file
 * Fixed [#338](https://github.com/NeoVintageous/NeoVintageous/issues/338): `gv` after visual line should be linewise
 * Fixed [#349](https://github.com/NeoVintageous/NeoVintageous/issues/349): `>` and `<` should leave cursor on first non whitespace character

@@ -552,10 +552,10 @@ class State(object):
         # type: () -> None
         view = active_window().active_view()
         if view:
-            # Make sure we show the first caret on the screen, but don't show
-            # its surroundings.
+            # Make sure we show the current caret (last caret) on the screen,
+            # but don't show its surroundings.
             # TODO Maybe some commands should show their surroundings too?
-            view.show(view.sel()[0], False)
+            view.show(view.sel()[-1], False)
 
     def reset(self):
         # type: () -> None
