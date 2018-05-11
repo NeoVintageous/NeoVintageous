@@ -1562,6 +1562,8 @@ class _vi_gj(ViMotionCommand):
         elif mode == VISUAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': True})
+        elif mode == VISUAL_LINE:
+            self.view.run_command('_vi_j', {'mode': mode, 'count': count})
         elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': False})
@@ -1575,6 +1577,8 @@ class _vi_gk(ViMotionCommand):
         elif mode == VISUAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': True})
+        elif mode == VISUAL_LINE:
+            self.view.run_command('_vi_k', {'mode': mode, 'count': count})
         elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
