@@ -1348,41 +1348,32 @@ class _vi_s(ViTextCommandBase):
 
 
 class _vi_x(ViTextCommandBase):
+
     _can_yank = True
     _populates_small_delete_register = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def line_end(self, pt):
-        return self.view.line(pt).end()
-
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
-            nonlocal abort
             if mode == INTERNAL_NORMAL:
-                eol = utils.get_eol(view, s.b)
-                return Region(s.b, min(s.b + count, eol))
-            if s.size() == 1:
-                b = s.b - 1 if s.a < s.b else s.b  # FIXME # noqa: F841
+                return Region(s.b, min(s.b + count, utils.get_eol(view, s.b)))
+
             return s
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
-            # TODO [review] error?
+            # TODO [review] Why blink? Is this an error? Does/Should this ever run in any other mode?
             ui_blink()
             self.enter_normal_mode(mode)
 
-        if mode == INTERNAL_NORMAL:
-            if all(self.view.line(s.b).empty() for s in self.view.sel()):
-                return ui_blink()
-
-        abort = False
+        if mode == INTERNAL_NORMAL and all(self.view.line(s.b).empty() for s in self.view.sel()):
+            return
 
         regions_transformer(self.view, select)
 
-        if not abort:
-            self.state.registers.yank(self, register)
-            self.view.run_command('right_delete')
+        self.state.registers.yank(self, register)
+        self.view.run_command('right_delete')
         self.enter_normal_mode(mode)
 
 

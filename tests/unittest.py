@@ -314,6 +314,18 @@ class ViewTestCase(unittest.TestCase):
         else:
             self.assertEqual(expected, actual)
 
+    def assertRegister(self, name, expected, msg=None):
+        # Test that the value of the named register and *expected* are equal.
+        #
+        # Args:
+        #   name (str): The name of the register.
+        #   expected (str)
+        actual = self.state.registers.get(name)
+        # registers.get() returns a list (not sure why thats useful), it doesn't
+        # look like we need it for the tests.
+        self.assertEqual(1, len(actual), 'expected only one value for the named register {}'.format(name))
+        self.assertEqual(actual[0], expected, msg)
+
     def assertSelection(self, expected):
         # Test that view selection and *expected* are equal.
         #
@@ -674,6 +686,7 @@ _feedseq2cmd = {
     'J':            {'command': '_vi_big_j'},  # noqa: E241
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
     'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'x':            {'command': '_vi_x', 'args': {'register': '"'}},  # noqa: E241
     'yse"':         {'command': '_nv_surround_ys', 'args': {'surround_with': '"',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
     'yse(':         {'command': '_nv_surround_ys', 'args': {'surround_with': '(',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
     'yse)':         {'command': '_nv_surround_ys', 'args': {'surround_with': ')',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501

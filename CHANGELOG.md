@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#263](https://github.com/NeoVintageous/NeoVintageous/issues/263): `x` should not delete empty lines
 * Fixed [#350](https://github.com/NeoVintageous/NeoVintageous/issues/350): Multi-select `k` doesn't work with a count
 * Fixed [#314](https://github.com/NeoVintageous/NeoVintageous/issues/314): `gj` and `gk` do not work in visual line mode
 * Fixed [#341](https://github.com/NeoVintageous/NeoVintageous/issues/341): Multi-select should scroll viewport to end of selection
