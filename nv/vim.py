@@ -49,34 +49,28 @@ VISUAL_BLOCK = 'mode_visual_block'
 VISUAL_LINE = 'mode_visual_line'
 
 
-def mode_to_friendly_name(mode):
-    # type: (str) -> str
-    if mode == INSERT:
-        return 'INSERT'
-    if mode == INTERNAL_NORMAL:
-        return ''
-    if mode == NORMAL:
-        return ''
-    if mode == OPERATOR_PENDING:
-        return ''
-    if mode == VISUAL:
-        return 'VISUAL'
-    if mode == VISUAL_BLOCK:
-        return 'VISUAL BLOCK'
-    if mode == VISUAL_LINE:
-        return 'VISUAL LINE'
-    if mode == UNKNOWN:
-        return 'UNKNOWN'
-    if mode == REPLACE:
-        return 'REPLACE'
-    if mode == NORMAL_INSERT:
-        return 'INSERT'
-    if mode == SELECT:
-        return 'SELECT'
-    if mode == CTRL_X:
-        return 'Mode ^X'
+_MODE_NAMES = {
+    INSERT: 'INSERT',
+    INTERNAL_NORMAL: '',
+    NORMAL: '',
+    OPERATOR_PENDING: '',
+    VISUAL: 'VISUAL',
+    VISUAL_BLOCK: 'VISUAL BLOCK',
+    VISUAL_LINE: 'VISUAL LINE',
+    UNKNOWN: 'UNKNOWN',
+    REPLACE: 'REPLACE',
+    NORMAL_INSERT: 'INSERT',
+    SELECT: 'SELECT',
+    CTRL_X: 'Mode ^X'
+}
 
-    return 'REALLY UNKNOWN'
+
+def mode_to_name(mode):
+    # type: (str) -> str
+    try:
+        return _MODE_NAMES[mode]
+    except KeyError:
+        return 'REALLY UNKNOWN'
 
 
 # TODO [refactor] I assume "INMEDIATE" is a typo, should be "IMMEDIATE"?

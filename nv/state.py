@@ -43,7 +43,7 @@ from NeoVintageous.nv.vim import INPUT_INMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
-from NeoVintageous.nv.vim import mode_to_friendly_name
+from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
@@ -527,7 +527,7 @@ class State(object):
 
     def display_status(self):
         # type: () -> None
-        mode_name = mode_to_friendly_name(self.mode)
+        mode_name = mode_to_name(self.mode)
         if mode_name:
             self.view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
 
