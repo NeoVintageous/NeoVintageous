@@ -160,6 +160,14 @@ class ViewTestCase(unittest.TestCase):
 
                 self.view.sel().clear()
                 self.view.sel().add_all(v_sels)
+
+            # This is required, because the cursor in VISUAL mode is a block
+            # cursor. Without this setting some tests will pass when the window
+            # running the tests has focus, and fail when it doesn't have focus.
+            # This happens because ST doesn't fire events for views (test views)
+            # when the window loses focus: the on_activated() event fixes VISUAL
+            # mode selections that don't have a correct caret state.
+            self.view.settings().set('inverse_caret_state', True)
         else:
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']

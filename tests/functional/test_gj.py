@@ -23,14 +23,22 @@ class Test_gj(unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.settings().set('word_wrap', True)
-        self.settings().set('wrap_width', 4)
+        # A wrap width of 6 means the buffer "1234567..." will visually look
+        # like two lines, where every 6th character is on a new visual line:
+        #
+        #   12345
+        #   67...
+        #
+        self.settings().set('wrap_width', 6)
 
     def test_gj(self):
-        self.eq('1|23\n456\n', 'gj', '123\n4|56\n')
-        self.eq('1|23456\nx\n', 'gj', '1234|56\nx\n')
+        self.eq('1|23\n4x6\n', 'gj', '123\n4|x6\n')
+        self.eq('1|23456x89\n', 'gj', '123456|x89\n')
 
     def test_v_gj(self):
-        self.eq('1|2|3\n456\n', 'v_gj', '1|23\n456|\n')
+        self.eq('1|23\n456\n', 'v_gj', '1|23\n456|\n')
+        self.eq('1|234\n56x8\n', 'v_gj', '1|234\n56x|8\n')
+        self.eq('|12|34\n567x\n', 'v_gj', '|1234\n567|x\n')
 
     def test_l_gj(self):
         self.eq('|123\n|456\nx\n', 'l_gj', '|123\n456\n|x\n')
