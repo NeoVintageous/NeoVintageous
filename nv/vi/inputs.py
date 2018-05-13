@@ -18,7 +18,7 @@
 from collections import namedtuple
 
 from NeoVintageous.nv.vi.utils import translate_char
-from NeoVintageous.nv.vim import INPUT_INMEDIATE
+from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 
 
@@ -55,7 +55,7 @@ def vi_f(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_big_f(state):
@@ -63,7 +63,7 @@ def vi_big_f(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_big_t(state):
@@ -71,7 +71,7 @@ def vi_big_t(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_t(state):
@@ -79,7 +79,7 @@ def vi_t(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 # TODO [refactor] Rename to "vi_a_text_object".
@@ -88,7 +88,7 @@ def vi_inclusive_text_object(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_exclusive_text_object(state):
@@ -96,7 +96,7 @@ def vi_exclusive_text_object(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_m(state):
@@ -104,7 +104,7 @@ def vi_m(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_q(state):
@@ -112,7 +112,7 @@ def vi_q(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_at(state):
@@ -120,7 +120,7 @@ def vi_at(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_a_text_object(state):
@@ -128,7 +128,7 @@ def vi_a_text_object(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_i_text_object(state):
@@ -136,7 +136,7 @@ def vi_i_text_object(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_quote(state):
@@ -144,7 +144,7 @@ def vi_quote(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_r(state):
@@ -152,7 +152,7 @@ def vi_r(state):
                       interactive_command=None,
                       input_param=None,
                       on_done='_vi_r_on_parser_done',
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_backtick(state):
@@ -160,7 +160,7 @@ def vi_backtick(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_left_square_bracket(state):
@@ -168,7 +168,7 @@ def vi_left_square_bracket(state):
                       interactive_command=None,
                       input_param=None,
                       on_done=None,
-                      type=INPUT_INMEDIATE)
+                      type=INPUT_IMMEDIATE)
 
 
 def vi_slash(state):
@@ -186,7 +186,7 @@ def vi_slash(state):
     if state.non_interactive:
         return parser_def(command=lambda x: False,
                           interactive_command='_vi_slash',
-                          type=INPUT_INMEDIATE,
+                          type=INPUT_IMMEDIATE,
                           on_done='_vi_slash_on_parser_done',
                           input_param='key')
     else:
@@ -212,7 +212,7 @@ def vi_question_mark(state):
     if state.non_interactive:
         return parser_def(command=lambda x: False,
                           interactive_command='_vi_question_mark',
-                          type=INPUT_INMEDIATE,
+                          type=INPUT_IMMEDIATE,
                           on_done='_vi_question_mark_on_parser_done',
                           input_param='key')
     else:

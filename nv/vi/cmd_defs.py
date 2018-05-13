@@ -22,7 +22,7 @@ from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.inputs import parser_def
 from NeoVintageous.nv.vi.keys import seqs
-from NeoVintageous.nv.vim import INPUT_INMEDIATE
+from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
@@ -1599,7 +1599,7 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -1631,7 +1631,7 @@ class ViToggleMacroRecorder(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -2414,7 +2414,7 @@ class ViGotoExactMarkXpos(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -2600,7 +2600,7 @@ class ViGotoMark(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -2695,7 +2695,7 @@ class ViGotoOpeningBracket(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -2755,7 +2755,7 @@ class ViGotoClosingBracket(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -3151,7 +3151,7 @@ class ViReplaceCharacters(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -3185,7 +3185,7 @@ class ViSetMark(ViOperatorDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -3221,7 +3221,7 @@ class ViSearchCharForward(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -3264,7 +3264,7 @@ class ViATextObject(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -3300,7 +3300,7 @@ class ViITextObject(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):
@@ -3338,7 +3338,7 @@ class ViSearchCharBackward(ViMotionDef):
                                        interactive_command=None,
                                        input_param=None,
                                        on_done=None,
-                                       type=INPUT_INMEDIATE)
+                                       type=INPUT_IMMEDIATE)
 
     @property
     def accept_input(self):

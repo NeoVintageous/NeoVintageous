@@ -39,7 +39,7 @@ from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
-from NeoVintageous.nv.vim import INPUT_INMEDIATE
+from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -448,7 +448,7 @@ class State(object):
         if (isinstance(action, cmd_defs.ViToggleMacroRecorder) and self.is_recording):
             return False
 
-        if (action and action.accept_input and action.input_parser.type == INPUT_INMEDIATE):
+        if (action and action.accept_input and action.input_parser.type == INPUT_IMMEDIATE):
             return True
 
         if motion:

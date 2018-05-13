@@ -73,8 +73,7 @@ def mode_to_name(mode):
         return 'REALLY UNKNOWN'
 
 
-# TODO [refactor] I assume "INMEDIATE" is a typo, should be "IMMEDIATE"?
-INPUT_INMEDIATE = 1
+INPUT_IMMEDIATE = 1
 INPUT_VIA_PANEL = 2
 INPUT_AFTER_MOTION = 3
 

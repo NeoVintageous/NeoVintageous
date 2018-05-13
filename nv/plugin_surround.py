@@ -25,7 +25,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import INPUT_AFTER_MOTION
-from NeoVintageous.nv.plugin import INPUT_INMEDIATE
+from NeoVintageous.nv.plugin import INPUT_IMMEDIATE
 from NeoVintageous.nv.plugin import inputs
 from NeoVintageous.nv.plugin import INTERNAL_NORMAL
 from NeoVintageous.nv.plugin import NORMAL
@@ -96,7 +96,7 @@ class _surround_S(_surround_ys):
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=INPUT_INMEDIATE
+            type=INPUT_IMMEDIATE
         )
 
 
@@ -112,7 +112,7 @@ class _surround_ds(ViOperatorDef):
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=INPUT_INMEDIATE
+            type=INPUT_IMMEDIATE
         )
 
     # TODO Fix ds should not accept input
@@ -153,7 +153,7 @@ class _surround_cs(ViOperatorDef):
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=INPUT_INMEDIATE
+            type=INPUT_IMMEDIATE
         )
 
     @property

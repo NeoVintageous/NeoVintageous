@@ -19,7 +19,7 @@
 
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import INPUT_INMEDIATE
+from NeoVintageous.nv.plugin import INPUT_IMMEDIATE
 from NeoVintageous.nv.plugin import inputs
 from NeoVintageous.nv.plugin import NORMAL
 from NeoVintageous.nv.plugin import register
@@ -226,7 +226,7 @@ class _BaseToggleDef(ViOperatorDef):
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=INPUT_INMEDIATE
+            type=INPUT_IMMEDIATE
         )
 
     @property
