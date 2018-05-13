@@ -1050,29 +1050,38 @@ class _vi_left_brace(ViMotionCommand):
 
 
 class _vi_percent(ViMotionCommand):
-    # TODO: Perhaps truly support multiple regions here?
+
     pairs = (
-            ('(', ')'),
-            ('[', ']'),
-            ('{', '}'),
-            ('<', '>'),
+        ('(', ')'),
+        ('[', ']'),
+        ('{', '}'),
+        ('<', '>'),
     )
 
     def find_tag(self, pt):
+        # Args:
+        #   pt (int)
+        # Returns:
+        #   Region|None
         if (self.view.score_selector(0, 'text.html') == 0 and self.view.score_selector(0, 'text.xml') == 0):
             return None
 
         if any([self.view.substr(pt) in p for p in self.pairs]):
             return None
 
-        # TODO [bug] Looks like get_closes_tag can return None which causes an error.
-        _, tag = get_closest_tag(self.view, pt)
-        if tag.contains(pt):
+        _, closest_tag = get_closest_tag(self.view, pt)
+        if not closest_tag:
+            return None
+
+        if closest_tag.contains(pt):
             begin_tag, end_tag, _ = find_containing_tag(self.view, pt)
             if begin_tag:
                 return begin_tag if end_tag.contains(pt) else end_tag
 
     def run(self, percent=None, mode=None):
+        # Args:
+        #   percent (int): Percentage down in file.
+        #   mode: (str)
         if percent is None:
             def move_to_bracket(view, s):
                 def find_bracket_location(region):

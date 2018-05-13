@@ -735,20 +735,30 @@ def get_region_begin(r):
 
 
 def get_closest_tag(view, pt):
+    # Args:
+    #   view (sublime.View)
+    #   pt (int)
+    # Returns:
+    #   2-tuple(int, Region)|2-tuple(None, None)
     while pt > 0 and view.substr(pt) != '<':
         pt -= 1
 
     if view.substr(pt) != '<':
-        return None
+        return None, None
 
     next_tag = view.find(RX_ANY_TAG, pt)
     if next_tag.a != pt:
-        return None
+        return None, None
 
     return pt, next_tag
 
 
 def find_containing_tag(view, start):
+    # Args:
+    #   view (sublime.View)
+    #   start (int)
+    # Returns:
+    #   3-tuple(Region, Region, str)|3-tuple(None, None, None)
     # BUG: fails if start < first begin tag
     # TODO: Should not select tags in PCDATA sections.
     _, closest_tag = get_closest_tag(view, start)
@@ -764,10 +774,12 @@ def find_containing_tag(view, start):
         'start': start,
     }
 
-    end_region, tag_name = next_unbalanced_tag(view,
-                                               search=next_end_tag,
-                                               search_args=search_forward_args,
-                                               restart_at=get_region_end)
+    end_region, tag_name = next_unbalanced_tag(
+        view,
+        search=next_end_tag,
+        search_args=search_forward_args,
+        restart_at=get_region_end
+    )
 
     if not end_region:
         return None, None, None
@@ -778,10 +790,12 @@ def find_containing_tag(view, start):
         'end': end_region.a
     }
 
-    begin_region, _ = next_unbalanced_tag(view,
-                                          search=previous_begin_tag,
-                                          search_args=search_backward_args,
-                                          restart_at=get_region_begin)
+    begin_region, _ = next_unbalanced_tag(
+        view,
+        search=previous_begin_tag,
+        search_args=search_backward_args,
+        restart_at=get_region_begin
+    )
 
     if not end_region:
         return None, None, None

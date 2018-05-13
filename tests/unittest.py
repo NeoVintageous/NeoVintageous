@@ -558,6 +558,7 @@ class FunctionalTestCase(ViewTestCase):
 _feedseq2cmd = {
 
     '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    '%':            {'command': '_vi_percent', 'args': {'percent': None, 'mode': 'mode_normal'}},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
