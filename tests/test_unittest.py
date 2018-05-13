@@ -522,187 +522,210 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.view.window.return_value = self.window
         self.instance = FunctionalTestCaseStub(self.view)
         self.instance.feed = unittest.mock.Mock()
+        self.instance.fixture = unittest.mock.Mock()
+        self.instance.vFixture = unittest.mock.Mock()
+        self.instance.vLineFixture = unittest.mock.Mock()
+        self.instance.vBlockFixture = unittest.mock.Mock()
+        self.instance.expects = unittest.mock.Mock()
+        self.instance.expectsI = unittest.mock.Mock()
+        self.instance.expectsV = unittest.mock.Mock()
+        self.instance.expectsVLine = unittest.mock.Mock()
+        self.instance.expectsVBlock = unittest.mock.Mock()
+
+    def assert_fixture(self, *args):
+        self.instance.fixture.assert_called_once_with(*args)
+
+    def assert_vFixture(self, *args):
+        self.instance.vFixture.assert_called_once_with(*args)
+
+    def assert_vLineFixture(self, *args):
+        self.instance.vLineFixture.assert_called_once_with(*args)
+
+    def assert_vBlockFixture(self, *args):
+        self.instance.vBlockFixture.assert_called_once_with(*args)
+
+    def assert_feed(self, *args):
+        self.instance.feed.assert_called_once_with(*args)
+
+    def assert_expects(self, *args):
+        self.instance.expects.assert_called_once_with(*args)
+
+    def assert_expectsI(self, *args):
+        self.instance.expectsI.assert_called_once_with(*args)
+
+    def assert_expectsV(self, *args):
+        self.instance.expectsV.assert_called_once_with(*args)
+
+    def assert_expectsVLine(self, *args):
+        self.instance.expectsVLine.assert_called_once_with(*args)
+
+    def assert_expectsVBlock(self, *args):
+        self.instance.expectsVBlock.assert_called_once_with(*args)
 
     def test_eq(self):
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.expects = unittest.mock.Mock()
         self.instance.eq('a', 'b', 'c')
-        self.instance.fixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b')
-        self.instance.expects.assert_called_once_with('c', None)
+        self.assert_fixture('a')
+        self.assert_feed('b')
+        self.assert_expects('c', None)
 
     def test_eq_expected_should_be_optional(self):
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.expects = unittest.mock.Mock()
         self.instance.eq('a', 'b')
-        self.instance.fixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b')
-        self.instance.expects.assert_called_once_with('a', None)
-
-    def test_eq_expects_visual(self):
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.expectsV = unittest.mock.Mock()
-        self.instance.eq('a', 'b', 'v_c')
-        self.instance.fixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b')
-        self.instance.expectsV.assert_called_once_with('c', None)
-
-    def test_eq_expects_visual_line(self):
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.expectsVLine = unittest.mock.Mock()
-        self.instance.eq('a', 'b', 'l_c')
-        self.instance.fixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b')
-        self.instance.expectsVLine.assert_called_once_with('c', None)
-
-    def test_eq_expects_visual_block(self):
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.expectsVBlock = unittest.mock.Mock()
-        self.instance.eq('a', 'b', 'b_c')
-        self.instance.fixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b')
-        self.instance.expectsVBlock.assert_called_once_with('c', None)
+        self.assert_fixture('a')
+        self.assert_feed('b')
+        self.assert_expects('a', None)
 
     def test_eq_expects_insert(self):
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.expectsI = unittest.mock.Mock()
         self.instance.eq('a', 'b', 'i_c')
-        self.instance.fixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b')
-        self.instance.expectsI.assert_called_once_with('c', None)
+        self.assert_fixture('a')
+        self.assert_feed('b')
+        self.assert_expectsI('c', None)
+
+    def test_eq_expects_visual(self):
+        self.instance.eq('a', 'b', 'v_c')
+        self.assert_fixture('a')
+        self.assert_feed('b')
+        self.assert_expectsV('c', None)
+
+    def test_eq_expects_visual_block(self):
+        self.instance.eq('a', 'b', 'b_c')
+        self.assert_fixture('a')
+        self.assert_feed('b')
+        self.assert_expectsVBlock('c', None)
+
+    def test_eq_expects_visual_line(self):
+        self.instance.eq('a', 'b', 'l_c')
+        self.assert_fixture('a')
+        self.assert_feed('b')
+        self.assert_expectsVLine('c', None)
+
+    def test_eq_normal(self):
+        self.instance.eq('a', 'n_b', 'c')
+        self.assert_fixture('a')
+        self.assert_feed('n_b')
+        self.assert_expects('c', None)
+
+    def test_eq_normal_expects_insert(self):
+        self.instance.eq('a', 'n_b', 'i_c')
+        self.assert_fixture('a')
+        self.assert_feed('n_b')
+        self.assert_expectsI('c', None)
+
+    def test_eq_normal_expects_visual_block(self):
+        self.instance.eq('a', 'n_b', 'b_c')
+        self.assert_fixture('a')
+        self.assert_feed('n_b')
+        self.assert_expectsVBlock('c', None)
+
+    def test_eq_normal_expects_visual_line(self):
+        self.instance.eq('a', 'n_b', 'l_c')
+        self.assert_fixture('a')
+        self.assert_feed('n_b')
+        self.assert_expectsVLine('c', None)
 
     def test_eq_visual(self):
-        self.instance.vFixture = unittest.mock.Mock()
-        self.instance.expectsV = unittest.mock.Mock()
         self.instance.eq('a', 'v_b', 'c')
-        self.instance.vFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('v_b')
-        self.instance.expectsV.assert_called_once_with('c', None)
-
-    def test_eq_visual_expects_normal(self):
-        self.instance.vFixture = unittest.mock.Mock()
-        self.instance.expects = unittest.mock.Mock()
-        self.instance.eq('a', 'v_b', 'n_c')
-        self.instance.vFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('v_b')
-        self.instance.expects.assert_called_once_with('c', None)
-
-    def test_eq_visual_expects_visual_line(self):
-        self.instance.vFixture = unittest.mock.Mock()
-        self.instance.expectsVLine = unittest.mock.Mock()
-        self.instance.eq('a', 'v_b', 'l_c')
-        self.instance.vFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('v_b')
-        self.instance.expectsVLine.assert_called_once_with('c', None)
-
-    def test_eq_visual_expects_visual_block(self):
-        self.instance.vFixture = unittest.mock.Mock()
-        self.instance.expectsVBlock = unittest.mock.Mock()
-        self.instance.eq('a', 'v_b', 'b_c')
-        self.instance.vFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('v_b')
-        self.instance.expectsVBlock.assert_called_once_with('c', None)
+        self.assert_vFixture('a')
+        self.assert_feed('v_b')
+        self.assert_expectsV('c', None)
 
     def test_eq_visual_expects_insert(self):
-        self.instance.vFixture = unittest.mock.Mock()
-        self.instance.expectsI = unittest.mock.Mock()
         self.instance.eq('a', 'v_b', 'i_c')
-        self.instance.vFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('v_b')
-        self.instance.expectsI.assert_called_once_with('c', None)
+        self.assert_vFixture('a')
+        self.assert_feed('v_b')
+        self.assert_expectsI('c', None)
+
+    def test_eq_visual_expects_normal(self):
+        self.instance.eq('a', 'v_b', 'n_c')
+        self.assert_vFixture('a')
+        self.assert_feed('v_b')
+        self.assert_expects('c', None)
+
+    def test_eq_visual_expects_visual_block(self):
+        self.instance.eq('a', 'v_b', 'b_c')
+        self.assert_vFixture('a')
+        self.assert_feed('v_b')
+        self.assert_expectsVBlock('c', None)
+
+    def test_eq_visual_expects_visual_line(self):
+        self.instance.eq('a', 'v_b', 'l_c')
+        self.assert_vFixture('a')
+        self.assert_feed('v_b')
+        self.assert_expectsVLine('c', None)
 
     def test_eq_visual_line(self):
-        self.instance.vLineFixture = unittest.mock.Mock()
-        self.instance.expectsVLine = unittest.mock.Mock()
         self.instance.eq('a', 'l_b', 'c')
-        self.instance.vLineFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('l_b')
-        self.instance.expectsVLine.assert_called_once_with('c', None)
-
-    def test_eq_visual_line_expects_normal(self):
-        self.instance.vLineFixture = unittest.mock.Mock()
-        self.instance.expects = unittest.mock.Mock()
-        self.instance.eq('a', 'l_b', 'n_c')
-        self.instance.vLineFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('l_b')
-        self.instance.expects.assert_called_once_with('c', None)
+        self.assert_vLineFixture('a')
+        self.assert_feed('l_b')
+        self.assert_expectsVLine('c', None)
 
     def test_eq_visual_line_expects_insert(self):
-        self.instance.vLineFixture = unittest.mock.Mock()
-        self.instance.expectsI = unittest.mock.Mock()
         self.instance.eq('a', 'l_b', 'i_c')
-        self.instance.vLineFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('l_b')
-        self.instance.expectsI.assert_called_once_with('c', None)
+        self.assert_vLineFixture('a')
+        self.assert_feed('l_b')
+        self.assert_expectsI('c', None)
+
+    def test_eq_visual_line_expects_normal(self):
+        self.instance.eq('a', 'l_b', 'n_c')
+        self.assert_vLineFixture('a')
+        self.assert_feed('l_b')
+        self.assert_expects('c', None)
 
     def test_eq_visual_line_expects_visual(self):
-        self.instance.vLineFixture = unittest.mock.Mock()
-        self.instance.expectsV = unittest.mock.Mock()
         self.instance.eq('a', 'l_b', 'v_c')
-        self.instance.vLineFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('l_b')
-        self.instance.expectsV.assert_called_once_with('c', None)
+        self.assert_vLineFixture('a')
+        self.assert_feed('l_b')
+        self.assert_expectsV('c', None)
 
     def test_eq_visual_line_expects_visual_block(self):
-        self.instance.vLineFixture = unittest.mock.Mock()
-        self.instance.expectsVBlock = unittest.mock.Mock()
         self.instance.eq('a', 'l_b', 'b_c')
-        self.instance.vLineFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('l_b')
-        self.instance.expectsVBlock.assert_called_once_with('c', None)
+        self.assert_vLineFixture('a')
+        self.assert_feed('l_b')
+        self.assert_expectsVBlock('c', None)
 
     def test_eq_visual_block(self):
-        self.instance.vBlockFixture = unittest.mock.Mock()
-        self.instance.expectsVBlock = unittest.mock.Mock()
         self.instance.eq('a', 'b_b', 'c')
-        self.instance.vBlockFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b_b')
-        self.instance.expectsVBlock.assert_called_once_with('c', None)
-
-    def test_eq_visual_block_expects_normal(self):
-        self.instance.vBlockFixture = unittest.mock.Mock()
-        self.instance.expects = unittest.mock.Mock()
-        self.instance.eq('a', 'b_b', 'n_c')
-        self.instance.vBlockFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b_b')
-        self.instance.expects.assert_called_once_with('c', None)
+        self.assert_vBlockFixture('a')
+        self.assert_feed('b_b')
+        self.assert_expectsVBlock('c', None)
 
     def test_eq_visual_block_expects_insert(self):
-        self.instance.vBlockFixture = unittest.mock.Mock()
-        self.instance.expectsI = unittest.mock.Mock()
         self.instance.eq('a', 'b_b', 'i_c')
-        self.instance.vBlockFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b_b')
-        self.instance.expectsI.assert_called_once_with('c', None)
+        self.assert_vBlockFixture('a')
+        self.assert_feed('b_b')
+        self.assert_expectsI('c', None)
+
+    def test_eq_visual_block_expects_normal(self):
+        self.instance.eq('a', 'b_b', 'n_c')
+        self.assert_vBlockFixture('a')
+        self.assert_feed('b_b')
+        self.assert_expects('c', None)
 
     def test_eq_visual_block_expects_visual(self):
-        self.instance.vBlockFixture = unittest.mock.Mock()
-        self.instance.expectsV = unittest.mock.Mock()
         self.instance.eq('a', 'b_b', 'v_c')
-        self.instance.vBlockFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b_b')
-        self.instance.expectsV.assert_called_once_with('c', None)
+        self.assert_vBlockFixture('a')
+        self.assert_feed('b_b')
+        self.assert_expectsV('c', None)
 
     def test_eq_visual_block_expects_visual_block(self):
-        self.instance.vBlockFixture = unittest.mock.Mock()
-        self.instance.expectsVBlock = unittest.mock.Mock()
         self.instance.eq('a', 'b_b', 'b_c')
-        self.instance.vBlockFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with('b_b')
-        self.instance.expectsVBlock.assert_called_once_with('c', None)
+        self.assert_vBlockFixture('a')
+        self.assert_feed('b_b')
+        self.assert_expectsVBlock('c', None)
+
+    def test_eq_visual_block_expects_visual_line(self):
+        self.instance.eq('a', 'b_b', 'l_c')
+        self.assert_vBlockFixture('a')
+        self.assert_feed('b_b')
+        self.assert_expectsVLine('c', None)
 
     def test_eq_cmdline(self):
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.expects = unittest.mock.Mock()
         self.instance.eq('a', ':b', 'c')
-        self.instance.fixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with(':b')
-        self.instance.expects.assert_called_once_with('c', None)
+        self.assert_fixture('a')
+        self.assert_feed(':b')
+        self.assert_expects('c', None)
 
     def test_eq_visual_cmdline(self):
-        self.instance.vFixture = unittest.mock.Mock()
-        self.instance.expectsV = unittest.mock.Mock()
         self.instance.eq('a', ':\'<,\'>b', 'c')
-        self.instance.vFixture.assert_called_once_with('a')
-        self.instance.feed.assert_called_once_with(':\'<,\'>b')
-        self.instance.expectsV.assert_called_once_with('c', None)
+        self.assert_vFixture('a')
+        self.assert_feed(':\'<,\'>b')
+        self.assert_expectsV('c', None)
