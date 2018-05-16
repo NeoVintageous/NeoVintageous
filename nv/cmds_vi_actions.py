@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from functools import partial
+import logging
 import re
 import webbrowser
 
@@ -39,7 +40,6 @@ from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vim import console_message
-from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -163,7 +163,7 @@ __all__ = [
 ]
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 # https://vimhelp.appspot.com/change.txt.html#gU
@@ -465,7 +465,7 @@ class _enter_normal_mode(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('enter normal mode (mode=%s)', mode)
+        _log.debug('enter normal mode (mode=%s, from_init=%s)', mode, from_init)
         state = self.state
 
         self.view.window().run_command('hide_auto_complete')

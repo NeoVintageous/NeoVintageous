@@ -17,6 +17,7 @@
 
 from functools import wraps
 import inspect
+import logging
 import os
 import re
 import stat
@@ -55,7 +56,6 @@ from NeoVintageous.nv.vi.utils import has_dirty_buffers
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vim import console_message
-from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -64,13 +64,13 @@ from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_split
 from NeoVintageous.nv.window import window_tab_control
-from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import WindowAPI
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 def _changing_cd(f, *args, **kwargs):

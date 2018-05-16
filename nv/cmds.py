@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import os
 import re
 
@@ -56,7 +57,6 @@ from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import translate_char
-from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import message
@@ -90,7 +90,7 @@ __all__ = [
 ]
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 class _nv_cmdline_feed_key(TextCommand):

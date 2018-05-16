@@ -15,10 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from logging.handlers import RotatingFileHandler
-import logging
-import os
-
 from sublime import status_message as _status_message
 
 
@@ -99,88 +95,3 @@ def message(msg):
     # type: (str) -> None
     status_message(msg)
     console_message(msg)
-
-
-# If the debug environment variable is set then the debug message logging is
-# initialised, otherwise a null logger used. This avoids needless overhead of
-# dbeug logging functioanility, which 80% of users will never need.
-if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
-
-    def _log_file():
-        # Why is sublime.packages_path() not used to build the path?
-        # > At importing time, plugins may not call any API functions, with the
-        # > exception of sublime.version(), sublime.platform(),
-        # > sublime.architecture() and sublime.channel().
-        # > - https://www.sublimetext.com/docs/3/api_reference.html.
-        module_relative_file = __name__.replace('.', os.sep) + '.py'
-        current_file = __file__.replace('NeoVintageous.sublime-package', 'NeoVintageous')
-        if current_file.endswith(module_relative_file):
-            path = current_file.replace('/Installed Packages/NeoVintageous/', '/Packages/NeoVintageous/')
-            return os.path.join(
-                path[:-(len(module_relative_file) + len(os.sep))],
-                'User',
-                'NeoVintageous.log'
-            )
-
-    def _init_logger():
-        logger = logging.getLogger('NeoVintageous')
-
-        if not logger.hasHandlers():
-            logger.setLevel(logging.DEBUG)
-
-            formatter = logging.Formatter('NeoVintageous: %(levelname)-7s [%(filename)s:%(lineno)d] %(message)s')
-
-            # Stream handler
-            stream_handler = logging.StreamHandler()
-            stream_handler.setFormatter(formatter)
-            logger.addHandler(stream_handler)
-
-            # File handler
-            file = _log_file()
-            if file:
-                file_handler = RotatingFileHandler(
-                    file,
-                    maxBytes=10000000,  # 10000000 = 10MB
-                    backupCount=2
-                )
-                file_handler.setFormatter(formatter)
-                logger.addHandler(file_handler)
-
-                logger.debug('debug log file: %s', file)
-            else:
-                console_message('could not create log file \'{}\''.format(file))
-
-            logger.debug('logger initialised')
-
-    _init_logger()
-
-    def get_logger(name):
-        logger = logging.getLogger(name)
-        logger.debug('logger name: %s', name)
-
-        return logger
-
-else:
-
-    class _NullLogger():
-
-        def debug(self, msg, *args, **kwargs):
-            pass
-
-        def info(self, msg, *args, **kwargs):
-            pass
-
-        def warning(self, msg, *args, **kwargs):
-            pass
-
-        def error(self, msg, *args, **kwargs):
-            pass
-
-        def critical(self, msg, *args, **kwargs):
-            pass
-
-        def exception(self, msg, *args, **kwargs):
-            pass
-
-    def get_logger(name):
-        return _NullLogger()

@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 
 from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
@@ -31,10 +32,9 @@ from NeoVintageous.nv.ex.tokens import TokenPercent
 from NeoVintageous.nv.ex.tokens import TokenSearchBackward
 from NeoVintageous.nv.ex.tokens import TokenSearchForward
 from NeoVintageous.nv.ex.tokens import TokenSemicolon
-from NeoVintageous.nv.vim import get_logger
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 class _ParserState:

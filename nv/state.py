@@ -15,8 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
 from collections import Counter
+import logging
+import os
 
 from sublime import active_window
 from sublime import Region
@@ -37,7 +38,6 @@ from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vim import DIRECTION_DOWN
-from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
 from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
@@ -54,7 +54,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 class State(object):
@@ -605,7 +605,8 @@ class State(object):
                 tab_size = self.view.settings().get('tab_size')
                 self.xpos = (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t']))
             except Exception:
-                _log.exception('error updating xpos; default to 0')
+                # TODO [review] Exception handling
+                _log.debug('error updating xpos; default to 0')
                 self.xpos = 0
 
     def _set_parsers(self, command):
@@ -905,7 +906,8 @@ def init_state(view, new_session=False):
 
             view.settings().erase('vintage')
         except Exception:
-            _log.exception('error initialising irregular view i.e. console, widget, panel, etc.')
+            # TODO [review] Exception handling
+            _log.debug('error initialising irregular view i.e. console, widget, panel, etc.')
         finally:
             return
 

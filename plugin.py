@@ -15,7 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import sublime
+import os
+
+if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
+    # Initialise the debug logger.
+    #
+    # To enable the debug logger: set an environment variable named
+    # SUBLIME_NEOVINTAGEOUS_DEBUG to a non-empty value.
+    #
+    # The debug logger needs to be configured before the plugin modules are
+    # loaded, otherwise they would be logging to what is mostly a null logger:
+    # Python configures a "handler of last resort" since 3.2, which is a
+    # StreamHandler writing to sys.stderr with a level of WARNING, and is used
+    # to handle logging events in the absence of any logging configuration. The
+    # end result is to just print the message to sys.stderr, and in Sublime Text
+    # that means it will print the message to console.
+    import logging
+
+    logger = logging.getLogger('NeoVintageous')
+    if not logger.hasHandlers():
+        logger.setLevel(logging.DEBUG)
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(
+            logging.Formatter('NeoVintageous: %(levelname)-7s [%(filename)s:%(lineno)d] %(message)s')
+        )
+        logger.addHandler(stream_handler)
+        logger.debug('debug logger initialised')
+
+import sublime  # noqa: E402
 
 # The plugin loading is designed to handle errors gracefully.
 #

@@ -16,16 +16,16 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import builtins
+import logging
 import os
 import re
 
 import sublime
 
-from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import message
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 # A specific list of ex commands are supported.
@@ -119,8 +119,9 @@ def _parse_line(line):
 
                 return cmdline
     except Exception:
+        # TODO [review] Exception handling
         msg = 'error detected while processing {} at line {}'.format(_file_name(), line.rstrip())
         message(msg)
-        _log.exception(msg)
+        _log.debug(msg)
 
     return None
