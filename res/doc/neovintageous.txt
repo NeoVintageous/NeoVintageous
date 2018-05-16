@@ -192,19 +192,19 @@ This is roughly equivalent to running the Sublime Text command: >
         'text': "@"
     })
 
-Command-keys (OSX) or "super-keys" (Linux) or "windows-keys" (Windows) can be
-used in the form <D-...> (disabled by default). Example: >
+
+Super-keys, known as windows-keys, and command-keys (OSX), can be mapped in
+form <D-...>. Super-keys are disabled by default. Example: >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
 More examples...
 
-A command to toggle the side bar is provided: >
+Toggle the side bar: >
 
     nnoremap <leader>d :NeovintageousToggleSideBar<CR>
 
-To enable the toggle command when the side bar is focused add a key binding
-with the the same keys as above: `Menu > Preferences > Key Bindings`: >
+Toggle the side bar when it has focus: `Menu > Preferences > Key Bindings`: >
 
     [
         {
@@ -216,23 +216,7 @@ with the the same keys as above: `Menu > Preferences > Key Bindings`: >
         }
     ]
 
-Scroll viewport faster: >
-
-    nnoremap <C-e> 3<C-e>
-    nnoremap <C-y> 3<C-y>
-
-Easy buffer navigation: >
-
-    nnoremap <C-h> <C-w>h
-    nnoremap <C-j> <C-w>j
-    nnoremap <C-k> <C-w>k
-
-Clear highlighting. Using Esc is a workaround, because :nohlsearch is not yet
-supported: >
-
-    nnoremap <C-l> <Esc>
-
-Saving: >
+Saving with CTRL-s: >
 
     nnoremap <C-s> :w<CR>
 
@@ -244,14 +228,14 @@ Yank and paste using system clipboard: >
     noremap <leader>P "+P
     noremap <leader>yy "+Y
 
-Select entire buffer: >
-
-    nnoremap <leader>va ggvGg_
-    nnoremap <leader>Va ggVG
-
 Show the registers: >
 
     nnoremap <leader>r :reg<CR>
+
+Scroll viewport faster: >
+
+    nnoremap <C-e> 3<C-e>
+    nnoremap <C-y> 3<C-y>
 
 Some window command aliases. This is especially useful if you don't like to
 enable ctrl-key key bindings: >
@@ -260,6 +244,14 @@ enable ctrl-key key bindings: >
     nnoremap <leader>\| <C-w>\|
     nnoremap <leader>= <C-w>=
     nnoremap <leader>. <C-w>_<C-w>\|
+
+Goto Symbol: >
+
+    nnoremap <leader>s :ShowOverlay overlay=goto text=@<CR>
+
+Goto Symbol in Project: >
+
+    nnoremap <leader>i :GotoSymbolInProject<CR>
 
 ==============================================================================
 
