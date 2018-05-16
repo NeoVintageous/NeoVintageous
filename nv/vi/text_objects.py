@@ -310,7 +310,11 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         if inclusive:
             return Region(opening.a, closing.b)
 
-        return Region(opening.a + 1, closing.b - 1)
+        a = opening.a + 1
+        if view.substr(a) == '\n':
+            a += 1
+
+        return Region(a, closing.b - 1)
 
     if type_ == QUOTE:
         # Vim only operates on the current line.
