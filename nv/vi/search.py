@@ -25,6 +25,8 @@ import sublime_plugin
 
 
 def find_in_range(view, term, start, end, flags=0):
+    # Returns:
+    #   Region|None
     found = view.find(term, start, flags)
     if found and found.b <= end:
         return found

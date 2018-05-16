@@ -1222,31 +1222,45 @@ class _vi_percent(ViMotionCommand):
                 self.view.text_point(caret_row, caret_col + found_brackets[0]))
 
     def find_balanced_closing_bracket(self, start, brackets, unbalanced=0):
+        # Returns:
+        #   Region|None
         new_start = start
         for i in range(unbalanced or 1):
-            next_closing_bracket = find_in_range(self.view, brackets[1],
-                                                 start=new_start,
-                                                 end=self.view.size(),
-                                                 flags=LITERAL)
-            if next_closing_bracket is None:
-                # Unbalanced brackets; nothing we can do.
+            next_closing_bracket = find_in_range(
+                self.view,
+                brackets[1],
+                start=new_start,
+                end=self.view.size(),
+                flags=LITERAL
+            )
+
+            if next_closing_bracket is None:  # Unbalanced brackets; nothing we can do.
                 return
+
             new_start = next_closing_bracket.end()
 
         nested = 0
         while True:
-            next_opening_bracket = find_in_range(self.view, brackets[0],
-                                                 start=start,
-                                                 end=next_closing_bracket.end(),
-                                                 flags=LITERAL)
+            next_opening_bracket = find_in_range(
+                self.view,
+                brackets[0],
+                start=start,
+                end=next_closing_bracket.end(),
+                flags=LITERAL
+            )
+
             if not next_opening_bracket:
                 break
+
             nested += 1
             start = next_opening_bracket.end()
 
         if nested > 0:
-            return self.find_balanced_closing_bracket(next_closing_bracket.end(),
-                                                      brackets, nested)
+            return self.find_balanced_closing_bracket(
+                next_closing_bracket.end(),
+                brackets,
+                nested
+            )
         else:
             return next_closing_bracket.begin()
 

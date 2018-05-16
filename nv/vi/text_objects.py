@@ -738,8 +738,10 @@ def get_closest_tag(view, pt):
     # Args:
     #   view (sublime.View)
     #   pt (int)
+    #
     # Returns:
-    #   2-tuple(int, Region)|2-tuple(None, None)
+    #   tuple[int, Region]
+    #   tuple[None, None]
     substr = view.substr
     while pt > 0 and substr(pt) != '<':
         pt -= 1
@@ -758,8 +760,11 @@ def find_containing_tag(view, start):
     # Args:
     #   view (sublime.View)
     #   start (int)
+    #
     # Returns:
-    #   3-tuple(Region, Region, str)|3-tuple(None, None, None)
+    #   tuple[Region, Region, str]
+    #   tuple[None, None, None]
+    #
     # BUG: fails if start < first begin tag
     # TODO: Should not select tags in PCDATA sections.
     _, closest_tag = get_closest_tag(view, start)
@@ -770,31 +775,24 @@ def find_containing_tag(view, start):
     start = closest_tag.a if ((closest_tag.contains(start)) and
                               (view.substr(closest_tag)[1] == '/')) else start
 
-    search_forward_args = {
-        'pattern': RX_ANY_TAG,
-        'start': start,
-    }
-
     end_region, tag_name = next_unbalanced_tag(
         view,
         search=next_end_tag,
-        search_args=search_forward_args,
+        search_args={'pattern': RX_ANY_TAG, 'start': start},
         restart_at=get_region_end
     )
 
     if not end_region:
         return None, None, None
 
-    search_backward_args = {
-        'pattern': RX_ANY_TAG_NAMED_TPL.format(tag_name),
-        'start': 0,
-        'end': end_region.a
-    }
-
     begin_region, _ = next_unbalanced_tag(
         view,
         search=previous_begin_tag,
-        search_args=search_backward_args,
+        search_args={
+            'pattern': RX_ANY_TAG_NAMED_TPL.format(tag_name),
+            'start': 0,
+            'end': end_region.a
+        },
         restart_at=get_region_begin
     )
 
