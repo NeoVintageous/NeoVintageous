@@ -306,14 +306,14 @@ class ViewTestCase(unittest.TestCase):
         #       int, or a tuple, it will be converted to a Region before
         #       evaluating against the actual value.
         if isinstance(expected, int):
-            self.assertEqual(Region(expected), actual)
+            self.assertEqual(actual, Region(expected))
         elif isinstance(expected, tuple):
-            self.assertEqual(Region(expected[0], expected[1]), actual)
+            self.assertEqual(actual, Region(expected[0], expected[1]))
         elif isinstance(expected, str):
-            self.assertEqual(expected, self.view.substr(actual))
+            self.assertEqual(self.view.substr(actual), expected)
         else:
             self.assertIsInstance(actual, Region)
-            self.assertEqual(expected, actual)
+            self.assertEqual(actual, expected)
 
     def assertRegister(self, name, expected, msg=None):
         # Test that the value of the named register and *expected* are equal.
