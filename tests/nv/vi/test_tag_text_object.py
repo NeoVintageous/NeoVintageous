@@ -56,6 +56,7 @@ TESTS_CONTAINING_TAG = (
     test_data(content='<div>foo</div>', args={'start': 2}, expected=(unittest.Region(0, 5), unittest.Region(8, 14), 'div'), msg='find tag from within start tag'),  # noqa: E501
     test_data(content='<div>foo</div>', args={'start': 13}, expected=(unittest.Region(0, 5), unittest.Region(8, 14), 'div'), msg='find tag from within end tag'),  # noqa: E501
     test_data(content='<div>foo <p>bar</p></div>', args={'start': 12}, expected=(unittest.Region(9, 12), unittest.Region(15, 19), 'p'), msg='find nested tag from inside'),  # noqa: E501
+    test_data(content='<head><link rel="shortcut icon" href="favicon.png"></head>', args={'start': 16}, expected=(unittest.Region(0, 6), unittest.Region(51, 58), 'head'), msg='find head'),  # noqa: E501
 )
 
 

@@ -287,6 +287,10 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
     if type_ == TAG:
         begin_tag, end_tag, _ = find_containing_tag(view, s.b)
+
+        if not (begin_tag and end_tag):
+            return s
+
         if inclusive:
             return Region(begin_tag.a, end_tag.b)
         else:
@@ -706,6 +710,15 @@ def word_end_reverse(view, pt, count=1, big=False):
 
 
 def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
+    # Args:
+    #   view (sublime.View)
+    #   pattern (str)
+    #   start (int)
+    #   end (int)
+    #
+    # Returns:
+    #   tuple[Region, str, bool]
+    #   typle[None, None, None]
     region = view.find(pattern, start, IGNORECASE)
     if region.a == -1:
         return None, None, None
@@ -717,11 +730,11 @@ def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
 
 def previous_begin_tag(view, pattern, start=0, end=0):
     assert pattern, 'bad call'
-    region = reverse_search_by_pt(view, RX_ANY_TAG, start, end, IGNORECASE)
+    region = reverse_search_by_pt(view, pattern, start, end, IGNORECASE)
     if not region:
         return None, None, None
 
-    match = re.search(RX_ANY_TAG, view.substr(region))
+    match = re.search(pattern, view.substr(region))
 
     return (region, match.group(1), match.group(0)[1] != '/')
 
@@ -764,9 +777,6 @@ def find_containing_tag(view, start):
     # Returns:
     #   tuple[Region, Region, str]
     #   tuple[None, None, None]
-    #
-    # BUG: fails if start < first begin tag
-    # TODO: Should not select tags in PCDATA sections.
     _, closest_tag = get_closest_tag(view, start)
 
     if not closest_tag:
@@ -803,6 +813,16 @@ def find_containing_tag(view, start):
 
 
 def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags=[]):
+    # Args:
+    #   view (sublime.View)
+    #   search (callable)
+    #   search_args (dict)
+    #   restart_at (callable)
+    #   tags (list[str])
+    #
+    # Returns:
+    #   tuple[Region, str]
+    #   tuple[None, None]
     assert search and restart_at, 'wrong call'
     region, tag, is_end_tag = search(view, **search_args)
 

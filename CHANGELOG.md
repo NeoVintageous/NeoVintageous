@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#161](https://github.com/NeoVintageous/NeoVintageous/issues/161): `vit` `vat` work incorrect inside self closing tags
 * Fixed [#180](https://github.com/NeoVintageous/NeoVintageous/issues/180): `%` doesn't work in VISUAL LINE mode
 * Fixed [#354](https://github.com/NeoVintageous/NeoVintageous/issues/354): `:help ctrl-w` opens wrong help file section
 * Fixed [#352](https://github.com/NeoVintageous/NeoVintageous/issues/352): `%` should jump to the next item in this line after the cursor
