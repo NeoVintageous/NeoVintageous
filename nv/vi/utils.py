@@ -229,7 +229,8 @@ class IrreversibleTextCommand(TextCommand):
 
 def next_non_white_space_char(view, pt, white_space='\t '):
     # type: (...) -> int
-    while (view.substr(pt) in white_space) and (pt <= view.size()):
+    substr = view.substr
+    while (substr(pt) in white_space) and (pt <= view.size()):
         pt += 1
 
     return pt
@@ -237,7 +238,8 @@ def next_non_white_space_char(view, pt, white_space='\t '):
 
 def previous_non_white_space_char(view, pt, white_space='\t \n'):
     # type: (...) -> int
-    while view.substr(pt) in white_space and pt > 0:
+    substr = view.substr
+    while substr(pt) in white_space and pt > 0:
         pt -= 1
 
     return pt
@@ -246,7 +248,8 @@ def previous_non_white_space_char(view, pt, white_space='\t \n'):
 # TODO [review] DEPRECATED; Refactor and remove.
 def previous_white_space_char(view, pt, white_space='\t '):
     # type: (...) -> int
-    while pt >= 0 and view.substr(pt) not in white_space:
+    substr = view.substr
+    while pt >= 0 and substr(pt) not in white_space:
         pt -= 1
 
     return pt

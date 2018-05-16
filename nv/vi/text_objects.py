@@ -740,10 +740,11 @@ def get_closest_tag(view, pt):
     #   pt (int)
     # Returns:
     #   2-tuple(int, Region)|2-tuple(None, None)
-    while pt > 0 and view.substr(pt) != '<':
+    substr = view.substr
+    while pt > 0 and substr(pt) != '<':
         pt -= 1
 
-    if view.substr(pt) != '<':
+    if substr(pt) != '<':
         return None, None
 
     next_tag = view.find(RX_ANY_TAG, pt)

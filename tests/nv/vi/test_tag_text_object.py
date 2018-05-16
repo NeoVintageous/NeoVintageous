@@ -19,11 +19,12 @@ from collections import namedtuple
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.vi.text_objects import previous_begin_tag
 from NeoVintageous.nv.vi.text_objects import find_containing_tag
-from NeoVintageous.nv.vi.text_objects import next_end_tag
+from NeoVintageous.nv.vi.text_objects import get_closest_tag
 from NeoVintageous.nv.vi.text_objects import get_region_end
+from NeoVintageous.nv.vi.text_objects import next_end_tag
 from NeoVintageous.nv.vi.text_objects import next_unbalanced_tag
+from NeoVintageous.nv.vi.text_objects import previous_begin_tag
 
 
 test_data = namedtuple('test_data', 'content args expected msg')
@@ -56,6 +57,27 @@ TESTS_CONTAINING_TAG = (
     test_data(content='<div>foo</div>', args={'start': 13}, expected=(unittest.Region(0, 5), unittest.Region(8, 14), 'div'), msg='find tag from within end tag'),  # noqa: E501
     test_data(content='<div>foo <p>bar</p></div>', args={'start': 12}, expected=(unittest.Region(9, 12), unittest.Region(15, 19), 'p'), msg='find nested tag from inside'),  # noqa: E501
 )
+
+
+class TestTextObjects(unittest.ViewTestCase):
+
+    def test_get_closest_tag(self):
+        self.fixture('ab')
+        self.assertEqual((None, None), get_closest_tag(self.view, 0))
+        self.assertEqual((None, None), get_closest_tag(self.view, 1))
+        self.assertEqual((None, None), get_closest_tag(self.view, 2))
+
+        self.fixture('<p>x<i>ab</i></p>')
+        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 0))
+        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 1))
+        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 2))
+        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 3))
+        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 4))
+        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 5))
+        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 6))
+        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 7))
+        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 8))
+        self.assertEqual((9, self.Region(9, 13)), get_closest_tag(self.view, 9))
 
 
 class Test_next_unbalanced_end_tag(unittest.ViewTestCase):
