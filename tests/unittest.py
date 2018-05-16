@@ -305,12 +305,12 @@ class ViewTestCase(unittest.TestCase):
         #   expected (str|int|tuple|Region): If the expected value is a str,
         #       int, or a tuple, it will be converted to a Region before
         #       evaluating against the actual value.
-        if isinstance(expected, str):
-            self.assertEqual(expected, self.view.substr(actual))
-        elif isinstance(expected, int):
+        if isinstance(expected, int):
             self.assertEqual(Region(expected), actual)
         elif isinstance(expected, tuple):
             self.assertEqual(Region(expected[0], expected[1]), actual)
+        elif isinstance(expected, str):
+            self.assertEqual(expected, self.view.substr(actual))
         else:
             self.assertIsInstance(actual, Region)
             self.assertEqual(expected, actual)
