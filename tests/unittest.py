@@ -312,6 +312,7 @@ class ViewTestCase(unittest.TestCase):
         elif isinstance(expected, tuple):
             self.assertEqual(Region(expected[0], expected[1]), actual)
         else:
+            self.assertIsInstance(actual, Region)
             self.assertEqual(expected, actual)
 
     def assertRegister(self, name, expected, msg=None):

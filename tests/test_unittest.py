@@ -297,6 +297,12 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.assertRegion(Region(0, 5), 'hello')
         self.assertRegion(Region(4, 9), 'o wor')
 
+        class NotARegion():
+            pass
+
+        with self.assertRaisesRegex(AssertionError, 'is not an instance of <class \'sublime.Region\'>'):
+            self.assertRegion(NotARegion, Region(1))
+
     def test_assert_selection(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.view.sel().clear()
