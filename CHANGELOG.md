@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Fixed
 
+* Fixed [#354](https://github.com/NeoVintageous/NeoVintageous/issues/354): `:help ctrl-w` opens wrong help file section
 * Fixed [#352](https://github.com/NeoVintageous/NeoVintageous/issues/352): `%` should jump to the next item in this line after the cursor
 * Fixed [#263](https://github.com/NeoVintageous/NeoVintageous/issues/263): `x` should not delete empty lines
 * Fixed [#350](https://github.com/NeoVintageous/NeoVintageous/issues/350): Multi-select `k` doesn't work with a count
