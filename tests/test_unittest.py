@@ -290,12 +290,12 @@ class TestViewTestCase(unittest.ViewTestCase):
     def test_assert_region(self):
         self.view.run_command('insert', {'characters': 'hello world'})
 
-        self.assertRegion(1, Region(1))
-        self.assertRegion((1, 1), Region(1))
-        self.assertRegion((3, 5), Region(3, 5))
+        self.assertRegion(Region(1), 1)
+        self.assertRegion(Region(1), (1, 1))
+        self.assertRegion(Region(3, 5), (3, 5))
         self.assertRegion(Region(3, 5), Region(3, 5))
-        self.assertRegion('hello', Region(0, 5))
-        self.assertRegion('o wor', Region(4, 9))
+        self.assertRegion(Region(0, 5), 'hello')
+        self.assertRegion(Region(4, 9), 'o wor')
 
     def test_assert_selection(self):
         self.view.run_command('insert', {'characters': 'hello world'})

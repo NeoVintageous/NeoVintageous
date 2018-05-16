@@ -230,80 +230,80 @@ class TestRangeNodeResolve(unittest.ViewTestCase):
     def test_resolve_returns_current_line_if_range_is_empty(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\n')
         self.select(8)
-        self.assertRegion((8, 16), RangeNode().resolve(self.view))
+        self.assertRegion(RangeNode().resolve(self.view), (8, 16))
 
     def test_resolve_returns_current_line_if_range_is_empty2(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\n')
         self.select(0)
-        self.assertRegion((0, 8), RangeNode().resolve(self.view))
+        self.assertRegion(RangeNode().resolve(self.view), (0, 8))
 
     def test_resolve_returns_current_line_if_range_is_empty_and_adds_offset(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\nddd ddd\n')
         self.select(0)
-        self.assertRegion((16, 24), RangeNode(start=[TokenOffset([1, 1])]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenOffset([1, 1])]).resolve(self.view), (16, 24))
 
     def test_resolve_returns_current_line_if_range_is_empty_and_adds_offsets(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\nddd ddd\n')
         self.select(0)
-        self.assertRegion((16, 24), RangeNode(start=[TokenOffset([2])]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenOffset([2])]).resolve(self.view), (16, 24))
 
     def test_resolve_returns_requested_start_line_number(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\nddd ddd\n')
         self.select(0)
-        self.assertRegion((8, 16), RangeNode(start=[TokenDigits('2')]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenDigits('2')]).resolve(self.view), (8, 16))
 
     def test_resolve_returns_requested_start_line_number_and_adds_offset(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\nddd ddd\n')
         self.select(0)
-        self.assertRegion((24, 32), RangeNode(start=[TokenDigits('2'), TokenOffset([2])]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenDigits('2'), TokenOffset([2])]).resolve(self.view), (24, 32))
 
     def test_resolve_returns_requested_start_line_number_and_adds_offset2(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\nddd ddd\n')
         self.select(0)
-        self.assertRegion((16, 24), RangeNode(start=[TokenDigits('2'), TokenOffset([1])]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenDigits('2'), TokenOffset([1])]).resolve(self.view), (16, 24))
 
     def test_resolve_returns_whole_buffer_if_percent_requested(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\nddd ddd\n')
         self.select(0)
-        self.assertRegion((0, 32), RangeNode(start=[TokenPercent()]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenPercent()]).resolve(self.view), (0, 32))
 
     def test_resolve__dollar__(self):
         self.write('a\nb\nc\n')
         self.select(0)
-        self.assertRegion(6, RangeNode([TokenDollar()]).resolve(self.view))
+        self.assertRegion(RangeNode([TokenDollar()]).resolve(self.view), 6)
 
         self.write('a\nb\nc\nd\n')
         self.select(5)
-        self.assertRegion(8, RangeNode([TokenDollar()]).resolve(self.view))
+        self.assertRegion(RangeNode([TokenDollar()]).resolve(self.view), 8)
 
     def test_resolve__dot__(self):
         self.write('a\nbcd\ne\n')
         self.select(2)
-        self.assertRegion((2, 6), RangeNode([TokenDot()]).resolve(self.view))
+        self.assertRegion(RangeNode([TokenDot()]).resolve(self.view), (2, 6))
 
     def test_resolve__dot__dollar__(self):
         self.write('a\nbcd\nef\n')
         self.select(4)
-        self.assertRegion((2, 9), RangeNode([TokenDot()], [TokenDollar()], ',').resolve(self.view))
+        self.assertRegion(RangeNode([TokenDot()], [TokenDollar()], ',').resolve(self.view), (2, 9))
 
     def test_resolve__dot__4(self):
         self.write('a\nbcd\nef\ng\nhi\n')
         self.select(3)
-        self.assertRegion((2, 11), RangeNode([TokenDot()], [TokenDigits(4)], ',').resolve(self.view))
+        self.assertRegion(RangeNode([TokenDot()], [TokenDigits(4)], ',').resolve(self.view), (2, 11))
 
     def test_resolve__1__comma__dollar__(self):
         self.write('a\nb\n')
         self.select(0)
-        self.assertRegion((0, 4), RangeNode([TokenDigits(1)], [TokenDollar()], ',').resolve(self.view))
+        self.assertRegion(RangeNode([TokenDigits(1)], [TokenDollar()], ',').resolve(self.view), (0, 4))
 
         self.write('a\nb\nc\nde\n')
         self.select(4)
-        self.assertRegion((0, 9), RangeNode([TokenDigits(1)], [TokenDollar()], ',').resolve(self.view))
+        self.assertRegion(RangeNode([TokenDigits(1)], [TokenDollar()], ',').resolve(self.view), (0, 9))
 
     def test_resolve__3__comma__dollar__(self):
         self.write('a\nb\nc\nde\n')
         self.select(1)
-        self.assertRegion((4, 9), RangeNode([TokenDigits(3)], [TokenDollar()], ',').resolve(self.view))
+        self.assertRegion(RangeNode([TokenDigits(3)], [TokenDollar()], ',').resolve(self.view), (4, 9))
 
 
 class TestRangeNodeResolve_SearchForward(unittest.ViewTestCase):
@@ -311,12 +311,12 @@ class TestRangeNodeResolve_SearchForward(unittest.ViewTestCase):
     def test_resolve_can_search_forward(self):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd cat\n')
         self.select(0)
-        self.assertRegion((16, 24), RangeNode(start=[TokenSearchForward('cat')]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenSearchForward('cat')]).resolve(self.view), (16, 24))
 
     def test_resolve_can_search_forward_with_offset(self):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd ddd\n')
         self.select(0)
-        self.assertRegion((24, 32), RangeNode(start=[TokenSearchForward('cat'), TokenOffset([1])]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenSearchForward('cat'), TokenOffset([1])]).resolve(self.view), (24, 32))
 
     def test_resolve_failed_search_throws(self):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd cat\n')
@@ -327,8 +327,9 @@ class TestRangeNodeResolve_SearchForward(unittest.ViewTestCase):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd ddd\neee eee\nfff cat\n')
         self.select(0)
         self.assertRegion(
-            (40, 48),
-            RangeNode(start=[TokenSearchForward('cat'), TokenSearchForward('cat')]).resolve(self.view))
+            RangeNode(start=[TokenSearchForward('cat'), TokenSearchForward('cat')]).resolve(self.view),
+            (40, 48)
+        )
 
 
 class TestRangeNodeResolve_SearchBackward(unittest.ViewTestCase):
@@ -336,12 +337,12 @@ class TestRangeNodeResolve_SearchBackward(unittest.ViewTestCase):
     def test_resolve_can_search_backward(self):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd ddd\nxxx xxx\n')
         self.select(self.view.size())
-        self.assertRegion((16, 24), RangeNode(start=[TokenSearchBackward('cat')]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenSearchBackward('cat')]).resolve(self.view), (16, 24))
 
     def test_resolve_can_search_backward_with_offset(self):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd ddd\nxxx xxx\n')
         self.select(self.view.size())
-        self.assertRegion((24, 32), RangeNode(start=[TokenSearchBackward('cat'), TokenOffset([1])]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenSearchBackward('cat'), TokenOffset([1])]).resolve(self.view), (24, 32))
 
     def test_resolve_failed_search_throws(self):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd cat\n')
@@ -352,8 +353,9 @@ class TestRangeNodeResolve_SearchBackward(unittest.ViewTestCase):
         self.write('aaa aaa\nbbb bbb\nccc cat\nddd cat\neee eee\nfff fff\n')
         self.select(self.view.size())
         self.assertRegion(
-            (16, 24),
-            RangeNode(start=[TokenSearchBackward('cat'), TokenSearchBackward('cat')]).resolve(self.view))
+            RangeNode(start=[TokenSearchBackward('cat'), TokenSearchBackward('cat')]).resolve(self.view),
+            (16, 24)
+        )
 
 
 class TestRangeNodeResolve_Line0(unittest.ViewTestCase):
@@ -361,7 +363,7 @@ class TestRangeNodeResolve_Line0(unittest.ViewTestCase):
     def test_resolve_can_calculate_visual_start(self):
         self.write('xxx xxx\naaa aaa\nxxx xxx\nbbb bbb\n')
         self.select((8, 10))
-        self.assertRegion((-1, -1), RangeNode(start=[TokenDigits('0')]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenDigits('0')]).resolve(self.view), (-1, -1))
 
 
 class TestRangeNodeResolve_Marks(unittest.ViewTestCase):
@@ -369,22 +371,22 @@ class TestRangeNodeResolve_Marks(unittest.ViewTestCase):
     def test_resolve_can_calculate_visual_start(self):
         self.write('xxx xxx\naaa aaa\nxxx xxx\nbbb bbb\n')
         self.select((8, 10))
-        self.assertRegion((8, 16), RangeNode(start=[TokenMark("<")]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenMark("<")]).resolve(self.view), (8, 16))
 
     def test_resolve_can_calculate_visual_start_with_multiple_sels(self):
         self.write('xxx xxx\naaa aaa\nxxx xxx\nbbb bbb\nxxx xxx\nccc ccc\n')
         self.select([(8, 10), (24, 27)])
-        self.assertRegion((8, 16), RangeNode(start=[TokenMark("<")]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenMark("<")]).resolve(self.view), (8, 16))
 
     def test_resolve_can_calculate_visual_end(self):
         self.write('xxx xxx\naaa aaa\nxxx xxx\nbbb bbb\n')
         self.select((8, 10))
-        self.assertRegion((8, 16), RangeNode(start=[TokenMark(">")]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenMark(">")]).resolve(self.view), (8, 16))
 
     def test_resolve_can_calculate_visual_end_with_multiple_sels(self):
         self.write('xxx xxx\naaa aaa\nxxx xxx\nbbb bbb\nxxx xxx\nccc ccc\n')
         self.select((8, 10))
-        self.assertRegion((8, 16), RangeNode(start=[TokenMark("<"), TokenMark(">")]).resolve(self.view))
+        self.assertRegion(RangeNode(start=[TokenMark("<"), TokenMark(">")]).resolve(self.view), (8, 16))
 
 
 class TestCommandLineNode(unittest.TestCase):

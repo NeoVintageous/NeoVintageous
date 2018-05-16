@@ -297,14 +297,14 @@ class ViewTestCase(unittest.TestCase):
     def assertVisualLineMode(self):
         self._assertMode(VISUAL_LINE)
 
-    def assertRegion(self, expected, actual):
+    def assertRegion(self, actual, expected):
         # Test that *actual* and *expected* are equal.
         #
         # Args:
+        #   actual (Region): Actual region.
         #   expected (str|int|tuple|Region): If the expected value is a str,
         #       int, or a tuple, it will be converted to a Region before
         #       evaluating against the actual value.
-        #   actual (Region): Actual region.
         if isinstance(expected, str):
             self.assertEqual(expected, self.view.substr(actual))
         elif isinstance(expected, int):
