@@ -327,11 +327,12 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(1, len(actual), 'expected only one value for the named register {}'.format(name))
         self.assertEqual(actual[0], expected, msg)
 
-    def assertSelection(self, expected):
+    def assertSelection(self, expected, msg=None):
         # Test that view selection and *expected* are equal.
         #
         # Args:
         #   expected (int|tuple|Region|list<Region>):
+        #   msg (str)
         #
         # Integers and tuples are converted to Regions:
         # >>> assertSelection(3) is the short for: assertSelection(sublime.Region(3))
@@ -353,14 +354,14 @@ class ViewTestCase(unittest.TestCase):
         # >>> self.assertSelection([3, 5, (7, 11)])
 
         if isinstance(expected, int):
-            self.assertEqual([Region(expected)], list(self.view.sel()))
+            self.assertEqual([Region(expected)], list(self.view.sel()), msg)
         elif isinstance(expected, tuple):
-            self.assertEqual([Region(expected[0], expected[1])], list(self.view.sel()))
+            self.assertEqual([Region(expected[0], expected[1])], list(self.view.sel()), msg)
         elif isinstance(expected, Region):
-            self.assertEqual([expected], list(self.view.sel()))
+            self.assertEqual([expected], list(self.view.sel()), msg)
         else:
             # Defaults to expect a list of Regions.
-            self.assertEqual(expected, list(self.view.sel()))
+            self.assertEqual(expected, list(self.view.sel()), msg)
 
     def assertSelectionCount(self, expected):
         # Test that view selection count and *expected* are equal.

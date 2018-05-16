@@ -1061,6 +1061,7 @@ class _vi_percent(ViMotionCommand):
     def find_tag(self, pt):
         # Args:
         #   pt (int)
+        #
         # Returns:
         #   Region|None
         if (self.view.score_selector(0, 'text.html') == 0 and self.view.score_selector(0, 'text.xml') == 0):
@@ -1078,6 +1079,8 @@ class _vi_percent(ViMotionCommand):
             if begin_tag:
                 return begin_tag if end_tag.contains(pt) else end_tag
 
+        return None
+
     def run(self, percent=None, mode=None):
         # Args:
         #   percent (int): Percentage down in file.
@@ -1085,6 +1088,11 @@ class _vi_percent(ViMotionCommand):
         if percent is None:
             def move_to_bracket(view, s):
                 def find_bracket_location(region):
+                    # Args:
+                    #   region (Region)
+                    #
+                    # Returns:
+                    #   int|None
                     pt = region.b
                     if (region.size() > 0) and (region.b > region.a):
                         pt = region.b - 1
@@ -1116,11 +1124,49 @@ class _vi_percent(ViMotionCommand):
                         return Region(begin, end)
 
                 if mode == VISUAL_LINE:
-                    # TODO: Improve handling of s.a < s.b and s.a > s.b cases.
-                    a = find_bracket_location(s)
-                    if a is not None:
-                        a = self.view.full_line(a).b
-                        return Region(s.begin(), a)
+
+                    sel = s
+                    if sel.a > sel.b:
+                        # If selection is in reverse: b <-- a
+                        # Find bracket starting at end of line of point b
+                        target_pt = find_bracket_location(Region(sel.b, self.view.line(sel.b).end()))
+                    else:
+                        # If selection is forward: a --> b
+                        # Find bracket starting at point b - 1:
+                        #   Because point b for an a --> b VISUAL LINE selection
+                        #   is the eol (newline) character.
+                        target_pt = find_bracket_location(Region(sel.a, sel.b - 1))
+
+                    if target_pt is not None:
+                        target_full_line = self.view.full_line(target_pt)
+
+                        if sel.a > sel.b:
+                            # If REVERSE selection: b <-- a
+
+                            if target_full_line.a > sel.a:
+                                # If target is after start of selection: b <-- a --> t
+                                # Keep line a, extend to end of target, and reverse: a --> t
+                                a, b = self.view.line(sel.a - 1).a, target_full_line.b
+                            else:
+                                # If target is before or after end of selection:
+                                #   Before: b     t <-- a (subtract t --> b)
+                                #   After:  t <-- b <-- a (extend b --> t)
+                                a, b = sel.a, target_full_line.a
+
+                        else:
+                            # If FORWARD selection: a --> b
+
+                            if target_full_line.a < sel.a:
+                                # If target is before start of selection: t <-- a --> b
+                                # Keep line a, extend to start of target, and reverse: t <-- a
+                                a, b = self.view.full_line(sel.a).b, target_full_line.a
+                            else:
+                                # If target is before or after end of selection:
+                                #   Before: a --> t     b (subtract t --> b)
+                                #   After:  a --> b --> t (extend b --> t)
+                                a, b = s.a, target_full_line.b
+
+                        return Region(a, b)
 
                 elif mode == NORMAL:
                     a = find_bracket_location(s)
@@ -1140,19 +1186,17 @@ class _vi_percent(ViMotionCommand):
 
             regions_transformer(self.view, move_to_bracket)
 
-            return
+        else:
 
-        row = self.view.rowcol(self.view.size())[0] * (percent / 100)
+            row = self.view.rowcol(self.view.size())[0] * (percent / 100)
 
-        def f(view, s):
-            pt = view.text_point(row, 0)
-            return Region(pt, pt)
+            def f(view, s):
+                return Region(view.text_point(row, 0))
 
-        regions_transformer(self.view, f)
+            regions_transformer(self.view, f)
 
-        # FIXME: Bringing the selections into view will be undesirable in many cases. Maybe we
-        # should have an optional .scroll_selections_into_view() step during command execution.
-        self.view.show(self.view.sel()[0])
+            # FIXME Bringing the selections into view will be undesirable in many cases. Maybe we should have an optional .scroll_selections_into_view() step during command execution.  # noqa: E501
+            self.view.show(self.view.sel()[0])
 
     def find_a_bracket(self, caret_pt):
         """

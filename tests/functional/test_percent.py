@@ -57,3 +57,88 @@ class Test_percent_in_php_syntax(unittest.FunctionalTestCase):
 
     def test_percent(self):
         self.eq('<?php\nfunct|ion x() {\n//...\n}\n', '%', '<?php\nfunction x(|) {\n//...\n}\n')
+
+    def test_find_next_item_in_this_line_after_the_cursor(self):
+        start = '<?php\nfunct|ion x() {\n    //...\n}\n'
+        self.fixture(start)
+        self.feed('%')
+        self.expects('<?php\nfunction x(|) {\n    //...\n}\n')
+
+
+class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
+
+    def test_if_forward_vline_and_target_is_after_selection_it_should_extend_forward(self):
+        start = 'x\n|f {\n|a\nb\nc\n}\nx\n'
+        self.vLineFixture(start)
+        self.feed('l_%')
+        self.expectsVLine('x\n|f {\na\nb\nc\n}\n|x\n')
+        self.feed('l_%')
+        self.expectsVLine(start)
+
+    def test_if_forward_vlines_and_target_is_after_selection_it_should_extend_forward(self):
+        start = 'x\n|y\nz\nf {\n|a\nb\nc\n}\nx\n'
+        self.vLineFixture(start)
+        self.feed('l_%')
+        self.expectsVLine('x\n|y\nz\nf {\na\nb\nc\n}\n|x\n')
+        self.feed('l_%')
+        self.expectsVLine(start)
+
+    def test_if_forward_vline_and_target_is_before_selection_it_should_reverse_selection_and_extend_backward(self):
+        start = 'x\nf {\na\nb\nc\n|}\n|x\n'
+        self.vLineFixture(start)
+        self.feed('l_%')
+        self.expectsVLine('x\n|f {\na\nb\nc\n}\n|x\n')
+        self.feed('l_%')
+        self.expectsVLine(start)
+        # TODO Addding a "reverse" param for expectsVLine() would make this call to assertSelection() obsolete.
+        self.assertSelection((14, 12), 'selection should be reversed compared to initial fixture.')
+
+    def test_if_forward_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
+        start = 'x\nf {\na\n|b\nc\n}\n|x\n'
+        self.vLineFixture(start)
+        # TODO Addding a "reverse" param for vLineFixture() above would make this calls to assertSelection() and select() obsolete.  # noqa: E501
+        self.feed('l_%')
+        self.expectsVLine('x\n|f {\na\nb\n|c\n}\nx\n')
+        self.assertSelection((10, 2))
+        self.feed('l_%')
+        self.expectsVLine(start)
+        self.assertSelection((8, 14))
+
+    def test_if_backward_vline_and_target_is_before_selection_it_should_extend_selection(self):
+        start = 'x\nf {\na\nb\nc\n|}\n|x\n'
+        self.vLineFixture(start)
+        # TODO Addding a "reverse" param for vLineFixture() and expectsVLine() would make the calls to assertSelection() and select() below obsolete.  # noqa: E501
+        self.assertSelection((12, 14))
+        self.select((14, 12))
+        self.feed('l_%')
+        self.expectsVLine('x\n|f {\na\nb\nc\n}\n|x\n')
+        self.assertSelection((14, 2))
+        self.feed('l_%')
+        self.expectsVLine(start)
+        self.assertSelection((14, 12))
+
+    def test_if_backward_vlines_and_target_is_before_selection_it_should_extend_selection(self):
+        start = 'x\nf {\na\nb\nc\n|}\nx\ny\n|z\n'
+        self.vLineFixture(start)
+        # TODO Addding a "reverse" param for vLineFixture() and expectsVLine() would make the calls to assertSelection() and select() below obsolete.  # noqa: E501
+        self.assertSelection((12, 18))
+        self.select((18, 12))
+        self.feed('l_%')
+        self.expectsVLine('x\n|f {\na\nb\nc\n}\nx\ny\n|z\n')
+        self.assertSelection((18, 2))
+        self.feed('l_%')
+        self.expectsVLine(start)
+        self.assertSelection((18, 12))
+
+    def test_if_reverse_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
+        start = 'x\n|f {\na\nb\n|c\n}\nx\n'
+        self.vLineFixture(start)
+        # TODO Addding a "reverse" param for vLineFixture() above would make this calls to assertSelection() and select() obsolete.  # noqa: E501
+        self.assertSelection((2, 10))
+        self.select((10, 2))
+        self.feed('l_%')
+        self.expectsVLine('x\nf {\na\n|b\nc\n}\n|x\n')
+        self.assertSelection((8, 14))
+        self.feed('l_%')
+        self.expectsVLine(start)
+        self.assertSelection((10, 2))
