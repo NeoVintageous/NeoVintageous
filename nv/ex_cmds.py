@@ -545,12 +545,15 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         # Also checks lowercase variants e.g. ctrl-k", "c_ctrl-k, etc., and
         # uppercase variants e.g. CTRL-K", "C_CTRL-K, etc.
         found = False
-        for s in (subject, subject.lower(), subject.upper()):
-            for p in (':', 'c_', 'i_', 'v_', '-', '/'):
+        for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
+            for s in (subject, subject.lower(), subject.upper()):
                 _subject = p + s
                 if _subject in _ex_help_tags_cache:
                     found = True
                     subject = _subject
+
+            if found:
+                break
 
         if not found:
             return message('E149: Sorry, no help for %s' % subject)
