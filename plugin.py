@@ -72,8 +72,7 @@ try:
     from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
 
     # Events.
-    # TODO [review] Should events be imported using glob idiom i.e. from .nv.events import *?
-    from NeoVintageous.nv.events import NeoVintageousEvents  # noqa: F401
+    from NeoVintageous.nv.events import *  # noqa: F401,F403
 
 except Exception as e:  # pragma: no cover
     _EXCEPTION = e

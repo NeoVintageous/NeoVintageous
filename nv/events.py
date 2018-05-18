@@ -31,6 +31,9 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
+__all__ = [
+    'NeoVintageousEvents'
+]
 
 # TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline
 # commands are being heavily reactored, and so these are hardcoded until a
