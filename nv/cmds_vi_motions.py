@@ -300,7 +300,15 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             if state.mode == VISUAL:
                 next_hit = Region(self.view.sel()[0].a, next_hit.a + 1)
 
-            self.view.add_regions('vi_inc_search', [next_hit], 'string.search', '', DRAW_NO_OUTLINE)
+            # The scopes are prefixed with common color scopes so that color
+            # schemes have sane default colors. Color schemes can progressively
+            # enhance support by using the nv_* scopes.
+            self.view.add_regions(
+                'vi_inc_search',
+                [next_hit],
+                scope='support.function nv_search_inc',
+                flags=DRAW_NO_OUTLINE
+            )
 
             if not self.view.visible_region().contains(next_hit.b):
                 self.view.show(next_hit.b)
@@ -1989,7 +1997,15 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             if state.mode == VISUAL:
                 occurrence = Region(self.view.sel()[0].a, occurrence.a)
 
-            self.view.add_regions('vi_inc_search', [occurrence], 'string.search', '', DRAW_NO_OUTLINE)
+            # The scopes are prefixed with common color scopes so that color
+            # schemes have sane default colors. Color schemes can progressively
+            # enhance support by using the nv_* scopes.
+            self.view.add_regions(
+                'vi_inc_search',
+                [occurrence],
+                scope='support.function nv_search_inc',
+                flags=DRAW_NO_OUTLINE
+            )
 
             if not self.view.visible_region().contains(occurrence):
                 self.view.show(occurrence)

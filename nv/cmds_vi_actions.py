@@ -610,6 +610,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
             self.view.sel().add(Region(sel.b))
 
         self.view.erase_regions('vi_search')
+        self.view.erase_regions('vi_search_current')
         self.view.run_command('_nv_fix_st_eol_caret', {'mode': mode})
 
 
