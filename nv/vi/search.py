@@ -230,7 +230,7 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         regions_current = []
         for region in regions:
             for sel in sels:
-                if sel.a == region.a:
+                if region.contains(sel):
                     regions_current.append(region)
 
         # TODO Allow option to configure search highlight style outline or fill
