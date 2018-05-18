@@ -20,11 +20,11 @@ from NeoVintageous.tests import unittest
 
 class Test_gc(unittest.FunctionalTestCase):
 
-    def fixture(self, text):
+    def normal(self, text):
         # Test against a specific syntax, because views that
         # have no syntax applied have no comment behaviours.
         self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
-        super().fixture(text)
+        super().normal(text)
 
     def test_comment(self):
         self.eq('|abc', 'gcc', '|# abc')

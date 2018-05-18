@@ -26,97 +26,97 @@ class TestNvCmdlineEditing(unittest.ViewTestCase):
 
     def test_c_ctrl_b(self):
         for test_key in ('<C-b>', '<home>'):
-            self.fixture(':abc|')
+            self.normal(':abc|')
             self.feed(test_key)
-            self.expects(':|abc')
+            self.assertNormal(':|abc')
 
             # shouldn't change if position already correct.
             self.feed(test_key)
-            self.expects(':|abc')
+            self.assertNormal(':|abc')
 
             # should work in the middle of words.
-            self.fixture(':ab|c')
+            self.normal(':ab|c')
             self.feed(test_key)
-            self.expects(':|abc')
+            self.assertNormal(':|abc')
 
             # shouldn't move cursor when cmdline is empty.
-            self.fixture(':|')
+            self.normal(':|')
             self.feed(test_key)
-            self.expects(':|')
+            self.assertNormal(':|')
 
     def test_c_ctrl_e(self):
         for test_key in ('<C-e>', '<end>'):
-            self.fixture(':|abc')
+            self.normal(':|abc')
             self.feed(test_key)
-            self.expects(':abc|')
+            self.assertNormal(':abc|')
 
             # shouldn't change if position already correct.
             self.feed(test_key)
-            self.expects(':abc|')
+            self.assertNormal(':abc|')
 
             # should work in the middle of words.
-            self.fixture(':a|bc')
+            self.normal(':a|bc')
             self.feed(test_key)
-            self.expects(':abc|')
+            self.assertNormal(':abc|')
 
             # shouldn't move cursor when cmdline is empty.
-            self.fixture(':|')
+            self.normal(':|')
             self.feed(test_key)
-            self.expects(':|')
+            self.assertNormal(':|')
 
     def test_c_ctrl_h(self):
         for test_key in ('<C-h>',):
-            self.fixture(':abc|')
+            self.normal(':abc|')
             self.feed(test_key)
-            self.expects(':ab|')
+            self.assertNormal(':ab|')
 
-            self.fixture(':ab|c')
+            self.normal(':ab|c')
             self.feed(test_key)
-            self.expects(':a|c')
+            self.assertNormal(':a|c')
 
-            self.fixture(':|')
+            self.normal(':|')
             self.feed(test_key)
-            self.expects(':|')
+            self.assertNormal(':|')
 
     def test_c_ctrl_u(self):
-        self.fixture(':abc|')
+        self.normal(':abc|')
         self.feed('<C-u>')
-        self.expects(':|')
+        self.assertNormal(':|')
 
         # shouldn't change when cmdline is empty.
         self.feed('<C-u>')
-        self.expects(':|')
+        self.assertNormal(':|')
 
         # should only remove characters up to cursor position.
-        self.fixture(':abc d|ef')
+        self.normal(':abc d|ef')
         self.feed('<C-u>')
-        self.expects(':|ef')
+        self.assertNormal(':|ef')
 
         # shouldn't change anything if no characters before cursor.
         self.feed('<C-w>')
-        self.expects(':|ef')
+        self.assertNormal(':|ef')
 
     def test_c_ctrl_w(self):
-        self.fixture(':abc|')
+        self.normal(':abc|')
         self.feed('<C-w>')
-        self.expects(':|')
+        self.assertNormal(':|')
 
         # shouldn't change when cmdline is empty.
         self.feed('<C-w>')
-        self.expects(':|')
+        self.assertNormal(':|')
 
         # should only remove characters up to cursor position.
-        self.fixture(':ab|c')
+        self.normal(':ab|c')
         self.feed('<C-w>')
-        self.expects(':|c')
+        self.assertNormal(':|c')
 
         # shouldn't change anything if no characters before cursor.
         self.feed('<C-w>')
-        self.expects(':|c')
+        self.assertNormal(':|c')
 
         # should include whitespace.
-        self.fixture(':abc def    |')
+        self.normal(':abc def    |')
         self.feed('<C-w>')
-        self.expects(':abc |')
+        self.assertNormal(':abc |')
         self.feed('<C-w>')
-        self.expects(':|')
+        self.assertNormal(':|')

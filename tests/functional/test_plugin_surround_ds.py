@@ -188,11 +188,11 @@ class TestSurround_ds(unittest.FunctionalTestCase):
         # cursor was matched as the begin part of `()`. This test prevents a
         # regression like that.
         for t in punctuation_targets_data:
-            fixture = 'x{}|{}{}y'.format(t[0], t[2], t[1])
+            text = 'x{}|{}{}y'.format(t[0], t[2], t[1])
             expected = 'x|{}y'.format(t[2])
-            self.eq(fixture, 'ds' + t[0], expected)  # Open
-            self.eq(fixture, 'ds' + t[1], expected)  # Close
-            self.eq(fixture, 'ds' + t[2], expected)  # Alias (close)
+            self.eq(text, 'ds' + t[0], expected)  # Open
+            self.eq(text, 'ds' + t[1], expected)  # Close
+            self.eq(text, 'ds' + t[2], expected)  # Alias (close)
 
         # Ensure dst doesn't match the t under the cursor
         self.eq('<i>|t</i>', 'dst', '|t')
@@ -218,8 +218,8 @@ class TestSurround_ds(unittest.FunctionalTestCase):
 
     def test_t_target_should_not_delete_invalid_tags(self):
         for t in invalid_tag_targets_data:
-            fixture = expected = 'x {}a|b{} y'.format(t[0], t[1])
-            self.eq(fixture, 'dst', expected)
+            text = expected = 'x {}a|b{} y'.format(t[0], t[1])
+            self.eq(text, 'dst', expected)
 
 
 class TestIssue282(unittest.FunctionalTestCase):

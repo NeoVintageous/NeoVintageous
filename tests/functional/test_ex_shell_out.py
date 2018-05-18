@@ -44,7 +44,7 @@ class TestExShellOutNoInput(unittest.FunctionalTestCase):
 
     @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_simple_filter_through_shell(self):
-        self.fixture("tw|o words\nbbb\nccc")
+        self.normal("tw|o words\nbbb\nccc")
         self.feed(':.! wc -w')
         # Ignore whitespace for the first line as on OS X "wc -l" pads the
         # number with whitespace like this:
@@ -54,7 +54,7 @@ class TestExShellOutNoInput(unittest.FunctionalTestCase):
 
     @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_command_is_escaped_correctly(self):
-        self.fixture('th|is gets replaced')
+        self.normal('th|is gets replaced')
         self.feed(':.! echo \\"one\\" \\\'two\\\'')
         self.assertContent('"one" \'two\'\n')
 
@@ -68,26 +68,26 @@ class TestExShellOutNoInput(unittest.FunctionalTestCase):
 
     @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_multiple_filter_through_shell(self):
-        self.fixture("aaa\nthree |short words\nccc")
+        self.normal("aaa\nthree |short words\nccc")
         self.feed(':.! wc -w')
         self.assertContentRegex(r"aaa\n\s*3\nccc")
 
     @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_filter_command_with_multiple_options_through_shell(self):
-        self.fixture('a\n|one two\nb')
+        self.normal('a\n|one two\nb')
         self.feed(':.! wc -m')
         self.assertContentRegex(r'a\n\s*8\nb')
 
-        self.fixture('a\n|one two\nb')
+        self.normal('a\n|one two\nb')
         self.feed(':.! wc -w -m')
         self.assertContentRegex(r'a\n\s*2\s+8\nb')
 
-        self.fixture('a\n|one two\nb')
+        self.normal('a\n|one two\nb')
         self.feed(':.! wc -l -w -m')
         self.assertContentRegex(r'a\n\s*1\s*2\s+8\nb')
 
     @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_filter_piped_command_through_shell(self):
-        self.fixture('a\n|one two\nb')
+        self.normal('a\n|one two\nb')
         self.feed(':.! echo "one two" | wc -w -m')
         self.assertContentRegex(r'\s*2\s*8')

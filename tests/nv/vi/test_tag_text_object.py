@@ -63,12 +63,12 @@ TESTS_CONTAINING_TAG = (
 class TestTextObjects(unittest.ViewTestCase):
 
     def test_get_closest_tag(self):
-        self.fixture('ab')
+        self.normal('ab')
         self.assertEqual((None, None), get_closest_tag(self.view, 0))
         self.assertEqual((None, None), get_closest_tag(self.view, 1))
         self.assertEqual((None, None), get_closest_tag(self.view, 2))
 
-        self.fixture('<p>x<i>ab</i></p>')
+        self.normal('<p>x<i>ab</i></p>')
         self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 0))
         self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 1))
         self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 2))

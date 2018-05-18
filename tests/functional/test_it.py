@@ -25,6 +25,6 @@ class Test_it(unittest.FunctionalTestCase):
         self.eq('x<p>_<i>_</i>a|bc<i>_</i>d</p>x', 'v_it', 'x<p>|_<i>_</i>abc<i>_</i>d|</p>x')
 
     def test_161(self):
-        self.vFixture('<head>\n    <link rel=|"shortcut icon" href="favicon.png">\n</head>')
+        self.visual('<head>\n    <link rel=|"shortcut icon" href="favicon.png">\n</head>')
         self.feed('v_it')
-        self.expectsV('<head>|\n    <link rel="shortcut icon" href="favicon.png">\n|</head>')
+        self.assertVisual('<head>|\n    <link rel="shortcut icon" href="favicon.png">\n|</head>')

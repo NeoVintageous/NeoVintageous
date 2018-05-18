@@ -21,49 +21,49 @@ from NeoVintageous.tests import unittest
 class Test_b(unittest.FunctionalTestCase):
 
     def test_b(self):
-        self.fixture('Gui|de to the Galaxy')
+        self.normal('Gui|de to the Galaxy')
 
         self.feed('b')
-        self.expects('|Guide to the Galaxy')
+        self.assertNormal('|Guide to the Galaxy')
 
         self.select(5)
         self.feed('b')
-        self.expects('|Guide to the Galaxy')
+        self.assertNormal('|Guide to the Galaxy')
 
         self.select(7)
         self.feed('b')
-        self.expects('Guide |to the Galaxy')
+        self.assertNormal('Guide |to the Galaxy')
 
         self.select(11)
         self.feed('b')
-        self.expects('Guide to |the Galaxy')
+        self.assertNormal('Guide to |the Galaxy')
 
         self.select(13)
         self.feed('b')
-        self.expects('Guide to |the Galaxy')
+        self.assertNormal('Guide to |the Galaxy')
 
         self.select(17)
         self.feed('b')
-        self.expects('Guide to the |Galaxy')
+        self.assertNormal('Guide to the |Galaxy')
 
     def test_v_b(self):
-        self.vFixture('Gui|de| to the Galaxy')
+        self.visual('Gui|de| to the Galaxy')
 
         self.feed('v_b')
-        self.expectsV('|Guid|e to the Galaxy')
+        self.assertVisual('|Guid|e to the Galaxy')
 
         self.select((5, 7))
         self.feed('v_b')
-        self.expectsV('|Guide |to the Galaxy')
+        self.assertVisual('|Guide |to the Galaxy')
 
         self.select((7, 11))
         self.feed('v_b')
-        self.expectsV('Guide t|o t|he Galaxy')
+        self.assertVisual('Guide t|o t|he Galaxy')
 
         self.select((7, 13))
         self.feed('v_b')
-        self.expectsV('Guide t|o t|he Galaxy')
+        self.assertVisual('Guide t|o t|he Galaxy')
 
         self.select((7, 17))
         self.feed('v_b')
-        self.expectsV('Guide t|o the G|alaxy')
+        self.assertVisual('Guide t|o the G|alaxy')

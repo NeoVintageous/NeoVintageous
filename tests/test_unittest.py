@@ -7,9 +7,9 @@
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# NeoVintageous is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# neovintageous is distributed in the hope that it will be useful,
+# but without any warranty; without even the implied warranty of
+# merchantability or fitness for a particular purpose.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -82,194 +82,194 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.assertEqual('Hello world!', self.view.substr(Region(0, self.view.size())))
         self.assertEqual([Region(12)], list(self.view.sel()))
 
-    def test_fixture_default_selection_is_eof(self):
-        self.fixture('Hello world!')
+    def test_normal_default_selection_is_eof(self):
+        self.normal('Hello world!')
         self.assertEqual('Hello world!', self.view.substr(Region(0, self.view.size())))
         self.assertEqual([Region(12)], list(self.view.sel()))
 
-    def test_fixture_is_normal_mode(self):
-        self.fixture('Hello world!')
+    def test_normal_is_normal_mode(self):
+        self.normal('Hello world!')
         self.assertNormalMode()
 
-    def test_fixture_erases_view_before_insert(self):
-        self.fixture('foobar')
-        self.fixture('a')
+    def test_normal_erases_view_before_insert(self):
+        self.normal('foobar')
+        self.normal('a')
         self.assertEqual('a', self.view.substr(Region(0, self.view.size())))
-        self.fixture('b')
+        self.normal('b')
         self.assertEqual('b', self.view.substr(Region(0, self.view.size())))
 
-    def test_fixture_zero_pos_selection(self):
-        self.fixture('|hello world!')
+    def test_normal_zero_pos_selection(self):
+        self.normal('|hello world!')
         self.assertEqual([Region(0)], list(self.view.sel()))
 
-    def test_fixture_middle_pos_selection(self):
-        self.fixture('hello| world!')
+    def test_normal_middle_pos_selection(self):
+        self.normal('hello| world!')
         self.assertEqual([Region(5)], list(self.view.sel()))
 
-    def test_fixture_end_pos_selection(self):
-        self.fixture('hello world|!')
+    def test_normal_end_pos_selection(self):
+        self.normal('hello world|!')
         self.assertEqual([Region(11)], list(self.view.sel()))
 
-    def test_fixture_multiple_selections(self):
-        self.fixture('h|el|lo world!')
+    def test_normal_multiple_selections(self):
+        self.normal('h|el|lo world!')
         self.assertEqual([Region(1), Region(3)], list(self.view.sel()))
-        self.fixture('hell|o |wo|rld!')
+        self.normal('hell|o |wo|rld!')
         self.assertEqual([Region(4), Region(6), Region(8)], list(self.view.sel()))
-        self.fixture('hel|lo| w|orld|!')
+        self.normal('hel|lo| w|orld|!')
         self.assertEqual([Region(3), Region(5), Region(7), Region(11)], list(self.view.sel()))
 
-    def test_ifixture(self):
-        self.iFixture('t|ext')
+    def test_insert(self):
+        self.insert('t|ext')
         self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
         self.assertEqual([Region(1)], list(self.view.sel()))
         self.assertInsertMode()
 
-    def test_vfixture(self):
-        self.vFixture('t|ex|t')
+    def test_visual(self):
+        self.visual('t|ex|t')
         self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
         self.assertEqual([Region(1, 3)], list(self.view.sel()))
         self.assertVisualMode()
 
-    def test_vfixture_single_selection_expands_one_character(self):
-        self.vFixture('t|ext')
+    def test_visual_single_selection_expands_one_character(self):
+        self.visual('t|ext')
         self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
         self.assertEqual([Region(1, 2)], list(self.view.sel()))
         self.assertVisualMode()
 
-    def test_vfixture_multiple_selection(self):
-        self.vFixture('h|ell|o |worl|d')
+    def test_visual_multiple_selection(self):
+        self.visual('h|ell|o |worl|d')
         self.assertEqual([Region(1, 4), Region(6, 10)], list(self.view.sel()))
         self.assertVisualMode()
 
-    def test_vfixture_raises_exception_if_malformed_visual_selection(self):
-        with self.assertRaisesRegex(Exception, 'invalid fixture visual selection'):
-            self.vFixture('hello world!')
-        with self.assertRaisesRegex(Exception, 'invalid fixture visual selection'):
-            self.vFixture('h|e|l|lo world!')
-        with self.assertRaisesRegex(Exception, 'invalid fixture visual selection'):
-            self.vFixture('h|e|l|lo |w|orld!')
+    def test_visual_raises_exception_if_malformed_visual_selection(self):
+        with self.assertRaisesRegex(Exception, 'invalid visual selection'):
+            self.visual('hello world!')
+        with self.assertRaisesRegex(Exception, 'invalid visual selection'):
+            self.visual('h|e|l|lo world!')
+        with self.assertRaisesRegex(Exception, 'invalid visual selection'):
+            self.visual('h|e|l|lo |w|orld!')
 
-    def test_vline_fixture_sets_visual_line_mode(self):
-        self.vLineFixture('|text|')
-        self.assertVisualLineMode()
+    def test_vline_sets_vline_mode(self):
+        self.vline('|text|')
+        self.assertVlineMode()
 
-    def test_vblock_fixture_sets_visual_block_mode(self):
-        self.vBlockFixture('|text|')
-        self.assertVisualBlockMode()
+    def test_vblock_sets_vblock_mode(self):
+        self.vblock('|text|')
+        self.assertVblockMode()
 
-    def test_expects(self):
+    def test_assertNormal(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.state.mode = unittest.NORMAL
 
         self.view.sel().clear()
-        self.expects('hello world')
+        self.assertNormal('hello world')
 
         self.view.sel().add(0)
-        self.expects('|hello world')
+        self.assertNormal('|hello world')
 
         with self.assertRaises(AssertionError):
-            self.expects('hello world')
+            self.assertNormal('hello world')
 
         self.view.sel().add(4)
-        self.expects('|hell|o world')
+        self.assertNormal('|hell|o world')
 
         self.view.sel().clear()
         self.view.sel().add(6)
-        self.expects('hello |world')
+        self.assertNormal('hello |world')
 
         with self.assertRaises(AssertionError):
-            self.expects('hello world')
+            self.assertNormal('hello world')
 
         with self.assertRaises(AssertionError):
-            self.expects('hello| world')
+            self.assertNormal('hello| world')
 
         with self.assertRaises(AssertionError):
-            self.expects('hello world|')
+            self.assertNormal('hello world|')
 
         self.view.sel().clear()
         self.view.sel().add(3)
         self.view.sel().add(5)
         self.view.sel().add(7)
-        self.expects('hel|lo| w|orld')
+        self.assertNormal('hel|lo| w|orld')
 
-    def test_expects_asserts_normal_mode(self):
+    def test_assertNormal_asserts_normal_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.state.mode = unittest.VISUAL
         with self.assertRaises(AssertionError):
-            self.expects('hello world|')
+            self.assertNormal('hello world|')
         self.state.mode = unittest.NORMAL
-        self.expects('hello world|')
+        self.assertNormal('hello world|')
 
-    def test_expects_i(self):
+    def test_assertInsert(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.state.mode = unittest.INSERT
 
         self.view.sel().clear()
-        self.expectsI('hello world')
+        self.assertInsert('hello world')
 
         self.view.sel().clear()
         self.view.sel().add(3)
         self.view.sel().add(5)
         self.view.sel().add(7)
-        self.expectsI('hel|lo| w|orld')
+        self.assertInsert('hel|lo| w|orld')
 
-    def test_expects_i_asserts_insert_mode(self):
+    def test_assertInsert_asserts_insert_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.state.mode = unittest.NORMAL
         with self.assertRaises(AssertionError):
-            self.expectsI('hello world|')
+            self.assertInsert('hello world|')
         self.state.mode = unittest.INSERT
-        self.expectsI('hello world|')
+        self.assertInsert('hello world|')
 
-    def test_expects_v(self):
+    def test_assertVisual(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.state.mode = unittest.VISUAL
 
         self.view.sel().clear()
-        self.expectsV('hello world')
+        self.assertVisual('hello world')
 
         self.view.sel().add(Region(3, 5))
-        self.expectsV('hel|lo| world')
+        self.assertVisual('hel|lo| world')
 
         with self.assertRaises(AssertionError):
-            self.expectsV('|hello| world')
+            self.assertVisual('|hello| world')
 
         self.view.sel().add(Region(3, 5))
         self.view.sel().add(Region(7, 11))
-        self.expectsV('hel|lo| w|orld|')
+        self.assertVisual('hel|lo| w|orld|')
 
-    def test_expects_v_asserts_visual_mode(self):
+    def test_assertVisual_asserts_visual_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.view.sel().clear()
         self.view.sel().add(3)
         self.view.sel().add(5)
         self.state.mode = unittest.NORMAL
         with self.assertRaises(AssertionError):
-            self.expectsV('hel|lo| world')
+            self.assertVisual('hel|lo| world')
         self.state.mode = unittest.VISUAL
-        self.expectsV('hel|lo| world')
+        self.assertVisual('hel|lo| world')
 
-    def test_expects_vline_asserts_visual_line_mode(self):
+    def test_assertVline_asserts_vline_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.view.sel().clear()
         self.view.sel().add(0)
         self.view.sel().add(11)
         self.state.mode = unittest.NORMAL
         with self.assertRaises(AssertionError):
-            self.expectsVLine('|hello world|')
+            self.assertVline('|hello world|')
         self.state.mode = unittest.VISUAL_LINE
-        self.expectsVLine('|hello world|')
+        self.assertVline('|hello world|')
 
-    def test_expects_vblock_asserts_visual_block_mode(self):
+    def test_assertVBlock_asserts_vblock_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.view.sel().clear()
         self.view.sel().add(0)
         self.view.sel().add(11)
         self.state.mode = unittest.NORMAL
         with self.assertRaises(AssertionError):
-            self.expectsVBlock('|hello world|')
+            self.assertVblock('|hello world|')
         self.state.mode = unittest.VISUAL_BLOCK
-        self.expectsVBlock('|hello world|')
+        self.assertVblock('|hello world|')
 
     def test_assert_content(self):
         self.view.run_command('insert', {'characters': 'hello world'})
@@ -528,210 +528,210 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.view.window.return_value = self.window
         self.instance = FunctionalTestCaseStub(self.view)
         self.instance.feed = unittest.mock.Mock()
-        self.instance.fixture = unittest.mock.Mock()
-        self.instance.vFixture = unittest.mock.Mock()
-        self.instance.vLineFixture = unittest.mock.Mock()
-        self.instance.vBlockFixture = unittest.mock.Mock()
-        self.instance.expects = unittest.mock.Mock()
-        self.instance.expectsI = unittest.mock.Mock()
-        self.instance.expectsV = unittest.mock.Mock()
-        self.instance.expectsVLine = unittest.mock.Mock()
-        self.instance.expectsVBlock = unittest.mock.Mock()
+        self.instance.normal = unittest.mock.Mock()
+        self.instance.visual = unittest.mock.Mock()
+        self.instance.vline = unittest.mock.Mock()
+        self.instance.vblock = unittest.mock.Mock()
+        self.instance.assertNormal = unittest.mock.Mock()
+        self.instance.assertInsert = unittest.mock.Mock()
+        self.instance.assertVisual = unittest.mock.Mock()
+        self.instance.assertVline = unittest.mock.Mock()
+        self.instance.assertVblock = unittest.mock.Mock()
 
-    def assert_fixture(self, *args):
-        self.instance.fixture.assert_called_once_with(*args)
+    def assert_normal(self, *args):
+        self.instance.normal.assert_called_once_with(*args)
 
-    def assert_vFixture(self, *args):
-        self.instance.vFixture.assert_called_once_with(*args)
+    def assert_visual(self, *args):
+        self.instance.visual.assert_called_once_with(*args)
 
-    def assert_vLineFixture(self, *args):
-        self.instance.vLineFixture.assert_called_once_with(*args)
+    def assert_vline(self, *args):
+        self.instance.vline.assert_called_once_with(*args)
 
-    def assert_vBlockFixture(self, *args):
-        self.instance.vBlockFixture.assert_called_once_with(*args)
+    def assert_vblock(self, *args):
+        self.instance.vblock.assert_called_once_with(*args)
 
     def assert_feed(self, *args):
         self.instance.feed.assert_called_once_with(*args)
 
-    def assert_expects(self, *args):
-        self.instance.expects.assert_called_once_with(*args)
+    def assert_assertNormal(self, *args):
+        self.instance.assertNormal.assert_called_once_with(*args)
 
-    def assert_expectsI(self, *args):
-        self.instance.expectsI.assert_called_once_with(*args)
+    def assert_assertInsert(self, *args):
+        self.instance.assertInsert.assert_called_once_with(*args)
 
-    def assert_expectsV(self, *args):
-        self.instance.expectsV.assert_called_once_with(*args)
+    def assert_assertVisual(self, *args):
+        self.instance.assertVisual.assert_called_once_with(*args)
 
-    def assert_expectsVLine(self, *args):
-        self.instance.expectsVLine.assert_called_once_with(*args)
+    def assert_assertVline(self, *args):
+        self.instance.assertVline.assert_called_once_with(*args)
 
-    def assert_expectsVBlock(self, *args):
-        self.instance.expectsVBlock.assert_called_once_with(*args)
+    def assert_assertVblock(self, *args):
+        self.instance.assertVblock.assert_called_once_with(*args)
 
     def test_eq(self):
         self.instance.eq('a', 'b', 'c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('b')
-        self.assert_expects('c', None)
+        self.assert_assertNormal('c', None)
 
     def test_eq_expected_should_be_optional(self):
         self.instance.eq('a', 'b')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('b')
-        self.assert_expects('a', None)
+        self.assert_assertNormal('a', None)
 
-    def test_eq_expects_insert(self):
+    def test_eq_assertNormal_insert(self):
         self.instance.eq('a', 'b', 'i_c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('b')
-        self.assert_expectsI('c', None)
+        self.assert_assertInsert('c', None)
 
-    def test_eq_expects_visual(self):
+    def test_eq_assertNormal_visual(self):
         self.instance.eq('a', 'b', 'v_c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('b')
-        self.assert_expectsV('c', None)
+        self.assert_assertVisual('c', None)
 
-    def test_eq_expects_visual_block(self):
+    def test_eq_assertNormal_visual_block(self):
         self.instance.eq('a', 'b', 'b_c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('b')
-        self.assert_expectsVBlock('c', None)
+        self.assert_assertVblock('c', None)
 
-    def test_eq_expects_visual_line(self):
+    def test_eq_assertNormal_visual_line(self):
         self.instance.eq('a', 'b', 'l_c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('b')
-        self.assert_expectsVLine('c', None)
+        self.assert_assertVline('c', None)
 
     def test_eq_normal(self):
         self.instance.eq('a', 'n_b', 'c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('n_b')
-        self.assert_expects('c', None)
+        self.assert_assertNormal('c', None)
 
-    def test_eq_normal_expects_insert(self):
+    def test_eq_normal_assertNormal_insert(self):
         self.instance.eq('a', 'n_b', 'i_c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('n_b')
-        self.assert_expectsI('c', None)
+        self.assert_assertInsert('c', None)
 
-    def test_eq_normal_expects_visual_block(self):
+    def test_eq_normal_assertNormal_visual_block(self):
         self.instance.eq('a', 'n_b', 'b_c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('n_b')
-        self.assert_expectsVBlock('c', None)
+        self.assert_assertVblock('c', None)
 
-    def test_eq_normal_expects_visual_line(self):
+    def test_eq_normal_assertNormal_visual_line(self):
         self.instance.eq('a', 'n_b', 'l_c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed('n_b')
-        self.assert_expectsVLine('c', None)
+        self.assert_assertVline('c', None)
 
     def test_eq_visual(self):
         self.instance.eq('a', 'v_b', 'c')
-        self.assert_vFixture('a')
+        self.assert_visual('a')
         self.assert_feed('v_b')
-        self.assert_expectsV('c', None)
+        self.assert_assertVisual('c', None)
 
-    def test_eq_visual_expects_insert(self):
+    def test_eq_visual_assertNormal_insert(self):
         self.instance.eq('a', 'v_b', 'i_c')
-        self.assert_vFixture('a')
+        self.assert_visual('a')
         self.assert_feed('v_b')
-        self.assert_expectsI('c', None)
+        self.assert_assertInsert('c', None)
 
-    def test_eq_visual_expects_normal(self):
+    def test_eq_visual_assertNormal_normal(self):
         self.instance.eq('a', 'v_b', 'n_c')
-        self.assert_vFixture('a')
+        self.assert_visual('a')
         self.assert_feed('v_b')
-        self.assert_expects('c', None)
+        self.assert_assertNormal('c', None)
 
-    def test_eq_visual_expects_visual_block(self):
+    def test_eq_visual_assertNormal_visual_block(self):
         self.instance.eq('a', 'v_b', 'b_c')
-        self.assert_vFixture('a')
+        self.assert_visual('a')
         self.assert_feed('v_b')
-        self.assert_expectsVBlock('c', None)
+        self.assert_assertVblock('c', None)
 
-    def test_eq_visual_expects_visual_line(self):
+    def test_eq_visual_assertNormal_visual_line(self):
         self.instance.eq('a', 'v_b', 'l_c')
-        self.assert_vFixture('a')
+        self.assert_visual('a')
         self.assert_feed('v_b')
-        self.assert_expectsVLine('c', None)
+        self.assert_assertVline('c', None)
 
     def test_eq_visual_line(self):
         self.instance.eq('a', 'l_b', 'c')
-        self.assert_vLineFixture('a')
+        self.assert_vline('a')
         self.assert_feed('l_b')
-        self.assert_expectsVLine('c', None)
+        self.assert_assertVline('c', None)
 
-    def test_eq_visual_line_expects_insert(self):
+    def test_eq_visual_line_assertNormal_insert(self):
         self.instance.eq('a', 'l_b', 'i_c')
-        self.assert_vLineFixture('a')
+        self.assert_vline('a')
         self.assert_feed('l_b')
-        self.assert_expectsI('c', None)
+        self.assert_assertInsert('c', None)
 
-    def test_eq_visual_line_expects_normal(self):
+    def test_eq_visual_line_assertNormal_normal(self):
         self.instance.eq('a', 'l_b', 'n_c')
-        self.assert_vLineFixture('a')
+        self.assert_vline('a')
         self.assert_feed('l_b')
-        self.assert_expects('c', None)
+        self.assert_assertNormal('c', None)
 
-    def test_eq_visual_line_expects_visual(self):
+    def test_eq_visual_line_assertNormal_visual(self):
         self.instance.eq('a', 'l_b', 'v_c')
-        self.assert_vLineFixture('a')
+        self.assert_vline('a')
         self.assert_feed('l_b')
-        self.assert_expectsV('c', None)
+        self.assert_assertVisual('c', None)
 
-    def test_eq_visual_line_expects_visual_block(self):
+    def test_eq_visual_line_assertNormal_visual_block(self):
         self.instance.eq('a', 'l_b', 'b_c')
-        self.assert_vLineFixture('a')
+        self.assert_vline('a')
         self.assert_feed('l_b')
-        self.assert_expectsVBlock('c', None)
+        self.assert_assertVblock('c', None)
 
     def test_eq_visual_block(self):
         self.instance.eq('a', 'b_b', 'c')
-        self.assert_vBlockFixture('a')
+        self.assert_vblock('a')
         self.assert_feed('b_b')
-        self.assert_expectsVBlock('c', None)
+        self.assert_assertVblock('c', None)
 
-    def test_eq_visual_block_expects_insert(self):
+    def test_eq_visual_block_assertNormal_insert(self):
         self.instance.eq('a', 'b_b', 'i_c')
-        self.assert_vBlockFixture('a')
+        self.assert_vblock('a')
         self.assert_feed('b_b')
-        self.assert_expectsI('c', None)
+        self.assert_assertInsert('c', None)
 
-    def test_eq_visual_block_expects_normal(self):
+    def test_eq_visual_block_assertNormal_normal(self):
         self.instance.eq('a', 'b_b', 'n_c')
-        self.assert_vBlockFixture('a')
+        self.assert_vblock('a')
         self.assert_feed('b_b')
-        self.assert_expects('c', None)
+        self.assert_assertNormal('c', None)
 
-    def test_eq_visual_block_expects_visual(self):
+    def test_eq_visual_block_assertNormal_visual(self):
         self.instance.eq('a', 'b_b', 'v_c')
-        self.assert_vBlockFixture('a')
+        self.assert_vblock('a')
         self.assert_feed('b_b')
-        self.assert_expectsV('c', None)
+        self.assert_assertVisual('c', None)
 
-    def test_eq_visual_block_expects_visual_block(self):
+    def test_eq_visual_block_assertNormal_visual_block(self):
         self.instance.eq('a', 'b_b', 'b_c')
-        self.assert_vBlockFixture('a')
+        self.assert_vblock('a')
         self.assert_feed('b_b')
-        self.assert_expectsVBlock('c', None)
+        self.assert_assertVblock('c', None)
 
-    def test_eq_visual_block_expects_visual_line(self):
+    def test_eq_visual_block_assertNormal_visual_line(self):
         self.instance.eq('a', 'b_b', 'l_c')
-        self.assert_vBlockFixture('a')
+        self.assert_vblock('a')
         self.assert_feed('b_b')
-        self.assert_expectsVLine('c', None)
+        self.assert_assertVline('c', None)
 
     def test_eq_cmdline(self):
         self.instance.eq('a', ':b', 'c')
-        self.assert_fixture('a')
+        self.assert_normal('a')
         self.assert_feed(':b')
-        self.assert_expects('c', None)
+        self.assert_assertNormal('c', None)
 
     def test_eq_visual_cmdline(self):
         self.instance.eq('a', ':\'<,\'>b', 'c')
-        self.assert_vFixture('a')
+        self.assert_visual('a')
         self.assert_feed(':\'<,\'>b')
-        self.assert_expectsV('c', None)
+        self.assert_assertVisual('c', None)

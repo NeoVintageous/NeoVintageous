@@ -86,10 +86,12 @@ class ViewTestCase(unittest.TestCase):
         # modules.
         #
         # Args:
-        #   a (int): The first end of the region.
-        #   b (int, optional): The second end of the region. Defaults to the
-        #       same as the a end of the region. May be less that a, in
-        #       which case the region is a reversed one.
+        #   a (int):
+        #       The first end of the region.
+        #   b (int):
+        #       The second end of the region. Defaults to the same as the a end
+        #       of the region. May be less that a, in which case the region is a
+        #       reversed one.
         return Region(a, b)
 
     def select(self, selections):
@@ -137,7 +139,7 @@ class ViewTestCase(unittest.TestCase):
         # type: (str) -> None
         self.view.run_command('_nv_test_write', {'text': text})
 
-    def _fixture(self, text, mode):
+    def _setupView(self, text, mode):
         if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -146,7 +148,7 @@ class ViewTestCase(unittest.TestCase):
             if sel_len == 1:
                 sels.append(sels[0] + 2)
             elif sel_len % 2 != 0 or sel_len == 0:
-                raise Exception('invalid fixture visual selection')
+                raise Exception('invalid visual selection')
 
             if sels:
                 v_sels = []
@@ -178,32 +180,32 @@ class ViewTestCase(unittest.TestCase):
 
         self.state.mode = mode
 
-    def fixture(self, text):
+    def normal(self, text):
         # Args:
         #   text (str)
-        self._fixture(text, NORMAL)
+        self._setupView(text, NORMAL)
 
-    def iFixture(self, text):
+    def insert(self, text):
         # Args:
         #   text (str)
-        self._fixture(text, INSERT)
+        self._setupView(text, INSERT)
 
-    def vFixture(self, text):
+    def visual(self, text):
         # Args:
         #   text (str)
-        self._fixture(text, VISUAL)
+        self._setupView(text, VISUAL)
 
-    def vLineFixture(self, text):
+    def vline(self, text):
         # Args:
         #   text (str)
-        self._fixture(text, VISUAL_LINE)
+        self._setupView(text, VISUAL_LINE)
 
-    def vBlockFixture(self, text):
+    def vblock(self, text):
         # Args:
         #   text (str)
-        self._fixture(text, VISUAL_BLOCK)
+        self._setupView(text, VISUAL_BLOCK)
 
-    def _expects(self, expected, mode, msg):
+    def _assertView(self, expected, mode, msg):
         # Args:
         #   expected (str)
         #   mode (str)
@@ -230,53 +232,54 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertMode(mode)
 
-    def expects(self, expected, msg=None):
+    def assertNormal(self, expected, msg=None):
         # Args:
         #   expected (str)
         #   msg (str)
-        self._expects(expected, NORMAL, msg)
+        self._assertView(expected, NORMAL, msg)
 
-    def expectsI(self, expected, msg=None):
+    def assertInsert(self, expected, msg=None):
         # Args:
         #   expected (str)
         #   msg (str)
-        self._expects(expected, INSERT, msg)
+        self._assertView(expected, INSERT, msg)
 
-    def expectsV(self, expected, msg=None):
+    def assertVisual(self, expected, msg=None):
         # Args:
         #   expected (str)
         #   msg (str)
-        self._expects(expected, VISUAL, msg)
+        self._assertView(expected, VISUAL, msg)
 
-    def expectsVLine(self, expected, msg=None):
+    def assertVline(self, expected, msg=None):
         # Args:
         #   expected (str)
         #   msg (str)
-        self._expects(expected, VISUAL_LINE, msg)
+        self._assertView(expected, VISUAL_LINE, msg)
 
-    def expectsVBlock(self, expected, msg=None):
+    def assertVblock(self, expected, msg=None):
         # Args:
         #   expected (str)
         #   msg (str)
-        self._expects(expected, VISUAL_BLOCK, msg)
+        self._assertView(expected, VISUAL_BLOCK, msg)
 
     def assertContent(self, expected, msg=None):
         # Test that view contents and *expected* are equal.
         #
         # Args:
-        #   expected (str): Expected view contents.
-        #   msg (str, optional): If specified, is used as the error message on
-        #       failure.
+        #   expected (str):
+        #       The expected contents of the view.
+        #   msg (str, optional):
+        #       If specified, is used as the error message on failure.
         self.assertEqual(self.content(), expected, msg)
 
     def assertContentRegex(self, expected, msg=None):
         # Test that view contents matches (or does not match) *expected*.
         #
         # Args:
-        #   expected (str): Expected regular expression that should match view
-        #       contents.
-        #   msg (str:optional): If specified, is used as the error message on
-        #       failure.
+        #   expected (str):
+        #       Regular expression that should match view contents.
+        #   msg (str):
+        #       If specified, is used as the error message on failure.
         self.assertRegex(self.content(), expected, msg=msg)
 
     def _assertMode(self, mode):
@@ -291,20 +294,22 @@ class ViewTestCase(unittest.TestCase):
     def assertVisualMode(self):
         self._assertMode(VISUAL)
 
-    def assertVisualBlockMode(self):
+    def assertVblockMode(self):
         self._assertMode(VISUAL_BLOCK)
 
-    def assertVisualLineMode(self):
+    def assertVlineMode(self):
         self._assertMode(VISUAL_LINE)
 
     def assertRegion(self, actual, expected):
         # Test that *actual* and *expected* are equal.
         #
         # Args:
-        #   actual (Region): Actual region.
-        #   expected (str|int|tuple|Region): If the expected value is a str,
-        #       int, or a tuple, it will be converted to a Region before
-        #       evaluating against the actual value.
+        #   actual (Region):
+        #       The actual region.
+        #   expected (str|int|tuple|Region):
+        #       If the expected value is a str, int, or a tuple, it will be
+        #       converted to a Region before evaluating against the actual
+        #       value.
         if isinstance(expected, int):
             self.assertEqual(actual, Region(expected))
         elif isinstance(expected, tuple):
@@ -319,11 +324,12 @@ class ViewTestCase(unittest.TestCase):
         # Test that the value of the named register and *expected* are equal.
         #
         # Args:
-        #   name (str): The name of the register.
+        #   name (str):
+        #       The name of the register.
         #   expected (str)
         actual = self.state.registers.get(name)
-        # registers.get() returns a list (not sure why thats useful), it doesn't
-        # look like we need it for the tests.
+        # XXX registers.get() returns a list (not sure why that's useful), it
+        # doesn't look like we need it for the tests.
         self.assertEqual(1, len(actual), 'expected only one value for the named register {}'.format(name))
         self.assertEqual(actual[0], expected, msg)
 
@@ -331,7 +337,7 @@ class ViewTestCase(unittest.TestCase):
         # Test that view selection and *expected* are equal.
         #
         # Args:
-        #   expected (int|tuple|Region|list<Region>):
+        #   expected (int|tuple|Region|list<Region>)
         #   msg (str)
         #
         # Integers and tuples are converted to Regions:
@@ -352,7 +358,6 @@ class ViewTestCase(unittest.TestCase):
         #
         # Assert that the view has multiple points, and text selections:
         # >>> self.assertSelection([3, 5, (7, 11)])
-
         if isinstance(expected, int):
             self.assertEqual([Region(expected)], list(self.view.sel()), msg)
         elif isinstance(expected, tuple):
@@ -367,24 +372,26 @@ class ViewTestCase(unittest.TestCase):
         # Test that view selection count and *expected* are equal.
         #
         # Args:
-        #   expected (int): Expected number of selections in view.
+        #   expected (int):
+        #       The expected number of selections in view.
         self.assertEqual(expected, len(self.view.sel()))
 
     def assertSize(self, expected):
         # Test that number of view characters and *expected* are equal.
         #
         # Args:
-        #   expected (int): Expected number of characters in view.
+        #   expected (int):
+        #       The expected number of characters in view.
         self.assertEqual(expected, self.view.size())
 
     def assertStatusLineRegex(self, expected, msg=None):
         # Test that view contents matches (or does not match) *expected*.
         #
         # Args:
-        #   expected (str): Expected regular expression that should match view
-        #       contents.
-        #   msg (str:optional): If specified, is used as the error message on
-        #       failure.
+        #   expected (str):
+        #       Regular expression that should match view contents.
+        #   msg (str):
+        #       If specified, is used as the error message on failure.
         self.assertRegex(self.view.get_status('vim-mode') + ' ' + self.view.get_status('vim-seq'), expected, msg=msg)
 
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
@@ -422,7 +429,8 @@ class FunctionalTestCase(ViewTestCase):
 
     def feed(self, seq):
         # Args:
-        #   seq (str): A command sequence e.g. 3w, <C-a>, cs'", :pwd
+        #   seq (str):
+        #       A command sequence e.g. 3w, <C-a>, cs'", :pwd
         #
         # The seq can be prefixed to specify a mode:
         #
@@ -480,12 +488,12 @@ class FunctionalTestCase(ViewTestCase):
 
         self.view.run_command(command, args)
 
-    def eq(self, fixture, feed, expected=None, msg=None):
+    def eq(self, text, feed, expected=None, msg=None):
         # Args:
-        #   fixture (str):
-        #   feed (str):
-        #   expected (str):
-        #   msg (str):
+        #   text (str)
+        #   feed (str)
+        #   expected (str)
+        #   msg (str)
         #
         # The feed and expected can be prefixed to specify a mode:
         #
@@ -499,7 +507,7 @@ class FunctionalTestCase(ViewTestCase):
         # The default mode is Internal Normal.
         #
         # When a mode is specified by feed, it iss used as the default mode for
-        # fixture and expected.
+        # text and expected.
         #
         # Examples:
         #
@@ -508,49 +516,49 @@ class FunctionalTestCase(ViewTestCase):
         # >>> eq('a\nx|y\nb', 'cc', 'i_a\n|\nb')
 
         if expected is None:
-            expected = fixture
+            expected = text
 
         if feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>')):
             if feed[0] == 'l':
-                self.vLineFixture(fixture)
+                self.vline(text)
             elif feed[0] == 'b':
-                self.vBlockFixture(fixture)
+                self.vblock(text)
             else:
-                self.vFixture(fixture)
+                self.visual(text)
 
             self.feed(feed)
 
             if expected[:2] == 'n_':
-                self.expects(expected[2:], msg)
+                self.assertNormal(expected[2:], msg)
             elif expected[:2] == 'l_':
-                self.expectsVLine(expected[2:], msg)
+                self.assertVline(expected[2:], msg)
             elif expected[:2] == 'b_':
-                self.expectsVBlock(expected[2:], msg)
+                self.assertVblock(expected[2:], msg)
             elif expected[:2] == 'i_':
-                self.expectsI(expected[2:], msg)
+                self.assertInsert(expected[2:], msg)
             elif expected[:2] == 'v_':
-                self.expectsV(expected[2:], msg)
+                self.assertVisual(expected[2:], msg)
             elif feed[0] == 'l':
-                self.expectsVLine(expected, msg)
+                self.assertVline(expected, msg)
             elif feed[0] == 'b':
-                self.expectsVBlock(expected, msg)
+                self.assertVblock(expected, msg)
             else:
-                self.expectsV(expected, msg)
+                self.assertVisual(expected, msg)
         else:
-            self.fixture(fixture)
+            self.normal(text)
 
             self.feed(feed)
 
             if expected[:2] == 'v_':
-                self.expectsV(expected[2:], msg)
+                self.assertVisual(expected[2:], msg)
             elif expected[:2] == 'l_':
-                self.expectsVLine(expected[2:], msg)
+                self.assertVline(expected[2:], msg)
             elif expected[:2] == 'b_':
-                self.expectsVBlock(expected[2:], msg)
+                self.assertVblock(expected[2:], msg)
             elif expected[:2] == 'i_':
-                self.expectsI(expected[2:], msg)
+                self.assertInsert(expected[2:], msg)
             else:
-                self.expects(expected, msg)
+                self.assertNormal(expected, msg)
 
 
 # A hardcoded map of sequences to commands. Ideally we wouldn't need this

@@ -26,38 +26,38 @@ class TestDocumentationExamples(unittest.FunctionalTestCase):
         # It's easiest to explain with examples.  Press `cs"'` inside
         #     "Hello world!"
 
-        self.fixture('"Hello| world!"')
+        self.normal('"Hello| world!"')
         self.feed('cs"\'')
 
         # to change it to
         #     'Hello world!'
 
-        self.expects("|'Hello world!'")
+        self.assertNormal("|'Hello world!'")
 
         # Now press `cs'<q>` to change it to
         #     <q>Hello world!</q>
 
         self.select(1)  # TODO Fix: should work if cursor is at point on target.
         self.feed("cs'<q>")
-        self.expects('|<q>Hello world!</q>')
+        self.assertNormal('|<q>Hello world!</q>')
 
         # To go full circle, press `cst"` to get
         #     "Hello world!"
 
         self.feed('cst"')
-        self.expects('|"Hello world!"')
+        self.assertNormal('|"Hello world!"')
 
         # To remove the delimiters entirely, press `ds"`.
         #     Hello world!
 
         self.feed('ds"')
-        self.expects('|Hello world!')
+        self.assertNormal('|Hello world!')
 
         # Now with the cursor on "Hello", press `ysiw]` (`iw` is a text object).
         #     [Hello] world!
 
         self.feed('ysiw]')
-        self.expects('|[Hello] world!')
+        self.assertNormal('|[Hello] world!')
 
         # Let's make that braces and add some space (use `}` instead of `{` for no
         # space): `cs]{`
@@ -65,23 +65,23 @@ class TestDocumentationExamples(unittest.FunctionalTestCase):
 
         self.select(1)  # TODO Fix: should work if cursor is at point on target.
         self.feed('cs]{')
-        self.expects('|{ Hello } world!')
+        self.assertNormal('|{ Hello } world!')
 
         # Now wrap the entire line in parentheses with `yssb` or `yss)`.
         #     ({ Hello } world!)
 
         # self.feed('yss)')
-        # self.expects('|({ Hello } world!)')
-        # TODO yss operation above is not yet supported, setup a fixture for next feed.
-        self.fixture('|{(Hello world!)}')
+        # self.assertNormal('|({ Hello } world!)')
+        # TODO yss operation above is not yet supported, setup view for next feed.
+        self.normal('|{(Hello world!)}')
 
         # Revert to the original text: `ds{ds)`
         #     Hello world!
 
         self.feed('ds{')
-        self.expects('|(Hello world!)')
+        self.assertNormal('|(Hello world!)')
         self.feed('ds)')
-        self.expects('|Hello world!')
+        self.assertNormal('|Hello world!')
 
         # TODO Implement ysiw<em>
         # Emphasize hello: `ysiw<em>`
