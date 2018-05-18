@@ -67,9 +67,9 @@ try:
     from NeoVintageous.nv.cmds_vi_motions import *  # noqa: F401,F403
 
     # Plugins.
+    from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
     from NeoVintageous.nv.plugin_surround import *  # noqa: F401,F403
     from NeoVintageous.nv.plugin_unimpaired import *  # noqa: F401,F403
-    from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
 
     # Events.
     from NeoVintageous.nv.events import *  # noqa: F401,F403
