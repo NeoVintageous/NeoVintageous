@@ -90,15 +90,15 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
         self.assertVline('x\n|f {\na\nb\nc\n}\n|x\n')
         self.feed('l_%')
         self.assertVline(start)
-        # TODO Addding a "reverse" param for assertVline() would make this call to assertSelection() obsolete.
+        # TODO Addding a assertRvline to test reversed selections would make calls to assertSelection() obsolete in this test  # noqa: E501
         self.assertSelection((14, 12), 'selection should be reversed')
 
     def test_if_forward_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
         start = 'x\nf {\na\n|b\nc\n}\n|x\n'
         self.vline(start)
-        # TODO Addding a "reverse" param for vline() above would make this calls to assertSelection() and select() obsolete.  # noqa: E501
         self.feed('l_%')
         self.assertVline('x\n|f {\na\nb\n|c\n}\nx\n')
+        # TODO Addding a assertRvline to test reversed selections would make calls to assertSelection() obsolete in this test  # noqa: E501
         self.assertSelection((10, 2))
         self.feed('l_%')
         self.assertVline(start)
@@ -106,12 +106,10 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
 
     def test_if_backward_vline_and_target_is_before_selection_it_should_extend_selection(self):
         start = 'x\nf {\na\nb\nc\n|}\n|x\n'
-        self.vline(start)
-        # TODO Addding a "reverse" param for vline() and assertVline() would make the calls to assertSelection() and select() below obsolete.  # noqa: E501
-        self.assertSelection((12, 14))
-        self.select((14, 12))
+        self.rvline(start)
         self.feed('l_%')
         self.assertVline('x\n|f {\na\nb\nc\n}\n|x\n')
+        # TODO Addding a assertRvline to test reversed selections would make the calls to assertSelection() below in this test # noqa: E501
         self.assertSelection((14, 2))
         self.feed('l_%')
         self.assertVline(start)
@@ -119,12 +117,10 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
 
     def test_if_backward_vlines_and_target_is_before_selection_it_should_extend_selection(self):
         start = 'x\nf {\na\nb\nc\n|}\nx\ny\n|z\n'
-        self.vline(start)
-        # TODO Addding a "reverse" param for vline() and assertVline() would make the calls to assertSelection() and select() below obsolete.  # noqa: E501
-        self.assertSelection((12, 18))
-        self.select((18, 12))
+        self.rvline(start)
         self.feed('l_%')
         self.assertVline('x\n|f {\na\nb\nc\n}\nx\ny\n|z\n')
+        # TODO Addding a assertRvline to test reversed selections would make the calls to assertSelection() below in this test # noqa: E501
         self.assertSelection((18, 2))
         self.feed('l_%')
         self.assertVline(start)
@@ -132,12 +128,10 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
 
     def test_if_reverse_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
         start = 'x\n|f {\na\nb\n|c\n}\nx\n'
-        self.vline(start)
-        # TODO Addding a "reverse" param for vline() above would make this calls to assertSelection() and select() obsolete.  # noqa: E501
-        self.assertSelection((2, 10))
-        self.select((10, 2))
+        self.rvline(start)
         self.feed('l_%')
         self.assertVline('x\nf {\na\n|b\nc\n}\n|x\n')
+        # TODO Addding a assertRvline to test reversed selections would calls to assertSelection() obsolete in this test  # noqa: E501
         self.assertSelection((8, 14))
         self.feed('l_%')
         self.assertVline(start)

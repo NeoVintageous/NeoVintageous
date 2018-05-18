@@ -150,12 +150,24 @@ class TestViewTestCase(unittest.ViewTestCase):
             self.visual('h|e|l|lo |w|orld!')
 
     def test_vline_sets_vline_mode(self):
-        self.vline('|text|')
+        self.vline('x|text\n|y')
         self.assertVlineMode()
 
     def test_vblock_sets_vblock_mode(self):
-        self.vblock('|text|')
+        self.vblock('x|text|y')
         self.assertVblockMode()
+
+    def test_rvisual_selection_is_reversed(self):
+        self.rvisual('t|ex|t fooo')
+        self.assertEqual([Region(3, 1)], list(self.view.sel()))
+        self.rvisual('t|ex|t f|oo|o')
+        self.assertEqual([Region(3, 1), Region(8, 6)], list(self.view.sel()))
+
+    def test_rvline_selection_is_reversed(self):
+        self.rvline('x\n|ab\n|y')
+        self.assertEqual([Region(5, 2)], list(self.view.sel()))
+        self.rvline('x\n|a\n|y\n|b\n|z')
+        self.assertEqual([Region(4, 2), Region(8, 6)], list(self.view.sel()))
 
     def test_assertNormal(self):
         self.view.run_command('insert', {'characters': 'hello world'})

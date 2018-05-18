@@ -139,7 +139,7 @@ class ViewTestCase(unittest.TestCase):
         # type: (str) -> None
         self.view.run_command('_nv_test_write', {'text': text})
 
-    def _setupView(self, text, mode):
+    def _setupView(self, text, mode, reverse=False):
         if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -161,7 +161,13 @@ class ViewTestCase(unittest.TestCase):
                         a = None
 
                 self.view.sel().clear()
-                self.view.sel().add_all(v_sels)
+
+                if reverse:
+                    v_sels.sort(reverse=True)
+                    for s in v_sels:
+                        self.view.sel().add(Region(s.b, s.a))
+                else:
+                    self.view.sel().add_all(v_sels)
 
             # This is required, because the cursor in VISUAL mode is a block
             # cursor. Without this setting some tests will pass when the window
@@ -195,10 +201,20 @@ class ViewTestCase(unittest.TestCase):
         #   text (str)
         self._setupView(text, VISUAL)
 
+    def rvisual(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, VISUAL, reverse=True)
+
     def vline(self, text):
         # Args:
         #   text (str)
         self._setupView(text, VISUAL_LINE)
+
+    def rvline(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, VISUAL_LINE, reverse=True)
 
     def vblock(self, text):
         # Args:
