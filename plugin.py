@@ -74,7 +74,7 @@ try:
     # Events.
     from NeoVintageous.nv.events import *  # noqa: F401,F403
 
-except Exception as e:  # pragma: no cover
+except Exception as e:
     _EXCEPTION = e
     import traceback
     traceback.print_exc()
@@ -123,14 +123,14 @@ def plugin_loaded():
         if events.post_upgrade('NeoVintageous'):
             pc_event = 'post_upgrade'
     except ImportError:
-        pass  # Package Control isn't available
-    except Exception:  # pragma: no cover
+        pass  # Package Control isn't available (PC is not required)
+    except Exception:
         import traceback
         traceback.print_exc()
 
     try:
         _update_ignored_packages()
-    except Exception:  # pragma: no cover
+    except Exception:
         import traceback
         traceback.print_exc()
 
@@ -148,12 +148,12 @@ def plugin_loaded():
         if view:
             init_state(view, new_session=True)
 
-    except Exception as e:  # pragma: no cover
+    except Exception as e:
         _exception = e
         import traceback
         traceback.print_exc()
 
-    if _EXCEPTION or _exception:  # pragma: no cover
+    if _EXCEPTION or _exception:
 
         try:
             _cleanup_views()
@@ -184,6 +184,6 @@ def plugin_unloaded():
 
     try:
         _cleanup_views()
-    except Exception:  # pragma: no cover
+    except Exception:
         import traceback
         traceback.print_exc()
