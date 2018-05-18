@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Added
 
+* Added [#353](https://github.com/NeoVintageous/NeoVintageous/issues/353): Color scheme support for current match highlighting in `/`, `?`, `*`, and `#`
 * Added [#312](https://github.com/NeoVintageous/NeoVintageous/issues/312): Map commands with arguments e.g. `nnoremap ,f :ShowOverlay overlay=goto text=@<CR>`, `nnoremap ,p :ShowOverlay overlay=goto show_files=true<CR>`
 * Added [#345](https://github.com/NeoVintageous/NeoVintageous/issues/345): Map commands without executing e.g `nnoremap ,r :reg`
 * Added [#346](https://github.com/NeoVintageous/NeoVintageous/issues/346): Map commands with ranges and counts
