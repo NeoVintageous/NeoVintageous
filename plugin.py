@@ -50,10 +50,10 @@ import sublime  # noqa: E402
 # errors. In these cases we want to notify the user about needing to restart
 # Sublime Text to finish the upgrade.
 #
-# In the case of any errors we also don't want to leave the normal functioning
-# of the editor unusable. We can't access the sublime api until the
-# plugin_loaded() hook is called, so we need to catch any exceptions and run
-# cleanup operations when the plugin_loaded() hook is called.
+# In the case of any errors we don't want to leave the normal functioning of the
+# editor unusable. We can't access the sublime api until the plugin_loaded()
+# hook is called, so we need to catch any exceptions and run cleanup operations
+# when the plugin_loaded() hook is called.
 
 try:
     _EXCEPTION = None
@@ -113,8 +113,6 @@ def _cleanup_views():
 
 def plugin_loaded():
 
-    # Handles errors gracefully.
-
     try:
         pc_event = None
         from package_control import events
@@ -138,13 +136,12 @@ def plugin_loaded():
         _exception = None
 
         view = sublime.active_window().active_view()
-
-        # We can't always expect a valid view to be returned from
-        # `sublime.Window.active_view()`, especially at startup, e.g. at startup
-        # if the active view is an image then `sublime.Window.active_view()`
-        # will return None, because images are not represented by a
-        # `sublime.View`, but by a `sublime.Sheet`.
+        # We can't expect a valid view to be returned from active_view(),
+        # especially at startup e.g. at startup if the active view is an image
+        # then active_view() returns None, because images are not *views*, they
+        # are *sheets* (they can be retrieved via active_sheet()).
         # See https://github.com/SublimeTextIssues/Core/issues/2116.
+        # TODO [review] Is it necessary to initialise the active view in plugin_loaded()? Doesn't the on_activated() event initialize activated views?  # noqa: E501
         if view:
             init_state(view, new_session=True)
 
