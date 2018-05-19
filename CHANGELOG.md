@@ -4,20 +4,20 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased (1.6.0)
 
-## Added
+### Added
 
 * Added [#353](https://github.com/NeoVintageous/NeoVintageous/issues/353): Color scheme support for current match highlighting in `/`, `?`, `*`, and `#`
-* Added [#312](https://github.com/NeoVintageous/NeoVintageous/issues/312): Map commands with arguments e.g. `nnoremap ,f :ShowOverlay overlay=goto text=@<CR>`, `nnoremap ,p :ShowOverlay overlay=goto show_files=true<CR>`
-* Added [#345](https://github.com/NeoVintageous/NeoVintageous/issues/345): Map commands without executing e.g `nnoremap ,r :reg`
+* Added [#312](https://github.com/NeoVintageous/NeoVintageous/issues/312): Map commands with arguments e.g. `nnoremap ,f :ShowOverlay overlay=goto text=@<CR>`
+* Added [#345](https://github.com/NeoVintageous/NeoVintageous/issues/345): Map commands without executing immediately (no trailing `<CR>`) e.g `nnoremap ,r :reg`
 * Added [#346](https://github.com/NeoVintageous/NeoVintageous/issues/346): Map commands with ranges and counts
 * Added [#344](https://github.com/NeoVintageous/NeoVintageous/issues/344): Add buffer commands `:bf[irst]`, `:br[ewind]`, `:bp[revious]`, `:bN[ex]t`, `:bn[ext]`, and `:bl[ast]`
-* Added [#343](https://github.com/NeoVintageous/NeoVintageous/issues/343): Add Unimpaired `[b`, `]b`, `[B`, `]B`, `]t`, `[t`, `]T`, and `[T`
-* Added [#327](https://github.com/NeoVintageous/NeoVintageous/issues/327): Redo command (`<C-r>`) should invoke a UI bell if no more redo commands
-* Added [#70](https://github.com/NeoVintageous/NeoVintageous/issues/70): `:set list` should show whitespace
-* Added [#334](https://github.com/NeoVintageous/NeoVintageous/issues/334): Implement `:tabN[ext]` (`:tabprevious` alias)
-* Added [#330](https://github.com/NeoVintageous/NeoVintageous/issues/330): Implement `:tabc[lose]`
+* Added [#343](https://github.com/NeoVintageous/NeoVintageous/issues/343): Add Unimpaired commands `[b`, `]b`, `[B`, `]B`, `]t`, `[t`, `]T`, and `[T`
+* Added [#327](https://github.com/NeoVintageous/NeoVintageous/issues/327): Redo command (`<C-r>`) should invoke a UI bell if there are no more redo commands
+* Added [#70](https://github.com/NeoVintageous/NeoVintageous/issues/70): Add show whitespace command `:set list`
+* Added [#334](https://github.com/NeoVintageous/NeoVintageous/issues/334): Add tab command `:tabN[ext]`
+* Added [#330](https://github.com/NeoVintageous/NeoVintageous/issues/330): Add tab command `:tabc[lose]`
 
-## Fixed
+### Fixed
 
 * Fixed [#173](https://github.com/NeoVintageous/NeoVintageous/issues/173): `vi{` selects extra blank chars
 * Fixed [#161](https://github.com/NeoVintageous/NeoVintageous/issues/161): `vit` `vat` work incorrect inside self closing tags
@@ -54,9 +54,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#148](https://github.com/NeoVintageous/NeoVintageous/issues/148): `:$` does not go to last line
 * Fixed [#87](https://github.com/NeoVintageous/NeoVintageous/issues/87): Double front slash doesn't escape properly
 
-## Removed
+### Removed
 
-* Removed: Deprecated SublimeLinter API calls
+* Removed: Deprecated SublimeLinter APIs
 
 ## 1.5.3 - 2018-03-24
 
