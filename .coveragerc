@@ -3,5 +3,6 @@ omit =
     /*/tests/test*
     /*/tests/nv/*
     /*/tests/fixtures/*
+    /*/tests/functional/*
     /*/tests/__init__.py
     /*/tests/commands.py
