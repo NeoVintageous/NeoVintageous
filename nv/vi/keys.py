@@ -18,8 +18,8 @@
 import re
 
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv import variables
 from NeoVintageous.nv.vi import cmd_base
-from NeoVintageous.nv.vi import variables
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING

@@ -15,22 +15,23 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+# A port of https://github.com/tpope/vim-unimpaired.
+
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import INPUT_INMEDIATE
+from NeoVintageous.nv.plugin import INPUT_IMMEDIATE
 from NeoVintageous.nv.plugin import inputs
 from NeoVintageous.nv.plugin import NORMAL
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.plugin import ViOperatorDef
 from NeoVintageous.nv.plugin import VISUAL
+from NeoVintageous.nv.window import window_buffer_control
+from NeoVintageous.nv.window import window_tab_control
 
 
 __all__ = [
     '_nv_unimpaired_command'
 ]
-
-
-# A post of https://github.com/tpope/vim-unimpaired.
 
 
 @register(seq='[l', modes=(NORMAL, VISUAL))
@@ -85,6 +86,58 @@ class _UnimpairedBlankDown(ViOperatorDef):
         }
 
 
+@register(seq='[b', modes=(NORMAL,))
+class _UnimpairedBprevious(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'bprevious'
+            }
+        }
+
+
+@register(seq=']b', modes=(NORMAL,))
+class _UnimpairedBnext(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'bnext'
+            }
+        }
+
+
+@register(seq='[B', modes=(NORMAL,))
+class _UnimpairedBfirst(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'bfirst'
+            }
+        }
+
+
+@register(seq=']B', modes=(NORMAL,))
+class _UnimpairedBlast(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'blast'
+            }
+        }
+
+
 @register(seq='[e', modes=(NORMAL,))
 class _UnimpairedMoveUp(ViOperatorDef):
     def translate(self, state):
@@ -111,6 +164,58 @@ class _UnimpairedMoveDown(ViOperatorDef):
         }
 
 
+@register(seq='[t', modes=(NORMAL,))
+class _UnimpairedTabprevious(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'tabprevious'
+            }
+        }
+
+
+@register(seq=']t', modes=(NORMAL,))
+class _UnimpairedTabnext(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'tabnext'
+            }
+        }
+
+
+@register(seq='[T', modes=(NORMAL,))
+class _UnimpairedTabfirst(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'tabfirst'
+            }
+        }
+
+
+@register(seq=']T', modes=(NORMAL,))
+class _UnimpairedTablast(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'tablast'
+            }
+        }
+
+
 class _BaseToggleDef(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -121,7 +226,7 @@ class _BaseToggleDef(ViOperatorDef):
             interactive_command=None,
             input_param=None,
             on_done=None,
-            type=INPUT_INMEDIATE
+            type=INPUT_IMMEDIATE
         )
 
     @property
@@ -178,13 +283,6 @@ def _context_previous(view, count):
             'count': count
         })
 
-    for i in range(count):
-        # DEPRECATED This is an old SublimeLinter API. If this command is not
-        # available then running it will do nothing.
-        view.run_command('sublimelinter_goto_error', {
-            'direction': 'previous'
-        })
-
 
 def _context_next(view, count):
     window = view.window()
@@ -192,13 +290,6 @@ def _context_next(view, count):
         window.run_command('sublime_linter_goto_error', {
             'direction': 'next',
             'count': count
-        })
-
-    for i in range(count):
-        # DEPRECATED This is an old SublimeLinter API. If this command is not
-        # available then running it will do nothing.
-        view.run_command('sublimelinter_goto_error', {
-            'direction': 'next'
         })
 
 
@@ -415,6 +506,10 @@ class _nv_unimpaired_command(TextCommand):
         elif action == 'blank_up':
             # Add [count] blank lines above the cursor
             _blank_up(self.view, edit, count)
+        elif action in ('bnext', 'bprevious', 'bfirst', 'blast'):
+            window_buffer_control(self.view.window(), action[1:], count=count)
+        elif action in ('tabnext', 'tabprevious', 'tabfirst', 'tablast'):
+            window_tab_control(self.view.window(), action[3:], count=count)
         elif action == 'context_next':
             # Go to the next [count]  SCM conflict marker or diff/patch hunk
             _context_next(self.view, count)

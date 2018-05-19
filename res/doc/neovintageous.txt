@@ -128,25 +128,30 @@ https://github.com/NeoVintageous/ToggleNeoVintageous
 VINTAGEOUSRC                                                      *vintageousrc*
 
 A file that contains initialization commands is called a "vintageousrc" file
-(the "rc" stands for runtime configuration). It is comparative to the |vimrc|
-file ("vintageousrc" is a Neovintageous specific name).
+("rc" stands for runtime configuration). It is comparative to the |vimrc| file.
 
 The file is located at "Packages/User/.vintageousrc" and is read by
-NeoVintageous during startup. It can be opened and reloaded via the Command
-Palette. See |neovintageous-command-palette|.
+NeoVintageous during startup.
 
-The |mapleader| special key is supported.
+The rc file can be opened and reloaded via the Command Palette commands:
 
-The following |:map-commands| are supported:
+* NeoVintageous: Open My .vintageousrc File
+* NeoVintageous: Reload My .vintageousrc File
 
-{lhs}   means left-hand-side
-{rhs}   means right-hand-side
+The |mapleader| variable is supported. To define a mapping which uses the
+"mapleader" variable, the special string "<leader>" can be used. It is replaced
+with the string value of "mapleader". If "mapleader" is not set or empty, a
+backslash is used instead. Example: >
+    nnoremap <leader>w 3w
+Works like: >
+    noremap \w  3w
+But after: >
+    let mapleader=,
+It works like: >
+    nnoremap ,w 3w
 
-:map        {lhs} {rhs}         |:map|
-:nmap       {lhs} {rhs}         |:nmap|
-:omap       {lhs} {rhs}         |:omap|
-:smap       {lhs} {rhs}         |:smap|
-:vmap       {lhs} {rhs}         |:vmap|
+The following |:map-commands| are supported ({lhs} means left-hand-side and
+{rhs} means right-hand-side).
 
 :noremap    {lhs} {rhs}         |:noremap|
 :nnoremap   {lhs} {rhs}         |:nnoremap|
@@ -154,134 +159,99 @@ The following |:map-commands| are supported:
 :snoremap   {lhs} {rhs}         |:snoremap|
 :vnoremap   {lhs} {rhs}         |:vnoremap|
 
-Note: the "remap" commands are currently aliased to the map commands, this is a
-known issue and hopefully will be fixed in a future release.
+Mapping to Ex commands is supported.
 
-Mapping to built-in Command-line mode commands is supported for basic use-cases
-using the format `command<CR>`. For example to map to the built-in Command-line
-mode command `:w` use `:w<CR>`.
+When you have a mapping that contains an Ex command, you need to put a line
+terminator after it to have it executed.  Use <CR> (carriage-return): >
 
-Mapping to Sublime Text commands is supported for basic use-cases. The command
-must start an Uppercase letter to avoid confusion with built-in Command-line
-mode commands. The command is converted to snake_case. For example to map to the
-Sublime Text command "toggle_side_bar" use `:ToggleSideBar<CR>`.
-
-Here is an example |vintageousrc| file: >
-
-    " The character " (the double quote mark) starts a comment
-
-    let mapleader=,
-
-    " Enter command line mode.
-    nnoremap <space> :
-
-    " Toggle the side bar.
-    nnoremap <leader>d :NeovintageousToggleSideBar<CR>
-
-    " " Make j and k work file linewise instead of screen linewise.
-    " nnoremap j gj
-    " nnoremap k gk
-
-    " Scroll viewport faster.
-    nnoremap <C-e> 3<C-e>
-    nnoremap <C-y> 3<C-y>
-
-    " Easy buffer navigation.
-    nnoremap <C-h> <C-w>h
-    nnoremap <C-j> <C-w>j
-    nnoremap <C-k> <C-w>k
-
-    " Clear highlighting. The :nohlsearch command is currently not supported.
-    " Using the Esc key is a workaround.
-    nnoremap <C-l> <Esc>
-
-    " Saving.
     nnoremap <C-s> :w<CR>
 
-    " Yank and paste using system clipboard.
+When a mapping doesn't end in <CR> the Command-line is invoked with the initial
+text set to the mapping: >
+
+    nnoremap <C-s> :w
+
+Mapping to Sublime Text commands is supported. These commands start with an
+uppercase letter to avoid confusion with built-in Ex commands. The command is
+converted to snake_case before executing. Arguments are accepted in key=value
+format with "true" & "false" converted to boolean and digits converted to
+integer: Example: >
+
+    nnoremap ,p :ShowOverlay overlay=goto show_files=true<CR>
+    nnoremap ,f :ShowOverlay overlay=goto text=@<CR>
+
+This is roughly equivalent to running the Sublime Text command: >
+
+    sublime.active_window().run_command('show_overlay', {
+        'overlay': 'goto',
+        'show_files': True
+    })
+
+    sublime.active_window().run_command('show_overlay', {
+        'overlay': 'goto',
+        'text': "@"
+    })
+
+
+Super-keys, known as windows-keys, and command-keys (OSX), can be mapped in
+form <D-...>. Super-keys are disabled by default. Example: >
+
+    nnoremap <D-i> :GotoSymbolInProject<CR>
+
+More examples...
+
+Toggle the side bar: >
+
+    nnoremap <leader>d :NeovintageousToggleSideBar<CR>
+
+Toggle the side bar when it has focus: `Menu > Preferences > Key Bindings`: >
+
+    [
+        {
+            "keys": [",", "d"],
+            "command": "neovintageous_toggle_side_bar",
+            "context": [
+                { "key": "control", "operand": "sidebar_tree" }
+            ]
+        }
+    ]
+
+Saving with CTRL-s: >
+
+    nnoremap <C-s> :w<CR>
+
+Yank and paste using system clipboard: >
+
     noremap <leader>y "+y
     noremap <leader>Y "+Y
     noremap <leader>p "+p
     noremap <leader>P "+P
     noremap <leader>yy "+Y
 
-    " Select entire buffer.
-    nnoremap <leader>va ggvGg_
-    nnoremap <leader>Va ggVG
+Show the registers: >
 
-    " Maintain Visual Mode after shifting > and <.
-    " Notice that '<lt>' is used to represent a real '<', because like a
-    " backslash, it needs to be escaped. See `:h <>`.
-    vnoremap <lt> <lt>gv
-    vnoremap > >gv
+    nnoremap <leader>r :reg<CR>
 
-    " Goto to symbols.
-    nnoremap <leader>f :GotoSymbolInFile<CR>
-    nnoremap <leader>m :GotoSymbolInProject<CR>
+Scroll viewport faster: >
 
-    " Edit preferences.
-    nnoremap <leader>ep :OpenPreferences<CR>
-    nnoremap <leader>en :NeovintageousOpenMyRcFile<CR>
+    nnoremap <C-e> 3<C-e>
+    nnoremap <C-y> 3<C-y>
 
-    " Some window command aliases. This is especially useful if you don't like
-    " to enable ctrl-key key bindings ('vintageous_use_ctrl_keys' setting).
+Some window command aliases. This is especially useful if you don't like to
+enable ctrl-key key bindings: >
+
     nnoremap <leader>_ <C-w>_
     nnoremap <leader>\| <C-w>\|
     nnoremap <leader>= <C-w>=
     nnoremap <leader>. <C-w>_<C-w>\|
 
-    " Test plugin.
-    " See https://github.com/gerardroche/sublime-test.
-    " See https://github.com/gerardroche/sublime-phpunit.
-    " See https://github.com/gerardroche/sublime-color-scheme-unit.
-    " See https://github.com/randy3k/UnitTesting.
-    nnoremap <leader>t :TestNearest<CR>
-    nnoremap <leader>T :TestFile<CR>
-    nnoremap <leader>a :TestSuite<CR>
-    nnoremap <leader>l :TestLast<CR>
-    nnoremap <leader>gg :TestVisit<CR>
+Goto Symbol: >
 
-Two custom commands are used in the above mappings: >
+    nnoremap <leader>s :ShowOverlay overlay=goto text=@<CR>
 
-    import os
+Goto Symbol in Project: >
 
-    import sublime
-    import sublime_plugin
-
-    class GotoSymbolInFileCommand(sublime_plugin.WindowCommand):
-        def run(self):
-            self.window.run_command('show_overlay', {
-                'overlay': 'goto',
-                'text': '@'
-            })
-
-    class OpenPreferencesCommand(sublime_plugin.WindowCommand):
-        def run(self):
-            self.window.run_command('open_file', {
-                'file': os.path.join(
-                    sublime.packages_path(),
-                    'User',
-                    'Preferences.sublime-settings'
-                )
-            })
-
-To create a mapping to toggle the side bar when the side bar has focus add this
-key binding to your Sublime Text Key Bindings (modify to the keys to reflect
-whatever mapping you used in your `vintageousrc` to toggle the side bar. In the
-example above we used `<leader>d`, and since we defined our leader key as a
-comma (`,`) then we create a comparative mapping for when the side bar has
-focus i.e. `,d`):
-
-`Menu > Preferences > Key Bindings`:
-
->
-    {
-        "keys": [",", "d"],
-        "command": "neovintageous_toggle_side_bar",
-        "context": [
-            { "key": "control", "operand": "sidebar_tree" }
-        ]
-    },
+    nnoremap <leader>i :GotoSymbolInProject<CR>
 
 ==============================================================================
 
@@ -328,58 +298,70 @@ view when it's opened. This is easiest to understand with some examples: >
 
 ==============================================================================
 
-PLUGINS OUT-OF-THE-BOX                                   *neovintageous-plugins*
-
-Summary of the plugins are provided out-of-the-box.
-
-Some plugin features may only be partially supported and some features may
-depend on third party plugins. Those details are indicated below.
-
-Please open issues about missing features that you would like too see
-implemented.
+PLUGINS                                                  *neovintageous-plugins*
 
 ------------------------------------------------------------------------------
 
 ABOLISH                                                  *neovintageous-abolish*
 
-Currently only the coercion commands are supported. See |abolish-coercion|.
+The abolish case mutating algorithms are supported, they can be applied to the
+word under the cursor.
+
+See |abolish-coercion|.
 
 ------------------------------------------------------------------------------
 
 COMMENTARY                                            *neovintageous-commentary*
 
-Comment stuff out. Then uncomment it later. See |commentary|.
+Comment stuff out. Then uncomment it later.
+
+See |commentary.txt|.
 
 ------------------------------------------------------------------------------
 
 SURROUND                                                *neovintageous-surround*
 
-A plugin for deleting, changing, and adding "surroundings". See |surround|.
+A plugin for deleting, changing, and adding "surroundings".
+
+See |surround.txt|.
 
 ------------------------------------------------------------------------------
 
 UNIMPAIRED                                            *neovintageous-unimpaired*
 
-This plugin provides several pairs of bracket maps. See |unimpaired|.
+This plugin provides several pairs of bracket maps.
 
-Next and previous
+The following maps all correspond to normal mode commands.  If a count is
+given, it becomes an argument to the command.
+
+[b      |:bprevious|
+]b      |:bnext|
+[B      |:bfirst|
+]B      |:blast|
+[t      |:tprevious|
+]t      |:tnext|
+[T      |:tfirst|
+]T      |:tlast|
+
 
 [l                      Jump to the [count] previous error.
-
-                        Requires: https://github.com/SublimeLinter/SublimeLinter3
-
-                        Also see |[l|.
+                        Requires SublimeLinter:
+                        https://github.com/SublimeLinter/SublimeLinter3
 
 ]l                      Jump to the [count] next error.
+                        Requires SublimeLinter:
+                        https://github.com/SublimeLinter/SublimeLinter3
 
-                        Requires: https://github.com/SublimeLinter/SublimeLinter3
+[<Space>                Add [count] blank lines above the cursor.
 
-                        Also see |]l|.
+]<Space>                Add [count] blank lines below the cursor.
 
-All |unimpaired-lines| commands are supported i.e |[<Space>|, |]<Space>|, |[e|
-and |]e|.
+[e                      Exchange the current line with [count] lines above it.
 
-Option toggling is supported, with some NeoVintageous specific additions.
+]e                      Exchange the current line with [count] lines below it.
+
+Option toggling (some are Neovintageous specific, meaning they are not from
+the original Unimpaired plugin).
 
 On      Off     Toggle  Option
 |[oa|   |]oa|   |coa|   'menu' {Neovintageous specific}

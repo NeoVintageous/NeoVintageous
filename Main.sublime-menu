@@ -9,23 +9,11 @@
                         "caption": "NeoVintageous",
                         "children": [
                             {
-                                "caption": "Settings",
-                                "command": "edit_settings",
-                                "args": {"base_file": "${packages}/NeoVintageous/Preferences.sublime-settings"}
-                            },
-                            {
                                 "caption": ".vintageousrc File",
                                 "command": "neovintageous_open_my_rc_file"
                             },
                             {
                                 "caption": "-"
-                            },
-                            {
-                                "caption": "README",
-                                "command": "open_file",
-                                "args": {
-                                    "file": "${packages}/NeoVintageous/README.md"
-                                }
                             },
                             {
                                 "caption": "CHANGELOG",

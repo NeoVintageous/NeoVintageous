@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from functools import partial
+import logging
 import re
 import webbrowser
 
@@ -23,6 +24,7 @@ from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
 
+from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
@@ -38,7 +40,6 @@ from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vim import console_message
-from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -48,11 +49,11 @@ from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.window import window_tab_control
 from NeoVintageous.nv.window import WindowAPI
 
 
 __all__ = [
-    '__replace_line',
     '_enter_insert_mode',
     '_enter_normal_mode',
     '_enter_normal_mode_impl',
@@ -75,9 +76,12 @@ __all__ = [
     '_vi_big_p',
     '_vi_big_s_action',
     '_vi_big_x',
+    '_vi_big_z_big_q',
+    '_vi_big_z_big_z',
     '_vi_c',
     '_vi_cc',
     '_vi_ctrl_e',
+    '_vi_ctrl_g',
     '_vi_ctrl_r',
     '_vi_ctrl_r_equal',
     '_vi_ctrl_right_square_bracket',
@@ -144,6 +148,7 @@ __all__ = [
     '_vi_s',
     '_vi_select_big_j',
     '_vi_select_j',
+    '_vi_select_k',
     '_vi_tilde',
     '_vi_u',
     '_vi_visual_big_u',
@@ -158,7 +163,7 @@ __all__ = [
 ]
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 # https://vimhelp.appspot.com/change.txt.html#gU
@@ -330,19 +335,27 @@ class _vi_ctrl_r(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
+        change_count_before = self._view.change_count()
+
         for i in range(count):
             self._view.run_command('redo')
 
-        self.correct_xpos()
+        change_count_after = self._view.change_count()
 
-    # XXX: make this a global 'service'?
-    # XXX: In fact, this may indicate that the redone command is at fault. For example, it seems
-    # that de near EOL does not adjust xpos as it should. In summary: we need to revise commands
-    # and probably remove this here.
-    def correct_xpos(self):
+        if change_count_after == change_count_before:
+            ui_blink()
+
+        # Fix eol issue.
+        # See https://github.com/SublimeTextIssues/Core/issues/2121.
         def f(view, s):
-            if (view.substr(s.b) == '\n' and not view.line(s.b).empty()):
+            pt = s.b
+            char = view.substr(pt)
+            if (char == '\n' and not view.line(pt).empty()):
+                return Region(pt - 1)
+
+            if char == '\x00' and pt == self._view.size():
                 return Region(s.b - 1)
+
             return s
 
         regions_transformer(self._view, f)
@@ -452,7 +465,7 @@ class _enter_normal_mode(ViTextCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('enter normal mode (%s)', mode)
+        _log.debug('enter normal mode (mode=%s, from_init=%s)', mode, from_init)
         state = self.state
 
         self.view.window().run_command('hide_auto_complete')
@@ -519,13 +532,15 @@ class _enter_normal_mode(ViTextCommandBase):
         state.update_xpos(force=True)
         state.reset_status()
 
+        self.view.run_command('_nv_fix_st_eol_caret', {'mode': state.mode})
+
 
 class _enter_normal_mode_impl(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
-        _log.debug('enter normal mode (impl) (%s)', mode)
+        _log.debug('enter normal mode (mode=%s) (impl)', mode)
 
         def f(view, s):
             if mode == INSERT:
@@ -538,27 +553,38 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                 return Region(s.b)
 
             if mode == VISUAL:
+                # Save selections for gv. But only if there are non-empty sels.
+                # We might be in visual mode and not have non-empty sels because
+                # we've just existed from an action.
+                if self.view.has_non_empty_selection_region():
+                    self.view.add_regions('visual_sel', list(self.view.sel()))
+                    self.view.settings().set('_nv_visual_sel_mode', mode)
+
                 if s.a < s.b:
                     pt = s.b - 1
                     if view.line(pt).empty():
                         return Region(pt)
+
                     if view.substr(pt) == '\n':
                         pt -= 1
+
                     return Region(pt)
+
                 return Region(s.b)
 
             if mode in (VISUAL_LINE, VISUAL_BLOCK):
-                # save selections for gv
-                # But only if there are non-empty sels. We might be in visual
-                # mode and not have non-empty sels because we've just existed
-                # from an action.
+                # Save selections for gv. But only if there are non-empty sels.
+                # We might be in visual mode and not have non-empty sels because
+                # we've just existed from an action.
                 if self.view.has_non_empty_selection_region():
                     self.view.add_regions('visual_sel', list(self.view.sel()))
+                    self.view.settings().set('_nv_visual_sel_mode', mode)
 
                 if s.a < s.b:
                     pt = s.b - 1
                     if (view.substr(pt) == '\n') and not view.line(pt).empty():
                         pt -= 1
+
                     return Region(pt)
                 else:
                     return Region(s.b)
@@ -578,7 +604,13 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
         regions_transformer(self.view, f)
 
+        if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
+            sel = self.view.sel()[-1]
+            self.view.sel().clear()
+            self.view.sel().add(Region(sel.b))
+
         self.view.erase_regions('vi_search')
+        self.view.erase_regions('vi_search_current')
         self.view.run_command('_nv_fix_st_eol_caret', {'mode': mode})
 
 
@@ -753,7 +785,7 @@ class _vi_dot(ViWindowCommandBase):
             state.mode = NORMAL
 
         if repeat_data is None:
-            _log.debug('[_vi_dot] nothing to repeat')
+            _log.debug('nothing to repeat')
             return
 
         # TODO: Find out if the user actually meant '1'.
@@ -761,7 +793,7 @@ class _vi_dot(ViWindowCommandBase):
             count = None
 
         type_, seq_or_cmd, old_mode, visual_data = repeat_data
-        _log.debug('[_vi_dot] type=\'%s\', seq or cmd=\'%s\', old mode=\'%s\'', type_, seq_or_cmd, old_mode)
+        _log.debug('type=%s, seq or cmd=%s, old mode=%s', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
             state.restore_visual_data(visual_data)
@@ -772,7 +804,7 @@ class _vi_dot(ViWindowCommandBase):
             return ui_blink()
 
         if type_ == 'vi':
-            self.window.run_command('process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
+            self.window.run_command('_nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
         elif type_ == 'native':
             sels = list(self.window.active_view().sel())
             # FIXME: We're not repeating as we should. It's the motion that
@@ -1092,7 +1124,7 @@ class _vi_quote(ViTextCommandBase):
 
     def run(self, edit, mode=None, character=None, count=1):
         def f(view, s):
-            if mode == VISUAL:
+            if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if s.a <= s.b:
                     if address.b < s.b:
                         return Region(s.a + 1, address.b)
@@ -1317,41 +1349,32 @@ class _vi_s(ViTextCommandBase):
 
 
 class _vi_x(ViTextCommandBase):
+
     _can_yank = True
     _populates_small_delete_register = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def line_end(self, pt):
-        return self.view.line(pt).end()
-
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
-            nonlocal abort
             if mode == INTERNAL_NORMAL:
-                eol = utils.get_eol(view, s.b)
-                return Region(s.b, min(s.b + count, eol))
-            if s.size() == 1:
-                b = s.b - 1 if s.a < s.b else s.b  # FIXME # noqa: F841
+                return Region(s.b, min(s.b + count, utils.get_eol(view, s.b)))
+
             return s
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
-            # TODO [review] error?
+            # TODO [review] Why blink? Is this an error? Does/Should this ever run in any other mode?
             ui_blink()
             self.enter_normal_mode(mode)
 
-        if mode == INTERNAL_NORMAL:
-            if all(self.view.line(s.b).empty() for s in self.view.sel()):
-                return ui_blink()
-
-        abort = False
+        if mode == INTERNAL_NORMAL and all(self.view.line(s.b).empty() for s in self.view.sel()):
+            return
 
         regions_transformer(self.view, select)
 
-        if not abort:
-            self.state.registers.yank(self, register)
-            self.view.run_command('right_delete')
+        self.state.registers.yank(self, register)
+        self.view.run_command('right_delete')
         self.enter_normal_mode(mode)
 
 
@@ -1482,7 +1505,10 @@ class _vi_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return Region(s.begin())
+            bol = utils.get_bol(view, s.begin())
+            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+
+            return Region(pt)
 
         def indent_from_begin(view, s, level=1):
             block = '\t' if not translate else ' ' * size
@@ -1520,7 +1546,10 @@ class _vi_less_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            return Region(s.begin())
+            bol = utils.get_bol(view, s.begin())
+            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+
+            return Region(pt)
 
         # Note: Vim does not unindent in visual block mode.
 
@@ -1616,6 +1645,22 @@ class _vi_big_x(ViTextCommandBase):
             self.view.run_command('left_delete')
 
         self.enter_normal_mode(mode)
+
+
+class _vi_big_z_big_q(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        do_ex_command(self.window, 'quit', {'forceit': True})
+
+
+class _vi_big_z_big_z(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        do_ex_command(self.window, 'exit')
 
 
 class _vi_big_p(ViTextCommandBase):
@@ -1848,9 +1893,9 @@ class _vi_gt(ViWindowCommandBase):
 
     def run(self, count=0, mode=None):
         if count > 0:
-            self.window.run_command('tab_control', {'command': 'goto', 'index': count})
+            window_tab_control(self.window, action='goto', index=count)
         else:
-            self.window.run_command('tab_control', {'command': 'next'})
+            window_tab_control(self.window, action='next')
 
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
@@ -1861,7 +1906,8 @@ class _vi_g_big_t(ViWindowCommandBase):
         super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
-        self.window.run_command('tab_control', {'command': 'prev'})
+        window_tab_control(self.window, action='previous')
+
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
@@ -2294,7 +2340,27 @@ class _vi_gv(IrreversibleTextCommand):
         if not sels:
             return
 
-        self.view.window().run_command('_enter_visual_mode', {'mode': mode})
+        visual_sel_mode = self.view.settings().get('_nv_visual_sel_mode', mode)
+
+        if visual_sel_mode == VISUAL:
+            cmd = '_enter_visual_mode'
+        elif visual_sel_mode == VISUAL_LINE:
+            cmd = '_enter_visual_line_mode'
+            for sel in sels:
+                a = self.view.line(sel.a)
+                b = self.view.line(sel.b)
+                if a < b:
+                    sel.a = a.begin()
+                    sel.b = b.end()
+                else:
+                    sel.a = a.end()
+                    sel.b = b.begin()
+        elif visual_sel_mode == VISUAL_BLOCK:
+            cmd = '_enter_visual_block_mode'
+        else:
+            raise RuntimeError('unexpected visual sel mode')
+
+        self.view.window().run_command(cmd, {'mode': mode})
         self.view.sel().clear()
         self.view.sel().add_all(sels)
 
@@ -2368,6 +2434,14 @@ class _vi_ctrl_e(ViTextCommandBase):
         self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
 
 
+class _vi_ctrl_g(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        do_ex_command(self.window, 'file')
+
+
 # https://vimhelp.appspot.com/scroll.txt.html#CTRL-Y
 class _vi_ctrl_y(ViTextCommandBase):
     def __init__(self, *args, **kwargs):
@@ -2420,6 +2494,15 @@ class _vi_q(IrreversibleTextCommand):
     def run(self, name=None, mode=None, count=1):
         state = State(self.view)
 
+        # TODO [refactor] state.is_recording, state.start_recording
+        # TODO [refactor] State.macro_registers
+
+        # TODO Fix macro registers get broken when invalid registers given, or
+        # if recording macros are left "unclosed" (not stopped) e.g. if a
+        # recording macro is not stopped before closing ST then macros don't
+        # work on the next, similarly, trying to use an invalid register like
+        # "#" breaks macro registers.
+
         if state.is_recording:
             State.macro_registers[_vi_q._register_name] = list(State.macro_steps)
             state.stop_recording()
@@ -2436,6 +2519,9 @@ class _vi_at(IrreversibleTextCommand):
         super().__init__(*args, **kwargs)
 
     def run(self, name=None, mode=None, count=1):
+        # TODO [refactor] State.macro_steps
+        # TODO [refactor] State.macro_registers
+
         # TODO Do we need to glue all these edits?
         cmds = State.macro_steps
         if name != '@':
@@ -2461,6 +2547,7 @@ class _vi_at(IrreversibleTextCommand):
                     motion = args.get('motion')
                     motion['motion_args']['xpos'] = State(self.view).xpos
                     args['motion'] = motion
+
                 self.view.run_command(cmd, args)
 
 
@@ -2536,6 +2623,8 @@ class _enter_visual_block_mode(ViTextCommandBase):
         if not self.view.has_non_empty_selection_region():
             regions_transformer(self.view, f)
 
+        state.display_status()
+
 
 class _vi_select_j(ViWindowCommandBase):
     def __init__(self, *args, **kwargs):
@@ -2547,6 +2636,18 @@ class _vi_select_j(ViWindowCommandBase):
 
         for i in range(count):
             self.window.run_command('find_under_expand')
+
+
+class _vi_select_k(ViWindowCommandBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(self, count=1, mode=None):
+        if mode != SELECT:
+            raise ValueError('wrong mode')
+
+        for i in range(count):
+            self.window.run_command('soft_undo')
 
 
 # Implemented as if 'notildeopt' was True
@@ -2758,21 +2859,11 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         self.view.window().show_quick_panel(items, self.replace, MONOSPACE_FONT)
 
     def replace(self, s):
-        self.view.run_command('__replace_line', {'with_what': self._matches[s]})
+        self.view.run_command('_nv_replace_line', {'with_what': self._matches[s]})
         del self.__dict__['_matches']
         pt = self.view.sel()[0].b
         self.view.sel().clear()
         self.view.sel().add(Region(pt))
-
-
-class __replace_line(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def run(self, edit, with_what):
-        b = self.view.line(self.view.sel()[0].b).a
-        pt = utils.next_non_white_space_char(self.view, b, white_space=' \t')
-        self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
 
 
 # https://vimhelp.appspot.com/change.txt.html#gc

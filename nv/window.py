@@ -656,3 +656,74 @@ def window_split(window, file=None):
     else:
         window.run_command('create_pane', {'direction': 'down'})
         window.run_command('clone_file_to_pane', {'direction': 'down'})
+
+
+def window_buffer_control(window, action, count=1):
+    if action == 'next':
+        # TODO Optimise: Avoid running command n times
+        for i in range(count):
+            window.run_command('next_view')
+
+    elif action == 'previous':
+        # TODO Optimise: Avoid running command n times
+        for i in range(count):
+            window.run_command('prev_view')
+
+    elif action == 'first':
+        window.focus_group(0)
+        window.run_command('select_by_index', {'index': 0})
+
+    elif action == 'last':
+        window.focus_group(window.num_groups() - 1)
+        window.run_command('select_by_index', {'index': len(window.views_in_group(window.num_groups() - 1)) - 1})
+
+    else:
+        raise ValueError('unknown buffer control action: %s' % action)
+
+
+def window_tab_control(window, action, count=1, index=None):
+    view = window.active_view()
+    if not view:
+        return status_message('view not found')
+
+    view_count = len(window.views_in_group(window.active_group()))
+    group_index, view_index = window.get_view_index(view)
+
+    if action == 'next':
+        window.run_command('select_by_index', {'index': (view_index + count) % view_count})
+
+    elif action == 'previous':
+        window.run_command('select_by_index', {'index': (view_index + view_count - count) % view_count})
+
+    elif action == 'last':
+        window.run_command('select_by_index', {'index': view_count - 1})
+
+    elif action == 'first':
+        window.run_command('select_by_index', {'index': 0})
+
+    elif action == 'goto':
+        window.run_command('select_by_index', {'index': index - 1})
+
+    elif action == 'only':
+        group_views = window.views_in_group(group_index)
+        if any(view.is_dirty() for view in group_views):
+            return status_message('E445: Other window contains changes')
+
+        for group_view in group_views:
+            if group_view.id() == view.id():
+                continue
+
+            window.focus_view(group_view)
+
+            # TODO [review] Probably doesn't need use :quit (just close the view).
+            from NeoVintageous.nv.ex_cmds import do_ex_command
+
+            do_ex_command(window, 'quit')
+
+        window.focus_view(view)
+
+    elif action == 'close':
+        window.run_command('close_by_index', {'group': group_index, 'index': view_index})
+
+    else:
+        raise ValueError('unknown tab control action: %s' % action)

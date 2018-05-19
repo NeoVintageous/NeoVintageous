@@ -71,6 +71,14 @@ def _set_sidebar(view, name, value, opt, globally=False):
     view.window().run_command('toggle_side_bar')
 
 
+def _set_list(view, name, value, opt, globally=False):
+    value = _opt_bool_parser(value)
+    if value:
+        view.settings().set('draw_white_space', 'all')
+    else:
+        view.settings().set('draw_white_space', 'selection')
+
+
 def _opt_bool_parser(value):
     if value.lower() in ('false', 'true', '0', '1', 'yes', 'no'):
         if value.lower() in ('true', '1', 'yes'):
@@ -96,6 +104,7 @@ _VI_OPTIONS = {
     'hlsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'ignorecase': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'incsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
+    'list': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False, parser=None, action=_set_list, negatable=True),  # FIXME # noqa: E501
     'magic': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'visualbell': _vi_user_setting(scope=_SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'rulers': _vi_user_setting(scope=_SCOPE_VIEW, values=None, default=[], parser=_opt_rulers_parser, action=_set_generic_view_setting, negatable=False),  # FIXME # noqa: E501

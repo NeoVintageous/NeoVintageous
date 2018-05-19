@@ -15,7 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import sublime
+import os
+
+if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
+    # Initialise the debug logger.
+    #
+    # To enable the debug logger: set an environment variable named
+    # SUBLIME_NEOVINTAGEOUS_DEBUG to a non-empty value.
+    #
+    # The debug logger needs to be configured before the plugin modules are
+    # loaded, otherwise they would be logging to what is mostly a null logger:
+    # Python configures a "handler of last resort" since 3.2, which is a
+    # StreamHandler writing to sys.stderr with a level of WARNING, and is used
+    # to handle logging events in the absence of any logging configuration. The
+    # end result is to just print the message to sys.stderr, and in Sublime Text
+    # that means it will print the message to console.
+    import logging
+
+    logger = logging.getLogger('NeoVintageous')
+    if not logger.hasHandlers():
+        logger.setLevel(logging.DEBUG)
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(
+            logging.Formatter('NeoVintageous: %(levelname)-7s [%(filename)s:%(lineno)d] %(message)s')
+        )
+        logger.addHandler(stream_handler)
+        logger.debug('debug logger initialised')
+
+import sublime  # noqa: E402
 
 # The plugin loading is designed to handle errors gracefully.
 #
@@ -23,39 +50,29 @@ import sublime
 # errors. In these cases we want to notify the user about needing to restart
 # Sublime Text to finish the upgrade.
 #
-# In the case of any errors we also don't want to leave the normal functioning
-# of the editor unusable. We can't access the sublime api until the
-# plugin_loaded() hook is called, so we need to catch any exceptions and run
-# cleanup operations when the plugin_loaded() hook is called.
+# In the case of any errors we don't want to leave the normal functioning of the
+# editor unusable. We can't access the sublime api until the plugin_loaded()
+# hook is called, so we need to catch any exceptions and run cleanup operations
+# when the plugin_loaded() hook is called.
 
 try:
     _EXCEPTION = None
 
-    from .nv.state import init_state
+    from NeoVintageous.nv.state import init_state
 
-    from .nv.cmds import *  # noqa: F401,F403
-
+    # Commands.
     # TODO Organise all commands into a single module (i.e. .nv.cmds).
-    from .nv.cmds_ex import *  # noqa: F401,F403
-    from .nv.cmds_vi_actions import *  # noqa: F401,F403
-    from .nv.cmds_vi_motions import *  # noqa: F401,F403
+    from NeoVintageous.nv.cmds import *  # noqa: F401,F403
+    from NeoVintageous.nv.cmds_vi_actions import *  # noqa: F401,F403
+    from NeoVintageous.nv.cmds_vi_motions import *  # noqa: F401,F403
 
-    # Why not put all the plugins in a directory named "plugins"? The plugins
-    # were not placed into a directory named "plugins" because of a bug in
-    # Sublime Text that causes loading issues with anything named "plugins" i.e.
-    # module names, attribute names, class names, functions, etc.
-    # See https://github.com/NeoVintageous/NeoVintageous/commit/f29727.
-    # This issue has since been fixed in Sublime Text build 3153.
-    # See https://github.com/SublimeTextIssues/Core/issues/1991.
-    # Note that if the plugins are moved into a directory named "plugins" at a
-    # later time, then remember to bump the minimum Sublime Text version
-    # requirement to 3153.
-    from .nv.plugin_surround import *      # noqa: F401,F403
-    from .nv.plugin_unimpaired import *    # noqa: F401,F403
-    from .nv.plugin_abolish import *       # noqa: F401,F403
+    # Plugins.
+    from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
+    from NeoVintageous.nv.plugin_surround import *  # noqa: F401,F403
+    from NeoVintageous.nv.plugin_unimpaired import *  # noqa: F401,F403
 
-    # TODO [review] Should events be imported using "*" idiom i.e. `from .nv.events import *`?
-    from .nv.events import NeoVintageousEvents  # noqa: F401
+    # Events.
+    from NeoVintageous.nv.events import *  # noqa: F401,F403
 
 except Exception as e:
     _EXCEPTION = e
@@ -96,8 +113,6 @@ def _cleanup_views():
 
 def plugin_loaded():
 
-    # Handles errors gracefully.
-
     try:
         pc_event = None
         from package_control import events
@@ -106,7 +121,7 @@ def plugin_loaded():
         if events.post_upgrade('NeoVintageous'):
             pc_event = 'post_upgrade'
     except ImportError:
-        pass  # Package Control isn't available
+        pass  # Package Control isn't available (PC is not required)
     except Exception:
         import traceback
         traceback.print_exc()
@@ -121,13 +136,12 @@ def plugin_loaded():
         _exception = None
 
         view = sublime.active_window().active_view()
-
-        # We can't always expect a valid view to be returned from
-        # `sublime.Window.active_view()`, especially at startup, e.g. at startup
-        # if the active view is an image then `sublime.Window.active_view()`
-        # will return None, because images are not represented by a
-        # `sublime.View`, but by a `sublime.Sheet`.
+        # We can't expect a valid view to be returned from active_view(),
+        # especially at startup e.g. at startup if the active view is an image
+        # then active_view() returns None, because images are not *views*, they
+        # are *sheets* (they can be retrieved via active_sheet()).
         # See https://github.com/SublimeTextIssues/Core/issues/2116.
+        # TODO [review] Is it necessary to initialise the active view in plugin_loaded()? Doesn't the on_activated() event initialize activated views?  # noqa: E501
         if view:
             init_state(view, new_session=True)
 
@@ -159,7 +173,7 @@ def plugin_loaded():
                 message = "An error occurred trying to load NeoVintageous. "\
                           "Please restart Sublime Text."
 
-        print('NeoVintageous:', message)
+        print('NeoVintageous: ERROR', message)
         sublime.message_dialog(message)
 
 

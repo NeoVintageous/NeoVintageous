@@ -66,3 +66,57 @@ class TestViEnterNormalModeMulipleSelectionsFromNormalMode(unittest.ViewTestCase
         self.view.run_command('_enter_normal_mode', {'mode': unittest.NORMAL})
 
         self.assertSelection(8)
+
+
+class TestVisualBlock(unittest.ViewTestCase):
+
+    def test_enter_normal_from_visual_block(self):
+        self.write('1111\n2222\n')
+        self.select([(1, 3), (6, 8)])
+
+        State(self.view).mode = unittest.VISUAL_BLOCK
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL_BLOCK})
+
+        self.assertNormalMode()
+        self.assertSelection(7)
+
+
+class TestEnterNormalMode(unittest.ViewTestCase):
+
+    def test_visual_mode_positions_cursor_on_last_character_not_eol_char(self):
+        self.write('ab\n')
+        self.select((1, 3))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(1)
+
+        self.write('ab\n')
+        self.select((3, 1))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(1)
+
+        self.write('abc\ndef\n')
+        self.select((1, 4))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(2)
+
+        self.write('abc\ndef\n')
+        self.select((6, 3))
+        State(self.view).mode = unittest.VISUAL
+
+        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+
+        self.assertNormalMode()
+        self.assertSelection(2)

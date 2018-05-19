@@ -40,12 +40,12 @@ from NeoVintageous.nv.mappings import VISUAL_LINE
 
 # We need to patch the mappings storage dictionary so that out tests don't mess
 # up our userland mappings, which would obviously be bad.
-from NeoVintageous.nv.mappings import _mappings as __mappings_struct__
+from NeoVintageous.nv.mappings import _mappings as _mappings_struct_
 
 
 # Reusable mappings test patcher (also passes a clean mappings structure to tests).
 _patch_mappings = unittest.mock.patch('NeoVintageous.nv.mappings._mappings',
-                                      new_callable=lambda: {k: {} for k in __mappings_struct__})
+                                      new_callable=lambda: {k: {} for k in _mappings_struct_})
 
 
 class TestMapping(unittest.TestCase):
@@ -188,8 +188,8 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(_mappings, expected)
 
     @_patch_mappings
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._DEFAULTS', {'mapleader': '\\'})
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._VARIABLES', {})
+    @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': '\\'})
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_add_expands_keys(self, _mappings):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousToggleSideBar<CR>')
 
@@ -198,8 +198,8 @@ class TestMappings(unittest.TestCase):
         })
 
     @_patch_mappings
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._DEFAULTS', {'mapleader': '\\'})
-    @unittest.mock.patch('NeoVintageous.nv.vi.variables._VARIABLES', {})
+    @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': '\\'})
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_can_remove_expanded_keys(self, _mappings):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousToggleSideBar<CR>')
         mappings_remove(unittest.NORMAL, '\\d')

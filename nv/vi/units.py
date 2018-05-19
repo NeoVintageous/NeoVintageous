@@ -130,9 +130,7 @@ def word_starts(view, start, count=1, internal=False):
         pt = next_word_start(view, pt)
         if not internal or (i != count - 1):
             pt = next_non_white_space_char(view, pt, white_space=' \t')
-            while not (view.size() == pt or
-                       view.line(pt).empty() or
-                       view.substr(view.line(pt)).strip()):
+            while not (view.size() == pt or view.line(pt).empty() or view.substr(view.line(pt)).strip()):
                 pt = next_word_start(view, pt)
                 pt = next_non_white_space_char(view, pt, white_space=' \t')
 

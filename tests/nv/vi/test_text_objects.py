@@ -187,15 +187,15 @@ class TestAWord(unittest.ViewTestCase):
 
     def test_returns_full_word(self):
         self.write('foo bar baz\n')
-        self.assertRegion('bar ', a_word(self.view, 5))
+        self.assertRegion(a_word(self.view, 5), 'bar ')
 
     def test_returns_word_and_preceding_white_space(self):
         self.write('(foo bar) baz\n')
-        self.assertRegion(' bar', a_word(self.view, 5))
+        self.assertRegion(a_word(self.view, 5), ' bar')
 
     def test_returns_word_and_all_preceding_white_space(self):
         self.write('(foo   bar) baz\n')
-        self.assertRegion('   bar', a_word(self.view, 8))
+        self.assertRegion(a_word(self.view, 8), '   bar')
 
     # XXX when the cursor starts at space character
     # it should probably include the following
@@ -203,23 +203,23 @@ class TestAWord(unittest.ViewTestCase):
     # `a| b c` -> daw should delete ` b`
     def test_letters_digits_and_underscores(self):
         self.write('a ab _a _a1 x')
-        self.assertRegion('a ', a_word(self.view, 0))
-        self.assertRegion(' ', a_word(self.view, 1))
-        self.assertRegion('ab ', a_word(self.view, 2))
-        self.assertRegion('ab ', a_word(self.view, 3))
-        self.assertRegion(' ', a_word(self.view, 4))
-        self.assertRegion('_a ', a_word(self.view, 5))
-        self.assertRegion('_a ', a_word(self.view, 6))
-        self.assertRegion(' ', a_word(self.view, 7))
-        self.assertRegion('_a1 ', a_word(self.view, 8))
-        self.assertRegion('_a1 ', a_word(self.view, 9))
-        self.assertRegion('_a1 ', a_word(self.view, 10))
-        self.assertRegion(' ', a_word(self.view, 11))
-        self.assertRegion(' x', a_word(self.view, 12))
+        self.assertRegion(a_word(self.view, 0), 'a ')
+        self.assertRegion(a_word(self.view, 1), ' ')
+        self.assertRegion(a_word(self.view, 2), 'ab ')
+        self.assertRegion(a_word(self.view, 3), 'ab ')
+        self.assertRegion(a_word(self.view, 4), ' ')
+        self.assertRegion(a_word(self.view, 5), '_a ')
+        self.assertRegion(a_word(self.view, 6), '_a ')
+        self.assertRegion(a_word(self.view, 7), ' ')
+        self.assertRegion(a_word(self.view, 8), '_a1 ')
+        self.assertRegion(a_word(self.view, 9), '_a1 ')
+        self.assertRegion(a_word(self.view, 10), '_a1 ')
+        self.assertRegion(a_word(self.view, 11), ' ')
+        self.assertRegion(a_word(self.view, 12), ' x')
 
     def test_letters_digits_and_underscores_eol_includes_preceding_space(self):
         self.write('x   e12_x')
-        self.assertRegion('   e12_x', a_word(self.view, 4))
+        self.assertRegion(a_word(self.view, 4), '   e12_x')
 
     # XXX when the cursor starts at space character
     # it should probably include the following
@@ -227,24 +227,24 @@ class TestAWord(unittest.ViewTestCase):
     # `a| b c` -> daw should delete ` b`
     def test_non_blank_characters(self):
         self.write('.. .,-= .%.$ .')
-        self.assertRegion('.. ', a_word(self.view, 0))
-        self.assertRegion('.. ', a_word(self.view, 1))
-        self.assertRegion(' ', a_word(self.view, 2))
-        self.assertRegion('.,-= ', a_word(self.view, 3))
-        self.assertRegion('.,-= ', a_word(self.view, 4))
-        self.assertRegion('.,-= ', a_word(self.view, 5))
-        self.assertRegion('.,-= ', a_word(self.view, 6))
-        self.assertRegion(' ', a_word(self.view, 7))
-        self.assertRegion('.%.$ ', a_word(self.view, 8))
-        self.assertRegion('.%.$ ', a_word(self.view, 9))
-        self.assertRegion('.%.$ ', a_word(self.view, 10))
-        self.assertRegion('.%.$ ', a_word(self.view, 11))
-        self.assertRegion(' ', a_word(self.view, 12))
-        self.assertRegion(' .', a_word(self.view, 13))
+        self.assertRegion(a_word(self.view, 0), '.. ')
+        self.assertRegion(a_word(self.view, 1), '.. ')
+        self.assertRegion(a_word(self.view, 2), ' ')
+        self.assertRegion(a_word(self.view, 3), '.,-= ')
+        self.assertRegion(a_word(self.view, 4), '.,-= ')
+        self.assertRegion(a_word(self.view, 5), '.,-= ')
+        self.assertRegion(a_word(self.view, 6), '.,-= ')
+        self.assertRegion(a_word(self.view, 7), ' ')
+        self.assertRegion(a_word(self.view, 8), '.%.$ ')
+        self.assertRegion(a_word(self.view, 9), '.%.$ ')
+        self.assertRegion(a_word(self.view, 10), '.%.$ ')
+        self.assertRegion(a_word(self.view, 11), '.%.$ ')
+        self.assertRegion(a_word(self.view, 12), ' ')
+        self.assertRegion(a_word(self.view, 13), ' .')
 
     def test_non_blank_characters_eol_includes_preceding_space(self):
         self.write('x    .=-,')
-        self.assertRegion('    .=-,', a_word(self.view, 5))
+        self.assertRegion(a_word(self.view, 5), '    .=-,')
 
     # XXX when the cursor starts at space character
     # it should probably include the following
@@ -252,16 +252,16 @@ class TestAWord(unittest.ViewTestCase):
     # `a| b c` -> daw should delete ` b`
     def test_letters_digits_underscores_and_non_blank_characters(self):
         self.write('ab.. _a_,=-12.34 .')
-        self.assertRegion('ab', a_word(self.view, 0))
-        self.assertRegion('ab', a_word(self.view, 1))
-        self.assertRegion('.. ', a_word(self.view, 2))
-        self.assertRegion('.. ', a_word(self.view, 3))
-        self.assertRegion(' ', a_word(self.view, 4))
-        self.assertRegion(' _a_', a_word(self.view, 5))
-        self.assertRegion(',=-', a_word(self.view, 8))
-        self.assertRegion('12', a_word(self.view, 11))
-        self.assertRegion('.', a_word(self.view, 13))
-        self.assertRegion('34 ', a_word(self.view, 14))
+        self.assertRegion(a_word(self.view, 0), 'ab')
+        self.assertRegion(a_word(self.view, 1), 'ab')
+        self.assertRegion(a_word(self.view, 2), '.. ')
+        self.assertRegion(a_word(self.view, 3), '.. ')
+        self.assertRegion(a_word(self.view, 4), ' ')
+        self.assertRegion(a_word(self.view, 5), ' _a_')
+        self.assertRegion(a_word(self.view, 8), ',=-')
+        self.assertRegion(a_word(self.view, 11), '12')
+        self.assertRegion(a_word(self.view, 13), '.')
+        self.assertRegion(a_word(self.view, 14), '34 ')
 
 
 class TestABigWordStart(unittest.ViewTestCase):
@@ -320,26 +320,26 @@ class TestABigWord(unittest.ViewTestCase):
 
     def test_returns_full_words(self):
         self.write('a baz bA.__ eol')
-        self.assertRegion('a', a_big_word(self.view, 0))
-        self.assertRegion(' baz', a_big_word(self.view, 1))
-        self.assertRegion('baz', a_big_word(self.view, 2))
-        self.assertRegion('baz', a_big_word(self.view, 3))
-        self.assertRegion('baz', a_big_word(self.view, 4))
-        self.assertRegion(' bA.__', a_big_word(self.view, 5))
-        self.assertRegion('bA.__', a_big_word(self.view, 6))
-        self.assertRegion('bA.__', a_big_word(self.view, 7))
-        self.assertRegion('bA.__', a_big_word(self.view, 8))
-        self.assertRegion('bA.__', a_big_word(self.view, 9))
-        self.assertRegion('bA.__', a_big_word(self.view, 10))
-        self.assertRegion(' eol', a_big_word(self.view, 11))
-        self.assertRegion('eol', a_big_word(self.view, 12))
-        self.assertRegion('eol', a_big_word(self.view, 13))
-        self.assertRegion('eol', a_big_word(self.view, 14))
+        self.assertRegion(a_big_word(self.view, 0), 'a')
+        self.assertRegion(a_big_word(self.view, 1), ' baz')
+        self.assertRegion(a_big_word(self.view, 2), 'baz')
+        self.assertRegion(a_big_word(self.view, 3), 'baz')
+        self.assertRegion(a_big_word(self.view, 4), 'baz')
+        self.assertRegion(a_big_word(self.view, 5), ' bA.__')
+        self.assertRegion(a_big_word(self.view, 6), 'bA.__')
+        self.assertRegion(a_big_word(self.view, 7), 'bA.__')
+        self.assertRegion(a_big_word(self.view, 8), 'bA.__')
+        self.assertRegion(a_big_word(self.view, 9), 'bA.__')
+        self.assertRegion(a_big_word(self.view, 10), 'bA.__')
+        self.assertRegion(a_big_word(self.view, 11), ' eol')
+        self.assertRegion(a_big_word(self.view, 12), 'eol')
+        self.assertRegion(a_big_word(self.view, 13), 'eol')
+        self.assertRegion(a_big_word(self.view, 14), 'eol')
 
     def test_should_not_error_when_cursor_starts_on_whitespace(self):
         self.write('a   b')
-        self.assertRegion('a', a_big_word(self.view, 0))
-        self.assertRegion('   b', a_big_word(self.view, 1))
-        self.assertRegion('   b', a_big_word(self.view, 2))
-        self.assertRegion('   b', a_big_word(self.view, 3))
-        self.assertRegion('b', a_big_word(self.view, 4))
+        self.assertRegion(a_big_word(self.view, 0), 'a')
+        self.assertRegion(a_big_word(self.view, 1), '   b')
+        self.assertRegion(a_big_word(self.view, 2), '   b')
+        self.assertRegion(a_big_word(self.view, 3), '   b')
+        self.assertRegion(a_big_word(self.view, 4), 'b')

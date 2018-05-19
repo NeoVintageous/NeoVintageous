@@ -287,6 +287,10 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
     if type_ == TAG:
         begin_tag, end_tag, _ = find_containing_tag(view, s.b)
+
+        if not (begin_tag and end_tag):
+            return s
+
         if inclusive:
             return Region(begin_tag.a, end_tag.b)
         else:
@@ -306,7 +310,11 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         if inclusive:
             return Region(opening.a, closing.b)
 
-        return Region(opening.a + 1, closing.b - 1)
+        a = opening.a + 1
+        if view.substr(a) == '\n':
+            a += 1
+
+        return Region(a, closing.b - 1)
 
     if type_ == QUOTE:
         # Vim only operates on the current line.
@@ -706,6 +714,15 @@ def word_end_reverse(view, pt, count=1, big=False):
 
 
 def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
+    # Args:
+    #   view (sublime.View)
+    #   pattern (str)
+    #   start (int)
+    #   end (int)
+    #
+    # Returns:
+    #   tuple[Region, str, bool]
+    #   typle[None, None, None]
     region = view.find(pattern, start, IGNORECASE)
     if region.a == -1:
         return None, None, None
@@ -717,11 +734,11 @@ def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
 
 def previous_begin_tag(view, pattern, start=0, end=0):
     assert pattern, 'bad call'
-    region = reverse_search_by_pt(view, RX_ANY_TAG, start, end, IGNORECASE)
+    region = reverse_search_by_pt(view, pattern, start, end, IGNORECASE)
     if not region:
         return None, None, None
 
-    match = re.search(RX_ANY_TAG, view.substr(region))
+    match = re.search(pattern, view.substr(region))
 
     return (region, match.group(1), match.group(0)[1] != '/')
 
@@ -735,22 +752,35 @@ def get_region_begin(r):
 
 
 def get_closest_tag(view, pt):
-    while pt > 0 and view.substr(pt) != '<':
+    # Args:
+    #   view (sublime.View)
+    #   pt (int)
+    #
+    # Returns:
+    #   tuple[int, Region]
+    #   tuple[None, None]
+    substr = view.substr
+    while pt > 0 and substr(pt) != '<':
         pt -= 1
 
-    if view.substr(pt) != '<':
-        return None
+    if substr(pt) != '<':
+        return None, None
 
     next_tag = view.find(RX_ANY_TAG, pt)
     if next_tag.a != pt:
-        return None
+        return None, None
 
     return pt, next_tag
 
 
 def find_containing_tag(view, start):
-    # BUG: fails if start < first begin tag
-    # TODO: Should not select tags in PCDATA sections.
+    # Args:
+    #   view (sublime.View)
+    #   start (int)
+    #
+    # Returns:
+    #   tuple[Region, Region, str]
+    #   tuple[None, None, None]
     _, closest_tag = get_closest_tag(view, start)
 
     if not closest_tag:
@@ -759,29 +789,26 @@ def find_containing_tag(view, start):
     start = closest_tag.a if ((closest_tag.contains(start)) and
                               (view.substr(closest_tag)[1] == '/')) else start
 
-    search_forward_args = {
-        'pattern': RX_ANY_TAG,
-        'start': start,
-    }
-
-    end_region, tag_name = next_unbalanced_tag(view,
-                                               search=next_end_tag,
-                                               search_args=search_forward_args,
-                                               restart_at=get_region_end)
+    end_region, tag_name = next_unbalanced_tag(
+        view,
+        search=next_end_tag,
+        search_args={'pattern': RX_ANY_TAG, 'start': start},
+        restart_at=get_region_end
+    )
 
     if not end_region:
         return None, None, None
 
-    search_backward_args = {
-        'pattern': RX_ANY_TAG_NAMED_TPL.format(tag_name),
-        'start': 0,
-        'end': end_region.a
-    }
-
-    begin_region, _ = next_unbalanced_tag(view,
-                                          search=previous_begin_tag,
-                                          search_args=search_backward_args,
-                                          restart_at=get_region_begin)
+    begin_region, _ = next_unbalanced_tag(
+        view,
+        search=previous_begin_tag,
+        search_args={
+            'pattern': RX_ANY_TAG_NAMED_TPL.format(tag_name),
+            'start': 0,
+            'end': end_region.a
+        },
+        restart_at=get_region_begin
+    )
 
     if not end_region:
         return None, None, None
@@ -790,6 +817,16 @@ def find_containing_tag(view, start):
 
 
 def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags=[]):
+    # Args:
+    #   view (sublime.View)
+    #   search (callable)
+    #   search_args (dict)
+    #   restart_at (callable)
+    #   tags (list[str])
+    #
+    # Returns:
+    #   tuple[Region, str]
+    #   tuple[None, None]
     assert search and restart_at, 'wrong call'
     region, tag, is_end_tag = search(view, **search_args)
 

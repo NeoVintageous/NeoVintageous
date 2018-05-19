@@ -2,6 +2,62 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.6.0 - 2018-05-19
+
+### Added
+
+* Added [#353](https://github.com/NeoVintageous/NeoVintageous/issues/353): Color scheme support for current match highlighting in `/`, `?`, `*`, and `#`
+* Added [#312](https://github.com/NeoVintageous/NeoVintageous/issues/312): Map commands with arguments e.g. `nnoremap ,f :ShowOverlay overlay=goto text=@<CR>`
+* Added [#345](https://github.com/NeoVintageous/NeoVintageous/issues/345): Map commands without executing immediately (no trailing `<CR>`) e.g `nnoremap ,r :reg`
+* Added [#346](https://github.com/NeoVintageous/NeoVintageous/issues/346): Map commands with ranges and counts
+* Added [#344](https://github.com/NeoVintageous/NeoVintageous/issues/344): Add buffer commands `:bf[irst]`, `:br[ewind]`, `:bp[revious]`, `:bN[ex]t`, `:bn[ext]`, and `:bl[ast]`
+* Added [#343](https://github.com/NeoVintageous/NeoVintageous/issues/343): Add Unimpaired commands `[b`, `]b`, `[B`, `]B`, `]t`, `[t`, `]T`, and `[T`
+* Added [#327](https://github.com/NeoVintageous/NeoVintageous/issues/327): Redo command (`<C-r>`) should invoke a UI bell if there are no more redo commands
+* Added [#70](https://github.com/NeoVintageous/NeoVintageous/issues/70): Add show whitespace command `:set list`
+* Added [#334](https://github.com/NeoVintageous/NeoVintageous/issues/334): Add tab command `:tabN[ext]`
+* Added [#330](https://github.com/NeoVintageous/NeoVintageous/issues/330): Add tab command `:tabc[lose]`
+
+### Fixed
+
+* Fixed [#173](https://github.com/NeoVintageous/NeoVintageous/issues/173): `vi{` selects extra blank chars
+* Fixed [#161](https://github.com/NeoVintageous/NeoVintageous/issues/161): `vit` `vat` work incorrect inside self closing tags
+* Fixed [#180](https://github.com/NeoVintageous/NeoVintageous/issues/180): `%` doesn't work in VISUAL LINE mode
+* Fixed [#354](https://github.com/NeoVintageous/NeoVintageous/issues/354): `:help ctrl-w` opens wrong help file section
+* Fixed [#352](https://github.com/NeoVintageous/NeoVintageous/issues/352): `%` should jump to the next item in this line after the cursor
+* Fixed [#263](https://github.com/NeoVintageous/NeoVintageous/issues/263): `x` should not delete empty lines
+* Fixed [#350](https://github.com/NeoVintageous/NeoVintageous/issues/350): Multi-select `k` doesn't work with a count
+* Fixed [#314](https://github.com/NeoVintageous/NeoVintageous/issues/314): `gj` and `gk` do not work in visual line mode
+* Fixed [#341](https://github.com/NeoVintageous/NeoVintageous/issues/341): Multi-select should scroll viewport to end of selection
+* Fixed [#273](https://github.com/NeoVintageous/NeoVintageous/issues/273): Sort Lines command sorts whole file
+* Fixed [#338](https://github.com/NeoVintageous/NeoVintageous/issues/338): `gv` after visual line should be linewise
+* Fixed [#349](https://github.com/NeoVintageous/NeoVintageous/issues/349): `>` and `<` should leave cursor on first non whitespace character
+* Fixed [#348](https://github.com/NeoVintageous/NeoVintageous/issues/348): `gv` doesn't remember which visual mode was last used
+* Fixed [#347](https://github.com/NeoVintageous/NeoVintageous/issues/347): `gv` doesn't work in visual mode
+* Fixed [#336](https://github.com/NeoVintageous/NeoVintageous/issues/336): `*` and `#` should center match on screen if not visible
+* Fixed [#328](https://github.com/NeoVintageous/NeoVintageous/issues/328): Entering normal mode should not put cursor on EOL character
+* Fixed [#324](https://github.com/NeoVintageous/NeoVintageous/issues/324): Entering Normal mode from Visual Block mode creates multiple selection
+* Fixed [#329](https://github.com/NeoVintageous/NeoVintageous/issues/329): Redo command should not leave cursor on EOL character
+* Fixed [#209](https://github.com/NeoVintageous/NeoVintageous/issues/209): Jumping to mark in visual mode does not work
+* Fixed [#335](https://github.com/NeoVintageous/NeoVintageous/issues/335): Help subjects should be case sensitive e.g. `help L` should open help for L not l
+* Fixed [#333](https://github.com/NeoVintageous/NeoVintageous/issues/333): `:ou` (`:ounmap` alias) doesn't work
+* Fixed [#332](https://github.com/NeoVintageous/NeoVintageous/issues/332): `:no` (`:noremap` alias) doesn't work
+* Fixed [#331](https://github.com/NeoVintageous/NeoVintageous/issues/331): `:files` doesn't work
+* Fixed [#325](https://github.com/NeoVintageous/NeoVintageous/issues/325): `:sunmap` doesn't work, prints message E492: Not an editor command
+* Fixed [#324](https://github.com/NeoVintageous/NeoVintageous/issues/324): Entering Normal mode from Visual Block mode creates multiple selection
+* Fixed [#323](https://github.com/NeoVintageous/NeoVintageous/issues/323): `:g!/222/p` is bailing out with error: 'str' object has no attribute 'consume'
+* Fixed [#153](https://github.com/NeoVintageous/NeoVintageous/issues/153): Cursor gets stuck after a few edit operations
+* Fixed [#322](https://github.com/NeoVintageous/NeoVintageous/issues/322): `:print` doesn't work
+* Fixed [#320](https://github.com/NeoVintageous/NeoVintageous/issues/320): `:move`  `KeyError: 'next_sel'` when address is the same as current line
+* Fixed [#321](https://github.com/NeoVintageous/NeoVintageous/issues/321): Entering cmdline-mode from Visual Block mode doesn't work
+* Fixed [#319](https://github.com/NeoVintageous/NeoVintageous/issues/319): `:cd` should change the current directory to the home directory
+* Fixed [#150](https://github.com/NeoVintageous/NeoVintageous/issues/150): Remove lines with regular expression
+* Fixed [#148](https://github.com/NeoVintageous/NeoVintageous/issues/148): `:$` does not go to last line
+* Fixed [#87](https://github.com/NeoVintageous/NeoVintageous/issues/87): Double front slash doesn't escape properly
+
+### Removed
+
+* Removed: Deprecated SublimeLinter APIs
+
 ## 1.5.3 - 2018-03-24
 
 ### Fixed
@@ -70,11 +126,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
   Recursive command | Non recursive command
   ----------------- | ---------------------
-  `map` | `[no]remap`
-  `nmap` | `[nn]oremap`
-  `omap` | `[ono]remap`
-  `smap` | `[snor]emap`
-  `vmap` | `[vn]oremap`
+  `map` | `noremap`
+  `nmap` | `nnoremap`
+  `omap` | `onoremap`
+  `smap` | `snoremap`
+  `vmap` | `vnoremap`
 
 * Removed: Unused `vintageous_enable_cmdline_mode` setting
 

@@ -19,7 +19,6 @@ from sublime import OP_EQUAL
 from sublime import OP_NOT_EQUAL
 from sublime_plugin import EventListener
 
-from NeoVintageous.nv.ex import command_names
 from NeoVintageous.nv.ex.completions import wants_fs_completions
 from NeoVintageous.nv.ex.completions import wants_setting_completions
 from NeoVintageous.nv.modeline import do_modeline
@@ -32,8 +31,22 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
+__all__ = [
+    'NeoVintageousEvents'
+]
 
-_COMPLETIONS = sorted([x[0] for x in command_names])
+# TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline
+# commands are being heavily reactored, and so these are hardcoded until a
+# better way to auto generate the completions is figured out.
+_cmdline_completions = [
+    'abbreviate', 'browse', 'buffers', 'cd', 'cdd', 'close', 'copy', 'cquit',
+    'delete', 'edit', 'exit', 'file', 'files', 'global', 'help', 'let', 'ls',
+    'move', 'new', 'nnoremap', 'noremap', 'nunmap', 'only', 'onoremap',
+    'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set',
+    'setlocal', 'shell', 'snoremap', 'split', 'substitute', 'tabfirst',
+    'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
+    'unabbreviate', 'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap',
+    'wall', 'wq', 'wqall', 'write', 'xall', 'xit', 'yank']
 
 
 class _Context:
@@ -129,57 +142,56 @@ class NeoVintageousEvents(EventListener):
         # should return None.
         return _Context(view).query(key, operator, operand, match_all)
 
+    # TODO [refactor] command line completion queries: refactor into view
+    # listener that is attached to the cmdline view when it is opened. That will
+    # avoid the performance overhead of running this event for all views.
     def on_query_completions(self, view, prefix, locations):
         if view.score_selector(0, 'text.excmdline') == 0:
-            return []
+            return None
 
         if len(prefix) + 1 != view.size():
-            return []
+            return None
 
         if prefix and prefix in self._CACHED_COMPLETION_PREFIXES:
             return self._CACHED_COMPLETIONS
 
-        compls = [x for x in _COMPLETIONS if x.startswith(prefix) and x != prefix]
+        compls = [x for x in _cmdline_completions if x.startswith(prefix) and x != prefix]
+
         self._CACHED_COMPLETION_PREFIXES = [prefix] + compls
         self._CACHED_COMPLETIONS = list(zip([prefix] + compls, compls + [prefix]))
 
         return self._CACHED_COMPLETIONS
 
-    # TODO Refactor, cleanup and optimise on_text_command()
+    # TODO [refactor] [cleanup] and [optimise] on_text_command()
     def on_text_command(self, view, command, args):
         if command == 'drag_select':
             state = State(view)
+            mode = state.mode
 
-            if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+            if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
                     return
                 elif args.get('by') == 'lines':
-                    return ('sequence', {
-                        'commands': [
-                            ['drag_select', args],
-                            ['_enter_visual_line_mode', {'mode': state.mode}]
-                        ]
-                    })
+                    return ('_nv_run_cmds', {'commands': [
+                        ['drag_select', args],
+                        ['_enter_visual_line_mode', {'mode': state.mode}]
+                    ]})
                 elif not args.get('extend'):
-                    return ('sequence', {
-                        'commands': [
-                            ['drag_select', args],
-                            ['_enter_normal_mode', {'mode': state.mode}]
-                        ]
-                    })
+                    return ('_nv_run_cmds', {'commands': [
+                        ['drag_select', args],
+                        ['_enter_normal_mode', {'mode': mode}]
+                    ]})
 
-            elif state.mode == NORMAL:
+            elif mode == NORMAL:
                 # TODO Dragging the mouse does not seem to fire a different
                 # event than simply clicking. This makes it hard to update the
                 # xpos.
                 # See https://github.com/SublimeTextIssues/Core/issues/2117.
                 if args.get('extend') or (args.get('by') == 'words'):
-                    return ('sequence', {
-                        'commands': [
-                            ['drag_select', args],
-                            ['_enter_visual_mode', {'mode': state.mode}]
-                        ]
-                    })
+                    return ('_nv_run_cmds', {'commands': [
+                        ['drag_select', args],
+                        ['_enter_visual_mode', {'mode': mode}]
+                    ]})
 
     def on_post_text_command(self, view, command, args):
         # This fixes issues where the xpos is not updated after a mouse click

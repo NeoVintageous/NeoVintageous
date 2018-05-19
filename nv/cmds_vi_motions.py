@@ -25,8 +25,9 @@ from sublime import DRAW_NO_OUTLINE
 from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
+from sublime_plugin import WindowCommand
 
-from NeoVintageous.nv.cmds import _nv_cmdline_handle_key
+from NeoVintageous.nv.cmds import _nv_cmdline_feed_key
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
@@ -35,6 +36,8 @@ from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
+from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
+from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.core import ViMotionCommand
 from NeoVintageous.nv.vi.search import BufferSearchBase
 from NeoVintageous.nv.vi.search import ExactWordBufferSearchBase
@@ -56,6 +59,7 @@ from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import row_to_pt
+from NeoVintageous.nv.vi.utils import show_if_not_visible
 from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
@@ -98,7 +102,6 @@ __all__ = [
     '_vi_hat',
     '_vi_j',
     '_vi_k',
-    '_vi_k_select',
     '_vi_l',
     '_vi_left_brace',
     '_vi_left_paren',
@@ -111,6 +114,7 @@ __all__ = [
     '_vi_pipe',
     '_vi_question_mark',
     '_vi_question_mark_impl',
+    '_vi_question_mark_on_parser_done',
     '_vi_repeat_buffer_search',
     '_vi_reverse_find_in_line',
     '_vi_right_brace',
@@ -121,6 +125,7 @@ __all__ = [
     '_vi_shift_enter',
     '_vi_slash',
     '_vi_slash_impl',
+    '_vi_slash_on_parser_done',
     '_vi_star',
     '_vi_underscore',
     '_vi_w',
@@ -237,14 +242,14 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
 class _vi_slash(ViMotionCommand, BufferSearchBase):
 
-    def run(self, default=''):
+    def run(self):
         self.state.reset_during_init = False
 
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
 
         ui_cmdline_prompt(
             self.view.window(),
-            initial_text='/' + default,
+            initial_text='/',
             on_done=self.on_done,
             on_change=self.on_change,
             on_cancel=self.on_cancel)
@@ -257,7 +262,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             return
 
         history_update(s)
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
         s = s[1:]
 
         state = self.state
@@ -295,7 +300,15 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             if state.mode == VISUAL:
                 next_hit = Region(self.view.sel()[0].a, next_hit.a + 1)
 
-            self.view.add_regions('vi_inc_search', [next_hit], 'string.search', '', DRAW_NO_OUTLINE)
+            # The scopes are prefixed with common color scopes so that color
+            # schemes have sane default colors. Color schemes can progressively
+            # enhance support by using the nv_* scopes.
+            self.view.add_regions(
+                'vi_inc_search',
+                [next_hit],
+                scope='support.function nv_search_inc',
+                flags=DRAW_NO_OUTLINE
+            )
 
             if not self.view.visible_region().contains(next_hit.b):
                 self.view.show(next_hit.b)
@@ -308,7 +321,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         state = self.state
         self.view.erase_regions('vi_inc_search')
         state.reset_command_data()
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
@@ -349,6 +362,14 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
 
         regions_transformer(self.view, f)
         self.hilite(search_string)
+
+
+class _vi_slash_on_parser_done(WindowCommand):
+
+    def run(self, key=None):
+        state = State(self.window.active_view())
+        state.motion = ViSearchForwardImpl()
+        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
 class _vi_l(ViMotionCommand):
@@ -717,17 +738,6 @@ class _vi_k(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_k_select(ViMotionCommand):
-    def run(self, count=1, mode=None):
-        # FIXME: It isn't working.
-        if mode != SELECT:
-            return ui_blink()
-
-        for i in range(count):
-            self.view.window().run_command('soft_undo')
-            return
-
-
 class _vi_gg(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
@@ -1048,32 +1058,49 @@ class _vi_left_brace(ViMotionCommand):
 
 
 class _vi_percent(ViMotionCommand):
-    # TODO: Perhaps truly support multiple regions here?
+
     pairs = (
-            ('(', ')'),
-            ('[', ']'),
-            ('{', '}'),
-            ('<', '>'),
+        ('(', ')'),
+        ('[', ']'),
+        ('{', '}'),
+        ('<', '>'),
     )
 
     def find_tag(self, pt):
+        # Args:
+        #   pt (int)
+        #
+        # Returns:
+        #   Region|None
         if (self.view.score_selector(0, 'text.html') == 0 and self.view.score_selector(0, 'text.xml') == 0):
             return None
 
         if any([self.view.substr(pt) in p for p in self.pairs]):
             return None
 
-        # TODO [bug] Looks like get_closes_tag can return None which causes an error.
-        _, tag = get_closest_tag(self.view, pt)
-        if tag.contains(pt):
+        _, closest_tag = get_closest_tag(self.view, pt)
+        if not closest_tag:
+            return None
+
+        if closest_tag.contains(pt):
             begin_tag, end_tag, _ = find_containing_tag(self.view, pt)
             if begin_tag:
                 return begin_tag if end_tag.contains(pt) else end_tag
 
+        return None
+
     def run(self, percent=None, mode=None):
+        # Args:
+        #   percent (int): Percentage down in file.
+        #   mode: (str)
         if percent is None:
             def move_to_bracket(view, s):
                 def find_bracket_location(region):
+                    # Args:
+                    #   region (Region)
+                    #
+                    # Returns:
+                    #   int|None
                     pt = region.b
                     if (region.size() > 0) and (region.b > region.a):
                         pt = region.b - 1
@@ -1105,11 +1132,49 @@ class _vi_percent(ViMotionCommand):
                         return Region(begin, end)
 
                 if mode == VISUAL_LINE:
-                    # TODO: Improve handling of s.a < s.b and s.a > s.b cases.
-                    a = find_bracket_location(s)
-                    if a is not None:
-                        a = self.view.full_line(a).b
-                        return Region(s.begin(), a)
+
+                    sel = s
+                    if sel.a > sel.b:
+                        # If selection is in reverse: b <-- a
+                        # Find bracket starting at end of line of point b
+                        target_pt = find_bracket_location(Region(sel.b, self.view.line(sel.b).end()))
+                    else:
+                        # If selection is forward: a --> b
+                        # Find bracket starting at point b - 1:
+                        #   Because point b for an a --> b VISUAL LINE selection
+                        #   is the eol (newline) character.
+                        target_pt = find_bracket_location(Region(sel.a, sel.b - 1))
+
+                    if target_pt is not None:
+                        target_full_line = self.view.full_line(target_pt)
+
+                        if sel.a > sel.b:
+                            # If REVERSE selection: b <-- a
+
+                            if target_full_line.a > sel.a:
+                                # If target is after start of selection: b <-- a --> t
+                                # Keep line a, extend to end of target, and reverse: a --> t
+                                a, b = self.view.line(sel.a - 1).a, target_full_line.b
+                            else:
+                                # If target is before or after end of selection:
+                                #   Before: b     t <-- a (subtract t --> b)
+                                #   After:  t <-- b <-- a (extend b --> t)
+                                a, b = sel.a, target_full_line.a
+
+                        else:
+                            # If FORWARD selection: a --> b
+
+                            if target_full_line.a < sel.a:
+                                # If target is before start of selection: t <-- a --> b
+                                # Keep line a, extend to start of target, and reverse: t <-- a
+                                a, b = self.view.full_line(sel.a).b, target_full_line.a
+                            else:
+                                # If target is before or after end of selection:
+                                #   Before: a --> t     b (subtract t --> b)
+                                #   After:  a --> b --> t (extend b --> t)
+                                a, b = s.a, target_full_line.b
+
+                        return Region(a, b)
 
                 elif mode == NORMAL:
                     a = find_bracket_location(s)
@@ -1129,19 +1194,17 @@ class _vi_percent(ViMotionCommand):
 
             regions_transformer(self.view, move_to_bracket)
 
-            return
+        else:
 
-        row = self.view.rowcol(self.view.size())[0] * (percent / 100)
+            row = self.view.rowcol(self.view.size())[0] * (percent / 100)
 
-        def f(view, s):
-            pt = view.text_point(row, 0)
-            return Region(pt, pt)
+            def f(view, s):
+                return Region(view.text_point(row, 0))
 
-        regions_transformer(self.view, f)
+            regions_transformer(self.view, f)
 
-        # FIXME: Bringing the selections into view will be undesirable in many cases. Maybe we
-        # should have an optional .scroll_selections_into_view() step during command execution.
-        self.view.show(self.view.sel()[0])
+            # FIXME Bringing the selections into view will be undesirable in many cases. Maybe we should have an optional .scroll_selections_into_view() step during command execution.  # noqa: E501
+            self.view.show(self.view.sel()[0])
 
     def find_a_bracket(self, caret_pt):
         """
@@ -1167,31 +1230,45 @@ class _vi_percent(ViMotionCommand):
                 self.view.text_point(caret_row, caret_col + found_brackets[0]))
 
     def find_balanced_closing_bracket(self, start, brackets, unbalanced=0):
+        # Returns:
+        #   Region|None
         new_start = start
         for i in range(unbalanced or 1):
-            next_closing_bracket = find_in_range(self.view, brackets[1],
-                                                 start=new_start,
-                                                 end=self.view.size(),
-                                                 flags=LITERAL)
-            if next_closing_bracket is None:
-                # Unbalanced brackets; nothing we can do.
+            next_closing_bracket = find_in_range(
+                self.view,
+                brackets[1],
+                start=new_start,
+                end=self.view.size(),
+                flags=LITERAL
+            )
+
+            if next_closing_bracket is None:  # Unbalanced brackets; nothing we can do.
                 return
+
             new_start = next_closing_bracket.end()
 
         nested = 0
         while True:
-            next_opening_bracket = find_in_range(self.view, brackets[0],
-                                                 start=start,
-                                                 end=next_closing_bracket.end(),
-                                                 flags=LITERAL)
+            next_opening_bracket = find_in_range(
+                self.view,
+                brackets[0],
+                start=start,
+                end=next_closing_bracket.end(),
+                flags=LITERAL
+            )
+
             if not next_opening_bracket:
                 break
+
             nested += 1
             start = next_opening_bracket.end()
 
         if nested > 0:
-            return self.find_balanced_closing_bracket(next_closing_bracket.end(),
-                                                      brackets, nested)
+            return self.find_balanced_closing_bracket(
+                next_closing_bracket.end(),
+                brackets,
+                nested
+            )
         else:
             return next_closing_bracket.begin()
 
@@ -1346,19 +1423,21 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
             return s
 
         state = self.state
-
         query = search_string or self.get_query()
-        if query:
-            self.hilite(query)
-            # Ensure n and N can repeat this search later.
-            state.last_buffer_search = query
 
         jumplist_update(self.view)
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
+        if query:
+            self.hilite(query)
+            # Ensure n and N can repeat this search later.
+            state.last_buffer_search = query
+
         if not search_string:
             state.last_buffer_search_command = 'vi_star'
+
+        show_if_not_visible(self.view)
 
 
 class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
@@ -1399,18 +1478,21 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
         state = self.state
 
         query = search_string or self.get_query()
-        if query:
-            self.hilite(query)
-            # Ensure n and N can repeat this search later.
-            state.last_buffer_search = query
 
         jumplist_update(self.view)
         start_sel = self.view.sel()[0]
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
+        if query:
+            self.hilite(query)
+            # Ensure n and N can repeat this search later.
+            state.last_buffer_search = query
+
         if not search_string:
             state.last_buffer_search_command = 'vi_octothorp'
+
+        show_if_not_visible(self.view)
 
 
 class _vi_b(ViMotionCommand):
@@ -1544,6 +1626,8 @@ class _vi_gj(ViMotionCommand):
         elif mode == VISUAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': True})
+        elif mode == VISUAL_LINE:
+            self.view.run_command('_vi_j', {'mode': mode, 'count': count})
         elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': False})
@@ -1557,6 +1641,8 @@ class _vi_gk(ViMotionCommand):
         elif mode == VISUAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': True})
+        elif mode == VISUAL_LINE:
+            self.view.run_command('_vi_k', {'mode': mode, 'count': count})
         elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
@@ -1853,14 +1939,15 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 
 
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
-    def run(self, default=''):
+
+    def run(self):
         self.state.reset_during_init = False
 
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
 
         ui_cmdline_prompt(
             self.view.window(),
-            initial_text='?' + default,
+            initial_text='?',
             on_done=self.on_done,
             on_change=self.on_change,
             on_cancel=self.on_cancel)
@@ -1873,7 +1960,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             return
 
         history_update(s)
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
         s = s[1:]
 
         state = self.state
@@ -1911,7 +1998,15 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             if state.mode == VISUAL:
                 occurrence = Region(self.view.sel()[0].a, occurrence.a)
 
-            self.view.add_regions('vi_inc_search', [occurrence], 'string.search', '', DRAW_NO_OUTLINE)
+            # The scopes are prefixed with common color scopes so that color
+            # schemes have sane default colors. Color schemes can progressively
+            # enhance support by using the nv_* scopes.
+            self.view.add_regions(
+                'vi_inc_search',
+                [occurrence],
+                scope='support.function nv_search_inc',
+                flags=DRAW_NO_OUTLINE
+            )
 
             if not self.view.visible_region().contains(occurrence):
                 self.view.show(occurrence)
@@ -1924,10 +2019,18 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         self.view.erase_regions('vi_inc_search')
         state = self.state
         state.reset_command_data()
-        _nv_cmdline_handle_key.reset_last_history_index()
+        _nv_cmdline_feed_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
+
+
+class _vi_question_mark_on_parser_done(WindowCommand):
+
+    def run(self, key=None):
+        state = State(self.window.active_view())
+        state.motion = ViSearchBackwardImpl()
+        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):

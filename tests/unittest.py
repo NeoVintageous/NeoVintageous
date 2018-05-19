@@ -25,6 +25,7 @@ from sublime import active_window as _active_window
 from sublime import Region
 
 # Use aliases to indicate that they are not public testing APIs.
+from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.state import State as _State
 
 from NeoVintageous.nv.vim import COMMAND_LINE  # noqa: F401
@@ -68,10 +69,10 @@ class ViewTestCase(unittest.TestCase):
 
     def setUp(self):
         self.view = _active_window().new_file()
-        self.view.set_scratch(True)
 
     def tearDown(self):
         if self.view:
+            self.view.set_scratch(True)
             self.view.close()
 
     def content(self):
@@ -85,39 +86,41 @@ class ViewTestCase(unittest.TestCase):
         # modules.
         #
         # Args:
-        #   a (int): The first end of the region.
-        #   b (int, optional): The second end of the region. Defaults to the
-        #       same as the a end of the region. May be less that a, in
-        #       which case the region is a reversed one.
+        #   a (int):
+        #       The first end of the region.
+        #   b (int):
+        #       The second end of the region. Defaults to the same as the a end
+        #       of the region. May be less that a, in which case the region is a
+        #       reversed one.
         return Region(a, b)
 
     def select(self, selections):
         # Create selection in the view.
         #
-        # Existing selections are cleared. Integers are converted to Regions
-        # e.g. `3 -> sublime.Region(3)`, tuples are converted to Regions e.g.
-        # `(3, 5) -> sublime.Region(3, 5)`, and integers and tuples in a list
-        # are also converted to Regions.
-        #
         # Args:
-        #   selections (int|tuple|Region|list<int|tuple|Region>):
+        #   selections (int|tuple|Region|list<int|tuple|Region>)
         #
-        # Usage:
+        # Existing selections are cleared.
         #
-        #   Select a single point:
-        #   >>> self.select(3)
+        # Integers and tuples are converted to Regions:
+        # >>> select(3) is the short for: select(sublime.Region(3))
+        # >>> select((3, 5)) is short for: select(sublime.Region(3, 5))
         #
-        #   Select a region of text e.g. from point 3 to 5:
-        #   >>> self.select((3, 5))
+        # Select a single point:
+        # >>> select(3)
         #
-        #   To make multiple single point selections pass a list of integers:
-        #   >>> self.select([3, 5, 7])
+        # Select a region of text e.g. from point 3 to 5:
+        # >>> select((3, 5))
         #
-        #   To make multiple regions of text:
-        #   >>> self.select([(3, 5), (7, 11)])
+        # Select multiple point selections:
+        # >>> select([3, 5, 7])
         #
-        #   You can also mix points and regions in a list:
-        #   >>> self.select([3, 5, (7, 11), 17, (19, 23)])
+        # Select multiple text selections:
+        # >>> select([(3, 5), (7, 11)])
+        #
+        # Select multiple points, and text selections:
+        # >>> select([3, 5, (7, 11), 17, (19, 23)])
+
         self.view.sel().clear()
 
         if not isinstance(selections, list):
@@ -134,108 +137,278 @@ class ViewTestCase(unittest.TestCase):
 
     def write(self, text):
         # type: (str) -> None
-        self.view.run_command('_neovintageous_test_write', {'text': text})
+        self.view.run_command('_nv_test_write', {'text': text})
+
+    def _setupView(self, text, mode, reverse=False):
+        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
+            self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
+            sels = [i for i, c in enumerate(text) if c == '|']
+            sel_len = len(sels)
+
+            if sel_len == 1:
+                sels.append(sels[0] + 2)
+            elif sel_len % 2 != 0 or sel_len == 0:
+                raise Exception('invalid visual selection')
+
+            if sels:
+                v_sels = []
+                a = None
+                for i, x in enumerate(sels):
+                    if a is None:
+                        a = x - i
+                    else:
+                        v_sels.append(Region(a, x - i))
+                        a = None
+
+                self.view.sel().clear()
+
+                if reverse:
+                    v_sels.sort(reverse=True)
+                    for s in v_sels:
+                        self.view.sel().add(Region(s.b, s.a))
+                else:
+                    self.view.sel().add_all(v_sels)
+
+            # This is required, because the cursor in VISUAL mode is a block
+            # cursor. Without this setting some tests will pass when the window
+            # running the tests has focus, and fail when it doesn't have focus.
+            # This happens because ST doesn't fire events for views (test views)
+            # when the window loses focus: the on_activated() event fixes VISUAL
+            # mode selections that don't have a correct caret state.
+            self.view.settings().set('inverse_caret_state', True)
+        else:
+            self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
+            sels = [i for i, c in enumerate(text) if c == '|']
+            if sels:
+                self.view.sel().clear()
+                for i, x in enumerate(sels):
+                    self.view.sel().add(x - i)
+
+        self.state.mode = mode
+
+    def normal(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, NORMAL)
+
+    def insert(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, INSERT)
+
+    def visual(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, VISUAL)
+
+    def rvisual(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, VISUAL, reverse=True)
+
+    def vline(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, VISUAL_LINE)
+
+    def rvline(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, VISUAL_LINE, reverse=True)
+
+    def vblock(self, text):
+        # Args:
+        #   text (str)
+        self._setupView(text, VISUAL_BLOCK)
+
+    def _assertView(self, expected, mode, msg):
+        # Args:
+        #   expected (str)
+        #   mode (str)
+        #   msg (str)
+        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
+            content = list(self.view.substr(Region(0, self.view.size())))
+            counter = 0
+            for sel in self.view.sel():
+                content.insert(sel.begin() + counter, '|')
+                counter += 1
+                if sel.end() != sel.begin():
+                    # TODO should be assert that it looks like
+                    # we're now in normal mode, otherwise visual mode?
+                    content.insert(sel.end() + counter, '|')
+                    counter += 1
+
+            self.assertEquals(''.join(content), expected, msg)
+        else:
+            content = list(self.view.substr(Region(0, self.view.size())))
+            for i, sel in enumerate(self.view.sel()):
+                content.insert(sel.begin() + i, '|')
+
+            self.assertEquals(''.join(content), expected, msg)
+
+        self._assertMode(mode)
+
+    def assertNormal(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._assertView(expected, NORMAL, msg)
+
+    def assertInsert(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._assertView(expected, INSERT, msg)
+
+    def assertVisual(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._assertView(expected, VISUAL, msg)
+
+    def assertVline(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._assertView(expected, VISUAL_LINE, msg)
+
+    def assertVblock(self, expected, msg=None):
+        # Args:
+        #   expected (str)
+        #   msg (str)
+        self._assertView(expected, VISUAL_BLOCK, msg)
 
     def assertContent(self, expected, msg=None):
         # Test that view contents and *expected* are equal.
         #
         # Args:
-        #   expected (str): Expected view contents.
-        #   msg (str, optional): If specified, is used as the error message on
-        #       failure.
+        #   expected (str):
+        #       The expected contents of the view.
+        #   msg (str, optional):
+        #       If specified, is used as the error message on failure.
         self.assertEqual(self.content(), expected, msg)
 
     def assertContentRegex(self, expected, msg=None):
         # Test that view contents matches (or does not match) *expected*.
         #
         # Args:
-        #   expected (str): Expected regular expression that should match view
-        #       contents.
-        #   msg (str, optional): If specified, is used as the error message on
-        #       failure.
-        self.assertRegex(self.content(), expected, msg)
+        #   expected (str):
+        #       Regular expression that should match view contents.
+        #   msg (str):
+        #       If specified, is used as the error message on failure.
+        self.assertRegex(self.content(), expected, msg=msg)
+
+    def _assertMode(self, mode):
+        self.assertEquals(self.state.mode, mode)
+
+    def assertInsertMode(self):
+        self._assertMode(INSERT)
 
     def assertNormalMode(self):
-        self.assertEquals(self.state.mode, NORMAL)
+        self._assertMode(NORMAL)
 
-    def assertRegion(self, expected, actual):
+    def assertVisualMode(self):
+        self._assertMode(VISUAL)
+
+    def assertVblockMode(self):
+        self._assertMode(VISUAL_BLOCK)
+
+    def assertVlineMode(self):
+        self._assertMode(VISUAL_LINE)
+
+    def assertRegion(self, actual, expected):
         # Test that *actual* and *expected* are equal.
         #
         # Args:
-        #   expected (str|int|tuple|Region): Expected region. *int* and *tuple*
-        #       are converted to *Region*. If *str*, then *actual* is converted
-        #       to a *str* before testing if both are equal.
-        #   actual (Region): Actual region.
-        if isinstance(expected, str):
-            self.assertEqual(expected, self.view.substr(actual))
-        elif isinstance(expected, int):
-            self.assertEqual(Region(expected), actual)
+        #   actual (Region):
+        #       The actual region.
+        #   expected (str|int|tuple|Region):
+        #       If the expected value is a str, int, or a tuple, it will be
+        #       converted to a Region before evaluating against the actual
+        #       value.
+        if isinstance(expected, int):
+            self.assertEqual(actual, Region(expected))
         elif isinstance(expected, tuple):
-            self.assertEqual(Region(expected[0], expected[1]), actual)
+            self.assertEqual(actual, Region(expected[0], expected[1]))
+        elif isinstance(expected, str):
+            self.assertEqual(self.view.substr(actual), expected)
         else:
-            self.assertEqual(expected, actual)
+            self.assertIsInstance(actual, Region)
+            self.assertEqual(actual, expected)
 
-    def assertSelection(self, expected):
-        # Test that view selection and *expected* are equal.
-        #
-        # Integers are converted to Regions e.g. `3 -> sublime.Region(3)`,
-        # tuples are converted to Regions e.g. `(3, 5) -> sublime.Region(3, 5)`,
-        # and integers and tuples in a list are also converted to Regions.
+    def assertRegister(self, name, expected, msg=None):
+        # Test that the value of the named register and *expected* are equal.
         #
         # Args:
-        #   expected (int|tuple|Region|list<Region>):
+        #   name (str):
+        #       The name of the register.
+        #   expected (str)
+        actual = self.state.registers.get(name)
+        # XXX registers.get() returns a list (not sure why that's useful), it
+        # doesn't look like we need it for the tests.
+        self.assertEqual(1, len(actual), 'expected only one value for the named register {}'.format(name))
+        self.assertEqual(actual[0], expected, msg)
+
+    def assertSelection(self, expected, msg=None):
+        # Test that view selection and *expected* are equal.
         #
-        # Usage:
+        # Args:
+        #   expected (int|tuple|Region|list<Region>)
+        #   msg (str)
         #
-        #   Assert single point selection:
-        #   >>> self.assertSelection(0)
-        #   # Asserts that the current view has one cursor at point zero.
-        #   >>> self.assertSelection(3)
-        #   # Asserts that the current view has one cursor at point three.
+        # Integers and tuples are converted to Regions:
+        # >>> assertSelection(3) is the short for: assertSelection(sublime.Region(3))
+        # >>> assertSelection((3, 5)) is short for: assertSelection(sublime.Region(3, 5))
         #
-        #   Assert multiple single point selections:
-        #   >>> self.assertSelection([3, 5, 7])
-        #   # Asserts that the current view has three cursors at points three,
-        #   # five, and seven.
+        # Assert that the view has one point selection:
+        # >>> self.assertSelection(3)
         #
-        #   Assert a text area selection:
-        #   >>> self.assertSelection((3, 5))
-        #   # Asserts that the current view has one cursor selection text from
-        #   # point three to five.
+        # Assert that the view has multiple point selections:
+        # >>> self.assertSelection([3, 5, 7])
         #
-        #   Assert multiple text are selections:
-        #   >>> self.assertSelection([(3, 5), (7, 9))
-        #   # Asserts that the current view has two cursors selecting text from
-        #   # point three to five, and point seven to nine.
+        # Assert that the view has a text area selection:
+        # >>> self.assertSelection((3, 5))
         #
-        #   You can also mix points and regions in a list:
-        #   >>> self.assertSelection([3, 5, (7, 11)])
-        #   # Asserts that the current view has two single point selections at
-        #   # points three, and five, and one region selection from point seven
-        #   # to eleven.
+        # Assert that the view has multiple text selections:
+        # >>> self.assertSelection([(3, 5), (7, 9))
+        #
+        # Assert that the view has multiple points, and text selections:
+        # >>> self.assertSelection([3, 5, (7, 11)])
         if isinstance(expected, int):
-            self.assertEqual([Region(expected)], list(self.view.sel()))
+            self.assertEqual([Region(expected)], list(self.view.sel()), msg)
         elif isinstance(expected, tuple):
-            self.assertEqual([Region(expected[0], expected[1])], list(self.view.sel()))
+            self.assertEqual([Region(expected[0], expected[1])], list(self.view.sel()), msg)
         elif isinstance(expected, Region):
-            self.assertEqual([expected], list(self.view.sel()))
+            self.assertEqual([expected], list(self.view.sel()), msg)
         else:
             # Defaults to expect a list of Regions.
-            self.assertEqual(expected, list(self.view.sel()))
+            self.assertEqual(expected, list(self.view.sel()), msg)
 
     def assertSelectionCount(self, expected):
         # Test that view selection count and *expected* are equal.
         #
         # Args:
-        #   expected (int): Expected number of selections in view.
+        #   expected (int):
+        #       The expected number of selections in view.
         self.assertEqual(expected, len(self.view.sel()))
 
     def assertSize(self, expected):
         # Test that number of view characters and *expected* are equal.
         #
         # Args:
-        #   expected (int): Expected number of characters in view.
+        #   expected (int):
+        #       The expected number of characters in view.
         self.assertEqual(expected, self.view.size())
+
+    def assertStatusLineRegex(self, expected, msg=None):
+        # Test that view contents matches (or does not match) *expected*.
+        #
+        # Args:
+        #   expected (str):
+        #       Regular expression that should match view contents.
+        #   msg (str):
+        #       If specified, is used as the error message on failure.
+        self.assertRegex(self.view.get_status('vim-mode') + ' ' + self.view.get_status('vim-seq'), expected, msg=msg)
 
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
@@ -257,3 +430,313 @@ class ViewTestCase(unittest.TestCase):
                                          actual_region.end())
 
         self.assertEqual(expected_region, actual_region, msg)
+
+
+_char2mode = {
+    'i': INSERT,
+    'n': NORMAL,
+    'v': VISUAL,
+    'l': VISUAL_LINE,
+    'b': VISUAL_BLOCK
+}
+
+
+class FunctionalTestCase(ViewTestCase):
+
+    def feed(self, seq):
+        # Args:
+        #   seq (str):
+        #       A command sequence e.g. 3w, <C-a>, cs'", :pwd
+        #
+        # The seq can be prefixed to specify a mode:
+        #
+        #   * n_ - Normal
+        #   * i_ - Insert
+        #   * v_ - Visual
+        #   * l_ - Visual line
+        #   * b_ - Visual block
+        #
+        # The default mode is Internal Normal.
+        #
+        # NOTE: This method currently uses a **hardcoded** map of sequences to
+        # commands (except <Esc> and cmdline sequences). You may need to add the
+        # a sequence to command map value. See the _feedseq2cmd variable.
+        #
+        # Examples:
+        #
+        # >>> feed('w')
+        # >>> feed('3w')
+        # >>> feed('v_w')
+        # >>> feed('v_3w')
+        # >>> feed('<Esc>')
+        # >>> feed(':pwd')
+        # >>> feed(':help neovintageous')
+
+        if seq == '<Esc>':
+            return self.view.window().run_command('_nv_feed_key', {'key': '<esc>'})
+
+        if seq[0] == ':':
+            return _do_ex_cmdline(self.view.window(), seq)
+
+        seq_args = {}
+
+        if seq[0] in 'vinlb' and (len(seq) > 1 and seq[1] == '_'):
+            seq_args['mode'] = _char2mode[seq[0]]
+            seq = seq[2:]
+
+        if seq[0].isdigit():
+            seq_args['count'] = int(seq[0])
+            seq = seq[1:]
+
+        try:
+            command = _feedseq2cmd[seq]['command']
+            if 'args' in _feedseq2cmd[seq]:
+                args = _feedseq2cmd[seq]['args'].copy()
+            else:
+                args = {}
+
+            if 'mode' not in args:
+                args['mode'] = INTERNAL_NORMAL
+
+            args.update(seq_args)
+        except KeyError as e:
+            raise KeyError('test command definition not found for feed %s' % str(e)) from None
+
+        self.view.run_command(command, args)
+
+    def eq(self, text, feed, expected=None, msg=None):
+        # Args:
+        #   text (str)
+        #   feed (str)
+        #   expected (str)
+        #   msg (str)
+        #
+        # The feed and expected can be prefixed to specify a mode:
+        #
+        #   * n_ - Normal
+        #   * i_ - Insert
+        #   * v_ - Visual
+        #   * l_ - Visual line
+        #   * b_ - Visual block
+        #   * :<','> - Visual cmdline (only valid for feed)
+        #
+        # The default mode is Internal Normal.
+        #
+        # When a mode is specified by feed, it iss used as the default mode for
+        # text and expected.
+        #
+        # Examples:
+        #
+        # >>> eq('|Hello world!', 'w', 'Hello |world!')
+        # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
+        # >>> eq('a\nx|y\nb', 'cc', 'i_a\n|\nb')
+
+        if expected is None:
+            expected = text
+
+        if feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>')):
+            if feed[0] == 'l':
+                self.vline(text)
+            elif feed[0] == 'b':
+                self.vblock(text)
+            else:
+                self.visual(text)
+
+            self.feed(feed)
+
+            if expected[:2] == 'n_':
+                self.assertNormal(expected[2:], msg)
+            elif expected[:2] == 'l_':
+                self.assertVline(expected[2:], msg)
+            elif expected[:2] == 'b_':
+                self.assertVblock(expected[2:], msg)
+            elif expected[:2] == 'i_':
+                self.assertInsert(expected[2:], msg)
+            elif expected[:2] == 'v_':
+                self.assertVisual(expected[2:], msg)
+            elif feed[0] == 'l':
+                self.assertVline(expected, msg)
+            elif feed[0] == 'b':
+                self.assertVblock(expected, msg)
+            else:
+                self.assertVisual(expected, msg)
+        else:
+            self.normal(text)
+
+            self.feed(feed)
+
+            if expected[:2] == 'v_':
+                self.assertVisual(expected[2:], msg)
+            elif expected[:2] == 'l_':
+                self.assertVline(expected[2:], msg)
+            elif expected[:2] == 'b_':
+                self.assertVblock(expected[2:], msg)
+            elif expected[:2] == 'i_':
+                self.assertInsert(expected[2:], msg)
+            else:
+                self.assertNormal(expected, msg)
+
+
+# A hardcoded map of sequences to commands. Ideally we wouldn't need this
+# hardcoded map, some internal refactoring and redesign is required to make that
+# happen. For now make-do with the hardcoded map. Refactoring later should not
+# impact the existing tests.
+_feedseq2cmd = {
+
+    '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    '%':            {'command': '_vi_percent', 'args': {'percent': None, 'mode': 'mode_normal'}},  # noqa: E241
+    '<':            {'command': '_vi_less_than'},  # noqa: E241
+    '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
+    '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
+    '>':            {'command': '_vi_greater_than'},  # noqa: E241
+    '[ ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_up'}},  # noqa: E241
+    '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
+    '] ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_down'}},  # noqa: E241
+    ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
+    'at':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': True}},  # noqa: E241,E501
+    'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'cc':           {'command': '_vi_cc'},  # noqa: E241
+    'cr ':          {'command': '_nv_abolish', 'args': {'to': 'spacecase'}},  # noqa: E241
+    'cr-':          {'command': '_nv_abolish', 'args': {'to': 'dashcase'}},  # noqa: E241
+    'cr.':          {'command': '_nv_abolish', 'args': {'to': 'dotcase'}},  # noqa: E241
+    'cr_':          {'command': '_nv_abolish', 'args': {'to': 'snakecase'}},  # noqa: E241
+    'crc':          {'command': '_nv_abolish', 'args': {'to': 'camelcase'}},  # noqa: E241
+    'crk':          {'command': '_nv_abolish', 'args': {'to': 'dashcase'}},  # noqa: E241
+    'crm':          {'command': '_nv_abolish', 'args': {'to': 'mixedcase'}},  # noqa: E241
+    'crs':          {'command': '_nv_abolish', 'args': {'to': 'snakecase'}},  # noqa: E241
+    'crt':          {'command': '_nv_abolish', 'args': {'to': 'titlecase'}},  # noqa: E241
+    'cru':          {'command': '_nv_abolish', 'args': {'to': 'uppercase'}},  # noqa: E241
+    'crU':          {'command': '_nv_abolish', 'args': {'to': 'uppercase'}},  # noqa: E241
+    'cs""':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '"'}},  # noqa: E241,E501
+    'cs"(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '('}},  # noqa: E241,E501
+    'cs")':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': ')'}},  # noqa: E241,E501
+    'cs"2':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '2'}},  # noqa: E241,E501
+    'cs"<':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '<'}},  # noqa: E241,E501
+    'cs"<x>':       {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '<x>'}},  # noqa: E241,E501
+    'cs">':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '>'}},  # noqa: E241,E501
+    'cs"[':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '['}},  # noqa: E241,E501
+    'cs"\'':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': "'"}},  # noqa: E241,E501
+    'cs"]':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': ']'}},  # noqa: E241,E501
+    'cs"`':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '`'}},  # noqa: E241,E501
+    'cs"{':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '{'}},  # noqa: E241,E501
+    'cs"}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '}'}},  # noqa: E241,E501
+    'cs("':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '"'}},  # noqa: E241,E501
+    'cs((':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '('}},  # noqa: E241,E501
+    'cs()':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': ')'}},  # noqa: E241,E501
+    'cs(2':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '2'}},  # noqa: E241,E501
+    'cs([':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '['}},  # noqa: E241,E501
+    'cs(\'':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '\''}},  # noqa: E241,E501
+    'cs(]':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': ']'}},  # noqa: E241,E501
+    'cs({':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '{'}},  # noqa: E241,E501
+    'cs(}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '}'}},  # noqa: E241,E501
+    'cs)"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '"'}},  # noqa: E241,E501
+    'cs)(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '('}},  # noqa: E241,E501
+    'cs))':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': ')'}},  # noqa: E241,E501
+    'cs)2':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '2'}},  # noqa: E241,E501
+    'cs)[':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '['}},  # noqa: E241,E501
+    'cs)\'':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '\''}},  # noqa: E241,E501
+    'cs)]':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': ']'}},  # noqa: E241,E501
+    'cs){':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '{'}},  # noqa: E241,E501
+    'cs)}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '}'}},  # noqa: E241,E501
+    'cs,`':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ',', 'replacement': '`'}},  # noqa: E241,E501
+    'cs-_':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '-', 'replacement': '_'}},  # noqa: E241,E501
+    'cs."':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '.', 'replacement': '"'}},  # noqa: E241,E501
+    'cs>"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '>', 'replacement': '"'}},  # noqa: E241,E501
+    'cs>{':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '>', 'replacement': '{'}},  # noqa: E241,E501
+    'cs>}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '>', 'replacement': '}'}},  # noqa: E241,E501
+    'cs["':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '[', 'replacement': '"'}},  # noqa: E241,E501
+    'cs\'"':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '"'}},  # noqa: E241,E501
+    'cs\'(':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '('}},  # noqa: E241,E501
+    'cs\'<div>':    {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '<div>'}},  # noqa: E241,E501
+    'cs\'<q>':      {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '<q>'}},  # noqa: E241,E501
+    'cs\'`':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '`'}},  # noqa: E241,E501
+    'cs\'tdiv>':    {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': 'tdiv>'}},  # noqa: E241,E501
+    'cs\'tq>':      {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': 'tq>'}},  # noqa: E241,E501
+    'cs]"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ']', 'replacement': '"'}},  # noqa: E241,E501
+    'cs]>':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ']', 'replacement': '>'}},  # noqa: E241,E501
+    'cs]{':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ']', 'replacement': '{'}},  # noqa: E241,E501
+    'cs_-':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '_', 'replacement': '-'}},  # noqa: E241,E501
+    'cs`"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '`', 'replacement': '"'}},  # noqa: E241,E501
+    'cs`\'':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '`', 'replacement': "'"}},  # noqa: E241,E501
+    'cst"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 't', 'replacement': '"'}},  # noqa: E241,E501
+    'cst<a>':       {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 't', 'replacement': '<a>'}},  # noqa: E241,E501
+    'cstta>':       {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 't', 'replacement': 'ta>'}},  # noqa: E241,E501
+    'cs{(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '{', 'replacement': '('}},  # noqa: E241,E501
+    'cs{)':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '{', 'replacement': ')'}},  # noqa: E241,E501
+    'cs}(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '}', 'replacement': '('}},  # noqa: E241,E501
+    'cs})':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '}', 'replacement': ')'}},  # noqa: E241,E501
+    'd$':           {'command': '_vi_d', 'args': {'motion': {'is_jump': True, 'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
+    'd2ft':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 2, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501
+    'df=':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': '='}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'dft':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'ds ':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': ' '}},  # noqa: E241
+    'ds"':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '"'}},  # noqa: E241
+    'ds(':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '('}},  # noqa: E241
+    'ds)':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': ')'}},  # noqa: E241
+    'ds,':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': ','}},  # noqa: E241
+    'ds-':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '-'}},  # noqa: E241
+    'ds.':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '.'}},  # noqa: E241
+    'ds0':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '0'}},  # noqa: E241
+    'ds2':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '2'}},  # noqa: E241
+    'ds<':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '<'}},  # noqa: E241
+    'ds>':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '>'}},  # noqa: E241
+    'ds[':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '['}},  # noqa: E241
+    'ds\'':         {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '\''}},  # noqa: E241
+    'ds]':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': ']'}},  # noqa: E241
+    'ds_':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '_'}},  # noqa: E241
+    'ds`':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '`'}},  # noqa: E241
+    'dsa':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'a'}},  # noqa: E241
+    'dsb':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'b'}},  # noqa: E241
+    'dsB':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'B'}},  # noqa: E241
+    'dse':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'e'}},  # noqa: E241
+    'dsp':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'p'}},  # noqa: E241
+    'dsq':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'q'}},  # noqa: E241
+    'dsr':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'r'}},  # noqa: E241
+    'dss':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 's'}},  # noqa: E241
+    'dst':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 't'}},  # noqa: E241
+    'dsw':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'w'}},  # noqa: E241
+    'dsW':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'W'}},  # noqa: E241
+    'ds{':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '{'}},  # noqa: E241
+    'ds}':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '}'}},  # noqa: E241
+    'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
+    'e':            {'command': '_vi_e', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'gc':           {'command': '_vi_gc'},  # noqa: E241
+    'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
+    'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
+    'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
+    'gj':           {'command': '_vi_gj', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'gk':           {'command': '_vi_gk', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'gq':           {'command': '_vi_gq', 'args': {'mode': 'mode_visual', 'count': 1}},  # noqa: E241
+    'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
+    'gv':           {'command': '_vi_gv'},  # noqa: E241
+    'it':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': False}},  # noqa: E241,E501
+    'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
+    'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
+    'J':            {'command': '_vi_big_j'},  # noqa: E241
+    'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
+    'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'x':            {'command': '_vi_x', 'args': {'register': '"'}},  # noqa: E241
+    'yse"':         {'command': '_nv_surround_ys', 'args': {'surround_with': '"',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse(':         {'command': '_nv_surround_ys', 'args': {'surround_with': '(',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse)':         {'command': '_nv_surround_ys', 'args': {'surround_with': ')',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse2':         {'command': '_nv_surround_ys', 'args': {'surround_with': '2',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse<foo>':     {'command': '_nv_surround_ys', 'args': {'surround_with': '<foo>', 'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse[':         {'command': '_nv_surround_ys', 'args': {'surround_with': '[',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse\'':        {'command': '_nv_surround_ys', 'args': {'surround_with': '\'',    'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse]':         {'command': '_nv_surround_ys', 'args': {'surround_with': ']',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse{':         {'command': '_nv_surround_ys', 'args': {'surround_with': '{',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'yse}':         {'command': '_nv_surround_ys', 'args': {'surround_with': '}',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
+    'ysiw"':        {'command': '_nv_surround_ys', 'args': {'surround_with': '"',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw(':        {'command': '_nv_surround_ys', 'args': {'surround_with': '(',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw)':        {'command': '_nv_surround_ys', 'args': {'surround_with': ')',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw2':        {'command': '_nv_surround_ys', 'args': {'surround_with': '2',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw<foo>':    {'command': '_nv_surround_ys', 'args': {'surround_with': '<foo>', 'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw[':        {'command': '_nv_surround_ys', 'args': {'surround_with': '[',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw\'':       {'command': '_nv_surround_ys', 'args': {'surround_with': '\'',    'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw]':        {'command': '_nv_surround_ys', 'args': {'surround_with': ']',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw{':        {'command': '_nv_surround_ys', 'args': {'surround_with': '{',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'ysiw}':        {'command': '_nv_surround_ys', 'args': {'surround_with': '}',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+
+}

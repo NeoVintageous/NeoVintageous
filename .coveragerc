@@ -1,5 +1,7 @@
 [run]
-omit = */tests/*
-
-[report]
-ignore_errors = True
+omit =
+    /*/tests/test*
+    /*/tests/nv/*
+    /*/tests/fixtures/*
+    /*/tests/__init__.py
+    /*/tests/commands.py

@@ -15,14 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
 from collections import Counter
+import logging
+import os
 
 from sublime import active_window
 from sublime import Region
 
 from NeoVintageous.nv import plugin
-from NeoVintageous.nv import rcfile
+from NeoVintageous.nv import rc
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi import utils
@@ -36,16 +37,13 @@ from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
-from NeoVintageous.nv.vi.variables import Variables
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import DIRECTION_DOWN
-from NeoVintageous.nv.vim import get_logger
 from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
-from NeoVintageous.nv.vim import INPUT_INMEDIATE
+from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
-from NeoVintageous.nv.vim import mode_to_friendly_name
+from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
@@ -56,7 +54,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-_log = get_logger(__name__)
+_log = logging.getLogger(__name__)
 
 
 class State(object):
@@ -77,7 +75,6 @@ class State(object):
     registers = Registers()
     macro_registers = MacroRegisters()
     marks = Marks()
-    variables = Variables()
     macro_steps = []
 
     def __init__(self, view):
@@ -107,17 +104,14 @@ class State(object):
 
     @property
     def processing_notation(self):
-        """
-        Indicate whether `ProcessNotation` is running.
-
-        Indicates whether `ProcessNotation` is running a command and is grouping
-        all edits in one single undo step. That is, we are running a non-
-        interactive sequence of commands.
-
-        This property is *VOLATILE*; it shouldn't be persisted between
-        sessions.
-        """
-        # TODO Rename self.settings.vi to self.settings.local
+        # Indicate whether _nv_process_notation is running.
+        #
+        # Indicates whether _nv_process_notation is running a command and is
+        # grouping all edits in one single undo step. That is, we are running a
+        # non- interactive sequence of commands.
+        #
+        # This property is *VOLATILE*; it shouldn't be persisted between
+        # sessions.
         return self.settings.vi['_vintageous_processing_notation'] or False
 
     @processing_notation.setter
@@ -127,15 +121,13 @@ class State(object):
     # FIXME: This property seems to do the same as processing_notation.
     @property
     def non_interactive(self):
-        """
-        Indicate whether `ProcessNotation` is running.
-
-        Indicates whether `ProcessNotation` is running a command and no
-        interactive prompts should be used (for example, by the '/' motion.)
-
-        This property is *VOLATILE*; it shouldn't be persisted between
-        sessions.
-        """
+        # Indicate whether _nv_process_notation is running.
+        #
+        # Indicates whether _nv_process_notation is running a command and no
+        # interactive prompts should be used (for example, by the '/' motion.)
+        #
+        # This property is *VOLATILE*; it shouldn't be persisted between
+        # sessions.
         return self.settings.vi['_vintageous_non_interactive'] or False
 
     @non_interactive.setter
@@ -255,7 +247,7 @@ class State(object):
     @sequence.setter
     def sequence(self, value):
         # type: (str) -> None
-        _log.debug('sequence %s', value)
+        _log.debug('sequence >>>%s<<<', value)
         self.settings.vi['sequence'] = value
 
     @property
@@ -268,7 +260,7 @@ class State(object):
     @partial_sequence.setter
     def partial_sequence(self, value):
         # type: (str) -> None
-        _log.debug('partial sequence %s', value)
+        _log.debug('partial sequence >>>%s<<<', value)
         self.settings.vi['partial_sequence'] = value
 
     @property
@@ -342,11 +334,10 @@ class State(object):
     @repeat_data.setter
     def repeat_data(self, value):
         # Store data structure for repeat ('.') to use.
-        #
         # Args:
         #   tuple (type, cmd_name_or_key_seq, mode): Type may be "vi" or
-        #       "native" ("vi" commands are executed via ProcessNotation, while
-        #       "native" commands are executed via sublime.run_command().
+        #       "native" ("vi" commands are executed via _nv_process_notation,
+        #       "while "native" commands are executed via sublime.run_command().
         assert isinstance(value, tuple) or isinstance(value, list), 'bad call'
         assert len(value) == 4, 'bad call'
         _log.debug('set repeat data: %s', value)
@@ -435,7 +426,6 @@ class State(object):
     @register.setter
     def register(self, value):
         assert len(str(value)) == 1, '`value` must be a character'
-        _log.debug('register %s', value)
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
@@ -443,7 +433,7 @@ class State(object):
     def must_collect_input(self):
         # type: () -> bool
         # Returns:
-        #   True if the current status must collect input, False otherwise.
+        #   True if the current status should collect input, False otherwise.
         motion = self.motion
         action = self.action
 
@@ -458,7 +448,7 @@ class State(object):
         if (isinstance(action, cmd_defs.ViToggleMacroRecorder) and self.is_recording):
             return False
 
-        if (action and action.accept_input and action.input_parser.type == INPUT_INMEDIATE):
+        if (action and action.accept_input and action.input_parser.type == INPUT_IMMEDIATE):
             return True
 
         if motion:
@@ -468,11 +458,9 @@ class State(object):
 
     @property
     def must_update_xpos(self):
+        # type: () -> bool
         # Returns:
-        #   bool|None: True if motion or action requires xpos update, None
-        #       otherwise.
-        # TODO State.must_update_xpos) should return False by default rather
-        #   than None.
+        #   True if motion/action should update xpos, False otherwise.
         motion = self.motion
         if motion and motion.updates_xpos:
             return True
@@ -480,6 +468,8 @@ class State(object):
         action = self.action
         if action and action.updates_xpos:
             return True
+
+        return False
 
     @property
     def is_recording(self):
@@ -522,7 +512,6 @@ class State(object):
 
     def reset_partial_sequence(self):
         # type: () -> None
-        _log.debug('reset partial sequence')
         self.partial_sequence = ''
 
     def reset_register_data(self):
@@ -538,15 +527,16 @@ class State(object):
 
     def display_status(self):
         # type: () -> None
-        mode_name = mode_to_friendly_name(self.mode)
+        mode_name = mode_to_name(self.mode)
         if mode_name:
-            mode_name = '-- {} --'.format(mode_name) if mode_name else ''
-            self.view.set_status('vim-mode', mode_name)
+            self.view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
 
         self.view.set_status('vim-seq', self.sequence)
 
     def must_scroll_into_view(self):
         # type: () -> bool
+        # Returns:
+        #   True if motion/action should scroll into view, False otherwise.
         motion = self.motion
         if motion and motion.scroll_into_view:
             return True
@@ -561,10 +551,10 @@ class State(object):
         # type: () -> None
         view = active_window().active_view()
         if view:
-            # Make sure we show the first caret on the screen, but don't show
-            # its surroundings.
+            # Make sure we show the current caret (last caret) on the screen,
+            # but don't show its surroundings.
             # TODO Maybe some commands should show their surroundings too?
-            view.show(view.sel()[0], False)
+            view.show(view.sel()[-1], False)
 
     def reset(self):
         # type: () -> None
@@ -602,7 +592,7 @@ class State(object):
         self.reset_during_init = True
 
     def update_xpos(self, force=False):
-        if self.must_update_xpos or force:
+        if force or self.must_update_xpos:
             try:
                 # TODO: we should check the current mode instead. ============
                 sel = self.view.sel()[0]
@@ -610,19 +600,14 @@ class State(object):
                 if not sel.empty():
                     if sel.a < sel.b:
                         pos -= 1
-                # ============================================================
-                r = Region(self.view.line(pos).a, pos)
-                counter = Counter(self.view.substr(r))
+
+                counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))
                 tab_size = self.view.settings().get('tab_size')
-                xpos = (self.view.rowcol(pos)[1] +
-                        ((counter['\t'] * tab_size) - counter['\t']))
-            except Exception as e:
-                console_message(str(e))
-                _log.exception('error setting xpos; default to 0')
+                self.xpos = (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t']))
+            except Exception:
+                # TODO [review] Exception handling
+                _log.debug('error updating xpos; default to 0')
                 self.xpos = 0
-                return
-            else:
-                self.xpos = xpos
 
     def _set_parsers(self, command):
         # type: (ViCommandDefBase) -> None
@@ -767,8 +752,7 @@ class State(object):
     def runnable(self):
         # type: () -> bool
         # Returns:
-        #   bool: True if we can run the state data as it is, False otherwise.
-        #
+        #   True if motion/action is in a runnable state, False otherwise.
         # Raises:
         #   ValueError: Wrong mode.
         if self.must_collect_input:
@@ -803,35 +787,39 @@ class State(object):
         if self.action and self.motion:
             action_cmd = self.action.translate(self)
             motion_cmd = self.motion.translate(self)
-            _log.debug('full command, switching to internal normal mode...')
+
+            _log.debug('changing to INTERNAL_NORMAL...')
             self.mode = INTERNAL_NORMAL
 
-            # TODO: Make a requirement that motions and actions take a
-            # 'mode' param.
+            # TODO Make motions and actions require a 'mode' param.
             if 'mode' in action_cmd['action_args']:
+                _log.debug('action has a mode, changing to INTERNAL_NORMAL...')
                 action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
             if 'mode' in motion_cmd['motion_args']:
+                _log.debug('motion has a mode, changing to INTERNAL_NORMAL...')
                 motion_cmd['motion_args']['mode'] = INTERNAL_NORMAL
 
             args = action_cmd['action_args']
             args['count'] = 1
-            # let the action run the motion within its edit object so that
-            # we don't need to worry about grouping edits to the buffer.
+            # Let the action run the motion within its edit object so that we
+            # don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
-            _log.debug('motion cmd %s, action cmd %s', motion_cmd, action_cmd)
 
             if self.glue_until_normal_mode and not self.processing_notation:
-                # We need to tell Sublime Text now that it should group
-                # all the next edits until we enter normal mode again.
+                # Tell Sublime Text that it should group all the next edits
+                # until we enter normal mode again.
+                _log.info('window.run_command() mark_undo_groups_for_gluing')
                 active_window().run_command('mark_undo_groups_for_gluing')
 
             self.add_macro_step(action_cmd['action'], args)
 
-            _log.info('run command (action + motion) %s %s', action_cmd['action'], args)
+            _log.info('window.run_command() %s %s', action_cmd['action'], args)
             active_window().run_command(action_cmd['action'], args)
+
             if not self.non_interactive:
                 if self.action.repeatable:
+                    _log.debug('action is repeatable, setting repeat data...')
                     self.repeat_data = ('vi', str(self.sequence), self.mode, None)
 
             self.reset_command_data()
@@ -840,35 +828,40 @@ class State(object):
 
         if self.motion:
             motion_cmd = self.motion.translate(self)
-            _log.debug('lone motion cmd %s', motion_cmd)
 
             self.add_macro_step(motion_cmd['motion'], motion_cmd['motion_args'])
 
-            # We know that all motions are subclasses of ViTextCommandBase,
-            # so it's safe to call them from the current view.
-            _log.info('run command (motion) %s %s', motion_cmd['motion'], motion_cmd['motion_args'])
+            # All motions are subclasses of ViTextCommandBase, so it's safe to
+            # run the command via the current view.
+            _log.info('view.run_command() %s', motion_cmd)
             self.view.run_command(motion_cmd['motion'], motion_cmd['motion_args'])
 
         if self.action:
             action_cmd = self.action.translate(self)
-            _log.debug('lone action cmd %s', action_cmd)
+
             if self.mode == NORMAL:
-                _log.debug('switch to internal normal mode')
+                _log.debug('is NORMAL, changing to INTERNAL_NORMAL...')
                 self.mode = INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
+                    _log.debug('action has a mode, changing to INTERNAL_NORMAL...')
                     action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
             elif self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+                _log.debug('is VISUAL, saving selection...')
                 self.view.add_regions('visual_sel', list(self.view.sel()))
+                self.view.settings().set('_nv_visual_sel_mode', self.mode)
 
-            # Some commands, like 'i' or 'a', open a series of edits that
-            # need to be grouped together unless we are gluing a larger
-            # sequence through ProcessNotation. For example, aFOOBAR<Esc> should
-            # be grouped atomically, but not inside a sequence like
-            # iXXX<Esc>llaYYY<Esc>, where we want to group the whole
-            # sequence instead.
+            # Some commands, like 'i' or 'a', open a series of edits that need
+            # to be grouped together unless we are gluing a larger sequence
+            # through _nv_process_notation. For example, aFOOBAR<Esc> should be
+            # grouped atomically, but not inside a sequence like
+            # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
+            # instead.
             if self.glue_until_normal_mode and not self.processing_notation:
+                # Tell Sublime Text that it should group all the next edits
+                # until we enter normal mode again.
+                _log.info('window.run_command() mark_undo_groups_for_gluing')
                 active_window().run_command('mark_undo_groups_for_gluing')
 
             seq = self.sequence
@@ -877,14 +870,16 @@ class State(object):
 
             self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
 
-            _log.info('run command (action) %s %s', action_cmd['action'], action_cmd['action_args'])
+            _log.info('window.run_command() %s', action_cmd)
             active_window().run_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
+                    _log.debug('action is repeatable, setting repeat data...')
                     self.repeat_data = ('vi', seq, self.mode, visual_repeat_data)
 
         if self.mode == INTERNAL_NORMAL:
+            _log.debug('is INTERNAL_NORMAL, changing to NORMAL...')
             self.enter_normal_mode()
 
         self.reset_command_data()
@@ -911,7 +906,8 @@ def init_state(view, new_session=False):
 
             view.settings().erase('vintage')
         except Exception:
-            _log.exception('error initialising irregular view i.e. console, widget, panel, etc.')
+            # TODO [review] Exception handling
+            _log.debug('error initialising irregular view i.e. console, widget, panel, etc.')
         finally:
             return
 
@@ -937,6 +933,7 @@ def init_state(view, new_session=False):
 
     # If we have no selections, add one.
     if len(state.view.sel()) == 0:
+        _log.debug('no selection, adding one at 0...')
         state.view.sel().add(Region(0))
 
     if state.mode in (VISUAL, VISUAL_LINE):
@@ -947,15 +944,12 @@ def init_state(view, new_session=False):
         # TODO: Don't we need to pass a mode here?
         view.window().run_command('_enter_normal_mode', {'from_init': True})
 
-    elif (view.has_non_empty_selection_region() and
-          state.mode != VISUAL):
-            # Runs, for example, when we've performed a search via ST3 search
-            # panel and we've pressed 'Find All'. In this case, we want to
-            # ensure a consistent state for multiple selections.
-            # TODO: We could end up with multiple selections in other ways
-            #       that bypass init_state.
-            state.mode = VISUAL
-
+    elif (view.has_non_empty_selection_region() and state.mode != VISUAL):
+        # Runs, for example, when we've performed a search via ST3 search panel
+        # and we've pressed 'Find All'. In this case, we want to ensure a
+        # consistent state for multiple selections.
+        # TODO We could end up with multiple selections in other ways that bypass init_state.
+        state.mode = VISUAL
     else:
         # This may be run when we're coming from cmdline mode.
         pseudo_visual = view.has_non_empty_selection_region()
@@ -968,7 +962,7 @@ def init_state(view, new_session=False):
 
     if new_session:
         state.reset_volatile_data()
-        rcfile.load()
+        rc.load()
 
         # TODO is setting the cwd for cmdline necessary?
         cmdline_cd = os.path.dirname(view.file_name()) if view.file_name() else os.getcwd()

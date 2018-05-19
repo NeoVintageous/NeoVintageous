@@ -32,8 +32,10 @@ a complete and centralized reference of those differences.
 - 'backupdir' defaults to .,~/.local/share/nvim/backup (|xdg|)
 - 'belloff' defaults to "all"
 - 'complete' doesn't include "i"
+- 'cscopeverbose' is enabled
 - 'directory' defaults to ~/.local/share/nvim/swap// (|xdg|), auto-created
-- 'display' defaults to "lastline"
+- 'display' defaults to "lastline,msgsep"
+- 'fillchars' defaults (in effect) to "vert:│,fold:·"
 - 'formatoptions' defaults to "tcqj"
 - 'history' defaults to 10000 (the maximum)
 - 'hlsearch' is set by default
@@ -47,6 +49,7 @@ a complete and centralized reference of those differences.
 - 'ruler' is set by default
 - 'sessionoptions' doesn't include "options"
 - 'showcmd' is set by default
+- 'sidescroll' defaults to 1
 - 'smarttab' is set by default
 - 'tabpagemax' defaults to 50
 - 'tags' defaults to "./tags;,tags"
@@ -127,7 +130,9 @@ Some `CTRL-SHIFT-...` key chords are distinguished from `CTRL-...` variants
 
 Options:
   'cpoptions' flags: |cpo-_|
+  'display' flag `msgsep` to minimize scrolling when showing messages
   'guicursor' works in the terminal
+  'fillchars' flag `msgsep` (see 'display' above)
   'inccommand' shows interactive results for |:substitute|-like commands
   'scrollback'
   'statusline' supports unlimited alignment sections
@@ -161,6 +166,7 @@ Events:
 
 Highlight groups:
   |hl-NormalNC| highlights non-current windows
+  |hl-MsgSeparator| highlights separator for scrolled messages
   |hl-QuickFixLine|
   |hl-Substitute|
   |hl-TermCursor|
@@ -374,7 +380,6 @@ MS-DOS support:
 Test functions:
   test_alloc_fail()
   test_autochdir()
-  test_disable_char_avail()
   test_garbagecollect_now()
   test_null_channel()
   test_null_dict()
@@ -382,6 +387,7 @@ Test functions:
   test_null_list()
   test_null_partial()
   test_null_string()
+  test_override()
   test_settime()
 
 Other options:
@@ -396,6 +402,8 @@ Other options:
   *'imactivatekey'* *'imak'*
   *'imstatusfunc'* *'imsf'*
   *'macatsui'*
+  'maxmem' Nvim delegates memory-management to the OS.
+  'maxmemtot' Nvim delegates memory-management to the OS.
   *'restorescreen'* *'rs'* *'norestorescreen'* *'nors'*
   'shelltype'
   *'shortname'* *'sn'* *'noshortname'* *'nosn'*

@@ -17,6 +17,7 @@
 
 import re
 
+from sublime import DRAW_NO_FILL
 from sublime import DRAW_NO_OUTLINE
 from sublime import IGNORECASE
 from sublime import LITERAL
@@ -25,6 +26,8 @@ import sublime_plugin
 
 
 def find_in_range(view, term, start, end, flags=0):
+    # Returns:
+    #   Region|None
     found = view.find(term, start, flags)
     if found and found.b <= end:
         return found
@@ -209,20 +212,52 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         return query
 
     def hilite(self, query):
-        regs = self.view.find_all(
+        regions = self.view.find_all(
             self.build_pattern(query),
             self.calculate_flags()
         )
 
-        if not regs:
+        if not regions:
             self.view.erase_regions('vi_search')
+            self.view.erase_regions('vi_search_current')
             return
 
         # TODO: Re-enable hlsearch toggle setting.
         # if State(self.view).settings.vi['hlsearch'] == False:
         #     return
 
-        self.view.add_regions('vi_search', regs, 'string.search.occurrence', '', DRAW_NO_OUTLINE)
+        sels = self.view.sel()
+        regions_current = []
+        for region in regions:
+            for sel in sels:
+                if region.contains(sel):
+                    regions_current.append(region)
+
+        # TODO Allow option to configure search highlight style outline or fill
+        use_outline_style = False
+        if use_outline_style:
+            flags_all = DRAW_NO_FILL
+            flags_current = DRAW_NO_OUTLINE
+        else:
+            flags_all = DRAW_NO_OUTLINE
+            flags_current = DRAW_NO_OUTLINE
+
+        # The scopes are prefixed with common color scopes so that color schemes
+        # have sane default colors. Color schemes can progressively enhance
+        # support by using the nv_* scopes.
+        self.view.add_regions(
+            'vi_search',
+            regions,
+            scope='string nv_search_occurence',
+            flags=flags_all
+        )
+
+        self.view.add_regions(
+            'vi_search_current',
+            regions_current,
+            scope='support.function nv_search_current',
+            flags=flags_current
+        )
 
 
 # TODO [refactor] Move to commands module

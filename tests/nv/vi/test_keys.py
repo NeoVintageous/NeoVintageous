@@ -15,88 +15,68 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from collections import namedtuple
+from unittest import mock
 import unittest
 
-from NeoVintageous.nv.vi import variables
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import seqs
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.utils import translate_char
 
 
-_TESTS_TOKENIZER = (
-    ('p', 'p', 'lower letter key'),
-    ('P', 'P', 'upper case letter key'),
-    ('<C-p>', '<C-p>', 'ctrl-modified lower case letter key'),
-    ('<C-P>', '<C-P>', 'ctrl-modified upper case letter key'),
-    ('<C-S-.>', '<C-S-.>', 'ctrl-shift modified period key'),
-    ('<Esc>', '<esc>', 'esc key title case'),
-    ('<esc>', '<esc>', 'esc key lowercase'),
-    ('<eSc>', '<esc>', 'esc key mixed case'),
-    ('<lt>', '<lt>', 'less than key'),
-    ('<HOME>', '<home>', 'less than key'),
-    ('<enD>', '<end>', 'less than key'),
-    ('<uP>', '<up>', 'less than key'),
-    ('<DoWn>', '<down>', 'less than key'),
-    ('<left>', '<left>', 'less than key'),
-    ('<RigHt>', '<right>', 'less than key'),
-    ('<Space>', '<space>', 'space key'),
-    ('<c-Space>', '<C-space>', 'ctrl-space key'),
-    ('0', '0', 'zero key'),
-    ('<c-m-.>', '<C-M-.>', 'ctrl-alt-period key'),
-    ('<tab>', '<tab>', 'tab key'),
-    ('<Leader>', '\\', 'leader key'),
-)
+class TestKeySequenceTokenizer(unittest.TestCase):
+
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
+    def test_tokenize_one(self):
+        def tokenize_one(source):
+            return KeySequenceTokenizer(source).tokenize_one()
+
+        self.assertEqual(tokenize_one('p'), 'p', 'lower letter key')
+        self.assertEqual(tokenize_one('P'), 'P', 'upper case letter key')
+        self.assertEqual(tokenize_one('<C-p>'), '<C-p>', 'ctrl-modified lower case letter key')
+        self.assertEqual(tokenize_one('<C-P>'), '<C-P>', 'ctrl-modified upper case letter key')
+        self.assertEqual(tokenize_one('<C-S-.>'), '<C-S-.>', 'ctrl-shift modified period key')
+        self.assertEqual(tokenize_one('<Esc>'), '<esc>', 'esc key title case')
+        self.assertEqual(tokenize_one('<esc>'), '<esc>', 'esc key lowercase')
+        self.assertEqual(tokenize_one('<eSc>'), '<esc>', 'esc key mixed case')
+        self.assertEqual(tokenize_one('<lt>'), '<lt>', 'less than key')
+        self.assertEqual(tokenize_one('<HOME>'), '<home>', 'less than key')
+        self.assertEqual(tokenize_one('<enD>'), '<end>', 'less than key')
+        self.assertEqual(tokenize_one('<uP>'), '<up>', 'less than key')
+        self.assertEqual(tokenize_one('<DoWn>'), '<down>', 'less than key')
+        self.assertEqual(tokenize_one('<left>'), '<left>', 'less than key')
+        self.assertEqual(tokenize_one('<RigHt>'), '<right>', 'less than key')
+        self.assertEqual(tokenize_one('<Space>'), '<space>', 'space key')
+        self.assertEqual(tokenize_one('<c-Space>'), '<C-space>', 'ctrl-space key')
+        self.assertEqual(tokenize_one('0'), '0', 'zero key')
+        self.assertEqual(tokenize_one('<c-m-.>'), '<C-M-.>', 'ctrl-alt-period key')
+        self.assertEqual(tokenize_one('<tab>'), '<tab>', 'tab key')
+        self.assertEqual(tokenize_one('<Leader>'), '\\', 'leader key')
+        self.assertEqual(tokenize_one('<D-a>'), '<D-a>', 'super key')
+        self.assertEqual(tokenize_one('<d-a>'), '<D-a>', 'super key')
+        self.assertEqual(tokenize_one('<D-A>'), '<D-A>', 'super key')
+        self.assertEqual(tokenize_one('<d-A>'), '<D-A>', 'super key')
+
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
+    def test_iter_tokenize(self):
+        def iter_tokenize(source):
+            return list(KeySequenceTokenizer(source).iter_tokenize())
+
+        self.assertEqual(iter_tokenize('pp'), ['p', 'p'])
+        self.assertEqual(iter_tokenize('<C-p>'), ['<C-p>'])
+        self.assertEqual(iter_tokenize('<C-P>x'), ['<C-P>', 'x'])
+        self.assertEqual(iter_tokenize('<C-S-.>'), ['<C-S-.>'])
+        self.assertEqual(iter_tokenize('<Esc>ai'), ['<esc>', 'a', 'i'])
+        self.assertEqual(iter_tokenize('<lt><lt>'), ['<lt>', '<lt>'])
+        self.assertEqual(iter_tokenize('<DoWn>abc.'), ['<down>', 'a', 'b', 'c', '.'])
+        self.assertEqual(iter_tokenize('0<down>'), ['0', '<down>'])
+        self.assertEqual(iter_tokenize('<c-m-.>'), ['<C-M-.>'])
+        self.assertEqual(iter_tokenize('<d-i>i.'), ['<D-i>', 'i', '.'])
+        self.assertEqual(iter_tokenize('<d-i><c-i>'), ['<D-i>', '<C-i>'])
+        self.assertEqual(iter_tokenize('<d-i><c-d>'), ['<D-i>', '<C-d>'])
 
 
-class TestKeySequenceTokenizerTokenizeOne(unittest.TestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.old_vars = variables._VARIABLES
-        variables._VARIABLES = {}
-
-    def parse(self, input_):
-        tokenizer = KeySequenceTokenizer(input_)
-        return tokenizer.tokenize_one()
-
-    def test_all(self):
-        for (i, t) in enumerate(_TESTS_TOKENIZER):
-            input_, expected, msg = t
-            self.assertEqual(self.parse(input_), expected, "{0} - {1}".format(i, msg))
-
-    def tearDown(self):
-        super().tearDown()
-        variables._VARIABLES = self.old_vars
-
-
-_TESTS_ITER_TOKENIZE = (
-    ('pp', ['p', 'p'], 'sequence'),
-    ('<C-p>', ['<C-p>'], 'sequence'),
-    ('<C-P>x', ['<C-P>', 'x'], 'sequence'),
-    ('<C-S-.>', ['<C-S-.>'], 'sequence'),
-    ('<Esc>ai', ['<esc>', 'a', 'i'], 'sequence'),
-    ('<lt><lt>', ['<lt>', '<lt>'], 'sequence'),
-    ('<DoWn>abc.', ['<down>', 'a', 'b', 'c', '.'], 'sequence'),
-    ('0<down>', ['0', '<down>'], 'sequence'),
-    ('<c-m-.>', ['<C-M-.>'], 'sequence'),
-)
-
-
-class TestKeySequenceTokenizerIterTokenize(unittest.TestCase):
-
-    def parse(self, input_):
-        tokenizer = KeySequenceTokenizer(input_)
-        return list(tokenizer.iter_tokenize())
-
-    def test_all(self):
-        for (i, t) in enumerate(_TESTS_ITER_TOKENIZE):
-            input_, expected, msg = t
-            self.assertEqual(self.parse(input_), expected, "{0} - {1}".format(i, msg))
-
-
-class TestToBareCommandName(unittest.TestCase):
+class TestFunctions(unittest.TestCase):
 
     def test_to_bare_command_name(self):
         self.assertEquals('daw', to_bare_command_name('daw'))
@@ -113,299 +93,284 @@ class TestToBareCommandName(unittest.TestCase):
         self.assertEquals('0', to_bare_command_name('0'))
         self.assertEquals('dd', to_bare_command_name('d2d'))
 
-
-_TRANLATION_TESTS = (
-    ('<enter>', '\n', ''),
-    ('<cr>', '\n', ''),
-    ('<sp>', ' ', ''),
-    ('<space>', ' ', ''),
-    ('<lt>', '<', ''),
-    ('a', 'a', ''),
-)
+    def test_translate_char(self):
+        self.assertEqual(translate_char('<enter>'), '\n')
+        self.assertEqual(translate_char('<cr>'), '\n')
+        self.assertEqual(translate_char('<sp>'), ' ')
+        self.assertEqual(translate_char('<space>'), ' ')
+        self.assertEqual(translate_char('<lt>'), '<')
+        self.assertEqual(translate_char('a'), 'a')
 
 
-class TestTranslateChar(unittest.TestCase):
-
-    def test_all(self):
-        for (i, t) in enumerate(_TRANLATION_TESTS):
-            input_, expected, msg = t
-            self.assertEqual(translate_char(input_), expected, "{0} - {1}".format(i, msg))
-
-
-_seq_test = namedtuple('_seq_test', 'actual expected')
-
-
-_TESTS_KNOWN_SEQUENCES = (
-    _seq_test(actual=seqs.A, expected='a'),
-    _seq_test(actual=seqs.ALT_CTRL_P, expected='<C-M-p>'),
-    _seq_test(actual=seqs.AMPERSAND, expected='&'),
-    _seq_test(actual=seqs.AT, expected='@'),
-    _seq_test(actual=seqs.AW, expected='aw'),
-    _seq_test(actual=seqs.B, expected='b'),
-    _seq_test(actual=seqs.BACKSPACE, expected='<bs>'),
-    _seq_test(actual=seqs.BACKTICK, expected='`'),
-    _seq_test(actual=seqs.BIG_A, expected='A'),
-    _seq_test(actual=seqs.BIG_B, expected='B'),
-    _seq_test(actual=seqs.BIG_C, expected='C'),
-    _seq_test(actual=seqs.BIG_D, expected='D'),
-    _seq_test(actual=seqs.BIG_E, expected='E'),
-    _seq_test(actual=seqs.BIG_F, expected='F'),
-    _seq_test(actual=seqs.BIG_G, expected='G'),
-    _seq_test(actual=seqs.BIG_H, expected='H'),
-    _seq_test(actual=seqs.BIG_I, expected='I'),
-    _seq_test(actual=seqs.BIG_J, expected='J'),
-    _seq_test(actual=seqs.BIG_K, expected='K'),
-    _seq_test(actual=seqs.BIG_L, expected='L'),
-    _seq_test(actual=seqs.BIG_M, expected='M'),
-    _seq_test(actual=seqs.BIG_N, expected='N'),
-    _seq_test(actual=seqs.BIG_O, expected='O'),
-    _seq_test(actual=seqs.BIG_P, expected='P'),
-    _seq_test(actual=seqs.BIG_Q, expected='Q'),
-    _seq_test(actual=seqs.BIG_R, expected='R'),
-    _seq_test(actual=seqs.BIG_S, expected='S'),
-    _seq_test(actual=seqs.BIG_T, expected='T'),
-    _seq_test(actual=seqs.BIG_U, expected='U'),
-    _seq_test(actual=seqs.BIG_V, expected='V'),
-    _seq_test(actual=seqs.BIG_W, expected='W'),
-    _seq_test(actual=seqs.BIG_X, expected='X'),
-    _seq_test(actual=seqs.BIG_Y, expected='Y'),
-    _seq_test(actual=seqs.BIG_Z, expected='Z'),
-    _seq_test(actual=seqs.BIG_Z_BIG_Q, expected='ZQ'),
-    _seq_test(actual=seqs.BIG_Z_BIG_Z, expected='ZZ'),
-    _seq_test(actual=seqs.C, expected='c'),
-    _seq_test(actual=seqs.CC, expected='cc'),
-    _seq_test(actual=seqs.COLON, expected=':'),
-    _seq_test(actual=seqs.COMMA, expected=','),
-    _seq_test(actual=seqs.COMMAND_BIG_B, expected='<D-B>'),
-    _seq_test(actual=seqs.COMMAND_BIG_F, expected='<D-F>'),
-    _seq_test(actual=seqs.COMMAND_BIG_P, expected='<D-P>'),
-    _seq_test(actual=seqs.COMMAND_P, expected='<D-p>'),
-    _seq_test(actual=seqs.CTRL_0, expected='<C-0>'),
-    _seq_test(actual=seqs.CTRL_1, expected='<C-1>'),
-    _seq_test(actual=seqs.CTRL_2, expected='<C-2>'),
-    _seq_test(actual=seqs.CTRL_3, expected='<C-3>'),
-    _seq_test(actual=seqs.CTRL_4, expected='<C-4>'),
-    _seq_test(actual=seqs.CTRL_5, expected='<C-5>'),
-    _seq_test(actual=seqs.CTRL_6, expected='<C-6>'),
-    _seq_test(actual=seqs.CTRL_7, expected='<C-7>'),
-    _seq_test(actual=seqs.CTRL_8, expected='<C-8>'),
-    _seq_test(actual=seqs.CTRL_9, expected='<C-9>'),
-    _seq_test(actual=seqs.CTRL_A, expected='<C-a>'),
-    _seq_test(actual=seqs.CTRL_B, expected='<C-b>'),
-    _seq_test(actual=seqs.CTRL_BIG_F, expected='<C-F>'),
-    _seq_test(actual=seqs.CTRL_BIG_P, expected='<C-P>'),
-    _seq_test(actual=seqs.CTRL_C, expected='<C-c>'),
-    _seq_test(actual=seqs.CTRL_D, expected='<C-d>'),
-    _seq_test(actual=seqs.CTRL_DOT, expected='<C-.>'),
-    _seq_test(actual=seqs.CTRL_E, expected='<C-e>'),
-    _seq_test(actual=seqs.CTRL_ENTER, expected='<C-cr>'),
-    _seq_test(actual=seqs.CTRL_F, expected='<C-f>'),
-    _seq_test(actual=seqs.CTRL_F12, expected='<C-f12>'),
-    _seq_test(actual=seqs.CTRL_F2, expected='<C-f2>'),
-    _seq_test(actual=seqs.CTRL_G, expected='<C-g>'),
-    _seq_test(actual=seqs.CTRL_I, expected='<C-i>'),
-    _seq_test(actual=seqs.CTRL_J, expected='<C-j>'),
-    _seq_test(actual=seqs.CTRL_K, expected='<C-k>'),
-    _seq_test(actual=seqs.CTRL_K_CTRL_B, expected='<C-k><C-b>'),
-    _seq_test(actual=seqs.CTRL_L, expected='<C-l>'),
-    _seq_test(actual=seqs.CTRL_LEFT_SQUARE_BRACKET, expected='<C-[>'),
-    _seq_test(actual=seqs.CTRL_N, expected='<C-n>'),
-    _seq_test(actual=seqs.CTRL_O, expected='<C-o>'),
-    _seq_test(actual=seqs.CTRL_P, expected='<C-p>'),
-    _seq_test(actual=seqs.CTRL_R, expected='<C-r>'),
-    _seq_test(actual=seqs.CTRL_R_EQUAL, expected='<C-r>='),
-    _seq_test(actual=seqs.CTRL_RIGHT_SQUARE_BRACKET, expected='<C-]>'),
-    _seq_test(actual=seqs.CTRL_SHIFT_B, expected='<C-S-b>'),
-    _seq_test(actual=seqs.CTRL_SHIFT_DOT, expected='<C-S-.>'),
-    _seq_test(actual=seqs.CTRL_SHIFT_ENTER, expected='<C-S-cr>'),
-    _seq_test(actual=seqs.CTRL_SHIFT_F2, expected='<C-S-f2>'),
-    _seq_test(actual=seqs.CTRL_U, expected='<C-u>'),
-    _seq_test(actual=seqs.CTRL_V, expected='<C-v>'),
-    _seq_test(actual=seqs.CTRL_W, expected='<C-w>'),
-    _seq_test(actual=seqs.CTRL_W_B, expected='<C-w>b'),
-    _seq_test(actual=seqs.CTRL_W_BACKSPACE, expected='<C-w><bs>'),
-    _seq_test(actual=seqs.CTRL_W_BIG_H, expected='<C-w>H'),
-    _seq_test(actual=seqs.CTRL_W_BIG_J, expected='<C-w>J'),
-    _seq_test(actual=seqs.CTRL_W_BIG_K, expected='<C-w>K'),
-    _seq_test(actual=seqs.CTRL_W_BIG_L, expected='<C-w>L'),
-    _seq_test(actual=seqs.CTRL_W_BIG_S, expected='<C-w>S'),
-    _seq_test(actual=seqs.CTRL_W_C, expected='<C-w>c'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_B, expected='<C-w><C-b>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_H, expected='<C-w><C-h>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_J, expected='<C-w><C-j>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_K, expected='<C-w><C-k>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_L, expected='<C-w><C-l>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_N, expected='<C-w><C-n>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_O, expected='<C-w><C-o>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_Q, expected='<C-w><C-q>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_S, expected='<C-w><C-s>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_T, expected='<C-w><C-t>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_UNDERSCORE, expected='<C-w><C-_>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_V, expected='<C-w><C-v>'),
-    _seq_test(actual=seqs.CTRL_W_CTRL_X, expected='<C-w><C-x>'),
-    _seq_test(actual=seqs.CTRL_W_DOWN, expected='<C-w><down>'),
-    _seq_test(actual=seqs.CTRL_W_EQUAL, expected='<C-w>='),
-    _seq_test(actual=seqs.CTRL_W_GREATER_THAN, expected='<C-w>>'),
-    _seq_test(actual=seqs.CTRL_W_H, expected='<C-w>h'),
-    _seq_test(actual=seqs.CTRL_W_J, expected='<C-w>j'),
-    _seq_test(actual=seqs.CTRL_W_K, expected='<C-w>k'),
-    _seq_test(actual=seqs.CTRL_W_L, expected='<C-w>l'),
-    _seq_test(actual=seqs.CTRL_W_LEFT, expected='<C-w><left>'),
-    _seq_test(actual=seqs.CTRL_W_LESS_THAN, expected='<C-w><lt>'),
-    _seq_test(actual=seqs.CTRL_W_MINUS, expected='<C-w>-'),
-    _seq_test(actual=seqs.CTRL_W_N, expected='<C-w>n'),
-    _seq_test(actual=seqs.CTRL_W_O, expected='<C-w>o'),
-    _seq_test(actual=seqs.CTRL_W_PIPE, expected='<C-w>|'),
-    _seq_test(actual=seqs.CTRL_W_PLUS, expected='<C-w>+'),
-    _seq_test(actual=seqs.CTRL_W_Q, expected='<C-w>q'),
-    _seq_test(actual=seqs.CTRL_W_RIGHT, expected='<C-w><right>'),
-    _seq_test(actual=seqs.CTRL_W_S, expected='<C-w>s'),
-    _seq_test(actual=seqs.CTRL_W_T, expected='<C-w>t'),
-    _seq_test(actual=seqs.CTRL_W_UNDERSCORE, expected='<C-w>_'),
-    _seq_test(actual=seqs.CTRL_W_UP, expected='<C-w><up>'),
-    _seq_test(actual=seqs.CTRL_W_V, expected='<C-w>v'),
-    _seq_test(actual=seqs.CTRL_W_X, expected='<C-w>x'),
-    _seq_test(actual=seqs.CTRL_X, expected='<C-x>'),
-    _seq_test(actual=seqs.CTRL_X_CTRL_L, expected='<C-x><C-l>'),
-    _seq_test(actual=seqs.CTRL_Y, expected='<C-y>'),
-    _seq_test(actual=seqs.D, expected='d'),
-    _seq_test(actual=seqs.DD, expected='dd'),
-    _seq_test(actual=seqs.DOLLAR, expected='$'),
-    _seq_test(actual=seqs.DOT, expected='.'),
-    _seq_test(actual=seqs.DOUBLE_QUOTE, expected='"'),
-    _seq_test(actual=seqs.DOWN, expected='<down>'),
-    _seq_test(actual=seqs.E, expected='e'),
-    _seq_test(actual=seqs.END, expected='<end>'),
-    _seq_test(actual=seqs.ENTER, expected='<cr>'),
-    _seq_test(actual=seqs.EQUAL, expected='='),
-    _seq_test(actual=seqs.EQUAL_EQUAL, expected='=='),
-    _seq_test(actual=seqs.ESC, expected='<esc>'),
-    _seq_test(actual=seqs.F, expected='f'),
-    _seq_test(actual=seqs.F1, expected='<f1>'),
-    _seq_test(actual=seqs.F10, expected='<f10>'),
-    _seq_test(actual=seqs.F11, expected='<f11>'),
-    _seq_test(actual=seqs.F12, expected='<f12>'),
-    _seq_test(actual=seqs.F13, expected='<f13>'),
-    _seq_test(actual=seqs.F14, expected='<f14>'),
-    _seq_test(actual=seqs.F15, expected='<f15>'),
-    _seq_test(actual=seqs.F2, expected='<f2>'),
-    _seq_test(actual=seqs.F3, expected='<f3>'),
-    _seq_test(actual=seqs.F4, expected='<f4>'),
-    _seq_test(actual=seqs.F5, expected='<f5>'),
-    _seq_test(actual=seqs.F6, expected='<f6>'),
-    _seq_test(actual=seqs.F7, expected='<f7>'),
-    _seq_test(actual=seqs.F8, expected='<f8>'),
-    _seq_test(actual=seqs.F9, expected='<f9>'),
-    _seq_test(actual=seqs.G, expected='g'),
-    _seq_test(actual=seqs.G_BIG_C, expected='gC'),
-    _seq_test(actual=seqs.G_BIG_D, expected='gD'),
-    _seq_test(actual=seqs.G_BIG_E, expected='gE'),
-    _seq_test(actual=seqs.G_BIG_H, expected='gH'),
-    _seq_test(actual=seqs.G_BIG_J, expected='gJ'),
-    _seq_test(actual=seqs.G_BIG_T, expected='gT'),
-    _seq_test(actual=seqs.G_BIG_U, expected='gU'),
-    _seq_test(actual=seqs.G_BIG_U_BIG_U, expected='gUU'),
-    _seq_test(actual=seqs.G_BIG_U_G_BIG_U, expected='gUgU'),
-    _seq_test(actual=seqs.G_TILDE, expected='g~'),
-    _seq_test(actual=seqs.G_TILDE_G_TILDE, expected='g~g~'),
-    _seq_test(actual=seqs.G_TILDE_TILDE, expected='g~~'),
-    _seq_test(actual=seqs.G_UNDERSCORE, expected='g_'),
-    _seq_test(actual=seqs.GA, expected='ga'),
-    _seq_test(actual=seqs.GC, expected='gc'),
-    _seq_test(actual=seqs.GCC, expected='gcc'),
-    _seq_test(actual=seqs.GD, expected='gd'),
-    _seq_test(actual=seqs.GE, expected='ge'),
-    _seq_test(actual=seqs.GG, expected='gg'),
-    _seq_test(actual=seqs.GH, expected='gh'),
-    _seq_test(actual=seqs.GJ, expected='gj'),
-    _seq_test(actual=seqs.GK, expected='gk'),
-    _seq_test(actual=seqs.GM, expected='gm'),
-    _seq_test(actual=seqs.GQ, expected='gq'),
-    _seq_test(actual=seqs.GREATER_THAN, expected='>'),
-    _seq_test(actual=seqs.GREATER_THAN_GREATER_THAN, expected='>>'),
-    _seq_test(actual=seqs.GT, expected='gt'),
-    _seq_test(actual=seqs.GU, expected='gu'),
-    _seq_test(actual=seqs.GUGU, expected='gugu'),
-    _seq_test(actual=seqs.GUU, expected='guu'),
-    _seq_test(actual=seqs.GV, expected='gv'),
-    _seq_test(actual=seqs.GX, expected='gx'),
-    _seq_test(actual=seqs.H, expected='h'),
-    _seq_test(actual=seqs.HAT, expected='^'),
-    _seq_test(actual=seqs.HOME, expected='<home>'),
-    _seq_test(actual=seqs.I, expected='i'),
-    _seq_test(actual=seqs.J, expected='j'),
-    _seq_test(actual=seqs.K, expected='k'),
-    _seq_test(actual=seqs.L, expected='l'),
-    _seq_test(actual=seqs.LEFT, expected='<left>'),
-    _seq_test(actual=seqs.LEFT_BRACE, expected='{'),
-    _seq_test(actual=seqs.LEFT_PAREN, expected='('),
-    _seq_test(actual=seqs.LEFT_SQUARE_BRACKET, expected='['),
-    _seq_test(actual=seqs.LEFT_SQUARE_BRACKET_C, expected='[c'),
-    _seq_test(actual=seqs.LESS_THAN, expected='<lt>'),
-    _seq_test(actual=seqs.LESS_THAN_LESS_THAN, expected='<lt><lt>'),
-    _seq_test(actual=seqs.M, expected='m'),
-    _seq_test(actual=seqs.MINUS, expected='-'),
-    _seq_test(actual=seqs.N, expected='n'),
-    _seq_test(actual=seqs.O, expected='o'),
-    _seq_test(actual=seqs.OCTOTHORP, expected='#'),
-    _seq_test(actual=seqs.P, expected='p'),
-    _seq_test(actual=seqs.PAGE_DOWN, expected='pagedown'),
-    _seq_test(actual=seqs.PAGE_UP, expected='pageup'),
-    _seq_test(actual=seqs.PERCENT, expected='%'),
-    _seq_test(actual=seqs.PIPE, expected='|'),
-    _seq_test(actual=seqs.PLUS, expected='+'),
-    _seq_test(actual=seqs.Q, expected='q'),
-    _seq_test(actual=seqs.QUESTION_MARK, expected='?'),
-    _seq_test(actual=seqs.QUOTE, expected="'"),
-    _seq_test(actual=seqs.QUOTE_QUOTE, expected="''"),
-    _seq_test(actual=seqs.R, expected='r'),
-    _seq_test(actual=seqs.RIGHT, expected='<right>'),
-    _seq_test(actual=seqs.RIGHT_BRACE, expected='}'),
-    _seq_test(actual=seqs.RIGHT_PAREN, expected=')'),
-    _seq_test(actual=seqs.RIGHT_SQUARE_BRACKET, expected=']'),
-    _seq_test(actual=seqs.RIGHT_SQUARE_BRACKET_C, expected=']c'),
-    _seq_test(actual=seqs.S, expected='s'),
-    _seq_test(actual=seqs.SEMICOLON, expected=';'),
-    _seq_test(actual=seqs.SHIFT_CTRL_F12, expected='<C-S-f12>'),
-    _seq_test(actual=seqs.SHIFT_ENTER, expected='<S-cr>'),
-    _seq_test(actual=seqs.SHIFT_F11, expected='<S-f11>'),
-    _seq_test(actual=seqs.SHIFT_F2, expected='<S-f2>'),
-    _seq_test(actual=seqs.SHIFT_F3, expected='<S-f3>'),
-    _seq_test(actual=seqs.SHIFT_F4, expected='<S-f4>'),
-    _seq_test(actual=seqs.SLASH, expected='/'),
-    _seq_test(actual=seqs.SPACE, expected='<space>'),
-    _seq_test(actual=seqs.STAR, expected='*'),
-    _seq_test(actual=seqs.T, expected='t'),
-    _seq_test(actual=seqs.TAB, expected='<tab>'),
-    _seq_test(actual=seqs.TILDE, expected='~'),
-    _seq_test(actual=seqs.U, expected='u'),
-    _seq_test(actual=seqs.UNDERSCORE, expected='_'),
-    _seq_test(actual=seqs.UP, expected='<up>'),
-    _seq_test(actual=seqs.V, expected='v'),
-    _seq_test(actual=seqs.W, expected='w'),
-    _seq_test(actual=seqs.X, expected='x'),
-    _seq_test(actual=seqs.Y, expected='y'),
-    _seq_test(actual=seqs.YY, expected='yy'),
-    _seq_test(actual=seqs.Z, expected='z'),
-    _seq_test(actual=seqs.Z_ENTER, expected='z<cr>'),
-    _seq_test(actual=seqs.Z_MINUS, expected='z-'),
-    _seq_test(actual=seqs.ZB, expected='zb'),
-    _seq_test(actual=seqs.ZERO, expected='0'),
-    _seq_test(actual=seqs.ZT, expected='zt'),
-    _seq_test(actual=seqs.ZZ, expected='zz'),
+_known_seqs_dataset = (
+    (seqs.A, 'a'),
+    (seqs.ALT_CTRL_P, '<C-M-p>'),
+    (seqs.AMPERSAND, '&'),
+    (seqs.AT, '@'),
+    (seqs.AW, 'aw'),
+    (seqs.B, 'b'),
+    (seqs.BACKSPACE, '<bs>'),
+    (seqs.BACKTICK, '`'),
+    (seqs.BIG_A, 'A'),
+    (seqs.BIG_B, 'B'),
+    (seqs.BIG_C, 'C'),
+    (seqs.BIG_D, 'D'),
+    (seqs.BIG_E, 'E'),
+    (seqs.BIG_F, 'F'),
+    (seqs.BIG_G, 'G'),
+    (seqs.BIG_H, 'H'),
+    (seqs.BIG_I, 'I'),
+    (seqs.BIG_J, 'J'),
+    (seqs.BIG_K, 'K'),
+    (seqs.BIG_L, 'L'),
+    (seqs.BIG_M, 'M'),
+    (seqs.BIG_N, 'N'),
+    (seqs.BIG_O, 'O'),
+    (seqs.BIG_P, 'P'),
+    (seqs.BIG_Q, 'Q'),
+    (seqs.BIG_R, 'R'),
+    (seqs.BIG_S, 'S'),
+    (seqs.BIG_T, 'T'),
+    (seqs.BIG_U, 'U'),
+    (seqs.BIG_V, 'V'),
+    (seqs.BIG_W, 'W'),
+    (seqs.BIG_X, 'X'),
+    (seqs.BIG_Y, 'Y'),
+    (seqs.BIG_Z, 'Z'),
+    (seqs.BIG_Z_BIG_Q, 'ZQ'),
+    (seqs.BIG_Z_BIG_Z, 'ZZ'),
+    (seqs.C, 'c'),
+    (seqs.CC, 'cc'),
+    (seqs.COLON, ':'),
+    (seqs.COMMA, ','),
+    (seqs.COMMAND_BIG_B, '<D-B>'),
+    (seqs.COMMAND_BIG_F, '<D-F>'),
+    (seqs.COMMAND_BIG_P, '<D-P>'),
+    (seqs.COMMAND_P, '<D-p>'),
+    (seqs.CTRL_0, '<C-0>'),
+    (seqs.CTRL_1, '<C-1>'),
+    (seqs.CTRL_2, '<C-2>'),
+    (seqs.CTRL_3, '<C-3>'),
+    (seqs.CTRL_4, '<C-4>'),
+    (seqs.CTRL_5, '<C-5>'),
+    (seqs.CTRL_6, '<C-6>'),
+    (seqs.CTRL_7, '<C-7>'),
+    (seqs.CTRL_8, '<C-8>'),
+    (seqs.CTRL_9, '<C-9>'),
+    (seqs.CTRL_A, '<C-a>'),
+    (seqs.CTRL_B, '<C-b>'),
+    (seqs.CTRL_BIG_F, '<C-F>'),
+    (seqs.CTRL_BIG_P, '<C-P>'),
+    (seqs.CTRL_C, '<C-c>'),
+    (seqs.CTRL_D, '<C-d>'),
+    (seqs.CTRL_DOT, '<C-.>'),
+    (seqs.CTRL_E, '<C-e>'),
+    (seqs.CTRL_ENTER, '<C-cr>'),
+    (seqs.CTRL_F, '<C-f>'),
+    (seqs.CTRL_F12, '<C-f12>'),
+    (seqs.CTRL_F2, '<C-f2>'),
+    (seqs.CTRL_G, '<C-g>'),
+    (seqs.CTRL_I, '<C-i>'),
+    (seqs.CTRL_J, '<C-j>'),
+    (seqs.CTRL_K, '<C-k>'),
+    (seqs.CTRL_K_CTRL_B, '<C-k><C-b>'),
+    (seqs.CTRL_L, '<C-l>'),
+    (seqs.CTRL_LEFT_SQUARE_BRACKET, '<C-[>'),
+    (seqs.CTRL_N, '<C-n>'),
+    (seqs.CTRL_O, '<C-o>'),
+    (seqs.CTRL_P, '<C-p>'),
+    (seqs.CTRL_R, '<C-r>'),
+    (seqs.CTRL_R_EQUAL, '<C-r>='),
+    (seqs.CTRL_RIGHT_SQUARE_BRACKET, '<C-]>'),
+    (seqs.CTRL_SHIFT_B, '<C-S-b>'),
+    (seqs.CTRL_SHIFT_DOT, '<C-S-.>'),
+    (seqs.CTRL_SHIFT_ENTER, '<C-S-cr>'),
+    (seqs.CTRL_SHIFT_F2, '<C-S-f2>'),
+    (seqs.CTRL_U, '<C-u>'),
+    (seqs.CTRL_V, '<C-v>'),
+    (seqs.CTRL_W, '<C-w>'),
+    (seqs.CTRL_W_B, '<C-w>b'),
+    (seqs.CTRL_W_BACKSPACE, '<C-w><bs>'),
+    (seqs.CTRL_W_BIG_H, '<C-w>H'),
+    (seqs.CTRL_W_BIG_J, '<C-w>J'),
+    (seqs.CTRL_W_BIG_K, '<C-w>K'),
+    (seqs.CTRL_W_BIG_L, '<C-w>L'),
+    (seqs.CTRL_W_BIG_S, '<C-w>S'),
+    (seqs.CTRL_W_C, '<C-w>c'),
+    (seqs.CTRL_W_CTRL_B, '<C-w><C-b>'),
+    (seqs.CTRL_W_CTRL_H, '<C-w><C-h>'),
+    (seqs.CTRL_W_CTRL_J, '<C-w><C-j>'),
+    (seqs.CTRL_W_CTRL_K, '<C-w><C-k>'),
+    (seqs.CTRL_W_CTRL_L, '<C-w><C-l>'),
+    (seqs.CTRL_W_CTRL_N, '<C-w><C-n>'),
+    (seqs.CTRL_W_CTRL_O, '<C-w><C-o>'),
+    (seqs.CTRL_W_CTRL_Q, '<C-w><C-q>'),
+    (seqs.CTRL_W_CTRL_S, '<C-w><C-s>'),
+    (seqs.CTRL_W_CTRL_T, '<C-w><C-t>'),
+    (seqs.CTRL_W_CTRL_UNDERSCORE, '<C-w><C-_>'),
+    (seqs.CTRL_W_CTRL_V, '<C-w><C-v>'),
+    (seqs.CTRL_W_CTRL_X, '<C-w><C-x>'),
+    (seqs.CTRL_W_DOWN, '<C-w><down>'),
+    (seqs.CTRL_W_EQUAL, '<C-w>='),
+    (seqs.CTRL_W_GREATER_THAN, '<C-w>>'),
+    (seqs.CTRL_W_H, '<C-w>h'),
+    (seqs.CTRL_W_J, '<C-w>j'),
+    (seqs.CTRL_W_K, '<C-w>k'),
+    (seqs.CTRL_W_L, '<C-w>l'),
+    (seqs.CTRL_W_LEFT, '<C-w><left>'),
+    (seqs.CTRL_W_LESS_THAN, '<C-w><lt>'),
+    (seqs.CTRL_W_MINUS, '<C-w>-'),
+    (seqs.CTRL_W_N, '<C-w>n'),
+    (seqs.CTRL_W_O, '<C-w>o'),
+    (seqs.CTRL_W_PIPE, '<C-w>|'),
+    (seqs.CTRL_W_PLUS, '<C-w>+'),
+    (seqs.CTRL_W_Q, '<C-w>q'),
+    (seqs.CTRL_W_RIGHT, '<C-w><right>'),
+    (seqs.CTRL_W_S, '<C-w>s'),
+    (seqs.CTRL_W_T, '<C-w>t'),
+    (seqs.CTRL_W_UNDERSCORE, '<C-w>_'),
+    (seqs.CTRL_W_UP, '<C-w><up>'),
+    (seqs.CTRL_W_V, '<C-w>v'),
+    (seqs.CTRL_W_X, '<C-w>x'),
+    (seqs.CTRL_X, '<C-x>'),
+    (seqs.CTRL_X_CTRL_L, '<C-x><C-l>'),
+    (seqs.CTRL_Y, '<C-y>'),
+    (seqs.D, 'd'),
+    (seqs.DD, 'dd'),
+    (seqs.DOLLAR, '$'),
+    (seqs.DOT, '.'),
+    (seqs.DOUBLE_QUOTE, '"'),
+    (seqs.DOWN, '<down>'),
+    (seqs.E, 'e'),
+    (seqs.END, '<end>'),
+    (seqs.ENTER, '<cr>'),
+    (seqs.EQUAL, '='),
+    (seqs.EQUAL_EQUAL, '=='),
+    (seqs.ESC, '<esc>'),
+    (seqs.F, 'f'),
+    (seqs.F1, '<f1>'),
+    (seqs.F10, '<f10>'),
+    (seqs.F11, '<f11>'),
+    (seqs.F12, '<f12>'),
+    (seqs.F13, '<f13>'),
+    (seqs.F14, '<f14>'),
+    (seqs.F15, '<f15>'),
+    (seqs.F2, '<f2>'),
+    (seqs.F3, '<f3>'),
+    (seqs.F4, '<f4>'),
+    (seqs.F5, '<f5>'),
+    (seqs.F6, '<f6>'),
+    (seqs.F7, '<f7>'),
+    (seqs.F8, '<f8>'),
+    (seqs.F9, '<f9>'),
+    (seqs.G, 'g'),
+    (seqs.G_BIG_C, 'gC'),
+    (seqs.G_BIG_D, 'gD'),
+    (seqs.G_BIG_E, 'gE'),
+    (seqs.G_BIG_H, 'gH'),
+    (seqs.G_BIG_J, 'gJ'),
+    (seqs.G_BIG_T, 'gT'),
+    (seqs.G_BIG_U, 'gU'),
+    (seqs.G_BIG_U_BIG_U, 'gUU'),
+    (seqs.G_BIG_U_G_BIG_U, 'gUgU'),
+    (seqs.G_TILDE, 'g~'),
+    (seqs.G_TILDE_G_TILDE, 'g~g~'),
+    (seqs.G_TILDE_TILDE, 'g~~'),
+    (seqs.G_UNDERSCORE, 'g_'),
+    (seqs.GA, 'ga'),
+    (seqs.GC, 'gc'),
+    (seqs.GCC, 'gcc'),
+    (seqs.GD, 'gd'),
+    (seqs.GE, 'ge'),
+    (seqs.GG, 'gg'),
+    (seqs.GH, 'gh'),
+    (seqs.GJ, 'gj'),
+    (seqs.GK, 'gk'),
+    (seqs.GM, 'gm'),
+    (seqs.GQ, 'gq'),
+    (seqs.GREATER_THAN, '>'),
+    (seqs.GREATER_THAN_GREATER_THAN, '>>'),
+    (seqs.GT, 'gt'),
+    (seqs.GU, 'gu'),
+    (seqs.GUGU, 'gugu'),
+    (seqs.GUU, 'guu'),
+    (seqs.GV, 'gv'),
+    (seqs.GX, 'gx'),
+    (seqs.H, 'h'),
+    (seqs.HAT, '^'),
+    (seqs.HOME, '<home>'),
+    (seqs.I, 'i'),
+    (seqs.J, 'j'),
+    (seqs.K, 'k'),
+    (seqs.L, 'l'),
+    (seqs.LEFT, '<left>'),
+    (seqs.LEFT_BRACE, '{'),
+    (seqs.LEFT_PAREN, '('),
+    (seqs.LEFT_SQUARE_BRACKET, '['),
+    (seqs.LEFT_SQUARE_BRACKET_C, '[c'),
+    (seqs.LESS_THAN, '<lt>'),
+    (seqs.LESS_THAN_LESS_THAN, '<lt><lt>'),
+    (seqs.M, 'm'),
+    (seqs.MINUS, '-'),
+    (seqs.N, 'n'),
+    (seqs.O, 'o'),
+    (seqs.OCTOTHORP, '#'),
+    (seqs.P, 'p'),
+    (seqs.PAGE_DOWN, 'pagedown'),
+    (seqs.PAGE_UP, 'pageup'),
+    (seqs.PERCENT, '%'),
+    (seqs.PIPE, '|'),
+    (seqs.PLUS, '+'),
+    (seqs.Q, 'q'),
+    (seqs.QUESTION_MARK, '?'),
+    (seqs.QUOTE, "'"),
+    (seqs.QUOTE_QUOTE, "''"),
+    (seqs.R, 'r'),
+    (seqs.RIGHT, '<right>'),
+    (seqs.RIGHT_BRACE, '}'),
+    (seqs.RIGHT_PAREN, ')'),
+    (seqs.RIGHT_SQUARE_BRACKET, ']'),
+    (seqs.RIGHT_SQUARE_BRACKET_C, ']c'),
+    (seqs.S, 's'),
+    (seqs.SEMICOLON, ';'),
+    (seqs.SHIFT_CTRL_F12, '<C-S-f12>'),
+    (seqs.SHIFT_ENTER, '<S-cr>'),
+    (seqs.SHIFT_F11, '<S-f11>'),
+    (seqs.SHIFT_F2, '<S-f2>'),
+    (seqs.SHIFT_F3, '<S-f3>'),
+    (seqs.SHIFT_F4, '<S-f4>'),
+    (seqs.SLASH, '/'),
+    (seqs.SPACE, '<space>'),
+    (seqs.STAR, '*'),
+    (seqs.T, 't'),
+    (seqs.TAB, '<tab>'),
+    (seqs.TILDE, '~'),
+    (seqs.U, 'u'),
+    (seqs.UNDERSCORE, '_'),
+    (seqs.UP, '<up>'),
+    (seqs.V, 'v'),
+    (seqs.W, 'w'),
+    (seqs.X, 'x'),
+    (seqs.Y, 'y'),
+    (seqs.YY, 'yy'),
+    (seqs.Z, 'z'),
+    (seqs.Z_ENTER, 'z<cr>'),
+    (seqs.Z_MINUS, 'z-'),
+    (seqs.ZB, 'zb'),
+    (seqs.ZERO, '0'),
+    (seqs.ZT, 'zt'),
+    (seqs.ZZ, 'zz'),
 )
 
 
 class TestKeySequenceNames(unittest.TestCase):
 
-    def test_all(self):
-        for (i, data) in enumerate(_TESTS_KNOWN_SEQUENCES):
-            self.assertEqual(data.actual, data.expected, "failed at index {0}".format(i))
+    def test_seqs(self):
+        for i, (actual, expected) in enumerate(_known_seqs_dataset):
+            self.assertEqual(actual, expected, 'failed at index {}'.format(i))
 
     def test_all_key_sequence_names_are_tested(self):
-        tested_seqs = [k.actual for k in _TESTS_KNOWN_SEQUENCES]
-
         self.assertEqual(
-            sorted(tested_seqs),
+            sorted([k[1] for k in _known_seqs_dataset]),
             sorted([v for (k, v) in seqs.__dict__.items() if k.isupper()])
         )
