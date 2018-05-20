@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.6.1 - Unreleased
+## 1.6.1 - 2018-05-20
 
 * Fixed [#64](https://github.com/NeoVintageous/NeoVintageous/issues/64): `0` selects incorrect regions in visual mode
 
