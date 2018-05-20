@@ -485,8 +485,9 @@ class FunctionalTestCase(ViewTestCase):
             seq = seq[2:]
 
         if seq[0].isdigit():
-            seq_args['count'] = int(seq[0])
-            seq = seq[1:]
+            if seq != '0':  # Special case motion.
+                seq_args['count'] = int(seq[0])
+                seq = seq[1:]
 
         try:
             command = _feedseq2cmd[seq]['command']
@@ -585,6 +586,7 @@ _feedseq2cmd = {
 
     '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     '%':            {'command': '_vi_percent', 'args': {'percent': None, 'mode': 'mode_normal'}},  # noqa: E241
+    '0':            {'command': '_vi_zero'},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241

@@ -31,7 +31,6 @@ TESTS = (
     test_data('abc', [[(0, 2), (0, 2)]], {'mode': unittest.INTERNAL_NORMAL}, [(0, 2), (0, 0)], first_sel, ''),
     test_data('abc\nabc', [[(0, 2), (1, 3)]], {'mode': unittest.VISUAL}, [(0, 2), (1, 1)], first_sel, ''),
     test_data('abc\nabc', [[(1, 3), (0, 2)]], {'mode': unittest.VISUAL}, [(1, 3), (0, 0)], first_sel, ''),
-    # TODO: Test multiple sels.
 )
 
 

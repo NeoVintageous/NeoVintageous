@@ -978,7 +978,11 @@ class _vi_zero(ViMotionCommand):
                 return Region(s.a, view.line(s.b).a)
             elif mode == VISUAL:
                 if s.a < s.b:
-                    return Region(s.a, view.line(s.b - 1).a + 1)
+                    line = view.line(s.b)
+                    if s.a > line.a:
+                        return Region(s.a + 1, line.a)
+                    else:
+                        return Region(s.a, line.a + 1)
                 else:
                     return Region(s.a, view.line(s.b).a)
 
