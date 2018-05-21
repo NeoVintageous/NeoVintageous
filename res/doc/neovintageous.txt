@@ -471,30 +471,40 @@ CTRL-[ -> Esc: >
 
 SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
 
-Color schemes can enhance search highlighting support
-via the following scopes:
+Search highlighting can be customized using these scopes:
 
 nv_search_inc
 nv_search_current
 nv_search_occurrence
 
-Example: >
+Searches supporting highlighting include `/`, `?`, `*`, and `#`.
 
-    <dict><key>scope</key><string>nv_search_inc</string>
-      <key>settings</key><dict>
-      <key>background</key><string>#a1efe4</string>
-      <key>foreground</key><string>#272822</string>
-    </dict></dict>
-    <dict><key>scope</key><string>nv_search_current</string>
-      <key>settings</key><dict>
-      <key>background</key><string>#a1efe4</string>
-      <key>foreground</key><string>#272822</string>
-    </dict></dict>
-    <dict><key>scope</key><string>nv_search_occurrence</string>
-      <key>settings</key><dict>
-      <key>background</key><string>#e6db74</string>
-      <key>foreground</key><string>#272822</string>
-    </dict></dict>
+To customise the colors, create a color scheme override for the relevant color
+scheme: for example if you have the default Monokai color scheme enabled,
+create a file named `Monokai.sublime-color-scheme` in your User directory
+(find the User directory location via the Menu:
+`Preferences > Browse Packages...`), then create the styles using the scopes: >
+
+    {
+        "rules":
+        [
+            {
+                "scope": "nv_search_inc",
+                "background": "#a1efe4",
+                "foreground": "#272822"
+            },
+            {
+                "scope": "nv_search_current",
+                "background": "#a1efe4",
+                "foreground": "#272822"
+            },
+            {
+                "scope": "nv_search_occurrence",
+                "background": "#e6db74",
+                "foreground": "#272822"
+            }
+        ]
+    }
 
 ==============================================================================
 
