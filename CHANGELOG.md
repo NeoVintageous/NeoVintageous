@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.6.2 - Unreleased
+
+* Fixed [#291](https://github.com/NeoVintageous/NeoVintageous/issues/291): Append multi line is off by one char
+
 ## 1.6.1 - 2018-05-20
 
 * Fixed [#64](https://github.com/NeoVintageous/NeoVintageous/issues/64): `0` selects incorrect regions in visual mode

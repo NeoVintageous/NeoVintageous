@@ -1054,11 +1054,10 @@ class _vi_big_a(ViTextCommandBase):
                 return Region(pt)
 
             elif mode == VISUAL_LINE:
-                if s.a < s.b:
-                    if s.b < view.size():
-                        return Region(s.end() - 1)
-                    return Region(s.end())
-                return Region(s.begin())
+                if self.view.substr(s.b - 1) == '\n':
+                    return Region(s.b - 1)
+                else:
+                    return Region(s.b)
 
             elif mode != INTERNAL_NORMAL:
                 return s

@@ -595,6 +595,7 @@ _feedseq2cmd = {
     '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
     '] ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_down'}},  # noqa: E241
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
+    'A':            {'command': '_vi_big_a'},  # noqa: E241
     'at':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': True}},  # noqa: E241,E501
     'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'cc':           {'command': '_vi_cc'},  # noqa: E241
