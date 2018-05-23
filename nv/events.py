@@ -238,7 +238,7 @@ class NeoVintageousEvents(EventListener):
                         other_view = window.active_view_in_group(group)
                         if other_view and other_view != view:
                             sel = other_view.sel()
-                            if len(sel) > 0:
+                            if len(sel) > 0 and any([not s.empty() for s in sel]):
                                 sels_begin_at_pt = sel[0].begin()
                                 sel.clear()
                                 sel.add(sels_begin_at_pt)
