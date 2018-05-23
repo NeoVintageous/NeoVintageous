@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.6.2 - Unreleased
 
+* Fixed [#355](https://github.com/NeoVintageous/NeoVintageous/issues/355): Fix a typo in the name of a Wrap Plus setting used to detect it
 * Fixed [#291](https://github.com/NeoVintageous/NeoVintageous/issues/291): Append multi line is off by one char
 
 ## 1.6.1 - 2018-05-20
