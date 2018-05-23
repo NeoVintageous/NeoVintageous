@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.6.2 - Unreleased
+## 1.6.2 - 2018-05-23
 
 * Fixed [#47](https://github.com/NeoVintageous/NeoVintageous/issues/47): Inserts text behind cursor when plugin is accessed via the command palette
 * Fixed [#355](https://github.com/NeoVintageous/NeoVintageous/issues/355): Fix a typo in the name of a Wrap Plus setting used to detect it
