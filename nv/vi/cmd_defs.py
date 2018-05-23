@@ -1815,8 +1815,10 @@ class StShowSwitchProject(ViOperatorDef):
         }
 
 
+@keys.assign(seq=seqs.COMMAND_BIG_P, modes=(INSERT,))
 @keys.assign(seq=seqs.COMMAND_BIG_P, modes=_MODES_ACTION)
 @keys.assign(seq=seqs.CTRL_BIG_P, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_BIG_P, modes=(INSERT,))
 class StShowCommandPalette(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
