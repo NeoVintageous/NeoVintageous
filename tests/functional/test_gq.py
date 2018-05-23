@@ -22,7 +22,7 @@ class Test_gq(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.view.settings().set('WrapPlus.include_line_ending', None)
+        self.view.settings().set('WrapPlus.include_line_endings', None)
 
     def test_gqip(self):
         self.eq('|aaa\nbbb\nccc', 'gqip', '|aaa bbb ccc\n'),
