@@ -106,6 +106,8 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
         on_cancel
     )
 
+    input_panel.set_name('Command-line mode')
+
     _set = input_panel.settings().set
 
     # Mark the input panel as a widget so we can later inspect that attribute
