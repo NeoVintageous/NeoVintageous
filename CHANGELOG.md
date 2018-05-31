@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.6.3 - Unreleased
+## 1.6.3 - 2018-05-31
 
 * Fixed [#340](https://github.com/NeoVintageous/NeoVintageous/issues/340): `[{`, `[(`, `]}`, and `])` don't work
 * Fixed [#260](https://github.com/NeoVintageous/NeoVintageous/issues/260): Black hole register `"_` doesn't work for some commands
