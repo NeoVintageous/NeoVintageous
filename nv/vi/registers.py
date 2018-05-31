@@ -204,6 +204,9 @@ class Registers(object):
             pass
 
     def yank(self, vi_cmd_data, register=None, operation='yank'):
+        if register == REG_BLACK_HOLE:
+            return
+
         # Populate registers if we have to.
         if vi_cmd_data._can_yank:
             if register and register != REG_UNNAMED:

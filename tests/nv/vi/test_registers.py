@@ -407,6 +407,17 @@ class Test_yank(unittest.ViewTestCase):
             '0': None,
         })
 
+    def test_yank_to_black_hole_register(self):
+        class cmd:
+            _can_yank = True
+            _populates_small_delete_register = True
+
+        self.regs.yank(cmd, '_')
+        self.assertEqual(registers._REGISTER_DATA, {
+            '1-9': [None] * 9,
+            '0': None,
+        })
+
     def test_yanks_to_unnamed_register_if_no_register_name_provided(self):
         class vi_cmd_data:
             _can_yank = True
