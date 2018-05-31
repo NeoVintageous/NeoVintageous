@@ -74,7 +74,7 @@ __all__ = [
     '_vi_big_j',
     '_vi_big_o',
     '_vi_big_p',
-    '_vi_big_s_action',
+    '_vi_big_s_action',  # TODO Refactor name (remove _action)
     '_vi_big_x',
     '_vi_big_z_big_q',
     '_vi_big_z_big_z',
@@ -125,8 +125,8 @@ __all__ = [
     '_vi_g_tilde_g_tilde',
     '_vi_ga',
     '_vi_gc',
-    '_vi_gcc_action',
-    '_vi_gcc_motion',
+    '_vi_gcc_action',  # TODO Refactor name (remove _action)
+    '_vi_gcc_motion',  # TODO Refactor name (remove _motion)
     '_vi_gq',
     '_vi_greater_than',
     '_vi_greater_than_greater_than',
@@ -407,12 +407,14 @@ class _vi_c(ViTextCommandBase):
         def compact(view, s):
             if view.substr(s).strip():
                 if s.b > s.a:
-                    pt = utils.previous_non_white_space_char(
-                        view, s.b - 1, white_space=' \t\n')
+                    pt = utils.previous_non_white_space_char(view, s.b - 1, white_space=' \t\n')
+
                     return Region(s.a, pt + 1)
-                pt = utils.previous_non_white_space_char(
-                    view, s.a - 1, white_space=' \t\n')
+
+                pt = utils.previous_non_white_space_char(view, s.a - 1, white_space=' \t\n')
+
                 return Region(pt + 1, s.b)
+
             return s
 
         if mode is None:
@@ -432,6 +434,7 @@ class _vi_c(ViTextCommandBase):
 
             if not self.has_sel_changed():
                 self.enter_insert_mode(mode)
+
                 return
 
             # If we ci' and the target is an empty pair of quotes, we should
@@ -439,12 +442,11 @@ class _vi_c(ViTextCommandBase):
             # FIXME: This will not work well with multiple selections.
             if all(s.empty() for s in self.view.sel()):
                 self.enter_insert_mode(mode)
+
                 return
 
         self.state.registers.yank(self, register)
-
         self.view.run_command('right_delete')
-
         self.enter_insert_mode(mode)
 
 
@@ -845,6 +847,7 @@ class _vi_dd(ViTextCommandBase):
 
             view.erase(edit, s)
             pt = utils.next_non_white_space_char(view, view.line(s.a).a, white_space=' \t')
+
             return Region(pt)
 
         def set_sel():

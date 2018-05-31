@@ -95,7 +95,6 @@ class TestCaseRegisters(unittest.ViewTestCase):
         registers._REGISTER_DATA = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
-        # self.regs = Registers(view=self.view, settings=SettingsManager(view=self.view))
         self.regs = State(self.view).registers
 
     def tearDown(self):
@@ -108,8 +107,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
 
     def test_can_set_unanmed_register(self):
         self.regs._set_default_register(["foo"])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED],
-                         ["foo"])
+        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ["foo"])
 
     def test_setting_long_register_name_throws_assertion_error(self):
         self.assertRaises(AssertionError, self.regs.set, "aa", "foo")
@@ -119,8 +117,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
 
     def test_register_data_is_always_stored_as_string(self):
         self.regs.set('"', [100])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED],
-                         ["100"])
+        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ["100"])
 
     def test_setting_black_hole_register_does_nothing(self):
         registers._REGISTER_DATA[registers.REG_UNNAMED] = ["bar"]
@@ -156,7 +153,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
         self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ['200'])
 
     def test_setting_register_sets_clipboard_if_needed(self):
-        self.regs.settings.view['vintageous_use_sys_clipboard'] = True
+        self.settings().set('vintageous_use_sys_clipboard', True)
         self.regs.set('a', [100])
         self.assertEqual(get_clipboard(), '100')
 
@@ -183,11 +180,10 @@ class TestCaseRegisters(unittest.ViewTestCase):
     def test_appending_sets_default_register(self):
         self.regs.set('a', ['foo'])
         self.regs.append_to('A', ['bar'])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED],
-                         ['foobar'])
+        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ['foobar'])
 
     def test_append_sets_clipboard_if_needed(self):
-        self.regs.settings.view['vintageous_use_sys_clipboard'] = True
+        self.settings().set('vintageous_use_sys_clipboard', True)
         self.regs.set('a', ['foo'])
         self.regs.append_to('A', ['bar'])
         self.assertEqual(get_clipboard(), 'foobar')
@@ -214,7 +210,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
         self.assertEqual(self.regs.get(registers.REG_SYS_CLIPBOARD_2), ['bar'])
 
     def test_get_sys_clipboard_always_if_requested(self):
-        self.regs.settings.view['vintageous_use_sys_clipboard'] = True
+        self.settings().set('vintageous_use_sys_clipboard', True)
         set_clipboard('foo')
         self.assertEqual(self.regs.get(), ['foo'])
 
