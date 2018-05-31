@@ -1222,9 +1222,14 @@ class _vi_big_d(ViTextCommandBase):
             if mode == INTERNAL_NORMAL:
                 if count == 1:
                     if view.line(s.b).size() > 0:
-                        eol = view.line(s.b).b
-                        return Region(s.b, eol)
-                    return s
+                        return Region(s.b, view.line(s.b).b)
+
+            elif mode == VISUAL:
+                startline = view.line(s.begin())
+                endline = view.full_line(s.end())
+
+                return Region(startline.a, endline.b)
+
             return s
 
         self.save_sel()
@@ -1234,6 +1239,22 @@ class _vi_big_d(ViTextCommandBase):
         state.registers.yank(self, register, operation='delete')
 
         self.view.run_command('left_delete')
+
+        if mode == VISUAL:
+            # TODO Refactor set position cursor after operation into reusable api.
+            new_sels = []
+            update = False
+            for sel in self.view.sel():
+                line = self.view.line(sel.b)
+                if line.size() > 0:
+                    pt = self.view.find('^\\s*', line.begin()).end()
+                    new_sels.append(pt)
+                    if pt != line.begin():
+                        update = True
+
+            if update and new_sels:
+                self.view.sel().clear()
+                self.view.sel().add_all(new_sels)
 
         self.enter_normal_mode(mode)
 
