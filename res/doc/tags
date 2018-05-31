@@ -449,6 +449,9 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'mp'	options.txt	/*'mp'*
 'mps'	options.txt	/*'mps'*
 'msm'	options.txt	/*'msm'*
+'neovintageous_search_cur_style'	neovintageous.txt	/*'neovintageous_search_cur_style'*
+'neovintageous_search_inc_style'	neovintageous.txt	/*'neovintageous_search_inc_style'*
+'neovintageous_search_occ_style'	neovintageous.txt	/*'neovintageous_search_occ_style'*
 'nf'	options.txt	/*'nf'*
 'noacd'	options.txt	/*'noacd'*
 'noai'	options.txt	/*'noai'*

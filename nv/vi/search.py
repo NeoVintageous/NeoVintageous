@@ -17,12 +17,12 @@
 
 import re
 
-from sublime import DRAW_NO_FILL
-from sublime import DRAW_NO_OUTLINE
 from sublime import IGNORECASE
 from sublime import LITERAL
 from sublime import Region
 import sublime_plugin
+
+from NeoVintageous.nv.ui import ui_region_flags
 
 
 def find_in_range(view, term, start, end, flags=0):
@@ -233,30 +233,22 @@ class BufferSearchBase(sublime_plugin.TextCommand):
                 if region.contains(sel):
                     regions_current.append(region)
 
-        # TODO Allow option to configure search highlight style outline or fill
-        use_outline_style = False
-        if use_outline_style:
-            flags_all = DRAW_NO_FILL
-            flags_current = DRAW_NO_OUTLINE
-        else:
-            flags_all = DRAW_NO_OUTLINE
-            flags_current = DRAW_NO_OUTLINE
-
         # The scopes are prefixed with common color scopes so that color schemes
         # have sane default colors. Color schemes can progressively enhance
         # support by using the nv_* scopes.
+
         self.view.add_regions(
             'vi_search',
             regions,
             scope='string nv_search_occurence',
-            flags=flags_all
+            flags=ui_region_flags(self.view.settings().get('neovintageous_search_occ_style'))
         )
 
         self.view.add_regions(
             'vi_search_current',
             regions_current,
             scope='support.function nv_search_current',
-            flags=flags_current
+            flags=ui_region_flags(self.view.settings().get('neovintageous_search_cur_style'))
         )
 
 

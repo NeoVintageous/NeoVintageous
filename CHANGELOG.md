@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#360](https://github.com/NeoVintageous/NeoVintageous/issues/360): Add search highlighting configuration; see `:h nv-search-highlighting`
 * Added [#359](https://github.com/NeoVintageous/NeoVintageous/issues/359): Add HighlightedYank plugin; see `:h highlightedyank`
 
 ### Removed

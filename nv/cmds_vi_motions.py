@@ -21,7 +21,6 @@ from sublime import CLASS_EMPTY_LINE
 from sublime import CLASS_LINE_END
 from sublime import CLASS_PUNCTUATION_END
 from sublime import CLASS_PUNCTUATION_START
-from sublime import DRAW_NO_OUTLINE
 from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
@@ -33,6 +32,7 @@ from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
+from NeoVintageous.nv.ui import ui_region_flags
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
@@ -307,7 +307,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
                 'vi_inc_search',
                 [next_hit],
                 scope='support.function nv_search_inc',
-                flags=DRAW_NO_OUTLINE
+                flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
             )
 
             if not self.view.visible_region().contains(next_hit.b):
@@ -2009,7 +2009,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
                 'vi_inc_search',
                 [occurrence],
                 scope='support.function nv_search_inc',
-                flags=DRAW_NO_OUTLINE
+                flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
             )
 
             if not self.view.visible_region().contains(occurrence):

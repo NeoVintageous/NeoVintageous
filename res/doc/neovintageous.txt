@@ -462,6 +462,33 @@ CTRL-[ -> Esc: >
         squiggly_underline
         stippled_underline
 
+                                             *'neovintageous_search_cur_style'*
+'neovintageous_search_cur_style' string (default fill)
+    Current search style. Accepts any of the following:
+        fill
+        outline
+        underline
+        squiggly_underline
+        stippled_underline
+
+                                             *'neovintageous_search_inc_style'*
+'neovintageous_search_inc_style' string (default fill)
+    Incremental search style. Accepts any of the following:
+        fill
+        outline
+        underline
+        squiggly_underline
+        stippled_underline
+
+                                             *'neovintageous_search_occ_style'*
+'neovintageous_search_occ_style' string (default fill)
+    Search occurrences style. Accepts any of the following:
+        fill
+        outline
+        underline
+        squiggly_underline
+        stippled_underline
+
                                                      *'vintageous_autoindent'*
 'vintageous_autoindent' boolean (default on)
         See 'autoindent'.
@@ -525,17 +552,20 @@ SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
 
 Search highlighting can be customized using these scopes:
 
-nv_search_inc
-nv_search_current
-nv_search_occurrence
+    nv_search_inc
+    nv_search_current
+    nv_search_occurrence
 
 Searches supporting highlighting include `/`, `?`, `*`, and `#`.
 
+The highlighted style can be tuned by 'neovintageous_search_cur',
+'neovintageous_search_inc_style', and 'neovintageous_search_occ_style'.
+
 To customise the colors, create a color scheme override for your color scheme:
 for example if you have the default Monokai color scheme enabled, create a
-file named `Monokai.sublime-color-scheme` in the User directory (find the User
-directory location via the Menu: `Preferences > Browse Packages...`), then
-create the styles using the scopes: >
+file named `Monokai.sublime-color- scheme` in the User directory (find the
+User directory location via the Menu: `Preferences > Browse Packages...`),
+then create the styles using the scopes: >
 
     {
         "rules":

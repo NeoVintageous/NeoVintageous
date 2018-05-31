@@ -14,6 +14,33 @@
     // * stippled_underline
     "highlightedyank_style": "fill",
 
+    // Current search style.
+    // Accepts any of the following:
+    // * fill
+    // * outline
+    // * underline
+    // * squiggly_underline
+    // * stippled_underline
+    "neovintageous_search_cur_style": "fill",
+
+    // Incremental search style.
+    // Accepts any of the following:
+    // * fill
+    // * outline
+    // * underline
+    // * squiggly_underline
+    // * stippled_underline
+    "neovintageous_search_inc_style": "fill",
+
+    // Search occurences style.
+    // Accepts any of the following:
+    // * fill
+    // * outline
+    // * underline
+    // * squiggly_underline
+    // * stippled_underline
+    "neovintageous_search_occ_style": "fill",
+
     // Enable auto indentation.
     // https://vimhelp.appspot.com/options.txt.html#%27autoindent%27
     "vintageous_autoindent": true,
