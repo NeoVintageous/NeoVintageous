@@ -326,7 +326,7 @@ class _vi_u(ViWindowCommandBase):
 
         # If we yy, then u, we might end up with outlined regions if we
         # don't erase them here, because ST will restore them when undoing.
-        self._view.erase_regions('vi_yy_target')
+        self._view.erase_regions('highlightedyank')
 
 
 # https://vimhelp.appspot.com/undo.txt.html#CTRL-R

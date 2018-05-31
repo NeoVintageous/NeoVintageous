@@ -16,8 +16,14 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from sublime import active_window
-from sublime import set_timeout
+from sublime import DRAW_EMPTY_AS_OVERWRITE
+from sublime import DRAW_NO_FILL
+from sublime import DRAW_NO_OUTLINE
+from sublime import DRAW_SOLID_UNDERLINE
+from sublime import DRAW_SQUIGGLY_UNDERLINE
+from sublime import DRAW_STIPPLED_UNDERLINE
 from sublime import load_settings
+from sublime import set_timeout
 
 
 def ui_bell():
@@ -140,3 +146,16 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
 
     input_panel.assign_syntax(
         'Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
+
+
+_region_flags = {
+    'fill': DRAW_NO_OUTLINE,
+    'outline': DRAW_NO_FILL,
+    'squiggly_underline': DRAW_SQUIGGLY_UNDERLINE | DRAW_NO_FILL | DRAW_NO_OUTLINE | DRAW_EMPTY_AS_OVERWRITE,
+    'stippled_underline': DRAW_STIPPLED_UNDERLINE | DRAW_NO_FILL | DRAW_NO_OUTLINE | DRAW_EMPTY_AS_OVERWRITE,
+    'underline': DRAW_SOLID_UNDERLINE | DRAW_NO_FILL | DRAW_NO_OUTLINE | DRAW_EMPTY_AS_OVERWRITE,
+}
+
+
+def ui_region_flags(name):
+    return _region_flags.get(name)

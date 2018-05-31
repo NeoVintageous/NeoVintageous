@@ -1,4 +1,19 @@
 {
+    // A port of https://github.com/machakann/vim-highlightedyank.
+    // See http://vimcasts.org/episodes/neovim-eyecandy/#shownotes.
+    "highlightedyank": true,
+
+    // Assign number of time in milliseconds.
+    "highlightedyank_duration": 1000,
+
+    // Accepts any of the following:
+    // * fill
+    // * outline
+    // * underline
+    // * squiggly_underline
+    // * stippled_underline
+    "highlightedyank_style": "fill",
+
     // Enable auto indentation.
     // https://vimhelp.appspot.com/options.txt.html#%27autoindent%27
     "vintageous_autoindent": true,

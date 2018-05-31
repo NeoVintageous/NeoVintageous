@@ -318,6 +318,9 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'hid'	options.txt	/*'hid'*
 'hidden'	options.txt	/*'hidden'*
 'highlight'	deprecated.txt	/*'highlight'*
+'highlightedyank'	neovintageous.txt	/*'highlightedyank'*
+'highlightedyank_duration'	neovintageous.txt	/*'highlightedyank_duration'*
+'highlightedyank_style'	neovintageous.txt	/*'highlightedyank_style'*
 'history'	options.txt	/*'history'*
 'hk'	options.txt	/*'hk'*
 'hkmap'	options.txt	/*'hkmap'*
@@ -6079,6 +6082,7 @@ highlight-stop	syntax.txt	/*highlight-stop*
 highlight-term	syntax.txt	/*highlight-term*
 highlightID()	deprecated.txt	/*highlightID()*
 highlight_exists()	deprecated.txt	/*highlight_exists()*
+highlightedyank	neovintageous.txt	/*highlightedyank*
 highlighting-functions	usr_41.txt	/*highlighting-functions*
 hist-names	eval.txt	/*hist-names*
 histadd()	eval.txt	/*histadd()*
@@ -7021,6 +7025,7 @@ nv-commentary	neovintageous.txt	/*nv-commentary*
 nv-default-options	neovintageous.txt	/*nv-default-options*
 nv-disable-arrow-keys	neovintageous.txt	/*nv-disable-arrow-keys*
 nv-escape	neovintageous.txt	/*nv-escape*
+nv-highlightedyank	neovintageous.txt	/*nv-highlightedyank*
 nv-j	neovintageous.txt	/*nv-j*
 nv-jumpto-diffs	neovintageous.txt	/*nv-jumpto-diffs*
 nv-modeline	neovintageous.txt	/*nv-modeline*

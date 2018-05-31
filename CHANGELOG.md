@@ -2,6 +2,17 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.7.0 - Unreleased
+
+### Added
+
+* Added [#359](https://github.com/NeoVintageous/NeoVintageous/issues/359): Add HighlightedYank plugin; see `:h highlightedyank`
+
+### Removed
+
+* Removed: `vintageous_visualyank` setting, use the new HighlightedYank plugin instead; see `:h highlightedyank`
+* Removed: `highlighted.yank` scope, use the new HighlightedYank plugin instead; see `:h highlightedyank`
+
 ## 1.6.3 - 2018-05-31
 
 * Fixed [#340](https://github.com/NeoVintageous/NeoVintageous/issues/340): `[{`, `[(`, `]}`, and `])` don't work

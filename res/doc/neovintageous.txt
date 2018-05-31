@@ -16,8 +16,9 @@ Neovintageous                                             *neovintageous* *nv*
  8. Plugins out-of-the-box          |nv-plugins|
     1.1 Abolish                         |nv-abolish|
     1.2 Commentary                      |nv-commentary|
-    1.3 Surround                        |nv-surround|
-    1.4 Unimpaired                      |nv-unimpaired|
+    1.3 HighlightedYank                 |nv-highlightedyank|
+    1.4 Surround                        |nv-surround|
+    1.5 Unimpaired                      |nv-unimpaired|
  9. Plugins out-of-the-box          |nv-plugins|
 10. Options                         |nv-options|
 11. Search highlighting             |nv-search-highlighting|
@@ -299,6 +300,41 @@ See |commentary.txt|.
 
 ------------------------------------------------------------------------------
 
+HIGHLIGHTEDYANK                                           *nv-highlightedyank*
+                                                             *highlightedyank*
+
+A plugin to just highlight a region where user yanks. That is a pretty trick
+to make your coding easier.
+
+The plugin can be disabled by 'highlightedyank'.
+
+The highlighted duration can be optimised by 'highlightedyank_duration'.
+
+When a new text is yanked, the old highlighting is deleted. Or when former
+lines are edited, the highlighting is deleted to prevent shifting the
+position, also.
+
+The highlighted style can be configured by 'highlightedyank_style'.
+
+To customise the colors, create a color scheme override for your color scheme:
+for example if you have the default Monokai color scheme enabled, create a
+file named `Monokai.sublime-color-scheme` in the User directory (find the User
+directory location via the Menu: `Preferences > Browse Packages...`), then
+create the styles using the scopes: >
+
+    {
+        "rules":
+        [
+            {
+                "scope": "highlightedyank",
+                "background": "#e6db74",
+                "foreground": "#272822"
+            }
+        ]
+    }
+
+------------------------------------------------------------------------------
+
 SURROUND                                                         *nv-surround*
 
 A plugin for deleting, changing, and adding "surroundings".
@@ -409,6 +445,22 @@ CTRL-[ -> Esc: >
 
 5. Options summary                                         *nv-option-summary*
 
+                                                           *'highlightedyank'*
+'highlightedyank' boolean (default on)
+    Enable/disable the plugin.
+
+                                                  *'highlightedyank_duration'*
+'highlightedyank_duration' number (default 1000)
+        Assign number of time in milliseconds.
+
+                                                     *'highlightedyank_style'*
+'highlightedyank_style' string (default fill)
+    Accepts any of the following:
+        fill
+        outline
+        underline
+        squiggly_underline
+        stippled_underline
 
                                                      *'vintageous_autoindent'*
 'vintageous_autoindent' boolean (default on)
@@ -479,11 +531,11 @@ nv_search_occurrence
 
 Searches supporting highlighting include `/`, `?`, `*`, and `#`.
 
-To customise the colors, create a color scheme override for the relevant color
-scheme: for example if you have the default Monokai color scheme enabled,
-create a file named `Monokai.sublime-color-scheme` in your User directory
-(find the User directory location via the Menu:
-`Preferences > Browse Packages...`), then create the styles using the scopes: >
+To customise the colors, create a color scheme override for your color scheme:
+for example if you have the default Monokai color scheme enabled, create a
+file named `Monokai.sublime-color-scheme` in the User directory (find the User
+directory location via the Menu: `Preferences > Browse Packages...`), then
+create the styles using the scopes: >
 
     {
         "rules":
