@@ -221,6 +221,16 @@ class ViewTestCase(unittest.TestCase):
         #   text (str)
         self._setupView(text, VISUAL_BLOCK)
 
+    def register(self, name, value):
+        # Args:
+        #   name (str)
+        #   value (str)
+        # XXX state.registers.set() requires a list (not sure why that's useful); it doesn't look like we need it for the tests (also see assertRegister()).  # noqa: E501
+        if not isinstance(value, str):
+            raise ValueError('argument #2 is not a valid str')
+
+        self.state.registers.set(name, [value])
+
     def _assertView(self, expected, mode, msg):
         # Args:
         #   expected (str)
@@ -344,8 +354,7 @@ class ViewTestCase(unittest.TestCase):
         #       The name of the register.
         #   expected (str)
         actual = self.state.registers.get(name)
-        # XXX registers.get() returns a list (not sure why that's useful), it
-        # doesn't look like we need it for the tests.
+        # XXX registers.get() returns a list (not sure why that's useful); it doesn't look like we need it for the tests (also see register()).  # noqa: E501
         self.assertEqual(1, len(actual), 'expected only one value for the named register {}'.format(name))
         self.assertEqual(actual[0], expected, msg)
 
