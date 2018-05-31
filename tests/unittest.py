@@ -732,6 +732,8 @@ _feedseq2cmd = {
     'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
+    'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
+    'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
     'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'x':            {'command': '_vi_x', 'args': {'register': '"'}},  # noqa: E241
