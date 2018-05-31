@@ -110,10 +110,12 @@ class TestCaseRegisters(unittest.ViewTestCase):
         self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ["foo"])
 
     def test_setting_long_register_name_throws_assertion_error(self):
-        self.assertRaises(AssertionError, self.regs.set, "aa", "foo")
+        with self.assertRaisesRegex(AssertionError, 'names must be 1 char long'):
+            self.regs.set('aa', 'foo')
 
     def test_setting_non_list_value_throws_assertion_error(self):
-        self.assertRaises(AssertionError, self.regs.set, "a", "foo")
+        with self.assertRaisesRegex(AssertionError, 'values must be inside a list'):
+            self.regs.set('a', 'foo')
 
     def test_register_data_is_always_stored_as_string(self):
         self.regs.set('"', [100])
