@@ -58,8 +58,6 @@ import sublime  # noqa: E402
 try:
     _EXCEPTION = None
 
-    from NeoVintageous.nv.state import init_state
-
     # Commands.
     # TODO Organise all commands into a single module (i.e. .nv.cmds).
     from NeoVintageous.nv.cmds import *  # noqa: F401,F403
@@ -143,6 +141,7 @@ def plugin_loaded():
         # See https://github.com/SublimeTextIssues/Core/issues/2116.
         # TODO [review] Is it necessary to initialise the active view in plugin_loaded()? Doesn't the on_activated() event initialize activated views?  # noqa: E501
         if view:
+            from NeoVintageous.nv.state import init_state
             init_state(view, new_session=True)
 
     except Exception as e:
