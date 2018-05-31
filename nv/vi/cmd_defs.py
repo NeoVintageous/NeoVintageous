@@ -2687,34 +2687,36 @@ class ViMoveBySentenceDown(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET, modes=_MODES_MOTION)
-class ViGotoOpeningBracket(ViMotionDef):
+@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET_LEFT_BRACE, modes=_MODES_MOTION)
+class ViGotoOpeningBrace(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.input_parser = parser_def(command=inputs.vi_left_square_bracket,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        translated = utils.translate_char(key)
-        assert len(translated) == 1, '`[` only accepts a single char'
-        self._inp = translated
-
-        return True
 
     def translate(self, state):
         return {
-            'motion': '_vi_left_square_bracket',
+            'motion': '_vi_left_square_bracket_target',
             'motion_args': {
-                'char': self.inp,
+                'target': '{',
+                'mode': state.mode,
+                'count': state.count,
+            }
+        }
+
+
+@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET_LEFT_PAREN, modes=_MODES_MOTION)
+class ViGotoOpeningParen(ViMotionDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, state):
+        return {
+            'motion': '_vi_left_square_bracket_target',
+            'motion_args': {
+                'target': '(',
                 'mode': state.mode,
                 'count': state.count,
             }
@@ -2747,34 +2749,36 @@ class ViForwardToStartOfChange(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET, modes=_MODES_MOTION)
-class ViGotoClosingBracket(ViMotionDef):
+@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET_RIGHT_BRACE, modes=_MODES_MOTION)
+class ViGotoClosingBrace(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.input_parser = parser_def(command=inputs.vi_left_square_bracket,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        translated = utils.translate_char(key)
-        assert len(translated) == 1, '`]` only accepts a single char'
-        self._inp = translated
-
-        return True
 
     def translate(self, state):
         return {
-            'motion': '_vi_right_square_bracket',
+            'motion': '_vi_right_square_bracket_target',
             'motion_args': {
-                'char': self.inp,
+                'target': '}',
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
+@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET_RIGHT_PAREN, modes=_MODES_MOTION)
+class ViGotoClosingParen(ViMotionDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, state):
+        return {
+            'motion': '_vi_right_square_bracket_target',
+            'motion_args': {
+                'target': ')',
                 'mode': state.mode,
                 'count': state.count
             }
