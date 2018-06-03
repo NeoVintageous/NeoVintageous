@@ -35,18 +35,17 @@ __all__ = [
     'NeoVintageousEvents'
 ]
 
-# TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline
-# commands are being heavily reactored, and so these are hardcoded until a
-# better way to auto generate the completions is figured out.
+# TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline commands are being heavily reactored, and so these are hardcoded until a better way to auto generate the completions is figured out.  # noqa: E501
 _cmdline_completions = [
-    'abbreviate', 'browse', 'buffers', 'cd', 'cdd', 'close', 'copy', 'cquit',
-    'delete', 'edit', 'exit', 'file', 'files', 'global', 'help', 'let', 'ls',
-    'move', 'new', 'nnoremap', 'noremap', 'nunmap', 'only', 'onoremap',
-    'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set',
-    'setlocal', 'shell', 'snoremap', 'split', 'substitute', 'tabfirst',
-    'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
-    'unabbreviate', 'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap',
-    'wall', 'wq', 'wqall', 'write', 'xall', 'xit', 'yank']
+    'browse', 'buffers', 'cd', 'cdd', 'close', 'copy', 'cquit', 'delete',
+    'edit', 'exit', 'file', 'files', 'global', 'help', 'let', 'ls', 'move',
+    'new', 'nnoremap', 'noremap', 'nunmap', 'only', 'onoremap', 'ounmap',
+    'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set', 'setlocal',
+    'shell', 'snoremap', 'split', 'substitute', 'tabfirst', 'tablast',
+    'tabnext', 'tabonly', 'tabprevious', 'tabrewind', 'unmap', 'unvsplit',
+    'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall', 'write', 'xall',
+    'xit', 'yank'
+]
 
 
 class _Context:

@@ -45,7 +45,6 @@ from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
-from NeoVintageous.nv.vi import abbrev
 from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import set_global
@@ -138,21 +137,6 @@ def _serialize_deserialize(f, *args, **kwargs):
         view.run_command('_enter_normal_mode')
 
     return inner
-
-
-# TODO [review] Looks broken or not implemented properly
-def ex_abbreviate(window, short=None, full=None, **kwargs):
-    if short is None and full is None:
-        def _show_abbreviations():
-            abbrevs = ['{0} --> {1}'.format(item['trigger'], item['contents']) for item in abbrev.Store().get_all()]
-            window.show_quick_panel(abbrevs, None, flags=MONOSPACE_FONT)
-
-        return _show_abbreviations()
-
-    if not (short and full):
-        return message(':abbreviate not fully implemented')
-
-    abbrev.Store().set(short, full)
 
 
 def ex_bfirst(window, **kwargs):
@@ -1125,14 +1109,6 @@ def ex_tabonly(window, **kwargs):
 
 def ex_tabprevious(window, **kwargs):
     window_tab_control(window, action='previous')
-
-
-# TODO [review] Looks broken or not implemented properly
-def ex_unabbreviate(lhs, **kwargs):
-    if lhs:
-        return
-
-    abbrev.Store().erase(lhs)
 
 
 def ex_unmap(keys, **kwargs):

@@ -361,8 +361,6 @@ class TestRoutes(unittest.TestCase):
         # TODO [review] assert_route('g') works for the command scanner but fails a regex match, why?
         # TODO [review] assert_route('global') works for the command scanner but fails a regex match, why?
 
-        assert_route('ab')
-        assert_route('abbreviate')
         assert_route(['bnext', 'bn'])
         assert_route(['bNext', 'bN'], name='bprevious')
         assert_route(['bprevious', 'bp'])
@@ -447,8 +445,6 @@ class TestRoutes(unittest.TestCase):
         assert_route('tabprevious')
         assert_route('tabr', name='tabfirst')
         assert_route('tabrewind', name='tabfirst')
-        assert_route('una')
-        assert_route('unabbreviate')
         assert_route('unm')
         assert_route('unmap')
         assert_route('vn')

@@ -24,28 +24,6 @@ from NeoVintageous.nv.ex.tokens import TokenEof
 # TODO [bug] (all commands) ":command" followed by character that is not "!"  shouldn't be # valid e.g. the ":close" command should run when !:closex". There are a # bunch of commands that have this bug.  # noqa: E501
 
 
-# TODO Fix broken :abbreviate scanner
-def _ex_route_abbreviate(state):
-    command = TokenCommand('abbreviate')
-    params = {'short': None, 'full': None}
-
-    state.expect(' ')
-    state.skip(' ')
-    state.ignore()
-
-    if state.consume() == state.EOF:
-        return None, [command, TokenEof()]
-
-    state.backup()
-
-    m = state.match(r'(?P<short>.+?)(?: +(?P<full>.+))?$')
-    params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
-
-
 def _ex_route_bfirst(state):
     command = TokenCommand('bfirst')
 
@@ -995,18 +973,6 @@ def _ex_route_tabprevious(state):
     return None, [command, TokenEof()]
 
 
-def _ex_route_unabbreviate(state):
-    command = TokenCommand('unabbreviate')
-    params = {'lhs': None}
-
-    m = state.expect_match(r'\s+(?P<lhs>.+?)\s*$')
-    params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
-
-
 def _ex_route_unmap(state):
     command = TokenCommand('unmap')
     params = {'keys': None}
@@ -1306,7 +1272,6 @@ def _ex_route_yank(state):
 ex_routes = OrderedDict()
 ex_routes[r'!(?=.+)'] = _ex_route_shell_out
 ex_routes[r'&&?'] = _ex_route_double_ampersand
-ex_routes[r'ab(?:breviate)?'] = _ex_route_abbreviate
 ex_routes[r'bf(?:irst)?'] = _ex_route_bfirst
 ex_routes[r'bl(?:ast)?'] = _ex_route_blast
 ex_routes[r'bn(?:ext)?'] = _ex_route_bnext
@@ -1358,7 +1323,6 @@ ex_routes[r'tabo(?:nly)?'] = _ex_route_tabonly
 ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
 ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
 ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
-ex_routes[r'una(?:bbreviate)?'] = _ex_route_unabbreviate
 ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
 ex_routes[r'unvsplit$'] = _ex_route_unvsplit
 ex_routes[r'vn(?:oremap)?'] = _ex_route_vnoremap
