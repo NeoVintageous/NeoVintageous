@@ -48,98 +48,114 @@ _cmdline_completions = [
 ]
 
 
-class _Context:
+def _check_query_context_value(value, operator, operand, match_all):
+    if operator == OP_EQUAL:
+        if operand is True:
+            return value
+        elif operand is False:
+            return not value
+    elif operator is OP_NOT_EQUAL:
+        if operand is True:
+            return not value
+        elif operand is False:
+            return value
 
-    def __init__(self, view):
-        self.view = view
 
-    # TODO [refactor] Simplify the call to _check() by inlining/containing the logic.
-    # TODO This is a dependency for creating custom keymaps see :h
-    # neovintageous. However, we should create a generic "mode" context e.g.
-    # psuedo code: is context neovintageous_mode equal to visual. Also see other
-    # mode aware context methods.
-    def vi_command_mode_aware(self, key, operator, operand, match_all):
-        _is_command_mode = self.view.settings().get('command_mode')
-        _is_view = is_view(self.view)
+# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
+def _is_command_mode(view, operator, operand, match_all):
+    _command_mode = view.settings().get('command_mode')
+    _is_view = is_view(view)
 
-        return self._check((_is_command_mode and _is_view), operator, operand, match_all)
+    return _check_query_context_value(
+        (_command_mode and _is_view),
+        operator,
+        operand,
+        match_all
+    )
 
-    # TODO [refactor] Simplify the call to _check() by inlining/containing the logic.
-    # TODO This is a dependency for creating custom keymaps see :h
-    # neovintageous. However, we should create a generic "mode" context e.g.
-    # psuedo code: is context neovintageous_mode equal to visual. Also see other
-    # mode aware context methods.
-    def vi_insert_mode_aware(self, key, operator, operand, match_all):
-        _is_command_mode = self.view.settings().get('command_mode')
-        _is_view = is_view(self.view)
 
-        return self._check((not _is_command_mode and _is_view), operator, operand, match_all)
+# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
+def _is_insert_mode(view, operator, operand, match_all):
+    _command_mode = view.settings().get('command_mode')
+    _is_view = is_view(view)
 
-    # TODO [refactor] Some completion keymaps depend on the "text.excmdline" so
-    # remove this and use built-in scope selector context in the keymap
-    # definition.
-    def vi_is_cmdline(self, key, operator, operand, match_all):
-        return self._check((self.view.score_selector(0, 'text.excmdline') != 0), operator, operand, match_all)
+    return _check_query_context_value(
+        (not _command_mode and _is_view),
+        operator,
+        operand,
+        match_all
+    )
 
-    def vi_cmdline_at_fs_completion(self, key, operator, operand, match_all):
-        if self.view.score_selector(0, 'text.excmdline') != 0:
-            value = wants_fs_completions(self.view.substr(self.view.line(0)))
-            value = value and self.view.sel()[0].b == self.view.size()
-            if operator == OP_EQUAL:
-                if operand is True:
-                    return value
-                elif operand is False:
-                    return not value
 
-        # TODO queries should default to False because they can handle the
-        # request. The tests are passing because None is falsy, see
-        # https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false
-        # All the tests should be revised to use assertIs(False|True... to fix
-        # the edge case bugs.
+# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
+def _is_cmdline_mode(view, operator, operand, match_all):
+    return _check_query_context_value(
+        (view.score_selector(0, 'text.excmdline') != 0),
+        operator,
+        operand,
+        match_all
+    )
 
-    def vi_cmdline_at_setting_completion(self, key, operator, operand, match_all):
-        if self.view.score_selector(0, 'text.excmdline') != 0:
-            value = wants_setting_completions(self.view.substr(self.view.line(0)))
-            value = value and self.view.sel()[0].b == self.view.size()
-            if operator == OP_EQUAL:
-                if operand is True:
-                    return value
-                elif operand is False:
-                    return not value
 
-    def query(self, key, operator, operand, match_all):
-        func = getattr(self, key, None)
-        if func:
-            return func(key, operator, operand, match_all)
-        else:
-            return None
-
-    def _check(self, value, operator, operand, match_all):
+# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
+def _is_cmdline_at_fs_completion(view, operator, operand, match_all):
+    if view.score_selector(0, 'text.excmdline') != 0:
+        value = wants_fs_completions(view.substr(view.line(0)))
+        value = value and view.sel()[0].b == view.size()
         if operator == OP_EQUAL:
             if operand is True:
                 return value
             elif operand is False:
                 return not value
-        elif operator is OP_NOT_EQUAL:
+
+
+# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
+def _is_cmdline_at_setting_completion(view, operator, operand, match_all):
+    if view.score_selector(0, 'text.excmdline') != 0:
+        value = wants_setting_completions(view.substr(view.line(0)))
+        value = value and view.sel()[0].b == view.size()
+        if operator == OP_EQUAL:
             if operand is True:
-                return not value
-            elif operand is False:
                 return value
+            elif operand is False:
+                return not value
 
 
-# TODO Refactor XXX; cleanup, optimise (especially the on_query_context() and the on_text_command() events)
+_query_contexts = {
+    'vi_cmdline_at_fs_completion': _is_cmdline_at_fs_completion,
+    'vi_cmdline_at_setting_completion': _is_cmdline_at_setting_completion,
+    'vi_command_mode_aware': _is_command_mode,
+    'vi_insert_mode_aware': _is_insert_mode,
+    'vi_is_cmdline': _is_cmdline_mode,
+}
+
+
 class NeoVintageousEvents(EventListener):
 
     _cached_completions = []
     _cached_completion_prefixes = []
 
-    # TODO Refactor, cleanup and optimise on_query_context()
     def on_query_context(self, view, key, operator, operand, match_all):
-        # Called when determining to trigger a key binding with the given
-        # context key. If the plugin knows how to respond to the context, it
-        # should return either True of False. If the context is unknown, it
-        # should return None.
-        return _Context(view).query(key, operator, operand, match_all)
+        # Called when determining to trigger a key binding with the given context key.
+        #
+        # If the plugin knows how to respond to the context, it should return
+        # either True of False. If the context is unknown, it should return
+        # None.
+        #
+        # Args:
+        #   view (View):
+        #   key (str):
+        #   operator (int):
+        #   operand (bool):
+        #   match_all (bool):
+        #
+        # Returns:
+        #   bool:
+        #       If the context is known.
+        #   None:
+        #       If the context is unknown.
+        if key in _query_contexts:
+            return _query_contexts[key](view, operator, operand, match_all)
 
     # TODO [refactor] command line completion queries: refactor into view
     # listener that is attached to the cmdline view when it is opened. That will
