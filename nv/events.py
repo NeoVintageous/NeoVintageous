@@ -37,14 +37,15 @@ __all__ = [
 
 # TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline commands are being heavily reactored, and so these are hardcoded until a better way to auto generate the completions is figured out.  # noqa: E501
 _cmdline_completions = [
-    'browse', 'buffers', 'cd', 'cdd', 'close', 'copy', 'cquit', 'delete',
-    'edit', 'exit', 'file', 'files', 'global', 'help', 'let', 'ls', 'move',
-    'new', 'nnoremap', 'noremap', 'nunmap', 'only', 'onoremap', 'ounmap',
-    'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set', 'setlocal',
-    'shell', 'snoremap', 'split', 'substitute', 'tabfirst', 'tablast',
-    'tabnext', 'tabonly', 'tabprevious', 'tabrewind', 'unmap', 'unvsplit',
-    'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall', 'write', 'xall',
-    'xit', 'yank'
+    'bfirst', 'blast', 'bnext', 'bNext', 'bprevious', 'browse', 'brewind',
+    'close', 'copy', 'cquit', 'delete', 'exit', 'files', 'ls', 'buffers',
+    'file', 'global', 'help', 'vsplit', 'xit', 'cd', 'cdd', 'edit', 'let',
+    'move', 'noremap', 'new', 'nnoremap', 'nunmap', 'onoremap', 'only',
+    'ounmap', 'print', 'pwd', 'quit', 'qall', 'read', 'registers', 'substitute',
+    'set', 'setlocal', 'shell', 'snoremap', 'split', 'sunmap', 'tabclose',
+    'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabNext',
+    'tabrewind', 'unmap', 'unvsplit', 'vnoremap', 'vunmap', 'write', 'wqall',
+    'xall', 'wall', 'wq', 'yank'
 ]
 
 
