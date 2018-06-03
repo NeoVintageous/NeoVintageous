@@ -163,7 +163,31 @@ class NeoVintageousEvents(EventListener):
 
     # TODO [refactor] [cleanup] and [optimise] on_text_command()
     def on_text_command(self, view, command, args):
+        # Called when a text command is issued.
+        #
+        # The listener may return a (command, arguments) tuple to rewrite the
+        # command, or None to run the command unmodified.
+        #
+        # Args:
+        #   view (View)
+        #   command (str)
+        #   args (dict)
+        #
+        # Returns:
+        #   Tuple (str, dict):
+        #       If the command is to be rewritten
+        #   None:
+        #       If the command is unmodified
         if command == 'drag_select':
+
+            # Updates the mode based on mouse events. For example, a double
+            # click will select a word and enter VISUAL mode. A triple click
+            # will select a line and enter VISUAL LINE mode.
+            #
+            # The command is rewritten by returning a chain of commands that
+            # executes the original drag_select command followed by entering the
+            # correct mode.
+
             state = State(view)
             mode = state.mode
 
@@ -171,22 +195,22 @@ class NeoVintageousEvents(EventListener):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
                     return
                 elif args.get('by') == 'lines':
+                    # Triple click: enter VISUAL LINE.
                     return ('_nv_run_cmds', {'commands': [
                         ['drag_select', args],
                         ['_enter_visual_line_mode', {'mode': state.mode}]
                     ]})
                 elif not args.get('extend'):
+                    # Single click: enter NORMAL.
                     return ('_nv_run_cmds', {'commands': [
                         ['drag_select', args],
                         ['_enter_normal_mode', {'mode': mode}]
                     ]})
 
             elif mode == NORMAL:
-                # TODO Dragging the mouse does not seem to fire a different
-                # event than simply clicking. This makes it hard to update the
-                # xpos.
-                # See https://github.com/SublimeTextIssues/Core/issues/2117.
+                # TODO Dragging the mouse does not seem to fire a different event than simply clicking. This makes it hard to update the xpos. See https://github.com/SublimeTextIssues/Core/issues/2117.  # noqa: E501
                 if args.get('extend') or (args.get('by') == 'words'):
+                    # Double click: enter VISUAL.
                     return ('_nv_run_cmds', {'commands': [
                         ['drag_select', args],
                         ['_enter_visual_mode', {'mode': mode}]
