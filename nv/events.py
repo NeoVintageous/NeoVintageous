@@ -60,8 +60,9 @@ def _check_query_context_value(value, operator, operand, match_all):
         elif operand is False:
             return value
 
+    return False
 
-# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
+
 def _is_command_mode(view, operator, operand, match_all):
     _command_mode = view.settings().get('command_mode')
     _is_view = is_view(view)
@@ -74,7 +75,6 @@ def _is_command_mode(view, operator, operand, match_all):
     )
 
 
-# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
 def _is_insert_mode(view, operator, operand, match_all):
     _command_mode = view.settings().get('command_mode')
     _is_view = is_view(view)
@@ -87,7 +87,6 @@ def _is_insert_mode(view, operator, operand, match_all):
     )
 
 
-# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
 def _is_cmdline_mode(view, operator, operand, match_all):
     return _check_query_context_value(
         (view.score_selector(0, 'text.excmdline') != 0),
@@ -97,7 +96,6 @@ def _is_cmdline_mode(view, operator, operand, match_all):
     )
 
 
-# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
 def _is_cmdline_at_fs_completion(view, operator, operand, match_all):
     if view.score_selector(0, 'text.excmdline') != 0:
         value = wants_fs_completions(view.substr(view.line(0)))
@@ -108,8 +106,9 @@ def _is_cmdline_at_fs_completion(view, operator, operand, match_all):
             elif operand is False:
                 return not value
 
+    return False
 
-# TODO queries should default to a bool, because if the plugin knows how to respond to the context, it should return either True of False. If the context is unknown, it should return None. See the api docs for on_query_context(). keep in mind that None is falsy, see https://stackoverflow.com/questions/35038519/python-unittest-successfully-asserts-none-is-false All the tests should be revised to use assertIs(False|True... to fix the edge case bugs.  # noqa: E501
+
 def _is_cmdline_at_setting_completion(view, operator, operand, match_all):
     if view.score_selector(0, 'text.excmdline') != 0:
         value = wants_setting_completions(view.substr(view.line(0)))
@@ -119,6 +118,8 @@ def _is_cmdline_at_setting_completion(view, operator, operand, match_all):
                 return value
             elif operand is False:
                 return not value
+
+    return False
 
 
 _query_contexts = {
