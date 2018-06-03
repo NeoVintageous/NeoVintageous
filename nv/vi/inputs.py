@@ -163,14 +163,6 @@ def vi_backtick(state):
                       type=INPUT_IMMEDIATE)
 
 
-def vi_left_square_bracket(state):
-    return parser_def(command=lambda x: x in '(){}',
-                      interactive_command=None,
-                      input_param=None,
-                      on_done=None,
-                      type=INPUT_IMMEDIATE)
-
-
 def vi_slash(state):
     # Parse should always be used non-interactively.
     #
