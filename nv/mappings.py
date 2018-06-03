@@ -30,16 +30,7 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
-
 _log = logging.getLogger(__name__)
-
-
-# Currently not used anywhere else so marked as private (underscore prefix). If
-# needed they can be refactored and made available to other modules. Add a
-# prefix of something like "MAPPING_STATUS_" if making these public.
-_STATUS_INCOMPLETE = 1
-_STATUS_COMPLETE = 2
-
 
 _mappings = {
     INSERT: {},
@@ -54,11 +45,10 @@ _mappings = {
 
 class Mapping:
 
-    def __init__(self, head, mapping, tail, status):
+    def __init__(self, head, mapping, tail):
         self.mapping = mapping
         self.head = head
         self.tail = tail
-        self.status = status
 
     @property
     def sequence(self):
@@ -152,18 +142,18 @@ def _expand_first(mode, seq):
 
     keys, mapped_to = _find_full_match(mode, seq)
     if keys:
-        return Mapping(seq, mapped_to['name'], seq[len(keys):], _STATUS_COMPLETE)
+        return Mapping(seq, mapped_to['name'], seq[len(keys):])
 
     for key in KeySequenceTokenizer(seq).iter_tokenize():
         head += key
         keys, mapped_to = _find_full_match(mode, head)
         if keys:
-            return Mapping(head, mapped_to['name'], seq[len(head):], _STATUS_COMPLETE)
+            return Mapping(head, mapped_to['name'], seq[len(head):])
         else:
             break
 
     if _find_partial_match(mode, seq):
-        return Mapping(seq, '', '', _STATUS_INCOMPLETE)
+        return Mapping(seq, '', '')
 
 
 # XXX: Provisional. Get rid of this as soon as possible.

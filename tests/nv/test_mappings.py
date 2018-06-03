@@ -21,8 +21,6 @@ from NeoVintageous.nv.mappings import _expand_first
 from NeoVintageous.nv.mappings import _find_full_match
 from NeoVintageous.nv.mappings import _find_partial_match
 from NeoVintageous.nv.mappings import _get_seqs
-from NeoVintageous.nv.mappings import _STATUS_COMPLETE
-from NeoVintageous.nv.mappings import _STATUS_INCOMPLETE
 from NeoVintageous.nv.mappings import CMD_TYPE_USER
 from NeoVintageous.nv.mappings import INSERT
 from NeoVintageous.nv.mappings import Mapping
@@ -51,31 +49,29 @@ _patch_mappings = unittest.mock.patch('NeoVintageous.nv.mappings._mappings',
 class TestMapping(unittest.TestCase):
 
     def test_mapping(self):
-        mapping = Mapping('h', 'm', 't', 's')
+        mapping = Mapping('h', 'm', 't')
         self.assertEqual(mapping.head, 'h')
         self.assertEqual(mapping.tail, 't')
-        self.assertEqual(mapping.status, 's')
         self.assertEqual(mapping.mapping, 'm')
         self.assertEqual(mapping.sequence, 'ht')
 
     def test_allows_empty_sequence(self):
-        mapping = Mapping('', '', '', '')
+        mapping = Mapping('', '', '')
         self.assertEqual(mapping.head, '')
         self.assertEqual(mapping.tail, '')
-        self.assertEqual(mapping.status, '')
         self.assertEqual(mapping.mapping, '')
         self.assertEqual(mapping.sequence, '')
 
     def test_raises_exception(self):
-        mapping = Mapping(None, None, None, None)
+        mapping = Mapping(None, None, None)
         with self.assertRaises(ValueError, msg='no mapping found'):
             mapping.sequence
 
-        mapping = Mapping(None, 'm', 't', 's')
+        mapping = Mapping(None, 'm', 't')
         with self.assertRaises(ValueError, msg='no mapping found'):
             mapping.sequence
 
-        mapping = Mapping('h', 'm', None, 's')
+        mapping = Mapping('h', 'm', None)
         with self.assertRaises(ValueError, msg='no mapping found'):
             mapping.sequence
 
@@ -243,7 +239,6 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.mapping, 'G_')
         self.assertEqual(mapping.tail, '')
         self.assertEqual(mapping.sequence, 'G')
-        self.assertEqual(mapping.status, _STATUS_COMPLETE)
 
         mappings_add(unittest.NORMAL, '<C-m>', 'daw')
         mapping = _expand_first(unittest.NORMAL, '<C-m>')
@@ -253,7 +248,6 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.mapping, 'daw')
         self.assertEqual(mapping.tail, '')
         self.assertEqual(mapping.sequence, '<C-m>')
-        self.assertEqual(mapping.status, _STATUS_COMPLETE)
 
         mappings_add(unittest.NORMAL, '<C-m>', 'daw')
         mapping = _expand_first(unittest.NORMAL, '<C-m>x')
@@ -263,7 +257,6 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.mapping, 'daw')
         self.assertEqual(mapping.tail, 'x')
         self.assertEqual(mapping.sequence, '<C-m>x')
-        self.assertEqual(mapping.status, _STATUS_COMPLETE)
 
         mappings_add(unittest.NORMAL, 'xxA', 'daw')
         mapping = _expand_first(unittest.NORMAL, 'xx')
@@ -273,7 +266,6 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.mapping, '')
         self.assertEqual(mapping.tail, '')
         self.assertEqual(mapping.sequence, 'xx')
-        self.assertEqual(mapping.status, _STATUS_INCOMPLETE)
 
     @_patch_mappings
     def test_expand_first_returns_none_when_not_found(self, _mappings):
