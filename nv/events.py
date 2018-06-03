@@ -64,11 +64,8 @@ def _check_query_context_value(value, operator, operand, match_all):
 
 
 def _is_command_mode(view, operator, operand, match_all):
-    _command_mode = view.settings().get('command_mode')
-    _is_view = is_view(view)
-
     return _check_query_context_value(
-        (_command_mode and _is_view),
+        (view.settings().get('command_mode') and is_view(view)),
         operator,
         operand,
         match_all
@@ -76,11 +73,8 @@ def _is_command_mode(view, operator, operand, match_all):
 
 
 def _is_insert_mode(view, operator, operand, match_all):
-    _command_mode = view.settings().get('command_mode')
-    _is_view = is_view(view)
-
     return _check_query_context_value(
-        (not _command_mode and _is_view),
+        (not view.settings().get('command_mode') and is_view(view)),
         operator,
         operand,
         match_all

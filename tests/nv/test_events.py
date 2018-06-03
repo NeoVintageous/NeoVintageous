@@ -142,3 +142,21 @@ class TestContextCheckers(unittest.ViewTestCase):
     def test_is_insert_mode_false_by_default(self):
         self.assertEqual(_is_insert_mode(self.view, operator=OP_REGEX_MATCH, operand=True, match_all=True), False)
         self.assertEqual(_is_insert_mode(self.view, operator=OP_REGEX_MATCH, operand=False, match_all=True), False)
+
+    @unittest.mock.patch('NeoVintageous.nv.events.is_view')
+    def test_is_command_mode_should_return_early_if_not_correct_mode(self, is_view):
+        self.settings().set('command_mode', True)
+        _is_command_mode(self.view, operator=OP_EQUAL, operand=True, match_all=False)
+        self.assertEqual(is_view.call_count, 1)
+        self.settings().set('command_mode', False)
+        _is_command_mode(self.view, operator=OP_EQUAL, operand=True, match_all=False)
+        self.assertEqual(is_view.call_count, 1)
+
+    @unittest.mock.patch('NeoVintageous.nv.events.is_view')
+    def test_is_insert_mode_should_return_early_if_not_correct_mode(self, is_view):
+        self.settings().set('command_mode', False)
+        _is_insert_mode(self.view, operator=OP_EQUAL, operand=True, match_all=False)
+        self.assertEqual(is_view.call_count, 1)
+        self.settings().set('command_mode', True)
+        _is_insert_mode(self.view, operator=OP_EQUAL, operand=True, match_all=False)
+        self.assertEqual(is_view.call_count, 1)
