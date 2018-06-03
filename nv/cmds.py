@@ -422,7 +422,6 @@ class _nv_feed_key(ViWindowCommandBase):
             action_seq = to_bare_command_name(state.sequence)
             _log.debug('action sequence %s', action_seq)
             command = mappings_resolve(state, sequence=action_seq, mode=NORMAL)
-            # TODO: Make _missing a command.
             if isinstance(command, ViMissingCommandDef):
                 _log.debug('unmapped sequence %s', state.sequence)
                 state.reset_command_data()

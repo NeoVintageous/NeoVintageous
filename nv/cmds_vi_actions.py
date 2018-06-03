@@ -388,7 +388,6 @@ class _vi_a(ViTextCommandBase):
             return
 
         regions_transformer(self.view, f)
-        # TODO derive this class from ViTextCommandBase ???
         self.view.window().run_command('_enter_insert_mode', {
             'mode': mode,
             'count': state.normal_insert_count
@@ -898,11 +897,9 @@ class _vi_visual_o(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            # FIXME: In Vim, o doesn't work in VISUAL_LINE, but ST can't move the caret while
-            # in VISUAL_LINE, so we enable this for convenience. Change when/if ST can move
-            # the caret while in VISUAL_LINE.
             if mode in (VISUAL, VISUAL_LINE):
                 return Region(s.b, s.a)
+
             return s
 
         regions_transformer(self.view, f)

@@ -1,8 +1,4 @@
 [
-    // TODO Review why keys such as Ç, Ñ need to be defined. Including their
-    // lowercase (ç, ñ) and ctrl modifiers (ctrl+ç, ctrl+ñ). Why are these keys
-    // specifically defined below when other similar keys are not defined?
-
     // Note that some plugins set some `CTRL` modifier keymaps in the form
     // `CTRL+{Char}, {Char}` i.e. press `CTRL+{Char}` followed a character in the
     // range `{Char}`. This means when  you press `CTRL+{Char}` ST waits for the
@@ -328,9 +324,7 @@
 
     {"keys": ["shift+ctrl+."], "command": "_nv_feed_key", "args": {"key": "<C-S-.>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    // TODO Review shift+ctrl+b appears to defined twice, once as key=<C-B> and
-    // once as <C-S-b>. Why? Only the last one defined (this one, key=<C-S-b>)
-    // gets triggered doesn't it? So the one defined above is redundant?
+    // TODO Review shift+ctrl+b appears to defined twice, once as key=<C-B> and once as <C-S-b>. Why? Only the last one defined (this one, key=<C-S-b>) gets triggered doesn't it? So the one defined above is redundant?
     {"keys": ["shift+ctrl+b"], "command": "_nv_feed_key", "args": {"key": "<C-S-b>"}, "context": [{"key": "vi_command_mode_aware"},    {"key": "setting.vintageous_use_ctrl_keys"}]},
 
     {"keys": ["shift+super+a"], "command": "_nv_feed_key", "args": {"key": "<D-A>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
