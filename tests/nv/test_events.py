@@ -47,6 +47,7 @@ class TestContextCheckers(unittest.ViewTestCase):
 
     def test_is_cmdline_at_fs_completion(self):
         self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)  # noqa: E501
+        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_EQUAL, operand=False, match_all=False), True)  # noqa: E501
         self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
         self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)  # noqa: E501
         self.write(':write ')

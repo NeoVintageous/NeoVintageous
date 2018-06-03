@@ -100,26 +100,20 @@ def _is_cmdline_at_fs_completion(view, operator, operand, match_all):
     if view.score_selector(0, 'text.excmdline') != 0:
         value = wants_fs_completions(view.substr(view.line(0)))
         value = value and view.sel()[0].b == view.size()
-        if operator == OP_EQUAL:
-            if operand is True:
-                return value
-            elif operand is False:
-                return not value
+    else:
+        value = False
 
-    return False
+    return _check_query_context_value(value, operator, operand, match_all)
 
 
 def _is_cmdline_at_setting_completion(view, operator, operand, match_all):
     if view.score_selector(0, 'text.excmdline') != 0:
         value = wants_setting_completions(view.substr(view.line(0)))
         value = value and view.sel()[0].b == view.size()
-        if operator == OP_EQUAL:
-            if operand is True:
-                return value
-            elif operand is False:
-                return not value
+    else:
+        value = False
 
-    return False
+    return _check_query_context_value(value, operator, operand, match_all)
 
 
 _query_contexts = {
