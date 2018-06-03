@@ -1,21 +1,23 @@
 # SYNTAX TEST "Packages/NeoVintageous/res/Help.sublime-syntax"
 
 *intro.txt*     For Vim version 8.0.  Last change: 2017 Sep 04
-# ^^^^^^^^^ entity.name
-#          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
+# ^^^^^^^^ entity.name
+#         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
 
 Introduction to Vim                 *ref* *reference*
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
-#                                   ^^^^^  entity.name
-#                                         ^^^^^^^^^^^  entity.name
+#                                    ^^^  entity.name
+#                                          ^^^^^^^^^  entity.name
 
 1. Introduction                 |intro|
-#                               ^^^^^^^ support.constant
+#                                ^^^^^ markup.underline.link
+#                                ^^^^^ jumptag
 2. Vim on the internet          |internet|
 3. Credits                      |credits|
 4. Notation                     |notation|
 5. Modes, introduction          |vim-modes-intro|
-#                               ^^^^^^^^^^^^^^^^^ support.constant
+#                                ^^^^^^^^^^^^^^^ markup.underline.link
+#                                ^^^^^^^^^^^^^^^ jumptag
 6. Switching from mode to mode  |mode-switching|
 7. The window contents          |window-contents|
 8. Definitions                  |definitions|
@@ -28,87 +30,91 @@ Introduction to Vim                 *ref* *reference*
 
 1. Introduction                     *intro*
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity
-#                                   ^^^^^^^ entity.name
+#                                    ^^^^^ entity.name
 
 Cursor motions                  *cursor-motions* *navigation*
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity.name
-#                               ^^^^^^^^^^^^^^^^ entity.name
-#                                                ^^^^^^^^^^^^ entity.name
+#                                ^^^^^^^^^^^^^^ entity.name
+#                                                 ^^^^^^^^^^ entity.name
 
             *www* *WWW*  *faq* *FAQ* *distribution* *download*
-#           ^^^^^ entity.name
-#                 ^^^^^ entity.name
-#                        ^^^^^ entity.name
-#                              ^^^^^ entity.name
-#                                    ^^^^^^^^^^^^^^ entity.name
-#                                                   ^^^^^^^^^^ entity.name
+#            ^^^ entity.name
+#                  ^^^  entity.name
+#                         ^^^  entity.name
+#                               ^^^  entity.name
+#                                     ^^^^^^^^^^^^  entity.name
+#                                                    ^^^^^^^^  entity.name
 
     *name*
-#   ^^^^^^ entity.name
+#    ^^^^  entity.name
     *name* *name*
-#   ^^^^^^ entity.name
-#          ^^^^^^ entity.name
+#    ^^^^  entity.name
+#           ^^^^  entity.name
     *name* *name* *name*
-#   ^^^^^^ entity.name
-#          ^^^^^^ entity.name
-#                 ^^^^^^ entity.name
+#    ^^^^  entity.name
+#           ^^^^  entity.name
+#                  ^^^^  entity.name
     *name.txt*
-#   ^^^^^^^^^^ entity.name
+#    ^^^^^^^^  entity.name
     *name-dash*
-#   ^^^^^^^^^^^ entity.name
+#    ^^^^^^^^^  entity.name
     *:name*
-#   ^^^^^^^ entity.name
+#    ^^^^^  entity.name
     *:Name*
-#   ^^^^^^^ entity.name
+#    ^^^^^  entity.name
     *:S*
-#   ^^^^ entity.name
+#    ^^  entity.name
     *i_CTRL-G_s* *i_CTRL-G_S*
-#   ^^^^^^^^^^^^ entity.name
-#                ^^^^^^^^^^^^ entity.name
+#    ^^^^^^^^^^  entity.name
+#                 ^^^^^^^^^^  entity.name
 
 HEADING             *tag*
 # ^^^^^ storage
-#                   ^^^^^ entity.name
+#                    ^^^  entity.name
 
 HEADING             *tag* *tag*
 # ^^^^^ storage
-#                   ^^^^^ entity.name
-#                         ^^^^^ entity.name
+#                    ^^^  entity.name
+#                          ^^^  entity.name
 
 HEADING             *tag* *tag* *tag*
 # ^^^^^ storage
-#                   ^^^^^ entity.name
-#                         ^^^^^ entity.name
-#                               ^^^^^ entity.name
+#                    ^^^  entity.name
+#                          ^^^  entity.name
+#                                ^^^  entity.name
 
 INTRODUCTION                                    *abolish* *:Abolish* *:Subvert*
 # ^^^^^^^^^^ storage
-#                                               ^^^^^^^^^ entity.name
-#                                                         ^^^^^^^^^^ entity.name
-#                                                                    ^^^^^^^^^^ entity.name
+#                                                ^^^^^^^  entity.name
+#                                                          ^^^^^^^^  entity.name
+#                                                                     ^^^^^^^^  entity.name
 
 LINE OPERATIONS                                 *unimpaired-lines*
 # ^^^^^^^^^^^^^ storage
-#                                               ^^^^^^^^^^^^^^^^^^ entity.name
+#                                                ^^^^^^^^^^^^^^^^  entity.name
 
 CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 # ^^^^^^^^^^^^^^^ storage
-#                           ^^^^^^^^^^^^ entity.name
-#                                        ^^^^^^^^^^^^^^^^^^^ entity.name
-#                                                            ^^^^^^ entity.name
+#                            ^^^^^^^^^^  entity.name
+#                                         ^^^^^^^^^^^^^^^^^  entity.name
+#                                                             ^^^^  entity.name
 
 <kMultiply> keypad *            *keypad-multiply*
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity.name
-#                               ^^^^^^^^^^^^^^^^^ entity.name
+#                                ^^^^^^^^^^^^^^^  entity.name
 
 .. |search|
-#  ^^^^^^^^ support.constant
+#   ^^^^^^ markup.underline.link
+#   ^^^^^^ jumptag
 .. |search-offset|
-#  ^^^^^^^^^^^^^^^ support.constant
+#   ^^^^^^^^^^^^^ markup.underline.link
+#   ^^^^^^^^^^^^^ jumptag
 .. |gui.txt|
-#  ^^^^^^^^^ support.constant
+#   ^^^^^^^ markup.underline.link
+#   ^^^^^^^ jumptag
 .. |:s_flag|
-#  ^^^^^^^^^ support.constant
+#   ^^^^^^^ markup.underline.link
+#   ^^^^^^^ jumptag
     +-----------------------+
     |first line             |
 #   ^^^^^^^^^^^^^^^^^^^^^^^^^ -support.constant
@@ -122,10 +128,13 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 
 . 'option'
 # ^^^^^^^^ string
+# ^^^^^^^^ jumptag
 . 'helpfile'
 # ^^^^^^^^^^ string
+# ^^^^^^^^^^ jumptag
 . 'option_underscore'
 # ^^^^^^^^^^^^^^^^^^^ string
+# ^^^^^^^^^^^^^^^^^^^ jumptag
 . 'c'
 # ^^^ - string
 . 'INVALID'
@@ -239,7 +248,7 @@ text}
             {not available when compiled without the
             inline |+byte_offset| feature}
 #           ^^^^^^^ markup.raw.inline
-#                  ^^^^^^^^^^^^^^ support.constant
+#                   ^^^^^^^^^^^^ markup.underline.link
 #                                ^^^^^^^^^ markup.raw.inline
 
                             *{*

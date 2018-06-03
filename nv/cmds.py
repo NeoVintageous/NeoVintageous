@@ -17,7 +17,6 @@
 
 import logging
 import os
-import re
 import time
 
 from sublime import CLASS_WORD_START
@@ -223,30 +222,27 @@ class _nv_goto_help(WindowCommand):
 
     def run(self):
         view = self.window.active_view()
-        pt = view.sel()[0]
-        # scope_name() needs to striped due to a bug in ST:
-        # See https://github.com/SublimeTextIssues/Core/issues/657.
-        scope = view.scope_name(pt.b).rstrip()
+        if not view:
+            raise ValueError('view is required')
 
-        # TODO Fix jumptags scopes (rename them to less generic scopes)
-        jumptag_scopes = [
-            'text.neovintageous.help string.neovintageous',
-            'text.neovintageous.help support.constant.neovintageous'
-        ]
+        if not view.sel():
+            raise ValueError('selection is required')
 
-        if scope not in jumptag_scopes:
-            return
+        sel = view.sel()[0]
 
-        subject = view.substr(view.extract_scope(pt.b))
+        score = view.score_selector(sel.b, 'text.neovintageous jumptag')
+        # TODO ENHANCEMENT Allow goto to help for any word in a help file. See :h bar Anyway, you can use CTRL-] on any word, also when it is not within |, and Vim will try to find help for it.  Especially for options in single quotes, e.g. 'compatible'.  # noqa: E501
+        if score == 0:
+            return  # noop
 
-        if len(subject) < 3:
-            return message('E149: Sorry, no help for %s' % subject)
+        subject = view.substr(view.extract_scope(sel.b))
+        if not subject:
+            return  # noop
 
-        match = re.match('^\'[a-z_]+\'|\\|[^\\s\\|]+\\|$', subject)
-        if match:
-            do_ex_command(self.window, 'help', {'subject': subject.strip('|')})
-        else:
-            return message('E149: Sorry, no help for %s' % subject)
+        if len(subject) > 35:
+            return message('E149: Sorry, no help found')
+
+        do_ex_command(self.window, 'help', {'subject': subject})
 
 
 class _nv_run_cmds(TextCommand):
