@@ -15,8 +15,6 @@ class TestVim(unittest.TestCase):
         self.assertEqual(mode_to_name(unittest.VISUAL_LINE), 'VISUAL LINE')
         self.assertEqual(mode_to_name(unittest.UNKNOWN), 'UNKNOWN')
         self.assertEqual(mode_to_name(unittest.REPLACE), 'REPLACE')
-        self.assertEqual(mode_to_name(unittest.NORMAL_INSERT), 'INSERT')
         self.assertEqual(mode_to_name(unittest.SELECT), 'SELECT')
-        self.assertEqual(mode_to_name(unittest.CTRL_X), 'Mode ^X')
         self.assertEqual(mode_to_name(unittest.INSERT), 'INSERT')
         self.assertEqual(mode_to_name('foobar'), 'REALLY UNKNOWN')

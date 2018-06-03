@@ -28,12 +28,9 @@ from sublime import Region
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.state import State as _State
 
-from NeoVintageous.nv.vim import COMMAND_LINE  # noqa: F401
-from NeoVintageous.nv.vim import CTRL_X  # noqa: F401
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
 from NeoVintageous.nv.vim import INTERNAL_NORMAL  # noqa: F401
 from NeoVintageous.nv.vim import NORMAL  # noqa: F401
-from NeoVintageous.nv.vim import NORMAL_INSERT  # noqa: F401
 from NeoVintageous.nv.vim import OPERATOR_PENDING  # noqa: F401
 from NeoVintageous.nv.vim import REPLACE  # noqa: F401
 from NeoVintageous.nv.vim import SELECT  # noqa: F401

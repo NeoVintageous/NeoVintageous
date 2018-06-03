@@ -204,7 +204,6 @@ class TestStateCounts(unittest.ViewTestCase):
 class TestStateModeNames(unittest.ViewTestCase):
 
     def test_mode_name(self):
-        self.assertEqual(unittest.COMMAND_LINE, 'mode_command_line')
         self.assertEqual(unittest.INSERT, 'mode_insert')
         self.assertEqual(unittest.INTERNAL_NORMAL, 'mode_internal_normal')
         self.assertEqual(unittest.NORMAL, 'mode_normal')
