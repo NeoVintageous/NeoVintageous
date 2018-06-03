@@ -130,8 +130,8 @@ class _Context:
 # TODO Refactor XXX; cleanup, optimise (especially the on_query_context() and the on_text_command() events)
 class NeoVintageousEvents(EventListener):
 
-    _CACHED_COMPLETIONS = []
-    _CACHED_COMPLETION_PREFIXES = []
+    _cached_completions = []
+    _cached_completion_prefixes = []
 
     # TODO Refactor, cleanup and optimise on_query_context()
     def on_query_context(self, view, key, operator, operand, match_all):
@@ -151,15 +151,15 @@ class NeoVintageousEvents(EventListener):
         if len(prefix) + 1 != view.size():
             return None
 
-        if prefix and prefix in self._CACHED_COMPLETION_PREFIXES:
-            return self._CACHED_COMPLETIONS
+        if prefix and prefix in self._cached_completion_prefixes:
+            return self._cached_completions
 
         compls = [x for x in _cmdline_completions if x.startswith(prefix) and x != prefix]
 
-        self._CACHED_COMPLETION_PREFIXES = [prefix] + compls
-        self._CACHED_COMPLETIONS = list(zip([prefix] + compls, compls + [prefix]))
+        self._cached_completion_prefixes = [prefix] + compls
+        self._cached_completions = list(zip([prefix] + compls, compls + [prefix]))
 
-        return self._CACHED_COMPLETIONS
+        return self._cached_completions
 
     # TODO [refactor] [cleanup] and [optimise] on_text_command()
     def on_text_command(self, view, command, args):
