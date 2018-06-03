@@ -2339,7 +2339,6 @@ class _vi_left_square_bracket_target(ViMotionCommand):
         regions_transformer(self.view, move)
 
 
-# https://vimhelp.appspot.com/diff.txt.html#[c
 class _vi_left_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
         self.view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
@@ -2380,7 +2379,6 @@ class _vi_right_square_bracket_target(ViMotionCommand):
         regions_transformer(self.view, move)
 
 
-# https://vimhelp.appspot.com/diff.txt.html#]c
 class _vi_right_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
         self.view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})
