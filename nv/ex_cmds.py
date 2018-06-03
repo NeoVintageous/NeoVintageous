@@ -532,6 +532,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
             for s in (subject, subject.lower(), subject.upper()):
                 _subject = p + s
+                _log.debug('looking for help subject >>>%s<<<', _subject)
                 if _subject in _ex_help_tags_cache:
                     found = True
                     subject = _subject
