@@ -21,32 +21,32 @@ from sublime import get_clipboard
 from sublime import set_clipboard
 
 
-REG_UNNAMED = '"'
-REG_SMALL_DELETE = '-'
-REG_BLACK_HOLE = '_'
-REG_LAST_INSERTED_TEXT = '.'
-REG_FILE_NAME = '%'
-REG_ALT_FILE_NAME = '#'
-REG_EXPRESSION = '='
-REG_SYS_CLIPBOARD_1 = '*'
-REG_SYS_CLIPBOARD_2 = '+'
-REG_SYS_CLIPBOARD_ALL = (
-    REG_SYS_CLIPBOARD_1,
-    REG_SYS_CLIPBOARD_2
+_REG_UNNAMED = '"'
+_REG_SMALL_DELETE = '-'
+_REG_BLACK_HOLE = '_'
+_REG_LAST_INSERTED_TEXT = '.'
+_REG_FILE_NAME = '%'
+_REG_ALT_FILE_NAME = '#'
+_REG_EXPRESSION = '='
+_REG_SYS_CLIPBOARD_1 = '*'
+_REG_SYS_CLIPBOARD_2 = '+'
+_REG_SYS_CLIPBOARD_ALL = (
+    _REG_SYS_CLIPBOARD_1,
+    _REG_SYS_CLIPBOARD_2
 )
-REG_VALID_NAMES = tuple('abcdefghijklmnopqrstuvwxyz')
-REG_VALID_NUMBERS = tuple('0123456789')
-REG_SPECIAL = (
-    REG_UNNAMED,
-    REG_SMALL_DELETE,
-    REG_BLACK_HOLE,
-    REG_LAST_INSERTED_TEXT,
-    REG_FILE_NAME,
-    REG_ALT_FILE_NAME,
-    REG_SYS_CLIPBOARD_1,
-    REG_SYS_CLIPBOARD_2
+_REG_VALID_NAMES = tuple('abcdefghijklmnopqrstuvwxyz')
+_REG_VALID_NUMBERS = tuple('0123456789')
+_REG_SPECIAL = (
+    _REG_UNNAMED,
+    _REG_SMALL_DELETE,
+    _REG_BLACK_HOLE,
+    _REG_LAST_INSERTED_TEXT,
+    _REG_FILE_NAME,
+    _REG_ALT_FILE_NAME,
+    _REG_SYS_CLIPBOARD_1,
+    _REG_SYS_CLIPBOARD_2
 )
-REG_ALL = REG_SPECIAL + REG_VALID_NUMBERS + REG_VALID_NAMES
+_REG_ALL = _REG_SPECIAL + _REG_VALID_NUMBERS + _REG_VALID_NAMES
 
 # TODO "* and "+ don't do what they should in linux.
 
@@ -62,7 +62,7 @@ def init_register_data():
 _data = init_register_data()
 
 
-class Registers(object):
+class Registers:
 
     # Registers hold global data used mainly by yank, delete and paste.
     #
@@ -100,11 +100,11 @@ class Registers(object):
         assert isinstance(values, list)
         # Coerce all values into strings.
         values = [str(v) for v in values]
-        _data[REG_UNNAMED] = values
+        _data[_REG_UNNAMED] = values
 
     def _maybe_set_sys_clipboard(self, name, value):
         # Check whether the option is set to a bool; could be any JSON type
-        if (name in REG_SYS_CLIPBOARD_ALL or
+        if (name in _REG_SYS_CLIPBOARD_ALL or
            self.settings.view['vintageous_use_sys_clipboard'] is True):
                 # Take care of multiple selections.
                 if len(value) > 1:
@@ -112,20 +112,21 @@ class Registers(object):
                 else:
                     set_clipboard(value[0])
 
-    def set(self, name, values):
-        """
-        Set an a-z or 0-9 register.
+    def set_expression(self, values):
+        self.set(_REG_EXPRESSION, values)
 
-        In order to honor multiple selections in Sublime Text, we need to
-        store register data as lists, one per selection. The paste command
-        will then make the final decision about what to insert into the buffer
-        when faced with unbalanced selection number / available register data.
-        """
+    def set(self, name, values):
+        # Set an a-z or 0-9 register.
+        # In order to honor multiple selections in Sublime Text, we need to
+        # store register data as lists, one per selection. The paste command
+        # will then make the final decision about what to insert into the buffer
+        # when faced with unbalanced selection number / available register data.
+
         # We accept integers as register names.
         name = str(name)
         assert len(str(name)) == 1, "Register names must be 1 char long: " + name
 
-        if name == REG_BLACK_HOLE:
+        if name == _REG_BLACK_HOLE:
             return
 
         assert isinstance(values, list), "Register values must be inside a list."
@@ -135,17 +136,17 @@ class Registers(object):
 
         # Special registers and invalid registers won't be set.
         if (not (name.isalpha() or name.isdigit() or
-                 name.isupper() or name == REG_UNNAMED or
-                 name in REG_SYS_CLIPBOARD_ALL or
-                 name == REG_EXPRESSION or
-                 name == REG_SMALL_DELETE)):
+                 name.isupper() or name == _REG_UNNAMED or
+                 name in _REG_SYS_CLIPBOARD_ALL or
+                 name == _REG_EXPRESSION or
+                 name == _REG_SMALL_DELETE)):
                     # Vim fails silently.
                     # raise Exception("Can only set a-z and 0-9 registers.")
                     return None
 
         _data[name] = values
 
-        if name not in (REG_EXPRESSION,):
+        if name not in (_REG_EXPRESSION,):
             self._set_default_register(values)
             self._maybe_set_sys_clipboard(name, values)
 
@@ -161,7 +162,7 @@ class Registers(object):
         self._set_default_register(new_values)
         self._maybe_set_sys_clipboard(name, new_values)
 
-    def get(self, name=REG_UNNAMED):
+    def get(self, name=_REG_UNNAMED):
         # Args:
         #   name (str|int)
         #
@@ -174,31 +175,31 @@ class Registers(object):
         assert len(name) == 1, "Register names must be 1 char long."
 
         # Did we request a special register?
-        if name == REG_BLACK_HOLE:
+        if name == _REG_BLACK_HOLE:
             return
 
-        if name == REG_FILE_NAME:
+        if name == _REG_FILE_NAME:
             try:
                 return [self.view.file_name()]
             except AttributeError:
                 return ''
 
-        if name in REG_SYS_CLIPBOARD_ALL:
+        if name in _REG_SYS_CLIPBOARD_ALL:
             return [get_clipboard()]
 
-        if ((name not in (REG_UNNAMED, REG_SMALL_DELETE)) and (name in REG_SPECIAL)):
+        if ((name not in (_REG_UNNAMED, _REG_SMALL_DELETE)) and (name in _REG_SPECIAL)):
             return
 
         # Special case lumped among these --user always wants the sys clipboard
-        if ((name == REG_UNNAMED) and (self.settings.view['vintageous_use_sys_clipboard'] is True)):
+        if ((name == _REG_UNNAMED) and (self.settings.view['vintageous_use_sys_clipboard'] is True)):
             return [get_clipboard()]
 
         # If the expression register holds a value and we're requesting the
         # unnamed register, return the expression register and clear it
         # aftwerwards.
-        if name == REG_UNNAMED and _data.get(REG_EXPRESSION, ''):
-            value = _data[REG_EXPRESSION]
-            _data[REG_EXPRESSION] = ''
+        if name == _REG_UNNAMED and _data.get(_REG_EXPRESSION, ''):
+            value = _data[_REG_EXPRESSION]
+            _data[_REG_EXPRESSION] = ''
 
             return value
 
@@ -227,15 +228,15 @@ class Registers(object):
         # Raises:
         #   ValueError:
         #       If operation is not supported.
-        if register == REG_BLACK_HOLE:
+        if register == _REG_BLACK_HOLE:
             return
 
         # Populate registers if we have to.
         if cmd._can_yank:
-            if register and register != REG_UNNAMED:
+            if register and register != _REG_UNNAMED:
                 self[register] = self.get_selected_text(cmd)
             else:
-                self[REG_UNNAMED] = self.get_selected_text(cmd)
+                self[_REG_UNNAMED] = self.get_selected_text(cmd)
 
                 # if yanking, the 0 register gets set
                 if operation == 'yank':
@@ -256,7 +257,7 @@ class Registers(object):
         if cmd._populates_small_delete_register:
             is_same_line = (lambda r: self.view.line(r.begin()) == self.view.line(r.end() - 1))
             if all(is_same_line(x) for x in list(self.view.sel())):
-                self[REG_SMALL_DELETE] = self.get_selected_text(cmd)
+                self[_REG_SMALL_DELETE] = self.get_selected_text(cmd)
 
     def get_selected_text(self, cmd):
         # Inspect settings and populate registers as needed.
@@ -285,7 +286,7 @@ class Registers(object):
 
     def to_dict(self):
         # XXX: Stopgap solution until we sublass from dict
-        return {name: self.get(name) for name in REG_ALL}
+        return {name: self.get(name) for name in _REG_ALL}
 
     def __getitem__(self, key):
         return self.get(key)

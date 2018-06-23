@@ -32,7 +32,6 @@ from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
-from NeoVintageous.nv.vi.registers import REG_EXPRESSION
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
 from NeoVintageous.nv.vi.utils import is_view
@@ -2437,7 +2436,7 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
             try:
                 rv = [str(eval(s, None, None)), ]
                 if not insert:
-                    state.registers[REG_EXPRESSION] = rv
+                    state.registers.set_expression(rv)
                 else:
                     self.view.run_command('insert_snippet', {'contents': str(rv[0])})
                     state.reset()
