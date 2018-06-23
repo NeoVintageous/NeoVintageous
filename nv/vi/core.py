@@ -26,12 +26,8 @@ from NeoVintageous.nv.vim import console_message
 
 class ViCommandMixin(object):
 
-    # Provide functionality needed by some vim commands. Intended to be used
-    # with TextCommand and WindowCommand classes.
-
     @property
     def _view(self):
-        """Return the view that should receive any actions."""
         view = None
         try:
             view = self.view
@@ -45,7 +41,6 @@ class ViCommandMixin(object):
 
     @property
     def _window(self):
-        """Return the view that should receive any actions."""
         window = None
         try:
             window = self.window
@@ -62,7 +57,6 @@ class ViCommandMixin(object):
         return State(self._view)
 
     def save_sel(self):
-        """Save the current .sel() for later reference."""
         self.old_sel = tuple(self._view.sel())
 
     def is_equal_to_old_sel(self, new_sel):
@@ -73,23 +67,16 @@ class ViCommandMixin(object):
             raise AttributeError('have you forgotten to call .save_sel()?')
 
     def has_sel_changed(self):
-        """`True` is the current selection is different to .old_sel as recorded by .save_sel()."""
         return not self.is_equal_to_old_sel(self._view.sel())
 
     def enter_normal_mode(self, mode):
-        """
-        Call the command to enter normal mode.
-
-        @mode: The mode the state was in before calling this method.
-        """
+        # Args:
+        #   mode (str): The current mode
         self._window.run_command('_enter_normal_mode', {'mode': mode})
 
     def enter_insert_mode(self, mode):
-        """
-        Call the command to enter normal mode.
-
-        @mode: The mode the state was in before calling this method.
-        """
+        # Args:
+        #   mode (str): The current mode
         self._window.run_command('_enter_insert_mode', {'mode': mode})
 
     def set_xpos(self, state):
