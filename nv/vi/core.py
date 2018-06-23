@@ -23,7 +23,7 @@ from NeoVintageous.nv.ui import ui_region_flags
 from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
 
 
-class ViCommandMixin(object):
+class ViCommandMixin:
 
     @property
     def _view(self):
@@ -107,43 +107,24 @@ class ViCommandMixin(object):
         )
 
 
-# TODO [refactor] Move to commands module
+# DEPRECATED
+# TODO Remove this command
 class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
-    """
-    Base class form motion and action commands.
-
-    Not all commands need to derive from this base class, but it's
-    recommended they do if there isn't any good reason they shouldn't.
-    """
-
-    # Yank config data is controlled through class attributes:
-    _can_yank = False
-    _synthetize_new_line_at_eof = False
-    _yanks_linewise = False
-    _populates_small_delete_register = False
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-# TODO [refactor] Move to commands module
-# Due to MRO in Python subclasses, IrreversibleTextCommand must come first so
-# that the modified .run_() method is found first.
+# DEPRECATED
+# TODO Remove this command or refactor it just to allow commands to bypass the undo stack
 class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
-    """Motion should bypass the undo stack."""
-
+    # Motion should bypass the undo stack.
+    # Due to MRO in Python subclasses, IrreversibleTextCommand must come first so
+    # that the modified .run_() method is found first.
     pass
 
 
-# DEPRECATED TODO REMOVE
-# TODO [refactor] Move to commands module
+# DEPRECATED
+# TODO Remove this command
 class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
-    """
-    Base class form some window commands.
-
-    Not all window commands need to derive from this base class, but it's
-    recommended they do if there isn't any good reason they shouldn't.
-    """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

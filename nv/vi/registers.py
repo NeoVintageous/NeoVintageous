@@ -62,6 +62,10 @@ def init_register_data():
 _data = init_register_data()
 
 
+class YankCommand:
+    pass
+
+
 class Registers:
 
     # Registers hold global data used mainly by yank, delete and paste.
@@ -216,7 +220,7 @@ class Registers:
         except KeyError:
             pass
 
-    def yank(self, cmd, register=None, operation='yank'):
+    def yank(self, synthetize_new_line_at_eof=False, yanks_linewise=False, populates_small_delete_register=False, register=None, operation='yank'):  # noqa: E501
         # Args:
         #   cmd (ViTextCommandBase)
         #   register (str)
@@ -232,34 +236,33 @@ class Registers:
             return
 
         # Populate registers if we have to.
-        if cmd._can_yank:
-            if register and register != _REG_UNNAMED:
-                self[register] = self.get_selected_text(cmd)
+        if register and register != _REG_UNNAMED:
+            self[register] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
+        else:
+            self[_REG_UNNAMED] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
+
+            # if yanking, the 0 register gets set
+            if operation == 'yank':
+                _data['0'] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
+
+            # if changing or deleting, the numbered registers get set
+            elif operation in ('change', 'delete'):
+                # TODO: very inefficient
+                _data['1-9'].insert(0, self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise))
+
+                if len(_data['1-9']) > 10:
+                    _data['1-9'].pop()
+
             else:
-                self[_REG_UNNAMED] = self.get_selected_text(cmd)
-
-                # if yanking, the 0 register gets set
-                if operation == 'yank':
-                    _data['0'] = self.get_selected_text(cmd)
-
-                # if changing or deleting, the numbered registers get set
-                elif operation in ('change', 'delete'):
-                    # TODO: very inefficient
-                    _data['1-9'].insert(0, self.get_selected_text(cmd))
-
-                    if len(_data['1-9']) > 10:
-                        _data['1-9'].pop()
-
-                else:
-                    raise ValueError('unsupported operation: ' + operation)
+                raise ValueError('unsupported operation: ' + operation)
 
         # XXX: Small register delete. Improve this implementation.
-        if cmd._populates_small_delete_register:
+        if populates_small_delete_register:
             is_same_line = (lambda r: self.view.line(r.begin()) == self.view.line(r.end() - 1))
             if all(is_same_line(x) for x in list(self.view.sel())):
-                self[_REG_SMALL_DELETE] = self.get_selected_text(cmd)
+                self[_REG_SMALL_DELETE] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
 
-    def get_selected_text(self, cmd):
+    def get_selected_text(self, synthetize_new_line_at_eof=False, yanks_linewise=False):  # noqa: E501
         # Inspect settings and populate registers as needed.
         #
         # Args:
@@ -270,12 +273,12 @@ class Registers:
         fragments = [self.view.substr(r) for r in list(self.view.sel())]
 
         # Add new line at EOF, but don't add too many new lines.
-        if (cmd._synthetize_new_line_at_eof and not cmd._yanks_linewise):
+        if (synthetize_new_line_at_eof and not yanks_linewise):
             # XXX: It appears regions can end beyond the buffer's EOF (?).
             if (not fragments[-1].endswith('\n') and self.view.sel()[-1].b >= self.view.size()):
                 fragments[-1] += '\n'
 
-        if fragments and cmd._yanks_linewise:
+        if fragments and yanks_linewise:
             for i, f in enumerate(fragments):
                 # When should we add a newline character? Always except when we
                 # have a non-\n-only string followed by a newline char.

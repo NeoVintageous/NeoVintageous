@@ -388,9 +388,6 @@ class _vi_a(ViTextCommandBase):
 
 
 class _vi_c(ViTextCommandBase):
-    _can_yank = True
-    _populates_small_delete_register = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -436,7 +433,7 @@ class _vi_c(ViTextCommandBase):
 
                 return
 
-        self.state.registers.yank(self, register)
+        self.state.registers.yank(populates_small_delete_register=True, register=register)
         self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
 
@@ -815,11 +812,6 @@ class _vi_dot(ViWindowCommandBase):
 
 
 class _vi_dd(ViTextCommandBase):
-    _can_yank = True
-    _yanks_linewise = True
-    _populates_small_delete_register = False
-    _synthetize_new_line_at_eof = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -846,18 +838,20 @@ class _vi_dd(ViTextCommandBase):
             self.view.sel().add_all([Region(pt) for pt in new])
 
         regions_transformer(self.view, do_motion)
-        self.state.registers.yank(self, register, operation='delete')
+        self.state.registers.yank(
+            yanks_linewise=True,
+            populates_small_delete_register=False,
+            synthetize_new_line_at_eof=True,
+            register=register,
+            operation='delete'
+        )
+
         self.view.run_command('right_delete')
         set_sel()
         # TODO deleting last line leaves the caret at \n
 
 
 class _vi_cc(ViTextCommandBase):
-    _can_yank = True
-    _yanks_linewise = True
-    _populates_small_delete_register = False
-    _synthetize_new_line_at_eof = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -872,7 +866,13 @@ class _vi_cc(ViTextCommandBase):
             return units.inner_lines(view, s, count)
 
         regions_transformer(self.view, motion)
-        self.state.registers.yank(self, register)
+        self.state.registers.yank(
+            yanks_linewise=True,
+            populates_small_delete_register=False,
+            synthetize_new_line_at_eof=True,
+            register=register
+        )
+
         if not all(s.empty() for s in self.view.sel()):
             self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
@@ -896,10 +896,6 @@ class _vi_visual_o(ViTextCommandBase):
 
 # TODO: is this really a text command?
 class _vi_yy(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-    _yanks_linewise = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -927,15 +923,16 @@ class _vi_yy(ViTextCommandBase):
 
         state = self.state
         self.outline_target()
-        state.registers.yank(self, register)
+        state.registers.yank(
+            synthetize_new_line_at_eof=True,
+            yanks_linewise=True,
+            register=register
+        )
         restore()
         self.enter_normal_mode(mode)
 
 
 class _vi_y(ViTextCommandBase):
-    _can_yank = True
-    _populates_small_delete_register = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -952,16 +949,15 @@ class _vi_y(ViTextCommandBase):
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return
 
-        state = self.state
-        state.registers.yank(self, register)
+        self.state.registers.yank(
+            populates_small_delete_register=True,
+            register=register
+        )
         regions_transformer(self.view, f)
         self.enter_normal_mode(mode)
 
 
 class _vi_d(ViTextCommandBase):
-    _can_yank = True
-    _populates_small_delete_register = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -994,8 +990,11 @@ class _vi_d(ViTextCommandBase):
 
                 return
 
-        state = self.state
-        state.registers.yank(self, register, operation='delete')
+        self.state.registers.yank(
+            populates_small_delete_register=True,
+            register=register,
+            operation='delete'
+        )
 
         self.view.run_command('left_delete')
         self.view.run_command('_nv_fix_st_eol_caret')
@@ -1196,9 +1195,6 @@ class _vi_quote_quote(IrreversibleTextCommand):
 
 
 class _vi_big_d(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1220,8 +1216,11 @@ class _vi_big_d(ViTextCommandBase):
         self.save_sel()
         regions_transformer(self.view, f)
 
-        state = self.state
-        state.registers.yank(self, register, operation='delete')
+        self.state.registers.yank(
+            synthetize_new_line_at_eof=True,
+            register=register,
+            operation='delete'
+        )
 
         self.view.run_command('left_delete')
 
@@ -1245,9 +1244,6 @@ class _vi_big_d(ViTextCommandBase):
 
 
 class _vi_big_c(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1264,8 +1260,7 @@ class _vi_big_c(ViTextCommandBase):
         self.save_sel()
         regions_transformer(self.view, f)
 
-        state = self.state
-        state.registers.yank(self)
+        self.state.registers.yank(synthetize_new_line_at_eof=True)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1281,9 +1276,6 @@ class _vi_big_c(ViTextCommandBase):
 
 
 class _vi_big_s_action(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1301,8 +1293,7 @@ class _vi_big_s_action(ViTextCommandBase):
 
         regions_transformer(self.view, sel_line)
 
-        state = self.state
-        state.registers.yank(self, register)
+        self.state.registers.yank(synthetize_new_line_at_eof=True, register=register)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1319,9 +1310,6 @@ class _vi_big_s_action(ViTextCommandBase):
 
 
 class _vi_s(ViTextCommandBase):
-    _can_yank = True
-    _populates_small_delete_register = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1346,18 +1334,13 @@ class _vi_s(ViTextCommandBase):
             self.enter_insert_mode(mode)
             return
 
-        state = self.state
-        state.registers.yank(self, register)
+        self.state.registers.yank(populates_small_delete_register=True, register=register)
         self.view.run_command('right_delete')
 
         self.enter_insert_mode(mode)
 
 
 class _vi_x(ViTextCommandBase):
-
-    _can_yank = True
-    _populates_small_delete_register = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1378,16 +1361,12 @@ class _vi_x(ViTextCommandBase):
 
         regions_transformer(self.view, select)
 
-        self.state.registers.yank(self, register)
+        self.state.registers.yank(populates_small_delete_register=True, register=register)
         self.view.run_command('right_delete')
         self.enter_normal_mode(mode)
 
 
 class _vi_r(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-    _populates_small_delete_register = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1427,7 +1406,11 @@ class _vi_r(ViTextCommandBase):
             raise ValueError('bad parameters')
         char = utils.translate_char(char)
 
-        self.state.registers.yank(self, register)
+        self.state.registers.yank(
+            synthetize_new_line_at_eof=True,
+            populates_small_delete_register=True,
+            register=register
+        )
         regions_transformer(self.view, f)
 
         self.enter_normal_mode(mode)
@@ -1612,9 +1595,6 @@ class _vi_o(ViTextCommandBase):
 
 
 class _vi_big_x(ViTextCommandBase):
-    _can_yank = True
-    _populates_small_delete_register = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1643,8 +1623,10 @@ class _vi_big_x(ViTextCommandBase):
 
         regions_transformer(self.view, select)
 
-        state = self.state
-        state.registers.yank(self, register)
+        self.state.registers.yank(
+            populates_small_delete_register=True,
+            register=register
+        )
 
         if not abort:
             self.view.run_command('left_delete')
@@ -1669,9 +1651,6 @@ class _vi_big_z_big_z(ViWindowCommandBase):
 
 
 class _vi_big_p(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1679,7 +1658,7 @@ class _vi_big_p(ViTextCommandBase):
         state = self.state
 
         if state.mode == VISUAL:
-            prev_text = state.registers.get_selected_text(self)
+            prev_text = state.registers.get_selected_text(synthetize_new_line_at_eof=True)
 
         if register:
             fragments = state.registers[register]
@@ -1742,9 +1721,6 @@ class _vi_big_p(ViTextCommandBase):
 
 
 class _vi_p(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -1756,7 +1732,7 @@ class _vi_p(ViTextCommandBase):
             return console_message('Nothing in register "')
 
         if state.mode == VISUAL:
-            prev_text = state.registers.get_selected_text(self)
+            prev_text = state.registers.get_selected_text(synthetize_new_line_at_eof=True)
             state.registers['"'] = prev_text
 
         sels = list(self.view.sel())
@@ -2881,11 +2857,6 @@ class _vi_g_big_c(ViTextCommandBase):
 
 
 class _vi_gcc_action(ViTextCommandBase):
-    _can_yank = True
-    _synthetize_new_line_at_eof = True
-    _yanks_linewise = False
-    _populates_small_delete_register = False
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -2906,8 +2877,11 @@ class _vi_gcc_action(ViTextCommandBase):
 
         self.view.run_command('_vi_gcc_motion', {'mode': mode, 'count': count})
 
-        state = self.state
-        state.registers.yank(self)
+        self.state.registers.yank(
+            synthetize_new_line_at_eof=True,
+            yanks_linewise=False,
+            populates_small_delete_register=False
+        )
 
         line = self.view.line(self.view.sel()[0].begin())
         pt = line.begin()

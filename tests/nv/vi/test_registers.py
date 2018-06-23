@@ -291,11 +291,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
         self.regs.view.sel.return_value = [10, 20, 30]
         self.regs.view.substr.side_effect = lambda x: x
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = False
-            _yanks_linewise = False
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=False, yanks_linewise=False)
         self.assertEqual(rv, [10, 20, 30])
 
     def test_can_synthetize_new_line_at_eof(self):
@@ -303,11 +299,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
         self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
         self.regs.view.size.return_value = 0
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = True
-            _yanks_linewise = False
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=True, yanks_linewise=False)
         self.assertEqual(rv, ["AAA", "AAA\n"])
 
     def test_doesnt_synthetize_new_line_at_eof_if_not_needed(self):
@@ -315,11 +307,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
         self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
         self.regs.view.size.return_value = 0
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = True
-            _yanks_linewise = False
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=True, yanks_linewise=False)
         self.assertEqual(rv, ["AAA\n", "AAA\n"])
 
     def test_doesnt_synthetize_new_line_at_eof_if_not_at_eof(self):
@@ -327,55 +315,35 @@ class Test_get_selected_text(unittest.ViewTestCase):
         self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
         self.regs.view.size.return_value = 100
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = True
-            _yanks_linewise = False
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=True, yanks_linewise=False)
         self.assertEqual(rv, ["AAA", "AAA"])
 
     def test_can_yank_linewise(self):
         self.regs.view.substr.return_value = "AAA"
         self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = False
-            _yanks_linewise = True
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=False, yanks_linewise=True)
         self.assertEqual(rv, ["AAA\n", "AAA\n"])
 
     def test_does_not_yank_linewise_if_non_empty_string_followed_by_new_line(self):
         self.regs.view.substr.return_value = "AAA\n"
         self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = False
-            _yanks_linewise = True
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=False, yanks_linewise=True)
         self.assertEqual(rv, ["AAA\n", "AAA\n"])
 
     def test_yank_linewise_if_empty_string_followed_by_new_line(self):
         self.regs.view.substr.return_value = "\n"
         self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = False
-            _yanks_linewise = True
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=False, yanks_linewise=True)
         self.assertEqual(rv, ["\n", "\n"])
 
     def test_yank_linewise_if_two_trailing_new_lines(self):
         self.regs.view.substr.return_value = "\n\n"
         self.regs.view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
-        class vi_cmd_data:
-            _synthetize_new_line_at_eof = False
-            _yanks_linewise = True
-
-        rv = self.regs.get_selected_text(vi_cmd_data)
+        rv = self.regs.get_selected_text(synthetize_new_line_at_eof=False, yanks_linewise=True)
         self.assertEqual(rv, ["\n\n\n", "\n\n\n"])
 
 
@@ -394,39 +362,22 @@ class Test_yank(unittest.ViewTestCase):
         super().tearDown()
         registers._data = registers.init_register_data()
 
-    def test_dont_yank_if_we_dont_have_to(self):
-        class vi_cmd_data:
-            _can_yank = False
-            _populates_small_delete_register = False
-
-        self.regs.yank(vi_cmd_data)
-        self.assertEqual(registers._data, {
-            '1-9': [None] * 9,
-            '0': None,
-        })
-
     def test_yank_to_black_hole_register(self):
-        class cmd:
-            _can_yank = True
-            _populates_small_delete_register = True
-
-        self.regs.yank(cmd, '_')
+        self.regs.yank(populates_small_delete_register=True, register='_')
         self.assertEqual(registers._data, {
             '1-9': [None] * 9,
             '0': None,
         })
 
     def test_yanks_to_unnamed_register_if_no_register_name_provided(self):
-        class vi_cmd_data:
-            _can_yank = True
-            _synthetize_new_line_at_eof = False
-            _yanks_linewise = True
-            register = None
-            _populates_small_delete_register = False
-
         with mock.patch.object(self.regs, 'get_selected_text') as gst:
             gst.return_value = ['foo']
-            self.regs.yank(vi_cmd_data)
+            self.regs.yank(
+                synthetize_new_line_at_eof=False,
+                yanks_linewise=True,
+                register=None,
+                populates_small_delete_register=False
+            )
             self.assertEqual(registers._data, {
                 '"': ['foo'],
                 '0': ['foo'],
@@ -434,13 +385,9 @@ class Test_yank(unittest.ViewTestCase):
             })
 
     def test_yanks_to_registers(self):
-        class vi_cmd_data:
-            _can_yank = True
-            _populates_small_delete_register = False
-
         with mock.patch.object(self.regs, 'get_selected_text') as gst:
             gst.return_value = ['foo']
-            self.regs.yank(vi_cmd_data, register='a')
+            self.regs.yank(populates_small_delete_register=False, register='a')
             self.assertEqual(registers._data, {
                 '"': ['foo'],
                 'a': ['foo'],
@@ -449,32 +396,13 @@ class Test_yank(unittest.ViewTestCase):
             })
 
     def test_can_populate_small_delete_register(self):
-        class vi_cmd_data:
-            _can_yank = True
-            _populates_small_delete_register = True
-
         with mock.patch.object(builtins, 'all') as a, mock.patch.object(self.regs, 'get_selected_text') as gst:
             gst.return_value = ['foo']
             self.regs.view.sel.return_value = range(1)
             a.return_value = True
-            self.regs.yank(vi_cmd_data)
+            self.regs.yank(populates_small_delete_register=True)
             self.assertEqual(registers._data, {
                 '"': ['foo'],
                 '-': ['foo'],
                 '0': ['foo'],
                 '1-9': [None] * 9})
-
-    def test_does_not_populate_small_delete_register_if_we_should_not(self):
-        class vi_cmd_data:
-            _can_yank = False
-            _populates_small_delete_register = False
-
-        with mock.patch.object(builtins, 'all') as a, mock.patch.object(self.regs, 'get_selected_text') as gst:
-            gst.return_value = ['foo']
-            self.regs.view.sel.return_value = range(1)
-            a.return_value = False
-            self.regs.yank(vi_cmd_data)
-            self.assertEqual(registers._data, {
-                '1-9': [None] * 9,
-                '0': None,
-            })
