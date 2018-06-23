@@ -60,7 +60,7 @@ class Test__vi_big_p(unittest.ViewTestCase):
             self.select([self._R(*region) for region in data.regions])
 
             self.view.settings().set('vintageous_use_sys_clipboard', False)
-            registers._REGISTER_DATA['"'] = data.in_register
+            registers._data['"'] = data.in_register
 
             self.view.run_command('_vi_big_p', data.params)
 

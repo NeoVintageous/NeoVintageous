@@ -92,14 +92,14 @@ class TestCaseRegisters(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         set_clipboard('')
-        registers._REGISTER_DATA = registers.init_register_data()
+        registers._data = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
         self.regs = State(self.view).registers
 
     def tearDown(self):
         super().tearDown()
-        registers._REGISTER_DATA = registers.init_register_data()
+        registers._data = registers.init_register_data()
 
     def test_can_initialize_class(self):
         self.assertEqual(self.regs.view, self.view)
@@ -107,7 +107,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
 
     def test_can_set_unanmed_register(self):
         self.regs._set_default_register(["foo"])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ["foo"])
+        self.assertEqual(registers._data[registers.REG_UNNAMED], ["foo"])
 
     def test_setting_long_register_name_throws_assertion_error(self):
         with self.assertRaisesRegex(AssertionError, 'names must be 1 char long'):
@@ -119,20 +119,20 @@ class TestCaseRegisters(unittest.ViewTestCase):
 
     def test_register_data_is_always_stored_as_string(self):
         self.regs.set('"', [100])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ["100"])
+        self.assertEqual(registers._data[registers.REG_UNNAMED], ["100"])
 
     def test_setting_black_hole_register_does_nothing(self):
-        registers._REGISTER_DATA[registers.REG_UNNAMED] = ["bar"]
+        registers._data[registers.REG_UNNAMED] = ["bar"]
         # In this case it doesn't matter whether we're setting a list or not,
         # because we are discarding the value anyway.
         self.regs.set(registers.REG_BLACK_HOLE, "foo")
-        self.assertTrue(registers.REG_BLACK_HOLE not in registers._REGISTER_DATA)
-        self.assertTrue(registers._REGISTER_DATA[registers.REG_UNNAMED], ["bar"])
+        self.assertTrue(registers.REG_BLACK_HOLE not in registers._data)
+        self.assertTrue(registers._data[registers.REG_UNNAMED], ["bar"])
 
     def test_setting_expression_register_doesnt_populate_unnamed_register(self):
         self.regs.set("=", [100])
-        self.assertTrue(registers.REG_UNNAMED not in registers._REGISTER_DATA)
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_EXPRESSION], ["100"])
+        self.assertTrue(registers.REG_UNNAMED not in registers._data)
+        self.assertEqual(registers._data[registers.REG_EXPRESSION], ["100"])
 
     def test_can_set_normal_registers(self):
         for name in registers.REG_VALID_NAMES:
@@ -142,17 +142,17 @@ class TestCaseRegisters(unittest.ViewTestCase):
             self.regs.set(number, [number])
 
         for name in registers.REG_VALID_NAMES:
-            self.assertEqual(registers._REGISTER_DATA[name], [name])
+            self.assertEqual(registers._data[name], [name])
 
         for number in registers.REG_VALID_NUMBERS:
-            self.assertEqual(registers._REGISTER_DATA[number], [number])
+            self.assertEqual(registers._data[number], [number])
 
     def test_setting_normal_register_sets_unnamed_register_too(self):
         self.regs.set('a', [100])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ['100'])
+        self.assertEqual(registers._data[registers.REG_UNNAMED], ['100'])
 
         self.regs.set('0', [200])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ['200'])
+        self.assertEqual(registers._data[registers.REG_UNNAMED], ['200'])
 
     def test_setting_register_sets_clipboard_if_needed(self):
         self.settings().set('vintageous_use_sys_clipboard', True)
@@ -162,27 +162,27 @@ class TestCaseRegisters(unittest.ViewTestCase):
     def test_can_append_to_single_value(self):
         self.regs.set('a', ['foo'])
         self.regs.append_to('A', ['bar'])
-        self.assertEqual(registers._REGISTER_DATA['a'], ['foobar'])
+        self.assertEqual(registers._data['a'], ['foobar'])
 
     def test_can_append_to_multiple_balanced_values(self):
         self.regs.set('a', ['foo', 'bar'])
         self.regs.append_to('A', ['fizz', 'buzz'])
-        self.assertEqual(registers._REGISTER_DATA['a'], ['foofizz', 'barbuzz'])
+        self.assertEqual(registers._data['a'], ['foofizz', 'barbuzz'])
 
     def test_can_append_to_multiple_values_more_existing_values(self):
         self.regs.set('a', ['foo', 'bar'])
         self.regs.append_to('A', ['fizz'])
-        self.assertEqual(registers._REGISTER_DATA['a'], ['foofizz', 'bar'])
+        self.assertEqual(registers._data['a'], ['foofizz', 'bar'])
 
     def test_can_append_to_multiple_values_more_new_values(self):
         self.regs.set('a', ['foo'])
         self.regs.append_to('A', ['fizz', 'buzz'])
-        self.assertEqual(registers._REGISTER_DATA['a'], ['foofizz', 'buzz'])
+        self.assertEqual(registers._data['a'], ['foofizz', 'buzz'])
 
     def test_appending_sets_default_register(self):
         self.regs.set('a', ['foo'])
         self.regs.append_to('A', ['bar'])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_UNNAMED], ['foobar'])
+        self.assertEqual(registers._data[registers.REG_UNNAMED], ['foobar'])
 
     def test_append_sets_clipboard_if_needed(self):
         self.settings().set('vintageous_use_sys_clipboard', True)
@@ -191,7 +191,7 @@ class TestCaseRegisters(unittest.ViewTestCase):
         self.assertEqual(get_clipboard(), 'foobar')
 
     def test_get_default_to_unnamed_register(self):
-        registers._REGISTER_DATA['"'] = ['foo']
+        registers._data['"'] = ['foo']
         self.view.settings().set('vintageous_use_sys_clipboard', False)
         self.assertEqual(self.regs.get(), ['foo'])
 
@@ -217,21 +217,21 @@ class TestCaseRegisters(unittest.ViewTestCase):
         self.assertEqual(self.regs.get(), ['foo'])
 
     def test_getting_expression_register_clears_expression_register(self):
-        registers._REGISTER_DATA[registers.REG_EXPRESSION] = ['100']
+        registers._data[registers.REG_EXPRESSION] = ['100']
         self.view.settings().set('vintageous_use_sys_clipboard', False)
         self.assertEqual(self.regs.get(), ['100'])
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_EXPRESSION], '')
+        self.assertEqual(registers._data[registers.REG_EXPRESSION], '')
 
     def test_can_get_number_register(self):
-        registers._REGISTER_DATA['1-9'][4] = ['foo']
+        registers._data['1-9'][4] = ['foo']
         self.assertEqual(self.regs.get('5'), ['foo'])
 
     def test_can_get_register_even_if_requesting_it_through_a_capital_letter(self):
-        registers._REGISTER_DATA['a'] = ['foo']
+        registers._data['a'] = ['foo']
         self.assertEqual(self.regs.get('A'), ['foo'])
 
     def test_can_get_registers_with_dict_syntax(self):
-        registers._REGISTER_DATA['a'] = ['foo']
+        registers._data['a'] = ['foo']
         self.assertEqual(self.regs.get('a'), self.regs['a'])
 
     def test_can_set_registers_with_dict_syntax(self):
@@ -255,10 +255,10 @@ class TestCaseRegisters(unittest.ViewTestCase):
 
     def test_can_set_small_delete_register(self):
         self.regs[registers.REG_SMALL_DELETE] = ['foo']
-        self.assertEqual(registers._REGISTER_DATA[registers.REG_SMALL_DELETE], ['foo'])
+        self.assertEqual(registers._data[registers.REG_SMALL_DELETE], ['foo'])
 
     def test_can_get_small_delete_register(self):
-        registers._REGISTER_DATA[registers.REG_SMALL_DELETE] = ['foo']
+        registers._data[registers.REG_SMALL_DELETE] = ['foo']
         self.assertEqual(self.regs.get(registers.REG_SMALL_DELETE), ['foo'])
 
 
@@ -267,7 +267,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         set_clipboard('')
-        registers._REGISTER_DATA = registers.init_register_data()
+        registers._data = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
         self.regs = State(self.view).registers
@@ -275,7 +275,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def tearDown(self):
         super().tearDown()
-        registers._REGISTER_DATA = registers.init_register_data()
+        registers._data = registers.init_register_data()
 
     def test_extracts_substrings(self):
         self.regs.view.sel.return_value = [10, 20, 30]
@@ -384,7 +384,7 @@ class Test_yank(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         set_clipboard('')
-        registers._REGISTER_DATA = registers.init_register_data()
+        registers._data = registers.init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
         self.regs = State(self.view).registers
@@ -392,7 +392,7 @@ class Test_yank(unittest.ViewTestCase):
 
     def tearDown(self):
         super().tearDown()
-        registers._REGISTER_DATA = registers.init_register_data()
+        registers._data = registers.init_register_data()
 
     def test_dont_yank_if_we_dont_have_to(self):
         class vi_cmd_data:
@@ -400,7 +400,7 @@ class Test_yank(unittest.ViewTestCase):
             _populates_small_delete_register = False
 
         self.regs.yank(vi_cmd_data)
-        self.assertEqual(registers._REGISTER_DATA, {
+        self.assertEqual(registers._data, {
             '1-9': [None] * 9,
             '0': None,
         })
@@ -411,7 +411,7 @@ class Test_yank(unittest.ViewTestCase):
             _populates_small_delete_register = True
 
         self.regs.yank(cmd, '_')
-        self.assertEqual(registers._REGISTER_DATA, {
+        self.assertEqual(registers._data, {
             '1-9': [None] * 9,
             '0': None,
         })
@@ -427,7 +427,7 @@ class Test_yank(unittest.ViewTestCase):
         with mock.patch.object(self.regs, 'get_selected_text') as gst:
             gst.return_value = ['foo']
             self.regs.yank(vi_cmd_data)
-            self.assertEqual(registers._REGISTER_DATA, {
+            self.assertEqual(registers._data, {
                 '"': ['foo'],
                 '0': ['foo'],
                 '1-9': [None] * 9,
@@ -441,7 +441,7 @@ class Test_yank(unittest.ViewTestCase):
         with mock.patch.object(self.regs, 'get_selected_text') as gst:
             gst.return_value = ['foo']
             self.regs.yank(vi_cmd_data, register='a')
-            self.assertEqual(registers._REGISTER_DATA, {
+            self.assertEqual(registers._data, {
                 '"': ['foo'],
                 'a': ['foo'],
                 '0': None,
@@ -458,7 +458,7 @@ class Test_yank(unittest.ViewTestCase):
             self.regs.view.sel.return_value = range(1)
             a.return_value = True
             self.regs.yank(vi_cmd_data)
-            self.assertEqual(registers._REGISTER_DATA, {
+            self.assertEqual(registers._data, {
                 '"': ['foo'],
                 '-': ['foo'],
                 '0': ['foo'],
@@ -474,7 +474,7 @@ class Test_yank(unittest.ViewTestCase):
             self.regs.view.sel.return_value = range(1)
             a.return_value = False
             self.regs.yank(vi_cmd_data)
-            self.assertEqual(registers._REGISTER_DATA, {
+            self.assertEqual(registers._data, {
                 '1-9': [None] * 9,
                 '0': None,
             })
