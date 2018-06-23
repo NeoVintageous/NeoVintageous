@@ -124,20 +124,20 @@ class TestContextCheckers(unittest.ViewTestCase):
     def test_is_insert_mode_can_return_false_for_panels(self):
         panel = self.view.window().create_output_panel('test_context', unlisted=True)
         panel.settings().set('command_mode', False)
-        self.assertEqual(_is_insert_mode(self.view, operator=OP_EQUAL, operand=True, match_all=True), False)
+        self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=True, match_all=True), False)
 
         panel = self.view.window().create_output_panel('test_context', unlisted=True)
         panel.settings().set('command_mode', True)
-        self.assertEqual(_is_insert_mode(self.view, operator=OP_EQUAL, operand=True, match_all=True), False)
+        self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=True, match_all=True), False)
 
     def test_is_insert_mode_can_return_true_for_panels(self):
         panel = self.view.window().create_output_panel('test_context', unlisted=True)
         panel.settings().set('command_mode', False)
-        self.assertEqual(_is_insert_mode(self.view, operator=OP_EQUAL, operand=False, match_all=True), True)
+        self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=False, match_all=True), True)
 
         panel = self.view.window().create_output_panel('test_context', unlisted=True)
         panel.settings().set('command_mode', True)
-        self.assertEqual(_is_insert_mode(self.view, operator=OP_EQUAL, operand=False, match_all=True), True)
+        self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=False, match_all=True), True)
 
     def test_is_insert_mode_false_by_default(self):
         self.assertEqual(_is_insert_mode(self.view, operator=OP_REGEX_MATCH, operand=True, match_all=True), False)
