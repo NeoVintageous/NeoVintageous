@@ -21,7 +21,6 @@ import sublime_plugin
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_region_flags
 from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
-from NeoVintageous.nv.vim import console_message
 
 
 class ViCommandMixin(object):
@@ -81,10 +80,10 @@ class ViCommandMixin(object):
 
     def set_xpos(self, state):
         try:
-            xpos = self._view.rowcol(self._view.sel()[0].b)[1]
+            view = self._view
+            xpos = view.rowcol(view.sel()[0].b)[1]
         except Exception as e:
-            console_message(str(e))
-            raise ValueError('could not set xpos')
+            raise ValueError('could not set xpos:' + str(e))
 
         state.xpos = xpos
 
