@@ -62,10 +62,6 @@ def init_register_data():
 _data = init_register_data()
 
 
-class YankCommand:
-    pass
-
-
 class Registers:
 
     # Registers hold global data used mainly by yank, delete and paste.
