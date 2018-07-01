@@ -18,7 +18,6 @@
 from contextlib import contextmanager
 
 from sublime import Region
-from sublime_plugin import TextCommand
 
 
 def has_dirty_buffers(window):
@@ -189,42 +188,6 @@ def gluing_undo_groups(view, state):
     yield
     view.run_command('glue_marked_undo_groups')
     state.processing_notation = False
-
-
-class IrreversibleTextCommand(TextCommand):
-
-    # Base class. The undo stack will ignore commands derived from this class.
-    # This is useful to prevent global state management commands from shadowing
-    # commands performing edits to the buffer, which are the important ones to
-    # keep in the undo history.
-
-    def __init__(self, view):
-        TextCommand.__init__(self, view)
-
-    def run_(self, edit_token, args):
-
-        # We discard the edit_token because we don't want an
-        # IrreversibleTextCommand to be added to the undo stack, but Sublime
-        # Text seems to still require us to begin..end the token. If we removed
-        # those calls, the caret would blink while motion keys were pressed,
-        # because --apparently-- we'd have an unclosed edit object around.
-
-        args = self.filter_args(args)
-        if args:
-            edit = self.view.begin_edit(edit_token, self.name(), args)
-            try:
-                return self.run(**args)
-            finally:
-                self.view.end_edit(edit)
-        else:
-            edit = self.view.begin_edit(edit_token, self.name())
-            try:
-                return self.run()
-            finally:
-                self.view.end_edit(edit)
-
-    def run(self, **kwargs):
-        pass
 
 
 def next_non_white_space_char(view, pt, white_space='\t '):

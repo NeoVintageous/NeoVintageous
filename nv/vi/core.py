@@ -20,7 +20,6 @@ import sublime_plugin
 
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_region_flags
-from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
 
 
 class ViCommandMixin:
@@ -105,6 +104,42 @@ class ViCommandMixin:
             lambda: view.erase_regions('highlightedyank'),
             _get('highlightedyank_duration')
         )
+
+
+class IrreversibleTextCommand(sublime_plugin.TextCommand):
+
+    # Base class. The undo stack will ignore commands derived from this class.
+    # This is useful to prevent global state management commands from shadowing
+    # commands performing edits to the buffer, which are the important ones to
+    # keep in the undo history.
+
+    def __init__(self, view):
+        sublime_plugin.TextCommand.__init__(self, view)
+
+    def run_(self, edit_token, args):
+
+        # We discard the edit_token because we don't want an
+        # IrreversibleTextCommand to be added to the undo stack, but Sublime
+        # Text seems to still require us to begin..end the token. If we removed
+        # those calls, the caret would blink while motion keys were pressed,
+        # because --apparently-- we'd have an unclosed edit object around.
+
+        args = self.filter_args(args)
+        if args:
+            edit = self.view.begin_edit(edit_token, self.name(), args)
+            try:
+                return self.run(**args)
+            finally:
+                self.view.end_edit(edit)
+        else:
+            edit = self.view.begin_edit(edit_token, self.name())
+            try:
+                return self.run()
+            finally:
+                self.view.end_edit(edit)
+
+    def run(self, **kwargs):
+        pass
 
 
 # DEPRECATED

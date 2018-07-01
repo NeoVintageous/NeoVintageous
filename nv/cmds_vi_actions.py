@@ -30,10 +30,10 @@ from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
+from NeoVintageous.nv.vi.core import IrreversibleTextCommand
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.utils import first_sel
-from NeoVintageous.nv.vi.utils import IrreversibleTextCommand
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
