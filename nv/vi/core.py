@@ -110,8 +110,7 @@ class ViCommandMixin:
 # DEPRECATED
 # TODO Remove this command
 class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 # DEPRECATED
@@ -126,5 +125,4 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
 # DEPRECATED
 # TODO Remove this command
 class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass

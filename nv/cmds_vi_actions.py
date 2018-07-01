@@ -166,8 +166,6 @@ _log = logging.getLogger(__name__)
 
 
 class _vi_g_big_u(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -198,8 +196,6 @@ class _vi_g_big_u(ViTextCommandBase):
 
 
 class _vi_gu(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -230,8 +226,6 @@ class _vi_gu(ViTextCommandBase):
 
 
 class _vi_gq(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def wrap_command():
@@ -300,8 +294,6 @@ class _vi_gq(ViTextCommandBase):
 
 
 class _vi_u(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     # TODO: surely must accept a mode?
     def run(self, count=1):
@@ -325,8 +317,6 @@ class _vi_u(ViWindowCommandBase):
 
 
 class _vi_ctrl_r(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
         change_count_before = self._view.change_count()
@@ -356,8 +346,6 @@ class _vi_ctrl_r(ViWindowCommandBase):
 
 
 class _vi_a(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None):
         def f(view, s):
@@ -388,8 +376,6 @@ class _vi_a(ViTextCommandBase):
 
 
 class _vi_c(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None, motion=None, register=None):
         def compact(view, s):
@@ -450,9 +436,6 @@ class _enter_normal_mode(ViTextCommandBase):
       is important to know in order to not hide output panels when the user
       is only navigating files or clicking around, not pressing Esc.
     """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, from_init=False):
         _log.debug('enter normal mode (mode=%s, from_init=%s)', mode, from_init)
@@ -526,8 +509,6 @@ class _enter_normal_mode(ViTextCommandBase):
 
 
 class _enter_normal_mode_impl(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
         _log.debug('enter normal mode (mode=%s) (impl)', mode)
@@ -605,8 +586,6 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
 
 class _enter_select_mode(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, mode=None, count=1):
         self.state.enter_select_mode()
@@ -622,8 +601,6 @@ class _enter_select_mode(ViWindowCommandBase):
 
 
 class _enter_insert_mode(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         self.view.settings().set('inverse_caret_state', False)
@@ -635,8 +612,6 @@ class _enter_insert_mode(ViTextCommandBase):
 
 
 class _enter_visual_mode(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
         state = self.state
@@ -672,9 +647,6 @@ class _enter_visual_mode_impl(ViTextCommandBase):
     to neglect to repaint the selections. (bug?)
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def run(self, edit, mode=None):
         def f(view, s):
             if mode == VISUAL_LINE:
@@ -700,8 +672,6 @@ class _enter_visual_mode_impl(ViTextCommandBase):
 
 
 class _enter_visual_line_mode(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
 
@@ -722,8 +692,6 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
 
 class _enter_visual_line_mode_impl(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
         def f(view, s):
@@ -745,8 +713,6 @@ class _enter_visual_line_mode_impl(ViTextCommandBase):
 
 
 class _enter_replace_mode(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit):
         def f(view, s):
@@ -763,8 +729,6 @@ class _enter_replace_mode(ViTextCommandBase):
 
 
 class _vi_dot(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, mode=None, count=None, repeat_data=None):
         state = self.state
@@ -812,8 +776,6 @@ class _vi_dot(ViWindowCommandBase):
 
 
 class _vi_dd(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register='"'):
         def do_motion(view, s):
@@ -852,8 +814,6 @@ class _vi_dd(ViTextCommandBase):
 
 
 class _vi_cc(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register='"'):
         def motion(view, s):
@@ -880,8 +840,6 @@ class _vi_cc(ViTextCommandBase):
 
 
 class _vi_visual_o(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -896,8 +854,6 @@ class _vi_visual_o(ViTextCommandBase):
 
 # TODO: is this really a text command?
 class _vi_yy(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
@@ -933,8 +889,6 @@ class _vi_yy(ViTextCommandBase):
 
 
 class _vi_y(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         def f(view, s):
@@ -958,8 +912,6 @@ class _vi_y(ViTextCommandBase):
 
 
 class _vi_d(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         def reverse(view, s):
@@ -1019,8 +971,6 @@ class _vi_d(ViTextCommandBase):
 
 
 class _vi_big_a(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1062,8 +1012,6 @@ class _vi_big_a(ViTextCommandBase):
 
 
 class _vi_big_i(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None):
         def f(view, s):
@@ -1090,8 +1038,6 @@ class _vi_big_i(ViTextCommandBase):
 
 
 class _vi_m(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, character=None):
         state = self.state
@@ -1102,8 +1048,6 @@ class _vi_m(ViTextCommandBase):
 
 
 class _vi_quote(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, character=None, count=1):
         def f(view, s):
@@ -1147,8 +1091,6 @@ class _vi_quote(ViTextCommandBase):
 
 
 class _vi_backtick(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None, character=None):
         def f(view, s):
@@ -1185,9 +1127,6 @@ class _vi_backtick(ViTextCommandBase):
 class _vi_quote_quote(IrreversibleTextCommand):
     next_command = 'jump_back'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def run(self):
         current = _vi_quote_quote.next_command
         self.view.window().run_command(current)
@@ -1195,8 +1134,6 @@ class _vi_quote_quote(IrreversibleTextCommand):
 
 
 class _vi_big_d(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1244,8 +1181,6 @@ class _vi_big_d(ViTextCommandBase):
 
 
 class _vi_big_c(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1276,8 +1211,6 @@ class _vi_big_c(ViTextCommandBase):
 
 
 class _vi_big_s_action(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register=None):
         def sel_line(view, s):
@@ -1310,8 +1243,6 @@ class _vi_big_s_action(ViTextCommandBase):
 
 
 class _vi_s(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
@@ -1341,8 +1272,6 @@ class _vi_s(ViTextCommandBase):
 
 
 class _vi_x(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
@@ -1367,8 +1296,6 @@ class _vi_x(ViTextCommandBase):
 
 
 class _vi_r(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def make_replacement_text(self, char, r):
         frags = self.view.split_by_newlines(r)
@@ -1417,8 +1344,6 @@ class _vi_r(ViTextCommandBase):
 
 
 class _vi_less_than_less_than(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=None):
         def motion(view, s):
@@ -1443,8 +1368,6 @@ class _vi_less_than_less_than(ViTextCommandBase):
 
 
 class _vi_equal_equal(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1465,8 +1388,6 @@ class _vi_equal_equal(ViTextCommandBase):
 
 
 class _vi_greater_than_greater_than(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1488,8 +1409,6 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
 
 
 class _vi_greater_than(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -1529,8 +1448,6 @@ class _vi_greater_than(ViTextCommandBase):
 
 
 class _vi_less_than(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -1554,8 +1471,6 @@ class _vi_less_than(ViTextCommandBase):
 
 
 class _vi_equal(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -1573,8 +1488,6 @@ class _vi_equal(ViTextCommandBase):
 
 
 class _vi_big_o(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None):
         if mode == INTERNAL_NORMAL:
@@ -1584,8 +1497,6 @@ class _vi_big_o(ViTextCommandBase):
 
 
 class _vi_o(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None):
         if mode == INTERNAL_NORMAL:
@@ -1595,8 +1506,6 @@ class _vi_o(ViTextCommandBase):
 
 
 class _vi_big_x(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def line_start(self, pt):
         return self.view.line(pt).begin()
@@ -1635,24 +1544,18 @@ class _vi_big_x(ViTextCommandBase):
 
 
 class _vi_big_z_big_q(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         do_ex_command(self.window, 'quit', {'forceit': True})
 
 
 class _vi_big_z_big_z(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         do_ex_command(self.window, 'exit')
 
 
 class _vi_big_p(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, register=None, count=1, mode=None):
         state = self.state
@@ -1721,8 +1624,6 @@ class _vi_big_p(ViTextCommandBase):
 
 
 class _vi_p(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, register=None, count=1, mode=None):
         state = self.state
@@ -1833,8 +1734,6 @@ class _vi_p(ViTextCommandBase):
 
 
 class _vi_ga(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
 
@@ -1867,8 +1766,6 @@ class _vi_ga(ViWindowCommandBase):
 
 
 class _vi_gt(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=0, mode=None):
         if count > 0:
@@ -1880,8 +1777,6 @@ class _vi_gt(ViWindowCommandBase):
 
 
 class _vi_g_big_t(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
         window_tab_control(self.window, action='previous')
@@ -1892,152 +1787,114 @@ class _vi_g_big_t(ViWindowCommandBase):
 # TODO <C-]> could learn visual mode
 # TODO <C-]> could learn to count
 class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         self.window.run_command('goto_definition')
 
 
 class _vi_ctrl_w_b(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).move_group_focus_to_bottom_right()
 
 
 class _vi_ctrl_w_big_h(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).move_current_view_to_far_left()
 
 
 class _vi_ctrl_w_big_j(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).move_current_view_to_very_bottom()
 
 
 class _vi_ctrl_w_big_k(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).move_current_view_to_very_top()
 
 
 class _vi_ctrl_w_big_l(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).move_current_view_to_far_right()
 
 
 class _vi_ctrl_w_c(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).close_current_view()
 
 
 class _vi_ctrl_w_equal(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).resize_groups_almost_equally()
 
 
 class _vi_ctrl_w_greater_than(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).increase_current_group_width_by_n(count)
 
 
 class _vi_ctrl_w_h(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
 
 
 class _vi_ctrl_w_j(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
 
 
 class _vi_ctrl_w_k(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
 
 
 class _vi_ctrl_w_l(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
 
 
 class _vi_ctrl_w_less_than(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).decrease_current_group_width_by_n(count)
 
 
 class _vi_ctrl_w_minus(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).decrease_current_group_height_by_n(count)
 
 
 class _vi_ctrl_w_n(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).split_with_new_file(count)
 
 
 class _vi_ctrl_w_o(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).close_all_other_views()
 
 
 class _vi_ctrl_w_pipe(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=None):
         WindowAPI(self.window).set_current_group_width_to_n(count)
 
 
 class _vi_ctrl_w_plus(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).increase_current_group_height_by_n(count)
@@ -2045,48 +1902,35 @@ class _vi_ctrl_w_plus(ViWindowCommandBase):
 
 class _vi_ctrl_w_q(IrreversibleTextCommand):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def run(self):
         WindowAPI(self.view.window()).quit_current_view(exit_sublime_if_last=True)
 
 
 class _vi_ctrl_w_s(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=None):
         WindowAPI(self.window).split_current_view_in_two(count)
 
 
 class _vi_ctrl_w_t(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         WindowAPI(self.window).move_group_focus_to_top_left()
 
 
 class _vi_ctrl_w_underscore(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=None):
         WindowAPI(self.window).set_current_group_height_to_n(count)
 
 
 class _vi_ctrl_w_v(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
         WindowAPI(self.window).split_current_view_in_two_vertically(count)
 
 
 class _vi_ctrl_w_x(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1):
         WindowAPI(self.window).exchange_current_view_with_view_in_next_or_previous_group(count)
@@ -2095,8 +1939,6 @@ class _vi_ctrl_w_x(ViWindowCommandBase):
 # TODO: z<CR> != zt
 # TODO if count is given should be the same as CTRL-W__
 class _vi_z_enter(IrreversibleTextCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
         pt = resolve_insertion_point_at_b(first_sel(self.view))
@@ -2107,8 +1949,6 @@ class _vi_z_enter(IrreversibleTextCommand):
 
 
 class _vi_z_minus(IrreversibleTextCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
         layout_coord = self.view.text_to_layout(first_sel(self.view).b)
@@ -2119,9 +1959,6 @@ class _vi_z_minus(IrreversibleTextCommand):
 
 
 class _vi_zz(IrreversibleTextCommand):
-
-    def __init__(self, view):
-        IrreversibleTextCommand.__init__(self, view)
 
     def run(self, count=1, mode=None):
         first_sel = self.view.sel()[0]
@@ -2136,9 +1973,6 @@ class _vi_modify_numbers(ViTextCommandBase):
 
     DIGIT_PAT = re.compile('(\\D+?)?(-)?(\\d+)(\\D+)?')
     NUM_PAT = re.compile('\\d')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def get_editable_data(self, pt):
         sign = -1 if (self.view.substr(pt - 1) == '-') else 1
@@ -2209,9 +2043,6 @@ class _vi_select_big_j(IrreversibleTextCommand):
     # Clears multiple selections and returns to normal mode. Should be more
     # convenient than having to reach for Esc.
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def run(self, mode=None, count=1):
         s = self.view.sel()[0]
         self.view.sel().clear()
@@ -2221,9 +2052,6 @@ class _vi_select_big_j(IrreversibleTextCommand):
 
 class _vi_big_j(ViTextCommandBase):
     WHITE_SPACE = ' \t'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, dont_insert_or_remove_spaces=False):
         sels = self.view.sel()
@@ -2278,8 +2106,6 @@ class _vi_big_j(ViTextCommandBase):
 
 
 class _vi_gv(IrreversibleTextCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, mode=None, count=None):
         sels = self.view.get_regions('visual_sel')
@@ -2363,8 +2189,6 @@ class _vi_gx(IrreversibleTextCommand):
 
 
 class _vi_ctrl_e(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         # TODO: Implement this motion properly; don't use built-in commands.
@@ -2379,16 +2203,12 @@ class _vi_ctrl_e(ViTextCommandBase):
 
 
 class _vi_ctrl_g(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self):
         do_ex_command(self.window, 'file')
 
 
 class _vi_ctrl_y(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         # TODO: Implement this motion properly; don't use built-in commands.
@@ -2403,8 +2223,6 @@ class _vi_ctrl_y(ViTextCommandBase):
 
 
 class _vi_ctrl_r_equal(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, insert=False, next_mode=None):
         def on_done(s):
@@ -2430,9 +2248,6 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
 class _vi_q(IrreversibleTextCommand):
     _register_name = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def run(self, name=None, mode=None, count=1):
         state = State(self.view)
 
@@ -2457,8 +2272,6 @@ class _vi_q(IrreversibleTextCommand):
 
 
 class _vi_at(IrreversibleTextCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, name=None, mode=None, count=1):
         # TODO [refactor] State.macro_steps
@@ -2494,8 +2307,6 @@ class _vi_at(IrreversibleTextCommand):
 
 
 class _enter_visual_block_mode(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None):
         def f(view, s):
@@ -2569,8 +2380,6 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
 
 class _vi_select_j(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
         if mode != SELECT:
@@ -2581,8 +2390,6 @@ class _vi_select_j(ViWindowCommandBase):
 
 
 class _vi_select_k(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, count=1, mode=None):
         if mode != SELECT:
@@ -2594,9 +2401,6 @@ class _vi_select_k(ViWindowCommandBase):
 
 # Implemented as if 'notildeopt' was True
 class _vi_tilde(ViTextCommandBase):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None, motion=None):
         def select(view, s):
@@ -2617,8 +2421,6 @@ class _vi_tilde(ViTextCommandBase):
 
 
 class _vi_g_tilde(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None, motion=None):
         def f(view, s):
@@ -2643,8 +2445,6 @@ class _vi_g_tilde(ViTextCommandBase):
 
 
 class _vi_visual_u(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         for s in self.view.sel():
@@ -2659,8 +2459,6 @@ class _vi_visual_u(ViTextCommandBase):
 
 
 class _vi_visual_big_u(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         for s in self.view.sel():
@@ -2675,8 +2473,6 @@ class _vi_visual_big_u(ViTextCommandBase):
 
 
 class _vi_g_tilde_g_tilde(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, count=1, mode=None):
         def select(view, s):
@@ -2696,8 +2492,6 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
 
 
 class _vi_g_big_u_big_u(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -2713,8 +2507,6 @@ class _vi_g_big_u_big_u(ViTextCommandBase):
 
 
 class _vi_guu(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -2734,8 +2526,6 @@ class _vi_guu(ViTextCommandBase):
 # Non-standard command. After a search has been performed via '/' or '?',
 # selects all matches and enters select mode.
 class _vi_g_big_h(ViWindowCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, mode=None, count=1):
         view = self.window.active_view()
@@ -2755,9 +2545,6 @@ class _vi_g_big_h(ViWindowCommandBase):
 
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
     MAX_MATCHES = 20
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def find_matches(self, prefix, end):
         escaped = re.escape(prefix)
@@ -2808,8 +2595,6 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
 
 
 class _vi_gc(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -2838,8 +2623,6 @@ class _vi_gc(ViTextCommandBase):
 
 
 class _vi_g_big_c(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -2857,8 +2640,6 @@ class _vi_g_big_c(ViTextCommandBase):
 
 
 class _vi_gcc_action(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -2897,8 +2678,6 @@ class _vi_gcc_action(ViTextCommandBase):
 
 
 class _vi_gcc_motion(ViTextCommandBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):

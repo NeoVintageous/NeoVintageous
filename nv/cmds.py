@@ -258,11 +258,6 @@ class _nv_run_cmds(TextCommand):
 
 class _nv_feed_key(ViWindowCommandBase):
 
-    # Interact with the global state each time a key is pressed.
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         # Args:
         #   key (str): Key pressed.
@@ -457,11 +452,6 @@ class _nv_feed_key(ViWindowCommandBase):
 
 
 class _nv_process_notation(ViWindowCommandBase):
-
-    # Runs sequences of keys representing Vim commands.
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         # Args:
