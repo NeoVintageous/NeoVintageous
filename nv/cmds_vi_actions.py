@@ -2143,7 +2143,7 @@ class _vi_gx(IrreversibleTextCommand):
         .*(?P<url>
             https?://               # http:// or https://
             (?:www\.)?              # www.
-            (?:[a-zA-Z0-9]+\.)+     # domain
+            (?:[a-zA-Z0-9-]+\.)+    # domain
             [a-zA-Z]+               # tld
             /?[a-zA-Z0-9\-._?,!'(){}\[\]/+&@%$#=:"|~;]*     # url path
         )

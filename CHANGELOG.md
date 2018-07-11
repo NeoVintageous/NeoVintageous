@@ -14,6 +14,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Removed: `vintageous_visualyank` setting, use the new HighlightedYank plugin instead; see `:h highlightedyank`
 * Removed: `highlighted.yank` scope, use the new HighlightedYank plugin instead; see `:h highlightedyank`
 
+### Fixed
+
+* Fixed [#367](https://github.com/NeoVintageous/NeoVintageous/issues/367): `gx` doesn't work for urls containing dashes
+
 ## 1.6.3 - 2018-05-31
 
 * Fixed [#340](https://github.com/NeoVintageous/NeoVintageous/issues/340): `[{`, `[(`, `]}`, and `])` don't work

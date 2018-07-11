@@ -69,3 +69,6 @@ class Test_gx(unittest.TestCase):
     def test_urls_within_strings_within_lists_with_trailing_comma__inception__(self):
         self.assertMatch('http://example.com', '"http://example.com",')
         self.assertMatch('http://example.com', '\'http://example.com\',')
+
+    def test_dashes(self):
+        self.assertMatch('http://api-v1.example.com', 'http://api-v1.example.com.')
