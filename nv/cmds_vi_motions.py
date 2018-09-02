@@ -306,7 +306,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             self.view.add_regions(
                 'vi_inc_search',
                 [next_hit],
-                scope='support.function nv_search_inc',
+                scope='support.function neovintageous_search_inc',
                 flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
             )
 
@@ -2008,7 +2008,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             self.view.add_regions(
                 'vi_inc_search',
                 [occurrence],
-                scope='support.function nv_search_inc',
+                scope='support.function neovintageous_search_inc',
                 flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
             )
 

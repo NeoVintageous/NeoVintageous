@@ -9,6 +9,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#360](https://github.com/NeoVintageous/NeoVintageous/issues/360): Add search highlighting configuration; see `:h nv-search-highlighting`
 * Added [#359](https://github.com/NeoVintageous/NeoVintageous/issues/359): Add HighlightedYank plugin; see `:h highlightedyank`
 
+### Changed
+
+* Changed: Renamed scope `nv_search_inc` to `neovintageous_search_inc`
+* Changed: Renamed scope `nv_search_cur` to `neovintageous_search_cur`
+* Changed: Renamed scope `nv_search_occ` to `neovintageous_search_occ`
+
 ### Removed
 
 * Removed: `vintageous_visualyank` setting, use the new HighlightedYank plugin instead; see `:h highlightedyank`

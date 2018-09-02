@@ -240,14 +240,14 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         self.view.add_regions(
             'vi_search',
             regions,
-            scope='string nv_search_occurence',
+            scope='string neovintageous_search_occ',
             flags=ui_region_flags(self.view.settings().get('neovintageous_search_occ_style'))
         )
 
         self.view.add_regions(
             'vi_search_current',
             regions_current,
-            scope='support.function nv_search_current',
+            scope='support.function neovintageous_search_cur',
             flags=ui_region_flags(self.view.settings().get('neovintageous_search_cur_style'))
         )
 
