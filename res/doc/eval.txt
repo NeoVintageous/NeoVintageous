@@ -1508,8 +1508,7 @@ v:errmsg	Last given error message.  It's allowed to set this variable.
 	:silent! next
 	:if v:errmsg != ""
 	:  ... handle error
-<		"errmsg" also works, for backwards compatibility.
-
+<
 					*v:errors* *errors-variable*
 v:errors	Errors found by assert functions, such as |assert_true()|.
 		This is a list of strings.
@@ -1528,8 +1527,8 @@ v:event		Dictionary of event data for the current |autocommand|.  Valid
 		event, e.g. |DirChanged| or |TextYankPost|.
 			KEY		DESCRIPTION ~
 			abort		Whether the event triggered during
-					an aborting condition, i e |c_Esc| or
-					|c_CTRL-c|for |CmdlineLeave|.
+					an aborting condition (e.g. |c_Esc| or
+					|c_CTRL-C| for |CmdlineLeave|).
 			cmdlevel	Level of cmdline.
 			cmdtype		Type of cmdline, |cmdline-char|.
 			cwd		Current working directory.
@@ -1813,8 +1812,7 @@ v:shell_error	Result of the last shell command.  When non-zero, the last
 	:if v:shell_error
 	:  echo 'could not rename "foo" to "bar"!'
 	:endif
-<		"shell_error" also works, for backwards compatibility.
-
+<
 					*v:statusmsg* *statusmsg-variable*
 v:statusmsg	Last given status message.  It's allowed to set this variable.
 
@@ -1888,7 +1886,6 @@ v:testing	Must be set before using `test_garbagecollect_now()`.
 v:this_session	Full filename of the last loaded or saved session file.  See
 		|:mksession|.  It is allowed to set this variable.  When no
 		session file has been saved, this variable is empty.
-		"this_session" also works, for backwards compatibility.
 
 					*v:throwpoint* *throwpoint-variable*
 v:throwpoint	The point where the exception most recently caught and not
@@ -2222,6 +2219,8 @@ remote_read({serverid} [, {timeout}])
 				String	read reply string
 remote_send({server}, {string} [, {idvar}])
 				String	send key sequence
+remote_startserver({name})	none	become server {name}
+				String	send key sequence
 remove({list}, {idx} [, {end}])	any	remove items {idx}-{end} from {list}
 remove({dict}, {key})		any	remove entry {key} from {dict}
 rename({from}, {to})		Number	rename (move) file from {from} to {to}
@@ -2337,6 +2336,7 @@ tolower({expr})			String	the String {expr} switched to lowercase
 toupper({expr})			String	the String {expr} switched to uppercase
 tr({src}, {fromstr}, {tostr})	String	translate chars of {src} in {fromstr}
 					to chars in {tostr}
+trim({text}[, {mask}]) 		String	trim characters in {mask} from {text}
 trunc({expr})			Float	truncate Float {expr}
 type({name})			Number	type of variable {name}
 undofile({name})		String	undo file name for {name}
@@ -2352,6 +2352,7 @@ win_getid([{win} [, {tab}]])	Number	get |window-ID| for {win} in {tab}
 win_gotoid({expr})		Number	go to |window-ID| {expr}
 win_id2tabwin({expr})		List	get tab and window nr from |window-ID|
 win_id2win({expr})		Number	get window nr from |window-ID|
+win_screenpos({nr})		List	get screen position of window {nr}
 winbufnr({nr})			Number	buffer number of window {nr}
 wincol()			Number	window column of the cursor
 winheight({nr})			Number	height of window {nr}
@@ -2991,11 +2992,16 @@ cosh({expr})						*cosh()*
 
 count({comp}, {expr} [, {ic} [, {start}]])			*count()*
 		Return the number of times an item with value {expr} appears
-		in |List| or |Dictionary| {comp}.
+		in |String|, |List| or |Dictionary| {comp}.
+
 		If {start} is given then start with the item with this index.
 		{start} can only be used with a |List|.
+
 		When {ic} is given and it's |TRUE| then case is ignored.
 
+		When {comp} is a string then the number of not overlapping
+		occurrences of {expr} is returned. Zero is returned when
+		{expr} is an empty string.
 
 							*cscope_connection()*
 cscope_connection([{num} , {dbpath} [, {prepend}]])
@@ -3224,8 +3230,7 @@ executable({expr})					*executable()*
 		On Windows it only checks if the file exists and
 		is not a directory, not if it's really executable.
 		On Windows an executable in the same directory as Vim is
-		always found.  Since this directory is added to $PATH it
-		should also work to execute it |win32-PATH|.
+		always found (it is added to $PATH at |startup|).
 		The result is a Number:
 			1	exists
 			0	does not exist
@@ -4074,6 +4079,7 @@ getcompletion({pat}, {type} [, {filtered}])		*getcompletion()*
 		specifies what for.  The following completion types are
 		supported:
 
+		arglist		file names in argument list
 		augroup		autocmd groups
 		buffer		buffer names
 		behave		:behave suboptions
@@ -4094,6 +4100,7 @@ getcompletion({pat}, {type} [, {filtered}])		*getcompletion()*
 		highlight	highlight groups
 		history		:history suboptions
 		locale		locale names (as output of locale -a)
+		mapclear        buffer argument
 		mapping		mapping name
 		menu		menus
 		messages	|:messages| suboptions
@@ -4466,8 +4473,10 @@ getwininfo([{winid}])					*getwininfo()*
 			variables	a reference to the dictionary with
 					window-local variables
 			width		window width
+			wincol		leftmost screen column of the window
 			winid		|window-ID|
 			winnr		window number
+			winrow		topmost screen column of the window
 
 		To obtain all window-local variables use: >
 			gettabwinvar({tabnr}, {winnr}, '&')
@@ -4799,7 +4808,7 @@ input({opts})
 		where
 			hl_start_col is the first highlighted column,
 			hl_end_col is the last highlighted column (+ 1!),
-			hl_group is |:hl| group used for highlighting.
+			hl_group is |:hi| group used for highlighting.
 					      *E5403* *E5404* *E5405* *E5406*
 		Both hl_start_col and hl_end_col + 1 must point to the start
 		of the multibyte character (highlighting must not break
@@ -4993,6 +5002,9 @@ jobstart({cmd}[, {opts}])				*jobstart()*
 		  :call jobstart(split(&shell) + split(&shellcmdflag) + ['{cmd}'])
 <		(See |shell-unquoting| for details.)
 
+		Example: >
+		  :call jobstart('nvim -h', {'on_stdout':{j,d,e->append(line('.'),d)}})
+<
 		Returns |job-id| on success, 0 on invalid arguments (or job
 		table is full), -1 if {cmd}[0] or 'shell' is not executable.
 		For communication over the job's stdio, it is represented as a
@@ -5001,7 +5013,7 @@ jobstart({cmd}[, {opts}])				*jobstart()*
 		was used) to send data to stdin and |chanclose()| to close stdio
 		streams without stopping the job explicitly.
 
-		See |job-control| and |rpc|.
+		See |job-control| and |RPC|.
 
 		NOTE: on Windows if {cmd} is a List:
 		  - cmd[0] must be an executable (not a "built-in"). If it is
@@ -5043,7 +5055,7 @@ jobstart({cmd}[, {opts}])				*jobstart()*
 		  - The channel ID on success
 		  - 0 on invalid arguments
 		  - -1 if {cmd}[0] is not executable.
-		See |job-control|, |channels|, and |msgpack-rpc| for more information.
+		See also |job-control|, |channel|, |msgpack-rpc|.
 
 jobstop({id})						*jobstop()*
 		Stop |job-id| {id} by sending SIGTERM to the job process. If
@@ -5182,8 +5194,10 @@ line({expr})	The result is a Number, which is the line number of the file
 		    $	    the last line in the current buffer
 		    'x	    position of mark x (if the mark is not set, 0 is
 			    returned)
-		    w0	    first line visible in current window
-		    w$	    last line visible in current window
+		    w0	    first line visible in current window (one if the
+			    display isn't updated, e.g. in silent Ex mode)
+		    w$	    last line visible in current window (this is one
+			    less than "w0" if no lines are visible)
 		    v	    In Visual mode: the start of the Visual area (the
 			    cursor is the end).  When not in Visual mode
 			    returns the cursor position.  Differs from |'<| in
@@ -5200,9 +5214,9 @@ line({expr})	The result is a Number, which is the line number of the file
 		This autocommand jumps to the last known position in a file
 		just after opening it, if the '" mark is set: >
      :au BufReadPost *
-         \ if line("'\"") > 1 && line("'\"") <= line("$") && &ft !~# 'commit'
-         \ |   exe "normal! g`\""
-         \ | endif
+	\ if line("'\"") > 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+	\ |   exe "normal! g`\""
+	\ | endif
 
 line2byte({lnum})					*line2byte()*
 		Return the byte count from the start of the buffer for line
@@ -5669,7 +5683,7 @@ min({expr})	Return the minimum value of all items in {expr}.
 		it returns the minimum of all values in the dictionary.
 		If {expr} is neither a list nor a dictionary, or one of the
 		items in {expr} cannot be used as a Number this results in
-                an error.  An empty |List| or |Dictionary| results in zero.
+		an error.  An empty |List| or |Dictionary| results in zero.
 
 							*mkdir()* *E739*
 mkdir({name} [, {path} [, {prot}]])
@@ -6194,15 +6208,17 @@ reltimestr({time})				*reltimestr()*
 <		Also see |profiling|.
 
 							*remote_expr()* *E449*
-remote_expr({server}, {string} [, {idvar}])
+remote_expr({server}, {string} [, {idvar} [, {timeout}]])
 		Send the {string} to {server}.	The string is sent as an
 		expression and the result is returned after evaluation.
 		The result must be a String or a |List|.  A |List| is turned
 		into a String by joining the items with a line break in
 		between (not at the end), like with join(expr, "\n").
-		If {idvar} is present, it is taken as the name of a
-		variable and a {serverid} for later use with
+		If {idvar} is present and not empty, it is taken as the name
+		of a variable and a {serverid} for later use with
 		remote_read() is stored there.
+		If {timeout} is given the read times out after this many
+		seconds.  Otherwise a timeout of 600 seconds is used.
 		See also |clientserver| |RemoteReply|.
 		This function is not available in the |sandbox|.
 		{only available when compiled with the |+clientserver| feature}
@@ -6246,9 +6262,10 @@ remote_peek({serverid} [, {retvar}])		*remote_peek()*
 			:let repl = ""
 			:echo "PEEK: ".remote_peek(id, "repl").": ".repl
 
-remote_read({serverid})				*remote_read()*
+remote_read({serverid}, [{timeout}])			*remote_read()*
 		Return the oldest available reply from {serverid} and consume
-		it.  It blocks until a reply is available.
+		it.  Unless a {timeout} in seconds is given, it blocks until a
+		reply is available.
 		See also |clientserver|.
 		This function is not available in the |sandbox|.
 		{only available when compiled with the |+clientserver| feature}
@@ -6266,6 +6283,7 @@ remote_send({server}, {string} [, {idvar}])
 		See also |clientserver| |RemoteReply|.
 		This function is not available in the |sandbox|.
 		{only available when compiled with the |+clientserver| feature}
+
 		Note: Any errors will be reported in the server and may mess
 		up the display.
 		Examples: >
@@ -6277,6 +6295,12 @@ remote_send({server}, {string} [, {idvar}])
 		:echo remote_send("gvim", ":sleep 10 | echo ".
 		 \ 'server2client(expand("<client>"), "HELLO")<CR>')
 <
+					*remote_startserver()* *E941* *E942*
+remote_startserver({name})
+		Become the server {name}.  This fails if already running as a
+		server, when |v:servername| is not empty.
+		{only available when compiled with the |+clientserver| feature}
+
 remove({list}, {idx} [, {end}])				*remove()*
 		Without {end}: Remove the item at {idx} from |List| {list} and
 		return the item.
@@ -6365,11 +6389,9 @@ rpcstart({prog}[, {argv}])				   {Nvim} *rpcstart()*
 			:let id = jobstart(['prog', 'arg1', 'arg2'], {'rpc': v:true})
 
 rpcstop({channel})					    {Nvim} *rpcstop()*
-		Deprecated. This function was used to stop a job with |rpc|
-		channel, and additionally closed rpc sockets.  Instead use
-		|jobstop()| to stop any job, and |chanclose|(id, "rpc") to close
-		rpc communication without stopping the job. Use |chanclose|(id)
-		to close any socket.
+		Deprecated. Instead use |jobstop()| to stop any job, and
+		chanclose(id, "rpc") to close RPC communication without
+		stopping the job. Use chanclose(id) to close any socket.
 
 screenattr({row}, {col})					*screenattr()*
 		Like |screenchar()|, but return the attribute.  This is a rather
@@ -6789,10 +6811,12 @@ setpos({expr}, {list})
 		    [bufnum, lnum, col, off, curswant]
 
 		"bufnum" is the buffer number.	Zero can be used for the
-		current buffer.  Setting the cursor is only possible for
-		the current buffer.  To set a mark in another buffer you can
-		use the |bufnr()| function to turn a file name into a buffer
-		number.
+		current buffer.  When setting an uppercase mark "bufnum" is
+		used for the mark position.  For other marks it specifies the
+		buffer to set the mark in.  You can use the |bufnr()| function
+		to turn a file name into a buffer number.
+		For setting the cursor and the ' mark "bufnum" is ignored,
+		since these are associated with a window, not a buffer.
 		Does not change the jumplist.
 
 		"lnum" and "col" are the position in the buffer.  The first
@@ -6893,7 +6917,8 @@ setqflist({list} [, {action}[, {what}]])		*setqflist()*
 		    title	quickfix list title text
 		Unsupported keys in {what} are ignored.
 		If the "nr" item is not present, then the current quickfix list
-		is modified.
+		is modified. When creating a new quickfix list, "nr" can be
+		set to a value one greater than the quickfix stack size.
 
 		Examples: >
 			:call setqflist([], 'r', {'title': 'My search'})
@@ -7263,10 +7288,8 @@ stdioopen({opts})			 *stdioopen()*
 
 
 stdpath({what})					*stdpath()* *E6100*
-		Returns the standard path(s) for {what}.
-
-		These directories are the default locations for various files
-		used by Neovim.
+		Returns |standard-path| locations of various default files and
+		directories.
 
 		{what}       Type    Description ~
 		cache        String  Cache directory. Useful for plugins
@@ -7942,6 +7965,22 @@ tr({src}, {fromstr}, {tostr})				*tr()*
 			echo tr("<blob>", "<>", "{}")
 <		returns "{blob}"
 
+trim({text}[, {mask}])						*trim()*
+		Return {text} as a String where any character in {mask} is
+		removed from the beginning and  end of {text}.
+		If {mask} is not given, {mask} is all characters up to 0x20,
+		which includes Tab, space, NL and CR, plus the non-breaking
+		space character 0xa0.
+		This code deals with multibyte characters properly.
+
+		Examples: >
+			echo trim("  \r\t\t\r RESERVE \t \t\n\x0B\x0B")."_TAIL"
+<		returns "RESERVE_TAIL" >
+			echo trim("needrmvRESERVEnnneeedddrrmmmmvv", "ednmrv")
+<		returns "RESERVE" >
+			echo trim("rm<blob1><blob2><any_chars>rrmm<blob1><blob2><blob2>", "rm<blob1><blob2>")
+<		returns "any_chas"
+
 trunc({expr})							*trunc()*
 		Return the largest integral value with magnitude less than or
 		equal to {expr} as a |Float| (truncate towards zero).
@@ -8144,6 +8183,14 @@ win_id2win({expr})					*win_id2win()*
 		Return the window number of window with ID {expr}.
 		Return 0 if the window cannot be found in the current tabpage.
 
+win_screenpos({nr})					*win_screenpos()*
+		Return the screen position of window {nr} as a list with two
+		numbers: [row, col].  The first window always has position
+		[1, 1].
+		{nr} can be the window number or the |window-ID|.
+		Return [0, 0] if the window cannot be found in the current
+		tabpage.
+
 							*winbufnr()*
 winbufnr({nr})	The result is a Number, which is the number of the buffer
 		associated with window {nr}.  {nr} can be the window number or
@@ -8251,8 +8298,8 @@ winwidth({nr})						*winwidth()*
   :if winwidth(0) <= 50
   :  exe "normal 50\<C-W>|"
   :endif
-<               For getting the terminal or screen size, see the 'columns'
-               option.
+<		For getting the terminal or screen size, see the 'columns'
+		option.
 
 
 wordcount()						*wordcount()*
@@ -8270,11 +8317,11 @@ wordcount()						*wordcount()*
 			cursor_words    Number of words before cursor position
 					(not in Visual mode)
 			visual_bytes    Number of bytes visually selected
-			                (only in Visual mode)
+					(only in Visual mode)
 			visual_chars    Number of chars visually selected
-			                (only in Visual mode)
+					(only in Visual mode)
 			visual_words    Number of chars visually selected
-			                (only in Visual mode)
+					(only in Visual mode)
 
 
 							*writefile()*
@@ -8558,6 +8605,9 @@ See |:verbose-cmd| for more information.
 			not used an error message is given.  When [!] is used,
 			an existing function is silently replaced.  Unless it
 			is currently being executed, that is an error.
+			NOTE: Use ! wisely.  If used without care it can cause
+			an existing function to be replaced unexpectedly,
+			which is hard to debug.
 
 			For the {arguments} see |function-argument|.
 
@@ -8607,18 +8657,36 @@ See |:verbose-cmd| for more information.
 			implies that the effect of |:nohlsearch| is undone
 			when the function returns.
 
-					*:endf* *:endfunction* *E126* *E193*
-:endf[unction]		The end of a function definition.  Must be on a line
-			by its own, without other commands.
+				*:endf* *:endfunction* *E126* *E193* *W22*
+:endf[unction] [argument]
+			The end of a function definition.  Best is to put it
+			on a line by its own, without [argument].
 
-				    *:delf* *:delfunction* *E130* *E131* *E933*
-:delf[unction] {name}	Delete function {name}.
+			[argument] can be:
+				| command	command to execute next
+				\n command	command to execute next
+				" comment	always ignored
+				anything else	ignored, warning given when
+						'verbose' is non-zero
+			The support for a following command was added in Vim
+			8.0.0654, before that any argument was silently
+			ignored.
+
+			To be able to define a function inside an `:execute`
+			command, use line breaks instead of |:bar|: >
+				:exe "func Foo()\necho 'foo'\nendfunc"
+<
+				*:delf* *:delfunction* *E130* *E131* *E933*
+:delf[unction][!] {name}
+			Delete function {name}.
 			{name} can also be a |Dictionary| entry that is a
 			|Funcref|: >
 				:delfunc dict.init
-<			This will remove the "init" entry from "dict".	The
+<			This will remove the "init" entry from "dict".  The
 			function is deleted if there are no more references to
 			it.
+			With the ! there is no error if the function does not
+			exist.
 							*:retu* *:return* *E133*
 :retu[rn] [expr]	Return from a function.  When "[expr]" is given, it is
 			evaluated and returned as the result of the function.
@@ -8816,9 +8884,6 @@ And you will get an error message every time.
 Also note that if you have two script files, and one calls a function in the
 other and vice versa, before the used function is defined, it won't work.
 Avoid using the autoload functionality at the toplevel.
-
-Hint: If you distribute a bunch of scripts you can pack them together with the
-|vimball| utility.  Also read the user manual |distribute-script|.
 
 ==============================================================================
 6. Curly braces names					*curly-braces-names*
@@ -10691,7 +10756,7 @@ Group                              Default link            Colored expression ~
                                                            |expr-entry|
 
 *hl-NvimColon*                       Delimiter               `:` in |dict| literal
-*hl-NvimComma*                       Delimiter               `,` in |dict|/|list|
+*hl-NvimComma*                       Delimiter               `,` in |dict| or |list|
                                                            literal or
                                                            |expr-function|
 *hl-NvimArrow*                       Delimiter               `->` in |lambda|

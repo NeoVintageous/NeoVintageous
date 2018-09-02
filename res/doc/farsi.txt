@@ -101,7 +101,7 @@ o  right-to-left Farsi Mode
    + While in Left-to-right mode, enter 'set rl' in the command line ('rl' is
      the abbreviation for rightleft).
 
-   + Put the 'set rl' line in your vimrc file to start Vim in right-to-left
+   + Put the 'set rl' line in your vimrc file to start Vim in right-to-left 
      mode permanently.
 
 Encoding
@@ -134,34 +134,34 @@ o  Keyboard
 
 	-------------------------------------
 	`  1  2  3  4  5  6  7  8  9  0  -  =
-	Â¢  Â±  Â²  Â³  Â´  Âµ  Â¶  Â·  Â¸  Â¹  Â°  Â­  Â½
+	¢  ±  ²  ³  ´  µ  ¶  ·  ¸  ¹  °  ­  ½
 	-------------------------------------
 	~  !  @  #  $  %  ^  &  *  (  )  _  +
-	~  Â£  Â§  Â®  Â¤  Â¥  Âª  Â¬  Ã¨  Â¨  Â©  Ã©  Â«
+	~  £  §  ®  ¤  ¥  ª  ¬  è  ¨  ©  é  «
 	-------------------------------------
 	q  w  e  r  t  z  u  i  o  p  [  ]
-	Ã“  Ã’  Ã†  Ã™  Ã˜  Ã•  Ã–  Ã   ÃŠ  Ã‰  Ã‡  Ë†
+	Ó  Ò  Æ  Ù  Ø  Õ  Ö  à  Ê  É  Ç  ˆ
 	-------------------------------------
 	Q  W  E  R  T  Z  U  I  O  P  {  }
-	Ã·  Ãµ  Ã´  Ã³  Ã²  Ã½  Ã°  Ã¶  [  ]  {  }
+	÷  õ  ô  ó  ò  ı  ğ  ö  [  ]  {  }
 	-------------------------------------
 	a  s  d  f  g  h  j  k  l  ;  '  \
-	Ã‘  Ã  Ã¡  Ãƒ  Ãœ  Ã  Ã…  Ã  Ã  Ãš  Ã›  Ã«
+	Ñ  Ğ  á  Ã  Ü  Á  Å  Ş  İ  Ú  Û  ë
 	-------------------------------------
 	A  S  D  F  G  H  J  K  L  :  "  |
-	Ã¹  Ã»Â  Ã¾  Ãº  Ã¸  Ã€  Ã¼  Ã¦  Ã§  Âº  Â»  Ãª
+	ù  û  ş  ú  ø  À  ü  æ  ç  º  »  ê
 	-------------------------------------
 	<  y  x  c  v  b  n  m  ,  .  /
-	Â¾  Ã—  Ã”  Ã  Ã  ÃŒ  Ã‹  Ã„  ÃŸ  Â¦  Â¯
+	¾  ×  Ô  Î  Í  Ì  Ë  Ä  ß  ¦  ¯
 	-------------------------------------
 	>  Y  X  C  V  B  N  M  <  >  ?
-	Â¼  Ã±  Ã”  Ã  Ã  Â¡  Ã‹  Ã‚  Â¾  Â¼  Â¿
+	¼  ñ  Ô  Ï  Í  ¡  Ë  Â  ¾  ¼  ¿
 	-------------------------------------
 
 Note:
-	Â¡  stands for Farsi PSP (break without space)
+	¡  stands for Farsi PSP (break without space)
 
-	Â¢  stands for Farsi PCN (for HAMZE attribute)
+	¢  stands for Farsi PCN (for HAMZE attribute)
 
 Restrictions
 ------------

@@ -942,7 +942,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
 'vintageous_use_sys_clipboard'	neovintageous.txt	/*'vintageous_use_sys_clipboard'*
 'vintageous_visualbell'	neovintageous.txt	/*'vintageous_visualbell'*
-'vintageous_visualyank'	neovintageous.txt	/*'vintageous_visualyank'*
 'virtualedit'	options.txt	/*'virtualedit'*
 'visualbell'	options.txt	/*'visualbell'*
 'vop'	options.txt	/*'vop'*
@@ -1096,7 +1095,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 +xfontset	various.txt	/*+xfontset*
 +xim	various.txt	/*+xim*
 +xpm	various.txt	/*+xpm*
-+xpm_w32	various.txt	/*+xpm_w32*
 ,	motion.txt	/*,*
 -	motion.txt	/*-*
 -+	starting.txt	/*-+*
@@ -1106,11 +1104,10 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 ---	starting.txt	/*---*
 --api-info	starting.txt	/*--api-info*
 --cmd	starting.txt	/*--cmd*
---embed	channel.txt	/*--embed*
+--embed	starting.txt	/*--embed*
 --headless	starting.txt	/*--headless*
 --help	starting.txt	/*--help*
 --listen	starting.txt	/*--listen*
---literal	starting.txt	/*--literal*
 --noplugin	starting.txt	/*--noplugin*
 --remote	remote.txt	/*--remote*
 --remote-expr	remote.txt	/*--remote-expr*
@@ -1127,6 +1124,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 -A	starting.txt	/*-A*
 -D	starting.txt	/*-D*
 -E	starting.txt	/*-E*
+-Es	starting.txt	/*-Es*
 -F	starting.txt	/*-F*
 -H	starting.txt	/*-H*
 -L	starting.txt	/*-L*
@@ -1141,6 +1139,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 -c	starting.txt	/*-c*
 -d	starting.txt	/*-d*
 -e	starting.txt	/*-e*
+-es	starting.txt	/*-es*
 -file	starting.txt	/*-file*
 -h	starting.txt	/*-h*
 -i	starting.txt	/*-i*
@@ -1550,7 +1549,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 :!	various.txt	/*:!*
 :!!	various.txt	/*:!!*
 :!cmd	various.txt	/*:!cmd*
-:!start	various.txt	/*:!start*
 :#	various.txt	/*:#*
 :#!	various.txt	/*:#!*
 :$	cmdline.txt	/*:$*
@@ -2239,7 +2237,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 :map-<unique>	map.txt	/*:map-<unique>*
 :map-alt-keys	map.txt	/*:map-alt-keys*
 :map-arguments	map.txt	/*:map-arguments*
-:map-command	map.txt	/*:map-command*
+:map-cmd	map.txt	/*:map-cmd*
 :map-commands	map.txt	/*:map-commands*
 :map-expression	map.txt	/*:map-expression*
 :map-local	map.txt	/*:map-local*
@@ -3058,6 +3056,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 @r	eval.txt	/*@r*
 A	insert.txt	/*A*
 ACL	editing.txt	/*ACL*
+ALT	intro.txt	/*ALT*
 API	api.txt	/*API*
 ATTENTION	usr_11.txt	/*ATTENTION*
 Abbreviations	map.txt	/*Abbreviations*
@@ -3198,6 +3197,8 @@ CTRL-\_CTRL-N	intro.txt	/*CTRL-\\_CTRL-N*
 CTRL-]	tagsrch.txt	/*CTRL-]*
 CTRL-^	editing.txt	/*CTRL-^*
 CTRL-{char}	intro.txt	/*CTRL-{char}*
+ChanInfo	autocmd.txt	/*ChanInfo*
+ChanOpen	autocmd.txt	/*ChanOpen*
 Chinese	mbyte.txt	/*Chinese*
 Cmd-event	autocmd.txt	/*Cmd-event*
 CmdUndefined	autocmd.txt	/*CmdUndefined*
@@ -4034,6 +4035,8 @@ E937	autocmd.txt	/*E937*
 E939	change.txt	/*E939*
 E94	windows.txt	/*E94*
 E940	eval.txt	/*E940*
+E941	eval.txt	/*E941*
+E942	eval.txt	/*E942*
 E943	message.txt	/*E943*
 E944	pattern.txt	/*E944*
 E945	pattern.txt	/*E945*
@@ -4224,6 +4227,7 @@ TOhtml-uncopyable-text	syntax.txt	/*TOhtml-uncopyable-text*
 TOhtml-wrap-text	syntax.txt	/*TOhtml-wrap-text*
 TRUE	eval.txt	/*TRUE*
 TSQL	ft_sql.txt	/*TSQL*
+TUI	term.txt	/*TUI*
 Tab	intro.txt	/*Tab*
 TabClosed	autocmd.txt	/*TabClosed*
 TabEnter	autocmd.txt	/*TabEnter*
@@ -4236,6 +4240,7 @@ TermResponse	autocmd.txt	/*TermResponse*
 Terminal-mode	intro.txt	/*Terminal-mode*
 TextChanged	autocmd.txt	/*TextChanged*
 TextChangedI	autocmd.txt	/*TextChangedI*
+TextChangedP	autocmd.txt	/*TextChangedP*
 TextYankPost	autocmd.txt	/*TextYankPost*
 Transact-SQL	ft_sql.txt	/*Transact-SQL*
 U	undo.txt	/*U*
@@ -4270,6 +4275,7 @@ W16	message.txt	/*W16*
 W17	arabic.txt	/*W17*
 W18	syntax.txt	/*W18*
 W19	autocmd.txt	/*W19*
+W22	eval.txt	/*W22*
 WORD	motion.txt	/*WORD*
 WWW	intro.txt	/*WWW*
 WinEnter	autocmd.txt	/*WinEnter*
@@ -4315,6 +4321,7 @@ ZZ	editing.txt	/*ZZ*
 [:xdigit:]	pattern.txt	/*[:xdigit:]*
 [<C-L>	unimpaired.txt	/*[<C-L>*
 [<C-Q>	unimpaired.txt	/*[<C-Q>*
+[<C-T>	unimpaired.txt	/*[<C-T>*
 [<MiddleMouse>	change.txt	/*[<MiddleMouse>*
 [<Space>	unimpaired.txt	/*[<Space>*
 [==]	pattern.txt	/*[==]*
@@ -4394,6 +4401,7 @@ ZZ	editing.txt	/*ZZ*
 ]/	motion.txt	/*]\/*
 ]<C-L>	unimpaired.txt	/*]<C-L>*
 ]<C-Q>	unimpaired.txt	/*]<C-Q>*
+]<C-T>	unimpaired.txt	/*]<C-T>*
 ]<MiddleMouse>	change.txt	/*]<MiddleMouse>*
 ]<Space>	unimpaired.txt	/*]<Space>*
 ]A	unimpaired.txt	/*]A*
@@ -4534,7 +4542,6 @@ add-plugin	usr_05.txt	/*add-plugin*
 aff-dic-format	spell.txt	/*aff-dic-format*
 after-directory	options.txt	/*after-directory*
 aleph	options.txt	/*aleph*
-alt	intro.txt	/*alt*
 alternate-file	editing.txt	/*alternate-file*
 and()	eval.txt	/*and()*
 anonymous-function	eval.txt	/*anonymous-function*
@@ -4543,6 +4550,7 @@ ap	motion.txt	/*ap*
 apache.vim	syntax.txt	/*apache.vim*
 api	api.txt	/*api*
 api-buffer	api.txt	/*api-buffer*
+api-buffer-updates	api.txt	/*api-buffer-updates*
 api-client	msgpack_rpc.txt	/*api-client*
 api-contract	api.txt	/*api-contract*
 api-global	api.txt	/*api-global*
@@ -4590,6 +4598,7 @@ attr-list	syntax.txt	/*attr-list*
 author	intro.txt	/*author*
 auto-format	change.txt	/*auto-format*
 auto-setting	options.txt	/*auto-setting*
+autocmd	autocmd.txt	/*autocmd*
 autocmd-<>	tips.txt	/*autocmd-<>*
 autocmd-buffer-local	autocmd.txt	/*autocmd-buffer-local*
 autocmd-buflocal	autocmd.txt	/*autocmd-buflocal*
@@ -4640,7 +4649,7 @@ b:match_word	pi_matchit.txt	/*b:match_word*
 b:match_words	pi_matchit.txt	/*b:match_words*
 b:netrw_lastfile	pi_netrw.txt	/*b:netrw_lastfile*
 b:term_title	nvim_terminal_emulator.txt	/*b:term_title*
-b:terminal_job_pid	nvim_terminal_emulator.txt	/*b:terminal_job_pid*
+b:terminal_job_pid	deprecated.txt	/*b:terminal_job_pid*
 b:tex_stylish	syntax.txt	/*b:tex_stylish*
 b:var	eval.txt	/*b:var*
 b:yaml_schema	syntax.txt	/*b:yaml_schema*
@@ -4723,6 +4732,7 @@ c_<C-Left>	cmdline.txt	/*c_<C-Left>*
 c_<C-R>	cmdline.txt	/*c_<C-R>*
 c_<C-R>_<C-A>	cmdline.txt	/*c_<C-R>_<C-A>*
 c_<C-R>_<C-F>	cmdline.txt	/*c_<C-R>_<C-F>*
+c_<C-R>_<C-L>	cmdline.txt	/*c_<C-R>_<C-L>*
 c_<C-R>_<C-O>	cmdline.txt	/*c_<C-R>_<C-O>*
 c_<C-R>_<C-P>	cmdline.txt	/*c_<C-R>_<C-P>*
 c_<C-R>_<C-R>	cmdline.txt	/*c_<C-R>_<C-R>*
@@ -4771,6 +4781,7 @@ c_CTRL-R	cmdline.txt	/*c_CTRL-R*
 c_CTRL-R_=	cmdline.txt	/*c_CTRL-R_=*
 c_CTRL-R_CTRL-A	cmdline.txt	/*c_CTRL-R_CTRL-A*
 c_CTRL-R_CTRL-F	cmdline.txt	/*c_CTRL-R_CTRL-F*
+c_CTRL-R_CTRL-L	cmdline.txt	/*c_CTRL-R_CTRL-L*
 c_CTRL-R_CTRL-O	cmdline.txt	/*c_CTRL-R_CTRL-O*
 c_CTRL-R_CTRL-P	cmdline.txt	/*c_CTRL-R_CTRL-P*
 c_CTRL-R_CTRL-R	cmdline.txt	/*c_CTRL-R_CTRL-R*
@@ -4912,6 +4923,7 @@ clojure-indent	indent.txt	/*clojure-indent*
 closure	eval.txt	/*closure*
 cmdarg-variable	eval.txt	/*cmdarg-variable*
 cmdbang-variable	eval.txt	/*cmdbang-variable*
+cmdline	cmdline.txt	/*cmdline*
 cmdline-char	cmdline.txt	/*cmdline-char*
 cmdline-completion	cmdline.txt	/*cmdline-completion*
 cmdline-editing	cmdline.txt	/*cmdline-editing*
@@ -6082,7 +6094,6 @@ highlight-guifg	syntax.txt	/*highlight-guifg*
 highlight-guisp	syntax.txt	/*highlight-guisp*
 highlight-start	syntax.txt	/*highlight-start*
 highlight-stop	syntax.txt	/*highlight-stop*
-highlight-term	syntax.txt	/*highlight-term*
 highlightID()	deprecated.txt	/*highlightID()*
 highlight_exists()	deprecated.txt	/*highlight_exists()*
 highlightedyank	neovintageous.txt	/*highlightedyank*
@@ -6377,7 +6388,9 @@ if_cscop.txt	if_cscop.txt	/*if_cscop.txt*
 if_lua.txt	if_lua.txt	/*if_lua.txt*
 if_mzscheme	vim_diff.txt	/*if_mzscheme*
 if_perl	vim_diff.txt	/*if_perl*
+if_pyth	if_pyth.txt	/*if_pyth*
 if_pyth.txt	if_pyth.txt	/*if_pyth.txt*
+if_ruby	if_ruby.txt	/*if_ruby*
 if_ruby.txt	if_ruby.txt	/*if_ruby.txt*
 if_tcl	vim_diff.txt	/*if_tcl*
 ignore-errors	eval.txt	/*ignore-errors*
@@ -6702,7 +6715,6 @@ merge	diff.txt	/*merge*
 message-history	message.txt	/*message-history*
 message.txt	message.txt	/*message.txt*
 messages	message.txt	/*messages*
-meta	intro.txt	/*meta*
 min()	eval.txt	/*min()*
 mkdir()	eval.txt	/*mkdir()*
 mlang.txt	mlang.txt	/*mlang.txt*
@@ -7058,23 +7070,33 @@ nvim__id()	api.txt	/*nvim__id()*
 nvim__id_array()	api.txt	/*nvim__id_array()*
 nvim__id_dictionary()	api.txt	/*nvim__id_dictionary()*
 nvim__id_float()	api.txt	/*nvim__id_float()*
+nvim__inspect_cell()	api.txt	/*nvim__inspect_cell()*
+nvim__stats()	api.txt	/*nvim__stats()*
 nvim_buf_add_highlight()	api.txt	/*nvim_buf_add_highlight()*
+nvim_buf_attach()	api.txt	/*nvim_buf_attach()*
+nvim_buf_changedtick_event	api.txt	/*nvim_buf_changedtick_event*
 nvim_buf_clear_highlight()	api.txt	/*nvim_buf_clear_highlight()*
 nvim_buf_del_var()	api.txt	/*nvim_buf_del_var()*
+nvim_buf_detach()	api.txt	/*nvim_buf_detach()*
+nvim_buf_detach_event	api.txt	/*nvim_buf_detach_event*
 nvim_buf_get_changedtick()	api.txt	/*nvim_buf_get_changedtick()*
+nvim_buf_get_commands()	api.txt	/*nvim_buf_get_commands()*
 nvim_buf_get_keymap()	api.txt	/*nvim_buf_get_keymap()*
 nvim_buf_get_lines()	api.txt	/*nvim_buf_get_lines()*
 nvim_buf_get_mark()	api.txt	/*nvim_buf_get_mark()*
 nvim_buf_get_name()	api.txt	/*nvim_buf_get_name()*
 nvim_buf_get_option()	api.txt	/*nvim_buf_get_option()*
 nvim_buf_get_var()	api.txt	/*nvim_buf_get_var()*
+nvim_buf_is_loaded()	api.txt	/*nvim_buf_is_loaded()*
 nvim_buf_is_valid()	api.txt	/*nvim_buf_is_valid()*
 nvim_buf_line_count()	api.txt	/*nvim_buf_line_count()*
+nvim_buf_lines_event	api.txt	/*nvim_buf_lines_event*
 nvim_buf_set_lines()	api.txt	/*nvim_buf_set_lines()*
 nvim_buf_set_name()	api.txt	/*nvim_buf_set_name()*
 nvim_buf_set_option()	api.txt	/*nvim_buf_set_option()*
 nvim_buf_set_var()	api.txt	/*nvim_buf_set_var()*
 nvim_call_atomic()	api.txt	/*nvim_call_atomic()*
+nvim_call_dict_function()	api.txt	/*nvim_call_dict_function()*
 nvim_call_function()	api.txt	/*nvim_call_function()*
 nvim_command()	api.txt	/*nvim_command()*
 nvim_command_output()	api.txt	/*nvim_command_output()*
@@ -7086,8 +7108,10 @@ nvim_eval()	api.txt	/*nvim_eval()*
 nvim_execute_lua()	api.txt	/*nvim_execute_lua()*
 nvim_feedkeys()	api.txt	/*nvim_feedkeys()*
 nvim_get_api_info()	api.txt	/*nvim_get_api_info()*
+nvim_get_chan_info()	api.txt	/*nvim_get_chan_info()*
 nvim_get_color_by_name()	api.txt	/*nvim_get_color_by_name()*
 nvim_get_color_map()	api.txt	/*nvim_get_color_map()*
+nvim_get_commands()	api.txt	/*nvim_get_commands()*
 nvim_get_current_buf()	api.txt	/*nvim_get_current_buf()*
 nvim_get_current_line()	api.txt	/*nvim_get_current_line()*
 nvim_get_current_tabpage()	api.txt	/*nvim_get_current_tabpage()*
@@ -7097,16 +7121,21 @@ nvim_get_hl_by_name()	api.txt	/*nvim_get_hl_by_name()*
 nvim_get_keymap()	api.txt	/*nvim_get_keymap()*
 nvim_get_mode()	api.txt	/*nvim_get_mode()*
 nvim_get_option()	api.txt	/*nvim_get_option()*
+nvim_get_proc()	api.txt	/*nvim_get_proc()*
+nvim_get_proc_children()	api.txt	/*nvim_get_proc_children()*
 nvim_get_var()	api.txt	/*nvim_get_var()*
 nvim_get_vvar()	api.txt	/*nvim_get_vvar()*
 nvim_input()	api.txt	/*nvim_input()*
 nvim_list_bufs()	api.txt	/*nvim_list_bufs()*
+nvim_list_chans()	api.txt	/*nvim_list_chans()*
 nvim_list_runtime_paths()	api.txt	/*nvim_list_runtime_paths()*
 nvim_list_tabpages()	api.txt	/*nvim_list_tabpages()*
+nvim_list_uis()	api.txt	/*nvim_list_uis()*
 nvim_list_wins()	api.txt	/*nvim_list_wins()*
 nvim_out_write()	api.txt	/*nvim_out_write()*
 nvim_parse_expression()	api.txt	/*nvim_parse_expression()*
 nvim_replace_termcodes()	api.txt	/*nvim_replace_termcodes()*
+nvim_set_client_info()	api.txt	/*nvim_set_client_info()*
 nvim_set_current_buf()	api.txt	/*nvim_set_current_buf()*
 nvim_set_current_dir()	api.txt	/*nvim_set_current_dir()*
 nvim_set_current_line()	api.txt	/*nvim_set_current_line()*
@@ -7422,6 +7451,7 @@ remote_peek()	eval.txt	/*remote_peek()*
 remote_plugin.txt	remote_plugin.txt	/*remote_plugin.txt*
 remote_read()	eval.txt	/*remote_read()*
 remote_send()	eval.txt	/*remote_send()*
+remote_startserver()	eval.txt	/*remote_startserver()*
 remove()	eval.txt	/*remove()*
 remove-filetype	filetype.txt	/*remove-filetype*
 remove-option-flags	options.txt	/*remove-option-flags*
@@ -7546,6 +7576,7 @@ sdl.vim	syntax.txt	/*sdl.vim*
 search()	eval.txt	/*search()*
 search()-sub-match	eval.txt	/*search()-sub-match*
 search-commands	pattern.txt	/*search-commands*
+search-highlighting	neovintageous.txt	/*search-highlighting*
 search-offset	pattern.txt	/*search-offset*
 search-pattern	pattern.txt	/*search-pattern*
 search-range	pattern.txt	/*search-range*
@@ -7618,6 +7649,7 @@ shada-read	starting.txt	/*shada-read*
 shada-read-write	starting.txt	/*shada-read-write*
 shada-s	options.txt	/*shada-s*
 shada-write	starting.txt	/*shada-write*
+shell-powershell	options.txt	/*shell-powershell*
 shell-unquoting	options.txt	/*shell-unquoting*
 shell_error-variable	eval.txt	/*shell_error-variable*
 shellescape()	eval.txt	/*shellescape()*
@@ -8018,6 +8050,7 @@ tolower()	eval.txt	/*tolower()*
 toolbar-icon	gui.txt	/*toolbar-icon*
 toupper()	eval.txt	/*toupper()*
 tr()	eval.txt	/*tr()*
+trim()	eval.txt	/*trim()*
 trojan-horse	starting.txt	/*trojan-horse*
 true-color	term.txt	/*true-color*
 true-variable	eval.txt	/*true-variable*
@@ -8042,13 +8075,18 @@ uganda	uganda.txt	/*uganda*
 uganda.txt	uganda.txt	/*uganda.txt*
 ui	ui.txt	/*ui*
 ui-cmdline	ui.txt	/*ui-cmdline*
+ui-event-grid_line	ui.txt	/*ui-event-grid_line*
 ui-event-highlight_set	ui.txt	/*ui-event-highlight_set*
+ui-event-hl_attr_define	ui.txt	/*ui-event-hl_attr_define*
 ui-events	ui.txt	/*ui-events*
 ui-ext-options	ui.txt	/*ui-ext-options*
 ui-global	ui.txt	/*ui-global*
-ui-grid	ui.txt	/*ui-grid*
+ui-grid-old	ui.txt	/*ui-grid-old*
+ui-hlstate	ui.txt	/*ui-hlstate*
+ui-newgrid	ui.txt	/*ui-newgrid*
 ui-options	ui.txt	/*ui-options*
 ui-popupmenu	ui.txt	/*ui-popupmenu*
+ui-rgb	ui.txt	/*ui-rgb*
 ui-tabline	ui.txt	/*ui-tabline*
 ui-wildmenu	ui.txt	/*ui-wildmenu*
 ui.txt	ui.txt	/*ui.txt*
@@ -8430,6 +8468,7 @@ win_getid()	eval.txt	/*win_getid()*
 win_gotoid()	eval.txt	/*win_gotoid()*
 win_id2tabwin()	eval.txt	/*win_id2tabwin()*
 win_id2win()	eval.txt	/*win_id2win()*
+win_screenpos()	eval.txt	/*win_screenpos()*
 winbufnr()	eval.txt	/*winbufnr()*
 wincol()	eval.txt	/*wincol()*
 window	windows.txt	/*window*

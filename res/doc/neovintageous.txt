@@ -303,24 +303,32 @@ See |commentary.txt|.
 HIGHLIGHTEDYANK                                           *nv-highlightedyank*
                                                              *highlightedyank*
 
-A plugin to just highlight a region where user yanks. That is a pretty trick
-to make your coding easier.
+A plugin to highlight yanked regions. That is a pretty trick to make your
+coding easier.
 
-The plugin can be disabled by 'highlightedyank'.
+The plugin can be disabled by the 'highlightedyank' setting.
 
-The highlighted duration can be optimised by 'highlightedyank_duration'.
+The highlighted duration can be configured by the 'highlightedyank_duration'
+setting.
 
-When a new text is yanked, the old highlighting is deleted. Or when former
-lines are edited, the highlighting is deleted to prevent shifting the
-position, also.
+When new text is yanked, the old highlighting is deleted. Or when former lines
+are edited, the highlighting is deleted to prevent shifting the position,
+also.
 
-The highlighted style can be configured by 'highlightedyank_style'.
+The highlighted style can be configured by the 'highlightedyank_style'
+setting.
 
 To customise the colors, create a color scheme override for your color scheme:
 for example if you have the default Monokai color scheme enabled, create a
 file named `Monokai.sublime-color-scheme` in the User directory (find the User
 directory location via the Menu: `Preferences > Browse Packages...`), then
 create the styles using the scopes: >
+
+To customise the colors, create a color scheme override: for example if you
+have the default Monokai color scheme enabled - create a file named `Monokai
+.sublime-color-scheme` in the Sublime Text User directory (`Menu > Preferences
+> Browse Packages...`), and create the styles using the "highlightedyank"
+scope: >
 
     {
         "rules":
@@ -542,46 +550,38 @@ CTRL-[ -> Esc: >
 'vintageous_visualbell' boolean (default on)
         Enable visual bell.
 
-                                                     *'vintageous_visualyank'*
-'vintageous_visualyank' boolean (default on)
-        Enable visual bell when yanking.
-
 ==============================================================================
 
 SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
-
-Search highlighting can be customized using these scopes:
-
-    nv_search_inc
-    nv_search_current
-    nv_search_occurrence
+                                                      *search-highlighting*
 
 Searches supporting highlighting include `/`, `?`, `*`, and `#`.
 
-The highlighted style can be tuned by 'neovintageous_search_cur',
-'neovintageous_search_inc_style', and 'neovintageous_search_occ_style'.
+The highlighted styles can be configured by the settings
+'neovintageous_search_cur_style', 'neovintageous_search_inc_style', and
+'neovintageous_search_occ_style'.
 
-To customise the colors, create a color scheme override for your color scheme:
-for example if you have the default Monokai color scheme enabled, create a
-file named `Monokai.sublime-color- scheme` in the User directory (find the
-User directory location via the Menu: `Preferences > Browse Packages...`),
-then create the styles using the scopes: >
+To customise the colors of each state, create a color scheme override: for
+example if you have the default Monokai color scheme enabled - create a file
+named `Monokai.sublime-color- scheme` in the Sublime Text User directory
+(`Menu > Preferences > Browse Packages...`), and create the styles using the
+`neovintageous_search_*` scopes: >
 
     {
         "rules":
         [
             {
-                "scope": "nv_search_inc",
+                "scope": "neovintageous_search_inc",
                 "background": "#a1efe4",
                 "foreground": "#272822"
             },
             {
-                "scope": "nv_search_current",
+                "scope": "neovintageous_search_cur",
                 "background": "#a1efe4",
                 "foreground": "#272822"
             },
             {
-                "scope": "nv_search_occurrence",
+                "scope": "neovintageous_search_occ",
                 "background": "#e6db74",
                 "foreground": "#272822"
             }
