@@ -39,7 +39,7 @@
     // * underline
     // * squiggly_underline
     // * stippled_underline
-    "neovintageous_search_occ_style": "fill",
+    "neovintageous_search_occ_style": "outline",
 
     // Enable auto indentation.
     // https://vimhelp.appspot.com/options.txt.html#%27autoindent%27
