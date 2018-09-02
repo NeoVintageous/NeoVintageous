@@ -37,13 +37,10 @@ def ui_bell():
     if not view:
         return
 
-    # WIP feature toggle.
-    enabled = view.settings().get('vintageous_wips', False)
-    if not enabled:
+    if not view.settings().get('vintageous_wip', False):
         return
 
-    belloff = view.settings().get('vintageous_belloff', 'all')
-    if belloff == 'all':
+    if view.settings().get('vintageous_wip_belloff', 'all') == 'all':
         return
 
     # TODO How to make the bell theme adaptive i.e. work nice in light AND dark
@@ -52,7 +49,7 @@ def ui_bell():
 
     duration = int(0.3 * 1000)
 
-    if view.settings().get('vintageous_wips_bell_all_active_views', True):
+    if view.settings().get('vintageous_wip_bell_all_active_views', True):
         views = []
         for group in range(window.num_groups()):
             view = window.active_view_in_group(group)
