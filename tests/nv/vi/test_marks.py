@@ -81,6 +81,24 @@ class MarksTests(unittest.ViewTestCase):
         expected = "<untitled {0}>:{1}".format(999, "0:0")
         self.assertEqual(self.marks.get_as_encoded_address('a'), expected)
 
-    def test_can_retrieve_single_quote_mark(self):
+    @unittest.mock.patch('NeoVintageous.nv.vi.marks.jumplist_back')
+    def test_can_retrieve_quote_mark(self, mock_jumplist_back):
+        # Single quote mark should call jumplist_back for its region ignoring
+        # any mark set for "'".
+        marks._MARKS['\''] = (Window(), self.view, (0, 0))
+        mock_jumplist_back.return_value = (self.view, [self.Region(30, 30)])
+        self.write(''.join(('foo bar\n') * 10))
+
         location = self.marks.get_as_encoded_address("'")
-        self.assertEqual(location, '<command _vi_double_single_quote>')
+        self.assertEqual(location, self.Region(24, 24))
+
+    @unittest.mock.patch('NeoVintageous.nv.vi.marks.jumplist_back')
+    def test_can_retrieve_backtick_mark(self, mock_jumplist_back):
+        # Backtick mark should call jumplist_back for its region ignoring any
+        # mark set for "`". Here we set exact to true, emulating ``.
+        marks._MARKS['`'] = (Window(), self.view, (0, 0))
+        mock_jumplist_back.return_value = (self.view, [self.Region(30, 30)])
+        self.write(''.join(('foo bar\n') * 10))
+
+        location = self.marks.get_as_encoded_address("`", exact=True)
+        self.assertEqual(location, self.Region(30, 30))

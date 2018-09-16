@@ -2615,22 +2615,15 @@ class ViGotoMark(ViMotionDef):
         return True
 
     def translate(self, state):
-        if self.inp == "'":
-            return {
-                'is_jump': True,
-                'motion': '_vi_quote_quote',
-                'motion_args': {}
+        return {
+            'is_jump': True,
+            'motion': '_vi_quote',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'character': self.inp
             }
-        else:
-            return {
-                'is_jump': True,
-                'motion': '_vi_quote',
-                'motion_args': {
-                    'mode': state.mode,
-                    'count': state.count,
-                    'character': self.inp
-                }
-            }
+        }
 
 
 @keys.assign(seq=seqs.RIGHT_BRACE, modes=_MODES_MOTION)
