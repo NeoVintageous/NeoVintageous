@@ -17,6 +17,8 @@
 
 from sublime import Region
 
+from NeoVintageous.nv.jumplist import jumplist_back
+
 # store: window, view, rowcol
 
 _MARKS = {}
@@ -45,11 +47,18 @@ class Marks(object):
           If `true`, the exact position of the mark is returned. Otherwise,
           the relevant row's 0 column is returned.
         """
-        if name == "'":
-            # Special case: '' motion
-            return '<command _vi_double_single_quote>'
+        win, view, rowcol = None, None, None
+        if name == "'" or name == "`":
+            # Note: We might get a selection outside the current view, which
+            # deviates from vim behaviour.
+            view, selections = jumplist_back(self.state.view)
+            if len(selections) > 0:
+                win = view.window()
+                # TODO: support multiple selections
+                rowcol = view.rowcol(selections[0].b)
+        else:
+            win, view, rowcol = _MARKS.get(name, (None,) * 3)
 
-        win, view, rowcol = _MARKS.get(name, (None,) * 3)
         if win:
             if exact:
                 rowcol_encoded = ':'.join(str(i) for i in rowcol)

@@ -25,6 +25,7 @@ from sublime import MONOSPACE_FONT
 from sublime import Region
 
 from NeoVintageous.nv.ex_cmds import do_ex_command
+from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import search
@@ -142,7 +143,6 @@ __all__ = [
     '_vi_p',
     '_vi_q',
     '_vi_quote',
-    '_vi_quote_quote',
     '_vi_r',
     '_vi_s',
     '_vi_select_big_j',
@@ -1084,7 +1084,9 @@ class _vi_quote(ViTextCommandBase):
                 self.view.run_command(address.split(' ')[1][:-1])
             return
 
+        jumplist_update(self.view)
         regions_transformer(self.view, f)
+        jumplist_update(self.view)
 
         if not self.view.visible_region().intersects(address):
             self.view.show_at_center(address)
@@ -1121,16 +1123,9 @@ class _vi_backtick(ViTextCommandBase):
             return
 
         # This is a motion in a composite command.
+        jumplist_update(self.view)
         regions_transformer(self.view, f)
-
-
-class _vi_quote_quote(IrreversibleTextCommand):
-    next_command = 'jump_back'
-
-    def run(self):
-        current = _vi_quote_quote.next_command
-        self.view.window().run_command(current)
-        _vi_quote_quote.next_command = ('jump_forward' if (current == 'jump_back') else 'jump_back')
+        jumplist_update(self.view)
 
 
 class _vi_big_d(ViTextCommandBase):
