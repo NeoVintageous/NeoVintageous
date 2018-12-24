@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.7.1 - 2018-12-24
+
+* Fixed [#377](https://github.com/NeoVintageous/NeoVintageous/issues/377): Add backtick mark jumps to jumplist
+
 ## 1.7.0 - 2018-09-02
 
 ### Added
