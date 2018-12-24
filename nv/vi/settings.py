@@ -132,7 +132,7 @@ def set_local(view, name, value):
             opt.action(view, name, '1', opt)
             return
         opt.action(view, name, value, opt)
-    except KeyError as e:
+    except KeyError:
         if name.startswith('no'):
             try:
                 opt = _VI_OPTIONS[name[2:]]
@@ -151,7 +151,7 @@ def set_global(view, name, value):
             opt.action(view, name, '1', opt, globally=True)
             return
         opt.action(view, name, value, opt, globally=True)
-    except KeyError as e:
+    except KeyError:
         if name.startswith('no'):
             try:
                 opt = _VI_OPTIONS[name[2:]]

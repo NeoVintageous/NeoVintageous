@@ -1384,7 +1384,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
                 view.retarget(expanded_path)
                 window.run_command('save')
 
-            except IOError as e:
+            except IOError:
                 # TODO: Add logging.
                 return message("E212: Can't open file for writing: {}".format(fname))
 
