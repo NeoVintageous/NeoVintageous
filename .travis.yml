@@ -28,9 +28,15 @@ before_install:
 
 install:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-            pip install flake8;
-            pip install flake8-docstrings;
-            pip install python-coveralls;
+            if [ "$TRAVIS_PYTHON_VERSION" == "3.3" ]; then
+                pip install flake8==3.5;
+                pip install flake8-docstrings;
+                pip install python-coveralls;
+            else
+                pip install flake8;
+                pip install flake8-docstrings;
+                pip install python-coveralls;
+            fi
       elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
             brew update;
             brew upgrade python;
