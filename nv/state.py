@@ -43,6 +43,7 @@ from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -672,21 +673,13 @@ class State(object):
                 raise ValueError('too many actions')
             self.action = command
 
-            if (self.action.motion_required and not self.in_any_visual_mode()):
+            if (self.action.motion_required and not is_visual_mode(self.mode)):
                 self.mode = OPERATOR_PENDING
 
             self._set_parsers(command)
 
         else:
             raise ValueError('unexpected command type')
-
-    def in_any_visual_mode(self):
-        return (self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
-
-    def can_run_action(self):
-        action = self.action
-        if (action and (not action['motion_required'] or self.in_any_visual_mode())):
-            return True
 
     def get_visual_repeat_data(self):
         # Return the data needed to restore visual selections.
@@ -752,27 +745,31 @@ class State(object):
     def runnable(self):
         # type: () -> bool
         # Returns:
-        #   True if motion/action is in a runnable state, False otherwise.
+        #   True if motion and/or action is in a runnable state, False otherwise.
         # Raises:
-        #   ValueError: Wrong mode.
+        #   ValueError: Invlid mode.
         if self.must_collect_input:
             return False
 
-        if self.action and self.motion:
-            if self.mode != NORMAL:
-                raise ValueError('wrong mode')
+        action = self.action
+        motion = self.motion
+        mode = self.mode
+
+        if action and motion:
+            if mode != NORMAL:
+                raise ValueError('invalid mode')
 
             return True
 
-        if self.can_run_action():
-            if self.mode == OPERATOR_PENDING:
-                raise ValueError('wrong mode')
+        if (action and (not action['motion_required'] or is_visual_mode(mode))):
+            if mode == OPERATOR_PENDING:
+                raise ValueError('action has invalid mode')
 
             return True
 
-        if self.motion:
-            if self.mode == OPERATOR_PENDING:
-                raise ValueError('wrong mode')
+        if motion:
+            if mode == OPERATOR_PENDING:
+                raise ValueError('motion has invalid mode')
 
             return True
 
