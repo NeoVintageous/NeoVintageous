@@ -39,7 +39,6 @@ from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -419,7 +418,7 @@ class _vi_c(ViTextCommandBase):
 
                 return
 
-        self.state.registers.yank(populates_small_delete_register=True, register=register)
+        self.state.registers.op_yank(small_delete=True, register=register)
         self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
 
@@ -800,17 +799,11 @@ class _vi_dd(ViTextCommandBase):
             self.view.sel().add_all([Region(pt) for pt in new])
 
         regions_transformer(self.view, do_motion)
-        self.state.registers.yank(
-            yanks_linewise=True,
-            populates_small_delete_register=False,
-            synthetize_new_line_at_eof=True,
-            register=register,
-            operation='delete'
-        )
 
+        self.state.registers.op_delete(linewise=True, new_line_at_eof=True, register=register)
+        # TODO deleting last line leaves the caret at \n
         self.view.run_command('right_delete')
         set_sel()
-        # TODO deleting last line leaves the caret at \n
 
 
 class _vi_cc(ViTextCommandBase):
@@ -826,15 +819,12 @@ class _vi_cc(ViTextCommandBase):
             return units.inner_lines(view, s, count)
 
         regions_transformer(self.view, motion)
-        self.state.registers.yank(
-            yanks_linewise=True,
-            populates_small_delete_register=False,
-            synthetize_new_line_at_eof=True,
-            register=register
-        )
+
+        self.state.registers.op_yank(linewise=True, new_line_at_eof=True, register=register)
 
         if not all(s.empty() for s in self.view.sel()):
             self.view.run_command('right_delete')
+
         self.enter_insert_mode(mode)
         self.set_xpos(self.state)
 
@@ -852,7 +842,6 @@ class _vi_visual_o(ViTextCommandBase):
         self.view.show(self.view.sel()[0].b, False)
 
 
-# TODO: is this really a text command?
 class _vi_yy(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
@@ -875,15 +864,12 @@ class _vi_yy(ViTextCommandBase):
             raise ValueError('wrong mode')
 
         self.save_sel()
+
         regions_transformer(self.view, select)
 
         state = self.state
         self.outline_target()
-        state.registers.yank(
-            synthetize_new_line_at_eof=True,
-            yanks_linewise=True,
-            register=register
-        )
+        state.registers.op_yank(new_line_at_eof=True, linewise=True, register=register)
         restore()
         self.enter_normal_mode(mode)
 
@@ -903,10 +889,7 @@ class _vi_y(ViTextCommandBase):
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return
 
-        self.state.registers.yank(
-            populates_small_delete_register=True,
-            register=register
-        )
+        self.state.registers.op_yank(small_delete=True, register=register)
         regions_transformer(self.view, f)
         self.enter_normal_mode(mode)
 
@@ -942,12 +925,7 @@ class _vi_d(ViTextCommandBase):
 
                 return
 
-        self.state.registers.yank(
-            populates_small_delete_register=True,
-            register=register,
-            operation='delete'
-        )
-
+        self.state.registers.op_delete(small_delete=True, register=register)
         self.view.run_command('left_delete')
         self.view.run_command('_nv_fix_st_eol_caret')
 
@@ -1148,12 +1126,7 @@ class _vi_big_d(ViTextCommandBase):
         self.save_sel()
         regions_transformer(self.view, f)
 
-        self.state.registers.yank(
-            synthetize_new_line_at_eof=True,
-            register=register,
-            operation='delete'
-        )
-
+        self.state.registers.op_delete(new_line_at_eof=True, register=register)
         self.view.run_command('left_delete')
 
         if mode == VISUAL:
@@ -1189,8 +1162,7 @@ class _vi_big_c(ViTextCommandBase):
 
         self.save_sel()
         regions_transformer(self.view, f)
-
-        self.state.registers.yank(synthetize_new_line_at_eof=True)
+        self.state.registers.op_yank(new_line_at_eof=True)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1198,10 +1170,8 @@ class _vi_big_c(ViTextCommandBase):
             self.view.sel().subtract(r)
 
         self.view.run_command('right_delete')
-
         self.view.sel().add_all(self.view.get_regions('vi_empty_sels'))
         self.view.erase_regions('vi_empty_sels')
-
         self.enter_insert_mode(mode)
 
 
@@ -1220,8 +1190,7 @@ class _vi_big_s_action(ViTextCommandBase):
             return s
 
         regions_transformer(self.view, sel_line)
-
-        self.state.registers.yank(synthetize_new_line_at_eof=True, register=register)
+        self.state.registers.op_yank(new_line_at_eof=True, register=register)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1229,11 +1198,9 @@ class _vi_big_s_action(ViTextCommandBase):
             self.view.sel().subtract(r)
 
         self.view.run_command('right_delete')
-
         self.view.sel().add_all(self.view.get_regions('vi_empty_sels'))
         self.view.erase_regions('vi_empty_sels')
         self.view.run_command('reindent', {'force_indent': False})
-
         self.enter_insert_mode(mode)
 
 
@@ -1253,16 +1220,14 @@ class _vi_s(ViTextCommandBase):
             self.enter_normal_mode(mode)
 
         self.save_sel()
-
         regions_transformer(self.view, select)
 
         if not self.has_sel_changed() and mode == INTERNAL_NORMAL:
             self.enter_insert_mode(mode)
             return
 
-        self.state.registers.yank(populates_small_delete_register=True, register=register)
+        self.state.registers.op_yank(small_delete=True, register=register)
         self.view.run_command('right_delete')
-
         self.enter_insert_mode(mode)
 
 
@@ -1285,7 +1250,7 @@ class _vi_x(ViTextCommandBase):
 
         regions_transformer(self.view, select)
 
-        self.state.registers.yank(populates_small_delete_register=True, register=register)
+        self.state.registers.op_yank(small_delete=True, register=register)
         self.view.run_command('right_delete')
         self.enter_normal_mode(mode)
 
@@ -1297,6 +1262,7 @@ class _vi_r(ViTextCommandBase):
         new_frags = []
         for fr in frags:
             new_frags.append(char * len(fr))
+
         return '\n'.join(new_frags)
 
     def run(self, edit, mode=None, count=1, register=None, char=None):
@@ -1326,15 +1292,10 @@ class _vi_r(ViTextCommandBase):
 
         if char is None:
             raise ValueError('bad parameters')
+
         char = utils.translate_char(char)
-
-        self.state.registers.yank(
-            synthetize_new_line_at_eof=True,
-            populates_small_delete_register=True,
-            register=register
-        )
+        self.state.registers.op_yank(new_line_at_eof=True, small_delete=True, register=register)
         regions_transformer(self.view, f)
-
         self.enter_normal_mode(mode)
 
 
@@ -1527,10 +1488,7 @@ class _vi_big_x(ViTextCommandBase):
 
         regions_transformer(self.view, select)
 
-        self.state.registers.yank(
-            populates_small_delete_register=True,
-            register=register
-        )
+        self.state.registers.op_yank(small_delete=True, register=register)
 
         if not abort:
             self.view.run_command('left_delete')
@@ -1555,23 +1513,13 @@ class _vi_big_p(ViTextCommandBase):
     def run(self, edit, register=None, count=1, mode=None):
         state = self.state
 
-        if state.mode == VISUAL:
-            prev_text = state.registers.get_selected_text(synthetize_new_line_at_eof=True)
-
-        if register:
-            fragments = state.registers[register]
-        else:
-            # TODO: There should be a simpler way of getting the unnamed
-            # register's content.
-            fragments = state.registers['"']
-
-        if state.mode == VISUAL:
-            # Populate registers with the text we're about to paste.
-            state.registers['"'] = prev_text
+        register_values = state.registers.get_for_paste(register, state.mode)
+        if not register_values:
+            return status_message('E353: Nothing in register ' + register)
 
         # TODO: Enable pasting to multiple selections.
         sel = list(self.view.sel())[0]
-        text_block, linewise = self.merge(fragments)
+        text_block, linewise = self.merge(register_values)
 
         if mode == INTERNAL_NORMAL:
             if not linewise:
@@ -1604,14 +1552,14 @@ class _vi_big_p(ViTextCommandBase):
 
         self.enter_normal_mode(mode=mode)
 
-    def merge(self, fragments):
+    def merge(self, register_values):
         """
         Merge a list of strings.
 
         Return a block of text and a bool indicating whether it's a linewise block.
         """
-        block = ''.join(fragments)
-        if '\n' in fragments[0]:
+        block = ''.join(register_values)
+        if '\n' in register_values[0]:
             if block[-1] != '\n':
                 return (block + '\n'), True
             return block, True
@@ -1622,22 +1570,18 @@ class _vi_p(ViTextCommandBase):
 
     def run(self, edit, register=None, count=1, mode=None):
         state = self.state
-        register = register or '"'
-        fragments = state.registers[register]
-        if not fragments:
-            return console_message('Nothing in register "')
 
-        if state.mode == VISUAL:
-            prev_text = state.registers.get_selected_text(synthetize_new_line_at_eof=True)
-            state.registers['"'] = prev_text
+        register_values = state.registers.get_for_paste(register, state.mode)
+        if not register_values:
+            return status_message('E353: Nothing in register ' + register)
 
         sels = list(self.view.sel())
-        # If we have the same number of pastes and selections, map 1:1. Otherwise paste paste[0]
-        # to all target selections.
-        if len(sels) == len(fragments):
-            sel_to_frag_mapped = zip(sels, fragments)
+        # If we have the same number of pastes and selections, map 1:1,
+        # otherwise paste paste[0] to all target selections.
+        if len(sels) == len(register_values):
+            sel_to_frag_mapped = zip(sels, register_values)
         else:
-            sel_to_frag_mapped = zip(sels, [fragments[0], ] * len(sels))
+            sel_to_frag_mapped = zip(sels, [register_values[0], ] * len(sels))
 
         # FIXME: Fix this mess. Separate linewise from charwise pasting.
         pasting_linewise = True
@@ -1731,32 +1675,28 @@ class _vi_p(ViTextCommandBase):
 class _vi_ga(ViWindowCommandBase):
 
     def run(self):
-
-        def character_to_notation(character):
-            # Convert a character to a key notation. Uses vim key notation.
+        def char_to_notation(char):
+            # Convert a char to a key notation. Uses vim key notation.
             # See https://vimhelp.appspot.com/intro.txt.html#key-notation
-            character_notation_map = {
-                "\0": "Nul",
+            char_notation_map = {
+                "\\0": "Nul",
                 " ": "Space",
-                "\t": "Tab",
-                "\n": "NL"
+                "\\t": "Tab",
+                "\\n": "NL"
             }
 
-            if character in character_notation_map:
-                character = character_notation_map[character]
+            if char in char_notation_map:
+                char = char_notation_map[char]
 
-            return "<" + character + ">"
+            return "<" + char + ">"
 
         view = self.window.active_view()
-
         for region in view.sel():
-
             c_str = view.substr(region.begin())
             c_ord = ord(c_str)
             c_hex = hex(c_ord)
             c_oct = oct(c_ord)
-            c_not = character_to_notation(c_str)
-
+            c_not = char_to_notation(c_str)
             status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
@@ -2246,43 +2186,37 @@ class _vi_q(IrreversibleTextCommand):
     def run(self, name=None, mode=None, count=1):
         state = State(self.view)
 
-        # TODO [refactor] state.is_recording, state.start_recording
-        # TODO [refactor] State.macro_registers
+        try:
+            if state.is_recording:
+                State.macro_registers[_vi_q._register_name] = list(State.macro_steps)
+                state.stop_recording()
+                _vi_q._register_name = None
+                return
 
-        # TODO Fix macro registers get broken when invalid registers given, or
-        # if recording macros are left "unclosed" (not stopped) e.g. if a
-        # recording macro is not stopped before closing ST then macros don't
-        # work on the next, similarly, trying to use an invalid register like
-        # "#" breaks macro registers.
+            if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW"'):
+                return
 
-        if state.is_recording:
-            State.macro_registers[_vi_q._register_name] = list(State.macro_steps)
+            state.start_recording()
+            _vi_q._register_name = name
+        except (AttributeError, ValueError):
             state.stop_recording()
             _vi_q._register_name = None
-            return
-
-        # TODO What happens when we change views?
-        state.start_recording()
-        _vi_q._register_name = name
+            ui_blink()
 
 
 class _vi_at(IrreversibleTextCommand):
 
-    def run(self, name=None, mode=None, count=1):
-        # TODO [refactor] State.macro_steps
-        # TODO [refactor] State.macro_registers
+    def run(self, name, mode=None, count=1):
+        if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW".=*+'):
+            return
 
-        # TODO Do we need to glue all these edits?
-        cmds = State.macro_steps
-        if name != '@':
-            try:
-                cmds = State.macro_registers[name]
-                State.macro_steps = cmds
-            except KeyError:
-                # TODO Should emit bell (if enabled) because no register
-                pass
-            except ValueError as e:
-                return console_message('error: %s' % e)
+        try:
+            cmds = State.macro_registers[name]
+        except (KeyError, ValueError):
+            return
+
+        if not cmds:
+            return
 
         state = State(self.view)
 
@@ -2653,11 +2587,7 @@ class _vi_gcc_action(ViTextCommandBase):
 
         self.view.run_command('_vi_gcc_motion', {'mode': mode, 'count': count})
 
-        self.state.registers.yank(
-            synthetize_new_line_at_eof=True,
-            yanks_linewise=False,
-            populates_small_delete_register=False
-        )
+        self.state.registers.op_yank(new_line_at_eof=True)
 
         line = self.view.line(self.view.sel()[0].begin())
         pt = line.begin()

@@ -41,10 +41,6 @@
     // * stippled_underline
     "neovintageous_search_occ_style": "outline",
 
-    // Enable auto indentation.
-    // https://vimhelp.appspot.com/options.txt.html#%27autoindent%27
-    "vintageous_autoindent": true,
-
     // Enable ':' and ex commands.
     // {not in Vim}
     "vintageous_enable_cmdline_mode": true,

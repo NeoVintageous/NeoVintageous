@@ -836,9 +836,8 @@ def ex_registers(window, view, **kwargs):
                 lines = v[0].splitlines()
                 value = '^J'.join(lines)
 
-                # The splitlines function will remove a final newline, if
-                # present. So joining the lines with the join-line indicator
-                # (^J) may be missing a final join-line indicator.
+                # The splitlines function will remove any trailing newlines. We
+                # need to append one if splitlines() removed a trailing one.
                 if len(''.join(lines)) < len(v[0]):
                     value += '^J'
 
@@ -860,10 +859,8 @@ def ex_set(view, option, value, **kwargs):
 
     try:
         set_global(view, option, value)
-    except KeyError:
-        status_message('no such option')
-    except ValueError:
-        status_message('invalid value for option')
+    except (KeyError, ValueError):
+        status_message('E518: Unknown option: ' + option)
 
 
 def ex_setlocal(view, option, value, **kwargs):
@@ -872,10 +869,8 @@ def ex_setlocal(view, option, value, **kwargs):
 
     try:
         set_local(view, option, value)
-    except KeyError:
-        status_message('no such option')
-    except ValueError:
-        status_message('invalid value for option')
+    except (KeyError, ValueError):
+        status_message('E518: Unknown option: ' + option)
 
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands

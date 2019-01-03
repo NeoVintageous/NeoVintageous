@@ -61,6 +61,10 @@ def mode_to_name(mode):
         return 'REALLY UNKNOWN'
 
 
+def is_visual_mode(mode):
+    return mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+
+
 INPUT_IMMEDIATE = 1
 INPUT_VIA_PANEL = 2
 INPUT_AFTER_MOTION = 3

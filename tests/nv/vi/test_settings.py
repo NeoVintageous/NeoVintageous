@@ -17,16 +17,7 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.vi.settings import _opt_bool_parser
-from NeoVintageous.nv.vi.settings import _opt_rulers_parser
-from NeoVintageous.nv.vi.settings import _SCOPE_VI_VIEW
-from NeoVintageous.nv.vi.settings import _SCOPE_VI_WINDOW
-from NeoVintageous.nv.vi.settings import _SCOPE_VIEW
 from NeoVintageous.nv.vi.settings import _SCOPE_WINDOW
-from NeoVintageous.nv.vi.settings import _set_generic_view_setting
-from NeoVintageous.nv.vi.settings import _set_list
-from NeoVintageous.nv.vi.settings import _set_minimap
-from NeoVintageous.nv.vi.settings import _set_sidebar
 from NeoVintageous.nv.vi.settings import _SublimeSettings
 from NeoVintageous.nv.vi.settings import _VI_OPTIONS
 from NeoVintageous.nv.vi.settings import _vi_user_setting
@@ -112,50 +103,6 @@ class TestViEditorSettings(unittest.ViewTestCase):
         self.view.settings().erase('vintageous_foo')
         self.view.window().settings().erase('vintageous_foo')
         self.settsman = _VintageSettings(view=self.view)
-
-    def test_knows_all_settings(self):
-        all_settings = [
-            'hlsearch',
-            'magic',
-            'incsearch',
-            'ignorecase',
-            'autoindent',
-            'list',
-            'showminimap',
-            'rulers',
-            'showsidebar',
-            'visualbell',
-        ]
-
-        self.assertEqual(sorted(all_settings), sorted(list(_VI_OPTIONS.keys())))
-
-    def test_settings_are_correctly_defined(self):
-        KNOWN_OPTIONS = {
-            'hlsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                         parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
-            'magic': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                      parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
-            'incsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                          parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
-            'ignorecase': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False,
-                                           parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
-            'autoindent': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True,
-                                           parser=None, action=_set_generic_view_setting, negatable=False),
-            'showminimap': _vi_user_setting(scope=_SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
-                                            parser=None, action=_set_minimap, negatable=True),
-            'list': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False,
-                                     parser=None, action=_set_list, negatable=True),
-            'visualbell': _vi_user_setting(scope=_SCOPE_VI_WINDOW, values=(True, False, '0', '1'), default=True,
-                                           parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),
-            'rulers': _vi_user_setting(scope=_SCOPE_VIEW, values=None, default=[],
-                                       parser=_opt_rulers_parser, action=_set_generic_view_setting, negatable=False),
-            'showsidebar': _vi_user_setting(scope=_SCOPE_WINDOW, values=(True, False, '0', '1'), default=True,
-                                            parser=None, action=_set_sidebar, negatable=True),
-        }
-
-        self.assertEqual(len(KNOWN_OPTIONS), len(_VI_OPTIONS))
-        for (k, v) in KNOWN_OPTIONS.items():
-            self.assertEqual(_VI_OPTIONS[k], v)
 
     def test_can_retrieve_default_value(self):
         self.assertEqual(self.settsman['hlsearch'], True)

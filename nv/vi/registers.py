@@ -20,35 +20,67 @@ import itertools
 from sublime import get_clipboard
 from sublime import set_clipboard
 
+from NeoVintageous.nv.vim import VISUAL
 
-_REG_UNNAMED = '"'
-_REG_SMALL_DELETE = '-'
-_REG_BLACK_HOLE = '_'
-_REG_LAST_INSERTED_TEXT = '.'
-_REG_FILE_NAME = '%'
-_REG_ALT_FILE_NAME = '#'
-_REG_EXPRESSION = '='
-_REG_SYS_CLIPBOARD_1 = '*'
-_REG_SYS_CLIPBOARD_2 = '+'
-_REG_SYS_CLIPBOARD_ALL = (
-    _REG_SYS_CLIPBOARD_1,
-    _REG_SYS_CLIPBOARD_2
-)
-_REG_VALID_NAMES = tuple('abcdefghijklmnopqrstuvwxyz')
-_REG_VALID_NUMBERS = tuple('0123456789')
-_REG_SPECIAL = (
-    _REG_UNNAMED,
-    _REG_SMALL_DELETE,
-    _REG_BLACK_HOLE,
-    _REG_LAST_INSERTED_TEXT,
-    _REG_FILE_NAME,
-    _REG_ALT_FILE_NAME,
-    _REG_SYS_CLIPBOARD_1,
-    _REG_SYS_CLIPBOARD_2
-)
-_REG_ALL = _REG_SPECIAL + _REG_VALID_NUMBERS + _REG_VALID_NAMES
 
-# TODO "* and "+ don't do what they should in linux.
+# 1. The unnamed register ""
+_UNNAMED = '"'
+
+# 2. 10 numberd registers "0 to "9
+_NUMBERS = tuple('0123456789')
+
+# 3 The small delete register "-
+_SMALL_DELETE = '-'
+
+# 4. 26 named registers "a to "z or "A to "Z
+_NAMES = tuple('abcdefghijklmnopqrstuvwxyz')
+
+# 5. Three read-only registers ":, "., "%
+_LAST_EXECUTED_COMMAND = ':'
+_LAST_INSERTED_TEXT = '.'
+_CURRENT_FILE_NAME = '%'
+
+# 6. Alternate buffer register "#
+_ALT_FILE = '#'
+
+_READ_ONLY = (
+    _LAST_EXECUTED_COMMAND,
+    _LAST_INSERTED_TEXT,
+    _CURRENT_FILE_NAME,
+    _ALT_FILE
+)
+
+# 7. The expression register "=
+_EXPRESSION = '='
+
+# 8. The selection and drop registers "*, "+, and "~
+_CLIPBOARD_STAR = '*'
+_CLIPBOARD_PLUS = '+'
+_CLIPBOARD_TILDA = '~'
+_CLIPBOARD_ALL = (_CLIPBOARD_STAR, _CLIPBOARD_PLUS)
+_SELECTION_AND_DROP = (_CLIPBOARD_STAR, _CLIPBOARD_PLUS, _CLIPBOARD_TILDA)
+
+# 9. The black hole register "_
+_BLACK_HOLE = '_'
+
+# 10. Last search pattern register "/
+_LAST_SEARCH_PATTERN = '/'
+
+_SPECIAL = (
+    _UNNAMED,
+    _SMALL_DELETE,
+    _BLACK_HOLE,
+    _LAST_INSERTED_TEXT,
+    _LAST_EXECUTED_COMMAND,
+    _LAST_SEARCH_PATTERN,
+    _CURRENT_FILE_NAME,
+    _ALT_FILE,
+    _CLIPBOARD_STAR,
+    _CLIPBOARD_PLUS,
+    _CLIPBOARD_TILDA
+)
+
+_ALL = _SPECIAL + _NUMBERS + _NAMES
 
 
 def init_register_data():
@@ -62,33 +94,32 @@ def init_register_data():
 _data = init_register_data()
 
 
+# Registers hold global data used mainly by yank, delete and paste.
+#
+# This class is meant to be used a descriptor.
+#
+#     class State(object):
+#         registers = Registers()
+#         ...
+#
+#     # now state.registers has access to the current view.
+#     state = State()
+#     state.registers['%']
+#
+# And this is how you access registers:
+#
+# Setting registers:
+#
+#     state.registers['a'] = "foo" # => a == "foo"
+#     state.registers['A'] = "bar" # => a == "foobar"
+#     state.registers['1'] = "baz" # => 1 == "baz"
+#     state.registers[1] = "fizz"  # => 1 == "fizz"
+#
+# Retrieving registers:
+#
+#     state.registers['a'] # => "foobar"
+#     state.registers['A'] # => "foobar" (synonyms)
 class Registers:
-
-    # Registers hold global data used mainly by yank, delete and paste.
-    #
-    # This class is meant to be used a descriptor.
-    #
-    #     class State(object):
-    #         registers = Registers()
-    #         ...
-    #
-    #     state = State()
-    #     state.registers['%'] # now state.registers has access to the
-    #                          # current view.
-    #
-    # And this is how you access registers:
-    #
-    # Setting registers...
-    #
-    #     state.registers['a'] = "foo" # => a == "foo"
-    #     state.registers['A'] = "bar" # => a == "foobar"
-    #     state.registers['1'] = "baz" # => 1 == "baz"
-    #     state.registers[1] = "fizz"  # => 1 == "fizz"
-    #
-    # Retrieving registers...
-    #
-    #     state.registers['a'] # => "foobar"
-    #     state.registers['A'] # => "foobar" (synonyms)
 
     def __get__(self, instance, owner):
         self.view = instance.view
@@ -100,33 +131,27 @@ class Registers:
         assert isinstance(values, list)
         # Coerce all values into strings.
         values = [str(v) for v in values]
-        _data[_REG_UNNAMED] = values
+        _data[_UNNAMED] = values
 
     def _maybe_set_sys_clipboard(self, name, value):
-        # Check whether the option is set to a bool; could be any JSON type
-        if (name in _REG_SYS_CLIPBOARD_ALL or
-           self.settings.view['vintageous_use_sys_clipboard'] is True):
-                # Take care of multiple selections.
-                if len(value) > 1:
-                    self.view.run_command('copy')
-                else:
-                    set_clipboard(value[0])
+        if (name in _CLIPBOARD_ALL or self.settings.view['vintageous_use_sys_clipboard'] is True):
+            # Take care of multiple selections.
+            if len(value) > 1:
+                self.view.run_command('copy')
+            else:
+                set_clipboard(value[0])
 
-    def set_expression(self, values):
-        self.set(_REG_EXPRESSION, values)
-
+    # Set a register.
+    # In order to honor multiple selections in Sublime Text, we need to store
+    # register data as lists, one per selection. The paste command will then
+    # make the final decision about what to insert into the buffer when faced
+    # with unbalanced selection number / available register data.
     def set(self, name, values):
-        # Set an a-z or 0-9 register.
-        # In order to honor multiple selections in Sublime Text, we need to
-        # store register data as lists, one per selection. The paste command
-        # will then make the final decision about what to insert into the buffer
-        # when faced with unbalanced selection number / available register data.
-
-        # We accept integers as register names.
         name = str(name)
-        assert len(str(name)) == 1, "Register names must be 1 char long: " + name
 
-        if name == _REG_BLACK_HOLE:
+        assert len(name) == 1, "Register names must be 1 char long: " + name
+
+        if name == _BLACK_HOLE:
             return
 
         assert isinstance(values, list), "Register values must be inside a list."
@@ -136,19 +161,21 @@ class Registers:
 
         # Special registers and invalid registers won't be set.
         if (not (name.isalpha() or name.isdigit() or
-                 name.isupper() or name == _REG_UNNAMED or
-                 name in _REG_SYS_CLIPBOARD_ALL or
-                 name == _REG_EXPRESSION or
-                 name == _REG_SMALL_DELETE)):
+                 name.isupper() or name == _UNNAMED or
+                 name in _CLIPBOARD_ALL or
+                 name == _EXPRESSION or
+                 name == _SMALL_DELETE)):
                     # Vim fails silently.
-                    # raise Exception("Can only set a-z and 0-9 registers.")
                     return None
 
         _data[name] = values
 
-        if name not in (_REG_EXPRESSION,):
+        if name not in (_EXPRESSION,):
             self._set_default_register(values)
             self._maybe_set_sys_clipboard(name, values)
+
+    def set_expression(self, values):
+        self.set(_EXPRESSION, values)
 
     def append_to(self, name, suffixes):
         """Append to an a-z register. `name` must be a capital in A-Z."""
@@ -162,44 +189,38 @@ class Registers:
         self._set_default_register(new_values)
         self._maybe_set_sys_clipboard(name, new_values)
 
-    def get(self, name=_REG_UNNAMED):
+    def get(self, name=_UNNAMED):
         # Args:
-        #   name (str|int)
+        #   name (str|int) Accepts integers or strings as register names.
         #
         # Returns:
         #   (list|str|None)
-
-        # We accept integers or strings a register names.
         name = str(name)
 
         assert len(name) == 1, "Register names must be 1 char long."
 
-        # Did we request a special register?
-        if name == _REG_BLACK_HOLE:
-            return
-
-        if name == _REG_FILE_NAME:
+        if name == _CURRENT_FILE_NAME:
             try:
                 return [self.view.file_name()]
             except AttributeError:
                 return ''
 
-        if name in _REG_SYS_CLIPBOARD_ALL:
+        if name in _CLIPBOARD_ALL:
             return [get_clipboard()]
 
-        if ((name not in (_REG_UNNAMED, _REG_SMALL_DELETE)) and (name in _REG_SPECIAL)):
+        if ((name not in (_UNNAMED, _SMALL_DELETE)) and (name in _SPECIAL)):
             return
 
         # Special case lumped among these --user always wants the sys clipboard
-        if ((name == _REG_UNNAMED) and (self.settings.view['vintageous_use_sys_clipboard'] is True)):
+        if ((name == _UNNAMED) and (self.settings.view['vintageous_use_sys_clipboard'] is True)):
             return [get_clipboard()]
 
         # If the expression register holds a value and we're requesting the
         # unnamed register, return the expression register and clear it
         # aftwerwards.
-        if name == _REG_UNNAMED and _data.get(_REG_EXPRESSION, ''):
-            value = _data[_REG_EXPRESSION]
-            _data[_REG_EXPRESSION] = ''
+        if name == _UNNAMED and _data.get(_EXPRESSION, ''):
+            value = _data[_EXPRESSION]
+            _data[_EXPRESSION] = ''
 
             return value
 
@@ -216,49 +237,54 @@ class Registers:
         except KeyError:
             pass
 
-    def yank(self, synthetize_new_line_at_eof=False, yanks_linewise=False, populates_small_delete_register=False, register=None, operation='yank'):  # noqa: E501
-        # Args:
-        #   cmd (ViTextCommandBase)
-        #   register (str)
-        #   operation (str)
-        #
-        # Returns:
-        #   None
-        #
-        # Raises:
-        #   ValueError:
-        #       If operation is not supported.
-        if register == _REG_BLACK_HOLE:
+    def op_yank(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
+        self._op(new_line_at_eof, linewise, small_delete, register, operation='yank')
+
+    def op_delete(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
+        self._op(new_line_at_eof, linewise, small_delete, register, operation='delete')
+
+    def _op(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None, operation=None):
+        if register == _BLACK_HOLE:
             return
 
-        # Populate registers if we have to.
-        if register and register != _REG_UNNAMED:
-            self[register] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
+        selected_text = self._get_selected_text(new_line_at_eof, linewise)
+
+        if register and register != _UNNAMED:
+            self[register] = selected_text
         else:
-            self[_REG_UNNAMED] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
+            self[_UNNAMED] = selected_text
 
-            # if yanking, the 0 register gets set
-            if operation == 'yank':
-                _data['0'] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
-
-            # if changing or deleting, the numbered registers get set
-            elif operation in ('change', 'delete'):
+            if operation == 'yank':  # if yanking, the 0 register gets set
+                _data['0'] = selected_text
+            elif operation in ('change', 'delete'):  # if changing or deleting, the numbered registers get set
                 # TODO: very inefficient
-                _data['1-9'].insert(0, self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise))
-
+                _data['1-9'].insert(0, selected_text)
                 if len(_data['1-9']) > 10:
                     _data['1-9'].pop()
-
             else:
                 raise ValueError('unsupported operation: ' + operation)
 
         # XXX: Small register delete. Improve this implementation.
-        if populates_small_delete_register:
+        if small_delete:
             is_same_line = (lambda r: self.view.line(r.begin()) == self.view.line(r.end() - 1))
             if all(is_same_line(x) for x in list(self.view.sel())):
-                self[_REG_SMALL_DELETE] = self.get_selected_text(synthetize_new_line_at_eof, yanks_linewise)
+                self[_SMALL_DELETE] = selected_text
 
-    def get_selected_text(self, synthetize_new_line_at_eof=False, yanks_linewise=False):  # noqa: E501
+    def get_for_paste(self, register, mode):
+        if not register:
+            register = _UNNAMED
+
+        values = self[register]
+
+        # Populate unnamed register with the text we're about to paste into (the
+        # text we're about to replace), but only if there was something in
+        # requested register (not empty), and we're in VISUAL mode.
+        if values and (mode == VISUAL):
+            self[_UNNAMED] = self._get_selected_text(new_line_at_eof=True)
+
+        return values
+
+    def _get_selected_text(self, new_line_at_eof=False, linewise=False):
         # Inspect settings and populate registers as needed.
         #
         # Args:
@@ -269,12 +295,12 @@ class Registers:
         fragments = [self.view.substr(r) for r in list(self.view.sel())]
 
         # Add new line at EOF, but don't add too many new lines.
-        if (synthetize_new_line_at_eof and not yanks_linewise):
+        if (new_line_at_eof and not linewise):
             # XXX: It appears regions can end beyond the buffer's EOF (?).
             if (not fragments[-1].endswith('\n') and self.view.sel()[-1].b >= self.view.size()):
                 fragments[-1] += '\n'
 
-        if fragments and yanks_linewise:
+        if fragments and linewise:
             for i, f in enumerate(fragments):
                 # When should we add a newline character? Always except when we
                 # have a non-\n-only string followed by a newline char.
@@ -284,8 +310,7 @@ class Registers:
         return fragments
 
     def to_dict(self):
-        # XXX: Stopgap solution until we sublass from dict
-        return {name: self.get(name) for name in _REG_ALL}
+        return {name: self.get(name) for name in _ALL}
 
     def __getitem__(self, key):
         return self.get(key)

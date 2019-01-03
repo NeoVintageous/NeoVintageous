@@ -2993,15 +2993,14 @@ class ViRepeatSearchForward(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_repeat_buffer_search'
-        cmd['motion_args'] = {
-            'mode': state.mode,
-            'count': state.count,
-            'reverse': False
+        return {
+            'motion': '_vi_repeat_buffer_search',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'reverse': False
+            }
         }
-
-        return cmd
 
 
 @keys.assign(seq=seqs.BIG_N, modes=_MODES_MOTION)
@@ -3012,15 +3011,14 @@ class ViRepeatSearchBackward(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['motion'] = '_vi_repeat_buffer_search'
-        cmd['motion_args'] = {
-            'mode': state.mode,
-            'count': state.count,
-            'reverse': True
+        return {
+            'motion': '_vi_repeat_buffer_search',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'reverse': True
+            }
         }
-
-        return cmd
 
 
 @keys.assign(seq=seqs.STAR, modes=_MODES_MOTION)

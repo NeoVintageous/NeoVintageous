@@ -246,6 +246,16 @@ def last_row(view):
     return view.rowcol(view.size())[0]
 
 
+_tranlsate_char_map = {
+    '<enter>': '\n',
+    '<cr>': '\n',
+    '<sp>': ' ',
+    '<space>': ' ',
+    '<lt>': '<',
+    '<tab>': '\t'
+}
+
+
 def translate_char(char):
     # type: (str) -> str
     lchar = char.lower()
@@ -253,16 +263,10 @@ def translate_char(char):
     # TODO [bug] ??? What happens to keys like <home>, <up>, etc? We shouln't be
     # able to use those in some contexts, like as arguments to f, t...
 
-    if lchar in ('<enter>', '<cr>'):
-        return '\n'
-    elif lchar in ('<sp>', '<space>'):
-        return ' '
-    elif lchar == '<lt>':
-        return '<'
-    elif lchar == '<tab>':
-        return '\t'
-    else:
-        return char
+    if lchar in _tranlsate_char_map:
+        return _tranlsate_char_map[lchar]
+
+    return char
 
 
 @contextmanager

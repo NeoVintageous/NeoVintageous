@@ -23,18 +23,6 @@ from NeoVintageous.nv.vi import cmd_defs
 
 class TestState(unittest.ViewTestCase):
 
-    def test_is_in_any_visual_mode(self):
-        self.assertEqual(self.state.in_any_visual_mode(), False)
-
-        self.state.mode = unittest.NORMAL
-        self.assertEqual(self.state.in_any_visual_mode(), False)
-        self.state.mode = unittest.VISUAL
-        self.assertEqual(self.state.in_any_visual_mode(), True)
-        self.state.mode = unittest.VISUAL_LINE
-        self.assertEqual(self.state.in_any_visual_mode(), True)
-        self.state.mode = unittest.VISUAL_BLOCK
-        self.assertEqual(self.state.in_any_visual_mode(), True)
-
     def _assertDefaultMode(self, mode):
         # The default mode assertion can sometimes fail.
         #
@@ -215,60 +203,59 @@ class TestStateModeNames(unittest.ViewTestCase):
 
 class TestStateRunnability(unittest.ViewTestCase):
 
-    def test_can_run_action(self):
-        self.assertEqual(self.state.can_run_action(), None)
-
-        self.state.mode = unittest.VISUAL
-        self.assertEqual(self.state.can_run_action(), None)
-
-        self.state.action = cmd_defs.ViDeleteByChars()
-        self.state.mode = unittest.VISUAL
-        self.assertEqual(self.state.can_run_action(), True)
-
-        self.state.action = cmd_defs.ViDeleteLine()
-        self.state.mode = unittest.VISUAL
-        self.assertEqual(self.state.can_run_action(), True)
-
-        self.state.mode = unittest.NORMAL
-        self.state.action = cmd_defs.ViDeleteByChars()
-        self.assertEqual(self.state.can_run_action(), None)
-
-        self.state.mode = unittest.NORMAL
-        self.state.action = cmd_defs.ViDeleteLine()
-        self.assertEqual(self.state.can_run_action(), True)
-
     def test_runnable_if_action_and_motion_available(self):
         self.state.mode = unittest.NORMAL
         self.state.action = cmd_defs.ViDeleteLine()
         self.state.motion = cmd_defs.ViMoveRightByChars()
         self.assertEqual(self.state.runnable(), True)
 
-        self.state.mode = 'junk'
+    def test_runnable_raises_exception_if_action_and_motion_available_but_has_invalid_mode(self):
+        self.state.mode = 'foobar'
         self.state.action = cmd_defs.ViDeleteByChars()
         self.state.motion = cmd_defs.ViMoveRightByChars()
-        self.assertRaises(ValueError, self.state.runnable)
+        self.assertRaisesRegex(ValueError, 'invalid mode', self.state.runnable)
+
+    def test_runnable_if_action_available(self):
+        self.state.mode = unittest.NORMAL
+        self.state.action = cmd_defs.ViDeleteLine()
+        self.assertEqual(self.state.runnable(), True)
+        self.state.action = cmd_defs.ViDeleteByChars()
+        self.assertEqual(self.state.runnable(), False)
+
+    def test_runnable_raises_exception_if_action_available_but_has_invalid_mode(self):
+        self.state.mode = unittest.OPERATOR_PENDING
+        self.state.action = cmd_defs.ViDeleteLine()
+        self.assertRaisesRegex(ValueError, 'action has invalid mode', self.state.runnable)
+
+    def test_runnable_if_action_motion_not_required_in_visual_returns_true(self):
+        self.state.mode = unittest.VISUAL
+        self.state.action = cmd_defs.ViDeleteLine()
+        self.assertEqual(self.state.runnable(), True)
+
+    def test_runnable_if_action_motion_not_required_not_visual_returns_true(self):
+        self.state.mode = unittest.NORMAL
+        self.state.action = cmd_defs.ViDeleteLine()
+        self.assertEqual(self.state.runnable(), True)
+
+    def test_runnable_if_action_motion_is_required_in_visual_returns_true(self):
+        self.state.mode = unittest.VISUAL
+        self.state.action = cmd_defs.ViDeleteByChars()
+        self.assertEqual(self.state.runnable(), True)
+
+    def test_runnable_if_action_motion_is_required_not_in_visual_returns_false(self):
+        self.state.mode = unittest.NORMAL
+        self.state.action = cmd_defs.ViDeleteByChars()
+        self.assertEqual(self.state.runnable(), False)
 
     def test_runnable_if_motion_available(self):
         self.state.mode = unittest.NORMAL
         self.state.motion = cmd_defs.ViMoveRightByChars()
         self.assertEqual(self.state.runnable(), True)
 
+    def test_runnable_raises_exception_if_motion_available_but_has_invalid_mode(self):
         self.state.mode = unittest.OPERATOR_PENDING
         self.state.motion = cmd_defs.ViMoveRightByChars()
-        self.assertRaises(ValueError, self.state.runnable)
-
-    def test_runnable_if_action_available(self):
-        self.state.mode = unittest.NORMAL
-        self.state.action = cmd_defs.ViDeleteLine()
-        self.assertEqual(self.state.runnable(), True)
-
-        self.state.action = cmd_defs.ViDeleteByChars()
-        self.assertEqual(self.state.runnable(), False)
-
-        self.state.mode = unittest.OPERATOR_PENDING
-        # ensure we can run the action
-        self.state.action = cmd_defs.ViDeleteLine()
-        self.assertRaises(ValueError, self.state.runnable)
+        self.assertRaisesRegex(ValueError, 'motion has invalid mode', self.state.runnable)
 
 
 class TestStateSetCommand(unittest.ViewTestCase):

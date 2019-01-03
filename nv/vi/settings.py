@@ -63,6 +63,12 @@ def _set_generic_view_setting(view, name, value, opt, globally=False):
         save_settings('Preferences.sublime-settings')
 
 
+def _set_auto_indent(view, name, value, opt, globally=False):
+    prefs = load_settings('Preferences.sublime-settings')
+    prefs.set('auto_indent', opt.parser(value))
+    save_settings('Preferences.sublime-settings')
+
+
 def _set_minimap(view, name, value, opt, globally=False):
     view.window().run_command('toggle_minimap')
 
@@ -100,7 +106,7 @@ def _opt_rulers_parser(value):
 
 
 _VI_OPTIONS = {
-    'autoindent': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=None, action=_set_generic_view_setting, negatable=False),  # FIXME # noqa: E501
+    'autoindent': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_auto_indent, negatable=True),  # noqa: E501
     'hlsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'ignorecase': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'incsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
@@ -111,6 +117,20 @@ _VI_OPTIONS = {
     'showminimap': _vi_user_setting(scope=_SCOPE_WINDOW, values=(True, False, '0', '1'), default=True, parser=None, action=_set_minimap, negatable=True),  # FIXME # noqa: E501
     'showsidebar': _vi_user_setting(scope=_SCOPE_WINDOW, values=(True, False, '0', '1'), default=True, parser=None, action=_set_sidebar, negatable=True),  # FIXME # noqa: E501
 }
+
+
+_VI_OPTION_ALIASES = {
+    'ai': 'autoindent',
+    'hls': 'hlsearch',
+    'ic': 'ignorecase',
+}
+
+
+def _resolve_option_alias(name):
+    if name in _VI_OPTION_ALIASES:
+        return _VI_OPTION_ALIASES[name]
+
+    return name
 
 
 # For completions.
@@ -126,6 +146,8 @@ def iter_settings(prefix=''):
 
 
 def set_local(view, name, value):
+    name = _resolve_option_alias(name)
+
     try:
         opt = _VI_OPTIONS[name]
         if not value and opt.negatable:
@@ -135,9 +157,11 @@ def set_local(view, name, value):
     except KeyError:
         if name.startswith('no'):
             try:
-                opt = _VI_OPTIONS[name[2:]]
+                name = _resolve_option_alias(name[2:])
+                opt = _VI_OPTIONS[name]
                 if opt.negatable:
-                    opt.action(view, name[2:], '0', opt)
+                    opt.action(view, name, '0', opt)
+
                 return
             except KeyError:
                 pass
@@ -145,6 +169,8 @@ def set_local(view, name, value):
 
 
 def set_global(view, name, value):
+    name = _resolve_option_alias(name)
+
     try:
         opt = _VI_OPTIONS[name]
         if not value and opt.negatable:
@@ -154,9 +180,11 @@ def set_global(view, name, value):
     except KeyError:
         if name.startswith('no'):
             try:
-                opt = _VI_OPTIONS[name[2:]]
+                name = _resolve_option_alias(name[2:])
+                opt = _VI_OPTIONS[name]
                 if opt.negatable:
-                    opt.action(view, name[2:], '0', opt, globally=True)
+                    opt.action(view, name, '0', opt, globally=True)
+
                 return
             except KeyError:
                 pass
@@ -164,6 +192,8 @@ def set_global(view, name, value):
 
 
 def _get_option(view, name):
+    name = _resolve_option_alias(name)
+
     try:
         option_data = _VI_OPTIONS[name]
     except KeyError:

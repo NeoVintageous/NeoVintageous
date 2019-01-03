@@ -83,14 +83,15 @@ class ViCommandDefBase:
         """
         instance = cls()
         instance.__dict__.update(data)
+
         return instance
 
     def serialize(self):
         """Return a valid Json object representing this command in a format NeoVintageous uses internally."""
-        data = {'name': self.__class__.__name__,
-                'data': {k: v for k, v in self.__dict__.items() if k in self._serializable}}
-
-        return data
+        return {
+            'name': self.__class__.__name__,
+            'data': {k: v for k, v in self.__dict__.items() if k in self._serializable}
+        }
 
 
 class ViMissingCommandDef(ViCommandDefBase):

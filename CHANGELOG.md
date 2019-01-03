@@ -2,6 +2,14 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+* Fixed [#23](https://github.com/NeoVintageous/NeoVintageous/issues/23): `:set autoindent`
+* Fixed [#35](https://github.com/NeoVintageous/NeoVintageous/issues/35): `:set ic` and `:set noic` has no effect
+* Fixed [#368](https://github.com/NeoVintageous/NeoVintageous/issues/368): Disabling `vintageous_hlsearch` appears to have no effect
+* Fixed [#388](https://github.com/NeoVintageous/NeoVintageous/issues/388): Executing register while recording causes recursion error
+* Fixed [#94](https://github.com/NeoVintageous/NeoVintageous/issues/94): Executing a register with a count, `[count]@q{register}` doesn't work
+
 ## 1.7.1 - 2018-12-24
 
 * Fixed [#377](https://github.com/NeoVintageous/NeoVintageous/issues/377): Add backtick mark jumps to jumplist
