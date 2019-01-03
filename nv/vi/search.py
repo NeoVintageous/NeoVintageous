@@ -222,10 +222,6 @@ class BufferSearchBase(sublime_plugin.TextCommand):
             self.view.erase_regions('vi_search_current')
             return
 
-        # TODO: Re-enable hlsearch toggle setting.
-        # if State(self.view).settings.vi['hlsearch'] == False:
-        #     return
-
         sels = self.view.sel()
         regions_current = []
         for region in regions:
@@ -236,20 +232,20 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         # The scopes are prefixed with common color scopes so that color schemes
         # have sane default colors. Color schemes can progressively enhance
         # support by using the nv_* scopes.
+        if self.view.settings().get('vintageous_hlsearch'):
+            self.view.add_regions(
+                'vi_search',
+                regions,
+                scope='string neovintageous_search_occ',
+                flags=ui_region_flags(self.view.settings().get('neovintageous_search_occ_style'))
+            )
 
-        self.view.add_regions(
-            'vi_search',
-            regions,
-            scope='string neovintageous_search_occ',
-            flags=ui_region_flags(self.view.settings().get('neovintageous_search_occ_style'))
-        )
-
-        self.view.add_regions(
-            'vi_search_current',
-            regions_current,
-            scope='support.function neovintageous_search_cur',
-            flags=ui_region_flags(self.view.settings().get('neovintageous_search_cur_style'))
-        )
+            self.view.add_regions(
+                'vi_search_current',
+                regions_current,
+                scope='support.function neovintageous_search_cur',
+                flags=ui_region_flags(self.view.settings().get('neovintageous_search_cur_style'))
+            )
 
 
 # TODO [refactor] Move to commands module
