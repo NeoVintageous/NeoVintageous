@@ -200,6 +200,6 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
     if not command:
         command = seq_to_command(state, seq, mode=mode)
 
-    _log.debug('resolved %s -> %s -> %s', sequence, seq, command)
+    _log.debug('resolved %s (sequence) -> %s -> %s', sequence, seq, command)
 
     return command

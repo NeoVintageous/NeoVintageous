@@ -258,6 +258,18 @@ class _nv_run_cmds(TextCommand):
 class _nv_feed_key(ViWindowCommandBase):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
+        start_time = time.time()
+
+        _log.info('key evt: %s repeat_count=%s do_eval=%s check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
+
+        try:
+            self._feed_key(key, repeat_count, do_eval, check_user_mappings)
+        except Exception as e:
+            _log.exception(e)
+
+        _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
+
+    def _feed_key(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         # Args:
         #   key (str): Key pressed.
         #   repeat_count (int): Count to be used when repeating through the '.' command.
@@ -267,8 +279,6 @@ class _nv_feed_key(ViWindowCommandBase):
         #       state's evaluation. For example, this is what the _nv_feed_key
         #       command does.
         #   check_user_mappings (bool):
-        start_time = time.time()
-        _log.info('key evt: %s repeat_count=%s do_eval=%s check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
         state = self.state
 
         # If the user has made selections with the mouse, we may be in an
@@ -283,7 +293,6 @@ class _nv_feed_key(ViWindowCommandBase):
         if key.lower() == '<esc>':
             self.window.run_command('_enter_normal_mode', {'mode': state.mode})
             state.reset_command_data()
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
             return
 
@@ -294,7 +303,6 @@ class _nv_feed_key(ViWindowCommandBase):
             _log.debug('capturing register name...')
             state.register = key
             state.partial_sequence = ''
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
             return
 
@@ -308,8 +316,6 @@ class _nv_feed_key(ViWindowCommandBase):
                     state.eval()
                     state.reset_command_data()
 
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
-
             return
 
         if repeat_count:
@@ -317,7 +323,6 @@ class _nv_feed_key(ViWindowCommandBase):
 
         if self._handle_count(state, key, repeat_count):
             _log.debug('handled count')
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
             return
 
@@ -325,16 +330,15 @@ class _nv_feed_key(ViWindowCommandBase):
 
         if check_user_mappings and mappings_is_incomplete(state.mode, state.partial_sequence):
             _log.debug('found incomplete mapping')
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
             return
 
         command = mappings_resolve(state, check_user_mappings=check_user_mappings)
+        _log.debug('command %s %s', command, command.__class__.__mro__)
 
         if isinstance(command, ViOpenRegister):
             _log.debug('opening register...')
             state.must_capture_register_name = True
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
             return
 
@@ -361,13 +365,10 @@ class _nv_feed_key(ViWindowCommandBase):
 
                 if ':' in new_keys:
                     do_ex_user_cmdline(self.window, new_keys)
-                    _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
                     return
 
                 self.window.run_command('_nv_process_notation', {'keys': new_keys, 'check_user_mappings': False})
-
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
             return
 
@@ -375,7 +376,6 @@ class _nv_feed_key(ViWindowCommandBase):
             # Keep collecting input to complete the sequence. For example, we
             # may have typed 'g'
             _log.info('opening namespace')
-            _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
             return
 
@@ -399,7 +399,6 @@ class _nv_feed_key(ViWindowCommandBase):
                 _log.debug('unmapped sequence %s', state.sequence)
                 state.mode = NORMAL
                 state.reset_command_data()
-                _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
                 return ui_blink()
 
@@ -415,7 +414,6 @@ class _nv_feed_key(ViWindowCommandBase):
             if isinstance(command, ViMissingCommandDef):
                 _log.debug('unmapped sequence %s', state.sequence)
                 state.reset_command_data()
-                _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
                 return
 
@@ -430,8 +428,6 @@ class _nv_feed_key(ViWindowCommandBase):
         if do_eval:
             _log.info('evaluating state...')
             state.eval()
-
-        _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
 
     def _handle_count(self, state, key, repeat_count):
         """Return True if the processing of the current key needs to stop."""
