@@ -34,7 +34,6 @@ from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.core import IrreversibleTextCommand
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
-from NeoVintageous.nv.vi.registers import is_register_readonly
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import regions_transformer
@@ -2186,9 +2185,6 @@ class _vi_q(IrreversibleTextCommand):
     _register_name = None
 
     def run(self, name=None, mode=None, count=1):
-        if is_register_readonly(name):
-            return
-
         state = State(self.view)
 
         try:
@@ -2196,6 +2192,9 @@ class _vi_q(IrreversibleTextCommand):
                 State.macro_registers[_vi_q._register_name] = list(State.macro_steps)
                 state.stop_recording()
                 _vi_q._register_name = None
+                return
+
+            if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW"'):
                 return
 
             state.start_recording()
@@ -2208,21 +2207,17 @@ class _vi_q(IrreversibleTextCommand):
 
 class _vi_at(IrreversibleTextCommand):
 
-    def run(self, name=None, mode=None, count=1):
-        # TODO [refactor] State.macro_steps
-        # TODO [refactor] State.macro_registers
+    def run(self, name, mode=None, count=1):
+        if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW".=*+'):
+            return
 
-        # TODO Do we need to glue all these edits?
-        cmds = State.macro_steps
-        if name != '@':
-            try:
-                cmds = State.macro_registers[name]
-                State.macro_steps = cmds
-            except KeyError:
-                # TODO Should emit bell (if enabled) because no register
-                pass
-            except ValueError as e:
-                return console_message('error: %s' % e)
+        try:
+            cmds = State.macro_registers[name]
+        except (KeyError, ValueError):
+            return
+
+        if not cmds:
+            return
 
         state = State(self.view)
 

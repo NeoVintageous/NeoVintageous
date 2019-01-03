@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased
 
+* Fixed [#388](https://github.com/NeoVintageous/NeoVintageous/issues/388): Executing register while recording causes recursion error
 * Fixed [#94](https://github.com/NeoVintageous/NeoVintageous/issues/94): Executing a register with a count, `[count]@q{register}` doesn't work
 
 ## 1.7.1 - 2018-12-24

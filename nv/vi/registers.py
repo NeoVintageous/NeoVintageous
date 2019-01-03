@@ -94,10 +94,6 @@ def init_register_data():
 _data = init_register_data()
 
 
-def is_register_readonly(char):
-    return char in _READ_ONLY
-
-
 # Registers hold global data used mainly by yank, delete and paste.
 #
 # This class is meant to be used a descriptor.
