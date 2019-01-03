@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased
 
+* Fixed [#23](https://github.com/NeoVintageous/NeoVintageous/issues/23): `:set autoindent`
 * Fixed [#35](https://github.com/NeoVintageous/NeoVintageous/issues/35): `:set ic` and `:set noic` has no effect
 * Fixed [#368](https://github.com/NeoVintageous/NeoVintageous/issues/368): Disabling `vintageous_hlsearch` appears to have no effect
 * Fixed [#388](https://github.com/NeoVintageous/NeoVintageous/issues/388): Executing register while recording causes recursion error
