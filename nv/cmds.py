@@ -847,15 +847,12 @@ class NeovintageousReloadMyRcFileCommand(WindowCommand):
     def run(self):
         rc.reload()
 
-        status_message('runtime configuation file reloaded')
-
 
 class NeovintageousToggleSideBarCommand(WindowCommand):
 
     def run(self):
         self.window.run_command('toggle_side_bar')
 
-        # Requires >= Sublime Text 3115 (is_sidebar_visible we added in 3115).
         if self.window.is_sidebar_visible():
             self.window.run_command('focus_side_bar')
         else:

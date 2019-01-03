@@ -50,7 +50,6 @@ _recursive_mapping_alts = {
 
 
 def _file_name():
-    # TODO v2.0.0 Rename .vintageousrc file -> .neovintageousrc
     return os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
 
 
@@ -83,7 +82,9 @@ def _run():
             for line in f:
                 cmdline = _parse_line(line)
                 if cmdline:
-                    # TODO [review] Should do_ex_cmdline() make the colon optional?
+                    # The line parser strips command lines prefixed with ":"
+                    # (colon), but do_ex_cmdline() requires command lines to
+                    # begin with a colon.
                     do_ex_cmdline(window, ':' + cmdline)
 
     except FileNotFoundError:
