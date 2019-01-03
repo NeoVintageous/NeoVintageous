@@ -497,10 +497,6 @@ CTRL-[ -> Esc: >
         squiggly_underline
         stippled_underline
 
-                                                     *'vintageous_autoindent'*
-'vintageous_autoindent' boolean (default on)
-        See 'autoindent'.
-
                                                        *'vintageous_hlsearch'*
 'vintageous_hlsearch'   boolean (default on)
         See 'hlsearch'.

@@ -63,6 +63,12 @@ def _set_generic_view_setting(view, name, value, opt, globally=False):
         save_settings('Preferences.sublime-settings')
 
 
+def _set_auto_indent(view, name, value, opt, globally=False):
+    prefs = load_settings('Preferences.sublime-settings')
+    prefs.set('auto_indent', opt.parser(value))
+    save_settings('Preferences.sublime-settings')
+
+
 def _set_minimap(view, name, value, opt, globally=False):
     view.window().run_command('toggle_minimap')
 
@@ -100,7 +106,7 @@ def _opt_rulers_parser(value):
 
 
 _VI_OPTIONS = {
-    'autoindent': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=None, action=_set_generic_view_setting, negatable=False),  # FIXME # noqa: E501
+    'autoindent': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_auto_indent, negatable=True),  # noqa: E501
     'hlsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'ignorecase': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=False, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
     'incsearch': _vi_user_setting(scope=_SCOPE_VI_VIEW, values=(True, False, '0', '1'), default=True, parser=_opt_bool_parser, action=_set_generic_view_setting, negatable=True),  # FIXME # noqa: E501
@@ -114,6 +120,8 @@ _VI_OPTIONS = {
 
 
 _VI_OPTION_ALIASES = {
+    'ai': 'autoindent',
+    'hls': 'hlsearch',
     'ic': 'ignorecase',
     'hls': 'hlsearch',
 }
