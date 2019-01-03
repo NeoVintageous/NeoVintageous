@@ -836,9 +836,8 @@ def ex_registers(window, view, **kwargs):
                 lines = v[0].splitlines()
                 value = '^J'.join(lines)
 
-                # The splitlines function will remove a final newline, if
-                # present. So joining the lines with the join-line indicator
-                # (^J) may be missing a final join-line indicator.
+                # The splitlines function will remove any trailing newlines. We
+                # need to append one if splitlines() removed a trailing one.
                 if len(''.join(lines)) < len(v[0]):
                     value += '^J'
 

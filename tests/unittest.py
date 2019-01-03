@@ -350,7 +350,7 @@ class ViewTestCase(unittest.TestCase):
         #   name (str):
         #       The name of the register.
         #   expected (str)
-        actual = self.state.registers.get(name)
+        actual = self.state.registers[name]
         # XXX registers.get() returns a list (not sure why that's useful); it doesn't look like we need it for the tests (also see register()).  # noqa: E501
         self.assertEqual(1, len(actual), 'expected only one value for the named register {}'.format(name))
         self.assertEqual(actual[0], expected, msg)
