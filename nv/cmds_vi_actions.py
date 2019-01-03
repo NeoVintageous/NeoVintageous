@@ -1731,32 +1731,28 @@ class _vi_p(ViTextCommandBase):
 class _vi_ga(ViWindowCommandBase):
 
     def run(self):
-
-        def character_to_notation(character):
-            # Convert a character to a key notation. Uses vim key notation.
+        def char_to_notation(char):
+            # Convert a char to a key notation. Uses vim key notation.
             # See https://vimhelp.appspot.com/intro.txt.html#key-notation
-            character_notation_map = {
-                "\0": "Nul",
+            char_notation_map = {
+                "\\0": "Nul",
                 " ": "Space",
-                "\t": "Tab",
-                "\n": "NL"
+                "\\t": "Tab",
+                "\\n": "NL"
             }
 
-            if character in character_notation_map:
-                character = character_notation_map[character]
+            if char in char_notation_map:
+                char = char_notation_map[char]
 
-            return "<" + character + ">"
+            return "<" + char + ">"
 
         view = self.window.active_view()
-
         for region in view.sel():
-
             c_str = view.substr(region.begin())
             c_ord = ord(c_str)
             c_hex = hex(c_ord)
             c_oct = oct(c_ord)
-            c_not = character_to_notation(c_str)
-
+            c_not = char_to_notation(c_str)
             status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
