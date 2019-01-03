@@ -115,6 +115,7 @@ _VI_OPTIONS = {
 
 _VI_OPTION_ALIASES = {
     'ic': 'ignorecase',
+    'hls': 'hlsearch',
 }
 
 
