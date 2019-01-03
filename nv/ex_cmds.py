@@ -859,10 +859,8 @@ def ex_set(view, option, value, **kwargs):
 
     try:
         set_global(view, option, value)
-    except KeyError:
-        status_message('no such option')
-    except ValueError:
-        status_message('invalid value for option')
+    except (KeyError, ValueError):
+        status_message('E518: Unknown option: ' + option)
 
 
 def ex_setlocal(view, option, value, **kwargs):
@@ -871,10 +869,8 @@ def ex_setlocal(view, option, value, **kwargs):
 
     try:
         set_local(view, option, value)
-    except KeyError:
-        status_message('no such option')
-    except ValueError:
-        status_message('invalid value for option')
+    except (KeyError, ValueError):
+        status_message('E518: Unknown option: ' + option)
 
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
