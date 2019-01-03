@@ -113,6 +113,18 @@ _VI_OPTIONS = {
 }
 
 
+_VI_OPTION_ALIASES = {
+    'ic': 'ignorecase',
+}
+
+
+def _resolve_option_alias(name):
+    if name in _VI_OPTION_ALIASES:
+        return _VI_OPTION_ALIASES[name]
+
+    return name
+
+
 # For completions.
 def iter_settings(prefix=''):
     if prefix.startswith('no'):
@@ -126,6 +138,8 @@ def iter_settings(prefix=''):
 
 
 def set_local(view, name, value):
+    name = _resolve_option_alias(name)
+
     try:
         opt = _VI_OPTIONS[name]
         if not value and opt.negatable:
@@ -135,9 +149,11 @@ def set_local(view, name, value):
     except KeyError:
         if name.startswith('no'):
             try:
-                opt = _VI_OPTIONS[name[2:]]
+                name = _resolve_option_alias(name[2:])
+                opt = _VI_OPTIONS[name]
                 if opt.negatable:
-                    opt.action(view, name[2:], '0', opt)
+                    opt.action(view, name, '0', opt)
+
                 return
             except KeyError:
                 pass
@@ -145,6 +161,8 @@ def set_local(view, name, value):
 
 
 def set_global(view, name, value):
+    name = _resolve_option_alias(name)
+
     try:
         opt = _VI_OPTIONS[name]
         if not value and opt.negatable:
@@ -154,9 +172,11 @@ def set_global(view, name, value):
     except KeyError:
         if name.startswith('no'):
             try:
-                opt = _VI_OPTIONS[name[2:]]
+                name = _resolve_option_alias(name[2:])
+                opt = _VI_OPTIONS[name]
                 if opt.negatable:
-                    opt.action(view, name[2:], '0', opt, globally=True)
+                    opt.action(view, name, '0', opt, globally=True)
+
                 return
             except KeyError:
                 pass
@@ -164,6 +184,8 @@ def set_global(view, name, value):
 
 
 def _get_option(view, name):
+    name = _resolve_option_alias(name)
+
     try:
         option_data = _VI_OPTIONS[name]
     except KeyError:

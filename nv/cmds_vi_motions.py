@@ -353,8 +353,6 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         start = current_sel.b if not current_sel.empty() else current_sel.b + 1
         wrapped_end = self.view.size()
 
-        # TODO: What should we do here? Case-sensitive or case-insensitive search? Configurable?
-        # Search wrapping around the end of the buffer.
         flags = self.calculate_flags()
         match = find_wrapping(self.view, search_string, start, wrapped_end, flags=flags, times=count)
         if not match:
