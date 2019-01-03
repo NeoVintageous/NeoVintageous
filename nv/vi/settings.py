@@ -123,7 +123,6 @@ _VI_OPTION_ALIASES = {
     'ai': 'autoindent',
     'hls': 'hlsearch',
     'ic': 'ignorecase',
-    'hls': 'hlsearch',
 }
 
 
