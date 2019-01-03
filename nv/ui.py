@@ -145,7 +145,7 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
         'Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
 
 
-_region_flags = {
+_REGION_FLAGS = {
     'fill': DRAW_NO_OUTLINE,
     'outline': DRAW_NO_FILL,
     'squiggly_underline': DRAW_SQUIGGLY_UNDERLINE | DRAW_NO_FILL | DRAW_NO_OUTLINE | DRAW_EMPTY_AS_OVERWRITE,
@@ -155,4 +155,4 @@ _region_flags = {
 
 
 def ui_region_flags(name):
-    return _region_flags.get(name)
+    return _REGION_FLAGS.get(name)

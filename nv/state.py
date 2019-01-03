@@ -656,10 +656,13 @@ class State(object):
         #   ValueError: Unexpected command type.
         assert isinstance(command, ViCommandDefBase), 'ViCommandDefBase expected, got {}'.format(type(command))  # FIXME # noqa: E501
 
+        is_runnable = self.runnable()
+
         if isinstance(command, ViMotionDef):
-            if self.runnable():
+            if is_runnable:
                 # We already have a motion, so this looks like an error.
                 raise ValueError('too many motions')
+
             self.motion = command
 
             if self.mode == OPERATOR_PENDING:
@@ -668,9 +671,10 @@ class State(object):
             self._set_parsers(command)
 
         elif isinstance(command, ViOperatorDef):
-            if self.runnable():
+            if is_runnable:
                 # We already have an action, so this looks like an error.
                 raise ValueError('too many actions')
+
             self.action = command
 
             if (self.action.motion_required and not is_visual_mode(self.mode)):

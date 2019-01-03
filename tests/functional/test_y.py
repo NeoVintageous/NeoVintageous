@@ -24,11 +24,13 @@ class Test_y(unittest.FunctionalTestCase):
         self.eq('x|ab|x', 'v_y', 'n_x|abx')
         self.assertRegister('"', 'ab')
 
+    def test_v_y_should_not_capture_newline(self):
         self.eq('x|ab|\nx', 'v_y', 'n_x|ab\nx')
-        self.assertRegister('"', 'ab', 'should not capture newline')
+        self.assertRegister('"', 'ab')
 
+    def test_v_y_should_capture_newline(self):
         self.eq('x|ab\n|x', 'v_y', 'n_x|ab\nx')
-        self.assertRegister('"', 'ab\n', 'should capture newline')
+        self.assertRegister('"', 'ab\n')
 
     def test_yiw(self):
         self.eq('x wo|rd x', 'yiw', 'x |word x')
@@ -38,5 +40,6 @@ class Test_y(unittest.FunctionalTestCase):
         self.eq('x a|b x', 'y$', 'x a|b x')
         self.assertRegister('"', 'b x')
 
+    def test_ydollar_should_not_include_eol_newline(self):
         self.eq('x a|b x\n', 'y$', 'x a|b x\n')
-        self.assertRegister('"', 'b x', 'should not include eol newline')
+        self.assertRegister('"', 'b x')

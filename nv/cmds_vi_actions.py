@@ -39,7 +39,6 @@ from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -843,7 +842,6 @@ class _vi_visual_o(ViTextCommandBase):
         self.view.show(self.view.sel()[0].b, False)
 
 
-# TODO: is this really a text command?
 class _vi_yy(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
@@ -1264,6 +1262,7 @@ class _vi_r(ViTextCommandBase):
         new_frags = []
         for fr in frags:
             new_frags.append(char * len(fr))
+
         return '\n'.join(new_frags)
 
     def run(self, edit, mode=None, count=1, register=None, char=None):
