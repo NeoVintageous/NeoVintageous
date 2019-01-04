@@ -4,6 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.7.3 - Unreleased
 
+* Fixed [#391](https://github.com/NeoVintageous/NeoVintageous/issues/391): `c{motion}` should fill the numbered registers
+* Fixed [#390](https://github.com/NeoVintageous/NeoVintageous/issues/390): `cc` should fill the numbered registers
 * Fixed [#389](https://github.com/NeoVintageous/NeoVintageous/issues/389): `dd` on last line leaves cursor at eof
 
 ## 1.7.2 - 2019-01-04

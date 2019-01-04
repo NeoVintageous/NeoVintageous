@@ -18,23 +18,12 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_cc(unittest.FunctionalTestCase):
+class Test_c(unittest.FunctionalTestCase):
 
-    def test_cc(self):
-        self.register('-', 'x')
-        self.eq('|aaa\nbbb\nccc', 'cc', 'i_|\nbbb\nccc')
-        self.eq('aaa\nbb|b\nccc', 'cc', 'i_aaa\n|\nccc')
-        self.eq('aaa\nbbb\n|ccc', 'cc', 'i_aaa\nbbb\n|')
-        self.assertRegister('"', 'ccc\n')
-        self.assertRegister('-', 'x')
-        self.assertRegister('1', 'ccc\n')
-        self.assertRegister('2', 'bbb\n')
-        self.assertRegister('3', 'aaa\n')
-
-    def test_cc_should_not_strip_preceding_whitespace(self):
-        self.eq('    |one', 'cc', 'i_    |')
-        self.eq('one\n  tw|o\nthree\n', 'cc', 'i_one\n  |\nthree\n')
-
-    def test_cc_last_line(self):
-        self.eq('1\ntw|o', 'cc', 'i_1\n|')
-        self.eq('1\ntw|o\n', 'cc', 'i_1\n|\n')
+    def test_cw(self):
+        self.eq('one |two three', 'cw', 'i_one | three')
+        self.eq('one t|wo three', 'cw', 'i_one t| three')
+        self.assertRegister('"', 'wo')
+        self.assertRegister('-', 'wo')
+        self.assertRegister('1', 'wo')
+        self.assertRegister('2', 'two')

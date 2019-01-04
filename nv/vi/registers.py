@@ -240,6 +240,9 @@ class Registers:
     def op_yank(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
         self._op(new_line_at_eof, linewise, small_delete, register, operation='yank')
 
+    def op_change(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
+        self._op(new_line_at_eof, linewise, small_delete, register, operation='change')
+
     def op_delete(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
         self._op(new_line_at_eof, linewise, small_delete, register, operation='delete')
 

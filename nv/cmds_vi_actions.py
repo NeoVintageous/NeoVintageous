@@ -419,7 +419,7 @@ class _vi_c(ViTextCommandBase):
 
                 return
 
-        self.state.registers.op_yank(small_delete=True, register=register)
+        self.state.registers.op_change(small_delete=True, register=register)
         self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
 
@@ -820,7 +820,7 @@ class _vi_cc(ViTextCommandBase):
 
         regions_transformer(self.view, motion)
 
-        self.state.registers.op_yank(linewise=True, new_line_at_eof=True, register=register)
+        self.state.registers.op_change(linewise=True, new_line_at_eof=True, register=register)
 
         if not all(s.empty() for s in self.view.sel()):
             self.view.run_command('right_delete')
