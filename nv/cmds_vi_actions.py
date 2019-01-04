@@ -37,6 +37,7 @@ from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
+from NeoVintageous.nv.vi.utils import previous_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
@@ -381,11 +382,11 @@ class _vi_c(ViTextCommandBase):
         def compact(view, s):
             if view.substr(s).strip():
                 if s.b > s.a:
-                    pt = utils.previous_non_white_space_char(view, s.b - 1, white_space=' \t\n')
+                    pt = previous_non_white_space_char(view, s.b - 1, white_space=' \t\n')
 
                     return Region(s.a, pt + 1)
 
-                pt = utils.previous_non_white_space_char(view, s.a - 1, white_space=' \t\n')
+                pt = previous_non_white_space_char(view, s.a - 1, white_space=' \t\n')
 
                 return Region(pt + 1, s.b)
 
@@ -792,7 +793,7 @@ class _vi_dd(ViTextCommandBase):
             for pt in old:
                 # If on the last char, then pur cursor on previous line
                 if pt == size and self.view.substr(pt) == '\x00':
-                    pt =self.view.text_point(self.view.rowcol(pt)[0], 0)
+                    pt = self.view.text_point(self.view.rowcol(pt)[0], 0)
 
                 pt = next_non_white_space_char(self.view, pt)
                 new.append(pt)
@@ -942,7 +943,7 @@ class _vi_d(ViTextCommandBase):
                     elif motion['motion'] == '_vi_find_in_line':
                         return Region(s.begin())
 
-            return Region(utils.next_non_white_space_char(self.view, s.b))
+            return Region(next_non_white_space_char(self.view, s.b))
 
         if mode == INTERNAL_NORMAL:
             regions_transformer(self.view, advance_to_text_start)
@@ -1002,12 +1003,12 @@ class _vi_big_i(ViTextCommandBase):
                 return Region(pt)
             elif mode == VISUAL_LINE:
                 line = view.line(s.a)
-                pt = utils.next_non_white_space_char(view, line.a)
+                pt = next_non_white_space_char(view, line.a)
                 return Region(pt)
             elif mode != INTERNAL_NORMAL:
                 return s
             line = view.line(s.b)
-            pt = utils.next_non_white_space_char(view, line.a)
+            pt = next_non_white_space_char(view, line.a)
             return Region(pt, pt)
 
         regions_transformer(self.view, f)
@@ -1184,7 +1185,7 @@ class _vi_big_s_action(ViTextCommandBase):
                     if view.line(s.b).size() > 0:
                         eol = view.line(s.b).b
                         begin = view.line(s.b).a
-                        begin = utils.next_non_white_space_char(view, begin, white_space=' \t')
+                        begin = next_non_white_space_char(view, begin, white_space=' \t')
                         return Region(begin, eol)
                     return s
             return s
@@ -1315,7 +1316,7 @@ class _vi_less_than_less_than(ViTextCommandBase):
 
         def action(view, s):
             bol = utils.get_bol(view, s.begin())
-            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+            pt = next_non_white_space_char(view, bol, white_space='\t ')
             return Region(pt)
 
         regions_transformer(self.view, motion)
@@ -1348,7 +1349,7 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
     def run(self, edit, mode=None, count=1):
         def f(view, s):
             bol = utils.get_bol(view, s.begin())
-            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+            pt = next_non_white_space_char(view, bol, white_space='\t ')
             return Region(pt)
 
         def select(view):
@@ -1369,7 +1370,7 @@ class _vi_greater_than(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
             bol = utils.get_bol(view, s.begin())
-            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+            pt = next_non_white_space_char(view, bol, white_space='\t ')
 
             return Region(pt)
 
@@ -1408,7 +1409,7 @@ class _vi_less_than(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
             bol = utils.get_bol(view, s.begin())
-            pt = utils.next_non_white_space_char(view, bol, white_space='\t ')
+            pt = next_non_white_space_char(view, bol, white_space='\t ')
 
             return Region(pt)
 
@@ -1635,7 +1636,7 @@ class _vi_p(ViTextCommandBase):
             self.view.sel().add_all([Region(loc) for loc in pts])
             return
 
-        pts = [utils.next_non_white_space_char(self.view, pt + 1) for pt in pts]
+        pts = [next_non_white_space_char(self.view, pt + 1) for pt in pts]
 
         self.view.sel().add_all([Region(pt) for pt in pts])
 
@@ -2575,11 +2576,11 @@ class _vi_gcc_action(ViTextCommandBase):
             if mode == INTERNAL_NORMAL:
                 view.run_command('toggle_comment')
                 if utils.row_at(self.view, s.a) != utils.row_at(self.view, self.view.size()):
-                    pt = utils.next_non_white_space_char(view, s.a, white_space=' \t')
+                    pt = next_non_white_space_char(view, s.a, white_space=' \t')
                 else:
-                    pt = utils.next_non_white_space_char(view,
-                                                         self.view.line(s.a).a,
-                                                         white_space=' \t')
+                    pt = next_non_white_space_char(view,
+                                                   self.view.line(s.a).a,
+                                                   white_space=' \t')
 
                 return Region(pt, pt)
 
