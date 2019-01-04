@@ -36,6 +36,7 @@ from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_view
+from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
@@ -783,27 +784,26 @@ class _vi_dd(ViTextCommandBase):
 
             return units.lines(view, s, count)
 
-        def do_action(view, s):
-            if mode != INTERNAL_NORMAL:
-                return s
-
-            view.erase(edit, s)
-            pt = utils.next_non_white_space_char(view, view.line(s.a).a, white_space=' \t')
-
-            return Region(pt)
-
-        def set_sel():
+        def fixup_sel_pos():
             old = [s.a for s in list(self.view.sel())]
             self.view.sel().clear()
-            new = [utils.next_non_white_space_char(self.view, pt) for pt in old]
-            self.view.sel().add_all([Region(pt) for pt in new])
+            size = self.view.size()
+            new = []
+            for pt in old:
+                # If on the last char, then pur cursor on previous line
+                if pt == size and self.view.substr(pt) == '\x00':
+                    pt =self.view.text_point(self.view.rowcol(pt)[0], 0)
+
+                pt = next_non_white_space_char(self.view, pt)
+                new.append(pt)
+
+            self.view.sel().add_all(new)
 
         regions_transformer(self.view, do_motion)
 
         self.state.registers.op_delete(linewise=True, new_line_at_eof=True, register=register)
-        # TODO deleting last line leaves the caret at \n
         self.view.run_command('right_delete')
-        set_sel()
+        fixup_sel_pos()
 
 
 class _vi_cc(ViTextCommandBase):
