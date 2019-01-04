@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## 1.7.2 - 2019-01-04
 
 * Fixed [#23](https://github.com/NeoVintageous/NeoVintageous/issues/23): `:set autoindent`
 * Fixed [#35](https://github.com/NeoVintageous/NeoVintageous/issues/35): `:set ic` and `:set noic` has no effect
