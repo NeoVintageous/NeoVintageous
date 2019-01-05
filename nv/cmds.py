@@ -265,9 +265,18 @@ class _nv_feed_key(ViWindowCommandBase):
         try:
             self._feed_key(key, repeat_count, do_eval, check_user_mappings)
         except Exception as e:
+            print('NeoVintageous: An error occurred during key press handle:')
             _log.exception(e)
 
-        _log.debug('key evt took {:.4f}s'.format(time.time() - start_time))
+            import sublime
+            for window in sublime.windows():
+                for view in window.views():
+                    settings = view.settings()
+                    settings.set('command_mode', False)
+                    settings.set('inverse_caret_state', False)
+                    settings.erase('vintage')
+
+        _log.debug('key evt took %ss (key=%s repeat_count=%s do_eval=%s check_user_mappings=%s)', '{:.4f}'.format(time.time() - start_time), key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
 
     def _feed_key(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         # Args:
