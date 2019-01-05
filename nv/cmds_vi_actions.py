@@ -421,7 +421,7 @@ class _vi_c(ViTextCommandBase):
 
                 return
 
-        self.state.registers.op_change(small_delete=True, register=register)
+        self.state.registers.op_change(register=register)
         self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
 
@@ -795,14 +795,11 @@ class _vi_dd(ViTextCommandBase):
                 # If on the last char, then pur cursor on previous line
                 if pt == size and self.view.substr(pt) == '\x00':
                     pt = self.view.text_point(self.view.rowcol(pt)[0], 0)
-
                 pt = next_non_white_space_char(self.view, pt)
                 new.append(pt)
-
             self.view.sel().add_all(new)
 
         regions_transformer(self.view, do_motion)
-
         self.state.registers.op_delete(register=register, linewise=True)
         self.view.run_command('right_delete')
         fixup_sel_pos()
@@ -811,7 +808,7 @@ class _vi_dd(ViTextCommandBase):
 class _vi_cc(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register='"'):
-        def motion(view, s):
+        def do_motion(view, s):
             if mode != INTERNAL_NORMAL:
                 return s
 
@@ -820,9 +817,8 @@ class _vi_cc(ViTextCommandBase):
 
             return units.inner_lines(view, s, count)
 
-        regions_transformer(self.view, motion)
-
-        self.state.registers.op_change(linewise=True, new_line_at_eof=True, register=register)
+        regions_transformer(self.view, do_motion)
+        self.state.registers.op_change(register=register, linewise=True)
 
         if not all(s.empty() for s in self.view.sel()):
             self.view.run_command('right_delete')
@@ -901,7 +897,7 @@ class _vi_y(ViTextCommandBase):
 
 class _vi_d(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=1, motion=None, register=None):
+    def run(self, edit, count=1, mode=None, motion=None, register=None):
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE):
             raise ValueError('wrong mode')
 
@@ -1162,7 +1158,7 @@ class _vi_big_c(ViTextCommandBase):
 
         self.save_sel()
         regions_transformer(self.view, f)
-        self.state.registers.op_yank(small_delete=True, new_line_at_eof=True)
+        self.state.registers.op_change(register=register)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)

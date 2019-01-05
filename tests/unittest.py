@@ -619,6 +619,7 @@ _feedseq2cmd = {
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
     'cc':           {'command': '_vi_cc'},  # noqa: E241
     'ce':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501
+    'ci"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'text_object': "\"", 'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'cr ':          {'command': '_nv_abolish', 'args': {'to': 'spacecase'}},  # noqa: E241
     'cr-':          {'command': '_nv_abolish', 'args': {'to': 'dashcase'}},  # noqa: E241
     'cr.':          {'command': '_nv_abolish', 'args': {'to': 'dotcase'}},  # noqa: E241
@@ -692,7 +693,7 @@ _feedseq2cmd = {
     'd$':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'D':            {'command': '_vi_big_d'},  # noqa: E241
     'd2ft':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 2, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
-    'dd':           {'command': '_vi_dd', 'args': {}},  # noqa: E241,E501
+    'dd':           {'command': '_vi_dd'},  # noqa: E241,E501
     'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501
     'df=':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': '='}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
     'dft':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501

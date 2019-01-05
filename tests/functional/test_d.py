@@ -29,6 +29,7 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'de', 'one t| three')
         self.assertRegister('"', 'wo')
         self.assertRegister('-', 'wo')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_df(self):
@@ -37,6 +38,7 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('|a = 1', 'df=', '| 1')
         self.assertRegister('"', 'a =')
         self.assertRegister('-', 'a =')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_dw(self):
@@ -44,6 +46,7 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'dw', 'one t|three')
         self.assertRegister('"', 'wo ')
         self.assertRegister('-', 'wo ')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_d__dollar(self):
@@ -51,6 +54,7 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'd$', 'one |t')
         self.assertRegister('"', 'wo three')
         self.assertRegister('-', 'wo three')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_dd(self):
@@ -59,6 +63,7 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('one\ntwo|\nthree', 'dd', 'one\n|three')
         self.assertRegister('"', 'two\n')
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', 'two\n')
         self.assertRegister('2', 'two\n')
         self.assertRegister('3', 'one two three\n')

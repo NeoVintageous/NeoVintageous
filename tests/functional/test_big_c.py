@@ -28,16 +28,16 @@ class Test_C(unittest.FunctionalTestCase):
         self.eq('one\n|two\nthree', 'C', 'i_one\n|\nthree')
         self.eq('one\nt|wo\nthree', 'C', 'i_one\nt|\nthree')
         self.assertRegister('"', 'wo')
-        self.assertRegister('0', 'wo')
-        self.assertRegister('1', None)
         self.assertRegister('-', 'wo')
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
 
     def test_C_multiple_selections(self):
         self.eq('x\n|1\n|2\n|3\nx\n|4\nx', 'C', 'i_x\n|\n|\n|\nx\n|\nx')
         self.assertRegister('"', ['1', '2', '3', '4'])
-        self.assertRegister('0', ['1', '2', '3', '4'])
-        self.assertRegister('1', None)
         self.assertRegister('-', ['1', '2', '3', '4'])
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
 
     def test_C_multiple_selections_empty_lines(self):
         self.eq('x\n|1\n|\n|3\nx\n|\nx', 'C', 'i_x\n|\n|\n|\nx\n|\nx')

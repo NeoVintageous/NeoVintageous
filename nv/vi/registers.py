@@ -240,8 +240,8 @@ class Registers:
     def op_yank(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
         self._op('yank', register=register, linewise=linewise, new_line_at_eof=new_line_at_eof, small_delete=small_delete)  # noqa: E501
 
-    def op_change(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
-        self._op('change', register=register, linewise=linewise, new_line_at_eof=new_line_at_eof, small_delete=small_delete)  # noqa: E501
+    def op_change(self, linewise=False, register=None):
+        self._op('change', register=register, linewise=linewise)
 
     def op_delete(self, register=None, linewise=False):
         self._op('delete', register=register, linewise=linewise)
@@ -252,15 +252,14 @@ class Registers:
 
         selected_text = self._get_selected_text(new_line_at_eof, linewise)
 
-        # Hack to fix which registers are populated.
-        # Only "delete" operations for now.
+        # TODO Optimise
         multiline = False
         for fragment in selected_text:
             if '\n' in fragment:
                 multiline = True
                 break
 
-        if operation == 'delete':
+        if operation in ('change', 'delete'):
             if multiline:
                 small_delete = False
             else:
@@ -271,19 +270,23 @@ class Registers:
         else:
             self[_UNNAMED] = selected_text
 
-            if operation == 'yank':  # if yanking, the 0 register gets set
+            # Numbered register 0 contains the text from the most recent yank.
+            if operation == 'yank':
                 _data['0'] = selected_text
-            elif operation == 'delete':
+
+            # Numbered register 1 contains the text deleted by the most
+            # recent delete or change command, unless the command specified
+            # another register or the text is less than one line (the small
+            # delete register is used then).
+            # With each successive deletion or change, Vim shifts the previous
+            # contents of register 1 into register 2, 2 into 3, and so forth,
+            # losing the previous contents of register 9.
+            elif operation in ('change', 'delete'):
                 if linewise or multiline:
-                    # TODO: very inefficient
+                    # TODO Very inefficient
                     _data['1-9'].insert(0, selected_text)
                     if len(_data['1-9']) > 10:
                         _data['1-9'].pop()
-            elif operation == 'change':
-                # TODO: very inefficient
-                _data['1-9'].insert(0, selected_text)
-                if len(_data['1-9']) > 10:
-                    _data['1-9'].pop()
             else:
                 raise ValueError('unsupported operation: ' + operation)
 

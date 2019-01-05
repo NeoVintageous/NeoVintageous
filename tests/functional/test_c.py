@@ -29,24 +29,24 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'ce', 'i_one t| three')
         self.assertRegister('"', 'wo')
         self.assertRegister('-', 'wo')
-        self.assertRegister('1', 'wo')
-        self.assertRegister('2', 'two')
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
 
     def test_cw(self):
         self.eq('one |two three', 'cw', 'i_one | three')
         self.eq('one t|wo three', 'cw', 'i_one t| three')
         self.assertRegister('"', 'wo')
         self.assertRegister('-', 'wo')
-        self.assertRegister('1', 'wo')
-        self.assertRegister('2', 'two')
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
 
     def test_c__dollar(self):
         self.eq('one |two three', 'c$', 'i_one |')
         self.eq('one t|wo three', 'c$', 'i_one t|')
         self.assertRegister('"', 'wo three')
         self.assertRegister('-', 'wo three')
-        self.assertRegister('1', 'wo three')
-        self.assertRegister('2', 'two three')
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
 
     def test_cc(self):
         self.eq('|aaa\nbbb\nccc', 'cc', 'i_|\nbbb\nccc')
@@ -54,6 +54,7 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('aaa\nbbb\n|ccc', 'cc', 'i_aaa\nbbb\n|')
         self.assertRegister('"', 'ccc\n')
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', 'ccc\n')
         self.assertRegister('2', 'bbb\n')
         self.assertRegister('3', 'aaa\n')
@@ -65,3 +66,31 @@ class Test_c(unittest.FunctionalTestCase):
     def test_cc_last_line(self):
         self.eq('1\ntw|o', 'cc', 'i_1\n|')
         self.eq('1\ntw|o\n', 'cc', 'i_1\n|\n')
+
+    def test_ci__quote(self):
+        self.eq('"1|23"', 'ci"', 'i_"|"')
+        self.assertRegister('"', '123')
+        self.assertRegister('-', '123')
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
+
+    def test_ci__quote_multi_sel(self):
+        self.eq('x"1|23"y\ni"ab|c"j\n', 'ci"', 'i_x"|"y\ni"|"j\n')
+        self.assertRegister('"', ['123', 'abc'])
+        self.assertRegister('-', ['123', 'abc'])
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
+
+    def test_ci__quote__empty_should_not_fill_registers(self):
+        self.eq('"|"', 'ci"', 'i_"|"')
+        self.assertRegister('"', None)
+        self.assertRegister('-', None)
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
+
+    def test_ci__quote__multi_sels_empty_should_not_fill_registers(self):
+        self.eq('"|"\n"|"', 'ci"', 'i_"|"\n"|"')
+        self.assertRegister('"', None)
+        self.assertRegister('-', None)
+        self.assertRegister('0', None)
+        self.assertRegister('1', None)
