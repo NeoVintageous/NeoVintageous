@@ -24,7 +24,7 @@ class Test_x(unittest.FunctionalTestCase):
         super().setUp()
         self.resetRegisters()
 
-    def test_x_empty(self):
+    def test_x(self):
         self.eq('|', 'x', '|')
         self.eq('|\n', 'x', '|\n')
         self.eq('|a\n', 'x', '|\n')
@@ -32,12 +32,14 @@ class Test_x(unittest.FunctionalTestCase):
         self.eq('a|123b\n', '3x', 'a|b\n')
         self.assertRegister('"', '123')
         self.assertRegister('-', '123')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_x_should_be_noop_on_empty_lines(self):
         self.eq('\n\n|\n\n', 'x', '\n\n|\n\n')
         self.assertRegister('"', None)
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_x_multiple_selections(self):
@@ -50,6 +52,7 @@ class Test_x(unittest.FunctionalTestCase):
         self.eq('a|xyz|b\n', 'v_x', 'n_a|b\n', 'should delete characters')
         self.assertRegister('"', 'xyz')
         self.assertRegister('-', 'xyz')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_v_x_multiple_lines(self):
@@ -59,6 +62,8 @@ class Test_x(unittest.FunctionalTestCase):
         self.eq('\n|\n\n|\n', 'v_x', 'n_\n|\n')
         self.assertRegister('"', '\n\n')
         self.assertRegister('-', None)
+
+        self.assertRegister('0', None)
         self.assertRegister('1', '\n\n')
         self.assertRegister('2', 'x1\nx2\n')
         self.assertRegister('3', 'xy\n')
@@ -73,6 +78,7 @@ class Test_x(unittest.FunctionalTestCase):
         self.eq('ab\n|x1\nx2\nx3\n|cd\n', 'l_x', 'n_ab\n|cd\n', 'should delete multiple full lines')
         self.assertRegister('"', 'x1\nx2\nx3\n')
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', 'x1\nx2\nx3\n')
         self.assertRegister('2', 'xy\n')
 
@@ -80,6 +86,7 @@ class Test_x(unittest.FunctionalTestCase):
         self.eq('\n|\n\n|\n', 'l_x', 'n_\n|\n')
         self.assertRegister('"', '\n\n')
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', '\n\n')
 
     def test_issue_263(self):

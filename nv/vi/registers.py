@@ -237,8 +237,8 @@ class Registers:
         except KeyError:
             pass
 
-    def op_yank(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
-        self._op('yank', register=register, linewise=linewise, new_line_at_eof=new_line_at_eof, small_delete=small_delete)  # noqa: E501
+    def op_yank(self, register=None, linewise=False):
+        self._op('yank', register=register, linewise=linewise)
 
     def op_change(self, linewise=False, register=None):
         self._op('change', register=register, linewise=linewise)
@@ -246,19 +246,21 @@ class Registers:
     def op_delete(self, register=None, linewise=False):
         self._op('delete', register=register, linewise=linewise)
 
-    def _op(self, operation, register=None, linewise=False, new_line_at_eof=False, small_delete=False):
+    def _op(self, operation, register=None, linewise=False):
+        new_line_at_eof = False
+
         if register == _BLACK_HOLE:
             return
 
         selected_text = self._get_selected_text(new_line_at_eof, linewise)
 
-        # TODO Optimise
         multiline = False
         for fragment in selected_text:
             if '\n' in fragment:
                 multiline = True
                 break
 
+        small_delete = False
         if operation in ('change', 'delete'):
             if multiline:
                 small_delete = False

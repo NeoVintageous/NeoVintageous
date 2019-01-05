@@ -360,7 +360,7 @@ class Test_yank(unittest.ViewTestCase):
         registers._data = registers._init_register_data()
 
     def test_yank_to_black_hole_register(self):
-        self.regs.op_yank(small_delete=True, register='_')
+        self.regs.op_delete(register='_')
         self.assertEqual(registers._data, {
             '1-9': [None] * 9,
             '0': None,
@@ -392,9 +392,9 @@ class Test_yank(unittest.ViewTestCase):
             gst.return_value = ['foo']
             self.regs.view.sel.return_value = range(1)
             a.return_value = True
-            self.regs.op_yank(small_delete=True)
+            self.regs.op_delete()
             self.assertEqual(registers._data, {
                 '"': ['foo'],
                 '-': ['foo'],
-                '0': ['foo'],
+                '0': None,
                 '1-9': [None] * 9})

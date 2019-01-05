@@ -31,6 +31,7 @@ class Test_s(unittest.FunctionalTestCase):
         self.eq('a|bcde\nf\n', '3s', 'i_a|e\nf\n')
         self.assertRegister('"', 'bcd')
         self.assertRegister('-', 'bcd')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_s_should_not_delete_past_the_eol(self):
@@ -40,6 +41,7 @@ class Test_s(unittest.FunctionalTestCase):
         self.eq('a|bc|d', 'v_s', 'i_a|d')
         self.assertRegister('"', 'bc')
         self.assertRegister('-', 'bc')
+        self.assertRegister('0', None)
         self.assertRegister('1', None)
 
     def test_v_s_multiline(self):
@@ -47,6 +49,7 @@ class Test_s(unittest.FunctionalTestCase):
         self.eq('ab|12\n34\n56|cd\n', 'v_s', 'i_ab|cd\n')
         self.assertRegister('"', '12\n34\n56')
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', '12\n34\n56')
         self.assertRegister('2', '12\n34')
 
@@ -55,6 +58,7 @@ class Test_s(unittest.FunctionalTestCase):
         self.eq('x\n|ab\ncd\n|y\n', 'l_s', 'i_x\n|\ny\n')
         self.assertRegister('"', 'ab\ncd\n')
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', 'ab\ncd\n')
         self.assertRegister('2', 'ab\n')
 
@@ -62,4 +66,5 @@ class Test_s(unittest.FunctionalTestCase):
         self.eq('\n|\n\n|\n', 'l_s', 'i_\n|\n\n')
         self.assertRegister('"', '\n')
         self.assertRegister('-', None)
+        self.assertRegister('0', None)
         self.assertRegister('1', '\n')

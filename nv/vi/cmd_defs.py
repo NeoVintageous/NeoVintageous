@@ -571,7 +571,7 @@ class ViSubstituteByLines(ViOperatorDef):
         state.glue_until_normal_mode = True
 
         return {
-            'action': '_vi_big_s_action',
+            'action': '_vi_big_s',
             'action_args': {
                 'mode': state.mode,
                 'count': 1,

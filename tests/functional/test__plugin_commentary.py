@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gc(unittest.FunctionalTestCase):
+class TestCommentary(unittest.FunctionalTestCase):
 
     def normal(self, text):
         # Test against a specific syntax, because views that

@@ -749,10 +749,13 @@ _feedseq2cmd = {
     'o':            {'command': '_vi_o'},  # noqa: E241
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
+    'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
+    'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
     'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
-    'x':            {'command': '_vi_x', 'args': {'register': '"'}},  # noqa: E241
+    'X':            {'command': '_vi_big_x'},  # noqa: E241
+    'x':            {'command': '_vi_x'},  # noqa: E241
     'y$':           {'command': '_vi_y', 'args': {'register': '"', 'motion': {'is_jump': True, 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'y':            {'command': '_vi_y', 'args': {'register': '"'}},  # noqa: E241
     'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241

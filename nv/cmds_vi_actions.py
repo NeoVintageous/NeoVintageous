@@ -76,7 +76,7 @@ __all__ = [
     '_vi_big_j',
     '_vi_big_o',
     '_vi_big_p',
-    '_vi_big_s_action',  # TODO Refactor name (remove _action)
+    '_vi_big_s',
     '_vi_big_x',
     '_vi_big_z_big_q',
     '_vi_big_z_big_z',
@@ -1171,7 +1171,7 @@ class _vi_big_c(ViTextCommandBase):
         self.enter_insert_mode(mode)
 
 
-class _vi_big_s_action(ViTextCommandBase):
+class _vi_big_s(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
         def sel_line(view, s):
@@ -1186,7 +1186,7 @@ class _vi_big_s_action(ViTextCommandBase):
             return s
 
         regions_transformer(self.view, sel_line)
-        self.state.registers.op_yank(new_line_at_eof=True, register=register)
+        self.state.registers.op_change(register=register, linewise=True)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1298,7 +1298,6 @@ class _vi_r(ViTextCommandBase):
             raise ValueError('bad parameters')
 
         char = utils.translate_char(char)
-        self.state.registers.op_yank(new_line_at_eof=True, small_delete=True, register=register)
         regions_transformer(self.view, f)
         self.enter_normal_mode(mode)
 
@@ -1470,7 +1469,7 @@ class _vi_big_x(ViTextCommandBase):
     def line_start(self, pt):
         return self.view.line(pt).begin()
 
-    def run(self, edit, mode=None, count=1, register=None):
+    def run(self, edit, count=1, mode=None, register=None):
         def select(view, s):
             nonlocal abort
             if mode == INTERNAL_NORMAL:
@@ -1489,10 +1488,9 @@ class _vi_big_x(ViTextCommandBase):
             return Region(s.begin(), s.end())
 
         abort = False
-
         regions_transformer(self.view, select)
 
-        self.state.registers.op_yank(small_delete=True, register=register)
+        self.state.registers.op_delete(register=register)
 
         if not abort:
             self.view.run_command('left_delete')
@@ -2591,8 +2589,6 @@ class _vi_gcc_action(ViTextCommandBase):
 
         self.view.run_command('_vi_gcc_motion', {'mode': mode, 'count': count})
 
-        self.state.registers.op_yank(new_line_at_eof=True)
-
         line = self.view.line(self.view.sel()[0].begin())
         pt = line.begin()
 
@@ -2613,10 +2609,11 @@ class _vi_gcc_motion(ViTextCommandBase):
             if mode == INTERNAL_NORMAL:
                 end = view.text_point(utils.row_at(self.view, s.b) + (count - 1), 0)
                 begin = view.line(s.b).a
-                if (
-                    (utils.row_at(self.view, end) == utils.row_at(self.view, view.size())) and
-                    (view.substr(begin - 1) == '\n')
-                ):
+
+                row_at_end = utils.row_at(self.view, end)
+                row_at_size = utils.row_at(self.view, view.size())
+
+                if ((row_at_end == row_at_size) and (view.substr(begin - 1) == '\n')):
                     begin -= 1
 
                 return Region(begin, view.full_line(end).b)
