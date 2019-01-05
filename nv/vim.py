@@ -15,9 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
+
+from sublime import active_window as _active_window
 from sublime import status_message as _status_message
 
-# XXX The modes use strings for reasability (they are used in Default.sublime-keymap).
+_log = logging.getLogger(__name__)
 
 INSERT = 'mode_insert'
 NORMAL = 'mode_normal'
@@ -91,3 +94,15 @@ def message(msg):
     # type: (str) -> None
     status_message(msg)
     console_message(msg)
+
+
+def run_window_command(cmd, args=None, window=None):
+    if not window:
+        window = _active_window()
+    _log.info('command: %s %s', cmd, args)
+    window.run_command(cmd, args)
+
+
+def run_view_command(view, cmd, args=None):
+    _log.info('command: %s %s', cmd, args)
+    view.run_command(cmd, args)

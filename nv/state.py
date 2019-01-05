@@ -48,6 +48,8 @@ from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
+from NeoVintageous.nv.vim import run_view_command
+from NeoVintageous.nv.vim import run_window_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
@@ -617,7 +619,7 @@ class State(object):
                 if self.non_interactive:
                     return
 
-                active_window().run_command(command.input_parser.command)
+                run_window_command(command.input_parser.command)
 
     def process_input(self, key):
         # type: (str) -> bool
@@ -810,13 +812,10 @@ class State(object):
             if self.glue_until_normal_mode and not self.processing_notation:
                 # Tell Sublime Text that it should group all the next edits
                 # until we enter normal mode again.
-                _log.info('window.run_command() mark_undo_groups_for_gluing')
-                active_window().run_command('mark_undo_groups_for_gluing')
+                run_window_command('mark_undo_groups_for_gluing')
 
             self.add_macro_step(action_cmd['action'], args)
-
-            _log.info('window.run_command() %s %s', action_cmd['action'], args)
-            active_window().run_command(action_cmd['action'], args)
+            run_window_command(action_cmd['action'], args)
 
             if not self.non_interactive:
                 if self.action.repeatable:
@@ -834,8 +833,7 @@ class State(object):
 
             # All motions are subclasses of ViTextCommandBase, so it's safe to
             # run the command via the current view.
-            _log.info('view.run_command() %s', motion_cmd)
-            self.view.run_command(motion_cmd['motion'], motion_cmd['motion_args'])
+            run_view_command(self.view, motion_cmd['motion'], motion_cmd['motion_args'])
 
         if self.action:
             action_cmd = self.action.translate(self)
@@ -862,17 +860,14 @@ class State(object):
             if self.glue_until_normal_mode and not self.processing_notation:
                 # Tell Sublime Text that it should group all the next edits
                 # until we enter normal mode again.
-                _log.info('window.run_command() mark_undo_groups_for_gluing')
-                active_window().run_command('mark_undo_groups_for_gluing')
+                run_window_command('mark_undo_groups_for_gluing')
 
             seq = self.sequence
             visual_repeat_data = self.get_visual_repeat_data()
             action = self.action
 
             self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
-
-            _log.info('window.run_command() %s', action_cmd)
-            active_window().run_command(action_cmd['action'], action_cmd['action_args'])
+            run_window_command(action_cmd['action'], action_cmd['action_args'])
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
