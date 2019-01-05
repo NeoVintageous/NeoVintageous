@@ -21,7 +21,11 @@ from NeoVintageous.tests import unittest
 class Test_P(unittest.FunctionalTestCase):
 
     def test_P(self):
-        self.normal('ab|cd')
-        self.register('"', '12x')
-        self.feed('P')
-        self.assertNormal('ab12|xcd')
+        self.register('"', 'ab')
+        self.eq('|xy', 'P', 'a|bxy')
+        self.eq('x|y', 'P', 'xa|by')
+        self.eq('x\n|y', 'P', 'x\na|by')
+
+    def test_p_newlines(self):
+        self.register('"', 'x\n')
+        self.eq('|foo', 'P', '|x\nfoo')

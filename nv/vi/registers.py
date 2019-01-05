@@ -83,7 +83,7 @@ _SPECIAL = (
 _ALL = _SPECIAL + _NUMBERS + _NAMES
 
 
-def init_register_data():
+def _init_register_data():
     return {
         '0': None,
         # init registers 1-9
@@ -91,7 +91,7 @@ def init_register_data():
     }
 
 
-_data = init_register_data()
+_data = _init_register_data()
 
 
 # Registers hold global data used mainly by yank, delete and paste.
@@ -238,19 +238,33 @@ class Registers:
             pass
 
     def op_yank(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
-        self._op(new_line_at_eof, linewise, small_delete, register, operation='yank')
+        self._op('yank', register=register, linewise=linewise, new_line_at_eof=new_line_at_eof, small_delete=small_delete)  # noqa: E501
 
     def op_change(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
-        self._op(new_line_at_eof, linewise, small_delete, register, operation='change')
+        self._op('change', register=register, linewise=linewise, new_line_at_eof=new_line_at_eof, small_delete=small_delete)  # noqa: E501
 
-    def op_delete(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None):
-        self._op(new_line_at_eof, linewise, small_delete, register, operation='delete')
+    def op_delete(self, register=None, linewise=False):
+        self._op('delete', register=register, linewise=linewise)
 
-    def _op(self, new_line_at_eof=False, linewise=False, small_delete=False, register=None, operation=None):
+    def _op(self, operation, register=None, linewise=False, new_line_at_eof=False, small_delete=False):
         if register == _BLACK_HOLE:
             return
 
         selected_text = self._get_selected_text(new_line_at_eof, linewise)
+
+        # Hack to fix which registers are populated.
+        # Only "delete" operations for now.
+        multiline = False
+        for fragment in selected_text:
+            if '\n' in fragment:
+                multiline = True
+                break
+
+        if operation == 'delete':
+            if multiline:
+                small_delete = False
+            else:
+                small_delete = True
 
         if register and register != _UNNAMED:
             self[register] = selected_text
@@ -259,7 +273,13 @@ class Registers:
 
             if operation == 'yank':  # if yanking, the 0 register gets set
                 _data['0'] = selected_text
-            elif operation in ('change', 'delete'):  # if changing or deleting, the numbered registers get set
+            elif operation == 'delete':
+                if linewise or multiline:
+                    # TODO: very inefficient
+                    _data['1-9'].insert(0, selected_text)
+                    if len(_data['1-9']) > 10:
+                        _data['1-9'].pop()
+            elif operation == 'change':
                 # TODO: very inefficient
                 _data['1-9'].insert(0, selected_text)
                 if len(_data['1-9']) > 10:

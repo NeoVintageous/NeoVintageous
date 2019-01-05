@@ -18,24 +18,9 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_p(unittest.FunctionalTestCase):
+class Test_o(unittest.FunctionalTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.resetRegisters()
-
-    def test_p(self):
-        self.register('"', 'ab')
-        self.eq('|xy', 'p', 'xa|by')
-
-    # TODO How paste works depends on how the register was created (not just the
-    # contents of the register e.g. just because the register has newlines
-    # doesn't mean that it should be pasted linewise).
-    #
-    # Maybe have a "get-for-paste" register content retrival method that  will
-    # return the content with the appropriate prefix/suffix newlines  already
-    # added, then the paste commands can just insert it.
-    #
-    # def test_p_newlines(self):
-    #     self.register('"', 'x\n')
-    #     self.eq('|ab', 'p', 'a|x\nb')
+    def test_o(self):
+        self.eq('|', 'o', 'i_\n|')
+        self.eq('|\n', 'o', 'i_\n|\n')
+        self.eq('|a\nb\n', 'o', 'i_a\n|\nb\n')

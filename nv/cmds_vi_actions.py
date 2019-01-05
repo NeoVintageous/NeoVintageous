@@ -43,6 +43,7 @@ from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import status_message
@@ -802,7 +803,7 @@ class _vi_dd(ViTextCommandBase):
 
         regions_transformer(self.view, do_motion)
 
-        self.state.registers.op_delete(linewise=True, new_line_at_eof=True, register=register)
+        self.state.registers.op_delete(register=register, linewise=True)
         self.view.run_command('right_delete')
         fixup_sel_pos()
 
@@ -850,10 +851,12 @@ class _vi_yy(ViTextCommandBase):
             if count > 1:
                 row, col = self.view.rowcol(s.b)
                 end = view.text_point(row + count - 1, 0)
+
                 return Region(view.line(s.a).a, view.full_line(end).b)
 
             if view.line(s.b).empty():
                 return Region(s.b, min(view.size(), s.b + 1))
+
             return view.full_line(s.b)
 
         def restore():
@@ -861,16 +864,16 @@ class _vi_yy(ViTextCommandBase):
             self.view.sel().add_all(list(self.old_sel))
 
         if mode != INTERNAL_NORMAL:
+            self.enter_normal_mode(mode)
             ui_blink()
-            raise ValueError('wrong mode')
+
+            return
 
         self.save_sel()
-
         regions_transformer(self.view, select)
 
-        state = self.state
         self.outline_target()
-        state.registers.op_yank(new_line_at_eof=True, linewise=True, register=register)
+        self.state.registers.op_yank(register=register, linewise=True)
         restore()
         self.enter_normal_mode(mode)
 
@@ -884,13 +887,14 @@ class _vi_y(ViTextCommandBase):
         if mode == INTERNAL_NORMAL:
             if motion is None:
                 raise ValueError('bad args')
+
             self.view.run_command(motion['motion'], motion['motion_args'])
             self.outline_target()
 
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return
 
-        self.state.registers.op_yank(small_delete=True, register=register)
+        self.state.registers.op_yank(register=register)
         regions_transformer(self.view, f)
         self.enter_normal_mode(mode)
 
@@ -898,9 +902,6 @@ class _vi_y(ViTextCommandBase):
 class _vi_d(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
-        def reverse(view, s):
-            return Region(s.end(), s.begin())
-
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE):
             raise ValueError('wrong mode')
 
@@ -909,13 +910,12 @@ class _vi_d(ViTextCommandBase):
 
         if motion:
             self.save_sel()
-
             self.view.run_command(motion['motion'], motion['motion_args'])
 
             # The motion has failed, so abort.
             if not self.has_sel_changed():
-                ui_blink()
                 self.enter_normal_mode(mode)
+                ui_blink()
 
                 return
 
@@ -926,10 +926,9 @@ class _vi_d(ViTextCommandBase):
 
                 return
 
-        self.state.registers.op_delete(small_delete=True, register=register)
+        self.state.registers.op_delete(register=register)
         self.view.run_command('left_delete')
         self.view.run_command('_nv_fix_st_eol_caret')
-
         self.enter_normal_mode(mode)
 
         # XXX: abstract this out for all types of selections.
@@ -1127,7 +1126,7 @@ class _vi_big_d(ViTextCommandBase):
         self.save_sel()
         regions_transformer(self.view, f)
 
-        self.state.registers.op_delete(new_line_at_eof=True, register=register)
+        self.state.registers.op_delete(register=register, linewise=is_visual_mode(mode))
         self.view.run_command('left_delete')
 
         if mode == VISUAL:
@@ -1163,7 +1162,7 @@ class _vi_big_c(ViTextCommandBase):
 
         self.save_sel()
         regions_transformer(self.view, f)
-        self.state.registers.op_yank(new_line_at_eof=True)
+        self.state.registers.op_yank(small_delete=True, new_line_at_eof=True)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1210,15 +1209,22 @@ class _vi_s(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
             if mode == INTERNAL_NORMAL:
-                if view.line(s.b).empty():
+                line = view.line(s.b)
+                if line.empty():
                     return Region(s.b)
-                return Region(s.b, s.b + count)
+
+                # Should not delete past eol.
+                return Region(s.b, min(s.b + count, line.b))
+
+            if mode == VISUAL_LINE:
+                return Region(s.begin(), s.end() - 1)
+
             return Region(s.begin(), s.end())
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
-            # TODO [review] error?
-            ui_blink()
             self.enter_normal_mode(mode)
+            ui_blink()
+            return
 
         self.save_sel()
         regions_transformer(self.view, select)
@@ -1227,7 +1233,7 @@ class _vi_s(ViTextCommandBase):
             self.enter_insert_mode(mode)
             return
 
-        self.state.registers.op_yank(small_delete=True, register=register)
+        self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
 
@@ -1242,16 +1248,17 @@ class _vi_x(ViTextCommandBase):
             return s
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
-            # TODO [review] Why blink? Is this an error? Does/Should this ever run in any other mode?
-            ui_blink()
             self.enter_normal_mode(mode)
+            ui_blink()
+
+            return
 
         if mode == INTERNAL_NORMAL and all(self.view.line(s.b).empty() for s in self.view.sel()):
             return
 
         regions_transformer(self.view, select)
 
-        self.state.registers.op_yank(small_delete=True, register=register)
+        self.state.registers.op_delete(register=register)
         self.view.run_command('right_delete')
         self.enter_normal_mode(mode)
 

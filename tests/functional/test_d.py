@@ -20,13 +20,16 @@ from NeoVintageous.tests import unittest
 
 class Test_d(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.resetRegisters()
+
     def test_de(self):
         self.eq('one |two three', 'de', 'one | three')
         self.eq('one t|wo three', 'de', 'one t| three')
         self.assertRegister('"', 'wo')
         self.assertRegister('-', 'wo')
-        self.assertRegister('1', 'wo')
-        self.assertRegister('2', 'two')
+        self.assertRegister('1', None)
 
     def test_df(self):
         self.eq('one |two three', 'dft', 'one |hree')
@@ -34,33 +37,28 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('|a = 1', 'df=', '| 1')
         self.assertRegister('"', 'a =')
         self.assertRegister('-', 'a =')
-        self.assertRegister('1', 'a =')
-        self.assertRegister('2', 'two three t')
-        self.assertRegister('3', 'two t')
+        self.assertRegister('1', None)
 
     def test_dw(self):
         self.eq('one |two three', 'dw', 'one |three')
         self.eq('one t|wo three', 'dw', 'one t|three')
         self.assertRegister('"', 'wo ')
         self.assertRegister('-', 'wo ')
-        self.assertRegister('1', 'wo ')
-        self.assertRegister('2', 'two ')
+        self.assertRegister('1', None)
 
     def test_d__dollar(self):
         self.eq('one |two three', 'd$', 'one| ')
         self.eq('one t|wo three', 'd$', 'one |t')
         self.assertRegister('"', 'wo three')
         self.assertRegister('-', 'wo three')
-        self.assertRegister('1', 'wo three')
-        self.assertRegister('2', 'two three')
+        self.assertRegister('1', None)
 
     def test_dd(self):
-        self.register('-', 'x')
         self.eq('one |two three', 'dd', '|')
         self.eq('one\n|two\nthree', 'dd', 'one\n|three')
         self.eq('one\ntwo|\nthree', 'dd', 'one\n|three')
         self.assertRegister('"', 'two\n')
-        self.assertRegister('-', 'x')
+        self.assertRegister('-', None)
         self.assertRegister('1', 'two\n')
         self.assertRegister('2', 'two\n')
         self.assertRegister('3', 'one two three\n')

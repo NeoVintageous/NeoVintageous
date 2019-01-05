@@ -18,24 +18,26 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_p(unittest.FunctionalTestCase):
+class Test_C(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
         self.resetRegisters()
 
-    def test_p(self):
-        self.register('"', 'ab')
-        self.eq('|xy', 'p', 'xa|by')
+    def test_C(self):
+        self.eq('one\n|two\nthree', 'C', 'i_one\n|\nthree')
+        self.eq('one\nt|wo\nthree', 'C', 'i_one\nt|\nthree')
+        self.assertRegister('"', 'wo')
+        self.assertRegister('0', 'wo')
+        self.assertRegister('1', None)
+        self.assertRegister('-', 'wo')
 
-    # TODO How paste works depends on how the register was created (not just the
-    # contents of the register e.g. just because the register has newlines
-    # doesn't mean that it should be pasted linewise).
-    #
-    # Maybe have a "get-for-paste" register content retrival method that  will
-    # return the content with the appropriate prefix/suffix newlines  already
-    # added, then the paste commands can just insert it.
-    #
-    # def test_p_newlines(self):
-    #     self.register('"', 'x\n')
-    #     self.eq('|ab', 'p', 'a|x\nb')
+    def test_C_multiple_selections(self):
+        self.eq('x\n|1\n|2\n|3\nx\n|4\nx', 'C', 'i_x\n|\n|\n|\nx\n|\nx')
+        self.assertRegister('"', ['1', '2', '3', '4'])
+        self.assertRegister('0', ['1', '2', '3', '4'])
+        self.assertRegister('1', None)
+        self.assertRegister('-', ['1', '2', '3', '4'])
+
+    def test_C_multiple_selections_empty_lines(self):
+        self.eq('x\n|1\n|\n|3\nx\n|\nx', 'C', 'i_x\n|\n|\n|\nx\n|\nx')

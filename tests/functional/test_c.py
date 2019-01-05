@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_c(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.resetRegisters()
+
     def test_ce(self):
         self.eq('one |two three', 'ce', 'i_one | three')
         self.eq('one t|wo three', 'ce', 'i_one t| three')
@@ -45,12 +49,11 @@ class Test_c(unittest.FunctionalTestCase):
         self.assertRegister('2', 'two three')
 
     def test_cc(self):
-        self.register('-', 'x')
         self.eq('|aaa\nbbb\nccc', 'cc', 'i_|\nbbb\nccc')
         self.eq('aaa\nbb|b\nccc', 'cc', 'i_aaa\n|\nccc')
         self.eq('aaa\nbbb\n|ccc', 'cc', 'i_aaa\nbbb\n|')
         self.assertRegister('"', 'ccc\n')
-        self.assertRegister('-', 'x')
+        self.assertRegister('-', None)
         self.assertRegister('1', 'ccc\n')
         self.assertRegister('2', 'bbb\n')
         self.assertRegister('3', 'aaa\n')

@@ -28,6 +28,7 @@ from sublime import Region
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.state import State as _State
 
+from NeoVintageous.nv.vi import registers
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
 from NeoVintageous.nv.vim import INTERNAL_NORMAL  # noqa: F401
 from NeoVintageous.nv.vim import NORMAL  # noqa: F401
@@ -218,6 +219,9 @@ class ViewTestCase(unittest.TestCase):
         #   text (str)
         self._setupView(text, VISUAL_BLOCK)
 
+    def resetRegisters(self):
+        registers._data = registers._init_register_data()
+
     def register(self, name, value):
         # Args:
         #   name (str)
@@ -226,7 +230,10 @@ class ViewTestCase(unittest.TestCase):
         if not isinstance(value, str):
             raise ValueError('argument #2 is not a valid str')
 
-        self.state.registers.set(name, [value])
+        if name.isdigit() and name != '0':
+            registers._data['1-9'][int(name) - 1] = value
+        else:
+            registers._data[name] = [value]
 
     def _assertView(self, expected, mode, msg):
         # Args:
@@ -350,10 +357,10 @@ class ViewTestCase(unittest.TestCase):
         #   name (str):
         #       The name of the register.
         #   expected (str)
-        actual = self.state.registers[name]
-        # XXX registers.get() returns a list (not sure why that's useful); it doesn't look like we need it for the tests (also see register()).  # noqa: E501
-        self.assertEqual(1, len(actual), 'expected only one value for the named register {}'.format(name))
-        self.assertEqual(actual[0], expected, msg)
+        if expected is not None and not isinstance(expected, list):
+            expected = [expected]
+
+        self.assertEqual(self.state.registers[name], expected, msg or 'register = "' + name)
 
     def assertSelection(self, expected, msg=None):
         # Test that view selection and *expected* are equal.
@@ -609,6 +616,7 @@ _feedseq2cmd = {
     'at':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': True}},  # noqa: E241,E501
     'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
+    'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
     'cc':           {'command': '_vi_cc'},  # noqa: E241
     'ce':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501
     'cr ':          {'command': '_nv_abolish', 'args': {'to': 'spacecase'}},  # noqa: E241
@@ -729,17 +737,24 @@ _feedseq2cmd = {
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
     'gv':           {'command': '_vi_gv'},  # noqa: E241
+    'h':            {'command': '_vi_h', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
+    'I':            {'command': '_vi_big_i'},  # noqa: E241
     'it':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': False}},  # noqa: E241,E501
     'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
+    'l':            {'command': '_vi_l', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
+    'O':            {'command': '_vi_big_o'},  # noqa: E241
+    'o':            {'command': '_vi_o'},  # noqa: E241
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
+    's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
     'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'x':            {'command': '_vi_x', 'args': {'register': '"'}},  # noqa: E241
     'y$':           {'command': '_vi_y', 'args': {'register': '"', 'motion': {'is_jump': True, 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'y':            {'command': '_vi_y', 'args': {'register': '"'}},  # noqa: E241
+    'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
     'yiw':          {'command': '_vi_y', 'args': {'register': '"', 'motion': {'motion_args': {'inclusive': False, 'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'yse"':         {'command': '_nv_surround_ys', 'args': {'surround_with': '"',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
     'yse(':         {'command': '_nv_surround_ys', 'args': {'surround_with': '(',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
@@ -761,5 +776,6 @@ _feedseq2cmd = {
     'ysiw]':        {'command': '_nv_surround_ys', 'args': {'surround_with': ']',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
     'ysiw{':        {'command': '_nv_surround_ys', 'args': {'surround_with': '{',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
     'ysiw}':        {'command': '_nv_surround_ys', 'args': {'surround_with': '}',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
+    'yy':           {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
 
 }

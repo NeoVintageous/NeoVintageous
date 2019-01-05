@@ -95,14 +95,14 @@ class TestCaseRegisters(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         set_clipboard('')
-        registers._data = registers.init_register_data()
+        registers._data = registers._init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
         self.regs = State(self.view).registers
 
     def tearDown(self):
         super().tearDown()
-        registers._data = registers.init_register_data()
+        registers._data = registers._init_register_data()
 
     def test_can_initialize_class(self):
         self.assertEqual(self.regs.view, self.view)
@@ -269,7 +269,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         set_clipboard('')
-        registers._data = registers.init_register_data()
+        registers._data = registers._init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
         self.regs = State(self.view).registers
@@ -277,7 +277,7 @@ class Test_get_selected_text(unittest.ViewTestCase):
 
     def tearDown(self):
         super().tearDown()
-        registers._data = registers.init_register_data()
+        registers._data = registers._init_register_data()
 
     def test_extracts_substrings(self):
         self.regs.view.sel.return_value = [10, 20, 30]
@@ -349,7 +349,7 @@ class Test_yank(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         set_clipboard('')
-        registers._data = registers.init_register_data()
+        registers._data = registers._init_register_data()
         self.view.settings().erase('vintage')
         self.view.settings().erase('vintageous_use_sys_clipboard')
         self.regs = State(self.view).registers
@@ -357,7 +357,7 @@ class Test_yank(unittest.ViewTestCase):
 
     def tearDown(self):
         super().tearDown()
-        registers._data = registers.init_register_data()
+        registers._data = registers._init_register_data()
 
     def test_yank_to_black_hole_register(self):
         self.regs.op_yank(small_delete=True, register='_')
