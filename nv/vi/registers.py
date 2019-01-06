@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import deque
 import itertools
 
 from sublime import get_clipboard
@@ -27,13 +28,13 @@ from NeoVintageous.nv.vim import VISUAL
 _UNNAMED = '"'
 
 # 2. 10 numberd registers "0 to "9
-_NUMBERS = tuple('0123456789')
+_NUMBERED = tuple('0123456789')
 
 # 3 The small delete register "-
 _SMALL_DELETE = '-'
 
 # 4. 26 named registers "a to "z or "A to "Z
-_NAMES = tuple('abcdefghijklmnopqrstuvwxyz')
+_NAMED = tuple('abcdefghijklmnopqrstuvwxyz')
 
 # 5. Three read-only registers ":, "., "%
 _LAST_EXECUTED_COMMAND = ':'
@@ -41,14 +42,7 @@ _LAST_INSERTED_TEXT = '.'
 _CURRENT_FILE_NAME = '%'
 
 # 6. Alternate buffer register "#
-_ALT_FILE = '#'
-
-_READ_ONLY = (
-    _LAST_EXECUTED_COMMAND,
-    _LAST_INSERTED_TEXT,
-    _CURRENT_FILE_NAME,
-    _ALT_FILE
-)
+_ALTERNATE_FILE = '#'
 
 # 7. The expression register "=
 _EXPRESSION = '='
@@ -57,8 +51,6 @@ _EXPRESSION = '='
 _CLIPBOARD_STAR = '*'
 _CLIPBOARD_PLUS = '+'
 _CLIPBOARD_TILDA = '~'
-_CLIPBOARD_ALL = (_CLIPBOARD_STAR, _CLIPBOARD_PLUS)
-_SELECTION_AND_DROP = (_CLIPBOARD_STAR, _CLIPBOARD_PLUS, _CLIPBOARD_TILDA)
 
 # 9. The black hole register "_
 _BLACK_HOLE = '_'
@@ -66,32 +58,88 @@ _BLACK_HOLE = '_'
 # 10. Last search pattern register "/
 _LAST_SEARCH_PATTERN = '/'
 
-_SPECIAL = (
-    _UNNAMED,
-    _SMALL_DELETE,
-    _BLACK_HOLE,
-    _LAST_INSERTED_TEXT,
-    _LAST_EXECUTED_COMMAND,
-    _LAST_SEARCH_PATTERN,
-    _CURRENT_FILE_NAME,
-    _ALT_FILE,
-    _CLIPBOARD_STAR,
+# Groups
+
+_CLIPBOARD = (
     _CLIPBOARD_PLUS,
+    _CLIPBOARD_STAR
+)
+
+_READ_ONLY = (
+    _ALTERNATE_FILE,
+    _CLIPBOARD_TILDA,
+    _CURRENT_FILE_NAME,
+    _LAST_EXECUTED_COMMAND,
+    _LAST_INSERTED_TEXT
+)
+
+_SELECTION_AND_DROP = (
+    _CLIPBOARD_PLUS,
+    _CLIPBOARD_STAR,
     _CLIPBOARD_TILDA
 )
 
-_ALL = _SPECIAL + _NUMBERS + _NAMES
+_SPECIAL = (
+    _ALTERNATE_FILE,
+    _BLACK_HOLE,
+    _CLIPBOARD_PLUS,
+    _CLIPBOARD_STAR,
+    _CLIPBOARD_TILDA,
+    _CURRENT_FILE_NAME,
+    _LAST_EXECUTED_COMMAND,
+    _LAST_INSERTED_TEXT,
+    _LAST_SEARCH_PATTERN,
+    _SMALL_DELETE,
+    _UNNAMED
+)
+
+_ALL = _SPECIAL + _NUMBERED + _NAMED
 
 
-def _init_register_data():
-    return {
-        '0': None,
-        # init registers 1-9
-        '1-9': [None] * 9,
-    }
+_data = {'0': None, '1-9': deque([None] * 9, maxlen=9)}  # type: dict
 
 
-_data = _init_register_data()
+def _reset_data():
+    _data.clear()
+    _data['0'] = None
+    _data['1-9'] = deque([None] * 9, maxlen=9)
+
+
+def _shift_numbered_register(content):
+    _data['1-9'].appendleft(content)
+
+
+def _set_numbered_register(number, values):
+    _data['1-9'][int(number) - 1] = values
+
+
+def _get_numbered_register(number):
+    return _data['1-9'][int(number) - 1]
+
+
+def _is_writable_register(register):
+    if register == _UNNAMED:
+        return True
+
+    if register == _SMALL_DELETE:
+        return True
+
+    if register in _CLIPBOARD:
+        return True
+
+    if register.isdigit():
+        return True
+
+    if register.isalpha():
+        return True
+
+    if register.isupper():
+        return True
+
+    if register == _EXPRESSION:
+        return True
+
+    return False
 
 
 # Registers hold global data used mainly by yank, delete and paste.
@@ -112,13 +160,14 @@ _data = _init_register_data()
 #
 #     state.registers['a'] = "foo" # => a == "foo"
 #     state.registers['A'] = "bar" # => a == "foobar"
+#     # Digits can be given a str or int:
 #     state.registers['1'] = "baz" # => 1 == "baz"
 #     state.registers[1] = "fizz"  # => 1 == "fizz"
 #
 # Retrieving registers:
 #
 #     state.registers['a'] # => "foobar"
-#     state.registers['A'] # => "foobar" (synonyms)
+#     state.registers['A'] # => "foobar"
 class Registers:
 
     def __get__(self, instance, owner):
@@ -127,14 +176,8 @@ class Registers:
 
         return self
 
-    def _set_default_register(self, values):
-        assert isinstance(values, list)
-        # Coerce all values into strings.
-        values = [str(v) for v in values]
-        _data[_UNNAMED] = values
-
     def _maybe_set_sys_clipboard(self, name, value):
-        if (name in _CLIPBOARD_ALL or self.settings.view['vintageous_use_sys_clipboard'] is True):
+        if (name in _CLIPBOARD or self.settings.view['vintageous_use_sys_clipboard'] is True):
             # Take care of multiple selections.
             if len(value) > 1:
                 self.view.run_command('copy')
@@ -146,7 +189,7 @@ class Registers:
     # register data as lists, one per selection. The paste command will then
     # make the final decision about what to insert into the buffer when faced
     # with unbalanced selection number / available register data.
-    def set(self, name, values):
+    def _set(self, name, values):
         name = str(name)
 
         assert len(name) == 1, "Register names must be 1 char long: " + name
@@ -154,42 +197,46 @@ class Registers:
         if name == _BLACK_HOLE:
             return
 
+        if not _is_writable_register(name):
+            return None  # Vim fails silently.
+
         assert isinstance(values, list), "Register values must be inside a list."
 
         # Coerce all values into strings.
         values = [str(v) for v in values]
 
-        # Special registers and invalid registers won't be set.
-        if (not (name.isalpha() or name.isdigit() or
-                 name.isupper() or name == _UNNAMED or
-                 name in _CLIPBOARD_ALL or
-                 name == _EXPRESSION or
-                 name == _SMALL_DELETE)):
-                    # Vim fails silently.
-                    return None
-
-        _data[name] = values
+        if name.isdigit() and name != '0':
+            _set_numbered_register(name, values)
+        else:
+            _data[name] = values
 
         if name not in (_EXPRESSION,):
-            self._set_default_register(values)
+            self._set_unnamed(values)
             self._maybe_set_sys_clipboard(name, values)
 
-    def set_expression(self, values):
-        self.set(_EXPRESSION, values)
+    def _set_unnamed(self, values):
+        assert isinstance(values, list)
+        # Coerce all values into strings.
+        _data[_UNNAMED] = [str(v) for v in values]
 
-    def append_to(self, name, suffixes):
-        """Append to an a-z register. `name` must be a capital in A-Z."""
+    def set_expression(self, values):
+        # Coerce all values into strings.
+        _data[_EXPRESSION] = [str(v) for v in values]
+
+    def _append(self, name, suffixes):
         assert len(name) == 1, "Register names must be 1 char long."
         assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Can only append to A-Z registers."
 
         existing_values = _data.get(name.lower(), '')
         new_values = itertools.zip_longest(existing_values, suffixes, fillvalue='')
         new_values = [(prefix + suffix) for (prefix, suffix) in new_values]
+
         _data[name.lower()] = new_values
-        self._set_default_register(new_values)
+
+        self._set_unnamed(new_values)
         self._maybe_set_sys_clipboard(name, new_values)
 
-    def get(self, name=_UNNAMED):
+    def _get(self, name=_UNNAMED):
         # Args:
         #   name (str|int) Accepts integers or strings as register names.
         #
@@ -205,7 +252,7 @@ class Registers:
             except AttributeError:
                 return ''
 
-        if name in _CLIPBOARD_ALL:
+        if name in _CLIPBOARD:
             return [get_clipboard()]
 
         if ((name not in (_UNNAMED, _SMALL_DELETE)) and (name in _SPECIAL)):
@@ -224,21 +271,16 @@ class Registers:
 
             return value
 
-        # We requested an [a-z0-9"] register.
         if name.isdigit():
             if name == '0':
                 return _data[name]
 
-            return _data['1-9'][int(name) - 1]
+            return _get_numbered_register(name)
 
         try:
-            # In Vim, "A and "a seem to be synonyms, so accept either.
             return _data[name.lower()]
         except KeyError:
             pass
-
-    def op_yank(self, register=None, linewise=False):
-        self._op('yank', register=register, linewise=linewise)
 
     def op_change(self, linewise=False, register=None):
         self._op('change', register=register, linewise=linewise)
@@ -246,13 +288,14 @@ class Registers:
     def op_delete(self, register=None, linewise=False):
         self._op('delete', register=register, linewise=linewise)
 
-    def _op(self, operation, register=None, linewise=False):
-        new_line_at_eof = False
+    def op_yank(self, register=None, linewise=False):
+        self._op('yank', register=register, linewise=linewise)
 
+    def _op(self, operation, register=None, linewise=False):
         if register == _BLACK_HOLE:
             return
 
-        selected_text = self._get_selected_text(new_line_at_eof, linewise)
+        selected_text = self._get_selected_text(linewise=linewise)
 
         multiline = False
         for fragment in selected_text:
@@ -261,11 +304,8 @@ class Registers:
                 break
 
         small_delete = False
-        if operation in ('change', 'delete'):
-            if multiline:
-                small_delete = False
-            else:
-                small_delete = True
+        if operation in ('change', 'delete') and not multiline:
+            small_delete = True
 
         if register and register != _UNNAMED:
             self[register] = selected_text
@@ -285,10 +325,7 @@ class Registers:
             # losing the previous contents of register 9.
             elif operation in ('change', 'delete'):
                 if linewise or multiline:
-                    # TODO Very inefficient
-                    _data['1-9'].insert(0, selected_text)
-                    if len(_data['1-9']) > 10:
-                        _data['1-9'].pop()
+                    _shift_numbered_register(selected_text)
             else:
                 raise ValueError('unsupported operation: ' + operation)
 
@@ -338,17 +375,17 @@ class Registers:
         return fragments
 
     def to_dict(self):
-        return {name: self.get(name) for name in _ALL}
+        return {name: self[name] for name in _ALL}
 
     def __getitem__(self, key):
-        return self.get(key)
+        return self._get(key)
 
     def __setitem__(self, key, value):
         try:
             if key.isupper():
-                self.append_to(key, value)
+                self._append(key, value)
             else:
-                self.set(key, value)
+                self._set(key, value)
         except AttributeError:
             # TODO [review] Looks like a bug: If set() above raises AttributeError so will this.
-            self.set(key, value)
+            self._set(key, value)

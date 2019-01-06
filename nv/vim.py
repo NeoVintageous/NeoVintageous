@@ -42,7 +42,7 @@ VISUAL_LINE = 'mode_visual_line'
 # often. Note that for pure motions we still use plain NORMAL mode.
 INTERNAL_NORMAL = 'mode_internal_normal'
 
-_MODE_NAMES = {
+_MODES = {
     INSERT: 'INSERT',
     INTERNAL_NORMAL: '',
     NORMAL: '',
@@ -59,7 +59,7 @@ _MODE_NAMES = {
 def mode_to_name(mode):
     # type: (str) -> str
     try:
-        return _MODE_NAMES[mode]
+        return _MODES[mode]
     except KeyError:
         return 'REALLY UNKNOWN'
 

@@ -220,18 +220,17 @@ class ViewTestCase(unittest.TestCase):
         self._setupView(text, VISUAL_BLOCK)
 
     def resetRegisters(self):
-        registers._data = registers._init_register_data()
+        registers._reset_data()
 
     def register(self, name, value):
         # Args:
         #   name (str)
         #   value (str)
-        # XXX state.registers.set() requires a list (not sure why that's useful); it doesn't look like we need it for the tests (also see assertRegister()).  # noqa: E501
         if not isinstance(value, str):
             raise ValueError('argument #2 is not a valid str')
 
         if name.isdigit() and name != '0':
-            registers._data['1-9'][int(name) - 1] = value
+            registers._set_numbered_register(name, value)
         else:
             registers._data[name] = [value]
 
@@ -731,6 +730,7 @@ _feedseq2cmd = {
     'gc':           {'command': '_vi_gc'},  # noqa: E241
     'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
     'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
+    'gg':           {'command': '_vi_gg'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gj':           {'command': '_vi_gj', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'gk':           {'command': '_vi_gk', 'args': {'mode': 'mode_normal'}},  # noqa: E241
