@@ -235,10 +235,6 @@ class ViewTestCase(unittest.TestCase):
             registers._data[name] = [value]
 
     def _assertView(self, expected, mode, msg):
-        # Args:
-        #   expected (str)
-        #   mode (str)
-        #   msg (str)
         if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
             content = list(self.view.substr(Region(0, self.view.size())))
             counter = 0
@@ -262,34 +258,31 @@ class ViewTestCase(unittest.TestCase):
         self._assertMode(mode)
 
     def assertNormal(self, expected, msg=None):
-        # Args:
-        #   expected (str)
-        #   msg (str)
         self._assertView(expected, NORMAL, msg)
 
     def assertInsert(self, expected, msg=None):
-        # Args:
-        #   expected (str)
-        #   msg (str)
         self._assertView(expected, INSERT, msg)
 
     def assertVisual(self, expected, msg=None):
-        # Args:
-        #   expected (str)
-        #   msg (str)
         self._assertView(expected, VISUAL, msg)
 
+    def assertRVisual(self, expected, msg=None):
+        self.assertVisual(expected, msg)
+        self.assertSelectionIsReveresed()
+
     def assertVline(self, expected, msg=None):
-        # Args:
-        #   expected (str)
-        #   msg (str)
         self._assertView(expected, VISUAL_LINE, msg)
 
+    def assertRVline(self, expected, msg=None):
+        self.assertVline(expected, msg)
+        self.assertSelectionIsReveresed()
+
     def assertVblock(self, expected, msg=None):
-        # Args:
-        #   expected (str)
-        #   msg (str)
         self._assertView(expected, VISUAL_BLOCK, msg)
+
+    def assertRVblock(self, expected, msg=None):
+        self.assertVblock(expected, msg)
+        self.assertSelectionIsReveresed()
 
     def assertContent(self, expected, msg=None):
         # Test that view contents and *expected* are equal.
@@ -404,6 +397,10 @@ class ViewTestCase(unittest.TestCase):
         #       The expected number of selections in view.
         self.assertEqual(expected, len(self.view.sel()))
 
+    def assertSelectionIsReveresed(self):
+        for sel in self.view.sel():
+            self.assertGreater(sel.a, sel.b, 'failed asserting selection is reversed')
+
     def assertSize(self, expected):
         # Test that number of view characters and *expected* are equal.
         #
@@ -517,6 +514,11 @@ class FunctionalTestCase(ViewTestCase):
 
         self.view.run_command(command, args)
 
+    # The same as eq(), except also assert selections are also reversed
+    def eqr(self, text, feed, expected=None, msg=None):
+        self.eq(text, feed, expected, msg)
+        self.assertSelectionIsReveresed()
+
     def eq(self, text, feed, expected=None, msg=None):
         # Args:
         #   text (str)
@@ -613,7 +615,7 @@ _feedseq2cmd = {
     ']}':           {'command': '_vi_right_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': '}'}},  # noqa: E241,E501
     'A':            {'command': '_vi_big_a'},  # noqa: E241
     'at':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': True}},  # noqa: E241,E501
-    'b':            {'command': '_vi_b', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'b':            {'command': '_vi_b'},  # noqa: E241
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
     'cc':           {'command': '_vi_cc'},  # noqa: E241
@@ -726,7 +728,7 @@ _feedseq2cmd = {
     'ds{':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '{'}},  # noqa: E241
     'ds}':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '}'}},  # noqa: E241
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
-    'e':            {'command': '_vi_e', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'e':            {'command': '_vi_e'},  # noqa: E241
     'gc':           {'command': '_vi_gc'},  # noqa: E241
     'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
     'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501

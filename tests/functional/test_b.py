@@ -21,49 +21,36 @@ from NeoVintageous.tests import unittest
 class Test_b(unittest.FunctionalTestCase):
 
     def test_b(self):
-        self.normal('Gui|de to the Galaxy')
+        self.eq('ab|c', 'b', '|abc')
+        self.eq('abc\n|', 'b', '|abc\n')
+        self.eq('one two thr|ee', 'b', 'one two |three')
+        self.eq('one two |three', 'b', 'one |two three')
+        self.eq('one two three fo|ur', '3b', 'one |two three four')
 
-        self.feed('b')
-        self.assertNormal('|Guide to the Galaxy')
-
-        self.select(5)
-        self.feed('b')
-        self.assertNormal('|Guide to the Galaxy')
-
-        self.select(7)
-        self.feed('b')
-        self.assertNormal('Guide |to the Galaxy')
-
-        self.select(11)
-        self.feed('b')
-        self.assertNormal('Guide to |the Galaxy')
-
-        self.select(13)
-        self.feed('b')
-        self.assertNormal('Guide to |the Galaxy')
-
-        self.select(17)
-        self.feed('b')
-        self.assertNormal('Guide to the |Galaxy')
+    def test_n_b(self):
+        self.eq('ab|c', 'n_b', '|abc')
+        self.eq('abc\n|', 'n_b', '|abc\n')
+        self.eq('one two thr|ee', 'n_b', 'one two |three')
+        self.eq('one two |three', 'n_b', 'one |two three')
+        self.eq('one two three fo|ur', 'n_3b', 'one |two three four')
 
     def test_v_b(self):
-        self.visual('Gui|de| to the Galaxy')
-
+        self.visual('one two three four f|ive six seven ei|ght')
         self.feed('v_b')
-        self.assertVisual('|Guid|e to the Galaxy')
-
-        self.select((5, 7))
+        self.assertVisual('one two three four f|ive six seven e|ight')
+        self.feed('v_2b')
+        self.assertVisual('one two three four f|ive s|ix seven eight')
         self.feed('v_b')
-        self.assertVisual('|Guide |to the Galaxy')
-
-        self.select((7, 11))
+        self.assertVisual('one two three four |fi|ve six seven eight')
+        self.feed('v_3b')
+        self.assertRVisual('one |two three four fi|ve six seven eight')
         self.feed('v_b')
-        self.assertVisual('Guide t|o t|he Galaxy')
+        self.assertRVisual('|one two three four fi|ve six seven eight')
 
-        self.select((7, 13))
-        self.feed('v_b')
-        self.assertVisual('Guide t|o t|he Galaxy')
+    def test_vline_b(self):
+        self.eq('x\n|one\n|y\n', 'l_b')
+        self.eq('x\n|one\ntwo\n|y\n', 'l_b')
 
-        self.select((7, 17))
-        self.feed('v_b')
-        self.assertVisual('Guide t|o the G|alaxy')
+    def test_vblock_b(self):
+        self.eq('one t|w|o\none t|w|o', 'b_b', 'one |tw|o\none |tw|o')
+        self.eq('one two t|hr|ee\none two t|hr|ee', 'b_2b', 'one |two th|ree\none |two th|ree')

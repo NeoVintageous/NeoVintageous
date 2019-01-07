@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-# DEPRECATED Use tests/functional/test_l.py instead
-
 from NeoVintageous.tests import unittest
 
 

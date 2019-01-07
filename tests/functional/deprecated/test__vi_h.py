@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-# DEPRECATED Use tests/functional/test_h.py instead
-
 from collections import namedtuple
 
 from NeoVintageous.tests import unittest
