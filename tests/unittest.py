@@ -222,17 +222,21 @@ class ViewTestCase(unittest.TestCase):
     def resetRegisters(self):
         registers._reset_data()
 
-    def register(self, name, value):
+    def register(self, name, value=None, linewise=False):
         # Args:
         #   name (str)
         #   value (str)
-        if not isinstance(value, str):
+        if value is None:
+            value = name[1:]
+            name = name[0]
+        elif not isinstance(value, str):
             raise ValueError('argument #2 is not a valid str')
 
         if name.isdigit() and name != '0':
             registers._set_numbered_register(name, value)
         else:
             registers._data[name] = [value]
+            registers._linewise[name] = linewise
 
     def _assertView(self, expected, mode, msg):
         if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
@@ -342,17 +346,31 @@ class ViewTestCase(unittest.TestCase):
             self.assertIsInstance(actual, Region)
             self.assertEqual(actual, expected)
 
-    def assertRegister(self, name, expected, msg=None):
+    def _assertRegister(self, name, expected, linewise, msg):
+        if expected is not None and not isinstance(expected, list):
+            expected = [expected]
+
+        self.assertEqual(self.state.registers[name], expected, msg or 'register = "' + name)
+        if expected is not None:
+            # FIXME
+            if not name.isdigit():
+                self.assertEqual(registers._linewise[name], linewise, msg or 'linewise register = "' + name)
+
+    def assertRegister(self, name, expected=None, linewise=False, msg=None):
         # Test that the value of the named register and *expected* are equal.
         #
         # Args:
         #   name (str):
         #       The name of the register.
         #   expected (str)
-        if expected is not None and not isinstance(expected, list):
-            expected = [expected]
+        if expected is None:
+            expected = name[1:]
+            name = name[0]
 
-        self.assertEqual(self.state.registers[name], expected, msg or 'register = "' + name)
+        self._assertRegister(name, expected, linewise, msg)
+
+    def assertRegisterIsNone(self, name, linewise=False, msg=None):
+        self._assertRegister(name, None, linewise, msg)
 
     def assertSelection(self, expected, msg=None):
         # Test that view selection and *expected* are equal.
@@ -618,6 +636,7 @@ _feedseq2cmd = {
     'b':            {'command': '_vi_b'},  # noqa: E241
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
+    'c':            {'command': '_vi_c'},  # noqa: E241
     'cc':           {'command': '_vi_cc'},  # noqa: E241
     'ce':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501
     'ci"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'text_object': "\"", 'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
@@ -693,6 +712,7 @@ _feedseq2cmd = {
     'cw':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'd$':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'D':            {'command': '_vi_big_d'},  # noqa: E241
+    'd':            {'command': '_vi_d'},  # noqa: E241
     'd2ft':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 2, 'mode': 'mode_internal_normal', 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
     'dd':           {'command': '_vi_dd'},  # noqa: E241,E501
     'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_e'}}},  # noqa: E241,E501

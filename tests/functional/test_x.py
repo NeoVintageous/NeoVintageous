@@ -30,17 +30,17 @@ class Test_x(unittest.FunctionalTestCase):
         self.eq('|a\n', 'x', '|\n')
         self.eq('a|xb\n', 'x', 'a|b\n')
         self.eq('a|123b\n', '3x', 'a|b\n')
-        self.assertRegister('"', '123')
-        self.assertRegister('-', '123')
-        self.assertRegister('0', None)
-        self.assertRegister('1', None)
+        self.assertRegister('"123')
+        self.assertRegister('-123')
+        self.assertRegisterIsNone('0')
+        self.assertRegisterIsNone('1')
 
     def test_x_should_be_noop_on_empty_lines(self):
         self.eq('\n\n|\n\n', 'x', '\n\n|\n\n')
-        self.assertRegister('"', None)
-        self.assertRegister('-', None)
-        self.assertRegister('0', None)
-        self.assertRegister('1', None)
+        self.assertRegisterIsNone('"')
+        self.assertRegisterIsNone('-')
+        self.assertRegisterIsNone('0')
+        self.assertRegisterIsNone('1')
 
     def test_x_multiple_selections(self):
         self.eq('a|xb|xc|xd', 'x', 'a|b|c|d')
@@ -50,24 +50,23 @@ class Test_x(unittest.FunctionalTestCase):
         self.eq('|a\n', 'v_x', 'n_|\n')
         self.eq('a|xb\n', 'v_x', 'n_a|b\n', 'should delete character')
         self.eq('a|xyz|b\n', 'v_x', 'n_a|b\n', 'should delete characters')
-        self.assertRegister('"', 'xyz')
-        self.assertRegister('-', 'xyz')
-        self.assertRegister('0', None)
-        self.assertRegister('1', None)
+        self.assertRegister('"xyz')
+        self.assertRegister('-xyz')
+        self.assertRegisterIsNone('0')
+        self.assertRegisterIsNone('1')
 
     def test_v_x_multiple_lines(self):
         self.eq('a\nb|x\ny|c\n', 'v_x', 'n_a\nb|c\n', 'should delete characters across multiple lines')
         self.eq('ab\n|xy\n|cd\n', 'v_x', 'n_ab\n|cd\n', 'should delete full line')
         self.eq('ab\n|x1\nx2\n|cd\n', 'v_x', 'n_ab\n|cd\n', 'should delete two full lines')
         self.eq('\n|\n\n|\n', 'v_x', 'n_\n|\n')
-        self.assertRegister('"', '\n\n')
-        self.assertRegister('-', None)
-
-        self.assertRegister('0', None)
-        self.assertRegister('1', '\n\n')
-        self.assertRegister('2', 'x1\nx2\n')
-        self.assertRegister('3', 'xy\n')
-        self.assertRegister('4', 'x\ny')
+        self.assertRegister('"\n\n')
+        self.assertRegister('1\n\n')
+        self.assertRegister('2x1\nx2\n')
+        self.assertRegister('3xy\n')
+        self.assertRegister('4x\ny')
+        self.assertRegisterIsNone('-')
+        self.assertRegisterIsNone('0')
 
     def test_v_x_multiple_selections(self):
         self.eq('a|xb|xc|xd', 'x', 'a|b|c|d', 'should work for multiple selection')
@@ -76,19 +75,26 @@ class Test_x(unittest.FunctionalTestCase):
     def test_l_x(self):
         self.eq('ab\n|xy\n|cd\n', 'l_x', 'n_ab\n|cd\n', 'should delete full line')
         self.eq('ab\n|x1\nx2\nx3\n|cd\n', 'l_x', 'n_ab\n|cd\n', 'should delete multiple full lines')
-        self.assertRegister('"', 'x1\nx2\nx3\n')
-        self.assertRegister('-', None)
-        self.assertRegister('0', None)
-        self.assertRegister('1', 'x1\nx2\nx3\n')
-        self.assertRegister('2', 'xy\n')
+        self.assertRegister('"x1\nx2\nx3\n', linewise=True)
+        self.assertRegister('1x1\nx2\nx3\n', linewise=True)
+        self.assertRegister('2xy\n', linewise=True)
+        self.assertRegisterIsNone('-')
+        self.assertRegisterIsNone('0')
 
     def test_l_x_empty_lines(self):
         self.eq('\n|\n\n|\n', 'l_x', 'n_\n|\n')
-        self.assertRegister('"', '\n\n')
-        self.assertRegister('-', None)
-        self.assertRegister('0', None)
-        self.assertRegister('1', '\n\n')
+        self.assertRegister('"\n\n\n', linewise=True)
+        self.assertRegister('1\n\n\n', linewise=True)
+        self.assertRegisterIsNone('-')
+        self.assertRegisterIsNone('0')
 
     def test_issue_263(self):
         self.eq('a\n|\nb', 'x', 'a\n|\nb')
         self.eq('a\n\n|\n\nb', 'x', 'a\n\n|\n\nb')
+
+    def test_x_visual_line_sets_linewise_register(self):
+        self.eq('x\n|abc\n|y', 'l_x', 'n_x\n|y')
+        self.assertRegister('"abc\n', linewise=True)
+        self.assertRegister('1abc\n', linewise=True)
+        self.assertRegisterIsNone('-')
+        self.assertRegisterIsNone('0')

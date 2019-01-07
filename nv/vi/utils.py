@@ -193,7 +193,8 @@ def gluing_undo_groups(view, state):
 def next_non_white_space_char(view, pt, white_space='\t '):
     # type: (...) -> int
     substr = view.substr
-    while (substr(pt) in white_space) and (pt <= view.size()):
+    size = view.size
+    while (substr(pt) in white_space) and (pt <= size()):
         pt += 1
 
     return pt

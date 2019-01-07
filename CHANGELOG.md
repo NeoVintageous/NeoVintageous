@@ -4,6 +4,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.7.3 - Unreleased
 
+* Fixed: Lots of yank, paste, register issues
+* Fixed [#224](https://github.com/NeoVintageous/NeoVintageous/issues/224): Pasting text ending with newline pastes to wrong line
+* Fixed [#2](https://github.com/NeoVintageous/NeoVintageous/issues/2): `YP` not working correctly
 * Fixed [#391](https://github.com/NeoVintageous/NeoVintageous/issues/391): `c{motion}` should fill the numbered registers
 * Fixed [#390](https://github.com/NeoVintageous/NeoVintageous/issues/390): `cc` should fill the numbered registers
 * Fixed [#389](https://github.com/NeoVintageous/NeoVintageous/issues/389): `dd` on last line leaves cursor at eof

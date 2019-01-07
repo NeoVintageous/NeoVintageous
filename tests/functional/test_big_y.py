@@ -26,10 +26,10 @@ class Test_Y(unittest.FunctionalTestCase):
 
     def test_Y(self):
         self.eq('one\nt|wo\nthree', 'Y', 'one\nt|wo\nthree')
-        self.assertRegister('"', 'two\n')
-        self.assertRegister('0', 'two\n')
+        self.assertRegister('"two\n', linewise=True)
+        self.assertRegister('0two\n', linewise=True)
         self.eq('o|ne', 'Y', 'o|ne')
-        self.assertRegister('"', 'one\n')
-        self.assertRegister('0', 'one\n')
-        self.assertRegister('1', None)
-        self.assertRegister('-', None)
+        self.assertRegister('"', 'one\n', linewise=True)
+        self.assertRegister('0', 'one\n', linewise=True)
+        self.assertRegisterIsNone('1')
+        self.assertRegisterIsNone('-')

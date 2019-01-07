@@ -25,8 +25,8 @@ class Test_p(unittest.FunctionalTestCase):
         self.resetRegisters()
 
     def test_p(self):
-        self.register('"', 'ab')
-        self.eq('|xy', 'p', 'xa|by')
+        self.register('"', 'one')
+        self.eq('|xy', 'p', 'xon|ey')
 
     # TODO How paste works depends on how the register was created (not just the
     # contents of the register e.g. just because the register has newlines

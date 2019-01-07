@@ -244,7 +244,7 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(self.registers['a'], ['foofizz', 'buzz'])
 
     def test_appending_sets_default_register(self):
-        self.registers._set('a', ['foo'])
+        self.registers['a'] = ['foo']
         self.registers['A'] = ['bar']
         self.assertEqual(self.registers[_UNNAMED], ['foobar'])
 

@@ -20,12 +20,78 @@ from NeoVintageous.tests import unittest
 
 class Test_P(unittest.FunctionalTestCase):
 
-    def test_P(self):
-        self.register('"', 'ab')
-        self.eq('|xy', 'P', 'a|bxy')
-        self.eq('x|y', 'P', 'xa|by')
-        self.eq('x\n|y', 'P', 'x\na|by')
+    def setUp(self):
+        super().setUp()
+        self.resetRegisters()
 
-    def test_p_newlines(self):
-        self.register('"', 'x\n')
-        self.eq('|foo', 'P', '|x\nfoo')
+    def test_P_paste_characterwise_content(self):
+        self.register('"abc')
+        self.eq('x|y', 'P', 'xab|cy')
+        self.assertRegister('"abc')
+
+    def test_P_paste_characterwise_content_multiline(self):
+        self.register('"fizz\nbuzz')
+        self.eq('x|y', 'P', 'x|fizz\nbuzzy')
+        self.assertRegister('"fizz\nbuzz')
+
+    def test_P_paste_characterwise_content_with_newline(self):
+        self.register('"abc\n')
+        self.eq('x|y', 'P', 'x|abc\ny')
+        self.assertRegister('"abc\n')
+
+    def test_P_paste_characterwise_content_with_newline_multiline(self):
+        self.register('"fizz\nbuzz\n')
+        self.eq('x|y', 'P', 'x|fizz\nbuzz\ny')
+        self.assertRegister('"fizz\nbuzz\n')
+
+    def test_P_paste_linewise_content(self):
+        self.register('"abc\n', linewise=True)
+        self.eq('x\ny|z', 'P', 'x\n|abc\nyz')
+        self.assertRegister('"abc\n', linewise=True)
+
+    def test_P_paste_linewise_content_multiline(self):
+        self.register('"fizz\nbuzz\n', linewise=True)
+        self.eq('x\ny|z', 'P', 'x\n|fizz\nbuzz\nyz')
+        self.assertRegister('"fizz\nbuzz\n', linewise=True)
+
+    def test_P_paste_linewise_content_puts_cursor_on_first_non_whitespace_character(self):
+        self.register('"    abc\n', linewise=True)
+        self.eq('x\ny|z', 'P', 'x\n    |abc\nyz')
+        self.assertRegister('"    abc\n', linewise=True)
+
+    def test_P_paste_linewise_content_puts_cursor_on_first_non_whitespace_character_multiline(self):
+        self.register('"    fizz\n    buzz\n', linewise=True)
+        self.eq('x\ny|z', 'P', 'x\n    |fizz\n    buzz\nyz')
+        self.assertRegister('"    fizz\n    buzz\n', linewise=True)
+
+
+class Test_v_P(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.resetRegisters()
+
+    def test_v_P_paste_characterwise_content(self):
+        self.register('"abc')
+        self.eq('x|456|y', 'v_P', 'n_xab|cy')
+        self.assertRegister('"456')
+
+    def test_v_P_paste_characterwise_content_with_newline(self):
+        self.register('"abc\n')
+        self.eq('x|456|y', 'v_P', 'n_xab|c\ny')
+        self.assertRegister('"456')
+
+    def test_v_P_paste_linewise_content(self):
+        self.register('"abc\n', linewise=True)
+        self.eq('x|456|y', 'v_P', 'n_x\n|abc\ny')
+        self.assertRegister('"456')
+
+    def test_v_P_paste_linewise_content_puts_cursor_on_first_non_whitespace_character(self):
+        self.register('"    abc\n', linewise=True)
+        self.eq('x|456|y', 'v_P', 'n_x\n    |abc\ny')
+        self.assertRegister('"456')
+
+    def test_224(self):
+        self.register('"bc\n')
+        self.eq('abc\nd|ef', 'P', 'abc\nd|bc\nef')
+        self.assertRegister('"bc\n')

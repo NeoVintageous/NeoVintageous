@@ -421,7 +421,7 @@ class _vi_c(ViTextCommandBase):
 
                 return
 
-        self.state.registers.op_change(register=register)
+        self.state.registers.op_change(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
         self.enter_insert_mode(mode)
 
@@ -890,7 +890,7 @@ class _vi_y(ViTextCommandBase):
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return
 
-        self.state.registers.op_yank(register=register)
+        self.state.registers.op_yank(register=register, linewise=(mode == VISUAL_LINE))
         regions_transformer(self.view, f)
         self.enter_normal_mode(mode)
 
@@ -922,7 +922,7 @@ class _vi_d(ViTextCommandBase):
 
                 return
 
-        self.state.registers.op_delete(register=register)
+        self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('left_delete')
         self.view.run_command('_nv_fix_st_eol_caret')
         self.enter_normal_mode(mode)
@@ -1158,7 +1158,7 @@ class _vi_big_c(ViTextCommandBase):
 
         self.save_sel()
         regions_transformer(self.view, f)
-        self.state.registers.op_change(register=register)
+        self.state.registers.op_change(register=register, linewise=is_visual_mode(mode))
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1254,7 +1254,7 @@ class _vi_x(ViTextCommandBase):
 
         regions_transformer(self.view, select)
 
-        self.state.registers.op_delete(register=register)
+        self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
         self.enter_normal_mode(mode)
 
@@ -1490,7 +1490,7 @@ class _vi_big_x(ViTextCommandBase):
         abort = False
         regions_transformer(self.view, select)
 
-        self.state.registers.op_delete(register=register)
+        self.state.registers.op_delete(register=register, linewise=True)
 
         if not abort:
             self.view.run_command('left_delete')
@@ -1513,59 +1513,61 @@ class _vi_big_z_big_z(ViWindowCommandBase):
 class _vi_big_p(ViTextCommandBase):
 
     def run(self, edit, register=None, count=1, mode=None):
+        if len(self.view.sel()) > 1:
+            return  # TODO Support multiple selections
+
         state = self.state
 
-        register_values = state.registers.get_for_paste(register, state.mode)
-        if not register_values:
+        text, linewise = state.registers.get_for_big_p(register, state.mode)
+        if not text:
             return status_message('E353: Nothing in register ' + register)
 
-        # TODO: Enable pasting to multiple selections.
-        sel = list(self.view.sel())[0]
-        text_block, linewise = self.merge(register_values)
+        sel = self.view.sel()[0]
 
         if mode == INTERNAL_NORMAL:
-            if not linewise:
-                self.view.insert(edit, sel.a, text_block)
-                self.view.sel().clear()
-                pt = sel.a + len(text_block) - 1
-                self.view.sel().add(Region(pt))
-            else:
-                pt = self.view.line(sel.a).a
-                self.view.insert(edit, pt, text_block)
-                self.view.sel().clear()
-                row = utils.row_at(self.view, pt)
+
+            if linewise:
+                # If register content is from a linewise operation, then the
+                # cursor is put on the first non-blank character of the first
+                # line of the content after the content is inserted.
+                row = self.view.rowcol(self.view.line(sel.a).a)[0]
                 pt = self.view.text_point(row, 0)
-                self.view.sel().add(Region(pt))
+
+                self.view.insert(edit, pt, text)
+
+                pt = next_non_white_space_char(self.view, pt)
+
+                self.view.sel().clear()
+                self.view.sel().add(pt)
+            else:
+                # If register is charactwise but contains a newline, then the cursor
+                # is put at the start of of the text pasted, otherwise the cursor is
+                # put on the last character of the text pasted.
+                if '\n' in text:
+                    pt = sel.a
+                else:
+                    pt = sel.a + len(text) - 1
+
+                self.view.insert(edit, sel.a, text)
+                self.view.sel().clear()
+                self.view.sel().add(pt)
+
+            self.enter_normal_mode(mode=mode)
 
         elif mode == VISUAL:
-            if not linewise:
-                self.view.replace(edit, sel, text_block)
-            else:
-                pt = sel.a
-                if text_block[0] != '\n':
-                    text_block = '\n' + text_block
-                self.view.replace(edit, sel, text_block)
-                self.view.sel().clear()
-                row = utils.row_at(self.view, pt + len(text_block))
-                pt = self.view.text_point(row - 1, 0)
-                self.view.sel().add(Region(pt))
-        else:
-            return
 
-        self.enter_normal_mode(mode=mode)
+            self.view.replace(edit, sel, text)
+            self.enter_normal_mode(mode=mode)
 
-    def merge(self, register_values):
-        """
-        Merge a list of strings.
+            # If register content is linewise, then the cursor is put on the
+            # first non blank of the line.
+            if linewise:
+                def selection_first_non_blank(view, s):
+                    return Region(next_non_white_space_char(view, view.line(s).a))
 
-        Return a block of text and a bool indicating whether it's a linewise block.
-        """
-        block = ''.join(register_values)
-        if '\n' in register_values[0]:
-            if block[-1] != '\n':
-                return (block + '\n'), True
-            return block, True
-        return block, False
+                regions_transformer(self.view, selection_first_non_blank)
+
+        # Issue #222 Implement VISUAL LINE mode
 
 
 class _vi_p(ViTextCommandBase):

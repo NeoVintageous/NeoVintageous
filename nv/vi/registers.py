@@ -21,13 +21,16 @@ import itertools
 from sublime import get_clipboard
 from sublime import set_clipboard
 
-from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import is_visual_mode
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 # 1. The unnamed register ""
 _UNNAMED = '"'
 
 # 2. 10 numberd registers "0 to "9
+_LAST_YANK = '0'
+_LAST_DELETE = '1'
 _NUMBERED = tuple('0123456789')
 
 # 3 The small delete register "-
@@ -97,6 +100,11 @@ _ALL = _SPECIAL + _NUMBERED + _NAMED
 
 
 _data = {'0': None, '1-9': deque([None] * 9, maxlen=9)}  # type: dict
+_linewise = {}  # type: dict
+
+
+def _set_register_linewise(name, linewise):
+    _linewise[name] = linewise
 
 
 def _reset_data():
@@ -115,6 +123,10 @@ def _set_numbered_register(number, values):
 
 def _get_numbered_register(number):
     return _data['1-9'][int(number) - 1]
+
+
+def _is_register_linewise(register):
+    return _linewise.get(register, False)
 
 
 def _is_writable_register(register):
@@ -189,7 +201,7 @@ class Registers:
     # register data as lists, one per selection. The paste command will then
     # make the final decision about what to insert into the buffer when faced
     # with unbalanced selection number / available register data.
-    def _set(self, name, values):
+    def _set(self, name, values, linewise=False):
         name = str(name)
 
         assert len(name) == 1, "Register names must be 1 char long: " + name
@@ -202,22 +214,22 @@ class Registers:
 
         assert isinstance(values, list), "Register values must be inside a list."
 
-        # Coerce all values into strings.
         values = [str(v) for v in values]
 
         if name.isdigit() and name != '0':
             _set_numbered_register(name, values)
         else:
             _data[name] = values
+            _linewise[name] = linewise
 
         if name not in (_EXPRESSION,):
-            self._set_unnamed(values)
+            self._set_unnamed(values, linewise)
             self._maybe_set_sys_clipboard(name, values)
 
-    def _set_unnamed(self, values):
+    def _set_unnamed(self, values, linewise=False):
         assert isinstance(values, list)
-        # Coerce all values into strings.
         _data[_UNNAMED] = [str(v) for v in values]
+        _linewise[_UNNAMED] = linewise
 
     def set_expression(self, values):
         # Coerce all values into strings.
@@ -272,7 +284,7 @@ class Registers:
             return value
 
         if name.isdigit():
-            if name == '0':
+            if name == _LAST_YANK:
                 return _data[name]
 
             return _get_numbered_register(name)
@@ -282,7 +294,7 @@ class Registers:
         except KeyError:
             pass
 
-    def op_change(self, linewise=False, register=None):
+    def op_change(self, register=None, linewise=False):
         self._op('change', register=register, linewise=linewise)
 
     def op_delete(self, register=None, linewise=False):
@@ -310,11 +322,11 @@ class Registers:
         if register and register != _UNNAMED:
             self[register] = selected_text
         else:
-            self[_UNNAMED] = selected_text
+            self._set(_UNNAMED, selected_text, linewise)
 
             # Numbered register 0 contains the text from the most recent yank.
             if operation == 'yank':
-                _data['0'] = selected_text
+                self._set(_LAST_YANK, selected_text, linewise)
 
             # Numbered register 1 contains the text deleted by the most
             # recent delete or change command, unless the command specified
@@ -333,19 +345,49 @@ class Registers:
         if small_delete:
             is_same_line = (lambda r: self.view.line(r.begin()) == self.view.line(r.end() - 1))
             if all(is_same_line(x) for x in list(self.view.sel())):
-                self[_SMALL_DELETE] = selected_text
+                self._set(_SMALL_DELETE, selected_text, linewise)
+
+    def get_for_big_p(self, register, mode):
+        if not register:
+            register = _UNNAMED
+
+        values = self._get(register)
+        linewise = _is_register_linewise(register)
+
+        as_str = ''
+
+        if values:
+            # Populate unnamed register with the text we're about to paste into (the
+            # text we're about to replace), but only if there was something in
+            # requested register (not empty), and we're in VISUAL mode.
+            if is_visual_mode(mode):
+                current_content = self._get_selected_text(linewise=(mode == VISUAL_LINE))
+                if current_content:
+                    self._set(_UNNAMED, current_content, linewise=(mode == VISUAL_LINE))
+
+            # If register content is from a linewise operation, and in VISUAL
+            # mode, and doesn't begin with newline, then a newline is prefixed.
+            as_str = ''.join(values)
+            if as_str and linewise and is_visual_mode(mode) and as_str[0] != '\n':
+                as_str = '\n' + as_str
+
+        return as_str, linewise
 
     def get_for_paste(self, register, mode):
         if not register:
             register = _UNNAMED
 
-        values = self[register]
+        values = self._get(register)
+        linewise = _is_register_linewise(register)
 
         # Populate unnamed register with the text we're about to paste into (the
         # text we're about to replace), but only if there was something in
         # requested register (not empty), and we're in VISUAL mode.
-        if values and (mode == VISUAL):
-            self[_UNNAMED] = self._get_selected_text(new_line_at_eof=True)
+        if values and is_visual_mode(mode):
+            content = self._get_selected_text(linewise=linewise)
+            if content:
+                linewise = (mode == VISUAL_LINE)
+                self._set(_UNNAMED, content, linewise=linewise)
 
         return values
 
@@ -375,12 +417,13 @@ class Registers:
         return fragments
 
     def to_dict(self):
-        return {name: self[name] for name in _ALL}
+        return {name: self._get(name) for name in _ALL}
 
     def __getitem__(self, key):
         return self._get(key)
 
     def __setitem__(self, key, value):
+        # TODO logic to _set() so that uppercase is handled properly when using _set()
         try:
             if key.isupper():
                 self._append(key, value)

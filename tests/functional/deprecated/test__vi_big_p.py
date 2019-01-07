@@ -47,7 +47,7 @@ TESTS = (
     test_data(content='aaa bbb ccc',
               regions=[[(0, 4), (0, 7)]],
               in_register=['xxx\n'], params={'mode': unittest.VISUAL, 'count': 1},
-              expected=('aaa \nxxx\n ccc', unittest.Region(5, 5)), msg='failed in {0}'),
+              expected=('aaa xxx\n ccc', unittest.Region(6, 6)), msg='failed in {0}'),
 )
 
 
@@ -61,6 +61,7 @@ class Test__vi_big_p(unittest.ViewTestCase):
 
             self.view.settings().set('vintageous_use_sys_clipboard', False)
             registers._data['"'] = data.in_register
+            registers._linewise['"'] = False
 
             self.view.run_command('_vi_big_p', data.params)
 
