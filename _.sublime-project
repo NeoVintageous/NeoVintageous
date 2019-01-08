@@ -12,7 +12,7 @@
 	"settings":
 	{
 		"default_line_ending": "unix",
-		"ensure_new_line_at_eof_on_save": true,
+		"ensure_newline_at_eof_on_save": true,
 		"tab_size": 4,
 		"translate_tabs_to_spaces": true,
 		"trim_automatic_white_space": true,
