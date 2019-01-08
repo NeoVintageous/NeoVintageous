@@ -21,11 +21,8 @@ from NeoVintageous.tests import unittest
 class Test_e(unittest.FunctionalTestCase):
 
     def test_e(self):
-        # Note: internal normal mode makes "visual" selections in "normal" mode
-        self.eq('one |two three', 'e', 'one |two three')
-        self.assertSelection((4, 7))
-        self.eq('one |two three', '2e', 'one |two three')
-        self.assertSelection((4, 13))
+        self.eq('one |two three', 'e', 'N_one |two| three')
+        self.eq('one |two three', '2e', 'N_one |two three|')
 
     def test_n_e(self):
         self.eq('one |two three', 'n_e', 'one tw|o three')

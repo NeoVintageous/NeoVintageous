@@ -21,8 +21,7 @@ from NeoVintageous.tests import unittest
 class Test_G(unittest.FunctionalTestCase):
 
     def test_G(self):
-        self.eq('|1\n2\n3\n4\n', 'G', '|1\n2\n3\n4\n')
-        self.assertSelection((0, 8))  # Internal normal mode
+        self.eq('|1\n2\n3\n4\n', 'G', 'N_|1\n2\n3\n4\n|')
 
     def test_n_G(self):
         self.eq('|1\n2\n3\n4\n', 'n_G', '1\n2\n3\n4\n|')

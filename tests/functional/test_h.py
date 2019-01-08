@@ -50,20 +50,17 @@ class Test_h(unittest.FunctionalTestCase):
     def test_v_h_reverse(self):
         self.visual('hello |wo|rld')
         self.feed('v_5h')
-        self.assertVisual('he|llo w|orld')
-        self.assertSelection((7, 2))
+        self.assertRVisual('he|llo w|orld')
 
     def test_v_h_to_sol(self):
         self.visual('x\nhe|ll|o')
         self.feed('v_7h')
-        self.assertVisual('x\n|hel|lo')
-        self.assertSelection((5, 2))
+        self.assertRVisual('x\n|hel|lo')
 
     def test_v_h_to_sol_2(self):
         self.visual('x\na|b\n|')
         self.feed('v_9h')
-        self.assertVisual('x\n|ab|\n')
-        self.assertSelection((4, 2))
+        self.assertRVisual('x\n|ab|\n')
 
     def test_v_h_to_sol_3(self):
         self.visual('x\n|ab\n|')
@@ -81,11 +78,7 @@ class Test_h(unittest.FunctionalTestCase):
         self.assertVisual('he|llo wor|ld')
 
     def test_h_internal_mode(self):
-        self.eq('hel|lo', 'h', 'he|llo')
-        # INTERNAL NORMAL mode (default mode), makes "visual" selections within
-        # a Vim "normal" mode, which is why the test above may look weird i.e.
-        # the test asserts the start of the selection.
-        self.assertSelection((3, 2))
+        self.eqr('hel|lo', 'h', 'N_he|l|lo')
 
     def test_b_h(self):
         self.eq('fi|z|z\nbu|z|z', 'b_h', 'f|iz|z\nb|uz|z')

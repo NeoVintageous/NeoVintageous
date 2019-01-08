@@ -315,10 +315,6 @@ class Registers:
                 multiline = True
                 break
 
-        small_delete = False
-        if operation in ('change', 'delete') and not multiline:
-            small_delete = True
-
         if register and register != _UNNAMED:
             self[register] = selected_text
         else:
@@ -341,8 +337,9 @@ class Registers:
             else:
                 raise ValueError('unsupported operation: ' + operation)
 
-        # XXX: Small register delete. Improve this implementation.
-        if small_delete:
+        # The small delete register.
+        if operation in ('change', 'delete') and not multiline:
+            # TODO Improve small delete register implementation.
             is_same_line = (lambda r: self.view.line(r.begin()) == self.view.line(r.end() - 1))
             if all(is_same_line(x) for x in list(self.view.sel())):
                 self._set(_SMALL_DELETE, selected_text, linewise)
@@ -356,7 +353,6 @@ class Registers:
         linewise = _is_register_linewise(register)
 
         if values:
-
             # Populate unnamed register with the text we're about to paste into
             # (the text we're about to replace), but only if there was something
             # in requested register (not empty), and we're in VISUAL mode.

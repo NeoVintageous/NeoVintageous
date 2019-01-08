@@ -89,50 +89,36 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
         self.feed('l_%')
         self.assertVline('x\n|f {\na\nb\nc\n}\n|x\n')
         self.feed('l_%')
-        self.assertVline(start)
-        # TODO Addding a assertRvline to test reversed selections would make calls to assertSelection() obsolete in this test  # noqa: E501
-        self.assertSelection((14, 12), 'selection should be reversed')
+        self.assertRVline(start)
 
     def test_if_forward_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
         start = 'x\nf {\na\n|b\nc\n}\n|x\n'
         self.vline(start)
         self.feed('l_%')
-        self.assertVline('x\n|f {\na\nb\n|c\n}\nx\n')
-        # TODO Addding a assertRvline to test reversed selections would make calls to assertSelection() obsolete in this test  # noqa: E501
-        self.assertSelection((10, 2))
+        self.assertRVline('x\n|f {\na\nb\n|c\n}\nx\n')
         self.feed('l_%')
         self.assertVline(start)
-        self.assertSelection((8, 14))
 
     def test_if_backward_vline_and_target_is_before_selection_it_should_extend_selection(self):
         start = 'x\nf {\na\nb\nc\n|}\n|x\n'
         self.rvline(start)
         self.feed('l_%')
-        self.assertVline('x\n|f {\na\nb\nc\n}\n|x\n')
-        # TODO Addding a assertRvline to test reversed selections would make the calls to assertSelection() below in this test # noqa: E501
-        self.assertSelection((14, 2))
+        self.assertRVline('x\n|f {\na\nb\nc\n}\n|x\n')
         self.feed('l_%')
-        self.assertVline(start)
-        self.assertSelection((14, 12))
+        self.assertRVline(start)
 
     def test_if_backward_vlines_and_target_is_before_selection_it_should_extend_selection(self):
         start = 'x\nf {\na\nb\nc\n|}\nx\ny\n|z\n'
         self.rvline(start)
         self.feed('l_%')
-        self.assertVline('x\n|f {\na\nb\nc\n}\nx\ny\n|z\n')
-        # TODO Addding a assertRvline to test reversed selections would make the calls to assertSelection() below in this test # noqa: E501
-        self.assertSelection((18, 2))
+        self.assertRVline('x\n|f {\na\nb\nc\n}\nx\ny\n|z\n')
         self.feed('l_%')
-        self.assertVline(start)
-        self.assertSelection((18, 12))
+        self.assertRVline(start)
 
     def test_if_reverse_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
         start = 'x\n|f {\na\nb\n|c\n}\nx\n'
         self.rvline(start)
         self.feed('l_%')
         self.assertVline('x\nf {\na\n|b\nc\n}\n|x\n')
-        # TODO Addding a assertRvline to test reversed selections would calls to assertSelection() obsolete in this test  # noqa: E501
-        self.assertSelection((8, 14))
         self.feed('l_%')
-        self.assertVline(start)
-        self.assertSelection((10, 2))
+        self.assertRVline(start)

@@ -41,28 +41,6 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK  # noqa: F401
 from NeoVintageous.nv.vim import VISUAL_LINE  # noqa: F401
 
 
-# DEPRECATED Use newer APIs.
-def _make_region(view, a, b=None):
-    # type: (...) -> Region
-    try:
-        pt_a = view.text_point(*a)
-        pt_b = view.text_point(*b)
-
-        return Region(pt_a, pt_b)
-    except (TypeError, ValueError):
-        pass
-
-    if isinstance(a, int) and b is None:
-        pass
-    elif not (isinstance(a, int) and isinstance(b, int)):
-        raise ValueError('a and b arguments must be integers or a tuple (row, col)')
-
-    if b is not None:
-        return Region(a, b)
-    else:
-        return Region(a)
-
-
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -138,7 +116,7 @@ class ViewTestCase(unittest.TestCase):
         self.view.run_command('_nv_test_write', {'text': text})
 
     def _setupView(self, text, mode, reverse=False):
-        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
+        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL):
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
             sel_len = len(sels)
@@ -149,7 +127,7 @@ class ViewTestCase(unittest.TestCase):
                 raise Exception('invalid visual selection')
 
             if sels:
-                v_sels = []
+                v_sels = []  # type: list
                 a = None
                 for i, x in enumerate(sels):
                     if a is None:
@@ -185,42 +163,31 @@ class ViewTestCase(unittest.TestCase):
         self.state.mode = mode
 
     def normal(self, text):
-        # Args:
-        #   text (str)
         self._setupView(text, NORMAL)
 
     def insert(self, text):
-        # Args:
-        #   text (str)
         self._setupView(text, INSERT)
 
+    def internalNormal(self, text):
+        self._setupView(text, INTERNAL_NORMAL)
+
+    def rinternalNormal(self, text):
+        self._setupView(text, INTERNAL_NORMAL, reverse=True)
+
     def visual(self, text):
-        # Args:
-        #   text (str)
         self._setupView(text, VISUAL)
 
     def rvisual(self, text):
-        # Args:
-        #   text (str)
         self._setupView(text, VISUAL, reverse=True)
 
     def vline(self, text):
-        # Args:
-        #   text (str)
         self._setupView(text, VISUAL_LINE)
 
     def rvline(self, text):
-        # Args:
-        #   text (str)
         self._setupView(text, VISUAL_LINE, reverse=True)
 
     def vblock(self, text):
-        # Args:
-        #   text (str)
         self._setupView(text, VISUAL_BLOCK)
-
-    def resetRegisters(self):
-        registers._reset_data()
 
     def register(self, name, value=None, linewise=False):
         # Args:
@@ -238,20 +205,26 @@ class ViewTestCase(unittest.TestCase):
             registers._data[name] = [value]
             registers._linewise[name] = linewise
 
-    def _assertView(self, expected, mode, msg):
-        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE):
-            content = list(self.view.substr(Region(0, self.view.size())))
-            counter = 0
-            for sel in self.view.sel():
-                content.insert(sel.begin() + counter, '|')
-                counter += 1
-                if sel.end() != sel.begin():
-                    # TODO should be assert that it looks like
-                    # we're now in normal mode, otherwise visual mode?
-                    content.insert(sel.end() + counter, '|')
-                    counter += 1
+    def resetRegisters(self):
+        registers._reset_data()
 
-            self.assertEquals(''.join(content), expected, msg)
+    def _assertViewSelectionContent(self, expected, msg):
+        content = list(self.view.substr(Region(0, self.view.size())))
+        counter = 0
+        for sel in self.view.sel():
+            content.insert(sel.begin() + counter, '|')
+            counter += 1
+            if sel.end() != sel.begin():
+                # TODO should be assert that it looks like
+                # we're now in normal mode, otherwise visual mode?
+                content.insert(sel.end() + counter, '|')
+                counter += 1
+
+        self.assertEquals(''.join(content), expected, msg)
+
+    def _assertView(self, expected, mode, msg):
+        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL):
+            self._assertViewSelectionContent(expected, msg)
         else:
             content = list(self.view.substr(Region(0, self.view.size())))
             for i, sel in enumerate(self.view.sel()):
@@ -266,6 +239,14 @@ class ViewTestCase(unittest.TestCase):
 
     def assertInsert(self, expected, msg=None):
         self._assertView(expected, INSERT, msg)
+
+    def assertInternalNormal(self, expected, strict=False, msg=None):
+        self._assertViewSelectionContent(expected, msg)
+        self._assertMode(INTERNAL_NORMAL if strict else NORMAL)
+
+    def assertRInternalNormal(self, expected, strict=False, msg=None):
+        self.assertInternalNormal(expected, strict, msg)
+        self.assertSelectionIsReveresed()
 
     def assertVisual(self, expected, msg=None):
         self._assertView(expected, VISUAL, msg)
@@ -313,6 +294,9 @@ class ViewTestCase(unittest.TestCase):
 
     def assertInsertMode(self):
         self._assertMode(INSERT)
+
+    def assertInternalNormalMode(self):
+        self._assertMode(INTERNAL_NORMAL)
 
     def assertNormalMode(self):
         self._assertMode(NORMAL)
@@ -459,7 +443,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(expected_region, actual_region, msg)
 
 
-_char2mode = {
+_CHAR2MODE = {
     'i': INSERT,
     'n': NORMAL,
     'v': VISUAL,
@@ -487,7 +471,7 @@ class FunctionalTestCase(ViewTestCase):
         #
         # NOTE: This method currently uses a **hardcoded** map of sequences to
         # commands (except <Esc> and cmdline sequences). You may need to add the
-        # a sequence to command map value. See the _feedseq2cmd variable.
+        # a sequence to command map value. See the _SEQ2CMD variable.
         #
         # Examples:
         #
@@ -508,7 +492,7 @@ class FunctionalTestCase(ViewTestCase):
         seq_args = {}
 
         if seq[0] in 'vinlb' and (len(seq) > 1 and seq[1] == '_'):
-            seq_args['mode'] = _char2mode[seq[0]]
+            seq_args['mode'] = _CHAR2MODE[seq[0]]
             seq = seq[2:]
 
         if seq[0].isdigit():
@@ -517,9 +501,9 @@ class FunctionalTestCase(ViewTestCase):
                 seq = seq[1:]
 
         try:
-            command = _feedseq2cmd[seq]['command']
-            if 'args' in _feedseq2cmd[seq]:
-                args = _feedseq2cmd[seq]['args'].copy()
+            command = _SEQ2CMD[seq]['command']
+            if 'args' in _SEQ2CMD[seq]:
+                args = _SEQ2CMD[seq]['args'].copy()
             else:
                 args = {}
 
@@ -552,10 +536,11 @@ class FunctionalTestCase(ViewTestCase):
         #   * l_ - Visual line
         #   * b_ - Visual block
         #   * :<','> - Visual cmdline (only valid for feed)
+        #   * N_ - Normal (Normal mode with VISUAL selections; Special Internal Normal mode)
         #
         # The default mode is Internal Normal.
         #
-        # When a mode is specified by feed, it iss used as the default mode for
+        # When a mode is specified by feed, it is used as the default mode for
         # text and expected.
         #
         # Examples:
@@ -606,21 +591,47 @@ class FunctionalTestCase(ViewTestCase):
                 self.assertVblock(expected[2:], msg)
             elif expected[:2] == 'i_':
                 self.assertInsert(expected[2:], msg)
+            elif expected[:2] == 'N_':
+                self.assertInternalNormal(expected[2:], msg)
             else:
                 self.assertNormal(expected, msg)
+
+
+# DEPRECATED Use newer APIs.
+def _make_region(view, a, b=None):
+    # type: (...) -> Region
+    try:
+        pt_a = view.text_point(*a)
+        pt_b = view.text_point(*b)
+
+        return Region(pt_a, pt_b)
+    except (TypeError, ValueError):
+        pass
+
+    if isinstance(a, int) and b is None:
+        pass
+    elif not (isinstance(a, int) and isinstance(b, int)):
+        raise ValueError('a and b arguments must be integers or a tuple (row, col)')
+
+    if b is not None:
+        return Region(a, b)
+    else:
+        return Region(a)
 
 
 # A hardcoded map of sequences to commands. Ideally we wouldn't need this
 # hardcoded map, some internal refactoring and redesign is required to make that
 # happen. For now make-do with the hardcoded map. Refactoring later should not
 # impact the existing tests.
-_feedseq2cmd = {
+_SEQ2CMD = {
 
     '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     '%':            {'command': '_vi_percent', 'args': {'percent': None, 'mode': 'mode_normal'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
+    '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
+    '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
     '>':            {'command': '_vi_greater_than'},  # noqa: E241
     '[ ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_up'}},  # noqa: E241
@@ -811,4 +822,4 @@ _feedseq2cmd = {
     'ysiw}':        {'command': '_nv_surround_ys', 'args': {'surround_with': '}',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
     'yy':           {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
 
-}
+}  # type: dict

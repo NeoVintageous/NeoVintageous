@@ -69,8 +69,4 @@ class Test_l(unittest.FunctionalTestCase):
         self.assertVisual('ab|\n|')
 
     def test_l_internal_mode(self):
-        self.eq('|abc', 'l', '|abc')
-        # INTERNAL NORMAL mode (default mode), makes "visual" selections within
-        # a Vim "normal" mode, which is why the test above may look weird i.e.
-        # the test asserts the start of the selection.
-        self.assertSelection((0, 1))
+        self.eq('|abc', 'l', 'N_|a|bc')
