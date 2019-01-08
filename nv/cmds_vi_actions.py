@@ -1576,7 +1576,7 @@ class _vi_p(ViTextCommandBase):
     def run(self, edit, register=None, count=1, mode=None):
         state = self.state
 
-        register_values = state.registers.get_for_paste(register, state.mode)
+        register_values, linewise = state.registers.get_for_p(register, state.mode)
         if not register_values:
             return status_message('E353: Nothing in register ' + register)
 

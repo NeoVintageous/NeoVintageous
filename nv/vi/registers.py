@@ -373,7 +373,7 @@ class Registers:
 
         return as_str, linewise
 
-    def get_for_paste(self, register, mode):
+    def get_for_p(self, register, mode):
         if not register:
             register = _UNNAMED
 
@@ -384,12 +384,11 @@ class Registers:
         # text we're about to replace), but only if there was something in
         # requested register (not empty), and we're in VISUAL mode.
         if values and is_visual_mode(mode):
-            content = self._get_selected_text(linewise=linewise)
+            content = self._get_selected_text(linewise=(mode == VISUAL_LINE))
             if content:
-                linewise = (mode == VISUAL_LINE)
-                self._set(_UNNAMED, content, linewise=linewise)
+                self._set(_UNNAMED, content, linewise=(mode == VISUAL_LINE))
 
-        return values
+        return values, linewise
 
     def _get_selected_text(self, new_line_at_eof=False, linewise=False):
         # Inspect settings and populate registers as needed.
