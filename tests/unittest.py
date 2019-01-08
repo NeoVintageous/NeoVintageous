@@ -749,6 +749,7 @@ _feedseq2cmd = {
     'ds}':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '}'}},  # noqa: E241
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'e':            {'command': '_vi_e'},  # noqa: E241
+    'G':            {'command': '_vi_big_g'},  # noqa: E241
     'gc':           {'command': '_vi_gc'},  # noqa: E241
     'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
     'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
@@ -759,6 +760,9 @@ _feedseq2cmd = {
     'gq':           {'command': '_vi_gq', 'args': {'mode': 'mode_visual', 'count': 1}},  # noqa: E241
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
+    'gU':           {'command': '_vi_g_big_u'},  # noqa: E241
+    'gUip':         {'command': '_vi_g_big_u', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'guis':         {'command': '_vi_gu', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 's'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gv':           {'command': '_vi_gv'},  # noqa: E241
     'h':            {'command': '_vi_h', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
     'I':            {'command': '_vi_big_i'},  # noqa: E241
@@ -775,6 +779,8 @@ _feedseq2cmd = {
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
+    'U__v__':       {'command': '_vi_visual_big_u'},  # NOTE __v__ is used because several u commands are in separate commands rather than one # noqa: E241,E501
+    'u__v__':       {'command': '_vi_visual_u'},  # NOTE __v__ is used because several u commands are in separate commands rather than one # noqa: E241,E501
     'w':            {'command': '_vi_w', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     'X':            {'command': '_vi_big_x'},  # noqa: E241
     'x':            {'command': '_vi_x'},  # noqa: E241
