@@ -844,22 +844,32 @@ class _vi_yy(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
-            if count > 1:
-                row, col = self.view.rowcol(s.b)
-                end = view.text_point(row + count - 1, 0)
 
-                return Region(view.line(s.a).a, view.full_line(end).b)
+            if mode == INTERNAL_NORMAL:
+                if count > 1:
+                    row, col = self.view.rowcol(s.b)
+                    end = view.text_point(row + count - 1, 0)
 
-            if view.line(s.b).empty():
-                return Region(s.b, min(view.size(), s.b + 1))
+                    return Region(view.line(s.a).a, view.full_line(end).b)
 
-            return view.full_line(s.b)
+                if view.line(s.b).empty():
+                    return Region(s.b, min(view.size(), s.b + 1))
+
+                return view.full_line(s.b)
+
+            elif mode == VISUAL:
+                startline = view.line(s.begin())
+                endline = view.line(s.end() - 1)
+
+                return Region(startline.a, endline.b)
+
+            return s
 
         def restore():
             self.view.sel().clear()
             self.view.sel().add_all(list(self.old_sel))
 
-        if mode != INTERNAL_NORMAL:
+        if mode not in (INTERNAL_NORMAL, VISUAL):
             self.enter_normal_mode(mode)
             ui_blink()
 
