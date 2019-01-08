@@ -63,10 +63,10 @@ class Test_gg_InVisualLineMode(unittest.ViewTestCase):
         self.write('abc\nabc\n')
         self.select((0, 4))
         self.view.run_command('_vi_gg', {'mode': unittest.VISUAL_LINE})
-        self.assertSelection((0, 4))
+        self.assertSelection((4, 0))
 
     def test_extends_selection(self):
         self.write('abc\nabc\n')
         self.select((4, 8))
         self.view.run_command('_vi_gg', {'mode': unittest.VISUAL_LINE})
-        self.assertSelection((0, 8))
+        self.assertSelection((8, 0))

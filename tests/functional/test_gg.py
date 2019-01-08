@@ -35,9 +35,10 @@ class Test_gg(unittest.FunctionalTestCase):
         self.assertRVisual('|fizzer\nbu|zz')
 
     def test_l_gg(self):
-        self.eq('11\n|2\n33\n|44', 'l_gg', '|11\n2\n33\n|44')
+        self.eqr('11\n|2\n33\n|44', 'l_gg', '|11\n2\n33\n|44')
 
     def test_l_gg_reverse(self):
         self.rvisual('11\n|2\n33\n|44')
         self.feed('l_gg')
         self.assertVisual('|11\n2\n33\n|44')
+        self.assertSelectionIsReveresed()

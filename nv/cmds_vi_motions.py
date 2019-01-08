@@ -750,9 +750,9 @@ class _vi_gg(ViMotionCommand):
                 return Region(view.full_line(s.b).b, 0)
             elif mode == VISUAL_LINE:
                 if s.a < s.b:
-                    return Region(0, s.b)
+                    return Region(s.b, 0)
                 else:
-                    return Region(0, s.a)
+                    return Region(s.a, 0)
             return s
 
         jumplist_update(self.view)
