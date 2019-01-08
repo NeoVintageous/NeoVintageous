@@ -29,9 +29,15 @@ class Test_A(unittest.FunctionalTestCase):
 
     def test_v_A(self):
         self.eq('x|ab|x', 'v_A', 'i_xab|x')
-        self.eq('x|ab\n|x', 'v_A', 'i_xab|\nx')
+        self.eq('x|abx|\n', 'v_A', 'i_xabx|\n')
+        self.eq('x|abx\n|', 'v_A', 'i_xabx|\n')
 
-    def test_vline_A(self):
+    def test_v_A_reverse(self):
+        self.rvisual('fi|zz bu|zz')
+        self.feed('v_A')
+        self.assertInsert('fi|zz buzz')
+
+    def test_l_A(self):
         self.eq('|a|', 'l_A', 'i_a|')
         self.eq('|a\n|', 'l_A', 'i_a|\n')
         self.eq('|a\n|x', 'l_A', 'i_a|\nx')
@@ -43,7 +49,7 @@ class Test_A(unittest.FunctionalTestCase):
         self.eq('|ab\ncd|', 'l_A', 'i_ab\ncd|')
         self.eq('|ab\ncd\n|', 'l_A', 'i_ab\ncd|\n')
 
-    def test_vline_A_multiple_selections(self):
+    def test_l_A_multiple_selections(self):
         self.eq('|ab\n||cd|', 'l_A', 'i_ab|\ncd|')
         self.eq('|ab\n||cd\n|', 'l_A', 'i_ab|\ncd|\n')
 
@@ -51,3 +57,9 @@ class Test_A(unittest.FunctionalTestCase):
         self.eq('|aaaaa\n||bbbbb\n||ccccc|', 'l_A', 'i_aaaaa|\nbbbbb|\nccccc|')
         self.eq('|aaaaa\n||bbbbb\n||ccccc\n|', 'l_A', 'i_aaaaa|\nbbbbb|\nccccc|\n')
         self.eq('|aaaaa\n||bbbbb\n||ccccc\n|x', 'l_A', 'i_aaaaa|\nbbbbb|\nccccc|\nx')
+
+    def test_b_A(self):
+        self.eq('x\n1|11|1\nx\n2|22|2\nx', 'b_A', 'i_x\n111|1\nx\n222|2\nx')
+
+    def test_b_A_eol(self):
+        self.eq('x\na|bc\n|x\nd|ef\n|x', 'b_A', 'i_x\nabc|\nx\ndef|\nx')

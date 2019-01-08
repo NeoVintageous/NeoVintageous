@@ -968,7 +968,8 @@ class _vi_big_a(ViTextCommandBase):
                 if self.view.substr(s.b - 1) == '\n':
                     pt -= 1
                 if s.a > s.b:
-                    pt = view.line(s.a).a
+                    pt = s.b
+
                 return Region(pt)
 
             elif mode == VISUAL_LINE:
@@ -1002,19 +1003,13 @@ class _vi_big_i(ViTextCommandBase):
             if mode == VISUAL_BLOCK:
                 return Region(s.begin())
             elif mode == VISUAL:
-                pt = view.line(s.a).a
-                if s.a > s.b:
-                    pt = s.b
-                return Region(pt)
+                return Region(view.line(s.a).a)
             elif mode == VISUAL_LINE:
-                line = view.line(s.a)
-                pt = next_non_white_space_char(view, line.a)
-                return Region(pt)
+                return Region(next_non_white_space_char(view, view.line(s.begin()).a))
             elif mode != INTERNAL_NORMAL:
                 return s
-            line = view.line(s.b)
-            pt = next_non_white_space_char(view, line.a)
-            return Region(pt, pt)
+
+            return Region(next_non_white_space_char(view, view.line(s.b).a))
 
         regions_transformer(self.view, f)
 

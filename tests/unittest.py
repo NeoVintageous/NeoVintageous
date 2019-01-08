@@ -631,6 +631,7 @@ _feedseq2cmd = {
     '])':           {'command': '_vi_right_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': ')'}},  # noqa: E241,E501
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': '}'}},  # noqa: E241,E501
+    'a':            {'command': '_vi_a'},  # noqa: E241
     'A':            {'command': '_vi_big_a'},  # noqa: E241
     'at':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': True}},  # noqa: E241,E501
     'b':            {'command': '_vi_b'},  # noqa: E241

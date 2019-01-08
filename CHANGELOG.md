@@ -5,6 +5,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ## 1.7.3 - Unreleased
 
 * Fixed: Lots of yank, paste, register issues
+* Fixed [#292](https://github.com/NeoVintageous/NeoVintageous/issues/292): Visual mode block insert and append partially working
 * Fixed [#358](https://github.com/NeoVintageous/NeoVintageous/issues/358): `Y` should copy all complete lines touched by the VISUAL selection
 * Fixed [#392](https://github.com/NeoVintageous/NeoVintageous/issues/392): `V_gg` start and end cursor is backwards
 * Fixed [#224](https://github.com/NeoVintageous/NeoVintageous/issues/224): Pasting text ending with newline pastes to wrong line
