@@ -511,7 +511,7 @@ class _nv_unimpaired_command(TextCommand):
         elif action in ('tabnext', 'tabprevious', 'tabfirst', 'tablast'):
             window_tab_control(self.view.window(), action[3:], count=count)
         elif action == 'context_next':
-            # Go to the next [count]  SCM conflict marker or diff/patch hunk
+            # Go to the next [count] SCM conflict marker or diff/patch hunk
             _context_next(self.view, count)
         elif action == 'context_previous':
             # Go to the previous [count] SCM conflict marker or diff/patch hunk

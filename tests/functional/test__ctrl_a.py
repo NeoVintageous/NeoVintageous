@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_CTRL_A(unittest.FunctionalTestCase):
+class Test_ctrl_a(unittest.FunctionalTestCase):
 
     def test_basic_addition(self):
         self.eq('-10|00', '<C-a>', '-99|9')

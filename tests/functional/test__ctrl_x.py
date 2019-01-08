@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_CTRL_X(unittest.FunctionalTestCase):
+class Test_ctrl_x(unittest.FunctionalTestCase):
 
     def test_basic_subtraction(self):
         self.eq('|1000', '<C-x>', '99|9')

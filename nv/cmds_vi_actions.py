@@ -1526,10 +1526,10 @@ class _vi_big_p(ViTextCommandBase):
 
         if mode == INTERNAL_NORMAL:
 
+            # If register content is from a linewise operation, then the cursor
+            # is put on the first non-blank character of the first line of the
+            # content after the content is inserted.
             if linewise:
-                # If register content is from a linewise operation, then the
-                # cursor is put on the first non-blank character of the first
-                # line of the content after the content is inserted.
                 row = self.view.rowcol(self.view.line(sel.a).a)[0]
                 pt = self.view.text_point(row, 0)
 
@@ -1539,10 +1539,11 @@ class _vi_big_p(ViTextCommandBase):
 
                 self.view.sel().clear()
                 self.view.sel().add(pt)
+
+            # If register is charactwise but contains a newline, then the cursor
+            # is put at the start of of the text pasted, otherwise the cursor is
+            # put on the last character of the text pasted.
             else:
-                # If register is charactwise but contains a newline, then the cursor
-                # is put at the start of of the text pasted, otherwise the cursor is
-                # put on the last character of the text pasted.
                 if '\n' in text:
                     pt = sel.a
                 else:
