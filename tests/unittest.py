@@ -516,11 +516,6 @@ class FunctionalTestCase(ViewTestCase):
 
         self.view.run_command(command, args)
 
-    # The same as eq(), except also assert selections are also reversed
-    def eqr(self, text, feed, expected=None, msg=None):
-        self.eq(text, feed, expected, msg)
-        self.assertSelectionIsReveresed()
-
     def eq(self, text, feed, expected=None, msg=None):
         # Args:
         #   text (str)
@@ -549,16 +544,30 @@ class FunctionalTestCase(ViewTestCase):
         # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
         # >>> eq('a\nx|y\nb', 'cc', 'i_a\n|\nb')
 
+        rtext = False
+        if text[:2] == 'r_':
+            text = text[2:]
+            rtext = True
+
         if expected is None:
             expected = text
 
         if feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>')):
             if feed[0] == 'l':
-                self.vline(text)
+                if rtext:
+                    self.rvline(text)
+                else:
+                    self.vline(text)
             elif feed[0] == 'b':
-                self.vblock(text)
+                if rtext:
+                    self.rvblock(text)
+                else:
+                    self.vblock(text)
             else:
-                self.visual(text)
+                if rtext:
+                    self.rvisual(text)
+                else:
+                    self.visual(text)
 
             self.feed(feed)
 
@@ -595,6 +604,12 @@ class FunctionalTestCase(ViewTestCase):
                 self.assertInternalNormal(expected[2:], msg)
             else:
                 self.assertNormal(expected, msg)
+
+    # The same as eq(), except also assert selections are also reversed
+    # TODO Implement a prefix to indicate reversed selections in eq()
+    def eqr(self, text, feed, expected=None, msg=None):
+        self.eq(text, feed, expected, msg)
+        self.assertSelectionIsReveresed()
 
 
 # DEPRECATED Use newer APIs.
