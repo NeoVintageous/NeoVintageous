@@ -676,14 +676,23 @@ class _enter_visual_mode_impl(ViTextCommandBase):
 class _enter_visual_line_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None):
-
         state = self.state
+
         if state.mode == VISUAL_LINE:
             self.view.run_command('_enter_normal_mode', {'mode': mode})
             return
 
-        # FIXME: 'V' from normal mode sets mode to internal normal.
         if mode in (NORMAL, INTERNAL_NORMAL):
+
+            # Special-case: If cursor is at the very EOF, then try  backup the
+            # selection one character so the line, or  previous line is
+            # selected (currently only handles non multiple-selections).
+            if self.view.size() > 0 and len(self.view.sel()) == 1:
+                s = self.view.sel()[0]
+                if self.view.substr(s.b) == '\x00':
+                    self.view.sel().clear()
+                    self.view.sel().add(s.b - 1)
+
             # Abort if we are at EOF -- no newline char to hold on to.
             if any(s.b == self.view.size() for s in self.view.sel()):
                 return ui_blink()

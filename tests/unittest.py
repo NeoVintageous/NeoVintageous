@@ -421,6 +421,14 @@ class ViewTestCase(unittest.TestCase):
         #       If specified, is used as the error message on failure.
         self.assertRegex(self.view.get_status('vim-mode') + ' ' + self.view.get_status('vim-seq'), expected, msg=msg)
 
+    def assertBell(self):
+        # This assertion requires use of the mock_bell() decorator.
+        self.assertEquals(1, self.bell.call_count, 'expects bell')
+
+    def assertNoBell(self):
+        # This assertion requires use of the @mock_bell() decorator.
+        self.assertEquals(0, self.bell.call_count, 'expects no bell')
+
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
     def state(self):
@@ -632,6 +640,27 @@ def _make_region(view, a, b=None):
         return Region(a, b)
     else:
         return Region(a)
+
+
+# Usage:
+#
+#   @unitest.mock_bell()
+#   def test_x(self):
+#       # ...
+#       self.assertBell()
+#       self.assertNoBell()
+#
+def mock_bell():
+    def wrapper(f):
+        @mock.patch('NeoVintageous.nv.cmds_vi_actions.ui_blink')
+        def wrapped(self, *args, **kwargs):
+            self.bell = args[-1]
+
+            return f(self, *args[:-1], **kwargs)
+
+        return wrapped
+
+    return wrapper
 
 
 # A hardcoded map of sequences to commands. Ideally we wouldn't need this
