@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.7.3 - Unreleased
+## 1.7.3 - 2019-01-09
 
 * Fixed: Lots of yank, paste, register issues
 * Fixed [#292](https://github.com/NeoVintageous/NeoVintageous/issues/292): Visual mode block insert and append partially working
