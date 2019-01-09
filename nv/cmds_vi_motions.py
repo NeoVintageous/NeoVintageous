@@ -54,6 +54,7 @@ from NeoVintageous.nv.vi.text_objects import word_end_reverse
 from NeoVintageous.nv.vi.text_objects import word_reverse
 from NeoVintageous.nv.vi.utils import get_bol
 from NeoVintageous.nv.vi.utils import next_non_blank
+from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import resize_visual_region
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
@@ -1315,12 +1316,12 @@ class _vi_big_h(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                non_ws = utils.next_non_white_space_char(view, target)
+                non_ws = next_non_white_space_char(view, target)
                 return Region(non_ws, non_ws)
             elif mode == INTERNAL_NORMAL:
                 return Region(s.a + 1, target)
             elif mode == VISUAL:
-                new_target = utils.next_non_white_space_char(view, target)
+                new_target = next_non_white_space_char(view, target)
                 return Region(s.a + 1, new_target)
             else:
                 return s
@@ -1339,7 +1340,7 @@ class _vi_big_l(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                non_ws = utils.next_non_white_space_char(view, target)
+                non_ws = next_non_white_space_char(view, target)
                 return Region(non_ws, non_ws)
             elif mode == INTERNAL_NORMAL:
                 if s.b >= target:
@@ -1347,9 +1348,9 @@ class _vi_big_l(ViMotionCommand):
                 return Region(s.a, target)
             elif mode == VISUAL:
                 if s.b >= target:
-                    new_target = utils.next_non_white_space_char(view, target)
+                    new_target = next_non_white_space_char(view, target)
                     return Region(s.a + 1, new_target)
-                new_target = utils.next_non_white_space_char(view, target)
+                new_target = next_non_white_space_char(view, target)
                 return Region(s.a, new_target + 1)
             else:
                 return s
@@ -1369,7 +1370,7 @@ class _vi_big_m(ViMotionCommand):
     def run(self, count=None, extend=False, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                non_ws = utils.next_non_white_space_char(view, target)
+                non_ws = next_non_white_space_char(view, target)
                 return Region(non_ws, non_ws)
             elif mode == INTERNAL_NORMAL:
                 if s.b >= target:
@@ -1377,9 +1378,9 @@ class _vi_big_m(ViMotionCommand):
                 return Region(s.a, target)
             elif mode == VISUAL:
                 if s.b >= target:
-                    new_target = utils.next_non_white_space_char(view, target)
+                    new_target = next_non_white_space_char(view, target)
                     return Region(s.a + 1, new_target)
-                new_target = utils.next_non_white_space_char(view, target)
+                new_target = next_non_white_space_char(view, target)
                 return Region(s.a, new_target + 1)
             else:
                 return s
@@ -1575,7 +1576,7 @@ class _vi_underscore(ViMotionCommand):
             bol = self.view.text_point(target_row, 0)
 
             if mode == NORMAL:
-                bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
+                bol = next_non_white_space_char(self.view, bol)
                 return Region(bol)
 
             elif mode == INTERNAL_NORMAL:
@@ -1592,7 +1593,7 @@ class _vi_underscore(ViMotionCommand):
                     return Region(begin, end + 1)
 
             elif mode == VISUAL:
-                bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
+                bol = next_non_white_space_char(self.view, bol)
                 return utils.new_inclusive_region(a, bol)
             else:
                 return s
@@ -1610,7 +1611,7 @@ class _vi_hat(ViMotionCommand):
                 b = resolve_insertion_point_at_b(s)
 
             bol = self.view.line(b).a
-            bol = utils.next_non_white_space_char(self.view, bol, white_space='\t ')
+            bol = next_non_white_space_char(self.view, bol)
 
             if mode == NORMAL:
                 return Region(bol)
@@ -1662,7 +1663,6 @@ class _vi_g__(ViMotionCommand):
             if mode == NORMAL:
                 eol = view.line(s.b).b
                 return Region(eol - 1, eol - 1)
-
             elif mode == VISUAL:
                 eol = None
                 if s.a < s.b:
@@ -1786,7 +1786,8 @@ class _vi_pipe(ViMotionCommand):
                         return Region(s.a, pt)
 
             elif mode == INTERNAL_NORMAL:
-                pt = self.col_to_pt(pt=s.b, nr=count)
+                pt = self._col_to_pt(s.b, count)
+
                 if s.a < s.b:
                     return Region(s.a, pt)
                 else:
@@ -1870,7 +1871,7 @@ class _vi_left_paren(ViMotionCommand):
 class _vi_right_paren(ViMotionCommand):
     def find_next_sentence_end(self, r):
         sen = r
-        non_ws = utils.next_non_white_space_char(self.view, sen.b, '\t \n')
+        non_ws = next_non_white_space_char(self.view, sen.b, '\t \n')
         sen = Region(non_ws, non_ws)
         while True:
             sen = self.view.expand_by_class(sen, CLASS_PUNCTUATION_START | CLASS_LINE_END)
@@ -2165,17 +2166,13 @@ class _vi_enter(ViMotionCommand):
 
         def advance(view, s):
             if mode == NORMAL:
-                pt = utils.next_non_white_space_char(view, s.b,
-                                                     white_space=' \t')
-                return Region(pt)
+                return Region(next_non_white_space_char(view, s.b))
             elif mode == VISUAL:
                 if s.a < s.b:
-                    pt = utils.next_non_white_space_char(view, s.b - 1,
-                                                         white_space=' \t')
-                    return Region(s.a, pt + 1)
-                pt = utils.next_non_white_space_char(view, s.b,
-                                                     white_space=' \t')
-                return Region(s.a, pt)
+                    return Region(s.a, next_non_white_space_char(view, s.b - 1))
+
+                return Region(s.a, next_non_white_space_char(view, s.b))
+
             return s
 
         regions_transformer(self.view, advance)
@@ -2187,16 +2184,13 @@ class _vi_minus(ViMotionCommand):
 
         def advance(view, s):
             if mode == NORMAL:
-                pt = utils.next_non_white_space_char(view, s.b,
-                                                     white_space=' \t')
+                pt = next_non_white_space_char(view, s.b)
                 return Region(pt)
             elif mode == VISUAL:
                 if s.a < s.b:
-                    pt = utils.next_non_white_space_char(view, s.b - 1,
-                                                         white_space=' \t')
+                    pt = next_non_white_space_char(view, s.b - 1)
                     return Region(s.a, pt + 1)
-                pt = utils.next_non_white_space_char(view, s.b,
-                                                     white_space=' \t')
+                pt = next_non_white_space_char(view, s.b)
                 return Region(s.a, pt)
             return s
 

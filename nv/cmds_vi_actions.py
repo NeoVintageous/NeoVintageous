@@ -222,7 +222,7 @@ class _vi_gu(ViTextCommandBase):
             else:
                 ui_blink()
         else:
-                regions_transformer(self.view, f)
+            regions_transformer(self.view, f)
 
         self.enter_normal_mode(mode)
 
