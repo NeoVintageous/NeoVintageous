@@ -2347,7 +2347,6 @@ class _vi_select_k(ViWindowCommandBase):
             self.window.run_command('soft_undo')
 
 
-# Implemented as if 'notildeopt' was True
 class _vi_tilde(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None, motion=None):
@@ -2374,6 +2373,10 @@ class _vi_g_tilde(ViTextCommandBase):
         def f(view, s):
             return Region(s.end(), s.begin())
 
+        sels = []
+        for s in list(self.view.sel()):
+            sels.append(s.a)
+
         if motion:
             self.save_sel()
 
@@ -2389,6 +2392,8 @@ class _vi_g_tilde(ViTextCommandBase):
         if motion:
             regions_transformer(self.view, f)
 
+        self.view.sel().clear()
+        self.view.sel().add_all(sels)
         self.enter_normal_mode(mode)
 
 
