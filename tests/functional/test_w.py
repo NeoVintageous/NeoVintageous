@@ -23,7 +23,13 @@ class Test_w(unittest.FunctionalTestCase):
     def test_w(self):
         self.eq('one |two three', 'n_w', 'one two |three')
         self.eq('|one two three', 'n_2w', 'one two |three')
+        self.eq('|one two', 'n_3w', 'one tw|o')
 
     def test_v_w(self):
         self.eq('one |two three', 'v_w', 'one |two t|hree')
         self.eq('|one two three', 'v_2w', '|one two t|hree')
+        self.eq('r_|on|e two three', 'v_w', 'o|ne t|wo three')
+        self.eqr('r_|one two three|', 'v_w', 'one |two three|')
+        self.eqr('r_|one two three|', 'v_2w', 'one two |three|')
+        self.eq('|o|ne', 'v_2w', '|one|')
+        self.eq('|o|ne\n', 'v_2w', '|one\n|')
