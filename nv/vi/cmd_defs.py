@@ -3085,22 +3085,13 @@ class ViGotoBof(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        if state.action_count or state.motion_count:
-            return {
-                'motion': '_vi_go_to_line',
-                'motion_args': {
-                    'line': state.count,
-                    'mode': state.mode
-                }
+        return {
+            'motion': '_vi_gg',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count if (state.action_count or state.motion_count) else None
             }
-        else:
-            return {
-                'motion': '_vi_gg',
-                'motion_args': {
-                    'mode': state.mode,
-                    'count': state.count
-                }
-            }
+        }
 
 
 @keys.assign(seq=seqs.BIG_G, modes=_MODES_MOTION)
@@ -3111,21 +3102,13 @@ class ViGotoEof(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, state):
-        if state.action_count or state.motion_count:
-            return {
-                'motion': '_vi_go_to_line',
-                'motion_args': {
-                    'line': state.count,
-                    'mode': state.mode
-                }
+        return {
+            'motion': '_vi_big_g',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count if (state.action_count or state.motion_count) else None
             }
-        else:
-            return {
-                'motion': '_vi_big_g',
-                'motion_args': {
-                    'mode': state.mode
-                }
-            }
+        }
 
 
 @keys.assign(seq=seqs.R, modes=_MODES_ACTION)

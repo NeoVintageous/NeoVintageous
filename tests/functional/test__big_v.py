@@ -36,6 +36,7 @@ class Test_V(unittest.FunctionalTestCase):
         self.eq('|\n\n', 'n_V', 'l_|\n|\n')
         self.eq('|    ', 'n_V', 'l_|    |')
         self.eq('|    \n', 'n_V', 'l_|    \n|')
+        self.assertStatusLineIsVisualLine()
 
     @unittest.mock_bell()
     def test_n_V_bell_on_empty_content(self):
@@ -58,6 +59,7 @@ class Test_V(unittest.FunctionalTestCase):
         self.eq('x\na|bc\n|x', 'v_V', 'l_x\n|abc\n|x')
         self.eq('r_x\n|abc\n|x', 'v_V', 'r_l_x\n|abc\n|x')
         self.eq('r_x\na|bc\n|x', 'v_V', 'r_l_x\n|abc\n|x')
+        self.assertStatusLineIsVisualLine()
 
     def test_l_V(self):
         self.eq('x\n|fizz\n|x', 'l_V', 'n_x\nfiz|z\nx')
@@ -75,6 +77,7 @@ class Test_V(unittest.FunctionalTestCase):
         self.eq('|\n\n', 'V', 'l_|\n|\n')
         self.eq('|    ', 'V', 'l_|    |')
         self.eq('|    \n', 'V', 'l_|    \n|')
+        self.assertStatusLineIsVisualLine()
 
     @unittest.mock_bell()
     def test_V_N_bell_on_empty_content(self):

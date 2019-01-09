@@ -25,6 +25,7 @@ from sublime import version
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.cmds import _nv_cmdline_feed_key
+from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
@@ -99,7 +100,6 @@ __all__ = [
     '_vi_gj',
     '_vi_gk',
     '_vi_gm',
-    '_vi_go_to_line',
     '_vi_go_to_symbol',
     '_vi_h',
     '_vi_hat',
@@ -740,7 +740,11 @@ class _vi_k(ViMotionCommand):
 
 
 class _vi_gg(ViMotionCommand):
-    def run(self, mode=None, count=1):
+    def run(self, mode=None, count=None):
+        if count:
+            goto_line(self.view, count, mode)
+            return
+
         def f(view, s):
             if mode == NORMAL:
                 return Region(next_non_blank(self.view, 0))
@@ -763,53 +767,12 @@ class _vi_gg(ViMotionCommand):
         jumplist_update(self.view)
 
 
-class _vi_go_to_line(ViMotionCommand):
-    def run(self, line=None, mode=None):
-        line = line if line > 0 else 1
-        dest = self.view.text_point(line - 1, 0)
-
-        def f(view, s):
-            if mode == NORMAL:
-                non_ws = utils.next_non_white_space_char(view, dest)
-                return Region(non_ws, non_ws)
-            elif mode == INTERNAL_NORMAL:
-                start_line = view.full_line(s.a)
-                dest_line = view.full_line(dest)
-                if start_line.a == dest_line.a:
-                    return dest_line
-                elif start_line.a < dest_line.a:
-                    return Region(start_line.a, dest_line.b)
-                else:
-                    return Region(start_line.b, dest_line.a)
-            elif mode == VISUAL:
-                if dest < s.a and s.a < s.b:
-                    return Region(s.a + 1, dest)
-                elif dest < s.a:
-                    return Region(s.a, dest)
-                elif dest > s.b and s.a > s.b:
-                    return Region(s.a - 1, dest + 1)
-                return Region(s.a, dest + 1)
-            elif mode == VISUAL_LINE:
-                if dest < s.a and s.a < s.b:
-                    return Region(view.full_line(s.a).b, dest)
-                elif dest < s.a:
-                    return Region(s.a, dest)
-                elif dest > s.a and s.a > s.b:
-                    return Region(view.full_line(s.a - 1).a, view.full_line(dest).b)
-                return Region(s.a, view.full_line(dest).b)
-            return s
-
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
-
-        # FIXME: Bringing the selections into view will be undesirable in many cases. Maybe we
-        # should have an optional .scroll_selections_into_view() step during command execution.
-        self.view.show(self.view.sel()[0])
-
-
 class _vi_big_g(ViMotionCommand):
     def run(self, mode=None, count=None):
+        if count:
+            goto_line(self.view, count, mode)
+            return
+
         def f(view, s):
             if mode == NORMAL:
                 eof_line = view.line(eof)

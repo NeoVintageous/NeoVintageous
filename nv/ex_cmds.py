@@ -40,6 +40,7 @@ from NeoVintageous.nv import variables
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
 from NeoVintageous.nv.ex.parser import parse_command_line_address
+from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
@@ -1404,7 +1405,7 @@ def _default_ex_cmd(window, view, line_range, **kwargs):
     enter_normal_mode(window, state.mode)
     state.enter_normal_mode()
     jumplist_update(view)
-    window.run_command('_vi_go_to_line', {'line': line, 'mode': state.mode})
+    goto_line(view, line, state.mode)
     jumplist_update(view)
     view.show(view.sel()[0])
 

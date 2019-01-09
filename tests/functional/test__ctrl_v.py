@@ -18,24 +18,12 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_v(unittest.FunctionalTestCase):
+class Test_ctrl_v(unittest.FunctionalTestCase):
 
-    def test_n_v(self):
-        self.eq('fi|zz', 'n_v', 'v_fi|z|z')
-        self.eq('\n|\n', 'n_v', 'v_\n|\n|')
-        self.eq('\n|\n\n', 'n_v', 'v_\n|\n|\n')
-        self.assertStatusLineIsVisual()
+    def test_n_ctrl_v(self):
+        self.eq('fi|zz', '<C-v>', 'b_fi|z|z')
+        self.assertStatusLineIsVisualBlock()
 
-    @unittest.mock_bell()
-    def test_n_v_empty_invokes_bell(self):
-        self.eq('|', 'n_v', 'n_|')
-        self.assertBell()
-
-    def test_v(self):
-        self.eq('f|izz bu|zz', 'v_v', 'n_fizz b|uzz')
-        self.eq('r_f|izz bu|zz', 'v_v', 'n_f|izz buzz')
-
-    def test_visual_line_enters_visual(self):
-        self.eq('x\n|fizz\n|x', 'l_v', 'v_x\n|fizz\n|x')
-        self.eq('r_x\n|fizz\n|x', 'l_v', 'r_v_x\n|fizz\n|x')
-        self.assertStatusLineIsVisual()
+    def test_b_ctrl_v(self):
+        self.eq('fi|zz bu|zz', 'b_<C-v>', 'n_fizz b|uzz')
+        self.assertStatusLineIsBlank()

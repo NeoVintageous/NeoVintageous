@@ -23,20 +23,22 @@ class Test_gg(unittest.FunctionalTestCase):
     def test_n_gg(self):
         self.eq('foo\nb|ar', 'n_gg', '|foo\nbar')
         self.eq('    foo\nb|ar', 'n_gg', '    |foo\nbar')
-        self.eq('|1\n2\n    foo', 'n_G', '1\n2\n    |foo')
+        self.eq('|1\n2\n3\n4\n5', 'n_3gg', '1\n2\n|3\n4\n5')
+        self.eq('|1\n2\n    3x\n4\n5', 'n_3gg', '1\n2\n    |3x\n4\n5')
+        self.eq('|1\n2\n3\n4\n5', 'n_5gg', '1\n2\n3\n4\n|5')
 
     def test_N_gg(self):
         self.eq('foo\nb|ar', 'gg', 'r_N_|foo\nbar|')
+        self.eq('r_1x\n2x\n3|x\n4|x\n5x', '2gg', 'r_N_1x\n|2x\n3x\n4x\n|5x')
 
     def test_v_gg(self):
         self.eq('fizz\nb|u|zz', 'v_gg', 'r_|fizz\nbu|zz')
-        self.eq('fi|zz\n2\n    buzz', 'v_G', 'fi|zz\n2\n    b|uzz')
-
-    def test_v_gg_reverse_sel(self):
+        self.eq('r_1x\n2x\n3|x\n4|x\n5x', 'v_gg', 'r_|1x\n2x\n3x\n4|x\n5x')
+        self.eq('1x\n2x\n3|x\n4|x\n5x', 'v_gg', 'r_|1x\n2x\n3x|\n4x\n5x')
         self.eq('r_fiz|zer\nbu|zz', 'v_gg', 'r_|fizzer\nbu|zz')
+        self.eq('1x\n2x\n3|x\n4|x\n5x', 'v_2gg', 'r_1x\n|2x\n3x|\n4x\n5x')
+        self.eq('r_1x\n2x\n3|x\n4|x\n5x', 'v_2gg', 'r_1x\n|2x\n3x\n4|x\n5x')
 
     def test_l_gg(self):
         self.eq('11\n|2\n33\n|44', 'l_gg', 'r_|11\n2\n33\n|44')
-
-    def test_l_gg_reverse(self):
         self.eq('r_11\n|2\n33\n|44', 'l_gg', 'r_|11\n2\n33\n|44')
