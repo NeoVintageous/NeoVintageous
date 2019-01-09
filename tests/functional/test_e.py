@@ -36,3 +36,5 @@ class Test_e(unittest.FunctionalTestCase):
         self.assertVisual('o|ne two three four| five six\n')
         self.feed('v_2e')
         self.assertVisual('o|ne two three four five six|\n')
+        self.eq('r_on|e t|wo x', 'v_2e', 'one |two| x')
+        self.eq('r_o|ne t|wo x', 'v_2e', 'one |two| x')

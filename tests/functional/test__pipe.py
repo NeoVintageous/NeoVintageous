@@ -18,15 +18,20 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gU(unittest.FunctionalTestCase):
+class Test_pipe(unittest.FunctionalTestCase):
 
-    def test_gUip(self):
-        self.eq('ab|c def', 'gUip', '|ABC DEF')
-        self.eq('xyz\n\nab|c\ndef\n\nxyz', 'gUip', 'xyz\n\n|ABC\nDEF\n\nxyz')
-        self.eq('ab|c def', 'gUip', '|ABC DEF')
+    def test_pipe(self):
+        self.eq('12|3', 'n_|', '|123')
+        self.eq('123x', 'n_3|', '12|3x')
+        self.eq('x\n|123\nx', 'n_7|', 'x\n12|3\nx')
 
-    def test_v_gU(self):
-        self.eq('f|izz b|uzz', 'v_gU', 'n_f|IZZ Buzz')
+    def test_v_pipe(self):
+        self.eq('fi|zz buzz', 'v_7|', 'fi|zz bu|zz')
+        self.eq('r_f|izz| buzz', 'v_7|', 'fiz|z bu|zz')
+        self.eqr('fizz b|uz|z', 'v_2|', 'f|izz bu|zz')
+        self.eqr('r_fizz b|uz|z', 'v_2|', 'f|izz buz|z')
 
-    def test_V_gU(self):
-        self.eq('x\n|one\n|y', 'l_gU', 'n_x\n|ONE\ny')
+    def test_N_pipe(self):
+        self.eq('fi|zz buzz', '7|', 'N_fiz|z b|uzz')
+        self.eq('fi|zz| buzz', '8|', 'N_fiz|z bu|zz')
+        self.eq('r_fi|zz| buzz', '8|', 'N_fiz|z bu|zz')

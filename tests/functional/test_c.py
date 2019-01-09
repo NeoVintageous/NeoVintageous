@@ -32,6 +32,11 @@ class Test_c(unittest.FunctionalTestCase):
         self.assertRegisterIsNone('0')
         self.assertRegisterIsNone('1')
 
+    def test_v_c(self):
+        self.eq('fi|zz bu|zz', 'v_c', 'i_fi|zz')
+        self.eq('r_fi|zz bu|zz', 'v_c', 'i_fi|zz')
+        self.eq('r_fi|   |zz', 'v_c', 'i_fi|zz')
+
     def test_cw(self):
         self.eq('one |two three', 'cw', 'i_one | three')
         self.eq('one t|wo three', 'cw', 'i_one t| three')

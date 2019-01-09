@@ -18,15 +18,12 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gU(unittest.FunctionalTestCase):
+class Test_tilde(unittest.FunctionalTestCase):
 
-    def test_gUip(self):
-        self.eq('ab|c def', 'gUip', '|ABC DEF')
-        self.eq('xyz\n\nab|c\ndef\n\nxyz', 'gUip', 'xyz\n\n|ABC\nDEF\n\nxyz')
-        self.eq('ab|c def', 'gUip', '|ABC DEF')
+    def test_tilde(self):
+        self.eq('a|bc', '~', 'aB|c')
+        self.eq('A|BC', '~', 'Ab|C')
+        self.eq('a|bCdEfxx', '5~', 'aBcDeF|xx')
 
-    def test_v_gU(self):
-        self.eq('f|izz b|uzz', 'v_gU', 'n_f|IZZ Buzz')
-
-    def test_V_gU(self):
-        self.eq('x\n|one\n|y', 'l_gU', 'n_x\n|ONE\ny')
+    def test_v_tilde(self):
+        self.eq('fI|zZ bU|zZ', 'v_~', 'n_fI|Zz BuzZ')

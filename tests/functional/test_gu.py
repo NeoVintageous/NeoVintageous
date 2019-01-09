@@ -22,3 +22,6 @@ class Test_gu(unittest.FunctionalTestCase):
 
     def test_guis(self):
         self.eq('FOO. FIZ|Z BUZZ. BAR.', 'guis', 'FOO. |fizz buzz. BAR.')
+
+    def test_v_gu(self):
+        self.eq('FI|ZZ BU|ZZ', 'v_gu', 'n_FI|zz buZZ')

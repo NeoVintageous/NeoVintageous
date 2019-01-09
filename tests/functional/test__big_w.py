@@ -18,15 +18,14 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gU(unittest.FunctionalTestCase):
+class Test_W(unittest.FunctionalTestCase):
 
-    def test_gUip(self):
-        self.eq('ab|c def', 'gUip', '|ABC DEF')
-        self.eq('xyz\n\nab|c\ndef\n\nxyz', 'gUip', 'xyz\n\n|ABC\nDEF\n\nxyz')
-        self.eq('ab|c def', 'gUip', '|ABC DEF')
+    def test_W(self):
+        self.eq('one |two. three', 'n_W', 'one two. |three')
+        self.eq('|one, t.- three', 'n_2W', 'one, t.- |three')
+        self.eq('|on.e t.wo', 'n_2W', 'on.e t.w|o')
 
-    def test_v_gU(self):
-        self.eq('f|izz b|uzz', 'v_gU', 'n_f|IZZ Buzz')
-
-    def test_V_gU(self):
-        self.eq('x\n|one\n|y', 'l_gU', 'n_x\n|ONE\ny')
+    def test_v_w(self):
+        self.eq('one |t=- three', 'v_W', 'one |t=- t|hree')
+        self.eq('|one_ two$ three', 'v_2W', '|one_ two$ t|hree')
+        self.eq('r_|on|e_ two$ three', 'v_3W', '|on|e_ two$ three')
