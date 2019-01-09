@@ -1405,7 +1405,8 @@ class _vi_greater_than(ViTextCommandBase):
             regions_transformer(self.view, f)
 
             # Restore only the first sel.
-            utils.replace_sel(self.view, utils.first_sel(self.view))
+            s = utils.first_sel(self.view)
+            utils.replace_sel(self.view, s.a + 1)
             self.enter_normal_mode(mode)
             return
 

@@ -25,6 +25,17 @@ class Test_less_than(unittest.FunctionalTestCase):
         self.settings().set('translate_tabs_to_spaces', True)
         self.settings().set('tab_size', 4)
 
-    def test_deindent(self):
+    def test_v(self):
         self.eq('        |abc\ndef\n', 'v_<', 'n_    |abc\ndef\n')
         self.eq('|        abc\ndef\n', 'v_<', 'n_    |abc\ndef\n')
+        self.eq('    x\n        fi|zz\n        bu|zz\n    x', 'v_<', 'n_    x\n    |fizz\n    buzz\n    x')
+        self.eq('    x\n        fi|zz\n    bu|zz\n    x', 'v_<', 'n_    x\n    |fizz\nbuzz\n    x')
+
+    def test_l(self):
+        self.eq('    x\n            |fizz\n    buzz\n|    x', 'l_<', 'n_    x\n        |fizz\nbuzz\n    x')
+
+    def test_paragraph(self):
+        self.eq(
+            '        x\n\n        1\n        2\n        |3\n        4\n\n        x',
+            '<{',
+            '        x\n|\n    1\n    2\n    3\n        4\n\n        x')
