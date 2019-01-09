@@ -21,8 +21,8 @@ from NeoVintageous.tests import unittest
 class Test_w(unittest.FunctionalTestCase):
 
     def test_w(self):
-        self.eq('one |two three', 'w', 'one two |three')
-        self.eq('|one two three', '2w', 'one two |three')
+        self.eq('one |two three', 'n_w', 'one two |three')
+        self.eq('|one two three', 'n_2w', 'one two |three')
 
     def test_v_w(self):
         self.eq('one |two three', 'v_w', 'one |two t|hree')
