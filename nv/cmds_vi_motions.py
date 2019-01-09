@@ -53,6 +53,7 @@ from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vi.text_objects import word_end_reverse
 from NeoVintageous.nv.vi.text_objects import word_reverse
 from NeoVintageous.nv.vi.utils import get_bol
+from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import resize_visual_region
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
@@ -740,12 +741,12 @@ class _vi_gg(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                return Region(0)
+                return Region(next_non_blank(self.view, 0))
             elif mode == VISUAL:
                 if s.a < s.b:
-                    return Region(s.a + 1, 0)
+                    return Region(s.a + 1, next_non_blank(self.view, 0))
                 else:
-                    return Region(s.a, 0)
+                    return Region(s.a, next_non_blank(self.view, 0))
             elif mode == INTERNAL_NORMAL:
                 return Region(view.full_line(s.b).b, 0)
             elif mode == VISUAL_LINE:
@@ -809,12 +810,17 @@ class _vi_big_g(ViMotionCommand):
     def run(self, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
-                pt = eof
-                if not view.line(eof).empty():
-                    pt = utils.previous_non_white_space_char(view, eof - 1, white_space='\n')
-                return Region(pt, pt)
+                eof_line = view.line(eof)
+                if not eof_line.empty():
+                    return Region(next_non_blank(self.view, eof_line.a))
+
+                return Region(eof_line.a)
             elif mode == VISUAL:
-                return Region(s.a, eof)
+                eof_line = view.line(eof)
+                if not eof_line.empty():
+                    return Region(s.a, next_non_blank(self.view, eof_line.a) + 1)
+
+                return Region(s.a, eof_line.a)
             elif mode == INTERNAL_NORMAL:
                 begin = view.line(s.b).a
                 begin = max(0, begin - 1)

@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.7.4 - Unreleased
+
+* Fixed [#396](https://github.com/NeoVintageous/NeoVintageous/issues/396): `gg` should move to first non blank character
+* Fixed [#395](https://github.com/NeoVintageous/NeoVintageous/issues/395): `G` should move to first non blank character
+* Fixed [#395](https://github.com/NeoVintageous/NeoVintageous/issues/395): `G` should reset xpos to 0
+* Fixed [#393](https://github.com/NeoVintageous/NeoVintageous/issues/393): `v_gg` should reset xpos to 0
+
 ## 1.7.3 - 2019-01-09
 
 * Fixed: Lots of yank, paste, register issues

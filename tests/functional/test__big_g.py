@@ -22,17 +22,17 @@ class Test_G(unittest.FunctionalTestCase):
 
     def test_G(self):
         self.eq('|1\n2\n3\n4\n', 'G', 'N_|1\n2\n3\n4\n|')
+        self.eq('|1\n2\n    foo', 'n_G', '1\n2\n    |foo')
 
     def test_n_G(self):
         self.eq('|1\n2\n3\n4\n', 'n_G', '1\n2\n3\n4\n|')
         self.eq('1\n2\n|3\n4\n', 'n_G', '1\n2\n3\n4\n|')
         self.eq('1\n2\n3\n4\n|', 'n_G', '1\n2\n3\n4\n|')
-
-    def test_n_G_moves_to_last_character(self):
-        self.eq('|1\n2\n3', 'n_G', '1\n2\n|3')
+        self.eq('1\n2\n3\n4\n|', 'n_G', '1\n2\n3\n4\n|')
 
     def test_v_G(self):
         self.eq('1\nab|cd\n3\n456\n', 'v_G', '1\nab|cd\n3\n456\n|')
+        self.eq('fi|zz\n2\n    buzz', 'v_G', 'fi|zz\n2\n    b|uzz')
 
     def test_V_G(self):
         self.eq('1\n|two\n|three\n4\nfive\n', 'l_G', '1\n|two\nthree\n4\nfive\n|')

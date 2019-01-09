@@ -3093,6 +3093,7 @@ class ViGotoBof(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
+        self.updates_xpos = True
 
     def translate(self, state):
         if state.action_count or state.motion_count:
@@ -3118,6 +3119,7 @@ class ViGotoEof(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
+        self.updates_xpos = True
 
     def translate(self, state):
         if state.action_count or state.motion_count:

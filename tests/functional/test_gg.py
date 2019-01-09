@@ -25,19 +25,18 @@ class Test_gg(unittest.FunctionalTestCase):
 
     def test_n_gg(self):
         self.eq('foo\nb|ar', 'n_gg', '|foo\nbar')
+        self.eq('    foo\nb|ar', 'n_gg', '    |foo\nbar')
+        self.eq('|1\n2\n    foo', 'n_G', '1\n2\n    |foo')
 
     def test_v_gg(self):
         self.eq('fizz\nb|u|zz', 'v_gg', '|fizz\nbu|zz')
+        self.eq('fi|zz\n2\n    buzz', 'v_G', 'fi|zz\n2\n    b|uzz')
 
     def test_v_gg_reverse_sel(self):
-        self.rvisual('fiz|zer\nbu|zz')
-        self.feed('v_gg')
-        self.assertRVisual('|fizzer\nbu|zz')
+        self.eqr('r_fiz|zer\nbu|zz', 'v_gg', '|fizzer\nbu|zz')
 
     def test_l_gg(self):
         self.eqr('11\n|2\n33\n|44', 'l_gg', '|11\n2\n33\n|44')
 
     def test_l_gg_reverse(self):
-        self.rvisual('11\n|2\n33\n|44')
-        self.feed('l_gg')
-        self.assertRVisual('|11\n2\n33\n|44')
+        self.eqr('r_11\n|2\n33\n|44', 'l_gg', '|11\n2\n33\n|44')

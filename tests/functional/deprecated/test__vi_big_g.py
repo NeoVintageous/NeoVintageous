@@ -26,7 +26,7 @@ class Test__vi_big_g_InNormalMode(unittest.ViewTestCase):
 
         self.view.run_command('_vi_big_g', {'mode': unittest.NORMAL, 'count': 1})
 
-        self.assertSelection((6, 6))
+        self.assertSelection((4, 4))
 
     def test_go_to_hard_eof_if_last_line_is_empty(self):
         self.write('abc\nabc\n')
