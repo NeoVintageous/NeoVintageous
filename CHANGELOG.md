@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.7.4 - Unreleased
 
+* Fixed [#398](https://github.com/NeoVintageous/NeoVintageous/issues/398): `gUU` should put cursor on first non blank
 * Fixed [#397](https://github.com/NeoVintageous/NeoVintageous/issues/397): `v_g~` should put cursor at start of selection
 * Fixed [#394](https://github.com/NeoVintageous/NeoVintageous/issues/394): `V` at EOF causes error bell
 * Fixed [#396](https://github.com/NeoVintageous/NeoVintageous/issues/396): `gg` should move to first non blank character

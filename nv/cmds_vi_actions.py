@@ -36,6 +36,7 @@ from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_view
+from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import previous_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
@@ -2452,7 +2453,7 @@ class _vi_g_big_u_big_u(ViTextCommandBase):
 
         def to_upper(view, s):
             view.replace(edit, s, view.substr(s).upper())
-            return Region(s.a)
+            return Region(next_non_blank(self.view, s.a))
 
         regions_transformer(self.view, select)
         regions_transformer(self.view, to_upper)
