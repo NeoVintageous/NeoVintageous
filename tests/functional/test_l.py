@@ -44,29 +44,19 @@ class Test_l(unittest.FunctionalTestCase):
         self.eq('\n\n|\n|\n', 'v_l', '\n\n|\n|\n')
 
     def test_v_l_reversed_selections(self):
-        self.rvisual('h|el|lo world')
-        self.feed('v_5l')
-        self.assertVisual('he|llo w|orld')
+        self.eq('r_h|el|lo world', 'v_5l', 'he|llo w|orld')
 
     def test_v_l_reversed_selections_to_eol(self):
-        self.rvisual('h|el|lo\n')
-        self.feed('v_5l')
-        self.assertVisual('he|llo\n|')
+        self.eq('r_h|el|lo\n', 'v_5l', 'he|llo\n|')
 
     def test_v_l_reversed_selections_to_eol_2(self):
-        self.rvisual('a|\n|')
-        self.feed('v_5l')
-        self.assertVisual('a|\n|')
+        self.eq('r_a|\n|', 'v_5l', 'a|\n|')
 
     def test_v_l_reversed_selections_to_eol_3(self):
-        self.rvisual('|ab|\n')
-        self.feed('v_9l')
-        self.assertVisual('a|b\n|')
+        self.eq('r_|ab|\n', 'v_9l', 'a|b\n|')
 
     def test_v_l_reversed_selections_to_eol_4(self):
-        self.rvisual('|ab\n|')
-        self.feed('v_9l')
-        self.assertVisual('ab|\n|')
+        self.eq('r_|ab\n|', 'v_9l', 'ab|\n|')
 
     def test_l_internal_mode(self):
         self.eq('|abc', 'l', 'N_|a|bc')

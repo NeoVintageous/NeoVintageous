@@ -3394,15 +3394,14 @@ class ViSearchForward(ViMotionDef):
         return True
 
     def translate(self, state):
-        cmd = {}
         if self.accept_input:
-            cmd['motion'] = '_vi_slash'
-            cmd['motion_args'] = {}
-        else:
-            # We'll end up here, for example, when repeating via '.'.
-            return ViSearchForwardImpl(term=self._inp[:-4]).translate(state)
+            return {
+                'motion': '_vi_slash',
+                'motion_args': {}
+            }
 
-        return cmd
+        # We'll end up here, for example, when repeating via '.'.
+        return ViSearchForwardImpl(term=self._inp[:-4]).translate(state)
 
 
 class ViSearchForwardImpl(ViMotionDef):
@@ -3454,11 +3453,10 @@ class ViSearchBackward(ViMotionDef):
 
     def translate(self, state):
         if self.accept_input:
-            cmd = {}
-            cmd['motion'] = '_vi_question_mark'
-            cmd['motion_args'] = {}
-
-            return cmd
+            return {
+                'motion': '_vi_question_mark',
+                'motion_args': {}
+            }
         else:
             # We'll end up here, for example, when repeating via '.'.
             return ViSearchBackwardImpl(term=self._inp[:-4]).translate(state)
@@ -3475,16 +3473,15 @@ class ViSearchBackwardImpl(ViMotionDef):
         if not self.inp:
             self._inp = state.last_buffer_search
 
-        cmd = {}
-        cmd['is_jump'] = True
-        cmd['motion'] = '_vi_question_mark_impl'
-        cmd['motion_args'] = {
-            'search_string': self.inp,
-            'mode': state.mode,
-            'count': state.count
+        return {
+            'is_jump': True,
+            'motion': '_vi_question_mark_impl',
+            'motion_args': {
+                'search_string': self.inp,
+                'mode': state.mode,
+                'count': state.count
+            }
         }
-
-        return cmd
 
 
 @keys.assign(seq=seqs.CTRL_X_CTRL_L, modes=[INSERT])

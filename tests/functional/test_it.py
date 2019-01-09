@@ -25,6 +25,8 @@ class Test_it(unittest.FunctionalTestCase):
         self.eq('x<p>_<i>_</i>a|bc<i>_</i>d</p>x', 'v_it', 'x<p>|_<i>_</i>abc<i>_</i>d|</p>x')
 
     def test_161(self):
-        self.visual('<head>\n    <link rel=|"shortcut icon" href="favicon.png">\n</head>')
-        self.feed('v_it')
-        self.assertVisual('<head>|\n    <link rel="shortcut icon" href="favicon.png">\n|</head>')
+        self.eq(
+            '<head>\n    <link rel=|"shortcut icon" href="favicon.png">\n</head>',
+            'v_it',
+            '<head>|\n    <link rel="shortcut icon" href="favicon.png">\n|</head>'
+        )

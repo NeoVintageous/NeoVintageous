@@ -24,7 +24,7 @@ class Test__vi_big_g_InNormalMode(unittest.ViewTestCase):
         self.write('abc\nabc')
         self.select(0)
 
-        self.view.run_command('_vi_big_g', {'mode': unittest.NORMAL, 'count': 1})
+        self.view.run_command('_vi_big_g', {'mode': unittest.NORMAL})
 
         self.assertSelection((4, 4))
 
@@ -32,7 +32,7 @@ class Test__vi_big_g_InNormalMode(unittest.ViewTestCase):
         self.write('abc\nabc\n')
         self.select(0)
 
-        self.view.run_command('_vi_big_g', {'mode': unittest.NORMAL, 'count': 1})
+        self.view.run_command('_vi_big_g', {'mode': unittest.NORMAL})
 
         self.assertSelection((8, 8))
 
@@ -43,7 +43,7 @@ class Test__vi_big_g_InVisualMode(unittest.ViewTestCase):
         self.write('abc\nabc\n')
         self.select((0, 1))
 
-        self.view.run_command('_vi_big_g', {'mode': unittest.VISUAL, 'count': 1})
+        self.view.run_command('_vi_big_g', {'mode': unittest.VISUAL})
 
         self.assertSelection((0, 8))
 
@@ -54,7 +54,7 @@ class Test__vi_big_g_InInternalNormalMode(unittest.ViewTestCase):
         self.write('abc\nabc\n')
         self.select(1)
 
-        self.view.run_command('_vi_big_g', {'mode': unittest.INTERNAL_NORMAL, 'count': 1})
+        self.view.run_command('_vi_big_g', {'mode': unittest.INTERNAL_NORMAL})
 
         self.assertSelection((0, 8))
 
@@ -62,7 +62,7 @@ class Test__vi_big_g_InInternalNormalMode(unittest.ViewTestCase):
         self.write('abc\nabc\nabc\n')
         self.select((4, 5))
 
-        self.view.run_command('_vi_big_g', {'mode': unittest.INTERNAL_NORMAL, 'count': 1})
+        self.view.run_command('_vi_big_g', {'mode': unittest.INTERNAL_NORMAL})
 
         self.assertSelection((3, 12))
 
@@ -73,6 +73,6 @@ class Test__vi_big_g_InVisualLineMode(unittest.ViewTestCase):
         self.write('abc\nabc\n')
         self.select((0, 4))
 
-        self.view.run_command('_vi_big_g', {'mode': unittest.VISUAL_LINE, 'count': 1})
+        self.view.run_command('_vi_big_g', {'mode': unittest.VISUAL_LINE})
 
         self.assertSelection((0, 8))

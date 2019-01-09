@@ -33,9 +33,7 @@ class Test_A(unittest.FunctionalTestCase):
         self.eq('x|abx\n|', 'v_A', 'i_xabx|\n')
 
     def test_v_A_reverse(self):
-        self.rvisual('fi|zz bu|zz')
-        self.feed('v_A')
-        self.assertInsert('fi|zz buzz')
+        self.eq('r_fi|zz bu|zz', 'v_A', 'i_fi|zz buzz')
 
     def test_l_A(self):
         self.eq('|a|', 'l_A', 'i_a|')

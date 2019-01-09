@@ -30,17 +30,13 @@ class Test_I(unittest.FunctionalTestCase):
         self.eq('x\na|bx|\n', 'v_I', 'i_x\n|abx\n')
 
     def test_v_I_reverse(self):
-        self.rvisual('xa|bc|x')
-        self.feed('v_I')
-        self.assertInsert('|xabcx')
+        self.eq('r_xa|bc|x', 'v_I', 'i_|xabcx')
 
     def test_l_I(self):
         self.eq('x\n|ab\n|x', 'l_I', 'i_x\n|ab\nx')
 
     def test_l_I_reverse(self):
-        self.rvline('x\n|ab\n|x')
-        self.feed('l_I')
-        self.assertInsert('x\n|ab\nx')
+        self.eq('r_x\n|ab\n|x', 'l_I', 'i_x\n|ab\nx')
 
     def test_b_I(self):
         self.eq('x\na|bc|d\nx\nc|de|f\nx', 'b_I', 'i_x\na|bcd\nx\nc|def\nx')

@@ -48,34 +48,22 @@ class Test_h(unittest.FunctionalTestCase):
         self.eq('\n\n|\n|\n', 'v_h', '\n\n|\n|\n')
 
     def test_v_h_reverse(self):
-        self.visual('hello |wo|rld')
-        self.feed('v_5h')
-        self.assertRVisual('he|llo w|orld')
+        self.eqr('hello |wo|rld', 'v_5h', 'he|llo w|orld')
 
     def test_v_h_to_sol(self):
-        self.visual('x\nhe|ll|o')
-        self.feed('v_7h')
-        self.assertRVisual('x\n|hel|lo')
+        self.eqr('x\nhe|ll|o', 'v_7h', 'x\n|hel|lo')
 
     def test_v_h_to_sol_2(self):
-        self.visual('x\na|b\n|')
-        self.feed('v_9h')
-        self.assertRVisual('x\n|ab|\n')
+        self.eqr('x\na|b\n|', 'v_9h', 'x\n|ab|\n')
 
     def test_v_h_to_sol_3(self):
-        self.visual('x\n|ab\n|')
-        self.feed('v_9h')
-        self.assertVisual('x\n|a|b\n')
+        self.eq('x\n|ab\n|', 'v_9h', 'x\n|a|b\n')
 
     def test_v_h_to_sol_4(self):
-        self.visual('x\na|b\ncd\n|')
-        self.feed('v_9h')
-        self.assertVisual('x\na|b\nc|d\n')
+        self.eq('x\na|b\ncd\n|', 'v_9h', 'x\na|b\nc|d\n')
 
     def test_v_h_reversed_selections(self):
-        self.rvisual('hello |wor|ld')
-        self.feed('v_4h')
-        self.assertVisual('he|llo wor|ld')
+        self.eq('r_hello |wor|ld', 'v_4h', 'he|llo wor|ld')
 
     def test_h_internal_mode(self):
         self.eqr('hel|lo', 'h', 'N_he|l|lo')
