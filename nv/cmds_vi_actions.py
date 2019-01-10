@@ -2202,42 +2202,53 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
 
 
 class _vi_q(IrreversibleTextCommand):
-    _register_name = None
+
+    _current = None
 
     def run(self, name=None, mode=None, count=1):
         state = State(self.view)
 
         try:
             if state.is_recording:
-                State.macro_registers[_vi_q._register_name] = list(State.macro_steps)
+                State.macro_registers[self._current] = list(State.macro_steps)
                 state.stop_recording()
-                _vi_q._register_name = None
+                self.__class__._current = None
                 return
 
             if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW"'):
-                return
+                return ui_blink("E354: Invalid register name: '" + name + "'")
 
             state.start_recording()
-            _vi_q._register_name = name
+            self.__class__._current = name
         except (AttributeError, ValueError):
             state.stop_recording()
-            _vi_q._register_name = None
+            self.__class__._current = None
             ui_blink()
 
 
 class _vi_at(IrreversibleTextCommand):
 
+    _last_used = None
+
     def run(self, name, mode=None, count=1):
-        if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW".=*+'):
-            return
+        if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW".=*+@'):
+            return ui_blink("E354: Invalid register name: '" + name + "'")
+
+        if name == '@':
+            name = self._last_used
+
+            if not name:
+                return ui_blink('E748: No previously used register')
 
         try:
             cmds = State.macro_registers[name]
         except (KeyError, ValueError):
-            return
+            return ui_blink()
 
         if not cmds:
-            return
+            return ui_blink()
+
+        self.__class__._last_used = name
 
         state = State(self.view)
 

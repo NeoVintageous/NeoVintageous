@@ -25,6 +25,8 @@ from sublime import DRAW_STIPPLED_UNDERLINE
 from sublime import load_settings
 from sublime import set_timeout
 
+from NeoVintageous.nv.vim import status_message
+
 
 def ui_bell():
     # TODO Implement bell. See :h 'belloff'.
@@ -76,7 +78,10 @@ def ui_bell():
 
 # TODO [refactor] Rework this to use the ui_bell().
 # TODO [refactor] Rework this to require a view or settings object.
-def ui_blink(times=4, delay=55):
+def ui_blink(msg=None, times=4, delay=55):
+    if msg:
+        status_message(msg)
+
     prefs = load_settings('Preferences.sublime-settings')
     if prefs.get('vintageous_visualbell') is False:
         return

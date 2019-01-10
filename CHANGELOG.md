@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.7.4 - Unreleased
 
+* Fixed [#400](https://github.com/NeoVintageous/NeoVintageous/issues/400): `@@` no longer works (regression)
 * Fixed [#399](https://github.com/NeoVintageous/NeoVintageous/issues/399): VISUAL BLOCK indent (`>`) should put cursor on first non blank
 * Fixed [#398](https://github.com/NeoVintageous/NeoVintageous/issues/398): `gUU` should put cursor on first non blank
 * Fixed [#397](https://github.com/NeoVintageous/NeoVintageous/issues/397): `v_g~` should put cursor at start of selection
