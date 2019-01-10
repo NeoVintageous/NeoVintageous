@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.7.4 - Unreleased
+## 1.7.4 - 2019-01-10
 
 * Fixed [#402](https://github.com/NeoVintageous/NeoVintageous/issues/402): `>G` should not include line above cursor
 * Fixed [#401](https://github.com/NeoVintageous/NeoVintageous/issues/401): `gcG` should not include line above cursor
