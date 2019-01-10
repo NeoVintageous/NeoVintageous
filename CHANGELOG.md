@@ -4,6 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.7.4 - Unreleased
 
+* Fixed [#402](https://github.com/NeoVintageous/NeoVintageous/issues/402): `>G` should not include line above cursor
+* Fixed [#401](https://github.com/NeoVintageous/NeoVintageous/issues/401): `gcG` should not include line above cursor
 * Fixed [#400](https://github.com/NeoVintageous/NeoVintageous/issues/400): `@@` no longer works (regression)
 * Fixed [#399](https://github.com/NeoVintageous/NeoVintageous/issues/399): VISUAL BLOCK indent (`>`) should put cursor on first non blank
 * Fixed [#398](https://github.com/NeoVintageous/NeoVintageous/issues/398): `gUU` should put cursor on first non blank

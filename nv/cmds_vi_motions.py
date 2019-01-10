@@ -823,9 +823,7 @@ class _vi_big_g(ViMotionCommand):
 
                 return Region(s.a, eof_line.a)
             elif mode == INTERNAL_NORMAL:
-                begin = view.line(s.b).a
-                begin = max(0, begin - 1)
-                return Region(begin, eof)
+                return Region(max(0, view.line(s.b).a), eof)
             elif mode == VISUAL_LINE:
                 return Region(s.a, eof)
 

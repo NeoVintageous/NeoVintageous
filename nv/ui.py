@@ -118,9 +118,7 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
 
     _set = input_panel.settings().set
 
-    # Mark the input panel as a widget so we can later inspect that attribute
-    # e.g. when hiding panels in _enter_normal_mode, and so that contexts such
-    # as normal/visual/etc mode will ignore the widget.
+    # Mark the input panel as a widget.
     #
     # XXX This doesn't always work as expected, because the input panel is
     # already created before we setapply the settings, so there is a race-

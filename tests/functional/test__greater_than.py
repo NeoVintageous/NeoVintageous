@@ -25,6 +25,13 @@ class Test_greater_than(unittest.FunctionalTestCase):
         self.settings().set('translate_tabs_to_spaces', True)
         self.settings().set('tab_size', 4)
 
+    def test_G(self):
+        self.eq('1\n|2\n3\n4\n', '>G', '1\n    |2\n    3\n    4\n')
+        self.eq('1\n|    2\n3\n4\n', '>G', '1\n        |2\n    3\n    4\n')
+
+    def test_ip(self):
+        self.eq('x\n\nf|iz|z\nb|uz|z\n\nx', '>ip', 'x\n\n    |fizz\n    buzz\n\nx')
+
     def test_v(self):
         self.eq('|abc\ndef\n', 'v_>', 'n_    |abc\ndef\n')
         self.eq('|    abc\ndef\n', 'v_>', 'n_        |abc\ndef\n')
@@ -36,6 +43,3 @@ class Test_greater_than(unittest.FunctionalTestCase):
 
     def test_b(self):
         self.eq('x\nf|iz|z\nb|uz|z\nx', 'b_>', 'n_x\nf|    izz\nb    uzz\nx')
-
-    def test_ip(self):
-        self.eq('x\n\nf|iz|z\nb|uz|z\n\nx', '>ip', 'x\n\n    |fizz\n    buzz\n\nx')

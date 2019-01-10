@@ -64,7 +64,7 @@ class Test__vi_big_g_InInternalNormalMode(unittest.ViewTestCase):
 
         self.view.run_command('_vi_big_g', {'mode': unittest.INTERNAL_NORMAL})
 
-        self.assertSelection((3, 12))
+        self.assertSelection((4, 12))
 
 
 class Test__vi_big_g_InVisualLineMode(unittest.ViewTestCase):
