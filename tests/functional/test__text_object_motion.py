@@ -18,15 +18,16 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_at(unittest.FunctionalTestCase):
+class TestTextObjectMotion(unittest.FunctionalTestCase):
 
-    def test_v_at(self):
-        self.eq('x<p>a|bc</p>x', 'v_at', 'x|<p>abc</p>|x')
-        self.eq('x<p><b>_</b>a|bc<i>_</i>e</p>x', 'v_at', 'x|<p><b>_</b>abc<i>_</i>e</p>|x')
+    def test_left_bracket_left_paren(self):
+        self.eq('x(\n_|)_', '[(', 'x|(\n_)_')
 
-    def test_161(self):
-        self.eq(
-            '<head>\n    <link rel=|"shortcut icon" href="favicon.png">\n</head>',
-            'v_at',
-            '|<head>\n    <link rel="shortcut icon" href="favicon.png">\n</head>|'
-        )
+    def test_left_bracket_left_brace(self):
+        self.eq('x{\n_|}_', '[{', 'x|{\n_}_')
+
+    def test_right_bracket_right_paren(self):
+        self.eq('x|(\n_)_', '])', 'x(\n_|)_')
+
+    def test_right_bracket_right_brace(self):
+        self.eq('x|{\n_}_', ']}', 'x{\n_|}_')

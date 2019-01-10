@@ -20,16 +20,16 @@ from NeoVintageous.tests import unittest
 
 class Test_gg(unittest.FunctionalTestCase):
 
-    def test_gg(self):
-        self.eq('foo\nb|ar', 'gg', '|foo\nbar')
-
     def test_n_gg(self):
         self.eq('foo\nb|ar', 'n_gg', '|foo\nbar')
         self.eq('    foo\nb|ar', 'n_gg', '    |foo\nbar')
         self.eq('|1\n2\n    foo', 'n_G', '1\n2\n    |foo')
 
+    def test_N_gg(self):
+        self.eqr('foo\nb|ar', 'gg', 'N_|foo\nbar|')
+
     def test_v_gg(self):
-        self.eq('fizz\nb|u|zz', 'v_gg', '|fizz\nbu|zz')
+        self.eqr('fizz\nb|u|zz', 'v_gg', '|fizz\nbu|zz')
         self.eq('fi|zz\n2\n    buzz', 'v_G', 'fi|zz\n2\n    b|uzz')
 
     def test_v_gg_reverse_sel(self):

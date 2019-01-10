@@ -37,9 +37,9 @@ class Test_percent(unittest.FunctionalTestCase):
 
     def test_v_percent(self):
         self.eq('|{ab}', 'v_%', '|{ab}|')
-        self.eq('{ab|}', 'v_%', '|{ab}|')
+        self.eqr('{ab|}', 'v_%', '|{ab}|')
         self.eq('a |{\nb\n}\nc', 'v_%', 'a |{\nb\n}|\nc')
-        self.eq('a {\nb\n|}\nc', 'v_%', 'a |{\nb\n}|\nc')
+        self.eqr('a {\nb\n|}\nc', 'v_%', 'a |{\nb\n}|\nc')
         self.eq('a|123{|\nb\n}\nc', 'v_%', 'a|123{\nb\n}|\nc')
 
     def test_l_percent(self):

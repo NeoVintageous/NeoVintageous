@@ -246,28 +246,28 @@ class ViewTestCase(unittest.TestCase):
 
     def assertRInternalNormal(self, expected, strict=False, msg=None):
         self.assertInternalNormal(expected, strict, msg)
-        self.assertSelectionIsReveresed()
+        self.assertSelectionIsReversed()
 
     def assertVisual(self, expected, msg=None):
         self._assertView(expected, VISUAL, msg)
 
     def assertRVisual(self, expected, msg=None):
         self.assertVisual(expected, msg)
-        self.assertSelectionIsReveresed()
+        self.assertSelectionIsReversed()
 
     def assertVline(self, expected, msg=None):
         self._assertView(expected, VISUAL_LINE, msg)
 
     def assertRVline(self, expected, msg=None):
         self.assertVline(expected, msg)
-        self.assertSelectionIsReveresed()
+        self.assertSelectionIsReversed()
 
     def assertVblock(self, expected, msg=None):
         self._assertView(expected, VISUAL_BLOCK, msg)
 
     def assertRVblock(self, expected, msg=None):
         self.assertVblock(expected, msg)
-        self.assertSelectionIsReveresed()
+        self.assertSelectionIsReversed()
 
     def assertContent(self, expected, msg=None):
         # Test that view contents and *expected* are equal.
@@ -399,9 +399,11 @@ class ViewTestCase(unittest.TestCase):
         #       The expected number of selections in view.
         self.assertEqual(expected, len(self.view.sel()))
 
-    def assertSelectionIsReveresed(self):
+    def assertSelectionIsReversed(self):
         for sel in self.view.sel():
             self.assertGreater(sel.a, sel.b, 'failed asserting selection is reversed')
+
+    # def assertSelectionIsNotReversed(self):
 
     def assertSize(self, expected):
         # Test that number of view characters and *expected* are equal.
@@ -524,7 +526,7 @@ class FunctionalTestCase(ViewTestCase):
 
         self.view.run_command(command, args)
 
-    def eq(self, text, feed, expected=None, msg=None):
+    def eq(self, text, feed, expected=None, msg=None, _expects_reversed_selection=False):
         # Args:
         #   text (str)
         #   feed (str)
@@ -613,11 +615,16 @@ class FunctionalTestCase(ViewTestCase):
             else:
                 self.assertNormal(expected, msg)
 
+        if _expects_reversed_selection:
+            self.assertSelectionIsReversed()
+        else:
+            for sel in self.view.sel():
+                self.assertTrue(sel.b >= sel.a, 'failed asserting selection is not reversed')
+
     # The same as eq(), except also assert selections are also reversed
     # TODO Implement a prefix to indicate reversed selections in eq()
     def eqr(self, text, feed, expected=None, msg=None):
-        self.eq(text, feed, expected, msg)
-        self.assertSelectionIsReveresed()
+        self.eq(text, feed, expected, msg, _expects_reversed_selection=True)
 
 
 # DEPRECATED Use newer APIs.
@@ -680,6 +687,7 @@ _SEQ2CMD = {
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
     '>':            {'command': '_vi_greater_than'},  # noqa: E241
     '>>':           {'command': '_vi_greater_than_greater_than'},  # noqa: E241
+    '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     '>ip':          {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     '[ ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_up'}},  # noqa: E241
     '[(':           {'command': '_vi_left_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': '('}},  # noqa: E241,E501
@@ -689,9 +697,26 @@ _SEQ2CMD = {
     '])':           {'command': '_vi_right_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': ')'}},  # noqa: E241,E501
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': '}'}},  # noqa: E241,E501
+    'a"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': True}},  # noqa: E241,E501
     'a':            {'command': '_vi_a'},  # noqa: E241
     'A':            {'command': '_vi_big_a'},  # noqa: E241
+    'a(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': True}},  # noqa: E241,E501
+    'a)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': True}},  # noqa: E241,E501
+    'a[':           {'command': '_vi_select_text_object', 'args': {'text_object': '[', 'inclusive': True}},  # noqa: E241,E501
+    'a\'':          {'command': '_vi_select_text_object', 'args': {'text_object': '\'', 'inclusive': True}},  # noqa: E241,E501
+    'a]':           {'command': '_vi_select_text_object', 'args': {'text_object': ']', 'inclusive': True}},  # noqa: E241,E501
+    'a`':           {'command': '_vi_select_text_object', 'args': {'text_object': '`', 'inclusive': True}},  # noqa: E241,E501
+    'ab':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': True}},  # noqa: E241,E501
+    'aB':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': True}},  # noqa: E241,E501
+    'ap':           {'command': '_vi_select_text_object', 'args': {'text_object': 'p', 'inclusive': True}},  # noqa: E241,E501
+    'as':           {'command': '_vi_select_text_object', 'args': {'text_object': 's', 'inclusive': True}},  # noqa: E241,E501
     'at':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': True}},  # noqa: E241,E501
+    'aW':           {'command': '_vi_select_text_object', 'args': {'text_object': 'W', 'inclusive': True}},  # noqa: E241,E501
+    'aw':           {'command': '_vi_select_text_object', 'args': {'text_object': 'w', 'inclusive': True}},  # noqa: E241,E501
+    'a{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': True}},  # noqa: E241,E501
+    'a}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': True}},  # noqa: E241,E501
+    'a<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': True}},  # noqa: E241,E501
+    'a>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': True}},  # noqa: E241,E501
     'b':            {'command': '_vi_b'},  # noqa: E241
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
@@ -831,10 +856,25 @@ _SEQ2CMD = {
     'g~':           {'command': '_vi_g_tilde'},  # noqa: E241
     'g~~':          {'command': '_vi_g_tilde_g_tilde'},  # noqa: E241
     'h':            {'command': '_vi_h', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
+    'i"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': False}},  # noqa: E241,E501
     'I':            {'command': '_vi_big_i'},  # noqa: E241
+    'i(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': False}},  # noqa: E241,E501
+    'i)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': False}},  # noqa: E241,E501
+    'i[':           {'command': '_vi_select_text_object', 'args': {'text_object': '[', 'inclusive': False}},  # noqa: E241,E501
+    'i\'':          {'command': '_vi_select_text_object', 'args': {'text_object': '\'', 'inclusive': False}},  # noqa: E241,E501
+    'i]':           {'command': '_vi_select_text_object', 'args': {'text_object': ']', 'inclusive': False}},  # noqa: E241,E501
+    'i`':           {'command': '_vi_select_text_object', 'args': {'text_object': '`', 'inclusive': False}},  # noqa: E241,E501
+    'iB':           {'command': '_vi_select_text_object', 'args': {'text_object': 'B', 'inclusive': False}},  # noqa: E241,E501
+    'ib':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': False}},  # noqa: E241,E501
+    'ip':           {'command': '_vi_select_text_object', 'args': {'text_object': 'p', 'inclusive': False}},  # noqa: E241,E501
+    'is':           {'command': '_vi_select_text_object', 'args': {'text_object': 's', 'inclusive': False}},  # noqa: E241,E501
     'it':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': False}},  # noqa: E241,E501
+    'iw':           {'command': '_vi_select_text_object', 'args': {'text_object': 'w', 'inclusive': False}},  # noqa: E241,E501
+    'iW':           {'command': '_vi_select_text_object', 'args': {'text_object': 'W', 'inclusive': False}},  # noqa: E241,E501
     'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
+    'i<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': False}},  # noqa: E241,E501
+    'i>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
     'l':            {'command': '_vi_l', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241

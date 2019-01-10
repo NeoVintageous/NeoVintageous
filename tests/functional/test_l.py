@@ -50,13 +50,13 @@ class Test_l(unittest.FunctionalTestCase):
         self.eq('r_h|el|lo\n', 'v_5l', 'he|llo\n|')
 
     def test_v_l_reversed_selections_to_eol_2(self):
-        self.eq('r_a|\n|', 'v_5l', 'a|\n|')
+        self.eqr('r_a|\n|', 'v_5l', 'a|\n|')
 
     def test_v_l_reversed_selections_to_eol_3(self):
         self.eq('r_|ab|\n', 'v_9l', 'a|b\n|')
 
     def test_v_l_reversed_selections_to_eol_4(self):
-        self.eq('r_|ab\n|', 'v_9l', 'ab|\n|')
+        self.eqr('r_|ab\n|', 'v_9l', 'ab|\n|')
 
     def test_l_internal_mode(self):
         self.eq('|abc', 'l', 'N_|a|bc')

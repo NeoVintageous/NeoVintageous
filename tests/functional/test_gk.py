@@ -30,5 +30,5 @@ class Test_gk(unittest.FunctionalTestCase):
         self.eq('1234|56\nx\n', 'gk', '1|23456\nx\n')
 
     def test_l_gk(self):
-        self.eq('123\n|456\n|x', 'l_gk', '|123\n456\n|x')
-        self.eq('x\n123456\n|123456\n|y', 'l_gk', 'x\n|123456\n123456\n|y')
+        self.eqr('123\n|456\n|x', 'l_gk', '|123\n456\n|x')
+        self.eqr('x\n123456\n|123456\n|y', 'l_gk', 'x\n|123456\n123456\n|y')

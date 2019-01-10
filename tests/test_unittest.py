@@ -551,6 +551,7 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
 
     def setUp(self):
         self.view = unittest.mock.Mock()
+        self.view.sel.return_value = []
         self.window = unittest.mock.Mock()
         self.view.window.return_value = self.window
         self.instance = FunctionalTestCaseStub(self.view)

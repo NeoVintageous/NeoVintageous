@@ -33,19 +33,19 @@ class Test_h(unittest.FunctionalTestCase):
         self.eq('\n\n|\n\n', 'n_h', '\n\n|\n\n')
 
     def test_v_h(self):
-        self.eq('ab|c', 'v_h', 'a|bc|')
-        self.eq('ab|c', 'v_1h', 'a|bc|')
-        self.eq('foo bar |baz', 'v_6h', 'fo|o bar b|az')
-        self.eq('pin|g', 'v_9h', '|ping|')
-        self.eq('ping|\n', 'v_9h', '|ping\n|')
-        self.eq('abc|\nx', 'v_5h', '|abc\n|x')
-        self.eq('x\npin|g', 'v_9h', 'x\n|ping|')
-        self.eq('x\nping|\n', 'v_9h', 'x\n|ping\n|')
-        self.eq('x\nabc|\nx', 'v_5h', 'x\n|abc\n|x')
+        self.eqr('ab|c', 'v_h', 'a|bc|')
+        self.eqr('ab|c', 'v_1h', 'a|bc|')
+        self.eqr('foo bar |baz', 'v_6h', 'fo|o bar b|az')
+        self.eqr('pin|g', 'v_9h', '|ping|')
+        self.eqr('ping|\n', 'v_9h', '|ping\n|')
+        self.eqr('abc|\nx', 'v_5h', '|abc\n|x')
+        self.eqr('x\npin|g', 'v_9h', 'x\n|ping|')
+        self.eqr('x\nping|\n', 'v_9h', 'x\n|ping\n|')
+        self.eqr('x\nabc|\nx', 'v_5h', 'x\n|abc\n|x')
 
     def test_v_h_empty_lines(self):
         self.eq('|', 'v_h', '|')
-        self.eq('\n\n|\n|\n', 'v_h', '\n\n|\n|\n')
+        self.eqr('\n\n|\n|\n', 'v_h', '\n\n|\n|\n')
 
     def test_v_h_reverse(self):
         self.eqr('hello |wo|rld', 'v_5h', 'he|llo w|orld')
@@ -57,23 +57,23 @@ class Test_h(unittest.FunctionalTestCase):
         self.eqr('x\na|b\n|', 'v_9h', 'x\n|ab|\n')
 
     def test_v_h_to_sol_3(self):
-        self.eq('x\n|ab\n|', 'v_9h', 'x\n|a|b\n')
+        self.eqr('x\n|ab\n|', 'v_9h', 'x\n|a|b\n')
 
     def test_v_h_to_sol_4(self):
         self.eq('x\na|b\ncd\n|', 'v_9h', 'x\na|b\nc|d\n')
 
     def test_v_h_reversed_selections(self):
-        self.eq('r_hello |wor|ld', 'v_4h', 'he|llo wor|ld')
+        self.eqr('r_hello |wor|ld', 'v_4h', 'he|llo wor|ld')
 
     def test_h_internal_mode(self):
         self.eqr('hel|lo', 'h', 'N_he|l|lo')
 
     def test_b_h(self):
-        self.eq('fi|z|z\nbu|z|z', 'b_h', 'f|iz|z\nb|uz|z')
+        self.eqr('fi|z|z\nbu|z|z', 'b_h', 'f|iz|z\nb|uz|z')
         self.eq('|fi|zz\n|bu|zz', 'b_h', '|f|izz\n|b|uzz')
         self.eq('|f|izz\n|b|uzz', 'b_h', '|f|izz\n|b|uzz')
-        self.eq('fizz|e|r\nbuzz|e|r', 'b_3h', 'f|izze|r\nb|uzze|r')
-        self.eq('x\nfi|z|z\nbu|z|z', 'b_9h', 'x\n|fiz|z\n|buz|z')
+        self.eqr('fizz|e|r\nbuzz|e|r', 'b_3h', 'f|izze|r\nb|uzze|r')
+        self.eqr('x\nfi|z|z\nbu|z|z', 'b_9h', 'x\n|fiz|z\n|buz|z')
 
     def test_b_h_jagged_selections(self):
         # For jagged selections (on the rhs), only those sticking out need to move leftwards.
