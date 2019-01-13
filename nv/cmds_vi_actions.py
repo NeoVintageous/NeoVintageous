@@ -972,6 +972,12 @@ class _vi_d(ViTextCommandBase):
         if mode == INTERNAL_NORMAL:
             regions_transformer(self.view, advance_to_text_start)
 
+        if mode == VISUAL_LINE:
+            def f(view, s):
+                return Region(next_non_blank(self.view, s.b))
+
+            regions_transformer(self.view, f)
+
 
 class _vi_big_a(ViTextCommandBase):
 

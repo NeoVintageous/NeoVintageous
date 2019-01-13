@@ -82,3 +82,10 @@ class Test_d(unittest.FunctionalTestCase):
         self.assertRegister('1abc\n', linewise=True)
         self.assertRegisterIsNone('-')
         self.assertRegisterIsNone('0')
+
+    def test_l_d_puts_cursors_on_first_non_blank(self):
+        self.eq('    x\n|    a\n    b\n|    y\n', 'l_d', 'n_    x\n    |y\n')
+        self.assertRegister('"    a\n    b\n', linewise=True)
+        self.assertRegister('1    a\n    b\n', linewise=True)
+        self.assertRegisterIsNone('-')
+        self.assertRegisterIsNone('0')
