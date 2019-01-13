@@ -245,7 +245,7 @@ class ViChangeByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.U, modes=[NORMAL])
+@keys.assign(seq=seqs.U, modes=(NORMAL,))
 class ViUndo(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -261,7 +261,7 @@ class ViUndo(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.U, modes=[VISUAL, VISUAL_LINE, VISUAL_BLOCK])
+@keys.assign(seq=seqs.U, modes=(VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1512,7 +1512,7 @@ class ViScrollByLinesUp(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_U, modes=[VISUAL, VISUAL_LINE, VISUAL_BLOCK])
+@keys.assign(seq=seqs.BIG_U, modes=(VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2578,18 +2578,18 @@ class ViRepeatCharSearchForward(ViMotionDef):
         forward = state.last_char_search_command in ('vi_t', 'vi_f')
         inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
         skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
+        motion = '_vi_find_in_line' if forward else '_vi_reverse_find_in_line'
 
-        cmd = {}
-        cmd['motion'] = ('_vi_find_in_line' if forward else '_vi_reverse_find_in_line')
-        cmd['motion_args'] = {
-            'mode': state.mode,
-            'count': state.count,
-            'char': state.last_character_search,
-            'inclusive': inclusive,
-            'skipping': skipping
+        return {
+            'motion': motion,
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'char': state.last_character_search,
+                'inclusive': inclusive,
+                'skipping': skipping
+            }
         }
-
-        return cmd
 
 
 @keys.assign(seq=seqs.QUOTE, modes=_MODES_MOTION)
@@ -2808,18 +2808,18 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         forward = state.last_char_search_command in ('vi_t', 'vi_f')
         inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
         skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
+        motion = '_vi_find_in_line' if not forward else '_vi_reverse_find_in_line'
 
-        cmd = {}
-        cmd['motion'] = ('_vi_find_in_line' if not forward else '_vi_reverse_find_in_line')
-        cmd['motion_args'] = {
-            'mode': state.mode,
-            'count': state.count,
-            'char': state.last_character_search,
-            'inclusive': inclusive,
-            'skipping': skipping
+        return {
+            'motion': motion,
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'char': state.last_character_search,
+                'inclusive': inclusive,
+                'skipping': skipping
+            }
         }
-
-        return cmd
 
 
 @keys.assign(seq=seqs.PIPE, modes=_MODES_MOTION)
@@ -3069,7 +3069,7 @@ class ViReverseFindWord(ViMotionDef):
 @keys.assign(seq=seqs.CTRL_DOT, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_SHIFT_DOT, modes=_MODES_MOTION)
 # XXX: This is called a 'submode' in the vim docs:
-@keys.assign(seq=seqs.CTRL_X, modes=[INSERT])
+@keys.assign(seq=seqs.CTRL_X, modes=(INSERT,))
 # TODO This should not be a motion.
 class ViOpenNameSpace(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -3252,7 +3252,7 @@ class ViSearchCharForward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.A, modes=[OPERATOR_PENDING, VISUAL, VISUAL_BLOCK])
+@keys.assign(seq=seqs.A, modes=(OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
 class ViATextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3288,7 +3288,7 @@ class ViATextObject(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.I, modes=[OPERATOR_PENDING, VISUAL, VISUAL_BLOCK])
+@keys.assign(seq=seqs.I, modes=(OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
 class ViITextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3415,16 +3415,15 @@ class ViSearchForwardImpl(ViMotionDef):
         if not self.inp:
             self._inp = state.last_buffer_search
 
-        cmd = {}
-        cmd['is_jump'] = True
-        cmd['motion'] = '_vi_slash_impl'
-        cmd['motion_args'] = {
-            'search_string': self.inp,
-            'mode': state.mode,
-            'count': state.count,
+        return {
+            'is_jump': True,
+            'motion': '_vi_slash_impl',
+            'motion_args': {
+                'search_string': self.inp,
+                'mode': state.mode,
+                'count': state.count
+            }
         }
-
-        return cmd
 
 
 @keys.assign(seq=seqs.QUESTION_MARK, modes=_MODES_MOTION)
@@ -3484,7 +3483,7 @@ class ViSearchBackwardImpl(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_X_CTRL_L, modes=[INSERT])
+@keys.assign(seq=seqs.CTRL_X_CTRL_L, modes=(INSERT,))
 class ViInsertLineWithCommonPrefix(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

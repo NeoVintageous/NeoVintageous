@@ -21,32 +21,52 @@ from NeoVintageous.tests import unittest
 class Test_percent(unittest.FunctionalTestCase):
 
     def test_percent(self):
-        self.eq('|', '%', '|')
-        self.eq('fi|zz', '%', 'fi|zz')
-        self.eq('|{ab}', '%', '{ab|}')
-        self.eq('{ab|}', '%', '|{ab}')
-        self.eq('a |{\nb\n}\nc', '%', 'a {\nb\n|}\nc')
-        self.eq('a {\nb\n|}\nc', '%', 'a |{\nb\n}\nc')
-        self.eq('|12{}', '%', '12{|}', 'should jump to the *match* of the next item in the line')
-        self.eq('{}12|', '%', '{}12|', 'should NOT jump backwards')
-        self.eq('12{}3|4{}', '%', '12{}34{|}', 'should jump forward')
+        self.eq('|', 'n_%', '|')
+        self.eq('fi|zz', 'n_%', 'fi|zz')
+        self.eq('|{ab}', 'n_%', '{ab|}')
+        self.eq('{ab|}', 'n_%', '|{ab}')
+        self.eq('a |{\nb\n}\nc', 'n_%', 'a {\nb\n|}\nc')
+        self.eq('a {\nb\n|}\nc', 'n_%', 'a |{\nb\n}\nc')
+        self.eq('|12{}', 'n_%', '12{|}', 'should jump to the *match* of the next item in the line')
+        self.eq('{}12|', 'n_%', '{}12|', 'should NOT jump backwards')
+        self.eq('12{}3|4{}', 'n_%', '12{}34{|}', 'should jump forward')
 
     def test_percent_mutiple_selection(self):
-        self.eq('1|{ab}2|{cd}3|{ef}x', '%', '1{ab|}2{cd|}3{ef|}x')
-        self.eq('1|{ab}2{cd}3|{ef}x', '%', '1{ab|}2{cd}3{ef|}x')
+        self.eq('1|{ab}2|{cd}3|{ef}x', 'n_%', '1{ab|}2{cd|}3{ef|}x')
+        self.eq('1|{ab}2{cd}3|{ef}x', 'n_%', '1{ab|}2{cd}3{ef|}x')
 
     def test_v_percent(self):
         self.eq('|{ab}', 'v_%', '|{ab}|')
-        self.eqr('{ab|}', 'v_%', '|{ab}|')
+        self.eq('{ab|}', 'v_%', 'r_|{ab}|')
         self.eq('a |{\nb\n}\nc', 'v_%', 'a |{\nb\n}|\nc')
-        self.eqr('a {\nb\n|}\nc', 'v_%', 'a |{\nb\n}|\nc')
+        self.eq('a {\nb\n|}\nc', 'v_%', 'r_a |{\nb\n}|\nc')
         self.eq('a|123{|\nb\n}\nc', 'v_%', 'a|123{\nb\n}|\nc')
+        self.eq('abc (a|bc) abc', 'v_%', 'r_abc |(ab|c) abc'),
+        self.eq('abc (a|bc) abc', 'v_%', 'r_abc |(ab|c) abc')
+        self.eq('|0(|2)4', 'v_%', '|0(2)|4')
+        self.eq('0|(|2)4', 'v_%', '0|(2)|4')
+        self.eq('r_0(2|)4|', 'v_%', 'r_0|(2)4|')
+        self.eq('r_0(|2)|4', 'v_%', 'r_0|(2)|4')
+        self.eq('0(|2)|4', 'v_%', 'r_0|(2|)4')
+        self.eq('0(2|)|4', 'v_%', 'r_0|(2)|4')
+        self.eq('r_0|(2|)4', 'v_%', '0(|2)|4')
+        self.eq('0|(|2)4', 'v_%', '0|(2)|4')
+        self.eq('|()', 'v_%', '|()|')
+        self.eq('r_(|)|', 'v_%', 'r_|()|')
+        self.eq('(|)|', 'v_%', 'r_|()|')
+        self.eq('r_|(|)', 'v_%', '|()|')
 
     def test_l_percent(self):
         self.eq('|\n|', 'l_%', '|\n|')
         self.eq('|ab\n|', 'l_%', '|ab\n|')
         self.eq('1| \n|2', 'l_%', '1| \n|2', 'single space lines should be noop')
         self.eq('\n|\n\n|\n', 'l_%', '\n|\n\n|\n', 'empty lines should be noop')
+
+    def test_N_percent(self):
+        self.eq('abc (a|bc) abc', '%', 'r_N_abc |(ab|c) abc')
+        self.eq('abc (abc|) abc', '%', 'r_N_abc |(abc)| abc')
+        self.eq('abc |(abc) abc', '%', 'N_abc |(abc)| abc')
+        self.eq('|abc (abc) abc', '%', 'N_|abc (abc)| abc')
 
 
 class Test_percent_in_php_syntax(unittest.FunctionalTestCase):
@@ -56,12 +76,12 @@ class Test_percent_in_php_syntax(unittest.FunctionalTestCase):
         self.view.assign_syntax('Packages/PHP/PHP.sublime-syntax')
 
     def test_percent(self):
-        self.eq('<?php\nfunct|ion x() {\n//...\n}\n', '%', '<?php\nfunction x(|) {\n//...\n}\n')
+        self.eq('<?php\nfunct|ion x() {\n//...\n}\n', 'n_%', '<?php\nfunction x(|) {\n//...\n}\n')
 
     def test_find_next_item_in_this_line_after_the_cursor(self):
         start = '<?php\nfunct|ion x() {\n    //...\n}\n'
         self.normal(start)
-        self.feed('%')
+        self.feed('n_%')
         self.assertNormal('<?php\nfunction x(|) {\n    //...\n}\n')
 
 

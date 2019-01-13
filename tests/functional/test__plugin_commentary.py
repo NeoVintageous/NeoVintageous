@@ -26,28 +26,28 @@ class TestCommentary(unittest.FunctionalTestCase):
         self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
         super().normal(text)
 
-    def test_comment(self):
+    def test_gcc_comment(self):
         self.eq('|abc', 'gcc', '|# abc')
         self.eq('abc|', 'gcc', '|# abc')
 
-    def test_uncomment(self):
+    def test_gcc_uncomment(self):
         self.eq('|# abc', 'gcc', '|abc')
         self.eq('# abc|', 'gcc', '|abc')
 
-    def test_the_position_of_the_cursor_after_operation_should_be_first_non_whitespace_character(self):
+    def test_gcc_the_position_of_the_cursor_after_operation_should_be_first_non_whitespace_character(self):
         self.eq('    abc|', 'gcc', '    |# abc')
         self.eq('    a|bc', 'gcc', '    |# abc')
         self.eq('    # abc|', 'gcc', '    |abc')
         self.eq('    # a|bc', 'gcc', '    |abc')
 
-    def test_empty_lines(self):
+    def test_gcc_empty_lines(self):
         self.eq('|', 'gcc', '|# ')
         self.eq('|#', 'gcc', '|')
 
-    def test_multiple_cursor_commenting(self):
+    def test_gcc_multiple_cursor_commenting(self):
         self.eq('    a|bc\n    a|bc\n    a|bc\n', 'gcc', '    |# abc\n    # abc\n    # abc\n')
 
-    def test_multiple_cursor_uncommenting(self):
+    def test_gcc_multiple_cursor_uncommenting(self):
         self.eq('    # a|bc\n    # a|bc\n    # a|bc\n', 'gcc', '    |abc\n    abc\n    abc\n')
 
     def test_gcG_comment(self):

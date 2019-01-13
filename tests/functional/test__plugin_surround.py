@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class TestDocumentationExamples(unittest.FunctionalTestCase):
+class TestSurroundDocumentationExamples(unittest.FunctionalTestCase):
 
     def test_documentation_examples(self):
         # See https://github.com/tpope/vim-surround

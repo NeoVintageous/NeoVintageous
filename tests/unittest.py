@@ -427,14 +427,6 @@ class ViewTestCase(unittest.TestCase):
         #       If specified, is used as the error message on failure.
         self.assertRegex(self.view.get_status('vim-mode') + ' ' + self.view.get_status('vim-seq'), expected, msg=msg)
 
-    def assertBell(self):
-        # This assertion requires use of the mock_bell() decorator.
-        self.assertEquals(1, self.bell.call_count, 'expects bell')
-
-    def assertNoBell(self):
-        # This assertion requires use of the @mock_bell() decorator.
-        self.assertEquals(0, self.bell.call_count, 'expects no bell')
-
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
     def state(self):
@@ -449,10 +441,17 @@ class ViewTestCase(unittest.TestCase):
         # Test that regions covers the exact same region. Does not take region
         # orientation into account.
         if (expected_region.size() == 1) and (actual_region.size() == 1):
-            expected_region = _make_region(self.view, expected_region.begin(),
-                                           expected_region.end())
-            actual_region = _make_region(self.view, actual_region.begin(),
-                                         actual_region.end())
+            expected_region = _make_region(
+                self.view,
+                expected_region.begin(),
+                expected_region.end()
+            )
+
+            actual_region = _make_region(
+                self.view,
+                actual_region.begin(),
+                actual_region.end()
+            )
 
         self.assertEqual(expected_region, actual_region, msg)
 
@@ -530,7 +529,7 @@ class FunctionalTestCase(ViewTestCase):
 
         self.view.run_command(command, args)
 
-    def eq(self, text, feed, expected=None, msg=None, _expects_reversed_selection=False):
+    def eq(self, text, feed, expected=None, msg=None):
         # Args:
         #   text (str)
         #   feed (str)
@@ -539,24 +538,27 @@ class FunctionalTestCase(ViewTestCase):
         #
         # The feed and expected can be prefixed to specify a mode:
         #
-        #   * n_ - Normal
-        #   * i_ - Insert
-        #   * v_ - Visual
-        #   * l_ - Visual line
-        #   * b_ - Visual block
-        #   * :<','> - Visual cmdline (only valid for feed)
-        #   * N_ - Normal (Normal mode with VISUAL selections; Special Internal Normal mode)
+        #   * n_ - NORMAL
+        #   * i_ - INSERT
+        #   * v_ - VISUAL
+        #   * l_ - VISUAL LINE
+        #   * b_ - VISUAL BLOCK
+        #   * :<','> - VISUAL CMDLINE (feed parameter only)
+        #   * N_ - INTERNAL NORMAL (special mode; translates as NORMAL with
+        #          VISUAL selection)
+        #   * r_ - Specifies a reversed selection (must come first when joined
+        #          with mode prefix e.g. r_n_)
         #
-        # The default mode is Internal Normal.
+        # The default mode is INTERNAL NORMAL.
         #
-        # When a mode is specified by feed, it is used as the default mode for
-        # text and expected.
+        # The mode specified by feed is used for the text, and the expected
+        # arguments, unless a mode is otherwise specified.
         #
         # Examples:
         #
-        # >>> eq('|Hello world!', 'w', 'Hello |world!')
+        # >>> eq('|Hello world!', 'n_w', 'Hello |world!')
         # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
-        # >>> eq('a\nx|y\nb', 'cc', 'i_a\n|\nb')
+        # >>> eq('xxx\nbu|zz\nxxx', 'n_cc', 'i_xxx\n|\nxxx')
 
         rtext = False
         if text[:2] == 'r_':
@@ -565,6 +567,11 @@ class FunctionalTestCase(ViewTestCase):
 
         if expected is None:
             expected = text
+
+        rexpected = False
+        if expected[:2] == 'r_':
+            expected = expected[2:]
+            rexpected = True
 
         if feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>')):
             if feed[0] == 'l':
@@ -619,16 +626,11 @@ class FunctionalTestCase(ViewTestCase):
             else:
                 self.assertNormal(expected, msg)
 
-        if _expects_reversed_selection:
+        if rexpected:
             self.assertSelectionIsReversed()
         else:
             for sel in self.view.sel():
                 self.assertTrue(sel.b >= sel.a, 'failed asserting selection is not reversed')
-
-    # The same as eq(), except also assert selections are also reversed
-    # TODO Implement a prefix to indicate reversed selections in eq()
-    def eqr(self, text, feed, expected=None, msg=None):
-        self.eq(text, feed, expected, msg, _expects_reversed_selection=True)
 
 
 # DEPRECATED Use newer APIs.
@@ -656,21 +658,38 @@ def _make_region(view, a, b=None):
 # Usage:
 #
 #   @unitest.mock_bell()
-#   def test_x(self):
-#       # ...
+#   def test_bell(self):
 #       self.assertBell()
 #       self.assertNoBell()
 #
 def mock_bell():
     def wrapper(f):
         @mock.patch('NeoVintageous.nv.cmds_vi_actions.ui_blink')
+        @mock.patch('NeoVintageous.nv.cmds_vi_motions.ui_blink')
         def wrapped(self, *args, **kwargs):
-            self.bell = args[-1]
+            self.bells = [
+                args[-1],
+                args[-2]
+            ]
 
-            return f(self, *args[:-1], **kwargs)
+            def _bell_call_count():
+                bell_count = 0
+                for bell in self.bells:
+                    bell_count += bell.call_count
 
+                return bell_count
+
+            def _assertBell():
+                self.assertEquals(1, _bell_call_count(), 'expects bell')
+
+            def _assertNoBell():
+                self.assertEquals(0, _bell_call_count(), 'expects no bell')
+
+            self.assertBell = _assertBell
+            self.assertNoBell = _assertNoBell
+
+            return f(self, *args[:-2], **kwargs)
         return wrapped
-
     return wrapper
 
 
@@ -680,10 +699,12 @@ def mock_bell():
 # impact the existing tests.
 _SEQ2CMD = {
 
+    '#':            {'command': '_vi_octothorp'},  # noqa: E241
     '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
-    '%':            {'command': '_vi_percent', 'args': {'percent': None, 'mode': 'mode_normal'}},  # noqa: E241
+    '%':            {'command': '_vi_percent', 'args': {'percent': None}},  # noqa: E241
     '(':            {'command': '_vi_left_paren'},  # noqa: E241
     ')':            {'command': '_vi_right_paren'},  # noqa: E241
+    '*':            {'command': '_vi_star'},  # noqa: E241
     '/abc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
@@ -849,8 +870,8 @@ _SEQ2CMD = {
     'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     'gg':           {'command': '_vi_gg'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
-    'gj':           {'command': '_vi_gj', 'args': {'mode': 'mode_normal'}},  # noqa: E241
-    'gk':           {'command': '_vi_gk', 'args': {'mode': 'mode_normal'}},  # noqa: E241
+    'gj':           {'command': '_vi_gj'},  # noqa: E241
+    'gk':           {'command': '_vi_gk'},  # noqa: E241
     'gq':           {'command': '_vi_gq', 'args': {'mode': 'mode_visual', 'count': 1}},  # noqa: E241
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
@@ -864,6 +885,7 @@ _SEQ2CMD = {
     'g~$':          {'command': '_vi_g_tilde', 'args': {'motion': {'is_jump': True, 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'g~':           {'command': '_vi_g_tilde'},  # noqa: E241
     'g~~':          {'command': '_vi_g_tilde_g_tilde'},  # noqa: E241
+    'H':            {'command': '_vi_big_h'},  # noqa: E241
     'h':            {'command': '_vi_h', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
     'i"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': False}},  # noqa: E241,E501
     'i':            {'command': '_enter_insert_mode'},  # noqa: E241
@@ -886,17 +908,22 @@ _SEQ2CMD = {
     'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
+    'L':            {'command': '_vi_big_l'},  # noqa: E241
     'l':            {'command': '_vi_l', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
+    'M':            {'command': '_vi_big_m'},  # noqa: E241
+    'N':            {'command': '_vi_repeat_buffer_search', 'args': {'reverse': True}},  # noqa: E241
+    'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
+    'o__alt1':      {'command': '_vi_visual_o'},  # NOTE __* is used because several o operations are in separate commands rather than one # noqa: E241,E501
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
-    'U__v__':       {'command': '_vi_visual_big_u'},  # NOTE __v__ is used because several u commands are in separate commands rather than one # noqa: E241,E501
-    'u__v__':       {'command': '_vi_visual_u'},  # NOTE __v__ is used because several u commands are in separate commands rather than one # noqa: E241,E501
+    'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
+    'u':            {'command': '_vi_visual_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241
     'v':            {'command': '_enter_visual_mode'},  # noqa: E241
     'W':            {'command': '_vi_big_w'},  # noqa: E241

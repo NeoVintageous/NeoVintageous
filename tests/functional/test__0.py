@@ -30,15 +30,15 @@ class Test_0(unittest.FunctionalTestCase):
 
     def test_N_0(self):
         self.eq('|abc', '0', '|abc')
-        self.eqr('a|bc', '0', 'N_|a|bc')
-        self.eqr('ab|c', '0', 'N_|ab|c')
+        self.eq('a|bc', '0', 'r_N_|a|bc')
+        self.eq('ab|c', '0', 'r_N_|ab|c')
         self.eq('x\n|ab\nx', '0', 'N_x\n|ab\nx')
-        self.eqr('x\na|b\nx', '0', 'N_x\n|a|b\nx')
-        self.eqr('x\nab|\nx', '0', 'N_x\n|ab|\nx')
+        self.eq('x\na|b\nx', '0', 'r_N_x\n|a|b\nx')
+        self.eq('x\nab|\nx', '0', 'r_N_x\n|ab|\nx')
 
     def test_v_0(self):
-        self.eqr('x\nab|c|d\nx', 'v_0', 'x\n|abc|d\nx')
-        self.eqr('x\na|bc|d\nx', 'v_0', 'x\n|ab|cd\nx')
+        self.eq('x\nab|c|d\nx', 'v_0', 'r_x\n|abc|d\nx')
+        self.eq('x\na|bc|d\nx', 'v_0', 'r_x\n|ab|cd\nx')
         self.eq('x\n|abcd|\nx', 'v_0', 'x\n|a|bcd\nx')
 
     def test_v_0_multiline(self):

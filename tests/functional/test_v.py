@@ -29,4 +29,4 @@ class Test_v(unittest.FunctionalTestCase):
 
     def test_visual_line_enters_visual(self):
         self.eq('x\n|fizz\n|x', 'l_v', 'v_x\n|fizz\n|x')
-        self.eqr('r_x\n|fizz\n|x', 'l_v', 'v_x\n|fizz\n|x')
+        self.eq('r_x\n|fizz\n|x', 'l_v', 'r_v_x\n|fizz\n|x')

@@ -23,12 +23,26 @@ class Test_gk(unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.settings().set('word_wrap', True)
+        # Note: A wrap width of 6 means a buffer like:
+        #
+        #   12345...
+        #
+        # will visually look like two lines, where every
+        # 4th character is on a new visual line:
+        #
+        #   123
+        #   45...
+        #
         self.settings().set('wrap_width', 4)
 
     def test_gk(self):
+        self.eq('123\n4|56\nx\n', 'n_gk', '1|23\n456\nx\n')
+        self.eq('1234|56\nx\n', 'n_gk', '1|23456\nx\n')
+
+    def test_N_gk(self):
         self.eq('123\n4|56\nx\n', 'gk', '1|23\n456\nx\n')
         self.eq('1234|56\nx\n', 'gk', '1|23456\nx\n')
 
     def test_l_gk(self):
-        self.eqr('123\n|456\n|x', 'l_gk', '|123\n456\n|x')
-        self.eqr('x\n123456\n|123456\n|y', 'l_gk', 'x\n|123456\n123456\n|y')
+        self.eq('123\n|456\n|x', 'l_gk', 'r_|123\n456\n|x')
+        self.eq('x\n123456\n|123456\n|y', 'l_gk', 'r_x\n|123456\n123456\n|y')

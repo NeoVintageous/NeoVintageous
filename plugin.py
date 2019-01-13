@@ -114,6 +114,11 @@ def _cleanup_views():
 
 def plugin_loaded():
 
+    # Enable sublime debug information if in DEBUG mode.
+    if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
+        sublime.log_input(True)
+        sublime.log_commands(True)
+
     try:
         pc_event = None
         from package_control import events

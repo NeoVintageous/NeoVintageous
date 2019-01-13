@@ -111,3 +111,19 @@ class TestObjectSelection(unittest.FunctionalTestCase):
             'v_at',
             '|<head>\n    <link rel="shortcut icon" href="favicon.png">\n</head>|'
         )
+
+    def test_v_it(self):
+        self.eq('x<p>a|bc</p>x', 'v_it', 'x<p>|abc|</p>x')
+        self.eq('x<p>_<i>_</i>a|bc<i>_</i>d</p>x', 'v_it', 'x<p>|_<i>_</i>abc<i>_</i>d|</p>x')
+
+    def test_161(self):
+        self.eq(
+            '<head>\n    <link rel=|"shortcut icon" href="favicon.png">\n</head>',
+            'v_it',
+            '<head>|\n    <link rel="shortcut icon" href="favicon.png">\n|</head>'
+        )
+
+    def test_v_ibrace(self):
+        self.eq('{\na\n|b\nc\n}\n', 'v_i{', '{\n|a\nb\nc\n|}\n')
+        self.eq('{\na\n|b\nc\n}\n', 'v_i}', '{\n|a\nb\nc\n|}\n')
+        self.eq('{xx\na\n|b\nc\nxx}\n', 'v_i}', '{|xx\na\nb\nc\nxx|}\n')

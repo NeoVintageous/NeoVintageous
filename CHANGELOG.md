@@ -22,7 +22,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#402](https://github.com/NeoVintageous/NeoVintageous/issues/402): `>G` should not include line above cursor
 * Fixed [#401](https://github.com/NeoVintageous/NeoVintageous/issues/401): `gcG` should not include line above cursor
 * Fixed [#400](https://github.com/NeoVintageous/NeoVintageous/issues/400): `@@` no longer works (regression)
-* Fixed [#399](https://github.com/NeoVintageous/NeoVintageous/issues/399): VISUAL BLOCK indent (`>`) should put cursor on first non blank
+* Fixed [#399](https://github.com/NeoVintageous/NeoVintageous/issues/399): `>` VISUAL BLOCK indent should put cursor on first non blank
 * Fixed [#398](https://github.com/NeoVintageous/NeoVintageous/issues/398): `gUU` should put cursor on first non blank
 * Fixed [#397](https://github.com/NeoVintageous/NeoVintageous/issues/397): `v_g~` should put cursor at start of selection
 * Fixed [#394](https://github.com/NeoVintageous/NeoVintageous/issues/394): `V` at EOF causes error bell
@@ -37,7 +37,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#292](https://github.com/NeoVintageous/NeoVintageous/issues/292): Visual mode block insert and append partially working
 * Fixed [#358](https://github.com/NeoVintageous/NeoVintageous/issues/358): `Y` should copy all complete lines touched by the VISUAL selection
 * Fixed [#392](https://github.com/NeoVintageous/NeoVintageous/issues/392): `V_gg` start and end cursor is backwards
-* Fixed [#224](https://github.com/NeoVintageous/NeoVintageous/issues/224): Pasting text ending with newline pastes to wrong line
+* Fixed [#224](https://github.com/NeoVintageous/NeoVintageous/issues/224): `P` Pasting text ending with newline pastes to wrong line
 * Fixed [#2](https://github.com/NeoVintageous/NeoVintageous/issues/2): `YP` not working correctly
 * Fixed [#391](https://github.com/NeoVintageous/NeoVintageous/issues/391): `c{motion}` should fill the numbered registers
 * Fixed [#390](https://github.com/NeoVintageous/NeoVintageous/issues/390): `cc` should fill the numbered registers

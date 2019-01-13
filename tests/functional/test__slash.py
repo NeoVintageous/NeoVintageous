@@ -43,11 +43,11 @@ class Test_slash(unittest.FunctionalTestCase):
         self.assertSearch('x|abc|x')
         self.eq('|foo\nabc\nbar\nabc\nmoo\nabc\nend', '/abc', 'N_|foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eqr('foo\nabc\nbar\nabc\nmoo\na|bc\nend', '/abc', 'N_foo\n|abc\nbar\nabc\nmoo\na|bc\nend')
+        self.eq('foo\nabc\nbar\nabc\nmoo\na|bc\nend', '/abc', 'r_N_foo\n|abc\nbar\nabc\nmoo\na|bc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eqr('foo\nabc\nbar\nabc\nmoo\n|abc\nend', '/abc', 'N_foo\n|abc\nbar\nabc\nmoo\n|abc\nend')
+        self.eq('foo\nabc\nbar\nabc\nmoo\n|abc\nend', '/abc', 'r_N_foo\n|abc\nbar\nabc\nmoo\n|abc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eqr('foo\nabc\nbar\nabc\nmoo\nabc\n|end', '/abc', 'N_foo\n|abc\nbar\nabc\nmoo\nabc\n|end')
+        self.eq('foo\nabc\nbar\nabc\nmoo\nabc\n|end', '/abc', 'r_N_foo\n|abc\nbar\nabc\nmoo\nabc\n|end')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
 
     def test_v_slash(self):

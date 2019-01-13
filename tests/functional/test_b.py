@@ -21,11 +21,11 @@ from NeoVintageous.tests import unittest
 class Test_b(unittest.FunctionalTestCase):
 
     def test_b(self):
-        self.eqr('ab|c', 'b', 'N_|ab|c')
-        self.eqr('abc\n|', 'b', 'N_|abc\n|')
-        self.eqr('one two thr|ee', 'b', 'N_one two |thr|ee')
-        self.eqr('one two |three', 'b', 'N_one |two |three')
-        self.eqr('one two three fo|ur', '3b', 'N_one |two three fo|ur')
+        self.eq('ab|c', 'b', 'r_N_|ab|c')
+        self.eq('abc\n|', 'b', 'r_N_|abc\n|')
+        self.eq('one two thr|ee', 'b', 'r_N_one two |thr|ee')
+        self.eq('one two |three', 'b', 'r_N_one |two |three')
+        self.eq('one two three fo|ur', '3b', 'r_N_one |two three fo|ur')
 
     def test_n_b(self):
         self.eq('ab|c', 'n_b', '|abc')
@@ -52,5 +52,5 @@ class Test_b(unittest.FunctionalTestCase):
         self.eq('x\n|one\ntwo\n|y\n', 'l_b')
 
     def test_vblock_b(self):
-        self.eqr('one t|w|o\none t|w|o', 'b_b', 'one |tw|o\none |tw|o')
-        self.eqr('one two t|hr|ee\none two t|hr|ee', 'b_2b', 'one |two th|ree\none |two th|ree')
+        self.eq('one t|w|o\none t|w|o', 'b_b', 'r_one |tw|o\none |tw|o')
+        self.eq('one two t|hr|ee\none two t|hr|ee', 'b_2b', 'r_one |two th|ree\none |two th|ree')

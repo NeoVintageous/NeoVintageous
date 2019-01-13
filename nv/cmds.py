@@ -290,17 +290,17 @@ class _nv_feed_key(ViWindowCommandBase):
         #   check_user_mappings (bool):
         state = self.state
 
+        mode = state.mode
+
+        _log.debug('mode: %s', mode)
+
         # If the user has made selections with the mouse, we may be in an
         # inconsistent state. Try to remedy that.
-        if (state.view.has_non_empty_selection_region() and
-            state.mode not in (VISUAL,
-                               VISUAL_LINE,
-                               VISUAL_BLOCK,
-                               SELECT)):
-                init_state(state.view)
+        if (state.view.has_non_empty_selection_region() and mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT)):
+            init_state(state.view)
 
         if key.lower() == '<esc>':
-            self.window.run_command('_enter_normal_mode', {'mode': state.mode})
+            self.window.run_command('_enter_normal_mode', {'mode': mode})
             state.reset_command_data()
 
             return

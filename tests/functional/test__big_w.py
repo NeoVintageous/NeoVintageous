@@ -28,4 +28,4 @@ class Test_W(unittest.FunctionalTestCase):
     def test_v_w(self):
         self.eq('one |t=- three', 'v_W', 'one |t=- t|hree')
         self.eq('|one_ two$ three', 'v_2W', '|one_ two$ t|hree')
-        self.eqr('r_|on|e_ two$ three', 'v_3W', '|on|e_ two$ three')
+        self.eq('r_|on|e_ two$ three', 'v_3W', 'r_|on|e_ two$ three')

@@ -49,10 +49,10 @@ class Test_V(unittest.FunctionalTestCase):
     def test_v(self):
         self.eq('x\nfi|zz bu|zz\nx', 'v_V', 'l_x\n|fizz buzz\n|x')
         self.eq('x\nfi|zz buzz\n|x', 'v_V', 'l_x\n|fizz buzz\n|x')
-        self.eqr('r_x\nfi|zz bu|zz\nx', 'v_V', 'l_x\n|fizz buzz\n|x')
-        self.eqr('r_x\nfi|zz buzz\n|x', 'v_V', 'l_x\n|fizz buzz\n|x')
+        self.eq('r_x\nfi|zz bu|zz\nx', 'v_V', 'r_l_x\n|fizz buzz\n|x')
+        self.eq('r_x\nfi|zz buzz\n|x', 'v_V', 'r_l_x\n|fizz buzz\n|x')
         self.eq('x\nfi|zz\nbu|zz\nx', 'v_V', 'l_x\n|fizz\nbuzz\n|x')
-        self.eqr('r_x\nfi|zz\nbu|zz\nx', 'v_V', 'l_x\n|fizz\nbuzz\n|x')
+        self.eq('r_x\nfi|zz\nbu|zz\nx', 'v_V', 'r_l_x\n|fizz\nbuzz\n|x')
 
     @unittest.mock_bell()
     def test_V_bell_on_empty_content(self):

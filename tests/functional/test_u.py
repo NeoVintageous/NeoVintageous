@@ -21,4 +21,4 @@ from NeoVintageous.tests import unittest
 class Test_u(unittest.FunctionalTestCase):
 
     def test_v_u(self):
-        self.eq('F|IZZ B|UZZ', 'v_u__v__', 'n_F|izz bUZZ')
+        self.eq('F|IZZ B|UZZ', 'v_u', 'n_F|izz bUZZ')

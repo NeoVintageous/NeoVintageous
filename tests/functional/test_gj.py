@@ -23,8 +23,12 @@ class Test_gj(unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.settings().set('word_wrap', True)
-        # A wrap width of 6 means the buffer "1234567..." will visually look
-        # like two lines, where every 6th character is on a new visual line:
+        # Note: A wrap width of 6 means a buffer like:
+        #
+        #   1234567...
+        #
+        # will visually look like two lines, where every
+        # 6th character is on a new visual line:
         #
         #   12345
         #   67...
@@ -32,21 +36,12 @@ class Test_gj(unittest.FunctionalTestCase):
         self.settings().set('wrap_width', 6)
 
     def test_gj(self):
+        self.eq('1|23\n4x6\n', 'n_gj', '123\n4|x6\n')
+        self.eq('1|23456x89\n', 'n_gj', '123456|x89\n')
+
+    def test_N_gj(self):
         self.eq('1|23\n4x6\n', 'gj', '123\n4|x6\n')
         self.eq('1|23456x89\n', 'gj', '123456|x89\n')
-        self.eq('|aaa\nbbb', 'gJ', 'aaa|bbb')
-        self.eq('|aaa\nbbb', '1gJ', 'aaa|bbb')
-        self.eq('|aaa\nbbb', '2gJ', 'aaa|bbb')
-        self.eq('|aaa\nbbb', '9gJ', 'aaa|bbb')
-        self.eq('|aaa\nbbb\nccc', 'gJ', 'aaa|bbb\nccc')
-        self.eq('|aaa\nbbb\nccc', '1gJ', 'aaa|bbb\nccc')
-        self.eq('|aaa\nbbb\nccc', '2gJ', 'aaa|bbb\nccc')
-        self.eq('|aaa\nbbb\nccc', '3gJ', 'aaa|bbbccc'),  # TODO Fix: cursor position is incorrect
-        self.eq('|aaa\nbbb\nccc', '9gJ', 'aaa|bbbccc'),  # TODO Fix: cursor position is incorrect
-        self.eq('|aaa\n    bbb', 'gJ', 'aaa|    bbb')
-        self.eq('|aaa\n    bbb', '1gJ', 'aaa|    bbb')
-        self.eq('|aaa\n    bbb', '2gJ', 'aaa|    bbb')
-        self.eq('|aaa\n    bbb', '9gJ', 'aaa|    bbb')
 
     def test_v_gj(self):
         self.eq('1|23\n456\n', 'v_gj', '1|23\n456|\n')
