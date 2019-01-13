@@ -336,7 +336,7 @@ class ViewTestCase(unittest.TestCase):
 
         self.assertEqual(self.state.registers[name], expected, msg or 'register = "' + name)
         if expected is not None:
-            # FIXME
+            # FIXME digit registers linewise state is not implemented properly yet
             if not name.isdigit():
                 self.assertEqual(registers._linewise[name], linewise, msg or 'linewise register = "' + name)
 
@@ -678,6 +678,9 @@ _SEQ2CMD = {
 
     '$':            {'command': '_vi_dollar', 'args': {'mode': 'mode_normal'}},  # noqa: E241
     '%':            {'command': '_vi_percent', 'args': {'percent': None, 'mode': 'mode_normal'}},  # noqa: E241
+    '(':            {'command': '_vi_left_paren'},  # noqa: E241
+    ')':            {'command': '_vi_right_paren'},  # noqa: E241
+    '/abc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
@@ -689,6 +692,7 @@ _SEQ2CMD = {
     '>>':           {'command': '_vi_greater_than_greater_than'},  # noqa: E241
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     '>ip':          {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': 'mode_internal_normal', 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    '?abc':         {'command': '_vi_question_mark_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '[ ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_up'}},  # noqa: E241
     '[(':           {'command': '_vi_left_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': '('}},  # noqa: E241,E501
     '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
@@ -697,11 +701,14 @@ _SEQ2CMD = {
     '])':           {'command': '_vi_right_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': ')'}},  # noqa: E241,E501
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket_target', 'args': {'mode': 'mode_normal', 'target': '}'}},  # noqa: E241,E501
+    '^':            {'command': '_vi_hat'},  # noqa: E241
     'a"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': True}},  # noqa: E241,E501
     'a':            {'command': '_vi_a'},  # noqa: E241
     'A':            {'command': '_vi_big_a'},  # noqa: E241
     'a(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': True}},  # noqa: E241,E501
     'a)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': True}},  # noqa: E241,E501
+    'a<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': True}},  # noqa: E241,E501
+    'a>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': True}},  # noqa: E241,E501
     'a[':           {'command': '_vi_select_text_object', 'args': {'text_object': '[', 'inclusive': True}},  # noqa: E241,E501
     'a\'':          {'command': '_vi_select_text_object', 'args': {'text_object': '\'', 'inclusive': True}},  # noqa: E241,E501
     'a]':           {'command': '_vi_select_text_object', 'args': {'text_object': ']', 'inclusive': True}},  # noqa: E241,E501
@@ -715,8 +722,6 @@ _SEQ2CMD = {
     'aw':           {'command': '_vi_select_text_object', 'args': {'text_object': 'w', 'inclusive': True}},  # noqa: E241,E501
     'a{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': True}},  # noqa: E241,E501
     'a}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': True}},  # noqa: E241,E501
-    'a<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': True}},  # noqa: E241,E501
-    'a>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': True}},  # noqa: E241,E501
     'b':            {'command': '_vi_b'},  # noqa: E241
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
@@ -857,9 +862,12 @@ _SEQ2CMD = {
     'g~~':          {'command': '_vi_g_tilde_g_tilde'},  # noqa: E241
     'h':            {'command': '_vi_h', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
     'i"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': False}},  # noqa: E241,E501
+    'i':            {'command': '_enter_insert_mode'},  # noqa: E241
     'I':            {'command': '_vi_big_i'},  # noqa: E241
     'i(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': False}},  # noqa: E241,E501
     'i)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': False}},  # noqa: E241,E501
+    'i<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': False}},  # noqa: E241,E501
+    'i>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': False}},  # noqa: E241,E501
     'i[':           {'command': '_vi_select_text_object', 'args': {'text_object': '[', 'inclusive': False}},  # noqa: E241,E501
     'i\'':          {'command': '_vi_select_text_object', 'args': {'text_object': '\'', 'inclusive': False}},  # noqa: E241,E501
     'i]':           {'command': '_vi_select_text_object', 'args': {'text_object': ']', 'inclusive': False}},  # noqa: E241,E501
@@ -873,8 +881,6 @@ _SEQ2CMD = {
     'iW':           {'command': '_vi_select_text_object', 'args': {'text_object': 'W', 'inclusive': False}},  # noqa: E241,E501
     'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
-    'i<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': False}},  # noqa: E241,E501
-    'i>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
     'l':            {'command': '_vi_l', 'args': {'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
@@ -896,7 +902,10 @@ _SEQ2CMD = {
     'y$':           {'command': '_vi_y', 'args': {'register': '"', 'motion': {'is_jump': True, 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'y':            {'command': '_vi_y', 'args': {'register': '"'}},  # noqa: E241
     'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
-    'yiw':          {'command': '_vi_y', 'args': {'register': '"', 'motion': {'motion_args': {'inclusive': False, 'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'yi(':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'inclusive': False, 'text_object': '(', 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'yi)':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'inclusive': False, 'text_object': ')', 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'yib':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'inclusive': False, 'text_object': 'b', 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'yiw':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'inclusive': False, 'text_object': 'w', 'mode': 'mode_internal_normal', 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'yse"':         {'command': '_nv_surround_ys', 'args': {'surround_with': '"',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
     'yse(':         {'command': '_nv_surround_ys', 'args': {'surround_with': '(',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501
     'yse)':         {'command': '_nv_surround_ys', 'args': {'surround_with': ')',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}}}},  # noqa: E241,E501

@@ -34,6 +34,19 @@ class Test_gj(unittest.FunctionalTestCase):
     def test_gj(self):
         self.eq('1|23\n4x6\n', 'gj', '123\n4|x6\n')
         self.eq('1|23456x89\n', 'gj', '123456|x89\n')
+        self.eq('|aaa\nbbb', 'gJ', 'aaa|bbb')
+        self.eq('|aaa\nbbb', '1gJ', 'aaa|bbb')
+        self.eq('|aaa\nbbb', '2gJ', 'aaa|bbb')
+        self.eq('|aaa\nbbb', '9gJ', 'aaa|bbb')
+        self.eq('|aaa\nbbb\nccc', 'gJ', 'aaa|bbb\nccc')
+        self.eq('|aaa\nbbb\nccc', '1gJ', 'aaa|bbb\nccc')
+        self.eq('|aaa\nbbb\nccc', '2gJ', 'aaa|bbb\nccc')
+        self.eq('|aaa\nbbb\nccc', '3gJ', 'aaa|bbbccc'),  # TODO Fix: cursor position is incorrect
+        self.eq('|aaa\nbbb\nccc', '9gJ', 'aaa|bbbccc'),  # TODO Fix: cursor position is incorrect
+        self.eq('|aaa\n    bbb', 'gJ', 'aaa|    bbb')
+        self.eq('|aaa\n    bbb', '1gJ', 'aaa|    bbb')
+        self.eq('|aaa\n    bbb', '2gJ', 'aaa|    bbb')
+        self.eq('|aaa\n    bbb', '9gJ', 'aaa|    bbb')
 
     def test_v_gj(self):
         self.eq('1|23\n456\n', 'v_gj', '1|23\n456|\n')

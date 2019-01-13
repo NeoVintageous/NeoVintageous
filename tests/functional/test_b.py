@@ -21,11 +21,11 @@ from NeoVintageous.tests import unittest
 class Test_b(unittest.FunctionalTestCase):
 
     def test_b(self):
-        self.eqr('ab|c', 'b', '|abc')
-        self.eqr('abc\n|', 'b', '|abc\n')
-        self.eqr('one two thr|ee', 'b', 'one two |three')
-        self.eqr('one two |three', 'b', 'one |two three')
-        self.eqr('one two three fo|ur', '3b', 'one |two three four')
+        self.eqr('ab|c', 'b', 'N_|ab|c')
+        self.eqr('abc\n|', 'b', 'N_|abc\n|')
+        self.eqr('one two thr|ee', 'b', 'N_one two |thr|ee')
+        self.eqr('one two |three', 'b', 'N_one |two |three')
+        self.eqr('one two three fo|ur', '3b', 'N_one |two three fo|ur')
 
     def test_n_b(self):
         self.eq('ab|c', 'n_b', '|abc')
