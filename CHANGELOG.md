@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.7.5 - Unreleased
+
+* Fixed [#405](https://github.com/NeoVintageous/NeoVintageous/issues/405): `v_J` should enter NORMAL mode
+
 ## 1.7.4 - 2019-01-10
 
 * Fixed [#402](https://github.com/NeoVintageous/NeoVintageous/issues/402): `>G` should not include line above cursor

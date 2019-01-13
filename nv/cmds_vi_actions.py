@@ -2060,6 +2060,8 @@ class _vi_big_j(ViTextCommandBase):
         sels.clear()
         sels.add(Region(end_pos))
 
+        self.enter_normal_mode(mode=mode)
+
 
 class _vi_gv(IrreversibleTextCommand):
 
