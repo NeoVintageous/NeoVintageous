@@ -554,10 +554,25 @@ class State(object):
         # type: () -> None
         view = active_window().active_view()
         if view:
-            # Make sure we show the current caret (last caret) on the screen,
-            # but don't show its surroundings.
-            # TODO Maybe some commands should show their surroundings too?
-            view.show(view.sel()[-1], False)
+            # Show the *last* cursor on screen. There is currently no way to
+            # identify the "active" cursor of a multiple cursor selection.
+            sel = view.sel()[-1]
+
+            target_pt = sel.b
+
+            # In VISUAL mode we need to make sure that any newline at the end of
+            # the selection is NOT included in the target, because otherwise an
+            # extra line after the target line will also be scrolled into view.
+            if is_visual_mode(self.mode):
+                if sel.b > sel.a:
+                    if view.substr(sel.b - 1) == '\n':
+                        target_pt = max(0, target_pt - 1)
+                        # Use the start point of the target line to avoid
+                        # horizontal scrolling. For example, this can happen in
+                        # VISUAL LINE mode when the EOL is off-screen.
+                        target_pt = max(0, view.line(target_pt).a)
+
+            view.show(target_pt, False)
 
     def reset(self):
         # type: () -> None

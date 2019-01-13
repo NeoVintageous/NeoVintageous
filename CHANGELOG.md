@@ -2,6 +2,11 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.8.0 - Unreleased
+
+* Fixed [#412](https://github.com/NeoVintageous/NeoVintageous/issues/412): `j` and `k` VISUAL in mode causes window to scroll two lines when next line is empty (UX)
+* Fixed [#411](https://github.com/NeoVintageous/NeoVintageous/issues/411): `j` and `k` in VISUAL mode causes a jump to other end of visual selection (UX)
+
 ## 1.7.5 - 2019-01-17
 
 * Fixed [#406](https://github.com/NeoVintageous/NeoVintageous/issues/406): `V_d` should put cursor on first non blank
