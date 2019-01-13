@@ -31,6 +31,7 @@ from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
+from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 
 
@@ -515,6 +516,47 @@ def find_paragraph_text_object(view, s, inclusive=True, count=1):
             begin = b1
 
     return Region(begin, end)
+
+
+def find_sentences_forward(view, start_pt, count=1):
+    if isinstance(start_pt, Region):
+        start_pt = start_pt.b
+
+    pt = None
+    for i in range(count):
+        match = view.find(
+            '('
+            '[\\.\\?\\!][\\)\\]"\']*[\\s\\n]+|'
+            '[^\n]\n(?=\n)|\n\n+|'
+            '^\n(?=[^\n])'
+            ')', start_pt)
+
+        # We need to check if something was *actually* found, because find()
+        # returns Region(-1) when nothing is found, but that evaluates to true
+        # and has a size zero region like a valid region e.g. Region(3).
+        if match == Region(-1):
+            break
+
+        pt = match.b
+        start_pt = match.b
+
+    if pt is not None:
+        return Region(next_non_blank(view, pt))
+
+
+def find_sentences_backward(view, start_pt, count=1):
+    if isinstance(start_pt, Region):
+        start_pt = start_pt.a
+
+    pt = utils.previous_non_white_space_char(view, start_pt, white_space='\n \t')
+    sen = Region(pt)
+    while True:
+        sen = view.expand_by_class(sen, CLASS_LINE_END | CLASS_PUNCTUATION_END)
+        if sen.a <= 0 or view.substr(sen.begin() - 1) in ('.', '\n', '?', '!'):
+            if view.substr(sen.begin() - 1) == '.' and not view.substr(sen.begin()) == ' ':
+                continue
+
+            return sen
 
 
 def find_inner_paragraph(view, initial_loc):

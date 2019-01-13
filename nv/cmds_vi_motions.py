@@ -18,9 +18,6 @@
 from itertools import chain
 
 from sublime import CLASS_EMPTY_LINE
-from sublime import CLASS_LINE_END
-from sublime import CLASS_PUNCTUATION_END
-from sublime import CLASS_PUNCTUATION_START
 from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
@@ -48,6 +45,8 @@ from NeoVintageous.nv.vi.search import reverse_search_by_pt
 from NeoVintageous.nv.vi.text_objects import find_containing_tag
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
+from NeoVintageous.nv.vi.text_objects import find_sentences_backward
+from NeoVintageous.nv.vi.text_objects import find_sentences_forward
 from NeoVintageous.nv.vi.text_objects import get_closest_tag
 from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vi.text_objects import word_end_reverse
@@ -1988,31 +1987,19 @@ class _vi_g_big_e(ViMotionCommand):
 
 
 class _vi_left_paren(ViMotionCommand):
-    def find_previous_sentence_end(self, r):
-        sen = r
-        pt = utils.previous_non_white_space_char(self.view, sen.a, white_space='\n \t')
-        sen = Region(pt, pt)
-        while True:
-            sen = self.view.expand_by_class(sen, CLASS_LINE_END | CLASS_PUNCTUATION_END)
-            if sen.a <= 0 or self.view.substr(sen.begin() - 1) in ('.', '\n', '?', '!'):
-                if self.view.substr(sen.begin() - 1) == '.' and not self.view.substr(sen.begin()) == ' ':
-                    continue
-                return sen
 
     def run(self, mode=None, count=1):
-
         def f(view, s):
-            # TODO: must skip empty paragraphs.
-            sen = self.find_previous_sentence_end(s)
+            previous_sentence = find_sentences_backward(self.view, s, count)
+            if previous_sentence is None:
+                return s
 
             if mode == NORMAL:
-                return Region(sen.a, sen.a)
-
+                return Region(previous_sentence.a)
             elif mode == VISUAL:
-                return Region(s.a + 1, sen.a + 1)
-
+                return Region(s.a + 1, previous_sentence.a + 1)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, sen.a + 1)
+                return Region(s.a, previous_sentence.a + 1)
 
             return s
 
@@ -2020,39 +2007,19 @@ class _vi_left_paren(ViMotionCommand):
 
 
 class _vi_right_paren(ViMotionCommand):
-    def find_next_sentence_end(self, r):
-        sen = r
-        non_ws = next_non_white_space_char(self.view, sen.b, '\t \n')
-        sen = Region(non_ws, non_ws)
-        while True:
-            sen = self.view.expand_by_class(sen, CLASS_PUNCTUATION_START | CLASS_LINE_END)
-            if (sen.b == self.view.size() or
-                (self.view.substr(Region(sen.b, sen.b + 2)).endswith(('. ', '.\t'))) or
-                (self.view.substr(Region(sen.b, sen.b + 1)).endswith(('?', '!'))) or
-                (self.view.substr(self.view.line(sen.b)).strip() == '')):  # FIXME # noqa: E129
-                    if self.view.substr(sen.b) in '.?!':
-                        return Region(sen.a, sen.b + 1)
-                    else:
-                        if self.view.line(sen.b).empty():
-                            return Region(sen.a, sen.b)
-                        else:
-                            return self.view.full_line(sen.b)
 
     def run(self, mode=None, count=1):
         def f(view, s):
-            # TODO: must skip empty paragraphs.
-            sen = self.find_next_sentence_end(s)
+            next_sentence = find_sentences_forward(self.view, s, count)
+            if next_sentence is None:
+                return s
 
             if mode == NORMAL:
-                target = min(sen.b, view.size() - 1)
-                return Region(target, target)
-
+                return Region(min(next_sentence.b, view.size() - 1))
             elif mode == VISUAL:
-                # TODO: Must encompass new line char too?
-                return Region(s.a, sen.b)
-
+                return Region(s.a, min(next_sentence.b + 1, view.size() - 1))
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, sen.b)
+                return Region(s.a, next_sentence.b)
 
             return s
 
