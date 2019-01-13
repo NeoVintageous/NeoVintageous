@@ -208,31 +208,35 @@ class ViewTestCase(unittest.TestCase):
     def resetRegisters(self):
         registers._reset_data()
 
-    def _assertViewSelectionContent(self, expected, msg):
+    def _assertViewContent(self, sels, expected, msg=None):
         content = list(self.view.substr(Region(0, self.view.size())))
         counter = 0
-        for sel in self.view.sel():
+        for sel in sels:
             content.insert(sel.begin() + counter, '|')
             counter += 1
             if sel.end() != sel.begin():
-                # TODO should be assert that it looks like
-                # we're now in normal mode, otherwise visual mode?
                 content.insert(sel.end() + counter, '|')
                 counter += 1
 
         self.assertEquals(''.join(content), expected, msg)
 
+    def _assertViewRegionsContent(self, key, expected, msg=None):
+        self._assertViewContent(self.view.get_regions(key), expected, msg)
+
+    def _assertViewSelectionContent(self, expected, msg):
+        self._assertViewContent(self.view.sel(), expected, msg)
+
     def _assertView(self, expected, mode, msg):
-        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL):
-            self._assertViewSelectionContent(expected, msg)
-        else:
-            content = list(self.view.substr(Region(0, self.view.size())))
-            for i, sel in enumerate(self.view.sel()):
-                content.insert(sel.begin() + i, '|')
-
-            self.assertEquals(''.join(content), expected, msg)
-
+        self._assertViewSelectionContent(expected, msg)
         self._assertMode(mode)
+
+    def assertSearch(self, expected: str, msg=None):
+        self._assertViewRegionsContent('vi_search', expected, msg)
+        self._assertMode(NORMAL)
+
+    def assertSearchCurrent(self, expected: str, msg=None):
+        self._assertViewRegionsContent('vi_search_current', expected, msg)
+        self._assertMode(NORMAL)
 
     def assertNormal(self, expected, msg=None):
         self._assertView(expected, NORMAL, msg)

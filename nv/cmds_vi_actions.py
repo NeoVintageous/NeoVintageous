@@ -898,7 +898,9 @@ class _vi_y(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         def f(view, s):
-            return Region(s.end(), s.begin())
+            return Region(next_non_blank(self.view, s.begin()))
+
+        linewise = (mode == VISUAL_LINE)
 
         if mode == INTERNAL_NORMAL:
             if motion is None:
@@ -907,10 +909,17 @@ class _vi_y(ViTextCommandBase):
             self.view.run_command(motion['motion'], motion['motion_args'])
             self.outline_target()
 
+            # Some text object motions should be treated as a linewise
+            # operation, but only if the motion contains a newline.
+            if 'text_object' in motion['motion_args']:
+                if motion['motion_args']['text_object'] in '%()`/?nN{}':
+                    if not linewise:
+                        linewise = 'maybe'
+
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return
 
-        self.state.registers.op_yank(register=register, linewise=(mode == VISUAL_LINE))
+        self.state.registers.op_yank(register=register, linewise=linewise)
         regions_transformer(self.view, f)
         self.enter_normal_mode(mode)
 

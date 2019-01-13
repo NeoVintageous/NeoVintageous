@@ -307,6 +307,12 @@ class Registers:
         if register == _BLACK_HOLE:
             return
 
+        if linewise == 'maybe':
+            linewise = False
+            linewise_if_multiline = True
+        else:
+            linewise_if_multiline = False
+
         selected_text = self._get_selected_text(linewise=linewise)
 
         multiline = False
@@ -314,6 +320,9 @@ class Registers:
             if '\n' in fragment:
                 multiline = True
                 break
+
+        if linewise_if_multiline and multiline:
+            linewise = True
 
         if register and register != _UNNAMED:
             self[register] = selected_text

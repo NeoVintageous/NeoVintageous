@@ -33,6 +33,7 @@ from NeoVintageous.nv.vi.registers import _CLIPBOARD_STAR
 from NeoVintageous.nv.vi.registers import _CLIPBOARD_TILDA
 from NeoVintageous.nv.vi.registers import _CURRENT_FILE_NAME
 from NeoVintageous.nv.vi.registers import _EXPRESSION
+from NeoVintageous.nv.vi.registers import _is_register_linewise
 from NeoVintageous.nv.vi.registers import _LAST_EXECUTED_COMMAND
 from NeoVintageous.nv.vi.registers import _LAST_INSERTED_TEXT
 from NeoVintageous.nv.vi.registers import _LAST_SEARCH_PATTERN
@@ -504,6 +505,10 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(self.registers['-'], None)
         self.assertEqual(self.registers['0'], ['zz bu'])
         self.assertEqual(self.registers['1'], None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('-'))
+        self.assertFalse(_is_register_linewise('0'))
+        self.assertFalse(_is_register_linewise('1'))
 
     def test_op_yank_multiline(self):
         self.visual('fi|zz\nbu|zz')
@@ -512,6 +517,10 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(self.registers['-'], None)
         self.assertEqual(self.registers['0'], ['zz\nbu'])
         self.assertEqual(self.registers['1'], None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('-'))
+        self.assertFalse(_is_register_linewise('0'))
+        self.assertFalse(_is_register_linewise('1'))
 
     def test_op_yank_linewise(self):
         self.visual('fi|zz bu|zz')
@@ -520,6 +529,28 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(self.registers['-'], None)
         self.assertEqual(self.registers['0'], ['zz bu\n'])
         self.assertEqual(self.registers['1'], None)
+
+    def test_op_yank_linewise_maybe_when_no_newline(self):
+        self.visual('fi|zz bu|zz')
+        self.registers.op_yank(linewise='maybe')
+        self.assertEqual(self.registers['"'], ['zz bu'])
+        self.assertEqual(self.registers['-'], None)
+        self.assertEqual(self.registers['0'], ['zz bu'])
+        self.assertEqual(self.registers['1'], None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('-'))
+        self.assertFalse(_is_register_linewise('0'))
+        self.assertFalse(_is_register_linewise('1'))
+
+    def test_op_yank_linewise_maybe_when_newline(self):
+        self.visual('fi|zz bu\n|zz')
+        self.registers.op_yank(linewise='maybe')
+        self.assertEqual(self.registers['"'], ['zz bu\n'])
+        self.assertEqual(self.registers['-'], None)
+        self.assertEqual(self.registers['0'], ['zz bu\n'])
+        self.assertEqual(self.registers['1'], None)
+        self.assertTrue(_is_register_linewise('"'))
+        self.assertTrue(_is_register_linewise('0'))
 
     def test_op_yank_into_alpha_register(self):
         self.visual('fi|zzxbu|zz')

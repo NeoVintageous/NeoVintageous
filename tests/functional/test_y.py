@@ -52,6 +52,24 @@ class Test_y(unittest.FunctionalTestCase):
         self.assertRegisterIsNone('1')
         self.assertRegisterIsNone('-')
 
+    def test_yi__inner_block(self):
+        self.eq('(wo|rd)', 'yi(', '(|word)')
+        self.eq('(wo|rd)', 'yi)', '(|word)')
+        self.eq('(wo|rd)', 'yib', '(|word)')
+        self.assertRegister('"word')
+        self.assertRegister('0word')
+        self.assertRegisterIsNone('1')
+        self.assertRegisterIsNone('-')
+
+    def test_yi__inner_block_linewise(self):
+        self.eq('(\nwo|rd\n)', 'yi(', '(\n|word\n)')
+        self.eq('(\nwo|rd\n)', 'yi)', '(\n|word\n)')
+        self.eq('(\nwo|rd\n)', 'yib', '(\n|word\n)')
+        self.assertRegister('"word\n')
+        self.assertRegister('0word\n')
+        self.assertRegisterIsNone('1')
+        self.assertRegisterIsNone('-')
+
     def test_ydollar(self):
         self.eq('x a|b x', 'y$', 'x a|b x')
         self.assertRegister('"b x')

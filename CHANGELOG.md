@@ -4,6 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.7.5 - Unreleased
 
+* Fixed [#407](https://github.com/NeoVintageous/NeoVintageous/issues/407): `yi{motion}` should put cursor on first non blank at start of motion
+* Fixed [#403](https://github.com/NeoVintageous/NeoVintageous/issues/403): `yi(` and other block-like motions should create linewise registers
 * Fixed [#409](https://github.com/NeoVintageous/NeoVintageous/issues/409): `ga` doesn't work properly when cursor is on a NEWLINE, or TAB, or at EOF
 * Fixed [#405](https://github.com/NeoVintageous/NeoVintageous/issues/405): `v_J` should enter NORMAL mode
 
