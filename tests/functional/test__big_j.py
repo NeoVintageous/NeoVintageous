@@ -71,3 +71,46 @@ class Test_J(unittest.FunctionalTestCase):
 
     def test_b_J(self):
         self.eq('| |   abc  \n| |  abc\nabc', 'b_J', 'n_    abc  |abc\nabc'),
+
+
+class Test_J_c_syntax(unittest.FunctionalTestCase):
+
+    def feed(self, seq):
+        # Test against a specific syntax, because views that
+        # have no syntax applied have no comment behaviours.
+        self.view.assign_syntax('Packages/C++/C.sublime-syntax')
+        super().feed(seq)
+
+    def test_J_strips_leading_comment_tokens(self):
+        self.eq('|// fizz\n// buzz', 'J', '// fizz| buzz')
+        self.eq('|// fizz\n// buzz\n// fizz\n// buzz\nx', '4J', '// fizz| buzz fizz buzz\nx')
+
+    def test_J_does_not_strip_leading_comment_tokens_that_have_end_tokens(self):
+        self.eq('|/* fizz\n/* buzz\nx */', 'J', '/* fizz| /* buzz\nx */')
+
+    def test_J_leading_comment_tokens_and_any_leading_whitespace(self):
+        self.settings().set('translate_tabs_to_spaces', True)
+        self.eq('|// fizz\n    // buzz', 'J', '// fizz| buzz')
+        self.settings().set('translate_tabs_to_spaces', False)
+        self.eq('|// fizz\n\t\t// buzz', 'J', '// fizz| buzz')
+
+    def test_J_strips_comment_tokens_without_trailing_content(self):
+        self.eq('|// fizz\n//', 'J', '// fizz| ')
+        self.eq('|// fizz\n//\n// buzz\nx', '3J', '// fizz| buzz\nx')  # TODO Fix: cursor position is incorrect
+
+    def test_J_does_not_strip_leading_comment_tokens_if_first_line_does_not_lead_with_a_comment(self):
+        self.eq('|fizz\n// buzz', 'J', 'fizz| // buzz')
+        self.eq('// fi|zz\n// buzz', 'J', '// fizz| buzz')
+        self.eq('    // fi|zz\n// buzz', 'J', '    // fizz| buzz')
+
+
+class Test_J_python_syntax(unittest.FunctionalTestCase):
+
+    def feed(self, seq):
+        # Test against a specific syntax, because views that
+        # have no syntax applied have no comment behaviours.
+        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+        super().feed(seq)
+
+    def test_J_strips_leading_comment_tokens(self):
+        self.eq('|# fizz\n# buzz', 'J', '# fizz| buzz')

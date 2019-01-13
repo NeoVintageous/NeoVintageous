@@ -2060,6 +2060,51 @@ class _vi_big_j(ViTextCommandBase):
         text_to_join = self.view.substr(Region(start, end))
         lines = text_to_join.split('\n')
 
+        def strip_leading_comments(lines):
+            shell_vars = self.view.meta_info("shellVariables", start)
+            comment_start_tokens = {}
+            comment_end_tokens = {}
+            for var in shell_vars:
+                if var['name'].startswith('TM_COMMENT_'):
+                    if 'START' in var['name']:
+                        comment_start_tokens[var['name']] = var['value']
+                    else:
+                        comment_end_tokens[var['name']] = var['value']
+
+            # Strip any leading whitespace.
+            first_line = self.view.substr(self.view.line(start)).lstrip(' \t')
+
+            stripped = []
+            for i, line in enumerate(lines):
+                for name, value in comment_start_tokens.items():
+                    # The first line is ignored.
+                    if i < 1:
+                        continue
+
+                    # Comment definitions that have start AND end tokens are ignored.
+                    end_token = comment_end_tokens.get(name.replace('_START', '_END'))
+                    if end_token:
+                        continue
+
+                    # Lines are ignored if the first line is not a comment.
+                    if not first_line.startswith(value):
+                        continue
+
+                    # Strip leading and trailing whitespace.
+                    line_lstrip = line.lstrip(' \t')
+                    line_rstrip = line.rstrip(' \t')
+                    value_rstrip = value.rstrip(' \t')
+
+                    is_comment = line_lstrip.startswith(value) or (line_rstrip == value_rstrip)
+                    if is_comment:
+                        line = line_lstrip[len(value):]
+
+                stripped.append(line)
+
+            return stripped
+
+        lines = strip_leading_comments(lines)
+
         if not dont_insert_or_remove_spaces:  # J
             joined_text = lines[0]
 
