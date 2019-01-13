@@ -1700,10 +1700,10 @@ class _vi_ga(ViWindowCommandBase):
             # Convert a char to a key notation. Uses vim key notation.
             # See https://vimhelp.appspot.com/intro.txt.html#key-notation
             char_notation_map = {
-                "\\0": "Nul",
-                " ": "Space",
-                "\\t": "Tab",
-                "\\n": "NL"
+                '\0': "Nul",
+                ' ': "Space",
+                '\t': "Tab",
+                '\n': "NL"
             }
 
             if char in char_notation_map:
