@@ -1909,23 +1909,19 @@ class _vi_right_paren(ViMotionCommand):
 class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string, mode=None, count=1, extend=False):
         def f(view, s):
-            # FIXME: readjust carets if we searched for '\n'.
             if mode == VISUAL:
                 return Region(s.end(), found.a)
-
             elif mode == INTERNAL_NORMAL:
                 return Region(s.end(), found.a)
-
             elif mode == NORMAL:
                 return Region(found.a, found.a)
-
             elif mode == VISUAL_LINE:
-                # FIXME: Ensure that the very first ? search excludes the current line.
                 return Region(s.end(), view.full_line(found.a).a)
 
             return s
 
-        # This happens when we attempt to repeat the search and there's no search term stored yet.
+        # This happens when we attempt to repeat the search and there's no
+        # search term stored yet.
         if search_string is None:
             return
 
