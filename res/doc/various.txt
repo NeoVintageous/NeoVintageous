@@ -37,23 +37,34 @@ CTRL-L			Clear and redraw the screen.  The redraw may happen
 <
 :as[cii]	or					*ga* *:as* *:ascii*
 ga			Print the ascii value of the character under the
-			cursor in decimal, hexadecimal and octal.  For
-			example, when the cursor is on a 'R':
+			cursor in decimal, hexadecimal and octal.
+			Mnemonic: Get Ascii value.
+			
+			For example, when the cursor is on a 'R':
 				<R>  82,  Hex 52,  Octal 122 ~
 			When the character is a non-standard ASCII character,
 			but printable according to the 'isprint' option, the
-			non-printable version is also given.  When the
-			character is larger than 127, the <M-x> form is also
-			printed.  For example:
+			non-printable version is also given.
+			
+			When the character is larger than 127, the <M-x> form
+			is also printed.  For example:
 				<~A>  <M-^A>  129,  Hex 81,  Octal 201 ~
 				<p>  <|~>  <M-~>  254,  Hex fe,  Octal 376 ~
 			(where <p> is a special character)
+			
 			The <Nul> character in a file is stored internally as
 			<NL>, but it will be shown as:
 				<^@>  0,  Hex 00,  Octal 000 ~
+				
 			If the character has composing characters these are
 			also shown.  The value of 'maxcombine' doesn't matter.
-			Mnemonic: Get ASCII value.
+			
+			If the character can be inserted as a digraph, also
+			output the two characters that can be used to create
+			the character:
+			    <ö> 246, Hex 00f6, Oct 366, Digr o: ~
+			This shows you can type CTRL-K o : to insert ö.
+
 
 							*g8*
 g8			Print the hex values of the bytes used in the
@@ -204,11 +215,12 @@ g8			Print the hex values of the bytes used in the
 			":normal" command without a range.
 
 						  *:sh* *:shell* *E371* *E360*
-:sh[ell]		Removed. |vim-differences| {Nvim}
+:sh[ell]		Removed. |vim-differences|
 
 						  *:terminal* *:te*
-:te[rminal][!] [{cmd}]	Execute {cmd} with 'shell' in a new |terminal-emulator|
-			buffer. Without {cmd}, start an interactive 'shell'.
+:te[rminal][!] [{cmd}]	Run {cmd} in a non-interactive 'shell' in a new
+			|terminal-emulator| buffer. Without {cmd}, start an
+			interactive 'shell'.
 
 			Type |i| to enter |Terminal-mode|, then keys are sent to
 			the job running in the terminal. Type <C-\><C-N> to
@@ -370,7 +382,7 @@ T  *+tag_binary*	binary searching in tags file |tag-binary-search|
 N  *+tag_old_static*	old method for static tags |tag-old-static|
 m  *+tag_any_white*	any white space allowed in tags file |tag-any-white|
 B  *+termguicolors*	24-bit color in xterm-compatible terminals support
-N  *+termresponse*	support for |t_RV| and |v:termresponse|
+N  *+termresponse*	support for t_RV and |v:termresponse|
 N  *+textobjects*	|text-objects| selection
 N  *+timers*		the |timer_start()| function
 N  *+title*		Setting the window 'title' and 'icon'
@@ -381,6 +393,7 @@ N  *+virtualedit*	|'virtualedit'|
 S  *+visual*		Visual mode |Visual-mode| Always enabled since 7.4.200.
 N  *+visualextra*	extra Visual mode commands |blockwise-operators|
 N  *+vreplace*		|gR| and |gr|
+   *+vtp*		on MS-Windows console: support for 'termguicolors'
 N  *+wildignore*	|'wildignore'|
 N  *+wildmenu*		|'wildmenu'|
    *+windows*		more than one window
@@ -505,14 +518,9 @@ m  *+xim*		X input method |xim|
 			    :silent! /^begin
 			    :if v:errmsg != ""
 			    : ... pattern was not found
-<			":silent" will also avoid the hit-enter prompt.  When
-			using this for an external command, this may cause the
-			screen to be messed up.  Use |CTRL-L| to clean it up
-			then.
-			":silent menu ..." defines a menu that will not echo a
-			Command-line command.  The command will still produce
-			messages though.  Use ":silent" in the command itself
-			to avoid that: ":silent menu .... :silent command".
+<			":silent" also skips the hit-enter prompt.
+			Dialogs that prompt for user input (|confirm()|,
+			'swapfile', …) are never silent.
 
 						*:uns* *:unsilent*
 :uns[ilent] {command}	Execute {command} not silently.  Only makes a
