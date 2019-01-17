@@ -41,6 +41,12 @@
     // * stippled_underline
     "neovintageous_search_occ_style": "outline",
 
+    // Specifies for which events the bell (visual blink) will not be rung. It
+    // is a comma separated list of items. For each item that is present, the
+    // bell will be silenced. Currently only the "all" event is supported.
+    // https://vimhelp.org/options.txt.html#%27belloff%27
+    "vintageous_belloff": "",
+
     // Enable ':' and ex commands.
     // {not in Vim}
     "vintageous_enable_cmdline_mode": true,

@@ -41,7 +41,6 @@ from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
-from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
@@ -166,12 +165,12 @@ class _nv_cmdline_feed_key(TextCommand):
         if count == 0:
             _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
-            return ui_bell()
+            return ui_blink()
 
         if abs(_nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX) > count:
             _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -count
 
-            return ui_bell()
+            return ui_blink()
 
         if _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX >= 0:
             _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = 0
@@ -179,7 +178,7 @@ class _nv_cmdline_feed_key(TextCommand):
             if self.view.size() > 1:
                 return self.view.erase(edit, Region(1, self.view.size()))
             else:
-                return ui_bell()
+                return ui_blink()
 
         if self.view.size() > 1:
             self.view.erase(edit, Region(1, self.view.size()))

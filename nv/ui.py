@@ -22,53 +22,45 @@ from sublime import DRAW_NO_OUTLINE
 from sublime import DRAW_SOLID_UNDERLINE
 from sublime import DRAW_SQUIGGLY_UNDERLINE
 from sublime import DRAW_STIPPLED_UNDERLINE
-from sublime import load_settings
 from sublime import set_timeout
 
 from NeoVintageous.nv.vim import status_message
 
 
-def ui_bell():
-    # TODO Implement bell. See :h 'belloff'.
-    # 'belloff' defaults to 'all' in Neovim.
-    # See https://github.com/neovim/neovim/issues/2676.
-
+# TODO Implement bell. See :h 'belloff'. 'belloff' defaults to 'all' in Neovim. See https://github.com/neovim/neovim/issues/2676.  # noqa: E501
+# TODO How to make the bell theme adaptive i.e. work nice in light AND dark color schemes.
+def _ui_bell():
     window = active_window()
 
     view = window.active_view()
     if not view:
         return
 
-    if not view.settings().get('vintageous_wip', False):
+    settings = view.settings()
+
+    if settings.get('vintageous_belloff') == 'all':
         return
 
-    if view.settings().get('vintageous_wip_belloff', 'all') == 'all':
-        return
-
-    # TODO How to make the bell theme adaptive i.e. work nice in light AND dark
-    # color schemes.
     theme = 'Packages/NeoVintageous/res/Bell.tmTheme'
 
     duration = int(0.3 * 1000)
 
-    if view.settings().get('vintageous_wip_bell_all_active_views', True):
+    if settings.get('vintageous_wip_bell_all_active_views'):
         views = []
         for group in range(window.num_groups()):
             view = window.active_view_in_group(group)
             if view:
-                settings = view.settings()
+                settings = settings
                 settings.set('color_scheme', theme)
                 views.append(view)
 
         def remove_bell():
             for view in views:
-                view.settings().erase('color_scheme')
+                settings.erase('color_scheme')
 
         set_timeout(remove_bell, duration)
 
     else:
-        settings = view.settings()
-
         def remove_bell():
             settings.erase('color_scheme')
 
@@ -76,21 +68,24 @@ def ui_bell():
         set_timeout(remove_bell, duration)
 
 
-# TODO [refactor] Rework this to use the ui_bell().
+# TODO [refactor] Rework this to use the _ui_bell().
 # TODO [refactor] Rework this to require a view or settings object.
 def ui_blink(msg=None, times=4, delay=55):
     if msg:
         status_message(msg)
-
-    prefs = load_settings('Preferences.sublime-settings')
-    if prefs.get('vintageous_visualbell') is False:
-        return
 
     view = active_window().active_view()
     if not view:
         return
 
     settings = view.settings()
+
+    if settings.get('vintageous_belloff') == 'all':
+        return
+
+    if settings.get('vintageous_wip'):
+        return _ui_bell()
+
     # Ensure we leave the setting as we found it.
     times = times if (times % 2) == 0 else times + 1
 

@@ -542,9 +542,16 @@ CTRL-[ -> Esc: >
                         boolean (default off)
         Propagate copy actions to the system clipboard.
 
-                                                     *'vintageous_visualbell'*
-'vintageous_visualbell' boolean (default on)
-        Enable visual bell.
+                                                        *'vintageous_belloff'*
+'vintageous_belloff'    string (default "")
+        Specifies for which events the bell (visual blink) will not be rung. It
+        is a comma separated list of items. For each item that is present, the
+        bell will be silenced.
+
+        Currently only the "all" event is supported.
+
+        item        meaning when present    ~
+        all         All events.
 
 ==============================================================================
 

@@ -13,6 +13,9 @@
                 <key>background</key><string>#1b1d1e</string>
                 <key>foreground</key><string>#3e3d32</string>
                 <key>lineHighlight</key><string>#1b1d1e</string>
+                <key>caret</key><string>#1b1d1e</string>
+                <key>selection</key><string>#3e3d32</string>
+                <key>selectionForeground</key><string>#1b1d1e</string>
 
             </dict>
         </dict>
