@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.7.5 - Unreleased
+## 1.7.5 - 2019-01-17
 
 * Fixed [#406](https://github.com/NeoVintageous/NeoVintageous/issues/406): `V_d` should put cursor on first non blank
 * Fixed [#407](https://github.com/NeoVintageous/NeoVintageous/issues/407): `yi{motion}` should put cursor on first non blank at start of motion
