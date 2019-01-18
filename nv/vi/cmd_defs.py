@@ -2343,14 +2343,14 @@ class ViMoveHalfScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
-        self.scroll_into_view = True
+        self.scroll_into_view = False
 
     def translate(self, state):
         return {
             'motion': '_vi_ctrl_d',
             'motion_args': {
                 'mode': state.mode,
-                'count': state.count
+                'count': state.count_default_zero
             }
         }
 
@@ -2367,7 +2367,7 @@ class ViMoveHalfScreenUp(ViMotionDef):
             'motion': '_vi_ctrl_u',
             'motion_args': {
                 'mode': state.mode,
-                'count': state.count
+                'count': state.count_default_zero
             }
         }
 

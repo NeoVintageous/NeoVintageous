@@ -4,12 +4,22 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.8.0 - Unreleased
 
+## Added
+
+* Fixed [#242](https://github.com/NeoVintageous/NeoVintageous/issues/242): `CTRL-d` and `CTRL-u` should keep horizontal position when scrolling
+
 ### Changed
 
 * Removed: Setting `vintageous_visualbell`; use `vintageous_belloff` set to `all` to disable visual bells
 
 ### Fixed
 
+* Fixed [#416](https://github.com/NeoVintageous/NeoVintageous/issues/416): `H` and `L` should move to highest/lowest line without scrolling (UX)
+* Fixed [#417](https://github.com/NeoVintageous/NeoVintageous/issues/417): `CTRL-d` and `CTRL-u` count should be used as the number of lines to scroll
+* Fixed [#362](https://github.com/NeoVintageous/NeoVintageous/issues/362):  `SHIFT+H` `SHIFT+M` `SHIFT+L` in VISUAL LINE mode does not work
+* Fixed [#413](https://github.com/NeoVintageous/NeoVintageous/issues/413): `CTRL-d` and `CTRL-u` should put cursor on first non blank
+* Fixed [#414](https://github.com/NeoVintageous/NeoVintageous/issues/414): `H`, `M`, and `L`, should put cursor on first non blank
+* Fixed [#415](https://github.com/NeoVintageous/NeoVintageous/issues/415): `CTRL-d` and `CTRL-u` VISUAL mode bugs
 * Fixed [#363](https://github.com/NeoVintageous/NeoVintageous/issues/363): Searching for regex characters like `(` and `[` doesn't work
 * Fixed [#420](https://github.com/NeoVintageous/NeoVintageous/issues/420): `:help {subject}` should scroll subject into view
 * Fixed [#410](https://github.com/NeoVintageous/NeoVintageous/issues/410): `J` should strip leading comment tokens from joined lines enhancement

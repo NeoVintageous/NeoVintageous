@@ -1310,88 +1310,150 @@ class _vi_percent(ViMotionCommand):
             return prev_opening_bracket.begin()
 
 
+def highlow_visible_rows(view):
+    visible_region = view.visible_region()
+    highest_visible_row = view.rowcol(visible_region.a)[0]
+    lowest_visible_row = view.rowcol(visible_region.b - 1)[0]
+
+    # To avoid scrolling when we move to the highest visible row, we need to
+    # check if the row is fully visible or only partially visible. If the row is
+    # only partially visible we will move to next one.
+
+    line_height = view.line_height()
+    view_position = view.viewport_position()
+    viewport_extent = view.viewport_extent()
+
+    # The extent y position needs an additional "1.0" to its height. It's not
+    # clear why Sublime needs to add it, but it always adds it.
+
+    highest_position = (highest_visible_row * line_height) + 1.0
+    if highest_position < view_position[1]:
+        highest_visible_row += 1
+
+    lowest_position = ((lowest_visible_row + 1) * line_height) + 1.0
+    if lowest_position > (view_position[1] + viewport_extent[1]):
+        lowest_visible_row -= 1
+
+    return (highest_visible_row, lowest_visible_row)
+
+
+def highest_visible_pt(view):
+    return view.text_point(highlow_visible_rows(view)[0], 0)
+
+
+def lowest_visible_pt(view):
+    return view.text_point(highlow_visible_rows(view)[1], 0)
+
+
 class _vi_big_h(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                non_ws = next_non_white_space_char(view, target)
-                return Region(non_ws, non_ws)
+                return Region(target_pt)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a + 1, target)
+                return Region(s.a, target_pt)
             elif mode == VISUAL:
-                new_target = next_non_white_space_char(view, target)
-                return Region(s.a + 1, new_target)
-            else:
-                return s
+                if s.a < s.b and target_pt < s.a:
+                    return Region(s.a + 1, target_pt)
+                return Region(s.a, target_pt)
+            elif mode == VISUAL_LINE:
+                if s.b > s.a and target_pt <= s.a:
+                    a = self.view.full_line(s.a).b
+                    b = self.view.line(target_pt).a
+                elif s.b > s.a:
+                    a = s.a
+                    b = self.view.full_line(target_pt).b
+                else:
+                    a = s.a
+                    b = self.view.line(target_pt).a
 
-        r = self.view.visible_region()
-        row, _ = self.view.rowcol(r.a)
-        row += count + 1
+                return Region(a, b)
 
-        target = self.view.text_point(row, 0)
+            return s
 
+        target_pt = next_non_blank(self.view, highest_visible_pt(self.view))
         regions_transformer(self.view, f)
-        self.view.show(target)
 
 
 class _vi_big_l(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                non_ws = next_non_white_space_char(view, target)
-                return Region(non_ws, non_ws)
+                return Region(target_pt)
             elif mode == INTERNAL_NORMAL:
-                if s.b >= target:
-                    return Region(s.a + 1, target)
-                return Region(s.a, target)
+                if s.b >= target_pt:
+                    return Region(s.a + 1, target_pt)
+
+                return Region(s.a, target_pt)
             elif mode == VISUAL:
-                if s.b >= target:
-                    new_target = next_non_white_space_char(view, target)
-                    return Region(s.a + 1, new_target)
-                new_target = next_non_white_space_char(view, target)
-                return Region(s.a, new_target + 1)
+                if s.a > s.b and target_pt > s.a:
+                    return Region(s.a - 1, target_pt + 1)
+
+                return Region(s.a, target_pt + 1)
+            elif mode == VISUAL_LINE:
+                if s.a > s.b and target_pt >= s.a:
+                    a = self.view.line(s.a - 1).a
+                    b = self.view.full_line(target_pt).b
+                elif s.a > s.b:
+                    a = self.view.line(target_pt).a
+                    b = s.a
+                else:
+                    a = s.a
+                    b = self.view.full_line(target_pt).b
+
+                return Region(a, b)
             else:
                 return s
 
-        r = self.view.visible_region()
-        row, _ = self.view.rowcol(r.b)
-        row -= count + 1
-
-        # XXX: Subtract 1 so that ST won't attempt to scroll the line into view, which would be quite annoying
-        target = self.view.text_point(row - 1, 0)
-
+        target_pt = next_non_blank(self.view, lowest_visible_pt(self.view))
         regions_transformer(self.view, f)
-        self.view.show(target)
 
 
 class _vi_big_m(ViMotionCommand):
     def run(self, count=None, extend=False, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                non_ws = next_non_white_space_char(view, target)
-                return Region(non_ws, non_ws)
+                return Region(target_pt)
             elif mode == INTERNAL_NORMAL:
-                if s.b >= target:
-                    return Region(s.a + 1, target)
-                return Region(s.a, target)
+                return Region(s.a, target_pt)
+            elif mode == VISUAL_LINE:
+                if s.b > s.a:
+                    if target_pt < s.a:
+                        a = self.view.full_line(s.a).b
+                        b = self.view.line(target_pt).a
+                    else:
+                        a = s.a
+                        b = self.view.full_line(target_pt).b
+                else:
+                    if target_pt >= s.a:
+                        a = self.view.line(s.a - 1).a
+                        b = self.view.full_line(target_pt).b
+                    else:
+                        a = s.a
+                        b = self.view.full_line(target_pt).a
+
+                return Region(a, b)
             elif mode == VISUAL:
-                if s.b >= target:
-                    new_target = next_non_white_space_char(view, target)
-                    return Region(s.a + 1, new_target)
-                new_target = next_non_white_space_char(view, target)
-                return Region(s.a, new_target + 1)
+                a = s.a
+                b = target_pt
+
+                if s.b > s.a and target_pt < s.a:
+                    a += 1
+                elif s.a > s.b and target_pt > s.a:
+                    a -= 1
+                    b += 1
+                elif s.b > s.a:
+                    b += 1
+
+                return Region(a, b)
             else:
                 return s
 
-        r = self.view.visible_region()
-        row_a, _ = self.view.rowcol(r.a)
-        row_b, _ = self.view.rowcol(r.b)
-        row = ((row_a + row_b) / 2)
-
-        target = self.view.text_point(row, 0)
-
+        highest_row, lowest_row = highlow_visible_rows(self.view)
+        half_visible_lines = (lowest_row - highest_row) // 2
+        middle_row = highest_row + half_visible_lines
+        target_pt = next_non_blank(self.view, self.view.text_point(middle_row, 0))
         regions_transformer(self.view, f)
-        self.view.show(target)
 
 
 class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
@@ -1681,79 +1743,170 @@ class _vi_g__(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
+def _get_option_scroll(view):
+    line_height = view.line_height()
+    viewport_extent = view.viewport_extent()
+    line_count = viewport_extent[1] / line_height
+    number_of_scroll_lines = line_count / 2
+
+    # print('_get_option_scroll: lh=%s, em=%s, extent=%s, position=%s, lines=%s, scroll=%s (%s), layoutextent=%s' % (line_height, view.em_width(), viewport_extent, view.viewport_position(), line_count, number_of_scroll_lines, int(number_of_scroll_lines), view.layout_extent()))  # noqa: E501
+
+    return int(number_of_scroll_lines)
+
+
+def _scroll_viewport_position(view, number_of_scroll_lines, forward=True):
+    x, y = view.viewport_position()
+
+    y_addend = ((number_of_scroll_lines) * view.line_height())
+
+    if forward:
+        viewport_position = (x, y + y_addend)
+    else:
+        viewport_position = (x, y - y_addend)
+
+    view.set_viewport_position(viewport_position, animate=False)
+
+
+def _get_scroll_target(view, number_of_scroll_lines, forward=True):
+    s = view.sel()[0]
+
+    if forward:
+        if s.b > s.a and view.substr(s.b - 1) == '\n':
+            sel_row, sel_col = view.rowcol(s.b - 1)
+        else:
+            sel_row, sel_col = view.rowcol(s.b)
+
+        target_row = sel_row + number_of_scroll_lines
+
+        # Ignore the last line if it's a blank line. In Sublime the last
+        # character is a NULL character point ('\x00'). We don't need to check
+        # that it's NULL, just backup one point and retrieve that row and col.
+        last_line_row, last_line_col = view.rowcol(view.size() - 1)
+
+        # Ensure the target does not overflow the bottom of the buffer.
+        if target_row >= last_line_row:
+            target_row = last_line_row
+    else:
+        if s.b > s.a and view.substr(s.b - 1) == '\n':
+            sel_row, sel_col = view.rowcol(s.b - 1)
+        else:
+            sel_row, sel_col = view.rowcol(s.b)
+
+        target_row = sel_row - number_of_scroll_lines
+
+        # Ensure the target does not overflow the top of the buffer.
+        if target_row <= 0:
+            target_row = 0
+
+    # Return nothing to indicate there no need to scroll.
+    if sel_row == target_row:
+        return
+
+    target_pt = next_non_blank(view, view.text_point(target_row, 0))
+
+    return target_pt
+
+
+def _get_scroll_up_target_pt(view, number_of_scroll_lines):
+    return _get_scroll_target(view, number_of_scroll_lines, forward=False)
+
+
+def _get_scroll_down_target_pt(view, number_of_scroll_lines):
+    return _get_scroll_target(view, number_of_scroll_lines, forward=True)
+
+
 class _vi_ctrl_u(ViMotionCommand):
-    def prev_half_page(self, count):
 
-        origin = self.view.sel()[0]
-
-        visible = self.view.visible_region()
-        row_a = self.view.rowcol(visible.a)[0]
-        row_b = self.view.rowcol(visible.b)[0]
-
-        half_page_span = (row_b - row_a) // 2 * count
-
-        prev_half_page = self.view.rowcol(origin.b)[0] - half_page_span
-
-        pt = self.view.text_point(prev_half_page, 0)
-        return Region(pt, pt), (self.view.rowcol(visible.b)[0] - self.view.rowcol(pt)[0])
-
-    def run(self, mode=None, count=None):
-
+    def run(self, count=0, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                return previous
-
+                return Region(scroll_target_pt)
             elif mode == VISUAL:
-                return Region(s.a, previous.b)
+                a = s.a
+                b = scroll_target_pt
+
+                if s.b > s.a:
+                    if scroll_target_pt < s.a:
+                        a += 1
+                    else:
+                        b += 1
+
+                return Region(a, b)
+
+                if s.a < s.b and scroll_target_pt < s.a:
+                    return Region(min(s.a + 1, self.view.size()), scroll_target_pt)
+                return Region(s.a, scroll_target_pt)
 
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, previous.b)
-
+                return Region(s.a, scroll_target_pt)
             elif mode == VISUAL_LINE:
-                return Region(s.a, self.view.full_line(previous.b).b)
+                if s.b > s.a:
+                    if scroll_target_pt < s.a:
+                        a = self.view.full_line(s.a).b
+                        b = self.view.line(scroll_target_pt).a
+                    else:
+                        a = self.view.line(s.a).a
+                        b = self.view.full_line(scroll_target_pt).b
+                else:
+                    a = s.a
+                    b = self.view.line(scroll_target_pt).a
 
+                return Region(a, b)
             return s
 
-        previous, scroll_amount = self.prev_half_page(count)
+        number_of_scroll_lines = count if count >= 1 else _get_option_scroll(self.view)
+        scroll_target_pt = _get_scroll_up_target_pt(self.view, number_of_scroll_lines)
+        if scroll_target_pt is None:
+            return ui_blink()
+
         regions_transformer(self.view, f)
+        if not self.view.visible_region().contains(0):
+            _scroll_viewport_position(self.view, number_of_scroll_lines, forward=False)
 
 
 class _vi_ctrl_d(ViMotionCommand):
-    def next_half_page(self, count=1, mode=None):
 
-        origin = self.view.sel()[0]
-
-        visible = self.view.visible_region()
-        row_a = self.view.rowcol(visible.a)[0]
-        row_b = self.view.rowcol(visible.b)[0]
-
-        half_page_span = (row_b - row_a) // 2 * count
-
-        next_half_page = self.view.rowcol(origin.b)[0] + half_page_span
-
-        pt = self.view.text_point(next_half_page, 0)
-
-        return Region(pt, pt), (self.view.rowcol(pt)[0] - self.view.rowcol(visible.a)[0])
-
-    def run(self, mode=None, extend=False, count=None):
-
+    def run(self, count=0, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                return next
-
+                return Region(scroll_target_pt)
             elif mode == VISUAL:
-                return Region(s.a, next.b)
+                a = s.a
+                b = scroll_target_pt
 
+                if s.b > s.a:
+                    b += 1
+                elif scroll_target_pt >= s.a:
+                    a -= 1
+                    b += 1
+
+                return Region(a, b)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, next.b)
-
+                return Region(s.a, scroll_target_pt)
             elif mode == VISUAL_LINE:
-                return Region(s.a, self.view.full_line(next.b).b)
+                if s.a > s.b:
+                    if scroll_target_pt >= s.a:
+                        a = self.view.line(s.a - 1).a
+                        b = self.view.full_line(scroll_target_pt).b
+                    else:
+                        a = s.a
+                        b = self.view.line(scroll_target_pt).a
+                else:
+                    a = s.a
+                    b = self.view.full_line(scroll_target_pt).b
+
+                return Region(a, b)
 
             return s
 
-        next, scroll_amount = self.next_half_page(count)
+        number_of_scroll_lines = count if count >= 1 else _get_option_scroll(self.view)
+        scroll_target_pt = _get_scroll_down_target_pt(self.view, number_of_scroll_lines)
+        if scroll_target_pt is None:
+            return ui_blink()
+
         regions_transformer(self.view, f)
+        if not self.view.visible_region().contains(self.view.size()):
+            _scroll_viewport_position(self.view, number_of_scroll_lines)
 
 
 class _vi_pipe(ViMotionCommand):
