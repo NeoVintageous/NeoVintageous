@@ -290,7 +290,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         s = s[1:]
 
         state = self.state
-        flags = self.calculate_flags()
+        flags = self.calculate_flags(s)
         self.view.erase_regions('vi_inc_search')
         next_hit = find_wrapping(self.view,
                                  term=s,
@@ -355,7 +355,7 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         start = current_sel.b if not current_sel.empty() else current_sel.b + 1
         wrapped_end = self.view.size()
 
-        flags = self.calculate_flags()
+        flags = self.calculate_flags(search_string)
         match = find_wrapping(self.view, search_string, start, wrapped_end, flags=flags, times=count)
         if not match:
             return
@@ -1398,7 +1398,7 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
     def run(self, count=1, mode=None, search_string=None):
         def f(view, s):
             pattern = self.build_pattern(query)
-            flags = self.calculate_flags()
+            flags = self.calculate_flags(query)
 
             if mode == INTERNAL_NORMAL:
                 match = find_wrapping(view,
@@ -1451,7 +1451,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
     def run(self, count=1, mode=None, search_string=None):
         def f(view, s):
             pattern = self.build_pattern(query)
-            flags = self.calculate_flags()
+            flags = self.calculate_flags(query)
 
             if mode == INTERNAL_NORMAL:
                 match = reverse_find_wrapping(view,
@@ -1925,7 +1925,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
         if search_string is None:
             return
 
-        flags = self.calculate_flags()
+        flags = self.calculate_flags(search_string)
         # FIXME: What should we do here? Case-sensitive or case-insensitive search? Configurable?
         found = reverse_find_wrapping(self.view,
                                       term=search_string,
@@ -1988,7 +1988,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         s = s[1:]
 
-        flags = self.calculate_flags()
+        flags = self.calculate_flags(s)
         self.view.erase_regions('vi_inc_search')
         state = self.state
         occurrence = reverse_find_wrapping(self.view,

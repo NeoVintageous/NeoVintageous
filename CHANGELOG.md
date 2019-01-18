@@ -10,6 +10,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#363](https://github.com/NeoVintageous/NeoVintageous/issues/363): Searching for regex characters like `(` and `[` doesn't work
 * Fixed [#420](https://github.com/NeoVintageous/NeoVintageous/issues/420): `:help {subject}` should scroll subject into view
 * Fixed [#410](https://github.com/NeoVintageous/NeoVintageous/issues/410): `J` should strip leading comment tokens from joined lines enhancement
 * Fixed [#412](https://github.com/NeoVintageous/NeoVintageous/issues/412): `j` and `k` VISUAL in mode causes window to scroll two lines when next line is empty (UX)

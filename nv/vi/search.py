@@ -197,13 +197,24 @@ class BufferSearchBase(sublime_plugin.TextCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def calculate_flags(self):
+    def calculate_flags(self, pattern=None):
         flags = 0
 
         settings = self.view.settings()
 
         if settings.get('vintageous_magic') is False:
             flags |= LITERAL
+        elif pattern:
+            # Is the pattern as regular expression or a literal? For example, in
+            # "magic" mode, simple strings like "]" should be treated as a
+            # literal and "[0-9]" should be treated as a regular expression.
+
+            if re.match('^[a-zA-Z0-9_\\[\\]]+$', pattern):
+                if '[' not in pattern or ']' not in pattern:
+                    flags |= LITERAL
+            elif re.match('^[a-zA-Z0-9_\\(\\)]+$', pattern):
+                if '(' not in pattern or ')' not in pattern:
+                    flags |= LITERAL
 
         if settings.get('vintageous_ignorecase') is True:
             flags |= IGNORECASE
@@ -216,7 +227,7 @@ class BufferSearchBase(sublime_plugin.TextCommand):
     def hilite(self, query):
         regions = self.view.find_all(
             self.build_pattern(query),
-            self.calculate_flags()
+            self.calculate_flags(query)
         )
 
         if not regions:
@@ -255,7 +266,7 @@ class ExactWordBufferSearchBase(BufferSearchBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def calculate_flags(self):
+    def calculate_flags(self, pattern=None):
         flags = 0
 
         settings = self.view.settings()
