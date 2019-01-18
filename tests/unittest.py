@@ -693,6 +693,82 @@ def mock_bell():
     return wrapper
 
 
+# Usage:
+#
+#   @unitest.mock_ui()
+#   def test_...(self):
+#
+#   @unitest.mock_ui(screen_rows=10)
+#   def test_...(self):
+#
+#   @unitest.mock_ui(visible_region=(2, 7))
+#   def test_...(self):
+#
+#  Screen rows and visible region defaults to the current size of the view.
+#
+def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22.0):
+    def wrapper(f):
+        @mock_bell()
+        @mock.patch('sublime.View.em_width')
+        @mock.patch('sublime.View.line_height')
+        @mock.patch('sublime.View.viewport_extent')
+        @mock.patch('sublime.View.visible_region')
+        def wrapped(self, *args, **kwargs):
+            self.em_width = args[-1]
+            self.line_height = args[-2]
+            self.viewport_extent = args[-3]
+            self.visible_region = args[-4]
+
+            def _viewport_extent():
+                if screen_rows is not None:
+                    rows = screen_rows
+                else:
+                    rows = self.view.rowcol(self.view.size())[0] + 1
+
+                # Find the max cols of the view by cycling though all the lines.
+                lines = self.view.lines(self.Region(0, self.view.size()))
+                cols = max(lines, key=lambda item: item.size()).size()
+
+                # The extent y position needs an additional "1.0". It's not
+                # clear why Sublime needs to add it, but it always adds it.
+                extent_x = em_width * (cols + 2)
+                extent_y = (line_height * rows) + 1.0
+                extent = (extent_x, extent_y)
+
+                return extent
+
+            # The default visible region uses the size of the current view. For
+            # example when a test fixture is setup, the visible region will be
+            # the same size as content. This makes most tests easier to setup.
+            def _visible_region():
+                if visible_region:
+                    if isinstance(visible_region, tuple):
+                        return self.Region(visible_region[0], visible_region[1])
+
+                    return visible_region
+
+                region = self.Region(0, self.view.size())
+
+                return region
+
+            def _assertViewportPosition(x, y):
+                self.assertEqual((x, y), self.view.viewport_position())
+
+            def _assertViewportPositionIsZero():
+                self.assertEqual((0, 0), self.view.viewport_position())
+
+            self.em_width.return_value = em_width
+            self.line_height.return_value = line_height
+            self.viewport_extent.side_effect = _viewport_extent
+            self.visible_region.side_effect = _visible_region
+            self.assertViewportPosition = _assertViewportPosition
+            self.assertViewportPositionIsZero = _assertViewportPositionIsZero
+
+            return f(self, *args[:-4], **kwargs)
+        return wrapped
+    return wrapper
+
+
 # A hardcoded map of sequences to commands. Ideally we wouldn't need this
 # hardcoded map, some internal refactoring and redesign is required to make that
 # happen. For now make-do with the hardcoded map. Refactoring later should not
