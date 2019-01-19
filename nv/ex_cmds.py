@@ -599,6 +599,11 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
     view.sel().add(c_pt)
     view.show(c_pt, False)
 
+    # Fixes #420 show() doesn't work properly when the Sublime Text
+    # animation_enabled is true, which the default in Sublime.
+    xy = view.text_to_layout(view.text_point(view.rowcol(c_pt)[0], 0))
+    view.set_viewport_position(xy)
+
 
 def ex_let(name, value, **kwargs):
     variables.set(name, value)
