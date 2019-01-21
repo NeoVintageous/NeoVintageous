@@ -1748,8 +1748,6 @@ def _get_option_scroll(view):
     line_count = viewport_extent[1] / line_height
     number_of_scroll_lines = line_count / 2
 
-    # print('_get_option_scroll: lh=%s, em=%s, extent=%s, position=%s, lines=%s, scroll=%s (%s), layoutextent=%s' % (line_height, view.em_width(), viewport_extent, view.viewport_position(), line_count, number_of_scroll_lines, int(number_of_scroll_lines), view.layout_extent()))  # noqa: E501
-
     return int(number_of_scroll_lines)
 
 
