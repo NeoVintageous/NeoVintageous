@@ -2,9 +2,9 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.8.0 - Unreleased
+## 1.8.0 - 2019-01-23
 
-## Added
+### Added
 
 * Fixed [#242](https://github.com/NeoVintageous/NeoVintageous/issues/242): `CTRL-d` and `CTRL-u` should keep horizontal position when scrolling
 
