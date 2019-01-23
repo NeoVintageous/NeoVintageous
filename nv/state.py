@@ -896,7 +896,7 @@ class State(object):
         self.reset_command_data()
 
 
-def init_state(view, new_session=False):
+def init_state(view):
     # type: (...) -> None
     # Initialise view state.
     #
@@ -904,8 +904,6 @@ def init_state(view, new_session=False):
     #
     # Args:
     #   :view (sublime.View):
-    #   :new_session (bool): Whether we're starting up Sublime Text. If so,
-    #       volatile data must be wiped, and vintageousrc file must be loaded.
 
     if not is_view(view):
         # Abort if we got a console, widget, panel...
@@ -970,11 +968,3 @@ def init_state(view, new_session=False):
         view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
 
     state.reset_command_data()
-
-    if new_session:
-        state.reset_volatile_data()
-        rc.load()
-
-        # TODO is setting the cwd for cmdline necessary?
-        cmdline_cd = os.path.dirname(view.file_name()) if view.file_name() else os.getcwd()
-        state.settings.vi['_cmdline_cd'] = cmdline_cd
