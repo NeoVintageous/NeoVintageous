@@ -35,7 +35,7 @@ if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
 
     logger = logging.getLogger('NeoVintageous')
 
-    # Avoid duplicate loggers caused by plugin reloading.
+    # Avoid duplicate loggers when plugin is reloaded.
     if not logger.hasHandlers():
         logger.setLevel(logging.DEBUG)
         stream_handler = logging.StreamHandler()
@@ -59,7 +59,7 @@ import sublime  # noqa: E402
 # when the plugin_loaded() hook is called.
 
 try:
-    _EXCEPTION = None
+    _startup_exception = None
 
     # Commands.
     # TODO Organise all commands into a single module (i.e. .nv.cmds).
@@ -76,9 +76,9 @@ try:
     from NeoVintageous.nv.events import *  # noqa: F401,F403
 
 except Exception as e:
-    _EXCEPTION = e
     import traceback
     traceback.print_exc()
+    _startup_exception = e
 
 
 def _update_ignored_packages():
@@ -119,8 +119,9 @@ def plugin_loaded():
         sublime.log_input(True)
         sublime.log_commands(True)
 
+    pc_event = None
+
     try:
-        pc_event = None
         from package_control import events
         if events.install('NeoVintageous'):
             pc_event = 'install'
@@ -139,25 +140,36 @@ def plugin_loaded():
         traceback.print_exc()
 
     try:
-        _exception = None
+        _loading_exeption = None
 
-        view = sublime.active_window().active_view()
-        # We can't expect a valid view to be returned from active_view(),
-        # especially at startup e.g. at startup if the active view is an image
-        # then active_view() returns None, because images are not *views*, they
-        # are *sheets* (they can be retrieved via active_sheet()).
-        # See https://github.com/SublimeTextIssues/Core/issues/2116.
-        # TODO [review] Is it necessary to initialise the active view in plugin_loaded()? Doesn't the on_activated() event initialize activated views?  # noqa: E501
-        if view:
-            from NeoVintageous.nv.state import init_state
-            init_state(view, new_session=True)
+        from NeoVintageous.nv import rc
+
+        rc.load()
+
+        window = sublime.active_window()
+        if window:
+            # Hack to correctly set the current woring directory. The way
+            # settings are handled needs to be completley overhauled.
+            def set_window_cwd(window):
+                settings = window.settings().get('vintage')
+
+                if not isinstance(settings, dict):
+                    settings = {}
+
+                variables = window.extract_variables()
+                if 'folder' in variables:
+                    settings['_cmdline_cd'] = variables['folder']
+
+                window.settings().set('vintage', settings)
+
+            set_window_cwd(window)
 
     except Exception as e:
-        _exception = e
         import traceback
         traceback.print_exc()
+        _loading_exeption = e
 
-    if _EXCEPTION or _exception:
+    if _startup_exception or _loading_exeption:
 
         try:
             _cleanup_views()
@@ -165,7 +177,7 @@ def plugin_loaded():
             import traceback
             traceback.print_exc()
 
-        if isinstance(_EXCEPTION, ImportError) or isinstance(_exception, ImportError):
+        if isinstance(_startup_exception, ImportError) or isinstance(_loading_exeption, ImportError):
             if pc_event == 'post_upgrade':
                 message = "Failed to load some modules trying to upgrade NeoVintageous. "\
                           "Please restart Sublime Text to finish the upgrade."

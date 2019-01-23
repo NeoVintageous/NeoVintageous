@@ -14,6 +14,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#421](https://github.com/NeoVintageous/NeoVintageous/issues/421):  Direct shell command exec in project
 * Fixed [#416](https://github.com/NeoVintageous/NeoVintageous/issues/416): `H` and `L` should move to highest/lowest line without scrolling (UX)
 * Fixed [#417](https://github.com/NeoVintageous/NeoVintageous/issues/417): `CTRL-d` and `CTRL-u` count should be used as the number of lines to scroll
 * Fixed [#362](https://github.com/NeoVintageous/NeoVintageous/issues/362):  `SHIFT+H` `SHIFT+M` `SHIFT+L` in VISUAL LINE mode does not work
