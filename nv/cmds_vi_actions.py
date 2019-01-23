@@ -907,7 +907,6 @@ class _vi_y(ViTextCommandBase):
                 raise ValueError('bad args')
 
             self.view.run_command(motion['motion'], motion['motion_args'])
-            self.outline_target()
 
             # Some text object motions should be treated as a linewise
             # operation, but only if the motion contains a newline.
@@ -918,6 +917,8 @@ class _vi_y(ViTextCommandBase):
 
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return
+
+        self.outline_target()
 
         self.state.registers.op_yank(register=register, linewise=linewise)
         regions_transformer(self.view, f)
