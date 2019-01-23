@@ -64,31 +64,29 @@ def open(window):
 
 
 def load():
+    _log.debug('load %s', _file_name())
     _run()
 
 
 def reload():
+    _log.debug('reload %s', _file_name())
     _run()
 
 
 def _run():
-    _log.debug('run %s', _file_name())
-
     from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 
     try:
         window = sublime.active_window()
         with builtins.open(_file_name(), 'r') as f:
             for line in f:
-                cmdline = _parse_line(line)
-                if cmdline:
-                    # The line parser strips command lines prefixed with ":"
-                    # (colon), but do_ex_cmdline() requires command lines to
-                    # begin with a colon.
-                    do_ex_cmdline(window, ':' + cmdline)
+                ex_cmdline = _parse_line(line)
+                if ex_cmdline:
+                    do_ex_cmdline(window, ex_cmdline)
 
+        print('vinageousrc file loaded')
     except FileNotFoundError:
-        _log.debug('rcfile not found')
+        _log.info('rcfile not found')
 
 
 def _parse_line(line):
@@ -103,6 +101,10 @@ def _parse_line(line):
                                     .format(_recursive_mapping_alts[cmd]))
 
                 cmdline = match.group('cmdline')
+
+                # Ensure there is leading colon, because the matcher strips it.
+                if cmdline:
+                    cmdline = ':' + cmdline
 
                 # By default, mapping the character '|' (bar) should be escaped
                 # with a slash or '<Bar>' used instead. Neovintageous currently
