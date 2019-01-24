@@ -127,3 +127,14 @@ nnoremap <leader>w| <C-w>w|
 nnoremap <leader>|| <C-w>||
 "                ^^ invalid
 "                        ^^ invalid
+
+let highlightedyank=false
+" ^^^^^^^^^^^^^^^^^^^^^^^ invalid
+highlightedyank=false
+" ^^^^^^^^^^^^^^^^^^^ invalid
+set highlightedyank=false
+" ^^^^^^^^^^^^^^^^^^^^^^^ invalid
+:set highlightedyank=false
+" ^^^^^^^^^^^^^^^^^^^^^^^^ invalid
+foobar
+" ^^^^ invalid

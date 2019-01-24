@@ -30,3 +30,6 @@ contexts:
 
     - match: (?<!\\)\|
       scope: invalid.vintageourc
+
+    - match: ^.*$
+      scope: invalid.vintageourc
