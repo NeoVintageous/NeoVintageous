@@ -18,35 +18,32 @@
 import unittest
 
 from NeoVintageous.nv.rc import _parse_line
-from NeoVintageous.nv.rc import _parse_line_pattern
+from NeoVintageous.nv.rc import _PARSE_LINE_PATTERN
 
 
 class TestRcfile(unittest.TestCase):
 
     def test_regex_does_not_match_empty_line(self):
-        self.assertIsNone(_parse_line_pattern.match(''))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match(''))
 
     def test_regex_does_not_match_comments(self):
-        self.assertIsNone(_parse_line_pattern.match('" comment'))
-        self.assertIsNone(_parse_line_pattern.match('"map x y'))
-        self.assertIsNone(_parse_line_pattern.match('" map x y'))
-        self.assertIsNone(_parse_line_pattern.match('" let mapleader=,'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('" comment'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('"map x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('" map x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('"noremap x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('" noremap x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('" let mapleader=,'))
 
     def test_regex_does_not_match_plain_text(self):
-        self.assertIsNone(_parse_line_pattern.match('foo'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('foo'))
 
     def test_regex_matches_valid_commands(self):
-        self.assertIsNotNone(_parse_line_pattern.match('let mapleader=,'))
-        self.assertIsNotNone(_parse_line_pattern.match('map x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('nmap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('omap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('smap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('vmap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('noremap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('nnoremap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('onoremap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('snoremap x y'))
-        self.assertIsNotNone(_parse_line_pattern.match('vnoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('let mapleader=,'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('noremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('nnoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('onoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('snoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vnoremap x y'))
 
     def test_parse_line_return_none_for_non_commands(self):
         self.assertEquals(None, _parse_line(''))
@@ -55,6 +52,7 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(None, _parse_line('" foobar'))
         self.assertEquals(None, _parse_line('":let mapleader=,'))
         self.assertEquals(None, _parse_line('":map x zy'))
+        self.assertEquals(None, _parse_line('":noremap x zy'))
         self.assertEquals(None, _parse_line('zap x zy'))
 
     def test_parse_line_returns_valid_commands(self):
@@ -77,6 +75,13 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(':let mapleader=,', _parse_line('let mapleader=,    '))
         self.assertEquals(':noremap x yz', _parse_line('noremap x yz  '))
 
+    def test_regex_does_not_match_recursive_mappings(self):
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('map x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('nmap x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('omap x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('smap x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('vmap x y'))
+
     def test_parse_line_returns_none_for_recursive_mapping_commands(self):
 
         # The recursive mapping commands are disabled, and will emit an error
@@ -91,7 +96,6 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(None, _parse_line(':omap x yz'))
         self.assertEquals(None, _parse_line(':smap x yz'))
         self.assertEquals(None, _parse_line(':vmap x yz'))
-
         self.assertEquals(None, _parse_line('map x yz'))
         self.assertEquals(None, _parse_line('nmap x yz'))
         self.assertEquals(None, _parse_line('omap x yz'))

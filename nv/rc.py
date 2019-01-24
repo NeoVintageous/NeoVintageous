@@ -28,27 +28,6 @@ from NeoVintageous.nv.vim import message
 _log = logging.getLogger(__name__)
 
 
-# A specific list of ex commands are supported.
-# NOTE: The recursive mapping commands `:map`, `:nmap`, `:omap`, `:smap`,
-# `:vmap` are not supported. They were removed in v1.5. They are included in the
-# parse pattern because a notice is emitted if they are used. Uses should use
-# the non recursive commands instead. The recursive mappings were because they
-# were not implemented as recursive mappings, and replacing them now may prevent
-# some potential problems in the future if the recursive commands are ever
-# implemented.
-_parse_line_pattern = re.compile(
-    '^(?::)?(?P<cmdline>(?P<cmd>noremap|map|nnoremap|nmap|snoremap|smap|vnoremap|vmap|onoremap|omap|let) .*)$')
-
-
-_recursive_mapping_alts = {
-    'map': 'nnnoremap',
-    'nmap': 'nnoremap',
-    'smap': 'snoremap',
-    'vmap': 'vnoremap',
-    'omap': 'onoremap'
-}
-
-
 def _file_name():
     return os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
 
@@ -65,18 +44,18 @@ def open(window):
 
 def load():
     _log.debug('load %s', _file_name())
-    _run()
+    _load()
 
 
+# TODO reload should unload existing mappings before loading
 def reload():
     _log.debug('reload %s', _file_name())
-    _run()
+    _load()
 
 
-def _run():
-    from NeoVintageous.nv.ex_cmds import do_ex_cmdline
-
+def _load():
     try:
+        from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
         with builtins.open(_file_name(), 'r') as f:
             for line in f:
@@ -89,20 +68,21 @@ def _run():
         _log.info('rcfile not found')
 
 
+# Recursive mappings (:map, :nmap, :omap, :smap, :vmap) are not supported. They
+# were removed in version 1.5.0. They were removed because they were they were
+# implemented as non-recursive mappings.
+_PARSE_LINE_PATTERN = re.compile(
+    '^(?::)?(?P<cmdline>(?P<cmd>noremap|nnoremap|snoremap|vnoremap|onoremap|let) .*)$')
+
+
 def _parse_line(line):
     try:
         line = line.rstrip()
         if line:
-            match = _parse_line_pattern.match(line)
+            match = _PARSE_LINE_PATTERN.match(line)
             if match:
-                cmd = match.group('cmd')
-                if cmd in _recursive_mapping_alts:
-                    raise Exception('Recursive mapping commands are not allowed, use the "{}" command instead'
-                                    .format(_recursive_mapping_alts[cmd]))
-
                 cmdline = match.group('cmdline')
-
-                # Ensure there is leading colon, because the matcher strips it.
+                # Ensure there is leading colon, because the parser pattern omits it.
                 if cmdline:
                     cmdline = ':' + cmdline
 
@@ -122,9 +102,6 @@ def _parse_line(line):
 
                 return cmdline
     except Exception:
-        # TODO [review] Exception handling
-        msg = 'error detected while processing {} at line {}'.format(_file_name(), line.rstrip())
-        message(msg)
-        _log.debug(msg)
+        message('error detected while processing vintageousrc at line "{}"'.format(line.rstrip()))
 
     return None
