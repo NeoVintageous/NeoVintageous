@@ -95,12 +95,18 @@ def _changing_cd(f, *args, **kwargs):
 
             if cmdline_cwd:
                 _log.debug('changing cwd to: %s', cmdline_cwd)
-                os.chdir(cmdline_cwd)
+                if os.path.isdir(cmdline_cwd):
+                    os.chdir(cmdline_cwd)
+                else:
+                    _log.debug('cmdline_cwd is not a valid directory or does not exist')
 
             f(*args, **kwargs)
         finally:
             _log.debug('changing cwd back to: %s', old)
-            os.chdir(old)
+            if os.path.isdir(old):
+                os.chdir(old)
+            else:
+                _log.debug('old cwd is not a valid directory or does not exist')
 
     return inner
 
