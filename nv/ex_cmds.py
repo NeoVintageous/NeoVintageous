@@ -84,14 +84,22 @@ def _changing_cd(f, *args, **kwargs):
         state = State(view)
 
         old = os.getcwd()
+        _log.debug('cwd = %s', old)
         try:
             # FIXME: Under some circumstances, like when switching projects to
             # a file whose _cmdline_cd has not been set, _cmdline_cd might
             # return 'None'. In such cases, change to the actual current
             # directory as a last measure. (We should probably fix this anyway).
-            os.chdir(state.settings.vi['_cmdline_cd'] or old)
+            cmdline_cwd = state.settings.vi['_cmdline_cd']
+            _log.debug('cmdline_cwd = %s', cmdline_cwd)
+
+            if cmdline_cwd:
+                _log.debug('changing cwd to: %s', cmdline_cwd)
+                os.chdir(cmdline_cwd)
+
             f(*args, **kwargs)
         finally:
+            _log.debug('changing cwd back to: %s', old)
             os.chdir(old)
 
     return inner
