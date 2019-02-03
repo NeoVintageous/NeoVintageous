@@ -1490,9 +1490,15 @@ class _vi_big_o(ViTextCommandBase):
 class _vi_o(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None):
-        if mode == INTERNAL_NORMAL:
-            self.view.run_command('run_macro_file', {'file': 'res://Packages/Default/Add Line.sublime-macro'})
+        def create_selections(view, sel):
+            end_of_line = view.full_line(sel).max()
+            view.insert(edit, end_of_line, "\n" * count)
+            new = []
+            for i in range(1, count):
+                new.append(Region(end_of_line.a + i, end_of_line.b + i))
+            return new
 
+        regions_transformer(self.view, create_selections)
         self.enter_insert_mode(mode)
 
 

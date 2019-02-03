@@ -74,11 +74,16 @@ def regions_transformer(view, f):
     sels = list(view.sel())
     new = []
     for sel in sels:
-        region = f(view, sel)
-        if not isinstance(region, Region):
-            raise TypeError('Region required')
-
-        new.append(region)
+        regions = f(view, sel)
+        if isinstance(regions, Region):
+            new.append(regions)
+        else if isinstance(regions, list):
+            for region in regions:
+                if not isinstance(region, Region):
+                    raise TypeError('Region or array of Region required')
+                new.append(region)
+        else:
+            raise TypeError('Region or array of Region required')
 
     view.sel().clear()
     view.sel().add_all(new)
