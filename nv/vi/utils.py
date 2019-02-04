@@ -68,47 +68,42 @@ def is_view(view):
         is_ignored_but_command_mode(view)
     ))
 
-
-def regions_transformer(view, f):
-    # type: (...) -> None
-    sels = list(view.sel())
+def _regions_transformer(sels, view, f, with_idx):
     new = []
-    for sel in sels:
-        regions = f(view, sel)
+    for idx, sel in enumerate(sels):
+        if with_idx:
+            regions = f(view, sel, idx)
+        else:
+            regions = f(view, sel)
+
         if isinstance(regions, Region):
             new.append(regions)
-        else if isinstance(regions, list):
+        elif isinstance(regions, list):
             for region in regions:
                 if not isinstance(region, Region):
-                    raise TypeError('Region or array of Region required')
+                    raise TypeError('region or array of region required')
                 new.append(region)
         else:
-            raise TypeError('Region or array of Region required')
+            raise TypeError('region or array of region required')
 
     view.sel().clear()
     view.sel().add_all(new)
 
+def regions_transformer(view, f):
+    # type: (...) -> None
+    sels = list(view.sel())
+    _regions_transformer(sels, view, f, False)
 
-# TODO IMPORTANT was refactored from a module that removed vi/constants.py ...
-#       but required by lib/cmds/actions.py module. This can
-#       probably be refactored to use regions_transformer(), in
-#       fact this function probably causes some bugs becayse
-#       regions_transformer() is newer but this function was
-#       looks like it was never updated.
+def regions_transformer_indexed(view, f):
+    # type: (...) -> None
+    sels = list(view.sel())
+    _regions_transformer(sels, view, f, True)
+
+# TODO: test existin uses of this function to make sure the refactor works correctly
 def regions_transformer_reversed(view, f):
     # type: (...) -> None
-
-    # Apply f to every selection region in view and replace existing selections.
-
     sels = reversed(list(view.sel()))
-
-    new_sels = []
-    for s in sels:
-        new_sels.append(f(view, s))
-
-    view.sel().clear()
-    for ns in new_sels:
-        view.sel().add(ns)
+    _regions_transformer(sels, view, f, False)
 
 
 def resolve_insertion_point_at_b(region):

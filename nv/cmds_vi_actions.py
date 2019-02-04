@@ -40,6 +40,7 @@ from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import previous_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
+from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vim import INSERT
@@ -1481,24 +1482,31 @@ class _vi_equal(ViTextCommandBase):
 class _vi_big_o(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None):
-        if mode == INTERNAL_NORMAL:
-            self.view.run_command('run_macro_file', {'file': 'res://Packages/Default/Add Line Before.sublime-macro'})
+        def create_selections(view, sel, index):
+            real_sel = Region(sel.a + index * count, sel.b + index * count)
+            start_of_line = view.full_line(real_sel).begin()
+            view.insert(edit, start_of_line, "\n" * count)
+            new = []
+            for i in range(0, count):
+                new.append(Region(start_of_line + i, start_of_line + i))
+            return new
 
+        regions_transformer_indexed(self.view, create_selections)
         self.enter_insert_mode(mode)
 
 
 class _vi_o(ViTextCommandBase):
-
     def run(self, edit, count=1, mode=None):
-        def create_selections(view, sel):
-            end_of_line = view.full_line(sel).max()
+        def create_selections(view, sel, index):
+            real_sel = Region(sel.a + index * count, sel.b + index * count)
+            end_of_line = view.full_line(real_sel).end()
             view.insert(edit, end_of_line, "\n" * count)
             new = []
-            for i in range(1, count):
-                new.append(Region(end_of_line.a + i, end_of_line.b + i))
+            for i in range(0, count):
+                new.append(Region(end_of_line + i, end_of_line + i))
             return new
 
-        regions_transformer(self.view, create_selections)
+        regions_transformer_indexed(self.view, create_selections)
         self.enter_insert_mode(mode)
 
 
