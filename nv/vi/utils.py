@@ -99,7 +99,6 @@ def regions_transformer_indexed(view, f):
     sels = list(view.sel())
     _regions_transformer(sels, view, f, True)
 
-# TODO: test existin uses of this function to make sure the refactor works correctly
 def regions_transformer_reversed(view, f):
     # type: (...) -> None
     sels = reversed(list(view.sel()))
