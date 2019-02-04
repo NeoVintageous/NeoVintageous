@@ -1498,11 +1498,11 @@ class _vi_big_o(ViTextCommandBase):
 class _vi_o(ViTextCommandBase):
     def run(self, edit, count=1, mode=None):
         def create_selections(view, sel, index):
-            real_sel = Region(sel.a + index * count, sel.b + index * count)
-            end_of_line = view.full_line(real_sel).end()
+            real_sel = sel if index == 0 else Region(sel.a + index * count, sel.b + index * count)
+            end_of_line = view.line(real_sel).end()
             view.insert(edit, end_of_line, "\n" * count)
             new = []
-            for i in range(0, count):
+            for i in range(1, count + 1):
                 new.append(Region(end_of_line + i, end_of_line + i))
             return new
 
