@@ -24,3 +24,11 @@ class Test_O(unittest.FunctionalTestCase):
         self.eq('|', 'O', 'i_|\n')
         self.eq('|\n', 'O', 'i_|\n\n')
         self.eq('a\n|b\n', 'O', 'i_a\n|\nb\n')
+        self.eq('1\na|bc\n3', 'O', 'i_1\n|\nabc\n3')
+        self.eq('1\na|bc\n3\nx|yz\n5', 'O', 'i_1\n|\nabc\n3\n|\nxyz\n5')
+
+    def test_O_count(self):
+        self.eq('1\na|bc\n3', '3O', 'i_1\n|\n|\n|\nabc\n3')
+
+    def test_O_count_with_multiple_cursor(self):
+        self.eq('1\na|bc\n3\nx|yz\n5', '3O', 'i_1\n|\n|\n|\nabc\n3\n|\n|\n|\nxyz\n5')
