@@ -69,3 +69,8 @@ def get(name):
 def set(name, value):
     # type: (...) -> None
     _variables[name] = value
+
+
+def variables_clear():
+    # type: () -> None
+    _variables.clear()

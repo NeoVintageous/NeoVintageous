@@ -20,9 +20,11 @@ import unittest
 
 from NeoVintageous.nv.variables import _defaults as _defaults_struct_
 from NeoVintageous.nv.variables import _special_strings as _special_strings_struct_
+from NeoVintageous.nv.variables import _variables as _variables_struct_
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.variables import get
 from NeoVintageous.nv.variables import is_key_name
+from NeoVintageous.nv.variables import variables_clear
 
 
 class TestVariables(unittest.TestCase):
@@ -114,3 +116,8 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('xy', expand_keys('<TestX><TestY>'))
         self.assertEqual('1x2y3', expand_keys('1<TestX>2<TestY>3'))
         self.assertEqual('42Gyy:w<Enter>xggp', expand_keys('42G<TestY><TestY>:w<Enter><TestX>ggp'))
+
+    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
+    def test_clear(self):
+        variables_clear()
+        self.assertEquals({}, _variables_struct_)

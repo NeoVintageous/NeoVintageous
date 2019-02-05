@@ -47,10 +47,18 @@ def load():
     _load()
 
 
-# TODO reload should unload existing mappings before loading
 def reload():
     _log.debug('reload %s', _file_name())
+    _unload()
     _load()
+
+
+def _unload():
+    from NeoVintageous.nv.mappings import mappings_clear
+    from NeoVintageous.nv.variables import variables_clear
+
+    variables_clear()
+    mappings_clear()
 
 
 def _load():
@@ -63,9 +71,9 @@ def _load():
                 if ex_cmdline:
                     do_ex_cmdline(window, ex_cmdline)
 
-        print('vinageousrc file loaded')
+        print('vintageousrc file loaded')
     except FileNotFoundError:
-        _log.info('rcfile not found')
+        _log.info('vintageousrc file not found')
 
 
 # Recursive mappings (:map, :nmap, :omap, :smap, :vmap) are not supported. They

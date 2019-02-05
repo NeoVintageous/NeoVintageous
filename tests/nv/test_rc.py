@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import unittest
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.rc import _parse_line
 from NeoVintageous.nv.rc import _PARSE_LINE_PATTERN
@@ -102,7 +102,8 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(None, _parse_line('smap x yz'))
         self.assertEquals(None, _parse_line('vmap x yz'))
 
-    def test_unescaped_pipe_character_is_invalid(self):
+    @unittest.mock.patch('NeoVintageous.nv.rc.message')
+    def test_unescaped_pipe_character_is_invalid(self, message):
         tests = (
             'noremap |',
             'noremap | |',
@@ -113,8 +114,9 @@ class TestRcfile(unittest.TestCase):
             'noremap x|y abc'
         )
 
-        for test in tests:
+        for i, test in enumerate(tests):
             self.assertEquals(None, _parse_line(test))
+            self.assertEqual(message.call_count, i + 1)
 
     def test_escaped_pipe_character_is_valid(self):
         tests = (
