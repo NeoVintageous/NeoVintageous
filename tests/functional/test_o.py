@@ -36,3 +36,9 @@ class Test_o(unittest.FunctionalTestCase):
     def test_l_o(self):
         self.eq('x\n|fizz\n|x', 'l_o__alt1', 'r_x\n|fizz\n|x')
         self.eq('r_x\n|fizz\n|x', 'l_o__alt1', 'x\n|fizz\n|x')
+
+    def test_multiple_count_o(self):
+        self.eq('|', '2o', 'i_\n|\n|')
+
+    def test_multiple_count_v_o(self):
+        self.eq('fo|o\nba|r', '2o', 'i_foo\n|\n|\nbar\n|\n|')

@@ -69,41 +69,44 @@ def is_view(view):
     ))
 
 
-def regions_transformer(view, f):
-    # type: (...) -> None
-    sels = list(view.sel())
+def _regions_transformer(sels, view, f, with_idx):
     new = []
-    for sel in sels:
-        region = f(view, sel)
-        if not isinstance(region, Region):
-            raise TypeError('Region required')
+    for idx, sel in enumerate(sels):
+        if with_idx:
+            regions = f(view, sel, idx)
+        else:
+            regions = f(view, sel)
 
-        new.append(region)
+        if isinstance(regions, Region):
+            new.append(regions)
+        elif isinstance(regions, list):
+            for region in regions:
+                if not isinstance(region, Region):
+                    raise TypeError('region or array of region required')
+                new.append(region)
+        else:
+            raise TypeError('region or array of region required')
 
     view.sel().clear()
     view.sel().add_all(new)
 
 
-# TODO IMPORTANT was refactored from a module that removed vi/constants.py ...
-#       but required by lib/cmds/actions.py module. This can
-#       probably be refactored to use regions_transformer(), in
-#       fact this function probably causes some bugs becayse
-#       regions_transformer() is newer but this function was
-#       looks like it was never updated.
+def regions_transformer(view, f):
+    # type: (...) -> None
+    sels = list(view.sel())
+    _regions_transformer(sels, view, f, False)
+
+
+def regions_transformer_indexed(view, f):
+    # type: (...) -> None
+    sels = list(view.sel())
+    _regions_transformer(sels, view, f, True)
+
+
 def regions_transformer_reversed(view, f):
     # type: (...) -> None
-
-    # Apply f to every selection region in view and replace existing selections.
-
     sels = reversed(list(view.sel()))
-
-    new_sels = []
-    for s in sels:
-        new_sels.append(f(view, s))
-
-    view.sel().clear()
-    for ns in new_sels:
-        view.sel().add(ns)
+    _regions_transformer(sels, view, f, False)
 
 
 def resolve_insertion_point_at_b(region):
