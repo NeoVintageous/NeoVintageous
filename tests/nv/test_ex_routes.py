@@ -308,7 +308,7 @@ class Test_ex_route_tabnext(unittest.TestCase):
 
 class TestRoutes(unittest.TestCase):
 
-    def _route(self, string):
+    def _matchRoute(self, string):
         matches = []
         for route, command in ex_routes.items():
             match = re.compile(route).match(string)
@@ -317,151 +317,93 @@ class TestRoutes(unittest.TestCase):
 
         return matches
 
+    def assertNotRoute(self, string):
+        self.assertEquals(self._matchRoute(string), [], 'failed asserting no route for {}'.format(string))
+
+    def assertRoute(self, expected, values, multiple_matches=False):
+        for value in values:
+            matches = self._matchRoute(value)
+            # The route matcher sometimes matches multiple route, and uses the
+            # first one found, which is one of the reasons the route ordering is
+            # important, but it could probably always be an exact match.
+            if multiple_matches:
+                self.assertTrue(
+                    len(matches) > 1,
+                    'expected more than one route to match "{}"; found {}'
+                    .format(value, [s[0].group(0) for s in matches]))
+            else:
+                self.assertEqual(
+                    len(matches), 1,
+                    'expected only one route to match "{}"; found {}'
+                    .format(value, [s[0].group(0) for s in matches]))
+
+            self.assertEqual(matches[0][0].group(0), value, 'failed at "{}"'.format(value))
+            self.assertEqual(matches[0][2].__name__, expected)
+
     def test_invalid_routes(self):
 
-        def assert_not_route(string):
-            self.assertEquals(self._route(string), [], 'failed asserting no route for {}'.format(string))
-
-        assert_not_route('')
-        assert_not_route('zfoobar')
-        assert_not_route(' ')
-        assert_not_route('$')
-
-        # TODO assert_no_route('foobar') shouldn't match :file
+        # FIXME foobar shouldn't match :file i.e. self.assertNotRoute('foobar')
+        self.assertNotRoute(' ')
+        self.assertNotRoute('$')
+        self.assertNotRoute('')
+        self.assertNotRoute('zfoobar')
 
     def test_valid_routes(self):
 
-        def assert_route(string_or_strings, first=False, name=None):
-            if isinstance(string_or_strings, str):
-                string_or_strings = [string_or_strings]
-
-            if name:
-                expected_route_name = '_ex_route_' + name
-            else:
-                expected_route_name = '_ex_route_' + string_or_strings[0]
-
-            for string in string_or_strings:
-                matches = self._route(string)
-
-                if not first:
-                    self.assertEqual(
-                        len(matches), 1,
-                        'expected only one route to match "{}"; found {}'
-                        .format(string, [s[0].group(0) for s in matches]))
-                else:
-                    self.assertTrue(
-                        len(matches) > 1,
-                        'expected more than one route to match "{}"; found {}'
-                        .format(string, [s[0].group(0) for s in matches]))
-
-                self.assertEqual(matches[0][0].group(0), string, 'failed for "{}"'.format(string))
-
-                self.assertEqual(matches[0][2].__name__[0:len(expected_route_name)], expected_route_name)
-
-        # TODO [review] assert_route('g') works for the command scanner but fails a regex match, why?
-        # TODO [review] assert_route('global') works for the command scanner but fails a regex match, why?
-
-        assert_route(['bnext', 'bn'])
-        assert_route(['bNext', 'bN'], name='bprevious')
-        assert_route(['bprevious', 'bp'])
-        assert_route(['bfirst', 'bf'])
-        assert_route(['brewind', 'br'], name='bfirst')
-        assert_route(['blast', 'bl'])
-        assert_route(['browse', 'bro'], first=True)
-        assert_route('buffers')
-        assert_route('cd')
-        assert_route('cdd')
-        assert_route('clo')
-        assert_route('close')
-        assert_route('co')
-        assert_route('copy')
-        assert_route('cq')
-        assert_route('cquit')
-        assert_route('d')
-        assert_route('delete')
-        assert_route('e')
-        assert_route('edit')
-        assert_route('exi', first=True)
-        assert_route('exit', first=True)
-        assert_route('f')
-        assert_route('file')
-        assert_route('files', first=True, name='buffers')
-        assert_route('h')
-        assert_route('help')
-        assert_route('let ', name='let')
-        assert_route('ls', name='buffers')
-        assert_route('m')
-        assert_route('move')
-        assert_route('new')
-        assert_route('nn')
-        assert_route('nnoremap')
-        assert_route('no')
-        assert_route('noremap')
-        assert_route('nun')
-        assert_route('nunmap')
-        assert_route('ono')
-        assert_route('onoremap')
-        assert_route('ou')
-        assert_route('ounmap')
-        assert_route('p')
-        assert_route('print')
-        assert_route('pw')
-        assert_route('pwd')
-        assert_route('q')
-        assert_route('qa')
-        assert_route('qall')
-        assert_route('quit')
-        assert_route('r')
-        assert_route('read')
-        assert_route('reg')
-        assert_route('registers')
-        assert_route('s')
-        assert_route('se')
-        assert_route('set')
-        assert_route('setl')
-        assert_route('setlocal')
-        assert_route('sh')
-        assert_route('shell')
-        assert_route('snor')
-        assert_route('snoremap')
-        assert_route('sp')
-        assert_route('split')
-        assert_route('substitute')
-        assert_route('sunm')
-        assert_route('sunmap')
-        assert_route('tabc')
-        assert_route('tabclose')
-        assert_route('tabfir')
-        assert_route('tabfirst')
-        assert_route('tabl')
-        assert_route('tablast')
-        assert_route('tabn')
-        assert_route('tabN', name='tabprevious')
-        assert_route('tabnext')
-        assert_route('tabNext', name='tabprevious')
-        assert_route('tabo')
-        assert_route('tabonly')
-        assert_route('tabp')
-        assert_route('tabprevious')
-        assert_route('tabr', name='tabfirst')
-        assert_route('tabrewind', name='tabfirst')
-        assert_route('unm')
-        assert_route('unmap')
-        assert_route('vn')
-        assert_route('vnoremap')
-        assert_route('vs')
-        assert_route('vsplit')
-        assert_route('vu')
-        assert_route('vunmap')
-        assert_route('w')
-        assert_route('wa')
-        assert_route('wall')
-        assert_route('wq')
-        assert_route('wqall', first=True)
-        assert_route('write')
-        assert_route('x', name='exit')
-        assert_route('xa', name="wqall")
-        assert_route('xall', name="wqall")
-        assert_route('xit', name='exit')
-        assert_route('y')
-        assert_route('yank')
+        # TODO [review] self.assertRoute('g') works for the command scanner but fails a regex match, why?
+        # TODO [review] self.assertRoute('global') works for the command scanner but fails a regex match, why?
+        self.assertRoute('_ex_route_bfirst', ['bfirst', 'bf', 'brewind', 'br'])
+        self.assertRoute('_ex_route_blast', ['blast', 'bl'])
+        self.assertRoute('_ex_route_bnext', ['bnext', 'bn'])
+        self.assertRoute('_ex_route_bprevious', ['bNext', 'bN', 'bprevious', 'bp'])
+        self.assertRoute('_ex_route_browse', ['browse', 'bro'], multiple_matches=True)
+        self.assertRoute('_ex_route_buffers', ['buffers', 'ls'])
+        self.assertRoute('_ex_route_buffers', ['files'], multiple_matches=True)
+        self.assertRoute('_ex_route_cd', ['cd'])
+        self.assertRoute('_ex_route_cdd', ['cdd'])
+        self.assertRoute('_ex_route_close', ['close', 'clo'])
+        self.assertRoute('_ex_route_copy', ['copy', 'co'])
+        self.assertRoute('_ex_route_cquit', ['cquit', 'cq'])
+        self.assertRoute('_ex_route_delete', ['delete', 'd'])
+        self.assertRoute('_ex_route_edit', ['edit', 'e'])
+        self.assertRoute('_ex_route_exit', ['exit', 'exi'], multiple_matches=True)
+        self.assertRoute('_ex_route_exit', ['xit', 'x'])
+        self.assertRoute('_ex_route_file', ['file', 'f'])
+        self.assertRoute('_ex_route_help', ['help', 'h'])
+        self.assertRoute('_ex_route_let', ['let '])  # FIXME Should "let " with a trailing space match?
+        self.assertRoute('_ex_route_move', ['move', 'm'])
+        self.assertRoute('_ex_route_new', ['new'])
+        self.assertRoute('_ex_route_nnoremap', ['nnoremap', 'nn'])
+        self.assertRoute('_ex_route_noremap', ['noremap', 'no'])
+        self.assertRoute('_ex_route_nunmap', ['nunmap', 'nun'])
+        self.assertRoute('_ex_route_onoremap', ['onoremap', 'ono'])
+        self.assertRoute('_ex_route_ounmap', ['ounmap', 'ou'])
+        self.assertRoute('_ex_route_print', ['print', 'p'])
+        self.assertRoute('_ex_route_pwd', ['pwd', 'pw'])
+        self.assertRoute('_ex_route_qall', ['qall', 'qa'])
+        self.assertRoute('_ex_route_quit', ['quit', 'q'])
+        self.assertRoute('_ex_route_read', ['read', 'r'])
+        self.assertRoute('_ex_route_registers', ['registers', 'reg'])
+        self.assertRoute('_ex_route_set', ['set', 'se'])
+        self.assertRoute('_ex_route_setlocal', ['setlocal', 'setl'])
+        self.assertRoute('_ex_route_shell', ['shell', 'sh'])
+        self.assertRoute('_ex_route_snoremap', ['snoremap', 'snor'])
+        self.assertRoute('_ex_route_split', ['split', 'sp'])
+        self.assertRoute('_ex_route_substitute', ['substitute', 's'])
+        self.assertRoute('_ex_route_sunmap', ['sunmap', 'sunm'])
+        self.assertRoute('_ex_route_tabclose', ['tabclose', 'tabc'])
+        self.assertRoute('_ex_route_tabfirst', ['tabfirst', 'tabfir', 'tabrewind', 'tabr'])
+        self.assertRoute('_ex_route_tablast', ['tablast', 'tabl'])
+        self.assertRoute('_ex_route_tabnext', ['tabnext', 'tabn'])
+        self.assertRoute('_ex_route_tabonly', ['tabonly', 'tabo'])
+        self.assertRoute('_ex_route_tabprevious', ['tabNext', 'tabN', 'tabprevious', 'tabp'])
+        self.assertRoute('_ex_route_unmap', ['unmap', 'unm'])
+        self.assertRoute('_ex_route_vnoremap', ['vnoremap', 'vn'])
+        self.assertRoute('_ex_route_vsplit', ['vsplit', 'vs'])
+        self.assertRoute('_ex_route_vunmap', ['vunmap', 'vu'])
+        self.assertRoute('_ex_route_wall', ['wall', 'wa'])
+        self.assertRoute('_ex_route_wq', ['wq'])
+        self.assertRoute('_ex_route_wqall', ['wqall', 'wqa'], multiple_matches=True)
+        self.assertRoute('_ex_route_wqall', ['xall', 'xa'])
+        self.assertRoute('_ex_route_write', ['write', 'w'])
+        self.assertRoute('_ex_route_yank', ['yank', 'y'])
