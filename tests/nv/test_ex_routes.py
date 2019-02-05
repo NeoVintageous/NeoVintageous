@@ -309,36 +309,21 @@ class Test_ex_route_tabnext(unittest.TestCase):
 class TestRoutes(unittest.TestCase):
 
     def _matchRoute(self, string):
-        matches = []
         for route, command in ex_routes.items():
             match = re.compile(route).match(string)
             if match:
-                matches.append((match, route, command))
+                return (match, route, command)
 
-        return matches
+        return None
 
     def assertNotRoute(self, string):
-        self.assertEquals(self._matchRoute(string), [], 'failed asserting no route for {}'.format(string))
+        self.assertEquals(self._matchRoute(string), None, 'failed asserting no route for {}'.format(string))
 
     def assertRoute(self, expected, values, multiple_matches=False):
         for value in values:
-            matches = self._matchRoute(value)
-            # The route matcher sometimes matches multiple route, and uses the
-            # first one found, which is one of the reasons the route ordering is
-            # important, but it could probably always be an exact match.
-            if multiple_matches:
-                self.assertTrue(
-                    len(matches) > 1,
-                    'expected more than one route to match "{}"; found {}'
-                    .format(value, [s[0].group(0) for s in matches]))
-            else:
-                self.assertEqual(
-                    len(matches), 1,
-                    'expected only one route to match "{}"; found {}'
-                    .format(value, [s[0].group(0) for s in matches]))
-
-            self.assertEqual(matches[0][0].group(0), value, 'failed at "{}"'.format(value))
-            self.assertEqual(matches[0][2].__name__, expected)
+            match, route, command = self._matchRoute(value)
+            self.assertEqual(command.__name__, expected)
+            self.assertEqual(match.group(0), value, 'failed at "{}"'.format(value))
 
     def test_invalid_routes(self):
 
@@ -352,13 +337,13 @@ class TestRoutes(unittest.TestCase):
 
         # TODO [review] self.assertRoute('g') works for the command scanner but fails a regex match, why?
         # TODO [review] self.assertRoute('global') works for the command scanner but fails a regex match, why?
+
         self.assertRoute('_ex_route_bfirst', ['bfirst', 'bf', 'brewind', 'br'])
         self.assertRoute('_ex_route_blast', ['blast', 'bl'])
         self.assertRoute('_ex_route_bnext', ['bnext', 'bn'])
         self.assertRoute('_ex_route_bprevious', ['bNext', 'bN', 'bprevious', 'bp'])
-        self.assertRoute('_ex_route_browse', ['browse', 'bro'], multiple_matches=True)
-        self.assertRoute('_ex_route_buffers', ['buffers', 'ls'])
-        self.assertRoute('_ex_route_buffers', ['files'], multiple_matches=True)
+        self.assertRoute('_ex_route_browse', ['browse', 'bro'])
+        self.assertRoute('_ex_route_buffers', ['files', 'buffers', 'ls'])
         self.assertRoute('_ex_route_cd', ['cd'])
         self.assertRoute('_ex_route_cdd', ['cdd'])
         self.assertRoute('_ex_route_close', ['close', 'clo'])
@@ -366,11 +351,10 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_cquit', ['cquit', 'cq'])
         self.assertRoute('_ex_route_delete', ['delete', 'd'])
         self.assertRoute('_ex_route_edit', ['edit', 'e'])
-        self.assertRoute('_ex_route_exit', ['exit', 'exi'], multiple_matches=True)
-        self.assertRoute('_ex_route_exit', ['xit', 'x'])
+        self.assertRoute('_ex_route_exit', ['exit', 'exi', 'xit', 'x'])
         self.assertRoute('_ex_route_file', ['file', 'f'])
         self.assertRoute('_ex_route_help', ['help', 'h'])
-        self.assertRoute('_ex_route_let', ['let '])  # FIXME Should "let " with a trailing space match?
+        self.assertRoute('_ex_route_let', ['let '])
         self.assertRoute('_ex_route_move', ['move', 'm'])
         self.assertRoute('_ex_route_new', ['new'])
         self.assertRoute('_ex_route_nnoremap', ['nnoremap', 'nn'])
@@ -378,6 +362,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_nunmap', ['nunmap', 'nun'])
         self.assertRoute('_ex_route_onoremap', ['onoremap', 'ono'])
         self.assertRoute('_ex_route_ounmap', ['ounmap', 'ou'])
+        self.assertRoute('_ex_route_only', ['only', 'on'])
         self.assertRoute('_ex_route_print', ['print', 'p'])
         self.assertRoute('_ex_route_pwd', ['pwd', 'pw'])
         self.assertRoute('_ex_route_qall', ['qall', 'qa'])
@@ -403,7 +388,6 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_vunmap', ['vunmap', 'vu'])
         self.assertRoute('_ex_route_wall', ['wall', 'wa'])
         self.assertRoute('_ex_route_wq', ['wq'])
-        self.assertRoute('_ex_route_wqall', ['wqall', 'wqa'], multiple_matches=True)
-        self.assertRoute('_ex_route_wqall', ['xall', 'xa'])
+        self.assertRoute('_ex_route_wqall', ['wqall', 'wqa', 'xall', 'xa'])
         self.assertRoute('_ex_route_write', ['write', 'w'])
         self.assertRoute('_ex_route_yank', ['yank', 'y'])
