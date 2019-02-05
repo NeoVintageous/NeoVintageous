@@ -459,9 +459,9 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
         if prev_opening_bracket is None:
             # Check whether the caret is exactly at a bracket.
             # Tag names may be escaped, so slice them.
-            if (i == 0 and view.substr(start) == tags[0][-1] and
-               view.substr(start - 1) != '\\'):
-                    return Region(start, start + 1)
+            if (i == 0 and view.substr(start) == tags[0][-1] and view.substr(start - 1) != '\\'):
+                return Region(start, start + 1)
+
             # Unbalanced tags; nothing we can do.
             return
 
@@ -624,7 +624,7 @@ def find_indent_text_object(view, s, inclusive=True):
     # From http://vim.wikia.com/wiki/Indent_text_object:
     if inclusive:
         # "a"
-        if whitespace_length is 0:
+        if whitespace_length == 0:
             # When the cursor is on a line with zero indent,
             # the selection will be delimited by blank lines
             # (that may or may not contain whitespaces).
@@ -639,7 +639,7 @@ def find_indent_text_object(view, s, inclusive=True):
             break_on_empty_lines = False
     else:
         # "i"
-        if whitespace_length is 0:
+        if whitespace_length == 0:
             # When the cursor is on a line with zero indent,
             # the selection will be delimited by blank lines
             # (that may or may not contain whitespaces).

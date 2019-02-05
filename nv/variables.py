@@ -28,7 +28,7 @@ _defaults = {
 }
 
 
-_variables = {}
+_variables = {}  # type: dict
 
 
 def expand_keys(seq):

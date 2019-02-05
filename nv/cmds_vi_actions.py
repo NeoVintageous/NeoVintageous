@@ -193,7 +193,7 @@ class _vi_g_big_u(ViTextCommandBase):
             else:
                 ui_blink()
         else:
-                regions_transformer(self.view, f)
+            regions_transformer(self.view, f)
 
         self.enter_normal_mode(mode)
 
