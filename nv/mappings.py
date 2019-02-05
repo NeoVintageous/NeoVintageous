@@ -40,7 +40,7 @@ _mappings = {
     VISUAL_BLOCK: {},
     VISUAL_LINE: {},
     VISUAL: {}
-}
+}  # type: dict
 
 
 class Mapping:

@@ -58,7 +58,7 @@ def register(seq, modes, *args, **kwargs):
     """
     def inner(cls):
         for mode in modes:
-                mappings[mode][seq] = cls(*args, **kwargs)
-                classes[cls.__name__] = cls
+            mappings[mode][seq] = cls(*args, **kwargs)
+            classes[cls.__name__] = cls
         return cls
     return inner
