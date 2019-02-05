@@ -51,6 +51,7 @@ from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import key_names
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
+from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import iter_settings
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
@@ -741,9 +742,7 @@ class _nv_fs_completion(TextCommand):
         if self.view.score_selector(0, 'text.excmdline') == 0:
             return
 
-        state = State(self.view)
-        _nv_fs_completion.frozen_dir = (_nv_fs_completion.frozen_dir or
-                                        (state.settings.vi['_cmdline_cd'] + '/'))
+        _nv_fs_completion.frozen_dir = (_nv_fs_completion.frozen_dir or (get_cmdline_cwd() + '/'))
 
         cmd, prefix, only_dirs = parse_for_fs(self.view.substr(self.view.line(0)))
         if not cmd:

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
+
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.vi.settings import _SCOPE_WINDOW
@@ -22,6 +24,8 @@ from NeoVintageous.nv.vi.settings import _SublimeSettings
 from NeoVintageous.nv.vi.settings import _VI_OPTIONS
 from NeoVintageous.nv.vi.settings import _vi_user_setting
 from NeoVintageous.nv.vi.settings import _VintageSettings
+from NeoVintageous.nv.vi.settings import get_cmdline_cwd
+from NeoVintageous.nv.vi.settings import set_cmdline_cwd
 from NeoVintageous.nv.vi.settings import SettingsManager
 
 
@@ -124,3 +128,28 @@ class TestViEditorSettings(unittest.ViewTestCase):
         self.settsman.view.window().settings().set('vintageous_foo', 100)
         self.assertEqual(self.settsman['foo'], 100)
         del _VI_OPTIONS['foo']
+
+
+class TestCmdlineCwd(unittest.ViewTestCase):
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch('NeoVintageous.nv.vi.settings.active_window')
+    def test_returns_cwd(self, active_window):
+        active_window.return_value = None
+        self.assertEqual(get_cmdline_cwd(), os.getcwd())
+
+    @unittest.mock.patch('sublime.Window.extract_variables')
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    def test_returns_cwd_when_no_folder_variable_found(self, extract_variables):
+        extract_variables.return_value = {}
+        self.assertEqual(get_cmdline_cwd(), os.getcwd())
+
+    @unittest.mock.patch('sublime.Window.extract_variables')
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    def test_returns_cwd_folder_variable(self, extract_variables):
+        extract_variables.return_value = {'folder': '/tmp/folder'}
+        self.assertEqual(get_cmdline_cwd(), '/tmp/folder')
+
+    def test_returns_set_cwd(self):
+        set_cmdline_cwd('/tmp/fizz')
+        self.assertEqual(get_cmdline_cwd(), '/tmp/fizz')

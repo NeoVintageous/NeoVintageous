@@ -119,6 +119,8 @@ def plugin_loaded():
         sublime.log_input(True)
         sublime.log_commands(True)
 
+    loading_exeption = None
+
     pc_event = None
 
     try:
@@ -129,47 +131,27 @@ def plugin_loaded():
             pc_event = 'post_upgrade'
     except ImportError:
         pass  # Package Control isn't available (PC is not required)
-    except Exception:
-        import traceback
-        traceback.print_exc()
-
-    try:
-        _update_ignored_packages()
-    except Exception:
-        import traceback
-        traceback.print_exc()
-
-    try:
-        _loading_exeption = None
-
-        from NeoVintageous.nv import rc
-
-        rc.load()
-
-        window = sublime.active_window()
-        if window:
-            # Hack to correctly set the current woring directory. The way
-            # settings are handled needs to be completley overhauled.
-            def set_window_cwd(window):
-                settings = window.settings().get('vintage')
-
-                if not isinstance(settings, dict):
-                    settings = {}
-
-                variables = window.extract_variables()
-                if 'folder' in variables:
-                    settings['_cmdline_cd'] = variables['folder']
-
-                window.settings().set('vintage', settings)
-
-            set_window_cwd(window)
-
     except Exception as e:
         import traceback
         traceback.print_exc()
-        _loading_exeption = e
+        loading_exeption = e
 
-    if _startup_exception or _loading_exeption:
+    try:
+        _update_ignored_packages()
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        loading_exeption = e
+
+    try:
+        from NeoVintageous.nv import rc
+        rc.load()
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        loading_exeption = e
+
+    if _startup_exception or loading_exeption:
 
         try:
             _cleanup_views()
@@ -177,7 +159,7 @@ def plugin_loaded():
             import traceback
             traceback.print_exc()
 
-        if isinstance(_startup_exception, ImportError) or isinstance(_loading_exeption, ImportError):
+        if isinstance(_startup_exception, ImportError) or isinstance(loading_exeption, ImportError):
             if pc_event == 'post_upgrade':
                 message = "Failed to load some modules trying to upgrade NeoVintageous. "\
                           "Please restart Sublime Text to finish the upgrade."

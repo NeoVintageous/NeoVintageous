@@ -47,6 +47,8 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.search import find_all_in_range
+from NeoVintageous.nv.vi.settings import get_cmdline_cwd
+from NeoVintageous.nv.vi.settings import set_cmdline_cwd
 from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
 from NeoVintageous.nv.vi.utils import adding_regions
@@ -73,40 +75,28 @@ _log = logging.getLogger(__name__)
 
 
 def _changing_cd(f, *args, **kwargs):
-
     @wraps(f)
     def inner(*args, **kwargs):
         view = kwargs.get('view')
         if not view:
             raise RuntimeError('view is required')
 
-        # TODO [review] State dependency
-        state = State(view)
+        original_cwd = os.getcwd()
+        _log.debug('original cwd: %s', original_cwd)
 
-        old = os.getcwd()
-        _log.debug('cwd = %s', old)
         try:
-            # FIXME: Under some circumstances, like when switching projects to
-            # a file whose _cmdline_cd has not been set, _cmdline_cd might
-            # return 'None'. In such cases, change to the actual current
-            # directory as a last measure. (We should probably fix this anyway).
-            cmdline_cwd = state.settings.vi['_cmdline_cd']
-            _log.debug('cmdline_cwd = %s', cmdline_cwd)
+            cmdline_cwd = get_cmdline_cwd()
+            _log.debug('cmdline cwd: %s', cmdline_cwd)
 
-            if cmdline_cwd:
-                _log.debug('changing cwd to: %s', cmdline_cwd)
-                if os.path.isdir(cmdline_cwd):
-                    os.chdir(cmdline_cwd)
-                else:
-                    _log.debug('cmdline_cwd is not a valid directory or does not exist')
+            if cmdline_cwd and os.path.isdir(cmdline_cwd):
+                _log.debug('changing cwd to %s from %s', cmdline_cwd, original_cwd)
+                os.chdir(cmdline_cwd)
 
             f(*args, **kwargs)
         finally:
-            _log.debug('changing cwd back to: %s', old)
-            if os.path.isdir(old):
-                os.chdir(old)
-            else:
-                _log.debug('old cwd is not a valid directory or does not exist')
+            if os.path.isdir(original_cwd):
+                _log.debug('resetting cwd to %s', original_cwd)
+                os.chdir(original_cwd)
 
     return inner
 
@@ -170,11 +160,8 @@ def ex_bprevious(window, **kwargs):
 
 
 def ex_browse(window, view, **kwargs):
-    # TODO [review] State dependency
-    state = State(view)
-
     window.run_command('prompt_open_file', {
-        'initial_directory': state.settings.vi['_cmdline_cd']
+        'initial_directory': get_cmdline_cwd()
     })
 
 
@@ -224,32 +211,24 @@ def ex_cd(window, view, path=None, forceit=False, **kwargs):
     if view.is_dirty() and not forceit:
         return message("E37: No write since last change")
 
-    # TODO [review] State dependency
-    state = State(view)
-
     if not path:
-        state.settings.vi['_cmdline_cd'] = os.path.expanduser("~")
+        set_cmdline_cwd(os.path.expanduser('~'))
+        status_message(path)
 
-        return ex_pwd(window=window, view=view, path=path, forceit=forceit, **kwargs)
-
-    # TODO: It seems there a few symbols that are always substituted when they represent a
-    # filename. We should have a global method of substiting them.
-    if path == '%:h':
+    # TODO It seems there a few symbols that are always substituted when they
+    # represent a filename. We should have a global method of substiting them.
+    elif path == '%:h':
         fname = view.file_name()
         if fname:
-            state.settings.vi['_cmdline_cd'] = os.path.dirname(fname)
+            set_cmdline_cwd(os.path.dirname(fname))
+            status_message(path)
+    else:
+        path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
+        if not os.path.exists(path):
+            return message("E344: Can't find directory \"%s\" in cdpath" % path)
 
-            ex_pwd(window=window, view=view, path=path, forceit=forceit, **kwargs)
-
-        return
-
-    path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
-    if not os.path.exists(path):
-        return message("E344: Can't find directory \"%s\" in cdpath" % path)
-
-    state.settings.vi['_cmdline_cd'] = path
-
-    ex_pwd(window=window, view=view, path=path, forceit=forceit, **kwargs)
+        set_cmdline_cwd(path)
+        status_message(path)
 
 
 # Non-standard command to change the current directory to the active view's
@@ -261,13 +240,13 @@ def ex_cdd(view, forceit=False, **kwargs):
     if view.is_dirty() and not forceit:
         return message("E37: No write since last change")
 
-    path = os.path.dirname(view.file_name())
+    file_name = view.file_name()
+    if not file_name:
+        return
 
     try:
-        # TODO [review] State dependency
-        state = State(view)
-
-        state.settings.vi['_cmdline_cd'] = path
+        path = os.path.dirname(file_name)
+        set_cmdline_cwd(path)
         status_message(path)
     except IOError:
         message("E344: Can't find directory \"%s\" in cdpath" % path)
@@ -379,10 +358,7 @@ def ex_edit(window, view, file_name, cmd, forceit=False, **kwargs):
                 if os.path.isdir(file_dir):
                     return file_dir
 
-                # TODO [review] State dependency
-                state = State(view)
-
-                file_dir = state.settings.vi['_cmdline_cd']
+                file_dir = get_cmdline_cwd()
                 if os.path.isdir(file_dir):
                     return file_dir
 

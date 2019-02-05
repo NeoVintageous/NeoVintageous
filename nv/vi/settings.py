@@ -15,18 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import json
 from collections import defaultdict
 from collections import namedtuple
+import json
+import os
 
+from sublime import active_window
 from sublime import load_settings
 from sublime import save_settings
 
 _vi_user_setting = namedtuple('vi_editor_setting', 'scope values default parser action negatable')
 
 _WINDOW_SETTINGS = [
-    'last_buffer_search',
-    '_cmdline_cd'
+    'last_buffer_search'
 ]
 
 _SCOPE_WINDOW = 1
@@ -189,6 +190,26 @@ def set_global(view, name, value):
             except KeyError:
                 pass
         raise
+
+
+_storage = {}  # type: dict
+
+
+def get_cmdline_cwd():
+    if 'cmdline_cwd' in _storage:
+        return _storage['cmdline_cwd']
+
+    window = active_window()
+    if window:
+        variables = window.extract_variables()
+        if 'folder' in variables:
+            return variables['folder']
+
+    return os.getcwd()
+
+
+def set_cmdline_cwd(path):
+    _storage['cmdline_cwd'] = path
 
 
 def _get_option(view, name):
