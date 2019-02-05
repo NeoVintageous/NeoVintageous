@@ -68,6 +68,7 @@ def is_view(view):
         is_ignored_but_command_mode(view)
     ))
 
+
 def _regions_transformer(sels, view, f, with_idx):
     new = []
     for idx, sel in enumerate(sels):
@@ -89,15 +90,18 @@ def _regions_transformer(sels, view, f, with_idx):
     view.sel().clear()
     view.sel().add_all(new)
 
+
 def regions_transformer(view, f):
     # type: (...) -> None
     sels = list(view.sel())
     _regions_transformer(sels, view, f, False)
 
+
 def regions_transformer_indexed(view, f):
     # type: (...) -> None
     sels = list(view.sel())
     _regions_transformer(sels, view, f, True)
+
 
 def regions_transformer_reversed(view, f):
     # type: (...) -> None
