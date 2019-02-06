@@ -171,7 +171,7 @@ class ViewTestCase(unittest.TestCase):
     def internalNormal(self, text):
         self._setupView(text, INTERNAL_NORMAL)
 
-    def rinternalNormal(self, text):
+    def rInternalNormal(self, text):
         self._setupView(text, INTERNAL_NORMAL, reverse=True)
 
     def visual(self, text):
@@ -240,37 +240,46 @@ class ViewTestCase(unittest.TestCase):
 
     def assertNormal(self, expected, msg=None):
         self._assertView(expected, NORMAL, msg)
+        for sel in self.view.sel():
+            self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid NORMAL mode selection')
 
     def assertInsert(self, expected, msg=None):
         self._assertView(expected, INSERT, msg)
+        for sel in self.view.sel():
+            self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid INSERT mode selection')
 
     def assertInternalNormal(self, expected, strict=False, msg=None):
         self._assertViewSelectionContent(expected, msg)
         self._assertMode(INTERNAL_NORMAL if strict else NORMAL)
+        self.assertSelectionIsNotReversed()
 
     def assertRInternalNormal(self, expected, strict=False, msg=None):
-        self.assertInternalNormal(expected, strict, msg)
+        self._assertViewSelectionContent(expected, msg)
+        self._assertMode(INTERNAL_NORMAL if strict else NORMAL)
         self.assertSelectionIsReversed()
 
     def assertVisual(self, expected, msg=None):
         self._assertView(expected, VISUAL, msg)
+        self.assertSelectionIsNotReversed()
 
     def assertRVisual(self, expected, msg=None):
-        self.assertVisual(expected, msg)
+        self._assertView(expected, VISUAL, msg)
         self.assertSelectionIsReversed()
 
     def assertVline(self, expected, msg=None):
         self._assertView(expected, VISUAL_LINE, msg)
+        self.assertSelectionIsNotReversed()
 
     def assertRVline(self, expected, msg=None):
-        self.assertVline(expected, msg)
+        self._assertView(expected, VISUAL_LINE, msg)
         self.assertSelectionIsReversed()
 
     def assertVblock(self, expected, msg=None):
         self._assertView(expected, VISUAL_BLOCK, msg)
+        self.assertSelectionIsNotReversed()
 
     def assertRVblock(self, expected, msg=None):
-        self.assertVblock(expected, msg)
+        self._assertView(expected, VISUAL_BLOCK, msg)
         self.assertSelectionIsReversed()
 
     def assertContent(self, expected, msg=None):
@@ -402,6 +411,10 @@ class ViewTestCase(unittest.TestCase):
         #   expected (int):
         #       The expected number of selections in view.
         self.assertEqual(expected, len(self.view.sel()))
+
+    def assertSelectionIsNotReversed(self):
+        for sel in self.view.sel():
+            self.assertTrue(sel.b >= sel.a, 'failed asserting selection is not reversed')
 
     def assertSelectionIsReversed(self):
         for sel in self.view.sel():
@@ -560,77 +573,95 @@ class FunctionalTestCase(ViewTestCase):
         # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
         # >>> eq('xxx\nbu|zz\nxxx', 'n_cc', 'i_xxx\n|\nxxx')
 
-        rtext = False
-        if text[:2] == 'r_':
-            text = text[2:]
-            rtext = True
-
         if expected is None:
             expected = text
 
-        rexpected = False
+        if text[:2] == 'r_':
+            text = text[2:]
+            reverse_text = True
+        else:
+            reverse_text = False
+
         if expected[:2] == 'r_':
             expected = expected[2:]
-            rexpected = True
+            reverse_expected = True
+        else:
+            reverse_expected = False
 
-        if feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>')):
-            if feed[0] == 'l':
-                if rtext:
-                    self.rvline(text)
-                else:
-                    self.vline(text)
-            elif feed[0] == 'b':
-                if rtext:
-                    self.rvblock(text)
-                else:
-                    self.vblock(text)
+        is_feed_visual = feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>'))
+
+        if feed[:2] in ('l_', 'b_'):
+            text_mode = feed[0]
+        elif is_feed_visual:
+            text_mode = 'v'
+        else:
+            text_mode = 'n'
+
+        if expected[:2] in ('n_', 'v_', 'l_', 'b_', 'i_', 'N_'):
+            expected_mode = expected[0]
+            expected = expected[2:]
+        elif feed[:2] in ('l_', 'b_'):
+            expected_mode = feed[0]
+        elif is_feed_visual:
+            expected_mode = 'v'
+        else:
+            expected_mode = 'n'
+
+        if text_mode == 'n':
+            self.normal(text)
+        elif text_mode == 'v':
+            if reverse_text:
+                self.rvisual(text)
             else:
-                if rtext:
-                    self.rvisual(text)
-                else:
-                    self.visual(text)
+                self.visual(text)
+        elif text_mode == 'l':
+            if reverse_text:
+                self.rvline(text)
+            else:
+                self.vline(text)
+        elif text_mode == 'b':
+            if reverse_text:
+                self.rvblock(text)
+            else:
+                self.vblock(text)
+        elif text_mode == 'N':
+            if reverse_text:
+                self.rInternalNormal(text)
+            else:
+                self.internalNormal(text)
+        elif text_mode == 'i':
+            self.insert(text)
+        else:
+            self.assertTrue(False, 'invalid text mode')
 
-            self.feed(feed)
+        self.feed(feed)
 
-            if expected[:2] == 'n_':
-                self.assertNormal(expected[2:], msg)
-            elif expected[:2] == 'l_':
-                self.assertVline(expected[2:], msg)
-            elif expected[:2] == 'b_':
-                self.assertVblock(expected[2:], msg)
-            elif expected[:2] == 'i_':
-                self.assertInsert(expected[2:], msg)
-            elif expected[:2] == 'v_':
-                self.assertVisual(expected[2:], msg)
-            elif feed[0] == 'l':
-                self.assertVline(expected, msg)
-            elif feed[0] == 'b':
-                self.assertVblock(expected, msg)
+        if expected_mode == 'n':
+            self.assertNormal(expected, msg)
+        elif expected_mode == 'v':
+            if reverse_expected:
+                self.assertRVisual(expected, msg)
             else:
                 self.assertVisual(expected, msg)
-        else:
-            self.normal(text)
-
-            self.feed(feed)
-
-            if expected[:2] == 'v_':
-                self.assertVisual(expected[2:], msg)
-            elif expected[:2] == 'l_':
-                self.assertVline(expected[2:], msg)
-            elif expected[:2] == 'b_':
-                self.assertVblock(expected[2:], msg)
-            elif expected[:2] == 'i_':
-                self.assertInsert(expected[2:], msg)
-            elif expected[:2] == 'N_':
-                self.assertInternalNormal(expected[2:], msg)
+        elif expected_mode == 'l':
+            if reverse_expected:
+                self.assertRVline(expected, msg)
             else:
-                self.assertNormal(expected, msg)
-
-        if rexpected:
-            self.assertSelectionIsReversed()
+                self.assertVline(expected, msg)
+        elif expected_mode == 'b':
+            if reverse_expected:
+                self.assertRVblock(expected, msg)
+            else:
+                self.assertVblock(expected, msg)
+        elif expected_mode == 'N':
+            if reverse_expected:
+                self.assertRInternalNormal(expected, msg)
+            else:
+                self.assertInternalNormal(expected, msg)
+        elif expected_mode == 'i':
+            self.assertInsert(expected, msg)
         else:
-            for sel in self.view.sel():
-                self.assertTrue(sel.b >= sel.a, 'failed asserting selection is not reversed')
+            self.assertTrue(False, 'invalid expected mode')
 
 
 # DEPRECATED Use newer APIs.

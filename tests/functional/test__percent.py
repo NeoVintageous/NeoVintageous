@@ -107,7 +107,7 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
         start = 'x\nf {\na\nb\nc\n|}\n|x\n'
         self.vline(start)
         self.feed('l_%')
-        self.assertVline('x\n|f {\na\nb\nc\n}\n|x\n')
+        self.assertRVline('x\n|f {\na\nb\nc\n}\n|x\n')
         self.feed('l_%')
         self.assertRVline(start)
 

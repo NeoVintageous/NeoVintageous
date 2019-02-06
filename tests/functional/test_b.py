@@ -41,7 +41,7 @@ class Test_b(unittest.FunctionalTestCase):
         self.feed('v_2b')
         self.assertVisual('one two three four f|ive s|ix seven eight')
         self.feed('v_b')
-        self.assertVisual('one two three four |fi|ve six seven eight')
+        self.assertRVisual('one two three four |fi|ve six seven eight')
         self.feed('v_3b')
         self.assertRVisual('one |two three four fi|ve six seven eight')
         self.feed('v_b')
