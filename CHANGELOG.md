@@ -10,6 +10,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#427](https://github.com/NeoVintageous/NeoVintageous/issues/427): `{Visual}gv` should select previous selection
 * Fixed [#423](https://github.com/NeoVintageous/NeoVintageous/issues/423): `:w` cannot find file and save, but `:Save` and `<Ctrl-s>` work
 * Fixed [#425](https://github.com/NeoVintageous/NeoVintageous/issues/425): Reloading vintageousrc should unload existing mappings
 * Fixed [#422](https://github.com/NeoVintageous/NeoVintageous/issues/422): `{Visual}y` should highlight the selection (HighlightedYank)

@@ -152,6 +152,20 @@ def restoring_sels(view):
         view.sel().add(s)
 
 
+# Save selection. Used, for example, by the gv command.
+def save_previous_selection(view, mode):
+    # type: (...) -> None
+    if view.has_non_empty_selection_region():
+        # Only save a selection if it's not empty.
+        view.add_regions('visual_sel', list(view.sel()))
+        view.settings().set('_nv_visual_sel_mode', mode)
+
+
+def get_previous_selection(view):
+    # type: (...) -> tuple
+    return (view.get_regions('visual_sel'), view.settings().get('_nv_visual_sel_mode'))
+
+
 def show_if_not_visible(view):
     if view.sel():
         pt = view.sel()[0].b

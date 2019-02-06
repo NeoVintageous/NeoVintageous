@@ -35,6 +35,7 @@ from NeoVintageous.nv.vi.core import IrreversibleTextCommand
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.utils import first_sel
+from NeoVintageous.nv.vi.utils import get_previous_selection
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
@@ -43,6 +44,7 @@ from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
+from NeoVintageous.nv.vi.utils import save_previous_selection
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -442,7 +444,8 @@ class _enter_normal_mode(ViTextCommandBase):
     """
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('enter normal mode (mode=%s, from_init=%s)', mode, from_init)
+        _log.debug('_enter_normal_mode mode=%s, from_init=%s', mode, from_init)
+
         state = self.state
 
         self.view.window().run_command('hide_auto_complete')
@@ -515,7 +518,7 @@ class _enter_normal_mode(ViTextCommandBase):
 class _enter_normal_mode_impl(ViTextCommandBase):
 
     def run(self, edit, mode=None):
-        _log.debug('enter normal mode (mode=%s) (impl)', mode)
+        _log.debug('_enter_normal_mode_impl mode=%s', mode)
 
         def f(view, s):
             if mode == INSERT:
@@ -528,12 +531,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                 return Region(s.b)
 
             if mode == VISUAL:
-                # Save selections for gv. But only if there are non-empty sels.
-                # We might be in visual mode and not have non-empty sels because
-                # we've just existed from an action.
-                if self.view.has_non_empty_selection_region():
-                    self.view.add_regions('visual_sel', list(self.view.sel()))
-                    self.view.settings().set('_nv_visual_sel_mode', mode)
+                save_previous_selection(self.view, mode)
 
                 if s.a < s.b:
                     pt = s.b - 1
@@ -548,12 +546,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                 return Region(s.b)
 
             if mode in (VISUAL_LINE, VISUAL_BLOCK):
-                # Save selections for gv. But only if there are non-empty sels.
-                # We might be in visual mode and not have non-empty sels because
-                # we've just existed from an action.
-                if self.view.has_non_empty_selection_region():
-                    self.view.add_regions('visual_sel', list(self.view.sel()))
-                    self.view.settings().set('_nv_visual_sel_mode', mode)
+                save_previous_selection(self.view, mode)
 
                 if s.a < s.b:
                     pt = s.b - 1
@@ -617,16 +610,18 @@ class _enter_insert_mode(ViTextCommandBase):
 
 class _enter_visual_mode(ViTextCommandBase):
 
-    def run(self, edit, mode=None):
+    def run(self, edit, mode=None, force=False):
         state = self.state
 
-        # TODO If all selections are non-zero-length, we may be
-        # looking at a pseudo-visual selection, like the ones that are
-        # created pressing Alt+Enter when using ST's built-in search dialog.
-        # What shall we really do in that case?
-        # XXX: In response to the above, we would probably already be in
-        # visual mode, but we should double-check that.
-        if state.mode == VISUAL:
+        # TODO If all selections are non-zero-length, we may be looking at a
+        # pseudo-visual selection, like the ones that are created pressing
+        # Alt+Enter when using ST's built-in search dialog. What shall we really
+        # do in that case?
+
+        # XXX: In response to the above, we would probably already be in visual
+        # mode, but we should double-check that.
+
+        if state.mode == VISUAL and not force:
             self.view.run_command('_enter_normal_mode', {'mode': mode})
             return
 
@@ -677,18 +672,17 @@ class _enter_visual_mode_impl(ViTextCommandBase):
 
 class _enter_visual_line_mode(ViTextCommandBase):
 
-    def run(self, edit, mode=None):
+    def run(self, edit, mode=None, force=False):
         state = self.state
 
-        if state.mode == VISUAL_LINE:
+        if state.mode == VISUAL_LINE and not force:
             self.view.run_command('_enter_normal_mode', {'mode': mode})
             return
 
         if mode in (NORMAL, INTERNAL_NORMAL):
-
             # Special-case: If cursor is at the very EOF, then try  backup the
-            # selection one character so the line, or  previous line is
-            # selected (currently only handles non multiple-selections).
+            # selection one character so the line, or  previous line is selected
+            # (currently only handles non multiple-selections).
             if self.view.size() > 0 and len(self.view.sel()) == 1:
                 s = self.view.sel()[0]
                 if self.view.substr(s.b) == '\x00':
@@ -2141,33 +2135,31 @@ class _vi_big_j(ViTextCommandBase):
 class _vi_gv(IrreversibleTextCommand):
 
     def run(self, mode=None, count=None):
-        sels = self.view.get_regions('visual_sel')
-        if not sels:
+        visual_sel, visual_sel_mode = get_previous_selection(self.view)
+        if not visual_sel or not visual_sel_mode:
             return
-
-        visual_sel_mode = self.view.settings().get('_nv_visual_sel_mode', mode)
 
         if visual_sel_mode == VISUAL:
             cmd = '_enter_visual_mode'
         elif visual_sel_mode == VISUAL_LINE:
             cmd = '_enter_visual_line_mode'
-            for sel in sels:
-                a = self.view.line(sel.a)
-                b = self.view.line(sel.b)
-                if a < b:
-                    sel.a = a.begin()
-                    sel.b = b.end()
+            # Ensure VISUAL LINE selections span full lines.
+            for sel in visual_sel:
+                if sel.a < sel.b:
+                    sel.a = self.view.line(sel.a).a
+                    sel.b = self.view.full_line(sel.b - 1).b
                 else:
-                    sel.a = a.end()
-                    sel.b = b.begin()
+                    sel.a = self.view.full_line(sel.a - 1).b
+                    sel.b = self.view.line(sel.b).a
+
         elif visual_sel_mode == VISUAL_BLOCK:
             cmd = '_enter_visual_block_mode'
         else:
             raise RuntimeError('unexpected visual sel mode')
 
-        self.view.window().run_command(cmd, {'mode': mode})
+        self.view.window().run_command(cmd, {'mode': mode, 'force': True})
         self.view.sel().clear()
-        self.view.sel().add_all(sels)
+        self.view.sel().add_all(visual_sel)
 
 
 class _vi_gx(IrreversibleTextCommand):
@@ -2346,14 +2338,14 @@ class _vi_at(IrreversibleTextCommand):
 
 class _enter_visual_block_mode(ViTextCommandBase):
 
-    def run(self, edit, mode=None):
+    def run(self, edit, mode=None, force=False):
         def f(view, s):
             return Region(s.b, s.b + 1)
 
         if mode in (VISUAL_LINE,):
             return
 
-        if mode == VISUAL_BLOCK:
+        if mode == VISUAL_BLOCK and not force:
             self.enter_normal_mode(mode)
             return
 

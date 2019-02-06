@@ -35,6 +35,7 @@ from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
+from NeoVintageous.nv.vi.utils import save_previous_selection
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
 from NeoVintageous.nv.vim import INPUT_IMMEDIATE
@@ -859,10 +860,13 @@ class State(object):
                     _log.debug('action has a mode, changing to INTERNAL_NORMAL...')
                     action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
-            elif self.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
-                _log.debug('is VISUAL, saving selection...')
-                self.view.add_regions('visual_sel', list(self.view.sel()))
-                self.view.settings().set('_nv_visual_sel_mode', self.mode)
+            elif is_visual_mode(self.mode):
+                # Special-case exclusion: saving the previous selection would
+                # overwrite the previous selection needed e.g. gv in a VISUAL
+                # mode needs to expand or contract to previous selection.
+                if action_cmd['action'] != '_vi_gv':
+                    _log.debug('is VISUAL, saving selection...')
+                    save_previous_selection(self.view, self.mode)
 
             # Some commands, like 'i' or 'a', open a series of edits that need
             # to be grouped together unless we are gluing a larger sequence
