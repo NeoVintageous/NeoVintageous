@@ -887,8 +887,10 @@ class ViMoveCursorToBottomRightWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_b',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'b'
+            }
         }
 
 
@@ -900,8 +902,10 @@ class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_h',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'H'
+            }
         }
 
 
@@ -913,8 +917,10 @@ class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_j',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'J'
+            }
         }
 
 
@@ -926,8 +932,10 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_k',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'K'
+            }
         }
 
 
@@ -939,8 +947,10 @@ class ViMoveCurrentWindowToFarRight(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_l',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'L'
+            }
         }
 
 
@@ -952,8 +962,10 @@ class ViCloseTheCurrentWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_c',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'c'
+            }
         }
 
 
@@ -965,8 +977,10 @@ class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_equal',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': '='
+            }
         }
 
 
@@ -978,8 +992,9 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_greater_than',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '>',
                 'count': state.count
             }
         }
@@ -996,8 +1011,9 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_h',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'h',
                 'count': state.count
             }
         }
@@ -1013,8 +1029,9 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_j',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'j',
                 'count': state.count
             }
         }
@@ -1030,8 +1047,9 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_k',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'k',
                 'count': state.count
             }
         }
@@ -1047,8 +1065,9 @@ class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_l',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'l',
                 'count': state.count
             }
         }
@@ -1062,8 +1081,9 @@ class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_less_than',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '<',
                 'count': state.count
             }
         }
@@ -1077,8 +1097,9 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_minus',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '-',
                 'count': state.count
             }
         }
@@ -1093,8 +1114,9 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_n',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'n',
                 'count': state.count
             }
         }
@@ -1109,8 +1131,10 @@ class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_o',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'o'
+            }
         }
 
 
@@ -1122,8 +1146,9 @@ class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_pipe',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '|',
                 'count': state.count
             }
         }
@@ -1137,8 +1162,9 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_plus',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '+',
                 'count': state.count
             }
         }
@@ -1153,8 +1179,10 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_q',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'q'
+            }
         }
 
 
@@ -1168,8 +1196,9 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_s',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 's',
                 'count': state.count
             }
         }
@@ -1184,8 +1213,10 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_t',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 't'
+            }
         }
 
 
@@ -1198,8 +1229,9 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_underscore',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '_',
                 'count': state.count
             }
         }
@@ -1214,9 +1246,9 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_v',
+            'action': '_vi_ctrl_w',
             'action_args': {
-                'mode': state.mode,
+                'action': 'v',
                 'count': state.count
             }
         }
@@ -1231,8 +1263,9 @@ class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_x',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'x',
                 'count': state.count
             }
         }

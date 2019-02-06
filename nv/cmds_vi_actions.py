@@ -23,6 +23,7 @@ import webbrowser
 from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
+from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.jumplist import jumplist_update
@@ -91,30 +92,7 @@ __all__ = [
     '_vi_ctrl_r',
     '_vi_ctrl_r_equal',
     '_vi_ctrl_right_square_bracket',
-    '_vi_ctrl_w_b',
-    '_vi_ctrl_w_big_h',
-    '_vi_ctrl_w_big_j',
-    '_vi_ctrl_w_big_k',
-    '_vi_ctrl_w_big_l',
-    '_vi_ctrl_w_c',
-    '_vi_ctrl_w_equal',
-    '_vi_ctrl_w_greater_than',
-    '_vi_ctrl_w_h',
-    '_vi_ctrl_w_j',
-    '_vi_ctrl_w_k',
-    '_vi_ctrl_w_l',
-    '_vi_ctrl_w_less_than',
-    '_vi_ctrl_w_minus',
-    '_vi_ctrl_w_n',
-    '_vi_ctrl_w_o',
-    '_vi_ctrl_w_pipe',
-    '_vi_ctrl_w_plus',
-    '_vi_ctrl_w_q',
-    '_vi_ctrl_w_s',
-    '_vi_ctrl_w_t',
-    '_vi_ctrl_w_underscore',
-    '_vi_ctrl_w_v',
-    '_vi_ctrl_w_x',
+    '_vi_ctrl_w',
     '_vi_ctrl_x_ctrl_l',
     '_vi_ctrl_y',
     '_vi_d',
@@ -1540,13 +1518,13 @@ class _vi_big_x(ViTextCommandBase):
         self.enter_normal_mode(mode)
 
 
-class _vi_big_z_big_q(ViWindowCommandBase):
+class _vi_big_z_big_q(WindowCommand):
 
     def run(self):
         do_ex_command(self.window, 'quit', {'forceit': True})
 
 
-class _vi_big_z_big_z(ViWindowCommandBase):
+class _vi_big_z_big_z(WindowCommand):
 
     def run(self):
         do_ex_command(self.window, 'exit')
@@ -1747,7 +1725,7 @@ class _vi_ga(ViWindowCommandBase):
             status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
-class _vi_gt(ViWindowCommandBase):
+class _vi_gt(WindowCommand):
 
     def run(self, count=0, mode=None):
         if count > 0:
@@ -1758,7 +1736,7 @@ class _vi_gt(ViWindowCommandBase):
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
-class _vi_g_big_t(ViWindowCommandBase):
+class _vi_g_big_t(WindowCommand):
 
     def run(self, count=1, mode=None):
         window_tab_control(self.window, action='previous')
@@ -1766,160 +1744,71 @@ class _vi_g_big_t(ViWindowCommandBase):
         self.window.run_command('_enter_normal_mode', {'mode': mode})
 
 
-# TODO <C-]> could learn visual mode
-# TODO <C-]> could learn to count
-class _vi_ctrl_right_square_bracket(ViWindowCommandBase):
+class _vi_ctrl_right_square_bracket(WindowCommand):
 
     def run(self):
         self.window.run_command('goto_definition')
 
 
-class _vi_ctrl_w_b(ViWindowCommandBase):
+class _vi_ctrl_w(WindowCommand):
+
+    def run(self, action, count=1, **kwargs):
+        window = WindowAPI(self.window)
+
+        # TODO Optimise if-else into a lookup function hash-table
+
+        if action == 'b':
+            window.move_group_focus_to_bottom_right()
+        elif action == 'H':
+            window.move_current_view_to_far_left()
+        elif action == 'J':
+            window.move_current_view_to_very_bottom()
+        elif action == 'K':
+            window.move_current_view_to_very_top()
+        elif action == 'L':
+            window.move_current_view_to_far_right()
+        elif action == 'c':
+            window.close_current_view()
+        elif action == '=':
+            window.resize_groups_almost_equally()
+        elif action == '>':
+            window.increase_current_group_width_by_n(count)
+        elif action == 'h':
+            window.move_group_focus_to_nth_left_of_current_one(count)
+        elif action == 'j':
+            window.move_group_focus_to_nth_below_current_one(count)
+        elif action == 'k':
+            window.move_group_focus_to_nth_above_current_one(count)
+        elif action == 'l':
+            window.move_group_focus_to_nth_right_of_current_one(count)
+        elif action == '<':
+            window.decrease_current_group_width_by_n(count)
+        elif action == '-':
+            window.decrease_current_group_height_by_n(count)
+        elif action == 'n':
+            window.split_with_new_file(count)
+        elif action == 'o':
+            window.close_all_other_views()
+        elif action == '|':
+            window.set_current_group_width_to_n(count)
+        elif action == '+':
+            window.increase_current_group_height_by_n(count)
+        elif action == 'q':
+            window.quit_current_view_and_exit_if_last()
+        elif action == 's':
+            window.split_current_view_in_two(count)
+        elif action == 't':
+            window.move_group_focus_to_top_left()
+        elif action == '_':
+            window.set_current_group_height_to_n(count)
+        elif action == 'v':
+            window.split_current_view_in_two_vertically(count)
+        elif action == 'x':
+            window.exchange_current_view_with_view_in_next_or_previous_group(count)
+        else:
+            raise ValueError('unknown action')
 
-    def run(self):
-        WindowAPI(self.window).move_group_focus_to_bottom_right()
 
-
-class _vi_ctrl_w_big_h(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).move_current_view_to_far_left()
-
-
-class _vi_ctrl_w_big_j(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).move_current_view_to_very_bottom()
-
-
-class _vi_ctrl_w_big_k(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).move_current_view_to_very_top()
-
-
-class _vi_ctrl_w_big_l(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).move_current_view_to_far_right()
-
-
-class _vi_ctrl_w_c(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).close_current_view()
-
-
-class _vi_ctrl_w_equal(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).resize_groups_almost_equally()
-
-
-class _vi_ctrl_w_greater_than(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).increase_current_group_width_by_n(count)
-
-
-class _vi_ctrl_w_h(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).move_group_focus_to_nth_left_of_current_one(count)
-
-
-class _vi_ctrl_w_j(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).move_group_focus_to_nth_below_current_one(count)
-
-
-class _vi_ctrl_w_k(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).move_group_focus_to_nth_above_current_one(count)
-
-
-class _vi_ctrl_w_l(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).move_group_focus_to_nth_right_of_current_one(count)
-
-
-class _vi_ctrl_w_less_than(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).decrease_current_group_width_by_n(count)
-
-
-class _vi_ctrl_w_minus(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).decrease_current_group_height_by_n(count)
-
-
-class _vi_ctrl_w_n(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).split_with_new_file(count)
-
-
-class _vi_ctrl_w_o(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).close_all_other_views()
-
-
-class _vi_ctrl_w_pipe(ViWindowCommandBase):
-
-    def run(self, count=None):
-        WindowAPI(self.window).set_current_group_width_to_n(count)
-
-
-class _vi_ctrl_w_plus(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).increase_current_group_height_by_n(count)
-
-
-class _vi_ctrl_w_q(IrreversibleTextCommand):
-
-    def run(self):
-        WindowAPI(self.view.window()).quit_current_view(exit_sublime_if_last=True)
-
-
-class _vi_ctrl_w_s(ViWindowCommandBase):
-
-    def run(self, count=None):
-        WindowAPI(self.window).split_current_view_in_two(count)
-
-
-class _vi_ctrl_w_t(ViWindowCommandBase):
-
-    def run(self):
-        WindowAPI(self.window).move_group_focus_to_top_left()
-
-
-class _vi_ctrl_w_underscore(ViWindowCommandBase):
-
-    def run(self, count=None):
-        WindowAPI(self.window).set_current_group_height_to_n(count)
-
-
-class _vi_ctrl_w_v(ViWindowCommandBase):
-
-    def run(self, count=1, mode=None):
-        WindowAPI(self.window).split_current_view_in_two_vertically(count)
-
-
-class _vi_ctrl_w_x(ViWindowCommandBase):
-
-    def run(self, count=1):
-        WindowAPI(self.window).exchange_current_view_with_view_in_next_or_previous_group(count)
-
-
-# TODO: z<CR> != zt
-# TODO if count is given should be the same as CTRL-W__
 class _vi_z_enter(IrreversibleTextCommand):
 
     def run(self, count=1, mode=None):
@@ -2229,7 +2118,7 @@ class _vi_ctrl_e(ViTextCommandBase):
         self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
 
 
-class _vi_ctrl_g(ViWindowCommandBase):
+class _vi_ctrl_g(WindowCommand):
 
     def run(self):
         do_ex_command(self.window, 'file')
@@ -2244,8 +2133,8 @@ class _vi_ctrl_y(ViTextCommandBase):
         # NeoVintageous rightfully thinks it has failed.)
         if mode == VISUAL_LINE:
             return
-        extend = True if mode == VISUAL else False
 
+        extend = True if mode == VISUAL else False
         self.view.run_command('scroll_lines', {'amount': count, 'extend': extend})
 
 
