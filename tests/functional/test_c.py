@@ -54,6 +54,7 @@ class Test_c(unittest.FunctionalTestCase):
         self.assertRegisterIsNone('1')
 
     def test_cc(self):
+        self.eq('\n\n|\n\n', 'cc', 'i_\n\n|\n\n')
         self.eq('|aaa\nbbb\nccc', 'cc', 'i_|\nbbb\nccc')
         self.eq('aaa\nbb|b\nccc', 'cc', 'i_aaa\n|\nccc')
         self.eq('aaa\nbbb\n|ccc', 'cc', 'i_aaa\nbbb\n|')

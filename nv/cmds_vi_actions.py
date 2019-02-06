@@ -809,7 +809,11 @@ class _vi_cc(ViTextCommandBase):
             self.view.run_command('right_delete')
 
         self.enter_insert_mode(mode)
-        self.set_xpos(self.state)
+
+        try:
+            self.state.xpos = self.view.rowcol(self.view.sel()[0].b)[1]
+        except Exception as e:
+            raise ValueError('could not set xpos:' + str(e))
 
 
 class _vi_visual_o(ViTextCommandBase):

@@ -55,7 +55,7 @@ class ViCommandMixin:
     def save_sel(self):
         self.old_sel = tuple(self._view.sel())
 
-    def is_equal_to_old_sel(self, new_sel):
+    def _is_equal_to_old_sel(self, new_sel):
         try:
             return (tuple((s.a, s.b) for s in self.old_sel) ==
                     tuple((s.a, s.b) for s in tuple(self._view.sel())))
@@ -63,7 +63,7 @@ class ViCommandMixin:
             raise AttributeError('have you forgotten to call .save_sel()?')
 
     def has_sel_changed(self):
-        return not self.is_equal_to_old_sel(self._view.sel())
+        return not self._is_equal_to_old_sel(self._view.sel())
 
     def enter_normal_mode(self, mode):
         # Args:
@@ -74,15 +74,6 @@ class ViCommandMixin:
         # Args:
         #   mode (str): The current mode
         self._window.run_command('_enter_insert_mode', {'mode': mode})
-
-    def set_xpos(self, state):
-        try:
-            view = self._view
-            xpos = view.rowcol(view.sel()[0].b)[1]
-        except Exception as e:
-            raise ValueError('could not set xpos:' + str(e))
-
-        state.xpos = xpos
 
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
