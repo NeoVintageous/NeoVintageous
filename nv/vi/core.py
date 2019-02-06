@@ -15,11 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from sublime import set_timeout
 import sublime_plugin
 
 from NeoVintageous.nv.state import State
-from NeoVintageous.nv.ui import ui_region_flags
 
 
 class ViCommandMixin:
@@ -85,25 +83,6 @@ class ViCommandMixin:
             raise ValueError('could not set xpos:' + str(e))
 
         state.xpos = xpos
-
-    def outline_target(self):
-        view = self._view
-        _get = view.settings().get
-
-        if not _get('highlightedyank'):
-            return
-
-        view.add_regions(
-            'highlightedyank',
-            list(view.sel()),
-            scope='string highlightedyank',
-            flags=ui_region_flags(_get('highlightedyank_style'))
-        )
-
-        set_timeout(
-            lambda: view.erase_regions('highlightedyank'),
-            _get('highlightedyank_duration')
-        )
 
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):

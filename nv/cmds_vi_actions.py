@@ -29,6 +29,8 @@ from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
+from NeoVintageous.nv.ui import ui_highlight_yank
+from NeoVintageous.nv.ui import ui_highlight_yank_clear
 from NeoVintageous.nv.vi import search
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
@@ -295,9 +297,9 @@ class _vi_u(ViWindowCommandBase):
                 'mode': VISUAL
             })
 
-        # If we yy, then u, we might end up with outlined regions if we
-        # don't erase them here, because ST will restore them when undoing.
-        self._view.erase_regions('highlightedyank')
+        # Ensure regions are clear of any highlighted yanks. For example, ddyyu
+        # would otherwise show the restored line as previously highlighted.
+        ui_highlight_yank_clear(self._view)
 
 
 class _vi_ctrl_r(ViWindowCommandBase):
@@ -861,7 +863,8 @@ class _vi_yy(ViTextCommandBase):
         self.save_sel()
         regions_transformer(self.view, select)
 
-        self.outline_target()
+        ui_highlight_yank(self.view)
+
         self.state.registers.op_yank(register=register, linewise=True)
         restore()
         self.enter_normal_mode(mode)
@@ -891,7 +894,7 @@ class _vi_y(ViTextCommandBase):
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return
 
-        self.outline_target()
+        ui_highlight_yank(self.view)
 
         self.state.registers.op_yank(register=register, linewise=linewise)
         regions_transformer(self.view, f)
