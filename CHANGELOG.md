@@ -2,7 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.8.1 - Unreleased
+## 1.9.0 - Unreleased
+
+### Added
+
+* Added [#424](https://github.com/NeoVintageous/NeoVintageous/issues/424): `[count]o` and `[count]O`
+
+### Fixed
 
 * Fixed [#425](https://github.com/NeoVintageous/NeoVintageous/issues/425): Reloading vintageousrc should unload existing mappings
 * Fixed [#422](https://github.com/NeoVintageous/NeoVintageous/issues/422): `{Visual}y` should highlight the selection (HighlightedYank)
