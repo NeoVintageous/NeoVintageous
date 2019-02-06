@@ -540,7 +540,7 @@ class FunctionalTestCase(ViewTestCase):
         except KeyError as e:
             raise KeyError('test command definition not found for feed %s' % str(e)) from None
 
-        self.view.run_command(command, args)
+        self.view.window().run_command(command, args)
 
     def eq(self, text, feed, expected=None, msg=None):
         # Args:
@@ -726,14 +726,36 @@ def mock_bell():
 
 # Usage:
 #
+#   @unitest.mock_status_message()
+#   def test_status_message(self):
+#       self.assertStatusMessage('msg')
+#
+def mock_status_message():
+    def wrapper(f):
+        @mock.patch('NeoVintageous.nv.vim._status_message')
+        def wrapped(self, *args, **kwargs):
+            self.status_message = args[-1]
+
+            def _assertStatusMessage(msg):
+                self.status_message.assert_called_once_with(msg)
+
+            self.assertStatusMessage = _assertStatusMessage
+
+            return f(self, *args[:-1], **kwargs)
+        return wrapped
+    return wrapper
+
+
+# Usage:
+#
 #   @unitest.mock_ui()
-#   def test_...(self):
+#   def test_ui(self):
 #
 #   @unitest.mock_ui(screen_rows=10)
-#   def test_...(self):
+#   def test_ui(self):
 #
 #   @unitest.mock_ui(visible_region=(2, 7))
-#   def test_...(self):
+#   def test_ui(self):
 #
 #  Screen rows and visible region defaults to the current size of the view.
 #
@@ -975,6 +997,7 @@ _SEQ2CMD = {
     'e':            {'command': '_vi_e'},  # noqa: E241
     'G':            {'command': '_vi_big_g'},  # noqa: E241
     'g_':           {'command': '_vi_g__'},  # noqa: E241
+    'ga':           {'command': '_vi_ga'},  # noqa: E241
     'gc':           {'command': '_vi_gc'},  # noqa: E241
     'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
     'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501

@@ -1697,9 +1697,9 @@ class _vi_p(ViTextCommandBase):
             return sel.begin()
 
 
-class _vi_ga(ViWindowCommandBase):
+class _vi_ga(WindowCommand):
 
-    def run(self):
+    def run(self, **kwargs):
         def char_to_notation(char):
             # Convert a char to a key notation. Uses vim key notation.
             # See https://vimhelp.appspot.com/intro.txt.html#key-notation
@@ -1716,6 +1716,7 @@ class _vi_ga(ViWindowCommandBase):
             return "<" + char + ">"
 
         view = self.window.active_view()
+
         for region in view.sel():
             c_str = view.substr(region.begin())
             c_ord = ord(c_str)
