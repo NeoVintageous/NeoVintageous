@@ -842,9 +842,9 @@ _SEQ2CMD = {
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
-    '=}':           {'command': '_vi_equal', 'args': {'motion': {'motion': '_vi_right_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
     '=':            {'command': '_vi_equal'},  # noqa: E241
     '==':           {'command': '_vi_equal_equal'},  # noqa: E241
+    '=}':           {'command': '_vi_equal', 'args': {'motion': {'motion': '_vi_right_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
     '>':            {'command': '_vi_greater_than'},  # noqa: E241
     '>>':           {'command': '_vi_greater_than_greater_than'},  # noqa: E241
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
@@ -1001,6 +1001,8 @@ _SEQ2CMD = {
     'gc':           {'command': '_vi_gc'},  # noqa: E241
     'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
     'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
+    'gE':           {'command': '_vi_g_big_e'},  # noqa: E241
+    'ge':           {'command': '_vi_ge'},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241
