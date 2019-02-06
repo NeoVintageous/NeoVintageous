@@ -357,20 +357,20 @@ class _vi_a(ViTextCommandBase):
         def f(view, s):
             if view.substr(s.b) != '\n' and s.b < view.size():
                 return Region(s.b + 1)
+
             return s
 
         state = State(self.view)
-        # Abort if the *actual* mode is insert mode. This prevents
-        # _vi_a from adding spaces between text fragments when used with a
-        # count, as in 5aFOO. In that case, we only need to run 'a' the first
-        # time, not for every iteration.
+
+        # Abort if the *actual* mode is insert mode. This prevents _vi_a from
+        # adding spaces between text fragments when used with a count, as in
+        # 5aFOO. In that case, we only need to run 'a' the first time, not for
+        # every iteration.
         if state.mode == INSERT:
             return
 
         if mode is None:
             raise ValueError('mode required')
-        # TODO: We should probably not define the keys for these modes
-        # in the first place.
         elif mode != INTERNAL_NORMAL:
             return
 

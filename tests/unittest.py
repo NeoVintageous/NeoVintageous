@@ -820,6 +820,9 @@ _SEQ2CMD = {
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
+    '=}':           {'command': '_vi_equal', 'args': {'motion': {'motion': '_vi_right_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
+    '=':            {'command': '_vi_equal'},  # noqa: E241
+    '==':           {'command': '_vi_equal_equal'},  # noqa: E241
     '>':            {'command': '_vi_greater_than'},  # noqa: E241
     '>>':           {'command': '_vi_greater_than_greater_than'},  # noqa: E241
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
@@ -1022,7 +1025,7 @@ _SEQ2CMD = {
     'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
-    'o__alt1':      {'command': '_vi_visual_o'},  # NOTE __* is used because several o operations are in separate commands rather than one # noqa: E241,E501
+    'o__alt1':      {'command': '_vi_visual_o'},  # TODO __* is used because several o operations are in separate commands # noqa: E241,E501
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
