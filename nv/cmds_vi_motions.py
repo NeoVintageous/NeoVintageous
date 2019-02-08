@@ -21,6 +21,7 @@ from sublime import CLASS_EMPTY_LINE
 from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
+from sublime import version
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.cmds import _nv_cmdline_feed_key
@@ -2451,7 +2452,15 @@ class _vi_left_square_bracket_target(ViMotionCommand):
 
 class _vi_left_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
-        self.view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
+        if int(version()) >= 3189:
+            for i in range(count):
+                self.view.run_command('prev_modification')
+            a = self.view.sel()[0].a
+            self.view.sel().clear()
+            self.view.sel().add(a)
+            enter_normal_mode(self.view, mode)
+        else:
+            self.view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
 
         # TODO Refactor set position cursor after operation into reusable api.
         line = self.view.line(self.view.sel()[0].b)
@@ -2490,7 +2499,15 @@ class _vi_right_square_bracket_target(ViMotionCommand):
 
 class _vi_right_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
-        self.view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})
+        if int(version()) >= 3189:
+            for i in range(count):
+                self.view.run_command('next_modification')
+            a = self.view.sel()[0].a
+            self.view.sel().clear()
+            self.view.sel().add(a)
+            enter_normal_mode(self.view, mode)
+        else:
+            self.view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})
 
         # TODO Refactor set position cursor after operation into reusable api.
         line = self.view.line(self.view.sel()[0].b)

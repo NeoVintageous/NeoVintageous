@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#437](https://github.com/NeoVintageous/NeoVintageous/issues/437): Builtin support for jump to diff `]c` and `[c` in `>=3189` (GitGutter is required for older versions)
 * Added [#430](https://github.com/NeoVintageous/NeoVintageous/issues/430): Folding commands `zc`, `zo`, `zM`, and `zR`
 * Added [#432](https://github.com/NeoVintageous/NeoVintageous/issues/432): `cs{target}{replacement}` target aliases `b`, `B`, `r`, and `a`
 * Added [#431](https://github.com/NeoVintageous/NeoVintageous/issues/431): `ys{motion}{replacement}` replacement aliases `b`, `B`, `r`, and `a`

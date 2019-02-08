@@ -52,8 +52,7 @@ CTRL-K                  Move selection up / Previous selection.
 
 JUMPING TO DIFFS                                             *nv-jumpto-diffs*
 
-Two commands can be used to jump to diffs. Both commands require the plugin
-GitGutter: https://github.com/jisaacks/GitGutter.
+Two commands can be used to jump to diffs.
 
                                 *[c*
     [c      Jump backwards to the previous start of a change.
@@ -63,6 +62,9 @@ GitGutter: https://github.com/jisaacks/GitGutter.
             When a count is used, do it that many times.
 
 It is an error if there is no change for the cursor to move to.
+
+In older versions of Sublime Text (builds < 3189) you will need the the
+GitGutter plugin: https://github.com/jisaacks/GitGutter.
 
 ==============================================================================
 
