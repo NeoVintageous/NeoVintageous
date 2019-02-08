@@ -273,22 +273,22 @@ def last_row(view):
     return view.rowcol(view.size())[0]
 
 
+# Used, for example, by commands like f{char} and t{char}.
 _tranlsate_char_map = {
-    '<enter>': '\n',
+    '<bar>': '|',
+    '<bslash>': '\\',
     '<cr>': '\n',
+    '<enter>': '\n',
+    '<lt>': '<',
     '<sp>': ' ',
     '<space>': ' ',
-    '<lt>': '<',
-    '<tab>': '\t'
+    '<tab>': '\t',
 }
 
 
 def translate_char(char):
     # type: (str) -> str
     lchar = char.lower()
-
-    # TODO [bug] ??? What happens to keys like <home>, <up>, etc? We shouln't be
-    # able to use those in some contexts, like as arguments to f, t...
 
     if lchar in _tranlsate_char_map:
         return _tranlsate_char_map[lchar]

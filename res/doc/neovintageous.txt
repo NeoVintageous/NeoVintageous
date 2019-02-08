@@ -100,14 +100,9 @@ https://github.com/NeoVintageous/ToggleNeoVintageous
 
 VINTAGEOUSRC                                                    *vintageousrc*
 
-A file that contains initialization commands is called a "vintageousrc" file
-("rc" stands for runtime configuration). It is comparative to the |vimrc|
-file.
-
-The file is located at "Packages/User/.vintageousrc" and is read by
-NeoVintageous during startup.
-
-The rc file can be opened and reloaded via the Command Palette commands:
+In Vim, a file that contains initialization commands is called a vintageousrc
+file. The file is located at "Packages/User/.vintageousrc" and is read by during
+startup. It can be edited and reloaded via the Command Palette commands:
 
 * NeoVintageous: Open My .vintageousrc File
 * NeoVintageous: Reload My .vintageousrc File
@@ -140,51 +135,30 @@ The following |:map-commands| are supported ({lhs} means left-hand-side and
 :snoremap   {lhs} {rhs}         |:snoremap|
 :vnoremap   {lhs} {rhs}         |:vnoremap|
 
-Mapping to Ex commands is supported.
-
-When you have a mapping that contains an Ex command, you need to put a line
-terminator after it to have it executed.  Use <CR> (carriage-return): >
+When mapping to Ex commands use <CR> (carriage-return) to indicate pressing
+enter, otherwise the Command-line with be invoked: >
 
     nnoremap <C-s> :w<CR>
+    vnoremap <C-s> :w<CR>
 
-When a mapping doesn't end in <CR> the Command-line is invoked with the
-initial text set to the mapping: >
+You can map to Sublime Text commands, these commands start with an uppercase
+letter (this is to avoid confusion with built-in Ex commands). The command is
+converted to snake_case and accepts args key=value format: >
 
-    nnoremap <C-s> :w
+    nnoremap <leader>p :ShowOverlay overlay=goto show_files=true<CR>
+    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
 
-Mapping to Sublime Text commands is supported. These commands start with an
-uppercase letter to avoid confusion with built-in Ex commands. The command is
-converted to snake_case before executing. Arguments are accepted in key=value
-format with "true" & "false" converted to boolean and digits converted to
-integer: Example: >
-
-    nnoremap ,p :ShowOverlay overlay=goto show_files=true<CR>
-    nnoremap ,f :ShowOverlay overlay=goto text=@<CR>
-
-This is roughly equivalent to running the Sublime Text command: >
-
-    sublime.active_window().run_command('show_overlay', {
-        'overlay': 'goto',
-        'show_files': True
-    })
-
-    sublime.active_window().run_command('show_overlay', {
-        'overlay': 'goto',
-        'text': "@"
-    })
-
-Super-keys, known as windows-keys, and command-keys (OSX), can be mapped in
-form <D-...>. Super-keys are disabled by default. Example: >
+Super-keys, known as windows-keys or command-keys, are disabled by default: >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
-More examples...
-
-Toggle the side bar: >
+A command is providied out-of-the-box for mapping to toggle the side bar:
 
     nnoremap <leader>d :NeovintageousToggleSideBar<CR>
 
-Toggle the side bar when it has focus: `Menu > Preferences > Key Bindings`: >
+To enable the ability to toggle the side bar when the side bar has focus:
+
+`Menu > Preferences > Key Bindings`: >
 
     [
         {
@@ -196,42 +170,51 @@ Toggle the side bar when it has focus: `Menu > Preferences > Key Bindings`: >
         }
     ]
 
-Saving with CTRL-s: >
+More examples: >
 
+    " The character " (the double quote mark) starts a comment
+    " Type :h vintageousrc for help.
+
+    let mapleader=,
+
+    " Toggle the side bar.
+    nnoremap <leader>d :NeovintageousToggleSideBar<CR>
+
+    " Saving.
     nnoremap <C-s> :w<CR>
+    vnoremap <C-s> :w<CR>
 
-Yank and paste using system clipboard: >
-
+    " Yank and paste using system clipboard.
     noremap <leader>y "+y
     noremap <leader>Y "+Y
     noremap <leader>p "+p
     noremap <leader>P "+P
     noremap <leader>yy "+Y
 
-Show the registers: >
-
+    " Show the registers.
     nnoremap <leader>r :reg<CR>
 
-Scroll viewport faster: >
-
-    nnoremap <C-e> 3<C-e>
-    nnoremap <C-y> 3<C-y>
-
-Some window command aliases. This is especially useful if you don't like to
-enable ctrl-key key bindings: >
-
+    " Some window command aliases. This is especially useful if you don't like
+    " to enable ctrl-key key bindings
     nnoremap <leader>_ <C-w>_
-    nnoremap <leader>\| <C-w>\|
+    nnoremap <leader><bar> <C-w><bar>
     nnoremap <leader>= <C-w>=
-    nnoremap <leader>. <C-w>_<C-w>\|
+    nnoremap <leader>. <C-w>_<C-w><bar>
 
-Goto Symbol: >
-
-    nnoremap <leader>s :ShowOverlay overlay=goto text=@<CR>
-
-Goto Symbol in Project: >
-
+    " Goto symbols.
+    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
     nnoremap <leader>i :GotoSymbolInProject<CR>
+    " Or if you have super-keys enabled:
+    nnoremap <D-i> :GotoSymbolInProject<CR>
+
+    " Windowing aliases (especially useful if you don't enable ctrl-keys keys).
+    nnoremap <leader>_ <C-w>_
+    nnoremap <leader><bar> <C-w><bar>
+    nnoremap <leader>= <C-w>=
+
+    " Sets current view as high and as wide as possible, and redraws cursor line at
+    " center of window: <C-w>_ will make all windows (almost) equal in size.
+    nnoremap <leader>. <C-w>_<C-w><bar>zz
 
 ==============================================================================
 

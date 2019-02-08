@@ -995,6 +995,9 @@ _SEQ2CMD = {
     'ds}':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '}'}},  # noqa: E241
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'e':            {'command': '_vi_e'},  # noqa: E241
+    'f\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': True}},  # noqa: E241
+    'fx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': True}},  # noqa: E241
+    'f|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': True}},  # noqa: E241
     'G':            {'command': '_vi_big_g'},  # noqa: E241
     'g_':           {'command': '_vi_g__'},  # noqa: E241
     'ga':           {'command': '_vi_ga'},  # noqa: E241
@@ -1057,6 +1060,9 @@ _SEQ2CMD = {
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
+    't\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': False}},  # noqa: E241
+    'tx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
+    't|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': False}},  # noqa: E241
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
     'u':            {'command': '_vi_visual_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241

@@ -43,8 +43,10 @@ class seqs:
     AT = '@'
     AW = 'aw'
     B = 'b'
+    BACKSLASH = '<bslash>'
     BACKSPACE = '<bs>'
     BACKTICK = '`'
+    BAR = '<bar>'
     BIG_A = 'A'
     BIG_B = 'B'
     BIG_C = 'C'
@@ -125,6 +127,7 @@ class seqs:
     CTRL_W = '<C-w>'
     CTRL_W_B = '<C-w>b'
     CTRL_W_BACKSPACE = '<C-w><bs>'
+    CTRL_W_BAR = '<C-w><bar>'
     CTRL_W_BIG_H = '<C-w>H'
     CTRL_W_BIG_J = '<C-w>J'
     CTRL_W_BIG_K = '<C-w>K'
@@ -156,7 +159,6 @@ class seqs:
     CTRL_W_MINUS = '<C-w>-'
     CTRL_W_N = '<C-w>n'
     CTRL_W_O = '<C-w>o'
-    CTRL_W_PIPE = '<C-w>|'
     CTRL_W_PLUS = '<C-w>+'
     CTRL_W_Q = '<C-w>q'
     CTRL_W_RIGHT = '<C-w><right>'
@@ -256,7 +258,6 @@ class seqs:
     PAGE_DOWN = 'pagedown'
     PAGE_UP = 'pageup'
     PERCENT = '%'
-    PIPE = '|'
     PLUS = '+'
     Q = 'q'
     QUESTION_MARK = '?'
@@ -348,7 +349,9 @@ EOF = -2
 class key_names:
     """Names of special keys."""
 
+    BACKSLASH = '<bslash>'
     BACKSPACE = '<bs>'
+    BAR = '<bar>'
     CR = '<cr>'
     DOWN = '<down>'
     END = '<end>'
@@ -381,7 +384,10 @@ class key_names:
     Leader = '<leader>'
 
     as_list = [
+
+        BACKSLASH,
         BACKSPACE,
+        BAR,
         CR,
         DOWN,
         END,

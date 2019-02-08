@@ -1136,7 +1136,7 @@ class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_PIPE, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_BAR, modes=_MODES_ACTION)
 class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2812,7 +2812,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.PIPE, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.BAR, modes=_MODES_MOTION)
 class ViMoveByLineCols(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#429](https://github.com/NeoVintageous/NeoVintageous/issues/429): Support `<bslash>` in vintageousrc
+* Added [#428](https://github.com/NeoVintageous/NeoVintageous/issues/428): Support `<bar>` in vintageousrc
 * Added [#424](https://github.com/NeoVintageous/NeoVintageous/issues/424): `[count]o` and `[count]O`
 
 ### Fixed

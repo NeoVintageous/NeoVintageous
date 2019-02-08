@@ -37,6 +37,8 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('<C-p>'), '<C-p>', 'ctrl-modified lower case letter key')
         self.assertEqual(tokenize_one('<C-P>'), '<C-P>', 'ctrl-modified upper case letter key')
         self.assertEqual(tokenize_one('<C-S-.>'), '<C-S-.>', 'ctrl-shift modified period key')
+        self.assertEqual(tokenize_one('<C-S-f3>'), '<C-S-f3>')
+        self.assertEqual(tokenize_one('<C-S-F3>'), '<C-S-f3>')
         self.assertEqual(tokenize_one('<Esc>'), '<esc>', 'esc key title case')
         self.assertEqual(tokenize_one('<esc>'), '<esc>', 'esc key lowercase')
         self.assertEqual(tokenize_one('<eSc>'), '<esc>', 'esc key mixed case')
@@ -48,15 +50,23 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('<left>'), '<left>', 'less than key')
         self.assertEqual(tokenize_one('<RigHt>'), '<right>', 'less than key')
         self.assertEqual(tokenize_one('<Space>'), '<space>', 'space key')
+        self.assertEqual(tokenize_one('<space>'), '<space>', 'space key')
         self.assertEqual(tokenize_one('<c-Space>'), '<C-space>', 'ctrl-space key')
         self.assertEqual(tokenize_one('0'), '0', 'zero key')
         self.assertEqual(tokenize_one('<c-m-.>'), '<C-M-.>', 'ctrl-alt-period key')
         self.assertEqual(tokenize_one('<tab>'), '<tab>', 'tab key')
         self.assertEqual(tokenize_one('<Leader>'), '\\', 'leader key')
-        self.assertEqual(tokenize_one('<D-a>'), '<D-a>', 'super key')
-        self.assertEqual(tokenize_one('<d-a>'), '<D-a>', 'super key')
-        self.assertEqual(tokenize_one('<D-A>'), '<D-A>', 'super key')
-        self.assertEqual(tokenize_one('<d-A>'), '<D-A>', 'super key')
+        self.assertEqual(tokenize_one('<leader>'), '\\', 'leader key')
+        self.assertEqual(tokenize_one('<Bar>'), '<bar>')
+        self.assertEqual(tokenize_one('<bs>'), '<bs>')
+        self.assertEqual(tokenize_one('<Bslash>'), '<bslash>')
+        self.assertEqual(tokenize_one('<C-s>'), '<C-s>')
+        self.assertEqual(tokenize_one('<C-w>'), '<C-w>')
+        self.assertEqual(tokenize_one('<D-a>'), '<D-a>')
+        self.assertEqual(tokenize_one('<d-a>'), '<D-a>')
+        self.assertEqual(tokenize_one('<D-A>'), '<D-A>')
+        self.assertEqual(tokenize_one('<d-A>'), '<D-A>')
+        self.assertEqual(tokenize_one('<D-i>'), '<D-i>')
 
     @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
     def test_iter_tokenize(self):
@@ -75,6 +85,17 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(iter_tokenize('<d-i>i.'), ['<D-i>', 'i', '.'])
         self.assertEqual(iter_tokenize('<d-i><c-i>'), ['<D-i>', '<C-i>'])
         self.assertEqual(iter_tokenize('<d-i><c-d>'), ['<D-i>', '<C-d>'])
+        self.assertEqual(iter_tokenize('<Leader>d'), ['\\', 'd'])
+        self.assertEqual(iter_tokenize('<leader><leader>d'), ['\\', '\\', 'd'])
+        self.assertEqual(iter_tokenize('<leader>d'), ['\\', 'd'])
+        self.assertEqual(iter_tokenize('<leader>ek'), ['\\', 'e', 'k'])
+        self.assertEqual(iter_tokenize('<C-w>b'), ['<C-w>', 'b'])
+        self.assertEqual(iter_tokenize('<C-w><bs>'), ['<C-w>', '<bs>'])
+        self.assertEqual(iter_tokenize('<C-w><C-b>'), ['<C-w>', '<C-b>'])
+        self.assertEqual(iter_tokenize('<C-w><C-_>'), ['<C-w>', '<C-_>'])
+        self.assertEqual(iter_tokenize('<C-w>='), ['<C-w>', '='])
+        self.assertEqual(iter_tokenize('<C-w><Bar>'), ['<C-w>', '<bar>'])
+        self.assertEqual(iter_tokenize('<C-w><Space>'), ['<C-w>', '<space>'])
 
 
 class TestFunctions(unittest.TestCase):
@@ -166,6 +187,7 @@ class TestSeqToCommand(unittest.TestCase):
 
 
 _known_seqs_dataset = (
+
     (seqs.A, 'a'),
     (seqs.ALT_CTRL_P, '<C-M-p>'),
     (seqs.AMPERSAND, '&'),
@@ -173,7 +195,9 @@ _known_seqs_dataset = (
     (seqs.AW, 'aw'),
     (seqs.B, 'b'),
     (seqs.BACKSPACE, '<bs>'),
+    (seqs.BACKSLASH, '<bslash>'),
     (seqs.BACKTICK, '`'),
+    (seqs.BAR, '<bar>'),
     (seqs.BIG_A, 'A'),
     (seqs.BIG_B, 'B'),
     (seqs.BIG_C, 'C'),
@@ -254,6 +278,7 @@ _known_seqs_dataset = (
     (seqs.CTRL_W, '<C-w>'),
     (seqs.CTRL_W_B, '<C-w>b'),
     (seqs.CTRL_W_BACKSPACE, '<C-w><bs>'),
+    (seqs.CTRL_W_BAR, '<C-w><bar>'),
     (seqs.CTRL_W_BIG_H, '<C-w>H'),
     (seqs.CTRL_W_BIG_J, '<C-w>J'),
     (seqs.CTRL_W_BIG_K, '<C-w>K'),
@@ -285,7 +310,6 @@ _known_seqs_dataset = (
     (seqs.CTRL_W_MINUS, '<C-w>-'),
     (seqs.CTRL_W_N, '<C-w>n'),
     (seqs.CTRL_W_O, '<C-w>o'),
-    (seqs.CTRL_W_PIPE, '<C-w>|'),
     (seqs.CTRL_W_PLUS, '<C-w>+'),
     (seqs.CTRL_W_Q, '<C-w>q'),
     (seqs.CTRL_W_RIGHT, '<C-w><right>'),
@@ -384,7 +408,6 @@ _known_seqs_dataset = (
     (seqs.PAGE_DOWN, 'pagedown'),
     (seqs.PAGE_UP, 'pageup'),
     (seqs.PERCENT, '%'),
-    (seqs.PIPE, '|'),
     (seqs.PLUS, '+'),
     (seqs.Q, 'q'),
     (seqs.QUESTION_MARK, '?'),
@@ -427,6 +450,7 @@ _known_seqs_dataset = (
     (seqs.ZERO, '0'),
     (seqs.ZT, 'zt'),
     (seqs.ZZ, 'zz'),
+
 )
 
 

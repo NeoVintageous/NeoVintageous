@@ -120,9 +120,14 @@ class TestRcfile(unittest.TestCase):
 
     def test_escaped_pipe_character_is_valid(self):
         tests = (
-            'noremap x \\|',
-            'noremap x a\\|c'
+            (':noremap <bar> <bar>', ':noremap <bar> <bar>'),
+            (':noremap <bar> \\|', ':noremap <bar> <bar>'),
+            (':noremap \\| \\|', ':noremap <bar> <bar>'),
+            (':noremap \\| <bar>', ':noremap <bar> <bar>'),
+            (':noremap x \\|', ':noremap x <bar>'),
+            (':noremap x a\\|c', ':noremap x a<bar>c'),
+            (':noremap x a\\|\\|c', ':noremap x a<bar><bar>c')
         )
 
-        for test in tests:
-            self.assertNotEqual(None, _parse_line(test))
+        for value, expected in tests:
+            self.assertEqual(expected, _parse_line(value))
