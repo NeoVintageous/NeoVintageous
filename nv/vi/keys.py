@@ -19,7 +19,7 @@ import re
 
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv import variables
-from NeoVintageous.nv.vi import cmd_base
+from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -314,22 +314,20 @@ def seq_to_command(state, seq, mode=None):
     #   ViMissingCommandDef: If not found.
     mode = mode or state.mode
 
-    command = None
-
     if mode in plugin.mappings:
-        command = plugin.mappings[mode].get(seq, None)
+        plugin_command = plugin.mappings[mode].get(seq)
+        if plugin_command:
+            is_enabled_attr = hasattr(plugin_command, 'is_enabled')
+            if not is_enabled_attr or (is_enabled_attr and plugin_command.is_enabled(state)):
+                return plugin_command
 
-        # The plugin command might only be enabled under certain conditions
-        if command and hasattr(command, 'is_enabled') and (not command.is_enabled(state)):
-            command = None
+    if mode in mappings:
+        command = mappings[mode].get(seq)
+        if command:
+            return command
 
-    if not command and mode in mappings:
-        command = mappings[mode].get(seq, cmd_base.ViMissingCommandDef())
+    return ViMissingCommandDef()
 
-    if command:
-        return command
-
-    return cmd_base.ViMissingCommandDef()
 
 
 mappings = {
