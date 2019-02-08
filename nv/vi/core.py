@@ -22,8 +22,8 @@ from NeoVintageous.nv.state import State
 
 class ViCommandMixin:
 
-    @property
-    def _view(self):
+    # DEPRECATED
+    def _get_view(self):
         view = None
         try:
             view = self.view
@@ -36,44 +36,21 @@ class ViCommandMixin:
         return view
 
     @property
-    def _window(self):
-        window = None
-        try:
-            window = self.window
-        except AttributeError:
-            try:
-                window = self.view.window()
-            except AttributeError:
-                raise AttributeError(
-                    'ViCommandMixin must be used with a TextCommand or a WindowCommand class')
-        return window
-
-    @property
     def state(self):
-        return State(self._view)
+        return State(self._get_view())
 
     def save_sel(self):
-        self.old_sel = tuple(self._view.sel())
+        self.old_sel = tuple(self._get_view().sel())
 
     def _is_equal_to_old_sel(self, new_sel):
         try:
             return (tuple((s.a, s.b) for s in self.old_sel) ==
-                    tuple((s.a, s.b) for s in tuple(self._view.sel())))
+                    tuple((s.a, s.b) for s in tuple(self._get_view().sel())))
         except AttributeError:
             raise AttributeError('have you forgotten to call .save_sel()?')
 
     def has_sel_changed(self):
-        return not self._is_equal_to_old_sel(self._view.sel())
-
-    def enter_normal_mode(self, mode):
-        # Args:
-        #   mode (str): The current mode
-        self._window.run_command('_enter_normal_mode', {'mode': mode})
-
-    def enter_insert_mode(self, mode):
-        # Args:
-        #   mode (str): The current mode
-        self._window.run_command('_enter_insert_mode', {'mode': mode})
+        return not self._is_equal_to_old_sel(self._get_view().sel())
 
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):

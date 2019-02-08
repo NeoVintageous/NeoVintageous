@@ -37,6 +37,7 @@ from NeoVintageous.nv.plugin import VISUAL_BLOCK
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.utils import translate_char
+from NeoVintageous.nv.vim import enter_normal_mode
 
 
 __all__ = [
@@ -242,7 +243,7 @@ class _nv_surround_ys_command(ViTextCommandBase):
             return s
 
         if not motion and not self.view.has_non_empty_selection_region():
-            self.enter_normal_mode(mode)
+            enter_normal_mode(self.view, mode)
             raise ValueError('motion required')
 
         if mode == INTERNAL_NORMAL:
@@ -251,7 +252,7 @@ class _nv_surround_ys_command(ViTextCommandBase):
         if surround_with:
             _rsynced_regions_transformer(self.view, f)
 
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
     def surround(self, edit, s, surround_with):
         open_, close_ = self._pairs.get(surround_with, (surround_with, surround_with))

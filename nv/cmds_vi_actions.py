@@ -48,6 +48,8 @@ from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import save_previous_selection
+from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -156,8 +158,7 @@ class _vi_g_big_u(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
             view.replace(edit, s, view.substr(s).upper())
-            # Reverse the resulting region so that _enter_normal_mode
-            # collapses the selection as we want it.
+            # Reverse region so that entering NORMAL mode collapses selection.
             return Region(s.b, s.a)
 
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
@@ -168,7 +169,6 @@ class _vi_g_big_u(ViTextCommandBase):
 
         if mode == INTERNAL_NORMAL:
             self.save_sel()
-
             self.view.run_command(motion['motion'], motion['motion_args'])
 
             if self.has_sel_changed():
@@ -178,7 +178,7 @@ class _vi_g_big_u(ViTextCommandBase):
         else:
             regions_transformer(self.view, f)
 
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_gu(ViTextCommandBase):
@@ -186,8 +186,7 @@ class _vi_gu(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
             view.replace(edit, s, view.substr(s).lower())
-            # reverse the resulting region so that _enter_normal_mode collapses the
-            # selection as we want it.
+            # Reverse region so that entering NORMAL mode collapses selection.
             return Region(s.b, s.a)
 
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
@@ -198,7 +197,6 @@ class _vi_gu(ViTextCommandBase):
 
         if mode == INTERNAL_NORMAL:
             self.save_sel()
-
             self.view.run_command(motion['motion'], motion['motion_args'])
 
             if self.has_sel_changed():
@@ -208,7 +206,7 @@ class _vi_gu(ViTextCommandBase):
         else:
             regions_transformer(self.view, f)
 
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_gq(ViTextCommandBase):
@@ -238,7 +236,6 @@ class _vi_gq(ViTextCommandBase):
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
             self.view.run_command(wrap_lines)
-
             self.view.sel().clear()
             for s in sel:
                 # Cursors should move to the first non-blank character of the line.
@@ -246,8 +243,7 @@ class _vi_gq(ViTextCommandBase):
                 first_non_ws_char_region = self.view.find('[^\\s]', line.begin())
                 self.view.sel().add(first_non_ws_char_region.begin())
 
-            self.enter_normal_mode(mode)
-
+            enter_normal_mode(self.view, mode)
             return
 
         elif mode == INTERNAL_NORMAL:
@@ -255,7 +251,6 @@ class _vi_gq(ViTextCommandBase):
                 raise ValueError('motion data required')
 
             self.save_sel()
-
             self.view.run_command(motion['motion'], motion['motion_args'])
 
             if self.has_sel_changed():
@@ -273,7 +268,7 @@ class _vi_gq(ViTextCommandBase):
             else:
                 ui_blink()
 
-            self.enter_normal_mode(mode)
+            enter_normal_mode(self.view, mode)
 
         else:
             raise ValueError('bad mode: ' + mode)
@@ -290,11 +285,7 @@ class _vi_u(ViWindowCommandBase):
                 return Region(s.end(), s.begin())
 
             regions_transformer(self.view, reverse)
-
-            # XXX Why are we entering NORMAL mode explicitly from VISUAL mode?
-            self.window.run_command('_enter_normal_mode', {
-                'mode': VISUAL
-            })
+            enter_normal_mode(self.window, VISUAL)  # TODO Review: Why explicitly from VISUAL mode?
 
         # Ensure regions are clear of any highlighted yanks. For example, ddyyu
         # would otherwise show the restored line as previously highlighted.
@@ -390,21 +381,19 @@ class _vi_c(ViTextCommandBase):
                 regions_transformer(self.view, compact)
 
             if not self.has_sel_changed():
-                self.enter_insert_mode(mode)
-
+                enter_insert_mode(self.view, mode)
                 return
 
             # If we ci' and the target is an empty pair of quotes, we should
             # not delete anything.
             # FIXME: This will not work well with multiple selections.
             if all(s.empty() for s in self.view.sel()):
-                self.enter_insert_mode(mode)
-
+                enter_insert_mode(self.view, mode)
                 return
 
         self.state.registers.op_change(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
 
 
 class _enter_normal_mode(ViTextCommandBase):
@@ -579,7 +568,6 @@ class _enter_insert_mode(ViTextCommandBase):
     def run(self, edit, mode=None, count=1):
         self.view.settings().set('inverse_caret_state', False)
         self.view.settings().set('command_mode', False)
-
         self.state.enter_insert_mode()
         self.state.normal_insert_count = str(count)
         self.state.display_status()
@@ -599,7 +587,7 @@ class _enter_visual_mode(ViTextCommandBase):
         # mode, but we should double-check that.
 
         if state.mode == VISUAL and not force:
-            self.view.run_command('_enter_normal_mode', {'mode': mode})
+            enter_normal_mode(self.view, mode)
             return
 
         self.view.run_command('_enter_visual_mode_impl', {'mode': mode})
@@ -653,7 +641,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
         state = self.state
 
         if state.mode == VISUAL_LINE and not force:
-            self.view.run_command('_enter_normal_mode', {'mode': mode})
+            enter_normal_mode(self.view, mode)
             return
 
         if mode in (NORMAL, INTERNAL_NORMAL):
@@ -754,7 +742,7 @@ class _vi_dot(ViWindowCommandBase):
         else:
             raise ValueError('bad repeat data')
 
-        self.window.run_command('_enter_normal_mode', {'mode': mode})
+        enter_normal_mode(self.window, mode)
         state.repeat_data = repeat_data
         state.update_xpos()
 
@@ -805,7 +793,7 @@ class _vi_cc(ViTextCommandBase):
         if not all(s.empty() for s in self.view.sel()):
             self.view.run_command('right_delete')
 
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
 
         try:
             self.state.xpos = self.view.rowcol(self.view.sel()[0].b)[1]
@@ -856,19 +844,16 @@ class _vi_yy(ViTextCommandBase):
             self.view.sel().add_all(list(self.old_sel))
 
         if mode not in (INTERNAL_NORMAL, VISUAL):
-            self.enter_normal_mode(mode)
+            enter_normal_mode(self.view, mode)
             ui_blink()
-
             return
 
         self.save_sel()
         regions_transformer(self.view, select)
-
         ui_highlight_yank(self.view)
-
         self.state.registers.op_yank(register=register, linewise=True)
         restore()
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_y(ViTextCommandBase):
@@ -899,7 +884,7 @@ class _vi_y(ViTextCommandBase):
 
         self.state.registers.op_yank(register=register, linewise=linewise)
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_d(ViTextCommandBase):
@@ -917,22 +902,20 @@ class _vi_d(ViTextCommandBase):
 
             # The motion has failed, so abort.
             if not self.has_sel_changed():
-                self.enter_normal_mode(mode)
+                enter_normal_mode(self.view, mode)
                 ui_blink()
-
                 return
 
             # If the target's an empty pair of quotes, don't delete.
             # FIXME: This won't work well with multiple sels.
             if all(s.empty() for s in self.view.sel()):
-                self.enter_normal_mode(mode)
-
+                enter_normal_mode(self.view, mode)
                 return
 
         self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('left_delete')
         self.view.run_command('_nv_fix_st_eol_caret')
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
         # XXX: abstract this out for all types of selections.
         def advance_to_text_start(view, s):
@@ -995,8 +978,7 @@ class _vi_big_a(ViTextCommandBase):
             return
 
         regions_transformer(self.view, f)
-
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
 
 
 class _vi_big_i(ViTextCommandBase):
@@ -1015,8 +997,7 @@ class _vi_big_i(ViTextCommandBase):
             return Region(next_non_white_space_char(view, view.line(s.b).a))
 
         regions_transformer(self.view, f)
-
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
 
 
 class _vi_m(ViTextCommandBase):
@@ -1024,9 +1005,7 @@ class _vi_m(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, character=None):
         state = self.state
         state.marks.add(character, self.view)
-
-        # TODO: What if we are in visual mode?
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_quote(ViTextCommandBase):
@@ -1149,7 +1128,7 @@ class _vi_big_d(ViTextCommandBase):
                 self.view.sel().clear()
                 self.view.sel().add_all(new_sels)
 
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_big_c(ViTextCommandBase):
@@ -1176,7 +1155,7 @@ class _vi_big_c(ViTextCommandBase):
         self.view.run_command('right_delete')
         self.view.sel().add_all(self.view.get_regions('vi_empty_sels'))
         self.view.erase_regions('vi_empty_sels')
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
 
 
 class _vi_big_s(ViTextCommandBase):
@@ -1205,7 +1184,7 @@ class _vi_big_s(ViTextCommandBase):
         self.view.sel().add_all(self.view.get_regions('vi_empty_sels'))
         self.view.erase_regions('vi_empty_sels')
         self.view.run_command('reindent', {'force_indent': False})
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
 
 
 class _vi_s(ViTextCommandBase):
@@ -1226,7 +1205,7 @@ class _vi_s(ViTextCommandBase):
             return Region(s.begin(), s.end())
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
-            self.enter_normal_mode(mode)
+            enter_normal_mode(self.view, mode)
             ui_blink()
             return
 
@@ -1234,12 +1213,12 @@ class _vi_s(ViTextCommandBase):
         regions_transformer(self.view, select)
 
         if not self.has_sel_changed() and mode == INTERNAL_NORMAL:
-            self.enter_insert_mode(mode)
+            enter_insert_mode(self.view, mode)
             return
 
         self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
 
 
 class _vi_x(ViTextCommandBase):
@@ -1252,19 +1231,17 @@ class _vi_x(ViTextCommandBase):
             return s
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
-            self.enter_normal_mode(mode)
+            enter_normal_mode(self.view, mode)
             ui_blink()
-
             return
 
         if mode == INTERNAL_NORMAL and all(self.view.line(s.b).empty() for s in self.view.sel()):
             return
 
         regions_transformer(self.view, select)
-
         self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_r(ViTextCommandBase):
@@ -1307,7 +1284,7 @@ class _vi_r(ViTextCommandBase):
 
         char = utils.translate_char(char)
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_less_than_less_than(ViTextCommandBase):
@@ -1351,7 +1328,7 @@ class _vi_equal_equal(ViTextCommandBase):
 
         self.view.run_command('reindent', {'force_indent': False})
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_greater_than_greater_than(ViTextCommandBase):
@@ -1372,7 +1349,7 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
 
         self.view.run_command('indent')
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_greater_than(ViTextCommandBase):
@@ -1400,7 +1377,7 @@ class _vi_greater_than(ViTextCommandBase):
             # Restore only the first sel.
             s = utils.first_sel(self.view)
             utils.replace_sel(self.view, s.a + 1)
-            self.enter_normal_mode(mode)
+            enter_normal_mode(self.view, mode)
             return
 
         if motion:
@@ -1412,7 +1389,7 @@ class _vi_greater_than(ViTextCommandBase):
             self.view.run_command('indent')
 
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_less_than(ViTextCommandBase):
@@ -1435,7 +1412,7 @@ class _vi_less_than(ViTextCommandBase):
             self.view.run_command('unindent')
 
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_equal(ViTextCommandBase):
@@ -1452,7 +1429,7 @@ class _vi_equal(ViTextCommandBase):
         self.view.run_command('reindent', {'force_indent': False})
 
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_big_o(ViTextCommandBase):
@@ -1468,7 +1445,7 @@ class _vi_big_o(ViTextCommandBase):
             return new
 
         regions_transformer_indexed(self.view, create_selections)
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
         self.view.run_command('reindent', {'force_indent': False})
 
 
@@ -1484,7 +1461,7 @@ class _vi_o(ViTextCommandBase):
             return new
 
         regions_transformer_indexed(self.view, create_selections)
-        self.enter_insert_mode(mode)
+        enter_insert_mode(self.view, mode)
         self.view.run_command('reindent', {'force_indent': False})
 
 
@@ -1519,7 +1496,7 @@ class _vi_big_x(ViTextCommandBase):
         if not abort:
             self.view.run_command('left_delete')
 
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_big_z_big_q(WindowCommand):
@@ -1577,12 +1554,11 @@ class _vi_big_p(ViTextCommandBase):
                 self.view.sel().clear()
                 self.view.sel().add(pt)
 
-            self.enter_normal_mode(mode=mode)
+            enter_normal_mode(self.view, mode)
 
         elif mode == VISUAL:
-
             self.view.replace(edit, sel, text)
-            self.enter_normal_mode(mode=mode)
+            enter_normal_mode(self.view, mode)
 
             # If register content is linewise, then the cursor is put on the
             # first non blank of the line.
@@ -1644,7 +1620,7 @@ class _vi_p(ViTextCommandBase):
         else:
             self.reset_carets_charwise(paste_locations, len(fragment))
 
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
     def reset_carets_charwise(self, pts, paste_len):
         # FIXME: Won't work for multiple jagged pastes...
@@ -1738,15 +1714,14 @@ class _vi_gt(WindowCommand):
         else:
             window_tab_control(self.window, action='next')
 
-        self.window.run_command('_enter_normal_mode', {'mode': mode})
+        enter_normal_mode(self.window, mode)
 
 
 class _vi_g_big_t(WindowCommand):
 
     def run(self, count=1, mode=None):
         window_tab_control(self.window, action='previous')
-
-        self.window.run_command('_enter_normal_mode', {'mode': mode})
+        enter_normal_mode(self.window, mode)
 
 
 class _vi_ctrl_right_square_bracket(WindowCommand):
@@ -1923,7 +1898,7 @@ class _vi_select_big_j(IrreversibleTextCommand):
         s = self.view.sel()[0]
         self.view.sel().clear()
         self.view.sel().add(s)
-        self.view.run_command('_enter_normal_mode', {'mode': mode})
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_big_j(ViTextCommandBase):
@@ -2024,8 +1999,7 @@ class _vi_big_j(ViTextCommandBase):
         self.view.replace(edit, Region(start, end), joined_text)
         sels.clear()
         sels.add(Region(end_pos))
-
-        self.enter_normal_mode(mode=mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_gv(IrreversibleTextCommand):
@@ -2242,16 +2216,16 @@ class _enter_visual_block_mode(ViTextCommandBase):
             return
 
         if mode == VISUAL_BLOCK and not force:
-            self.enter_normal_mode(mode)
+            enter_normal_mode(self.view, mode)
             return
 
         if mode == VISUAL:
             first = utils.first_sel(self.view)
 
             if self.view.line(first.end() - 1).empty():
-                self.enter_normal_mode(mode)
-
-                return ui_blink()
+                enter_normal_mode(self.view, mode)
+                ui_blink()
+                return
 
             self.view.sel().clear()
             lhs_edge = self.view.rowcol(first.b)[1]  # FIXME # noqa: F841
@@ -2342,7 +2316,7 @@ class _vi_tilde(ViTextCommandBase):
         if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             regions_transformer(self.view, after)
 
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_g_tilde(ViTextCommandBase):
@@ -2362,7 +2336,7 @@ class _vi_g_tilde(ViTextCommandBase):
 
             if not self.has_sel_changed():
                 ui_blink()
-                self.enter_normal_mode(mode)
+                enter_normal_mode(self.view, mode)
                 return
 
         self.view.run_command('swap_case')
@@ -2372,7 +2346,7 @@ class _vi_g_tilde(ViTextCommandBase):
 
         self.view.sel().clear()
         self.view.sel().add_all(sels)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_visual_u(ViTextCommandBase):
@@ -2385,8 +2359,7 @@ class _vi_visual_u(ViTextCommandBase):
             return Region(s.begin())
 
         regions_transformer(self.view, after)
-
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_visual_big_u(ViTextCommandBase):
@@ -2399,8 +2372,7 @@ class _vi_visual_big_u(ViTextCommandBase):
             return Region(s.begin())
 
         regions_transformer(self.view, after)
-
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_g_tilde_g_tilde(ViTextCommandBase):
@@ -2416,10 +2388,9 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
 
         regions_transformer(self.view, select)
         self.view.run_command('swap_case')
-        # Ensure we leave the sel .b end where we want it.
+        # Ensure we leave the sel.b end where we want it.
         regions_transformer(self.view, select)
-
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_g_big_u_big_u(ViTextCommandBase):
@@ -2434,7 +2405,7 @@ class _vi_g_big_u_big_u(ViTextCommandBase):
 
         regions_transformer(self.view, select)
         regions_transformer(self.view, to_upper)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_guu(ViTextCommandBase):
@@ -2451,7 +2422,7 @@ class _vi_guu(ViTextCommandBase):
 
         regions_transformer(self.view, select)
         regions_transformer(self.view, to_lower)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 # Non-standard command. After a search has been performed via '/' or '?',
@@ -2549,8 +2520,7 @@ class _vi_gc(ViTextCommandBase):
 
         self.view.sel().clear()
         self.view.sel().add(pt)
-
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_g_big_c(ViTextCommandBase):
@@ -2565,9 +2535,8 @@ class _vi_g_big_c(ViTextCommandBase):
             return ui_blink()
 
         self.view.run_command('toggle_comment', {'block': True})
-
         regions_transformer(self.view, f)
-        self.enter_normal_mode(mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_gcc_action(ViTextCommandBase):

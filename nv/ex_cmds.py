@@ -57,6 +57,7 @@ from NeoVintageous.nv.vi.utils import has_dirty_buffers
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vim import console_message
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -138,7 +139,7 @@ def _serialize_deserialize(f, *args, **kwargs):
         state = State(view)
         # TODO [review] enter normal mode dependency
         state.enter_normal_mode()
-        view.run_command('_enter_normal_mode')
+        enter_normal_mode(view, None)
 
     return inner
 
@@ -1067,8 +1068,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0,
         view.sel().clear()
         view.sel().add(pt)
 
-    # TODO [review] enter normal mode dependency
-    view.run_command('_enter_normal_mode')
+    enter_normal_mode(view, None)
 
 
 def ex_sunmap(keys, **kwargs):
@@ -1329,9 +1329,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
 
             # TODO [review] State dependency
             state = State(view)
-
-            # TODO [review] enter normal mode dependency
-            window.run_command('_enter_normal_mode', {'mode': state.mode})
+            enter_normal_mode(window, state.mode)
             state.enter_normal_mode()
 
         return _do_append(view, file_name, forceit, line_range)
@@ -1416,11 +1414,8 @@ def _default_ex_cmd(window, view, line_range, **kwargs):
 
     # TODO [review] State dependency
     state = State(view)
-
-    # TODO [review] enter normal mode dependency
-    window.run_command('_enter_normal_mode', {'mode': state.mode})
+    enter_normal_mode(window, state.mode)
     state.enter_normal_mode()
-
     jumplist_update(view)
     window.run_command('_vi_go_to_line', {'line': line, 'mode': state.mode})
     jumplist_update(view)
