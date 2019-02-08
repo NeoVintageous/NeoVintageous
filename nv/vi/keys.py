@@ -479,15 +479,6 @@ class KeySequenceTokenizer(object):
 
                 modifiers += c + self.consume()
 
-            elif c == '>' and self.peek_one() == '>':
-                modifiers = self.sort_modifiers(modifiers.lower())
-
-                if len(key_name) == 0:
-                    return '<' + modifiers.upper() + self.consume() + '>'
-
-                else:
-                    raise ValueError('wrong key {0}'.format(key_name))
-
             elif c == '>':
                 modifiers = self.sort_modifiers(modifiers.lower())
 

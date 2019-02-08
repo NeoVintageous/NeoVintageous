@@ -67,6 +67,7 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('<D-A>'), '<D-A>')
         self.assertEqual(tokenize_one('<d-A>'), '<D-A>')
         self.assertEqual(tokenize_one('<D-i>'), '<D-i>')
+        self.assertEqual(tokenize_one('>'), '>')
 
     @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
     def test_iter_tokenize(self):
@@ -94,6 +95,7 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(iter_tokenize('<C-w><C-b>'), ['<C-w>', '<C-b>'])
         self.assertEqual(iter_tokenize('<C-w><C-_>'), ['<C-w>', '<C-_>'])
         self.assertEqual(iter_tokenize('<C-w>='), ['<C-w>', '='])
+        self.assertEqual(iter_tokenize('<C-w>>'), ['<C-w>', '>'])
         self.assertEqual(iter_tokenize('<C-w><Bar>'), ['<C-w>', '<bar>'])
         self.assertEqual(iter_tokenize('<C-w><Space>'), ['<C-w>', '<space>'])
 
