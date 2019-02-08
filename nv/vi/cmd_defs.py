@@ -34,8 +34,6 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 _MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
-
-
 _MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
@@ -281,7 +279,7 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
 
 @keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
 class ViRedo(ViOperatorDef):
-    def __init__(self, inclusive=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -1511,23 +1509,6 @@ class ViRepeat(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
-class ViOpenRegisterFromInsertMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_ctrl_r',
-            'action_args': {
-                'count': state.count,
-                'mode': state.mode
-            }
-        }
-
-
 @keys.assign(seq=seqs.CTRL_Y, modes=_MODES_ACTION)
 class ViScrollByLinesUp(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1604,20 +1585,6 @@ class StBuild(ViOperatorDef):
     def translate(self, state):
         return {
             'action': 'build',
-            'action_args': {}
-        }
-
-
-@keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
-class StFindPrev(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': 'find_prev',
             'action_args': {}
         }
 
@@ -1709,20 +1676,6 @@ class StFindNextResult(ViOperatorDef):
     def translate(self, state):
         return {
             'action': 'next_result',
-            'action_args': {}
-        }
-
-
-@keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
-class StFindPrevResult(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': 'prev_result',
             'action_args': {}
         }
 
@@ -1924,7 +1877,7 @@ class StFocusSideBar(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.I, modes=_MODES_ACTION + (SELECT,))
+@keys.assign(seq=seqs.I, modes=(NORMAL, VISUAL_LINE, SELECT))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1972,16 +1925,20 @@ class ViJumpToDefinition(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.A, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.A, modes=(NORMAL, VISUAL_LINE))
 class ViInsertAfterChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_a'
-        cmd['action_args'] = {'mode': state.mode, 'count': 1}
+        cmd = {
+            'action': '_vi_a',
+            'action_args': {
+                'mode': state.mode,
+                'count': 1
+            }
+        }
 
         if state.mode != SELECT:
             state.glue_until_normal_mode = True
