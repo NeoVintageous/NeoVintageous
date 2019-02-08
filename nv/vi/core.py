@@ -130,4 +130,7 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
 # DEPRECATED
 # TODO Remove this command
 class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
-    pass
+
+    @property
+    def view(self):
+        return self.window.active_view()

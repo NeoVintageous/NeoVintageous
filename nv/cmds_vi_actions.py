@@ -281,54 +281,51 @@ class _vi_gq(ViTextCommandBase):
 
 class _vi_u(ViWindowCommandBase):
 
-    # TODO: surely must accept a mode?
-    def run(self, count=1):
+    def run(self, count=1, **kwargs):
         for i in range(count):
-            self._view.run_command('undo')
+            self.view.run_command('undo')
 
-        if self._view.has_non_empty_selection_region():
+        if self.view.has_non_empty_selection_region():
             def reverse(view, s):
                 return Region(s.end(), s.begin())
 
-            # TODO: xpos is misaligned after this.
-            regions_transformer(self._view, reverse)
-            # FIXME: why from VISUAL?
+            regions_transformer(self.view, reverse)
+
+            # XXX Why are we entering NORMAL mode explicitly from VISUAL mode?
             self.window.run_command('_enter_normal_mode', {
                 'mode': VISUAL
             })
 
         # Ensure regions are clear of any highlighted yanks. For example, ddyyu
         # would otherwise show the restored line as previously highlighted.
-        ui_highlight_yank_clear(self._view)
+        ui_highlight_yank_clear(self.view)
 
 
 class _vi_ctrl_r(ViWindowCommandBase):
 
-    def run(self, count=1, mode=None):
-        change_count_before = self._view.change_count()
+    def run(self, count=1, **kwargs):
+        change_count_before = self.view.change_count()
 
         for i in range(count):
-            self._view.run_command('redo')
+            self.view.run_command('redo')
 
-        change_count_after = self._view.change_count()
+        if self.view.change_count() == change_count_before:
+            return ui_blink()
 
-        if change_count_after == change_count_before:
-            ui_blink()
-
-        # Fix eol issue.
+        # Fix EOL issue.
         # See https://github.com/SublimeTextIssues/Core/issues/2121.
-        def f(view, s):
+        def fixup_eol(view, s):
             pt = s.b
             char = view.substr(pt)
             if (char == '\n' and not view.line(pt).empty()):
                 return Region(pt - 1)
 
-            if char == '\x00' and pt == self._view.size():
+            if char == '\x00' and pt == view.size():
                 return Region(s.b - 1)
 
             return s
 
-        regions_transformer(self._view, f)
+        regions_transformer(self.view, fixup_eol)
 
 
 class _vi_a(ViTextCommandBase):
