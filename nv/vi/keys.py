@@ -415,7 +415,7 @@ class key_names:
         Leader,
     ]
 
-    max_len = len('<space>')
+    max_len = len('<leader>')
 
 
 # TODO: detect counts, registers, marks...
