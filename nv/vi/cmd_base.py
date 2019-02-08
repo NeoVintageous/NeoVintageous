@@ -29,7 +29,6 @@ class ViCommandDefBase:
     _serializable = ['_inp', ]
 
     def __init__(self):
-        self.command = '<unset>'
         self.input_parser = None
         self.inp = ''
 
@@ -38,7 +37,7 @@ class ViCommandDefBase:
         return self.__dict__[key]
 
     def __str__(self):
-        return '<{0} ({1})>'.format(self.__class__.__qualname__, self.command)
+        return '<{}>'.format(self.__class__.__qualname__)
 
     @property
     def accept_input(self):

@@ -73,9 +73,9 @@ class TestViCommandDefBase(unittest.TestCase):
         self.assertEqual({'name': 'ViCommandDefBase', 'data': {'_inp': 'xyz'}}, command.serialize())
 
     def test__str__(self):
-        self.assertEqual('<ViCommandDefBase (<unset>)>', str(self.command))
+        self.assertEqual('<ViCommandDefBase>', str(self.command))
         self.command.command = 'fizz'
-        self.assertEqual('<ViCommandDefBase (fizz)>', str(self.command))
+        self.assertEqual('<ViCommandDefBase>', str(self.command))
 
     def test__getitem__(self):
         self.command.foo = 'bar'
@@ -94,9 +94,9 @@ class TestViCommandDefBaseTestImplementation(unittest.TestCase):
         self.command = ViCommandDefBaseImplementation()
 
     def test__str__(self):
-        self.assertEqual('<ViCommandDefBaseImplementation (<unset>)>', str(self.command))
+        self.assertEqual('<ViCommandDefBaseImplementation>', str(self.command))
         self.command.command = 'buzz'
-        self.assertEqual('<ViCommandDefBaseImplementation (buzz)>', str(self.command))
+        self.assertEqual('<ViCommandDefBaseImplementation>', str(self.command))
 
     def test_serialize_input(self):
         self.command.inp = 'ab'
