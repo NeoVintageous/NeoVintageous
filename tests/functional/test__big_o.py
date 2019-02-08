@@ -38,6 +38,7 @@ class Test_O_auto_indent(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
+        self.settings().set('translate_tabs_to_spaces', True)
         self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
 
     def test_O(self):
