@@ -154,3 +154,26 @@ _REGION_FLAGS = {
 
 def ui_region_flags(name):
     return _REGION_FLAGS.get(name)
+
+
+def ui_highlight_yank(view):
+    _get = view.settings().get
+
+    if not _get('highlightedyank'):
+        return
+
+    view.add_regions(
+        'highlightedyank',
+        list(view.sel()),
+        scope='string highlightedyank',
+        flags=ui_region_flags(_get('highlightedyank_style'))
+    )
+
+    set_timeout(
+        lambda: view.erase_regions('highlightedyank'),
+        _get('highlightedyank_duration')
+    )
+
+
+def ui_highlight_yank_clear(view):
+    view.erase_regions('highlightedyank')

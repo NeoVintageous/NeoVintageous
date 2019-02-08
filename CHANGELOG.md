@@ -6,10 +6,13 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#429](https://github.com/NeoVintageous/NeoVintageous/issues/429): Support `<bslash>` in vintageousrc
+* Added [#428](https://github.com/NeoVintageous/NeoVintageous/issues/428): Support `<bar>` in vintageousrc
 * Added [#424](https://github.com/NeoVintageous/NeoVintageous/issues/424): `[count]o` and `[count]O`
 
 ### Fixed
 
+* Fixed [#247](https://github.com/NeoVintageous/NeoVintageous/issues/247): Unable to map `<C-w>>` in vintageousrc
 * Fixed [#427](https://github.com/NeoVintageous/NeoVintageous/issues/427): `{Visual}gv` should select previous selection
 * Fixed [#423](https://github.com/NeoVintageous/NeoVintageous/issues/423): `:w` cannot find file and save, but `:Save` and `<Ctrl-s>` work
 * Fixed [#425](https://github.com/NeoVintageous/NeoVintageous/issues/425): Reloading vintageousrc should unload existing mappings

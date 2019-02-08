@@ -540,7 +540,7 @@ class FunctionalTestCase(ViewTestCase):
         except KeyError as e:
             raise KeyError('test command definition not found for feed %s' % str(e)) from None
 
-        self.view.run_command(command, args)
+        self.view.window().run_command(command, args)
 
     def eq(self, text, feed, expected=None, msg=None):
         # Args:
@@ -726,14 +726,36 @@ def mock_bell():
 
 # Usage:
 #
+#   @unitest.mock_status_message()
+#   def test_status_message(self):
+#       self.assertStatusMessage('msg')
+#
+def mock_status_message():
+    def wrapper(f):
+        @mock.patch('NeoVintageous.nv.vim._status_message')
+        def wrapped(self, *args, **kwargs):
+            self.status_message = args[-1]
+
+            def _assertStatusMessage(msg):
+                self.status_message.assert_called_once_with(msg)
+
+            self.assertStatusMessage = _assertStatusMessage
+
+            return f(self, *args[:-1], **kwargs)
+        return wrapped
+    return wrapper
+
+
+# Usage:
+#
 #   @unitest.mock_ui()
-#   def test_...(self):
+#   def test_ui(self):
 #
 #   @unitest.mock_ui(screen_rows=10)
-#   def test_...(self):
+#   def test_ui(self):
 #
 #   @unitest.mock_ui(visible_region=(2, 7))
-#   def test_...(self):
+#   def test_ui(self):
 #
 #  Screen rows and visible region defaults to the current size of the view.
 #
@@ -820,9 +842,9 @@ _SEQ2CMD = {
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
-    '=}':           {'command': '_vi_equal', 'args': {'motion': {'motion': '_vi_right_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
     '=':            {'command': '_vi_equal'},  # noqa: E241
     '==':           {'command': '_vi_equal_equal'},  # noqa: E241
+    '=}':           {'command': '_vi_equal', 'args': {'motion': {'motion': '_vi_right_brace', 'motion_args': {'mode': 'mode_internal_normal', 'count': 1}, 'is_jump': True}, 'mode': 'mode_internal_normal', 'count': 1}},  # noqa: E241,E501
     '>':            {'command': '_vi_greater_than'},  # noqa: E241
     '>>':           {'command': '_vi_greater_than_greater_than'},  # noqa: E241
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
@@ -973,11 +995,17 @@ _SEQ2CMD = {
     'ds}':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '}'}},  # noqa: E241
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': 'mode_internal_normal'}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'e':            {'command': '_vi_e'},  # noqa: E241
+    'f\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': True}},  # noqa: E241
+    'fx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': True}},  # noqa: E241
+    'f|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': True}},  # noqa: E241
     'G':            {'command': '_vi_big_g'},  # noqa: E241
     'g_':           {'command': '_vi_g__'},  # noqa: E241
+    'ga':           {'command': '_vi_ga'},  # noqa: E241
     'gc':           {'command': '_vi_gc'},  # noqa: E241
     'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
     'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': 'mode_internal_normal'}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
+    'gE':           {'command': '_vi_g_big_e'},  # noqa: E241
+    'ge':           {'command': '_vi_ge'},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241
@@ -1032,6 +1060,9 @@ _SEQ2CMD = {
     'S"':           {'command': '_nv_surround_ys', 'args': {'surround_with': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
+    't\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': False}},  # noqa: E241
+    'tx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
+    't|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': False}},  # noqa: E241
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
     'u':            {'command': '_vi_visual_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241

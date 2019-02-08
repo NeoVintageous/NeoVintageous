@@ -94,19 +94,23 @@ def _parse_line(line):
                 if cmdline:
                     cmdline = ':' + cmdline
 
-                # By default, mapping the character '|' (bar) should be escaped
-                # with a slash or '<Bar>' used instead. Neovintageous currently
-                # doesn't support '<Bar>' and internally doesn't require the bar
-                # character to be escaped, but in order not to break backwards
-                # compatibility in the future, this piece of code checks that
-                # the mapping escapes the bar character correctly. This piece of
-                # code can be removed when this is fixed in the core. See :help
-                # map_bar for more details.
-                if '|' in cmdline:
-                    if '|' in cmdline.replace('\\|', ''):
-                        raise Exception('E488: Trailing characters: {}'.format(line.rstrip()))
+                # Since the '|' character is used to separate a map command from
+                # the next command, you will have to do something special to
+                # include a '|' in {rhs}. You can use '<bar>' or escape with a
+                # slash '\|'. See :h map-bar. TODO Refactor logic for
+                # translating escaped bar to <bar> into mapping internals.
+                cmdline = cmdline.replace('\\|', '<bar>')
 
-                    cmdline = cmdline.replace('\\|', '|')
+                # To map a backslash, or use a backslash literally in the {rhs},
+                # the special sequence "<bslash>" can be used. This avoids the
+                # need to double backslashes when using nested mappings. See :h
+                # map-backslash. TODO Refactor logic for translating escaped
+                # backslash to <bslash> into mapping internals.
+                cmdline = cmdline.replace('\\', '<bslash>')
+
+                if '|' in cmdline:
+                    # Using '|' to separate map commands is currently not supported.
+                    raise Exception('E488: Trailing characters: {}'.format(line.rstrip()))
 
                 return cmdline
     except Exception:

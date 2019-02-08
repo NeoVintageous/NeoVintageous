@@ -19,7 +19,7 @@ import re
 
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv import variables
-from NeoVintageous.nv.vi import cmd_base
+from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -43,8 +43,10 @@ class seqs:
     AT = '@'
     AW = 'aw'
     B = 'b'
+    BACKSLASH = '<bslash>'
     BACKSPACE = '<bs>'
     BACKTICK = '`'
+    BAR = '<bar>'
     BIG_A = 'A'
     BIG_B = 'B'
     BIG_C = 'C'
@@ -125,6 +127,7 @@ class seqs:
     CTRL_W = '<C-w>'
     CTRL_W_B = '<C-w>b'
     CTRL_W_BACKSPACE = '<C-w><bs>'
+    CTRL_W_BAR = '<C-w><bar>'
     CTRL_W_BIG_H = '<C-w>H'
     CTRL_W_BIG_J = '<C-w>J'
     CTRL_W_BIG_K = '<C-w>K'
@@ -156,7 +159,6 @@ class seqs:
     CTRL_W_MINUS = '<C-w>-'
     CTRL_W_N = '<C-w>n'
     CTRL_W_O = '<C-w>o'
-    CTRL_W_PIPE = '<C-w>|'
     CTRL_W_PLUS = '<C-w>+'
     CTRL_W_Q = '<C-w>q'
     CTRL_W_RIGHT = '<C-w><right>'
@@ -256,7 +258,6 @@ class seqs:
     PAGE_DOWN = 'pagedown'
     PAGE_UP = 'pageup'
     PERCENT = '%'
-    PIPE = '|'
     PLUS = '+'
     Q = 'q'
     QUESTION_MARK = '?'
@@ -313,37 +314,29 @@ def seq_to_command(state, seq, mode=None):
     #   ViMissingCommandDef: If not found.
     mode = mode or state.mode
 
-    command = None
-
     if mode in plugin.mappings:
-        command = plugin.mappings[mode].get(seq, None)
+        plugin_command = plugin.mappings[mode].get(seq)
+        if plugin_command:
+            is_enabled_attr = hasattr(plugin_command, 'is_enabled')
+            if not is_enabled_attr or (is_enabled_attr and plugin_command.is_enabled(state)):
+                return plugin_command
 
-        # The plugin command might only be enabled under certain conditions
-        if command and hasattr(command, 'is_enabled') and (not command.is_enabled(state)):
-            command = None
+    if mode in mappings:
+        command = mappings[mode].get(seq)
+        if command:
+            return command
 
-    if not command and mode in mappings:
-        command = mappings[mode].get(seq, cmd_base.ViMissingCommandDef())
-
-    if command:
-        return command
-
-    return cmd_base.ViMissingCommandDef()
+    return ViMissingCommandDef()
 
 
-# Mappings 'key sequence' ==> 'command definition'
-#
-# 'key sequence' is a sequence of key presses.
-#
 mappings = {
     INSERT: {},
     NORMAL: {},
-    VISUAL: {},
     OPERATOR_PENDING: {},
-    VISUAL_LINE: {},
-    VISUAL_BLOCK: {},
     SELECT: {},
-    '_missing': dict(name='_missing')
+    VISUAL: {},
+    VISUAL_BLOCK: {},
+    VISUAL_LINE: {}
 }
 
 
@@ -353,7 +346,9 @@ EOF = -2
 class key_names:
     """Names of special keys."""
 
+    BACKSLASH = '<bslash>'
     BACKSPACE = '<bs>'
+    BAR = '<bar>'
     CR = '<cr>'
     DOWN = '<down>'
     END = '<end>'
@@ -386,7 +381,10 @@ class key_names:
     Leader = '<leader>'
 
     as_list = [
+
+        BACKSLASH,
         BACKSPACE,
+        BAR,
         CR,
         DOWN,
         END,
@@ -420,7 +418,7 @@ class key_names:
         Leader,
     ]
 
-    max_len = len('<space>')
+    max_len = len('<leader>')
 
 
 # TODO: detect counts, registers, marks...
@@ -431,7 +429,6 @@ class KeySequenceTokenizer(object):
         """Sequence of key names in Vim notation."""
         self.idx = -1
         self.source = source
-        self.in_named_key = False
 
     def consume(self):
         self.idx += 1
@@ -462,7 +459,6 @@ class KeySequenceTokenizer(object):
         return modifiers
 
     def long_key_name(self):
-        self.in_named_key = True
         key_name = ''
         modifiers = ''
 
@@ -478,15 +474,6 @@ class KeySequenceTokenizer(object):
 
                 modifiers += c + self.consume()
 
-            elif c == '>' and self.peek_one() == '>':
-                modifiers = self.sort_modifiers(modifiers.lower())
-
-                if len(key_name) == 0:
-                    return '<' + modifiers.upper() + self.consume() + '>'
-
-                else:
-                    raise ValueError('wrong key {0}'.format(key_name))
-
             elif c == '>':
                 modifiers = self.sort_modifiers(modifiers.lower())
 
@@ -496,7 +483,6 @@ class KeySequenceTokenizer(object):
                     return '<' + modifiers.upper() + key_name + '>'
 
                 elif self.is_named_key('<' + key_name + '>'):
-                    self.in_named_key = False
                     return '<' + modifiers.upper() + key_name.lower() + '>'
 
                 else:

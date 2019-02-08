@@ -231,9 +231,12 @@ class WindowAPI():
                 # TODO is this the best way to close a group
                 self.window.run_command('close_pane', {'group': i})
 
-    def quit_current_view(self, exit_sublime_if_last=False):
+    def quit_current_view_and_exit_if_last(self):
+        self._quit_current_view(close_window_if_last_view=True)
+
+    def _quit_current_view(self, close_window_if_last_view=False):
         self._close_current_view(do_not_close_if_last=False)
-        if exit_sublime_if_last:
+        if close_window_if_last_view:
             if len(self.window.views()) == 0:
                 self.window.run_command('close')
 

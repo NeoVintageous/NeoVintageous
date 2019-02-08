@@ -39,11 +39,13 @@ from NeoVintageous.nv.vi.utils import translate_char
 class TestTranslateChar(unittest.TestCase):
 
     def test_enter(self):
-        self.assertEqual(translate_char('<enter>'), '\n')
+        self.assertEqual(translate_char('<bar>'), '|')
+        self.assertEqual(translate_char('<bslash>'), '\\')
         self.assertEqual(translate_char('<cr>'), '\n')
+        self.assertEqual(translate_char('<enter>'), '\n')
+        self.assertEqual(translate_char('<lt>'), '<')
         self.assertEqual(translate_char('<sp>'), ' ')
         self.assertEqual(translate_char('<space>'), ' ')
-        self.assertEqual(translate_char('<lt>'), '<')
         self.assertEqual(translate_char('<tab>'), '\t')
         self.assertEqual(translate_char('a'), 'a')
         self.assertEqual(translate_char('w'), 'w')

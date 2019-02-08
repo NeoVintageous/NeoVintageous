@@ -368,7 +368,7 @@ class _vi_slash_on_parser_done(WindowCommand):
     def run(self, key=None):
         state = State(self.window.active_view())
         state.motion = ViSearchForwardImpl()
-        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
+        state.last_buffer_search = (state.motion.inp or state.last_buffer_search)
 
 
 class _vi_l(ViMotionCommand):
@@ -2151,7 +2151,7 @@ class _vi_question_mark_on_parser_done(WindowCommand):
     def run(self, key=None):
         state = State(self.window.active_view())
         state.motion = ViSearchBackwardImpl()
-        state.last_buffer_search = (state.motion._inp or state.last_buffer_search)
+        state.last_buffer_search = (state.motion.inp or state.last_buffer_search)
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):

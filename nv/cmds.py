@@ -567,7 +567,7 @@ class _nv_process_notation(ViWindowCommandBase):
 
                 return ui_blink()
 
-            motion_data['motion_args']['default'] = state.motion._inp
+            motion_data['motion_args']['default'] = state.motion.inp
 
             self.window.run_command(motion_data['motion'], motion_data['motion_args'])
 
@@ -591,7 +591,7 @@ class _nv_process_notation(ViWindowCommandBase):
 
                 self.window.run_command(
                     parser_def.interactive_command,
-                    {parser_def.input_param: command._inp}
+                    {parser_def.input_param: command.inp}
                 )
         except IndexError:
             _log.debug('could not find a command to collect more user input')

@@ -34,8 +34,6 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 _MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
-
-
 _MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
@@ -281,7 +279,7 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
 
 @keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
 class ViRedo(ViOperatorDef):
-    def __init__(self, inclusive=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -887,8 +885,10 @@ class ViMoveCursorToBottomRightWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_b',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'b'
+            }
         }
 
 
@@ -900,8 +900,10 @@ class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_h',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'H'
+            }
         }
 
 
@@ -913,8 +915,10 @@ class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_j',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'J'
+            }
         }
 
 
@@ -926,8 +930,10 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_k',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'K'
+            }
         }
 
 
@@ -939,8 +945,10 @@ class ViMoveCurrentWindowToFarRight(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_big_l',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'L'
+            }
         }
 
 
@@ -952,8 +960,10 @@ class ViCloseTheCurrentWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_c',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'c'
+            }
         }
 
 
@@ -965,8 +975,10 @@ class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_equal',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': '='
+            }
         }
 
 
@@ -978,8 +990,9 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_greater_than',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '>',
                 'count': state.count
             }
         }
@@ -996,8 +1009,9 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_h',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'h',
                 'count': state.count
             }
         }
@@ -1013,8 +1027,9 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_j',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'j',
                 'count': state.count
             }
         }
@@ -1030,8 +1045,9 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_k',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'k',
                 'count': state.count
             }
         }
@@ -1047,8 +1063,9 @@ class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_l',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'l',
                 'count': state.count
             }
         }
@@ -1062,8 +1079,9 @@ class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_less_than',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '<',
                 'count': state.count
             }
         }
@@ -1077,8 +1095,9 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_minus',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '-',
                 'count': state.count
             }
         }
@@ -1093,8 +1112,9 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_n',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'n',
                 'count': state.count
             }
         }
@@ -1109,12 +1129,14 @@ class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_o',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'o'
+            }
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_PIPE, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.CTRL_W_BAR, modes=_MODES_ACTION)
 class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1122,8 +1144,9 @@ class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_pipe',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '|',
                 'count': state.count
             }
         }
@@ -1137,8 +1160,9 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_plus',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '+',
                 'count': state.count
             }
         }
@@ -1153,8 +1177,10 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_q',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'q'
+            }
         }
 
 
@@ -1168,8 +1194,9 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_s',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 's',
                 'count': state.count
             }
         }
@@ -1184,8 +1211,10 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_t',
-            'action_args': {}
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 't'
+            }
         }
 
 
@@ -1198,8 +1227,9 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_underscore',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': '_',
                 'count': state.count
             }
         }
@@ -1214,9 +1244,9 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_v',
+            'action': '_vi_ctrl_w',
             'action_args': {
-                'mode': state.mode,
+                'action': 'v',
                 'count': state.count
             }
         }
@@ -1231,8 +1261,9 @@ class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_ctrl_w_x',
+            'action': '_vi_ctrl_w',
             'action_args': {
+                'action': 'x',
                 'count': state.count
             }
         }
@@ -1478,23 +1509,6 @@ class ViRepeat(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
-class ViOpenRegisterFromInsertMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_ctrl_r',
-            'action_args': {
-                'count': state.count,
-                'mode': state.mode
-            }
-        }
-
-
 @keys.assign(seq=seqs.CTRL_Y, modes=_MODES_ACTION)
 class ViScrollByLinesUp(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1575,20 +1589,6 @@ class StBuild(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
-class StFindPrev(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': 'find_prev',
-            'action_args': {}
-        }
-
-
 @keys.assign(seq=seqs.AT, modes=_MODES_ACTION)
 class ViOpenMacrosForRepeating(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1607,7 +1607,7 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
 
     def accept(self, key):
         assert len(key) == 1, '`@` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -1639,7 +1639,7 @@ class ViToggleMacroRecorder(ViOperatorDef):
 
     def accept(self, key):
         assert len(key) == 1, '`q` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -1676,20 +1676,6 @@ class StFindNextResult(ViOperatorDef):
     def translate(self, state):
         return {
             'action': 'next_result',
-            'action_args': {}
-        }
-
-
-@keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
-class StFindPrevResult(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': 'prev_result',
             'action_args': {}
         }
 
@@ -1891,7 +1877,7 @@ class StFocusSideBar(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.I, modes=_MODES_ACTION + (SELECT,))
+@keys.assign(seq=seqs.I, modes=(NORMAL, VISUAL_LINE, SELECT))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1939,16 +1925,20 @@ class ViJumpToDefinition(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.A, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.A, modes=(NORMAL, VISUAL_LINE))
 class ViInsertAfterChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_a'
-        cmd['action_args'] = {'mode': state.mode, 'count': 1}
+        cmd = {
+            'action': '_vi_a',
+            'action_args': {
+                'mode': state.mode,
+                'count': 1
+            }
+        }
 
         if state.mode != SELECT:
             state.glue_until_normal_mode = True
@@ -2424,7 +2414,7 @@ class ViGotoExactMarkXpos(ViMotionDef):
 
     def accept(self, key):
         assert len(key) == 1, '``` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -2610,7 +2600,7 @@ class ViGotoMark(ViMotionDef):
 
     def accept(self, key):
         assert len(key) == 1, '`\'` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -2822,7 +2812,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.PIPE, modes=_MODES_MOTION)
+@keys.assign(seq=seqs.BAR, modes=_MODES_MOTION)
 class ViMoveByLineCols(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3159,7 +3149,7 @@ class ViReplaceCharacters(ViOperatorDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`r` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3192,7 +3182,7 @@ class ViSetMark(ViOperatorDef):
 
     def accept(self, key):
         assert len(key) == 1, '`m` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -3229,7 +3219,7 @@ class ViSearchCharForward(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`f`, `t`, `F`, `T` only accept a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3272,7 +3262,7 @@ class ViATextObject(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`a` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3308,7 +3298,7 @@ class ViITextObject(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`i` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3346,7 +3336,7 @@ class ViSearchCharBackward(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`t` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3389,7 +3379,7 @@ class ViSearchForward(ViMotionDef):
         return not self.inp.lower().endswith('<cr>')
 
     def accept(self, key):
-        self._inp += key
+        self.inp += key
 
         return True
 
@@ -3401,19 +3391,19 @@ class ViSearchForward(ViMotionDef):
             }
 
         # We'll end up here, for example, when repeating via '.'.
-        return ViSearchForwardImpl(term=self._inp[:-4]).translate(state)
+        return ViSearchForwardImpl(term=self.inp[:-4]).translate(state)
 
 
 class ViSearchForwardImpl(ViMotionDef):
     def __init__(self, *args, term='', **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
-        self._inp = term
+        self.inp = term
         self.updates_xpos = True
 
     def translate(self, state):
         if not self.inp:
-            self._inp = state.last_buffer_search
+            self.inp = state.last_buffer_search
 
         return {
             'is_jump': True,
@@ -3446,7 +3436,7 @@ class ViSearchBackward(ViMotionDef):
         return not self.inp.lower().endswith('<cr>')
 
     def accept(self, key):
-        self._inp += key
+        self.inp += key
 
         return True
 
@@ -3458,7 +3448,7 @@ class ViSearchBackward(ViMotionDef):
             }
         else:
             # We'll end up here, for example, when repeating via '.'.
-            return ViSearchBackwardImpl(term=self._inp[:-4]).translate(state)
+            return ViSearchBackwardImpl(term=self.inp[:-4]).translate(state)
 
 
 class ViSearchBackwardImpl(ViMotionDef):
@@ -3466,11 +3456,11 @@ class ViSearchBackwardImpl(ViMotionDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self._inp = term
+        self.inp = term
 
     def translate(self, state):
         if not self.inp:
-            self._inp = state.last_buffer_search
+            self.inp = state.last_buffer_search
 
         return {
             'is_jump': True,
