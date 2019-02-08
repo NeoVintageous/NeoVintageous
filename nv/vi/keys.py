@@ -329,7 +329,6 @@ def seq_to_command(state, seq, mode=None):
     return ViMissingCommandDef()
 
 
-
 mappings = {
     INSERT: {},
     NORMAL: {},
@@ -430,7 +429,6 @@ class KeySequenceTokenizer(object):
         """Sequence of key names in Vim notation."""
         self.idx = -1
         self.source = source
-        self.in_named_key = False
 
     def consume(self):
         self.idx += 1
@@ -461,7 +459,6 @@ class KeySequenceTokenizer(object):
         return modifiers
 
     def long_key_name(self):
-        self.in_named_key = True
         key_name = ''
         modifiers = ''
 
@@ -486,7 +483,6 @@ class KeySequenceTokenizer(object):
                     return '<' + modifiers.upper() + key_name + '>'
 
                 elif self.is_named_key('<' + key_name + '>'):
-                    self.in_named_key = False
                     return '<' + modifiers.upper() + key_name.lower() + '>'
 
                 else:
