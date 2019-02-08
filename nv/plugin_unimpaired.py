@@ -234,7 +234,7 @@ class _BaseToggleDef(ViOperatorDef):
         return self.inp == ''
 
     def accept(self, key):
-        self._inp = key
+        self.inp = key
 
         return True
 

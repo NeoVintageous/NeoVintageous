@@ -1607,7 +1607,7 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
 
     def accept(self, key):
         assert len(key) == 1, '`@` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -1639,7 +1639,7 @@ class ViToggleMacroRecorder(ViOperatorDef):
 
     def accept(self, key):
         assert len(key) == 1, '`q` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -2414,7 +2414,7 @@ class ViGotoExactMarkXpos(ViMotionDef):
 
     def accept(self, key):
         assert len(key) == 1, '``` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -2600,7 +2600,7 @@ class ViGotoMark(ViMotionDef):
 
     def accept(self, key):
         assert len(key) == 1, '`\'` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -3149,7 +3149,7 @@ class ViReplaceCharacters(ViOperatorDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`r` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3182,7 +3182,7 @@ class ViSetMark(ViOperatorDef):
 
     def accept(self, key):
         assert len(key) == 1, '`m` only accepts a single char'
-        self._inp = key
+        self.inp = key
 
         return True
 
@@ -3219,7 +3219,7 @@ class ViSearchCharForward(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`f`, `t`, `F`, `T` only accept a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3262,7 +3262,7 @@ class ViATextObject(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`a` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3298,7 +3298,7 @@ class ViITextObject(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`i` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3336,7 +3336,7 @@ class ViSearchCharBackward(ViMotionDef):
     def accept(self, key):
         translated = utils.translate_char(key)
         assert len(translated) == 1, '`t` only accepts a single char'
-        self._inp = translated
+        self.inp = translated
 
         return True
 
@@ -3379,7 +3379,7 @@ class ViSearchForward(ViMotionDef):
         return not self.inp.lower().endswith('<cr>')
 
     def accept(self, key):
-        self._inp += key
+        self.inp += key
 
         return True
 
@@ -3391,19 +3391,19 @@ class ViSearchForward(ViMotionDef):
             }
 
         # We'll end up here, for example, when repeating via '.'.
-        return ViSearchForwardImpl(term=self._inp[:-4]).translate(state)
+        return ViSearchForwardImpl(term=self.inp[:-4]).translate(state)
 
 
 class ViSearchForwardImpl(ViMotionDef):
     def __init__(self, *args, term='', **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
-        self._inp = term
+        self.inp = term
         self.updates_xpos = True
 
     def translate(self, state):
         if not self.inp:
-            self._inp = state.last_buffer_search
+            self.inp = state.last_buffer_search
 
         return {
             'is_jump': True,
@@ -3436,7 +3436,7 @@ class ViSearchBackward(ViMotionDef):
         return not self.inp.lower().endswith('<cr>')
 
     def accept(self, key):
-        self._inp += key
+        self.inp += key
 
         return True
 
@@ -3448,7 +3448,7 @@ class ViSearchBackward(ViMotionDef):
             }
         else:
             # We'll end up here, for example, when repeating via '.'.
-            return ViSearchBackwardImpl(term=self._inp[:-4]).translate(state)
+            return ViSearchBackwardImpl(term=self.inp[:-4]).translate(state)
 
 
 class ViSearchBackwardImpl(ViMotionDef):
@@ -3456,11 +3456,11 @@ class ViSearchBackwardImpl(ViMotionDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self._inp = term
+        self.inp = term
 
     def translate(self, state):
         if not self.inp:
-            self._inp = state.last_buffer_search
+            self.inp = state.last_buffer_search
 
         return {
             'is_jump': True,

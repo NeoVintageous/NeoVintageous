@@ -69,7 +69,7 @@ class _surround_ys(ViOperatorDef):
         return not(single or tag)
 
     def accept(self, key):
-        self._inp += translate_char(key)
+        self.inp += translate_char(key)
         return True
 
     def is_enabled(self, state):
@@ -124,7 +124,7 @@ class _surround_ds(ViOperatorDef):
         return not(single or tag)
 
     def accept(self, key):
-        self._inp += translate_char(key)
+        self.inp += translate_char(key)
         return True
 
     def is_enabled(self, state):
@@ -175,7 +175,7 @@ class _surround_cs(ViOperatorDef):
         return len(self.inp) < 2
 
     def accept(self, key):
-        self._inp += translate_char(key)
+        self.inp += translate_char(key)
 
         return True
 
