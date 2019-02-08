@@ -1487,6 +1487,7 @@ class _vi_big_o(ViTextCommandBase):
 
         regions_transformer_indexed(self.view, create_selections)
         self.enter_insert_mode(mode)
+        self.view.run_command('reindent', {'force_indent': False})
 
 
 class _vi_o(ViTextCommandBase):
@@ -1502,6 +1503,7 @@ class _vi_o(ViTextCommandBase):
 
         regions_transformer_indexed(self.view, create_selections)
         self.enter_insert_mode(mode)
+        self.view.run_command('reindent', {'force_indent': False})
 
 
 class _vi_big_x(ViTextCommandBase):

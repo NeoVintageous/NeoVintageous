@@ -42,3 +42,17 @@ class Test_o(unittest.FunctionalTestCase):
 
     def test_multiple_count_v_o(self):
         self.eq('fo|o\nba|r', '2o', 'i_foo\n|\n|\nbar\n|\n|')
+
+
+class Test_o_auto_indent(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+
+    def test_O(self):
+        self.eq('def x():\n    |x = 1', 'o', 'i_def x():\n    x = 1\n    |')
+        self.eq('def x():\n    def y():\n        |x = 1', 'o', 'i_def x():\n    def y():\n        x = 1\n        |')
+
+    def test_O_count(self):
+        self.eq('def x():\n    |x = 1', '3o', 'i_def x():\n    x = 1\n    |\n    |\n    |')

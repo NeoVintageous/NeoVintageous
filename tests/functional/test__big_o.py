@@ -32,3 +32,18 @@ class Test_O(unittest.FunctionalTestCase):
 
     def test_O_count_with_multiple_cursor(self):
         self.eq('1\na|bc\n3\nx|yz\n5', '3O', 'i_1\n|\n|\n|\nabc\n3\n|\n|\n|\nxyz\n5')
+
+
+class Test_O_auto_indent(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+
+    def test_O(self):
+        self.eq('def x():\n    |x = 1', 'O', 'i_def x():\n    |\n    x = 1')
+        self.eq('def x():\n    def y():\n        |x = 1', 'O', 'i_def x():\n    def y():\n        |\n        x = 1')
+        self.eq('def x():\n|x = 1', 'O', 'i_def x():\n    |\nx = 1')
+
+    def test_O_count(self):
+        self.eq('def x():\n    |x = 1', '3O', 'i_def x():\n    |\n    |\n    |\n    x = 1')
