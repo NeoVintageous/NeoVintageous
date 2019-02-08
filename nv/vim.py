@@ -19,7 +19,6 @@ import logging
 
 from sublime import active_window as _active_window
 from sublime import status_message as _status_message
-from sublime import View as _View
 
 _log = logging.getLogger(__name__)
 
@@ -112,17 +111,9 @@ def run_view_command(view, cmd, args=None):
     view.run_command(cmd, args)
 
 
-# TODO [review] Do the enter mode function need to on window object or can they run on view objects too?
-def enter_normal_mode(window, mode):
-    if isinstance(window, _View):
-        window = window.window()
-
-    window.run_command('_enter_normal_mode', {'mode': mode})
+def enter_normal_mode(view_or_window, mode):
+    view_or_window.run_command('_enter_normal_mode', {'mode': mode})
 
 
-# TODO [review] Do the enter mode function need to on window object or can they run on view objects too?
-def enter_insert_mode(window, mode):
-    if isinstance(window, _View):
-        window = window.window()
-
-    window.run_command('_enter_insert_mode', {'mode': mode})
+def enter_insert_mode(view_or_window, mode):
+    view_or_window.run_command('_enter_insert_mode', {'mode': mode})
