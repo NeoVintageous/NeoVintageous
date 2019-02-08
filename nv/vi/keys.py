@@ -330,20 +330,14 @@ def seq_to_command(state, seq, mode=None):
 
     return cmd_base.ViMissingCommandDef()
 
-
-# Mappings 'key sequence' ==> 'command definition'
-#
-# 'key sequence' is a sequence of key presses.
-#
 mappings = {
     INSERT: {},
     NORMAL: {},
-    VISUAL: {},
     OPERATOR_PENDING: {},
-    VISUAL_LINE: {},
-    VISUAL_BLOCK: {},
     SELECT: {},
-    '_missing': dict(name='_missing')
+    VISUAL: {},
+    VISUAL_BLOCK: {},
+    VISUAL_LINE: {}
 }
 
 
