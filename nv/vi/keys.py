@@ -330,6 +330,7 @@ def seq_to_command(state, seq, mode=None):
 
     return cmd_base.ViMissingCommandDef()
 
+
 mappings = {
     INSERT: {},
     NORMAL: {},
