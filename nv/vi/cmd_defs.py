@@ -1949,9 +1949,13 @@ class ViInsertAtEol(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_big_a'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        cmd = {
+            'action': '_vi_big_a',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
         if state.mode != SELECT:
             state.glue_until_normal_mode = True

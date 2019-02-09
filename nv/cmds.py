@@ -48,7 +48,6 @@ from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.cmd_defs import ViOperatorDef
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
-from NeoVintageous.nv.vi.keys import key_names
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
@@ -525,7 +524,7 @@ class _nv_process_notation(ViWindowCommandBase):
             with gluing_undo_groups(self.window.active_view(), state):
                 try:
                     for key in KeySequenceTokenizer(keys).iter_tokenize():
-                        if key.lower() == key_names.ESC:
+                        if key.lower() == '<esc>':
                             # XXX: We should pass a mode here?
                             enter_normal_mode(self.window, None)
                             continue
