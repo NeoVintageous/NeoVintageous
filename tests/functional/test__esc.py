@@ -46,3 +46,17 @@ class Test_esc(unittest.FunctionalTestCase):
 
     def test_N_esc(self):
         self.eq('fi|zzb|uzz', '<esc>', 'N_fi|zzb|uzz')
+
+    def test_O_esc(self):
+        self.normal('1\n2|\n3')
+        self.feed('n_O')
+        self.feed('i_<esc>')
+        self.assertNormal('1\n|\n2\n3')
+
+    def test_O_esc_strip_leading_whitespace(self):
+        self.normal('    1\n    2|\n    3')
+        self.feed('n_O')
+        self.assertInsert('    1\n    |\n    2\n    3')
+        self.feed('i_<esc>')
+        self.assertNormal('    1\n|\n    2\n    3')
+        self.assertXpos(4)

@@ -480,6 +480,19 @@ class _enter_normal_mode(ViTextCommandBase):
 
         self.view.run_command('_nv_fix_st_eol_caret', {'mode': state.mode})
 
+        # When the commands o and O are immediately followed by <Esc>, then if
+        # the current line is only whitespace it should be erased, and the xpos
+        # offset by 1 to account for transition from INSERT to NORMAL mode.
+        if mode == INSERT and self.view.is_dirty():
+            if self.view.command_history(0)[0] in ('_vi_big_o', '_vi_o'):
+                for s in reversed(list(self.view.sel())):
+                    line = self.view.line(s.b)
+                    line_str = self.view.substr(line)
+                    if re.match('^\\s+$', line_str):
+                        self.view.erase(edit, line)
+                        col = self.view.rowcol(line.b)[1]
+                        state.xpos = col + 1
+
 
 class _enter_normal_mode_impl(ViTextCommandBase):
 

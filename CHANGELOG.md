@@ -12,6 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#380](https://github.com/NeoVintageous/NeoVintageous/issues/380): `<Esc>` directly after `O` or `o` should erase leading whitespace
 * Fixed [#247](https://github.com/NeoVintageous/NeoVintageous/issues/247): Unable to map `<C-w>>` in vintageousrc
 * Fixed [#427](https://github.com/NeoVintageous/NeoVintageous/issues/427): `{Visual}gv` should select previous selection
 * Fixed [#423](https://github.com/NeoVintageous/NeoVintageous/issues/423): `:w` cannot find file and save, but `:Save` and `<Ctrl-s>` work
