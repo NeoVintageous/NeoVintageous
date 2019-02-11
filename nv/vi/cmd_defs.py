@@ -3564,3 +3564,24 @@ class ViToggleBlockCommentByLines(ViOperatorDef):
                 'count': state.count
             }
         }
+
+
+@keys.assign(seq='zc', modes=_MODES_ACTION)
+@keys.assign(seq='zM', modes=_MODES_ACTION)
+@keys.assign(seq='zo', modes=_MODES_ACTION)
+@keys.assign(seq='zR', modes=_MODES_ACTION)
+class Viz(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_z',
+            'action_args': {
+                'action': state.sequence[1],
+                'mode': state.mode,
+                'count': state.count
+            }
+        }

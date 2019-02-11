@@ -144,6 +144,7 @@ __all__ = [
     '_vi_x',
     '_vi_y',
     '_vi_yy',
+    '_vi_z',
     '_vi_z_enter',
     '_vi_z_minus',
     '_vi_zz'
@@ -658,8 +659,8 @@ class _enter_visual_line_mode(ViTextCommandBase):
             return
 
         if mode in (NORMAL, INTERNAL_NORMAL):
-            # Special-case: If cursor is at the very EOF, then try  backup the
-            # selection one character so the line, or  previous line is selected
+            # Special-case: If cursor is at the very EOF, then try backup the
+            # selection one character so the line, or previous line, is selected
             # (currently only handles non multiple-selections).
             if self.view.size() > 0 and len(self.view.sel()) == 1:
                 s = self.view.sel()[0]
@@ -1831,6 +1832,33 @@ class _vi_zz(IrreversibleTextCommand):
         new_pos = (0.0, current_position[1] - viewport_dim[1] / 2)
 
         self.view.set_viewport_position(new_pos)
+
+
+class _vi_z(ViTextCommandBase):
+
+    def run(self, edit, action, **kwargs):
+
+        # Clears any VISUAL selections.
+        def _post_fold_selection_fixup(view):
+            sels = []
+            for sel in view.sel():
+                sels.append(view.text_point(view.rowcol(sel.begin())[0], 0))
+            if sels:
+                view.sel().clear()
+                view.sel().add_all(sels)
+
+        if action == 'c':
+            self.view.run_command('fold')
+            _post_fold_selection_fixup(self.view)
+        elif action == 'o':
+            self.view.run_command('unfold')
+            _post_fold_selection_fixup(self.view)
+        elif action == 'R':
+            self.view.run_command('unfold_all')
+        elif action == 'M':
+            self.view.run_command('fold_all')
+        else:
+            raise ValueError('unknown action')
 
 
 class _vi_modify_numbers(ViTextCommandBase):
