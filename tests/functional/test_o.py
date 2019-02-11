@@ -26,16 +26,12 @@ class Test_o(unittest.FunctionalTestCase):
         self.eq('|a\nb\n', 'o', 'i_a\n|\nb\n')
 
     def test_v_o(self):
-        self.eq('x|fizz|x', 'v_o__alt1', 'r_x|fizz|x')
-        self.eq('r_x|fizz|x', 'v_o__alt1', 'x|fizz|x')
-
-    def test_N_o(self):
-        self.eq('x|fizz|x', 'o__alt1', 'N_x|fizz|x')
-        self.eq('r_x|fizz|x', 'o__alt1', 'N_x|fizz|x')
+        self.eq('x|fizz|x', 'v_o', 'r_x|fizz|x')
+        self.eq('r_x|fizz|x', 'v_o', 'x|fizz|x')
 
     def test_l_o(self):
-        self.eq('x\n|fizz\n|x', 'l_o__alt1', 'r_x\n|fizz\n|x')
-        self.eq('r_x\n|fizz\n|x', 'l_o__alt1', 'x\n|fizz\n|x')
+        self.eq('x\n|fizz\n|x', 'l_o', 'r_x\n|fizz\n|x')
+        self.eq('r_x\n|fizz\n|x', 'l_o', 'x\n|fizz\n|x')
 
     def test_multiple_count_o(self):
         self.eq('|', '2o', 'i_\n|\n|')

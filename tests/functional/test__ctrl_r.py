@@ -18,18 +18,18 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_u(unittest.FunctionalTestCase):
+class Test_ctrl_r(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('undo')
-    def test_n_u_invokes_bell_when_nothing_to_redo(self):
-        self.eq('fi|zz', 'n_u', 'fi|zz')
-        self.assertRunCommand('undo')
-
-    @unittest.mock_run_commands('undo')
+    @unittest.mock_run_commands('redo')
     @unittest.mock_bell()
-    def test_n_u_count(self):
-        self.eq('fi|zz', 'n_3u', 'fi|zz')
-        self.assertRunCommand('undo', count=3)
+    def test_ctrl_r_invokes_bell_when_nothing_to_redo(self):
+        self.eq('fi|zz', '<C-r>', 'fi|zz')
+        self.assertRunCommand('redo')
+        self.assertBell()
 
-    def test_v_u(self):
-        self.eq('F|IZZ B|UZZ', 'v_u', 'n_F|izz bUZZ')
+    @unittest.mock_run_commands('redo')
+    @unittest.mock_bell()
+    def test_ctrl_r_count(self):
+        self.eq('fi|zz', '3<C-r>', 'fi|zz')
+        self.assertRunCommand('redo', count=3)
+        self.assertBell()

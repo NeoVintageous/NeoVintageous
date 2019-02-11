@@ -521,6 +521,7 @@ class FunctionalTestCase(ViewTestCase):
         if seq[0] == ':':
             return _do_ex_cmdline(self.view.window(), seq)
 
+        orig_seq = seq
         seq_args = {}
 
         if seq[0] in 'vinlb' and (len(seq) > 1 and seq[1] == '_'):
@@ -533,7 +534,14 @@ class FunctionalTestCase(ViewTestCase):
                 seq = seq[1:]
 
         try:
+            # The reason for this try catch is because  some sequences map to
+            # different commands by mode. For example n_u -> _vi_visual_u, and
+            # all other modes u -> _vi_u (in other words all other modes).
+            if orig_seq in _SEQ2CMD:
+                seq = orig_seq
+
             command = _SEQ2CMD[seq]['command']
+
             if 'args' in _SEQ2CMD[seq]:
                 args = _SEQ2CMD[seq]['args'].copy()
             else:
@@ -832,9 +840,9 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
 #
 #   @unitest.mock_run_commands('redo', 'hide_panel')
 #   def test_run_command(self):
-#       self.assertCommandCalledWith('redo')
-#       self.assertCommandCalledWith('redo', count=3)
-#       self.assertCommandCalledWith('hide_panel', {'cancel': True})
+#       self.assertRunCommand('redo')
+#       self.assertRunCommand('redo', count=3)
+#       self.assertRunCommand('hide_panel', {'cancel': True})
 #
 def mock_run_commands(*methods):
     def wrapper(f):
@@ -857,7 +865,7 @@ def mock_run_commands(*methods):
         def wrapped(self, *args, **kwargs):
             f._run_command_calls = []
 
-            def assertRunCommandCalledWith(cmd, args=None, count=1):
+            def assertRunCommand(cmd, args=None, count=1):
                 found = 0
                 for actual_cmd, actual_args in f._run_command_calls:
                     if (cmd == actual_cmd) and (args == actual_args):
@@ -865,7 +873,7 @@ def mock_run_commands(*methods):
 
                 self.assertEqual(found, count, 'failed assert run command called once: "{}" {}'.format(cmd, args))
 
-            self.assertRunCommandCalledOnceWith = assertRunCommandCalledWith
+            self.assertRunCommand = assertRunCommand
 
             return f(self, *args, **kwargs)
         return wrapped
@@ -889,6 +897,7 @@ _SEQ2CMD = {
     '<':            {'command': '_vi_less_than'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
     '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
+    '<C-r>':        {'command': '_vi_ctrl_r'},  # noqa: E241
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
     '<esc>':        {'command': '_enter_normal_mode'},  # noqa: E241
@@ -1103,12 +1112,12 @@ _SEQ2CMD = {
     'J':            {'command': '_vi_big_j'},  # noqa: E241
     'L':            {'command': '_vi_big_l'},  # noqa: E241
     'l':            {'command': '_vi_l'},  # noqa: E241
+    'l_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
     'M':            {'command': '_vi_big_m'},  # noqa: E241
     'N':            {'command': '_vi_repeat_buffer_search', 'args': {'reverse': True}},  # noqa: E241
     'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
-    'o__alt1':      {'command': '_vi_visual_o'},  # TODO __* is used because several o operations are in separate commands # noqa: E241,E501
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
@@ -1118,10 +1127,12 @@ _SEQ2CMD = {
     't\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': False}},  # noqa: E241
     'tx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
     't|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': False}},  # noqa: E241
+    'u':            {'command': '_vi_u'},  # noqa: E241,E501
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
-    'u':            {'command': '_vi_visual_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241
     'v':            {'command': '_enter_visual_mode'},  # noqa: E241
+    'v_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
+    'v_u':          {'command': '_vi_visual_u'},  # noqa: E241,E501
     'W':            {'command': '_vi_big_w'},  # noqa: E241
     'w':            {'command': '_vi_w'},  # noqa: E241
     'X':            {'command': '_vi_big_x'},  # noqa: E241
