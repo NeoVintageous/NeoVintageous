@@ -44,6 +44,11 @@ class TestSurround_ys(unittest.FunctionalTestCase):
         self.eq('one |two three', 'ysiw}', 'one |{two} three')
         self.eq('one |two three', 'ysiw<foo>', 'one |<foo>two</foo> three')
 
+    def test_yss(self):
+        self.eq('abc', 'yss)', '|(abc)')
+        self.eq('x\nfi|zz\nx', 'yss)', 'x\n|(fizz)\nx')
+        self.eq('x\n    ab  fi|zz  x y  \nx', 'yss)', 'x\n    |(ab  fizz  x y  )\nx')
+
     def test_multiple_cursors(self):
         self.eq('x a|c\nd|c y', 'ysiw"', 'x |"ac"\n|"dc" y')
 

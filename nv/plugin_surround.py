@@ -86,6 +86,39 @@ class _surround_ys(ViOperatorDef):
         }
 
 
+@register(seq='yss', modes=(NORMAL,))
+class _surround_yss(_surround_ys):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.motion_required = False
+        self.input_parser = inputs.parser_def(
+            command=inputs.one_char,
+            interactive_command=None,
+            input_param=None,
+            on_done=None,
+            type=INPUT_IMMEDIATE
+        )
+
+    def translate(self, state):
+        return {
+            'action': '_nv_surround_ys',
+            'action_args': {
+                'mode': state.mode,
+                'surround_with': self.inp,
+                'motion': {
+                    'motion': '_vi_select_text_object',
+                    'motion_args': {
+                        'mode': INTERNAL_NORMAL,
+                        'count': 1,
+                        'inclusive': False,
+                        'text_object': 'l'
+                    }
+                }
+            }
+        }
+
+
 @register(seq='S', modes=(VISUAL, VISUAL_BLOCK))
 class _surround_S(_surround_ys):
 
