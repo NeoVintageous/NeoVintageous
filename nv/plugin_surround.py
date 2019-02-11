@@ -34,15 +34,13 @@ from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.plugin import ViOperatorDef
 from NeoVintageous.nv.plugin import VISUAL
 from NeoVintageous.nv.plugin import VISUAL_BLOCK
-from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import enter_normal_mode
 
 
 __all__ = [
-    '_nv_surround_command',
-    '_nv_surround_ys_command'
+    '_nv_surround_command'
 ]
 
 
@@ -78,10 +76,11 @@ class _surround_ys(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_nv_surround_ys',
+            'action': '_nv_surround',
             'action_args': {
+                'action': 'ys',
                 'mode': state.mode,
-                'surround_with': self.inp
+                'replacement': self.inp
             }
         }
 
@@ -102,10 +101,10 @@ class _surround_yss(_surround_ys):
 
     def translate(self, state):
         return {
-            'action': '_nv_surround_ys',
+            'action': '_nv_surround',
             'action_args': {
+                'action': 'ys',
                 'mode': state.mode,
-                'surround_with': self.inp,
                 'motion': {
                     'motion': '_vi_select_text_object',
                     'motion_args': {
@@ -114,7 +113,8 @@ class _surround_yss(_surround_ys):
                         'inclusive': False,
                         'text_object': 'l'
                     }
-                }
+                },
+                'replacement': self.inp
             }
         }
 
@@ -228,26 +228,14 @@ class _surround_cs(ViOperatorDef):
         }
 
 
-def _rsynced_regions_transformer(view, f):
-    sels = reversed(list(view.sel()))
-    view_sel = view.sel()
-    for sel in sels:
-        view_sel.subtract(sel)
-
-        new_sel = f(view, sel)
-        if not isinstance(new_sel, Region):
-            raise TypeError('sublime.Region required')
-
-        view_sel.add(new_sel)
-
-
 class _nv_surround_command(TextCommand):
-    def run(self, edit, **kwargs):
-        action = kwargs.get('action')
+    def run(self, edit, action, **kwargs):
         if action == 'cs':
-            _do_surround_cs(self.view, edit, kwargs.get('target'), kwargs.get('replacement'), kwargs.get('mode'))
+            _do_surround_cs(self.view, edit, **kwargs)
         elif action == 'ds':
-            _do_surround_ds(self.view, edit, kwargs.get('target'), kwargs.get('mode'))
+            _do_surround_ds(self.view, edit, **kwargs)
+        elif action == 'ys':
+            _do_surround_ys(self.view, edit, **kwargs)
         else:
             raise Exception('unknown action')
 
@@ -301,57 +289,24 @@ def _get_punctuation_mark_replacements(target):
     return (begin, end)
 
 
-# TODO [refactor] to use _nv_surround proxy command
-class _nv_surround_ys_command(ViTextCommandBase):
+def _rsynced_regions_transformer(view, f):
+    sels = reversed(list(view.sel()))
+    view_sel = view.sel()
+    for sel in sels:
+        view_sel.subtract(sel)
 
-    def run(self, edit, mode=None, surround_with='"', count=1, motion=None):
-        def f(view, s):
-            if mode == INTERNAL_NORMAL:
-                self.surround(edit, s, surround_with)
-                return Region(s.begin())
-            elif mode in (VISUAL, VISUAL_BLOCK):
-                self.surround(edit, s, surround_with)
-                return Region(s.begin())
+        new_sel = f(view, sel)
+        if not isinstance(new_sel, Region):
+            raise TypeError('sublime.Region required')
 
-            return s
-
-        if not motion and not self.view.has_non_empty_selection_region():
-            enter_normal_mode(self.view, mode)
-            raise ValueError('motion required')
-
-        if mode == INTERNAL_NORMAL:
-            self.view.run_command(motion['motion'], motion['motion_args'])
-
-        if surround_with:
-            _rsynced_regions_transformer(self.view, f)
-
-        enter_normal_mode(self.view, mode)
-
-    def surround(self, edit, s, surround_with):
-        open_, close_ = _get_punctuation_mark_replacements(surround_with)
-
-        # Takes <q class="foo"> and produces: <q class="foo">text</q>
-        if open_.startswith('<'):
-            name = open_[1:].strip()[:-1].strip()
-            name = name.split(' ', 1)[0]
-            self.view.insert(edit, s.b, "</{0}>".format(name))
-            self.view.insert(edit, s.a, surround_with)
-            return
-
-        self.view.insert(edit, s.end(), close_)
-        self.view.insert(edit, s.begin(), open_)
+        view_sel.add(new_sel)
 
 
 def _find(view, sub, start, flags=0):
-    # TODO Implement end param.
-    # TODO Make start and end optional arguments interpreted as in slice notation.
-    # TODO [refactor] into reusable api.
     return view.find(sub, start, flags)
 
 
 def _rfind(view, sub, start, end, flags=0):
-    # TODO Make start and end optional arguments interpreted as in slice notation.
-    # TODO [refactor] into reusable api.
     res = reverse_search(view, sub, start, end, flags)
     if res is None:
         return Region(-1)
@@ -359,20 +314,18 @@ def _rfind(view, sub, start, end, flags=0):
     return res
 
 
-# TODO Add punctuation aliases
-def _do_surround_cs(view, edit, target, replacement, mode=None):
+def _do_surround_cs(view, edit, mode, target, replacement):
     # Targets are always one character.
     if len(target) != 1:
-        # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
         return
 
     # Replacements must be one character long, except for tags which must be at
     # least three character long.
     if len(replacement) >= 3:
         if replacement[0] not in ('t', '<') or not replacement.endswith('>'):
-            return  # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
+            return
     elif len(replacement) != 1:
-        return  # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
+        return
 
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
@@ -419,11 +372,11 @@ def _do_surround_cs(view, edit, target, replacement, mode=None):
         _rsynced_regions_transformer(view, _f)
 
 
-def _do_surround_ds(view, edit, target, mode=None):
+def _do_surround_ds(view, edit, mode, target):
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
             if len(target) != 1:
-                return s  # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
+                return s
 
             # The *target* letters w, W, s, and p correspond to a |word|, a
             # |WORD|, a |sentence|, and a |paragraph| respectively.  These are
@@ -433,11 +386,11 @@ def _do_surround_ds(view, edit, target, mode=None):
 
             noop = 'wWsp'
             if target in noop:
-                return s  # TODO [review] should a message be displayed or logged e.g. status, console?
+                return s
 
             valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/'
             if target not in valid_targets:
-                return s  # TODO [review] should an exception be raised, or message displayed or logged e.g. status console?  # noqa: E501
+                return s
 
             # All marks, except punctuation marks, are only searched for on the
             # current line.
@@ -466,7 +419,6 @@ def _do_surround_ds(view, edit, target, mode=None):
                 current = view.substr(s.begin())
                 # TODO test ds{char} works when cursor position is on target begin |"x" -> ds" -> |x
                 # TODO test ds{char} works when cursor position is on target end   "x|" -> ds" -> |x
-
                 if current == t_char_begin:
                     t_region_begin = Region(s.begin(), s.begin() + 1)
                 else:
@@ -523,3 +475,39 @@ def _do_surround_ds(view, edit, target, mode=None):
 
     if target:
         _rsynced_regions_transformer(view, _f)
+
+
+def _do_surround_ys(view, edit, mode=None, motion=None, replacement='"', count=1):
+    def surround(view, edit, s, replacement):
+        open_, close_ = _get_punctuation_mark_replacements(replacement)
+        # Takes <q class="foo"> and produces: <q class="foo">text</q>
+        if open_.startswith('<'):
+            name = open_[1:].strip()[:-1].strip()
+            name = name.split(' ', 1)[0]
+            view.insert(edit, s.b, "</{0}>".format(name))
+            view.insert(edit, s.a, replacement)
+            return
+
+        view.insert(edit, s.end(), close_)
+        view.insert(edit, s.begin(), open_)
+
+    def f(view, s):
+        if mode == INTERNAL_NORMAL:
+            surround(view, edit, s, replacement)
+            return Region(s.begin())
+        elif mode in (VISUAL, VISUAL_BLOCK):
+            surround(view, edit, s, replacement)
+            return Region(s.begin())
+        return s
+
+    if not motion and not view.has_non_empty_selection_region():
+        enter_normal_mode(view, mode)
+        raise ValueError('motion required')
+
+    if mode == INTERNAL_NORMAL:
+        view.run_command(motion['motion'], motion['motion_args'])
+
+    if replacement:
+        _rsynced_regions_transformer(view, f)
+
+    enter_normal_mode(view, mode)
