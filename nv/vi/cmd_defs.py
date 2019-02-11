@@ -3506,66 +3506,6 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         }
 
 
-# TODO gc is a non-standard Vim command. It looks like it based on
-# vim-commentary. It should be refactored into an out-of-the-box
-# plugin like the surround, unimpaired, abolish, etc. plugins.
-# See https://github.com/tpope/vim-commentary.
-@keys.assign(seq=seqs.GC, modes=_MODES_ACTION)
-class ViToggleCommentByLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-        self.motion_required = True
-        self.repeatable = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_gc',
-            'action_args': {
-                'mode': state.mode,
-                'count': state.count
-            }
-        }
-
-
-@keys.assign(seq=seqs.GCC, modes=_MODES_ACTION)
-class ViCommentLine(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-        self.repeatable = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_gcc_action',
-            'action_args': {
-                'mode': state.mode,
-                'count': state.count
-            }
-        }
-
-
-@keys.assign(seq=seqs.G_BIG_C, modes=_MODES_ACTION)
-class ViToggleBlockCommentByLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-        self.motion_required = True
-        self.repeatable = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_g_big_c',
-            'action_args': {
-                'mode': state.mode,
-                'count': state.count
-            }
-        }
-
-
 @keys.assign(seq='zc', modes=_MODES_ACTION)
 @keys.assign(seq='zM', modes=_MODES_ACTION)
 @keys.assign(seq='zo', modes=_MODES_ACTION)

@@ -1065,9 +1065,9 @@ _SEQ2CMD = {
     'G':            {'command': '_vi_big_g'},  # noqa: E241
     'g_':           {'command': '_vi_g__'},  # noqa: E241
     'ga':           {'command': '_vi_ga'},  # noqa: E241
-    'gc':           {'command': '_vi_gc'},  # noqa: E241
-    'gcc':          {'command': '_vi_gcc_action'},  # noqa: E241
-    'gcG':          {'command': '_vi_gc', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
+    'gc':           {'command': '_nv_commentary', 'args': {'action': 'c'}},  # noqa: E241
+    'gcc':          {'command': '_nv_commentary', 'args': {'action': 'cc'}},  # noqa: E241
+    'gcG':          {'command': '_nv_commentary', 'args': {'action': 'c', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     'gE':           {'command': '_vi_g_big_e'},  # noqa: E241
     'ge':           {'command': '_vi_ge'},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241

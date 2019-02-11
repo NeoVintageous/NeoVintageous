@@ -231,11 +231,11 @@ class _surround_cs(ViOperatorDef):
 class _nv_surround_command(TextCommand):
     def run(self, edit, action, **kwargs):
         if action == 'cs':
-            _do_surround_cs(self.view, edit, **kwargs)
+            _do_cs(self.view, edit, **kwargs)
         elif action == 'ds':
-            _do_surround_ds(self.view, edit, **kwargs)
+            _do_ds(self.view, edit, **kwargs)
         elif action == 'ys':
-            _do_surround_ys(self.view, edit, **kwargs)
+            _do_ys(self.view, edit, **kwargs)
         else:
             raise Exception('unknown action')
 
@@ -314,7 +314,7 @@ def _rfind(view, sub, start, end, flags=0):
     return res
 
 
-def _do_surround_cs(view, edit, mode, target, replacement):
+def _do_cs(view, edit, mode, target, replacement):
     # Targets are always one character.
     if len(target) != 1:
         return
@@ -372,7 +372,7 @@ def _do_surround_cs(view, edit, mode, target, replacement):
         _rsynced_regions_transformer(view, _f)
 
 
-def _do_surround_ds(view, edit, mode, target):
+def _do_ds(view, edit, mode, target):
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
             if len(target) != 1:
@@ -477,7 +477,7 @@ def _do_surround_ds(view, edit, mode, target):
         _rsynced_regions_transformer(view, _f)
 
 
-def _do_surround_ys(view, edit, mode=None, motion=None, replacement='"', count=1):
+def _do_ys(view, edit, mode=None, motion=None, replacement='"', count=1):
     def surround(view, edit, s, replacement):
         open_, close_ = _get_punctuation_mark_replacements(replacement)
         # Takes <q class="foo"> and produces: <q class="foo">text</q>

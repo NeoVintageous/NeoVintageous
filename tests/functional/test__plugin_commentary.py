@@ -20,29 +20,30 @@ from NeoVintageous.tests import unittest
 
 class TestCommentary(unittest.FunctionalTestCase):
 
-    def normal(self, text):
-        # Test against a specific syntax, because views that
-        # have no syntax applied have no comment behaviours.
+    def feed(self, seq):
+        # Assign a specific syntax before feed, because our  tests would fail,
+        # because views that have no syntax applied have no comment behaviours.
         self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
-        super().normal(text)
+        super().feed(seq)
 
     def test_gcc_comment(self):
         self.eq('|abc', 'gcc', '|# abc')
         self.eq('abc|', 'gcc', '|# abc')
+        self.eq('|', 'gcc', '|# ')
+        self.eq('1\n|2\n3\n4\n5', '3gcc', '1\n|# 2\n# 3\n# 4\n5')
+        self.eq('1\n2\n|', 'gcc', '1\n|# 2\n')
 
     def test_gcc_uncomment(self):
         self.eq('|# abc', 'gcc', '|abc')
         self.eq('# abc|', 'gcc', '|abc')
+        self.eq('|#', 'gcc', '|')
+        self.eq('# 1\n|# 2\n# 3\n# 4\n# 5\n', '3gcc', '# 1\n|2\n3\n4\n# 5\n')
 
     def test_gcc_the_position_of_the_cursor_after_operation_should_be_first_non_whitespace_character(self):
         self.eq('    abc|', 'gcc', '    |# abc')
         self.eq('    a|bc', 'gcc', '    |# abc')
         self.eq('    # abc|', 'gcc', '    |abc')
         self.eq('    # a|bc', 'gcc', '    |abc')
-
-    def test_gcc_empty_lines(self):
-        self.eq('|', 'gcc', '|# ')
-        self.eq('|#', 'gcc', '|')
 
     def test_gcc_multiple_cursor_commenting(self):
         self.eq('    a|bc\n    a|bc\n    a|bc\n', 'gcc', '    |# abc\n    # abc\n    # abc\n')
@@ -61,3 +62,7 @@ class TestCommentary(unittest.FunctionalTestCase):
         self.eq('1\n2\n|3\n4\n5\n', 'gcG', '1\n2\n|# 3\n# 4\n# 5\n')
         self.eq('1\n2\n    |#3\n    #4\n    #5\n', 'gcG', '1\n2\n    |3\n    4\n    5\n')
         self.eq('1\n2\n|    #3\n    #4\n    #5\n', 'gcG', '1\n2\n    |3\n    4\n    5\n')
+
+    def test_v_gc(self):
+        self.eq('f|iz|z', 'v_gc', 'n_|# fizz')
+        self.eq('1\na|bc\n3\na|bc\nx', 'v_gc', 'n_1\n|# abc\n# 3\n# abc\nx')

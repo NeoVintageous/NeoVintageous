@@ -104,7 +104,6 @@ __all__ = [
     '_vi_dot',
     '_vi_equal',
     '_vi_equal_equal',
-    '_vi_g_big_c',
     '_vi_g_big_h',
     '_vi_g_big_t',
     '_vi_g_big_u',
@@ -112,9 +111,6 @@ __all__ = [
     '_vi_g_tilde',
     '_vi_g_tilde_g_tilde',
     '_vi_ga',
-    '_vi_gc',
-    '_vi_gcc_action',  # TODO Refactor name (remove _action)
-    '_vi_gcc_motion',  # TODO Refactor name (remove _motion)
     '_vi_gq',
     '_vi_greater_than',
     '_vi_greater_than_greater_than',
@@ -2535,99 +2531,3 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         pt = self.view.sel()[0].b
         self.view.sel().clear()
         self.view.sel().add(Region(pt))
-
-
-class _vi_gc(ViTextCommandBase):
-
-    def run(self, edit, mode=None, count=1, motion=None):
-        def f(view, s):
-            return Region(s.begin())
-
-        if motion:
-            self.view.run_command(motion['motion'], motion['motion_args'])
-        elif mode not in (VISUAL, VISUAL_LINE):
-            return ui_blink()
-
-        self.view.run_command('toggle_comment', {'block': False})
-
-        regions_transformer(self.view, f)
-
-        line = self.view.line(self.view.sel()[0].begin())
-        pt = line.begin()
-
-        if line.size() > 0:
-            line = self.view.find('^\\s*', line.begin())
-            pt = line.end()
-
-        self.view.sel().clear()
-        self.view.sel().add(pt)
-        enter_normal_mode(self.view, mode)
-
-
-class _vi_g_big_c(ViTextCommandBase):
-
-    def run(self, edit, mode=None, count=1, motion=None):
-        def f(view, s):
-            return Region(s.begin())
-
-        if motion:
-            self.view.run_command(motion['motion'], motion['motion_args'])
-        elif mode not in (VISUAL, VISUAL_LINE):
-            return ui_blink()
-
-        self.view.run_command('toggle_comment', {'block': True})
-        regions_transformer(self.view, f)
-        enter_normal_mode(self.view, mode)
-
-
-class _vi_gcc_action(ViTextCommandBase):
-
-    def run(self, edit, mode=None, count=1):
-        def f(view, s):
-            if mode == INTERNAL_NORMAL:
-                view.run_command('toggle_comment')
-                if utils.row_at(self.view, s.a) != utils.row_at(self.view, self.view.size()):
-                    pt = next_non_white_space_char(view, s.a, white_space=' \t')
-                else:
-                    pt = next_non_white_space_char(view,
-                                                   self.view.line(s.a).a,
-                                                   white_space=' \t')
-
-                return Region(pt, pt)
-
-            return s
-
-        self.view.run_command('_vi_gcc_motion', {'mode': mode, 'count': count})
-
-        line = self.view.line(self.view.sel()[0].begin())
-        pt = line.begin()
-
-        if line.size() > 0:
-            line = self.view.find('^\\s*', line.begin())
-            pt = line.end()
-
-        regions_transformer_reversed(self.view, f)
-
-        self.view.sel().clear()
-        self.view.sel().add(pt)
-
-
-class _vi_gcc_motion(ViTextCommandBase):
-
-    def run(self, edit, mode=None, count=1):
-        def f(view, s):
-            if mode == INTERNAL_NORMAL:
-                end = view.text_point(utils.row_at(self.view, s.b) + (count - 1), 0)
-                begin = view.line(s.b).a
-
-                row_at_end = utils.row_at(self.view, end)
-                row_at_size = utils.row_at(self.view, view.size())
-
-                if ((row_at_end == row_at_size) and (view.substr(begin - 1) == '\n')):
-                    begin -= 1
-
-                return Region(begin, view.full_line(end).b)
-
-            return s
-
-        regions_transformer(self.view, f)
