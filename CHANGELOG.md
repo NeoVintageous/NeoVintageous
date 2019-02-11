@@ -6,12 +6,18 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#430](https://github.com/NeoVintageous/NeoVintageous/issues/430): Folding commands `zc`, `zo`, `zM`, and `zR`
+* Added [#432](https://github.com/NeoVintageous/NeoVintageous/issues/432): `cs{target}{replacement}` target aliases `b`, `B`, `r`, and `a`
+* Added [#431](https://github.com/NeoVintageous/NeoVintageous/issues/431): `ys{motion}{replacement}` replacement aliases `b`, `B`, `r`, and `a`
+* Added [#418](https://github.com/NeoVintageous/NeoVintageous/issues/418): Implement Surround Line `yss{replacement}`
 * Added [#429](https://github.com/NeoVintageous/NeoVintageous/issues/429): Support `<bslash>` in vintageousrc
 * Added [#428](https://github.com/NeoVintageous/NeoVintageous/issues/428): Support `<bar>` in vintageousrc
 * Added [#424](https://github.com/NeoVintageous/NeoVintageous/issues/424): `[count]o` and `[count]O`
 
 ### Fixed
 
+* Fixed [#366](https://github.com/NeoVintageous/NeoVintageous/issues/366): Folding with `zc` enters VISUAL mode
+* Fixed [#380](https://github.com/NeoVintageous/NeoVintageous/issues/380): `<Esc>` directly after `O` or `o` should erase leading whitespace
 * Fixed [#247](https://github.com/NeoVintageous/NeoVintageous/issues/247): Unable to map `<C-w>>` in vintageousrc
 * Fixed [#427](https://github.com/NeoVintageous/NeoVintageous/issues/427): `{Visual}gv` should select previous selection
 * Fixed [#423](https://github.com/NeoVintageous/NeoVintageous/issues/423): `:w` cannot find file and save, but `:Save` and `<Ctrl-s>` work

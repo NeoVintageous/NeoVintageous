@@ -18,6 +18,7 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.vim import enter_normal_mode
 
 
 class TestViEnterNormalModeSingleSelectionLeftRoRight(unittest.ViewTestCase):
@@ -26,8 +27,7 @@ class TestViEnterNormalModeSingleSelectionLeftRoRight(unittest.ViewTestCase):
         self.write('foo bar\nfoo bar\nfoo bar\n')
         self.select((8, 11))
         State(self.view).mode = unittest.VISUAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+        enter_normal_mode(self.view, unittest.VISUAL)
 
         self.assertSelection(10)
 
@@ -38,8 +38,7 @@ class TestViEnterNormalModeSingleSelectionRightToLeft(unittest.ViewTestCase):
         self.write('foo bar\nfoo bar\nfoo bar\n')
         self.select((11, 8))
         self.state.mode = unittest.VISUAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+        enter_normal_mode(self.view, unittest.VISUAL)
 
         self.assertSelection(8)
 
@@ -50,8 +49,7 @@ class TestViEnterNormalModeMulipleSelectionsFromSelectMode(unittest.ViewTestCase
         self.write('foo bar\nfoo bar\nfoo bar\n')
         self.select([(8, 11), (16, 19)])
         State(self.view).mode = unittest.SELECT
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.SELECT})
+        enter_normal_mode(self.view, unittest.SELECT)
 
         self.assertSelection([self.Region(8), self.Region(16)])
 
@@ -62,8 +60,7 @@ class TestViEnterNormalModeMulipleSelectionsFromNormalMode(unittest.ViewTestCase
         self.write('foo bar\nfoo bar\nfoo bar\n')
         self.select([8, 16])
         State(self.view).mode = unittest.NORMAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.NORMAL})
+        enter_normal_mode(self.view, unittest.NORMAL)
 
         self.assertSelection(8)
 
@@ -73,10 +70,8 @@ class TestVisualBlock(unittest.ViewTestCase):
     def test_enter_normal_from_visual_block(self):
         self.write('1111\n2222\n')
         self.select([(1, 3), (6, 8)])
-
         State(self.view).mode = unittest.VISUAL_BLOCK
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL_BLOCK})
+        enter_normal_mode(self.view, unittest.VISUAL_BLOCK)
 
         self.assertNormalMode()
         self.assertSelection(7)
@@ -88,8 +83,7 @@ class TestEnterNormalMode(unittest.ViewTestCase):
         self.write('ab\n')
         self.select((1, 3))
         State(self.view).mode = unittest.VISUAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+        enter_normal_mode(self.view, unittest.VISUAL)
 
         self.assertNormalMode()
         self.assertSelection(1)
@@ -97,8 +91,7 @@ class TestEnterNormalMode(unittest.ViewTestCase):
         self.write('ab\n')
         self.select((3, 1))
         State(self.view).mode = unittest.VISUAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+        enter_normal_mode(self.view, unittest.VISUAL)
 
         self.assertNormalMode()
         self.assertSelection(1)
@@ -106,8 +99,7 @@ class TestEnterNormalMode(unittest.ViewTestCase):
         self.write('abc\ndef\n')
         self.select((1, 4))
         State(self.view).mode = unittest.VISUAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+        enter_normal_mode(self.view, unittest.VISUAL)
 
         self.assertNormalMode()
         self.assertSelection(2)
@@ -115,8 +107,7 @@ class TestEnterNormalMode(unittest.ViewTestCase):
         self.write('abc\ndef\n')
         self.select((6, 3))
         State(self.view).mode = unittest.VISUAL
-
-        self.view.run_command('_enter_normal_mode', {'mode': unittest.VISUAL})
+        enter_normal_mode(self.view, unittest.VISUAL)
 
         self.assertNormalMode()
         self.assertSelection(2)

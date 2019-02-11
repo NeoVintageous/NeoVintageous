@@ -189,18 +189,6 @@ class TestStateCounts(unittest.ViewTestCase):
         self.assertEqual(self.state.count, 100)
 
 
-class TestStateModeNames(unittest.ViewTestCase):
-
-    def test_mode_name(self):
-        self.assertEqual(unittest.INSERT, 'mode_insert')
-        self.assertEqual(unittest.INTERNAL_NORMAL, 'mode_internal_normal')
-        self.assertEqual(unittest.NORMAL, 'mode_normal')
-        self.assertEqual(unittest.OPERATOR_PENDING, 'mode_operator_pending')
-        self.assertEqual(unittest.VISUAL, 'mode_visual')
-        self.assertEqual(unittest.VISUAL_BLOCK, 'mode_visual_block')
-        self.assertEqual(unittest.VISUAL_LINE, 'mode_visual_line')
-
-
 class TestStateRunnability(unittest.ViewTestCase):
 
     def test_runnable_if_action_and_motion_available(self):

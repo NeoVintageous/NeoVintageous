@@ -64,6 +64,7 @@ from NeoVintageous.nv.vi.utils import show_if_not_visible
 from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import SELECT
@@ -372,7 +373,7 @@ class _vi_slash_on_parser_done(WindowCommand):
 
 
 class _vi_l(ViMotionCommand):
-    def run(self, mode=None, count=None):
+    def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
                 if view.line(s.b).empty():
@@ -2433,8 +2434,7 @@ class _vi_left_square_bracket_target(ViMotionCommand):
             return s
 
         if mode != NORMAL:
-            self.enter_normal_mode(mode=mode)
-
+            enter_normal_mode(self.view, mode)
             return ui_blink()
 
         targets = {
@@ -2473,8 +2473,7 @@ class _vi_right_square_bracket_target(ViMotionCommand):
             return s
 
         if mode != NORMAL:
-            self.enter_normal_mode(mode=mode)
-
+            enter_normal_mode(self.view, mode)
             return ui_blink()
 
         targets = {

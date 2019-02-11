@@ -178,6 +178,7 @@ More examples: >
     let mapleader=,
 
     " Toggle the side bar.
+    " To enable side bar toggle when the side bar has focus, see docs above.
     nnoremap <leader>d :NeovintageousToggleSideBar<CR>
 
     " Saving.
@@ -191,20 +192,13 @@ More examples: >
     noremap <leader>P "+P
     noremap <leader>yy "+Y
 
-    " Show the registers.
+    " Show me the registers.
     nnoremap <leader>r :reg<CR>
 
-    " Some window command aliases. This is especially useful if you don't like
-    " to enable ctrl-key key bindings
-    nnoremap <leader>_ <C-w>_
-    nnoremap <leader><bar> <C-w><bar>
-    nnoremap <leader>= <C-w>=
-    nnoremap <leader>. <C-w>_<C-w><bar>
-
-    " Goto symbols.
+    " Show me the symbols.
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
     nnoremap <leader>i :GotoSymbolInProject<CR>
-    " Or if you have super-keys enabled:
+    " Or if you're using super-keys (disabled by default):
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
     " Windowing aliases (especially useful if you don't enable ctrl-keys keys).
@@ -212,9 +206,9 @@ More examples: >
     nnoremap <leader><bar> <C-w><bar>
     nnoremap <leader>= <C-w>=
 
-    " Sets current view as high and as wide as possible, and redraws cursor line at
-    " center of window: <C-w>_ will make all windows (almost) equal in size.
-    nnoremap <leader>. <C-w>_<C-w><bar>zz
+    " Toggle Zoom. Requires the Origami plugin:
+    " https://packagecontrol.io/packages/Origami.
+    nnoremap <leader>. :ToggleZoomPane<CR>
 
 ==============================================================================
 

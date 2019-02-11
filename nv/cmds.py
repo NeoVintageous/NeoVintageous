@@ -48,7 +48,6 @@ from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.cmd_defs import ViOperatorDef
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
-from NeoVintageous.nv.vi.keys import key_names
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
@@ -57,6 +56,7 @@ from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import translate_char
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import message
@@ -300,9 +300,8 @@ class _nv_feed_key(ViWindowCommandBase):
             init_state(state.view)
 
         if key.lower() == '<esc>':
-            self.window.run_command('_enter_normal_mode', {'mode': mode})
+            enter_normal_mode(self.window, mode)
             state.reset_command_data()
-
             return
 
         state.sequence += key
@@ -525,9 +524,9 @@ class _nv_process_notation(ViWindowCommandBase):
             with gluing_undo_groups(self.window.active_view(), state):
                 try:
                     for key in KeySequenceTokenizer(keys).iter_tokenize():
-                        if key.lower() == key_names.ESC:
+                        if key.lower() == '<esc>':
                             # XXX: We should pass a mode here?
-                            self.window.run_command('_enter_normal_mode')
+                            enter_normal_mode(self.window, None)
                             continue
 
                         elif state.mode not in (INSERT, REPLACE):

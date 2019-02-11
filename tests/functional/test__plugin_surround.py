@@ -21,65 +21,42 @@ from NeoVintageous.tests import unittest
 class TestSurroundDocumentationExamples(unittest.FunctionalTestCase):
 
     def test_documentation_examples(self):
-        # See https://github.com/tpope/vim-surround
-
-        # It's easiest to explain with examples.  Press `cs"'` inside
-        #     "Hello world!"
+        # See the usage examples at https://github.com/tpope/vim-surround.
 
         self.normal('"Hello| world!"')
         self.feed('cs"\'')
-
-        # to change it to
-        #     'Hello world!'
-
         self.assertNormal("|'Hello world!'")
 
-        # Now press `cs'<q>` to change it to
-        #     <q>Hello world!</q>
-
-        self.select(1)  # TODO Fix: should work if cursor is at point on target.
+        # Now press `cs'<q>` to change it to <q>Hello world!</q>.
+        self.select(1)  # TODO This should work without havng to use select() i.e. if cursor is at point on target.
         self.feed("cs'<q>")
         self.assertNormal('|<q>Hello world!</q>')
 
-        # To go full circle, press `cst"` to get
-        #     "Hello world!"
-
+        # To go full circle, press `cst"` to get "Hello world!".
         self.feed('cst"')
         self.assertNormal('|"Hello world!"')
 
         # To remove the delimiters entirely, press `ds"`.
-        #     Hello world!
-
         self.feed('ds"')
         self.assertNormal('|Hello world!')
 
         # Now with the cursor on "Hello", press `ysiw]` (`iw` is a text object).
-        #     [Hello] world!
-
         self.feed('ysiw]')
         self.assertNormal('|[Hello] world!')
 
-        # Let's make that braces and add some space (use `}` instead of `{` for no
-        # space): `cs]{`
-        #     { Hello } world!
-
-        self.select(1)  # TODO Fix: should work if cursor is at point on target.
+        # Let's make that braces and add some space (use `}` instead of `{` for no space): `cs]{`
+        self.select(1)  # TODO This should work without havng to use select() i.e. if cursor is at point on target.
         self.feed('cs]{')
         self.assertNormal('|{ Hello } world!')
 
         # Now wrap the entire line in parentheses with `yssb` or `yss)`.
-        #     ({ Hello } world!)
-
-        # self.feed('yss)')
-        # self.assertNormal('|({ Hello } world!)')
-        # TODO yss operation above is not yet supported, setup view for next feed.
-        self.normal('|{(Hello world!)}')
+        self.feed('yss)')
+        self.assertNormal('|({ Hello } world!)')
 
         # Revert to the original text: `ds{ds)`
-        #     Hello world!
-
+        self.select(1)
         self.feed('ds{')
-        self.assertNormal('|(Hello world!)')
+        self.assertNormal('(|Hello world!)')
         self.feed('ds)')
         self.assertNormal('|Hello world!')
 

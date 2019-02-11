@@ -21,13 +21,13 @@ from NeoVintageous.tests import unittest
 class TestTextObjectMotion(unittest.FunctionalTestCase):
 
     def test_left_bracket_left_paren(self):
-        self.eq('x(\n_|)_', '[(', 'x|(\n_)_')
+        self.eq('x(\n_|)_', 'n_[(', 'x|(\n_)_')
 
     def test_left_bracket_left_brace(self):
-        self.eq('x{\n_|}_', '[{', 'x|{\n_}_')
+        self.eq('x{\n_|}_', 'n_[{', 'x|{\n_}_')
 
     def test_right_bracket_right_paren(self):
-        self.eq('x|(\n_)_', '])', 'x(\n_|)_')
+        self.eq('x|(\n_)_', 'n_])', 'x(\n_|)_')
 
     def test_right_bracket_right_brace(self):
-        self.eq('x|{\n_}_', ']}', 'x{\n_|}_')
+        self.eq('x|{\n_}_', 'n_]}', 'x{\n_|}_')

@@ -17,11 +17,11 @@
 
 from NeoVintageous.nv.vi import inputs
 from NeoVintageous.nv.vi import keys
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.inputs import parser_def
-from NeoVintageous.nv.vi.keys import seqs
 from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
@@ -41,7 +41,6 @@ _MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 class ViDeleteByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.command = '_vi_d'
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
@@ -49,7 +48,7 @@ class ViDeleteByChars(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': self.command,
+            'action': '_vi_d',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
@@ -62,14 +61,13 @@ class ViDeleteByChars(ViOperatorDef):
 class ViInsertLineBefore(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.command = '_vi_big_o'
         self.scroll_into_view = True
 
     def translate(self, state):
         state.glue_until_normal_mode = True
 
         return {
-            'action': self.command,
+            'action': '_vi_big_o',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count
@@ -85,7 +83,6 @@ class ViInsertLineAfter(ViOperatorDef):
         self.updates_xpos = False
 
     def translate(self, state):
-        # XXX: Create a separate command?
         if state.mode in (VISUAL, VISUAL_LINE):
             return {
                 'action': '_vi_visual_o',
@@ -1866,13 +1863,12 @@ class StFocusGroup(ViOperatorDef):
 class StFocusSideBar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.command = 'focus_side_bar'
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, state):
         return {
-            'action': self.command,
+            'action': 'focus_side_bar',
             'action_args': {}
         }
 
@@ -1881,14 +1877,13 @@ class StFocusSideBar(ViOperatorDef):
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.command = '_enter_insert_mode'
         self.scroll_into_view = True
 
     def translate(self, state):
         state.glue_until_normal_mode = True
 
         return {
-            'action': self.command,
+            'action': '_enter_insert_mode',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count
@@ -1954,9 +1949,13 @@ class ViInsertAtEol(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {}
-        cmd['action'] = '_vi_big_a'
-        cmd['action_args'] = {'mode': state.mode, 'count': state.count}
+        cmd = {
+            'action': '_vi_big_a',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
 
         if state.mode != SELECT:
             state.glue_until_normal_mode = True
@@ -3561,6 +3560,27 @@ class ViToggleBlockCommentByLines(ViOperatorDef):
         return {
             'action': '_vi_g_big_c',
             'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
+@keys.assign(seq='zc', modes=_MODES_ACTION)
+@keys.assign(seq='zM', modes=_MODES_ACTION)
+@keys.assign(seq='zo', modes=_MODES_ACTION)
+@keys.assign(seq='zR', modes=_MODES_ACTION)
+class Viz(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_z',
+            'action_args': {
+                'action': state.sequence[1],
                 'mode': state.mode,
                 'count': state.count
             }

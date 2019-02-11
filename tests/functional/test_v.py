@@ -20,10 +20,17 @@ from NeoVintageous.tests import unittest
 
 class Test_v(unittest.FunctionalTestCase):
 
-    def test_v(self):
-        self.eq('fi|zz', 'v', 'v_fi|z|z')
+    def test_n_v(self):
+        self.eq('fi|zz', 'n_v', 'v_fi|z|z')
+        self.eq('\n|\n', 'n_v', 'v_\n|\n|')
+        self.eq('\n|\n\n', 'n_v', 'v_\n|\n|\n')
 
-    def test_visual_enters_normal(self):
+    @unittest.mock_bell()
+    def test_n_v_empty_invokes_bell(self):
+        self.eq('|', 'n_v', 'n_|')
+        self.assertBell()
+
+    def test_v(self):
         self.eq('f|izz bu|zz', 'v_v', 'n_fizz b|uzz')
         self.eq('r_f|izz bu|zz', 'v_v', 'n_f|izz buzz')
 

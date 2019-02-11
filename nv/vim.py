@@ -109,3 +109,11 @@ def run_window_command(cmd, args=None, window=None):
 def run_view_command(view, cmd, args=None):
     _log.info('command: %s %s', cmd, args)
     view.run_command(cmd, args)
+
+
+def enter_normal_mode(view_or_window, mode):
+    view_or_window.run_command('_enter_normal_mode', {'mode': mode})
+
+
+def enter_insert_mode(view_or_window, mode):
+    view_or_window.run_command('_enter_insert_mode', {'mode': mode})
