@@ -189,7 +189,8 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
     # We usually need to look at the partial sequence, but some commands do
     # weird things, like ys, which isn't a namespace but behaves as such
     # sometimes.
-    seq = to_bare_command_name(sequence or state.partial_sequence)
+    partial_sequence = state.partial_sequence
+    seq = to_bare_command_name(sequence or partial_sequence)
 
     # TODO: Use same structure as in mappings (nested dict).
     command = None
@@ -198,8 +199,8 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
         command = _expand_first(state.mode, seq)
 
     if not command:
-        command = seq_to_command(state, seq, mode=mode)
+        command = seq_to_command(state, seq, mode)
 
-    _log.debug('resolved %s (sequence) -> %s -> %s', sequence, seq, command)
+    _log.debug('resolved %s %s or %s -> %s %s', mode, sequence, partial_sequence, seq, command)
 
     return command
