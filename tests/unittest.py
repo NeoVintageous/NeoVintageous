@@ -189,6 +189,9 @@ class ViewTestCase(unittest.TestCase):
     def vblock(self, text):
         self._setupView(text, VISUAL_BLOCK)
 
+    def rvblock(self, text):
+        self._setupView(text, VISUAL_BLOCK, reverse=True)
+
     def register(self, name, value=None, linewise=False):
         # Args:
         #   name (str)
@@ -822,6 +825,50 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
     return wrapper
 
 
+# Usage:
+#
+#   @unitest.mock_run_commands('redo', 'hide_panel')
+#   def test_run_command(self):
+#       self.assertCommandCalledWith('redo')
+#       self.assertCommandCalledWith('redo', count=3)
+#       self.assertCommandCalledWith('hide_panel', {'cancel': True})
+#
+def mock_run_commands(*methods):
+    def wrapper(f):
+        import sublime_api
+
+        def run_view_command(self, cmd, args=None):
+            if cmd not in methods:
+                sublime_api.view_run_command(self.id(), cmd, args)
+            else:
+                f._run_command_calls.append((cmd, args))
+
+        def run_window_command(self, cmd, args=None):
+            if cmd not in methods:
+                sublime_api.window_run_command(self.id(), cmd, args)
+            else:
+                f._run_command_calls.append((cmd, args))
+
+        @mock.patch('sublime.View.run_command', new=run_view_command)
+        @mock.patch('sublime.Window.run_command', new=run_window_command)
+        def wrapped(self, *args, **kwargs):
+            f._run_command_calls = []
+
+            def assertRunCommandCalledWith(cmd, args=None, count=1):
+                found = 0
+                for actual_cmd, actual_args in f._run_command_calls:
+                    if (cmd == actual_cmd) and (args == actual_args):
+                        found += 1
+
+                self.assertEqual(found, count, 'failed assert run command called once: "{}" {}'.format(cmd, args))
+
+            self.assertRunCommandCalledOnceWith = assertRunCommandCalledWith
+
+            return f(self, *args, **kwargs)
+        return wrapped
+    return wrapper
+
+
 # A hardcoded map of sequences to commands. Ideally we wouldn't need this
 # hardcoded map, some internal refactoring and redesign is required to make that
 # happen. For now make-do with the hardcoded map. Refactoring later should not
@@ -841,6 +888,7 @@ _SEQ2CMD = {
     '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
+    '<esc>':        {'command': '_enter_normal_mode'},  # noqa: E241
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'is_jump': True}}},  # noqa: E241,E501
     '=':            {'command': '_vi_equal'},  # noqa: E241
     '==':           {'command': '_vi_equal_equal'},  # noqa: E241
