@@ -2111,7 +2111,7 @@ class ViSkipInstance(ViOperatorDef):
         # Non-standard
         if state.mode != SELECT:
             raise ValueError(
-                'bad mode, expected mode_select, got {0}'.format(state.mode))
+                'bad mode, expected SELECT mode, got {0}'.format(state.mode))
 
         return {
             'action': 'find_under_expand_skip',
