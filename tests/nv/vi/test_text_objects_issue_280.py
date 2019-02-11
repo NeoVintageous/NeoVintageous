@@ -36,13 +36,13 @@ class TestIssue280(unittest.ViewTestCase):
                 'motion': {
                     'motion_args': {
                         'text_object': 'W',
-                        'mode': 'mode_internal_normal',
+                        'mode': unittest.INTERNAL_NORMAL,
                         'count': 1,
                         'inclusive': True
                     },
                     'motion': '_vi_select_text_object'
                 },
-                'mode': 'mode_internal_normal',
+                'mode': unittest.INTERNAL_NORMAL,
                 'count': 1,
                 'register': '"'
             }
@@ -80,13 +80,13 @@ class TestIssue280(unittest.ViewTestCase):
                     'motion_args': {
                         'inclusive': True,
                         'count': 1,
-                        'mode': 'mode_internal_normal',
+                        'mode': unittest.INTERNAL_NORMAL,
                         'text_object': 'W'
                     }
                 },
                 'register': '"',
                 'count': 1,
-                'mode': 'mode_internal_normal'
+                'mode': unittest.INTERNAL_NORMAL
             }
         )
 

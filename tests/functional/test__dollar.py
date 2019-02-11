@@ -21,8 +21,8 @@ from NeoVintageous.tests import unittest
 class Test_dollar(unittest.FunctionalTestCase):
 
     def test_dollar(self):
-        self.eq('one |two three', '$', 'one two thre|e')
-        self.eq('one |two three\nfour', '2$', 'one two three\nfou|r')
+        self.eq('one |two three', 'n_$', 'one two thre|e')
+        self.eq('one |two three\nfour', 'n_2$', 'one two three\nfou|r')
 
     def test_v_dollar(self):
         self.eq('one |two three', 'v_$', 'one |two three|')

@@ -50,7 +50,7 @@ class Test__vi_big_g_InVisualMode(unittest.ViewTestCase):
 
 class Test__vi_big_g_InInternalNormalMode(unittest.ViewTestCase):
 
-    def test_can_move_in_mode_internal_normal(self):
+    def test_can_move_in_internal_normal_mode(self):
         self.write('abc\nabc\n')
         self.select(1)
 
@@ -69,7 +69,7 @@ class Test__vi_big_g_InInternalNormalMode(unittest.ViewTestCase):
 
 class Test__vi_big_g_InVisualLineMode(unittest.ViewTestCase):
 
-    def test_can_move_in_mode_visual_line(self):
+    def test_can_move_in_visual_line_mode(self):
         self.write('abc\nabc\n')
         self.select((0, 4))
 

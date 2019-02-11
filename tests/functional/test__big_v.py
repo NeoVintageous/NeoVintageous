@@ -20,21 +20,15 @@ from NeoVintageous.tests import unittest
 
 class Test_V(unittest.FunctionalTestCase):
 
-    def test_V(self):
-        self.eq('fi|zz', 'V', 'l_|fizz|')
-        self.eq('x\nfi|zz\nx', 'V', 'l_x\n|fizz\n|x')
-        self.eq('x\nbar|\n', 'V', 'l_x\n|bar\n|')
-
-    def test_V_special_case_when_cursor_at_eof(self):
-        self.eq('x\nbar\n|', 'V', 'l_x\n|bar\n|')
-        self.eq('x\nbar|\n', 'V', 'l_x\n|bar\n|')
-        self.eq('|', 'V', '|')
-        self.eq('|\n', 'V', 'l_|\n|')
-        self.eq('|\n\n', 'V', 'l_|\n|\n')
-        self.eq('|    ', 'V', 'l_|    |')
-        self.eq('|    \n', 'V', 'l_|    \n|')
-
-    def test_n_V_special_case_when_cursor_at_eof(self):
+    def test_n_V(self):
+        self.eq('a|bc', 'n_V', 'l_|abc|')
+        self.eq('a|bc\n', 'n_V', 'l_|abc\n|')
+        self.eq('x\na|bc\nx', 'n_V', 'l_x\n|abc\n|x')
+        self.eq('\n|\n\n', 'n_V', 'l_\n|\n|\n')
+        self.eq('x\ny|\n', 'n_V', 'l_x\n|y\n|')
+        self.eq('x\ny|', 'n_V', 'l_x\n|y|')
+        self.eq('x\ny|\n', 'n_V', 'l_x\n|y\n|')
+        self.eq('x\ny\n|', 'n_V', 'l_x\n|y\n|')
         self.eq('x\nbar\n|', 'n_V', 'l_x\n|bar\n|')
         self.eq('x\nbar|\n', 'n_V', 'l_x\n|bar\n|')
         self.eq('|', 'n_V', '|')
@@ -43,23 +37,46 @@ class Test_V(unittest.FunctionalTestCase):
         self.eq('|    ', 'n_V', 'l_|    |')
         self.eq('|    \n', 'n_V', 'l_|    \n|')
 
-    def test_visual_line_enters_normal(self):
-        self.eq('x\n|fizz\n|x', 'l_V', 'n_x\nfiz|z\nx')
+    @unittest.mock_bell()
+    def test_n_V_bell_on_empty_content(self):
+        self.eq('|', 'n_V', '|')
+        self.assertBell()
 
-    def test_v(self):
+    def test_v_V(self):
         self.eq('x\nfi|zz bu|zz\nx', 'v_V', 'l_x\n|fizz buzz\n|x')
         self.eq('x\nfi|zz buzz\n|x', 'v_V', 'l_x\n|fizz buzz\n|x')
         self.eq('r_x\nfi|zz bu|zz\nx', 'v_V', 'r_l_x\n|fizz buzz\n|x')
         self.eq('r_x\nfi|zz buzz\n|x', 'v_V', 'r_l_x\n|fizz buzz\n|x')
         self.eq('x\nfi|zz\nbu|zz\nx', 'v_V', 'l_x\n|fizz\nbuzz\n|x')
         self.eq('r_x\nfi|zz\nbu|zz\nx', 'v_V', 'r_l_x\n|fizz\nbuzz\n|x')
+        self.eq('f|iz|z', 'v_V', 'l_|fizz|')
+        self.eq('x\nf|iz|z\nx', 'v_V', 'l_x\n|fizz\n|x')
+        self.eq('r_x\nf|iz|z\nx', 'v_V', 'r_l_x\n|fizz\n|x')
+        self.eq('x\nfi|zz\n\nx\nbuz|z\nx\ny', 'v_V', 'l_x\n|fizz\n\nx\nbuzz\n|x\ny')
+        self.eq('r_x\nfi|zz\n\nx\nb|uzz\nx\ny', 'v_V', 'r_l_x\n|fizz\n\nx\nbuzz\n|x\ny')
+        self.eq('x\n|abc\n|x', 'v_V', 'l_x\n|abc\n|x')
+        self.eq('x\na|bc\n|x', 'v_V', 'l_x\n|abc\n|x')
+        self.eq('r_x\n|abc\n|x', 'v_V', 'r_l_x\n|abc\n|x')
+        self.eq('r_x\na|bc\n|x', 'v_V', 'r_l_x\n|abc\n|x')
 
-    @unittest.mock_bell()
-    def test_V_bell_on_empty_content(self):
+    def test_l_V(self):
+        self.eq('x\n|fizz\n|x', 'l_V', 'n_x\nfiz|z\nx')
+        self.eq('x\n|abc\n|x', 'l_V', 'n_x\nab|c\nx')
+        self.eq('r_x\n|abc\n|x', 'l_V', 'n_x\n|abc\nx')
+
+    def test_N_V(self):
+        self.eq('fi|zz', 'V', 'l_|fizz|')
+        self.eq('x\nfi|zz\nx', 'V', 'l_x\n|fizz\n|x')
+        self.eq('x\nbar|\n', 'V', 'l_x\n|bar\n|')
+        self.eq('x\nbar\n|', 'V', 'l_x\n|bar\n|')
+        self.eq('x\nbar|\n', 'V', 'l_x\n|bar\n|')
         self.eq('|', 'V', '|')
-        self.assertBell()
+        self.eq('|\n', 'V', 'l_|\n|')
+        self.eq('|\n\n', 'V', 'l_|\n|\n')
+        self.eq('|    ', 'V', 'l_|    |')
+        self.eq('|    \n', 'V', 'l_|    \n|')
 
     @unittest.mock_bell()
-    def test_n_V_bell_on_empty_content(self):
-        self.eq('|', 'n_V', '|')
+    def test_V_N_bell_on_empty_content(self):
+        self.eq('|', 'V', '|')
         self.assertBell()

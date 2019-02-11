@@ -373,7 +373,7 @@ class _vi_slash_on_parser_done(WindowCommand):
 
 
 class _vi_l(ViMotionCommand):
-    def run(self, mode=None, count=None):
+    def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
                 if view.line(s.b).empty():

@@ -430,7 +430,7 @@ class FunctionalTestCaseStub(unittest.FunctionalTestCase):
 
 _PATCH_FEEDSEQ2CMD = {
     'b': {'command': 'cmd_b', 'args': {}},
-    'w': {'command': 'cmd_w', 'args': {'mode': 'mode_normal'}},
+    'w': {'command': 'cmd_w', 'args': {'mode': unittest.NORMAL}},
     'e': {'command': 'cmd_e', 'args': {'count': 2}},
     '$': {'command': 'cmd_dollar'},
     'cs"(': {'command': 'cmd_cs', 'args': {'action': 'cs', 'target': '"', 'replacement': '('}}
@@ -466,85 +466,85 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_cmd(self):
         self.instance.feed('b')
-        self.window.run_command.assert_called_once_with('cmd_b', {'mode': 'mode_internal_normal'})
+        self.window.run_command.assert_called_once_with('cmd_b', {'mode': unittest.INTERNAL_NORMAL})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_cmd_with_no_args(self):
         self.instance.feed('$')
-        self.window.run_command.assert_called_once_with('cmd_dollar', {'mode': 'mode_internal_normal'})
+        self.window.run_command.assert_called_once_with('cmd_dollar', {'mode': unittest.INTERNAL_NORMAL})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_cs(self):
         self.instance.feed('cs"(')
         self.window.run_command.assert_called_once_with('cmd_cs', {
-            'mode': 'mode_internal_normal', 'action': 'cs', 'target': '"', 'replacement': '('
+            'mode': unittest.INTERNAL_NORMAL, 'action': 'cs', 'target': '"', 'replacement': '('
         })
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_can_specify_mode(self):
         self.instance.feed('b')
-        self.window.run_command.assert_called_with('cmd_b', {'mode': 'mode_internal_normal'})
+        self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.INTERNAL_NORMAL})
         self.instance.feed('v_b')
-        self.window.run_command.assert_called_with('cmd_b', {'mode': 'mode_visual'})
+        self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.VISUAL})
         self.instance.feed('i_b')
-        self.window.run_command.assert_called_with('cmd_b', {'mode': 'mode_insert'})
+        self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.INSERT})
         self.instance.feed('n_b')
-        self.window.run_command.assert_called_with('cmd_b', {'mode': 'mode_normal'})
+        self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.NORMAL})
         self.instance.feed('l_b')
-        self.window.run_command.assert_called_with('cmd_b', {'mode': 'mode_visual_line'})
+        self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.VISUAL_LINE})
         self.instance.feed('b_b')
-        self.window.run_command.assert_called_with('cmd_b', {'mode': 'mode_visual_block'})
+        self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.VISUAL_BLOCK})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_can_override_cmd_default_mode(self):
         self.instance.feed('w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_normal'})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.NORMAL})
         self.instance.feed('v_w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual'})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL})
         self.instance.feed('i_w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_insert'})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.INSERT})
         self.instance.feed('n_w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_normal'})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.NORMAL})
         self.instance.feed('l_w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual_line'})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_LINE})
         self.instance.feed('b_w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual_block'})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_BLOCK})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_can_specify_mode_with_count(self):
         self.instance.feed('2w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_normal', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.NORMAL, 'count': 2})
         self.instance.feed('v_2w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL, 'count': 2})
         self.instance.feed('i_2w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_insert', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.INSERT, 'count': 2})
         self.instance.feed('n_2w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_normal', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.NORMAL, 'count': 2})
         self.instance.feed('l_2w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual_line', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_LINE, 'count': 2})
         self.instance.feed('b_2w')
-        self.window.run_command.assert_called_with('cmd_w', {'mode': 'mode_visual_block', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_BLOCK, 'count': 2})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_can_specify_counts(self):
         self.instance.feed('3b')
-        self.window.run_command.assert_called_with('cmd_b', {'mode': 'mode_internal_normal', 'count': 3})
+        self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.INTERNAL_NORMAL, 'count': 3})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_can_override_default_counts(self):
         self.instance.feed('3e')
-        self.window.run_command.assert_called_once_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 3})
+        self.window.run_command.assert_called_once_with('cmd_e', {'mode': unittest.INTERNAL_NORMAL, 'count': 3})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._SEQ2CMD', _PATCH_FEEDSEQ2CMD)
     def test_feed_count_resets_to_default_if_no_count_given(self):
         self.instance.feed('e')
-        self.window.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_e', {'mode': unittest.INTERNAL_NORMAL, 'count': 2})
 
         self.instance.feed('3e')
-        self.window.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 3})
+        self.window.run_command.assert_called_with('cmd_e', {'mode': unittest.INTERNAL_NORMAL, 'count': 3})
 
         self.instance.feed('e')
-        self.window.run_command.assert_called_with('cmd_e', {'mode': 'mode_internal_normal', 'count': 2})
+        self.window.run_command.assert_called_with('cmd_e', {'mode': unittest.INTERNAL_NORMAL, 'count': 2})
 
 
 class TestFunctionalTestCase_eq(unittest.TestCase):
