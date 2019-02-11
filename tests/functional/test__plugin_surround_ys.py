@@ -38,10 +38,14 @@ class TestSurround_ys(unittest.FunctionalTestCase):
         self.eq('one |two three', 'ysiw2', 'one |2two2 three')
         self.eq('one |two three', 'ysiw(', 'one |( two ) three')
         self.eq('one |two three', 'ysiw)', 'one |(two) three')
+        self.eq('one |two three', 'ysiwb', 'one |(two) three')
         self.eq('one |two three', 'ysiw[', 'one |[ two ] three')
         self.eq('one |two three', 'ysiw]', 'one |[two] three')
+        self.eq('one |two three', 'ysiwr', 'one |[two] three')
         self.eq('one |two three', 'ysiw{', 'one |{ two } three')
         self.eq('one |two three', 'ysiw}', 'one |{two} three')
+        self.eq('one |two three', 'ysiwafoo>', 'one |<foo>two</foo> three')
+        self.eq('one |two three', 'ysiwB', 'one |{two} three')
         self.eq('one |two three', 'ysiw<foo>', 'one |<foo>two</foo> three')
 
     def test_yss(self):

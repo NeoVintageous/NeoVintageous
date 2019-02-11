@@ -32,6 +32,7 @@ class TestSurround_cs(unittest.FunctionalTestCase):
     def test_paren_punctuation_marks(self):
         self.eq('x(a|bc)y', 'cs("', 'x|"abc"y')
         self.eq('x(a|bc)y', 'cs)"', 'x|"abc"y')
+        self.eq('x(a|bc)y', 'csb"', 'x|"abc"y')
         self.eq('x(a|bc)y', 'cs({', 'x|{ abc }y')
         self.eq('x(a|bc)y', 'cs){', 'x|{ abc }y')
         self.eq('x(a|bc)y', 'cs(}', 'x|{abc}y')
@@ -44,10 +45,12 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x{a|bc}y', 'cs}(', 'x|( abc )y')
         self.eq('x{a|bc}y', 'cs{)', 'x|(abc)y')
         self.eq('x{a|bc}y', 'cs})', 'x|(abc)y')
+        self.eq('x{a|bc}y', 'csB"', 'x|"abc"y')
 
     def test_square_bracket_punctuation_marks(self):
         self.eq('x[a|bc]y', 'cs["', 'x|"abc"y')
         self.eq('x[a|bc]y', 'cs]"', 'x|"abc"y')
+        self.eq('x[a|bc]y', 'csr"', 'x|"abc"y')
         self.eq('x"a|bc"y', 'cs"[', 'x|[ abc ]y')
         self.eq('x"a|bc"y', 'cs"]', 'x|[abc]y')
 
@@ -55,6 +58,7 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x"a|bc"y', 'cs">', 'x|<abc>y')
         self.eq('x[a|bc]y', 'cs]>', 'x|<abc>y')
         self.eq('x<a|bc>y', 'cs>"', 'x|"abc"y')
+        self.eq('x<a|bc>y', 'csa"', 'x|"abc"y')
         self.eq('x<a|bc>y', 'cs>}', 'x|{abc}y')
         self.eq('x<a|bc>y', 'cs>{', 'x|{ abc }y')
         # TODO Fix cs{target}<*> e.g. ('x"|abc"y', 'cs"<q>', 'x|<q>abc</q>y')

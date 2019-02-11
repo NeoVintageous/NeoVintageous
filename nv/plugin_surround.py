@@ -252,17 +252,57 @@ class _nv_surround_command(TextCommand):
             raise Exception('unknown action')
 
 
+_PUNCTUATION_MARKS = {
+    '(': ('(', ')'),
+    ')': ('(', ')'),
+    '{': ('{', '}'),
+    '}': ('{', '}'),
+    '[': ('[', ']'),
+    ']': ('[', ']'),
+    '<': ('<', '>'),
+    '>': ('<', '>'),
+}
+
+
+_PUNCTUTION_MARK_ALIASES = {
+    'b': ')',
+    'B': '}',
+    'r': ']',
+    'a': '>',
+}
+
+
+def _resolve_punctuation_aliases(target):
+    return _PUNCTUTION_MARK_ALIASES.get(target, target)
+
+
+# Eight punctuation marks, (, ), {, }, [, ], <, and >, represent themselves and
+# their counterparts. The targets b, B, r, and a are aliases for ), }, ], and >
+# (the first two mirror Vim; the second two are completely arbitrary and subject
+# to change).
+def _get_punctuation_marks(target):
+    target = _resolve_punctuation_aliases(target)
+
+    return _PUNCTUATION_MARKS.get(target, (target, target))
+
+
+# If either ), }, ], or > is used, the text is wrapped in the appropriate pair
+# of characters. Similar behavior can be found with (, {, and [ (but not <),
+# which append an additional space to the inside. Like with the targets above,
+# b, B, r, and a are aliases for ), }, ], and >.
+def _get_punctuation_mark_replacements(target):
+    target = _resolve_punctuation_aliases(target)
+    append_addition_space = True if target in '({[' else False
+    begin, end = _get_punctuation_marks(target)
+    if append_addition_space:
+        begin = begin + ' '
+        end = ' ' + end
+
+    return (begin, end)
+
+
 # TODO [refactor] to use _nv_surround proxy command
 class _nv_surround_ys_command(ViTextCommandBase):
-
-    _pairs = {
-        ')': ('(', ')'),
-        '(': ('( ', ' )'),
-        ']': ('[', ']'),
-        '[': ('[ ', ' ]'),
-        '}': ('{', '}'),
-        '{': ('{ ', ' }'),
-    }
 
     def run(self, edit, mode=None, surround_with='"', count=1, motion=None):
         def f(view, s):
@@ -288,7 +328,7 @@ class _nv_surround_ys_command(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
     def surround(self, edit, s, surround_with):
-        open_, close_ = self._pairs.get(surround_with, (surround_with, surround_with))
+        open_, close_ = _get_punctuation_mark_replacements(surround_with)
 
         # Takes <q class="foo"> and produces: <q class="foo">text</q>
         if open_.startswith('<'):
@@ -334,32 +374,12 @@ def _do_surround_cs(view, edit, target, replacement, mode=None):
     elif len(replacement) != 1:
         return  # TODO [review] should an exception be raised, and if yes, what type of exception e.g. package, module, plugin, generic?  # noqa: E501
 
-    target_pairs = {
-        ')': ('(', ')'),
-        '(': ('(', ')'),
-        ']': ('[', ']'),
-        '[': ('[', ']'),
-        '}': ('{', '}'),
-        '{': ('{', '}'),
-        '>': ('<', '>'),
-    }
-
-    replacement_pairs = {
-        ')': ('(', ')'),
-        '(': ('( ', ' )'),
-        ']': ('[', ']'),
-        '[': ('[ ', ' ]'),
-        '}': ('{', '}'),
-        '{': ('{ ', ' }'),
-        '>': ('<', '>'),
-    }
-
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
             old = target
             new = replacement
-            open_, close_ = target_pairs.get(old, (old, old))
-            new_open, new_close = replacement_pairs.get(new, (new, new))
+            open_, close_ = _get_punctuation_marks(old)
+            new_open, new_close = _get_punctuation_mark_replacements(new)
 
             # Replacements > 1 are always tags, and the first character could be
             # "t", which is an alias for "<".
@@ -422,26 +442,6 @@ def _do_surround_ds(view, edit, target, mode=None):
             # All marks, except punctuation marks, are only searched for on the
             # current line.
 
-            # Eight punctuation marks, (, ), {, }, [, ], <, and >, represent
-            # themselves and their counterparts. The targets b, B, r, and a are
-            # aliases for ), }, ], and > (the first two mirror Vim; the second two
-            # are completely arbitrary and subject to change).
-
-            punctuation_marks = {
-                '(': ('(', ')'),
-                ')': ('(', ')'),
-                'b': ('(', ')'),  # alias of )
-                '{': ('{', '}'),
-                '}': ('{', '}'),
-                'B': ('{', '}'),  # alias of }
-                '[': ('[', ']'),
-                ']': ('[', ']'),
-                'r': ('[', ']'),  # alias of ]
-                '<': ('<', '>'),
-                '>': ('<', '>'),
-                'a': ('<', '>'),  # alias of >
-            }
-
             # If opening punctuation mark is used, contained whitespace is also trimmed.
             trim_contained_whitespace = True if target in '({[<' else False
             search_current_line_only = False if target in 'b()B{}r[]a<>' else True
@@ -451,7 +451,7 @@ def _do_surround_ds(view, edit, target, mode=None):
             # []. Target is the same for begin and end for all other valid marks
             # e.g. ', ", `, -, _, etc.
 
-            t_char_begin, t_char_end = punctuation_marks.get(target, (target, target))
+            t_char_begin, t_char_end = _get_punctuation_marks(target)
 
             s_rowcol_begin = view.rowcol(s.begin())
             s_rowcol_end = view.rowcol(s.end())

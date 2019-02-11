@@ -6,7 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#418](https://github.com/NeoVintageous/NeoVintageous/issues/418): Implement Surround Line `yss{target}{replacement}`
+* Added [#432](https://github.com/NeoVintageous/NeoVintageous/issues/432): `cs{target}{replacement}` target aliases `b`, `B`, `r`, and `a`
+* Added [#431](https://github.com/NeoVintageous/NeoVintageous/issues/431): `ys{motion}{replacement}` replacement aliases `b`, `B`, `r`, and `a`
+* Added [#418](https://github.com/NeoVintageous/NeoVintageous/issues/418): Implement Surround Line `yss{replacement}`
 * Added [#429](https://github.com/NeoVintageous/NeoVintageous/issues/429): Support `<bslash>` in vintageousrc
 * Added [#428](https://github.com/NeoVintageous/NeoVintageous/issues/428): Support `<bar>` in vintageousrc
 * Added [#424](https://github.com/NeoVintageous/NeoVintageous/issues/424): `[count]o` and `[count]O`
