@@ -443,6 +443,9 @@ class ViewTestCase(unittest.TestCase):
         #       If specified, is used as the error message on failure.
         self.assertRegex(self.view.get_status('vim-mode') + ' ' + self.view.get_status('vim-seq'), expected, msg=msg)
 
+    def assertXpos(self, expected, msg=None):
+        self.assertEqual(self.state.xpos, expected, msg)
+
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
     def state(self):
