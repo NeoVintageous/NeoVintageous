@@ -17,11 +17,11 @@
 
 from NeoVintageous.nv.vi import inputs
 from NeoVintageous.nv.vi import keys
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.inputs import parser_def
-from NeoVintageous.nv.vi.keys import seqs
 from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
