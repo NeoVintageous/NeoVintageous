@@ -98,7 +98,7 @@
     "vintageous_terminal": null,
 
     // Enable key bindings prefaced by the control-key.
-    "vintageous_use_ctrl_keys": false,
+    "vintageous_use_ctrl_keys": true,
 
     // Enable key bindings prefaced by the super-key, otherwise known as the
     // command-key in OSX, and as the windows-key in Windows.

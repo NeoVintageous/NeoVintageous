@@ -810,7 +810,7 @@ List of available settings:
 
                                                   *'vintageous_use_ctrl_keys'*
 'vintageous_use_ctrl_keys'
-                        boolean (default: false)
+                        boolean (default on)
         Enable key bindings prefaced by the ctrl-key.
 
                                                  *'vintageous_use_super_keys'*
