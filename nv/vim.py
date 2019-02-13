@@ -80,20 +80,28 @@ def is_visual_mode(mode):
     return mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
-def console_message(msg):
-    # type: (str) -> None
-    print('NeoVintageous:', msg)
+def _format_message(msg, *args):
+    # type: (str, *str) -> str
+    if args:
+        msg = msg % args
+
+    return msg
 
 
-def status_message(msg):
-    # type: (str) -> None
-    _status_message(msg)
+def console_message(msg, *args):
+    # type: (str, *str) -> None
+    print('NeoVintageous:', _format_message(msg, *args))
 
 
-def message(msg):
-    # type: (str) -> None
-    status_message(msg)
-    console_message(msg)
+def status_message(msg, *args):
+    # type: (str, *str) -> None
+    _status_message(_format_message(msg, *args))
+
+
+def message(msg, *args):
+    # type: (str, *str) -> None
+    status_message(msg, *args)
+    console_message(msg, *args)
 
 
 def run_window_command(cmd, args=None, window=None):

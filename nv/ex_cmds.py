@@ -349,26 +349,15 @@ def ex_edit(window, view, file_name, cmd, forceit=False, **kwargs):
             return message("E37: No write since last change")
 
         if os.path.isdir(file_name):
-            # TODO :edit Open a file-manager in a buffer
-            return message('Cannot open directory')
-
-        def get_file_path():
-            file_name = view.file_name()
-            if file_name:
-                file_dir = os.path.dirname(file_name)
-                if os.path.isdir(file_dir):
-                    return file_dir
-
-                file_dir = get_cmdline_cwd()
-                if os.path.isdir(file_dir):
-                    return file_dir
+            # TODO In Vim, trying to edit a directory opens a file-manager.
+            return message('"%s" is a directory', file_name)
 
         if not os.path.isabs(file_name):
-            file_path = get_file_path()
-            if file_path:
-                file_name = os.path.join(file_path, file_name)
-            else:
-                return message("could not find a parent directory")
+            cwd = get_cmdline_cwd()
+            if not os.path.isdir(cwd):
+                return message("could not find a current working directory")
+
+            file_name = os.path.join(cwd, file_name)
 
         window.open_file(file_name)
 
@@ -379,11 +368,9 @@ def ex_edit(window, view, file_name, cmd, forceit=False, **kwargs):
             else:
                 msg = '"{}" [New File]'.format(os.path.basename(file_name))
 
-            # Give ST some time to load the new view.
+            # Give Sublime Text some time to load the new view.
             set_timeout(lambda: status_message(msg), 150)
-
     else:
-
         if forceit or not view.is_dirty():
             return view.run_command('revert')
 
