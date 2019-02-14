@@ -29,11 +29,15 @@ _log = logging.getLogger(__name__)
 
 
 def _file_name():
-    return os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
+    return '.vintageousrc'
+
+
+def _file_path():
+    return os.path.join(sublime.packages_path(), 'User', _file_name())
 
 
 def open(window):
-    file = _file_name()
+    file = _file_path()
 
     if not os.path.exists(file):
         with builtins.open(file, 'w') as f:
@@ -43,12 +47,12 @@ def open(window):
 
 
 def load():
-    _log.debug('load %s', _file_name())
+    _log.debug('load %s', _file_path())
     _load()
 
 
 def reload():
-    _log.debug('reload %s', _file_name())
+    _log.debug('reload %s', _file_path())
     _unload()
     _load()
 
@@ -65,15 +69,15 @@ def _load():
     try:
         from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
-        with builtins.open(_file_name(), 'r') as f:
+        with builtins.open(_file_path(), 'r') as f:
             for line in f:
                 ex_cmdline = _parse_line(line)
                 if ex_cmdline:
                     do_ex_cmdline(window, ex_cmdline)
 
-        print('vintageousrc file loaded')
+        print('%s file loaded' % _file_name())
     except FileNotFoundError:
-        _log.info('vintageousrc file not found')
+        _log.info('%s file not found', _file_name())
 
 
 # Recursive mappings (:map, :nmap, :omap, :smap, :vmap) are not supported. They
@@ -114,6 +118,6 @@ def _parse_line(line):
 
                 return cmdline
     except Exception:
-        message('error detected while processing vintageousrc at line "{}"'.format(line.rstrip()))
+        message('error detected while processing {} at line "{}"'.format(_file_name(), line.rstrip()))
 
     return None
