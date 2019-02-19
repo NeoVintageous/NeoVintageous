@@ -25,7 +25,6 @@ class Test_gq(unittest.FunctionalTestCase):
         self.view.settings().set('WrapPlus.include_line_endings', None)
 
     def test_gqip(self):
-        self.eq('|aaa\nbbb\nccc', 'gqip', '|aaa bbb ccc\n'),
         self.eq('|aaa\nbbb\nccc\n', 'gqip', '|aaa bbb ccc\n')
 
     def test_gqip_should_only_mutate_current_paragraph(self):
