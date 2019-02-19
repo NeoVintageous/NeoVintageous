@@ -1404,10 +1404,7 @@ def _default_ex_cmd(window, view, line_range, **kwargs):
     state = State(view)
     enter_normal_mode(window, state.mode)
     state.enter_normal_mode()
-    jumplist_update(view)
     goto_line(view, line, state.mode)
-    jumplist_update(view)
-    view.show(view.sel()[0])
 
 
 def _get_ex_cmd(name):
