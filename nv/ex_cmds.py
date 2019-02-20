@@ -41,7 +41,6 @@ from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
 from NeoVintageous.nv.ex.parser import parse_command_line_address
 from NeoVintageous.nv.goto import goto_line
-from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
