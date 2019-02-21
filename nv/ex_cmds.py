@@ -952,8 +952,11 @@ _ex_substitute_last_pattern = None
 _ex_substitute_last_replacement = ''
 
 
-def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0, count=1, **kwargs):
+def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=None, count=1, **kwargs):
     global _ex_substitute_last_pattern, _ex_substitute_last_replacement
+
+    if flags is None:
+        flags = []
 
     # Repeat last substitute with same search
     # pattern and substitute string, but
@@ -964,9 +967,6 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=0,
             return status_message('E33: No previous substitute regular expression')
 
         replacement = _ex_substitute_last_replacement
-
-    if not pattern:
-        return status_message('No substitute regular expression')
 
     if replacement is None:
         return status_message('No substitute replacement string')

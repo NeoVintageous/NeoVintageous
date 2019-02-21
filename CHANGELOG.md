@@ -17,6 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#439](https://github.com/NeoVintageous/NeoVintageous/issues/439): Repeat last `:substitute` doesn't work
 * Fixed [#438](https://github.com/NeoVintageous/NeoVintageous/issues/438): `{Visual}[count]G` and `{Visual}[count]gg` should extend to first non blank
 * Fixed [#366](https://github.com/NeoVintageous/NeoVintageous/issues/366): Folding with `zc` enters VISUAL mode
 * Fixed [#380](https://github.com/NeoVintageous/NeoVintageous/issues/380): `<Esc>` directly after `O` or `o` should erase leading whitespace
