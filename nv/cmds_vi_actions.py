@@ -1737,7 +1737,11 @@ class _vi_g_big_t(WindowCommand):
 class _vi_ctrl_right_square_bracket(WindowCommand):
 
     def run(self):
-        self.window.run_command('goto_definition')
+        view = self.window.active_view()
+        if view and view.score_selector(0, 'text.neovintageous.help') > 0:
+            self.window.run_command('_nv_goto_help')
+        else:
+            self.window.run_command('goto_definition')
 
 
 class _vi_ctrl_w(WindowCommand):
