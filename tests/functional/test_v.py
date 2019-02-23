@@ -20,11 +20,13 @@ from NeoVintageous.tests import unittest
 
 class Test_v(unittest.FunctionalTestCase):
 
+    @unittest.mock_bell()
     def test_n_v(self):
         self.eq('fi|zz', 'n_v', 'v_fi|z|z')
         self.eq('\n|\n', 'n_v', 'v_\n|\n|')
         self.eq('\n|\n\n', 'n_v', 'v_\n|\n|\n')
         self.assertStatusLineIsVisual()
+        self.assertNoBell()
 
     @unittest.mock_bell()
     def test_n_v_empty_invokes_bell(self):

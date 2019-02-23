@@ -62,6 +62,7 @@ class Test_ctrl_d(unittest.FunctionalTestCase):
         self.assertSelection(8)
         self.feed('n_4<C-d>')
         self.assertSelection(9)
+        self.assertNoBell()
 
     @unittest.mock_ui()
     def test_v_ctrl_d(self):
