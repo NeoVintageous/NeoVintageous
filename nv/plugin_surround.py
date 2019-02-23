@@ -44,9 +44,13 @@ __all__ = [
 ]
 
 
-@register(seq='ys', modes=(NORMAL,))
-class _surround_ys(ViOperatorDef):
+class _IsDefinitionEnabledAware():
+    def is_enabled(self, settings):
+        return settings.get('vintageous_enable_surround')
 
+
+@register(seq='ys', modes=(NORMAL,))
+class _surround_ys(ViOperatorDef, _IsDefinitionEnabledAware):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -71,9 +75,6 @@ class _surround_ys(ViOperatorDef):
         self.inp += translate_char(key)
         return True
 
-    def is_enabled(self, state):
-        return state.settings.view['vintageous_enable_surround']
-
     def translate(self, state):
         return {
             'action': '_nv_surround',
@@ -87,7 +88,6 @@ class _surround_ys(ViOperatorDef):
 
 @register(seq='yss', modes=(NORMAL,))
 class _surround_yss(_surround_ys):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
@@ -121,7 +121,6 @@ class _surround_yss(_surround_ys):
 
 @register(seq='S', modes=(VISUAL, VISUAL_BLOCK))
 class _surround_S(_surround_ys):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
@@ -135,7 +134,7 @@ class _surround_S(_surround_ys):
 
 
 @register(seq='ds', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_ds(ViOperatorDef):
+class _surround_ds(ViOperatorDef, _IsDefinitionEnabledAware):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -154,15 +153,11 @@ class _surround_ds(ViOperatorDef):
     def accept_input(self):
         single = len(self.inp) == 1
         tag = re.match('<.*?>', self.inp)
-
         return not(single or tag)
 
     def accept(self, key):
         self.inp += translate_char(key)
         return True
-
-    def is_enabled(self, state):
-        return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
         return {
@@ -176,7 +171,7 @@ class _surround_ds(ViOperatorDef):
 
 
 @register(seq='cs', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_cs(ViOperatorDef):
+class _surround_cs(ViOperatorDef, _IsDefinitionEnabledAware):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -210,11 +205,7 @@ class _surround_cs(ViOperatorDef):
 
     def accept(self, key):
         self.inp += translate_char(key)
-
         return True
-
-    def is_enabled(self, state):
-        return state.settings.view['vintageous_enable_surround']
 
     def translate(self, state):
         return {
