@@ -54,7 +54,7 @@ def _iter_paths(prefix=None, from_dir=None, only_dirs=False):
         if ('/' in prefix and not prefix_split[0]):
             prefix_len = 0
 
-        for path in glob.iglob(start_at + '*'):
+        for path in sorted(glob.iglob(start_at + '*')):
             if not only_dirs or os.path.isdir(path):
                 suffix = ('/' if os.path.isdir(path) else '')
                 item = os.path.split(path)[1]
@@ -62,7 +62,7 @@ def _iter_paths(prefix=None, from_dir=None, only_dirs=False):
     else:
         prefix = from_dir
         start_at = os.path.expandvars(os.path.expanduser(prefix))
-        for path in glob.iglob(start_at + '*'):
+        for path in sorted(glob.iglob(start_at + '*')):
             if not only_dirs or os.path.isdir(path):
                 yield path[len(start_at):] + ('' if not os.path.isdir(path) else '/')
 
@@ -188,6 +188,8 @@ class _FsCompletion():
         if prefix == '..':
             _FsCompletion.prefix = '../'
             _write_to_ex_cmdline(self.view, edit, cmd, '../')
+
+            return
 
         if prefix == '~':
             path = os.path.expanduser(prefix) + '/'

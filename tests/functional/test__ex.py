@@ -207,7 +207,9 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
     @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
     def test_c_tab_edit_completion_backup(self):
         set_cmdline_cwd(self.fixturePath('cwd', 'sub'))
-        self.eq(':edit ..|', '<tab>', ':edit ../b.txt|')
+        self.eq(':edit ..|', '<tab>', ':edit ../|')
+        self.feed('<tab>')
+        self.assertNormal(':edit ../b.txt|')
         self.feed('<tab>')
         self.assertNormal(':edit ../sub/|')
         self.feed('<tab>')
