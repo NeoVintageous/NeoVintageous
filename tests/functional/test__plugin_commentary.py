@@ -66,3 +66,24 @@ class TestCommentary(unittest.FunctionalTestCase):
     def test_v_gc(self):
         self.eq('f|iz|z', 'v_gc', 'n_|# fizz')
         self.eq('1\na|bc\n3\na|bc\nx', 'v_gc', 'n_1\n|# abc\n# 3\n# abc\nx')
+
+
+class TestCommentaryPHP(unittest.FunctionalTestCase):
+
+    def feed(self, seq):
+        # Assign a specific syntax before feed, because our  tests would fail,
+        # because views that have no syntax applied have no comment behaviours.
+        self.view.assign_syntax('Packages/PHP/PHP.sublime-syntax')
+        super().feed(seq)
+
+    def test_v_gc(self):
+        self.eq('<?php\nf|iz|z', 'v_gc', 'n_<?php\n|// fizz')
+
+    def test_v_gC(self):
+        self.eq('<?php\nf|iz|z', 'v_gC', 'n_<?php\nf/*|iz*/z')
+
+    def test_n_gC_right_brace(self):
+        self.eq('<?php\n|fizz\nbuzz\n\nx\ny', 'gC}', 'n_<?php\n/*|fizz\nbuzz\n*/\nx\ny')
+
+    def test_n_gC_should_do_nothing(self):
+        self.eq('<?php\nf|izz', 'n_gC', 'n_<?php\nf|izz')
