@@ -154,7 +154,7 @@ Super-keys, known as windows-keys or command-keys, are disabled by default: >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
-A command is providied out-of-the-box for mapping to toggle the side bar:
+A command is provided out-of-the-box for mapping to toggle the side bar:
 
     nnoremap <leader>d :NeovintageousToggleSideBar<CR>
 
