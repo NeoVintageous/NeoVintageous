@@ -18,6 +18,7 @@
 from unittest import mock  # noqa: F401
 from unittest import skipIf  # noqa: F401
 from unittest import TestCase  # noqa: F401
+import os
 import unittest
 
 # Use aliases to indicate that they are not public testing APIs.
@@ -110,6 +111,9 @@ class ViewTestCase(unittest.TestCase):
 
     def settings(self):
         return self.view.settings()
+
+    def fixturePath(self, *args):
+        return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
 
     def write(self, text):
         # type: (str) -> None
