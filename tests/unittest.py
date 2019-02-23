@@ -616,7 +616,7 @@ class FunctionalTestCase(ViewTestCase):
 
         is_feed_visual = feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>'))
 
-        if feed[:2] in ('l_', 'b_'):
+        if feed[:2] in ('l_', 'b_', 'i_', 'N_'):
             text_mode = feed[0]
         elif is_feed_visual:
             text_mode = 'v'
@@ -626,7 +626,7 @@ class FunctionalTestCase(ViewTestCase):
         if expected[:2] in ('n_', 'v_', 'l_', 'b_', 'i_', 'N_'):
             expected_mode = expected[0]
             expected = expected[2:]
-        elif feed[:2] in ('l_', 'b_'):
+        elif feed[:2] in ('l_', 'b_', 'i_', 'N_'):
             expected_mode = feed[0]
         elif is_feed_visual:
             expected_mode = 'v'

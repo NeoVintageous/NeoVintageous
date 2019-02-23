@@ -129,6 +129,11 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.assertEqual([Region(3, 8)], list(self.view.sel()))
         self.assertInternalNormalMode()
 
+    def test_internal_normal_reversed(self):
+        self.rInternalNormal('hel|lo wo|rld!')
+        self.assertEqual([Region(8, 3)], list(self.view.sel()))
+        self.assertInternalNormalMode()
+
     def test_internal_normal_zero_pos(self):
         self.internalNormal('|hello world!')
         self.assertEqual([Region(0, 1)], list(self.view.sel()))
@@ -168,8 +173,14 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.vline('x|text\n|y')
         self.assertVlineMode()
 
-    def test_vblock_sets_vblock_mode(self):
-        self.vblock('x|text|y')
+    def test_vblock(self):
+        self.vblock('xf|iz|zy\nxb|uz|zy\n')
+        self.assertEqual([Region(2, 4), Region(9, 11)], list(self.view.sel()))
+        self.assertVblockMode()
+
+    def test_vblock_reversed(self):
+        self.rvblock('xf|iz|zy\nxb|uz|zy\n')
+        self.assertEqual([Region(4, 2), Region(11, 9)], list(self.view.sel()))
         self.assertVblockMode()
 
     def test_rvisual_selection_is_reversed(self):
@@ -557,14 +568,28 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance = FunctionalTestCaseStub(self.view)
         self.instance.feed = unittest.mock.Mock()
         self.instance.normal = unittest.mock.Mock()
+        self.instance.insert = unittest.mock.Mock()
+        self.instance.internalNormal = unittest.mock.Mock()
+        self.instance.rInternalNormal = unittest.mock.Mock()
         self.instance.visual = unittest.mock.Mock()
         self.instance.vline = unittest.mock.Mock()
         self.instance.vblock = unittest.mock.Mock()
         self.instance.assertNormal = unittest.mock.Mock()
         self.instance.assertInsert = unittest.mock.Mock()
+        self.instance.assertInternalNormal = unittest.mock.Mock()
+        self.instance.assertRInternalNormal = unittest.mock.Mock()
         self.instance.assertVisual = unittest.mock.Mock()
         self.instance.assertVline = unittest.mock.Mock()
         self.instance.assertVblock = unittest.mock.Mock()
+
+    def assert_insert(self, *args):
+        self.instance.insert.assert_called_once_with(*args)
+
+    def assert_internal_normal(self, *args):
+        self.instance.internalNormal.assert_called_once_with(*args)
+
+    def assert_r_internal_normal(self, *args):
+        self.instance.rInternalNormal.assert_called_once_with(*args)
 
     def assert_normal(self, *args):
         self.instance.normal.assert_called_once_with(*args)
@@ -581,11 +606,17 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
     def assert_feed(self, *args):
         self.instance.feed.assert_called_once_with(*args)
 
-    def assert_assertNormal(self, *args):
-        self.instance.assertNormal.assert_called_once_with(*args)
-
     def assert_assertInsert(self, *args):
         self.instance.assertInsert.assert_called_once_with(*args)
+
+    def assert_assertInternalNormal(self, *args):
+        self.instance.assertInternalNormal.assert_called_once_with(*args)
+
+    def assert_assertRInternalNormal(self, *args):
+        self.instance.assertRInternalNormal.assert_called_once_with(*args)
+
+    def assert_assertNormal(self, *args):
+        self.instance.assertNormal.assert_called_once_with(*args)
 
     def assert_assertVisual(self, *args):
         self.instance.assertVisual.assert_called_once_with(*args)
@@ -637,6 +668,30 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.assert_normal('a')
         self.assert_feed('n_b')
         self.assert_assertNormal('c', None)
+
+    def test_eq_insert(self):
+        self.instance.eq('text', 'i_x', 'expected')
+        self.assert_insert('text')
+        self.assert_feed('i_x')
+        self.assert_assertInsert('expected', None)
+
+    def test_eq_internal_normal(self):
+        self.instance.eq('text', 'N_x', 'expected')
+        self.assert_internal_normal('text')
+        self.assert_feed('N_x')
+        self.assert_assertInternalNormal('expected', None)
+
+    def test_eq_r_internal_normal(self):
+        self.instance.eq('r_text', 'N_x', 'expected')
+        self.assert_r_internal_normal('text')
+        self.assert_feed('N_x')
+        self.assert_assertInternalNormal('expected', None)
+
+    def test_eq_internal_normal_r(self):
+        self.instance.eq('text', 'N_x', 'r_expected')
+        self.assert_internal_normal('text')
+        self.assert_feed('N_x')
+        self.assert_assertRInternalNormal('expected', None)
 
     def test_eq_normal_assertNormal_insert(self):
         self.instance.eq('a', 'n_b', 'i_c')
