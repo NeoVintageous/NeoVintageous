@@ -825,27 +825,16 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
             # the same size as content. This makes most tests easier to setup.
             def _visible_region():
                 if visible_region:
-                    if isinstance(visible_region, tuple):
-                        return self.Region(visible_region[0], visible_region[1])
-
-                    return visible_region
+                    return self.Region(visible_region[0], visible_region[1])
 
                 region = self.Region(0, self.view.size())
 
                 return region
 
-            def _assertViewportPosition(x, y):
-                self.assertEqual((x, y), self.view.viewport_position())
-
-            def _assertViewportPositionIsZero():
-                self.assertEqual((0, 0), self.view.viewport_position())
-
             self.em_width.return_value = em_width
             self.line_height.return_value = line_height
             self.viewport_extent.side_effect = _viewport_extent
             self.visible_region.side_effect = _visible_region
-            self.assertViewportPosition = _assertViewportPosition
-            self.assertViewportPositionIsZero = _assertViewportPositionIsZero
 
             return f(self, *args[:-4], **kwargs)
         return wrapped
