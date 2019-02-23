@@ -952,17 +952,17 @@ _SEQ2CMD = {
     'cc':           {'command': '_vi_cc'},  # noqa: E241
     'ce':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_e'}}},  # noqa: E241,E501
     'ci"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'text_object': "\"", 'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
-    'cr ':          {'command': '_nv_abolish', 'args': {'to': 'spacecase'}},  # noqa: E241
-    'cr-':          {'command': '_nv_abolish', 'args': {'to': 'dashcase'}},  # noqa: E241
-    'cr.':          {'command': '_nv_abolish', 'args': {'to': 'dotcase'}},  # noqa: E241
-    'cr_':          {'command': '_nv_abolish', 'args': {'to': 'snakecase'}},  # noqa: E241
-    'crc':          {'command': '_nv_abolish', 'args': {'to': 'camelcase'}},  # noqa: E241
-    'crk':          {'command': '_nv_abolish', 'args': {'to': 'dashcase'}},  # noqa: E241
-    'crm':          {'command': '_nv_abolish', 'args': {'to': 'mixedcase'}},  # noqa: E241
-    'crs':          {'command': '_nv_abolish', 'args': {'to': 'snakecase'}},  # noqa: E241
-    'crt':          {'command': '_nv_abolish', 'args': {'to': 'titlecase'}},  # noqa: E241
-    'cru':          {'command': '_nv_abolish', 'args': {'to': 'uppercase'}},  # noqa: E241
-    'crU':          {'command': '_nv_abolish', 'args': {'to': 'uppercase'}},  # noqa: E241
+    'cr ':          {'command': '_nv_abolish', 'args': {'to': '<space>'}},  # noqa: E241
+    'cr-':          {'command': '_nv_abolish', 'args': {'to': '-'}},  # noqa: E241
+    'cr.':          {'command': '_nv_abolish', 'args': {'to': '.'}},  # noqa: E241
+    'cr_':          {'command': '_nv_abolish', 'args': {'to': '_'}},  # noqa: E241
+    'crc':          {'command': '_nv_abolish', 'args': {'to': 'c'}},  # noqa: E241
+    'crk':          {'command': '_nv_abolish', 'args': {'to': 'k'}},  # noqa: E241
+    'crm':          {'command': '_nv_abolish', 'args': {'to': 'm'}},  # noqa: E241
+    'crs':          {'command': '_nv_abolish', 'args': {'to': 's'}},  # noqa: E241
+    'crt':          {'command': '_nv_abolish', 'args': {'to': 't'}},  # noqa: E241
+    'cru':          {'command': '_nv_abolish', 'args': {'to': 'u'}},  # noqa: E241
+    'crU':          {'command': '_nv_abolish', 'args': {'to': 'U'}},  # noqa: E241
     'cs""':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '"'}},  # noqa: E241,E501
     'cs"(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '('}},  # noqa: E241,E501
     'cs")':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': ')'}},  # noqa: E241,E501
