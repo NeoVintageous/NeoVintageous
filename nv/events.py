@@ -19,8 +19,6 @@ from sublime import OP_EQUAL
 from sublime import OP_NOT_EQUAL
 from sublime_plugin import EventListener
 
-from NeoVintageous.nv.ex.completions import wants_fs_completions
-from NeoVintageous.nv.ex.completions import wants_setting_completions
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
@@ -82,41 +80,9 @@ def _is_insert_mode(view, operator, operand, match_all):
     )
 
 
-def _is_cmdline_mode(view, operator, operand, match_all):
-    return _check_query_context_value(
-        (view.score_selector(0, 'text.excmdline') != 0),
-        operator,
-        operand,
-        match_all
-    )
-
-
-def _is_cmdline_at_fs_completion(view, operator, operand, match_all):
-    if view.score_selector(0, 'text.excmdline') != 0:
-        value = wants_fs_completions(view.substr(view.line(0)))
-        value = value and view.sel()[0].b == view.size()
-    else:
-        value = False
-
-    return _check_query_context_value(value, operator, operand, match_all)
-
-
-def _is_cmdline_at_setting_completion(view, operator, operand, match_all):
-    if view.score_selector(0, 'text.excmdline') != 0:
-        value = wants_setting_completions(view.substr(view.line(0)))
-        value = value and view.sel()[0].b == view.size()
-    else:
-        value = False
-
-    return _check_query_context_value(value, operator, operand, match_all)
-
-
 _query_contexts = {
-    'vi_cmdline_at_fs_completion': _is_cmdline_at_fs_completion,
-    'vi_cmdline_at_setting_completion': _is_cmdline_at_setting_completion,
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
-    'vi_is_cmdline': _is_cmdline_mode,
 }
 
 

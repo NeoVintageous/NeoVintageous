@@ -17,8 +17,16 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
+from NeoVintageous.nv.vi.settings import set_cmdline_cwd
 
-class TestNvCmdlineEditing(unittest.ViewTestCase):
+
+class TestCmdlineEditing(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
+        reset_cmdline_completion_state()
 
     # TODO [refactor] Into usable run test command-line mode command via feed.
     def feed(self, seq):
@@ -120,3 +128,107 @@ class TestNvCmdlineEditing(unittest.ViewTestCase):
         self.assertNormal(':abc |')
         self.feed('<C-w>')
         self.assertNormal(':|')
+
+    def test_c_tab_completions(self):
+        self.eq(':bl|', '<tab>', ':blast|')
+        self.eq(':bN|', '<tab>', ':bNext|')
+        self.eq(':n|', '<tab>', ':noremap|')
+        self.feed('<tab>')
+        self.assertNormal(':new|')
+        self.feed('<tab>')
+        self.assertNormal(':nnoremap|')
+        self.feed('<tab>')
+        self.assertNormal(':nunmap|')
+        self.feed('<tab>')
+        self.assertNormal(':n|')
+        self.feed('<tab>')
+        self.assertNormal(':noremap|')
+
+    def test_c_tab_set_completions(self):
+        self.eq(':set |', '<tab>', ':set autoindent|')
+        self.feed('<tab>')
+        self.assertNormal(':set hlsearch|')
+        self.feed('<tab>')
+        self.assertNormal(':set ignorecase|')
+
+    def test_c_tab_set_prefix_single_completion(self):
+        self.eq(':set li|', '<tab>', ':set list|')
+
+    def test_c_tab_set_wraps_completions(self):
+        self.eq(':set i|', '<tab>', ':set ignorecase|')
+        self.feed('<tab>')
+        self.assertNormal(':set incsearch|')
+        self.feed('<tab>')
+        self.assertNormal(':set ignorecase|')
+        self.feed('<tab>')
+        self.assertNormal(':set incsearch|')
+
+    def test_c_tab_set_no_completions(self):
+        self.eq(':set foobar|', '<tab>', ':set foobar|')
+
+    def test_c_tab_set_unknown_prefix(self):
+        self.settings().set('translate_tabs_to_spaces', True)
+        self.eq(':foobar |', '<tab>', ':foobar     |')
+        self.settings().set('translate_tabs_to_spaces', False)
+        self.eq(':foobar |', '<tab>', ':foobar \t|')
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch('os.path.expanduser')
+    def test_c_tab_edit_tilda(self, expanduser):
+        set_cmdline_cwd(self.fixturePath('cwd'))
+        cwd = self.fixturePath('cwd')
+        expanduser.side_effect = lambda path: path.replace('~', cwd)
+
+        self.eq(':edit ~|', '<tab>', ':edit %s/|' % cwd)
+        self.feed('<tab>')
+        self.assertNormal(':edit %s/b.txt|' % cwd)
+        self.feed('<tab>')
+        self.assertNormal(':edit %s/sub/|' % cwd)
+        self.feed('<tab>')
+        self.assertNormal(':edit %s/x.txt|' % cwd)
+        self.feed('<tab>')
+        self.assertNormal(':edit %s/|' % cwd)
+        self.feed('<tab>')
+        self.assertNormal(':edit %s/b.txt|' % cwd)
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    def test_c_tab_edit_completions(self):
+        set_cmdline_cwd(self.fixturePath('cwd'))
+        self.eq(':edit |', '<tab>', ':edit b.txt|')
+        self.feed('<tab>')
+        self.assertNormal(':edit sub/|')
+        self.feed('<tab>')
+        self.assertNormal(':edit x.txt|')
+        self.feed('<tab>')
+        self.assertNormal(':edit |')
+        self.feed('<tab>')
+        self.assertNormal(':edit b.txt|')
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    def test_c_tab_edit_completion_backup(self):
+        set_cmdline_cwd(self.fixturePath('cwd', 'sub'))
+        self.eq(':edit ..|', '<tab>', ':edit ../b.txt|')
+        self.feed('<tab>')
+        self.assertNormal(':edit ../sub/|')
+        self.feed('<tab>')
+        self.assertNormal(':edit ../x.txt|')
+        self.feed('<tab>')
+        self.assertNormal(':edit ../|')
+        self.feed('<tab>')
+        self.assertNormal(':edit ../b.txt|')
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    def test_c_tab_edit_completion_backup_slash(self):
+        set_cmdline_cwd(self.fixturePath('cwd', 'sub'))
+        self.eq(':edit ../|', '<tab>', ':edit ../b.txt|')
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    def test_c_tab_edit_completion_prefix(self):
+        set_cmdline_cwd(self.fixturePath('cwd'))
+        self.eq(':edit sub/s|', '<tab>', ':edit sub/sb.txt|')
+        self.feed('<tab>')
+        self.assertNormal(':edit sub/sc.txt|')
+        self.feed('<tab>')
+        self.assertNormal(':edit sub/s|')
+        self.feed('<tab>')
+        self.assertNormal(':edit sub/sb.txt|')
