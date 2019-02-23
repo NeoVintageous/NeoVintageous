@@ -67,9 +67,8 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import window_buffer_control
-from NeoVintageous.nv.window import window_split
+from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_tab_control
-from NeoVintageous.nv.window import WindowAPI
 
 
 _log = logging.getLogger(__name__)
@@ -253,9 +252,8 @@ def ex_cdd(view, forceit=False, **kwargs):
         message("E344: Can't find directory \"%s\" in cdpath" % path)
 
 
-# TODO [refactor] into window module
 def ex_close(window, forceit=False, **kwargs):
-    WindowAPI(window).close_current_view(not forceit)
+    window_control(window, 'c', close_if_last=forceit),
 
 
 @_serialize_deserialize
@@ -943,9 +941,8 @@ def ex_snoremap(keys, command, **kwargs):
     mappings_add(SELECT, keys, command)
 
 
-# TODO Unify with <C-w>s
 def ex_split(window, file=None, **kwargs):
-    window_split(window, file)
+    window_control(window, 's', file=file)
 
 
 _ex_substitute_last_pattern = None

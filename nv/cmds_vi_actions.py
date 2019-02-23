@@ -48,8 +48,8 @@ from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import save_previous_selection
-from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import enter_insert_mode
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -60,8 +60,8 @@ from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_tab_control
-from NeoVintageous.nv.window import WindowAPI
 
 
 __all__ = [
@@ -1746,61 +1746,8 @@ class _vi_ctrl_right_square_bracket(WindowCommand):
 
 class _vi_ctrl_w(WindowCommand):
 
-    def run(self, action, count=1, **kwargs):
-        window = WindowAPI(self.window)
-
-        # TODO Optimise if-else into a lookup function hash-table
-
-        if action == 'b':
-            window.move_group_focus_to_bottom_right()
-        elif action == 'H':
-            window.move_current_view_to_far_left()
-        elif action == 'J':
-            window.move_current_view_to_very_bottom()
-        elif action == 'K':
-            window.move_current_view_to_very_top()
-        elif action == 'L':
-            window.move_current_view_to_far_right()
-        elif action == 'c':
-            window.close_current_view()
-        elif action == '=':
-            window.resize_groups_almost_equally()
-        elif action == '>':
-            window.increase_current_group_width_by_n(count)
-        elif action == 'h':
-            window.move_group_focus_to_nth_left_of_current_one(count)
-        elif action == 'j':
-            window.move_group_focus_to_nth_below_current_one(count)
-        elif action == 'k':
-            window.move_group_focus_to_nth_above_current_one(count)
-        elif action == 'l':
-            window.move_group_focus_to_nth_right_of_current_one(count)
-        elif action == '<':
-            window.decrease_current_group_width_by_n(count)
-        elif action == '-':
-            window.decrease_current_group_height_by_n(count)
-        elif action == 'n':
-            window.split_with_new_file(count)
-        elif action == 'o':
-            window.close_all_other_views()
-        elif action == '|':
-            window.set_current_group_width_to_n(count)
-        elif action == '+':
-            window.increase_current_group_height_by_n(count)
-        elif action == 'q':
-            window.quit_current_view_and_exit_if_last()
-        elif action == 's':
-            window.split_current_view_in_two(count)
-        elif action == 't':
-            window.move_group_focus_to_top_left()
-        elif action == '_':
-            window.set_current_group_height_to_n(count)
-        elif action == 'v':
-            window.split_current_view_in_two_vertically(count)
-        elif action == 'x':
-            window.exchange_current_view_with_view_in_next_or_previous_group(count)
-        else:
-            raise ValueError('unknown action')
+    def run(self, **kwargs):
+        window_control(self.window, **kwargs)
 
 
 class _vi_z_enter(IrreversibleTextCommand):
