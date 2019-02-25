@@ -32,6 +32,9 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.ui import ui_region_flags
+from NeoVintageous.nv.utils import highest_visible_pt
+from NeoVintageous.nv.utils import highlow_visible_rows
+from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
@@ -1272,41 +1275,6 @@ class _vi_percent(ViMotionCommand):
                                                       nested)
         else:
             return prev_opening_bracket.begin()
-
-
-def highlow_visible_rows(view):
-    visible_region = view.visible_region()
-    highest_visible_row = view.rowcol(visible_region.a)[0]
-    lowest_visible_row = view.rowcol(visible_region.b - 1)[0]
-
-    # To avoid scrolling when we move to the highest visible row, we need to
-    # check if the row is fully visible or only partially visible. If the row is
-    # only partially visible we will move to next one.
-
-    line_height = view.line_height()
-    view_position = view.viewport_position()
-    viewport_extent = view.viewport_extent()
-
-    # The extent y position needs an additional "1.0" to its height. It's not
-    # clear why Sublime needs to add it, but it always adds it.
-
-    highest_position = (highest_visible_row * line_height) + 1.0
-    if highest_position < view_position[1]:
-        highest_visible_row += 1
-
-    lowest_position = ((lowest_visible_row + 1) * line_height) + 1.0
-    if lowest_position > (view_position[1] + viewport_extent[1]):
-        lowest_visible_row -= 1
-
-    return (highest_visible_row, lowest_visible_row)
-
-
-def highest_visible_pt(view):
-    return view.text_point(highlow_visible_rows(view)[0], 0)
-
-
-def lowest_visible_pt(view):
-    return view.text_point(highlow_visible_rows(view)[1], 0)
 
 
 class _vi_big_h(ViMotionCommand):
