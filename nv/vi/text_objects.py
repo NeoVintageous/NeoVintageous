@@ -315,7 +315,19 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         if view.substr(a) == '\n':
             a += 1
 
-        return Region(a, closing.b - 1)
+        b = closing.b - 1
+
+        if b > a:
+            line = view.line(b)
+            if next_non_blank(view, line.a) + 1 == line.b:
+                row_a, col_a = view.rowcol(a)
+                row_b, col_b = view.rowcol(b)
+                if (row_b - 1) > row_a:
+                    line = view.full_line(view.text_point((row_b - 1), 0))
+
+                    return Region(a, line.b)
+
+        return Region(a, b)
 
     if type_ == QUOTE:
         # Vim only operates on the current line.
@@ -339,9 +351,6 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
     if type_ == WORD:
         w = a_word(view, s.b, inclusive=inclusive, count=count)
-        if not w:
-            return s
-
         if s.size() <= 1:
             return w
 
@@ -349,9 +358,6 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
     if type_ == BIG_WORD:
         w = a_big_word(view, s.b, inclusive=inclusive, count=count)
-        if not w:
-            return s
-
         if s.size() <= 1:
             return w
 
@@ -368,8 +374,7 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
             sentence_start = sentence_start + 1
 
         sentence_end = find_in_range(view, r'([.?!:)](?=\s))|([.?!:)]$)', start=s.b, end=view.size())
-
-        if not (sentence_end):
+        if not sentence_end:
             return s
 
         if inclusive:
@@ -377,6 +382,8 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         else:
             return Region(sentence_start, sentence_end.b)
 
+    # Support for a port of the Indent Object plugin:
+    # https://github.com/michaeljsmith/vim-indent-object
     if type_ == INDENT:
         start, end = find_indent_text_object(view, s, inclusive)
 

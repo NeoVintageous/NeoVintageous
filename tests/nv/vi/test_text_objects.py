@@ -19,14 +19,15 @@ from collections import namedtuple
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
-from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
-from NeoVintageous.nv.vi.text_objects import is_at_space
-from NeoVintageous.nv.vi.text_objects import is_at_punctuation
-from NeoVintageous.nv.vi.text_objects import big_word_start
-from NeoVintageous.nv.vi.text_objects import big_word_end
-from NeoVintageous.nv.vi.text_objects import a_word
 from NeoVintageous.nv.vi.text_objects import a_big_word
+from NeoVintageous.nv.vi.text_objects import a_word
+from NeoVintageous.nv.vi.text_objects import big_word_end
+from NeoVintageous.nv.vi.text_objects import big_word_start
+from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
+from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
+from NeoVintageous.nv.vi.text_objects import get_text_object_region
+from NeoVintageous.nv.vi.text_objects import is_at_punctuation
+from NeoVintageous.nv.vi.text_objects import is_at_space
 
 
 test = namedtuple('simple_test', 'content start brackets expected msg')
@@ -343,3 +344,9 @@ class TestABigWord(unittest.ViewTestCase):
         self.assertRegion(a_big_word(self.view, 2), '   b')
         self.assertRegion(a_big_word(self.view, 3), '   b')
         self.assertRegion(a_big_word(self.view, 4), 'b')
+
+
+class TestGetTextObjectRegion(unittest.ViewTestCase):
+
+    def test_text_object_does_nothing_and_returns_selection(self):
+        self.assertEqual(get_text_object_region(self.view, '__expected__', 'foobar'), '__expected__')

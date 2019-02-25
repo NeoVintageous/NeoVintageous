@@ -10,6 +10,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#31](https://github.com/NeoVintageous/NeoVintageous/issues/31): `zl`, `zL`, `zh`, `zH` to scroll horizontally
 * Added [#442](https://github.com/NeoVintageous/NeoVintageous/issues/442): `:s/{search}/{replacement}/c` (confirm replacements) can now be cancelled
 
+### Fixed
+
+* Fixed [#444](https://github.com/NeoVintageous/NeoVintageous/issues/444): `vi[` and `vi]` should not select otherwise empty target lines
+
 ## 1.9.0 - 2019-02-21
 
 ### Added

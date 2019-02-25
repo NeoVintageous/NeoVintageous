@@ -2283,16 +2283,11 @@ class _vi_select_text_object(ViMotionCommand):
     def run(self, text_object=None, mode=None, count=1, extend=False, inclusive=False):
         def f(view, s):
             # TODO: Vim seems to swallow the delimiters if you give this command.
-            if mode == INTERNAL_NORMAL:
+            if mode in (INTERNAL_NORMAL, VISUAL):
 
                 # TODO: For the ( object, we have to abort the editing command
                 # completely if no match was found. We could signal this to
                 # the caller via exception.
-                return get_text_object_region(view, s, text_object,
-                                              inclusive=inclusive,
-                                              count=count)
-
-            if mode == VISUAL:
                 return get_text_object_region(view, s, text_object,
                                               inclusive=inclusive,
                                               count=count)
