@@ -56,6 +56,8 @@ from NeoVintageous.nv.vi.settings import set_local
 from NeoVintageous.nv.vi.utils import adding_regions
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import has_dirty_buffers
+from NeoVintageous.nv.vi.utils import next_non_blank
+from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vim import console_message
@@ -910,6 +912,16 @@ def ex_snoremap(keys, command, **kwargs):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(SELECT, keys, command)
+
+
+def ex_sort(view, line_range, **kwargs):
+    view.run_command('sort_lines', {'case_sensitive': False})
+
+    def f(view, s):
+        return Region(next_non_blank(view, s.begin()))
+
+    regions_transformer(view, f)
+    enter_normal_mode(view, None)
 
 
 def ex_split(window, file=None, **kwargs):

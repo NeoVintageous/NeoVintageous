@@ -21,8 +21,8 @@ from NeoVintageous.nv.ex.tokens import TokenCommand
 from NeoVintageous.nv.ex.tokens import TokenEof
 
 
-def _literal_route(state, name, forcable=False):
-    command = TokenCommand(name)
+def _literal_route(state, name, forcable=False, **kwargs):
+    command = TokenCommand(name, **kwargs)
 
     if forcable:
         if state.match('!'):
@@ -538,6 +538,10 @@ def _ex_route_sunmap(state):
     return None, [command, TokenEof()]
 
 
+def _ex_route_sort(state):
+    return _literal_route(state, 'sort', addressable=True)
+
+
 def _ex_route_split(state):
     command = TokenCommand('split')
     params = {'file': None}
@@ -969,6 +973,7 @@ ex_routes[r'se(?:t)?(?=$|\s)'] = _ex_route_set
 ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
 ex_routes[r'sh(?:ell)?'] = _ex_route_shell
 ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
+ex_routes[r'sor(?:t)?'] = _ex_route_sort
 ex_routes[r'sp(?:lit)?'] = _ex_route_split
 ex_routes[r'sunm(?:ap)?'] = _ex_route_sunmap
 ex_routes[r'tabc(?:lose)?'] = _ex_route_tabclose

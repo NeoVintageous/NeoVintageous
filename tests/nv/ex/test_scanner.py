@@ -509,6 +509,7 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['shell', 'sh'], cmd('shell'))
         self.assertRoute(['snoremap lhs rhs', 'snor lhs rhs'], cmd('snoremap', params={'keys': 'lhs', 'command': 'rhs'}))  # noqa: E501
         self.assertRoute(['snoremap', 'snor'], cmd('snoremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['sort', 'sor'], cmd('sort', addressable=True))
         self.assertRoute(['split file.txt', 'sp file.txt'], cmd('split', params={'file': 'file.txt'}))
         self.assertRoute(['split', 'sp'], cmd('split', params={'file': None}))
         self.assertRoute(['substitute', 's'], cmd('substitute', addressable=True))
