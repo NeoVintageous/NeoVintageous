@@ -585,18 +585,22 @@ class Test_scan_command(unittest.TestCase):
             'buffers x',
             'close ',
             'close x',
-            'close x',
             'close! ',
             'close! x',
             'close!x',
             'closex',
             'cq x',
             'cquit x',
+            'cquitx',
             'exitx',
             'ls x ',
             'new x',
             'newx',
             'shellx',
+            'tabclose x',
+            'tabclosex',
+            'wall ',
+            'wallx',
         ])
 
         self.assertRaisesExpectMatch([
@@ -624,5 +628,6 @@ class Test_scan_command(unittest.TestCase):
             'read ++',
             'read+',
             'read++',
+            'yank x 3',
             'yank x 3',
         ])

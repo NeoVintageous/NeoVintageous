@@ -112,10 +112,6 @@ def _ex_route_cd(state):
 def _ex_route_close(state):
     command = TokenCommand('close')
 
-    # bang = state.consume() == '!'
-    # state.expect_eof()
-    # command.forced = bang
-
     if state.match('!'):
         command.forced = True
 
@@ -547,6 +543,7 @@ def _ex_route_setlocal(state):
 
 def _ex_route_shell(state):
     command = TokenCommand('shell')
+
     state.expect_eof()
 
     return None, [command, TokenEof()]
@@ -682,66 +679,66 @@ def _ex_route_substitute(state):
 
 def _ex_route_tabclose(state):
     command = TokenCommand('tabclose')
-    c = state.consume()
-    if c == state.EOF:
-        return None, [command, TokenEof()]
 
-    command.forced = c == '!'
+    if state.match('!'):
+        command.forced = True
+
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_tabfirst(state):
     command = TokenCommand('tabfirst')
-    c = state.consume()
-    if c == state.EOF:
-        return None, [command, TokenEof()]
 
-    command.forced = c == '!'
+    if state.match('!'):
+        command.forced = True
+
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_tablast(state):
     command = TokenCommand('tablast')
-    c = state.consume()
-    if c == state.EOF:
-        return None, [command, TokenEof()]
 
-    command.forced = c == '!'
+    if state.match('!'):
+        command.forced = True
+
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_tabnext(state):
     command = TokenCommand('tabnext')
-    c = state.consume()
-    if c == state.EOF:
-        return None, [command, TokenEof()]
 
-    command.forced = c == '!'
+    if state.match('!'):
+        command.forced = True
+
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_tabonly(state):
     command = TokenCommand('tabonly')
-    c = state.consume()
-    if c == state.EOF:
-        return None, [command, TokenEof()]
 
-    command.forced = c == '!'
+    if state.match('!'):
+        command.forced = True
+
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_tabprevious(state):
     command = TokenCommand('tabprevious')
-    c = state.consume()
-    if c == state.EOF:
-        return None, [command, TokenEof()]
 
-    command.forced = c == '!'
+    if state.match('!'):
+        command.forced = True
+
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
@@ -761,6 +758,7 @@ def _ex_route_unmap(state):
 
 def _ex_route_unvsplit(state):
     command = TokenCommand('unvsplit')
+
     state.expect_eof()
 
     return None, [command, TokenEof()]
@@ -815,11 +813,11 @@ def _ex_route_vunmap(state):
 
 def _ex_route_wall(state):
     command = TokenCommand('wall')
-    bang = state.consume() == '!'
+
+    if state.match('!'):
+        command.forced = True
 
     state.expect_eof()
-
-    command.forced = bang
 
     return None, [command, TokenEof()]
 
