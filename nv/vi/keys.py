@@ -29,23 +29,22 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-def seq_to_command(state, seq, mode=None):
-    # Return the command definition mapped to seq.
+def seq_to_command(view, seq, mode):
+    # Return the command definition mapped for seq and mode.
     #
     # Args:
+    #   view (View):
     #   seq (str): The command sequence.
     #   mode (str): Forces the use of this mode instead of the global state's.
     #
     # Returns:
     #   Mapping:
     #   ViMissingCommandDef: If not found.
-    mode = mode or state.mode
-
     if mode in plugin.mappings:
         plugin_command = plugin.mappings[mode].get(seq)
         if plugin_command:
             is_enabled_attr = hasattr(plugin_command, 'is_enabled')
-            if not is_enabled_attr or (is_enabled_attr and plugin_command.is_enabled(state)):
+            if not is_enabled_attr or (is_enabled_attr and plugin_command.is_enabled(view.settings())):
                 return plugin_command
 
     if mode in mappings:

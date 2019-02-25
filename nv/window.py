@@ -15,8 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
+
 from sublime import Region
 
+from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vim import status_message
 
 
@@ -51,19 +54,8 @@ _LAYOUT_THREE_ROW = {
 }
 
 
-def _set_layout_group_height(layout, group, height=None):
-    # Set current group highest (default: highest possible).
-    #
-    # TODO implement set to {height}, currently sets to default highest possible
-    #
-    # Args:
-    #   :layout (dict):
-    #   :group (int):
-    #   :height (int, optional): Defaults to highest possible.
-    #
-    # Returns:
-    #   dict
-
+def _layout_group_height(layout, group, height=None):
+    """Set current group highest (default: highest possible)."""
     row_count = len(layout['rows'])
     if row_count < 3:
         # The layout only has one column so there is no work to do because the
@@ -81,9 +73,9 @@ def _set_layout_group_height(layout, group, height=None):
 
     # The minimal width that other windows will be resize to (accounts for some
     # tab size which is why it is greater than the min_width equivalent in the
-    # _set_layout_group_width function).
-    # TODO In Vim I think the setting 'winminheight' is used as the min width.
-    # The default in Vim for that setting is 1.
+    # _layout_group_width function). TODO In Vim I think the setting
+    # 'winminheight' is used as the min width. The default in Vim for that
+    # setting is 1.
     min_height = 0.057
 
     rows = []
@@ -100,23 +92,13 @@ def _set_layout_group_height(layout, group, height=None):
     return layout
 
 
-def _set_layout_group_width(layout, group, width=None):
-    # Set current group width (default: widest possible).
-    #
-    # TODO implement set to {width}, currently sets to default widest possible
-    #
-    # Args:
-    #   :layout (dict):
-    #   :group (int):
-    #   :width (int, optional): Defaults to widest possible.
-    #
-    # Returns:
-    #   dict
-
+def _layout_group_width(layout, group, width=None):
+    """Set current group width (default: widest possible)."""
     col_count = len(layout['cols'])
+
+    # The layout only has one row so there is no work to do because the width is
+    # already as wide as possible.
     if col_count < 3:
-        # The layout only has one row so there is no work to do because the
-        # width is already as wide as possible.
         return layout
 
     cell = layout['cells'][group]
@@ -124,13 +106,13 @@ def _set_layout_group_width(layout, group, width=None):
     x1 = cell[0]
     x2 = cell[2]
 
+    # The group cell is already as wide as possible.
     if x1 == 0 and x2 == (col_count - 1):
-        # The group cell is already as wide as possible.
         return layout
 
-    # The minimal width that other windows will be resize to.
-    # TODO In Vim I think the setting 'winminwidth' is used as the min width.
-    # The default in Vim for that setting is 20.
+    # The minimal width that other windows will be resize to. TODO In Vim I
+    # think the setting 'winminwidth' is used as the min width. The default in
+    # Vim for that setting is 20.
     min_width = 0.02
 
     cols = []
@@ -147,15 +129,13 @@ def _set_layout_group_width(layout, group, width=None):
     return layout
 
 
-# TODO could implement settings similar to vim
-# window resizing e.g. 'winheight', 'winwidth',
-# 'winfixheight', and 'winfixwidth'
-def _set_layout_groups_size_equal(layout):
-    # Make all groups (almost) equally high and wide.
-    #
-    # Uses 'winheight' and 'winwidth' for the current window.  Windows with
-    # 'winfixheight' set keep their height and windows with 'winfixwidth' set
-    # keep their width.
+def _layout_groups_equal(layout):
+    """Make all groups (almost) equally high and wide.
+
+    Uses 'winheight' and 'winwidth' for the current window.  Windows with
+    'winfixheight' set keep their height and windows with 'winfixwidth' set
+    keep their width.
+    """
     cell_count = len(layout['cells'])
     col_count = len(layout['cols'])
     row_count = len(layout['rows'])
@@ -164,8 +144,7 @@ def _set_layout_groups_size_equal(layout):
         return layout
 
     if cell_count == 4 and col_count == 3 and row_count == 3:
-        # Special case for Grid with 4 cells. Works around
-        # some complicated layout issues.
+        # Special case for 4-grid. Works around some complicated layout issues.
         return {
             'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]],
             'cols': [0.0, 0.5, 1.0],
@@ -189,470 +168,361 @@ def _set_layout_groups_size_equal(layout):
     return layout
 
 
-# TODO Refactor into descrete functional api instead of a class
-class WindowAPI():
+def _close_all_other_views(window):
+    """Make the current view the only one on the screen.
 
-    def __init__(self, window):
-        self.window = window
+    All other views are closed.
 
-    # TODO could implement settings similar to vim "hidden" and "autowrite"
-    def close_all_other_views(self):
-        """
-        Make the current view the only one on the screen.
+    Modified views are merged into current group. Modified views
+    are not removed, so changes cannot get lost.
+    """
+    current_group_num = window.active_group()
+    current_view = window.active_view()
 
-        All other views are closed.
+    if not current_view:
+        return
 
-        Modified views are merged into current group. Modified views
-        are not removed, so changes cannot get lost.
-        """
-        current_group_num = self.window.active_group()
-        current_view = self.window.active_view()
+    views = window.views()
+    if len(views) == 1:
+        return
 
-        if not current_view:
-            return
+    # Note: the views are closed and then the groups. Looping over the groups
+    # and closing the views in that group and then closing the group won't work.
 
-        views = self.window.views()
+    # close other unmodified views
+    for view in views:
+        if view != current_view and not view.is_dirty():
+            view.close()
 
-        if len(views) == 1:
-            return
+    # close other groups
+    for i in range(window.num_groups()):
+        if i != current_group_num:
+            # TODO is this the best way to close a group
+            window.run_command('close_pane', {'group': i})
 
-        # Note: the views are closed and then the groups. Looping
-        # over the groups and closing the views in that group and
-        # then closing the group won't work.
 
-        # close other unmodified views
-        for view in views:
-            if view != current_view and not view.is_dirty():
-                view.close()
+def _close_active_view(window, close_if_last=True):
+    """Close current view.
 
-        # close other groups
-        for i in range(self.window.num_groups()):
-            if i != current_group_num:
-                # TODO is this the best way to close a group
-                self.window.run_command('close_pane', {'group': i})
+    If {close_if_last} then this command fails when there is only one
+    view on screen. Modified views are not removed, so changes cannot get
+    lost.
 
-    def quit_current_view_and_exit_if_last(self):
-        self._quit_current_view(close_window_if_last_view=True)
+    If it's not a file on disk and contains only whitespace then it is
+    closed.
+    """
+    views_in_group = window.views_in_group(window.active_group())
+    if len(views_in_group) == 0:
+        window.run_command('destroy_pane', {'direction': 'self'})
+        return
 
-    def _quit_current_view(self, close_window_if_last_view=False):
-        self._close_current_view(do_not_close_if_last=False)
-        if close_window_if_last_view:
-            if len(self.window.views()) == 0:
-                self.window.run_command('close')
+    current_view = window.active_view()
+    if not current_view:
+        return
 
-    def close_current_view(self, do_not_close_if_last=True):
-        self._close_current_view(do_not_close_if_last)
-
-    def _close_current_view(self, do_not_close_if_last):
-        """
-        Close current view.
-
-        If {do_not_close_if_last} then this command fails when there is only one
-        view on screen. Modified views are not removed, so changes cannot get
-        lost.
-
-        If it's not a file on disk and contains only whitespace then it is
-        closed.
-        """
-        views_in_group = self.window.views_in_group(self.window.active_group())
-        if len(views_in_group) == 0:
-            self.window.run_command('destroy_pane', {'direction': 'self'})
-            return
-
-        current_view = self.window.active_view()
-        if not current_view:
-            return
-
-        # If it's not a file on disk and contains only whitespace then close it
-        if not current_view.file_name() and current_view.substr(Region(0, current_view.size())).strip() == '':
-            current_view.set_scratch(True)
-            current_view.close()
-            views_in_group = self.window.views_in_group(self.window.active_group())
-            if len(views_in_group) == 0:
-                self.window.run_command('destroy_pane', {'direction': 'self'})
-            return
-
-        if do_not_close_if_last and len(self.window.views()) < 2:
-            return status_message('cannot close last view')
-
-        if current_view.is_dirty():
-            dirty_buffer_message = 'No write since last change'
-            if current_view.file_name() is not None:
-                dirty_buffer_message += ' for buffer "%s"' % current_view.file_name()
-
-            return status_message(dirty_buffer_message)
-
+    # If it's not a file on disk and contains only whitespace then close it
+    if not current_view.file_name() and current_view.substr(Region(0, current_view.size())).strip() == '':
+        current_view.set_scratch(True)
         current_view.close()
-
-        views_in_group = self.window.views_in_group(self.window.active_group())
+        views_in_group = window.views_in_group(window.active_group())
         if len(views_in_group) == 0:
-            self.window.run_command('destroy_pane', {'direction': 'self'})
-            return
-
-    # TODO implement count
-    # TODO implement exchange when vertical and horizontal group splits
-    def exchange_current_view_with_view_in_next_or_previous_group(self, count=1):
-        """
-        Exchange view with previous one.
-
-        Without {count}: Exchange current view with the view in the
-        next group.  If there is no next group, exchange with the view
-        in the previous group.
-        With {count}: Exchange current view with the view in Nth group
-        (first group is 1).  The cursor is put in the other view.
-        When vertical and horizontal group splits are mixed, the
-        exchange is done in the row or column of groups that the
-        current view is in.
-        """
-        if self.window.num_groups() < 2:
-            return
-
-        active_group_num = self.window.active_group()
-        if (active_group_num + 1) < self.window.num_groups():
-            other_group_num = active_group_num + 1
-        else:
-            other_group_num = active_group_num - 1
-
-        other_view = self.window.active_view_in_group(other_group_num)
-
-        self._exchange_current_view(other_view)
-
-    def _exchange_view(self, view_a, view_b):
-
-        if not view_a:
-            return
-
-        if not view_b:
-            return
-
-        view_a_index = self.window.get_view_index(view_a)
-        view_b_index = self.window.get_view_index(view_b)
-
-        self.window.set_view_index(view_a, view_b_index[0], view_b_index[1])
-        self.window.set_view_index(view_b, view_a_index[0], view_a_index[1])
-
-    def _exchange_current_view(self, other_view):
-        self._exchange_view(self.window.active_view(), other_view)
-
-    def move_current_view_to_far_left(self):
-        """
-        Move the current view to be at the far left, using the full height of the view.
-
-        Example of moving window (a=active)
-         ____________                    _________________
-        |   0   |__1_|                  |    |   1   |  2 |
-        |_______|__2a|                  |    |_______|__ _|
-        |  3 | 4|  5 | move far left    | 0a |  3 | 4|  5 |
-        |____|__|____|                  |    |____|__|____|
-        |______6_____|                  |____|______6_____|
-
-        Currently only supports 2 row or 2 column layouts.
-
-        """
-        if self.window.num_groups() > 2:
-            # TODO not implemented yet
-            return
-
-        if self.window.num_groups() < 2:
-            # no work to do
-            return
-
-        if self.window.active_group() != 0:
-            # view index needs updating
-            self._exchange_current_view(self.window.active_view_in_group(0))
-            self.window.focus_group(0)
-
-        self.window.set_layout(_LAYOUT_TWO_COLUMN)
-        self.resize_groups_almost_equally()
-
-    def move_current_view_to_far_right(self):
-        """
-        Move the current view to be at the far right, using the full height of the view.
-
-        Currently only supports 2 row or 2 column layouts.
-        """
-        if self.window.num_groups() > 2:
-            # TODO not implemented yet
-            return
-
-        if self.window.num_groups() < 2:
-            # no work to do
-            return
-
-        if self.window.active_group() != 1:
-            # view index needs updating
-            self._exchange_current_view(self.window.active_view_in_group(1))
-            self.window.focus_group(1)
-
-        self.window.set_layout(_LAYOUT_TWO_COLUMN)
-        self.resize_groups_almost_equally()
-
-    def move_current_view_to_very_bottom(self):
-        """
-        Move the current view to be at the very bottom, using the full width of the view.
-
-        Currently only supports 2 row or 2 column layouts.
-        """
-        if self.window.num_groups() > 2:
-            # TODO not implemented yet
-            return
-
-        if self.window.num_groups() < 2:
-            # no work to do
-            return
-
-        if self.window.active_group() != 1:
-            # view index needs updating
-            self._exchange_current_view(self.window.active_view_in_group(1))
-            self.window.focus_group(1)
-
-        self.window.set_layout(_LAYOUT_TWO_ROW)
-        self.resize_groups_almost_equally()
-
-    def move_current_view_to_very_top(self):
-        """
-        Move the current view to be at the very top, using the full width of the view.
-
-        Currently only supports 2 row or 2 column layouts.
-        """
-        if self.window.num_groups() > 2:
-            # TODO not implemented yet
-            return
-
-        if self.window.num_groups() < 2:
-            # no work to do
-            return
-
-        if self.window.active_group() != 0:
-            # view index needs updating
-            self._exchange_current_view(self.window.active_view_in_group(0))
-            self.window.focus_group(0)
-
-        self.window.set_layout(_LAYOUT_TWO_ROW)
-        self.resize_groups_almost_equally()
-
-    def move_group_focus_to_nth_above_current_one(self, n=1):
-        """
-        Move cursor to Nth group above current one.
-
-        Uses the cursor position to select between alternatives.
-        """
-        self._move_group_focus_to_nth_in_direction_of_current_one('above', n)
-
-    def move_group_focus_to_nth_below_current_one(self, n=1):
-        """
-        Move cursor to Nth group below current one.
-
-        Uses the cursor position to select between alternatives.
-        """
-        self._move_group_focus_to_nth_in_direction_of_current_one('below', n)
-
-    def move_group_focus_to_nth_left_of_current_one(self, n=1):
-        """
-        Move cursor to Nth group left of current one.
-
-        Uses the cursor position to select between alternatives.
-        """
-        self._move_group_focus_to_nth_in_direction_of_current_one('left', n)
-
-    def move_group_focus_to_nth_right_of_current_one(self, n=1):
-        """
-        Move cursor to Nth group right of current one.
-
-        Uses the cursor position to select between alternatives.
-        """
-        self._move_group_focus_to_nth_in_direction_of_current_one('right', n)
-
-    def move_group_focus_to_bottom_right(self):
-        self.window.focus_group(self.window.num_groups() - 1)
-
-    def move_group_focus_to_top_left(self):
-        self.window.focus_group(0)
-
-    def _move_group_focus_to_nth_in_direction_of_current_one(self, direction, n=1):
-        nth_group_number = self._get_nth_group_number_in_direction_of_current_one(direction, n)
-        if nth_group_number is None:
-            return
-
-        # If the cursor is not visible in the view we are moving to, then move
-        # the cursor to the top of the visible area of the view (instead of
-        # scrolling the view to show the cursor). This prevents the view we are
-        # moving to suddenly scrolling, which can be unexpected and is arguably
-        # bad UX. The functionaility now works closer to how Vim works. The main
-        # difference in Vim is that the cursor never leaves the  visible areas
-        # in the first place, it just doesn't happen e.g. when you scroll with
-        # the mouse in Vim, Vim moves the cursor along with the scrolling
-        # visible area so the cursor is always visible, it never disappears from
-        # the visible areas.
-        view = self.window.active_view_in_group(nth_group_number)
-        if view:
-            visible_region = view.visible_region()
-            if not view.visible_region().contains(view.sel()[0]):
-                view.sel().clear()
-                view.sel().add(visible_region.begin())
-
-        self.window.focus_group(nth_group_number)
-
-    # TODO implement cursor position to select between alternatives
-    def _get_nth_group_number_in_direction_of_current_one(self, direction, n):
-        """
-        Retrieve group number in given direction.
-
-        :param direction:
-            A string, one of "above", "below", "left", or "right".
-        :param n:
-            An integer.
-        Uses the cursor position to select between alternatives.
-        Returns None if there are no groups in {direction}.
-        Returns the group number furthest in {direction} if {n}
-        is more than the number of groups in {direction}.
-        """
-        layout = self.window.layout()
-
-        if (direction == 'left' or direction == 'right') and len(layout['cols']) < 3:
-            return None
-
-        if (direction == 'below' or direction == 'above') and len(layout['rows']) < 3:
-            return None
-
-        current_cell = layout['cells'][self.window.active_group()]
-        current_cell_x1 = current_cell[0]
-        current_cell_y1 = current_cell[1]
-        current_cell_x2 = current_cell[2]
-        current_cell_y2 = current_cell[3]
-
-        cell_group_candidates = {}
-        for group_num, cell in enumerate(layout['cells']):
-            cell_x1 = cell[0]
-            cell_y1 = cell[1]
-            cell_x2 = cell[2]
-            cell_y2 = cell[3]
-
-            if direction == 'below':
-                if cell_x1 < current_cell_x2 and cell_x2 > current_cell_x1 and cell_y1 >= current_cell_y2:
-                    if cell_y1 not in cell_group_candidates:
-                        cell_group_candidates[cell_y1] = []
-                    cell_group_candidates[cell_y1].append(group_num)
-            elif direction == 'above':
-                if cell_x1 < current_cell_x2 and cell_x2 > current_cell_x1 and cell_y2 <= current_cell_y1:
-                    if cell_y2 not in cell_group_candidates:
-                        cell_group_candidates[cell_y2] = []
-                    cell_group_candidates[cell_y2].append(group_num)
-            elif direction == 'right':
-                if cell_y1 < current_cell_y2 and cell_y2 > current_cell_y1 and cell_x1 >= current_cell_x2:
-                    if cell_x1 not in cell_group_candidates:
-                        cell_group_candidates[cell_x1] = []
-                    cell_group_candidates[cell_x1].append(group_num)
-            elif direction == 'left':
-                if cell_y1 < current_cell_y2 and cell_y2 > current_cell_y1 and cell_x2 <= current_cell_x1:
-                    if cell_x1 not in cell_group_candidates:
-                        cell_group_candidates[cell_x1] = []
-                    cell_group_candidates[cell_x1].append(group_num)
-
-        if len(cell_group_candidates) == 0:
-            return None
-
-        cell_group_candidate_indexes = list(cell_group_candidates)
-
-        if direction == 'above' or direction == 'left':
-            cell_group_candidate_indexes.reverse()
-        else:
-            cell_group_candidate_indexes.sort()
-
-        direction_count = n - 1
-
-        if direction_count >= len(cell_group_candidate_indexes):
-            group_nums = cell_group_candidates[cell_group_candidate_indexes.pop()]
-        else:
-            group_nums = cell_group_candidates[cell_group_candidate_indexes[direction_count]]
-
-        group_num = group_nums[0]
-
-        return group_num
-
-    def set_current_group_height_to_n(self, n=None):
-        # Set current group height to N (default: highest possible).
-        #
-        # TODO implement set to n, currently sets to default highest possible
-        #
-        # Args:
-        #   :n (int):
-        return self.window.set_layout(
-            _set_layout_group_height(
-                self.window.layout(),
-                self.window.active_group(),
-                n))
-
-    def set_current_group_width_to_n(self, n=None):
-        # Set current group width to N (default: widest possible)
-        #
-        # TODO implement set to n, currently sets to default widest possible
-        #
-        # Args:
-        #   :n (int):
-        return self.window.set_layout(
-            _set_layout_group_width(
-                self.window.layout(),
-                self.window.active_group(),
-                n))
-
-    # TODO decrease_current_group_height_by_n()
-    def decrease_current_group_height_by_n(self, n=1):
-        pass
-
-    # TODO decrease_current_group_width_by_n()
-    def decrease_current_group_width_by_n(self, n=1):
-        pass
-
-    # TODO increase_current_group_height_by_n()
-    def increase_current_group_height_by_n(self, n=1):
-        pass
-
-    # TODO increase_current_group_width_by_n()
-    def increase_current_group_width_by_n(self, n=1):
-        pass
-
-    def resize_groups_almost_equally(self):
-        # Make all groups (almost) equally high and wide.
-        #
-        # Uses 'winheight' and 'winwidth' for the current window.  Windows with
-        # 'winfixheight' set keep their height and windows with 'winfixwidth'
-        # set keep their width.
-        #
-        # TODO could implement settings similar to vim window resizing e.g.
-        # 'winheight', 'winwidth', 'winfixheight', and 'winfixwidth'
-        return self.window.set_layout(
-            _set_layout_groups_size_equal(
-                self.window.layout()))
-
-    # DEPRECATED Use window_split() instead
-    def split_current_view_in_two(self, n=None):
-        window_split(self.window)
-
-    def split_current_view_in_two_vertically(self, n=None):
-        self.window.run_command('create_pane', {'direction': 'right'})
-        self.window.run_command('clone_file_to_pane', {'direction': 'right'})
-
-    def split_with_new_file(self, n=None):
-        """
-        Create a new group and start editing an empty file in it.
-
-        Make new group N high (default is to use half the existing height).
-        Reduces the current group height to create room (and others, if the
-        'equalalways' option is set and 'eadirection' isn't "hor").
-        """
-        self.window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
-
-
-def window_split(window, file=None):
-    # Split current view in two.
-    #
-    # The result is two viewports on the same file.
-    #
-    # TODO: Accept argument to make new view N high (default is to use half the
-    # height of the current window).  Rduces the current view height to create
-    # room (and others, if the 'equalalways' option is set, 'eadirection' isn't
-    # "hor", and one of the is higher than the current or the new view).
+            window.run_command('destroy_pane', {'direction': 'self'})
+        return
+
+    if not close_if_last and len(window.views()) < 2:
+        return status_message('cannot close last view')
+
+    if current_view.is_dirty():
+        dirty_buffer_message = 'No write since last change'
+        if current_view.file_name() is not None:
+            dirty_buffer_message += ' for buffer "%s"' % current_view.file_name()
+
+        return status_message(dirty_buffer_message)
+
+    current_view.close()
+
+    views_in_group = window.views_in_group(window.active_group())
+    if len(views_in_group) == 0:
+        window.run_command('destroy_pane', {'direction': 'self'})
+
+
+def _quit_active_view(window):
+    _close_active_view(window)
+    if len(window.views()) == 0:
+        window.run_command('close')
+
+
+def _exchange_views(window, view_a, view_b):
+    if not view_a or not view_b:
+        return
+
+    view_a_index = window.get_view_index(view_a)
+    view_b_index = window.get_view_index(view_b)
+
+    window.set_view_index(view_a, view_b_index[0], view_b_index[1])
+    window.set_view_index(view_b, view_a_index[0], view_a_index[1])
+
+
+def _exchange_view(window, other_view):
+    _exchange_views(window, window.active_view(), other_view)
+
+
+def _exchange_view_by_count(window, count=1):
+    """Exchange view with previous one.
+
+    Without {count}: Exchange current view with the view in the
+    next group.  If there is no next group, exchange with the view
+    in the previous group.
+    With {count}: Exchange current view with the view in Nth group
+    (first group is 1).  The cursor is put in the other view.
+    When vertical and horizontal group splits are mixed, the
+    exchange is done in the row or column of groups that the
+    current view is in.
+    """
+    if window.num_groups() < 2:
+        return
+
+    active_group_num = window.active_group()
+    if (active_group_num + 1) < window.num_groups():
+        other_group_num = active_group_num + 1
+    else:
+        other_group_num = active_group_num - 1
+
+    other_view = window.active_view_in_group(other_group_num)
+
+    _exchange_view(window, other_view)
+
+
+def _move_active_view_to_far_left(window):
+    """Move the current view to be at the far left, using the full height of the view.
+
+    Example of moving window (a=active). Currently only supports 2 row or 2 column layouts.
+     ____________                    _________________
+    |   0   |__1_|                  |    |   1   |  2 |
+    |_______|__2a|                  |    |_______|__ _|
+    |  3 | 4|  5 | move far left    | 0a |  3 | 4|  5 |
+    |____|__|____|                  |    |____|__|____|
+    |______6_____|                  |____|______6_____|
+
+    """
+    if window.num_groups() != 2:
+        return
+
+    if window.active_group() != 0:
+        _exchange_view(window, window.active_view_in_group(0))
+        window.focus_group(0)
+
+    window.set_layout(_LAYOUT_TWO_COLUMN)
+    _resize_groups_equally(window)
+
+
+def _move_active_view_to_far_right(window):
+    """Move the current view to be at the far right, using the full height of the view."""
+    if window.num_groups() != 2:
+        return
+
+    if window.active_group() != 1:
+        _exchange_view(window, window.active_view_in_group(1))
+        window.focus_group(1)
+
+    window.set_layout(_LAYOUT_TWO_COLUMN)
+    _resize_groups_equally(window)
+
+
+def _move_active_view_to_very_bottom(window):
+    """Move the current view to be at the very bottom, using the full width of the view."""
+    if window.num_groups() != 2:
+        return
+
+    if window.active_group() != 1:
+        _exchange_view(window, window.active_view_in_group(1))
+        window.focus_group(1)
+
+    window.set_layout(_LAYOUT_TWO_ROW)
+    _resize_groups_equally(window)
+
+
+def _move_active_view_to_very_top(window):
+    """Move the current view to be at the very top, using the full width of the view."""
+    if window.num_groups() != 2:
+        return
+
+    if window.active_group() != 0:
+        _exchange_view(window, window.active_view_in_group(0))
+        window.focus_group(0)
+
+    window.set_layout(_LAYOUT_TWO_ROW)
+    _resize_groups_equally(window)
+
+
+def _get_group(window, direction, count):
+    """Retrieve group number in given direction.
+
+    :param direction:
+        A string, one of "above", "below", "left", or "right".
+    :param count:
+        An integer.
+    Uses the cursor position to select between alternatives.
+    Returns None if there are no groups in {direction}.
+    Returns the group number furthest in {direction} if
+    {count} is more than the number of groups in {direction}.
+    """
+    layout = window.layout()
+
+    if (direction == 'left' or direction == 'right') and len(layout['cols']) < 3:
+        return None
+
+    if (direction == 'below' or direction == 'above') and len(layout['rows']) < 3:
+        return None
+
+    current_cell = layout['cells'][window.active_group()]
+    current_cell_x1 = current_cell[0]
+    current_cell_y1 = current_cell[1]
+    current_cell_x2 = current_cell[2]
+    current_cell_y2 = current_cell[3]
+
+    cell_group_candidates = {}
+    for group_num, cell in enumerate(layout['cells']):
+        cell_x1 = cell[0]
+        cell_y1 = cell[1]
+        cell_x2 = cell[2]
+        cell_y2 = cell[3]
+
+        if direction == 'below':
+            if cell_x1 < current_cell_x2 and cell_x2 > current_cell_x1 and cell_y1 >= current_cell_y2:
+                if cell_y1 not in cell_group_candidates:
+                    cell_group_candidates[cell_y1] = []
+                cell_group_candidates[cell_y1].append(group_num)
+        elif direction == 'above':
+            if cell_x1 < current_cell_x2 and cell_x2 > current_cell_x1 and cell_y2 <= current_cell_y1:
+                if cell_y2 not in cell_group_candidates:
+                    cell_group_candidates[cell_y2] = []
+                cell_group_candidates[cell_y2].append(group_num)
+        elif direction == 'right':
+            if cell_y1 < current_cell_y2 and cell_y2 > current_cell_y1 and cell_x1 >= current_cell_x2:
+                if cell_x1 not in cell_group_candidates:
+                    cell_group_candidates[cell_x1] = []
+                cell_group_candidates[cell_x1].append(group_num)
+        elif direction == 'left':
+            if cell_y1 < current_cell_y2 and cell_y2 > current_cell_y1 and cell_x2 <= current_cell_x1:
+                if cell_x1 not in cell_group_candidates:
+                    cell_group_candidates[cell_x1] = []
+                cell_group_candidates[cell_x1].append(group_num)
+
+    if len(cell_group_candidates) == 0:
+        return None
+
+    cell_group_candidate_indexes = list(cell_group_candidates)
+
+    if direction == 'above' or direction == 'left':
+        cell_group_candidate_indexes.reverse()
+    else:
+        cell_group_candidate_indexes.sort()
+
+    direction_count = count - 1
+
+    if direction_count >= len(cell_group_candidate_indexes):
+        group_nums = cell_group_candidates[cell_group_candidate_indexes.pop()]
+    else:
+        group_nums = cell_group_candidates[cell_group_candidate_indexes[direction_count]]
+
+    group_num = group_nums[0]
+
+    return group_num
+
+
+def _focus_group(window, direction, count=1):
+    nth_group_number = _get_group(window, direction, count)
+    if nth_group_number is None:
+        return
+
+    # If the cursor is not visible in the view we are moving to, then move the
+    # cursor to the top of the visible area of the view (instead of scrolling
+    # the view to show the cursor). This prevents the view we are moving to
+    # suddenly scrolling, which can be unexpected and is arguably bad UX. The
+    # functionaility now works closer to how Vim works. The main difference in
+    # Vim is that the cursor never leaves the  visible areas in the first place,
+    # it just doesn't happen e.g. when you scroll with the mouse in Vim, Vim
+    # moves the cursor along with the scrolling visible area so the cursor is
+    # always visible, it never disappears from the visible areas.
+
+    view = window.active_view_in_group(nth_group_number)
+    if view:
+        visible_region = view.visible_region()
+        if not view.visible_region().contains(view.sel()[0]):
+            view.sel().clear()
+            view.sel().add(visible_region.begin())
+
+    window.focus_group(nth_group_number)
+
+
+def _focus_group_above(window, count=1):
+    """Move cursor to Nth group above current one."""
+    _focus_group(window, 'above', count)
+
+
+def _focus_group_below(window, count=1):
+    """Move cursor to Nth group below current one."""
+    _focus_group(window, 'below', count)
+
+
+def _focus_group_left(window, count=1):
+    """Move cursor to Nth group left of current one."""
+    _focus_group(window, 'left', count)
+
+
+def _focus_group_right(window, count=1):
+    """Move cursor to Nth group right of current one."""
+    _focus_group(window, 'right', count)
+
+
+def _focus_group_top_left(window):
+    window.focus_group(0)
+
+
+def _focus_group_bottom_right(window):
+    window.focus_group(window.num_groups() - 1)
+
+
+def _set_group_height(window, height=None):
+    """Set current group height (default: highest possible)."""
+    return window.set_layout(
+        _layout_group_height(window.layout(), window.active_group(), height)
+    )
+
+
+def _set_group_width(window, width=None):
+    """Set current group width (default: widest possible)."""
+    return window.set_layout(
+        _layout_group_width(window.layout(), window.active_group(), width)
+    )
+
+
+def _decrease_group_height(window, count=1):
+    pass
+
+
+def _decrease_group_width(window, count=1):
+    pass
+
+
+def _increase_group_height(window, count=1):
+    pass
+
+
+def _increase_group_width(window, count=1):
+    pass
+
+
+def _resize_groups_equally(window):
+    """Make all groups (almost) equally high and wide."""
+    return window.set_layout(
+        _layout_groups_equal(window.layout())
+    )
+
+
+def _split(window, file=None):
+    """Split current view in two. The result is two viewports on the same file."""
     if file:
         window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
         window.open_file(file)
@@ -661,14 +531,27 @@ def window_split(window, file=None):
         window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
+def _split_vertically(window, count=None):
+    window.run_command('create_pane', {'direction': 'right'})
+    window.run_command('clone_file_to_pane', {'direction': 'right'})
+
+
+def _split_with_new_file(window, n=None):
+    """Create a new group and start editing an empty file in it.
+
+    Make new group N high (default is to use half the existing height).
+    Reduces the current group height to create room (and others, if the
+    'equalalways' option is set and 'eadirection' isn't "hor").
+    """
+    window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
+
+
 def window_buffer_control(window, action, count=1):
     if action == 'next':
-        # TODO Optimise: Avoid running command n times
         for i in range(count):
             window.run_command('next_view')
 
     elif action == 'previous':
-        # TODO Optimise: Avoid running command n times
         for i in range(count):
             window.run_command('prev_view')
 
@@ -730,3 +613,75 @@ def window_tab_control(window, action, count=1, index=None):
 
     else:
         raise ValueError('unknown tab control action: %s' % action)
+
+
+def window_control(window, action, count=1, **kwargs):
+    def merge(other, **defaults):
+        defaults.update(other)
+
+        return defaults
+
+    if action == 'b':
+        _focus_group_bottom_right(window)
+    elif action == 'H':
+        _move_active_view_to_far_left(window)
+    elif action == 'J':
+        _move_active_view_to_very_bottom(window)
+    elif action == 'K':
+        _move_active_view_to_very_top(window)
+    elif action == 'L':
+        _move_active_view_to_far_right(window)
+    elif action == 'c':
+        _close_active_view(window, **merge(kwargs, close_if_last=False))
+    elif action == '=':
+        _resize_groups_equally(window)
+    elif action == '>':
+        _increase_group_width(window, count)
+    elif action == 'h':
+        _focus_group_left(window, count)
+    elif action == 'j':
+        _focus_group_below(window, count)
+    elif action == 'k':
+        _focus_group_above(window, count)
+    elif action == 'l':
+        _focus_group_right(window, count)
+    elif action == '<':
+        _decrease_group_width(window, count)
+    elif action == '-':
+        _decrease_group_height(window, count)
+    elif action == 'n':
+        _split_with_new_file(window, count)
+    elif action == 'o':
+        _close_all_other_views(window)
+    elif action == '|':
+        _set_group_width(window, count)
+    elif action == '+':
+        _increase_group_height(window, count)
+    elif action == 'q':
+        _quit_active_view(window)
+    elif action == 's':
+        _split(window, **kwargs)
+    elif action == 't':
+        _focus_group_top_left(window)
+    elif action == '_':
+        _set_group_height(window, count)
+    elif action == 'v':
+        _split_vertically(window, count)
+    elif action == 'x':
+        _exchange_view_by_count(window, count)
+    else:
+        raise ValueError('unknown action')
+
+
+def window_open_file(window, file):
+    if not file:
+        return
+
+    if not os.path.isabs(file):
+        cwd = get_cmdline_cwd()
+
+        if os.path.isdir(cwd):
+            file = os.path.join(cwd, file)
+
+    if os.path.isfile(file):
+        window.open_file(file)

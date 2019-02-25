@@ -126,11 +126,11 @@ class TestSeqToCommand(unittest.TestCase):
     @mock.patch('NeoVintageous.nv.vi.keys.plugin')
     def test_seq_to_command(self, plugin):
         class EnabledPlugin():
-            def is_enabled(self, state):
+            def is_enabled(self, settings):
                 return True
 
         class DisabledPlugin():
-            def is_enabled(self, state):
+            def is_enabled(self, settings):
                 return False
 
         ep = EnabledPlugin()
@@ -141,47 +141,31 @@ class TestSeqToCommand(unittest.TestCase):
             'c': {'s': 'plugin_csv'}
         }
 
-        class StateModeA():
-            mode = 'a'
+        class View():
+            def settings(self):
+                pass
 
-        class StateModeB():
-            mode = 'b'
-
-        class StateModeC():
-            mode = 'c'
-
-        class StateModeUnknown():
-            mode = 'x'
-
-        self.assertEqual(seq_to_command(seq='s', state=StateModeA()), 'asv')
-        self.assertEqual(seq_to_command(seq='s', state=None, mode='a'), 'asv')
-        self.assertEqual(seq_to_command(seq='s', state=StateModeUnknown(), mode='a'), 'asv')
-
+        self.assertEqual(seq_to_command(seq='s', view=View(), mode='a'), 'asv')
+        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode=None), ViMissingCommandDef)
         # Plugin mode exists, but not sequence.
-        self.assertEqual(seq_to_command(seq='t', state=StateModeB()), 'tsv')
-        self.assertEqual(seq_to_command(seq='t', state=StateModeUnknown(), mode='b'), 'tsv')
-
+        self.assertEqual(seq_to_command(seq='t', view=View(), mode='b'), 'tsv')
         # Plugin mapping override.
-        self.assertEqual(seq_to_command(seq='s', state=StateModeB()), 'plugin_bsv')
-        self.assertEqual(seq_to_command(seq='s', state=None, mode='b'), 'plugin_bsv')
-        self.assertEqual(seq_to_command(seq='s', state=StateModeUnknown(), mode='b'), 'plugin_bsv')
-
-        self.assertEqual(seq_to_command(seq='ep', state=StateModeB()), ep)
-        self.assertIsInstance(seq_to_command(seq='dp', state=StateModeB()), ViMissingCommandDef)
-        self.assertEqual(seq_to_command(seq='dp2', state=StateModeB()), 'dp2')
-
+        self.assertEqual(seq_to_command(seq='s', view=View(), mode='b'), 'plugin_bsv')
+        self.assertEqual(seq_to_command(seq='ep', view=View(), mode='b'), ep)
+        self.assertIsInstance(seq_to_command(seq='dp', view=View(), mode='b'), ViMissingCommandDef)
+        self.assertEqual(seq_to_command(seq='dp2', view=View(), mode='b'), 'dp2')
         # Plugin.
-        self.assertEqual(seq_to_command(seq='s', state=StateModeC()), 'plugin_csv')
-        self.assertEqual(seq_to_command(seq='s', state=None, mode='c'), 'plugin_csv')
-        self.assertEqual(seq_to_command(seq='s', state=StateModeUnknown(), mode='c'), 'plugin_csv')
+        self.assertEqual(seq_to_command(seq='s', view=View(), mode='c'), 'plugin_csv')
 
     def test_unkown_mode(self):
-        class StateWithUnknownMode():
-            mode = 'unknown'
-
-        self.assertIsInstance(seq_to_command(seq='s', state=StateWithUnknownMode()), ViMissingCommandDef)
-        self.assertIsInstance(seq_to_command(seq='s', state=None, mode='u'), ViMissingCommandDef)
-        self.assertIsInstance(seq_to_command(seq='s', state=StateWithUnknownMode(), mode='u'), ViMissingCommandDef)
+        class View():
+            def settings(self):
+                pass
+        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode='unknown'), ViMissingCommandDef)
+        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode='u'), ViMissingCommandDef)
 
     def test_unknown_sequence(self):
-        self.assertIsInstance(seq_to_command(seq='foobar', state=None, mode='a'), ViMissingCommandDef)
+        class View():
+            def settings(self):
+                pass
+        self.assertIsInstance(seq_to_command(seq='foobar', view=View(), mode='a'), ViMissingCommandDef)

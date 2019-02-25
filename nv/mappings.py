@@ -199,7 +199,7 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
         command = _expand_first(state.mode, seq)
 
     if not command:
-        command = seq_to_command(state, seq, mode)
+        command = seq_to_command(state.view, seq, mode or state.mode)
 
     _log.debug('resolved %s %s or %s -> %s %s', mode, sequence, partial_sequence, seq, command)
 

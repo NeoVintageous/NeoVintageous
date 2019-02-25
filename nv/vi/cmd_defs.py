@@ -1757,13 +1757,21 @@ class StShowGotoAnything(ViOperatorDef):
 
 @keys.assign(seq=seqs.GA, modes=(NORMAL,))
 class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def translate(self, state):
         return {
             'action': '_vi_ga',
             'action_args': {}
+        }
+
+
+@keys.assign(seq=seqs.GF, modes=(NORMAL,))
+class Vi_gf(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_vi_g',
+            'action_args': {
+                'action': 'f'
+            }
         }
 
 
@@ -3489,7 +3497,13 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         }
 
 
+@keys.assign(seq='z<left>', modes=_MODES_ACTION)
+@keys.assign(seq='z<right>', modes=_MODES_ACTION)
 @keys.assign(seq='zc', modes=_MODES_ACTION)
+@keys.assign(seq='zh', modes=_MODES_ACTION)
+@keys.assign(seq='zH', modes=_MODES_ACTION)
+@keys.assign(seq='zl', modes=_MODES_ACTION)
+@keys.assign(seq='zL', modes=_MODES_ACTION)
 @keys.assign(seq='zM', modes=_MODES_ACTION)
 @keys.assign(seq='zo', modes=_MODES_ACTION)
 @keys.assign(seq='zR', modes=_MODES_ACTION)
@@ -3503,7 +3517,7 @@ class Viz(ViOperatorDef):
         return {
             'action': '_vi_z',
             'action_args': {
-                'action': state.sequence[1],
+                'action': state.partial_sequence[1:],
                 'mode': state.mode,
                 'count': state.count
             }

@@ -398,9 +398,6 @@ class Registers:
     def _get_selected_text(self, new_line_at_eof=False, linewise=False):
         # Inspect settings and populate registers as needed.
         #
-        # Args:
-        #   cmd (ViTextCommandBase)
-        #
         # Returns:
         #   list
         fragments = [self.view.substr(r) for r in list(self.view.sel())]

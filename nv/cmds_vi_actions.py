@@ -23,6 +23,7 @@ import webbrowser
 from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
+from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.ex_cmds import do_ex_command
@@ -31,6 +32,9 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
+from NeoVintageous.nv.utils import extract_file_name
+from NeoVintageous.nv.utils import extract_url
+from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.vi import search
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
@@ -48,8 +52,8 @@ from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import save_previous_selection
-from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import enter_insert_mode
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -60,8 +64,9 @@ from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.window import window_control
+from NeoVintageous.nv.window import window_open_file
 from NeoVintageous.nv.window import window_tab_control
-from NeoVintageous.nv.window import WindowAPI
 
 
 __all__ = [
@@ -104,6 +109,7 @@ __all__ = [
     '_vi_dot',
     '_vi_equal',
     '_vi_equal_equal',
+    '_vi_g',
     '_vi_g_big_h',
     '_vi_g_big_t',
     '_vi_g_big_u',
@@ -1734,6 +1740,17 @@ class _vi_g_big_t(WindowCommand):
         enter_normal_mode(self.window, mode)
 
 
+class _vi_g(TextCommand):
+
+    def run(self, edit, action, **kwargs):
+        if action == 'f':
+            file_name = extract_file_name(self.view)
+            if file_name:
+                window_open_file(self.view.window(), file_name)
+        else:
+            raise ValueError('unknown action')
+
+
 class _vi_ctrl_right_square_bracket(WindowCommand):
 
     def run(self):
@@ -1746,61 +1763,8 @@ class _vi_ctrl_right_square_bracket(WindowCommand):
 
 class _vi_ctrl_w(WindowCommand):
 
-    def run(self, action, count=1, **kwargs):
-        window = WindowAPI(self.window)
-
-        # TODO Optimise if-else into a lookup function hash-table
-
-        if action == 'b':
-            window.move_group_focus_to_bottom_right()
-        elif action == 'H':
-            window.move_current_view_to_far_left()
-        elif action == 'J':
-            window.move_current_view_to_very_bottom()
-        elif action == 'K':
-            window.move_current_view_to_very_top()
-        elif action == 'L':
-            window.move_current_view_to_far_right()
-        elif action == 'c':
-            window.close_current_view()
-        elif action == '=':
-            window.resize_groups_almost_equally()
-        elif action == '>':
-            window.increase_current_group_width_by_n(count)
-        elif action == 'h':
-            window.move_group_focus_to_nth_left_of_current_one(count)
-        elif action == 'j':
-            window.move_group_focus_to_nth_below_current_one(count)
-        elif action == 'k':
-            window.move_group_focus_to_nth_above_current_one(count)
-        elif action == 'l':
-            window.move_group_focus_to_nth_right_of_current_one(count)
-        elif action == '<':
-            window.decrease_current_group_width_by_n(count)
-        elif action == '-':
-            window.decrease_current_group_height_by_n(count)
-        elif action == 'n':
-            window.split_with_new_file(count)
-        elif action == 'o':
-            window.close_all_other_views()
-        elif action == '|':
-            window.set_current_group_width_to_n(count)
-        elif action == '+':
-            window.increase_current_group_height_by_n(count)
-        elif action == 'q':
-            window.quit_current_view_and_exit_if_last()
-        elif action == 's':
-            window.split_current_view_in_two(count)
-        elif action == 't':
-            window.move_group_focus_to_top_left()
-        elif action == '_':
-            window.set_current_group_height_to_n(count)
-        elif action == 'v':
-            window.split_current_view_in_two_vertically(count)
-        elif action == 'x':
-            window.exchange_current_view_with_view_in_next_or_previous_group(count)
-        else:
-            raise ValueError('unknown action')
+    def run(self, **kwargs):
+        window_control(self.window, **kwargs)
 
 
 class _vi_z_enter(IrreversibleTextCommand):
@@ -1834,31 +1798,37 @@ class _vi_zz(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
-class _vi_z(ViTextCommandBase):
+class _vi_z(TextCommand):
 
-    def run(self, edit, action, **kwargs):
-
-        # Clears any VISUAL selections.
-        def _post_fold_selection_fixup(view):
-            sels = []
-            for sel in view.sel():
-                sels.append(view.text_point(view.rowcol(sel.begin())[0], 0))
-            if sels:
-                view.sel().clear()
-                view.sel().add_all(sels)
-
+    def run(self, edit, action, count, **kwargs):
         if action == 'c':
             self.view.run_command('fold')
-            _post_fold_selection_fixup(self.view)
+            self._clear_visual_selection()
+        elif action in ('h', '<left>'):
+            scroll_horizontally(self.view, edit, amount=-count)
+        elif action in ('l', '<right>'):
+            scroll_horizontally(self.view, edit, amount=count)
         elif action == 'o':
             self.view.run_command('unfold')
-            _post_fold_selection_fixup(self.view)
-        elif action == 'R':
-            self.view.run_command('unfold_all')
+            self._clear_visual_selection()
+        elif action == 'H':
+            scroll_horizontally(self.view, edit, amount=-count, half_screen=True)
+        elif action == 'L':
+            scroll_horizontally(self.view, edit, amount=count, half_screen=True)
         elif action == 'M':
             self.view.run_command('fold_all')
+        elif action == 'R':
+            self.view.run_command('unfold_all')
         else:
             raise ValueError('unknown action')
+
+    def _clear_visual_selection(self):
+        sels = []
+        for sel in self.view.sel():
+            sels.append(self.view.text_point(self.view.rowcol(sel.begin())[0], 0))
+        if sels:
+            self.view.sel().clear()
+            self.view.sel().add_all(sels)
 
 
 class _vi_modify_numbers(ViTextCommandBase):
@@ -2075,51 +2045,8 @@ class _vi_gv(IrreversibleTextCommand):
 
 class _vi_gx(IrreversibleTextCommand):
 
-    URL_REGEX = r"""(?x)
-        .*(?P<url>
-            https?://               # http:// or https://
-            (?:www\.)?              # www.
-            (?:[a-zA-Z0-9-]+\.)+    # domain
-            [a-zA-Z]+               # tld
-            /?[a-zA-Z0-9\-._?,!'(){}\[\]/+&@%$#=:"|~;]*     # url path
-        )
-    """
-
-    def _url(regex, text):
-        match = re.match(regex, text)
-        if match:
-            url = match.group('url')
-
-            # Remove end of line full stop character.
-            url = url.rstrip('.')
-
-            # Remove closing tag markdown link e.g. `[title](url)`.
-            url = url.rstrip(')')
-
-            # Remove closing tag markdown image e.g. `![alt](url)]`.
-            if url[-2:] == ')]':
-                url = url[:-2]
-
-            # Remove trailing quote marks e.g. `"url"`, `'url'`.
-            url = url.rstrip('"\'')
-
-            # Remove trailing quote-comma marks e.g. `"url",`, `'url',`.
-            if url[-2:] == '",' or url[-2:] == '\',':
-                url = url[:-2]
-
-            return url
-
-        return None
-
-    def run(self, mode=None, count=None):
-        if len(self.view.sel()) != 1:
-            return
-
-        sel = self.view.sel()[0]
-        line = self.view.line(sel)
-        text = self.view.substr(line)
-
-        url = self.__class__._url(self.URL_REGEX, text)
+    def run(self, **kwargs):
+        url = extract_url(self.view)
         if url:
             webbrowser.open_new_tab(url)
 

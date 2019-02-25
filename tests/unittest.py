@@ -1078,6 +1078,7 @@ _SEQ2CMD = {
     'gC}':          {'command': '_nv_commentary', 'args': {'action': 'C', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace', 'is_jump': True}}},  # noqa: E241,E501
     'gE':           {'command': '_vi_g_big_e'},  # noqa: E241
     'ge':           {'command': '_vi_ge'},  # noqa: E241
+    'gf':           {'command': '_vi_g', 'args': {'action': 'f'}},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241
@@ -1092,6 +1093,7 @@ _SEQ2CMD = {
     'gUU':          {'command': '_vi_g_big_u_big_u'},  # noqa: E241
     'guu':          {'command': '_vi_guu'},  # noqa: E241
     'gv':           {'command': '_vi_gv'},  # noqa: E241
+    'gx':           {'command': '_vi_gx'},  # noqa: E241
     'g~$':          {'command': '_vi_g_tilde', 'args': {'motion': {'is_jump': True, 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'g~':           {'command': '_vi_g_tilde'},  # noqa: E241
     'g~~':          {'command': '_vi_g_tilde_g_tilde'},  # noqa: E241

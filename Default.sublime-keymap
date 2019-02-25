@@ -54,15 +54,9 @@
     {"keys": ["{"],         "command": "_nv_feed_key", "args": {"key": "{"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["]"],         "command": "_nv_feed_key", "args": {"key": "]"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["["],         "command": "_nv_feed_key", "args": {"key": "["},       "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["tab"],       "command": "_nv_feed_key", "args": {"key": "<tab>"},   "context": [{"key": "vi_command_mode_aware"}]},
 
-    {"keys": ["tab"],       "command": "_nv_feed_key", "args": {"key": "<tab>"},    "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["tab"],       "command": "_nv_fs_completion",                         "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_fs_completion"}] },
-    {"keys": ["tab"],       "command": "_nv_setting_completion",                    "context": [{"key": "vi_is_cmdline"}, {"key": "vi_cmdline_at_setting_completion"}] },
-
-    // Command-line editing.
-    // TODO handle Command-line <Backspace> key properly (should not delete first character "?", "/", or ":" and should exit if only those characters are visible.
-    // TODO handle Command-line <Tab> key.
-    // TODO handle Command-line S-Left and S-Right should work the same as C-Left and C-Right.
+    // command-line editing keys.
     {"keys": ["ctrl+["], "command": "_nv_cmdline_feed_key", "args": {"key": "<C-[>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
     {"keys": ["ctrl+b"], "command": "_nv_cmdline_feed_key", "args": {"key": "<C-b>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
     {"keys": ["ctrl+c"], "command": "_nv_cmdline_feed_key", "args": {"key": "<C-c>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
@@ -76,6 +70,7 @@
     {"keys": ["end"],    "command": "_nv_cmdline_feed_key", "args": {"key": "<end>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
     {"keys": ["home"],   "command": "_nv_cmdline_feed_key", "args": {"key": "<home>"}, "context": [{ "key": "selector", "operand": "text.excmdline"}]},
     {"keys": ["up"],     "command": "_nv_cmdline_feed_key", "args": {"key": "<up>"},   "context": [{ "key": "selector", "operand": "text.excmdline"}]},
+    {"keys": ["tab"],    "command": "_nv_cmdline_feed_key", "args": {"key": "<tab>"},  "context": [{ "key": "selector", "operand": "text.excmdline"}]},
 
     // special keys.
     {"keys": ["up"],        "command": "_nv_feed_key", "args": {"key": "<up>"},    "context": [{"key": "vi_command_mode_aware"}]},

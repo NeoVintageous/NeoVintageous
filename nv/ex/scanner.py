@@ -119,7 +119,6 @@ class _ScannerState:
             if on_error:
                 raise on_error()
 
-            # TODO Use domain specific exception.
             raise ValueError('expected {0}, got {1} instead'.format(item, c))
 
         return c
@@ -175,8 +174,6 @@ class Scanner:
     #
     # Attributes:
     #   :state (_ScannerState):
-    #
-    # TODO Make this class a function. We don't need a state object reference.
 
     def __init__(self, source):
         # type: (str) -> None

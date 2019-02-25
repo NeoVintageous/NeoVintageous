@@ -16,62 +16,16 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from sublime import OP_EQUAL
-from sublime import OP_NOT_EQUAL
-from sublime import OP_NOT_REGEX_MATCH
 from sublime import OP_REGEX_CONTAINS
 from sublime import OP_REGEX_MATCH
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.events import _is_cmdline_at_fs_completion
-from NeoVintageous.nv.events import _is_cmdline_at_setting_completion
-from NeoVintageous.nv.events import _is_cmdline_mode
 from NeoVintageous.nv.events import _is_command_mode
 from NeoVintageous.nv.events import _is_insert_mode
 
 
 class TestContextCheckers(unittest.ViewTestCase):
-
-    def test_is_cmdline(self):
-        self.assertEqual(_is_cmdline_mode(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)
-        self.assertEqual(_is_cmdline_mode(self.view, operator=OP_EQUAL, operand=False, match_all=False), True)
-        self.assertEqual(_is_cmdline_mode(self.view, operator=OP_NOT_EQUAL, operand=True, match_all=False), True)
-        self.assertEqual(_is_cmdline_mode(self.view, operator=OP_NOT_EQUAL, operand=False, match_all=False), False)
-        self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
-        self.assertTrue(_is_cmdline_mode(self.view, operator=OP_EQUAL, operand=True, match_all=False))
-        self.assertTrue(_is_cmdline_mode(self.view, operator=OP_NOT_EQUAL, operand=False, match_all=False))
-
-    def test_is_cmdline_returns_false_by_default(self):
-        self.assertEqual(_is_cmdline_mode(self.view, operator=OP_REGEX_MATCH, operand='', match_all=False), False)
-        self.assertEqual(_is_cmdline_mode(self.view, operator=OP_NOT_REGEX_MATCH, operand='', match_all=False), False)
-
-    def test_is_cmdline_at_fs_completion(self):
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)  # noqa: E501
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_EQUAL, operand=False, match_all=False), True)  # noqa: E501
-        self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)  # noqa: E501
-        self.write(':write ')
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), True)  # noqa: E501
-
-    def test_is_cmdline_at_fs_completion_returns_false_by_default(self):
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_REGEX_CONTAINS, operand=True, match_all=False), False)  # noqa: E501
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_REGEX_CONTAINS, operand=False, match_all=False), False)  # noqa: E501
-
-    def test_is_cmdline_at_setting_completion(self):
-        self.assertEqual(_is_cmdline_at_setting_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)  # noqa: E501
-
-        self.view.assign_syntax('Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
-        self.assertEqual(_is_cmdline_at_setting_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)  # noqa: E501
-
-        self.write(':set ')
-        self.assertEqual(_is_cmdline_at_setting_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), True)  # noqa: E501
-
-        self.view.assign_syntax('Packages/NeoVintageous/tests/fixtures/Command-line mode foobar.sublime-syntax')
-        self.assertEqual(_is_cmdline_at_setting_completion(self.view, operator=OP_EQUAL, operand=True, match_all=False), False)  # noqa: E501
-
-    def test_is_cmdline_at_setting_completion_returns_false_by_default(self):
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_REGEX_CONTAINS, operand=True, match_all=False), False)  # noqa: E501
-        self.assertEqual(_is_cmdline_at_fs_completion(self.view, operator=OP_REGEX_CONTAINS, operand=False, match_all=False), False)  # noqa: E501
 
     def test_is_command_mode_can_return_true(self):
         self.settings().set('command_mode', True)

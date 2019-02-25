@@ -16,7 +16,6 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
-import os
 import time
 
 from sublime import CLASS_WORD_START
@@ -25,9 +24,9 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import rc
-from NeoVintageous.nv.ex.completions import iter_paths
-from NeoVintageous.nv.ex.completions import parse_for_fs
-from NeoVintageous.nv.ex.completions import parse_for_setting
+from NeoVintageous.nv.ex.completions import insert_best_cmdline_completion
+from NeoVintageous.nv.ex.completions import on_change_cmdline_completion_prefix
+from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
 from NeoVintageous.nv.ex_cmds import do_ex_cmd_edit_wrap
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.ex_cmds import do_ex_command
@@ -50,8 +49,6 @@ from NeoVintageous.nv.vi.cmd_defs import ViOperatorDef
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
-from NeoVintageous.nv.vi.settings import iter_settings
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
@@ -59,6 +56,7 @@ from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -75,13 +73,10 @@ __all__ = [
     '_nv_ex_cmd_edit_wrap',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
-    '_nv_fs_completion',
     '_nv_goto_help',
     '_nv_process_notation',
     '_nv_replace_line',
     '_nv_run_cmds',
-    '_nv_setting_completion',
-    '_nv_write_fs_completion',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
     'NeovintageousToggleSideBarCommand',
@@ -100,10 +95,13 @@ class _nv_cmdline_feed_key(TextCommand):
         if self.view.size() == 0:
             raise RuntimeError('expected a non-empty command-line')
 
-        if self.view.size() == 1 and key not in ('<up>', '<C-n>', '<down>', '<C-p>', '<C-c>', '<C-[>'):
+        if self.view.size() == 1 and key not in ('<up>', '<C-n>', '<down>', '<C-p>', '<C-c>', '<C-[>', '<tab>'):
             return
 
-        if key in ('<up>', '<C-p>'):
+        if key == '<tab>':
+            insert_best_cmdline_completion(self.view, edit)
+
+        elif key in ('<up>', '<C-p>'):
             # Recall older command-line from history, whose beginning matches
             # the current command-line.
             self._next_history(edit, backwards=True)
@@ -620,41 +618,25 @@ class _nv_ex_cmd_edit_wrap(TextCommand):
 
 class _nv_cmdline(WindowCommand):
 
-    interactive_call = True
+    def _is_valid_cmdline(self, cmdline):
+        return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == ':'
 
     def is_enabled(self):
-        # TODO refactor into a text command as the view is always required?
         return bool(self.window.active_view())
 
-    def run(self, cmdline=None, initial_text=None):
-        _log.debug('cmdline.run cmdline = %s', cmdline)
-
-        if cmdline:
-
-            # The caller has provided a command (non-interactive mode), so run
-            # the command without a prompt.
-            # TODO [review] Non-interactive mode looks unused?
-
-            _nv_cmdline.interactive_call = False
-
-            return self.on_done(cmdline)
-        else:
-            _nv_cmdline.interactive_call = True
-
-        # TODO There has got to be a better way to handle fs ("file system"?) completions.
-        _nv_fs_completion.invalidate()
-
+    def run(self, initial_text=None):
+        reset_cmdline_completion_state()
         state = State(self.window.active_view())
         state.reset_during_init = False
 
         if initial_text is None:
-            if state.mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+            if is_visual_mode(state.mode):
                 initial_text = ":'<,'>"
             else:
                 initial_text = ':'
-        else:
-            if initial_text[0] != ':':
-                raise ValueError('initial cmdline text must begin with a colon')
+
+        if not self._is_valid_cmdline(initial_text):
+            raise ValueError('invalid cmdline initial text')
 
         ui_cmdline_prompt(
             self.window,
@@ -664,177 +646,26 @@ class _nv_cmdline(WindowCommand):
             on_cancel=self.on_cancel
         )
 
-    def on_change(self, s):
-        if s == '':
-            return self._force_cancel()
+    def on_change(self, cmdline):
+        if not self._is_valid_cmdline(cmdline):
+            return self.on_cancel(force=True)
 
-        if len(s) <= 1:
-            return
-
-        if s[0] != ':':
-            return self._force_cancel()
-
-        if _nv_cmdline.interactive_call:
-            cmd, prefix, only_dirs = parse_for_fs(s)
-            if cmd:
-                _nv_fs_completion.prefix = prefix
-                _nv_fs_completion.is_stale = True
-            cmd, prefix, _ = parse_for_setting(s)
-            if cmd:
-                _nv_setting_completion.prefix = prefix
-                _nv_setting_completion.is_stale = True
-
-            if not cmd:
-                return
-
-        _nv_cmdline.interactive_call = True
+        on_change_cmdline_completion_prefix(self.window, cmdline)
 
     def on_done(self, cmdline):
-        if len(cmdline) <= 1:
-            return
-
-        if cmdline[0] != ':':
-            return
-
-        if _nv_cmdline.interactive_call:
-            history_update(cmdline)
+        if not self._is_valid_cmdline(cmdline):
+            return self.on_cancel(force=True)
 
         _nv_cmdline_feed_key.reset_last_history_index()
 
+        history_update(cmdline)
         do_ex_cmdline(self.window, cmdline)
 
-    def _force_cancel(self):
-        self.on_cancel()
-        self.window.run_command('hide_panel', {'cancel': True})
-
-    def on_cancel(self):
+    def on_cancel(self, force=False):
         _nv_cmdline_feed_key.reset_last_history_index()
 
-
-class _nv_write_fs_completion(TextCommand):
-    def run(self, edit, cmd, completion):
-        if self.view.score_selector(0, 'text.excmdline') == 0:
-            return
-
-        _nv_cmdline.interactive_call = False
-
-        self.view.sel().clear()
-        self.view.replace(edit, Region(0, self.view.size()), cmd + ' ' + completion)
-        self.view.sel().add(Region(self.view.size()))
-
-
-class _nv_fs_completion(TextCommand):
-    # Last user-provided path string.
-    prefix = ''
-    frozen_dir = ''
-    is_stale = False
-    items = None
-
-    @staticmethod
-    def invalidate():  # type: () -> None
-        _nv_fs_completion.prefix = ''
-        _nv_fs_completion.frozen_dir = ''
-        _nv_fs_completion.is_stale = True
-        _nv_fs_completion.items = None
-
-    def run(self, edit):
-        if self.view.score_selector(0, 'text.excmdline') == 0:
-            return
-
-        _nv_fs_completion.frozen_dir = (_nv_fs_completion.frozen_dir or (get_cmdline_cwd() + '/'))
-
-        cmd, prefix, only_dirs = parse_for_fs(self.view.substr(self.view.line(0)))
-        if not cmd:
-            return
-
-        if not (_nv_fs_completion.prefix or _nv_fs_completion.items) and prefix:
-            _nv_fs_completion.prefix = prefix
-            _nv_fs_completion.is_stale = True
-
-        if prefix == '..':
-            _nv_fs_completion.prefix = '../'
-            self.view.run_command('_nv_write_fs_completion', {
-                'cmd': cmd,
-                'completion': '../'
-            })
-
-        if prefix == '~':
-            path = os.path.expanduser(prefix) + '/'
-            _nv_fs_completion.prefix = path
-            self.view.run_command('_nv_write_fs_completion', {
-                'cmd': cmd,
-                'completion': path
-            })
-
-            return
-
-        if (not _nv_fs_completion.items) or _nv_fs_completion.is_stale:
-            _nv_fs_completion.items = iter_paths(from_dir=_nv_fs_completion.frozen_dir,
-                                                 prefix=_nv_fs_completion.prefix,
-                                                 only_dirs=only_dirs)
-            _nv_fs_completion.is_stale = False
-
-        try:
-            self.view.run_command('_nv_write_fs_completion', {
-                'cmd': cmd,
-                'completion': next(_nv_fs_completion.items)
-            })
-        except StopIteration:
-            _nv_fs_completion.items = iter_paths(prefix=_nv_fs_completion.prefix,
-                                                 from_dir=_nv_fs_completion.frozen_dir,
-                                                 only_dirs=only_dirs)
-
-            self.view.run_command('_nv_write_fs_completion', {
-                'cmd': cmd,
-                'completion': _nv_fs_completion.prefix
-            })
-
-
-class _nv_setting_completion(TextCommand):
-    # Last user-provided path string.
-    prefix = ''
-    is_stale = False
-    items = None
-
-    @staticmethod
-    def invalidate():  # type: () -> None
-        _nv_setting_completion.prefix = ''
-        _nv_setting_completion.is_stale = True
-        _nv_setting_completion.items = None
-
-    def run(self, edit):
-        if self.view.score_selector(0, 'text.excmdline') == 0:
-            return
-
-        cmd, prefix, _ = parse_for_setting(self.view.substr(self.view.line(0)))
-        if not cmd:
-            return
-
-        if (_nv_setting_completion.prefix is None) and prefix:
-            _nv_setting_completion.prefix = prefix
-            _nv_setting_completion.is_stale = True
-        elif _nv_setting_completion.prefix is None:
-            _nv_setting_completion.items = iter_settings('')
-            _nv_setting_completion.is_stale = False
-
-        if not _nv_setting_completion.items or _nv_setting_completion.is_stale:
-            _nv_setting_completion.items = iter_settings(_nv_setting_completion.prefix)
-            _nv_setting_completion.is_stale = False
-
-        try:
-            self.view.run_command('_nv_write_fs_completion', {
-                'cmd': cmd,
-                'completion': next(_nv_setting_completion.items)
-            })
-        except StopIteration:
-            try:
-                _nv_setting_completion.items = iter_settings(_nv_setting_completion.prefix)
-                self.view.run_command('_nv_write_fs_completion', {
-                    'cmd': cmd,
-                    'completion': next(_nv_setting_completion.items)
-                })
-            except StopIteration:
-                return
+        if force:
+            self.window.run_command('hide_panel', {'cancel': True})
 
 
 class NeovintageousOpenMyRcFileCommand(WindowCommand):
