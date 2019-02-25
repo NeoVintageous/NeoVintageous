@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.10.0 - Unreleased
+
+### Added
+
+* Added [#442](https://github.com/NeoVintageous/NeoVintageous/issues/442): `:s/{search}/{replacement}/c` (confirm replacements) can now be cancelled
+
 ## 1.9.0 - 2019-02-21
 
 ### Added

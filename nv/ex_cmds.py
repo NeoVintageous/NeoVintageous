@@ -24,16 +24,18 @@ import stat
 import subprocess
 import sys
 
+from sublime import DIALOG_CANCEL
+from sublime import DIALOG_YES
 from sublime import ENCODED_POSITION
 from sublime import find_resources
 from sublime import FORCE_GROUP
 from sublime import LITERAL
 from sublime import load_resource
 from sublime import MONOSPACE_FONT
-from sublime import ok_cancel_dialog
 from sublime import platform
 from sublime import Region
 from sublime import set_timeout
+from sublime import yes_no_cancel_dialog
 
 from NeoVintageous.nv import shell
 from NeoVintageous.nv import variables
@@ -1008,7 +1010,11 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
 
                 with adding_regions(view, 's_confirm', [match], 'comment'):
                     view.show(match.a, True)
-                    if ok_cancel_dialog("Confirm replacement?"):
+                    response = yes_no_cancel_dialog('Replace with "%s"?' % replacement)
+                    if response == DIALOG_CANCEL:
+                        break
+
+                    if response == DIALOG_YES:
                         text = view.substr(match)
                         substituted = re.sub(compiled_pattern, replacement, text, count=replace_count)
                         view.replace(edit, match, substituted)
