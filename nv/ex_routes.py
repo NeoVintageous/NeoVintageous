@@ -21,52 +21,40 @@ from NeoVintageous.nv.ex.tokens import TokenCommand
 from NeoVintageous.nv.ex.tokens import TokenEof
 
 
-def _ex_route_bfirst(state):
-    command = TokenCommand('bfirst')
+def _literal_route(state, name, forcable=False):
+    command = TokenCommand(name)
+
+    if forcable:
+        if state.match('!'):
+            command.forced = True
 
     state.expect_eof()
 
     return None, [command, TokenEof()]
+
+
+def _ex_route_bfirst(state):
+    return _literal_route(state, 'bfirst')
 
 
 def _ex_route_blast(state):
-    command = TokenCommand('blast')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'blast')
 
 
 def _ex_route_bnext(state):
-    command = TokenCommand('bnext')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'bnext')
 
 
 def _ex_route_bprevious(state):
-    command = TokenCommand('bprevious')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'bprevious')
 
 
 def _ex_route_browse(state):
-    command = TokenCommand('browse')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'browse')
 
 
 def _ex_route_buffers(state):
-    command = TokenCommand('buffers')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'buffers')
 
 
 def _ex_route_cd(state):
@@ -129,11 +117,7 @@ def _ex_route_copy(state):
 
 
 def _ex_route_cquit(state):
-    command = TokenCommand('cquit')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'cquit')
 
 
 def _ex_route_delete(state):
@@ -221,19 +205,11 @@ def _ex_route_edit(state):
 
 
 def _ex_route_exit(state):
-    command = TokenCommand('exit')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'exit')
 
 
 def _ex_route_file(state):
-    command = TokenCommand('file')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'file')
 
 
 def _ex_route_global(state):
@@ -322,11 +298,7 @@ def _ex_route_move(state):
 
 
 def _ex_route_new(state):
-    command = TokenCommand('new')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'new')
 
 
 def _ex_route_nnoremap(state):
@@ -446,29 +418,15 @@ def _ex_route_print(state):
 
 
 def _ex_route_pwd(state):
-    command = TokenCommand('pwd')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'pwd')
 
 
 def _ex_route_qall(state):
-    command = TokenCommand('qall')
-    command.forced = state.consume() == '!'
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'qall', forcable=True)
 
 
 def _ex_route_quit(state):
-    command = TokenCommand('quit')
-    command.forced = state.consume() == '!'
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'quit', forcable=True)
 
 
 def _ex_route_read(state):
@@ -504,11 +462,7 @@ def _ex_route_read(state):
 
 
 def _ex_route_registers(state):
-    command = TokenCommand('registers')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'registers')
 
 
 def _ex_route_set(state):
@@ -542,11 +496,7 @@ def _ex_route_setlocal(state):
 
 
 def _ex_route_shell(state):
-    command = TokenCommand('shell')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'shell')
 
 
 def _ex_route_shell_out(state):
@@ -678,69 +628,27 @@ def _ex_route_substitute(state):
 
 
 def _ex_route_tabclose(state):
-    command = TokenCommand('tabclose')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'tabclose', forcable=True)
 
 
 def _ex_route_tabfirst(state):
-    command = TokenCommand('tabfirst')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'tabfirst', forcable=True)
 
 
 def _ex_route_tablast(state):
-    command = TokenCommand('tablast')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'tablast', forcable=True)
 
 
 def _ex_route_tabnext(state):
-    command = TokenCommand('tabnext')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'tabnext', forcable=True)
 
 
 def _ex_route_tabonly(state):
-    command = TokenCommand('tabonly')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'tabonly', forcable=True)
 
 
 def _ex_route_tabprevious(state):
-    command = TokenCommand('tabprevious')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'tabprevious', forcable=True)
 
 
 def _ex_route_unmap(state):
@@ -757,11 +665,7 @@ def _ex_route_unmap(state):
 
 
 def _ex_route_unvsplit(state):
-    command = TokenCommand('unvsplit')
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'unvsplit')
 
 
 def _ex_route_vnoremap(state):
@@ -812,14 +716,7 @@ def _ex_route_vunmap(state):
 
 
 def _ex_route_wall(state):
-    command = TokenCommand('wall')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'wall', forcable=True)
 
 
 def _ex_route_wq(state):
