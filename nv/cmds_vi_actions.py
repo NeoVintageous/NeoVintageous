@@ -32,6 +32,7 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
+from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.vi import search
 from NeoVintageous.nv.vi import units
@@ -63,6 +64,7 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import window_control
+from NeoVintageous.nv.window import window_open_file
 from NeoVintageous.nv.window import window_tab_control
 
 
@@ -106,6 +108,7 @@ __all__ = [
     '_vi_dot',
     '_vi_equal',
     '_vi_equal_equal',
+    '_vi_g',
     '_vi_g_big_h',
     '_vi_g_big_t',
     '_vi_g_big_u',
@@ -1734,6 +1737,17 @@ class _vi_g_big_t(WindowCommand):
     def run(self, count=1, mode=None):
         window_tab_control(self.window, action='previous')
         enter_normal_mode(self.window, mode)
+
+
+class _vi_g(TextCommand):
+
+    def run(self, edit, action, **kwargs):
+        if action == 'f':
+            file_name = extract_file_name(self.view)
+            if file_name:
+                window_open_file(self.view.window(), file_name)
+        else:
+            raise ValueError('unknown action')
 
 
 class _vi_ctrl_right_square_bracket(WindowCommand):

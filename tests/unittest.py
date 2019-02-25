@@ -1078,6 +1078,7 @@ _SEQ2CMD = {
     'gC}':          {'command': '_nv_commentary', 'args': {'action': 'C', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace', 'is_jump': True}}},  # noqa: E241,E501
     'gE':           {'command': '_vi_g_big_e'},  # noqa: E241
     'ge':           {'command': '_vi_ge'},  # noqa: E241
+    'gf':           {'command': '_vi_g', 'args': {'action': 'f'}},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241

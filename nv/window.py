@@ -15,8 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
+
 from sublime import Region
 
+from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vim import status_message
 
 
@@ -668,3 +671,17 @@ def window_control(window, action, count=1, **kwargs):
         _exchange_view_by_count(window, count)
     else:
         raise ValueError('unknown action')
+
+
+def window_open_file(window, file):
+    if not file:
+        return
+
+    if not os.path.isabs(file):
+        cwd = get_cmdline_cwd()
+
+        if os.path.isdir(cwd):
+            file = os.path.join(cwd, file)
+
+    if os.path.isfile(file):
+        window.open_file(file)

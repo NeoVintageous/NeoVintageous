@@ -31,6 +31,31 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import re
+
+
+def extract_file_name(view):
+    sel = view.sel()[0]
+
+    line = view.substr(view.line(sel))
+    pos = len(line) - len(line.strip()) + 1
+    col = view.rowcol(sel.b)[1]
+
+    if pos > col:
+        return
+
+    matches = re.findall('[^\\s]+', line)
+    if not matches:
+        return
+
+    for match in matches:
+        pos += len(match)
+        if pos >= col:
+            if not re.match('^[a-zA-Z0-9\\._/-]+$', match):
+                return
+
+            return match
+
 
 def scroll_horizontally(view, edit, amount, half_screen=False):
     if view.settings().get('word_wrap'):

@@ -1767,6 +1767,17 @@ class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
         }
 
 
+@keys.assign(seq=seqs.GF, modes=(NORMAL,))
+class Vi_gf(ViOperatorDef):
+    def translate(self, state):
+        return {
+            'action': '_vi_g',
+            'action_args': {
+                'action': 'f'
+            }
+        }
+
+
 @keys.assign(seq=seqs.J, modes=(SELECT,))
 class ViAddSelection(ViOperatorDef):
     def __init__(self, *args, **kwargs):
