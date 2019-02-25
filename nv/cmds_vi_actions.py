@@ -23,6 +23,7 @@ import webbrowser
 from sublime import ENCODED_POSITION
 from sublime import MONOSPACE_FONT
 from sublime import Region
+from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.ex_cmds import do_ex_command
@@ -31,6 +32,7 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
+from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.vi import search
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
@@ -1781,31 +1783,37 @@ class _vi_zz(IrreversibleTextCommand):
         self.view.set_viewport_position(new_pos)
 
 
-class _vi_z(ViTextCommandBase):
+class _vi_z(TextCommand):
 
-    def run(self, edit, action, **kwargs):
-
-        # Clears any VISUAL selections.
-        def _post_fold_selection_fixup(view):
-            sels = []
-            for sel in view.sel():
-                sels.append(view.text_point(view.rowcol(sel.begin())[0], 0))
-            if sels:
-                view.sel().clear()
-                view.sel().add_all(sels)
-
+    def run(self, edit, action, count, **kwargs):
         if action == 'c':
             self.view.run_command('fold')
-            _post_fold_selection_fixup(self.view)
+            self._clear_visual_selection()
+        elif action in ('h', '<left>'):
+            scroll_horizontally(self.view, edit, amount=-count)
+        elif action in ('l', '<right>'):
+            scroll_horizontally(self.view, edit, amount=count)
         elif action == 'o':
             self.view.run_command('unfold')
-            _post_fold_selection_fixup(self.view)
-        elif action == 'R':
-            self.view.run_command('unfold_all')
+            self._clear_visual_selection()
+        elif action == 'H':
+            scroll_horizontally(self.view, edit, amount=-count, half_screen=True)
+        elif action == 'L':
+            scroll_horizontally(self.view, edit, amount=count, half_screen=True)
         elif action == 'M':
             self.view.run_command('fold_all')
+        elif action == 'R':
+            self.view.run_command('unfold_all')
         else:
             raise ValueError('unknown action')
+
+    def _clear_visual_selection(self):
+        sels = []
+        for sel in self.view.sel():
+            sels.append(self.view.text_point(self.view.rowcol(sel.begin())[0], 0))
+        if sels:
+            self.view.sel().clear()
+            self.view.sel().add_all(sels)
 
 
 class _vi_modify_numbers(ViTextCommandBase):
