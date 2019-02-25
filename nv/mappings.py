@@ -99,12 +99,12 @@ def mappings_add(mode, new, target):
     _mappings[mode][expand_keys(new)] = {'name': target, 'type': CMD_TYPE_USER}
 
 
-def mappings_remove(mode, new):
+def mappings_remove(mode, lhs):
     # type: (str, str) -> None
     # Raises:
     #   KeyError: If mapping not found.
     try:
-        del _mappings[mode][expand_keys(new)]
+        del _mappings[mode][expand_keys(lhs)]
     except KeyError:
         raise KeyError('mapping not found')
 

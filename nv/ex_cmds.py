@@ -599,27 +599,27 @@ def ex_new(window, **kwargs):
     window.run_command('new_file')
 
 
-def ex_nnoremap(keys, command, **kwargs):
-    if not (keys and command):
+def ex_nnoremap(lhs=None, rhs=None, **kwargs):
+    if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
-    mappings_add(NORMAL, keys, command)
+    mappings_add(NORMAL, lhs, rhs)
 
 
-def ex_noremap(keys, command, **kwargs):
-    if not (keys and command):
+def ex_noremap(lhs=None, rhs=None, **kwargs):
+    if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
-    mappings_add(NORMAL, keys, command)
-    mappings_add(OPERATOR_PENDING, keys, command)
-    mappings_add(VISUAL, keys, command)
-    mappings_add(VISUAL_BLOCK, keys, command)
-    mappings_add(VISUAL_LINE, keys, command)
+    mappings_add(NORMAL, lhs, rhs)
+    mappings_add(OPERATOR_PENDING, lhs, rhs)
+    mappings_add(VISUAL, lhs, rhs)
+    mappings_add(VISUAL_BLOCK, lhs, rhs)
+    mappings_add(VISUAL_LINE, lhs, rhs)
 
 
-def ex_nunmap(keys, **kwargs):
+def ex_nunmap(lhs, **kwargs):
     try:
-        mappings_remove(NORMAL, keys)
+        mappings_remove(NORMAL, lhs)
     except KeyError:
         status_message('Mapping not found')
 
@@ -640,16 +640,16 @@ def ex_only(window, view, forceit=False, **kwargs):
         view.close()
 
 
-def ex_onoremap(keys, command, **kwargs):
-    if not (keys and command):
+def ex_onoremap(lhs=None, rhs=None, **kwargs):
+    if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
-    mappings_add(OPERATOR_PENDING, keys, command)
+    mappings_add(OPERATOR_PENDING, lhs, rhs)
 
 
-def ex_ounmap(keys, **kwargs):
+def ex_ounmap(lhs, **kwargs):
     try:
-        mappings_remove(OPERATOR_PENDING, keys)
+        mappings_remove(OPERATOR_PENDING, lhs)
     except KeyError:
         status_message('Mapping not found')
 
@@ -907,11 +907,11 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
         message('not implemented')
 
 
-def ex_snoremap(keys, command, **kwargs):
-    if not (keys and command):
+def ex_snoremap(lhs=None, rhs=None, **kwargs):
+    if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
-    mappings_add(SELECT, keys, command)
+    mappings_add(SELECT, lhs, rhs)
 
 
 def ex_sort(view, line_range, **kwargs):
@@ -1042,9 +1042,9 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
     enter_normal_mode(view, None)
 
 
-def ex_sunmap(keys, **kwargs):
+def ex_sunmap(lhs, **kwargs):
     try:
-        mappings_remove(SELECT, keys)
+        mappings_remove(SELECT, lhs)
     except KeyError:
         status_message('Mapping not found')
 
@@ -1073,13 +1073,13 @@ def ex_tabprevious(window, **kwargs):
     window_tab_control(window, action='previous')
 
 
-def ex_unmap(keys, **kwargs):
+def ex_unmap(lhs, **kwargs):
     try:
-        mappings_remove(NORMAL, keys)
-        mappings_remove(OPERATOR_PENDING, keys)
-        mappings_remove(VISUAL, keys)
-        mappings_remove(VISUAL_BLOCK, keys)
-        mappings_remove(VISUAL_LINE, keys)
+        mappings_remove(NORMAL, lhs)
+        mappings_remove(OPERATOR_PENDING, lhs)
+        mappings_remove(VISUAL, lhs)
+        mappings_remove(VISUAL_BLOCK, lhs)
+        mappings_remove(VISUAL_LINE, lhs)
     except KeyError:
         status_message('Mapping not found')
 
@@ -1113,13 +1113,13 @@ def ex_unvsplit(window, **kwargs):
     window.run_command('set_layout', layout_data[groups - 1])
 
 
-def ex_vnoremap(keys, command, **kwargs):
-    if not (keys and command):
+def ex_vnoremap(lhs=None, rhs=None, **kwargs):
+    if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
-    mappings_add(VISUAL, keys, command)
-    mappings_add(VISUAL_BLOCK, keys, command)
-    mappings_add(VISUAL_LINE, keys, command)
+    mappings_add(VISUAL, lhs, rhs)
+    mappings_add(VISUAL_BLOCK, lhs, rhs)
+    mappings_add(VISUAL_LINE, lhs, rhs)
 
 
 # TODO [refactor] into window module
@@ -1172,11 +1172,11 @@ def ex_vsplit(window, view, file=None, **kwargs):
         window.new_file()
 
 
-def ex_vunmap(keys, **kwargs):
+def ex_vunmap(lhs, **kwargs):
     try:
-        mappings_remove(VISUAL, keys)
-        mappings_remove(VISUAL_BLOCK, keys)
-        mappings_remove(VISUAL_LINE, keys)
+        mappings_remove(VISUAL, lhs)
+        mappings_remove(VISUAL_BLOCK, lhs)
+        mappings_remove(VISUAL_LINE, lhs)
     except KeyError:
         status_message('Mapping not found')
 

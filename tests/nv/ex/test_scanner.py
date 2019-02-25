@@ -459,10 +459,10 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['bnext', 'bn'], cmd('bnext'))
         self.assertRoute(['browse', 'bro'], cmd('browse'))
         self.assertRoute(['buffers', 'files', 'ls'], cmd('buffers'))
-        self.assertRoute(['cd /tmp/path'], cmd('cd', params={'path': '/tmp/path', '-': None}))
-        self.assertRoute(['cd ~'], cmd('cd', params={'path': '~', '-': None}))
-        self.assertRoute(['cd!'], cmd('cd', params={'path': None, '-': None}, forced=True))
-        self.assertRoute(['cd'], cmd('cd', params={'path': None, '-': None}))
+        self.assertRoute(['cd /tmp/path'], cmd('cd', params={'path': '/tmp/path'}))
+        self.assertRoute(['cd ~'], cmd('cd', params={'path': '~'}))
+        self.assertRoute(['cd!'], cmd('cd', forced=True))
+        self.assertRoute(['cd'], cmd('cd'))
         self.assertRoute(['close!', 'clo!'], cmd('close', forced=True))
         self.assertRoute(['close', 'clo'], cmd('close'))
         self.assertRoute(['copy .', 'co .'], cmd('copy', params={'address': '.'}, addressable=True))
@@ -484,18 +484,16 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
         self.assertRoute(['move', 'm'], cmd('move', params={'address': '.'}, addressable=True))
         self.assertRoute(['new'], cmd('new'))
-        self.assertRoute(['nnoremap lhs rhs', 'nn lhs rhs'], cmd('nnoremap', params={'keys': 'lhs', 'command': 'rhs'}))
-        self.assertRoute(['nnoremap', 'nn'], cmd('nnoremap', params={'keys': None, 'command': None}))
-        self.assertRoute(['noremap lhs rhs', 'no lhs rhs'], cmd('noremap', params={'keys': 'lhs', 'command': 'rhs'}))
-        self.assertRoute(['noremap', 'no'], cmd('noremap', params={'keys': None, 'command': None}))
-        self.assertRoute(['nunmap lhs', 'nun lhs'], cmd('nunmap', params={'keys': 'lhs'}))
-        self.assertRoute(['nunmap', 'nun'], cmd('nunmap', params={'keys': None}))
+        self.assertRoute(['nnoremap abc xyz', 'nn abc xyz'], cmd('nnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
+        self.assertRoute(['nnoremap', 'nn'], cmd('nnoremap'))
+        self.assertRoute(['noremap abc xyz', 'no abc xyz'], cmd('noremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
+        self.assertRoute(['noremap', 'no'], cmd('noremap'))
+        self.assertRoute(['nunmap xyz', 'nun xyz'], cmd('nunmap', params={'lhs': 'xyz'}))
         self.assertRoute(['only!', 'on!'], cmd('only', forced=True))
         self.assertRoute(['only', 'on'], cmd('only'))
-        self.assertRoute(['onoremap lhs rhs', 'ono lhs rhs'], cmd('onoremap', params={'keys': 'lhs', 'command': 'rhs'}))
-        self.assertRoute(['onoremap', 'ono'], cmd('onoremap', params={'keys': None, 'command': None}))
-        self.assertRoute(['ounmap lhs', 'ou lhs'], cmd('ounmap', params={'keys': 'lhs'}))
-        self.assertRoute(['ounmap', 'ou'], cmd('ounmap', params={'keys': None}))
+        self.assertRoute(['onoremap abc xyz', 'ono abc xyz'], cmd('onoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
+        self.assertRoute(['onoremap', 'ono'], cmd('onoremap'))
+        self.assertRoute(['ounmap xyz', 'ou xyz'], cmd('ounmap', params={'lhs': 'xyz'}))
         self.assertRoute(['print', 'p'], cmd('print', params={'count': '', 'flags': []}, addressable=True, cooperates_with_global=True))  # noqa: E501
         self.assertRoute(['pwd', 'pw'], cmd('pwd'))
         self.assertRoute(['qall!', 'qa!'], cmd('qall', forced=True))
@@ -507,16 +505,15 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['set opt=val', 'se opt=val'], cmd('set', params={'option': 'opt', 'value': 'val'}))
         self.assertRoute(['setlocal opt=val', 'setl opt=val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
         self.assertRoute(['shell', 'sh'], cmd('shell'))
-        self.assertRoute(['snoremap lhs rhs', 'snor lhs rhs'], cmd('snoremap', params={'keys': 'lhs', 'command': 'rhs'}))  # noqa: E501
-        self.assertRoute(['snoremap', 'snor'], cmd('snoremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['snoremap abc xyz', 'snor abc xyz'], cmd('snoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))  # noqa: E501
+        self.assertRoute(['snoremap', 'snor'], cmd('snoremap'))
         self.assertRoute(['sort', 'sor'], cmd('sort', addressable=True))
         self.assertRoute(['split file.txt', 'sp file.txt'], cmd('split', params={'file': 'file.txt'}))
         self.assertRoute(['split', 'sp'], cmd('split', params={'file': None}))
         self.assertRoute(['substitute', 's'], cmd('substitute', addressable=True))
         self.assertRoute(['substitute/x/y/', 's/x/y/'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
         self.assertRoute(['substitute/x/y/ic', 's/x/y/ic'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': ['i', 'c'], 'count': 1}, addressable=True))  # noqa: E501
-        self.assertRoute(['sunmap lhs', 'sunm lhs'], cmd('sunmap', params={'keys': 'lhs'}))
-        self.assertRoute(['sunmap', 'sunm'], cmd('sunmap', params={'keys': None}))
+        self.assertRoute(['sunmap xyz', 'sunm xyz'], cmd('sunmap', params={'lhs': 'xyz'}))
         self.assertRoute(['tabclose!', 'tabc!'], cmd('tabclose', forced=True))
         self.assertRoute(['tabclose', 'tabc'], cmd('tabclose'))
         self.assertRoute(['tabfirst!', 'tabfir!', 'tabrewind!', 'tabr!'], cmd('tabfirst', forced=True))
@@ -529,15 +526,13 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['tabnext', 'tabn'], cmd('tabnext'))
         self.assertRoute(['tabonly!', 'tabo!'], cmd('tabonly', forced=True))
         self.assertRoute(['tabonly', 'tabo'], cmd('tabonly'))
-        self.assertRoute(['unmap lhs', 'unm lhs'], cmd('unmap', params={'keys': 'lhs'}))
-        self.assertRoute(['unmap', 'unm'], cmd('unmap', params={'keys': None}))
+        self.assertRoute(['unmap xyz', 'unm xyz'], cmd('unmap', params={'lhs': 'xyz'}))
         self.assertRoute(['unvsplit'], cmd('unvsplit'))
-        self.assertRoute(['vnoremap lhs rhs', 'vn lhs rhs'], cmd('vnoremap', params={'keys': 'lhs', 'command': 'rhs'}))
-        self.assertRoute(['vnoremap', 'vn'], cmd('vnoremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['vnoremap abc xyz', 'vn abc xyz'], cmd('vnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
+        self.assertRoute(['vnoremap', 'vn'], cmd('vnoremap'))
         self.assertRoute(['vsplit file.txt', 'vs file.txt'], cmd('vsplit', params={'file': 'file.txt'}))
         self.assertRoute(['vsplit', 'vs'], cmd('vsplit', params={'file': None}))
-        self.assertRoute(['vunmap lhs', 'vu lhs'], cmd('vunmap', params={'keys': 'lhs'}))
-        self.assertRoute(['vunmap', 'vu'], cmd('vunmap', params={'keys': None}))
+        self.assertRoute(['vunmap xyz', 'vu xyz'], cmd('vunmap', params={'lhs': 'xyz'}))
         self.assertRoute(['wall!', 'wa!'], cmd('wall', forced=True))
         self.assertRoute(['wall', 'wa'], cmd('wall'))
         self.assertRoute(['wq file.txt'], cmd('wq', params={'++': None, 'file': 'file.txt'}))
@@ -564,6 +559,9 @@ class Test_scan_command(unittest.TestCase):
     def assertRaisesE488TrailingCharacters(self, sources):
         self.assertRaisesExeption(sources, Exception, 'E488: Trailing characters')
 
+    def assertRaisesE474InvalidArgument(self, sources):
+        self.assertRaisesExeption(sources, Exception, 'E474: Invalid argument')
+
     def assertRaisesExeption(self, sources, exception, message):
         if isinstance(sources, str):
             sources = [sources]
@@ -584,42 +582,64 @@ class Test_scan_command(unittest.TestCase):
             'browse x',
             'buffers ',
             'buffers x',
+            'close  ',
             'close ',
             'close x',
             'close! ',
             'close! x',
+            'close!!',
+            'close!foo',
             'close!x',
             'closex',
+            'closexy',
             'cq x',
             'cquit x',
             'cquitx',
             'exitx',
+            'file ',
+            'file! ',
+            'file!x',
+            'filex',
+            'foo bar',
+            'foobar',
             'ls x ',
             'new x',
             'newx',
+            'only! ',
+            'only!x',
+            'onlyx',
+            'pwdx',
+            'xitx',
+            'q!x',
             'qall!x',
             'qallx',
             'quit!x',
             'quitx',
             'qx',
-            'q!x',
+            'registers ',
+            'registersx',
             'shellx',
             'tabclose x',
             'tabclosex',
             'wall ',
+            'xx',
             'wallx',
         ])
 
         self.assertRaisesExpectMatch([
             'copy',
+            'nunmap',
+            'ounmap',
+            'sunmap',
+            'unmap',
+            'vunmap',
+        ])
+
+        self.assertRaisesE474InvalidArgument([
         ])
 
         self.assertRaisesE492NotAnEditorCommand([
-            'let'
-            'only!x',
-            'onlyx',
-            'registers ',
-            'registersx',
+            'let',
         ])
 
         self.assertRaisesNotImplemented([

@@ -335,7 +335,11 @@ def _scan_command(state):
         if state.match(route):
             state.ignore()
 
-            return command(state)
+            cmd = command(state)
+
+            state.expect_eof()
+
+            return None, [cmd, TokenEof()]
 
     state.expect_eof(lambda: Exception("E492: Not an editor command"))
 

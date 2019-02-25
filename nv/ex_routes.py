@@ -18,19 +18,32 @@
 from collections import OrderedDict
 
 from NeoVintageous.nv.ex.tokens import TokenCommand
-from NeoVintageous.nv.ex.tokens import TokenEof
 
 
 def _literal_route(state, name, forcable=False, **kwargs):
     command = TokenCommand(name, **kwargs)
 
-    if forcable:
-        if state.match('!'):
-            command.forced = True
+    if forcable and state.match('!'):
+        command.forced = True
 
-    state.expect_eof()
+    return command
 
-    return None, [command, TokenEof()]
+
+def _create_map_route(state, name):
+    command = TokenCommand(name)
+
+    m = state.match(r'\s*(?P<lhs>.+?)\s+(?P<rhs>.+?)\s*$')
+    if m:
+        command.params.update(m.groupdict())
+
+    return command
+
+
+def _create_unmap_route(state, name):
+    command = TokenCommand(name)
+    command.params.update(state.expect_match(r'\s*(?P<lhs>.+?)\s*$').groupdict())
+
+    return command
 
 
 def _ex_route_bfirst(state):
@@ -58,54 +71,23 @@ def _ex_route_buffers(state):
 
 
 def _ex_route_cd(state):
-    command = TokenCommand('cd')
-
-    params = {'path': None, '-': None}
-    bang = False
-
-    c = state.consume()
-    if c == state.EOF:
-        command.params = params
-        command.forced = bang
-
-        return None, [command, TokenEof()]
-
-    bang = c == '!'
-    if not bang:
-        state.backup()
+    command = _literal_route(state, 'cd', forcable=True)
 
     state.skip(' ')
     state.ignore()
 
-    c = state.consume()
-    if c == state.EOF:
-        command.params = params
-        command.forced = bang
-
-        return None, [command, TokenEof()]
-
-    if c == '-':
+    if state.match('-'):
         raise NotImplementedError('parameter not implemented')
 
-    state.backup()
     m = state.match(r'(?P<path>.+?)\s*$')
-    params.update(m.groupdict())
+    if m:
+        command.params.update(m.groupdict())
 
-    command.params = params
-    command.forced = bang
-
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_close(state):
-    command = TokenCommand('close')
-
-    if state.match('!'):
-        command.forced = True
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'close', forcable=True)
 
 
 def _ex_route_copy(state):
@@ -113,7 +95,7 @@ def _ex_route_copy(state):
     command.addressable = True
     command.params = state.expect_match(r'\s*(?P<address>.+?)\s*$').groupdict()
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_cquit(state):
@@ -133,7 +115,7 @@ def _ex_route_delete(state):
     if c == state.EOF:
         command.params = params
 
-        return None, [command, TokenEof()]
+        return command
 
     state.backup()
     state.skip(' ')
@@ -147,7 +129,7 @@ def _ex_route_delete(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_double_ampersand(state):
@@ -165,7 +147,7 @@ def _ex_route_double_ampersand(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_edit(state):
@@ -179,7 +161,7 @@ def _ex_route_edit(state):
     if c == state.EOF:
         command.params = params
 
-        return None, [command, TokenEof()]
+        return command
 
     bang = c == '!'
     if not bang:
@@ -191,7 +173,7 @@ def _ex_route_edit(state):
             command.params = params
             command.forced = bang
 
-            return None, [command, TokenEof()]
+            return command
 
         if c in ('+', '#'):
             raise NotImplementedError('parameter not implemented')
@@ -250,7 +232,7 @@ def _ex_route_global(state):
     command.params = params
     command.forced = bang
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_help(state):
@@ -262,7 +244,7 @@ def _ex_route_help(state):
     command.params = params
     command.forced = bang
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_let(state):
@@ -277,7 +259,7 @@ def _ex_route_let(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_move(state):
@@ -294,7 +276,7 @@ def _ex_route_move(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_new(state):
@@ -302,85 +284,27 @@ def _ex_route_new(state):
 
 
 def _ex_route_nnoremap(state):
-    command = TokenCommand('nnoremap')
-    params = {'keys': None, 'command': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s+(?P<command>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_map_route(state, 'nnoremap')
 
 
 def _ex_route_noremap(state):
-    command = TokenCommand('noremap')
-    params = {'keys': None, 'command': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s+(?P<command>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_map_route(state, 'noremap')
 
 
 def _ex_route_nunmap(state):
-    command = TokenCommand('nunmap')
-    params = {'keys': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_unmap_route(state, 'nunmap')
 
 
 def _ex_route_only(state):
-    command = TokenCommand('only')
-
-    bang = state.consume()
-    if bang == '!':
-        state.ignore()
-        state.expect_eof()
-
-        command.forced = True
-
-        return None, [command, TokenEof()]
-
-    state.expect_eof()
-
-    return None, [command, TokenEof()]
+    return _literal_route(state, 'only', forcable=True)
 
 
 def _ex_route_onoremap(state):
-    command = TokenCommand('onoremap')
-    params = {'keys': None, 'command': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s+(?P<command>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_map_route(state, 'onoremap')
 
 
 def _ex_route_ounmap(state):
-    command = TokenCommand('ounmap')
-    params = {'keys': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_unmap_route(state, 'ounmap')
 
 
 def _ex_route_print(state):
@@ -399,7 +323,7 @@ def _ex_route_print(state):
         if c == state.EOF:
             command.params = params
 
-            return None, [command, TokenEof()]
+            return command
 
         if c.isdigit():
             state.match(r'\d*')
@@ -414,7 +338,7 @@ def _ex_route_print(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_pwd(state):
@@ -458,7 +382,7 @@ def _ex_route_read(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_registers(state):
@@ -477,7 +401,7 @@ def _ex_route_set(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_setlocal(state):
@@ -492,7 +416,7 @@ def _ex_route_setlocal(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_shell(state):
@@ -509,33 +433,15 @@ def _ex_route_shell_out(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_snoremap(state):
-    command = TokenCommand('snoremap')
-    params = {'keys': None, 'command': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s+(?P<command>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_map_route(state, 'snoremap')
 
 
 def _ex_route_sunmap(state):
-    command = TokenCommand('sunmap')
-    params = {'keys': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_unmap_route(state, 'sunmap')
 
 
 def _ex_route_sort(state):
@@ -552,7 +458,7 @@ def _ex_route_split(state):
     if state.consume() == state.EOF:
         command.params = params
 
-        return None, [command, TokenEof()]
+        return command
 
     state.backup()
 
@@ -560,7 +466,7 @@ def _ex_route_split(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_substitute(state):
@@ -570,7 +476,7 @@ def _ex_route_substitute(state):
     delim = state.consume()
 
     if delim == state.EOF:
-        return None, [command, TokenEof()]
+        return command
 
     state.backup()
     delim = state.consume()
@@ -628,7 +534,7 @@ def _ex_route_substitute(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_tabclose(state):
@@ -656,16 +562,7 @@ def _ex_route_tabprevious(state):
 
 
 def _ex_route_unmap(state):
-    command = TokenCommand('unmap')
-    params = {'keys': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_unmap_route(state, 'unmap')
 
 
 def _ex_route_unvsplit(state):
@@ -673,16 +570,7 @@ def _ex_route_unvsplit(state):
 
 
 def _ex_route_vnoremap(state):
-    command = TokenCommand('vnoremap')
-    params = {'keys': None, 'command': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s+(?P<command>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_map_route(state, 'vnoremap')
 
 
 def _ex_route_vsplit(state):
@@ -695,7 +583,7 @@ def _ex_route_vsplit(state):
     if state.consume() == state.EOF:
         command.params = params
 
-        return None, [command, TokenEof()]
+        return command
 
     state.backup()
 
@@ -703,20 +591,11 @@ def _ex_route_vsplit(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_vunmap(state):
-    command = TokenCommand('vunmap')
-    params = {'keys': None}
-
-    m = state.match(r'\s*(?P<keys>.+?)\s*$')
-    if m:
-        params.update(m.groupdict())
-
-    command.params = params
-
-    return None, [command, TokenEof()]
+    return _create_unmap_route(state, 'vunmap')
 
 
 def _ex_route_wall(state):
@@ -735,7 +614,7 @@ def _ex_route_wq(state):
     if c == state.EOF:
         command.params = params
 
-        return None, [command, TokenEof()]
+        return command
 
     bang = True if c == '!' else False
     if not bang:
@@ -770,7 +649,7 @@ def _ex_route_wq(state):
         command.params = params
         command.forced = bang
 
-        return None, [command, TokenEof()]
+        return command
 
     m = state.expect_match(r'.+$')
     params['file'] = m.group(0).strip()
@@ -778,7 +657,7 @@ def _ex_route_wq(state):
     command.params = params
     command.forced = bang
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_wqall(state):
@@ -815,7 +694,7 @@ def _ex_route_wqall(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_write(state):
@@ -833,7 +712,7 @@ def _ex_route_write(state):
     if bang == state.EOF:
         command.params = params
 
-        return None, [command, TokenEof()]
+        return command
 
     if bang != '!':
         bang = False
@@ -855,7 +734,7 @@ def _ex_route_write(state):
             command.params = params
             command.forced = bang
 
-            return None, [command, TokenEof()]
+            return command
 
         if c == '+':
             state.expect('+')
@@ -896,7 +775,7 @@ def _ex_route_write(state):
     command.params = params
     command.forced = bang
 
-    return None, [command, TokenEof()]
+    return command
 
 
 def _ex_route_yank(state):
@@ -912,7 +791,7 @@ def _ex_route_yank(state):
     if c == state.EOF:
         command.params = params
 
-        return None, [command, TokenEof()]
+        return command
 
     state.backup()
     state.skip(' ')
@@ -926,7 +805,7 @@ def _ex_route_yank(state):
 
     command.params = params
 
-    return None, [command, TokenEof()]
+    return command
 
 
 # TODO: compile regexes. ??
@@ -940,6 +819,7 @@ ex_routes[r'bN(?:ext)?'] = _ex_route_bprevious
 ex_routes[r'bp(?:revious)?'] = _ex_route_bprevious
 ex_routes[r'bro(?:wse)?'] = _ex_route_browse
 ex_routes[r'br(?:ewind)?'] = _ex_route_bfirst
+ex_routes[r'cd'] = _ex_route_cd
 ex_routes[r'clo(?:se)?'] = _ex_route_close
 ex_routes[r'co(?:py)?'] = _ex_route_copy
 ex_routes[r'cq(?:uit)?'] = _ex_route_cquit
@@ -950,8 +830,6 @@ ex_routes[r'f(?:ile)?'] = _ex_route_file
 ex_routes[r'g(?:lobal)?(?=[^ ])'] = _ex_route_global
 ex_routes[r'h(?:elp)?'] = _ex_route_help
 ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
-ex_routes[r'x(?:it)?$'] = _ex_route_exit
-ex_routes[r'^cd(?=[^d]|$)'] = _ex_route_cd
 ex_routes[r'e(?:dit)?(?= |$)?'] = _ex_route_edit
 ex_routes[r'let\s'] = _ex_route_let
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
@@ -960,14 +838,14 @@ ex_routes[r'new'] = _ex_route_new
 ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap
 ex_routes[r'nun(?:map)?'] = _ex_route_nunmap
 ex_routes[r'ono(?:remap)?'] = _ex_route_onoremap
-ex_routes[r'on(?:ly)?(?=!$|$)'] = _ex_route_only
+ex_routes[r'on(?:ly)?'] = _ex_route_only
 ex_routes[r'ou(nmap)?'] = _ex_route_ounmap
 ex_routes[r'p(?:rint)?$'] = _ex_route_print
-ex_routes[r'pwd?$'] = _ex_route_pwd
+ex_routes[r'pw(?:d)?'] = _ex_route_pwd
 ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
 ex_routes[r'qa(?:ll)?'] = _ex_route_qall
 ex_routes[r'r(?!eg)(?:ead)?'] = _ex_route_read
-ex_routes[r'reg(?:isters)?(?=\s+[a-z0-9]+$|$)'] = _ex_route_registers
+ex_routes[r'reg(?:isters)?'] = _ex_route_registers
 ex_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = _ex_route_substitute
 ex_routes[r'se(?:t)?(?=$|\s)'] = _ex_route_set
 ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
@@ -985,12 +863,13 @@ ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
 ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
 ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
 ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
-ex_routes[r'unvsplit$'] = _ex_route_unvsplit
+ex_routes[r'unvsplit'] = _ex_route_unvsplit
 ex_routes[r'vn(?:oremap)?'] = _ex_route_vnoremap
 ex_routes[r'vu(?:nmap)?'] = _ex_route_vunmap
 ex_routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = _ex_route_write
 ex_routes[r'wqa(?:ll)?'] = _ex_route_wqall
 ex_routes[r'xa(?:ll)?'] = _ex_route_wqall
+ex_routes[r'x(?:it)?'] = _ex_route_exit
 ex_routes[r'wa(?:ll)?'] = _ex_route_wall
 ex_routes[r'wq(?=[^a-zA-Z]|$)?'] = _ex_route_wq
 ex_routes[r'y(?:ank)?'] = _ex_route_yank

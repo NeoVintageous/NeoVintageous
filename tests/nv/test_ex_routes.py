@@ -32,27 +32,26 @@ from NeoVintageous.nv.ex_routes import _ex_route_substitute
 from NeoVintageous.nv.ex_routes import _ex_route_tabnext
 from NeoVintageous.nv.ex_routes import ex_routes
 from NeoVintageous.nv.ex_routes import TokenCommand
-from NeoVintageous.nv.ex_routes import TokenEof
 
 
 class Test_ex_route_buffers(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_buffers(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('buffers'), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('buffers'))
 
 
 class Test_ex_route_cd(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_cd(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('cd', params={'-': None, 'path': None}), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('cd'))
 
         actual = _ex_route_cd(_ScannerState(' /tmp/foo/bar'))
-        self.assertEqual(actual, (None, [TokenCommand('cd', params={'-': None, 'path': '/tmp/foo/bar'}, forced=False), TokenEof()]))  # noqa: E501
+        self.assertEqual(actual, TokenCommand('cd', params={'path': '/tmp/foo/bar'}, forced=False))  # noqa: E501
 
         actual = _ex_route_cd(_ScannerState('!'))
-        self.assertEqual(actual, (None, [TokenCommand('cd', params={'-': None, 'path': None}, forced=True), TokenEof()]))  # noqa: E501
+        self.assertEqual(actual, TokenCommand('cd', forced=True))  # noqa: E501
 
     def test_not_implemented(self):
         with self.assertRaises(Exception):
@@ -63,119 +62,77 @@ class Test_ex_route_close(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_close(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('close'), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('close'))
 
         actual = _ex_route_close(_ScannerState('!'))
-        self.assertEqual(actual, (None, [TokenCommand('close', forced=True), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('close', forced=True))
 
         actual = _ex_route_close(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('close', forced=False), TokenEof()]))
-
-    def test_raises_exception(self):
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got   instead'):
-            _ex_route_close(_ScannerState('  '))
-
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got   instead'):
-            _ex_route_close(_ScannerState('! '))
-
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got x instead'):
-            _ex_route_close(_ScannerState('xy'))
-
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got x instead'):
-            _ex_route_close(_ScannerState('!x'))
-
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got b instead'):
-            _ex_route_close(_ScannerState('baz'))
-
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got f instead'):
-            _ex_route_close(_ScannerState('!foo'))
-
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got ! instead'):
-            _ex_route_close(_ScannerState('!!'))
+        self.assertEqual(actual, TokenCommand('close', forced=False))
 
 
 class Test_ex_route_file(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_file(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('file'), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('file'))
 
         actual = _ex_route_file(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('file', forced=False), TokenEof()]))
-
-    def test_can_raise_exception(self):
-        with self.assertRaises(Exception):
-            _ex_route_file(_ScannerState('x'))
-
-        with self.assertRaises(Exception):
-            _ex_route_file(_ScannerState('!x'))
-
-        with self.assertRaises(Exception):
-            _ex_route_file(_ScannerState('! '))
-
-        with self.assertRaises(Exception):
-            _ex_route_file(_ScannerState(' '))
+        self.assertEqual(actual, TokenCommand('file', forced=False))
 
 
 class Test_ex_route_global(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_global(_ScannerState('/111/print'))
-        self.assertEqual(actual, (None, [TokenCommand('global', addressable=True, params={'pattern': '111', 'cmd': 'print'}), TokenEof()]))  # noqa: E501
+        self.assertEqual(actual, TokenCommand('global', addressable=True, params={'pattern': '111', 'cmd': 'print'}))  # noqa: E501
 
         actual = _ex_route_global(_ScannerState('/111/p'))
-        self.assertEqual(actual, (None, [TokenCommand('global', addressable=True, params={'pattern': '111', 'cmd': 'p'}), TokenEof()]))  # noqa: E501
+        self.assertEqual(actual, TokenCommand('global', addressable=True, params={'pattern': '111', 'cmd': 'p'}))  # noqa: E501
 
         actual = _ex_route_global(_ScannerState('/111/delete'))
-        self.assertEqual(actual, (None, [TokenCommand('global', addressable=True, params={'pattern': '111', 'cmd': 'delete'}), TokenEof()]))  # noqa: E501
+        self.assertEqual(actual, TokenCommand('global', addressable=True, params={'pattern': '111', 'cmd': 'delete'}))  # noqa: E501
 
     def test_issue_181(self):
         actual = _ex_route_global(_ScannerState('!/111/print'))
-        self.assertEqual(actual, (None, [TokenCommand('global', addressable=True, forced=True, params={'pattern': '111', 'cmd': 'print'}), TokenEof()]))  # noqa: E501
+        self.assertEqual(actual, TokenCommand('global', addressable=True, forced=True, params={'pattern': '111', 'cmd': 'print'}))  # noqa: E501
 
         actual = _ex_route_global(_ScannerState('!/111/delete'))
-        self.assertEqual(actual, (None, [TokenCommand('global', addressable=True, forced=True, params={'pattern': '111', 'cmd': 'delete'}), TokenEof()]))  # noqa: E501
+        self.assertEqual(actual, TokenCommand('global', addressable=True, forced=True, params={'pattern': '111', 'cmd': 'delete'}))  # noqa: E501
 
 
 class Test_ex_route_noremap(unittest.TestCase):
 
     def test_ex_route_noremap(self):
         actual = _ex_route_noremap(_ScannerState('w 2w'))
-        self.assertEqual(actual, (None, [TokenCommand('noremap', params={'keys': 'w', 'command': '2w'}), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('noremap', params={'lhs': 'w', 'rhs': '2w'}))
 
 
 class Test_ex_route_only(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_only(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('only'), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('only'))
 
         actual = _ex_route_only(_ScannerState('!'))
-        self.assertEqual(actual, (None, [TokenCommand('only', forced=True), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('only', forced=True))
 
         actual = _ex_route_only(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('only', forced=False), TokenEof()]))
-
-    def test_can_raise_exception(self):
-        with self.assertRaises(Exception):
-            _ex_route_only(_ScannerState('!x'))
-
-        with self.assertRaises(Exception):
-            _ex_route_only(_ScannerState('! '))
+        self.assertEqual(actual, TokenCommand('only', forced=False))
 
 
 class Test_ex_route_onoremap(unittest.TestCase):
 
     def test_ex_route_onoremap(self):
         actual = _ex_route_onoremap(_ScannerState('L $'))
-        self.assertEqual(actual, (None, [TokenCommand('onoremap', params={'keys': 'L', 'command': '$'}), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('onoremap', params={'lhs': 'L', 'rhs': '$'}))
 
 
 class Test_ex_route_substitute(unittest.TestCase):
 
     def test_none(self):
         actual = _ex_route_substitute(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('substitute', addressable=True), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('substitute', addressable=True))
 
     def test_raises_exception(self):
         with self.assertRaisesRegex(ValueError, 'bad command'):
@@ -187,65 +144,65 @@ class Test_ex_route_substitute(unittest.TestCase):
     def _test_ex_route_substitute(self):
         self.assertEqual(
             _ex_route_substitute(_ScannerState('/abc/def/')),
-            (None, [TokenCommand('substitute', addressable=True, params={
+            TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': [],
-            }), TokenEof()])
+            })
         )
 
     def test_empty(self):
         self.assertEqual(
             _ex_route_substitute(_ScannerState('///')),
-            (None, [TokenCommand('substitute', addressable=True, params={
+            TokenCommand('substitute', addressable=True, params={
                 'pattern': '',
                 'replacement': '',
                 'count': 1,
                 'flags': [],
-            }), TokenEof()])
+            })
         )
 
     def test_flags(self):
         self.assertEqual(
             _ex_route_substitute(_ScannerState('/abc/def/g')),
-            (None, [TokenCommand('substitute', addressable=True, params={
+            TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['g']
-            }), TokenEof()])
+            })
         )
 
         self.assertEqual(
             _ex_route_substitute(_ScannerState('/abc/def/i')),
-            (None, [TokenCommand('substitute', addressable=True, params={
+            TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['i']
-            }), TokenEof()])
+            })
         )
 
         self.assertEqual(
             _ex_route_substitute(_ScannerState('/abc/def/gi')),
-            (None, [TokenCommand('substitute', addressable=True, params={
+            TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': ['g', 'i']
-            }), TokenEof()])
+            })
         )
 
     def test_closing_delimiter_is_not_required(self):
         self.assertEqual(
             _ex_route_substitute(_ScannerState('/abc/def')),
-            (None, [TokenCommand('substitute', addressable=True, params={
+            TokenCommand('substitute', addressable=True, params={
                 'pattern': 'abc',
                 'replacement': 'def',
                 'count': 1,
                 'flags': []
-            }), TokenEof()])
+            })
         )
 
 
@@ -253,13 +210,13 @@ class Test_ex_route_tabnext(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_tabnext(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('tabnext'), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('tabnext'))
 
         actual = _ex_route_tabnext(_ScannerState('!'))
-        self.assertEqual(actual, (None, [TokenCommand('tabnext', forced=True), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('tabnext', forced=True))
 
         actual = _ex_route_tabnext(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('tabnext', forced=False), TokenEof()]))
+        self.assertEqual(actual, TokenCommand('tabnext', forced=False))
 
 
 class TestRoutes(unittest.TestCase):
