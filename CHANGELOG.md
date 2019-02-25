@@ -12,6 +12,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#441](https://github.com/NeoVintageous/NeoVintageous/issues/441): Remove non-standard `:cdd`, use `:cd %:h` instead
+* Fixed [#446](https://github.com/NeoVintageous/NeoVintageous/issues/446): Many ex commands incorrectly accept an invalid trailing character
+* Fixed [#443](https://github.com/NeoVintageous/NeoVintageous/issues/443): `:cd %:h` display incorrect status message
+* Fixed [#20](https://github.com/NeoVintageous/NeoVintageous/issues/20): `:e#` edits literal file
 * Fixed [#444](https://github.com/NeoVintageous/NeoVintageous/issues/444): `vi[` and `vi]` should not select otherwise empty target lines
 
 ## 1.9.0 - 2019-02-21

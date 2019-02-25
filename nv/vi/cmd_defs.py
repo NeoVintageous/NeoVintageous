@@ -1757,9 +1757,6 @@ class StShowGotoAnything(ViOperatorDef):
 
 @keys.assign(seq=seqs.GA, modes=(NORMAL,))
 class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def translate(self, state):
         return {
             'action': '_vi_ga',

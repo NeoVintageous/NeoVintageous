@@ -21,9 +21,6 @@ from NeoVintageous.nv.ex.tokens import TokenCommand
 from NeoVintageous.nv.ex.tokens import TokenEof
 
 
-# TODO [bug] (all commands) ":command" followed by character that is not "!"  shouldn't be # valid e.g. the ":close" command should run when !:closex". There are a # bunch of commands that have this bug.  # noqa: E501
-
-
 def _ex_route_bfirst(state):
     command = TokenCommand('bfirst')
 
@@ -58,19 +55,8 @@ def _ex_route_bprevious(state):
 
 def _ex_route_browse(state):
     command = TokenCommand('browse')
-    # TODO [review] "cmd" param looks unused.
-    params = {'cmd': None}
 
-    state.skip(' ')
-    state.ignore()
-
-    m = state.match(r'(?P<cmd>.*)$')
-
-    params.update(m.groupdict())
-    if params['cmd']:
-        raise NotImplementedError('parameter not implemented')
-
-    command.params = params
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
@@ -78,11 +64,7 @@ def _ex_route_browse(state):
 def _ex_route_buffers(state):
     command = TokenCommand('buffers')
 
-    try:
-        state.expect_eof()
-    except ValueError:
-        # TODO Use a special domain exception for exceptions raised in scans.
-        raise Exception("E488: Trailing characters")
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
@@ -90,7 +72,6 @@ def _ex_route_buffers(state):
 def _ex_route_cd(state):
     command = TokenCommand('cd')
 
-    # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     params = {'path': None, '-': None}
     bang = False
 
@@ -128,31 +109,17 @@ def _ex_route_cd(state):
     return None, [command, TokenEof()]
 
 
-def _ex_route_cdd(state):
-    command = TokenCommand('cdd')
-
-    c = state.consume()
-    if c == state.EOF:
-        return None, [command, TokenEof()]
-
-    bang = c == '!'
-    if not bang:
-        state.backup()
-
-    state.expect_eof()
-
-    command.forced = bang
-
-    return None, [command, TokenEof()]
-
-
 def _ex_route_close(state):
     command = TokenCommand('close')
-    bang = state.consume() == '!'
+
+    # bang = state.consume() == '!'
+    # state.expect_eof()
+    # command.forced = bang
+
+    if state.match('!'):
+        command.forced = True
 
     state.expect_eof()
-
-    command.forced = bang
 
     return None, [command, TokenEof()]
 
@@ -160,12 +127,7 @@ def _ex_route_close(state):
 def _ex_route_copy(state):
     command = TokenCommand('copy')
     command.addressable = True
-
-    params = {'address': None}
-    m = state.expect_match(r'\s*(?P<address>.+?)\s*$')
-    params.update(m.groupdict())
-
-    command.params = params
+    command.params = state.expect_match(r'\s*(?P<address>.+?)\s*$').groupdict()
 
     return None, [command, TokenEof()]
 
@@ -228,12 +190,9 @@ def _ex_route_double_ampersand(state):
 
 def _ex_route_edit(state):
     command = TokenCommand('edit')
-    # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
+
     params = {
-        '++': None,
-        'cmd': None,
-        'file_name': None,
-        'count': None,
+        'file_name': None
     }
 
     c = state.consume()
@@ -246,48 +205,16 @@ def _ex_route_edit(state):
     if not bang:
         state.backup()
 
-    plus_plus_translations = {
-        'ff': 'fileformat',
-        'bin': 'binary',
-        'enc': 'fileencoding',
-        'nobin': 'nobinary'
-    }
-
     while True:
         c = state.consume()
-
         if c == state.EOF:
             command.params = params
             command.forced = bang
 
             return None, [command, TokenEof()]
 
-        if c == '+':
-            k = state.consume()
-            if k == '+':
-                state.ignore()
-                # TODO: expect_match should work with emit()
-                # https://vimhelp.appspot.com/editing.txt.html#[++opt]
-                m = state.expect_match(
-                    r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-                    lambda: Exception("E474: Invalid argument"))
-
-                name = m.group(0)
-                params['++'] = plus_plus_translations.get(name, name)
-
-                state.ignore()
-
-                raise NotImplementedError('param not implemented')
-                continue
-
-            state.backup()
-            state.ignore()
-            state.expect_match(r'.+$')
-
-            params['cmd'] = state.emit()
-
-            raise NotImplementedError('param not implemented')
-            continue
+        if c in ('+', '#'):
+            raise NotImplementedError('parameter not implemented')
 
         if c != ' ':
             state.match(r'.*')
@@ -295,102 +222,20 @@ def _ex_route_edit(state):
 
             state.skip(' ')
             state.ignore()
-            continue
-
-        if c == '#':
-            state.ignore()
-            m = state.expect_match(r'\d+')
-            params['count'] = m.group(0)
-
-            raise NotImplementedError('param not implemented')
-            continue
-
-    command.params = params
-    command.forced = bang
-
-    return None, [command, TokenEof()]
 
 
 def _ex_route_exit(state):
     command = TokenCommand('exit')
-    command.addressable = True
-
-    # TODO [review] file_name param looks unused by the ex_exit
-    params = {'file_name': ''}
-
-    bang = state.consume()
-
-    if bang == state.EOF:
-        command.params = params
-
-        return None, [command, TokenEof()]
-
-    bang = bang == '!'
-    if not bang:
-        state.backup()
-
-    state.skip(' ')
-    state.ignore()
-
-    plus_plus_translations = {
-        'ff': 'fileformat',
-        'bin': 'binary',
-        'enc': 'fileencoding',
-        'nobin': 'nobinary'
-    }
-
-    while True:
-        c = state.consume()
-
-        if c == state.EOF:
-            command.params = params
-            command.forced = bang
-
-            return None, [command, TokenEof()]
-
-        if c == '+':
-            state.expect('+')
-            state.ignore()
-
-            # TODO: expect_match should work with emit()
-            # https://vimhelp.appspot.com/editing.txt.html#[++opt]
-            m = state.expect_match(
-                r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-                lambda: Exception("E474: Invalid argument"))
-
-            name = m.group(0)
-            params['++'] = plus_plus_translations.get(name, name)
-
-            state.ignore()
-            continue
-
-        if c != ' ':
-            state.match(r'.*')
-            params['file_name'] = state.emit().strip()
-            state.skip(' ')
-            state.ignore()
 
     state.expect_eof()
-
-    command.params = params
-    command.forced = bang
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_file(state):
     command = TokenCommand('file')
-    bang = state.consume()
-    if bang == state.EOF:
-        return None, [command, TokenEof()]
 
-    bang = bang == '!'
-    if not bang:
-        raise Exception("E488: Trailing characters")
-
-    state.expect_eof(on_error=lambda: Exception("E488: Trailing characters"))
-
-    command.forced = bang
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
@@ -473,8 +318,7 @@ def _ex_route_move(state):
 
     m = state.match(r'(?P<address>.*$)')
     if m:
-        address_command_line = m.group(0).strip() or '.'
-        params['address'] = address_command_line
+        params['address'] = m.group(0).strip() or '.'
 
     command.params = params
 
@@ -483,43 +327,8 @@ def _ex_route_move(state):
 
 def _ex_route_new(state):
     command = TokenCommand('new')
-    # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
-    params = {'++': None, 'cmd': None}
 
-    state.skip(' ')
-    state.ignore()
-
-    c = state.consume()
-    if c == '+':
-        state.expect('+')
-        state.ignore()
-
-        # TODO: expect_match should work with emit()
-        # https://vimhelp.appspot.com/editing.txt.html#[++opt]
-        m = state.expect_match(
-            r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-            lambda: Exception("E474: Invalid argument"))
-
-        name = m.group(0)
-
-        plus_plus_translations = {
-            'ff': 'fileformat',
-            'bin': 'binary',
-            'enc': 'fileencoding',
-            'nobin': 'nobinary'
-        }
-
-        params['++'] = plus_plus_translations.get(name, name)
-        state.ignore()
-
-        raise NotImplementedError(':new not fully implemented')
-
-    m = state.match(r'.+$')
-    if m:
-        params['cmd'] = m.group(0).strip()
-        raise NotImplementedError(':new not fully implemented')
-
-    command.params = params
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
@@ -575,8 +384,7 @@ def _ex_route_only(state):
 
         return None, [command, TokenEof()]
 
-    # TODO [refactor] and remove assertion
-    assert bang == state.EOF, 'trailing characters'
+    state.expect_eof()
 
     return None, [command, TokenEof()]
 
@@ -612,7 +420,6 @@ def _ex_route_print(state):
     command.addressable = True
     command.cooperates_with_global = True
 
-    # TODO [review] count param looks unused.
     params = {'count': '', 'flags': []}
 
     while True:
@@ -652,31 +459,27 @@ def _ex_route_pwd(state):
 
 def _ex_route_qall(state):
     command = TokenCommand('qall')
-    bang = state.consume() == '!'
+    command.forced = state.consume() == '!'
 
     state.expect_eof()
-
-    command.forced = bang
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_quit(state):
     command = TokenCommand('quit')
-    bang = state.consume() == '!'
+    command.forced = state.consume() == '!'
 
     state.expect_eof()
-
-    command.forced = bang
 
     return None, [command, TokenEof()]
 
 
 def _ex_route_read(state):
     command = TokenCommand('read')
+
     params = {
         'cmd': None,
-        '++': [],
         'file_name': None,
     }
 
@@ -686,25 +489,7 @@ def _ex_route_read(state):
     c = state.consume()
 
     if c == '+':
-        state.expect('+')
-        state.ignore()
-        # TODO: expect_match should work with emit()
-        # https://vimhelp.appspot.com/editing.txt.html#[++opt]
-        m = state.expect_match(
-            r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-            lambda: Exception("E474: Invalid argument"))
-        name = m.group(0)
-
-        plus_plus_translations = {
-            'ff': 'fileformat',
-            'bin': 'binary',
-            'enc': 'fileencoding',
-            'nobin': 'nobinary',
-        }
-
-        params['++'] = plus_plus_translations.get(name, name)
-        state.ignore()
-        raise NotImplementedError('++opt not implemented')
+        raise NotImplementedError('parameter not implemented')
 
     elif c == '!':
         m = state.match(r'(?P<cmd>.+)')
@@ -724,22 +509,10 @@ def _ex_route_read(state):
 
 def _ex_route_registers(state):
     command = TokenCommand('registers')
-    # TODO [review] "names" param looks unused by ex_registers
-    params = {'names': []}
 
-    state.skip(' ')
-    state.ignore()
+    state.expect_eof()
 
-    while True:
-        c = state.consume()
-        if c == state.EOF:
-            command.params = params
-
-            return None, [command, TokenEof()]
-        elif c.isalpha() or c.isdigit():
-            params['names'].append(c)
-        else:
-            raise ValueError('wrong arguments')
+    return None, [command, TokenEof()]
 
 
 def _ex_route_set(state):
@@ -977,14 +750,6 @@ def _ex_route_unmap(state):
     command = TokenCommand('unmap')
     params = {'keys': None}
 
-    # TODO [refactor] Some commands require certain arguments e.g "keys" is a
-    # required argument for the unmap ex command. Currently the do_ex_command
-    # (may have  been refactored into another name), passes params to the ex
-    # commands, and None is valid argument, but in the case of this command
-    # it's a required argument, so rather than the ex command deal with the
-    # invalid argument, it should be dealt with a) either here, or b) by the
-    # command runner.
-
     m = state.match(r'\s*(?P<keys>.+?)\s*$')
     if m:
         params.update(m.groupdict())
@@ -1061,7 +826,7 @@ def _ex_route_wall(state):
 
 def _ex_route_wq(state):
     command = TokenCommand('wq')
-    # TODO [review] None of the prams looks used
+
     params = {
         '++': None,
         'file': None,
@@ -1100,7 +865,7 @@ def _ex_route_wq(state):
         params['++'] = plus_plus_translations.get(name, name)
 
         state.ignore()
-        raise NotImplementedError('param not implemented')
+        raise NotImplementedError('parameter not implemented')
 
     if c == state.EOF:
         command.params = params
@@ -1158,8 +923,6 @@ def _ex_route_write(state):
     command = TokenCommand('write')
     command.addressable = True
 
-    # TODO [refactor] params should used keys compatible with ex command function keyword arguments. Review other routes too.  # noqa: E501
-
     params = {
         '++': '',
         'file_name': '',
@@ -1190,7 +953,6 @@ def _ex_route_write(state):
     while True:
         c = state.consume()
         if c == state.EOF:
-            # TODO: forced?
             command.params = params
             command.forced = bang
 
@@ -1291,7 +1053,6 @@ ex_routes[r'h(?:elp)?'] = _ex_route_help
 ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
 ex_routes[r'x(?:it)?$'] = _ex_route_exit
 ex_routes[r'^cd(?=[^d]|$)'] = _ex_route_cd
-ex_routes[r'^cdd'] = _ex_route_cdd
 ex_routes[r'e(?:dit)?(?= |$)?'] = _ex_route_edit
 ex_routes[r'let\s'] = _ex_route_let
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move

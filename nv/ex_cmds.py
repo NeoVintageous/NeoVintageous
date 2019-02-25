@@ -207,51 +207,21 @@ def ex_buffers(window, **kwargs):
     window.show_quick_panel(file_names, on_done)
 
 
-@_changing_cd
-def ex_cd(window, view, path=None, forceit=False, **kwargs):
-    # XXX Currently behaves as on Unix systems for all platforms.
-    if view.is_dirty() and not forceit:
-        return message("E37: No write since last change")
-
+def ex_cd(view, path=None, **kwargs):
     if not path:
-        set_cmdline_cwd(os.path.expanduser('~'))
-        status_message(path)
-
-    # TODO It seems there a few symbols that are always substituted when they
-    # represent a filename. We should have a global method of substiting them.
+        path = os.path.expanduser('~')
     elif path == '%:h':
         fname = view.file_name()
         if fname:
-            set_cmdline_cwd(os.path.dirname(fname))
-            status_message(path)
+            path = os.path.dirname(fname)
     else:
         path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
-        if not os.path.exists(path):
-            return message("E344: Can't find directory \"%s\" in cdpath" % path)
 
-        set_cmdline_cwd(path)
-        status_message(path)
+    if not os.path.isdir(path):
+        return message("E344: Can't find directory \"%s\" in cdpath" % path)
 
-
-# Non-standard command to change the current directory to the active view's
-# directory. In Sublime Text, the current directory doesn't follow the
-# active view, so it's convenient to be able to align both easily.
-# XXX: Is the above still true?
-# XXX: This command may be removed at any time.
-def ex_cdd(view, forceit=False, **kwargs):
-    if view.is_dirty() and not forceit:
-        return message("E37: No write since last change")
-
-    file_name = view.file_name()
-    if not file_name:
-        return
-
-    try:
-        path = os.path.dirname(file_name)
-        set_cmdline_cwd(path)
-        status_message(path)
-    except IOError:
-        message("E344: Can't find directory \"%s\" in cdpath" % path)
+    set_cmdline_cwd(path)
+    status_message(path)
 
 
 def ex_close(window, forceit=False, **kwargs):
@@ -341,7 +311,7 @@ def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):
 
 
 @_changing_cd
-def ex_edit(window, view, file_name, cmd, forceit=False, **kwargs):
+def ex_edit(window, view, file_name=None, forceit=False, **kwargs):
     if file_name:
         file_name = os.path.expanduser(os.path.expandvars(file_name))
 
@@ -732,7 +702,6 @@ def ex_qall(window, forceit=False, **kwargs):
             if view.is_dirty():
                 view.set_scratch(True)
     elif has_dirty_buffers(window):
-        # TODO [review] [easypick] status message
         return status_message('there are unsaved changes!')
 
     window.run_command('close_all')
@@ -1249,7 +1218,6 @@ def ex_wqall(window, **kwargs):
 
 @_changing_cd
 def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
-    # TODO [refactor] Should params should used keys compatible with **kwargs? (review other commands too) # noqa: E501
     options = kwargs.get('++')
     appends = kwargs.get('>>')
 
@@ -1263,7 +1231,6 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
         return
 
     def _check_is_readonly(fname):
-        # type: (str) -> bool
         if not fname:
             return False
 

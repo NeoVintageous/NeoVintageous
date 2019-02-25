@@ -346,9 +346,9 @@ class _VintageSettings():
 
 # TODO: Make this a descriptor; avoid instantiation.
 class SettingsManager():
+    window = _SublimeWindowSettings()
     view = _SublimeSettings()
     vi = _VintageSettings()
-    window = _SublimeWindowSettings()
 
     def __init__(self, view):
         self.v = view

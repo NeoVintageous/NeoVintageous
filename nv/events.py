@@ -37,7 +37,7 @@ __all__ = [
 _cmdline_completions = [
     'bfirst', 'blast', 'bnext', 'bNext', 'bprevious', 'browse', 'brewind',
     'close', 'copy', 'cquit', 'delete', 'exit', 'files', 'ls', 'buffers',
-    'file', 'global', 'help', 'vsplit', 'xit', 'cd', 'cdd', 'edit', 'let',
+    'file', 'global', 'help', 'vsplit', 'xit', 'cd', 'edit', 'let',
     'move', 'noremap', 'new', 'nnoremap', 'nunmap', 'onoremap', 'only',
     'ounmap', 'print', 'pwd', 'quit', 'qall', 'read', 'registers', 'substitute',
     'set', 'setlocal', 'shell', 'snoremap', 'split', 'sunmap', 'tabclose',

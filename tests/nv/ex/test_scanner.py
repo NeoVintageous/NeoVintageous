@@ -436,42 +436,193 @@ class TestScannerWriteCommand(unittest.TestCase):
 
 class Test_scan_command(unittest.TestCase):
 
-    def test_can_scan_commands(self):
-        def assert_command(string, expected):
-            actual = _scan_command(_ScannerState(string))
-            # Do this check so that if assertion fails
-            # we get a diff of the command in the
-            # failure in result.
+    def assertRoute(self, sources, expected):
+        if isinstance(sources, str):
+            sources = [sources]
+
+        for source in sources:
+            actual = _scan_command(_ScannerState(source))
+            # Check the command part first, so that if there's a failure we get
+            # a good diff on the test results.
             self.assertEqual(actual[1], expected[1])
             self.assertEqual(actual, expected)
 
-        assert_command('&&', (None, [TokenCommand('&&', target='double_ampersand', params={'flags': [], 'count': ''}, addressable=True), TokenEof()]))  # noqa: E501
-        assert_command('buffers', (None, [TokenCommand('buffers'), TokenEof()]))  # noqa: E501
-        assert_command('cd!', (None, [TokenCommand('cd', params={'path': None, '-': None}, forced=True), TokenEof()]))  # noqa: E501
-        assert_command('cd', (None, [TokenCommand('cd', params={'path': None, '-': None}), TokenEof()]))  # noqa: E501
-        assert_command('clo', (None, [TokenCommand('close'), TokenEof()]))  # noqa: E501
-        assert_command('clos', (None, [TokenCommand('close'), TokenEof()]))  # noqa: E501
-        assert_command('close!', (None, [TokenCommand('close', forced=True), TokenEof()]))  # noqa: E501
-        assert_command('close', (None, [TokenCommand('close'), TokenEof()]))  # noqa: E501
-        assert_command('copy 3', (None, [TokenCommand('copy', params={'address': '3'}, addressable=True), TokenEof()]))  # noqa: E501
-        assert_command('cquit', (None, [TokenCommand('cquit'), TokenEof()]))  # noqa: E501
-        assert_command('delete', (None, [TokenCommand('delete', params={'register': '"', 'count': None}, addressable=True), TokenEof()]))  # noqa: E501
-        assert_command('f', (None, [TokenCommand('file'), TokenEof()]))  # noqa: E501
-        assert_command('file', (None, [TokenCommand('file'), TokenEof()]))  # noqa: E501
-        assert_command('files', (None, [TokenCommand('buffers'), TokenEof()]))  # noqa: E501
-        assert_command('g/foo/print', (None, [TokenCommand('global', params={'pattern': 'foo', 'cmd': 'print'}, addressable=True), TokenEof()]))  # noqa: E501
-        assert_command('global/foo/print', (None, [TokenCommand('global', params={'pattern': 'foo', 'cmd': 'print'}, addressable=True), TokenEof()]))  # noqa: E501
-        assert_command('h intro', (None, [TokenCommand('help', params={'subject': 'intro'}), TokenEof()]))  # noqa: E501
-        assert_command('help intro', (None, [TokenCommand('help', params={'subject': 'intro'}), TokenEof()]))  # noqa: E501
-        assert_command('ls', (None, [TokenCommand('buffers'), TokenEof()]))  # noqa: E501
-        assert_command('nn', (None, [TokenCommand('nnoremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
-        assert_command('nnoremap', (None, [TokenCommand('nnoremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
-        assert_command('no', (None, [TokenCommand('noremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
-        assert_command('noremap', (None, [TokenCommand('noremap', params={'command': None, 'keys': None}), TokenEof()]))  # noqa: E501
-        assert_command('only', (None, [TokenCommand('only'), TokenEof()]))  # noqa: E501
-        assert_command('ou', (None, [TokenCommand('ounmap', params={'keys': None}), TokenEof()]))  # noqa: E501
-        assert_command('ounmap', (None, [TokenCommand('ounmap', params={'keys': None}), TokenEof()]))  # noqa: E501
-        assert_command('tabclose', (None, [TokenCommand('tabclose'), TokenEof()]))  # noqa: E501
-        assert_command('tabc', (None, [TokenCommand('tabclose'), TokenEof()]))  # noqa: E501
-        assert_command('tabNext', (None, [TokenCommand('tabprevious'), TokenEof()]))  # noqa: E501
-        assert_command('tabN', (None, [TokenCommand('tabprevious'), TokenEof()]))  # noqa: E501
+    def test_valid_command_routes(self):
+        def cmd(*args, **kwargs):
+            return None, [TokenCommand(*args, **kwargs), TokenEof()]
+
+        self.assertRoute(['!ls'], cmd('!', target='shell_out', params={'cmd': 'ls'}, addressable=True))
+        self.assertRoute(['&&'], cmd('&&', target='double_ampersand', params={'count': '', 'flags': []}, addressable=True))  # noqa: E501
+        self.assertRoute(['bfirst', 'bf', 'brewind', 'br'], cmd('bfirst'))
+        self.assertRoute(['blast', 'bl'], cmd('blast'))
+        self.assertRoute(['bNext', 'bN', 'bprevious', 'bp'], cmd('bprevious'))
+        self.assertRoute(['bnext', 'bn'], cmd('bnext'))
+        self.assertRoute(['browse', 'bro'], cmd('browse'))
+        self.assertRoute(['buffers', 'files', 'ls'], cmd('buffers'))
+        self.assertRoute(['cd /tmp/path'], cmd('cd', params={'path': '/tmp/path', '-': None}))
+        self.assertRoute(['cd ~'], cmd('cd', params={'path': '~', '-': None}))
+        self.assertRoute(['cd!'], cmd('cd', params={'path': None, '-': None}, forced=True))
+        self.assertRoute(['cd'], cmd('cd', params={'path': None, '-': None}))
+        self.assertRoute(['close!', 'clo!'], cmd('close', forced=True))
+        self.assertRoute(['close', 'clo'], cmd('close'))
+        self.assertRoute(['copy .', 'co .'], cmd('copy', params={'address': '.'}, addressable=True))
+        self.assertRoute(['copy .+3', 'co .+3'], cmd('copy', params={'address': '.+3'}, addressable=True))
+        self.assertRoute(['cquit', 'cq'], cmd('cquit'))
+        self.assertRoute(['delete x', 'd x'], cmd('delete', params={'count': None, 'register': 'x'}, addressable=True))
+        self.assertRoute(['delete', 'd'], cmd('delete', params={'count': None, 'register': '"'}, addressable=True))
+        self.assertRoute(['edit file.txt', 'e file.txt'], cmd('edit', params={'file_name': 'file.txt'}))  # noqa: E501
+        self.assertRoute(['edit x/y.txt', 'e x/y.txt'], cmd('edit', params={'file_name': 'x/y.txt'}))  # noqa: E501
+        self.assertRoute(['edit!', 'e!'], cmd('edit', params={'file_name': None}, forced=True))  # noqa: E501
+        self.assertRoute(['edit', 'e'], cmd('edit', params={'file_name': None}))  # noqa: E501
+        self.assertRoute(['exit', 'exi', 'xit', 'x'], cmd('exit'))
+        self.assertRoute(['file', 'f'], cmd('file'))
+        self.assertRoute(['global/x/y', 'g/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, addressable=True))
+        self.assertRoute(['help fizz', 'h fizz'], cmd('help', params={'subject': 'fizz'}))
+        self.assertRoute(['help!', 'h!'], cmd('help', params={'subject': None}, forced=True))
+        self.assertRoute(['help', 'h'], cmd('help', params={'subject': None}))
+        self.assertRoute(['let n=v'], cmd('let', params={'name': 'n', 'value': 'v'}))
+        self.assertRoute(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
+        self.assertRoute(['move', 'm'], cmd('move', params={'address': '.'}, addressable=True))
+        self.assertRoute(['new'], cmd('new'))
+        self.assertRoute(['nnoremap lhs rhs', 'nn lhs rhs'], cmd('nnoremap', params={'keys': 'lhs', 'command': 'rhs'}))
+        self.assertRoute(['nnoremap', 'nn'], cmd('nnoremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['noremap lhs rhs', 'no lhs rhs'], cmd('noremap', params={'keys': 'lhs', 'command': 'rhs'}))
+        self.assertRoute(['noremap', 'no'], cmd('noremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['nunmap lhs', 'nun lhs'], cmd('nunmap', params={'keys': 'lhs'}))
+        self.assertRoute(['nunmap', 'nun'], cmd('nunmap', params={'keys': None}))
+        self.assertRoute(['only!', 'on!'], cmd('only', forced=True))
+        self.assertRoute(['only', 'on'], cmd('only'))
+        self.assertRoute(['onoremap lhs rhs', 'ono lhs rhs'], cmd('onoremap', params={'keys': 'lhs', 'command': 'rhs'}))
+        self.assertRoute(['onoremap', 'ono'], cmd('onoremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['ounmap lhs', 'ou lhs'], cmd('ounmap', params={'keys': 'lhs'}))
+        self.assertRoute(['ounmap', 'ou'], cmd('ounmap', params={'keys': None}))
+        self.assertRoute(['print', 'p'], cmd('print', params={'count': '', 'flags': []}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['pwd', 'pw'], cmd('pwd'))
+        self.assertRoute(['qall!', 'qa!'], cmd('qall', forced=True))
+        self.assertRoute(['qall', 'qa'], cmd('qall'))
+        self.assertRoute(['quit!', 'q!'], cmd('quit', forced=True))
+        self.assertRoute(['quit', 'q'], cmd('quit'))
+        self.assertRoute(['read file.txt', 'r file.txt'], cmd('read', params={'cmd': None, 'file_name': 'file.txt'}))
+        self.assertRoute(['registers', 'reg'], cmd('registers'))
+        self.assertRoute(['set opt=val', 'se opt=val'], cmd('set', params={'option': 'opt', 'value': 'val'}))
+        self.assertRoute(['setlocal opt=val', 'setl opt=val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
+        self.assertRoute(['shell', 'sh'], cmd('shell'))
+        self.assertRoute(['snoremap lhs rhs', 'snor lhs rhs'], cmd('snoremap', params={'keys': 'lhs', 'command': 'rhs'}))  # noqa: E501
+        self.assertRoute(['snoremap', 'snor'], cmd('snoremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['split file.txt', 'sp file.txt'], cmd('split', params={'file': 'file.txt'}))
+        self.assertRoute(['split', 'sp'], cmd('split', params={'file': None}))
+        self.assertRoute(['substitute', 's'], cmd('substitute', addressable=True))
+        self.assertRoute(['substitute/x/y/', 's/x/y/'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
+        self.assertRoute(['substitute/x/y/ic', 's/x/y/ic'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': ['i', 'c'], 'count': 1}, addressable=True))  # noqa: E501
+        self.assertRoute(['sunmap lhs', 'sunm lhs'], cmd('sunmap', params={'keys': 'lhs'}))
+        self.assertRoute(['sunmap', 'sunm'], cmd('sunmap', params={'keys': None}))
+        self.assertRoute(['tabclose!', 'tabc!'], cmd('tabclose', forced=True))
+        self.assertRoute(['tabclose', 'tabc'], cmd('tabclose'))
+        self.assertRoute(['tabfirst!', 'tabfir!', 'tabrewind!', 'tabr!'], cmd('tabfirst', forced=True))
+        self.assertRoute(['tabfirst', 'tabfir', 'tabrewind', 'tabr'], cmd('tabfirst'))
+        self.assertRoute(['tablast!', 'tabl!'], cmd('tablast', forced=True))
+        self.assertRoute(['tablast', 'tabl'], cmd('tablast'))
+        self.assertRoute(['tabNext!', 'tabN!', 'tabprevious!', 'tabp!'], cmd('tabprevious', forced=True))
+        self.assertRoute(['tabnext!', 'tabn!'], cmd('tabnext', forced=True))
+        self.assertRoute(['tabNext', 'tabN', 'tabprevious', 'tabp'], cmd('tabprevious'))
+        self.assertRoute(['tabnext', 'tabn'], cmd('tabnext'))
+        self.assertRoute(['tabonly!', 'tabo!'], cmd('tabonly', forced=True))
+        self.assertRoute(['tabonly', 'tabo'], cmd('tabonly'))
+        self.assertRoute(['unmap lhs', 'unm lhs'], cmd('unmap', params={'keys': 'lhs'}))
+        self.assertRoute(['unmap', 'unm'], cmd('unmap', params={'keys': None}))
+        self.assertRoute(['unvsplit'], cmd('unvsplit'))
+        self.assertRoute(['vnoremap lhs rhs', 'vn lhs rhs'], cmd('vnoremap', params={'keys': 'lhs', 'command': 'rhs'}))
+        self.assertRoute(['vnoremap', 'vn'], cmd('vnoremap', params={'keys': None, 'command': None}))
+        self.assertRoute(['vsplit file.txt', 'vs file.txt'], cmd('vsplit', params={'file': 'file.txt'}))
+        self.assertRoute(['vsplit', 'vs'], cmd('vsplit', params={'file': None}))
+        self.assertRoute(['vunmap lhs', 'vu lhs'], cmd('vunmap', params={'keys': 'lhs'}))
+        self.assertRoute(['vunmap', 'vu'], cmd('vunmap', params={'keys': None}))
+        self.assertRoute(['wall!', 'wa!'], cmd('wall', forced=True))
+        self.assertRoute(['wall', 'wa'], cmd('wall'))
+        self.assertRoute(['wq file.txt'], cmd('wq', params={'++': None, 'file': 'file.txt'}))
+        self.assertRoute(['wq!'], cmd('wq', params={'++': None, 'file': None}, forced=True))
+        self.assertRoute(['wq'], cmd('wq', params={'++': None, 'file': None}))
+        self.assertRoute(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', params={'++': ''}, addressable=True))
+        self.assertRoute(['write file.txt', 'w file.txt'], cmd('write', params={'++': '', 'file_name': 'file.txt', '>>': False, 'cmd': ''}, addressable=True))  # noqa: E501
+        self.assertRoute(['write', 'w'], cmd('write', params={'++': '', 'file_name': '', '>>': False, 'cmd': ''}, addressable=True))  # noqa: E501
+        self.assertRoute(['yank x', 'y x'], cmd('yank', params={'register': 'x', 'count': None}, addressable=True))
+        self.assertRoute(['yank', 'y'], cmd('yank', params={'register': '"', 'count': None}, addressable=True))
+
+    def assertRaisesE492NotAnEditorCommand(self, sources):
+        self.assertRaisesExeption(sources, Exception, 'E492: Not an editor command')
+
+    def assertRaisesNotImplemented(self, sources):
+        self.assertRaisesExeption(sources, NotImplementedError, '')
+
+    def assertRaisesExpectMatch(self, sources):
+        self.assertRaisesExeption(sources, ValueError, 'expected match with \'.+\', at \'.*\'')
+
+    def assertRaisesExpectEof(self, sources):
+        self.assertRaisesExeption(sources, ValueError, 'expected __EOF__, got . instead')
+
+    def assertRaisesE488TrailingCharacters(self, sources):
+        self.assertRaisesExeption(sources, Exception, 'E488: Trailing characters')
+
+    def assertRaisesExeption(self, sources, exception, message):
+        if isinstance(sources, str):
+            sources = [sources]
+
+        for source in sources:
+            with self.assertRaisesRegex(exception, message):
+                _scan_command(_ScannerState(source))
+
+    def test_invalid_command_routes(self):
+        self.assertRaisesExpectEof([
+            'bf x',
+            'bfirst x',
+            'blast x',
+            'blast x',
+            'blastx',
+            'bnext x',
+            'bnext x',
+            'browse x',
+            'buffers ',
+            'buffers x',
+            'close ',
+            'close x',
+            'close x',
+            'close! ',
+            'close! x',
+            'close!x',
+            'closex',
+            'cq x',
+            'cquit x',
+            'exitx',
+            'ls x ',
+            'new x',
+            'newx',
+            'shellx',
+        ])
+
+        self.assertRaisesExpectMatch([
+            'copy',
+        ])
+
+        self.assertRaisesE492NotAnEditorCommand([
+            'let'
+            'only!x',
+            'onlyx',
+            'registers ',
+            'registersx',
+        ])
+
+        self.assertRaisesNotImplemented([
+            'cd -',
+            'delete x 3',
+            'e#',
+            'edit #',
+            'edit +',
+            'edit ++',
+            'edit#',
+            'edit+',
+            'read +',
+            'read ++',
+            'read+',
+            'read++',
+            'yank x 3',
+        ])

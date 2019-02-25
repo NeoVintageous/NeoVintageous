@@ -23,7 +23,6 @@ from NeoVintageous.nv.ex.scanner import _ScannerState
 from NeoVintageous.nv.ex_routes import _ex_route_buffers
 from NeoVintageous.nv.ex_routes import _ex_route_cd
 from NeoVintageous.nv.ex_routes import _ex_route_close
-from NeoVintageous.nv.ex_routes import _ex_route_exit
 from NeoVintageous.nv.ex_routes import _ex_route_file
 from NeoVintageous.nv.ex_routes import _ex_route_global
 from NeoVintageous.nv.ex_routes import _ex_route_noremap
@@ -41,19 +40,6 @@ class Test_ex_route_buffers(unittest.TestCase):
     def test_can_scan(self):
         actual = _ex_route_buffers(_ScannerState(''))
         self.assertEqual(actual, (None, [TokenCommand('buffers'), TokenEof()]))
-
-    def test_raises_exception(self):
-        with self.assertRaisesRegex(Exception, 'E488: Trailing characters'):
-            _ex_route_buffers(_ScannerState(' '))
-
-        with self.assertRaisesRegex(Exception, 'E488: Trailing characters'):
-            _ex_route_buffers(_ScannerState('x'))
-
-        with self.assertRaisesRegex(Exception, 'E488: Trailing characters'):
-            _ex_route_buffers(_ScannerState('foo'))
-
-        with self.assertRaisesRegex(Exception, 'E488: Trailing characters'):
-            _ex_route_buffers(_ScannerState('!'))
 
 
 class Test_ex_route_cd(unittest.TestCase):
@@ -86,24 +72,19 @@ class Test_ex_route_close(unittest.TestCase):
         self.assertEqual(actual, (None, [TokenCommand('close', forced=False), TokenEof()]))
 
     def test_raises_exception(self):
-        # TODO [bug] Currently ":close" followed by character not "!" is accepted
-        # and it shouldn't be e.g. ":closex" is currently a valid command.
-
         with self.assertRaisesRegex(Exception, 'expected __EOF__, got   instead'):
             _ex_route_close(_ScannerState('  '))
 
         with self.assertRaisesRegex(Exception, 'expected __EOF__, got   instead'):
             _ex_route_close(_ScannerState('! '))
 
-        # "x" shouldn't be valid, oppose "y", see TODO above.
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got y instead'):
+        with self.assertRaisesRegex(Exception, 'expected __EOF__, got x instead'):
             _ex_route_close(_ScannerState('xy'))
 
         with self.assertRaisesRegex(Exception, 'expected __EOF__, got x instead'):
             _ex_route_close(_ScannerState('!x'))
 
-        # "b" shouldn't be valid, oppose to "a", see TODO above.
-        with self.assertRaisesRegex(Exception, 'expected __EOF__, got a instead'):
+        with self.assertRaisesRegex(Exception, 'expected __EOF__, got b instead'):
             _ex_route_close(_ScannerState('baz'))
 
         with self.assertRaisesRegex(Exception, 'expected __EOF__, got f instead'):
@@ -113,30 +94,11 @@ class Test_ex_route_close(unittest.TestCase):
             _ex_route_close(_ScannerState('!!'))
 
 
-class Test_ex_route_exit(unittest.TestCase):
-
-    def test_can_scan(self):
-        actual = _ex_route_exit(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('exit', addressable=True, params={'file_name': ''}), TokenEof()]))  # noqa: E501
-
-        actual = _ex_route_exit(_ScannerState(''))
-        self.assertEqual(actual, (None, [TokenCommand('exit', addressable=True, params={'file_name': ''}, forced=False), TokenEof()]))  # noqa: E501
-
-        actual = _ex_route_exit(_ScannerState('!'))
-        self.assertEqual(actual, (None, [TokenCommand('exit', addressable=True, params={'file_name': ''}, forced=True), TokenEof()]))  # noqa: E501
-
-        actual = _ex_route_exit(_ScannerState('/tmp/path/to/file'))
-        self.assertEqual(actual, (None, [TokenCommand('exit', addressable=True, params={'file_name': '/tmp/path/to/file'}), TokenEof()]))  # noqa: E501
-
-
 class Test_ex_route_file(unittest.TestCase):
 
     def test_can_scan(self):
         actual = _ex_route_file(_ScannerState(''))
         self.assertEqual(actual, (None, [TokenCommand('file'), TokenEof()]))
-
-        actual = _ex_route_file(_ScannerState('!'))
-        self.assertEqual(actual, (None, [TokenCommand('file', forced=True), TokenEof()]))
 
         actual = _ex_route_file(_ScannerState(''))
         self.assertEqual(actual, (None, [TokenCommand('file', forced=False), TokenEof()]))
@@ -196,16 +158,10 @@ class Test_ex_route_only(unittest.TestCase):
 
     def test_can_raise_exception(self):
         with self.assertRaises(Exception):
-            _ex_route_only(_ScannerState('x'))
-
-        with self.assertRaises(Exception):
             _ex_route_only(_ScannerState('!x'))
 
         with self.assertRaises(Exception):
             _ex_route_only(_ScannerState('! '))
-
-        with self.assertRaises(Exception):
-            _ex_route_only(_ScannerState(' '))
 
 
 class Test_ex_route_onoremap(unittest.TestCase):
@@ -327,16 +283,12 @@ class TestRoutes(unittest.TestCase):
 
     def test_invalid_routes(self):
 
-        # FIXME foobar shouldn't match :file i.e. self.assertNotRoute('foobar')
         self.assertNotRoute(' ')
         self.assertNotRoute('$')
         self.assertNotRoute('')
         self.assertNotRoute('zfoobar')
 
     def test_valid_routes(self):
-
-        # TODO [review] self.assertRoute('g') works for the command scanner but fails a regex match, why?
-        # TODO [review] self.assertRoute('global') works for the command scanner but fails a regex match, why?
 
         self.assertRoute('_ex_route_bfirst', ['bfirst', 'bf', 'brewind', 'br'])
         self.assertRoute('_ex_route_blast', ['blast', 'bl'])
@@ -345,7 +297,6 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_browse', ['browse', 'bro'])
         self.assertRoute('_ex_route_buffers', ['files', 'buffers', 'ls'])
         self.assertRoute('_ex_route_cd', ['cd'])
-        self.assertRoute('_ex_route_cdd', ['cdd'])
         self.assertRoute('_ex_route_close', ['close', 'clo'])
         self.assertRoute('_ex_route_copy', ['copy', 'co'])
         self.assertRoute('_ex_route_cquit', ['cquit', 'cq'])
@@ -360,9 +311,9 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_nnoremap', ['nnoremap', 'nn'])
         self.assertRoute('_ex_route_noremap', ['noremap', 'no'])
         self.assertRoute('_ex_route_nunmap', ['nunmap', 'nun'])
+        self.assertRoute('_ex_route_only', ['only', 'on'])
         self.assertRoute('_ex_route_onoremap', ['onoremap', 'ono'])
         self.assertRoute('_ex_route_ounmap', ['ounmap', 'ou'])
-        self.assertRoute('_ex_route_only', ['only', 'on'])
         self.assertRoute('_ex_route_print', ['print', 'p'])
         self.assertRoute('_ex_route_pwd', ['pwd', 'pw'])
         self.assertRoute('_ex_route_qall', ['qall', 'qa'])
