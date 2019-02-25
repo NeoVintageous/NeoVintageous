@@ -78,7 +78,7 @@ from NeoVintageous.nv.window import window_tab_control
 _log = logging.getLogger(__name__)
 
 
-def _changing_cd(f, *args, **kwargs):
+def _init_cwd(f, *args, **kwargs):
     @wraps(f)
     def inner(*args, **kwargs):
         view = kwargs.get('view')
@@ -312,7 +312,7 @@ def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):
     ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, **kwargs)
 
 
-@_changing_cd
+@_init_cwd
 def ex_edit(window, view, file_name=None, forceit=False, **kwargs):
     if file_name:
         file_name = os.path.expanduser(os.path.expandvars(file_name))
@@ -594,7 +594,7 @@ def ex_move(view, edit, address, line_range, **kwargs):
 
 
 # TODO [refactor] into window module
-@_changing_cd
+@_init_cwd
 def ex_new(window, **kwargs):
     window.run_command('new_file')
 
@@ -692,7 +692,7 @@ def ex_print(window, view, flags, line_range, global_lines=None, **kwargs):
         display.run_command('append', {'characters': characters})
 
 
-@_changing_cd
+@_init_cwd
 def ex_pwd(**kwargs):
     status_message(os.getcwd())
 
@@ -732,7 +732,7 @@ def ex_quit(window, view, forceit=False, **kwargs):
 
 # TODO [review] This command looks unused
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
-@_changing_cd
+@_init_cwd
 def ex_read(view, edit, cmd, line_range, **kwargs):
     r = line_range.resolve(view)
     target_point = min(r.end(), view.size())
@@ -836,7 +836,7 @@ def ex_setlocal(view, option, value, **kwargs):
 # current directory that most of the time will be out of sync with the actual
 # current directory. The virtual current directory is always set to the current
 # view's directory, but it isn't accessible through the API.
-@_changing_cd
+@_init_cwd
 def ex_shell(view, **kwargs):
 
     def _open_shell(command):
@@ -873,7 +873,7 @@ def ex_shell(view, **kwargs):
 _ex_shell_last_command = None
 
 
-@_changing_cd
+@_init_cwd
 def ex_shell_out(view, edit, cmd, line_range, **kwargs):
     global _ex_shell_last_command
 
@@ -1181,7 +1181,7 @@ def ex_vunmap(lhs, **kwargs):
         status_message('Mapping not found')
 
 
-@_changing_cd
+@_init_cwd
 def ex_wall(window, forceit=False, **kwargs):
     # TODO read-only views don't get properly saved.
     for v in (v for v in window.views() if v.file_name()):
@@ -1228,7 +1228,7 @@ def ex_wqall(window, **kwargs):
     window.run_command('exit')
 
 
-@_changing_cd
+@_init_cwd
 def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
     options = kwargs.get('++')
     appends = kwargs.get('>>')
