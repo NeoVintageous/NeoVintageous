@@ -1093,6 +1093,7 @@ _SEQ2CMD = {
     'gUU':          {'command': '_vi_g_big_u_big_u'},  # noqa: E241
     'guu':          {'command': '_vi_guu'},  # noqa: E241
     'gv':           {'command': '_vi_gv'},  # noqa: E241
+    'gx':           {'command': '_vi_gx'},  # noqa: E241
     'g~$':          {'command': '_vi_g_tilde', 'args': {'motion': {'is_jump': True, 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'g~':           {'command': '_vi_g_tilde'},  # noqa: E241
     'g~~':          {'command': '_vi_g_tilde_g_tilde'},  # noqa: E241

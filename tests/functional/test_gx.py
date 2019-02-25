@@ -18,9 +18,9 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gf(unittest.FunctionalTestCase):
+class Test_gx(unittest.FunctionalTestCase):
 
-    @unittest.mock.patch('NeoVintageous.nv.cmds_vi_actions.window_open_file')
-    def test_gf(self, open_file):
-        self.eq('x path/to/READ|ME.md y', 'n_gf', 'x path/to/READ|ME.md y')
-        self.assertEqual(open_file.call_args[0][1], 'path/to/README.md')
+    @unittest.mock.patch('webbrowser.open_new_tab')
+    def test_gf(self, open_new_tab):
+        self.eq('x https://exa|mple.com x', 'n_gx', 'x https://exa|mple.com x')
+        open_new_tab.assert_called_once_with('https://example.com')

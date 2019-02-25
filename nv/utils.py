@@ -36,7 +36,6 @@ import re
 
 def extract_file_name(view):
     sel = view.sel()[0]
-
     line = view.substr(view.line(sel))
     pos = len(line) - len(line.strip()) + 1
     col = view.rowcol(sel.b)[1]
@@ -55,6 +54,50 @@ def extract_file_name(view):
                 return
 
             return match
+
+
+def extract_url(view):
+    _URL_REGEX = r"""(?x)
+        .*(?P<url>
+            https?://               # http:// or https://
+            (?:www\.)?              # www.
+            (?:[a-zA-Z0-9-]+\.)+    # domain
+            [a-zA-Z]+               # tld
+            /?[a-zA-Z0-9\-._?,!'(){}\[\]/+&@%$#=:"|~;]*     # url path
+        )
+    """
+
+    def _extract_url_from_text(regex, text):
+        match = re.match(regex, text)
+        if match:
+            url = match.group('url')
+
+            # Remove end of line full stop character.
+            url = url.rstrip('.')
+
+            # Remove closing tag markdown link e.g. `[title](url)`.
+            url = url.rstrip(')')
+
+            # Remove closing tag markdown image e.g. `![alt](url)]`.
+            if url[-2:] == ')]':
+                url = url[:-2]
+
+            # Remove trailing quote marks e.g. `"url"`, `'url'`.
+            url = url.rstrip('"\'')
+
+            # Remove trailing quote-comma marks e.g. `"url",`, `'url',`.
+            if url[-2:] == '",' or url[-2:] == '\',':
+                url = url[:-2]
+
+            return url
+
+        return None
+
+    sel = view.sel()[0]
+    line = view.line(sel)
+    text = view.substr(line)
+
+    return _extract_url_from_text(_URL_REGEX, text)
 
 
 def scroll_horizontally(view, edit, amount, half_screen=False):
