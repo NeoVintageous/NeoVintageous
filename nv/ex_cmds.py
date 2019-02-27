@@ -1621,7 +1621,11 @@ def do_ex_cmdline(window, line):
 
         return window.run_command(user_command['cmd'], user_command['args'])
 
-    cmdline = parse_command_line(line[1:])
+    try:
+        cmdline = parse_command_line(line[1:])
+    except Exception as e:
+        status_message(str(e))
+        return
 
     if not cmdline.command:
         # Do default ex command. The default ex command is not associated with

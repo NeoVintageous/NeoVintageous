@@ -575,7 +575,17 @@ class Test_scan_command(unittest.TestCase):
                 _scan_command(_ScannerState(source))
 
     def test_invalid_command_routes(self):
-        self.assertRaisesExpectEof([
+        self.assertRaisesExpectMatch([
+            'copy',
+            'nunmap',
+            'ounmap',
+            'sunmap',
+            'unmap',
+            'vunmap',
+        ])
+
+        self.assertRaisesE492NotAnEditorCommand([
+            'let',
             'bf x',
             'bfirst x',
             'blast x',
@@ -628,22 +638,7 @@ class Test_scan_command(unittest.TestCase):
             'wall ',
             'xx',
             'wallx',
-        ])
-
-        self.assertRaisesExpectMatch([
-            'copy',
-            'nunmap',
-            'ounmap',
-            'sunmap',
-            'unmap',
-            'vunmap',
-        ])
-
-        self.assertRaisesE474InvalidArgument([
-        ])
-
-        self.assertRaisesE492NotAnEditorCommand([
-            'let',
+            'foobar',
         ])
 
         self.assertRaisesNotImplemented([

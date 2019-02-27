@@ -270,10 +270,10 @@ class Test_do_ex_cmdline(unittest.ViewTestCase):
                                            view=self.view,
                                            line_range=RangeNode([TokenDollar()]))
 
+    @unittest.mock_status_message()
     def test_raises_exception_on_unknown_ex_cmd(self):
-        # TODO Fix :foo actually calls :file (it shouldn't), this is why this test is using :zfoo instead.
-        with self.assertRaisesRegex(Exception, "E492: Not an editor command"):
-            do_ex_cmdline(self.view.window(), ':zfoo')
+        do_ex_cmdline(self.view.window(), ':foo')
+        self.assertStatusMessage('E492: Not an editor command')
 
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.ex_pwd', 'ex_pwd')
     def test_raises_exception_on_unknown_ex_cmd_type(self):
