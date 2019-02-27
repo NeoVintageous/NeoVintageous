@@ -38,17 +38,23 @@ def goto_help(window):
     sel = view.sel()[0]
 
     score = view.score_selector(sel.b, 'text.neovintageous jumptag')
-    # TODO ENHANCEMENT Allow goto to help for any word in a help file. See :h bar Anyway, you can use CTRL-] on any word, also when it is not within |, and Vim will try to find help for it.  Especially for options in single quotes, e.g. 'compatible'.  # noqa: E501
+
+    # TODO goto to help for any word in a help file. See :h bar Anyway, you can
+    # use CTRL-] on any word, also when it is not within |, and Vim will try to
+    # find help for it.  Especially for options in single quotes, e.g.
+    # 'compatible'.
+
     if score == 0:
-        return  # noop
+        return
 
     subject = view.substr(view.extract_scope(sel.b))
     if not subject:
-        return  # noop
+        return
 
     if len(subject) > 35:
         return status_message('E149: Sorry, no help found')
 
+    # TODO Refactor ex cmd internets to this common utility
     from NeoVintageous.nv.ex_cmds import do_ex_command
     do_ex_command(window, 'help', {'subject': subject})
 
