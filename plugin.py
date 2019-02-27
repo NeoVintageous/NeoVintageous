@@ -62,7 +62,7 @@ try:
     _startup_exception = None
 
     # Commands.
-    from NeoVintageous.nv.cmds import *  # noqa: F401,F403
+    from NeoVintageous.nv.commands import *  # noqa: F401,F403
 
     # Plugins.
     from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
