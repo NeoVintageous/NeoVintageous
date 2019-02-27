@@ -42,11 +42,9 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'a	motion.txt	/*'a*
 'acd'	options.txt	/*'acd'*
 'ai'	options.txt	/*'ai'*
-'akm'	options.txt	/*'akm'*
 'al'	options.txt	/*'al'*
 'aleph'	options.txt	/*'aleph'*
 'allowrevins'	options.txt	/*'allowrevins'*
-'altkeymap'	options.txt	/*'altkeymap'*
 'ambiwidth'	options.txt	/*'ambiwidth'*
 'ambw'	options.txt	/*'ambw'*
 'ar'	options.txt	/*'ar'*
@@ -243,8 +241,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'fillchars'	options.txt	/*'fillchars'*
 'fixendofline'	options.txt	/*'fixendofline'*
 'fixeol'	options.txt	/*'fixeol'*
-'fk'	options.txt	/*'fk'*
-'fkmap'	options.txt	/*'fkmap'*
 'flp'	options.txt	/*'flp'*
 'fml'	options.txt	/*'fml'*
 'fmr'	options.txt	/*'fmr'*
@@ -455,9 +451,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'nf'	options.txt	/*'nf'*
 'noacd'	options.txt	/*'noacd'*
 'noai'	options.txt	/*'noai'*
-'noakm'	options.txt	/*'noakm'*
 'noallowrevins'	options.txt	/*'noallowrevins'*
-'noaltkeymap'	options.txt	/*'noaltkeymap'*
 'noar'	options.txt	/*'noar'*
 'noarab'	options.txt	/*'noarab'*
 'noarabic'	options.txt	/*'noarabic'*
@@ -520,8 +514,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'nofileignorecase'	options.txt	/*'nofileignorecase'*
 'nofixendofline'	options.txt	/*'nofixendofline'*
 'nofixeol'	options.txt	/*'nofixeol'*
-'nofk'	options.txt	/*'nofk'*
-'nofkmap'	options.txt	/*'nofkmap'*
 'nofoldenable'	options.txt	/*'nofoldenable'*
 'nogd'	options.txt	/*'nogd'*
 'nogdefault'	options.txt	/*'nogdefault'*
@@ -688,6 +680,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'patchexpr'	options.txt	/*'patchexpr'*
 'patchmode'	options.txt	/*'patchmode'*
 'path'	options.txt	/*'path'*
+'pb'	options.txt	/*'pb'*
 'pdev'	options.txt	/*'pdev'*
 'penc'	options.txt	/*'penc'*
 'pex'	options.txt	/*'pex'*
@@ -714,6 +707,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'printoptions'	options.txt	/*'printoptions'*
 'prompt'	options.txt	/*'prompt'*
 'pt'	options.txt	/*'pt'*
+'pumblend'	options.txt	/*'pumblend'*
 'pumheight'	options.txt	/*'pumheight'*
 'pvh'	options.txt	/*'pvh'*
 'pvw'	options.txt	/*'pvw'*
@@ -1029,7 +1023,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 +eval	various.txt	/*+eval*
 +ex_extra	various.txt	/*+ex_extra*
 +extra_search	various.txt	/*+extra_search*
-+farsi	various.txt	/*+farsi*
 +feature-list	various.txt	/*+feature-list*
 +file_in_path	various.txt	/*+file_in_path*
 +find_in_path	various.txt	/*+find_in_path*
@@ -1128,7 +1121,6 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 -D	starting.txt	/*-D*
 -E	starting.txt	/*-E*
 -Es	starting.txt	/*-Es*
--F	starting.txt	/*-F*
 -H	starting.txt	/*-H*
 -L	starting.txt	/*-L*
 -M	starting.txt	/*-M*
@@ -3358,7 +3350,6 @@ E193	eval.txt	/*E193*
 E194	message.txt	/*E194*
 E196	various.txt	/*E196*
 E197	mlang.txt	/*E197*
-E198	options.txt	/*E198*
 E199	cmdline.txt	/*E199*
 E20	motion.txt	/*E20*
 E200	autocmd.txt	/*E200*
@@ -4086,7 +4077,6 @@ Exuberant_ctags	tagsrch.txt	/*Exuberant_ctags*
 F	motion.txt	/*F*
 FALSE	eval.txt	/*FALSE*
 FAQ	intro.txt	/*FAQ*
-Farsi	farsi.txt	/*Farsi*
 FileAppendCmd	autocmd.txt	/*FileAppendCmd*
 FileAppendPost	autocmd.txt	/*FileAppendPost*
 FileAppendPre	autocmd.txt	/*FileAppendPre*
@@ -4244,6 +4234,7 @@ SessionLoad-variable	starting.txt	/*SessionLoad-variable*
 SessionLoadPost	autocmd.txt	/*SessionLoadPost*
 ShellCmdPost	autocmd.txt	/*ShellCmdPost*
 ShellFilterPost	autocmd.txt	/*ShellFilterPost*
+Signal	autocmd.txt	/*Signal*
 SourceCmd	autocmd.txt	/*SourceCmd*
 SourcePre	autocmd.txt	/*SourcePre*
 SpellFileMissing	autocmd.txt	/*SpellFileMissing*
@@ -4536,6 +4527,7 @@ a:var	eval.txt	/*a:var*
 a<	motion.txt	/*a<*
 a>	motion.txt	/*a>*
 aB	motion.txt	/*aB*
+aI	indent-object.txt	/*aI*
 aW	motion.txt	/*aW*
 a[	motion.txt	/*a[*
 a]	motion.txt	/*a]*
@@ -4575,6 +4567,7 @@ add-package	usr_05.txt	/*add-package*
 add-plugin	usr_05.txt	/*add-plugin*
 aff-dic-format	spell.txt	/*aff-dic-format*
 after-directory	options.txt	/*after-directory*
+ai	indent-object.txt	/*ai*
 aleph	options.txt	/*aleph*
 alternate-file	editing.txt	/*alternate-file*
 and()	eval.txt	/*and()*
@@ -4590,6 +4583,7 @@ api-contract	api.txt	/*api-contract*
 api-global	api.txt	/*api-global*
 api-global-events	api.txt	/*api-global-events*
 api-highlights	api.txt	/*api-highlights*
+api-level	api.txt	/*api-level*
 api-metadata	api.txt	/*api-metadata*
 api-tabpage	api.txt	/*api-tabpage*
 api-types	api.txt	/*api-types*
@@ -5106,7 +5100,6 @@ credits	intro.txt	/*credits*
 crontab	options.txt	/*crontab*
 cs	surround.txt	/*cs*
 cs-find	if_cscop.txt	/*cs-find*
-cs7-problem	term.txt	/*cs7-problem*
 cscope	if_cscop.txt	/*cscope*
 cscope-commands	if_cscop.txt	/*cscope-commands*
 cscope-find	if_cscop.txt	/*cscope-find*
@@ -5197,6 +5190,7 @@ dev	develop.txt	/*dev*
 dev-api	develop.txt	/*dev-api*
 dev-api-client	develop.txt	/*dev-api-client*
 dev-doc	develop.txt	/*dev-doc*
+dev-guidelines	develop.txt	/*dev-guidelines*
 dev-provider	develop.txt	/*dev-provider*
 dev-ui	develop.txt	/*dev-ui*
 develop-spell	spell.txt	/*develop-spell*
@@ -5419,8 +5413,6 @@ extension-removal	cmdline.txt	/*extension-removal*
 f	motion.txt	/*f*
 false-variable	eval.txt	/*false-variable*
 faq	intro.txt	/*faq*
-farsi	farsi.txt	/*farsi*
-farsi.txt	farsi.txt	/*farsi.txt*
 fasm.vim	syntax.txt	/*fasm.vim*
 fcs_choice-variable	eval.txt	/*fcs_choice-variable*
 fcs_reason-variable	eval.txt	/*fcs_reason-variable*
@@ -5786,6 +5778,7 @@ g:loaded_node_provider	provider.txt	/*g:loaded_node_provider*
 g:loaded_python3_provider	provider.txt	/*g:loaded_python3_provider*
 g:loaded_python_provider	provider.txt	/*g:loaded_python_provider*
 g:loaded_ruby_provider	provider.txt	/*g:loaded_ruby_provider*
+g:man_hardwrap	filetype.txt	/*g:man_hardwrap*
 g:netrw_altfile	pi_netrw.txt	/*g:netrw_altfile*
 g:netrw_alto	pi_netrw.txt	/*g:netrw_alto*
 g:netrw_altv	pi_netrw.txt	/*g:netrw_altv*
@@ -6294,6 +6287,7 @@ i)	motion.txt	/*i)*
 i<	motion.txt	/*i<*
 i>	motion.txt	/*i>*
 iB	motion.txt	/*iB*
+iI	indent-object.txt	/*iI*
 iW	motion.txt	/*iW*
 i[	motion.txt	/*i[*
 i]	motion.txt	/*i]*
@@ -6431,16 +6425,22 @@ if_ruby	if_ruby.txt	/*if_ruby*
 if_ruby.txt	if_ruby.txt	/*if_ruby.txt*
 if_tcl	vim_diff.txt	/*if_tcl*
 ignore-errors	eval.txt	/*ignore-errors*
+ii	indent-object.txt	/*ii*
 inactive-buffer	windows.txt	/*inactive-buffer*
 include-search	tagsrch.txt	/*include-search*
 inclusive	motion.txt	/*inclusive*
 indent()	eval.txt	/*indent()*
 indent-expression	indent.txt	/*indent-expression*
+indent-object.txt	indent-object.txt	/*indent-object.txt*
 indent.txt	indent.txt	/*indent.txt*
 indentkeys-format	indent.txt	/*indentkeys-format*
 index	index.txt	/*index*
 index()	eval.txt	/*index()*
 index.txt	index.txt	/*index.txt*
+indtobj-about	indent-object.txt	/*indtobj-about*
+indtobj-blanklines	indent-object.txt	/*indtobj-blanklines*
+indtobj-introduction	indent-object.txt	/*indtobj-introduction*
+indtobj-objects	indent-object.txt	/*indtobj-objects*
 info-message	starting.txt	/*info-message*
 inform.vim	syntax.txt	/*inform.vim*
 informix	ft_sql.txt	/*informix*
@@ -6614,10 +6614,12 @@ lpc.vim	syntax.txt	/*lpc.vim*
 lua	if_lua.txt	/*lua*
 lua-commands	if_lua.txt	/*lua-commands*
 lua-eval	if_lua.txt	/*lua-eval*
+lua-intro	if_lua.txt	/*lua-intro*
 lua-luaeval	if_lua.txt	/*lua-luaeval*
 lua-require	if_lua.txt	/*lua-require*
 lua-require-example	if_lua.txt	/*lua-require-example*
 lua-special-tbl	if_lua.txt	/*lua-special-tbl*
+lua-stdlib	if_lua.txt	/*lua-stdlib*
 lua-vim	if_lua.txt	/*lua-vim*
 lua-vim.stricmp	if_lua.txt	/*lua-vim.stricmp*
 lua-vim.type_idx	if_lua.txt	/*lua-vim.type_idx*
@@ -6824,6 +6826,7 @@ navigation	motion.txt	/*navigation*
 ncf.vim	syntax.txt	/*ncf.vim*
 neovintageous	neovintageous.txt	/*neovintageous*
 neovintageous.txt	neovintageous.txt	/*neovintageous.txt*
+neovintageousrc	neovintageous.txt	/*neovintageousrc*
 netreadfixup	pi_netrw.txt	/*netreadfixup*
 netrw	pi_netrw.txt	/*netrw*
 netrw-%	pi_netrw.txt	/*netrw-%*
@@ -7074,6 +7077,7 @@ nv-default-options	neovintageous.txt	/*nv-default-options*
 nv-disable-arrow-keys	neovintageous.txt	/*nv-disable-arrow-keys*
 nv-escape	neovintageous.txt	/*nv-escape*
 nv-highlightedyank	neovintageous.txt	/*nv-highlightedyank*
+nv-indent-object	neovintageous.txt	/*nv-indent-object*
 nv-j	neovintageous.txt	/*nv-j*
 nv-jumpto-diffs	neovintageous.txt	/*nv-jumpto-diffs*
 nv-modeline	neovintageous.txt	/*nv-modeline*
@@ -7164,6 +7168,7 @@ nvim_get_proc_children()	api.txt	/*nvim_get_proc_children()*
 nvim_get_var()	api.txt	/*nvim_get_var()*
 nvim_get_vvar()	api.txt	/*nvim_get_vvar()*
 nvim_input()	api.txt	/*nvim_input()*
+nvim_input_mouse()	api.txt	/*nvim_input_mouse()*
 nvim_list_bufs()	api.txt	/*nvim_list_bufs()*
 nvim_list_chans()	api.txt	/*nvim_list_chans()*
 nvim_list_runtime_paths()	api.txt	/*nvim_list_runtime_paths()*
@@ -7173,6 +7178,7 @@ nvim_list_wins()	api.txt	/*nvim_list_wins()*
 nvim_out_write()	api.txt	/*nvim_out_write()*
 nvim_parse_expression()	api.txt	/*nvim_parse_expression()*
 nvim_replace_termcodes()	api.txt	/*nvim_replace_termcodes()*
+nvim_select_popupmenu_item()	api.txt	/*nvim_select_popupmenu_item()*
 nvim_set_client_info()	api.txt	/*nvim_set_client_info()*
 nvim_set_current_buf()	api.txt	/*nvim_set_current_buf()*
 nvim_set_current_dir()	api.txt	/*nvim_set_current_dir()*
@@ -7181,6 +7187,7 @@ nvim_set_current_tabpage()	api.txt	/*nvim_set_current_tabpage()*
 nvim_set_current_win()	api.txt	/*nvim_set_current_win()*
 nvim_set_option()	api.txt	/*nvim_set_option()*
 nvim_set_var()	api.txt	/*nvim_set_var()*
+nvim_set_vvar()	api.txt	/*nvim_set_vvar()*
 nvim_strwidth()	api.txt	/*nvim_strwidth()*
 nvim_subscribe()	api.txt	/*nvim_subscribe()*
 nvim_tabpage_del_var()	api.txt	/*nvim_tabpage_del_var()*
@@ -7194,6 +7201,7 @@ nvim_ui_attach()	api.txt	/*nvim_ui_attach()*
 nvim_ui_detach()	api.txt	/*nvim_ui_detach()*
 nvim_ui_set_option()	api.txt	/*nvim_ui_set_option()*
 nvim_ui_try_resize()	api.txt	/*nvim_ui_try_resize()*
+nvim_ui_try_resize_grid()	api.txt	/*nvim_ui_try_resize_grid()*
 nvim_unsubscribe()	api.txt	/*nvim_unsubscribe()*
 nvim_win_del_var()	api.txt	/*nvim_win_del_var()*
 nvim_win_get_buf()	api.txt	/*nvim_win_get_buf()*
@@ -7364,14 +7372,10 @@ put-Visual-mode	change.txt	/*put-Visual-mode*
 py3eval()	eval.txt	/*py3eval()*
 pyeval()	eval.txt	/*pyeval()*
 python	if_pyth.txt	/*python*
-python-.locked	if_pyth.txt	/*python-.locked*
-python-Dictionary	if_pyth.txt	/*python-Dictionary*
-python-Function	if_pyth.txt	/*python-Function*
-python-List	if_pyth.txt	/*python-List*
+python-Function	vim_diff.txt	/*python-Function*
 python-VIM_SPECIAL_PATH	if_pyth.txt	/*python-VIM_SPECIAL_PATH*
 python-_get_paths	if_pyth.txt	/*python-_get_paths*
-python-bindeval	if_pyth.txt	/*python-bindeval*
-python-bindeval-objects	if_pyth.txt	/*python-bindeval-objects*
+python-bindeval	vim_diff.txt	/*python-bindeval*
 python-buffer	if_pyth.txt	/*python-buffer*
 python-buffers	if_pyth.txt	/*python-buffers*
 python-chdir	if_pyth.txt	/*python-chdir*
@@ -7601,6 +7605,7 @@ save-file	editing.txt	/*save-file*
 save-settings	starting.txt	/*save-settings*
 scheme.vim	syntax.txt	/*scheme.vim*
 scp	pi_netrw.txt	/*scp*
+scratch-buffer	windows.txt	/*scratch-buffer*
 screenattr()	eval.txt	/*screenattr()*
 screenchar()	eval.txt	/*screenchar()*
 screencol()	eval.txt	/*screencol()*
@@ -8113,6 +8118,7 @@ try-nesting	eval.txt	/*try-nesting*
 tui	term.txt	/*tui*
 tui-colors	term.txt	/*tui-colors*
 tui-cursor-shape	term.txt	/*tui-cursor-shape*
+tui-cursor-tmux	term.txt	/*tui-cursor-tmux*
 tutor	usr_01.txt	/*tutor*
 twice	if_cscop.txt	/*twice*
 two-engines	pattern.txt	/*two-engines*
@@ -8134,6 +8140,7 @@ ui-global	ui.txt	/*ui-global*
 ui-grid-old	ui.txt	/*ui-grid-old*
 ui-hlstate	ui.txt	/*ui-hlstate*
 ui-linegrid	ui.txt	/*ui-linegrid*
+ui-messages	ui.txt	/*ui-messages*
 ui-multigrid	ui.txt	/*ui-multigrid*
 ui-options	ui.txt	/*ui-options*
 ui-popupmenu	ui.txt	/*ui-popupmenu*
@@ -8492,7 +8499,6 @@ visual-use	visual.txt	/*visual-use*
 visual.txt	visual.txt	/*visual.txt*
 visualmode()	eval.txt	/*visualmode()*
 vreplace-mode	insert.txt	/*vreplace-mode*
-vt100-cursor-keys	term.txt	/*vt100-cursor-keys*
 w	motion.txt	/*w*
 w32-clientserver	remote.txt	/*w32-clientserver*
 w:	eval.txt	/*w:*
@@ -8577,7 +8583,6 @@ xpm.vim	syntax.txt	/*xpm.vim*
 xterm-8-bit	vim_diff.txt	/*xterm-8-bit*
 xterm-8bit	vim_diff.txt	/*xterm-8bit*
 xterm-color	syntax.txt	/*xterm-color*
-xterm-cursor-keys	term.txt	/*xterm-cursor-keys*
 xterm-resize	term.txt	/*xterm-resize*
 xterm-scroll-region	term.txt	/*xterm-scroll-region*
 xterm-true-color	term.txt	/*xterm-true-color*
