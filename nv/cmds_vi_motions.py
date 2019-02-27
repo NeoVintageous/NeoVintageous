@@ -66,13 +66,13 @@ from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import row_to_pt
 from NeoVintageous.nv.vi.utils import show_if_not_visible
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
@@ -1986,7 +1986,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
                                       times=count)
 
         if not found:
-            return console_message('Pattern not found')
+            return status_message('Pattern not found')
 
         regions_transformer(self.view, f)
         self.hilite(search_string)

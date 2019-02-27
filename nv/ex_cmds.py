@@ -60,9 +60,7 @@ from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
-from NeoVintageous.nv.vim import console_message
 from NeoVintageous.nv.vim import enter_normal_mode
-from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
@@ -220,7 +218,7 @@ def ex_cd(view, path=None, **kwargs):
         path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
 
     if not os.path.isdir(path):
-        return message("E344: Can't find directory \"%s\" in cdpath" % path)
+        return status_message("E344: Can't find directory \"%s\" in cdpath" % path)
 
     set_cmdline_cwd(path)
     status_message(path)
@@ -249,10 +247,10 @@ def ex_copy(view, edit, address, line_range, **kwargs):
     try:
         unresolved = _calculate_address(address)
     except Exception:
-        return message("E14: Invalid address")
+        return status_message("E14: Invalid address")
 
     if unresolved is None:
-        return message("E14: Invalid address")
+        return status_message("E14: Invalid address")
 
     # TODO: how do we signal row 0?
     target_region = unresolved.resolve(view)
@@ -318,16 +316,16 @@ def ex_edit(window, view, file_name=None, forceit=False, **kwargs):
         file_name = os.path.expanduser(os.path.expandvars(file_name))
 
         if view.is_dirty() and not forceit:
-            return message("E37: No write since last change")
+            return status_message("E37: No write since last change")
 
         if os.path.isdir(file_name):
             # TODO In Vim, trying to edit a directory opens a file-manager.
-            return message('"%s" is a directory', file_name)
+            return status_message('"%s" is a directory', file_name)
 
         if not os.path.isabs(file_name):
             cwd = get_cmdline_cwd()
             if not os.path.isdir(cwd):
-                return message("could not find a current working directory")
+                return status_message("could not find a current working directory")
 
             file_name = os.path.join(cwd, file_name)
 
@@ -347,9 +345,9 @@ def ex_edit(window, view, file_name=None, forceit=False, **kwargs):
             return view.run_command('revert')
 
         if view.is_dirty():
-            return message("E37: No write since last change")
+            return status_message("E37: No write since last change")
 
-        message("E37: No write since last change")
+        status_message("E37: No write since last change")
 
 
 # TODO [refactor] into window module
@@ -424,7 +422,7 @@ def ex_global(window, view, pattern, cmd, line_range, **kwargs):
     try:
         matches = find_all_in_range(view, pattern, global_range.begin(), global_range.end())
     except Exception as e:
-        return message("(global): %s ... in pattern '%s'" % (str(e), pattern))
+        return status_message("(global): %s ... in pattern '%s'" % (str(e), pattern))
 
     # The cooperates_with_global attribute indicates if the command supports
     # the :global command. This is special flag, because all ex commands
@@ -433,7 +431,7 @@ def ex_global(window, view, pattern, cmd, line_range, **kwargs):
     # is the "print" command e.g. print all lines matching \d+ into new
     # buffer: ":%global/\d+/print".
     if not matches or not cmd.cooperates_with_global:
-        return message("command does not support :global")
+        return status_message("command does not support :global")
 
     matches = [view.full_line(r.begin()) for r in matches]
     matches = [[r.a, r.b] for r in matches]
@@ -451,16 +449,16 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         subject = 'help.txt'
 
         if forceit:
-            return message("E478: Don't panic!")
+            return status_message("E478: Don't panic!")
 
     if not _ex_help_tags_cache:
-        console_message('initializing help tags...')
+        _log.debug('initializing help tags...')
 
         tags_resources = [r for r in find_resources(
             'tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
 
         if not tags_resources:
-            return message('tags file not found')
+            return status_message('tags file not found')
 
         tags_matcher = re.compile('^([^\\s]+)\\s+([^\\s]+)\\s+(.+)$')
         tags_resource = load_resource(tags_resources[0])
@@ -470,7 +468,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
                 if match:
                     _ex_help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
 
-        console_message('finished initializing help tags')
+        _log.debug('finished initializing help tags')
 
     if subject not in _ex_help_tags_cache:
 
@@ -499,7 +497,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
                 break
 
         if not found:
-            return message('E149: Sorry, no help for %s' % subject)
+            return status_message('E149: Sorry, no help for %s' % subject)
 
     tag = _ex_help_tags_cache[subject]
 
@@ -507,7 +505,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
 
     if not doc_resources:
-        return message('Sorry, help file "%s" not found' % tag[0])
+        return status_message('Sorry, help file "%s" not found' % tag[0])
 
     def window_find_open_view(window, name):
         for view in window.views():
@@ -571,11 +569,11 @@ def ex_let(name, value, **kwargs):
 def ex_move(view, edit, address, line_range, **kwargs):
     # Move the lines given by [range] to below the line given by {address}.
     if address is None:
-        return message("E14: Invalid address")
+        return status_message("E14: Invalid address")
 
     source = line_range.resolve(view)
     if any(s.contains(source) for s in view.sel()):
-        return message("E134: Move lines into themselves")
+        return status_message("E134: Move lines into themselves")
 
     # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
     parsed_address_command = parse_command_line_address(address).line_range
@@ -635,7 +633,7 @@ def ex_nunmap(lhs, **kwargs):
 # TODO Unify with CTRL-W CTRL-O
 def ex_only(window, view, forceit=False, **kwargs):
     if not forceit and has_dirty_buffers(window):
-        return message("E445: Other window contains changes")
+        return status_message("E445: Other window contains changes")
 
     current_id = view.id()
     for view in window.views():
@@ -664,7 +662,7 @@ def ex_ounmap(lhs, **kwargs):
 
 def ex_print(window, view, flags, line_range, global_lines=None, **kwargs):
     if view.size() == 0:
-        return message("E749: empty buffer")
+        return status_message("E749: empty buffer")
 
     def _get_lines(view, parsed_range, global_lines):
         # If :global called us, ignore the parsed range.
@@ -724,10 +722,10 @@ def ex_quit(window, view, forceit=False, **kwargs):
         view.set_scratch(True)
 
     if view.is_dirty() and not forceit:
-        return message("E37: No write since last change")
+        return status_message("E37: No write since last change")
 
     if not view.file_name() and not forceit:
-        return message("E32: No file name")
+        return status_message("E32: No file name")
 
     window.run_command('close')
 
@@ -751,12 +749,12 @@ def ex_read(view, edit, cmd, line_range, **kwargs):
             shell_cmd = view.settings().get('linux_shell')
             shell_cmd = shell_cmd or os.path.expandvars("$SHELL")
             if not shell_cmd:
-                return message('no shell found')
+                return status_message('no shell found')
 
             try:
                 p = subprocess.Popen([shell_cmd, '-c', cmd], stdout=subprocess.PIPE)
             except Exception as e:
-                return message('error executing command through shell {}'.format(e))
+                return status_message('error executing command through shell {}'.format(e))
 
             view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
 
@@ -772,13 +770,13 @@ def ex_read(view, edit, cmd, line_range, **kwargs):
             view.insert(edit, target_point, rv.strip() + '\n')
 
         else:
-            return message('not implemented')
+            return status_message('not implemented')
     else:
         # Read a file into the current view.
         # According to Vim's help, :r should read the current file's content
         # if no file name is given, but Vim doesn't do that.
         # TODO: implement reading a file into the buffer.
-        return message('not implemented')
+        return status_message('not implemented')
 
 
 def ex_registers(window, view, **kwargs):
@@ -817,7 +815,7 @@ def ex_registers(window, view, **kwargs):
 
 def ex_set(view, option, value, **kwargs):
     if option.endswith('?'):
-        return message('not implemented')
+        return status_message('not implemented')
 
     try:
         set_global(view, option, value)
@@ -827,7 +825,7 @@ def ex_set(view, option, value, **kwargs):
 
 def ex_setlocal(view, option, value, **kwargs):
     if option.endswith('?'):
-        return message('not implemented')
+        return status_message('not implemented')
 
     try:
         set_local(view, option, value)
@@ -854,28 +852,28 @@ def ex_shell(view, **kwargs):
         term = view.settings().get('VintageousEx_linux_terminal')
         term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
         if not term:
-            return message('terminal not found')
+            return status_message('terminal not found')
 
         try:
             _open_shell([term, '-e', 'bash']).wait()
         except Exception as e:
-            return message('error executing command through shell {}'.format(e))
+            return status_message('error executing command through shell {}'.format(e))
 
     elif platform() == 'osx':
         term = view.settings().get('VintageousEx_osx_terminal')
         term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
         if not term:
-            return message('terminal not found')
+            return status_message('terminal not found')
 
         try:
             _open_shell([term, '-e', 'bash']).wait()
         except Exception as e:
-            return message('error executing command through shell {}'.format(e))
+            return status_message('error executing command through shell {}'.format(e))
 
     elif platform() == 'windows':
         _open_shell(['cmd.exe', '/k']).wait()
     else:
-        message('not implemented')
+        status_message('not implemented')
 
 
 _ex_shell_last_command = None
@@ -912,7 +910,7 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
         # TODO: store only successful commands.
         _ex_shell_last_command = cmd
     except NotImplementedError:
-        message('not implemented')
+        status_message('not implemented')
 
 
 def ex_snoremap(lhs=None, rhs=None, **kwargs):
@@ -973,7 +971,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
     try:
         compiled_pattern = re.compile(pattern, flags=computed_flags)
     except Exception as e:
-        return message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
+        return status_message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
 
     target_region = line_range.resolve(view)
     if target_region.empty():
@@ -1157,7 +1155,7 @@ def ex_vsplit(window, view, file=None, **kwargs):
 
     groups = window.num_groups()
     if groups >= max_splits:
-        return message('Can\'t create more groups')
+        return status_message('Can\'t create more groups')
 
     old_view = view
     pos = ''
@@ -1208,7 +1206,7 @@ def ex_wall(window, forceit=False, **kwargs):
 def ex_wq(window, view, forceit=False, **kwargs):
     if forceit:
         # TODO raise not implemented exception and make the command runner handle it.
-        return message('not implemented')
+        return status_message('not implemented')
 
     if view.is_read_only():
         return status_message("can't write a read-only buffer")
@@ -1225,12 +1223,12 @@ def ex_wqall(window, **kwargs):
     if not all(view.file_name() for view in window.views()):
         ui_blink()
 
-        return message("E32: No file name")
+        return status_message("E32: No file name")
 
     if any(view.is_read_only() for view in window.views()):
         ui_blink()
 
-        return message("E45: 'readonly' option is set (add ! to override)")
+        return status_message("E45: 'readonly' option is set (add ! to override)")
 
     window.run_command('save_all')
 
@@ -1247,10 +1245,10 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
     appends = kwargs.get('>>')
 
     if options:
-        return message('++opt isn\'t implemented for :write')
+        return status_message('++opt isn\'t implemented for :write')
 
     if cmd:
-        return message('!cmd not implememted for :write')
+        return status_message('!cmd not implememted for :write')
 
     if not view:
         return
@@ -1276,7 +1274,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
                 r = line_range.resolve(view)
 
             if not forceit and not os.path.exists(file_name):
-                return message("E212: Can't open file for writing: %s" % file_name)
+                return status_message("E212: Can't open file for writing: %s" % file_name)
 
             try:
                 with open(file_name, 'at') as f:
@@ -1287,7 +1285,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
                 return status_message('Appended to ' + os.path.abspath(file_name))
 
             except IOError as e:
-                return message('could not write file {}'.format(str(e)))
+                return status_message('could not write file {}'.format(str(e)))
 
         def _do_append(view, file_name, forceit, line_range):
             if file_name:
@@ -1317,7 +1315,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
         return _do_append(view, file_name, forceit, line_range)
 
     if cmd:
-        return message('!cmd isn\'t implemented for :write')
+        return status_message('!cmd isn\'t implemented for :write')
 
     if file_name:
         def _do_write(window, view, file_name, forceit, line_range):
@@ -1327,12 +1325,12 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
                 if os.path.exists(fname):
                     ui_blink()
 
-                    return message("E13: File exists (add ! to override)")
+                    return status_message("E13: File exists (add ! to override)")
 
                 if _check_is_readonly(fname):
                     ui_blink()
 
-                    return message("E45: 'readonly' option is set (add ! to override)")
+                    return status_message("E45: 'readonly' option is set (add ! to override)")
 
             region = None
             if line_range.is_empty:
@@ -1356,19 +1354,19 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
 
             except IOError:
                 # TODO: Add logging.
-                return message("E212: Can't open file for writing: {}".format(fname))
+                return status_message("E212: Can't open file for writing: {}".format(fname))
 
         return _do_write(window, view, file_name, forceit, line_range)
 
     if not view.file_name():
-        return message("E32: No file name")
+        return status_message("E32: No file name")
 
     read_only = (_check_is_readonly(view.file_name()) or view.is_read_only())
 
     if read_only and not forceit:
         ui_blink()
 
-        return message("E45: 'readonly' option is set (add ! to override)")
+        return status_message("E45: 'readonly' option is set (add ! to override)")
 
     window.run_command('save')
 
@@ -1614,8 +1612,7 @@ def do_ex_cmdline(window, line):
         # Run user command. User commands begin with an uppercase letter.
         user_command = _parse_user_cmdline(line)
         if not user_command:
-            # TODO noop message/Error?
-            return
+            return status_message('invalid command')
 
         _log.debug('execute user ex command: %s', user_command)
 
@@ -1624,8 +1621,7 @@ def do_ex_cmdline(window, line):
     try:
         cmdline = parse_command_line(line[1:])
     except Exception as e:
-        status_message(str(e))
-        return
+        return status_message(str(e))
 
     if not cmdline.command:
         # Do default ex command. The default ex command is not associated with
@@ -1635,8 +1631,7 @@ def do_ex_cmdline(window, line):
             raise RuntimeError('an active view is required for default ex cmd')
 
         if not cmdline.line_range:
-            # TODO noop message/Error?
-            return
+            return status_message('invalid command')
 
         return _default_ex_cmd(window=window, view=view, line_range=cmdline.line_range)
 

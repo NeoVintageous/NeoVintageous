@@ -57,7 +57,6 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE

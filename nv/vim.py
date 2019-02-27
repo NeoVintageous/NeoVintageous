@@ -88,11 +88,6 @@ def _format_message(msg, *args):
     return msg
 
 
-def console_message(msg, *args):
-    # type: (str, *str) -> None
-    print('NeoVintageous:', _format_message(msg, *args))
-
-
 def status_message(msg, *args):
     # type: (str, *str) -> None
     _status_message(_format_message(msg, *args))
@@ -100,8 +95,7 @@ def status_message(msg, *args):
 
 def message(msg, *args):
     # type: (str, *str) -> None
-    status_message(msg, *args)
-    console_message(msg, *args)
+    print('NeoVintageous:', _format_message(msg, *args))
 
 
 def run_window_command(cmd, args=None, window=None):

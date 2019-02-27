@@ -17,13 +17,40 @@
 
 from sublime import Region
 
+# from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
+
+
+def goto_help(window):
+    view = window.active_view()
+    if not view:
+        raise ValueError('view is required')
+
+    if not view.sel():
+        raise ValueError('selection is required')
+
+    sel = view.sel()[0]
+
+    score = view.score_selector(sel.b, 'text.neovintageous jumptag')
+    # TODO ENHANCEMENT Allow goto to help for any word in a help file. See :h bar Anyway, you can use CTRL-] on any word, also when it is not within |, and Vim will try to find help for it.  Especially for options in single quotes, e.g. 'compatible'.  # noqa: E501
+    if score == 0:
+        return  # noop
+
+    subject = view.substr(view.extract_scope(sel.b))
+    if not subject:
+        return  # noop
+
+    if len(subject) > 35:
+        return status_message('E149: Sorry, no help found')
+
+    do_ex_command(window, 'help', {'subject': subject})
 
 
 def goto_line(view, line, mode):
