@@ -1517,7 +1517,11 @@ def do_ex_command(window, name, args=None):
 
 
 def _parse_user_cmdline(line):
-    match = re.match('^\\:(?P<cmd>[A-Z][a-zA-Z_]*)(?P<args>(?:\\s[a-zA-Z_]+=[a-zA-Z0-9\n\t@_-]+)+)?$', line)
+    re_cmd = '[A-Z][a-zA-Z_]*'
+    re_arg_name = '[a-zA-Z_]+'
+    re_arg_value = '[a-zA-Z0-9\\.\n\t@_-]+'
+
+    match = re.match('^\\:(?P<cmd>' + re_cmd + ')(?P<args>(?:\\s' + re_arg_name + '=' + re_arg_value + ')+)?$', line)
     if not match:
         return None
 
@@ -1532,7 +1536,7 @@ def _parse_user_cmdline(line):
     command['cmd'] = cmd
 
     if command['args']:
-        argsv = re.findall('\\s(?P<name>[a-zA-Z_]+)=(?P<value>[a-zA-Z0-9\n\t@_-]+)', command['args'])
+        argsv = re.findall('\\s(?P<name>' + re_arg_name + ')=(?P<value>' + re_arg_value + ')', command['args'])
         if argsv:
             args = {}
             for name, value in argsv:
@@ -1542,6 +1546,8 @@ def _parse_user_cmdline(line):
                     value = False
                 elif re.match('^(?:-)?[0-9]+$', value):
                     value = int(value)
+                elif re.match('^(?:-)?(?:[0-9]+\\.)[0-9]+$', value):
+                    value = float(value)
 
                 args[name] = value
 

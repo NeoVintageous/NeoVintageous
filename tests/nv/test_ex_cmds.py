@@ -619,6 +619,15 @@ class Test_parse_user_cmdline(unittest.TestCase):
         self.assert_parsed(':FizzBuzz x=42', {'cmd': 'fizz_buzz', 'args': {'x': 42}})
         self.assert_parsed(':FizzBuzz x=4 y=2', {'cmd': 'fizz_buzz', 'args': {'x': 4, 'y': 2}})
 
+    def test_integer_float_values(self):
+        self.assert_parsed(':FizzBuzz x=-0.1', {'cmd': 'fizz_buzz', 'args': {'x': -0.1}})
+        self.assert_parsed(':FizzBuzz x=-4.2', {'cmd': 'fizz_buzz', 'args': {'x': -4.2}})
+        self.assert_parsed(':FizzBuzz x=0.0', {'cmd': 'fizz_buzz', 'args': {'x': 0.0}})
+        self.assert_parsed(':FizzBuzz x=0.9', {'cmd': 'fizz_buzz', 'args': {'x': 0.9}})
+        self.assert_parsed(':FizzBuzz x=1.0', {'cmd': 'fizz_buzz', 'args': {'x': 1.0}})
+        self.assert_parsed(':FizzBuzz x=4.1 y=2.3', {'cmd': 'fizz_buzz', 'args': {'x': 4.1, 'y': 2.3}})
+        self.assert_parsed(':FizzBuzz x=42.0', {'cmd': 'fizz_buzz', 'args': {'x': 42.0}})
+
     def test_invalid_command(self):
         self.assert_parsed(':foobar', None)
         self.assert_parsed('foobar', None)
