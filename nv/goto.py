@@ -17,7 +17,6 @@
 
 from sublime import Region
 
-# from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
@@ -50,6 +49,7 @@ def goto_help(window):
     if len(subject) > 35:
         return status_message('E149: Sorry, no help found')
 
+    from NeoVintageous.nv.ex_cmds import do_ex_command
     do_ex_command(window, 'help', {'subject': subject})
 
 

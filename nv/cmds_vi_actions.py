@@ -27,6 +27,7 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.ex_cmds import do_ex_command
+from NeoVintageous.nv.goto import goto_help
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
@@ -1756,7 +1757,7 @@ class _vi_ctrl_right_square_bracket(WindowCommand):
     def run(self):
         view = self.window.active_view()
         if view and view.score_selector(0, 'text.neovintageous.help') > 0:
-            self.window.run_command('_nv_goto_help')
+            goto_help(self.window)
         else:
             self.window.run_command('goto_definition')
 

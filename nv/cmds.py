@@ -29,7 +29,6 @@ from NeoVintageous.nv.ex.completions import on_change_cmdline_completion_prefix
 from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
 from NeoVintageous.nv.ex_cmds import do_ex_cmd_edit_wrap
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
-from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
@@ -72,7 +71,6 @@ __all__ = [
     '_nv_ex_cmd_edit_wrap',
     '_nv_feed_key',
     '_nv_fix_st_eol_caret',
-    '_nv_goto_help',
     '_nv_process_notation',
     '_nv_replace_line',
     '_nv_run_cmds',
@@ -212,33 +210,6 @@ class _nv_fix_st_eol_caret(TextCommand):
             return s
 
         regions_transformer(self.view, f)
-
-
-class _nv_goto_help(WindowCommand):
-
-    def run(self):
-        view = self.window.active_view()
-        if not view:
-            raise ValueError('view is required')
-
-        if not view.sel():
-            raise ValueError('selection is required')
-
-        sel = view.sel()[0]
-
-        score = view.score_selector(sel.b, 'text.neovintageous jumptag')
-        # TODO ENHANCEMENT Allow goto to help for any word in a help file. See :h bar Anyway, you can use CTRL-] on any word, also when it is not within |, and Vim will try to find help for it.  Especially for options in single quotes, e.g. 'compatible'.  # noqa: E501
-        if score == 0:
-            return  # noop
-
-        subject = view.substr(view.extract_scope(sel.b))
-        if not subject:
-            return  # noop
-
-        if len(subject) > 35:
-            return message('E149: Sorry, no help found')
-
-        do_ex_command(self.window, 'help', {'subject': subject})
 
 
 class _nv_run_cmds(TextCommand):
