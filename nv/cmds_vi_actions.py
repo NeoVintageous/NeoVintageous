@@ -35,6 +35,7 @@ from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
+from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.vi import search
 from NeoVintageous.nv.vi import units
@@ -481,8 +482,7 @@ class _enter_normal_mode(ViTextCommandBase):
 
         state.update_xpos(force=True)
         state.reset_status()
-
-        self.view.run_command('_nv_fix_st_eol_caret', {'mode': state.mode})
+        fix_eol_cursor(self.view, state.mode)
 
         # When the commands o and O are immediately followed by <Esc>, then if
         # the current line is only whitespace it should be erased, and the xpos
@@ -562,7 +562,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
         self.view.erase_regions('vi_search')
         self.view.erase_regions('vi_search_current')
-        self.view.run_command('_nv_fix_st_eol_caret', {'mode': mode})
+        fix_eol_cursor(self.view, mode)
 
 
 class _enter_select_mode(ViWindowCommandBase):
@@ -931,7 +931,7 @@ class _vi_d(ViTextCommandBase):
 
         self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('left_delete')
-        self.view.run_command('_nv_fix_st_eol_caret')
+        fix_eol_cursor(self.view, mode)
         enter_normal_mode(self.view, mode)
 
         # XXX: abstract this out for all types of selections.

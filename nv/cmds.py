@@ -50,11 +50,9 @@ from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
-from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
-from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -70,7 +68,6 @@ __all__ = [
     '_nv_cmdline_feed_key',
     '_nv_ex_cmd_edit_wrap',
     '_nv_feed_key',
-    '_nv_fix_st_eol_caret',
     '_nv_process_notation',
     '_nv_replace_line',
     '_nv_run_cmds',
@@ -186,30 +183,6 @@ class _nv_cmdline_feed_key(TextCommand):
     @staticmethod
     def reset_last_history_index():  # type: () -> None
         _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
-
-
-# TODO Replace with a functional api that commands can use directly.
-class _nv_fix_st_eol_caret(TextCommand):
-
-    # Tries to workaround some of the Sublime Text issues where the cursor caret
-    # is positioned, off-by-one, at the end of line i.e. the caret positions
-    # itself at >>>eol| |<<< instead of >>>eo|l|<<<. In some cases, the cursor
-    # positions itself at >>>eol| |<<<, and then a second later,  moves to the
-    # correct position >>>eo|l|<<< e.g. a left mouse click after the end of a
-    # line. Some of these issues can't be worked-around e.g. the mouse click
-    # issue described above.
-    # See https://github.com/SublimeTextIssues/Core/issues/2121.
-
-    def run(self, edit, mode=None):
-        def f(view, s):
-            if mode in (NORMAL, INTERNAL_NORMAL):
-                pt = s.b
-                if ((view.substr(pt) == '\n' or pt == view.size()) and not view.line(pt).empty()):
-                    return Region(pt - 1)
-
-            return s
-
-        regions_transformer(self.view, f)
 
 
 class _nv_run_cmds(TextCommand):

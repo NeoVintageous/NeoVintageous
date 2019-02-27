@@ -33,6 +33,12 @@
 
 import re
 
+from sublime import Region
+
+from NeoVintageous.nv.vi.utils import regions_transformer
+from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import NORMAL
+
 
 def extract_file_name(view):
     sel = view.sel()[0]
@@ -98,6 +104,26 @@ def extract_url(view):
     text = view.substr(line)
 
     return _extract_url_from_text(_URL_REGEX, text)
+
+
+# Tries to workaround some of the Sublime Text issues where the cursor caret is
+# positioned, off-by-one, at the end of line i.e. the caret positions itself at
+# >>>eol| |<<< instead of >>>eo|l|<<<. In some cases, the cursor positions
+# itself at >>>eol| |<<<, and then a second later,  moves to the correct
+# position >>>eo|l|<<< e.g. a left mouse click after the end of a line. Some of
+# these issues can't be worked-around e.g. the mouse click issue described
+# above. See https://github.com/SublimeTextIssues/Core/issues/2121.
+def fix_eol_cursor(view, mode):
+    def f(view, s):
+        b = s.b
+
+        if ((view.substr(b) == '\n' or b == view.size()) and not view.line(b).empty()):
+            return Region(b - 1)
+
+        return s
+
+    if mode in (NORMAL, INTERNAL_NORMAL):
+        regions_transformer(view, f)
 
 
 def highlow_visible_rows(view):

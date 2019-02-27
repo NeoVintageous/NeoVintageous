@@ -22,6 +22,7 @@ from sublime_plugin import EventListener
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vim import NORMAL
@@ -160,8 +161,8 @@ class NeoVintageousEvents(EventListener):
             # executes the original drag_select command followed by entering the
             # correct mode.
 
-            state = State(view)
-            mode = state.mode
+            # TODO Kill State dependency
+            mode = State(view).mode
 
             if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
@@ -170,7 +171,7 @@ class NeoVintageousEvents(EventListener):
                     # Triple click: enter VISUAL LINE.
                     return ('_nv_run_cmds', {'commands': [
                         ['drag_select', args],
-                        ['_enter_visual_line_mode', {'mode': state.mode}]
+                        ['_enter_visual_line_mode', {'mode': mode}]
                     ]})
                 elif not args.get('extend'):
                     # Single click: enter NORMAL.
@@ -192,9 +193,8 @@ class NeoVintageousEvents(EventListener):
         # This fixes issues where the xpos is not updated after a mouse click
         # moves the cursor position. These issues look like they could be
         # compounded by Sublime Text issues (see on_post_save() and the
-        # _nv_fix_st_eol_caret command). The xpos only needs to be
-        # updated on single mouse click.
-        # See https://github.com/SublimeTextIssues/Core/issues/2117.
+        # fix_eol_cursor utility). The xpos only needs to be updated on single
+        # mouse click. See https://github.com/SublimeTextIssues/Core/issues/2117.
         if command == 'drag_select':
             if set(args) == {'event'}:
                 if set(args['event']) == {'x', 'y', 'button'}:
@@ -212,7 +212,8 @@ class NeoVintageousEvents(EventListener):
 
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.
-        view.run_command('_nv_fix_st_eol_caret', {'mode': State(view).mode})
+        # TODO Kill State dependency
+        fix_eol_cursor(view, State(view).mode)
 
     def on_close(self, view):
         settings.destroy(view)
