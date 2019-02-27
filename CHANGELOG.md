@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#451](https://github.com/NeoVintageous/NeoVintageous/issues/451): `{Visual}e` in reverse selection should move to end of word
 * Fixed [#450](https://github.com/NeoVintageous/NeoVintageous/issues/450): `k` in SELECT mode should enter NORMAL mode if last selection
 * Fixed [#449](https://github.com/NeoVintageous/NeoVintageous/issues/449): `v_W` causes error when end of selection is at BOF
 * Fixed [#447](https://github.com/NeoVintageous/NeoVintageous/issues/447): `:h ctrl-w_o` should open help for `CTRL-W_o`

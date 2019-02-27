@@ -926,7 +926,7 @@ class _vi_e(ViMotionCommand):
                 if (s.a > s.b) and (pt >= s.a):
                     return Region(s.a - 1, pt)
                 elif (s.a > s.b):
-                    return Region(s.a, pt)
+                    return Region(s.a, pt - 1)
 
                 return Region(s.a, pt)
 
