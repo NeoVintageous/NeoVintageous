@@ -473,19 +473,27 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         console_message('finished initializing help tags')
 
     if subject not in _ex_help_tags_cache:
+
         # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
         # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
         # example is `:help copy` will look for "copy" then ":copy".
         # Also checks lowercase variants e.g. ctrl-k", "c_ctrl-k, etc., and
         # uppercase variants e.g. CTRL-K", "C_CTRL-K, etc.
+
+        subject_candidates = (
+            subject,
+            re.sub('ctrl-([a-zA-Z])', lambda m: 'CTRL-' + m.group(1).upper(), subject),
+            subject.lower(),
+            subject.upper(),
+        )
+
         found = False
         for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
-            for s in (subject, subject.lower(), subject.upper()):
+            for s in subject_candidates:
                 _subject = p + s
-                _log.debug('looking for help subject >>>%s<<<', _subject)
                 if _subject in _ex_help_tags_cache:
-                    found = True
                     subject = _subject
+                    found = True
 
             if found:
                 break
