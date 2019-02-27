@@ -19,15 +19,12 @@
 class Token:
 
     def __init__(self, content):
-        # type: (str) -> None
         self.content = content
 
     def __str__(self):
-        # type: () -> str
         return '{}({})'.format(self.__class__.__name__, self.content)
 
     def __eq__(self, other):
-        # type: (object) -> bool
         if isinstance(other, self.__class__):
             return self.__dict__ == other.__dict__
 
@@ -105,8 +102,7 @@ class TokenSemicolon(TokenOfRange):
 
 
 class TokenOffset(TokenOfRange):
-    def __init__(self, content, *args, **kwargs):
-        super().__init__(content)
+    pass
 
 
 class TokenPercent(TokenOfRange):
@@ -124,20 +120,16 @@ class TokenOfSearch(TokenOfRange):
 
 
 class TokenSearchForward(TokenOfSearch):
-    def __init__(self, content, *args, **kwargs):
-        super().__init__(content)
+    pass
 
 
 class TokenSearchBackward(TokenOfSearch):
-    def __init__(self, content, *args, **kwargs):
-        super().__init__(content)
+    pass
 
 
 class TokenDigits(TokenOfRange):
-    def __init__(self, content, *args, **kwargs):
-        super().__init__(content)
+    pass
 
 
 class TokenMark(TokenOfRange):
-    def __init__(self, content, *args, **kwargs):
-        super().__init__(content)
+    pass
