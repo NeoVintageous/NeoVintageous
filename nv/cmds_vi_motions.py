@@ -32,9 +32,13 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.ui import ui_region_flags
+from NeoVintageous.nv.utils import get_option_scroll
+from NeoVintageous.nv.utils import get_scroll_down_target_pt
+from NeoVintageous.nv.utils import get_scroll_up_target_pt
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import lowest_visible_pt
+from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi import utils
@@ -1675,76 +1679,6 @@ class _vi_g__(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-def _get_option_scroll(view):
-    line_height = view.line_height()
-    viewport_extent = view.viewport_extent()
-    line_count = viewport_extent[1] / line_height
-    number_of_scroll_lines = line_count / 2
-
-    return int(number_of_scroll_lines)
-
-
-def _scroll_viewport_position(view, number_of_scroll_lines, forward=True):
-    x, y = view.viewport_position()
-
-    y_addend = ((number_of_scroll_lines) * view.line_height())
-
-    if forward:
-        viewport_position = (x, y + y_addend)
-    else:
-        viewport_position = (x, y - y_addend)
-
-    view.set_viewport_position(viewport_position, animate=False)
-
-
-def _get_scroll_target(view, number_of_scroll_lines, forward=True):
-    s = view.sel()[0]
-
-    if forward:
-        if s.b > s.a and view.substr(s.b - 1) == '\n':
-            sel_row, sel_col = view.rowcol(s.b - 1)
-        else:
-            sel_row, sel_col = view.rowcol(s.b)
-
-        target_row = sel_row + number_of_scroll_lines
-
-        # Ignore the last line if it's a blank line. In Sublime the last
-        # character is a NULL character point ('\x00'). We don't need to check
-        # that it's NULL, just backup one point and retrieve that row and col.
-        last_line_row, last_line_col = view.rowcol(view.size() - 1)
-
-        # Ensure the target does not overflow the bottom of the buffer.
-        if target_row >= last_line_row:
-            target_row = last_line_row
-    else:
-        if s.b > s.a and view.substr(s.b - 1) == '\n':
-            sel_row, sel_col = view.rowcol(s.b - 1)
-        else:
-            sel_row, sel_col = view.rowcol(s.b)
-
-        target_row = sel_row - number_of_scroll_lines
-
-        # Ensure the target does not overflow the top of the buffer.
-        if target_row <= 0:
-            target_row = 0
-
-    # Return nothing to indicate there no need to scroll.
-    if sel_row == target_row:
-        return
-
-    target_pt = next_non_blank(view, view.text_point(target_row, 0))
-
-    return target_pt
-
-
-def _get_scroll_up_target_pt(view, number_of_scroll_lines):
-    return _get_scroll_target(view, number_of_scroll_lines, forward=False)
-
-
-def _get_scroll_down_target_pt(view, number_of_scroll_lines):
-    return _get_scroll_target(view, number_of_scroll_lines, forward=True)
-
-
 class _vi_ctrl_u(ViMotionCommand):
 
     def run(self, count=0, mode=None):
@@ -1784,14 +1718,14 @@ class _vi_ctrl_u(ViMotionCommand):
                 return Region(a, b)
             return s
 
-        number_of_scroll_lines = count if count >= 1 else _get_option_scroll(self.view)
-        scroll_target_pt = _get_scroll_up_target_pt(self.view, number_of_scroll_lines)
+        number_of_scroll_lines = count if count >= 1 else get_option_scroll(self.view)
+        scroll_target_pt = get_scroll_up_target_pt(self.view, number_of_scroll_lines)
         if scroll_target_pt is None:
             return ui_blink()
 
         regions_transformer(self.view, f)
         if not self.view.visible_region().contains(0):
-            _scroll_viewport_position(self.view, number_of_scroll_lines, forward=False)
+            scroll_viewport_position(self.view, number_of_scroll_lines, forward=False)
 
 
 class _vi_ctrl_d(ViMotionCommand):
@@ -1829,14 +1763,14 @@ class _vi_ctrl_d(ViMotionCommand):
 
             return s
 
-        number_of_scroll_lines = count if count >= 1 else _get_option_scroll(self.view)
-        scroll_target_pt = _get_scroll_down_target_pt(self.view, number_of_scroll_lines)
+        number_of_scroll_lines = count if count >= 1 else get_option_scroll(self.view)
+        scroll_target_pt = get_scroll_down_target_pt(self.view, number_of_scroll_lines)
         if scroll_target_pt is None:
             return ui_blink()
 
         regions_transformer(self.view, f)
         if not self.view.visible_region().contains(self.view.size()):
-            _scroll_viewport_position(self.view, number_of_scroll_lines)
+            scroll_viewport_position(self.view, number_of_scroll_lines)
 
 
 class _vi_pipe(ViMotionCommand):

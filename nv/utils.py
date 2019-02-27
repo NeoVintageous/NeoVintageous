@@ -35,6 +35,7 @@ import re
 
 from sublime import Region
 
+from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -177,3 +178,73 @@ def scroll_horizontally(view, edit, amount, half_screen=False):
         pos_x = 0
 
     view.set_viewport_position((pos_x, position[1]))
+
+
+def scroll_viewport_position(view, number_of_scroll_lines, forward=True):
+    x, y = view.viewport_position()
+
+    y_addend = ((number_of_scroll_lines) * view.line_height())
+
+    if forward:
+        viewport_position = (x, y + y_addend)
+    else:
+        viewport_position = (x, y - y_addend)
+
+    view.set_viewport_position(viewport_position, animate=False)
+
+
+def get_option_scroll(view):
+    line_height = view.line_height()
+    viewport_extent = view.viewport_extent()
+    line_count = viewport_extent[1] / line_height
+    number_of_scroll_lines = line_count / 2
+
+    return int(number_of_scroll_lines)
+
+
+def _get_scroll_target(view, number_of_scroll_lines, forward=True):
+    s = view.sel()[0]
+
+    if forward:
+        if s.b > s.a and view.substr(s.b - 1) == '\n':
+            sel_row, sel_col = view.rowcol(s.b - 1)
+        else:
+            sel_row, sel_col = view.rowcol(s.b)
+
+        target_row = sel_row + number_of_scroll_lines
+
+        # Ignore the last line if it's a blank line. In Sublime the last
+        # character is a NULL character point ('\x00'). We don't need to check
+        # that it's NULL, just backup one point and retrieve that row and col.
+        last_line_row, last_line_col = view.rowcol(view.size() - 1)
+
+        # Ensure the target does not overflow the bottom of the buffer.
+        if target_row >= last_line_row:
+            target_row = last_line_row
+    else:
+        if s.b > s.a and view.substr(s.b - 1) == '\n':
+            sel_row, sel_col = view.rowcol(s.b - 1)
+        else:
+            sel_row, sel_col = view.rowcol(s.b)
+
+        target_row = sel_row - number_of_scroll_lines
+
+        # Ensure the target does not overflow the top of the buffer.
+        if target_row <= 0:
+            target_row = 0
+
+    # Return nothing to indicate there no need to scroll.
+    if sel_row == target_row:
+        return
+
+    target_pt = next_non_blank(view, view.text_point(target_row, 0))
+
+    return target_pt
+
+
+def get_scroll_up_target_pt(view, number_of_scroll_lines):
+    return _get_scroll_target(view, number_of_scroll_lines, forward=False)
+
+
+def get_scroll_down_target_pt(view, number_of_scroll_lines):
+    return _get_scroll_target(view, number_of_scroll_lines, forward=True)
