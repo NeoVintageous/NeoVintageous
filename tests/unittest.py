@@ -764,11 +764,9 @@ def _make_region(view, a, b=None):
 def mock_bell():
     def wrapper(f):
         @mock.patch('NeoVintageous.nv.cmds.ui_blink')
-        @mock.patch('NeoVintageous.nv.cmds_vi_motions.ui_blink')
         def wrapped(self, *args, **kwargs):
             self.bells = [
-                args[-1],
-                args[-2]
+                args[-1]
             ]
 
             def _bell_call_count():
