@@ -922,8 +922,13 @@ def ex_snoremap(lhs=None, rhs=None, **kwargs):
     mappings_add(SELECT, lhs, rhs)
 
 
-def ex_sort(view, line_range, **kwargs):
-    view.run_command('sort_lines', {'case_sensitive': False})
+def ex_sort(view, options='', **kwargs):
+    case_sensitive = True if 'i' not in options else False
+
+    view.run_command('sort_lines', {'case_sensitive': case_sensitive})
+
+    if 'u' in options:
+        view.run_command('permute_lines', {'operation': 'unique'})
 
     def f(view, s):
         return Region(next_non_blank(view, s.begin()))

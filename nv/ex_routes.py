@@ -46,6 +46,14 @@ def _create_unmap_route(state, name):
     return command
 
 
+def _resolve(state, command, pattern):
+    m = state.match(pattern)
+    if m:
+        command.params.update(m.groupdict())
+
+    return command
+
+
 def _ex_route_bfirst(state):
     return _literal_route(state, 'bfirst')
 
@@ -445,7 +453,11 @@ def _ex_route_sunmap(state):
 
 
 def _ex_route_sort(state):
-    return _literal_route(state, 'sort', addressable=True)
+    command = _literal_route(state, 'sort', addressable=True)
+
+    _resolve(state, command, r'\s*(?P<options>[iu]+)')
+
+    return command
 
 
 def _ex_route_split(state):

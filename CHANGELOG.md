@@ -7,7 +7,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * Added [#448](https://github.com/NeoVintageous/NeoVintageous/issues/448): User command mappings should allow float arguments e.g. `nnoremap <leader>. :ToggleZoomPane fraction=0.98<CR>`
-* Added [#445](https://github.com/NeoVintageous/NeoVintageous/issues/445): `:sort` sort lines
+* Added [#445](https://github.com/NeoVintageous/NeoVintageous/issues/445): `:sort [i][u]` sort lines with case-insensitive and unique options
 * Added [#71](https://github.com/NeoVintageous/NeoVintageous/issues/71): `gf` edit the file under cursor (mnemonic: "goto file")
 * Added [#31](https://github.com/NeoVintageous/NeoVintageous/issues/31): `zl`, `zL`, `zh`, `zH` scroll horizontally
 * Added [#442](https://github.com/NeoVintageous/NeoVintageous/issues/442): `:s/{search}/{replacement}/c` can now be cancelled
