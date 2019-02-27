@@ -10,4 +10,4 @@ max-line-length = 120
 # D107  Missing docstring in __init__
 ignore = D100,D101,D102,D103,D104,D105,D107,W504
 
-max-complexity = 30
+max-complexity = 35

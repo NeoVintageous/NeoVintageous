@@ -196,6 +196,12 @@ class ViewTestCase(unittest.TestCase):
     def rvblock(self, text):
         self._setupView(text, VISUAL_BLOCK, reverse=True)
 
+    def vselect(self, text):
+        self._setupView(text, SELECT)
+
+    def rvselect(self, text):
+        self._setupView(text, SELECT, reverse=True)
+
     def register(self, name, value=None, linewise=False):
         # Args:
         #   name (str)
@@ -255,6 +261,11 @@ class ViewTestCase(unittest.TestCase):
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid INSERT mode selection')
 
+    def assertReplace(self, expected, msg=None):
+        self._assertView(expected, REPLACE, msg)
+        for sel in self.view.sel():
+            self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid REPLACE mode selection')
+
     def assertInternalNormal(self, expected, strict=False, msg=None):
         self._assertViewSelectionContent(expected, msg)
         self._assertMode(INTERNAL_NORMAL if strict else NORMAL)
@@ -287,6 +298,14 @@ class ViewTestCase(unittest.TestCase):
 
     def assertRVblock(self, expected, msg=None):
         self._assertView(expected, VISUAL_BLOCK, msg)
+        self.assertSelectionIsReversed()
+
+    def assertVSelect(self, expected, msg=None):
+        self._assertView(expected, SELECT, msg)
+        self.assertSelectionIsNotReversed()
+
+    def assertRVSelect(self, expected, msg=None):
+        self._assertView(expected, SELECT, msg)
         self.assertSelectionIsReversed()
 
     def assertContent(self, expected, msg=None):
@@ -503,6 +522,7 @@ class ViewTestCase(unittest.TestCase):
 _CHAR2MODE = {
     'i': INSERT,
     'n': NORMAL,
+    's': SELECT,
     'v': VISUAL,
     'l': VISUAL_LINE,
     'b': VISUAL_BLOCK
@@ -549,7 +569,7 @@ class FunctionalTestCase(ViewTestCase):
         orig_seq = seq
         seq_args = {}
 
-        if seq[0] in 'vinlb' and (len(seq) > 1 and seq[1] == '_'):
+        if seq[0] in 'vinlbs' and (len(seq) > 1 and seq[1] == '_'):
             seq_args['mode'] = _CHAR2MODE[seq[0]]
             seq = seq[2:]
 
@@ -629,17 +649,17 @@ class FunctionalTestCase(ViewTestCase):
 
         is_feed_visual = feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>'))
 
-        if feed[:2] in ('l_', 'b_', 'i_', 'N_'):
+        if feed[:2] in ('l_', 'b_', 'i_', 'N_', 's_'):
             text_mode = feed[0]
         elif is_feed_visual:
             text_mode = 'v'
         else:
             text_mode = 'n'
 
-        if expected[:2] in ('n_', 'v_', 'l_', 'b_', 'i_', 'N_'):
+        if expected[:2] in ('n_', 'v_', 'l_', 'b_', 'i_', 'N_', 's_', 'R_'):
             expected_mode = expected[0]
             expected = expected[2:]
-        elif feed[:2] in ('l_', 'b_', 'i_', 'N_'):
+        elif feed[:2] in ('l_', 'b_', 'i_', 'N_', 's_'):
             expected_mode = feed[0]
         elif is_feed_visual:
             expected_mode = 'v'
@@ -670,6 +690,8 @@ class FunctionalTestCase(ViewTestCase):
                 self.internalNormal(text)
         elif text_mode == 'i':
             self.insert(text)
+        elif text_mode == 's':
+            self.vselect(text)
         else:
             self.assertTrue(False, 'invalid text mode')
 
@@ -699,6 +721,13 @@ class FunctionalTestCase(ViewTestCase):
                 self.assertInternalNormal(expected, msg)
         elif expected_mode == 'i':
             self.assertInsert(expected, msg)
+        elif expected_mode == 's':
+            if reverse_expected:
+                self.assertRVSelect(expected, msg)
+            else:
+                self.assertVSelect(expected, msg)
+        elif expected_mode == 'R':
+            self.assertReplace(expected, msg)
         else:
             self.assertTrue(False, 'invalid expected mode')
 
@@ -1090,6 +1119,7 @@ _SEQ2CMD = {
     'ge':           {'command': '_vi_ge'},  # noqa: E241
     'gf':           {'command': '_vi_g', 'args': {'action': 'f'}},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241
+    'gh':           {'command': '_enter_select_mode'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241
     'gk':           {'command': '_vi_gk'},  # noqa: E241
@@ -1130,6 +1160,8 @@ _SEQ2CMD = {
     'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
+    'j':            {'command': '_vi_select_j'},  # noqa: E241
+    'k':            {'command': '_vi_select_k'},  # noqa: E241
     'L':            {'command': '_vi_big_l'},  # noqa: E241
     'l':            {'command': '_vi_l'},  # noqa: E241
     'l_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
@@ -1140,10 +1172,12 @@ _SEQ2CMD = {
     'o':            {'command': '_vi_o'},  # noqa: E241
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
+    'R':            {'command': '_enter_replace_mode'},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     'S"':           {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
+    's_J':          {'command': '_vi_select_big_j'},  # noqa: E241
     't\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': False}},  # noqa: E241
     'tx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
     't|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': False}},  # noqa: E241

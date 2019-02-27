@@ -703,7 +703,7 @@ class _enter_visual_line_mode_impl(ViTextCommandBase):
 
 class _enter_replace_mode(ViTextCommandBase):
 
-    def run(self, edit):
+    def run(self, edit, **kwargs):
         def f(view, s):
             return Region(s.b)
 
@@ -2248,6 +2248,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
         state.display_status()
 
 
+# TODO Refactor into _vi_j
 class _vi_select_j(ViWindowCommandBase):
 
     def run(self, count=1, mode=None):
@@ -2258,6 +2259,7 @@ class _vi_select_j(ViWindowCommandBase):
             self.window.run_command('find_under_expand')
 
 
+# TODO Refactor into _vi_k
 class _vi_select_k(ViWindowCommandBase):
 
     def run(self, count=1, mode=None):
@@ -2265,7 +2267,10 @@ class _vi_select_k(ViWindowCommandBase):
             raise ValueError('wrong mode')
 
         for i in range(count):
-            self.window.run_command('soft_undo')
+            if len(self.view.sel()) > 1:
+                self.window.run_command('soft_undo')
+            else:
+                enter_normal_mode(self.view, mode)
 
 
 class _vi_tilde(ViTextCommandBase):
