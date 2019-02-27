@@ -29,7 +29,6 @@ from NeoVintageous.nv.ex.tokens import TokenSearchBackward
 from NeoVintageous.nv.ex.tokens import TokenSearchForward
 from NeoVintageous.nv.ex.tokens import TokenSemicolon
 from NeoVintageous.nv.ex_routes import ex_routes
-from NeoVintageous.nv.vim import status_message
 
 
 class _ScannerState:
