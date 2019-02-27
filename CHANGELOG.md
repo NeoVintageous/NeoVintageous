@@ -7,17 +7,20 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * Added [#445](https://github.com/NeoVintageous/NeoVintageous/issues/445): `:sort` sort lines
-* Added [#71](https://github.com/NeoVintageous/NeoVintageous/issues/71): `gf` edit the file whose name is under or after the cursor (mnemonic: "goto file")
-* Added [#31](https://github.com/NeoVintageous/NeoVintageous/issues/31): `zl`, `zL`, `zh`, `zH` to scroll horizontally
-* Added [#442](https://github.com/NeoVintageous/NeoVintageous/issues/442): `:s/{search}/{replacement}/c` (confirm replacements) can now be cancelled
+* Added [#71](https://github.com/NeoVintageous/NeoVintageous/issues/71): `gf` edit the file under cursor (mnemonic: "goto file")
+* Added [#31](https://github.com/NeoVintageous/NeoVintageous/issues/31): `zl`, `zL`, `zh`, `zH` scroll horizontally
+* Added [#442](https://github.com/NeoVintageous/NeoVintageous/issues/442): `:s/{search}/{replacement}/c` can now be cancelled
+
+### Removed
+
+* Removed [#441](https://github.com/NeoVintageous/NeoVintageous/issues/441): Non-standard `:cdd` command (use `:cd %:h` instead)
 
 ### Fixed
 
-* Fixed [#441](https://github.com/NeoVintageous/NeoVintageous/issues/441): Remove non-standard `:cdd`, use `:cd %:h` instead
 * Fixed [#446](https://github.com/NeoVintageous/NeoVintageous/issues/446): Many ex commands incorrectly accept an invalid trailing character
-* Fixed [#443](https://github.com/NeoVintageous/NeoVintageous/issues/443): `:cd %:h` display incorrect status message
+* Fixed [#443](https://github.com/NeoVintageous/NeoVintageous/issues/443): `:cd %:h` displays incorrect status message
 * Fixed [#20](https://github.com/NeoVintageous/NeoVintageous/issues/20): `:e#` edits literal file
-* Fixed [#444](https://github.com/NeoVintageous/NeoVintageous/issues/444): `vi[` and `vi]` should not select otherwise empty target lines
+* Fixed [#444](https://github.com/NeoVintageous/NeoVintageous/issues/444): `vi[` and `vi]` should not select empty target line
 
 ## 1.9.0 - 2019-02-21
 
