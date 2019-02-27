@@ -37,6 +37,13 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('r_fi|zz bu|zz', 'v_c', 'i_fi|zz')
         self.eq('r_fi|   |zz', 'v_c', 'i_fi|zz')
 
+    def test_cb(self):
+        self.eq('x fizz|buzz x', 'cb', 'i_x |buzz x')
+        self.assertRegister('"fizz')
+        self.assertRegister('-fizz')
+        self.assertRegisterIsNone('0')
+        self.assertRegisterIsNone('1')
+
     def test_cw(self):
         self.eq('one |two three', 'cw', 'i_one | three')
         self.eq('one t|wo three', 'cw', 'i_one t| three')
@@ -74,6 +81,7 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('1\ntw|o\n', 'cc', 'i_1\n|\n')
 
     def test_ci__quote(self):
+        self.eq('"|"', 'ci"', 'i_"|"')
         self.eq('"1|23"', 'ci"', 'i_"|"')
         self.assertRegister('"123')
         self.assertRegister('-123')

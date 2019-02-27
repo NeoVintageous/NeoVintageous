@@ -25,6 +25,11 @@ class Test_octothorp(unittest.FunctionalTestCase):
         self.assertSearch('|abc|\n|abc|')
         self.assertSearchCurrent('|abc|\nabc')
 
+    def test_octothorp_empty(self):
+        self.eq('|', 'n_#', '|')
+        self.assertSearch('')
+        self.assertSearchCurrent('')
+
     def test_N_octohorp(self):
         self.eq('abc\nx\nabc\nx\na|bc\nx', '#', 'r_N_abc\nx\n|abc\nx\na|bc\nx')
         self.eq('fi|zz\nx\nabc\n', '*', 'N_fi|zz\nx\nabc\n')

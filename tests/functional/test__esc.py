@@ -24,34 +24,41 @@ class Test_esc(unittest.FunctionalTestCase):
     def test_n_esc(self):
         self.eq('fi|zz', 'n_<esc>', 'n_fi|zz')
         self.eq('fi|zz bu|zz fi|zz', 'n_<esc>', 'n_fi|zz buzz fizz')
+        self.assertStatusLineIsBlank()
 
     def test_i_esc(self):
         self.eq('fi|zz', 'i_<esc>', 'n_f|izz')
+        self.assertStatusLineIsBlank()
 
     def test_v_esc(self):
         self.eq('f|iz|z', 'v_<esc>', 'n_fi|zz')
         self.eq('r_f|iz|z', 'v_<esc>', 'n_f|izz')
         self.eq('1\n|\n|3', 'v_<esc>', 'n_1\n|\n3')
         self.eq('1\n2|\n|3', 'v_<esc>', 'n_1\n|2\n3')
+        self.assertStatusLineIsBlank()
 
     def test_l_esc(self):
         self.eq('1\n|fizz|', 'l_<esc>', 'n_1\nfiz|z')
         self.eq('1\n|fizz|\n', 'l_<esc>', 'n_1\nfiz|z\n')
         self.eq('1\n|fizz\n|3', 'l_<esc>', 'n_1\nfiz|z\n3')
         self.eq('r_1\n|fizz|', 'l_<esc>', 'n_1\n|fizz')
+        self.assertStatusLineIsBlank()
 
     def test_b_esc(self):
         self.eq('f|iz|z\nb|uz|z\n', 'b_<esc>', 'n_fizz\nbu|zz\n')
         self.eq('r_f|iz|z\nb|uz|z\n', 'b_<esc>', 'n_fizz\nb|uzz\n')
+        self.assertStatusLineIsBlank()
 
     def test_N_esc(self):
         self.eq('fi|zzb|uzz', '<esc>', 'N_fi|zzb|uzz')
+        self.assertStatusLineIsBlank()
 
     def test_O_esc(self):
         self.normal('1\n2|\n3')
         self.feed('n_O')
         self.feed('i_<esc>')
         self.assertNormal('1\n|\n2\n3')
+        self.assertStatusLineIsBlank()
 
     def test_O_esc_strip_leading_whitespace(self):
         self.normal('    1\n    2|\n    3')
@@ -60,3 +67,4 @@ class Test_esc(unittest.FunctionalTestCase):
         self.feed('i_<esc>')
         self.assertNormal('    1\n|\n    2\n    3')
         self.assertXpos(4)
+        self.assertStatusLineIsBlank()

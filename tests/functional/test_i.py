@@ -22,3 +22,4 @@ class Test_i(unittest.FunctionalTestCase):
 
     def test_i(self):
         self.eq('fi|zz', 'n_i', 'i_fi|zz')
+        self.assertStatusLineIsInsert()

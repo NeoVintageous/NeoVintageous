@@ -450,6 +450,15 @@ class ViewTestCase(unittest.TestCase):
     def assertStatusLineIsBlank(self, msg=None):
         self.assertStatusLineRegex('', msg)
 
+    def assertStatusLineIsInsert(self, msg=None):
+        self.assertStatusLineRegex('-- INSERT --', msg)
+
+    def assertStatusLineIsReplace(self, msg=None):
+        self.assertStatusLineRegex('-- REPLACE --', msg)
+
+    def assertStatusLineIsSelect(self, msg=None):
+        self.assertStatusLineRegex('-- SELECT --', msg)
+
     def assertStatusLineIsVisual(self, msg=None):
         self.assertStatusLineRegex('-- VISUAL --', msg)
 
@@ -949,6 +958,7 @@ _SEQ2CMD = {
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
     'c':            {'command': '_vi_c'},  # noqa: E241
+    'cb':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_b'}}},  # noqa: E241,E501
     'cc':           {'command': '_vi_cc'},  # noqa: E241
     'ce':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_e'}}},  # noqa: E241,E501
     'ci"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'text_object': "\"", 'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
