@@ -887,7 +887,7 @@ class _vi_big_w(ViMotionCommand):
                 return Region(pt, pt)
 
             elif mode == VISUAL:
-                pt = units.big_word_starts(view, start=s.b - 1, count=count)
+                pt = units.big_word_starts(view, start=max(s.b - 1, 0), count=count)
                 if s.a > s.b and pt >= s.a:
                     return Region(s.a - 1, pt + 1)
                 elif s.a > s.b:

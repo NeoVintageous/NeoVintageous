@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#449](https://github.com/NeoVintageous/NeoVintageous/issues/449): `v_W` causes error when end of selection is at BOF
 * Fixed [#447](https://github.com/NeoVintageous/NeoVintageous/issues/447): `:h ctrl-w_o` should open help for `CTRL-W_o`
 * Fixed [#446](https://github.com/NeoVintageous/NeoVintageous/issues/446): Many ex commands incorrectly accept an invalid trailing character
 * Fixed [#443](https://github.com/NeoVintageous/NeoVintageous/issues/443): `:cd %:h` displays incorrect status message

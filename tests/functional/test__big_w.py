@@ -21,11 +21,21 @@ from NeoVintageous.tests import unittest
 class Test_W(unittest.FunctionalTestCase):
 
     def test_W(self):
-        self.eq('one |two. three', 'n_W', 'one two. |three')
+        self.eq('x one |two. three', 'n_W', 'x one two. |three')
+        self.eq('x |one, t.- three', 'n_2W', 'x one, t.- |three')
+        self.eq('x |on.e t.wo', 'n_2W', 'x on.e t.w|o')
+        self.eq('x |one, t.- a&^$x four x', 'n_3W', 'x one, t.- a&^$x |four x')
         self.eq('|one, t.- three', 'n_2W', 'one, t.- |three')
         self.eq('|on.e t.wo', 'n_2W', 'on.e t.w|o')
+        self.eq('|one, t.- a&^$x four x', 'n_3W', 'one, t.- a&^$x |four x')
 
     def test_v_w(self):
         self.eq('one |t=- three', 'v_W', 'one |t=- t|hree')
-        self.eq('|one_ two$ three', 'v_2W', '|one_ two$ t|hree')
-        self.eq('r_|on|e_ two$ three', 'v_3W', 'r_|on|e_ two$ three')
+        self.eq('x |one two x', 'v_W', 'x |one t|wo x')
+        self.eq('x |one_ two$ three x', 'v_2W', 'x |one_ two$ t|hree x')
+        self.eq('x |one_ two$ a,b.c four x', 'v_3W', 'x |one_ two$ a,b.c f|our x')
+        self.eq('|one two x', 'v_W', '|one t|wo x')
+        self.eq('|one_ two$ three x', 'v_2W', '|one_ two$ t|hree x')
+        self.eq('|one_ two$ a,b.c four x', 'v_3W', '|one_ two$ a,b.c f|our x')
+        self.eq('r_|on|e two three four x', 'v_W', 'o|ne t|wo three four x')
+        self.eq('r_|on|e_ $two .!"£$%^&*(){}:@,./\\_ four x', 'v_3W', 'o|ne_ $two .!"£$%^&*(){}:@,./\\_ f|our x')
