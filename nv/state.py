@@ -670,7 +670,7 @@ class State(object):
         #   ValueError: If too many motions.
         #   ValueError: If too many actions.
         #   ValueError: Unexpected command type.
-        assert isinstance(command, ViCommandDefBase), 'ViCommandDefBase expected, got {}'.format(type(command))  # FIXME # noqa: E501
+        assert isinstance(command, ViCommandDefBase), 'ViCommandDefBase expected, got {}'.format(type(command))
 
         is_runnable = self.runnable()
 

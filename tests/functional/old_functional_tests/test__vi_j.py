@@ -24,8 +24,6 @@ def first_sel(self):
     return self.view.sel()[0]
 
 
-# TODO: Test against folded regions.
-# TODO: Ensure that we only create empty selections while testing. Add assert_all_sels_empty()?
 test_data = namedtuple('test_data', 'cmd initial_text regions cmd_params expected actual_func msg')
 region_data = namedtuple('region_data', 'regions')
 
@@ -149,7 +147,6 @@ class Test__vi_j(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
-            # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.initial_text)
             self.select([self._R(*region) for region in data.regions])
 

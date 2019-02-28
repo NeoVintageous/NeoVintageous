@@ -661,7 +661,6 @@ class _nv_process_notation(ViWindowCommandBase):
                 state.reset_command_data()
 
             else:
-                # XXX: When do we reach here?
                 state.eval()
 
         if state.must_collect_input:
@@ -943,8 +942,6 @@ class _vi_gq(ViTextCommandBase):
 
         if mode in (VISUAL, VISUAL_LINE):
             sel = tuple(self.view.sel())
-
-            # TODO: ST seems to always reformat whole paragraphs with 'wrap_lines'.
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
             self.view.run_command(wrap_lines)
@@ -2292,8 +2289,6 @@ class _vi_big_p(ViTextCommandBase):
 
                 regions_transformer(self.view, selection_first_non_blank)
 
-        # Issue #222 Implement VISUAL LINE mode
-
 
 class _vi_p(ViTextCommandBase):
 
@@ -3061,7 +3056,6 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
 
         regions_transformer(self.view, select)
         self.view.run_command('swap_case')
-        # Ensure we leave the sel.b end where we want it.
         regions_transformer(self.view, select)
         enter_normal_mode(self.view, mode)
 
@@ -4550,7 +4544,7 @@ class _vi_b(ViMotionCommand):
 
 
 class _vi_big_b(ViMotionCommand):
-    # TODO: Reimplement this.
+
     def run(self, count=1, mode=None):
         def do_motion(view, s):
             if mode == NORMAL:
@@ -5045,7 +5039,7 @@ class _vi_question_mark_on_parser_done(WindowCommand):
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):
-    # TODO: This is a jump.
+
     commands = {
         'vi_slash': ['_vi_slash_impl', '_vi_question_mark_impl'],
         'vi_question_mark': ['_vi_question_mark_impl', '_vi_slash_impl'],
@@ -5069,13 +5063,13 @@ class _vi_repeat_buffer_search(ViMotionCommand):
 
 
 class _vi_n(ViMotionCommand):
-    # TODO: This is a jump.
+
     def run(self, mode=None, count=1, search_string=''):
         self.view.run_command('_vi_slash_impl', {'mode': mode, 'count': count, 'search_string': search_string})
 
 
 class _vi_big_n(ViMotionCommand):
-    # TODO: This is a jump.
+
     def run(self, count=1, mode=None, search_string=''):
         self.view.run_command('_vi_question_mark_impl', {'mode': mode, 'count': count, 'search_string': search_string})
 
@@ -5105,7 +5099,6 @@ class _vi_big_e(ViMotionCommand):
                 else:
                     return Region(start + 1, end)
 
-            # Untested
             elif mode == VISUAL_BLOCK:
                 if s.a > s.b:
                     if pt > s.a:

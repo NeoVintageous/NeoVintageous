@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-# DEPRECATED These tests can be removed when the functional tests are merged.
-
 from collections import namedtuple
 
 from NeoVintageous.tests import unittest
@@ -65,7 +63,6 @@ class Test__vi_big_j(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
-            # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.initial_text)
             regions = [self._R(*region) for region in data.regions]
             self.select(regions)

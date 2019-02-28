@@ -21,7 +21,6 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import marks
 
 
-# XXX: Use the mock module instead?
 class View():
     def __init__(self, id_, fname, buffer_id=0):
         self.view_id = id_

@@ -83,7 +83,6 @@ class Test__vi_h(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
-            # TODO: Perhaps we should ensure that other state is reset too?
             self.write(data.initial_text)
             self.select([self._R(*region) for region in data.regions])
 

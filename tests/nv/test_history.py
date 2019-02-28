@@ -295,7 +295,6 @@ class TestHistory(unittest.TestCase):
         self.assertFalse(history_del('abc'))
         self.assertEqual('', history_get('abc'))
         with self.assertRaises(TypeError):
-            # TODO should raise 'E730:' error
             history_get([])
         self.assertEqual('', history_get(10))
         self.assertEqual(-1, history_nr('abc'))

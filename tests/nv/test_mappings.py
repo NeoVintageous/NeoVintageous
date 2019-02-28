@@ -297,7 +297,6 @@ class TestMappings(unittest.TestCase):
 
         mappings_add(unittest.NORMAL, 'x', 'y')
 
-        # XXX Should _find_partial_match() accept an empty string?
         self.assertEqual(_find_partial_match(unittest.NORMAL, ''), ['x'])
         self.assertEqual(_find_partial_match(unittest.NORMAL, 'x'), ['x'])
         self.assertEqual(_find_partial_match(unittest.NORMAL, ' '), [])
@@ -317,7 +316,6 @@ class TestMappings(unittest.TestCase):
         # Should also be sorted.
         self.assertEqual(_find_partial_match(unittest.NORMAL, 'y'), ['ya', 'yb', 'yc', 'yd'])
         self.assertEqual(_find_partial_match(unittest.NORMAL, ''), ['Y', 'Ya', 'x', 'ya', 'yb', 'yc', 'yd'])
-        # XXX Should _find_partial_match() accept empty string?
         self.assertEqual(_find_partial_match(unittest.NORMAL, 'yd'), ['yd'])
         self.assertEqual(_find_partial_match(unittest.NORMAL, 'x'), ['x'])
 

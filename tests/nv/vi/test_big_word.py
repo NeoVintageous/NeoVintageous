@@ -23,8 +23,6 @@ from NeoVintageous.nv.vi.units import next_big_word_start
 from NeoVintageous.nv.vi.units import big_word_starts
 
 
-# TODO: Test against folded regions.
-# TODO: Ensure that we only create empty selections while testing. Add assert_all_sels_empty()?
 test_data = namedtuple('test_data', 'initial_text region expected msg')
 region_data = namedtuple('region_data', 'regions')
 
