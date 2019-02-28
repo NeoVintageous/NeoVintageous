@@ -61,9 +61,9 @@ def goto_help(window):
     do_ex_command(window, 'help', {'subject': subject})
 
 
-def goto_line(view, line, mode):
-    line = line if line > 0 else 1
-    dest = view.text_point(line - 1, 0)
+def goto_line(view, mode, line_number):
+    line_number = line_number if line_number > 0 else 1
+    dest = view.text_point(line_number - 1, 0)
 
     def f(view, s):
         if mode == NORMAL:

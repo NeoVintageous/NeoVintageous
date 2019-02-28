@@ -3743,7 +3743,7 @@ class _vi_k(ViMotionCommand):
 class _vi_gg(ViMotionCommand):
     def run(self, mode=None, count=None):
         if count:
-            goto_line(self.view, count, mode)
+            goto_line(self.view, mode, count)
             return
 
         def f(view, s):
@@ -3771,7 +3771,7 @@ class _vi_gg(ViMotionCommand):
 class _vi_big_g(ViMotionCommand):
     def run(self, mode=None, count=None):
         if count:
-            goto_line(self.view, count, mode)
+            goto_line(self.view, mode, count)
             return
 
         def f(view, s):

@@ -1394,7 +1394,7 @@ def _default_ex_cmd(window, view, line_range, **kwargs):
     state = State(view)
     enter_normal_mode(window, state.mode)
     state.enter_normal_mode()
-    goto_line(view, line, state.mode)
+    goto_line(view, state.mode, line)
 
 
 def _get_ex_cmd(name):
