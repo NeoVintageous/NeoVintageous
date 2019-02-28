@@ -16,10 +16,12 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from sublime import Region
+from sublime import version
 
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import status_message
@@ -101,3 +103,47 @@ def goto_line(view, line, mode):
     # FIXME: Bringing the selections into view will be undesirable in many cases. Maybe we
     # should have an optional .scroll_selections_into_view() step during command execution.
     view.show(view.sel()[0])
+
+
+def goto_next_change(view, mode, count):
+    if int(version()) >= 3189:
+        for i in range(count):
+            view.run_command('next_modification')
+
+        a = view.sel()[0].a
+        if view.substr(a) == '\n':
+            a += 1
+
+        view.sel().clear()
+        view.sel().add(a)
+        enter_normal_mode(view, mode)
+    else:
+        view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})
+        line = view.line(view.sel()[0].b)
+        if line.size() > 0:
+            pt = view.find('^\\s*', line.begin()).end()
+            if pt != line.begin():
+                view.sel().clear()
+                view.sel().add(pt)
+
+
+def goto_prev_change(view, mode, count):
+    if int(version()) >= 3189:
+        for i in range(count):
+            view.run_command('prev_modification')
+
+        a = view.sel()[0].a
+        if view.substr(a) == '\n':
+            a += 1
+
+        view.sel().clear()
+        view.sel().add(a)
+        enter_normal_mode(view, mode)
+    else:
+        view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
+        line = view.line(view.sel()[0].b)
+        if line.size() > 0:
+            pt = view.find('^\\s*', line.begin()).end()
+            if pt != line.begin():
+                view.sel().clear()
+                view.sel().add(pt)

@@ -21,11 +21,12 @@ from sublime import CLASS_EMPTY_LINE
 from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import Region
-from sublime import version
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv.cmds import _nv_cmdline_feed_key
 from NeoVintageous.nv.goto import goto_line
+from NeoVintageous.nv.goto import goto_next_change
+from NeoVintageous.nv.goto import goto_prev_change
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.state import State
@@ -2312,23 +2313,7 @@ class _vi_left_square_bracket_target(ViMotionCommand):
 
 class _vi_left_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
-        if int(version()) >= 3189:
-            for i in range(count):
-                self.view.run_command('prev_modification')
-            a = self.view.sel()[0].a
-            self.view.sel().clear()
-            self.view.sel().add(a)
-            enter_normal_mode(self.view, mode)
-        else:
-            self.view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
-
-        # TODO Refactor set position cursor after operation into reusable api.
-        line = self.view.line(self.view.sel()[0].b)
-        if line.size() > 0:
-            pt = self.view.find('^\\s*', line.begin()).end()
-            if pt != line.begin():
-                self.view.sel().clear()
-                self.view.sel().add(pt)
+        goto_prev_change(self.view, mode, count)
 
 
 class _vi_right_square_bracket_target(ViMotionCommand):
@@ -2359,20 +2344,4 @@ class _vi_right_square_bracket_target(ViMotionCommand):
 
 class _vi_right_square_bracket_c(ViMotionCommand):
     def run(self, mode=None, count=1):
-        if int(version()) >= 3189:
-            for i in range(count):
-                self.view.run_command('next_modification')
-            a = self.view.sel()[0].a
-            self.view.sel().clear()
-            self.view.sel().add(a)
-            enter_normal_mode(self.view, mode)
-        else:
-            self.view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})
-
-        # TODO Refactor set position cursor after operation into reusable api.
-        line = self.view.line(self.view.sel()[0].b)
-        if line.size() > 0:
-            pt = self.view.find('^\\s*', line.begin()).end()
-            if pt != line.begin():
-                self.view.sel().clear()
-                self.view.sel().add(pt)
+        goto_next_change(self.view, mode, count)

@@ -18,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#452](https://github.com/NeoVintageous/NeoVintageous/issues/452): Jump to diff commands, `]c` and `[c`, gets stuck on lines with multiple changes
 * Fixed [#451](https://github.com/NeoVintageous/NeoVintageous/issues/451): `{Visual}e` in reverse selection should move to end of word
 * Fixed [#450](https://github.com/NeoVintageous/NeoVintageous/issues/450): `k` in SELECT mode should enter NORMAL mode if last selection
 * Fixed [#449](https://github.com/NeoVintageous/NeoVintageous/issues/449): `v_W` causes error when end of selection is at BOF
