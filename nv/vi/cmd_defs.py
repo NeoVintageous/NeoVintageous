@@ -33,8 +33,9 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-_MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 _MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+_MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+_MODES_VISUAL = (VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
 @keys.assign(seq=seqs.D, modes=_MODES_ACTION)
@@ -444,7 +445,7 @@ class ViChangeToLowerCaseByLines(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GU, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.GU, modes=_MODES_VISUAL)
 class ViChangeToLowerCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -594,7 +595,7 @@ class ViInvertCaseByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_U, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.G_BIG_U, modes=_MODES_VISUAL)
 class ViChangeToUpperCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -765,7 +766,7 @@ class ViScrollToScreenCenter(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GQ, modes=_MODES_ACTION)
+@keys.assign(seq=seqs.GQ, modes=_MODES_VISUAL)
 class ViReformat(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

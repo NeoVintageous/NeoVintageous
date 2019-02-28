@@ -510,8 +510,8 @@ class _nv_feed_key(ViWindowCommandBase):
 
             return
 
-        # XXX: This doesn't seem to be correct. If we are in OPERATOR_PENDING mode, we should
-        # most probably not have to wipe the state.
+        # XXX This doesn't seem to be correct. If we are in OPERATOR_PENDING
+        # mode, we should most probably not have to wipe the state.
         if isinstance(command, Mapping):
             _log.debug('found user mapping...')
 
@@ -872,13 +872,10 @@ class _vi_g_big_u(ViTextCommandBase):
             # Reverse region so that entering NORMAL mode collapses selection.
             return Region(s.b, s.a)
 
-        if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
-            raise ValueError('bad mode: ' + mode)
-
-        if motion is None and mode == INTERNAL_NORMAL:
-            raise ValueError('motion data required')
-
         if mode == INTERNAL_NORMAL:
+            if motion is None:
+                raise ValueError('motion data required')
+
             self.save_sel()
             self.view.run_command(motion['motion'], motion['motion_args'])
 
@@ -900,13 +897,10 @@ class _vi_gu(ViTextCommandBase):
             # Reverse region so that entering NORMAL mode collapses selection.
             return Region(s.b, s.a)
 
-        if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
-            raise ValueError('bad mode: ' + mode)
-
-        if motion is None and mode == INTERNAL_NORMAL:
-            raise ValueError('motion data required')
-
         if mode == INTERNAL_NORMAL:
+            if motion is None:
+                raise ValueError('motion data required')
+
             self.save_sel()
             self.view.run_command(motion['motion'], motion['motion_args'])
 
@@ -923,12 +917,11 @@ class _vi_gu(ViTextCommandBase):
 class _vi_gq(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
-        def wrap_command():
-            hasWrapPlus = self.view.settings().get('WrapPlus.include_line_endings')
-            if hasWrapPlus is None:
-                return 'wrap_lines'
-            else:
+        def get_wrap_lines_command(view):
+            if view.settings().get('WrapPlus.include_line_endings') is not None:
                 return 'wrap_lines_plus'
+            else:
+                return 'wrap_lines'
 
         def reverse(view, s):
             return Region(s.end(), s.begin())
@@ -936,24 +929,20 @@ class _vi_gq(ViTextCommandBase):
         def shrink(view, s):
             if view.substr(s.b - 1) == '\n':
                 return Region(s.a, s.b - 1)
-            return s
 
-        wrap_lines = wrap_command()
+            return s
 
         if mode in (VISUAL, VISUAL_LINE):
             sel = tuple(self.view.sel())
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
-            self.view.run_command(wrap_lines)
+            self.view.run_command(get_wrap_lines_command(self.view))
             self.view.sel().clear()
             for s in sel:
                 # Cursors should move to the first non-blank character of the line.
                 line = self.view.line(s.begin())
                 first_non_ws_char_region = self.view.find('[^\\s]', line.begin())
                 self.view.sel().add(first_non_ws_char_region.begin())
-
-            enter_normal_mode(self.view, mode)
-            return
 
         elif mode == INTERNAL_NORMAL:
             if motion is None:
@@ -964,7 +953,7 @@ class _vi_gq(ViTextCommandBase):
 
             if self.has_sel_changed():
                 self.save_sel()
-                self.view.run_command(wrap_lines)
+                self.view.run_command(get_wrap_lines_command(self.view))
                 self.view.sel().clear()
 
                 if 'is_jump' in motion and motion['is_jump']:
@@ -977,10 +966,7 @@ class _vi_gq(ViTextCommandBase):
             else:
                 ui_blink()
 
-            enter_normal_mode(self.view, mode)
-
-        else:
-            raise ValueError('bad mode: ' + mode)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_u(ViWindowCommandBase):
@@ -1077,8 +1063,8 @@ class _vi_c(ViTextCommandBase):
         if mode is None:
             raise ValueError('mode required')
 
-        if (mode == INTERNAL_NORMAL) and (motion is None):
-            raise ValueError('motion required')
+        if mode == INTERNAL_NORMAL and motion is None:
+            raise ValueError('motion data required')
 
         self.save_sel()
 
@@ -1587,7 +1573,7 @@ class _vi_y(ViTextCommandBase):
 
         if mode == INTERNAL_NORMAL:
             if motion is None:
-                raise ValueError('bad args')
+                raise ValueError('motion data required')
 
             self.view.run_command(motion['motion'], motion['motion_args'])
 
@@ -1615,7 +1601,7 @@ class _vi_d(ViTextCommandBase):
             raise ValueError('wrong mode')
 
         if mode == INTERNAL_NORMAL and not motion:
-            raise ValueError('missing motion')
+            raise ValueError('motion data required')
 
         if motion:
             self.save_sel()
@@ -2475,7 +2461,6 @@ class _vi_z_enter(IrreversibleTextCommand):
     def run(self, count=1, mode=None):
         pt = resolve_insertion_point_at_b(first_sel(self.view))
         home_line = self.view.line(pt)
-
         taget_pt = self.view.text_to_layout(home_line.begin())
         self.view.set_viewport_position(taget_pt)
 
@@ -2486,7 +2471,6 @@ class _vi_z_minus(IrreversibleTextCommand):
         layout_coord = self.view.text_to_layout(first_sel(self.view).b)
         viewport_extent = self.view.viewport_extent()
         new_pos = (0.0, layout_coord[1] - viewport_extent[1])
-
         self.view.set_viewport_position(new_pos)
 
 
@@ -2497,7 +2481,6 @@ class _vi_zz(IrreversibleTextCommand):
         current_position = self.view.text_to_layout(first_sel.b)
         viewport_dim = self.view.viewport_extent()
         new_pos = (0.0, current_position[1] - viewport_dim[1] / 2)
-
         self.view.set_viewport_position(new_pos)
 
 
@@ -2544,8 +2527,8 @@ class _vi_modify_numbers(ViTextCommandBase):
         end = pt
         while self.view.substr(end).isdigit():
             end += 1
-        return (sign, int(self.view.substr(Region(pt, end))),
-                Region(end, self.view.line(pt).b))
+
+        return (sign, int(self.view.substr(Region(pt, end))), Region(end, self.view.line(pt).b))
 
     def find_next_num(self, regions):
         # Modify selections that are inside a number already.
@@ -2564,6 +2547,7 @@ class _vi_modify_numbers(ViTextCommandBase):
         matches = [_vi_modify_numbers.NUM_PAT.search(text) for text in lines]
         if all(matches):
             return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]
+
         return []
 
     def run(self, edit, count=1, mode=None, subtract=False):
@@ -2607,7 +2591,6 @@ class _vi_select_big_j(IrreversibleTextCommand):
 
     # Clears multiple selections and returns to normal mode. Should be more
     # convenient than having to reach for Esc.
-
     def run(self, mode=None, count=1):
         s = self.view.sel()[0]
         self.view.sel().clear()
@@ -2783,6 +2766,10 @@ class _vi_ctrl_y(ViTextCommandBase):
 class _vi_ctrl_r_equal(ViTextCommandBase):
 
     def run(self, edit, insert=False, next_mode=None):
+        def on_cancel():
+            state = State(self.view)
+            state.reset()
+
         def on_done(s):
             state = State(self.view)
             try:
@@ -2795,10 +2782,6 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
             except Exception:
                 status_message('invalid expression')
                 on_cancel()
-
-        def on_cancel():
-            state = State(self.view)
-            state.reset()
 
         self.view.window().show_input_panel('', '', on_done, None, on_cancel)
 
@@ -3127,12 +3110,12 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
             text = self.view.substr(line).lstrip()
             if text not in matches:
                 matches.append(text)
+
         return matches
 
     def run(self, edit, mode=None, register='"'):
-        # TODO: Must exit to insert mode. As we're using a quick panel, the
-        #       mode is being reset in init_state.
-        assert mode == INSERT, 'bad mode'
+        if mode != INSERT:
+            raise ValueError('wrong mode')
 
         if (len(self.view.sel()) > 1 or not self.view.sel()[0].empty()):
             return ui_blink()
@@ -3162,14 +3145,13 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
 
 
 class _vi_find_in_line(ViMotionCommand):
-    def run(self, char=None, mode=None, count=1, inclusive=True, skipping=False):
-        # Contrary to *f*, *t* does not look past the caret's position, so if
-        # @character is under the caret, nothing happens.
 
+    # Contrary to *f*, *t* does not look past the caret's position, so if
+    # @character is under the caret, nothing happens.
+    def run(self, char=None, mode=None, count=1, inclusive=True, skipping=False):
         def f(view, s):
             if mode == VISUAL_LINE:
-                raise ValueError(
-                    'this operator is not valid in mode {}'.format(mode))
+                raise ValueError('wrong mode')
 
             b = s.b
             # If we are in any visual mode, get the actual insertion point.
@@ -3214,18 +3196,13 @@ class _vi_find_in_line(ViMotionCommand):
 
 
 class _vi_reverse_find_in_line(ViMotionCommand):
-    """
-    Reverse search.
 
-    Contrary to *F*, *T* does not look past the caret's position, so if
-    ``character`` is right before the caret, nothing happens.
-    """
-
+    # Contrary to *F*, *T* does not look past the caret's position, so if
+    # ``character`` is right before the caret, nothing happens.
     def run(self, char=None, mode=None, count=1, inclusive=True, skipping=False):
         def f(view, s):
             if mode == VISUAL_LINE:
-                raise ValueError(
-                    'this operator is not valid in mode {}'.format(mode))
+                raise ValueError('wrong mode')
 
             b = s.b
             if s.size() > 0:
@@ -3272,9 +3249,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
     def run(self):
         self.state.reset_during_init = False
-
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
-
         ui_cmdline_prompt(
             self.view.window(),
             initial_text='/',
@@ -3372,7 +3347,8 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
 
             return s
 
-        # This happens when we attempt to repeat the search and there's no search term stored yet.
+        # This happens when we attempt to repeat the search and there's no
+        # search term stored yet.
         if not search_string:
             return
 
@@ -4199,7 +4175,9 @@ class _vi_percent(ViMotionCommand):
 
             regions_transformer(self.view, f)
 
-            # FIXME Bringing the selections into view will be undesirable in many cases. Maybe we should have an optional .scroll_selections_into_view() step during command execution.  # noqa: E501
+            # FIXME Bringing the selections into view will be undesirable in
+            # many cases. Maybe we should have an optional
+            # .scroll_selections_into_view() step during command execution.
             self.view.show(self.view.sel()[0])
 
     def find_a_bracket(self, caret_pt):
@@ -4271,30 +4249,40 @@ class _vi_percent(ViMotionCommand):
     def find_balanced_opening_bracket(self, start, brackets, unbalanced=0):
         new_start = start
         for i in range(unbalanced or 1):
-            prev_opening_bracket = reverse_search_by_pt(self.view, brackets[0],
-                                                        start=0,
-                                                        end=new_start,
-                                                        flags=LITERAL)
+            prev_opening_bracket = reverse_search_by_pt(
+                self.view, brackets[0],
+                start=0,
+                end=new_start,
+                flags=LITERAL
+            )
+
+            # Unbalanced brackets; nothing we can do.
             if prev_opening_bracket is None:
-                # Unbalanced brackets; nothing we can do.
                 return
+
             new_start = prev_opening_bracket.begin()
 
         nested = 0
         while True:
-            next_closing_bracket = reverse_search_by_pt(self.view, brackets[1],
-                                                        start=prev_opening_bracket.a,
-                                                        end=start,
-                                                        flags=LITERAL)
+            next_closing_bracket = reverse_search_by_pt(
+                self.view, brackets[1],
+                start=prev_opening_bracket.a,
+                end=start,
+                flags=LITERAL
+            )
+
             if not next_closing_bracket:
                 break
+
             nested += 1
             start = next_closing_bracket.begin()
 
         if nested > 0:
-            return self.find_balanced_opening_bracket(prev_opening_bracket.begin(),
-                                                      brackets,
-                                                      nested)
+            return self.find_balanced_opening_bracket(
+                prev_opening_bracket.begin(),
+                brackets,
+                nested
+            )
         else:
             return prev_opening_bracket.begin()
 
@@ -4947,9 +4935,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
     def run(self):
         self.state.reset_during_init = False
-
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
-
         ui_cmdline_prompt(
             self.view.window(),
             initial_text='?',
