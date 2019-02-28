@@ -906,7 +906,6 @@ def init_state(view):
     #
     # Args:
     #   :view (sublime.View):
-
     if not is_view(view):
         # Abort if we got a console, widget, panel...
         try:

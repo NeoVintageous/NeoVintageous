@@ -51,8 +51,8 @@ from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
-from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
 from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.ui import ui_highlight_yank
@@ -69,11 +69,9 @@ from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
-from NeoVintageous.nv.vi import cmd_defs
-from NeoVintageous.nv.vi import search
 from NeoVintageous.nv.vi import units
-from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_defs import ViChangeByChars
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.cmd_defs import ViOperatorDef
@@ -90,6 +88,7 @@ from NeoVintageous.nv.vi.search import ExactWordBufferSearchBase
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
+from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
 from NeoVintageous.nv.vi.text_objects import find_containing_tag
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
@@ -102,15 +101,21 @@ from NeoVintageous.nv.vi.text_objects import word_end_reverse
 from NeoVintageous.nv.vi.text_objects import word_reverse
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import get_bol
+from NeoVintageous.nv.vi.utils import get_eol
 from NeoVintageous.nv.vi.utils import get_previous_selection
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
+from NeoVintageous.nv.vi.utils import is_at_bol
+from NeoVintageous.nv.vi.utils import is_at_eol
 from NeoVintageous.nv.vi.utils import is_view
+from NeoVintageous.nv.vi.utils import new_inclusive_region
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
 from NeoVintageous.nv.vi.utils import previous_non_white_space_char
+from NeoVintageous.nv.vi.utils import previous_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
+from NeoVintageous.nv.vi.utils import replace_sel
 from NeoVintageous.nv.vi.utils import resize_visual_region
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
@@ -121,20 +126,20 @@ from NeoVintageous.nv.vi.utils import show_if_not_visible
 from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
+from NeoVintageous.nv.vim import enter_insert_mode
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
 from NeoVintageous.nv.vim import SELECT
+from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
-from NeoVintageous.nv.vim import enter_insert_mode
-from NeoVintageous.nv.vim import enter_normal_mode
-from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_open_file
 from NeoVintageous.nv.window import window_tab_control
@@ -1945,7 +1950,7 @@ class _vi_x(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
             if mode == INTERNAL_NORMAL:
-                return Region(s.b, min(s.b + count, utils.get_eol(view, s.b)))
+                return Region(s.b, min(s.b + count, get_eol(view, s.b)))
 
             return s
 
@@ -2001,7 +2006,7 @@ class _vi_r(ViTextCommandBase):
         if char is None:
             raise ValueError('bad parameters')
 
-        char = utils.translate_char(char)
+        char = translate_char(char)
         regions_transformer(self.view, f)
         enter_normal_mode(self.view, mode)
 
@@ -2016,12 +2021,12 @@ class _vi_less_than_less_than(ViTextCommandBase):
             if count <= 1:
                 return s
 
-            a = utils.get_bol(view, s.a)
-            pt = view.text_point(utils.row_at(view, a) + (count - 1), 0)
-            return Region(a, utils.get_eol(view, pt))
+            a = get_bol(view, s.a)
+            pt = view.text_point(row_at(view, a) + (count - 1), 0)
+            return Region(a, get_eol(view, pt))
 
         def action(view, s):
-            bol = utils.get_bol(view, s.begin())
+            bol = get_bol(view, s.begin())
             pt = next_non_white_space_char(view, bol, white_space='\t ')
             return Region(pt)
 
@@ -2037,8 +2042,8 @@ class _vi_equal_equal(ViTextCommandBase):
             return Region(s.begin())
 
         def select(view):
-            s0 = utils.first_sel(self.view)
-            end_row = utils.row_at(view, s0.b) + (count - 1)
+            s0 = first_sel(self.view)
+            end_row = row_at(view, s0.b) + (count - 1)
             view.sel().clear()
             view.sel().add(Region(s0.begin(), view.text_point(end_row, 1)))
 
@@ -2054,14 +2059,14 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            bol = utils.get_bol(view, s.begin())
+            bol = get_bol(view, s.begin())
             pt = next_non_white_space_char(view, bol, white_space='\t ')
             return Region(pt)
 
         def select(view):
-            s0 = utils.first_sel(view)
-            end_row = utils.row_at(view, s0.b) + (count - 1)
-            utils.replace_sel(view, Region(s0.begin(), view.text_point(end_row, 1)))
+            s0 = first_sel(view)
+            end_row = row_at(view, s0.b) + (count - 1)
+            replace_sel(view, Region(s0.begin(), view.text_point(end_row, 1)))
 
         if count > 1:
             select(self.view)
@@ -2075,7 +2080,7 @@ class _vi_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            bol = utils.get_bol(view, s.begin())
+            bol = get_bol(view, s.begin())
             pt = next_non_white_space_char(view, bol, white_space='\t ')
 
             return Region(pt)
@@ -2094,8 +2099,8 @@ class _vi_greater_than(ViTextCommandBase):
             regions_transformer(self.view, f)
 
             # Restore only the first sel.
-            s = utils.first_sel(self.view)
-            utils.replace_sel(self.view, s.a + 1)
+            s = first_sel(self.view)
+            replace_sel(self.view, s.a + 1)
             enter_normal_mode(self.view, mode)
             return
 
@@ -2115,7 +2120,7 @@ class _vi_less_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            bol = utils.get_bol(view, s.begin())
+            bol = get_bol(view, s.begin())
             pt = next_non_white_space_char(view, bol, white_space='\t ')
 
             return Region(pt)
@@ -2316,7 +2321,7 @@ class _vi_p(ViTextCommandBase):
             if fragment.startswith('\n'):
                 # Pasting linewise...
                 # If pasting at EOL or BOL, make sure we paste before the newline character.
-                if (utils.is_at_eol(self.view, selection) or utils.is_at_bol(self.view, selection)):
+                if (is_at_eol(self.view, selection) or is_at_bol(self.view, selection)):
                     pa = self.paste_all(edit, selection, self.view.line(selection.b).b, fragment, count)
                     paste_locations.append(pa)
                 else:
@@ -2625,28 +2630,28 @@ class _vi_big_j(ViTextCommandBase):
             end_pos = self.view.line(s.b).b
             start = end = s.b
             if count > 2:
-                end = self.view.text_point(utils.row_at(self.view, s.b) + (count - 1), 0)
+                end = self.view.text_point(row_at(self.view, s.b) + (count - 1), 0)
                 end = self.view.line(end).b
             else:
                 # Join current line and the next.
-                end = self.view.text_point(utils.row_at(self.view, s.b) + 1, 0)
+                end = self.view.text_point(row_at(self.view, s.b) + 1, 0)
                 end = self.view.line(end).b
         elif mode in [VISUAL, VISUAL_LINE, VISUAL_BLOCK]:
             if s.a < s.b:
                 end_pos = self.view.line(s.a).b
                 start = s.a
-                if utils.row_at(self.view, s.b - 1) == utils.row_at(self.view, s.a):
-                    end = self.view.text_point(utils.row_at(self.view, s.a) + 1, 0)
+                if row_at(self.view, s.b - 1) == row_at(self.view, s.a):
+                    end = self.view.text_point(row_at(self.view, s.a) + 1, 0)
                 else:
-                    end = self.view.text_point(utils.row_at(self.view, s.b - 1), 0)
+                    end = self.view.text_point(row_at(self.view, s.b - 1), 0)
                 end = self.view.line(end).b
             else:
                 end_pos = self.view.line(s.b).b
                 start = s.b
-                if utils.row_at(self.view, s.b) == utils.row_at(self.view, s.a - 1):
-                    end = self.view.text_point(utils.row_at(self.view, s.a - 1) + 1, 0)
+                if row_at(self.view, s.b) == row_at(self.view, s.a - 1):
+                    end = self.view.text_point(row_at(self.view, s.a - 1) + 1, 0)
                 else:
-                    end = self.view.text_point(utils.row_at(self.view, s.a - 1), 0)
+                    end = self.view.text_point(row_at(self.view, s.a - 1), 0)
                 end = self.view.line(end).b
         else:
             return s
@@ -2757,14 +2762,10 @@ class _vi_gx(IrreversibleTextCommand):
 class _vi_ctrl_e(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
-        # TODO: Implement this motion properly; don't use built-in commands.
-        # We're using an action because we don't care too much right now and we don't want the
-        # motion to utils.blink every time we issue it (it does because the selections don't change and
-        # NeoVintageous rightfully thinks it has failed.)
         if mode == VISUAL_LINE:
             return
-        extend = True if mode == VISUAL else False
 
+        extend = True if mode == VISUAL else False
         self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
 
 
@@ -2777,10 +2778,6 @@ class _vi_ctrl_g(WindowCommand):
 class _vi_ctrl_y(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
-        # TODO: Implement this motion properly; don't use built-in commands.
-        # We're using an action because we don't care too much right now and we don't want the
-        # motion to utils.blink every time we issue it (it does because the selections don't change and
-        # NeoVintageous rightfully thinks it has failed.)
         if mode == VISUAL_LINE:
             return
 
@@ -2891,7 +2888,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
             return
 
         if mode == VISUAL:
-            first = utils.first_sel(self.view)
+            first = first_sel(self.view)
 
             if self.view.line(first.end() - 1).empty():
                 enter_normal_mode(self.view, mode)
@@ -3128,9 +3125,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         escaped = re.escape(prefix)
         matches = []
         while end > 0:
-            match = search.reverse_search(self.view,
-                                          r'^\s*{0}'.format(escaped),
-                                          0, end, flags=0)
+            match = reverse_search(self.view, r'^\s*{0}'.format(escaped), 0, end, flags=0)
             if (match is None) or (len(matches) == self.MAX_MATCHES):
                 break
             line = self.view.line(match.begin())
@@ -3149,7 +3144,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
             return ui_blink()
 
         s = self.view.sel()[0]
-        line_begin = self.view.text_point(utils.row_at(self.view, s.b), 0)
+        line_begin = self.view.text_point(row_at(self.view, s.b), 0)
         prefix = self.view.substr(Region(line_begin, s.b)).lstrip()
         self._matches = self.find_matches(prefix, end=self.view.line(s.b).a)
         if self._matches:
@@ -3214,12 +3209,12 @@ class _vi_find_in_line(ViMotionCommand):
                 return Region(s.a, target_pos + 1)
             else:  # For visual modes...
                 new_a = resolve_insertion_point_at_a(s)
-                return utils.new_inclusive_region(new_a, target_pos)
+                return new_inclusive_region(new_a, target_pos)
 
         if not all([char, mode]):
             raise ValueError('bad parameters')
 
-        char = utils.translate_char(char)
+        char = translate_char(char)
 
         regions_transformer(self.view, f)
 
@@ -3269,12 +3264,12 @@ class _vi_reverse_find_in_line(ViMotionCommand):
                 return Region(b, target_pos)
             else:  # For visual modes...
                 new_a = resolve_insertion_point_at_a(s)
-                return utils.new_inclusive_region(new_a, target_pos)
+                return new_inclusive_region(new_a, target_pos)
 
         if not all([char, mode]):
             raise ValueError('bad parameters')
 
-        char = utils.translate_char(char)
+        char = translate_char(char)
 
         regions_transformer(self.view, f)
 
@@ -3308,7 +3303,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         state.sequence += s + '<CR>'
         self.view.erase_regions('vi_inc_search')
         state.last_buffer_search_command = 'vi_slash'
-        state.motion = cmd_defs.ViSearchForwardImpl(term=s)
+        state.motion = ViSearchForwardImpl(term=s)
 
         # If s is empty, we must repeat the last search.
         state.last_buffer_search = s or state.last_buffer_search
@@ -3879,7 +3874,7 @@ class _vi_w(ViMotionCommand):
             if mode == NORMAL:
                 pt = units.word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
-                    pt = utils.previous_non_white_space_char(view, pt - 1, white_space='\n')
+                    pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
 
                 return Region(pt, pt)
 
@@ -3915,7 +3910,7 @@ class _vi_big_w(ViMotionCommand):
             if mode == NORMAL:
                 pt = units.big_word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
-                    pt = utils.previous_non_white_space_char(view, pt - 1, white_space='\n')
+                    pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
 
                 return Region(pt, pt)
 
@@ -4036,7 +4031,7 @@ class _vi_left_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             # TODO: must skip empty paragraphs.
-            start = utils.previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
+            start = previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
             par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
 
             if mode == NORMAL:
@@ -4504,8 +4499,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
                     return Region(match.begin(), match.begin())
 
             elif mode == NORMAL:
-                pt = utils.previous_white_space_char(view, s.b)
-                return Region(pt + 1)
+                return Region(previous_white_space_char(view, s.b) + 1)
 
             return s
 
@@ -4612,14 +4606,14 @@ class _vi_underscore(ViMotionCommand):
 
                 # XXX: There may be better ways to communicate between actions
                 # and motions than by inspecting state.
-                if isinstance(self.state.action, cmd_defs.ViChangeByChars):
+                if isinstance(self.state.action, ViChangeByChars):
                     return Region(begin, end)
                 else:
                     return Region(begin, end + 1)
 
             elif mode == VISUAL:
                 bol = next_non_white_space_char(self.view, bol)
-                return utils.new_inclusive_region(a, bol)
+                return new_inclusive_region(a, bol)
             else:
                 return s
 
@@ -4645,7 +4639,7 @@ class _vi_hat(ViMotionCommand):
                 # forward and reverse cases, so unlike other regions, no need to add 1 to it
                 return Region(a, bol)
             elif mode == VISUAL:
-                return utils.new_inclusive_region(a, bol)
+                return new_inclusive_region(a, bol)
             else:
                 return s
 
@@ -4984,7 +4978,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         state.sequence += s + '<CR>'
         self.view.erase_regions('vi_inc_search')
         state.last_buffer_search_command = 'vi_question_mark'
-        state.motion = cmd_defs.ViSearchBackwardImpl(term=s)
+        state.motion = ViSearchBackwardImpl(term=s)
 
         # If s is empty, we must repeat the last search.
         state.last_buffer_search = s or state.last_buffer_search

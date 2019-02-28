@@ -29,20 +29,16 @@ def has_dirty_buffers(window):
     return False
 
 
+# Useful for external plugins to disable NeoVintageous for specific views.
 def is_ignored(view):
     # type: (...) -> bool
-
-    # Useful for external plugins to disable NeoVintageous for specific views.
-
     return view.settings().get('__vi_external_disable', False)
 
 
+# Useful for third party plugins to disable vim emulation for specific views.
+# Differs from is_ignored() in that only keys should be disabled.
 def is_ignored_but_command_mode(view):
     # type: (...) -> bool
-
-    # Useful for third party plugins to disable vim emulation for specific
-    # views. Differs from is_ignored() in that only keys should be disabled.
-
     return view.settings().get('__vi_external_disable_keys', False)
 
 
@@ -173,11 +169,9 @@ def show_if_not_visible(view):
             view.show(pt)
 
 
+# Create a region that includes the char at a or b depending on orientation.
 def new_inclusive_region(a, b):
     # type: (int, int) -> Region
-
-    # Create a region that includes the char at a or b depending on orientation.
-
     if a <= b:
         return Region(a, b + 1)
     else:
