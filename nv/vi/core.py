@@ -22,35 +22,21 @@ from NeoVintageous.nv.state import State
 
 class ViCommandMixin:
 
-    # DEPRECATED
-    def _get_view(self):
-        view = None
-        try:
-            view = self.view
-        except AttributeError:
-            try:
-                view = self.window.active_view()
-            except AttributeError:
-                raise AttributeError(
-                    'ViCommandMixin must be used with a TextCommand or a WindowCommand class')
-        return view
-
     @property
     def state(self):
-        return State(self._get_view())
+        return State(self.view)
 
     def save_sel(self):
-        self.old_sel = tuple(self._get_view().sel())
+        self.old_sel = tuple(self.view.sel())
 
     def _is_equal_to_old_sel(self, new_sel):
         try:
-            return (tuple((s.a, s.b) for s in self.old_sel) ==
-                    tuple((s.a, s.b) for s in tuple(self._get_view().sel())))
+            return (tuple((s.a, s.b) for s in self.old_sel) == tuple((s.a, s.b) for s in tuple(self.view.sel())))
         except AttributeError:
             raise AttributeError('have you forgotten to call .save_sel()?')
 
     def has_sel_changed(self):
-        return not self._is_equal_to_old_sel(self._get_view().sel())
+        return not self._is_equal_to_old_sel(self.view.sel())
 
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
