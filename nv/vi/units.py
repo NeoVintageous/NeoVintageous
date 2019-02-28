@@ -17,13 +17,13 @@
 
 import re
 
-from sublime import Region
 from sublime import CLASS_LINE_END
 from sublime import CLASS_LINE_START
 from sublime import CLASS_PUNCTUATION_END
 from sublime import CLASS_PUNCTUATION_START
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
+from sublime import Region
 
 from NeoVintageous.nv.vi.utils import last_row
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
@@ -45,7 +45,6 @@ def at_eol(view, pt):
 
 
 def at_punctuation(view, pt):
-    # FIXME Not very reliable?
     is_at_eol = at_eol(view, pt)
     is_at_word = at_word(view, pt)
     is_white_space = view.substr(pt).isspace()
@@ -184,7 +183,6 @@ def word_ends(view, start, count=1, big=False):
         else:
             pt = next_word_end(view, pt)
 
-    # FIXME We should return the actual word end and not pt - 1 ??
     return pt
 
 
