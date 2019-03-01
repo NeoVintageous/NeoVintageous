@@ -117,6 +117,14 @@ def plugin_loaded():
         sublime.log_input(True)
         sublime.log_commands(True)
 
+    # Some setting defaults are changing! To avoid impacting users in a later
+    # update, this patch sets the current value to whatever is currently used.
+    # See Roadmap: https://github.com/NeoVintageous/NeoVintageous/issues/404.
+    preferences = sublime.load_settings('Preferences.sublime-settings')
+    preferences.set('vintageous_use_ctrl_keys', preferences.get('vintageous_use_ctrl_keys'))
+    preferences.set('vintageous_use_super_keys', preferences.get('vintageous_use_super_keys'))
+    sublime.save_settings('Preferences.sublime-settings')
+
     loading_exeption = None
 
     pc_event = None
