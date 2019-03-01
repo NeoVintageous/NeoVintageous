@@ -11,7 +11,7 @@ Neovintageous                                             *neovintageous* *nv*
  3. Opening a split window          |nv-splits|
  4. Command Palette                 |nv-command-palette|
  5. Toggle                          |nv-toggle|
- 6. neovintageousrc                 |neovintageousrc|
+ 6. neovintageousrc                 |nv-rc|
  7. Multiple cursors                |nv-multiple-cursors|
  8. Plugins out-of-the-box          |nv-plugins|
     1.1 Abolish                         |nv-abolish|
@@ -101,8 +101,9 @@ https://github.com/NeoVintageous/ToggleNeoVintageous
 
 ==============================================================================
 
-VINTAGEOUSRC                                                 *neovintageousrc*
+VINTAGEOUSRC                                                           *nv-rc*
                                                                 *vintageousrc*
+                                                             *neovintageousrc*
 
 In Vim, a file that contains initialization commands is called a vintageousrc
 file. The file is located at "Packages/User/.vintageousrc" and is read by during
@@ -261,10 +262,12 @@ examples: >
 ==============================================================================
 
 PLUGINS                                                           *nv-plugins*
+                                                                     *plugins*
 
 ------------------------------------------------------------------------------
 
 ABOLISH                                                           *nv-abolish*
+                                                                     *abolish*
 
 Only the abolish case mutating algorithms are supported, they can be applied
 to the word under the cursor.
@@ -274,6 +277,7 @@ See |abolish.txt|.
 ------------------------------------------------------------------------------
 
 COMMENTARY                                                     *nv-commentary*
+                                                                  *commentary*
 
 Comment stuff out. Then uncomment it later.
 
@@ -325,6 +329,7 @@ scope: >
 ------------------------------------------------------------------------------
 
 SURROUND                                                         *nv-surround*
+                                                                    *surround*
 
 A plugin for deleting, changing, and adding "surroundings".
 
@@ -333,6 +338,7 @@ See |surround.txt|.
 ------------------------------------------------------------------------------
 
 UNIMPAIRED                                                     *nv-unimpaired*
+                                                                  *unimpaired*
 
 This plugin provides several pairs of bracket maps.
 
@@ -374,9 +380,12 @@ On      Off     Toggle  Option
 *[os*   *]os*   *cos*   'spell'
 *[ow*   *]ow*   *cow*   'wrap'
 
+See |unimpaired.txt|.
+
 ------------------------------------------------------------------------------
 
 INDENT OBJECT                                               *nv-indent-object*
+                                                               *indent-object*
 
 This plugin defines a new text object, based on indentation levels.
 
