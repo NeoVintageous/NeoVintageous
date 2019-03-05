@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_gf(unittest.FunctionalTestCase):
 
-    @unittest.mock.patch('NeoVintageous.nv.cmds_vi_actions.window_open_file')
+    @unittest.mock.patch('NeoVintageous.nv.commands.window_open_file')
     def test_gf(self, open_file):
         self.eq('x path/to/READ|ME.md y', 'n_gf', 'x path/to/READ|ME.md y')
         self.assertEqual(open_file.call_args[0][1], 'path/to/README.md')

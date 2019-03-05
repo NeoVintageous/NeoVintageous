@@ -1348,12 +1348,10 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
                     text = view.substr(region)
                     f.write(text)
 
-                # FIXME: Does this do what we think it does?
                 view.retarget(expanded_path)
                 window.run_command('save')
 
             except IOError:
-                # TODO: Add logging.
                 return status_message("E212: Can't open file for writing: {}".format(fname))
 
         return _do_write(window, view, file_name, forceit, line_range)
@@ -1396,7 +1394,7 @@ def _default_ex_cmd(window, view, line_range, **kwargs):
     state = State(view)
     enter_normal_mode(window, state.mode)
     state.enter_normal_mode()
-    goto_line(view, line, state.mode)
+    goto_line(view, state.mode, line)
 
 
 def _get_ex_cmd(name):

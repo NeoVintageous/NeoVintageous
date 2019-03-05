@@ -18,7 +18,6 @@
 from NeoVintageous.tests import unittest
 
 
-# XXX: Am I using the best way to test this?
 class Test__vi_ctrl_r(unittest.ViewTestCase):
 
     def test_does_not_linger_past_soft_eol(self):

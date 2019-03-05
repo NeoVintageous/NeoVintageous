@@ -662,13 +662,13 @@ def find_indent_text_object(view, s, inclusive=True):
             break_on_empty_lines = True
 
     if pattern:
-        pattern = re.compile(pattern)
+        compiled_pattern = re.compile(pattern)
 
         def should_break_on_line(line_content):
             if break_on_empty_lines and not line_content.strip():
                 return True
 
-            return "pattern_match" if pattern.match(line_content) else False
+            return "pattern_match" if compiled_pattern.match(line_content) else False
     else:
         def should_break_on_line(line_content):
             return not line_content.strip()
@@ -707,7 +707,6 @@ def find_indent_text_object(view, s, inclusive=True):
 
 
 def find_line_text_object(view, s):
-    """Implement the line object."""
     line = view.line(s)
     line_content = view.substr(line)
 

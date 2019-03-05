@@ -4536,7 +4536,7 @@ ab	motion.txt	/*ab*
 abandon	editing.txt	/*abandon*
 abbreviations	map.txt	/*abbreviations*
 abel.vim	syntax.txt	/*abel.vim*
-abolish	abolish.txt	/*abolish*
+abolish	neovintageous.txt	/*abolish*
 abolish-abbrev	abolish.txt	/*abolish-abbrev*
 abolish-coercion	abolish.txt	/*abolish-coercion*
 abolish-coercion-reversible	abolish.txt	/*abolish-coercion-reversible*
@@ -4983,6 +4983,7 @@ com	neovintageous.txt	/*com*
 command-line-functions	usr_41.txt	/*command-line-functions*
 command-line-window	cmdline.txt	/*command-line-window*
 command-mode	intro.txt	/*command-mode*
+commentary	neovintageous.txt	/*commentary*
 commentary.txt	commentary.txt	/*commentary.txt*
 compiler-compaqada	ft_ada.txt	/*compiler-compaqada*
 compiler-decada	ft_ada.txt	/*compiler-decada*
@@ -6431,6 +6432,7 @@ include-search	tagsrch.txt	/*include-search*
 inclusive	motion.txt	/*inclusive*
 indent()	eval.txt	/*indent()*
 indent-expression	indent.txt	/*indent-expression*
+indent-object	neovintageous.txt	/*indent-object*
 indent-object.txt	indent-object.txt	/*indent-object.txt*
 indent.txt	indent.txt	/*indent.txt*
 indentkeys-format	indent.txt	/*indentkeys-format*
@@ -7087,6 +7089,7 @@ nv-opening-window	neovintageous.txt	/*nv-opening-window*
 nv-option-summary	neovintageous.txt	/*nv-option-summary*
 nv-options	neovintageous.txt	/*nv-options*
 nv-plugins	neovintageous.txt	/*nv-plugins*
+nv-rc	neovintageous.txt	/*nv-rc*
 nv-search-highlighting	neovintageous.txt	/*nv-search-highlighting*
 nv-set-option	neovintageous.txt	/*nv-set-option*
 nv-surround	neovintageous.txt	/*nv-surround*
@@ -7309,6 +7312,7 @@ plugin	usr_05.txt	/*plugin*
 plugin-details	filetype.txt	/*plugin-details*
 plugin-filetype	usr_41.txt	/*plugin-filetype*
 plugin-special	usr_41.txt	/*plugin-special*
+plugins	neovintageous.txt	/*plugins*
 pmbcs-option	print.txt	/*pmbcs-option*
 pmbfn-option	print.txt	/*pmbfn-option*
 popt-option	print.txt	/*popt-option*
@@ -7930,7 +7934,7 @@ submatch()	eval.txt	/*submatch()*
 subscript	eval.txt	/*subscript*
 substitute()	eval.txt	/*substitute()*
 suffixes	cmdline.txt	/*suffixes*
-surround	surround.txt	/*surround*
+surround	neovintageous.txt	/*surround*
 surround-customizing	surround.txt	/*surround-customizing*
 surround-issues	surround.txt	/*surround-issues*
 surround-mappings	surround.txt	/*surround-mappings*
@@ -8166,7 +8170,7 @@ undo_indent	usr_41.txt	/*undo_indent*
 undofile()	eval.txt	/*undofile()*
 undotree()	eval.txt	/*undotree()*
 unicode	mbyte.txt	/*unicode*
-unimpaired	unimpaired.txt	/*unimpaired*
+unimpaired	neovintageous.txt	/*unimpaired*
 unimpaired-encoding	unimpaired.txt	/*unimpaired-encoding*
 unimpaired-lines	unimpaired.txt	/*unimpaired-lines*
 unimpaired-next	unimpaired.txt	/*unimpaired-next*

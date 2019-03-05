@@ -29,20 +29,16 @@ def has_dirty_buffers(window):
     return False
 
 
+# Useful for external plugins to disable NeoVintageous for specific views.
 def is_ignored(view):
     # type: (...) -> bool
-
-    # Useful for external plugins to disable NeoVintageous for specific views.
-
     return view.settings().get('__vi_external_disable', False)
 
 
+# Useful for third party plugins to disable vim emulation for specific views.
+# Differs from is_ignored() in that only keys should be disabled.
 def is_ignored_but_command_mode(view):
     # type: (...) -> bool
-
-    # Useful for third party plugins to disable vim emulation for specific
-    # views. Differs from is_ignored() in that only keys should be disabled.
-
     return view.settings().get('__vi_external_disable_keys', False)
 
 
@@ -109,54 +105,47 @@ def regions_transformer_reversed(view, f):
     _regions_transformer(sels, view, f, False)
 
 
+# Return the insertion point closest to region.b for a visual region. For
+# non-visual regions, the insertion point is always any of the region's ends, so
+# using this function is pointless.
 def resolve_insertion_point_at_b(region):
     # type: (Region) -> int
-
-    # Return the insertion point closest to region.b for a visual region. For
-    # non-visual regions, the insertion point is always any of the region's
-    # ends, so using this function is pointless.
-
     if region.a < region.b:
         return (region.b - 1)
 
     return region.b
 
 
+# Return the actual insertion point closest to region.a for a visual region. For
+# non-visual regions, the insertion point is always any of the region's ends, so
+# using this function is pointless.
 def resolve_insertion_point_at_a(region):
     # type: (Region) -> int
-
-    # Return the actual insertion point closest to region.a for a visual region.
-    # For non-visual regions, the insertion point is always any of the region's
-    # ends, so using this function is pointless.
-
-    if region.size() == 0:
-        raise TypeError('not a visual region')
-
     if region.a < region.b:
         return region.a
     elif region.b < region.a:
         return region.a - 1
+    else:
+        raise TypeError('not a visual region')
 
 
 # TODO [review] this function looks unused; it was refactored from an obsolete module.
 @contextmanager
 def restoring_sels(view):
     old_sels = list(view.sel())
+
     yield
+
+    # TODO REVIEW Possible race-condition? If the buffer has changed.
     view.sel().clear()
     for s in old_sels:
-
-        # TODO [review] Race-condition? If the buffer has changed in the
-        # meantime, this won't work well.
-
         view.sel().add(s)
 
 
-# Save selection. Used, for example, by the gv command.
+# Save selection, but only if it's not empty.
 def save_previous_selection(view, mode):
     # type: (...) -> None
     if view.has_non_empty_selection_region():
-        # Only save a selection if it's not empty.
         view.add_regions('visual_sel', list(view.sel()))
         view.settings().set('_nv_visual_sel_mode', mode)
 
@@ -173,11 +162,9 @@ def show_if_not_visible(view):
             view.show(pt)
 
 
+# Create a region that includes the char at a or b depending on orientation.
 def new_inclusive_region(a, b):
     # type: (int, int) -> Region
-
-    # Create a region that includes the char at a or b depending on orientation.
-
     if a <= b:
         return Region(a, b + 1)
     else:
@@ -202,7 +189,9 @@ def row_to_pt(view, row, col=0):
 def gluing_undo_groups(view, state):
     state.processing_notation = True
     view.run_command('mark_undo_groups_for_gluing')
+
     yield
+
     view.run_command('glue_marked_undo_groups')
     state.processing_notation = False
 
@@ -379,5 +368,7 @@ def resize_visual_region(r, b):
 @contextmanager
 def adding_regions(view, name, regions, scope_name):
     view.add_regions(name, regions, scope_name)
+
     yield
+
     view.erase_regions(name)

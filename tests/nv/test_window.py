@@ -351,12 +351,10 @@ class TestResizeGroupsAlmostEqually(unittest.TestCase):
         self.assertEqual(expected, _layout_groups_equal(layout))
 
 
-# TODO use Python Mock instead
 class MockView():
     pass
 
 
-# TODO use Python Mock instead
 class MockWindow():
 
     def __init__(self):
@@ -582,9 +580,6 @@ class TestSublimeWindowApi(unittest.TestCase):
 
                     {'active_group': 6, 'left': None, 'right': None, 'below': None, 'above': 3, 'count': [1]},
                     {'active_group': 6, 'left': None, 'right': None, 'below': None, 'above': 0, 'count': [2]},
-
-                    # { 'active_group': 6, 'left': None, 'right': None, 'below': None, 'above': 0, 'count': [3]}
-                    # TODO select alternative based on cursor position; above should be == 1
                 ]
             }
         ]

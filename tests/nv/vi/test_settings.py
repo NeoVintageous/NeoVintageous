@@ -116,7 +116,6 @@ class TestViEditorSettings(unittest.ViewTestCase):
         self.assertEqual(self.settsman['hlsearch'], True)
 
     def test_can_retrieve_window_level_settings(self):
-        # TODO: use mock to patch dict
         _VI_OPTIONS['foo'] = _vi_user_setting(
             scope=_SCOPE_WINDOW,
             values=(100,),

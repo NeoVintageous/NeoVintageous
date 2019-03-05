@@ -147,7 +147,6 @@ class key_names:
     max_len = len('<leader>')
 
 
-# TODO: detect counts, registers, marks...
 class KeySequenceTokenizer(object):
     """Takes in a sequence of key names and tokenizes it."""
 

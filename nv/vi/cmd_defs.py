@@ -33,8 +33,8 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-_MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 _MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+_MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
 @keys.assign(seq=seqs.D, modes=_MODES_ACTION)
@@ -677,7 +677,6 @@ class ViIncrement(ViOperatorDef):
         }
 
 
-# FIXME: Doesn't work.
 @keys.assign(seq=seqs.G_BIG_J, modes=_MODES_ACTION)
 class ViJoinLinesNoSeparator(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -3065,10 +3064,8 @@ class ViReverseFindWord(ViMotionDef):
 # Non-standard modes:
 @keys.assign(seq=seqs.CTRL_DOT, modes=_MODES_MOTION)
 @keys.assign(seq=seqs.CTRL_SHIFT_DOT, modes=_MODES_MOTION)
-# XXX: This is called a 'submode' in the vim docs:
-@keys.assign(seq=seqs.CTRL_X, modes=(INSERT,))
-# TODO This should not be a motion.
-class ViOpenNameSpace(ViMotionDef):
+@keys.assign(seq=seqs.CTRL_X, modes=(INSERT,))  # This is called a 'submode' in the vim docs.
+class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
