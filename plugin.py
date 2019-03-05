@@ -121,9 +121,12 @@ def plugin_loaded():
     # update, this patch sets the current value to whatever is currently used.
     # See Roadmap: https://github.com/NeoVintageous/NeoVintageous/issues/404.
     preferences = sublime.load_settings('Preferences.sublime-settings')
-    preferences.set('vintageous_use_ctrl_keys', preferences.get('vintageous_use_ctrl_keys'))
-    preferences.set('vintageous_use_super_keys', preferences.get('vintageous_use_super_keys'))
-    sublime.save_settings('Preferences.sublime-settings')
+    build_version = preferences.get('neovintageous_build_version', 0)  # type: int
+    if not build_version or int(build_version) < 11000:
+        preferences.set('neovintageous_build_version', 11000)
+        preferences.set('vintageous_use_ctrl_keys', preferences.get('vintageous_use_ctrl_keys'))
+        preferences.set('vintageous_use_super_keys', preferences.get('vintageous_use_super_keys'))
+        sublime.save_settings('Preferences.sublime-settings')
 
     loading_exeption = None
 
