@@ -1607,16 +1607,14 @@ class _vi_d(ViTextCommandBase):
             self.save_sel()
             self.view.run_command(motion['motion'], motion['motion_args'])
 
-            # The motion has failed, so abort.
             if not self.has_sel_changed():
                 enter_normal_mode(self.view, mode)
                 ui_blink()
                 return
 
-            # If the target's an empty pair of quotes, don't delete.
-            # FIXME: This won't work well with multiple sels.
             if all(s.empty() for s in self.view.sel()):
                 enter_normal_mode(self.view, mode)
+                ui_blink()
                 return
 
         self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
@@ -1624,7 +1622,6 @@ class _vi_d(ViTextCommandBase):
         fix_eol_cursor(self.view, mode)
         enter_normal_mode(self.view, mode)
 
-        # XXX: abstract this out for all types of selections.
         def advance_to_text_start(view, s):
             if motion:
                 if 'motion' in motion:
@@ -1645,6 +1642,8 @@ class _vi_d(ViTextCommandBase):
                 return Region(next_non_blank(self.view, s.b))
 
             regions_transformer(self.view, f)
+
+        fix_eol_cursor(self.view, mode)
 
 
 class _vi_big_a(ViTextCommandBase):

@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.10.1 - Unreleased
+
+* Fixed [#458](https://github.com/NeoVintageous/NeoVintageous/issues/458): `d}` at EOL causes visual bell
+
 ## 1.10.0 - 2019-03-05
 
 ### Added
