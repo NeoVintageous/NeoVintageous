@@ -507,13 +507,13 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['shell', 'sh'], cmd('shell'))
         self.assertRoute(['snoremap abc xyz', 'snor abc xyz'], cmd('snoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))  # noqa: E501
         self.assertRoute(['snoremap', 'snor'], cmd('snoremap'))
-        self.assertRoute(['sort', 'sor'], cmd('sort', addressable=True))
         self.assertRoute(['sort i', 'sor i'], cmd('sort', params={'options': 'i'}, addressable=True))
+        self.assertRoute(['sort iu', 'sor iu'], cmd('sort', params={'options': 'iu'}, addressable=True))
         self.assertRoute(['sort u', 'sor u'], cmd('sort', params={'options': 'u'}, addressable=True))
         self.assertRoute(['sort ui', 'sor ui'], cmd('sort', params={'options': 'ui'}, addressable=True))
-        self.assertRoute(['sort iu', 'sor iu'], cmd('sort', params={'options': 'iu'}, addressable=True))
+        self.assertRoute(['sort', 'sor'], cmd('sort', addressable=True))
         self.assertRoute(['split file.txt', 'sp file.txt'], cmd('split', params={'file': 'file.txt'}))
-        self.assertRoute(['split', 'sp'], cmd('split', params={'file': None}))
+        self.assertRoute(['split', 'sp'], cmd('split'))
         self.assertRoute(['substitute', 's'], cmd('substitute', addressable=True))
         self.assertRoute(['substitute/x/y/', 's/x/y/'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
         self.assertRoute(['substitute/x/y/ic', 's/x/y/ic'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': ['i', 'c'], 'count': 1}, addressable=True))  # noqa: E501
@@ -535,7 +535,7 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['vnoremap abc xyz', 'vn abc xyz'], cmd('vnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
         self.assertRoute(['vnoremap', 'vn'], cmd('vnoremap'))
         self.assertRoute(['vsplit file.txt', 'vs file.txt'], cmd('vsplit', params={'file': 'file.txt'}))
-        self.assertRoute(['vsplit', 'vs'], cmd('vsplit', params={'file': None}))
+        self.assertRoute(['vsplit', 'vs'], cmd('vsplit'))
         self.assertRoute(['vunmap xyz', 'vu xyz'], cmd('vunmap', params={'lhs': 'xyz'}))
         self.assertRoute(['wall!', 'wa!'], cmd('wall', forced=True))
         self.assertRoute(['wall', 'wa'], cmd('wall'))

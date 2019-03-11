@@ -461,22 +461,9 @@ def _ex_route_sort(state):
 
 
 def _ex_route_split(state):
-    command = TokenCommand('split')
-    params = {'file': None}
+    command = _literal_route(state, 'split')
 
-    state.skip(' ')
-    state.ignore()
-
-    if state.consume() == state.EOF:
-        command.params = params
-
-        return command
-
-    state.backup()
-
-    params['file'] = state.match(r'.+$').group(0).strip()
-
-    command.params = params
+    _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
 
@@ -586,22 +573,9 @@ def _ex_route_vnoremap(state):
 
 
 def _ex_route_vsplit(state):
-    command = TokenCommand('vsplit')
-    params = {'file': None}
+    command = _literal_route(state, 'vsplit')
 
-    state.skip(' ')
-    state.ignore()
-
-    if state.consume() == state.EOF:
-        command.params = params
-
-        return command
-
-    state.backup()
-
-    params['file'] = state.match(r'.+$').group(0).strip()
-
-    command.params = params
+    _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
 
