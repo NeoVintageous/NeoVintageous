@@ -9,13 +9,6 @@
                         "caption": "NeoVintageous",
                         "children": [
                             {
-                                "caption": ".neovintageousrc File",
-                                "command": "neovintageous_open_my_rc_file"
-                            },
-                            {
-                                "caption": "-"
-                            },
-                            {
                                 "caption": "CHANGELOG",
                                 "command": "open_file",
                                 "args": {
