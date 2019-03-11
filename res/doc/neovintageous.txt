@@ -91,6 +91,8 @@ COMMAND PALETTE                                           *nv-command-palette*
 NeoVintageous: Changelog
 NeoVintageous: Open .neovintageousrc File
 NeoVintageous: Reload .neovintageousrc File
+NeoVintageous: Toggle CTRL keys
+NeoVintageous: Toggle SUPER keys
 
 ==============================================================================
 
