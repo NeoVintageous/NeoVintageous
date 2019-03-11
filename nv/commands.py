@@ -90,6 +90,9 @@ from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
+from NeoVintageous.nv.vi.settings import toggle_ctrl_keys
+from NeoVintageous.nv.vi.settings import toggle_side_bar
+from NeoVintageous.nv.vi.settings import toggle_super_keys
 from NeoVintageous.nv.vi.text_objects import find_containing_tag
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
@@ -290,6 +293,7 @@ __all__ = [
     '_vi_z_minus',
     '_vi_zero',
     '_vi_zz',
+    'Neovintageous',
     'NeovintageousOpenMyRcFileCommand',
     'NeovintageousReloadMyRcFileCommand',
     'NeovintageousToggleSideBarCommand',
@@ -829,27 +833,40 @@ class _nv_cmdline(WindowCommand):
             self.window.run_command('hide_panel', {'cancel': True})
 
 
-class NeovintageousOpenMyRcFileCommand(WindowCommand):
+class Neovintageous(WindowCommand):
+
+    def run(self, action, **kwargs):
+        if action == 'open_rc_file':
+            rc.open(self.window)
+        elif action == 'reload_rc_file':
+            rc.reload()
+        elif action == 'toggle_ctrl_keys':
+            toggle_ctrl_keys()
+        elif action == 'toggle_side_bar':
+            toggle_side_bar(self.window)
+        elif action == 'toggle_super_keys':
+            toggle_super_keys()
+
+
+# DEPRECATED use 'neovintageous action=open_rc_file' instead
+class NeovintageousOpenMyRcFileCommand(Neovintageous):
 
     def run(self):
-        rc.open(self.window)
+        super().run(action='open_rc_file')
 
 
-class NeovintageousReloadMyRcFileCommand(WindowCommand):
-
-    def run(self):
-        rc.reload()
-
-
-class NeovintageousToggleSideBarCommand(WindowCommand):
+# DEPRECATED use 'neovintageous action=reload_rc_file' instead
+class NeovintageousReloadMyRcFileCommand(Neovintageous):
 
     def run(self):
-        self.window.run_command('toggle_side_bar')
+        super().run(action='reload_rc_file')
 
-        if self.window.is_sidebar_visible():
-            self.window.run_command('focus_side_bar')
-        else:
-            self.window.focus_group(self.window.active_group())
+
+# DEPRECATED use 'neovintageous action=toggle_side_bar' instead
+class NeovintageousToggleSideBarCommand(Neovintageous):
+
+    def run(self):
+        super().run(action='toggle_side_bar')
 
 
 # DEPRECATED Use _nv_run_cmds instead

@@ -159,7 +159,7 @@ Super-keys, known as windows-keys or command-keys, are disabled by default: >
 
 A command is provided out-of-the-box for mapping to toggle the side bar:
 
-    nnoremap <leader>d :NeovintageousToggleSideBar<CR>
+    nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
 
 To enable the ability to toggle the side bar when the side bar has focus:
 
@@ -168,7 +168,8 @@ To enable the ability to toggle the side bar when the side bar has focus:
     [
         {
             "keys": [",", "d"],
-            "command": "neovintageous_toggle_side_bar",
+            "command": "neovintageous",
+            "args": { "action": "toggle_side_bar" },
             "context": [
                 { "key": "control", "operand": "sidebar_tree" }
             ]
@@ -183,8 +184,7 @@ More examples: >
     let mapleader=,
 
     " Toggle the side bar.
-    " To enable side bar toggle when the side bar has focus, see docs above.
-    nnoremap <leader>d :NeovintageousToggleSideBar<CR>
+    nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
 
     " Saving.
     nnoremap <C-s> :w<CR>

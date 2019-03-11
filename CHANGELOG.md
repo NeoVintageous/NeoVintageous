@@ -2,6 +2,19 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.10.0 - 2019-03-05
+
+### Added
+
+* Added [#460](https://github.com/NeoVintageous/NeoVintageous/issues/460): Add toggle SUPER keys (enable/disable) command
+* Added [#459](https://github.com/NeoVintageous/NeoVintageous/issues/459): Add toggle CTRL keys (enable/disable) command
+
+### Deprecated
+
+* Deprecated: `neovintageous_toggle_side_bar ` command, use `neovintageous` command with the arguments `{'action': 'toggle_side_bar'}` instead
+* Deprecated: `neovintageous_reload_my_rc_file` command, use `neovintageous` command with the arguments `{'action': 'reload_rc_file'}` instead
+* Deprecated: `neovintageous_open_my_rc_file` command, use `neovintageous` command with the arguments `{'action': 'open_rc_file'}` instead
+
 ## 1.10.1 - Unreleased
 
 * Fixed [#458](https://github.com/NeoVintageous/NeoVintageous/issues/458): `d}` at EOL causes visual bell
