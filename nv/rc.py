@@ -41,7 +41,7 @@ def open(window):
 
     if not os.path.exists(file):
         with builtins.open(file, 'w') as f:
-            f.write('" Type :h vintageousrc for help.\n')
+            f.write('" Type :h neovintageousrc for help.\n')
 
     window.open_file(file)
 

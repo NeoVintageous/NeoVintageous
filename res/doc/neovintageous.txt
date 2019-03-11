@@ -178,7 +178,7 @@ To enable the ability to toggle the side bar when the side bar has focus:
 More examples: >
 
     " The character " (the double quote mark) starts a comment
-    " Type :h vintageousrc for help.
+    " Type :h neovintageousrc for help.
 
     let mapleader=,
 
