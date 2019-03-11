@@ -206,14 +206,27 @@ More examples: >
     " Or if you're using super-keys (disabled by default):
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
+    " Sorted.
+    nnoremap <leader>s) vi)<F9>o<Esc>$^
+    nnoremap <leader>s] vi]<F9>o<Esc>$^
+    nnoremap <leader>si vii<F9>o<Esc>$^
+    nnoremap <leader>sp vip<F9>o<Esc>$^
+    nnoremap <leader>ss vii<F9>o<Esc>$^
+    vnoremap <leader>s :sort iu<CR>
+
     " Windowing aliases (especially useful if you don't enable ctrl-keys keys).
     nnoremap <leader>_ <C-w>_
     nnoremap <leader><bar> <C-w><bar>
     nnoremap <leader>= <C-w>=
 
-    " Toggle Zoom. Requires the Origami plugin:
-    " https://packagecontrol.io/packages/Origami.
+    " Origami: https://packagecontrol.io/packages/Origami.
     nnoremap <leader>. :ToggleZoomPane<CR>
+    nnoremap <leader>ws :CarryFileToPane direction=down<CR>
+    nnoremap <leader>wv :CarryFileToPane direction=right<CR>
+    nnoremap <leader>wd :DestroyPane direction=self<CR>
+
+    " Git
+    nnoremap <leader>hu :RevertModification<CR>
 
 ==============================================================================
 
