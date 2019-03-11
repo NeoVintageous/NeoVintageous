@@ -29,7 +29,7 @@ _log = logging.getLogger(__name__)
 
 
 def _file_name():
-    return '.vintageousrc'
+    return '.neovintageousrc'
 
 
 def _file_path():

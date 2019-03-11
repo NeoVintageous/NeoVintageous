@@ -9,7 +9,7 @@
                         "caption": "NeoVintageous",
                         "children": [
                             {
-                                "caption": ".vintageousrc File",
+                                "caption": ".neovintageousrc File",
                                 "command": "neovintageous_open_my_rc_file"
                             },
                             {

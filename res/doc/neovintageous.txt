@@ -89,8 +89,8 @@ CTRL-W v
 COMMAND PALETTE                                           *nv-command-palette*
 
 NeoVintageous: Changelog
-NeoVintageous: Open My .vintageousrc File
-NeoVintageous: Reload My .vintageousrc File
+NeoVintageous: Open .neovintageousrc File
+NeoVintageous: Reload .neovintageousrc File
 
 ==============================================================================
 
@@ -101,16 +101,17 @@ https://github.com/NeoVintageous/ToggleNeoVintageous
 
 ==============================================================================
 
-VINTAGEOUSRC                                                           *nv-rc*
+NEOVINTAGEOUSRC                                                        *nv-rc*
                                                                 *vintageousrc*
                                                              *neovintageousrc*
 
-In Vim, a file that contains initialization commands is called a vintageousrc
-file. The file is located at "Packages/User/.vintageousrc" and is read by during
-startup. It can be edited and reloaded via the Command Palette commands:
+In Vim, a file that contains initialization commands is called a
+neovintageousrc file. The file is located at "Packages/User/.neovintageousrc"
+and is read by during startup. It can be edited and reloaded via the Command
+Palette commands:
 
-* NeoVintageous: Open My .vintageousrc File
-* NeoVintageous: Reload My .vintageousrc File
+* NeoVintageous: Open My .neovintageousrc File
+* NeoVintageous: Reload My .neovintageousrc File
 
 The |mapleader| variable is supported. To define a mapping which uses the
 "mapleader" variable, the special string "<leader>" can be used. It is

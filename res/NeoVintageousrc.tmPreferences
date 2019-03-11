@@ -2,9 +2,9 @@
 <plist version="1.0">
 <dict>
     <key>name</key>
-    <string>Vintageousrc (NeoVintageous)</string>
+    <string>Neovintageousrc (NeoVintageous)</string>
     <key>scope</key>
-    <string>source.vintageousrc</string>
+    <string>source.neovintageousrc</string>
     <key>settings</key>
     <dict>
         <key>shellVariables</key>
