@@ -17,25 +17,22 @@
 
 import os
 
-# If debugging is enabled, initialise the debug logger.
-#
-# The debug logger needs to be configured before plugin modules are loaded,
-# otherwise the plugins would end up logging to a non-existing logger (a null
-# logger; Python configures a "handler of last resort" since 3.2, which is a
-# StreamHandler writing to sys.stderr with a level of WARNING, and is used to
-# handle logging events in the absence of any logging configuration. The end
-# result is to just print the message to sys.stderr, and in Sublime Text that
-# means it will print the message to console.
-#
-# To enable debugg logging:
-#
-# Set an environment variable named SUBLIME_NEOVINTAGEOUS_DEBUG.
-if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
+# To enable debugg logging, set the env var to a non-blank value.
+_DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
+
+# If debugging is enabled, initialise the debug logger. The debug logger needs
+# to be configured before any plugin modules are loaded, otherwise the plugins
+# would send log messages to a "handler of last resort". The "handler of last
+# resort" is a logger that python configures in the absence of any logging
+# configuration (a StreamHandler that writes to sys.stderr with a level of
+# WARNING. The end result is that it prints the message to sys.stderr, and in
+# Sublime Text that means it will print the message to console).
+if _DEBUG:
     import logging
 
     logger = logging.getLogger('NeoVintageous')
 
-    # Avoid duplicate loggers when plugin is reloaded.
+    # Avoid duplicate loggers when the plugin is reloaded.
     if not logger.hasHandlers():
         logger.setLevel(logging.DEBUG)
         stream_handler = logging.StreamHandler()
@@ -57,7 +54,6 @@ import sublime  # noqa: E402
 # editor unusable. We can't access the sublime api until the plugin_loaded()
 # hook is called, so we need to catch any exceptions and run cleanup operations
 # when the plugin_loaded() hook is called.
-
 try:
     _startup_exception = None
 
@@ -110,40 +106,49 @@ def _cleanup_views():
             settings.erase('vintage')
 
 
+def _init_backwards_compat_fixes():
+
+    try:
+        # Some setting defaults are changing! To avoid impacting users in a later
+        # update, this patch sets the current value to whatever is currently used.
+        # See Roadmap: https://github.com/NeoVintageous/NeoVintageous/issues/404.
+        preferences = sublime.load_settings('Preferences.sublime-settings')
+        build_version = int(preferences.get('neovintageous_build_version', 0))
+
+        # TODO Remove backwards compatability fix in a future version
+        if build_version < 11000:
+            preferences.set('neovintageous_build_version', 11000)
+            preferences.set('vintageous_use_ctrl_keys', preferences.get('vintageous_use_ctrl_keys'))
+            preferences.set('vintageous_use_super_keys', preferences.get('vintageous_use_super_keys'))
+            sublime.save_settings('Preferences.sublime-settings')
+
+        # TODO Remove backwards compatability fix in a future version
+        if build_version < 11100:
+            def _migrate_rcfile():
+                old_file = os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
+                new_file = os.path.join(sublime.packages_path(), 'User', '.neovintageousrc')
+                if os.path.exists(old_file):
+                    if os.path.exists(new_file):
+                        print('NeoVintageous: could not migrate "%s" to "%s": target already exists' % (old_file, new_file))
+                    else:
+                        os.rename(old_file, new_file)
+
+            _migrate_rcfile()
+            preferences.set('neovintageous_build_version', 11100)
+            sublime.save_settings('Preferences.sublime-settings')
+    except Exception:
+        import traceback
+        traceback.print_exc()
+
+
 def plugin_loaded():
 
     # Enable sublime debug information if in DEBUG mode.
-    if bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')):
+    if _DEBUG:
         sublime.log_input(True)
         sublime.log_commands(True)
 
-    # Some setting defaults are changing! To avoid impacting users in a later
-    # update, this patch sets the current value to whatever is currently used.
-    # See Roadmap: https://github.com/NeoVintageous/NeoVintageous/issues/404.
-    preferences = sublime.load_settings('Preferences.sublime-settings')
-    build_version = int(preferences.get('neovintageous_build_version', 0))
-
-    # TODO Remove backwards compatability fix in a future version
-    if build_version < 11000:
-        preferences.set('neovintageous_build_version', 11000)
-        preferences.set('vintageous_use_ctrl_keys', preferences.get('vintageous_use_ctrl_keys'))
-        preferences.set('vintageous_use_super_keys', preferences.get('vintageous_use_super_keys'))
-        sublime.save_settings('Preferences.sublime-settings')
-
-    # TODO Remove backwards compatability fix in a future version
-    if build_version < 11100:
-        def _migrate_rcfile():
-            old_file = os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
-            new_file = os.path.join(sublime.packages_path(), 'User', '.neovintageousrc')
-            if os.path.exists(old_file):
-                if os.path.exists(new_file):
-                    print('NeoVintageous: could not migrate "%s" to "%s": target already exists' % (old_file, new_file))
-                else:
-                    os.rename(old_file, new_file)
-
-        _migrate_rcfile()
-        preferences.set('neovintageous_build_version', 11100)
-        sublime.save_settings('Preferences.sublime-settings')
+    _init_backwards_compat_fixes()
 
     loading_exeption = None
 
