@@ -22,6 +22,7 @@ from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import EOF
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import status_message
@@ -67,7 +68,11 @@ def goto_line(view, mode, line_number):
 
     def f(view, s):
         if mode == NORMAL:
-            return Region(next_non_blank(view, dest))
+            pt = next_non_blank(view, dest)
+            if view.substr(pt) == EOF:
+                pt = max(pt - 1, 0)
+
+            return Region(pt)
         elif mode == INTERNAL_NORMAL:
             start_line = view.full_line(s.a)
             dest_line = view.full_line(dest)

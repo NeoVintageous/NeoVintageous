@@ -26,6 +26,9 @@ class Test_gg(unittest.FunctionalTestCase):
         self.eq('|1\n2\n3\n4\n5', 'n_3gg', '1\n2\n|3\n4\n5')
         self.eq('|1\n2\n    3x\n4\n5', 'n_3gg', '1\n2\n    |3x\n4\n5')
         self.eq('|1\n2\n3\n4\n5', 'n_5gg', '1\n2\n3\n4\n|5')
+        self.eq('|1\n2\n3', 'n_9gg', '1\n2\n|3')
+        self.eq('|1\n2\n3\n', 'n_9gg', '1\n2\n3|\n')
+        self.eq('|1\n2\n3\n\n', 'n_9gg', '1\n2\n3\n|\n')
 
     def test_N_gg(self):
         self.eq('foo\nb|ar', 'gg', 'r_N_|foo\nbar|')
