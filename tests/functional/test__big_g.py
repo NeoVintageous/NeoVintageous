@@ -28,11 +28,14 @@ class Test_G(unittest.FunctionalTestCase):
         self.eq('1\n2\n3\n4|\n', 'n_2G', '1\n|2\n3\n4\n')
         self.eq('|1\n2\n3\n4\n', 'n_3G', '1\n2\n|3\n4\n')
         self.eq('|1\n2\n3\n4\n', 'n_4G', '1\n2\n3\n|4\n')
-        self.eq('|1\n2\n3\n', 'n_8G', '1\n2\n3\n|')
-        self.eq('|1\n2\n3', 'n_8G', '1\n2\n3|')
+        self.eq('|1\n2\n3\n', 'n_8G', '1\n2\n3|\n')
+        self.eq('|1\n2\n3', 'n_8G', '1\n2\n|3')
         self.eq('|1\n2\n    3\n4\n', 'n_3G', '1\n2\n    |3\n4\n')
         self.eq('|1\n2\n3', 'n_G', '1\n2\n|3')
         self.eq('|1\n2\n    foo', 'n_G', '1\n2\n    |foo')
+        self.eq('|1\n2\n3', 'n_9G', '1\n2\n|3')
+        self.eq('|1\n2\n3\n', 'n_9G', '1\n2\n3|\n')
+        self.eq('|1\n2\n3\n\n', 'n_9G', '1\n2\n3\n|\n')
 
     def test_N_G(self):
         self.eq('|1\n2\n3\n4\n', 'G', 'N_|1\n2\n3\n4\n|')

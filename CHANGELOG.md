@@ -17,6 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.10.1 - Unreleased
 
+* Fixed [#462](https://github.com/NeoVintageous/NeoVintageous/issues/462): `[count]G` and `[count]gg` EOF off-by-one
 * Fixed [#458](https://github.com/NeoVintageous/NeoVintageous/issues/458): `d}` at EOL causes visual bell
 
 ## 1.10.0 - 2019-03-05
