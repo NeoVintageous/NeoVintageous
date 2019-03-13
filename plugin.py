@@ -129,7 +129,7 @@ def _init_backwards_compat_fixes():
                 new_file = os.path.join(sublime.packages_path(), 'User', '.neovintageousrc')
                 if os.path.exists(old_file):
                     if os.path.exists(new_file):
-                        print('NeoVintageous: could not migrate "%s" to "%s": target already exists' % (old_file, new_file))
+                        print('NeoVintageous: could not migrate "%s" to "%s": target already exists' % (old_file, new_file))  # noqa: E501
                     else:
                         os.rename(old_file, new_file)
 
