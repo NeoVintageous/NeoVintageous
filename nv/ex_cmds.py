@@ -627,7 +627,7 @@ def ex_nunmap(lhs, **kwargs):
     try:
         mappings_remove(NORMAL, lhs)
     except KeyError:
-        status_message('Mapping not found')
+        status_message('E31: No such mapping')
 
 
 # TODO Unify with CTRL-W CTRL-O
@@ -657,7 +657,7 @@ def ex_ounmap(lhs, **kwargs):
     try:
         mappings_remove(OPERATOR_PENDING, lhs)
     except KeyError:
-        status_message('Mapping not found')
+        status_message('E31: No such mapping')
 
 
 def ex_print(window, view, flags, line_range, global_lines=None, **kwargs):
@@ -1057,7 +1057,7 @@ def ex_sunmap(lhs, **kwargs):
     try:
         mappings_remove(SELECT, lhs)
     except KeyError:
-        status_message('Mapping not found')
+        status_message('E31: No such mapping')
 
 
 def ex_tabclose(window, **kwargs):
@@ -1092,7 +1092,7 @@ def ex_unmap(lhs, **kwargs):
         mappings_remove(VISUAL_BLOCK, lhs)
         mappings_remove(VISUAL_LINE, lhs)
     except KeyError:
-        status_message('Mapping not found')
+        status_message('E31: No such mapping')
 
 
 # TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
@@ -1189,7 +1189,7 @@ def ex_vunmap(lhs, **kwargs):
         mappings_remove(VISUAL_BLOCK, lhs)
         mappings_remove(VISUAL_LINE, lhs)
     except KeyError:
-        status_message('Mapping not found')
+        status_message('E31: No such mapping')
 
 
 @_init_cwd
