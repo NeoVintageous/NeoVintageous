@@ -27,11 +27,11 @@ from sublime import CLASS_WORD_START
 from sublime import IGNORECASE
 from sublime import Region
 
-from NeoVintageous.nv.vi import units
-from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
+from NeoVintageous.nv.vi.units import word_starts
 from NeoVintageous.nv.vi.utils import next_non_blank
+from NeoVintageous.nv.vi.utils import previous_non_white_space_char
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 
 
@@ -184,12 +184,12 @@ def a_word(view, pt, inclusive=True, count=1):
     end = pt
 
     if inclusive:
-        end = units.word_starts(view, start, count=count, internal=True)
+        end = word_starts(view, start, count=count, internal=True)
 
         # If there is no space at the end of our word text object, include any
         # preceding spaces. (Follows Vim behavior.)
         if (not view.substr(end - 1).isspace() and view.substr(start - 1).isspace()):
-            start = utils.previous_non_white_space_char(view, start - 1, white_space=' \t') + 1
+            start = previous_non_white_space_char(view, start - 1, white_space=' \t') + 1
 
         # Vim does some inconsistent stuff here...
         if count > 1 and view.substr(end) == '\n':
@@ -561,7 +561,7 @@ def find_sentences_backward(view, start_pt, count=1):
     if isinstance(start_pt, Region):
         start_pt = start_pt.a
 
-    pt = utils.previous_non_white_space_char(view, start_pt, white_space='\n \t')
+    pt = previous_non_white_space_char(view, start_pt, white_space='\n \t')
     sen = Region(pt)
     while True:
         sen = view.expand_by_class(sen, CLASS_LINE_END | CLASS_PUNCTUATION_END)

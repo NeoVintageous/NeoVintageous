@@ -24,17 +24,19 @@ from sublime import Region
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import settings
-from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
 from NeoVintageous.nv.vi.macros import MacroRegisters
 from NeoVintageous.nv.vi.marks import Marks
 from NeoVintageous.nv.vi.registers import Registers
 from NeoVintageous.nv.vi.settings import SettingsManager
+from NeoVintageous.nv.vi.utils import col_at
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
+from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import save_previous_selection
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
@@ -447,7 +449,7 @@ class State(object):
 
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
-        if (isinstance(action, cmd_defs.ViToggleMacroRecorder) and self.is_recording):
+        if (isinstance(action, ViToggleMacroRecorder) and self.is_recording):
             return False
 
         if (action and action.accept_input and action.input_parser.type == INPUT_IMMEDIATE):
@@ -712,11 +714,11 @@ class State(object):
             return
 
         first = first_sel(self.view)
-        lines = (utils.row_at(self.view, first.end()) -
-                 utils.row_at(self.view, first.begin()))
+        lines = (row_at(self.view, first.end()) -
+                 row_at(self.view, first.begin()))
 
         if lines > 0:
-            chars = utils.col_at(self.view, first.end())
+            chars = col_at(self.view, first.end())
         else:
             chars = first.size()
 
@@ -728,7 +730,7 @@ class State(object):
 
         if old_mode == VISUAL:
             if rows > 0:
-                end = self.view.text_point(utils.row_at(self.view, first.b) + rows, chars)
+                end = self.view.text_point(row_at(self.view, first.b) + rows, chars)
             else:
                 end = first.b + chars
 
@@ -738,7 +740,7 @@ class State(object):
         elif old_mode == VISUAL_LINE:
             rows, _, old_mode = data
             begin = self.view.line(first.b).a
-            end = self.view.text_point(utils.row_at(self.view, begin) +
+            end = self.view.text_point(row_at(self.view, begin) +
                                        (rows - 1), 0)
             end = self.view.full_line(end).b
             self.view.sel().add(Region(begin, end))

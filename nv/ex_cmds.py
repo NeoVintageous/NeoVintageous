@@ -47,7 +47,6 @@ from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_blink
-from NeoVintageous.nv.vi import utils
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import set_cmdline_cwd
@@ -58,6 +57,7 @@ from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import has_dirty_buffers
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
+from NeoVintageous.nv.vi.utils import replace_sel
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vim import enter_normal_mode
@@ -258,7 +258,7 @@ def ex_copy(view, edit, address, line_range, **kwargs):
     if target_region == Region(-1, -1):
         address = 0
     else:
-        row = utils.row_at(view, target_region.begin()) + 1
+        row = row_at(view, target_region.begin()) + 1
         address = view.text_point(row, 0)
 
     source = line_range.resolve(view)
@@ -1305,7 +1305,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
 
             view.run_command('append', {'characters': text})
 
-            utils.replace_sel(view, Region(view.line(location).a))
+            replace_sel(view, Region(view.line(location).a))
 
             # TODO [review] State dependency
             state = State(view)

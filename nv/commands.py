@@ -71,7 +71,6 @@ from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
-from NeoVintageous.nv.vi import units
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_defs import ViChangeByChars
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
@@ -102,6 +101,13 @@ from NeoVintageous.nv.vi.text_objects import get_closest_tag
 from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vi.text_objects import word_end_reverse
 from NeoVintageous.nv.vi.text_objects import word_reverse
+from NeoVintageous.nv.vi.units import big_word_starts
+from NeoVintageous.nv.vi.units import inner_lines
+from NeoVintageous.nv.vi.units import lines
+from NeoVintageous.nv.vi.units import next_paragraph_start
+from NeoVintageous.nv.vi.units import prev_paragraph_start
+from NeoVintageous.nv.vi.units import word_ends
+from NeoVintageous.nv.vi.units import word_starts
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import get_bol
 from NeoVintageous.nv.vi.utils import get_eol
@@ -1476,7 +1482,7 @@ class _vi_dd(ViTextCommandBase):
             if mode != INTERNAL_NORMAL:
                 return s
 
-            return units.lines(view, s, count)
+            return lines(view, s, count)
 
         def fixup_sel_pos():
             old = [s.a for s in list(self.view.sel())]
@@ -1507,7 +1513,7 @@ class _vi_cc(ViTextCommandBase):
             if view.line(s.b).empty():
                 return s
 
-            return units.inner_lines(view, s, count)
+            return inner_lines(view, s, count)
 
         regions_transformer(self.view, do_motion)
         self.state.registers.op_change(register=register, linewise=True)
@@ -3061,7 +3067,7 @@ class _vi_g_big_u_big_u(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
-            return units.lines(view, s, count)
+            return lines(view, s, count)
 
         def to_upper(view, s):
             view.replace(edit, s, view.substr(s).upper())
@@ -3856,7 +3862,7 @@ class _vi_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                pt = units.word_starts(view, start=s.b, count=count)
+                pt = word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
                     pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
 
@@ -3864,7 +3870,7 @@ class _vi_w(ViMotionCommand):
 
             elif mode in (VISUAL, VISUAL_BLOCK):
                 start = (s.b - 1) if (s.a < s.b) else s.b
-                pt = units.word_starts(view, start=start, count=count)
+                pt = word_starts(view, start=start, count=count)
 
                 if (s.a > s.b) and (pt >= s.a):
                     return Region(s.a - 1, pt + 1)
@@ -3877,7 +3883,7 @@ class _vi_w(ViMotionCommand):
 
             elif mode == INTERNAL_NORMAL:
                 a = s.a
-                pt = units.word_starts(view, start=s.b, count=count, internal=True)
+                pt = word_starts(view, start=s.b, count=count, internal=True)
                 if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
                     a = view.line(s.a).a
 
@@ -3892,14 +3898,14 @@ class _vi_big_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                pt = units.big_word_starts(view, start=s.b, count=count)
+                pt = big_word_starts(view, start=s.b, count=count)
                 if ((pt == view.size()) and (not view.line(pt).empty())):
                     pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
 
                 return Region(pt, pt)
 
             elif mode == VISUAL:
-                pt = units.big_word_starts(view, start=max(s.b - 1, 0), count=count)
+                pt = big_word_starts(view, start=max(s.b - 1, 0), count=count)
                 if s.a > s.b and pt >= s.a:
                     return Region(s.a - 1, pt + 1)
                 elif s.a > s.b:
@@ -3911,7 +3917,7 @@ class _vi_big_w(ViMotionCommand):
 
             elif mode == INTERNAL_NORMAL:
                 a = s.a
-                pt = units.big_word_starts(view, start=s.b, count=count, internal=True)
+                pt = big_word_starts(view, start=s.b, count=count, internal=True)
                 if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
                     a = view.line(s.a).a
 
@@ -3926,11 +3932,11 @@ class _vi_e(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                pt = units.word_ends(view, start=s.b, count=count)
+                pt = word_ends(view, start=s.b, count=count)
                 return Region(pt - 1)
 
             elif mode == VISUAL:
-                pt = units.word_ends(view, start=s.b - 1, count=count)
+                pt = word_ends(view, start=s.b - 1, count=count)
                 if (s.a > s.b) and (pt >= s.a):
                     return Region(s.a - 1, pt)
                 elif (s.a > s.b):
@@ -3940,7 +3946,7 @@ class _vi_e(ViMotionCommand):
 
             elif mode == INTERNAL_NORMAL:
                 a = s.a
-                pt = units.word_ends(view, start=s.b, count=count)
+                pt = word_ends(view, start=s.b, count=count)
                 if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
                     a = view.line(s.a).a
 
@@ -3977,18 +3983,18 @@ class _vi_right_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                par_begin = units.next_paragraph_start(view, s.b, count)
+                par_begin = next_paragraph_start(view, s.b, count)
                 # find the next non-empty row if needed
                 return Region(par_begin)
 
             elif mode == VISUAL:
-                next_start = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
+                next_start = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
 
                 return resize_visual_region(s, next_start)
 
             # TODO Delete previous ws in remaining start line.
             elif mode == INTERNAL_NORMAL:
-                par_begin = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
+                par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if par_begin == (self.view.size() - 1):
                     return Region(s.a, self.view.size())
                 if view.substr(s.a - 1) == '\n' or s.a == 0:
@@ -3997,7 +4003,7 @@ class _vi_right_brace(ViMotionCommand):
                 return Region(s.a, par_begin - 1)
 
             elif mode == VISUAL_LINE:
-                par_begin = units.next_paragraph_start(view, s.b, count, skip_empty=count > 1)
+                par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if s.a <= s.b:
                     return Region(s.a, par_begin + 1)
                 else:
@@ -4019,15 +4025,15 @@ class _vi_left_brace(ViMotionCommand):
             par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
 
             if mode == NORMAL:
-                next_start = units.prev_paragraph_start(view, s.b, count)
+                next_start = prev_paragraph_start(view, s.b, count)
                 return Region(next_start)
 
             elif mode == VISUAL:
-                next_start = units.prev_paragraph_start(view, s.b, count)
+                next_start = prev_paragraph_start(view, s.b, count)
                 return resize_visual_region(s, next_start)
 
             elif mode == INTERNAL_NORMAL:
-                next_start = units.prev_paragraph_start(view, s.b, count)
+                next_start = prev_paragraph_start(view, s.b, count)
                 return Region(s.a, next_start)
 
             elif mode == VISUAL_LINE:
@@ -5081,7 +5087,7 @@ class _vi_big_e(ViMotionCommand):
             if s.a < s.b:
                 b = s.b - 1
 
-            pt = units.word_ends(view, b, count=count, big=True)
+            pt = word_ends(view, b, count=count, big=True)
 
             if mode == NORMAL:
                 return Region(pt - 1)
