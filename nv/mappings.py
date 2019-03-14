@@ -18,8 +18,6 @@
 import logging
 
 from NeoVintageous.nv.variables import expand_keys
-from NeoVintageous.nv.vi.cmd_base import CMD_TYPE_USER
-from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import seq_to_command
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vim import INSERT
@@ -49,64 +47,32 @@ class Mapping:
         self.mapping = mapping
         self.head = head
         self.tail = tail
-
-    @property
-    def sequence(self):
-        try:
-            return self.head + self.tail
-        except TypeError:
-            raise ValueError('no mapping found')
+        self.sequence = head + tail
 
 
-def _get_seqs(mode):
-    # TODO [review] Do the mappings need to be sorted?
-    return sorted(_mappings[mode])
+def _find_partial_matches(mode, lhs):
+    # type: (str, str) -> list
+    return [x for x in _mappings[mode] if x.startswith(lhs)]
 
 
-def _find_partial_match(mode, seq):
-    return [x for x in _get_seqs(mode) if x.startswith(seq)]
+def _find_full_match(mode, lhs):
+    if lhs in _mappings[mode]:
+        return _mappings[mode][lhs]
 
 
-# TODO [review] Should this really accept empty string i.e. if seq='' then this all sequences for the mode are returned? # noqa
-# TODO [review] Should this raise an IndexError error?
-def _find_full_match(mode, seq):
-    # Args:
-    #   mode (str):
-    #   seq (str):
-    #
-    # Returns:
-    #   A 2-tuple Tuple[str, str], Tuple[None, None] if not found.
-    #
-    # Raises:
-    #   IndexError: If has partial sequences found, but not a full match.
-
-    # TODO [refactor] There doesn't look there is a need to use partials.
-    partials = _find_partial_match(mode, seq)
-
-    try:
-
-        name = [x for x in partials if x == seq][0]
-
-        return (name, _mappings[mode][name])
-    except IndexError:
-        return (None, None)
+def _normalise_lhs(lhs):
+    # type: (str) -> str
+    return expand_keys(lhs)
 
 
-def mappings_add(mode, new, target):
+def mappings_add(mode, lhs, rhs):
     # type: (str, str, str) -> None
-    # Raises:
-    #   KeyError: If mode does not exist.
-    _mappings[mode][expand_keys(new)] = {'name': target, 'type': CMD_TYPE_USER}
+    _mappings[mode][_normalise_lhs(lhs)] = rhs
 
 
 def mappings_remove(mode, lhs):
     # type: (str, str) -> None
-    # Raises:
-    #   KeyError: If mapping not found.
-    try:
-        del _mappings[mode][expand_keys(lhs)]
-    except KeyError:
-        raise KeyError('mapping not found')
+    del _mappings[mode][_normalise_lhs(lhs)]
 
 
 def mappings_clear():
@@ -115,53 +81,20 @@ def mappings_clear():
         _mappings[mode] = {}
 
 
-# XXX: Provisional. Get rid of this as soon as possible.
-def _can_be_long_user_mapping(mode, key):
-    # Args:
-    #   mode (str):
-    #   seq (str):
-    #
-    # Returns:
-    #   2-tuple (True, str) or (False, True) if not _can_be_long_user_mapping.
-    full_match = _find_full_match(mode, key)
-    partial_matches = _find_partial_match(mode, key)
-    if partial_matches:
-        return (True, full_match[0])
-
-    return (False, True)
+def _seq_to_mapping(mode, seq):
+    full_match = _find_full_match(mode, seq)
+    if full_match:
+        return Mapping(seq, full_match, '')
 
 
-def _expand_first(mode, seq):
-    # Args:
-    #   mode (str):
-    #   seq (str):
-    #
-    # Returns:
-    #   Mapping or None if no mapping for mode and seq found.
-    head = ''
-
-    keys, mapped_to = _find_full_match(mode, seq)
-    if keys:
-        return Mapping(seq, mapped_to['name'], seq[len(keys):])
-
-    for key in KeySequenceTokenizer(seq).iter_tokenize():
-        head += key
-        keys, mapped_to = _find_full_match(mode, head)
-        if keys:
-            return Mapping(head, mapped_to['name'], seq[len(head):])
-        else:
-            break
-
-    if _find_partial_match(mode, seq):
-        return Mapping(seq, '', '')
-
-
-# XXX: Provisional. Get rid of this as soon as possible.
-# e.g. we may have typed 'aa' and there's an 'aaa' mapping, so we need to keep collecting input.
-def mappings_is_incomplete(mode, partial_sequence):
+def mappings_is_incomplete(mode, seq):
     # type: (str, str) -> bool
-    (maybe_mapping, complete) = _can_be_long_user_mapping(mode, partial_sequence)
-    if maybe_mapping and not complete:
+    full_match = _find_full_match(mode, seq)
+    if full_match:
+        return False
+
+    partial_matches = _find_partial_matches(mode, seq)
+    if partial_matches:
         return True
 
     return False
@@ -192,11 +125,11 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
     partial_sequence = state.partial_sequence
     seq = to_bare_command_name(sequence or partial_sequence)
 
-    # TODO: Use same structure as in mappings (nested dict).
     command = None
+
     if check_user_mappings:
-        # TODO: We should be able to force a mode here too as, below.
-        command = _expand_first(state.mode, seq)
+        # TODO Review: state.mode is used instead of mode or state.mode, is it a bug?
+        command = _seq_to_mapping(state.mode, seq)
 
     if not command:
         command = seq_to_command(state.view, seq, mode or state.mode)

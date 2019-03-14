@@ -17,23 +17,25 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.mappings import _expand_first
 from NeoVintageous.nv.mappings import _find_full_match
-from NeoVintageous.nv.mappings import _find_partial_match
-from NeoVintageous.nv.mappings import _get_seqs
-from NeoVintageous.nv.mappings import CMD_TYPE_USER
+from NeoVintageous.nv.mappings import _find_partial_matches
+from NeoVintageous.nv.mappings import _seq_to_mapping
 from NeoVintageous.nv.mappings import INSERT
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_clear
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_remove
+from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.mappings import NORMAL
 from NeoVintageous.nv.mappings import OPERATOR_PENDING
 from NeoVintageous.nv.mappings import SELECT
 from NeoVintageous.nv.mappings import VISUAL
 from NeoVintageous.nv.mappings import VISUAL_BLOCK
 from NeoVintageous.nv.mappings import VISUAL_LINE
+from NeoVintageous.nv.plugin_commentary import CommentLines
+from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_defs import ViMoveByWords
 
 
 # We need to patch the mappings storage dictionary so that out tests don't mess
@@ -61,19 +63,6 @@ class TestMapping(unittest.TestCase):
         self.assertEqual(mapping.tail, '')
         self.assertEqual(mapping.mapping, '')
         self.assertEqual(mapping.sequence, '')
-
-    def test_raises_exception(self):
-        mapping = Mapping(None, None, None)
-        with self.assertRaises(ValueError, msg='no mapping found'):
-            mapping.sequence
-
-        mapping = Mapping(None, 'm', 't')
-        with self.assertRaises(ValueError, msg='no mapping found'):
-            mapping.sequence
-
-        mapping = Mapping('h', 'm', None)
-        with self.assertRaises(ValueError, msg='no mapping found'):
-            mapping.sequence
 
 
 class TestMappings(unittest.TestCase):
@@ -106,22 +95,22 @@ class TestMappings(unittest.TestCase):
         mappings_add(unittest.VISUAL, 'M', 'N')
 
         self.assertEquals(_mappings, {
-            INSERT: {'A': {'name': 'B', 'type': CMD_TYPE_USER}},
+            INSERT: {'A': 'B'},
             NORMAL: {
-                'C': {'name': 'D', 'type': CMD_TYPE_USER},
-                'C2': {'name': 'D2', 'type': CMD_TYPE_USER},
-                'C3': {'name': 'D3', 'type': CMD_TYPE_USER},
-                'A': {'name': 'B', 'type': CMD_TYPE_USER},
+                'C': 'D',
+                'C2': 'D2',
+                'C3': 'D3',
+                'A': 'B',
             },
-            OPERATOR_PENDING: {'E': {'name': 'F', 'type': CMD_TYPE_USER}},
-            SELECT: {'G': {'name': 'H', 'type': CMD_TYPE_USER}},
+            OPERATOR_PENDING: {'E': 'F'},
+            SELECT: {'G': 'H'},
             VISUAL_BLOCK: {
-                'I': {'name': 'J', 'type': CMD_TYPE_USER},
-                'I2': {'name': 'J2', 'type': CMD_TYPE_USER},
-                'K': {'name': 'L', 'type': CMD_TYPE_USER},
+                'I': 'J',
+                'I2': 'J2',
+                'K': 'L',
             },
-            VISUAL_LINE: {'K': {'name': 'L', 'type': CMD_TYPE_USER}},
-            VISUAL: {'M': {'name': 'N', 'type': CMD_TYPE_USER}},
+            VISUAL_LINE: {'K': 'L'},
+            VISUAL: {'M': 'N'},
         })
 
     @_patch_mappings
@@ -149,12 +138,12 @@ class TestMappings(unittest.TestCase):
 
         self.assertEquals(_mappings, {
             INSERT: {
-                'A': {'name': 'B', 'type': CMD_TYPE_USER},
-                'E': {'name': 'F', 'type': CMD_TYPE_USER},
+                'A': 'B',
+                'E': 'F',
             },
             NORMAL: {
-                'A': {'name': 'B', 'type': CMD_TYPE_USER},
-                'C': {'name': 'D', 'type': CMD_TYPE_USER},
+                'A': 'B',
+                'C': 'D',
             },
             OPERATOR_PENDING: {},
             SELECT: {},
@@ -190,7 +179,7 @@ class TestMappings(unittest.TestCase):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousTestX<CR>')
 
         self.assertEqual(_mappings[unittest.NORMAL], {
-            '\\d': {'name': ':NeovintageousTestX<CR>', 'type': CMD_TYPE_USER}
+            '\\d': ':NeovintageousTestX<CR>'
         })
 
     @_patch_mappings
@@ -230,9 +219,9 @@ class TestMappings(unittest.TestCase):
         })
 
     @_patch_mappings
-    def test_expand_first(self, _mappings):
+    def test_seq_to_mapping(self, _mappings):
         mappings_add(unittest.NORMAL, 'G', 'G_')
-        mapping = _expand_first(unittest.NORMAL, 'G')
+        mapping = _seq_to_mapping(unittest.NORMAL, 'G')
 
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.head, 'G')
@@ -241,7 +230,7 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.sequence, 'G')
 
         mappings_add(unittest.NORMAL, '<C-m>', 'daw')
-        mapping = _expand_first(unittest.NORMAL, '<C-m>')
+        mapping = _seq_to_mapping(unittest.NORMAL, '<C-m>')
 
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.head, '<C-m>')
@@ -249,62 +238,27 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.tail, '')
         self.assertEqual(mapping.sequence, '<C-m>')
 
-        mappings_add(unittest.NORMAL, '<C-m>', 'daw')
-        mapping = _expand_first(unittest.NORMAL, '<C-m>x')
-
-        self.assertIsInstance(mapping, Mapping)
-        self.assertEqual(mapping.head, '<C-m>')
-        self.assertEqual(mapping.mapping, 'daw')
-        self.assertEqual(mapping.tail, 'x')
-        self.assertEqual(mapping.sequence, '<C-m>x')
-
-        mappings_add(unittest.NORMAL, 'xxA', 'daw')
-        mapping = _expand_first(unittest.NORMAL, 'xx')
-
-        self.assertIsInstance(mapping, Mapping)
-        self.assertEqual(mapping.head, 'xx')
-        self.assertEqual(mapping.mapping, '')
-        self.assertEqual(mapping.tail, '')
-        self.assertEqual(mapping.sequence, 'xx')
-
     @_patch_mappings
-    def test_expand_first_returns_none_when_not_found(self, _mappings):
-        self.assertIsNone(_expand_first(unittest.NORMAL, ''))
-        self.assertIsNone(_expand_first(unittest.NORMAL, 'G'))
-        self.assertIsNone(_expand_first(unittest.NORMAL, 'foobar'))
-
-    @_patch_mappings
-    def test_get_mapped_seqs(self, _mappings):
-        self.assertEqual(_get_seqs(unittest.NORMAL), [])
-
-        mappings_add(unittest.NORMAL, 'B', 'Y')
-        mappings_add(unittest.NORMAL, 'C', 'Z')
-        mappings_add(unittest.NORMAL, 'A', 'X')
-        mappings_add(unittest.INSERT, 'J', 'K')
-        mappings_add(unittest.INSERT, 'I', 'L')
-        mappings_add(unittest.VISUAL, 'M', 'N')
-
-        # Should be sorted.
-        self.assertEqual(_get_seqs(unittest.NORMAL), ['A', 'B', 'C'])
-        self.assertEqual(_get_seqs(unittest.INSERT), ['I', 'J'])
-        self.assertEqual(_get_seqs(unittest.VISUAL), ['M'])
-        self.assertEqual(_get_seqs(unittest.SELECT), [])
+    def test_seq_to_mapping_returns_none_when_not_found(self, _mappings):
+        self.assertIsNone(_seq_to_mapping(unittest.NORMAL, ''))
+        self.assertIsNone(_seq_to_mapping(unittest.NORMAL, 'G'))
+        self.assertIsNone(_seq_to_mapping(unittest.NORMAL, 'foobar'))
 
     @_patch_mappings
     def test_find_partial_match(self, _mappings):
-        self.assertEqual(_find_partial_match(unittest.NORMAL, ''), [])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'foobar'), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, ''), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'foobar'), [])
 
         mappings_add(unittest.NORMAL, 'x', 'y')
 
-        self.assertEqual(_find_partial_match(unittest.NORMAL, ''), ['x'])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'x'), ['x'])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, ' '), [])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'x '), [])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, ' x'), [])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'y'), [])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'xy'), [])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'foobar'), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, ''), ['x'])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'x'), ['x'])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, ' '), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'x '), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, ' x'), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'y'), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'xy'), [])
+        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'foobar'), [])
 
         mappings_add(unittest.NORMAL, 'yc', 'g')
         mappings_add(unittest.NORMAL, 'yd', 'g')
@@ -314,46 +268,48 @@ class TestMappings(unittest.TestCase):
         mappings_add(unittest.NORMAL, 'Ya', 'g')  # For case-sensitive test.
 
         # Should also be sorted.
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'y'), ['ya', 'yb', 'yc', 'yd'])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, ''), ['Y', 'Ya', 'x', 'ya', 'yb', 'yc', 'yd'])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'yd'), ['yd'])
-        self.assertEqual(_find_partial_match(unittest.NORMAL, 'x'), ['x'])
+        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'y')), ['ya', 'yb', 'yc', 'yd'])
+        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, '')), ['Y', 'Ya', 'x', 'ya', 'yb', 'yc', 'yd'])
+        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'yd')), ['yd'])
+        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'x')), ['x'])
 
     @_patch_mappings
     def test_find_full_match(self, _mappings):
-        self.assertEqual(_find_full_match(unittest.NORMAL, ''), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'foobar'), (None, None))
+        self.assertEqual(_find_full_match(unittest.NORMAL, ''), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'foobar'), None)
 
         mappings_add(unittest.NORMAL, 'xc', 'y')
         mappings_add(unittest.NORMAL, 'xd', 'abc')
         mappings_add(unittest.NORMAL, 'xa', 'y')
         mappings_add(unittest.NORMAL, 'xb', 'y')
 
-        self.assertEqual(_find_full_match(unittest.NORMAL, ''), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, ' '), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'foobar'), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'x'), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xdd'), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd '), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, ' xd'), (None, None))
+        self.assertEqual(_find_full_match(unittest.NORMAL, ''), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, ' '), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'foobar'), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'x'), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'xdd'), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd '), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, ' xd'), None)
 
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), ('xd', {'name': 'abc', 'type': CMD_TYPE_USER}))
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
 
         mappings_add(unittest.NORMAL, 'bbc', 'y')
         mappings_add(unittest.NORMAL, 'bbd', 'y')
         mappings_add(unittest.NORMAL, 'bbb', 'cde')
         mappings_add(unittest.NORMAL, 'bba', 'y')
 
-        self.assertEqual(_find_full_match(unittest.NORMAL, ''), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'b'), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'bb'), (None, None))
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'bbb'), ('bbb', {'name': 'cde', 'type': CMD_TYPE_USER}))
+        self.assertEqual(_find_full_match(unittest.NORMAL, ''), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'b'), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'bb'), None)
+        self.assertEqual(_find_full_match(unittest.NORMAL, 'bbb'), 'cde')
 
     @_patch_mappings
     def test_is_incomplete(self, _mappings):
+        self.assertFalse(mappings_is_incomplete(NORMAL, 'f'))
+
         mappings_add(unittest.NORMAL, 'aa', 'y')
         self.assertEqual(mappings_is_incomplete(unittest.NORMAL, 'a'), True)
 
@@ -367,3 +323,25 @@ class TestMappings(unittest.TestCase):
         mappings_add(unittest.NORMAL, 'd', 'y')
         mappings_add(unittest.NORMAL, 'ddd', 'y')
         self.assertEquals(mappings_is_incomplete(unittest.NORMAL, 'dd'), True)
+
+        self.assertFalse(mappings_is_incomplete(NORMAL, 'f'))
+
+
+class TestResolve(unittest.ViewTestCase):
+
+    @_patch_mappings
+    def test_resolve(self, _mappings):
+        state = unittest.mock.Mock(partial_sequence=None, mode=NORMAL, view=self.view)
+        mappings_add(NORMAL, 'lhs', 'rhs')
+
+        self.assertIsInstance(mappings_resolve(state, 'foobar', NORMAL), ViMissingCommandDef)
+        self.assertIsInstance(mappings_resolve(state, 'w', NORMAL), ViMoveByWords, 'expected core command')
+        self.assertIsInstance(mappings_resolve(state, 'gcc', NORMAL), CommentLines, 'expected plugin comman')
+
+        actual = mappings_resolve(state, 'lhs', NORMAL)
+        self.assertIsInstance(actual, Mapping)
+        expected = Mapping('lhs', 'rhs', '')
+        self.assertEqual(actual.mapping, expected.mapping)
+        self.assertEqual(actual.head, expected.head)
+        self.assertEqual(actual.tail, expected.tail)
+        self.assertEqual(actual.sequence, expected.sequence)
