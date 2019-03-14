@@ -16,13 +16,6 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-CMD_TYPE_MOTION = 1
-CMD_TYPE_ACTION = 2
-CMD_TYPE_ANY = 3
-CMD_TYPE_OTHER = 4
-CMD_TYPE_OPEN_NAME_SPACE = 6
-
-
 class ViCommandDefBase:
 
     _serializable = ['_inp', ]
@@ -88,7 +81,6 @@ class ViMotionDef(ViCommandDefBase):
         super().__init__(*args, **kwargs)
         self.updates_xpos = False
         self.scroll_into_view = False
-        self.type = CMD_TYPE_MOTION
 
 
 class ViOperatorDef(ViCommandDefBase):
@@ -98,5 +90,4 @@ class ViOperatorDef(ViCommandDefBase):
         self.updates_xpos = False
         self.scroll_into_view = False
         self.motion_required = False
-        self.type = CMD_TYPE_ACTION
         self.repeatable = False
