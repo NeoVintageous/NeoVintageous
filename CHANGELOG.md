@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#433](https://github.com/NeoVintageous/NeoVintageous/issues/433): Support case-insensitive key mappings
 * Added [#460](https://github.com/NeoVintageous/NeoVintageous/issues/460): Add toggle SUPER keys (enable/disable) command
 * Added [#459](https://github.com/NeoVintageous/NeoVintageous/issues/459): Add toggle CTRL keys (enable/disable) command
 

@@ -18,6 +18,7 @@
 import logging
 
 from NeoVintageous.nv.variables import expand_keys
+from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import seq_to_command
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vim import INSERT
@@ -62,7 +63,7 @@ def _find_full_match(mode, lhs):
 
 def _normalise_lhs(lhs):
     # type: (str) -> str
-    return expand_keys(lhs)
+    return ''.join(KeySequenceTokenizer(expand_keys(lhs)).iter_tokenize())
 
 
 def mappings_add(mode, lhs, rhs):

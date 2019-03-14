@@ -183,6 +183,18 @@ class TestMappings(unittest.TestCase):
         })
 
     @_patch_mappings
+    @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': ','})
+    def test_add_normalises_mapping(self, _mappings):
+        mappings_add(NORMAL, '<Space>', 'a')
+        mappings_add(VISUAL, '<SPACE>', 'v')
+        mappings_add(VISUAL_LINE, '<Leader><Space>', 'b')
+        mappings_add(VISUAL_BLOCK, '<LeaDeR><SpAcE><c-w><C-w><c-s-b><c-s-B>', 'c')
+        self.assertEqual(_mappings[unittest.NORMAL], {'<space>': 'a'})
+        self.assertEqual(_mappings[unittest.VISUAL], {'<space>': 'v'})
+        self.assertEqual(_mappings[unittest.VISUAL_LINE], {',<space>': 'b'})
+        self.assertEqual(_mappings[unittest.VISUAL_BLOCK], {',<space><C-w><C-w><C-S-b><C-S-B>': 'c'})
+
+    @_patch_mappings
     @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': '\\'})
     @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_can_remove_expanded_keys(self, _mappings):
@@ -194,6 +206,21 @@ class TestMappings(unittest.TestCase):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousTestX<CR>')
         mappings_remove(unittest.NORMAL, '<leader>d')
 
+        self.assertEqual(_mappings[unittest.NORMAL], {})
+
+    @_patch_mappings
+    @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': ','})
+    def test_can_remove_normalised_mapping(self, _mappings):
+
+        for seq in ('<Space>', '<SPACE>', '<Space>', '<SpAcE>'):
+            mappings_add(NORMAL, '<Space>', 'a')
+            self.assertNotEqual(_mappings[unittest.NORMAL], {})
+            mappings_remove(NORMAL, seq)
+            self.assertEqual(_mappings[unittest.NORMAL], {})
+
+        mappings_add(NORMAL, '<Space><C-w><C-M-b><C-M-B>', 'a')
+        self.assertNotEqual(_mappings[unittest.NORMAL], {})
+        mappings_remove(NORMAL, '<SpAcE><c-w><c-m-b><c-m-B>')
         self.assertEqual(_mappings[unittest.NORMAL], {})
 
     @_patch_mappings
