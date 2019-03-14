@@ -276,6 +276,9 @@ def a_big_word(view, pt, inclusive=False, count=1):
             if inclusive and is_at_space(view, end):
                 end = get_space_region(view, end).b
 
+    if start is None:
+        return Region(end)
+
     return Region(start, end)
 
 
@@ -521,6 +524,9 @@ def find_paragraph_text_object(view, s, inclusive=True, count=1):
         b2, end = find_inner_paragraph(view, e1) if inclusive else (b1, e1)
         if begin is None:
             begin = b1
+
+    if begin is None:
+        return Region(end)
 
     return Region(begin, end)
 
@@ -776,8 +782,10 @@ def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
         return None, None, None
 
     match = re.search(pattern, view.substr(region))
+    if match:
+        return (region, match.group(1), match.group(0).startswith('</'))
 
-    return (region, match.group(1), match.group(0).startswith('</'))
+    return None, None, None
 
 
 def previous_begin_tag(view, pattern, start=0, end=0):
@@ -787,8 +795,10 @@ def previous_begin_tag(view, pattern, start=0, end=0):
         return None, None, None
 
     match = re.search(pattern, view.substr(region))
+    if match:
+        return (region, match.group(1), match.group(0)[1] != '/')
 
-    return (region, match.group(1), match.group(0)[1] != '/')
+    return None, None, None
 
 
 def get_region_end(r):
