@@ -22,6 +22,7 @@
     {"keys": ["enter"],             "command": "_nv_feed_key",       "args": {"key": "<cr>"},         "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ctrl+enter"],        "command": "_nv_feed_key",       "args": {"key": "<C-cr>"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+enter"],       "command": "_nv_feed_key",       "args": {"key": "<S-cr>"},       "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["shift+space"],       "command": "_nv_feed_key",       "args": {"key": "<S-space>"},    "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+ctrl+enter"],  "command": "_nv_feed_key",       "args": {"key": "<C-S-cr>"},     "context": [{"key": "vi_command_mode_aware"}]},
 
     // special-case command palette key.
