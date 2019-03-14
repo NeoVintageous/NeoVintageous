@@ -44,11 +44,9 @@ _mappings = {
 
 class Mapping:
 
-    def __init__(self, head, mapping, tail):
-        self.mapping = mapping
-        self.head = head
-        self.tail = tail
-        self.sequence = head + tail
+    def __init__(self, lhs, rhs):
+        self.sequence = lhs
+        self.mapping = rhs
 
 
 def _find_partial_matches(mode, lhs):
@@ -85,7 +83,7 @@ def mappings_clear():
 def _seq_to_mapping(mode, seq):
     full_match = _find_full_match(mode, seq)
     if full_match:
-        return Mapping(seq, full_match, '')
+        return Mapping(seq, full_match)
 
 
 def mappings_is_incomplete(mode, seq):

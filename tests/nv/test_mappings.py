@@ -51,18 +51,14 @@ _patch_mappings = unittest.mock.patch('NeoVintageous.nv.mappings._mappings',
 class TestMapping(unittest.TestCase):
 
     def test_mapping(self):
-        mapping = Mapping('h', 'm', 't')
-        self.assertEqual(mapping.head, 'h')
-        self.assertEqual(mapping.tail, 't')
-        self.assertEqual(mapping.mapping, 'm')
-        self.assertEqual(mapping.sequence, 'ht')
+        mapping = Mapping('lhs', 'rhs')
+        self.assertEqual(mapping.sequence, 'lhs')
+        self.assertEqual(mapping.mapping, 'rhs')
 
     def test_allows_empty_sequence(self):
-        mapping = Mapping('', '', '')
-        self.assertEqual(mapping.head, '')
-        self.assertEqual(mapping.tail, '')
-        self.assertEqual(mapping.mapping, '')
+        mapping = Mapping('', '')
         self.assertEqual(mapping.sequence, '')
+        self.assertEqual(mapping.mapping, '')
 
 
 class TestMappings(unittest.TestCase):
@@ -251,18 +247,14 @@ class TestMappings(unittest.TestCase):
         mapping = _seq_to_mapping(unittest.NORMAL, 'G')
 
         self.assertIsInstance(mapping, Mapping)
-        self.assertEqual(mapping.head, 'G')
         self.assertEqual(mapping.mapping, 'G_')
-        self.assertEqual(mapping.tail, '')
         self.assertEqual(mapping.sequence, 'G')
 
         mappings_add(unittest.NORMAL, '<C-m>', 'daw')
         mapping = _seq_to_mapping(unittest.NORMAL, '<C-m>')
 
         self.assertIsInstance(mapping, Mapping)
-        self.assertEqual(mapping.head, '<C-m>')
         self.assertEqual(mapping.mapping, 'daw')
-        self.assertEqual(mapping.tail, '')
         self.assertEqual(mapping.sequence, '<C-m>')
 
     @_patch_mappings
@@ -367,8 +359,6 @@ class TestResolve(unittest.ViewTestCase):
 
         actual = mappings_resolve(state, 'lhs', NORMAL)
         self.assertIsInstance(actual, Mapping)
-        expected = Mapping('lhs', 'rhs', '')
+        expected = Mapping('lhs', 'rhs')
         self.assertEqual(actual.mapping, expected.mapping)
-        self.assertEqual(actual.head, expected.head)
-        self.assertEqual(actual.tail, expected.tail)
         self.assertEqual(actual.sequence, expected.sequence)
