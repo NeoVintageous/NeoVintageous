@@ -2685,11 +2685,12 @@ class ViGotoOpeningBrace(ViMotionDef):
 
     def translate(self, state):
         return {
-            'motion': '_vi_left_square_bracket_target',
+            'motion': '_vi_left_square_bracket',
             'motion_args': {
-                'target': '{',
+                'action': 'target',
                 'mode': state.mode,
                 'count': state.count,
+                'target': '{'
             }
         }
 
@@ -2703,22 +2704,28 @@ class ViGotoOpeningParen(ViMotionDef):
 
     def translate(self, state):
         return {
-            'motion': '_vi_left_square_bracket_target',
+            'motion': '_vi_left_square_bracket',
             'motion_args': {
-                'target': '(',
+                'action': 'target',
                 'mode': state.mode,
                 'count': state.count,
+                'target': '('
             }
         }
 
 
 @keys.assign(seq=seqs.LEFT_SQUARE_BRACKET_C, modes=_MODES_ACTION)
 class ViBackwardToStartOfChange(ViMotionDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
 
     def translate(self, state):
         return {
-            'motion': '_vi_left_square_bracket_c',
+            'motion': '_vi_left_square_bracket',
             'motion_args': {
+                'action': 'c',
                 'mode': state.mode,
                 'count': state.count
             }
@@ -2727,11 +2734,16 @@ class ViBackwardToStartOfChange(ViMotionDef):
 
 @keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET_C, modes=_MODES_ACTION)
 class ViForwardToStartOfChange(ViMotionDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
 
     def translate(self, state):
         return {
-            'motion': '_vi_right_square_bracket_c',
+            'motion': '_vi_right_square_bracket',
             'motion_args': {
+                'action': 'c',
                 'mode': state.mode,
                 'count': state.count
             }
@@ -2747,11 +2759,12 @@ class ViGotoClosingBrace(ViMotionDef):
 
     def translate(self, state):
         return {
-            'motion': '_vi_right_square_bracket_target',
+            'motion': '_vi_right_square_bracket',
             'motion_args': {
-                'target': '}',
+                'action': 'target',
                 'mode': state.mode,
-                'count': state.count
+                'count': state.count,
+                'target': '}'
             }
         }
 
@@ -2765,11 +2778,12 @@ class ViGotoClosingParen(ViMotionDef):
 
     def translate(self, state):
         return {
-            'motion': '_vi_right_square_bracket_target',
+            'motion': '_vi_right_square_bracket',
             'motion_args': {
-                'target': ')',
+                'action': 'target',
                 'mode': state.mode,
-                'count': state.count
+                'count': state.count,
+                'target': ')'
             }
         }
 

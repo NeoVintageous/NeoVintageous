@@ -42,7 +42,9 @@ from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.goto import goto_help
 from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.goto import goto_next_change
+from NeoVintageous.nv.goto import goto_next_target
 from NeoVintageous.nv.goto import goto_prev_change
+from NeoVintageous.nv.goto import goto_prev_target
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
@@ -94,8 +96,6 @@ from NeoVintageous.nv.vi.settings import toggle_ctrl_keys
 from NeoVintageous.nv.vi.settings import toggle_side_bar
 from NeoVintageous.nv.vi.settings import toggle_super_keys
 from NeoVintageous.nv.vi.text_objects import find_containing_tag
-from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
-from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_sentences_backward
 from NeoVintageous.nv.vi.text_objects import find_sentences_forward
 from NeoVintageous.nv.vi.text_objects import get_closest_tag
@@ -243,8 +243,7 @@ __all__ = [
     '_vi_l',
     '_vi_left_brace',
     '_vi_left_paren',
-    '_vi_left_square_bracket_c',
-    '_vi_left_square_bracket_target',
+    '_vi_left_square_bracket',
     '_vi_less_than',
     '_vi_less_than_less_than',
     '_vi_m',
@@ -266,8 +265,7 @@ __all__ = [
     '_vi_reverse_find_in_line',
     '_vi_right_brace',
     '_vi_right_paren',
-    '_vi_right_square_bracket_c',
-    '_vi_right_square_bracket_target',
+    '_vi_right_square_bracket',
     '_vi_s',
     '_vi_select_big_j',
     '_vi_select_j',
@@ -5302,63 +5300,21 @@ class _vi_gm(ViMotionCommand):
         regions_transformer(self.view, advance)
 
 
-class _vi_left_square_bracket_target(ViMotionCommand):
-
-    def run(self, mode=None, count=1, target=None):
-        def move(view, s):
-            reg = find_prev_lone_bracket(self.view, s.b, brackets)
-            if reg is not None:
-                return Region(reg.a)
-
-            return s
-
-        if mode != NORMAL:
-            enter_normal_mode(self.view, mode)
-            return ui_blink()
-
-        targets = {
-            '{': ('\\{', '\\}'),
-            '(': ('\\(', '\\)'),
-        }
-
-        brackets = targets.get(target)
-        if brackets is None:
-            return ui_blink()
-
-        regions_transformer(self.view, move)
+class _vi_left_square_bracket(ViMotionCommand):
+    def run(self, action, mode, count=1, **kwargs):
+        if action == 'c':
+            goto_prev_change(self.view, mode, count, **kwargs)
+        elif action == 'target':
+            goto_prev_target(self.view, mode, count, **kwargs)
+        else:
+            raise ValueError('unknown action')
 
 
-class _vi_left_square_bracket_c(ViMotionCommand):
-    def run(self, mode, count):
-        goto_prev_change(self.view, mode, count)
-
-
-class _vi_right_square_bracket_target(ViMotionCommand):
-
-    def run(self, mode=None, count=1, target=None):
-        def move(view, s):
-            reg = find_next_lone_bracket(self.view, s.b, brackets)
-            if reg is not None:
-                return Region(reg.a)
-
-            return s
-
-        if mode != NORMAL:
-            enter_normal_mode(self.view, mode)
-            return ui_blink()
-
-        targets = {
-            '}': ('\\{', '\\}'),
-            ')': ('\\(', '\\)'),
-        }
-
-        brackets = targets.get(target)
-        if brackets is None:
-            return ui_blink()
-
-        regions_transformer(self.view, move)
-
-
-class _vi_right_square_bracket_c(ViMotionCommand):
-    def run(self, mode, count):
-        goto_next_change(self.view, mode, count)
+class _vi_right_square_bracket(ViMotionCommand):
+    def run(self, action, mode, count=1, **kwargs):
+        if action == 'c':
+            goto_next_change(self.view, mode, count, **kwargs)
+        elif action == 'target':
+            goto_next_target(self.view, mode, count, **kwargs)
+        else:
+            raise ValueError('unknown action')

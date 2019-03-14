@@ -19,6 +19,9 @@ from sublime import Region
 from sublime import version
 
 from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.ui import ui_blink
+from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
+from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vim import enter_normal_mode
@@ -152,3 +155,55 @@ def goto_prev_change(view, mode, count):
             if pt != line.begin():
                 view.sel().clear()
                 view.sel().add(pt)
+
+
+def goto_prev_target(view, mode, count, target):
+    def move(view, s):
+        reg = find_prev_lone_bracket(view, s.b, brackets)
+        if reg is not None:
+            return Region(reg.a)
+
+        return s
+
+    if mode != NORMAL:
+        enter_normal_mode(view, mode)
+        ui_blink()
+        return
+
+    targets = {
+        '{': ('\\{', '\\}'),
+        '(': ('\\(', '\\)'),
+    }
+
+    brackets = targets.get(target)
+    if brackets is None:
+        ui_blink()
+        return
+
+    regions_transformer(view, move)
+
+
+def goto_next_target(view, mode, count, target):
+    def move(view, s):
+        reg = find_next_lone_bracket(view, s.b, brackets)
+        if reg is not None:
+            return Region(reg.a)
+
+        return s
+
+    if mode != NORMAL:
+        enter_normal_mode(view, mode)
+        ui_blink()
+        return
+
+    targets = {
+        '}': ('\\{', '\\}'),
+        ')': ('\\(', '\\)'),
+    }
+
+    brackets = targets.get(target)
+    if brackets is None:
+        ui_blink()
+        return
+
+    regions_transformer(view, move)
