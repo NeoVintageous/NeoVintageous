@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_slash(unittest.FunctionalTestCase):
 
-    def test_slash(self):
+    def test_n_slash(self):
         self.eq('|', 'n_/abc', '|')
         self.assertSearch('')
         self.assertSearchCurrent('')
@@ -37,6 +37,14 @@ class Test_slash(unittest.FunctionalTestCase):
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
         self.eq('foo\nabc\nbar\nabc\nmoo\nabc\n|end', 'n_/abc', 'foo\n|abc\nbar\nabc\nmoo\nabc\nend')
+
+    def test_n_slash_when_view_contains_only_one_match_issue_223(self):
+        self.eq('a|bc', 'n_/abc', '|abc')
+        self.assertSearch('|abc|')
+        self.assertSearchCurrent('|abc|')
+        self.eq('x a|bc x', 'n_/abc', 'x |abc x')
+        self.assertSearch('x |abc| x')
+        self.assertSearchCurrent('x |abc| x')
 
     def test_N_slash(self):
         self.eq('|xabcx', '/abc', 'N_|x|abcx')

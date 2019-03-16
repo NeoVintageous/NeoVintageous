@@ -40,6 +40,14 @@ class Test_question_mark(unittest.FunctionalTestCase):
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
 
+    def test_n_question_mark_when_view_contains_only_one_match_issue_223(self):
+        self.eq('a|bc', 'n_?abc', '|abc')
+        self.assertSearch('|abc|')
+        self.assertSearchCurrent('|abc|')
+        self.eq('x a|bc x', 'n_?abc', 'x |abc x')
+        self.assertSearch('x |abc| x')
+        self.assertSearchCurrent('x |abc| x')
+
     def test_v_question_mark(self):
         self.eq('x abc |xy', 'v_?abc', 'r_x |abc x|y')
         self.eq('x abc |xy abc', 'v_?abc', 'r_x |abc x|y abc')

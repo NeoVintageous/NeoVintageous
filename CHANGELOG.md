@@ -20,6 +20,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#223](https://github.com/NeoVintageous/NeoVintageous/issues/223): Search does not work when cursor is on the word that is being searched
 * Fixed [#466](https://github.com/NeoVintageous/NeoVintageous/issues/466): x, y, and z registers
 
 ## 1.10.1 - Unreleased

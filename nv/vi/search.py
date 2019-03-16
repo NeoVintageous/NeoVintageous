@@ -62,23 +62,35 @@ def find_wrapping(view, term, start, end, flags=0, times=1):
         # make sure we wrap around the end of the buffer
         if not match:
             start = 0
+            # Extend the end of search to the end of current word, because
+            # otherwise the current word would be excluded and not found.
+            # See https://github.com/NeoVintageous/NeoVintageous/issues/223.
             end = current_sel.a
+            end = view.word(current_sel.a).b
             match = find_in_range(view, term, start, end, flags)
             if not match:
                 return
+
         start = match.b
 
     return match
 
 
 def reverse_find_wrapping(view, term, start, end, flags=0, times=1):
-    current_sel = view.sel()[0]
+    try:
+        current_sel = view.sel()[0]
+    except IndexError:
+        return
+
     # Search wrapping around the end of the buffer.
     for x in range(times):
         match = reverse_search(view, term, start, end, flags)
         # Start searching in the lower half of the buffer if we aren't doing it yet.
         if not match and start <= current_sel.b:
-            start = current_sel.b
+            # Extend the start of search to start of current word, because
+            # otherwise the current word would be excluded and not found.
+            # See https://github.com/NeoVintageous/NeoVintageous/issues/223.
+            start = view.word(current_sel.b).a
             end = view.size()
             match = reverse_search(view, term, start, end, flags)
             if not match:
@@ -86,6 +98,7 @@ def reverse_find_wrapping(view, term, start, end, flags=0, times=1):
         # No luck in the whole buffer.
         elif not match:
             return
+
         end = match.a
 
     return match
