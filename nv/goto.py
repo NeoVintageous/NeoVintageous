@@ -113,10 +113,10 @@ def goto_line(view, mode, line_number):
     view.show(view.sel()[0])
 
 
-def goto_next_change(view, mode, count):
+def _goto_modification(action, view, mode, count):
     if int(version()) >= 3189:
         for i in range(count):
-            view.run_command('next_modification')
+            view.run_command(action + '_modification')
 
         a = view.sel()[0].a
         if view.substr(a) == '\n':
@@ -126,35 +126,22 @@ def goto_next_change(view, mode, count):
         view.sel().add(a)
         enter_normal_mode(view, mode)
     else:
-        view.run_command('git_gutter_next_change', {'count': count, 'wrap': False})
+        # TODO Remove DEPRECATED code, deprecated since build 3189
+        view.run_command('git_gutter_' + action + '_change', {'count': count, 'wrap': False})
         line = view.line(view.sel()[0].b)
         if line.size() > 0:
             pt = view.find('^\\s*', line.begin()).end()
             if pt != line.begin():
                 view.sel().clear()
                 view.sel().add(pt)
+
+
+def goto_next_change(view, mode, count):
+    _goto_modification('next', view, mode, count)
 
 
 def goto_prev_change(view, mode, count):
-    if int(version()) >= 3189:
-        for i in range(count):
-            view.run_command('prev_modification')
-
-        a = view.sel()[0].a
-        if view.substr(a) == '\n':
-            a += 1
-
-        view.sel().clear()
-        view.sel().add(a)
-        enter_normal_mode(view, mode)
-    else:
-        view.run_command('git_gutter_prev_change', {'count': count, 'wrap': False})
-        line = view.line(view.sel()[0].b)
-        if line.size() > 0:
-            pt = view.find('^\\s*', line.begin()).end()
-            if pt != line.begin():
-                view.sel().clear()
-                view.sel().add(pt)
+    _goto_modification('prev', view, mode, count)
 
 
 def goto_prev_target(view, mode, count, target):
