@@ -1673,7 +1673,7 @@ def do_ex_user_cmdline(window, line):
 
     _log.debug('do ex user cmdline >>>%s<<<', line)
 
-    if line.endswith('<CR>'):
+    if line.lower().endswith('<cr>'):
         do_ex_cmdline(window, line[:-4])
     else:
         if ':' == line:
