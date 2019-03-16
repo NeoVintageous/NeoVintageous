@@ -3267,6 +3267,9 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
 class _vi_slash(ViMotionCommand, BufferSearchBase):
 
+    def _is_valid_cmdline(self, cmdline):
+        return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == '/'
+
     def run(self):
         self.state.reset_during_init = False
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
@@ -3278,11 +3281,8 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             on_cancel=self.on_cancel)
 
     def on_done(self, s):
-        if len(s) <= 1:
-            return
-
-        if s[0] != '/':
-            return
+        if not self._is_valid_cmdline(s):
+            return self.on_cancel(force=True)
 
         history_update(s)
         _nv_cmdline_feed_key.reset_last_history_index()
@@ -3299,26 +3299,24 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         state.eval()
 
     def on_change(self, s):
-        if s == '':
-            return self._force_cancel()
-
-        if len(s) <= 1:
-            return
-
-        if s[0] != '/':
-            return self._force_cancel()
+        if not self._is_valid_cmdline(s):
+            return self.on_cancel(force=True)
 
         s = s[1:]
 
         state = self.state
         flags = self.calculate_flags(s)
         self.view.erase_regions('vi_inc_search')
+        start = self.view.sel()[0].b + 1
+        end = self.view.size()
+
         next_hit = find_wrapping(self.view,
                                  term=s,
-                                 start=self.view.sel()[0].b + 1,
-                                 end=self.view.size(),
+                                 start=start,
+                                 end=end,
                                  flags=flags,
                                  times=state.count)
+
         if next_hit:
             if state.mode == VISUAL:
                 next_hit = Region(self.view.sel()[0].a, next_hit.a + 1)
@@ -3336,11 +3334,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             if not self.view.visible_region().contains(next_hit.b):
                 self.view.show(next_hit.b)
 
-    def _force_cancel(self):
-        self.on_cancel()
-        self.view.window().run_command('hide_panel', {'cancel': True})
-
-    def on_cancel(self):
+    def on_cancel(self, force=False):
         state = self.state
         self.view.erase_regions('vi_inc_search')
         state.reset_command_data()
@@ -3348,6 +3342,9 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
+
+        if force:
+            self.view.window().run_command('hide_panel', {'cancel': True})
 
 
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
@@ -3375,10 +3372,15 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         # We want to start searching right after the current selection.
         current_sel = self.view.sel()[0]
         start = current_sel.b if not current_sel.empty() else current_sel.b + 1
-        wrapped_end = self.view.size()
-
+        end = self.view.size()
         flags = self.calculate_flags(search_string)
-        match = find_wrapping(self.view, search_string, start, wrapped_end, flags=flags, times=count)
+
+        match = find_wrapping(self.view,
+                              term=search_string,
+                              start=start,
+                              end=end,
+                              flags=flags,
+                              times=count)
         if not match:
             return
 
@@ -4953,6 +4955,9 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
+    def _is_valid_cmdline(self, cmdline):
+        return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == '?'
+
     def run(self):
         self.state.reset_during_init = False
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
@@ -4964,11 +4969,8 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             on_cancel=self.on_cancel)
 
     def on_done(self, s):
-        if len(s) <= 1:
-            return
-
-        if s[0] != '?':
-            return
+        if not self._is_valid_cmdline(s):
+            return self.on_cancel(force=True)
 
         history_update(s)
         _nv_cmdline_feed_key.reset_last_history_index()
@@ -4985,14 +4987,8 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         state.eval()
 
     def on_change(self, s):
-        if s == '':
-            return self._force_cancel()
-
-        if len(s) <= 1:
-            return
-
-        if s[0] != '?':
-            return self._force_cancel()
+        if not self._is_valid_cmdline(s):
+            return self.on_cancel(force=True)
 
         s = s[1:]
 
@@ -5022,11 +5018,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             if not self.view.visible_region().contains(occurrence):
                 self.view.show(occurrence)
 
-    def _force_cancel(self):
-        self.on_cancel()
-        self.view.window().run_command('hide_panel', {'cancel': True})
-
-    def on_cancel(self):
+    def on_cancel(self, force=False):
         self.view.erase_regions('vi_inc_search')
         state = self.state
         state.reset_command_data()
@@ -5034,6 +5026,9 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
+
+        if force:
+            self.view.window().run_command('hide_panel', {'cancel': True})
 
 
 class _vi_question_mark_on_parser_done(WindowCommand):
