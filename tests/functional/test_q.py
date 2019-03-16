@@ -51,3 +51,7 @@ class Test_q(unittest.FunctionalTestCase):
         self.assertStatusLineEqual('Recording...')
         self.feed('n_q')
         self.assertStatusLineEqual('')
+        self.feed('n_qx')
+        self.assertStatusLineEqual('Recording...')
+        self.feed('n_q')
+        self.assertStatusLineEqual('')

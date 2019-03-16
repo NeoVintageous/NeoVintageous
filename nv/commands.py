@@ -2822,7 +2822,7 @@ class _vi_q(IrreversibleTextCommand):
                 self.__class__._current = None
                 return
 
-            if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW"'):
+            if name not in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"'):
                 return ui_blink("E354: Invalid register name: '" + name + "'")
 
             state.start_recording()
@@ -2838,12 +2838,11 @@ class _vi_at(IrreversibleTextCommand):
     _last_used = None
 
     def run(self, name, mode=None, count=1):
-        if name not in tuple('0123456789abcdefghijklmnopqrstuvwABCDEFGHIJKLMNOPQRSTUVW".=*+@'):
+        if name not in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".=*+@'):
             return ui_blink("E354: Invalid register name: '" + name + "'")
 
         if name == '@':
             name = self._last_used
-
             if not name:
                 return ui_blink('E748: No previously used register')
 

@@ -18,6 +18,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Deprecated: `neovintageous_reload_my_rc_file` command, use `neovintageous` command with the arguments `{'action': 'reload_rc_file'}` instead
 * Deprecated: `neovintageous_open_my_rc_file` command, use `neovintageous` command with the arguments `{'action': 'open_rc_file'}` instead
 
+### Fixed
+
+* Fixed [#466](https://github.com/NeoVintageous/NeoVintageous/issues/466): x, y, and z registers
+
 ## 1.10.1 - Unreleased
 
 * Fixed [#462](https://github.com/NeoVintageous/NeoVintageous/issues/462): `[count]G` and `[count]gg` EOF off-by-one
