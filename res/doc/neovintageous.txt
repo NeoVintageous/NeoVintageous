@@ -198,7 +198,9 @@ More examples: >
     noremap <leader>Y "+Y
     noremap <leader>p "+p
     noremap <leader>P "+P
-    noremap <leader>yy "+Y
+
+    " History.
+    noremap <leader>hp :PasteFromHistory<CR>
 
     " Show me the registers.
     nnoremap <leader>r :reg<CR>
@@ -208,6 +210,9 @@ More examples: >
     nnoremap <leader>i :GotoSymbolInProject<CR>
     " Or if you're using super-keys (disabled by default):
     nnoremap <D-i> :GotoSymbolInProject<CR>
+
+    " Edit settings.
+    nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
 
     " Sorted.
     nnoremap <leader>s) vi)<F9>o<Esc>$^
@@ -227,6 +232,10 @@ More examples: >
     nnoremap <leader>ws :CarryFileToPane direction=down<CR>
     nnoremap <leader>wv :CarryFileToPane direction=right<CR>
     nnoremap <leader>wd :DestroyPane direction=self<CR>
+
+    " Toggle Zoom. Requires the Origami plugin:
+    " https://packagecontrol.io/packages/Origami.
+    nnoremap <leader>. :ToggleZoomPane fraction=0.98<CR>
 
     " Git
     nnoremap <leader>hu :RevertModification<CR>
