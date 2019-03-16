@@ -52,13 +52,13 @@ class TestMapping(unittest.TestCase):
 
     def test_mapping(self):
         mapping = Mapping('lhs', 'rhs')
-        self.assertEqual(mapping.sequence, 'lhs')
-        self.assertEqual(mapping.mapping, 'rhs')
+        self.assertEqual(mapping.lhs, 'lhs')
+        self.assertEqual(mapping.rhs, 'rhs')
 
     def test_allows_empty_sequence(self):
         mapping = Mapping('', '')
-        self.assertEqual(mapping.sequence, '')
-        self.assertEqual(mapping.mapping, '')
+        self.assertEqual(mapping.lhs, '')
+        self.assertEqual(mapping.rhs, '')
 
 
 class TestMappings(unittest.TestCase):
@@ -247,15 +247,15 @@ class TestMappings(unittest.TestCase):
         mapping = _seq_to_mapping(unittest.NORMAL, 'G')
 
         self.assertIsInstance(mapping, Mapping)
-        self.assertEqual(mapping.mapping, 'G_')
-        self.assertEqual(mapping.sequence, 'G')
+        self.assertEqual(mapping.rhs, 'G_')
+        self.assertEqual(mapping.lhs, 'G')
 
         mappings_add(unittest.NORMAL, '<C-m>', 'daw')
         mapping = _seq_to_mapping(unittest.NORMAL, '<C-m>')
 
         self.assertIsInstance(mapping, Mapping)
-        self.assertEqual(mapping.mapping, 'daw')
-        self.assertEqual(mapping.sequence, '<C-m>')
+        self.assertEqual(mapping.rhs, 'daw')
+        self.assertEqual(mapping.lhs, '<C-m>')
 
     @_patch_mappings
     def test_seq_to_mapping_returns_none_when_not_found(self, _mappings):
@@ -360,5 +360,5 @@ class TestResolve(unittest.ViewTestCase):
         actual = mappings_resolve(state, 'lhs', NORMAL)
         self.assertIsInstance(actual, Mapping)
         expected = Mapping('lhs', 'rhs')
-        self.assertEqual(actual.mapping, expected.mapping)
-        self.assertEqual(actual.sequence, expected.sequence)
+        self.assertEqual(actual.rhs, expected.rhs)
+        self.assertEqual(actual.lhs, expected.lhs)

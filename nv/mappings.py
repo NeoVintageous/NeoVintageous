@@ -45,8 +45,8 @@ _mappings = {
 class Mapping:
 
     def __init__(self, lhs, rhs):
-        self.sequence = lhs
-        self.mapping = rhs
+        self.lhs = lhs
+        self.rhs = rhs
 
 
 def _find_partial_matches(mode, lhs):

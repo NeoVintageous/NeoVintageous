@@ -526,9 +526,12 @@ class _nv_feed_key(ViWindowCommandBase):
             if do_eval:
                 _log.debug('evaluating user mapping (mode=%s)...', state.mode)
 
-                new_keys = command.mapping
+                # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
+                rhs = command.rhs
                 if state.mode == OPERATOR_PENDING:
-                    new_keys = state.sequence[:-len(state.partial_sequence)] + command.mapping
+                    rhs = state.sequence[:-len(state.partial_sequence)] + command.rhs
+
+                # TODO Review Why does state need to be reset before running user mapping?
                 reg = state.register
                 acount = state.action_count
                 mcount = state.motion_count
@@ -537,14 +540,14 @@ class _nv_feed_key(ViWindowCommandBase):
                 state.motion_count = mcount
                 state.action_count = acount
 
-                _log.info('user mapping %s -> %s', command.sequence, new_keys)
+                _log.info('user mapping %s -> %s', command.lhs, rhs)
 
-                if ':' in new_keys:
-                    do_ex_user_cmdline(self.window, new_keys)
+                if ':' in rhs:
+                    do_ex_user_cmdline(self.window, rhs)
 
                     return
 
-                self.window.run_command('_nv_process_notation', {'keys': new_keys, 'check_user_mappings': False})
+                self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
 
             return
 
