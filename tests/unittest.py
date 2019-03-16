@@ -26,8 +26,10 @@ from sublime import active_window as _active_window
 from sublime import Region
 
 # Use aliases to indicate that they are not public testing APIs.
+from NeoVintageous.nv.commands import _vi_at
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.state import State as _State
+from NeoVintageous.nv.vi.macros import MacroRegisters as _MacroRegisters
 
 from NeoVintageous.nv.vi import registers
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
@@ -221,6 +223,11 @@ class ViewTestCase(unittest.TestCase):
     def resetRegisters(self):
         registers._reset_data()
 
+    def resetMacros(self):
+        _State.macro_registers = _MacroRegisters()
+        _State.macro_steps.clear()
+        _vi_at._last_used = None
+
     def _assertViewContent(self, sels, expected, msg=None):
         content = list(self.view.substr(Region(0, self.view.size())))
         counter = 0
@@ -340,6 +347,9 @@ class ViewTestCase(unittest.TestCase):
     def assertNormalMode(self):
         self._assertMode(NORMAL)
 
+    def assertReplaceMode(self):
+        self._assertMode(REPLACE)
+
     def assertVisualMode(self):
         self._assertMode(VISUAL)
 
@@ -382,6 +392,13 @@ class ViewTestCase(unittest.TestCase):
     def assertRegister(self, name, expected=None, linewise=False, msg=None):
         # Test that the value of the named register and *expected* are equal.
         #
+        # Example:
+        #
+        #   assertRegister('"', 'text')
+        #   assertRegister('-', 'text')
+        #   assertRegister('"text')
+        #   assertRegister('-text')
+        #
         # Args:
         #   name (str):
         #       The name of the register.
@@ -392,8 +409,17 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise, msg)
 
+    # TODO Rename assertRegisterEmpty
     def assertRegisterIsNone(self, name, linewise=False, msg=None):
         self._assertRegister(name, None, linewise, msg)
+
+    def assertRegistersEqual(self, names, expected=None, linewise=False, msg=None):
+        for name in names:
+            self._assertRegister(name, expected, linewise, msg)
+
+    def assertRegistersEmpty(self, names, linewise=False, msg=None):
+        for name in names:
+            self._assertRegister(name, None, linewise, msg)
 
     def assertSelection(self, expected, msg=None):
         # Test that view selection and *expected* are equal.
@@ -456,36 +482,41 @@ class ViewTestCase(unittest.TestCase):
         #       The expected number of characters in view.
         self.assertEqual(expected, self.view.size())
 
-    def assertStatusLineRegex(self, expected, msg=None):
-        # Test that view contents matches (or does not match) *expected*.
-        #
-        # Args:
-        #   expected (str):
-        #       Regular expression that should match view contents.
-        #   msg (str):
-        #       If specified, is used as the error message on failure.
-        self.assertRegex(self.view.get_status('vim-mode') + ' ' + self.view.get_status('vim-seq'), expected, msg=msg)
+    def _statusLine(self):
+        return (
+            self.view.get_status('vim-mode') + ' ' +
+            self.view.get_status('vim-seq') + ' ' +
+            self.view.get_status('vim-recorder')).strip()
+
+    def assertStatusLineEqual(self, expected, msg=None):
+        self.assertEqual(self._statusLine(), expected, msg=msg)
+
+    def assertStatusLineRegex(self, expected_regex, msg=None):
+        self.assertRegex(self._statusLine(), expected_regex, msg=msg)
 
     def assertStatusLineIsBlank(self, msg=None):
-        self.assertStatusLineRegex('', msg)
+        self.assertStatusLineEqual('', msg)
 
     def assertStatusLineIsInsert(self, msg=None):
-        self.assertStatusLineRegex('-- INSERT --', msg)
+        self.assertStatusLineEqual('-- INSERT --', msg)
+
+    def assertStatusLineIsNormal(self, msg=None):
+        self.assertStatusLineEqual('', msg)
 
     def assertStatusLineIsReplace(self, msg=None):
-        self.assertStatusLineRegex('-- REPLACE --', msg)
+        self.assertStatusLineEqual('-- REPLACE --', msg)
 
     def assertStatusLineIsSelect(self, msg=None):
-        self.assertStatusLineRegex('-- SELECT --', msg)
+        self.assertStatusLineEqual('-- SELECT --', msg)
 
     def assertStatusLineIsVisual(self, msg=None):
-        self.assertStatusLineRegex('-- VISUAL --', msg)
+        self.assertStatusLineEqual('-- VISUAL --', msg)
 
     def assertStatusLineIsVisualLine(self, msg=None):
-        self.assertStatusLineRegex('-- VISUAL LINE --', msg)
+        self.assertStatusLineEqual('-- VISUAL LINE --', msg)
 
     def assertStatusLineIsVisualBlock(self, msg=None):
-        self.assertStatusLineRegex('-- VISUAL BLOCK --', msg)
+        self.assertStatusLineEqual('-- VISUAL BLOCK --', msg)
 
     def assertXpos(self, expected, msg=None):
         self.assertEqual(self.state.xpos, expected, msg)
@@ -776,8 +807,10 @@ def mock_bell():
 
                 return bell_count
 
-            def _assertBell():
+            def _assertBell(msg=None):
                 self.assertEquals(1, _bell_call_count(), 'expects bell')
+                if msg:
+                    self.bells[0].assert_called_once_with(msg)
 
             def _assertNoBell():
                 self.assertEquals(0, _bell_call_count(), 'expects no bell')
@@ -933,6 +966,7 @@ _SEQ2CMD = {
     '(':            {'command': '_vi_left_paren'},  # noqa: E241
     ')':            {'command': '_vi_right_paren'},  # noqa: E241
     '*':            {'command': '_vi_star'},  # noqa: E241
+    '.':            {'command': '_vi_dot'},  # noqa: E241
     '/abc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
@@ -952,6 +986,10 @@ _SEQ2CMD = {
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     '>ip':          {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     '?abc':         {'command': '_vi_question_mark_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
+    '@-':           {'command': '_vi_at', 'args': {'name': '-'}},  # noqa: E241
+    '@@':           {'command': '_vi_at', 'args': {'name': '@'}},  # noqa: E241
+    '@a':           {'command': '_vi_at', 'args': {'name': 'a'}},  # noqa: E241
+    '@A':           {'command': '_vi_at', 'args': {'name': 'A'}},  # noqa: E241
     '[ ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_up'}},  # noqa: E241
     '[(':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '('}},  # noqa: E241,E501
     '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
@@ -1171,6 +1209,12 @@ _SEQ2CMD = {
     'o':            {'command': '_vi_o'},  # noqa: E241
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
+    'q':            {'command': '_vi_q'},  # noqa: E241
+    'q-':           {'command': '_vi_q', 'args': {'name': '-'}},  # noqa: E241
+    'q@':           {'command': '_vi_q', 'args': {'name': '@'}},  # noqa: E241
+    'qa':           {'command': '_vi_q', 'args': {'name': 'a'}},  # noqa: E241
+    'qA':           {'command': '_vi_q', 'args': {'name': 'A'}},  # noqa: E241
+    'qx':           {'command': '_vi_q', 'args': {'name': 'x'}},  # noqa: E241
     'R':            {'command': '_enter_replace_mode'},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     'S"':           {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"'}},  # noqa: E241
