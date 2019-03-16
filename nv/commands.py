@@ -510,7 +510,6 @@ class _nv_feed_key(ViWindowCommandBase):
             return
 
         command = mappings_resolve(state, check_user_mappings=check_user_mappings)
-        _log.debug('command %s %s', command, command.__class__.__mro__)
 
         if isinstance(command, ViOpenRegister):
             _log.debug('opening register...')
