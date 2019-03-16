@@ -2861,11 +2861,13 @@ class _vi_at(IrreversibleTextCommand):
                 if 'xpos' in args:
                     state.update_xpos(force=True)
                     args['xpos'] = State(self.view).xpos
-                elif args.get('motion') and 'xpos' in args.get('motion'):
-                    state.update_xpos(force=True)
+                elif args.get('motion'):
                     motion = args.get('motion')
-                    motion['motion_args']['xpos'] = State(self.view).xpos
-                    args['motion'] = motion
+                    if motion and 'motion_args' in motion and 'xpos' in motion['motion_args']:
+                        state.update_xpos(force=True)
+                        motion = args.get('motion')
+                        motion['motion_args']['xpos'] = State(self.view).xpos
+                        args['motion'] = motion
 
                 self.view.run_command(cmd, args)
 
