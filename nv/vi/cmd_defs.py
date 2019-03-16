@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.vi import keys
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.inputs import one_char
 from NeoVintageous.nv.vi.inputs import parser_def
+from NeoVintageous.nv.vi.keys import assign
 from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import INPUT_IMMEDIATE
 from NeoVintageous.nv.vim import INPUT_VIA_PANEL
@@ -33,11 +33,11 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-_MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
-_MODES_MOTION = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+_ACTION_MODES = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+_MOTION_MODES = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
-@keys.assign(seq=seqs.D, modes=_MODES_ACTION)
+@assign(seqs.D, _ACTION_MODES)
 class ViDeleteByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -57,7 +57,7 @@ class ViDeleteByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_O, modes=_MODES_ACTION)
+@assign(seqs.BIG_O, _ACTION_MODES)
 class ViInsertLineBefore(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,7 +75,7 @@ class ViInsertLineBefore(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.O, modes=_MODES_ACTION)
+@assign(seqs.O, _ACTION_MODES)
 class ViInsertLineAfter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -103,7 +103,7 @@ class ViInsertLineAfter(ViOperatorDef):
             }
 
 
-@keys.assign(seq=seqs.X, modes=_MODES_ACTION)
+@assign(seqs.X, _ACTION_MODES)
 class ViRightDeleteChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -122,7 +122,7 @@ class ViRightDeleteChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.S, modes=_MODES_ACTION)
+@assign(seqs.S, _ACTION_MODES)
 class ViSubstituteChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -142,7 +142,7 @@ class ViSubstituteChar(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.Y, modes=_MODES_ACTION)
+@assign(seqs.Y, _ACTION_MODES)
 class ViYankByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -161,7 +161,7 @@ class ViYankByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.EQUAL, modes=_MODES_ACTION)
+@assign(seqs.EQUAL, _ACTION_MODES)
 class ViReindent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -180,7 +180,7 @@ class ViReindent(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GREATER_THAN, modes=_MODES_ACTION)
+@assign(seqs.GREATER_THAN, _ACTION_MODES)
 class ViIndent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -199,7 +199,7 @@ class ViIndent(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.LESS_THAN, modes=_MODES_ACTION)
+@assign(seqs.LESS_THAN, _ACTION_MODES)
 class ViUnindent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -218,7 +218,7 @@ class ViUnindent(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.C, modes=_MODES_ACTION)
+@assign(seqs.C, _ACTION_MODES)
 class ViChangeByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -240,7 +240,7 @@ class ViChangeByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.U, modes=(NORMAL,))
+@assign(seqs.U, (NORMAL,))
 class ViUndo(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -256,7 +256,7 @@ class ViUndo(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.U, modes=(VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+@assign(seqs.U, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -274,7 +274,7 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_R, modes=_MODES_ACTION)
+@assign(seqs.CTRL_R, _ACTION_MODES)
 class ViRedo(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -291,7 +291,7 @@ class ViRedo(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_D, modes=_MODES_ACTION)
+@assign(seqs.BIG_D, _ACTION_MODES)
 class ViDeleteToEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -310,7 +310,7 @@ class ViDeleteToEol(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_C, modes=_MODES_ACTION)
+@assign(seqs.BIG_C, _ACTION_MODES)
 class ViChangeToEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -331,8 +331,8 @@ class ViChangeToEol(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_U_BIG_U, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.G_BIG_U_G_BIG_U, modes=_MODES_ACTION)
+@assign(seqs.G_BIG_U_BIG_U, _ACTION_MODES)
+@assign(seqs.G_BIG_U_G_BIG_U, _ACTION_MODES)
 class ViChangeToUpperCaseByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -350,7 +350,7 @@ class ViChangeToUpperCaseByLines(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CC, modes=_MODES_ACTION)
+@assign(seqs.CC, _ACTION_MODES)
 class ViChangeLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -371,7 +371,7 @@ class ViChangeLine(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.DD, modes=_MODES_ACTION)
+@assign(seqs.DD, _ACTION_MODES)
 class ViDeleteLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -390,7 +390,7 @@ class ViDeleteLine(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_R, modes=_MODES_ACTION)
+@assign(seqs.BIG_R, _ACTION_MODES)
 class ViEnterReplaceMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -407,7 +407,7 @@ class ViEnterReplaceMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GREATER_THAN_GREATER_THAN, modes=_MODES_ACTION)
+@assign(seqs.GREATER_THAN_GREATER_THAN, _ACTION_MODES)
 class ViIndentLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -425,8 +425,8 @@ class ViIndentLine(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GUGU, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.GUU, modes=_MODES_ACTION)
+@assign(seqs.GUGU, _ACTION_MODES)
+@assign(seqs.GUU, _ACTION_MODES)
 class ViChangeToLowerCaseByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -444,7 +444,7 @@ class ViChangeToLowerCaseByLines(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GU, modes=_MODES_ACTION)
+@assign(seqs.GU, _ACTION_MODES)
 class ViChangeToLowerCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -463,7 +463,7 @@ class ViChangeToLowerCaseByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.EQUAL_EQUAL, modes=_MODES_ACTION)
+@assign(seqs.EQUAL_EQUAL, _ACTION_MODES)
 class ViReindentLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -481,7 +481,7 @@ class ViReindentLine(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.LESS_THAN_LESS_THAN, modes=_MODES_ACTION)
+@assign(seqs.LESS_THAN_LESS_THAN, _ACTION_MODES)
 class ViUnindentLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -499,8 +499,8 @@ class ViUnindentLine(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.YY, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.BIG_Y, modes=_MODES_ACTION)
+@assign(seqs.YY, _ACTION_MODES)
+@assign(seqs.BIG_Y, _ACTION_MODES)
 class ViYankLine(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -518,7 +518,7 @@ class ViYankLine(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_TILDE_TILDE, modes=_MODES_ACTION)
+@assign(seqs.G_TILDE_TILDE, _ACTION_MODES)
 class ViInvertCaseByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -536,7 +536,7 @@ class ViInvertCaseByLines(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.TILDE, modes=_MODES_ACTION)
+@assign(seqs.TILDE, _ACTION_MODES)
 class ViForceInvertCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -554,7 +554,7 @@ class ViForceInvertCaseByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_S, modes=_MODES_ACTION)
+@assign(seqs.BIG_S, _ACTION_MODES)
 class ViSubstituteByLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -575,7 +575,7 @@ class ViSubstituteByLines(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_TILDE, modes=_MODES_ACTION)
+@assign(seqs.G_TILDE, _ACTION_MODES)
 class ViInvertCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -594,7 +594,7 @@ class ViInvertCaseByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_U, modes=_MODES_ACTION)
+@assign(seqs.G_BIG_U, _ACTION_MODES)
 class ViChangeToUpperCaseByChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -613,7 +613,7 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_J, modes=_MODES_ACTION + (SELECT,))
+@assign(seqs.BIG_J, _ACTION_MODES + (SELECT,))
 class ViJoinLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -640,7 +640,7 @@ class ViJoinLines(ViOperatorDef):
             }
 
 
-@keys.assign(seq=seqs.CTRL_X, modes=_MODES_ACTION)
+@assign(seqs.CTRL_X, _ACTION_MODES)
 class ViDecrement(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -659,7 +659,7 @@ class ViDecrement(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_A, modes=_MODES_ACTION)
+@assign(seqs.CTRL_A, _ACTION_MODES)
 class ViIncrement(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -677,7 +677,7 @@ class ViIncrement(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_J, modes=_MODES_ACTION)
+@assign(seqs.G_BIG_J, _ACTION_MODES)
 class ViJoinLinesNoSeparator(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -696,7 +696,7 @@ class ViJoinLinesNoSeparator(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.V, modes=_MODES_ACTION)
+@assign(seqs.V, _ACTION_MODES)
 class ViEnterVisualMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -712,8 +712,8 @@ class ViEnterVisualMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.Z_ENTER, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.ZT, modes=_MODES_ACTION)
+@assign(seqs.Z_ENTER, _ACTION_MODES)
+@assign(seqs.ZT, _ACTION_MODES)
 class ViScrollToScreenTop(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -730,8 +730,8 @@ class ViScrollToScreenTop(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.ZB, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.Z_MINUS, modes=_MODES_ACTION)
+@assign(seqs.ZB, _ACTION_MODES)
+@assign(seqs.Z_MINUS, _ACTION_MODES)
 class ViScrollToScreenBottom(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -748,7 +748,7 @@ class ViScrollToScreenBottom(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.ZZ, modes=_MODES_ACTION)
+@assign(seqs.ZZ, _ACTION_MODES)
 class ViScrollToScreenCenter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -765,7 +765,7 @@ class ViScrollToScreenCenter(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GQ, modes=_MODES_ACTION)
+@assign(seqs.GQ, _ACTION_MODES)
 class ViReformat(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -783,7 +783,7 @@ class ViReformat(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.P, modes=_MODES_ACTION)
+@assign(seqs.P, _ACTION_MODES)
 class ViPasteAfter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -802,7 +802,7 @@ class ViPasteAfter(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_P, modes=_MODES_ACTION)
+@assign(seqs.BIG_P, _ACTION_MODES)
 class ViPasteBefore(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -821,7 +821,7 @@ class ViPasteBefore(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_X, modes=_MODES_ACTION)
+@assign(seqs.BIG_X, _ACTION_MODES)
 class ViLeftDeleteChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -840,7 +840,7 @@ class ViLeftDeleteChar(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GT, modes=_MODES_ACTION)
+@assign(seqs.GT, _ACTION_MODES)
 class ViActivateNextTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -856,7 +856,7 @@ class ViActivateNextTab(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_T, modes=_MODES_ACTION)
+@assign(seqs.G_BIG_T, _ACTION_MODES)
 class ViActivatePreviousTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -872,8 +872,8 @@ class ViActivatePreviousTab(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_B, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_B, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_B, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_B, _ACTION_MODES)
 class ViMoveCursorToBottomRightWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -888,7 +888,7 @@ class ViMoveCursorToBottomRightWindow(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_BIG_H, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_BIG_H, _ACTION_MODES)
 class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -903,7 +903,7 @@ class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_BIG_J, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_BIG_J, _ACTION_MODES)
 class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -918,7 +918,7 @@ class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_BIG_K, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_BIG_K, _ACTION_MODES)
 class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -933,7 +933,7 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_BIG_L, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_BIG_L, _ACTION_MODES)
 class ViMoveCurrentWindowToFarRight(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -948,7 +948,7 @@ class ViMoveCurrentWindowToFarRight(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_C, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_C, _ACTION_MODES)
 class ViCloseTheCurrentWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -963,7 +963,7 @@ class ViCloseTheCurrentWindow(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_EQUAL, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_EQUAL, _ACTION_MODES)
 class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -978,7 +978,7 @@ class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_GREATER_THAN, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_GREATER_THAN, _ACTION_MODES)
 class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -994,10 +994,10 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_H, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_H, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_LEFT, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_BACKSPACE, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_H, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_H, _ACTION_MODES)
+@assign(seqs.CTRL_W_LEFT, _ACTION_MODES)
+@assign(seqs.CTRL_W_BACKSPACE, _ACTION_MODES)
 class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1013,9 +1013,9 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_J, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_J, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_DOWN, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_J, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_J, _ACTION_MODES)
+@assign(seqs.CTRL_W_DOWN, _ACTION_MODES)
 class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1031,9 +1031,9 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_K, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_K, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_UP, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_K, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_K, _ACTION_MODES)
+@assign(seqs.CTRL_W_UP, _ACTION_MODES)
 class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1049,9 +1049,9 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_L, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_L, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_RIGHT, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_L, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_L, _ACTION_MODES)
+@assign(seqs.CTRL_W_RIGHT, _ACTION_MODES)
 class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1067,7 +1067,7 @@ class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_LESS_THAN, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_LESS_THAN, _ACTION_MODES)
 class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1083,7 +1083,7 @@ class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_MINUS, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_MINUS, _ACTION_MODES)
 class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1099,8 +1099,8 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_N, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_N, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_N, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_N, _ACTION_MODES)
 class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1116,8 +1116,8 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_O, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_O, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_O, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_O, _ACTION_MODES)
 class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1132,7 +1132,7 @@ class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_BAR, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_BAR, _ACTION_MODES)
 class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1148,7 +1148,7 @@ class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_PLUS, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_PLUS, _ACTION_MODES)
 class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1164,8 +1164,8 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_Q, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_Q, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_Q, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_Q, _ACTION_MODES)
 class ViQuitTheCurrentWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1180,9 +1180,9 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_S, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_BIG_S, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_S, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_S, _ACTION_MODES)
+@assign(seqs.CTRL_W_BIG_S, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_S, _ACTION_MODES)
 class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1198,8 +1198,8 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_T, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_T, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_T, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_T, _ACTION_MODES)
 class ViMoveCursorToTopLeftWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1214,8 +1214,8 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_UNDERSCORE, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_UNDERSCORE, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_UNDERSCORE, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_UNDERSCORE, _ACTION_MODES)
 class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1231,8 +1231,8 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_V, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_V, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_V, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_V, _ACTION_MODES)
 class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1248,8 +1248,8 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_W_X, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_W_CTRL_X, modes=_MODES_ACTION)
+@assign(seqs.CTRL_W_X, _ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_X, _ACTION_MODES)
 class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1265,7 +1265,7 @@ class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_V, modes=_MODES_ACTION)
+@assign(seqs.BIG_V, _ACTION_MODES)
 class ViEnterVisualLineMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1281,7 +1281,7 @@ class ViEnterVisualLineMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GV, modes=_MODES_ACTION)
+@assign(seqs.GV, _ACTION_MODES)
 class ViRestoreVisualSelections(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1298,7 +1298,7 @@ class ViRestoreVisualSelections(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GX, modes=_MODES_ACTION)
+@assign(seqs.GX, _ACTION_MODES)
 class NetrwGx(ViOperatorDef):
     def translate(self, state):
         return {
@@ -1310,7 +1310,7 @@ class NetrwGx(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_K_CTRL_B, modes=_MODES_ACTION)
+@assign(seqs.CTRL_K_CTRL_B, _ACTION_MODES)
 class StToggleSidebar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1324,8 +1324,8 @@ class StToggleSidebar(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.COMMAND_BIG_B, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_SHIFT_B, modes=_MODES_ACTION)
+@assign(seqs.COMMAND_BIG_B, _ACTION_MODES)
+@assign(seqs.CTRL_SHIFT_B, _ACTION_MODES)
 class StShowBuildSystemsMenu(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1341,8 +1341,8 @@ class StShowBuildSystemsMenu(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.COMMAND_BIG_F, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_BIG_F, modes=_MODES_ACTION)
+@assign(seqs.COMMAND_BIG_F, _ACTION_MODES)
+@assign(seqs.CTRL_BIG_F, _ACTION_MODES)
 class StFinInFiles(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1358,7 +1358,7 @@ class StFinInFiles(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_O, modes=_MODES_ACTION)
+@assign(seqs.CTRL_O, _ACTION_MODES)
 class ViJumpBack(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1372,7 +1372,7 @@ class ViJumpBack(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_I, modes=_MODES_ACTION)
+@assign(seqs.CTRL_I, _ACTION_MODES)
 class ViJumpForward(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1386,7 +1386,7 @@ class ViJumpForward(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.SHIFT_CTRL_F12, modes=_MODES_ACTION)
+@assign(seqs.SHIFT_CTRL_F12, _ACTION_MODES)
 class StGotoSymbolInProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1400,7 +1400,7 @@ class StGotoSymbolInProject(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_F12, modes=_MODES_ACTION)
+@assign(seqs.CTRL_F12, _ACTION_MODES)
 class StGotoSymbolInFile(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1417,7 +1417,7 @@ class StGotoSymbolInFile(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F12, modes=_MODES_ACTION)
+@assign(seqs.F12, _ACTION_MODES)
 class StGotoDefinition(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1431,7 +1431,7 @@ class StGotoDefinition(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_F2, modes=_MODES_ACTION)
+@assign(seqs.CTRL_F2, _ACTION_MODES)
 class StToggleBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1445,7 +1445,7 @@ class StToggleBookmark(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_SHIFT_F2, modes=_MODES_ACTION)
+@assign(seqs.CTRL_SHIFT_F2, _ACTION_MODES)
 class StClearBookmarks(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1459,7 +1459,7 @@ class StClearBookmarks(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F2, modes=_MODES_ACTION)
+@assign(seqs.F2, _ACTION_MODES)
 class StPrevBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1473,7 +1473,7 @@ class StPrevBookmark(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.SHIFT_F2, modes=_MODES_ACTION)
+@assign(seqs.SHIFT_F2, _ACTION_MODES)
 class StNextBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1487,7 +1487,7 @@ class StNextBookmark(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.DOT, modes=_MODES_ACTION)
+@assign(seqs.DOT, _ACTION_MODES)
 class ViRepeat(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1505,7 +1505,7 @@ class ViRepeat(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_Y, modes=_MODES_ACTION)
+@assign(seqs.CTRL_Y, _ACTION_MODES)
 class ViScrollByLinesUp(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1522,7 +1522,7 @@ class ViScrollByLinesUp(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_U, modes=(VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+@assign(seqs.BIG_U, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1540,7 +1540,7 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_E, modes=_MODES_ACTION)
+@assign(seqs.CTRL_E, _ACTION_MODES)
 class ViScrollByLinesDown(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1557,7 +1557,7 @@ class ViScrollByLinesDown(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F11, modes=_MODES_ACTION)
+@assign(seqs.F11, _ACTION_MODES)
 class StToggleFullScreen(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1571,7 +1571,7 @@ class StToggleFullScreen(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F7, modes=_MODES_ACTION)
+@assign(seqs.F7, _ACTION_MODES)
 class StBuild(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1585,7 +1585,7 @@ class StBuild(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.AT, modes=_MODES_ACTION)
+@assign(seqs.AT, _ACTION_MODES)
 class ViOpenMacrosForRepeating(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1617,7 +1617,7 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.Q, modes=_MODES_ACTION)
+@assign(seqs.Q, _ACTION_MODES)
 class ViToggleMacroRecorder(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1648,7 +1648,7 @@ class ViToggleMacroRecorder(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F3, modes=_MODES_ACTION)
+@assign(seqs.F3, _ACTION_MODES)
 class StFindNext(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1662,7 +1662,7 @@ class StFindNext(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F4, modes=_MODES_ACTION)
+@assign(seqs.F4, _ACTION_MODES)
 class StFindNextResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1676,7 +1676,7 @@ class StFindNextResult(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_H, modes=_MODES_ACTION)
+@assign(seqs.G_BIG_H, _ACTION_MODES)
 class ViEnterSelectModeForSearch(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1690,7 +1690,7 @@ class ViEnterSelectModeForSearch(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.SHIFT_F4, modes=_MODES_ACTION)
+@assign(seqs.SHIFT_F4, _ACTION_MODES)
 class StPrevResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1704,7 +1704,7 @@ class StPrevResult(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GH, modes=_MODES_ACTION)
+@assign(seqs.GH, _ACTION_MODES)
 class ViEnterSelectMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1720,7 +1720,7 @@ class ViEnterSelectMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_V, modes=_MODES_ACTION)
+@assign(seqs.CTRL_V, _ACTION_MODES)
 class ViEnterVisualBlockMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1736,8 +1736,8 @@ class ViEnterVisualBlockMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.COMMAND_P, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_P, modes=_MODES_ACTION)
+@assign(seqs.COMMAND_P, _ACTION_MODES)
+@assign(seqs.CTRL_P, _ACTION_MODES)
 class StShowGotoAnything(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1754,7 +1754,7 @@ class StShowGotoAnything(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GA, modes=(NORMAL,))
+@assign(seqs.GA, (NORMAL,))
 class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
     def translate(self, state):
         return {
@@ -1763,7 +1763,7 @@ class ViShowAsciiValueOfCharacterUnderCursor(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GF, modes=(NORMAL,))
+@assign(seqs.GF, (NORMAL,))
 class Vi_gf(ViOperatorDef):
     def translate(self, state):
         return {
@@ -1774,7 +1774,7 @@ class Vi_gf(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.J, modes=(SELECT,))
+@assign(seqs.J, (SELECT,))
 class ViAddSelection(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1791,7 +1791,7 @@ class ViAddSelection(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.ALT_CTRL_P, modes=_MODES_ACTION)
+@assign(seqs.ALT_CTRL_P, _ACTION_MODES)
 class StShowSwitchProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1805,10 +1805,10 @@ class StShowSwitchProject(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.COMMAND_BIG_P, modes=(INSERT,))
-@keys.assign(seq=seqs.COMMAND_BIG_P, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_BIG_P, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_BIG_P, modes=(INSERT,))
+@assign(seqs.COMMAND_BIG_P, (INSERT,))
+@assign(seqs.COMMAND_BIG_P, _ACTION_MODES)
+@assign(seqs.CTRL_BIG_P, _ACTION_MODES)
+@assign(seqs.CTRL_BIG_P, (INSERT,))
 class StShowCommandPalette(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1826,7 +1826,7 @@ class StShowCommandPalette(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.SHIFT_F11, modes=_MODES_ACTION)
+@assign(seqs.SHIFT_F11, _ACTION_MODES)
 class StEnterDistractionFreeMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1840,15 +1840,15 @@ class StEnterDistractionFreeMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_1, group=0, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_2, group=1, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_3, group=2, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_4, group=3, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_5, group=4, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_6, group=5, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_7, group=6, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_8, group=7, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_9, group=8, modes=_MODES_ACTION)
+@assign(seqs.CTRL_1, _ACTION_MODES, group=0)
+@assign(seqs.CTRL_2, _ACTION_MODES, group=1)
+@assign(seqs.CTRL_3, _ACTION_MODES, group=2)
+@assign(seqs.CTRL_4, _ACTION_MODES, group=3)
+@assign(seqs.CTRL_5, _ACTION_MODES, group=4)
+@assign(seqs.CTRL_6, _ACTION_MODES, group=5)
+@assign(seqs.CTRL_7, _ACTION_MODES, group=6)
+@assign(seqs.CTRL_8, _ACTION_MODES, group=7)
+@assign(seqs.CTRL_9, _ACTION_MODES, group=8)
 class StFocusGroup(ViOperatorDef):
     def __init__(self, *args, group=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1866,7 +1866,7 @@ class StFocusGroup(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_0, modes=_MODES_ACTION)
+@assign(seqs.CTRL_0, _ACTION_MODES)
 class StFocusSideBar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1880,7 +1880,7 @@ class StFocusSideBar(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.I, modes=(NORMAL, VISUAL_LINE, SELECT))
+@assign(seqs.I, (NORMAL, VISUAL_LINE, SELECT))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1898,9 +1898,9 @@ class ViEnterInserMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.ESC, modes=_MODES_ACTION)
-@keys.assign(seq=seqs.CTRL_C, modes=_MODES_ACTION + (SELECT,))
-@keys.assign(seq=seqs.CTRL_LEFT_SQUARE_BRACKET, modes=_MODES_ACTION + (SELECT,))
+@assign(seqs.ESC, _ACTION_MODES)
+@assign(seqs.CTRL_C, _ACTION_MODES + (SELECT,))
+@assign(seqs.CTRL_LEFT_SQUARE_BRACKET, _ACTION_MODES + (SELECT,))
 class ViEnterNormalMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1915,7 +1915,7 @@ class ViEnterNormalMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_RIGHT_SQUARE_BRACKET, modes=_MODES_ACTION)
+@assign(seqs.CTRL_RIGHT_SQUARE_BRACKET, _ACTION_MODES)
 class ViJumpToDefinition(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1927,7 +1927,7 @@ class ViJumpToDefinition(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.A, modes=(NORMAL, VISUAL_LINE))
+@assign(seqs.A, (NORMAL, VISUAL_LINE))
 class ViInsertAfterChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1949,7 +1949,7 @@ class ViInsertAfterChar(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.BIG_A, modes=_MODES_ACTION + (SELECT,))
+@assign(seqs.BIG_A, _ACTION_MODES + (SELECT,))
 class ViInsertAtEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1970,7 +1970,7 @@ class ViInsertAtEol(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.BIG_I, modes=_MODES_ACTION)
+@assign(seqs.BIG_I, _ACTION_MODES)
 class ViInsertAtBol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1991,7 +1991,7 @@ class ViInsertAtBol(ViOperatorDef):
         return cmd
 
 
-@keys.assign(seq=seqs.COLON, modes=_MODES_ACTION)
+@assign(seqs.COLON, _ACTION_MODES)
 class ViEnterCommandLineMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2004,7 +2004,7 @@ class ViEnterCommandLineMode(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F9, modes=_MODES_ACTION)
+@assign(seqs.F9, _ACTION_MODES)
 class StSortLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2019,7 +2019,7 @@ class StSortLines(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_G, modes=_MODES_ACTION)
+@assign(seqs.CTRL_G, _ACTION_MODES)
 class ViShowFileStatus(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2032,7 +2032,7 @@ class ViShowFileStatus(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_Z_BIG_Q, modes=_MODES_ACTION)
+@assign(seqs.BIG_Z_BIG_Q, _ACTION_MODES)
 class ViExitEditor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2045,7 +2045,7 @@ class ViExitEditor(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_Z_BIG_Z, modes=_MODES_ACTION)
+@assign(seqs.BIG_Z_BIG_Z, _ACTION_MODES)
 class ViCloseFile(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2058,7 +2058,7 @@ class ViCloseFile(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.F6, modes=_MODES_ACTION)
+@assign(seqs.F6, _ACTION_MODES)
 class StToggleSpelling(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2073,7 +2073,7 @@ class StToggleSpelling(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_D, modes=_MODES_ACTION)
+@assign(seqs.G_BIG_D, _ACTION_MODES)
 class ViGotoSymbolInProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2091,7 +2091,7 @@ class ViGotoSymbolInProject(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.K, modes=(SELECT,))
+@assign(seqs.K, (SELECT,))
 class ViDeselectInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2108,7 +2108,7 @@ class ViDeselectInstance(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.L, modes=(SELECT,))
+@assign(seqs.L, (SELECT,))
 class ViSkipInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2126,7 +2126,7 @@ class ViSkipInstance(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GD, modes=_MODES_MOTION)
+@assign(seqs.GD, _MOTION_MODES)
 class ViGotoSymbolInFile(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2145,9 +2145,9 @@ class ViGotoSymbolInFile(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.L, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.RIGHT, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.SPACE, modes=_MODES_MOTION)
+@assign(seqs.L, _MOTION_MODES)
+@assign(seqs.RIGHT, _MOTION_MODES)
+@assign(seqs.SPACE, _MOTION_MODES)
 class ViMoveRightByChars(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2164,7 +2164,7 @@ class ViMoveRightByChars(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.SHIFT_ENTER, modes=_MODES_MOTION)
+@assign(seqs.SHIFT_ENTER, _MOTION_MODES)
 class ViShiftEnterMotion(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2181,7 +2181,7 @@ class ViShiftEnterMotion(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.B, modes=_MODES_MOTION)
+@assign(seqs.B, _MOTION_MODES)
 class ViMoveByWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2198,7 +2198,7 @@ class ViMoveByWordsBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_B, modes=_MODES_MOTION)
+@assign(seqs.BIG_B, _MOTION_MODES)
 class ViMoveByBigWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2215,7 +2215,7 @@ class ViMoveByBigWordsBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_W, modes=_MODES_MOTION)
+@assign(seqs.BIG_W, _MOTION_MODES)
 class ViMoveByBigWords(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2232,7 +2232,7 @@ class ViMoveByBigWords(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.E, modes=_MODES_MOTION)
+@assign(seqs.E, _MOTION_MODES)
 class ViMoveByWordEnds(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2249,7 +2249,7 @@ class ViMoveByWordEnds(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_H, modes=_MODES_MOTION)
+@assign(seqs.BIG_H, _MOTION_MODES)
 class ViGotoScreenTop(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2266,7 +2266,7 @@ class ViGotoScreenTop(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.GE, modes=_MODES_MOTION)
+@assign(seqs.GE, _MOTION_MODES)
 class ViMoveByWordEndsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2283,7 +2283,7 @@ class ViMoveByWordEndsBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.G_BIG_E, modes=_MODES_MOTION)
+@assign(seqs.G_BIG_E, _MOTION_MODES)
 class ViMoveByBigWordEndsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2300,7 +2300,7 @@ class ViMoveByBigWordEndsBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_L, modes=_MODES_MOTION)
+@assign(seqs.BIG_L, _MOTION_MODES)
 class ViGotoScreenBottom(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2317,7 +2317,7 @@ class ViGotoScreenBottom(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_M, modes=_MODES_MOTION)
+@assign(seqs.BIG_M, _MOTION_MODES)
 class ViGotoScreenMiddle(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2334,7 +2334,7 @@ class ViGotoScreenMiddle(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_D, modes=_MODES_MOTION)
+@assign(seqs.CTRL_D, _MOTION_MODES)
 class ViMoveHalfScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2351,7 +2351,7 @@ class ViMoveHalfScreenDown(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_U, modes=_MODES_MOTION)
+@assign(seqs.CTRL_U, _MOTION_MODES)
 class ViMoveHalfScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2368,7 +2368,7 @@ class ViMoveHalfScreenUp(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_F, modes=_MODES_MOTION)
+@assign(seqs.CTRL_F, _MOTION_MODES)
 class ViMoveScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2385,7 +2385,7 @@ class ViMoveScreenDown(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_B, modes=_MODES_MOTION)
+@assign(seqs.CTRL_B, _MOTION_MODES)
 class ViMoveScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2402,7 +2402,7 @@ class ViMoveScreenUp(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BACKTICK, modes=_MODES_MOTION)
+@assign(seqs.BACKTICK, _MOTION_MODES)
 class ViGotoExactMarkXpos(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2436,8 +2436,8 @@ class ViGotoExactMarkXpos(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.DOLLAR, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.END, modes=_MODES_MOTION)
+@assign(seqs.DOLLAR, _MOTION_MODES)
+@assign(seqs.END, _MOTION_MODES)
 class ViMoveToEol(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2455,8 +2455,8 @@ class ViMoveToEol(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.ENTER, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.PLUS, modes=_MODES_MOTION)
+@assign(seqs.ENTER, _MOTION_MODES)
+@assign(seqs.PLUS, _MOTION_MODES)
 class ViMotionEnter(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2474,7 +2474,7 @@ class ViMotionEnter(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.MINUS, modes=_MODES_MOTION)
+@assign(seqs.MINUS, _MOTION_MODES)
 class ViMoveBackOneLine(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2492,7 +2492,7 @@ class ViMoveBackOneLine(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.G_UNDERSCORE, modes=_MODES_MOTION)
+@assign(seqs.G_UNDERSCORE, _MOTION_MODES)
 class ViMoveToSoftEol(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2509,7 +2509,7 @@ class ViMoveToSoftEol(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.GJ, modes=_MODES_MOTION)
+@assign(seqs.GJ, _MOTION_MODES)
 class ViMoveByScreenLineDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2527,7 +2527,7 @@ class ViMoveByScreenLineDown(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.GK, modes=_MODES_MOTION)
+@assign(seqs.GK, _MOTION_MODES)
 class ViMoveByScreenLineUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2545,7 +2545,7 @@ class ViMoveByScreenLineUp(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.LEFT_BRACE, modes=_MODES_MOTION)
+@assign(seqs.LEFT_BRACE, _MOTION_MODES)
 class ViMoveByBlockUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2563,7 +2563,7 @@ class ViMoveByBlockUp(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.SEMICOLON, modes=_MODES_MOTION)
+@assign(seqs.SEMICOLON, _MOTION_MODES)
 class ViRepeatCharSearchForward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2588,7 +2588,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.QUOTE, modes=_MODES_MOTION)
+@assign(seqs.QUOTE, _MOTION_MODES)
 class ViGotoMark(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2622,7 +2622,7 @@ class ViGotoMark(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.RIGHT_BRACE, modes=_MODES_MOTION)
+@assign(seqs.RIGHT_BRACE, _MOTION_MODES)
 class ViMoveByBlockDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2640,7 +2640,7 @@ class ViMoveByBlockDown(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.LEFT_PAREN, modes=_MODES_MOTION)
+@assign(seqs.LEFT_PAREN, _MOTION_MODES)
 class ViMoveBySentenceUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2658,7 +2658,7 @@ class ViMoveBySentenceUp(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.RIGHT_PAREN, modes=_MODES_MOTION)
+@assign(seqs.RIGHT_PAREN, _MOTION_MODES)
 class ViMoveBySentenceDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2676,7 +2676,7 @@ class ViMoveBySentenceDown(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET_LEFT_BRACE, modes=_MODES_MOTION)
+@assign(seqs.LEFT_SQUARE_BRACKET_LEFT_BRACE, _MOTION_MODES)
 class ViGotoOpeningBrace(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2695,7 +2695,7 @@ class ViGotoOpeningBrace(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET_LEFT_PAREN, modes=_MODES_MOTION)
+@assign(seqs.LEFT_SQUARE_BRACKET_LEFT_PAREN, _MOTION_MODES)
 class ViGotoOpeningParen(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2714,7 +2714,7 @@ class ViGotoOpeningParen(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET_C, modes=_MODES_ACTION)
+@assign(seqs.LEFT_SQUARE_BRACKET_C, _ACTION_MODES)
 class ViBackwardToStartOfChange(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2732,7 +2732,7 @@ class ViBackwardToStartOfChange(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET_C, modes=_MODES_ACTION)
+@assign(seqs.RIGHT_SQUARE_BRACKET_C, _ACTION_MODES)
 class ViForwardToStartOfChange(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2750,7 +2750,7 @@ class ViForwardToStartOfChange(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET_RIGHT_BRACE, modes=_MODES_MOTION)
+@assign(seqs.RIGHT_SQUARE_BRACKET_RIGHT_BRACE, _MOTION_MODES)
 class ViGotoClosingBrace(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2769,7 +2769,7 @@ class ViGotoClosingBrace(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET_RIGHT_PAREN, modes=_MODES_MOTION)
+@assign(seqs.RIGHT_SQUARE_BRACKET_RIGHT_PAREN, _MOTION_MODES)
 class ViGotoClosingParen(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2789,7 +2789,7 @@ class ViGotoClosingParen(ViMotionDef):
 
 
 # TODO [review]
-@keys.assign(seq=seqs.PERCENT, modes=_MODES_MOTION)
+@assign(seqs.PERCENT, _MOTION_MODES)
 class ViGotoLinesPercent(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2807,7 +2807,7 @@ class ViGotoLinesPercent(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.COMMA, modes=_MODES_MOTION)
+@assign(seqs.COMMA, _MOTION_MODES)
 class ViRepeatCharSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2832,7 +2832,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BAR, modes=_MODES_MOTION)
+@assign(seqs.BAR, _MOTION_MODES)
 class ViMoveByLineCols(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2849,7 +2849,7 @@ class ViMoveByLineCols(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_E, modes=_MODES_MOTION)
+@assign(seqs.BIG_E, _MOTION_MODES)
 class ViMoveByBigWordEnds(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2866,9 +2866,9 @@ class ViMoveByBigWordEnds(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.H, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.LEFT, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.BACKSPACE, modes=_MODES_MOTION)
+@assign(seqs.H, _MOTION_MODES)
+@assign(seqs.LEFT, _MOTION_MODES)
+@assign(seqs.BACKSPACE, _MOTION_MODES)
 class ViMoveLeftByChars(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2891,7 +2891,7 @@ class ViMoveLeftByChars(ViMotionDef):
             }
 
 
-@keys.assign(seq=seqs.W, modes=_MODES_MOTION)
+@assign(seqs.W, _MOTION_MODES)
 class ViMoveByWords(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2905,10 +2905,10 @@ class ViMoveByWords(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.J, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.DOWN, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.CTRL_J, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.CTRL_N, modes=_MODES_MOTION)
+@assign(seqs.J, _MOTION_MODES)
+@assign(seqs.DOWN, _MOTION_MODES)
+@assign(seqs.CTRL_J, _MOTION_MODES)
+@assign(seqs.CTRL_N, _MOTION_MODES)
 class ViMoveDownByLines(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2925,8 +2925,8 @@ class ViMoveDownByLines(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.K, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.UP, modes=_MODES_MOTION)
+@assign(seqs.K, _MOTION_MODES)
+@assign(seqs.UP, _MOTION_MODES)
 class ViMoveUpByLines(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2943,8 +2943,8 @@ class ViMoveUpByLines(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.HAT, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.HOME, modes=_MODES_MOTION)
+@assign(seqs.HAT, _MOTION_MODES)
+@assign(seqs.HOME, _MOTION_MODES)
 class ViMoveToBol(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2961,7 +2961,7 @@ class ViMoveToBol(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.UNDERSCORE, modes=_MODES_MOTION)
+@assign(seqs.UNDERSCORE, _MOTION_MODES)
 class ViMoveToSoftBol(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2978,7 +2978,7 @@ class ViMoveToSoftBol(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.ZERO, modes=_MODES_MOTION)
+@assign(seqs.ZERO, _MOTION_MODES)
 class ViMoveToHardBol(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2995,7 +2995,7 @@ class ViMoveToHardBol(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.N, modes=_MODES_MOTION)
+@assign(seqs.N, _MOTION_MODES)
 class ViRepeatSearchForward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3013,7 +3013,7 @@ class ViRepeatSearchForward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_N, modes=_MODES_MOTION)
+@assign(seqs.BIG_N, _MOTION_MODES)
 class ViRepeatSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3031,7 +3031,7 @@ class ViRepeatSearchBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.STAR, modes=_MODES_MOTION)
+@assign(seqs.STAR, _MOTION_MODES)
 class ViFindWord(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3048,7 +3048,7 @@ class ViFindWord(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.OCTOTHORP, modes=_MODES_MOTION)
+@assign(seqs.OCTOTHORP, _MOTION_MODES)
 class ViReverseFindWord(ViMotionDef):
     # Trivia: Octothorp seems to be a symbol used in maps to represent a
     # small village surrounded by eight fields.
@@ -3068,17 +3068,17 @@ class ViReverseFindWord(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.LEFT_SQUARE_BRACKET, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.RIGHT_SQUARE_BRACKET, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.BIG_Z, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.CTRL_K, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.CTRL_W, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.G, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.Z, modes=_MODES_MOTION)
+@assign(seqs.LEFT_SQUARE_BRACKET, _MOTION_MODES)
+@assign(seqs.RIGHT_SQUARE_BRACKET, _MOTION_MODES)
+@assign(seqs.BIG_Z, _MOTION_MODES)
+@assign(seqs.CTRL_K, _MOTION_MODES)
+@assign(seqs.CTRL_W, _MOTION_MODES)
+@assign(seqs.G, _MOTION_MODES)
+@assign(seqs.Z, _MOTION_MODES)
 # Non-standard modes:
-@keys.assign(seq=seqs.CTRL_DOT, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.CTRL_SHIFT_DOT, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.CTRL_X, modes=(INSERT,))  # This is called a 'submode' in the vim docs.
+@assign(seqs.CTRL_DOT, _MOTION_MODES)
+@assign(seqs.CTRL_SHIFT_DOT, _MOTION_MODES)
+@assign(seqs.CTRL_X, (INSERT,))  # This is called a 'submode' in the vim docs.
 class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3087,7 +3087,7 @@ class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
         return {}
 
 
-@keys.assign(seq=seqs.DOUBLE_QUOTE, modes=_MODES_MOTION)
+@assign(seqs.DOUBLE_QUOTE, _MOTION_MODES)
 class ViOpenRegister(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3096,7 +3096,7 @@ class ViOpenRegister(ViMotionDef):
         return {}
 
 
-@keys.assign(seq=seqs.GG, modes=_MODES_MOTION)
+@assign(seqs.GG, _MOTION_MODES)
 class ViGotoBof(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3113,7 +3113,7 @@ class ViGotoBof(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_G, modes=_MODES_MOTION)
+@assign(seqs.BIG_G, _MOTION_MODES)
 class ViGotoEof(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3130,7 +3130,7 @@ class ViGotoEof(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.R, modes=_MODES_ACTION)
+@assign(seqs.R, _ACTION_MODES)
 class ViReplaceCharacters(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3166,7 +3166,7 @@ class ViReplaceCharacters(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.M, modes=_MODES_ACTION)
+@assign(seqs.M, _ACTION_MODES)
 class ViSetMark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3198,8 +3198,8 @@ class ViSetMark(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.T, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.F, modes=_MODES_MOTION, inclusive=True)
+@assign(seqs.T, _MOTION_MODES)
+@assign(seqs.F, _MOTION_MODES, inclusive=True)
 class ViSearchCharForward(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3243,7 +3243,7 @@ class ViSearchCharForward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.A, modes=(OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
+@assign(seqs.A, (OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
 class ViATextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3279,7 +3279,7 @@ class ViATextObject(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.I, modes=(OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
+@assign(seqs.I, (OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
 class ViITextObject(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3315,8 +3315,8 @@ class ViITextObject(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.BIG_T, modes=_MODES_MOTION)
-@keys.assign(seq=seqs.BIG_F, modes=_MODES_MOTION, inclusive=True)
+@assign(seqs.BIG_T, _MOTION_MODES)
+@assign(seqs.BIG_F, _MOTION_MODES, inclusive=True)
 class ViSearchCharBackward(ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3360,7 +3360,7 @@ class ViSearchCharBackward(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.SLASH, modes=_MODES_MOTION)
+@assign(seqs.SLASH, _MOTION_MODES)
 class ViSearchForward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3417,7 +3417,7 @@ class ViSearchForwardImpl(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.QUESTION_MARK, modes=_MODES_MOTION)
+@assign(seqs.QUESTION_MARK, _MOTION_MODES)
 class ViSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3474,7 +3474,7 @@ class ViSearchBackwardImpl(ViMotionDef):
         }
 
 
-@keys.assign(seq=seqs.CTRL_X_CTRL_L, modes=(INSERT,))
+@assign(seqs.CTRL_X_CTRL_L, (INSERT,))
 class ViInsertLineWithCommonPrefix(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3491,7 +3491,7 @@ class ViInsertLineWithCommonPrefix(ViOperatorDef):
         }
 
 
-@keys.assign(seq=seqs.GM, modes=_MODES_MOTION)
+@assign(seqs.GM, _MOTION_MODES)
 class ViMoveHalfScreenHorizontally(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3508,16 +3508,16 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         }
 
 
-@keys.assign(seq='z<left>', modes=_MODES_ACTION)
-@keys.assign(seq='z<right>', modes=_MODES_ACTION)
-@keys.assign(seq='zc', modes=_MODES_ACTION)
-@keys.assign(seq='zh', modes=_MODES_ACTION)
-@keys.assign(seq='zH', modes=_MODES_ACTION)
-@keys.assign(seq='zl', modes=_MODES_ACTION)
-@keys.assign(seq='zL', modes=_MODES_ACTION)
-@keys.assign(seq='zM', modes=_MODES_ACTION)
-@keys.assign(seq='zo', modes=_MODES_ACTION)
-@keys.assign(seq='zR', modes=_MODES_ACTION)
+@assign('z<left>', _ACTION_MODES)
+@assign('z<right>', _ACTION_MODES)
+@assign('zc', _ACTION_MODES)
+@assign('zh', _ACTION_MODES)
+@assign('zH', _ACTION_MODES)
+@assign('zl', _ACTION_MODES)
+@assign('zL', _ACTION_MODES)
+@assign('zM', _ACTION_MODES)
+@assign('zo', _ACTION_MODES)
+@assign('zR', _ACTION_MODES)
 class Viz(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
