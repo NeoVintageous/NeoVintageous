@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#464](https://github.com/NeoVintageous/NeoVintageous/issues/464): `:[sp]lit [file]` completions
 * Added [#265](https://github.com/NeoVintageous/NeoVintageous/issues/265): Support `<S-Space>` (shift+space) key
 * Added [#433](https://github.com/NeoVintageous/NeoVintageous/issues/433): Support case-insensitive key mappings
 * Added [#460](https://github.com/NeoVintageous/NeoVintageous/issues/460): Add toggle SUPER keys (enable/disable) command

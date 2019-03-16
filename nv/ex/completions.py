@@ -31,7 +31,7 @@ _completion_types = [
     (re.compile(r'^(?P<cmd>:\s*e(?:dit)?!?)\s+(?P<path>.*)$'), False),
     (re.compile(r'^(?P<cmd>:\s*t(?:abedit)?!?)\s+(?P<path>.*)$'), False),
     (re.compile(r'^(?P<cmd>:\s*t(?:abe)?!?)\s+(?P<path>.*)$'), False),
-    (re.compile(r'^(?P<cmd>:\s*vs(?:plit)?!?)\s+(?P<path>.*)$'), False),
+    (re.compile(r'^(?P<cmd>:\s*(?:sp(?:lit)?|vs(?:plit)?)!?)\s+(?P<path>.*)$'), False),
 ]
 
 _completion_settings = (
