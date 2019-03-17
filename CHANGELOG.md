@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#454](https://github.com/NeoVintageous/NeoVintageous/issues/454): Support advanced ex command mapping
 * Added [#99](https://github.com/NeoVintageous/NeoVintageous/issues/99): Support marks in line ranges
 * Added [#464](https://github.com/NeoVintageous/NeoVintageous/issues/464): `:[sp]lit [file]` completions
 * Added [#265](https://github.com/NeoVintageous/NeoVintageous/issues/265): Support `<S-Space>` (shift+space) key

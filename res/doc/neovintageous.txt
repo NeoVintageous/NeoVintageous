@@ -1,10 +1,13 @@
 *neovintageous.txt*  Neovintageous
 
 
-                NEOVINTAGEOUS REFERENCE MANUAL
+                NEOVINTAGEOUS - main help file
 
+Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
+   With the mouse:  Double-click the left mouse button on a tag, e.g. |bars|.
+    Jump back:  Type CTRL-T or CTRL-O.  Repeat to go further back.
 
-Neovintageous                                             *neovintageous* *nv*
+NeoVintageous                                             *neovintageous* *nv*
 
  1. Navigation                      |nv-navigation|
  2. Jumping to diffs                |nv-jumpto-diffs|
@@ -107,10 +110,11 @@ NEOVINTAGEOUSRC                                                        *nv-rc*
                                                                 *vintageousrc*
                                                              *neovintageousrc*
 
-In Vim, a file that contains initialization commands is called a
+In NeoVintageous, a file that contains initialization commands is called a
 neovintageousrc file. The file is located at "Packages/User/.neovintageousrc"
-and is read by during startup. It can be edited and reloaded via the Command
-Palette commands:
+and is read by during startup.
+
+The neovintageousrc file can be edited and reloaded via the Command Palette:
 
 * NeoVintageous: Open My .neovintageousrc File
 * NeoVintageous: Reload My .neovintageousrc File
@@ -160,24 +164,9 @@ Super-keys, known as windows-keys or command-keys, are disabled by default: >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
-A command is provided out-of-the-box for mapping to toggle the side bar:
+Ex commands can be prefixed with key sequences too: >
 
-    nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
-
-To enable the ability to toggle the side bar when the side bar has focus:
-
-`Menu > Preferences > Key Bindings`: >
-
-    [
-        {
-            "keys": [",", "d"],
-            "command": "neovintageous",
-            "args": { "action": "toggle_side_bar" },
-            "context": [
-                { "key": "control", "operand": "sidebar_tree" }
-            ]
-        }
-    ]
+    nnoremap <leader>s) vi):sort iu<CR>
 
 More examples: >
 
@@ -215,11 +204,11 @@ More examples: >
     nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
 
     " Sorted.
-    nnoremap <leader>s) vi)<F9>o<Esc>$^
-    nnoremap <leader>s] vi]<F9>o<Esc>$^
-    nnoremap <leader>si vii<F9>o<Esc>$^
-    nnoremap <leader>sp vip<F9>o<Esc>$^
-    nnoremap <leader>ss vii<F9>o<Esc>$^
+    nnoremap <leader>s) vi):sort iu<CR>
+    nnoremap <leader>s] vi]:sort iu<CR>
+    nnoremap <leader>si vii:sort iu<CR>
+    nnoremap <leader>sp vip:sort iu<CR>
+    nnoremap <leader>ss vii:sort iu<CR>
     vnoremap <leader>s :sort iu<CR>
 
     " Windowing aliases (especially useful if you don't enable ctrl-keys keys).
@@ -239,6 +228,21 @@ More examples: >
 
     " Git
     nnoremap <leader>hu :RevertModification<CR>
+
+To enable the ability to toggle the side bar when the side bar has focus:
+
+`Menu > Preferences > Key Bindings`: >
+
+    [
+        {
+            "keys": [",", "d"],
+            "command": "neovintageous",
+            "args": { "action": "toggle_side_bar" },
+            "context": [
+                { "key": "control", "operand": "sidebar_tree" }
+            ]
+        }
+    ]
 
 ==============================================================================
 

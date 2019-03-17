@@ -537,11 +537,18 @@ class _nv_feed_key(ViWindowCommandBase):
                 _log.info('user mapping %s -> %s', command.lhs, rhs)
 
                 if ':' in rhs:
-                    do_ex_user_cmdline(self.window, rhs)
+                    # Supports mappings in the form: sequence and command
+                    # separated by a colon. The sequence is optional e.g.
+                    # ':sort<CR>', 'vi]:sort u<CR>'. The keys up to the first
+                    # colon character are processed separately from the command.
+                    colon_pos = rhs.find(':')
+                    keys = rhs[:colon_pos]
+                    if keys:
+                        self.window.run_command('_nv_process_notation', {'keys': keys, 'check_user_mappings': False})
 
-                    return
-
-                self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
+                    do_ex_user_cmdline(self.window, rhs[colon_pos:])
+                else:
+                    self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
 
             return
 
