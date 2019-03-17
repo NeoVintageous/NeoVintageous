@@ -559,39 +559,25 @@ class _nv_feed_key(ViWindowCommandBase):
             # try to fix that (user mappings are excluded, since they've already
             # been given a chance to evaluate).
 
-            bare_seq = to_bare_command_name(state.sequence)
             if state.mode == OPERATOR_PENDING:
-                # We might be looking at a command like 'dd'. The first 'd' is
-                # mapped for normal mode, but the second is missing in
-                # operator pending mode, so we get a missing command. Try to
-                # build the full command now.
-                #
-                # Exclude user mappings, since they've already been given a
-                # chance to evaluate.
-                command = mappings_resolve(state, sequence=bare_seq, mode=NORMAL, check_user_mappings=False)
+                command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence),
+                                           mode=NORMAL, check_user_mappings=False)
             else:
-                command = mappings_resolve(state, sequence=bare_seq)
+                command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence))
 
-            if isinstance(command, ViMissingCommandDef):
-                _log.debug('unmapped sequence %s', state.sequence)
-                state.mode = NORMAL
-                state.reset_command_data()
-
-                return ui_blink()
+            if self._handle_missing_command(state, command):
+                return
 
         if (state.mode == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
-            _log.info('found operator pending...')
-            # TODO: This may be unreachable code by now. ???
-            # we're expecting a motion, but we could still get an action.
-            # For example, dd, g~g~ or g~~
-            # remove counts
-            action_seq = to_bare_command_name(state.sequence)
-            _log.debug('action sequence %s', action_seq)
-            command = mappings_resolve(state, sequence=action_seq, mode=NORMAL)
-            if isinstance(command, ViMissingCommandDef):
-                _log.debug('unmapped sequence %s', state.sequence)
-                state.reset_command_data()
 
+            # TODO This should be unreachable code. The mapping resolver should
+            # handle anything that can still reach this point (the first time).
+            # We're expecting a motion, but we could still get an action. For
+            # example, dd, g~g~ or g~~ remove counts. It looks like it might
+            # only be the '>>' command that needs this code.
+
+            command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence), mode=NORMAL)
+            if self._handle_missing_command(state, command):
                 return
 
             if not command['motion_required']:
@@ -620,6 +606,18 @@ class _nv_feed_key(ViWindowCommandBase):
                 state.motion_count += key
 
                 return True
+
+    def _handle_missing_command(self, state, command):
+        if isinstance(command, ViMissingCommandDef):
+            if state.mode == OPERATOR_PENDING:
+                state.mode = NORMAL
+
+            state.reset_command_data()
+            ui_blink()
+
+            return True
+
+        return False
 
 
 class _nv_process_notation(ViWindowCommandBase):

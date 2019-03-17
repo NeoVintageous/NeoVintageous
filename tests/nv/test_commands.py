@@ -190,6 +190,16 @@ class TestFeedKey(unittest.ViewTestCase):
         self.assertRegistersEmpty('"-012abc')
         self.assertBell()
 
+    @unittest.mock_bell()
+    def test_unknown_visual_operator_motion_invokes_bell_but_stays_in_visual(self):
+        self.visual('fi|zz bu|zz')
+        self.feedkey('g')
+        self.feedkey('y')
+        self.assertVisual('fi|zz bu|zz')
+        self.assertStatusLineIsVisual()
+        self.assertRegistersEmpty('"-012abc')
+        self.assertBell()
+
     def test_malformed_visual_selection_is_auto_corrected_by_feed(self):
         self.normal('fi|zz buzz fizz')
         self.select((2, 7))

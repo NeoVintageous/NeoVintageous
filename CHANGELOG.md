@@ -20,6 +20,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#467](https://github.com/NeoVintageous/NeoVintageous/issues/467): VISUAL mode operator pending command should stay in VISUAL mode
 * Fixed [#465](https://github.com/NeoVintageous/NeoVintageous/issues/465): Repeating (`.`) when nothing to repeat, should invoke bell
 * Fixed [#223](https://github.com/NeoVintageous/NeoVintageous/issues/223): Search does not work when cursor is on the word that is being searched
 * Fixed [#466](https://github.com/NeoVintageous/NeoVintageous/issues/466): x, y, and z registers
