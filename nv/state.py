@@ -799,7 +799,6 @@ class State(object):
 
     def eval(self):
         # type: () -> None
-        # Run data as a command if possible.
         if not self.runnable():
             return
 

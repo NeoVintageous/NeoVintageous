@@ -73,6 +73,9 @@ def _is_command_mode(view, operator, operand, match_all):
 
 
 def _is_insert_mode(view, operator, operand, match_all):
+    # TODO This currently returns true for all non-normal modes e.g. Replace
+    # mode. Fixing this will break things, for example <Esc> in replace mode
+    # would break, a few things need to be reworked to fix this.
     return _check_query_context_value(
         (not view.settings().get('command_mode') and is_view(view)),
         operator,

@@ -63,7 +63,7 @@ mappings = {
     VISUAL: {},
     VISUAL_BLOCK: {},
     VISUAL_LINE: {}
-}
+}  # type: dict
 
 
 EOF = -2

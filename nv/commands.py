@@ -512,16 +512,11 @@ class _nv_feed_key(ViWindowCommandBase):
         command = mappings_resolve(state, check_user_mappings=check_user_mappings)
 
         if isinstance(command, ViOpenRegister):
-            _log.debug('opening register...')
             state.must_capture_register_name = True
-
             return
 
-        # XXX This doesn't seem to be correct. If we are in OPERATOR_PENDING
-        # mode, we should most probably not have to wipe the state.
         if isinstance(command, Mapping):
-            _log.debug('found user mapping...')
-
+            # TODO Review What happens if Mapping + do_eval=False
             if do_eval:
                 _log.debug('evaluating user mapping (mode=%s)...', state.mode)
 
@@ -551,14 +546,18 @@ class _nv_feed_key(ViWindowCommandBase):
             return
 
         if isinstance(command, ViOpenNameSpace):
-            # Keep collecting input to complete the sequence. For example, we
-            # may have typed 'g'
-            _log.info('opening namespace')
-
             return
 
-        elif isinstance(command, ViMissingCommandDef):
-            _log.info('found missing command...')
+        if isinstance(command, ViMissingCommandDef):
+
+            # TODO We shouldn't need to try resolve the command again. The
+            # resolver should handle commands correctly the first time. The
+            # reason this logic is still needed is because we might be looking
+            # at a command like 'dd', which currently doesn't resolve properly.
+            # The first 'd' is mapped for NORMAL mode, but 'dd' is not mapped in
+            # OPERATOR PENDING mode, so we get a missing command, and here we
+            # try to fix that (user mappings are excluded, since they've already
+            # been given a chance to evaluate).
 
             bare_seq = to_bare_command_name(state.sequence)
             if state.mode == OPERATOR_PENDING:
@@ -604,7 +603,6 @@ class _nv_feed_key(ViWindowCommandBase):
             state.reset_partial_sequence()
 
         if do_eval:
-            _log.info('evaluating state...')
             state.eval()
 
     def _handle_count(self, state, key, repeat_count):
