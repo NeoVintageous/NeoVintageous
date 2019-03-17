@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class TestFeedKey(unittest.ViewTestCase):
+class TestFeedKey(unittest.FunctionalTestCase):
 
     def feedkey(self, key):
         self.view.window().run_command('_nv_feed_key', {'key': key})
@@ -321,3 +321,85 @@ class TestFeedKey(unittest.ViewTestCase):
         self.feedkey('.')
         self.assertVisual('one |t|hree four')
         self.assertBell()
+
+    def test_marks(self):
+        for key in ('\'', '`'):
+            self.normal('1\n2\n|3\n4\n5\n6\n7')
+            self.feedkey('m')
+            self.feedkey('a')
+            self.feedkey('3')
+            self.feedkey('j')
+            self.assertNormal('1\n2\n3\n4\n5\n|6\n7')
+            self.feedkey('m')
+            self.feedkey('b')
+            self.feedkey(key)
+            self.feedkey('a')
+            self.assertNormal('1\n2\n|3\n4\n5\n6\n7')
+            self.feedkey(key)
+            self.feedkey('b')
+            self.assertNormal('1\n2\n3\n4\n5\n|6\n7')
+            self.feedkey('k')
+            self.feedkey(key)
+            self.feedkey('a')
+            self.assertNormal('1\n2\n|3\n4\n5\n6\n7')
+            self.feedkey('v')
+            self.feedkey(key)
+            self.feedkey('b')
+            self.assertVisual('1\n2\n|3\n4\n5\n|6\n7')
+
+    def test_visual_marks(self):
+        for key in ('\'', '`'):
+            self.normal('one\ntwo\nthree\n|four\nfive')
+            self.feedkey('m')
+            self.feedkey('a')
+            self.feedkey('2')
+            self.feedkey('k')
+            self.feedkey('m')
+            self.feedkey('b')
+            self.feedkey('v')
+            self.assertVisual('one\n|t|wo\nthree\nfour\nfive')
+            self.feedkey(key)
+            self.feedkey('a')
+            self.assertVisual('one\n|two\nthree\n|four\nfive')
+            self.feedkey(key)
+            self.feedkey('b')
+            self.assertRVisual('one\n|t|wo\nthree\nfour\nfive')
+            self.feedkey('g')
+            self.feedkey('g')
+            self.assertRVisual('|one\nt|wo\nthree\nfour\nfive')
+            self.feedkey(key)
+            self.feedkey('a')
+            self.assertVisual('one\ntw|o\nthree\n|four\nfive')
+
+    def test_mark_operations(self):
+        for key in ('\'', '`'):
+            self.normal('1\n|2\n3\n4\n5\n6\n7')
+            self.feedkey('m')
+            self.feedkey('a')
+            self.feedkey('3')
+            self.feedkey('j')
+            self.feedkey('d')
+            self.feedkey(key)
+            self.feedkey('a')
+            self.assertNormal('1\n|6\n7')
+            self.normal('1\n2\n3\n4\n|5\n6\n7')
+            self.feedkey('m')
+            self.feedkey('a')
+            self.feedkey('3')
+            self.feedkey('k')
+            self.feedkey('d')
+            self.feedkey(key)
+            self.feedkey('a')
+            self.assertNormal('1\n|\n6\n7')
+
+    def test_substitute_marked_ranges(self):
+        for key in ('\'',):
+            self.normal('1this\n2th|is\n3this\n4this\n5this\n6this\n7this')
+            self.feedkey('m')
+            self.feedkey('a')
+            self.feedkey('3')
+            self.feedkey('j')
+            self.feedkey('m')
+            self.feedkey('b')
+            self.feed(':\'a,\'bs/this/that/')
+            self.assertNormal('1this\n2that\n3that\n4that\n|5that\n6this\n7this')

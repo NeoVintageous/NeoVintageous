@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#99](https://github.com/NeoVintageous/NeoVintageous/issues/99): Support marks in line ranges
 * Added [#464](https://github.com/NeoVintageous/NeoVintageous/issues/464): `:[sp]lit [file]` completions
 * Added [#265](https://github.com/NeoVintageous/NeoVintageous/issues/265): Support `<S-Space>` (shift+space) key
 * Added [#433](https://github.com/NeoVintageous/NeoVintageous/issues/433): Support case-insensitive key mappings
@@ -20,6 +21,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#468](https://github.com/NeoVintageous/NeoVintageous/issues/468): `d{backtick}{a-z}` should work the same as `d{singlequote}{a-z}`
 * Fixed [#467](https://github.com/NeoVintageous/NeoVintageous/issues/467): VISUAL mode operator pending command should stay in VISUAL mode
 * Fixed [#465](https://github.com/NeoVintageous/NeoVintageous/issues/465): Repeating (`.`) when nothing to repeat, should invoke bell
 * Fixed [#223](https://github.com/NeoVintageous/NeoVintageous/issues/223): Search does not work when cursor is on the word that is being searched

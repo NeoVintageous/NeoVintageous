@@ -87,6 +87,14 @@ def _resolve_line_number(view, token, current):
                 return row_at(view, sel.b - 1)
             else:
                 return row_at(view, sel.b)
+        elif token.content in tuple('abcdefghijklmnopqrstuvwxyz'):
+            # The state class is intentionally imported here instead of at the
+            # begining of the file to avoid circular imports errors. The State
+            # needs to refactored and replaced with some less god-like
+            from NeoVintageous.nv.state import State
+            address = State(view).marks.get_as_encoded_address(token.content)
+
+            return view.rowcol(address.b)[0]
 
     raise NotImplementedError()
 

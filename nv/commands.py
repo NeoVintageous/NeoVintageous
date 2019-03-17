@@ -1793,8 +1793,9 @@ class _vi_backtick(ViTextCommandBase):
             elif mode == NORMAL:
                 return address
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, address.b)
-
+                if s.a < address.a:
+                    return Region(view.full_line(s.b).a, view.line(address.b).b)
+                return Region(view.full_line(s.b).b, view.line(address.b).a)
             return s
 
         state = self.state
