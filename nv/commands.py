@@ -1440,7 +1440,7 @@ class _vi_dot(ViWindowCommandBase):
             state.mode = NORMAL
 
         if repeat_data is None:
-            _log.debug('nothing to repeat')
+            ui_blink()
             return
 
         # TODO: Find out if the user actually meant '1'.
@@ -2852,7 +2852,8 @@ class _vi_at(IrreversibleTextCommand):
             return ui_blink()
 
         if not cmds:
-            return ui_blink()
+            ui_blink()
+            return
 
         self.__class__._last_used = name
 
