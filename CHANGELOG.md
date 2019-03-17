@@ -8,7 +8,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Added [#454](https://github.com/NeoVintageous/NeoVintageous/issues/454): Support advanced ex command mapping
 * Added [#99](https://github.com/NeoVintageous/NeoVintageous/issues/99): Support marks in line ranges
-* Added [#464](https://github.com/NeoVintageous/NeoVintageous/issues/464): `:[sp]lit [file]` completions
+* Added [#464](https://github.com/NeoVintageous/NeoVintageous/issues/464): Support `:[sp]lit [file]` completions
 * Added [#265](https://github.com/NeoVintageous/NeoVintageous/issues/265): Support `<S-Space>` (shift+space) key
 * Added [#433](https://github.com/NeoVintageous/NeoVintageous/issues/433): Support case-insensitive key mappings
 * Added [#460](https://github.com/NeoVintageous/NeoVintageous/issues/460): Add toggle SUPER keys (enable/disable) command
@@ -16,9 +16,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Deprecated
 
-* Deprecated: `neovintageous_toggle_side_bar ` command, use `neovintageous` command with the arguments `{'action': 'toggle_side_bar'}` instead
-* Deprecated: `neovintageous_reload_my_rc_file` command, use `neovintageous` command with the arguments `{'action': 'reload_rc_file'}` instead
-* Deprecated: `neovintageous_open_my_rc_file` command, use `neovintageous` command with the arguments `{'action': 'open_rc_file'}` instead
+* Implemented: Deprecate `neovintageous_toggle_side_bar ` command; use the `neovintageous {'action': 'toggle_side_bar'}` instead
+* Implemented: Deprecate `neovintageous_reload_my_rc_file` command; use the `neovintageous {'action': 'reload_rc_file'}` instead
+* Implemented: Deprecate `neovintageous_open_my_rc_file` command; use the `neovintageous {'action': 'open_rc_file'}` instead
 
 ### Fixed
 
