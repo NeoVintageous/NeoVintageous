@@ -3370,7 +3370,7 @@ class ViSearchForward(ViMotionDef):
                                        interactive_command='_vi_slash',
                                        type=INPUT_VIA_PANEL,
                                        on_done=None,
-                                       input_param='default')
+                                       input_param='pattern')
 
     @property
     def accept_input(self):
@@ -3427,7 +3427,7 @@ class ViSearchBackward(ViMotionDef):
                                        interactive_command='_vi_question_mark',
                                        type=INPUT_VIA_PANEL,
                                        on_done=None,
-                                       input_param='default')
+                                       input_param='pattern')
 
     @property
     def accept_input(self):

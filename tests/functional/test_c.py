@@ -51,6 +51,18 @@ class Test_c(unittest.FunctionalTestCase):
         self.assertRegister('-wo')
         self.assertRegisterIsNone('0')
         self.assertRegisterIsNone('1')
+        self.eq('one t|wo\nthree four', '2cw', 'i_one t| four')
+        self.eq('one |two\nthree four', '2cw', 'i_one | four')
+        self.eq('one |two\nthree\nfour', '2cw', 'i_one |\nfour')
+
+    def test_caw(self):
+        self.eq('a fi|zz b', 'caw', 'i_a | b')
+        self.eq('1\na fi|zz b\n3', 'caw', 'i_1\na | b\n3')
+        self.eq('one t|wo\nthree four', '2caw', 'i_one | four')
+        self.eq('one t|wo\nthree\nfour', '2caw', 'i_one|\nfour')
+        self.eq('one |two\nthree\nfour', '2caw', 'i_one|\nfour')
+        self.eq('one |two\nthree\nfour', '2caw', 'i_one|\nfour')
+        self.eq('one |two\nthree four', '2caw', 'i_one | four')
 
     def test_c__dollar(self):
         self.eq('one |two three', 'c$', 'i_one |')

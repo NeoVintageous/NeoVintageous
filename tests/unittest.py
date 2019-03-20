@@ -629,6 +629,15 @@ class FunctionalTestCase(ViewTestCase):
             if 'mode' not in args:
                 args['mode'] = INTERNAL_NORMAL
 
+            # If a count was given and the command has a motion, then the count
+            # of the motion needs updating. This is a bit hacky.
+            if 'count' in seq_args and seq_args['count'] > 1:
+                try:
+                    args['motion']['motion_args']['count'] = seq_args['count']
+                    seq_args['count'] = 1
+                except KeyError:
+                    pass
+
             args.update(seq_args)
         except KeyError as e:
             raise KeyError('test command definition not found for feed %s' % str(e)) from None
@@ -1052,6 +1061,7 @@ _SEQ2CMD = {
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_dollar', 'is_jump': True}}},  # noqa: E241,E501
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
     'c':            {'command': '_vi_c'},  # noqa: E241
+    'caw':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'text_object': 'w', 'inclusive': True}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'cb':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_b'}}},  # noqa: E241,E501
     'cc':           {'command': '_vi_cc'},  # noqa: E241
     'ce':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_e'}}},  # noqa: E241,E501

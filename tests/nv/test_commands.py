@@ -23,6 +23,10 @@ class TestFeedKey(unittest.FunctionalTestCase):
     def feedkey(self, key):
         self.view.window().run_command('_nv_feed_key', {'key': key})
 
+    def feedkeys(self, keys):
+        for key in keys:
+            self.view.window().run_command('_nv_feed_key', {'key': key})
+
     def tearDown(self):
         super().tearDown()
         self.resetRegisters()
@@ -404,3 +408,65 @@ class TestFeedKey(unittest.FunctionalTestCase):
             self.feedkey('b')
             self.feed(':\'a,\'bs/this/that/')
             self.assertNormal('1this\n2that\n3that\n4that\n|5that\n6this\n7this')
+
+    @unittest.mock_bell()
+    @unittest.mock_mappings(
+        (unittest.NORMAL, ',a', '3l'),
+        (unittest.VISUAL, ',a', '3l'),
+        (unittest.OPERATOR_PENDING, ',a', '3l'),
+        (unittest.VISUAL, ',ba', ':sort iu<CR>'),
+        (unittest.NORMAL, ',bb', 'vi]:sort iu<CR>'),
+        (unittest.NORMAL, ',c', 'vfx'),
+        (unittest.NORMAL, ',d', 'f'),
+        (unittest.NORMAL, ',e', 'wi'),
+        (unittest.NORMAL, ',f', 'wi<Esc>'),
+        (unittest.NORMAL, ',g', 'wifizz<Space>'),
+        (unittest.NORMAL, ',h', '/foo<CR>cwfizz<Esc>'),
+        (unittest.NORMAL, ',i', 'ifizz<Esc>fz'),
+        (unittest.NORMAL, ',j', 'ifizz<Esc>f'),
+        (unittest.NORMAL, ',k', 'ca'),
+    )
+    def test_process_notation(self):
+        self.normal('|fizz buzz')
+        self.feedkeys(',a')
+        self.assertNormal('fiz|z buzz')
+        self.visual('f|iz|z buzz')
+        self.feedkeys(',a')
+        self.assertVisual('f|izz b|uzz')
+        self.normal('fiz|z buzz')
+        self.feedkeys('d,a')
+        self.assertNormal('fiz|uzz')
+        self.visual('3\n|5\n1\n5\n1\n4\n4|\n2\n')
+        self.feedkeys(',ba')
+        self.assertNormal('3\n|1\n4\n5\n2\n')
+        self.normal('9\n3\n3\n[\n1\n5\n|1\n4\n4\n]\n1\n2')
+        self.feedkeys(',bb')
+        self.assertNormal('9\n3\n3\n[\n|1\n4\n5\n]\n1\n2')
+        self.normal('f|izzxbuzz')
+        self.feedkeys(',c')
+        self.assertVisual('f|izzx|buzz')
+        self.normal('f|izzxbuzz')
+        self.feedkeys(',dx')
+        self.assertNormal('fizz|xbuzz')
+        self.normal('fiz|z buzz')
+        self.feedkeys(',e')
+        self.assertInsert('fizz |buzz')
+        self.normal('fiz|z buzz')
+        self.feedkeys(',f')
+        self.assertNormal('fizz |buzz')
+        self.normal('f|oo buzz')
+        self.feedkeys(',g')
+        self.assertInsert('foo fizz |buzz')
+        self.normal('o|ne\ntwo\nfoo buzz\nthree')
+        self.feedkeys(',h')
+        self.assertNormal('one\ntwo\nfizz| buzz\nthree')
+        self.normal('| buzz')
+        self.feedkeys(',i')
+        self.assertNormal('fizz bu|zz')
+        self.normal('| buzz')
+        self.feedkeys(',ju')
+        self.assertNormal('fizz b|uzz')
+        self.normal('|foo buzz')
+        self.feedkeys(',kw')
+        self.assertInsert('| buzz')
+        self.assertNoBell()

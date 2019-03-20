@@ -657,9 +657,10 @@ class _nv_process_notation(ViWindowCommandBase):
                 'repeat_count': repeat_count,
                 'check_user_mappings': check_user_mappings
             })
+
             if state.action:
                 # The last key press has caused an action to be primed. That
-                # means there are no more leading motions. Break out of here.
+                # means there are  no more leading motions. Break out of here.
                 _log.debug('first action found in %s', state.sequence)
                 state.reset_command_data()
                 if state.mode == OPERATOR_PENDING:
@@ -677,7 +678,7 @@ class _nv_process_notation(ViWindowCommandBase):
                 state.eval()
 
         if state.must_collect_input:
-            # State is requesting more input, so this is the last command in
+            # State is requesting more input, so this is the last command  in
             # the sequence and it needs more input.
             self.collect_input()
             return
@@ -688,9 +689,7 @@ class _nv_process_notation(ViWindowCommandBase):
                 state.non_interactive = False
                 return
 
-            _log.debug('original keys/leading-motions: %s/%s', keys, leading_motions)
             keys = keys[len(leading_motions):]
-            _log.debug('keys stripped to %s', keys)
 
         if not (state.motion and not state.action):
             with gluing_undo_groups(self.window.active_view(), state):
@@ -735,35 +734,36 @@ class _nv_process_notation(ViWindowCommandBase):
 
             if motion_data is None:
                 state.reset_command_data()
-
-                return ui_blink()
-
-            motion_data['motion_args']['default'] = state.motion.inp
+                ui_blink()
+                return
 
             self.window.run_command(motion_data['motion'], motion_data['motion_args'])
-
             return
 
         self.collect_input()
 
     def collect_input(self):
         try:
+            motion = self.state.motion
+            action = self.state.action
+
             command = None
-            if self.state.motion and self.state.action:
-                if self.state.motion.accept_input:
-                    command = self.state.motion
+
+            if motion and action:
+                if motion.accept_input:
+                    command = motion
                 else:
-                    command = self.state.action
+                    command = action
             else:
-                command = self.state.action or self.state.motion
+                command = action or motion
 
-            parser_def = command.input_parser
-            if parser_def.interactive_command:
+            parser = command.input_parser
 
-                self.window.run_command(
-                    parser_def.interactive_command,
-                    {parser_def.input_param: command.inp}
-                )
+            if parser.interactive_command:
+                cmd = parser.interactive_command
+                args = {parser.input_param: command.inp}
+                self.window.run_command(cmd, args)
+
         except IndexError:
             _log.debug('could not find a command to collect more user input')
             ui_blink()
@@ -3278,12 +3278,12 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
     def _is_valid_cmdline(self, cmdline):
         return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == '/'
 
-    def run(self):
+    def run(self, pattern=''):
         self.state.reset_during_init = False
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
         ui_cmdline_prompt(
             self.view.window(),
-            initial_text='/',
+            initial_text='/' + pattern,
             on_done=self.on_done,
             on_change=self.on_change,
             on_cancel=self.on_cancel)
@@ -4966,12 +4966,12 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
     def _is_valid_cmdline(self, cmdline):
         return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == '?'
 
-    def run(self):
+    def run(self, pattern=''):
         self.state.reset_during_init = False
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
         ui_cmdline_prompt(
             self.view.window(),
-            initial_text='?',
+            initial_text='?' + pattern,
             on_done=self.on_done,
             on_change=self.on_change,
             on_cancel=self.on_cancel)
