@@ -3526,16 +3526,14 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         }
 
 
-@assign('z<left>', _ACTION_MODES)
-@assign('z<right>', _ACTION_MODES)
-@assign('zc', _ACTION_MODES)
-@assign('zh', _ACTION_MODES)
-@assign('zH', _ACTION_MODES)
-@assign('zl', _ACTION_MODES)
-@assign('zL', _ACTION_MODES)
-@assign('zM', _ACTION_MODES)
-@assign('zo', _ACTION_MODES)
-@assign('zR', _ACTION_MODES)
+@assign(seqs.Z_LEFT, _ACTION_MODES)
+@assign(seqs.Z_RIGHT, _ACTION_MODES)
+@assign(seqs.ZC, _ACTION_MODES)
+@assign(seqs.ZH, _ACTION_MODES)
+@assign(seqs.ZL, _ACTION_MODES)
+@assign(seqs.ZM, _ACTION_MODES)
+@assign(seqs.ZO, _ACTION_MODES)
+@assign(seqs.ZR, _ACTION_MODES)
 class Viz(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
