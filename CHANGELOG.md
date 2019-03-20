@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#196](https://github.com/NeoVintageous/NeoVintageous/issues/196): `z.` Redraw, line at center of window and put cursor at first non-blank
 * Added [#454](https://github.com/NeoVintageous/NeoVintageous/issues/454): Support advanced ex command mapping
 * Added [#99](https://github.com/NeoVintageous/NeoVintageous/issues/99): Support marks in line ranges
 * Added [#464](https://github.com/NeoVintageous/NeoVintageous/issues/464): Support `:[sp]lit [file]` completions

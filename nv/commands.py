@@ -2502,12 +2502,18 @@ class _vi_z_minus(IrreversibleTextCommand):
 
 class _vi_zz(IrreversibleTextCommand):
 
-    def run(self, count=1, mode=None):
+    def run(self, count=1, mode=None, first_non_blank=False):
         first_sel = self.view.sel()[0]
         current_position = self.view.text_to_layout(first_sel.b)
         viewport_dim = self.view.viewport_extent()
         new_pos = (0.0, current_position[1] - viewport_dim[1] / 2)
         self.view.set_viewport_position(new_pos)
+        if first_non_blank:
+            row = self.view.rowcol(first_sel.b)[0]
+            first_non_blank_pt = next_non_blank(self.view, self.view.text_point(row, 0))
+            if mode in (NORMAL, INTERNAL_NORMAL):
+                self.view.sel().clear()
+                self.view.sel().add(Region(first_non_blank_pt))
 
 
 class _vi_z(TextCommand):

@@ -765,6 +765,24 @@ class ViScrollToScreenCenter(ViOperatorDef):
         }
 
 
+@assign(seqs.Z_DOT, _ACTION_MODES)
+class ViZDot(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_zz',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'first_non_blank': True
+            }
+        }
+
+
 @assign(seqs.GQ, _ACTION_MODES)
 class ViReformat(ViOperatorDef):
     def __init__(self, *args, **kwargs):
