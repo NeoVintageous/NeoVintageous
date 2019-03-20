@@ -142,3 +142,28 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
         self.assertVline('x\nf {\na\n|b\nc\n}\n|x\n')
         self.feed('l_%')
         self.assertRVline(start)
+
+
+class Test_percent_tags(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.view.assign_syntax('Packages/HTML/HTML.sublime-syntax')
+
+    def test_percent(self):
+        self.eq('|<div>fizz</div>', 'n_%', '<div|>fizz</div>')
+        self.eq('<div|>fizz</div>', 'n_%', '|<div>fizz</div>')
+        self.eq('<div>fizz|</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div>fizz</div|>', 'n_%', '<div>fizz|</div>')
+        self.eq('<div>f|izz</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div>fi|zz</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div>fiz|z</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div><div>f|izz</div></div>', 'n_%', '<div><div>fizz</div|></div>')
+        self.eq('ab|<div>fizz</div>cd', 'n_%', 'ab<div|>fizz</div>cd')
+        self.eq('ab<div|>fizz</div>cd', 'n_%', 'ab|<div>fizz</div>cd')
+        self.eq('ab<div>fizz|</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div>fizz</div|>cd', 'n_%', 'ab<div>fizz|</div>cd')
+        self.eq('ab<div>f|izz</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div>fi|zz</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div>fiz|z</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div><div>f|izz</div></div>cd', 'n_%', 'ab<div><div>fizz</div|></div>cd')
