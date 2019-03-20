@@ -444,6 +444,18 @@ class TestViewTestCase(unittest.ViewTestCase):
         with self.assertRaises(AssertionError):
             self.assertSize(12)
 
+    def test_invalid_register_value(self):
+        with self.assertRaisesRegex(ValueError, 'not a valid str'):
+            self.register('x', [])
+
+    def test_numbered_register(self):
+        self.register('"x')
+        self.assertRegister('"x')
+        self.register('0y')
+        self.assertRegister('0y')
+        self.register('1y')
+        self.assertRegister('1y')
+
 
 class FunctionalTestCaseStub(unittest.FunctionalTestCase):
 

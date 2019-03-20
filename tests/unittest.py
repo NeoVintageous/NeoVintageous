@@ -215,7 +215,7 @@ class ViewTestCase(unittest.TestCase):
             raise ValueError('argument #2 is not a valid str')
 
         if name.isdigit() and name != '0':
-            registers._set_numbered_register(name, value)
+            registers._set_numbered_register(name, [value])
         else:
             registers._data[name] = [value]
             registers._linewise[name] = linewise
