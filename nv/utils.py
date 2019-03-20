@@ -51,16 +51,14 @@ def extract_file_name(view):
         return
 
     matches = re.findall('[^\\s]+', line)
-    if not matches:
-        return
+    if matches:
+        for match in matches:
+            pos += len(match)
+            if pos >= col:
+                if not re.match('^[a-zA-Z0-9\\._/-]+$', match):
+                    return
 
-    for match in matches:
-        pos += len(match)
-        if pos >= col:
-            if not re.match('^[a-zA-Z0-9\\._/-]+$', match):
-                return
-
-            return match
+                return match
 
 
 def extract_url(view):

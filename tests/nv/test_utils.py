@@ -23,6 +23,10 @@ from NeoVintageous.nv.utils import extract_url
 
 class TestExtractFileName(unittest.ViewTestCase):
 
+    def assertExtractFileName(self, expected, text):
+        self.normal(text)
+        self.assertEqual(extract_file_name(self.view), expected)
+
     def test_extract_file_name(self):
         tests = {
             '|': None,
@@ -35,8 +39,11 @@ class TestExtractFileName(unittest.ViewTestCase):
         }
 
         for text, expected in tests.items():
-            self.normal(text)
-            self.assertEqual(extract_file_name(self.view), expected)
+            self.assertExtractFileName(expected, text)
+
+    def test_invalid(self):
+        self.assertExtractFileName(None, '|')
+        self.assertExtractFileName(None, '$|$$')
 
 
 class TestExtractUrl(unittest.ViewTestCase):
