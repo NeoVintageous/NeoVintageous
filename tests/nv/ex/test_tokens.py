@@ -95,12 +95,26 @@ class TestToken(unittest.TestCase):
         self.assertFalse(digits == mark)
         self.assertFalse(mark == digits)
 
+    def test_to_str(self):
+        self.assertEqual(str(Token('fizz')), 'Token(fizz)')
+
 
 class TestCommandToken(unittest.TestCase):
 
     def test_requires_name(self):
         with self.assertRaisesRegex(TypeError, 'name'):
             TokenCommand()
+
+    def test_to_str(self):
+        cmd = str(TokenCommand('fizz'))
+        self.assertTrue('fizz {' in cmd)
+        self.assertTrue("'name': 'fizz'" in cmd)
+        self.assertTrue("'params': {}, " in cmd)
+        self.assertTrue("'addressable': False" in cmd)
+        self.assertTrue("'forced': False" in cmd)
+        self.assertTrue("'content': 'fizz'" in cmd)
+        self.assertTrue("'cooperates_with_global': False" in cmd)
+        self.assertTrue("'target': 'fizz'" in cmd)
 
     def test_can_create_with_name(self):
         command = TokenCommand('only')
