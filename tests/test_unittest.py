@@ -169,6 +169,18 @@ class TestViewTestCase(unittest.ViewTestCase):
         with self.assertRaisesRegex(Exception, 'invalid visual selection'):
             self.visual('h|e|l|lo |w|orld!')
 
+    def test_vselect(self):
+        self.vselect('t|ex|t')
+        self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
+        self.assertEqual([Region(1, 3)], list(self.view.sel()))
+        self.assertSelectMode()
+
+    def test_rvselect(self):
+        self.rvselect('t|ex|t')
+        self.assertEqual('text', self.view.substr(Region(0, self.view.size())))
+        self.assertEqual([Region(3, 1)], list(self.view.sel()))
+        self.assertSelectMode()
+
     def test_vline_sets_vline_mode(self):
         self.vline('x|text\n|y')
         self.assertVlineMode()
@@ -571,6 +583,8 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.insert = unittest.mock.Mock()
         self.instance.internalNormal = unittest.mock.Mock()
         self.instance.rInternalNormal = unittest.mock.Mock()
+        self.instance.vselect = unittest.mock.Mock()
+        self.instance.rvselect = unittest.mock.Mock()
         self.instance.visual = unittest.mock.Mock()
         self.instance.vline = unittest.mock.Mock()
         self.instance.vblock = unittest.mock.Mock()
@@ -578,6 +592,8 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.assertInsert = unittest.mock.Mock()
         self.instance.assertInternalNormal = unittest.mock.Mock()
         self.instance.assertRInternalNormal = unittest.mock.Mock()
+        self.instance.assertVSelect = unittest.mock.Mock()
+        self.instance.assertRVSelect = unittest.mock.Mock()
         self.instance.assertVisual = unittest.mock.Mock()
         self.instance.assertVline = unittest.mock.Mock()
         self.instance.assertVblock = unittest.mock.Mock()
@@ -603,6 +619,12 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
     def assert_vblock(self, *args):
         self.instance.vblock.assert_called_once_with(*args)
 
+    def assert_vselect(self, *args):
+        self.instance.vselect.assert_called_once_with(*args)
+
+    def assert_rvselect(self, *args):
+        self.instance.rvselect.assert_called_once_with(*args)
+
     def assert_feed(self, *args):
         self.instance.feed.assert_called_once_with(*args)
 
@@ -614,6 +636,12 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
 
     def assert_assertRInternalNormal(self, *args):
         self.instance.assertRInternalNormal.assert_called_once_with(*args)
+
+    def assert_assertVSelect(self, *args):
+        self.instance.assertVSelect.assert_called_once_with(*args)
+
+    def assert_assertRVSelect(self, *args):
+        self.instance.assertRVSelect.assert_called_once_with(*args)
 
     def assert_assertNormal(self, *args):
         self.instance.assertNormal.assert_called_once_with(*args)
@@ -746,6 +774,18 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.assert_vline('a')
         self.assert_feed('l_b')
         self.assert_assertVline('c', None)
+
+    def test_eq_vselect(self):
+        self.instance.eq('a', 's_b', 'c')
+        self.assert_vselect('a')
+        self.assert_feed('s_b')
+        self.assert_assertVSelect('c', None)
+
+    def test_eq_rvselect(self):
+        self.instance.eq('r_a', 's_b', 'r_c')
+        self.assert_rvselect('a')
+        self.assert_feed('s_b')
+        self.assert_assertRVSelect('c', None)
 
     def test_eq_visual_line_assertNormal_insert(self):
         self.instance.eq('a', 'l_b', 'i_c')

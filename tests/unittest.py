@@ -122,7 +122,7 @@ class ViewTestCase(unittest.TestCase):
         self.view.run_command('_nv_test_write', {'text': text})
 
     def _setupView(self, text, mode, reverse=False):
-        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL):
+        if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL, SELECT):
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
             sel_len = len(sels)
@@ -349,6 +349,9 @@ class ViewTestCase(unittest.TestCase):
 
     def assertReplaceMode(self):
         self._assertMode(REPLACE)
+
+    def assertSelectMode(self):
+        self._assertMode(SELECT)
 
     def assertVisualMode(self):
         self._assertMode(VISUAL)
@@ -722,7 +725,10 @@ class FunctionalTestCase(ViewTestCase):
         elif text_mode == 'i':
             self.insert(text)
         elif text_mode == 's':
-            self.vselect(text)
+            if reverse_text:
+                self.rvselect(text)
+            else:
+                self.vselect(text)
         else:
             self.assertTrue(False, 'invalid text mode')
 
