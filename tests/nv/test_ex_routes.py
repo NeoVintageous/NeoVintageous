@@ -261,6 +261,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_edit', ['edit', 'e'])
         self.assertRoute('_ex_route_exit', ['exit', 'exi', 'xit', 'x'])
         self.assertRoute('_ex_route_file', ['file', 'f'])
+        self.assertRoute('_ex_route_global', ['global', 'g'])
         self.assertRoute('_ex_route_help', ['help', 'h'])
         self.assertRoute('_ex_route_let', ['let '])
         self.assertRoute('_ex_route_move', ['move', 'm'])

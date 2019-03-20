@@ -68,6 +68,11 @@ class TestParseLineRef(unittest.TestCase):
         self.assertEqual(parsed.line_range.start, [TokenOffset([10, 10])])
         self.assertEqual(parsed.line_range.end, [])
 
+    def test_invalid_offset(self):
+        self.assertRaises(ValueError, parse_command_line, '+2$')
+        self.assertRaises(ValueError, parse_command_line, '$+2')
+        self.assertRaises(ValueError, parse_command_line, '1,$+2')
+
     def test_can_parse_search_forward(self):
         parsed = parse_command_line('/foo/')
         self.assertEqual(parsed.line_range.start, [TokenSearchForward('foo')])
@@ -82,6 +87,11 @@ class TestParseLineRef(unittest.TestCase):
         parsed = parse_command_line('.+10/foo/')
         self.assertEqual(parsed.line_range.start, [TokenDot(), TokenOffset([10]), TokenSearchForward('foo')])
         self.assertEqual(parsed.line_range.end, [])
+
+    def test_search_forward_start_and_end(self):
+        parsed = parse_command_line('.+5/foo/,.+10/bar/')
+        self.assertEqual(parsed.line_range.start, [TokenDot(), TokenOffset([5]), TokenSearchForward('foo')])
+        self.assertEqual(parsed.line_range.end, [TokenDot(), TokenOffset([10]), TokenSearchForward('bar')])
 
     def test_can_parse_search_backward(self):
         parsed = parse_command_line('?foo?')
@@ -108,12 +118,22 @@ class TestParseLineRef(unittest.TestCase):
         self.assertEqual(parsed.line_range.start, [TokenSearchForward('foo'), TokenOffset([10, 10, 10])])
         self.assertEqual(parsed.line_range.end, [])
 
-    def test_can_parse_search_bacward_with_offset(self):
+    def test_can_parse_search_backward_with_offset(self):
         parsed = parse_command_line('?foo?+10')
         self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo'), TokenOffset([10])])
         self.assertEqual(parsed.line_range.end, [])
 
-    def test_can_parse_search_bacward_with_offsets(self):
+    def test_can_parse_search_backward_end(self):
+        parsed = parse_command_line('?foo?+5,?bar?+10+20')
+        self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo'), TokenOffset([5])])
+        self.assertEqual(parsed.line_range.end, [TokenSearchBackward('bar'), TokenOffset([10, 20])])
+
+    def test_search_backward_start_and_end(self):
+        parsed = parse_command_line('.+5?foo?,.+10?bar?')
+        self.assertEqual(parsed.line_range.start, [TokenDot(), TokenOffset([5]), TokenSearchBackward('foo')])
+        self.assertEqual(parsed.line_range.end, [TokenDot(), TokenOffset([10]), TokenSearchBackward('bar')])
+
+    def test_can_parse_search_backward_with_offsets(self):
         parsed = parse_command_line('?foo?+10+10+10')
         self.assertEqual(parsed.line_range.start, [TokenSearchBackward('foo'), TokenOffset([10, 10, 10])])
         self.assertEqual(parsed.line_range.end, [])
@@ -121,6 +141,11 @@ class TestParseLineRef(unittest.TestCase):
     def test_can_parse_dollar_on_its_own(self):
         parsed = parse_command_line('$')
         self.assertEqual(parsed.line_range.start, [TokenDollar()])
+
+    def test_invalid_dollar(self):
+        self.assertRaises(ValueError, parse_command_line, '1,1$')
+        self.assertRaises(ValueError, parse_command_line, '1,$$')
+        self.assertRaises(ValueError, parse_command_line, '1,.$')
 
     def test_can_parse_dollar_with_company(self):
         parsed = parse_command_line('0,$')
@@ -150,6 +175,10 @@ class TestParseLineRef(unittest.TestCase):
         self.assertEqual(parsed.line_range.separator, TokenComma())
         self.assertEqual(parsed.line_range.start, [])
         self.assertEqual(parsed.line_range.end, [TokenDot()])
+
+    def test_invalid_dot(self):
+        self.assertRaises(ValueError, parse_command_line, '+1.')
+        self.assertRaises(ValueError, parse_command_line, '1,+2.')
 
     def test_can_parse_lone_smicolon(self):
         parsed = parse_command_line(';')
@@ -194,8 +223,19 @@ class TestParseLineRef(unittest.TestCase):
         self.assertEqual(parsed.line_range.start, [])
         self.assertEqual(parsed.line_range.end, [TokenDigits('10')])
 
-    def test_fails_if_dot_digits(self):
+    def test_fails_dot_digits(self):
         self.assertRaises(ValueError, parse_command_line, '.10')
+        self.assertRaises(ValueError, parse_command_line, '10,.10')
+
+    def test_unknown_command_raises_exception(self):
+        with self.assertRaisesRegex(Exception, 'E492: Not an editor command'):
+            parse_command_line('foobar')
+
+        with self.assertRaisesRegex(Exception, 'E492: Not an editor command'):
+            parse_command_line('1,2foobar')
+
+        with self.assertRaisesRegex(Exception, 'E492: Not an editor command'):
+            parse_command_line('1,$foobar')
 
 
 class TestParseLineRefTokenComma(unittest.TestCase):
@@ -256,6 +296,15 @@ class TestParseLineRefPercent(unittest.TestCase):
     def test_can_parse_percent(self):
         parsed = parse_command_line("%")
         self.assertEqual(parsed.line_range.start, [TokenPercent()])
+        self.assertEqual(parsed.line_range.end, [])
+        parsed = parse_command_line("%,%")
+        self.assertEqual(parsed.line_range.start, [TokenPercent()])
+        self.assertEqual(parsed.line_range.end, [TokenPercent()])
+
+    def test_invalid_percent(self):
+        self.assertRaises(ValueError, parse_command_line, '1%')
+        self.assertRaises(ValueError, parse_command_line, '%,1%')
+        self.assertRaises(ValueError, parse_command_line, '%%')
 
 
 class TestParseLineRefSetLineRangeSeparator(unittest.TestCase):

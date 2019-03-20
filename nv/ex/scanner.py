@@ -341,6 +341,4 @@ def _scan_command(state):
 
             return None, [cmd, TokenEof()]
 
-    state.expect_eof(lambda: Exception("E492: Not an editor command"))
-
-    return None, [TokenEof()]
+    raise Exception("E492: Not an editor command")

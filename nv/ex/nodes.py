@@ -197,9 +197,6 @@ class CommandLineNode(Node):
 
     def validate(self):
         # type: () -> None
-
-        # Raise an error for known conditions.
-
         if not (self.command and self.line_range):
             return
 

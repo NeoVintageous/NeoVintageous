@@ -205,16 +205,15 @@ def _ex_route_file(state):
 def _ex_route_global(state):
     command = TokenCommand('global')
     command.addressable = True
-    params = {'pattern': None, 'cmd': None}
+    params = {}
 
     c = state.consume()
 
     bang = c == '!'
     sep = c if not bang else state.consume()
 
-    # TODO: we're probably missing legal separators.
-    # TODO [refactor] and remove assertion
-    assert c in '!:?/\\&$', 'bad separator'
+    if c not in '!:?/\\&$':
+        raise ValueError('bad separator: ' + c)
 
     state.ignore()
 
@@ -273,16 +272,13 @@ def _ex_route_let(state):
 def _ex_route_move(state):
     command = TokenCommand('move')
     command.addressable = True
-    params = {'address': None}
 
     state.skip(' ')
     state.ignore()
 
     m = state.match(r'(?P<address>.*$)')
     if m:
-        params['address'] = m.group(0).strip() or '.'
-
-    command.params = params
+        command.params['address'] = m.group(0).strip() or '.'
 
     return command
 
@@ -320,8 +316,6 @@ def _ex_route_print(state):
     command.addressable = True
     command.cooperates_with_global = True
 
-    params = {'count': '', 'flags': []}
-
     while True:
         c = state.consume()
 
@@ -329,22 +323,21 @@ def _ex_route_print(state):
         state.ignore()
 
         if c == state.EOF:
-            command.params = params
+            break
 
-            return command
-
+        c = state.consume()
         if c.isdigit():
             state.match(r'\d*')
-            params['count'] = state.emit()
+            command.params['count'] = state.emit()
             continue
 
+        state.backup()
+
         m = state.expect_match(r'[l#p]+')
-        params['flags'] = list(m.group(0))
+        command.params['flags'] = list(m.group(0))
         state.ignore()
         state.expect_eof()
         break
-
-    command.params = params
 
     return command
 
@@ -364,10 +357,7 @@ def _ex_route_quit(state):
 def _ex_route_read(state):
     command = TokenCommand('read')
 
-    params = {
-        'cmd': None,
-        'file_name': None,
-    }
+    params = {}
 
     state.skip(' ')
     state.ignore()
@@ -589,98 +579,11 @@ def _ex_route_wall(state):
 
 
 def _ex_route_wq(state):
-    command = TokenCommand('wq')
-
-    params = {
-        '++': None,
-        'file': None,
-    }
-
-    c = state.consume()
-    if c == state.EOF:
-        command.params = params
-
-        return command
-
-    bang = True if c == '!' else False
-    if not bang:
-        state.backup()
-
-    c = state.consume()
-    if c == '+':
-        state.expect('+')
-        state.ignore()
-
-        # TODO: expect_match should work with emit()
-        # https://vimhelp.appspot.com/editing.txt.html#[++opt]
-        m = state.expect_match(
-            r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-            lambda: Exception("E474: Invalid argument"))
-
-        name = m.group(0)
-
-        plus_plus_translations = {
-            'ff': 'fileformat',
-            'bin': 'binary',
-            'enc': 'fileencoding',
-            'nobin': 'nobinary',
-        }
-
-        params['++'] = plus_plus_translations.get(name, name)
-
-        state.ignore()
-        raise NotImplementedError('parameter not implemented')
-
-    if c == state.EOF:
-        command.params = params
-        command.forced = bang
-
-        return command
-
-    m = state.expect_match(r'.+$')
-    params['file'] = m.group(0).strip()
-
-    command.params = params
-    command.forced = bang
-
-    return command
+    return _literal_route(state, 'wq', forcable=True)
 
 
 def _ex_route_wqall(state):
-    command = TokenCommand('wqall')
-    command.addressable = True
-    params = {'++': ''}
-
-    state.skip(' ')
-    state.ignore()
-
-    c = state.consume()
-    if c == '+':
-        state.expect('+')
-        state.ignore()
-        # TODO: expect_match should work with emit()
-        # https://vimhelp.appspot.com/editing.txt.html#[++opt]
-        m = state.expect_match(
-            r'(?:f(?:ile)?f(?:ormat)?|(?:file)?enc(?:oding)?|(?:no)?bin(?:ary)?|bad|edit)(?=\s|$)',
-            lambda: Exception("E474: Invalid argument"))
-
-        name = m.group(0)
-
-        plus_plus_translations = {
-            'ff': 'fileformat',
-            'bin': 'binary',
-            'enc': 'fileencoding',
-            'nobin': 'nobinary'
-        }
-
-        params['++'] = plus_plus_translations.get(name, name)
-        state.ignore()
-
-    state.expect_eof()
-
-    command.params = params
-
-    return command
+    return _literal_route(state, 'wqall', addressable=True)
 
 
 def _ex_route_write(state):
@@ -717,10 +620,7 @@ def _ex_route_write(state):
     while True:
         c = state.consume()
         if c == state.EOF:
-            command.params = params
-            command.forced = bang
-
-            return command
+            break
 
         if c == '+':
             state.expect('+')
@@ -756,10 +656,8 @@ def _ex_route_write(state):
             state.skip(' ')
             state.ignore()
 
-    state.expect_eof()
-
     command.params = params
-    command.forced = bang
+    command.forced = bang == '!'
 
     return command
 
@@ -795,9 +693,10 @@ def _ex_route_yank(state):
 
 
 # TODO: compile regexes. ??
-ex_routes = OrderedDict()
+ex_routes = OrderedDict()  # type: dict
 ex_routes[r'!(?=.+)'] = _ex_route_shell_out
 ex_routes[r'&&?'] = _ex_route_double_ampersand
+ex_routes[r'(?:files|ls|buffers)!?'] = _ex_route_buffers
 ex_routes[r'bf(?:irst)?'] = _ex_route_bfirst
 ex_routes[r'bl(?:ast)?'] = _ex_route_blast
 ex_routes[r'bn(?:ext)?'] = _ex_route_bnext
@@ -811,30 +710,28 @@ ex_routes[r'co(?:py)?'] = _ex_route_copy
 ex_routes[r'cq(?:uit)?'] = _ex_route_cquit
 ex_routes[r'd(?:elete)?'] = _ex_route_delete
 ex_routes[r'exi(?:t)?'] = _ex_route_exit
-ex_routes[r'(?:files|ls|buffers)!?'] = _ex_route_buffers
-ex_routes[r'f(?:ile)?'] = _ex_route_file
-ex_routes[r'g(?:lobal)?(?=[^ ])'] = _ex_route_global
-ex_routes[r'h(?:elp)?'] = _ex_route_help
-ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
 ex_routes[r'e(?:dit)?(?= |$)?'] = _ex_route_edit
+ex_routes[r'f(?:ile)?'] = _ex_route_file
+ex_routes[r'g(?:lobal)?'] = _ex_route_global
+ex_routes[r'h(?:elp)?'] = _ex_route_help
 ex_routes[r'let\s'] = _ex_route_let
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
-ex_routes[r'no(?:remap)?'] = _ex_route_noremap
 ex_routes[r'new'] = _ex_route_new
 ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap
+ex_routes[r'no(?:remap)?'] = _ex_route_noremap
 ex_routes[r'nun(?:map)?'] = _ex_route_nunmap
 ex_routes[r'ono(?:remap)?'] = _ex_route_onoremap
 ex_routes[r'on(?:ly)?'] = _ex_route_only
 ex_routes[r'ou(nmap)?'] = _ex_route_ounmap
-ex_routes[r'p(?:rint)?$'] = _ex_route_print
 ex_routes[r'pw(?:d)?'] = _ex_route_pwd
-ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
+ex_routes[r'p(?:rint)?'] = _ex_route_print
 ex_routes[r'qa(?:ll)?'] = _ex_route_qall
-ex_routes[r'r(?!eg)(?:ead)?'] = _ex_route_read
+ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
 ex_routes[r'reg(?:isters)?'] = _ex_route_registers
-ex_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = _ex_route_substitute
-ex_routes[r'se(?:t)?(?=$|\s)'] = _ex_route_set
+ex_routes[r'r(?!eg)(?:ead)?'] = _ex_route_read
 ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
+ex_routes[r'se(?:t)?(?=$|\s)'] = _ex_route_set
+ex_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = _ex_route_substitute
 ex_routes[r'sh(?:ell)?'] = _ex_route_shell
 ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
 ex_routes[r'sor(?:t)?'] = _ex_route_sort
@@ -844,18 +741,19 @@ ex_routes[r'tabc(?:lose)?'] = _ex_route_tabclose
 ex_routes[r'tabfir(?:st)?'] = _ex_route_tabfirst
 ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
 ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
+ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
 ex_routes[r'tabo(?:nly)?'] = _ex_route_tabonly
 ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
-ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
 ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
 ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
 ex_routes[r'unvsplit'] = _ex_route_unvsplit
 ex_routes[r'vn(?:oremap)?'] = _ex_route_vnoremap
+ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
 ex_routes[r'vu(?:nmap)?'] = _ex_route_vunmap
 ex_routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = _ex_route_write
+ex_routes[r'wa(?:ll)?'] = _ex_route_wall
 ex_routes[r'wqa(?:ll)?'] = _ex_route_wqall
+ex_routes[r'wq(?=[^a-zA-Z]|$)?'] = _ex_route_wq
 ex_routes[r'xa(?:ll)?'] = _ex_route_wqall
 ex_routes[r'x(?:it)?'] = _ex_route_exit
-ex_routes[r'wa(?:ll)?'] = _ex_route_wall
-ex_routes[r'wq(?=[^a-zA-Z]|$)?'] = _ex_route_wq
 ex_routes[r'y(?:ank)?'] = _ex_route_yank

@@ -51,6 +51,9 @@ class TestRangeNode(unittest.TestCase):
         self.assertEqual(False, RangeNode([2]).__eq__(unittest.mock.Mock(
             spec=RangeNode, start=[], end=[], separator=None)))
 
+    def test_to_str(self):
+        self.assertEqual(str(RangeNode('s', 'e', ';')), 's;e')
+
 
 class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
 
@@ -398,3 +401,20 @@ class TestCommandLineNode(unittest.TestCase):
 
         self.assertEqual(range_node, command_line_node.line_range)
         self.assertEqual(command, command_line_node.command)
+
+    def test_to_str(self):
+        self.assertEqual(str(CommandLineNode('1,10', 'cmd')), '1,10cmd')
+        self.assertEqual(str(CommandLineNode('1,10', None)), '1,10')
+
+    def test_validate(self):
+        class NotAddressableCommand:
+            addressable = False
+
+        class AddressableCommand:
+            addressable = True
+
+        self.assertIsNone(CommandLineNode(RangeNode(), AddressableCommand()).validate())
+        self.assertIsNone(CommandLineNode(RangeNode(), NotAddressableCommand()).validate())
+        self.assertIsNone(CommandLineNode(RangeNode('1', '2', ';'), AddressableCommand()).validate())
+        with self.assertRaisesRegex(Exception, 'E481: No range allowed'):
+            CommandLineNode(RangeNode('1', '2', ';'), NotAddressableCommand()).validate()

@@ -402,7 +402,7 @@ _ex_global_most_recent_pat = None
 # At the time of writing, the only command that supports :global is the
 # "print" command e.g. print all lines matching \d+ into new buffer:
 #   :%global/\d+/print
-def ex_global(window, view, pattern, cmd, line_range, **kwargs):
+def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
     if line_range.is_empty:
         global_range = Region(0, view.size())
     else:
@@ -566,7 +566,7 @@ def ex_let(name, value, **kwargs):
 
 
 @_serialize_deserialize
-def ex_move(view, edit, address, line_range, **kwargs):
+def ex_move(view, edit, line_range, address=None, **kwargs):
     # Move the lines given by [range] to below the line given by {address}.
     if address is None:
         return status_message("E14: Invalid address")
@@ -660,9 +660,12 @@ def ex_ounmap(lhs, **kwargs):
         status_message('E31: No such mapping')
 
 
-def ex_print(window, view, flags, line_range, global_lines=None, **kwargs):
+def ex_print(window, view, line_range, flags=None, global_lines=None, **kwargs):
     if view.size() == 0:
         return status_message("E749: empty buffer")
+
+    if flags is None:
+        flags = []
 
     def _get_lines(view, parsed_range, global_lines):
         # If :global called us, ignore the parsed range.
@@ -736,10 +739,9 @@ def ex_quit(window, view, forceit=False, **kwargs):
         ex_unvsplit(window=window, view=view, forceit=forceit, **kwargs)
 
 
-# TODO [review] This command looks unused
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
 @_init_cwd
-def ex_read(view, edit, cmd, line_range, **kwargs):
+def ex_read(view, edit, line_range, cmd=None, **kwargs):
     r = line_range.resolve(view)
     target_point = min(r.end(), view.size())
 

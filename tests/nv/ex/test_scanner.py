@@ -155,6 +155,11 @@ class TestScannerState(unittest.TestCase):
         state = _ScannerState('foo')
         self.assertRaises(ValueError, state.expect_match, 'x')
 
+    def test_expect_match_raises_on_error(self):
+        state = _ScannerState('foo')
+        with self.assertRaisesRegex(ValueError, 'fizz buzz'):
+            state.expect_match('x', lambda: ValueError('fizz buzz'))
+
     def test_expect_eof(self):
         state = _ScannerState('')
         self.assertEqual(state.EOF, state.expect_eof())
@@ -223,6 +228,16 @@ class TestScanner(unittest.TestCase):
         scanner = Scanner("?foo?")
         tokens = list(scanner.scan())
         self.assertEqual([TokenSearchBackward('foo'), TokenEof()], tokens)
+
+    def test_can_scan_forward_raises_exception_on_unclosed_pattern(self):
+        scanner = Scanner("/fizz")
+        with self.assertRaisesRegex(ValueError, 'unclosed search pattern'):
+            list(scanner.scan())
+
+    def test_can_scan_backward_raises_exception_on_unclosed_pattern(self):
+        scanner = Scanner("?fizz")
+        with self.assertRaisesRegex(ValueError, 'unclosed search pattern'):
+            list(scanner.scan())
 
     def test_can_scan_offset(self):
         scanner = Scanner("+100")
@@ -476,6 +491,8 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['edit', 'e'], cmd('edit', params={'file_name': None}))  # noqa: E501
         self.assertRoute(['exit', 'exi', 'xit', 'x'], cmd('exit'))
         self.assertRoute(['file', 'f'], cmd('file'))
+        self.assertRoute(['global/^/', 'g/^/'], cmd('global', params={'pattern': '^'}, addressable=True))
+        self.assertRoute(['global/^/y', 'g/^/y'], cmd('global', params={'pattern': '^', 'cmd': 'y'}, addressable=True))
         self.assertRoute(['global/x/y', 'g/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, addressable=True))
         self.assertRoute(['help fizz', 'h fizz'], cmd('help', params={'subject': 'fizz'}))
         self.assertRoute(['help!', 'h!'], cmd('help', params={'subject': None}, forced=True))
@@ -494,13 +511,21 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['onoremap abc xyz', 'ono abc xyz'], cmd('onoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
         self.assertRoute(['onoremap', 'ono'], cmd('onoremap'))
         self.assertRoute(['ounmap xyz', 'ou xyz'], cmd('ounmap', params={'lhs': 'xyz'}))
-        self.assertRoute(['print', 'p'], cmd('print', params={'count': '', 'flags': []}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['print 4 l#', 'p 4 l#'], cmd('print', params={'count': '4', 'flags': ['l', '#']}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['print 4 l', 'p 4 l'], cmd('print', params={'count': '4', 'flags': ['l']}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['print 4', 'p 4'], cmd('print', params={'count': '4'}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['print l#', 'p l#'], cmd('print', params={'flags': ['l', '#']}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['print l', 'p l'], cmd('print', params={'flags': ['l']}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['print', 'p'], cmd('print', addressable=True, cooperates_with_global=True))  # noqa: E501
         self.assertRoute(['pwd', 'pw'], cmd('pwd'))
         self.assertRoute(['qall!', 'qa!'], cmd('qall', forced=True))
         self.assertRoute(['qall', 'qa'], cmd('qall'))
         self.assertRoute(['quit!', 'q!'], cmd('quit', forced=True))
         self.assertRoute(['quit', 'q'], cmd('quit'))
-        self.assertRoute(['read file.txt', 'r file.txt'], cmd('read', params={'cmd': None, 'file_name': 'file.txt'}))
+        self.assertRoute(['read file.txt', 'r file.txt'], cmd('read', params={'file_name': 'file.txt'}))
+        self.assertRoute(['read!p', 'r!p'], cmd('read', params={'cmd': 'p'}))
+        self.assertRoute(['read!print', 'r!print'], cmd('read', params={'cmd': 'print'}))
+        self.assertRoute(['read!yank', 'r!yank'], cmd('read', params={'cmd': 'yank'}))
         self.assertRoute(['registers', 'reg'], cmd('registers'))
         self.assertRoute(['set opt=val', 'se opt=val'], cmd('set', params={'option': 'opt', 'value': 'val'}))
         self.assertRoute(['setlocal opt=val', 'setl opt=val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
@@ -515,6 +540,8 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['split file.txt', 'sp file.txt'], cmd('split', params={'file': 'file.txt'}))
         self.assertRoute(['split', 'sp'], cmd('split'))
         self.assertRoute(['substitute', 's'], cmd('substitute', addressable=True))
+        self.assertRoute(['substitute/x/', 's/x/'], cmd('substitute', params={'pattern': 'x', 'replacement': '', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
+        self.assertRoute(['substitute/x//', 's/x//'], cmd('substitute', params={'pattern': 'x', 'replacement': '', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
         self.assertRoute(['substitute/x/y/', 's/x/y/'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
         self.assertRoute(['substitute/x/y/ic', 's/x/y/ic'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': ['i', 'c'], 'count': 1}, addressable=True))  # noqa: E501
         self.assertRoute(['sunmap xyz', 'sunm xyz'], cmd('sunmap', params={'lhs': 'xyz'}))
@@ -539,11 +566,12 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['vunmap xyz', 'vu xyz'], cmd('vunmap', params={'lhs': 'xyz'}))
         self.assertRoute(['wall!', 'wa!'], cmd('wall', forced=True))
         self.assertRoute(['wall', 'wa'], cmd('wall'))
-        self.assertRoute(['wq file.txt'], cmd('wq', params={'++': None, 'file': 'file.txt'}))
-        self.assertRoute(['wq!'], cmd('wq', params={'++': None, 'file': None}, forced=True))
-        self.assertRoute(['wq'], cmd('wq', params={'++': None, 'file': None}))
-        self.assertRoute(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', params={'++': ''}, addressable=True))
+        self.assertRoute(['wq!'], cmd('wq', forced=True))
+        self.assertRoute(['wq'], cmd('wq'))
+        self.assertRoute(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', addressable=True))
         self.assertRoute(['write file.txt', 'w file.txt'], cmd('write', params={'++': '', 'file_name': 'file.txt', '>>': False, 'cmd': ''}, addressable=True))  # noqa: E501
+        self.assertRoute(['write! file.txt', 'w! file.txt'], cmd('write', params={'++': '', 'file_name': 'file.txt', '>>': False, 'cmd': ''}, addressable=True, forced=True))  # noqa: E501
+        self.assertRoute(['write!', 'w!'], cmd('write', params={'++': '', 'file_name': '', '>>': False, 'cmd': ''}, addressable=True, forced=True))  # noqa: E501
         self.assertRoute(['write', 'w'], cmd('write', params={'++': '', 'file_name': '', '>>': False, 'cmd': ''}, addressable=True))  # noqa: E501
         self.assertRoute(['yank x', 'y x'], cmd('yank', params={'register': 'x', 'count': None}, addressable=True))
         self.assertRoute(['yank', 'y'], cmd('yank', params={'register': '"', 'count': None}, addressable=True))
@@ -579,19 +607,26 @@ class Test_scan_command(unittest.TestCase):
             'copy',
             'nunmap',
             'ounmap',
+            'print 4 x',
+            'print x',
+            'printx',
+            'px',
             'sunmap',
             'unmap',
             'vunmap',
         ])
 
+        self.assertRaisesExeption(['globalx', 'gx'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global#', 'g#'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global!/', 'g!/'], ValueError, 'unexpected EOF')
+        self.assertRaisesExeption(['global/', 'g/'], ValueError, 'unexpected EOF')
+        self.assertRaisesExeption(['substitute/x', 's/x'], ValueError, 'bad command')
+
         self.assertRaisesE492NotAnEditorCommand([
-            'let',
             'bf x',
             'bfirst x',
             'blast x',
-            'blast x',
             'blastx',
-            'bnext x',
             'bnext x',
             'browse x',
             'buffers ',
@@ -616,6 +651,7 @@ class Test_scan_command(unittest.TestCase):
             'filex',
             'foo bar',
             'foobar',
+            'let',
             'ls x ',
             'new x',
             'newx',
@@ -623,7 +659,6 @@ class Test_scan_command(unittest.TestCase):
             'only!x',
             'onlyx',
             'pwdx',
-            'xitx',
             'q!x',
             'qall!x',
             'qallx',
@@ -636,9 +671,18 @@ class Test_scan_command(unittest.TestCase):
             'tabclose x',
             'tabclosex',
             'wall ',
-            'xx',
             'wallx',
-            'foobar',
+            'wq +',
+            'wq ++',
+            'wq x',
+            'wq+',
+            'wqa ++',
+            'wqall ++',
+            'wqallx',
+            'wqax',
+            'wqx',
+            'xitx',
+            'xx',
         ])
 
         self.assertRaisesNotImplemented([
@@ -654,6 +698,5 @@ class Test_scan_command(unittest.TestCase):
             'read ++',
             'read+',
             'read++',
-            'yank x 3',
             'yank x 3',
         ])

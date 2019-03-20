@@ -205,6 +205,7 @@ class KeySequenceTokenizer(object):
                 if len(key_name) == 1:
                     if not modifiers:
                         raise ValueError('wrong sequence {0}'.format(self.source))
+
                     return '<' + modifiers.upper() + key_name + '>'
 
                 elif self.is_named_key('<' + key_name + '>'):

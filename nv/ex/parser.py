@@ -222,10 +222,12 @@ def _process_digits(token, state, command_line):
 def _process_search_forward(token, state, command_line):
     if not state.is_range_start_line_parsed:
         if command_line.line_range.start:
+            # TODO Review start_offset looks unused
             command_line.line_range.start_offset = []
         command_line.line_range.start.append(token)
     else:
         if command_line.line_range.end:
+            # TODO Review end_offset looks unused
             command_line.line_range.end_offset = []
         command_line.line_range.end.append(token)
 
@@ -235,10 +237,12 @@ def _process_search_forward(token, state, command_line):
 def _process_search_backward(token, state, command_line):
     if not state.is_range_start_line_parsed:
         if command_line.line_range.start:
+            # TODO Review start_offset looks unused
             command_line.line_range.start_offset = []
         command_line.line_range.start.append(token)
     else:
         if command_line.line_range.end:
+            # TODO Review end_offset looks unused
             command_line.line_range.end_offset = []
         command_line.line_range.end.append(token)
 
@@ -266,7 +270,7 @@ def _process_dot(state, command_line):
         command_line.line_range.start.append(TokenDot())
     else:
         if command_line.line_range.end and isinstance(command_line.line_range.end[-1], TokenOffset):
-            raise ValueError('bad range {0}'.format(state.scanner.source))
+            raise ValueError('bad range {0}'.format(state.scanner.state.source))
         command_line.line_range.end.append(TokenDot())
 
     return _parse_line_ref, command_line

@@ -38,3 +38,8 @@ class Test_ex_move(unittest.FunctionalTestCase):
 
     def test_v_move(self):
         self.eq('abc\n|x|xx\nabc\nabc', ":'<,'>move3", 'n_abc\nabc\n|xxx\nabc')
+
+    @unittest.mock_status_message()
+    def test_cannot_move_lines_into_themselves(self):
+        self.eq('|1\n2\n3\n|4', ':\'<,\'>move 2', 'n_1\n2\n3\n|4')
+        self.assertStatusMessage('E134: Move lines into themselves')
