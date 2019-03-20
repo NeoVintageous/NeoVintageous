@@ -33,6 +33,7 @@ class Test_gq(unittest.FunctionalTestCase):
 
     def test_gq_brace(self):
         self.eq('|aaa\nbbb\nccc\n', 'gq}', 'aaa bbb ccc\n|'),
+        self.eq('|aaa\nbbb\nccc', 'gq}', 'aaa bbb cc|c'),
 
     def test_gq_brace_should_only_mutate_current_paragraph(self):
         self.eq('x\n\na|a\nbb\ncc\n\nyyy', 'gqip', 'x\n\n|aa bb cc\n\nyyy')
@@ -41,6 +42,10 @@ class Test_gq(unittest.FunctionalTestCase):
     def test_v_gq(self):
         self.eq('x\n\n|aa\nbb\ncc|\n\nyyy\n', 'v_gq', 'n_x\n\n|aa bb cc\n\nyyy\n')
         self.eq('x\n\na|a\nbb\ncc|\n\nyyy\n', 'v_gq', 'n_x\n\n|aa bb cc\n\nyyy\n')
+        self.eq('x\n\n|one\ntwo\nthree|\n\nx', 'v_gq', 'n_x\n\n|one two three\n\nx')
+        self.eq('x\n\n|one\ntwo\nthree\n|\nx', 'v_gq', 'n_x\n\n|one two three\n\nx')
+        self.eq('x\n|one\ntwo\nthree|\nx', 'v_gq', 'n_x\n|one two three\nx')
+        self.eq('x\n|one\ntwo\nthree\n|x', 'v_gq', 'n_x\n|one two three\nx')
 
     def test_v_gq_cursors_should_move_to_the_first_non_blank_character_of_the_line(self):
         self.eq('x\n\nx a|a\nbb\ncc|\n\nyyy\n', 'v_gq', 'n_x\n\n|x aa bb cc\n\nyyy\n')
