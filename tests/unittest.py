@@ -853,6 +853,29 @@ def mock_status_message():
 
 # Usage:
 #
+#   @unittest.mock_mappings(
+#       (unittest.NORMAL, ',l', '3l'),
+#       (unittest.VISUAL, ',l', '3l'),
+#       # more mappings..
+#   )
+#   def test_mappings(self):
+#       # test something...
+#
+def mock_mappings(*mappings):
+    def wrapper(f):
+        from NeoVintageous.nv.mappings import _mappings
+        from NeoVintageous.nv.mappings import mappings_add
+        @unittest.mock.patch('NeoVintageous.nv.mappings._mappings', new_callable=lambda: {k: {} for k in _mappings})
+        def wrapped(self, *args, **kwargs):
+            for mapping in mappings:
+                mappings_add(*mapping)
+            return f(self, *args[:-1], **kwargs)
+        return wrapped
+    return wrapper
+
+
+# Usage:
+#
 #   @unitest.mock_ui()
 #   def test_ui(self):
 #

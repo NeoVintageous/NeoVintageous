@@ -392,8 +392,9 @@ class TestFeedKey(unittest.FunctionalTestCase):
             self.feedkey('a')
             self.assertNormal('1\n|\n6\n7')
 
+    @unittest.mock_mappings()
     def test_substitute_marked_ranges(self):
-        for key in ('\'',):
+        for key in ('\'', '`'):
             self.normal('1this\n2th|is\n3this\n4this\n5this\n6this\n7this')
             self.feedkey('m')
             self.feedkey('a')
