@@ -872,8 +872,10 @@ def mock_status_message():
 #
 def mock_mappings(*mappings):
     def wrapper(f):
+
         from NeoVintageous.nv.mappings import _mappings
         from NeoVintageous.nv.mappings import mappings_add
+
         @unittest.mock.patch('NeoVintageous.nv.mappings._mappings', new_callable=lambda: {k: {} for k in _mappings})
         def wrapped(self, *args, **kwargs):
             for mapping in mappings:
