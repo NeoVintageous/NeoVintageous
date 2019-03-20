@@ -53,6 +53,13 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('<c-Space>'), '<C-space>', 'ctrl-space key')
         self.assertEqual(tokenize_one('0'), '0', 'zero key')
         self.assertEqual(tokenize_one('<c-m-.>'), '<C-M-.>', 'ctrl-alt-period key')
+        self.assertEqual(tokenize_one('<c-m-s-a>'), '<C-M-S-a>')
+        self.assertEqual(tokenize_one('<c-m-s>'), '<C-M-s>')
+        self.assertEqual(tokenize_one('<c-s-b>'), '<C-S-b>')
+        self.assertEqual(tokenize_one('<m-c-x>'), '<C-M-x>')
+        self.assertEqual(tokenize_one('<m-s-c>'), '<M-S-c>')
+        self.assertEqual(tokenize_one('<s-c-x>'), '<C-S-x>')
+        self.assertEqual(tokenize_one('<s-m-x>'), '<M-S-x>')
         self.assertEqual(tokenize_one('<tab>'), '<tab>', 'tab key')
         self.assertEqual(tokenize_one('<Leader>'), '\\', 'leader key')
         self.assertEqual(tokenize_one('<leader>'), '\\', 'leader key')
@@ -67,6 +74,45 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('<d-A>'), '<D-A>')
         self.assertEqual(tokenize_one('<D-i>'), '<D-i>')
         self.assertEqual(tokenize_one('>'), '>')
+
+    def test_expected_closing_bracket(self):
+        invalid_tokens = (
+            '<c-',
+            '<C-',
+            '<D-',
+            '<d-'
+            '<s-',
+            '<S-',
+            '<C',
+            '<S',
+        )
+
+        for token in invalid_tokens:
+            with self.assertRaisesRegex(ValueError, "expected '>' at index"):
+                KeySequenceTokenizer(token).tokenize_one()
+
+    def test_invalid_modifier_sequence(self):
+        invalid_tokens = (
+            '<c-c->',
+            '<C-C->',
+            '<d-d->',
+            '<c-s-c->',
+        )
+
+        for token in invalid_tokens:
+            with self.assertRaisesRegex(ValueError, "invalid modifier sequence"):
+                KeySequenceTokenizer(token).tokenize_one()
+
+    def test_invalid_key_name(self):
+        invalid_tokens = {
+            '<>': '\'\' is not a known key',
+            '<foobar>': '\'foobar\' is not a known key',
+            '<a>': 'wrong sequence <a>',
+        }
+
+        for token, msg in invalid_tokens.items():
+            with self.assertRaisesRegex(ValueError, msg):
+                KeySequenceTokenizer(token).tokenize_one()
 
     @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
     def test_iter_tokenize(self):
