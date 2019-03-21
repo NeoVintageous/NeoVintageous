@@ -846,7 +846,7 @@ def ex_setlocal(view, option, value, **kwargs):
 def ex_shell(view, **kwargs):
 
     def _open_shell(command):
-        return subprocess.Popen(command, cwd=os.getcwd())
+        return subprocess.Popen(command, cwd=os.getcwd(), env=os.environ)
 
     if platform() == 'linux':
         term = view.settings().get('VintageousEx_linux_terminal')
