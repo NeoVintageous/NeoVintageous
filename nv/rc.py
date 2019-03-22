@@ -67,6 +67,7 @@ def _unload():
 
 def _load():
     try:
+        _load_preset()
         from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
         with builtins.open(_file_path(), 'r') as f:
@@ -78,6 +79,25 @@ def _load():
         print('%s file loaded' % _file_name())
     except FileNotFoundError:
         _log.info('%s file not found', _file_name())
+
+
+def _load_preset():
+    window = sublime.active_window()
+    view = window.active_view()
+    if view:
+        keys = view.settings().get('vintageous_key_presets')
+        if keys and keys in ('idea', 'vwrapper'):
+            file_name = str(keys) + 'rc'
+            resource = sublime.load_resource('Packages/NeoVintageous/res/keypresets/' + file_name)
+            if resource:
+                from NeoVintageous.nv.ex_cmds import do_ex_cmdline
+                window = sublime.active_window()
+                for line in resource.split('\n'):
+                    ex_cmdline = _parse_line(line)
+                    if ex_cmdline:
+                        do_ex_cmdline(window, ex_cmdline)
+
+                print('%s preset file loaded' % file_name)
 
 
 # Recursive mappings (:map, :nmap, :omap, :smap, :vmap) are not supported. They

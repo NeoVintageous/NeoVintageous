@@ -1,0 +1,6 @@
+" This is a preset rc file of Eclipse vwrapper style mappings.
+"
+" The character " (the double quote mark) starts a comment
+" Type :h neovintageousrc for help.
+
+nnoremap <C-d> dd

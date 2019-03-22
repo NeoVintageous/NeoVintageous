@@ -1,0 +1,10 @@
+" This is a preset rc file of IntelliJ IDEAVim style mappings.
+"
+" The character " (the double quote mark) starts a comment
+" Type :h neovintageousrc for help.
+
+" Saving.
+nnoremap <C-s> :w<CR>
+vnoremap <C-s> :w<CR>
+
+nnoremap <C-d> dd
