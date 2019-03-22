@@ -109,7 +109,7 @@ class TestCommandToken(unittest.TestCase):
         cmd = str(TokenCommand('fizz'))
         self.assertTrue('fizz {' in cmd)
         self.assertTrue("'name': 'fizz'" in cmd)
-        self.assertTrue("'params': {}, " in cmd)
+        self.assertTrue("'params': {}" in cmd)
         self.assertTrue("'addressable': False" in cmd)
         self.assertTrue("'forced': False" in cmd)
         self.assertTrue("'content': 'fizz'" in cmd)
