@@ -145,13 +145,6 @@ def goto_prev_change(view, mode, count):
 
 
 def goto_prev_target(view, mode, count, target):
-    def move(view, s):
-        reg = find_prev_lone_bracket(view, s.b, brackets)
-        if reg is not None:
-            return Region(reg.a)
-
-        return s
-
     if mode != NORMAL:
         enter_normal_mode(view, mode)
         ui_blink()
@@ -163,21 +156,25 @@ def goto_prev_target(view, mode, count, target):
     }
 
     brackets = targets.get(target)
-    if brackets is None:
+    if not brackets:
         ui_blink()
         return
 
-    regions_transformer(view, move)
+    def f(view, s):
+        start = s.b
+        if view.substr(start) == target:
+            start -= 1
 
-
-def goto_next_target(view, mode, count, target):
-    def move(view, s):
-        reg = find_next_lone_bracket(view, s.b, brackets)
+        reg = find_prev_lone_bracket(view, start, brackets)
         if reg is not None:
             return Region(reg.a)
 
         return s
 
+    regions_transformer(view, f)
+
+
+def goto_next_target(view, mode, count, target):
     if mode != NORMAL:
         enter_normal_mode(view, mode)
         ui_blink()
@@ -189,8 +186,19 @@ def goto_next_target(view, mode, count, target):
     }
 
     brackets = targets.get(target)
-    if brackets is None:
+    if not brackets:
         ui_blink()
         return
 
-    regions_transformer(view, move)
+    def f(view, s):
+        start = s.b
+        if view.substr(start) == target:
+            start += 1
+
+        reg = find_next_lone_bracket(view, start, brackets, count)
+        if reg is not None:
+            return Region(reg.a)
+
+        return s
+
+    regions_transformer(view, f)

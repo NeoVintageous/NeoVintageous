@@ -20,8 +20,39 @@ from NeoVintageous.tests import unittest
 
 class TestLeftSquareBracketTarget(unittest.FunctionalTestCase):
 
-    def test_left_bracket_left_paren(self):
+    def test_n_paren(self):
         self.eq('x(\n_|)_', 'n_[(', 'x|(\n_)_')
 
-    def test_left_bracket_left_brace(self):
+    def test_n_brace(self):
         self.eq('x{\n_|}_', 'n_[{', 'x|{\n_}_')
+
+    def test_n_brace_balanced(self):
+        self.eq('{ a { b { x |} c } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a { b { x } c |} d }', 'n_]}', '{ a { b { x } c } d |}')
+        self.eq('{ a { b { x } c } d |}', 'n_]}', '{ a { b { x } c } d |}')
+        self.eq('{ a { b { x } c }| d }', 'n_]}', '{ a { b { x } c } d |}')
+        self.eq('{ a { b { x } c| } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a { b { x } |c } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a { b { x }| c } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a { b { x| } c } d }', 'n_]}', '{ a { b { x |} c } d }')
+        self.eq('{ a { b { |x } c } d }', 'n_]}', '{ a { b { x |} c } d }')
+        self.eq('{ a { b {| x } c } d }', 'n_]}', '{ a { b { x |} c } d }')
+        self.eq('{ a { b |{ x } c } d }', 'n_]}', '{ a { b { x |} c } d }')
+        self.eq('{ a { b| { x } c } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a { |b { x } c } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a {| b { x } c } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a |{ b { x } c } d }', 'n_]}', '{ a { b { x } c |} d }')
+        self.eq('{ a| { b { x } c } d }', 'n_]}', '{ a { b { x } c } d |}')
+        self.eq('{ |a { b { x } c } d }', 'n_]}', '{ a { b { x } c } d |}')
+        self.eq('{| a { b { x } c } d }', 'n_]}', '{ a { b { x } c } d |}')
+        self.eq('|{ a { b { x } c } d }', 'n_]}', '{ a { b { x } c } d |}')
+
+    def test_n_brace_unbalanced(self):
+        self.eq('{ x } x |{ y }', 'n_[{', '{ x } x |{ y }')
+        self.eq('{ x } x| { y }', 'n_[{', '{ x } x| { y }')
+        self.eq('{ x } |x { y }', 'n_[{', '{ x } |x { y }')
+        self.eq('{ x }| x { y }', 'n_[{', '{ x }| x { y }')
+
+    def test_n_brace_multiline(self):
+        self.eq('{\n    {\nfi|zz\n    }\n}', 'n_[{', '{\n    |{\nfizz\n    }\n}')
+        self.eq('{\n    |{\nfizz\n    }\n}', 'n_[{', '|{\n    {\nfizz\n    }\n}')

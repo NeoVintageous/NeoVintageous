@@ -23,6 +23,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#474](https://github.com/NeoVintageous/NeoVintageous/issues/474): `]}`, `])`, `[{`, and `[(` are inconsistent in NORMAL mode
 * Fixed [#473](https://github.com/NeoVintageous/NeoVintageous/issues/473): `gq` on reverse selection is off-by-one
 * Fixed [#469](https://github.com/NeoVintageous/NeoVintageous/issues/469): Unable to set mapleader to `<Space>`
 * Fixed [#468](https://github.com/NeoVintageous/NeoVintageous/issues/468): `d{backtick}{a-z}` should work the same as `d{singlequote}{a-z}`

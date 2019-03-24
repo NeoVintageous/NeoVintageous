@@ -467,11 +467,6 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
                                                     flags=IGNORECASE)
 
         if prev_opening_bracket is None:
-            # Check whether the caret is exactly at a bracket.
-            # Tag names may be escaped, so slice them.
-            if (i == 0 and view.substr(start) == tags[0][-1] and view.substr(start - 1) != '\\'):
-                return Region(start, start + 1)
-
             # Unbalanced tags; nothing we can do.
             return
 
