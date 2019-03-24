@@ -25,6 +25,7 @@ class Test_ex_let(unittest.FunctionalTestCase):
     def assertVariable(self, name, expected):
         self.assertEqual(get(name), expected)
 
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_let_can_set_mapleader_to_a_comma(self):
         self.feed(':let mapleader=,')
         self.assertVariable('<leader>', ',')
@@ -33,6 +34,7 @@ class Test_ex_let(unittest.FunctionalTestCase):
         self.feed(':let mapleader=\',\'')
         self.assertVariable('<leader>', ',')
 
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_let_can_set_mapleader_to_a_slash(self):
         self.feed(':let mapleader=/')
         self.assertVariable('<leader>', '/')
@@ -41,6 +43,7 @@ class Test_ex_let(unittest.FunctionalTestCase):
         self.feed(':let mapleader=\'/\'')
         self.assertVariable('<leader>', '/')
 
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_let_can_set_mapleader_to_a_space(self):
         self.feed(':let mapleader=<space>')
         self.assertVariable('<leader>', '<space>')

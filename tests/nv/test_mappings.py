@@ -180,6 +180,7 @@ class TestMappings(unittest.TestCase):
 
     @_patch_mappings
     @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': ','})
+    @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
     def test_add_normalises_mapping(self, _mappings):
         mappings_add(NORMAL, '<Space>', 'a')
         mappings_add(VISUAL, '<SPACE>', 'v')
