@@ -249,9 +249,10 @@ def to_bare_command_name(seq):
     if seq == '0':
         return seq
 
-    new_seq = re.sub(r'^(?:".)?(?:[1-9]+)?', '', seq)
     # Account for d2d and similar sequences.
-    new_seq = list(KeySequenceTokenizer(new_seq).iter_tokenize())
+    new_seq = list(KeySequenceTokenizer(
+        re.sub(r'^(?:".)?(?:[1-9]+)?', '', seq)
+    ).iter_tokenize())
 
     return ''.join(k for k in new_seq if not k.isdigit())
 
