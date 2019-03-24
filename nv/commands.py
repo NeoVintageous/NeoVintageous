@@ -51,6 +51,7 @@ from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.mappings import Mapping
+from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.state import init_state
@@ -494,13 +495,18 @@ class _nv_feed_key(ViWindowCommandBase):
 
             return
 
-        if repeat_count:
-            state.action_count = str(repeat_count)
+        # If the user has defined any mappings that starts with a number
+        # (count), or " (register character), we need to skip the count handler
+        # and go straight to resolving the mapping, otherwise it won't resolve.
+        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
+        if not mappings_can_resolve(state.mode, state.partial_sequence + key):
+            if repeat_count:
+                state.action_count = str(repeat_count)
 
-        if self._handle_count(state, key, repeat_count):
-            _log.debug('handled count')
+            if self._handle_count(state, key, repeat_count):
+                _log.debug('handled count')
 
-            return
+                return
 
         state.partial_sequence += key
 

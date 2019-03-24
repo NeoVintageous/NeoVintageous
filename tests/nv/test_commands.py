@@ -425,6 +425,8 @@ class TestFeedKey(unittest.FunctionalTestCase):
         (unittest.NORMAL, ',i', 'ifizz<Esc>fz'),
         (unittest.NORMAL, ',j', 'ifizz<Esc>f'),
         (unittest.NORMAL, ',k', 'ca'),
+        (unittest.NORMAL, '2l', 'w'),
+        (unittest.NORMAL, '""', 'b'),
     )
     def test_process_notation(self):
         self.normal('|fizz buzz')
@@ -469,4 +471,11 @@ class TestFeedKey(unittest.FunctionalTestCase):
         self.normal('|foo buzz')
         self.feedkeys(',kw')
         self.assertInsert('| buzz')
+        self.assertNoBell()
+        self.normal('|fizz buzz')
+        self.feedkeys('2l')
+        self.assertNormal('fizz |buzz')
+        self.normal('fizz bu|zz')
+        self.feedkeys('""')
+        self.assertNormal('fizz |buzz')
         self.assertNoBell()

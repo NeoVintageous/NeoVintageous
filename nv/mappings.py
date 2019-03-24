@@ -99,6 +99,18 @@ def mappings_is_incomplete(mode, seq):
     return False
 
 
+def mappings_can_resolve(mode, sequence):
+    full_match = _find_full_match(mode, sequence)
+    if full_match:
+        return True
+
+    partial_matches = _find_partial_matches(mode, sequence)
+    if partial_matches:
+        return True
+
+    return False
+
+
 def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
     # Look at the current global state and return the command mapped to the available sequence.
     #
@@ -121,12 +133,15 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
     # We usually need to look at the partial sequence, but some commands do
     # weird things, like ys, which isn't a namespace but behaves as such
     # sometimes.
+    seq = sequence or state.partial_sequence
 
-    partial_sequence = state.partial_sequence
-    seq = to_bare_command_name(sequence or partial_sequence)
     command = None
 
     if check_user_mappings:
+        # Resolve the full sequence rather than the "bare" sequence, because the
+        # user may have defined some mappings that start with numbers (counts),
+        # or " (register character), which are stripped from the bare sequences.
+        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
 
         # XXX The reason these does not pass the mode, and instead uses the
         # state.mode, is because implementation of commands like dd are a bit
@@ -141,7 +156,7 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
         command = _seq_to_mapping(state.mode, seq)
 
     if not command:
-        command = seq_to_command(state.view, seq, mode or state.mode)
+        command = seq_to_command(state.view, to_bare_command_name(seq), mode or state.mode)
 
     _log.debug('resolved %s %s -> %s %s', mode, sequence, command, command.__class__.__mro__)
 

@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#434](https://github.com/NeoVintageous/NeoVintageous/issues/434): Support mapping digits e.g. `<leader>0`
 * Added [#196](https://github.com/NeoVintageous/NeoVintageous/issues/196): `z.` Redraw, line at center of window and put cursor at first non-blank
 * Added [#454](https://github.com/NeoVintageous/NeoVintageous/issues/454): Support advanced ex command mapping
 * Added [#99](https://github.com/NeoVintageous/NeoVintageous/issues/99): Support marks in line ranges
@@ -23,6 +24,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#98](https://github.com/NeoVintageous/NeoVintageous/issues/98): Unable to map double quotes
 * Fixed [#474](https://github.com/NeoVintageous/NeoVintageous/issues/474): `]}`, `])`, `[{`, and `[(` are inconsistent in NORMAL mode
 * Fixed [#473](https://github.com/NeoVintageous/NeoVintageous/issues/473): `gq` on reverse selection is off-by-one
 * Fixed [#469](https://github.com/NeoVintageous/NeoVintageous/issues/469): Unable to set mapleader to `<Space>`
