@@ -46,7 +46,20 @@ class Test_gq(unittest.FunctionalTestCase):
         self.eq('x\n\n|one\ntwo\nthree\n|\nx', 'v_gq', 'n_x\n\n|one two three\n\nx')
         self.eq('x\n|one\ntwo\nthree|\nx', 'v_gq', 'n_x\n|one two three\nx')
         self.eq('x\n|one\ntwo\nthree\n|x', 'v_gq', 'n_x\n|one two three\nx')
+        self.eq('    abc\n|        fizz\n        bu|zz\n\n', 'v_gq', 'n_    abc\n        |fizz buzz\n\n')
+        self.eq('r_    abc\n|        fizz\n        bu|zz\n\n', 'v_gq', 'n_    abc\n        |fizz buzz\n\n')
 
     def test_v_gq_cursors_should_move_to_the_first_non_blank_character_of_the_line(self):
         self.eq('x\n\nx a|a\nbb\ncc|\n\nyyy\n', 'v_gq', 'n_x\n\n|x aa bb cc\n\nyyy\n')
         self.eq('x\n\n    x a|a\nbb\ncc|\n\nyyy\n', 'v_gq', 'n_x\n\n    |x aa bb cc\n\nyyy\n')
+
+
+class Test_gq_python_syntax(unittest.FunctionalTestCase):
+
+    def feed(self, seq):
+        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+        super().feed(seq)
+
+    def test_v_gq(self):
+        self.eq('    if x:\n|        # fizz\n        # bu|zz\n\n', 'v_gq', 'n_    if x:\n        |# fizz buzz\n\n')
+        self.eq('r_    if x:\n|        # fizz\n        # bu|zz\n\n', 'v_gq', 'n_    if x:\n        |# fizz buzz\n\n')
