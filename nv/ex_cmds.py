@@ -562,7 +562,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
 
 
 def ex_let(name, value, **kwargs):
-    variables.set(name, value)
+    variables.set(name, re.sub('^(?:"|\')(.*)(?:"|\')$', '\\1', value))
 
 
 @_serialize_deserialize
