@@ -17,9 +17,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Deprecated
 
-* Implemented: Deprecate `neovintageous_toggle_side_bar ` command; use the `neovintageous {'action': 'toggle_side_bar'}` instead
-* Implemented: Deprecate `neovintageous_reload_my_rc_file` command; use the `neovintageous {'action': 'reload_rc_file'}` instead
-* Implemented: Deprecate `neovintageous_open_my_rc_file` command; use the `neovintageous {'action': 'open_rc_file'}` instead
+* Implemented [#475](https://github.com/NeoVintageous/NeoVintageous/issues/475): Deprecate `neovintageous_toggle_side_bar ` command; use the `neovintageous {'action': 'toggle_side_bar'}` instead
+* Implemented [#475](https://github.com/NeoVintageous/NeoVintageous/issues/475): Deprecate `neovintageous_reload_my_rc_file` command; use the `neovintageous {'action': 'reload_rc_file'}` instead
+* Implemented [#475](https://github.com/NeoVintageous/NeoVintageous/issues/475): Deprecate `neovintageous_open_my_rc_file` command; use the `neovintageous {'action': 'open_rc_file'}` instead
 
 ### Fixed
 
