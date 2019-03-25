@@ -38,6 +38,10 @@ class Test_d(unittest.FunctionalTestCase):
         self.assertRegister('-wo')
         self.assertRegisterIsNone('0')
         self.assertRegisterIsNone('1')
+        self.eq('one\n|\ntwo\nthree', 'de', 'one\n|three')
+        self.eq('one\n|\n\ntwo\nthree', 'de', 'one\n|three')
+        self.eq('one\n|\n\n\ntwo\nthree', 'de', 'one\n|three')
+        self.eq('one\n|\n\n\n    two\nthree', 'de', 'one\n|three')
 
     def test_df(self):
         self.eq('one |two three', 'dft', 'one |hree')

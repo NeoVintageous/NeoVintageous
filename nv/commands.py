@@ -3971,6 +3971,8 @@ class _vi_e(ViMotionCommand):
                 pt = word_ends(view, start=s.b, count=count)
                 if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
                     a = view.line(s.a).a
+                    if view.line(a).empty():
+                        pt += 1
 
                 return Region(a, pt)
 
