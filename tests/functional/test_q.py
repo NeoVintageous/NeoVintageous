@@ -20,9 +20,6 @@ from NeoVintageous.tests import unittest
 
 class Test_q(unittest.FunctionalTestCase):
 
-    def setUp(self):
-        super().setUp()
-
     def tearDown(self):
         super().tearDown()
         self.resetMacros()

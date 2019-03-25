@@ -22,6 +22,7 @@ class Test_P(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
+        self.settings().set('vintageous_use_sys_clipboard', False)
         self.resetRegisters()
 
     def test_P_paste_characterwise_content(self):
@@ -69,6 +70,10 @@ class Test_v_P(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
+        self.settings().set('vintageous_use_sys_clipboard', False)
+
+    def tearDown(self):
+        super().tearDown()
         self.resetRegisters()
 
     def test_v_P_paste_characterwise_content(self):

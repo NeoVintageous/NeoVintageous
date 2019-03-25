@@ -21,6 +21,21 @@ import itertools
 from sublime import get_clipboard
 from sublime import set_clipboard
 
+try:
+    from Default.paste_from_history import g_clipboard_history as _clipboard_history
+
+    def update_clipboard_history(text):
+        _clipboard_history.push_text(text)
+
+except Exception:
+    print('NeoVintageous: could not import default package clipboard history updater')
+
+    import traceback
+    traceback.print_exc()
+
+    def update_clipboard_history(text):
+        print('NeoVintageous: could not update clipboard history: import error')
+
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import VISUAL_LINE
 
@@ -190,11 +205,9 @@ class Registers:
 
     def _maybe_set_sys_clipboard(self, name, value):
         if (name in _CLIPBOARD or self.settings.view['vintageous_use_sys_clipboard'] is True):
-            # Take care of multiple selections.
-            if len(value) > 1:
-                self.view.run_command('copy')
-            else:
-                set_clipboard(value[0])
+            value = '\n'.join(value)
+            set_clipboard(value)
+            update_clipboard_history(value)
 
     # Set a register.
     # In order to honor multiple selections in Sublime Text, we need to store

@@ -26,6 +26,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#364](https://github.com/NeoVintageous/NeoVintageous/issues/364): Loss of clipboard copy and paste functionality in insert mode
 * Fixed [#98](https://github.com/NeoVintageous/NeoVintageous/issues/98): Unable to map double quotes
 * Fixed [#474](https://github.com/NeoVintageous/NeoVintageous/issues/474): `]}`, `])`, `[{`, and `[(` are inconsistent in NORMAL mode
 * Fixed [#473](https://github.com/NeoVintageous/NeoVintageous/issues/473): `gq` on reverse selection is off-by-one

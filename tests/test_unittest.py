@@ -449,6 +449,7 @@ class TestViewTestCase(unittest.ViewTestCase):
             self.register('x', [])
 
     def test_numbered_register(self):
+        self.settings().set('vintageous_use_sys_clipboard', False)
         self.register('"x')
         self.assertRegister('"x')
         self.register('0y')

@@ -27,6 +27,10 @@ class TestFeedKey(unittest.FunctionalTestCase):
         for key in keys:
             self.view.window().run_command('_nv_feed_key', {'key': key})
 
+    def setUp(self):
+        super().setUp()
+        self.settings().set('vintageous_use_sys_clipboard', False)
+
     def tearDown(self):
         super().tearDown()
         self.resetRegisters()
