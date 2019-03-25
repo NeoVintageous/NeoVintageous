@@ -42,3 +42,5 @@ class Test_right_brace(unittest.FunctionalTestCase):
         self.eq('r_|1\n2\n\n3\n\n\n\n4\n5|', 'l_}', 'r_1\n2\n|\n3\n\n\n\n4\n5|')
         self.eq('r_1\n2\n|\n3\n\n\n\n4\n5|', 'l_}', 'r_1\n2\n\n3\n|\n\n\n4\n5|')
         self.eq('r_|1\nfizz\n|2\n\n\n\n4', 'l_}', '1\n|fizz\n2\n\n|\n\n4')
+        self.eq('r_|1\nfizz\n2\n|\n\n\n4', 'l_}', '1\nfizz\n|2\n\n|\n\n4')
+        self.eq('r_|1\nfizz\nbuzz\n|\n\n\n4', 'l_}', '1\nfizz\n|buzz\n\n|\n\n4')

@@ -26,6 +26,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#477](https://github.com/NeoVintageous/NeoVintageous/issues/477): `}` VISUAL line off-by-one
 * Fixed [#476](https://github.com/NeoVintageous/NeoVintageous/issues/476): `de` should delete leading whitespace
 * Fixed [#134](https://github.com/NeoVintageous/NeoVintageous/issues/134): `(` and `)` not jumping correctly
 * Fixed [#364](https://github.com/NeoVintageous/NeoVintageous/issues/364): Loss of clipboard copy and paste functionality in insert mode

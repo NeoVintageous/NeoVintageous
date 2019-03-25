@@ -4031,7 +4031,7 @@ class _vi_right_brace(ViMotionCommand):
                 if s.a <= s.b:
                     return Region(s.a, par_begin + 1)
                 else:
-                    if par_begin > s.a:
+                    if par_begin >= s.a:
                         return Region(view.line(s.a - 1).a, par_begin + 1)
 
                     return Region(s.a, par_begin)
