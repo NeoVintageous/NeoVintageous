@@ -21,10 +21,38 @@ from NeoVintageous.tests import unittest
 class Test_right_paren(unittest.FunctionalTestCase):
 
     def test_n(self):
+        self.eq('|', 'n_)', '|')
+        self.eq('fi|zz', 'n_)', 'fi|zz')
         self.eq('|a b c. xy', 'n_)', 'a b c. |xy')
         self.eq('|a b c? xy', 'n_)', 'a b c? |xy')
         self.eq('|a b c! xy', 'n_)', 'a b c! |xy')
         self.eq('|a b c! x y. a b. xy.', 'n_3)', 'a b c! x y. a b. |xy.')
+        self.eq('|fizz? buzz', 'n_)', 'fizz? |buzz')
+        self.eq('|fizz! buzz', 'n_)', 'fizz! |buzz')
+        self.eq('|fizz. buzz', 'n_)', 'fizz. |buzz')
+        self.eq('|fizz.  buzz', 'n_)', 'fizz.  |buzz')
+        self.eq('|fizz.   buzz', 'n_)', 'fizz.   |buzz')
+        self.eq('|fizz." buzz', 'n_)', 'fizz." |buzz')
+        self.eq('|fizz.) buzz', 'n_)', 'fizz.) |buzz')
+        self.eq('|fizz.] buzz', 'n_)', 'fizz.] |buzz')
+        self.eq("|fizz.' buzz", 'n_)', "fizz.' |buzz")
+
+    def test_n_section_boundary(self):
+        self.normal('|one.\ntwo.\n\nthree.\n\n\nfour.\n\n\n\nfive.')
+        self.feed('n_)')
+        self.assertNormal('one.\n|two.\n\nthree.\n\n\nfour.\n\n\n\nfive.')
+        self.feed('n_)')
+        self.assertNormal('one.\ntwo.\n|\nthree.\n\n\nfour.\n\n\n\nfive.')
+        self.feed('n_)')
+        self.assertNormal('one.\ntwo.\n\n|three.\n\n\nfour.\n\n\n\nfive.')
+        self.feed('n_)')
+        self.assertNormal('one.\ntwo.\n\nthree.\n|\n\nfour.\n\n\n\nfive.')
+        self.feed('n_)')
+        self.assertNormal('one.\ntwo.\n\nthree.\n\n\n|four.\n\n\n\nfive.')
+        self.feed('n_)')
+        self.assertNormal('one.\ntwo.\n\nthree.\n\n\nfour.\n|\n\n\nfive.')
+        self.feed('n_)')
+        self.assertNormal('one.\ntwo.\n\nthree.\n\n\nfour.\n\n\n\n|five.')
 
     def test_N(self):
         self.eq('|a b c. xy', ')', 'N_|a b c. |xy')

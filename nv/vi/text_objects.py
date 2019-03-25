@@ -526,30 +526,29 @@ def find_paragraph_text_object(view, s, inclusive=True, count=1):
     return Region(begin, end)
 
 
-def find_sentences_forward(view, start_pt, count=1):
-    if isinstance(start_pt, Region):
-        start_pt = start_pt.b
+def find_sentences_forward(view, start, count=1):
+    def _find_sentence_forward(view, start):
+        char = view.substr(start)
+        if char == '\n':
+            next_sentence = view.find('\\s+', start)
+        else:
+            next_sentence = view.find('[\\.\\?\\!][\\)\\]"\']*\\s', start)
 
-    pt = None
+        if next_sentence:
+            return next_non_blank(view, next_sentence.b)
+
+    start = start.b if isinstance(start, Region) else start
+
+    new_start = start
     for i in range(count):
-        match = view.find(
-            '('
-            '[\\.\\?\\!][\\)\\]"\']*[\\s\\n]+|'
-            '[^\n]\n(?=\n)|\n\n+|'
-            '^\n(?=[^\n])'
-            ')', start_pt)
-
-        # We need to check if something was *actually* found, because find()
-        # returns Region(-1) when nothing is found, but that evaluates to true
-        # and has a size zero region like a valid region e.g. Region(3).
-        if match == Region(-1):
+        next_sentence = _find_sentence_forward(view, new_start)
+        if not next_sentence:
             break
 
-        pt = match.b
-        start_pt = match.b
+        new_start = next_sentence
 
-    if pt is not None:
-        return Region(next_non_blank(view, pt))
+    if new_start != start:
+        return Region(new_start)
 
 
 def find_sentences_backward(view, start_pt, count=1):
@@ -558,13 +557,33 @@ def find_sentences_backward(view, start_pt, count=1):
 
     pt = previous_non_white_space_char(view, start_pt, white_space='\n \t')
     sen = Region(pt)
+    prev = sen
     while True:
         sen = view.expand_by_class(sen, CLASS_LINE_END | CLASS_PUNCTUATION_END)
         if sen.a <= 0 or view.substr(sen.begin() - 1) in ('.', '\n', '?', '!'):
             if view.substr(sen.begin() - 1) == '.' and not view.substr(sen.begin()) == ' ':
                 continue
 
+            if prev == sen:
+                break
+
+            prev = sen
+
+            if sen:
+                pt = next_non_blank(view, sen.a)
+                if pt < sen.b and pt != start_pt:
+                    if view.substr(pt) == '\n':
+                        if pt + 1 != start_pt:
+                            pt += 1
+
+                    return Region(pt)
+
+                if pt > 0:
+                    continue
+
             return sen
+
+    return sen
 
 
 def find_inner_paragraph(view, initial_loc):

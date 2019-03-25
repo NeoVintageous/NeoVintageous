@@ -14,3 +14,33 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
+
+
+from NeoVintageous.tests import unittest
+
+
+class Test_left_paren(unittest.FunctionalTestCase):
+
+    def test_n(self):
+        self.eq('|', 'n_(', '|')
+        self.eq('fi|zz', 'n_(', '|fizz')
+        self.eq('one. tw|o', 'n_(', 'one. |two')
+        self.eq('one? tw|o', 'n_(', 'one? |two')
+        self.eq('one! tw|o', 'n_(', 'one! |two')
+        self.eq('one.  tw|o', 'n_(', 'one.  |two')
+        self.eq('one.   tw|o', 'n_(', 'one.   |two')
+
+    def test_n_section_boundary(self):
+        self.normal('one.\ntwo.\n\nthree.\n\n\nfour.\n\n\n\nfi|ve.')
+        self.feed('n_(')
+        self.assertNormal('one.\ntwo.\n\nthree.\n\n\nfour.\n\n\n\n|five.')
+        self.feed('n_(')
+        self.assertNormal('one.\ntwo.\n\nthree.\n\n\nfour.\n\n\n|\nfive.')
+        self.feed('n_(')
+        self.assertNormal('one.\ntwo.\n\nthree.\n\n\n|four.\n\n\n\nfive.')
+        self.feed('n_(')
+        self.assertNormal('one.\ntwo.\n\nthree.\n\n|\nfour.\n\n\n\nfive.')
+        self.feed('n_(')
+        self.assertNormal('one.\ntwo.\n\n|three.\n\n\nfour.\n\n\n\nfive.')
+        self.feed('n_(')
+        self.assertNormal('one.\ntwo.\n|\nthree.\n\n\nfour.\n\n\n\nfive.')
