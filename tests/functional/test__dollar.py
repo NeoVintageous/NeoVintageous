@@ -26,4 +26,5 @@ class Test_dollar(unittest.FunctionalTestCase):
 
     def test_v_dollar(self):
         self.eq('one |two three', 'v_$', 'one |two three|')
+        self.eq('one |two three\nfour', 'v_$', 'one |two three\n|four')
         self.eq('one |two three\nfour', 'v_2$', 'one |two three\nfour|')
