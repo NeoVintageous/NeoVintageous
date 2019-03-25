@@ -4743,11 +4743,6 @@ class _vi_ctrl_u(ViMotionCommand):
                         b += 1
 
                 return Region(a, b)
-
-                if s.a < s.b and scroll_target_pt < s.a:
-                    return Region(min(s.a + 1, self.view.size()), scroll_target_pt)
-                return Region(s.a, scroll_target_pt)
-
             elif mode == INTERNAL_NORMAL:
                 return Region(s.a, scroll_target_pt)
             elif mode == VISUAL_LINE:
