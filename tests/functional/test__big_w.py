@@ -39,3 +39,6 @@ class Test_W(unittest.FunctionalTestCase):
         self.eq('|one_ two$ a,b.c four x', 'v_3W', '|one_ two$ a,b.c f|our x')
         self.eq('r_|on|e two three four x', 'v_W', 'o|ne t|wo three four x')
         self.eq('r_|on|e_ $two .!"£$%^&*(){}:@,./\\_ four x', 'v_3W', 'o|ne_ $two .!"£$%^&*(){}:@,./\\_ f|our x')
+        self.eq('r_|one t|wo', 'v_W', 'r_one |t|wo')
+        self.eq('r_|one |two', 'v_W', 'one| t|wo')
+        self.eq('fi|zz', 'v_W', 'fi|zz|')
