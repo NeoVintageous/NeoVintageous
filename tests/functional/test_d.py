@@ -24,6 +24,13 @@ class Test_d(unittest.FunctionalTestCase):
         super().setUp()
         self.resetRegisters()
 
+    def test_dB(self):
+        self.eq('fi|zz', 'dB', '|zz')
+        self.eq('fizz bu|zz', 'dB', 'fizz |zz')
+        self.eq('fizz bu.,!;|zz', 'dB', 'fizz |zz')
+        self.assertRegistersEqual('"-', 'bu.,!;')
+        self.assertRegistersEmpty('01')
+
     def test_de(self):
         self.eq('one |two three', 'de', 'one | three')
         self.eq('one t|wo three', 'de', 'one t| three')
