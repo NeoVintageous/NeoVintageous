@@ -56,3 +56,28 @@ class TestRightSquareBracketTarget(unittest.FunctionalTestCase):
     def test_n_brace_multiline(self):
         self.eq('{\n    {\nfizz\n    |}\n}', 'n_]}', '{\n    {\nfizz\n    }\n|}')
         self.eq('{\n    {\nfi|zz\n    }\n}', 'n_]}', '{\n    {\nfizz\n    |}\n}')
+
+    def test_v(self):
+        self.eq('{ a { b { x |} c |} d }', 'v_]}', '{ a { b { x |} c }| d }')
+        self.eq('{ a { b { x |} c } |d }', 'v_]}', '{ a { b { x |} c } d }|')
+        self.eq('{ a { b { x |} c }| d }', 'v_]}', '{ a { b { x |} c } d }|')
+        self.eq('{ a { b { x |} c| } d }', 'v_]}', '{ a { b { x |} c }| d }')
+        self.eq('{ a { b { x |} |c } d }', 'v_]}', '{ a { b { x |} c }| d }')
+        self.eq('{ a { b { x |}| c } d }', 'v_]}', '{ a { b { x |} c }| d }')
+        self.eq('{ a { b { |x |} c } d }', 'v_]}', '{ a { b { |x }| c } d }')
+        self.eq('{ a { b { |x }| c } d }', 'v_]}', '{ a { b { |x } c }| d }')
+        self.eq('{ a { b { |x| } c } d }', 'v_]}', '{ a { b { |x }| c } d }')
+        self.eq('{ a { b |{| x } c } d }', 'v_]}', '{ a { b |{ x }| c } d }')
+        self.eq('{ a |{| b { x } c } d }', 'v_]}', '{ a |{ b { x } c }| d }')
+        self.eq('|{ a { b { x }| c } d }', 'v_]}', '|{ a { b { x } c }| d }')
+        self.eq('|{| a { b { x } c } d }', 'v_]}', '|{ a { b { x } c } d }|')
+
+    def test_v_reverse(self):
+        self.eq('r_{ a { b { x |} c } d }|', 'v_]}', 'r_{ a { b { x } c |} d }|')
+        self.eq('r_{ a { b { x } c |} d }|', 'v_]}', 'r_{ a { b { x } c } d |}|')
+        self.eq('r_{ a { b { x } |c } d }|', 'v_]}', 'r_{ a { b { x } c |} d }|')
+        self.eq('r_{ a { b |{ x }| c } d }', 'v_]}', 'r_{ a { b { x |}| c } d }')
+        self.eq('r_{ a |{ b { x } c |} d }', 'v_]}', '{ a { b { x } c |}| d }')
+        self.eq('r_{ a |{ b { x } c } d }|', 'v_]}', 'r_{ a { b { x } c |} d }|')
+        self.eq('r_{ a |{ b { x } c }| d }', 'v_]}', 'r_{ a { b { x } c |}| d }')
+        self.eq('r_{ a |{ b { x| } c } d }', 'v_]}', '{ a { b { |x } c }| d }')

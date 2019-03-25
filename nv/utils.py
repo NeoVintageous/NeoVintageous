@@ -246,3 +246,28 @@ def get_scroll_up_target_pt(view, number_of_scroll_lines):
 
 def get_scroll_down_target_pt(view, number_of_scroll_lines):
     return _get_scroll_target(view, number_of_scroll_lines, forward=True)
+
+
+def resolve_visual_target(s, target):
+    # type: (Region, int) -> Region
+    if s.a < s.b:
+        if target < s.a:
+            s.a += 1
+            s.b = target
+        else:
+            s.b = target + 1
+    elif s.a > s.b:
+        if target > s.a:
+            s.a -= 1
+            s.b = target + 1
+        elif target == s.a:
+            s.b = target + 1
+        else:
+            s.b = target
+    elif s.a == s.b:
+        if target == s.b:
+            s.b = target + 1
+        else:
+            s.b = target
+
+    return s

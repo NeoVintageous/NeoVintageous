@@ -15,10 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from sublime import Region
+
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
+from NeoVintageous.nv.utils import resolve_visual_target
 
 
 class TestExtractFileName(unittest.ViewTestCase):
@@ -99,3 +102,47 @@ class TestExtractUrl(unittest.ViewTestCase):
 
     def test_dashes(self):
         self.assertExtractUrl('http://api-v1.example.com', 'http://api-v1.example.com.')
+
+
+class TestResolveVisualTarget(unittest.TestCase):
+
+    def test_forward_visual_selection(self):
+        self.assertEqual(resolve_visual_target(Region(5, 11), 14), Region(5, 15))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 13), Region(5, 14))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 12), Region(5, 13))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 11), Region(5, 12))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 10), Region(5, 11))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 9), Region(5, 10))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 8), Region(5, 9))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 7), Region(5, 8))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 6), Region(5, 7))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 5), Region(5, 6))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 4), Region(6, 4))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 3), Region(6, 3))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 2), Region(6, 2))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 1), Region(6, 1))
+        self.assertEqual(resolve_visual_target(Region(5, 11), 0), Region(6, 0))
+
+    def test_backward_visual_selection(self):
+        self.assertEqual(resolve_visual_target(Region(11, 5), 0), Region(11, 0))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 1), Region(11, 1))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 2), Region(11, 2))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 3), Region(11, 3))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 4), Region(11, 4))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 5), Region(11, 5))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 6), Region(11, 6))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 7), Region(11, 7))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 8), Region(11, 8))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 9), Region(11, 9))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 10), Region(11, 10))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 11), Region(11, 12))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 12), Region(10, 13))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 13), Region(10, 14))
+        self.assertEqual(resolve_visual_target(Region(11, 5), 14), Region(10, 15))
+
+    def test_invalid_visual_selection_point_is_corrected(self):
+        self.assertEqual(resolve_visual_target(Region(5, 5), 3), Region(5, 3))
+        self.assertEqual(resolve_visual_target(Region(5, 5), 4), Region(5, 4))
+        self.assertEqual(resolve_visual_target(Region(5, 5), 5), Region(5, 6))
+        self.assertEqual(resolve_visual_target(Region(5, 5), 6), Region(5, 6))
+        self.assertEqual(resolve_visual_target(Region(5, 5), 7), Region(5, 7))

@@ -20,6 +20,7 @@ from sublime import version
 
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.ui import ui_blink
+from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
 from NeoVintageous.nv.vi.utils import next_non_blank
@@ -145,29 +146,37 @@ def goto_prev_change(view, mode, count):
 
 
 def goto_prev_target(view, mode, count, target):
-    if mode != NORMAL:
-        enter_normal_mode(view, mode)
-        ui_blink()
-        return
-
     targets = {
         '{': ('\\{', '\\}'),
         '(': ('\\(', '\\)'),
     }
 
     brackets = targets.get(target)
-    if not brackets:
+    if not brackets or mode not in (NORMAL, VISUAL):
         ui_blink()
         return
 
     def f(view, s):
-        start = s.b
-        if view.substr(start) == target:
-            start -= 1
+        if mode == NORMAL:
+            start = s.b
+            if view.substr(start) == target:
+                start -= 1
 
-        reg = find_prev_lone_bracket(view, start, brackets)
-        if reg is not None:
-            return Region(reg.a)
+            prev_target = find_prev_lone_bracket(view, start, brackets)
+            if prev_target is not None:
+                return Region(prev_target.a)
+
+        elif mode == VISUAL:
+            start = s.b
+            if s.b > s.a:
+                start -= 1
+
+            if view.substr(start) == target:
+                start -= 1
+
+            prev_target = find_prev_lone_bracket(view, start, brackets)
+            if prev_target:
+                return resolve_visual_target(s, prev_target.a)
 
         return s
 
@@ -175,29 +184,35 @@ def goto_prev_target(view, mode, count, target):
 
 
 def goto_next_target(view, mode, count, target):
-    if mode != NORMAL:
-        enter_normal_mode(view, mode)
-        ui_blink()
-        return
-
     targets = {
         '}': ('\\{', '\\}'),
         ')': ('\\(', '\\)'),
     }
 
     brackets = targets.get(target)
-    if not brackets:
+
+    if not brackets or mode not in (NORMAL, VISUAL):
         ui_blink()
         return
 
     def f(view, s):
-        start = s.b
-        if view.substr(start) == target:
-            start += 1
+        if mode == NORMAL:
+            start = s.b
+            if view.substr(start) == target:
+                start += 1
 
-        reg = find_next_lone_bracket(view, start, brackets, count)
-        if reg is not None:
-            return Region(reg.a)
+            bracket = find_next_lone_bracket(view, start, brackets, count)
+            if bracket is not None:
+                return Region(bracket.a)
+
+        elif mode == VISUAL:
+            start = s.b
+            if s.b <= s.a and view.substr(start) == target:
+                start += 1
+
+            next_target = find_next_lone_bracket(view, start, brackets)
+            if next_target:
+                return resolve_visual_target(s, next_target.a)
 
         return s
 

@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#379](https://github.com/NeoVintageous/NeoVintageous/issues/379): `[{` and `]}` VISUAL mode
+* Added [#379](https://github.com/NeoVintageous/NeoVintageous/issues/379): `[(` and `])` VISUAL mode
 * Added [#434](https://github.com/NeoVintageous/NeoVintageous/issues/434): Support mapping digits e.g. `<leader>0`
 * Added [#196](https://github.com/NeoVintageous/NeoVintageous/issues/196): `z.` Redraw, line at center of window and put cursor at first non-blank
 * Added [#454](https://github.com/NeoVintageous/NeoVintageous/issues/454): Support advanced ex command mapping
