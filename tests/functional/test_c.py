@@ -128,3 +128,7 @@ class Test_c(unittest.FunctionalTestCase):
         self.assertRegister('1abc\n', linewise=True)
         self.assertRegisterIsNone('-')
         self.assertRegisterIsNone('0')
+
+    def test_c_(self):
+        self.eq('1\nfi|zz\n2\n3', 'c_', 'i_1\n|\n2\n3')
+        self.eq('1\n    fi|zz\n2\n3', 'c_', 'i_1\n|\n2\n3')
