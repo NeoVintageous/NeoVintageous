@@ -33,3 +33,6 @@ class Test_w(unittest.FunctionalTestCase):
         self.eq('r_|one two three|', 'v_2w', 'r_one two |three|')
         self.eq('|o|ne', 'v_2w', '|one|')
         self.eq('|o|ne\n', 'v_2w', '|one\n|')
+        self.eq('r_|one t|wo', 'v_w', 'r_one |t|wo')
+        self.eq('r_|one |two', 'v_w', 'one| t|wo')
+        self.eq('fi|zz', 'v_w', 'fi|zz|')
