@@ -56,6 +56,8 @@ class TestCommentary(unittest.FunctionalTestCase):
         self.eq('1\n2\n|3\n4\n5\n', 'gcG', '1\n2\n|# 3\n# 4\n# 5\n')
         self.eq('1\n2\n    |3\n    4\n    5\n', 'gcG', '1\n2\n    |# 3\n    # 4\n    # 5\n')
         self.eq('1\n2\n|    3\n    4\n    5\n', 'gcG', '1\n2\n    |# 3\n    # 4\n    # 5\n')
+        self.eq('1\n2\n3\n4\n5\n6\n|7', 'gc7G', '1\n2\n3\n4\n5\n6\n|# 7')
+        self.eq('1\n2\n3\n|4\n5\n6\n7\n8\n9', 'gc7G', '1\n2\n3\n|# 4\n# 5\n# 6\n# 7\n8\n9')
 
     def test_gcG_uncomment(self):
         self.eq('|# abc\n# def\n# ghi\n', 'gcG', '|abc\ndef\nghi\n')
