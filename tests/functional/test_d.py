@@ -55,6 +55,14 @@ class Test_d(unittest.FunctionalTestCase):
         self.assertRegister('-wo ')
         self.assertRegisterIsNone('0')
         self.assertRegisterIsNone('1')
+        self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
+        self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
+
+    def test_dW(self):
+        self.eq('one |two three', 'dW', 'one |three')
+        self.eq('one |t.$£;,wo three', 'dW', 'one |three')
+        self.eq('1\n|\n2\n3', 'dW', '1\n|2\n3')
+        self.eq('1\n|\n\n2\n3', 'dW', '1\n|\n2\n3')
 
     def test_d__dollar(self):
         self.eq('one |two three', 'd$', 'one| ')
