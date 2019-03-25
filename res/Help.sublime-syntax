@@ -71,6 +71,7 @@ contexts:
       scope: comment.neovintageous
 
     - match: \>$
+      scope: punctuation.definition.raw.block conceal
       push:
         - meta_scope: markup.raw.block.neovintageous
         - match: ^(?=[^\s<])|^\s*\<$|^\<
