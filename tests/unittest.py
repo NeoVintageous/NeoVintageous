@@ -1313,7 +1313,9 @@ _SEQ2CMD = {
     'ysiw}':        {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '}',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'w', 'mode': INTERNAL_NORMAL, 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
     'yss)':         {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': ')',     'motion': {'motion': '_vi_select_text_object', 'motion_args': {'text_object': 'l', 'mode': INTERNAL_NORMAL, 'count': 1, 'inclusive': False}}}},  # noqa: E241,E501
     'yy':           {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
+    '{':            {'command': '_vi_left_brace'},  # noqa: E241
     '|':            {'command': '_vi_pipe'},  # noqa: E241
+    '}':            {'command': '_vi_right_brace'},  # noqa: E241
     '~':            {'command': '_vi_tilde'},  # noqa: E241
 
 }  # type: dict
