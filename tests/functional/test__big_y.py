@@ -31,8 +31,8 @@ class Test_Y(unittest.FunctionalTestCase):
         self.eq('o|ne', 'Y', 'o|ne')
         self.assertRegister('"', 'one\n', linewise=True)
         self.assertRegister('0', 'one\n', linewise=True)
-        self.assertRegisterIsNone('1')
-        self.assertRegisterIsNone('-')
+        self.assertRegisterEmpty('1')
+        self.assertRegisterEmpty('-')
 
     def test_issue_353_Y_should_yank_complete_lines_touched_by_visual_mode(self):
         self.eq('one\n|two\n|three', 'v_Y', 'n_one\ntw|o\nthree')
@@ -41,5 +41,5 @@ class Test_Y(unittest.FunctionalTestCase):
         self.eq('x\n22|22\n33\n4\n|x', 'v_Y', 'n_x\n2222\n33\n|4\nx')
         self.assertRegister('"2222\n33\n4\n', linewise=True)
         self.assertRegister('02222\n33\n4\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('1')

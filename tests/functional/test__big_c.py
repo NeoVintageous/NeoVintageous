@@ -30,15 +30,15 @@ class Test_C(unittest.FunctionalTestCase):
         self.eq('one\nt|wo\nthree', 'C', 'i_one\nt|\nthree')
         self.assertRegister('"wo')
         self.assertRegister('-wo')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_C_multiple_selections(self):
         self.eq('x\n|1\n|2\n|3\nx\n|4\nx', 'C', 'i_x\n|\n|\n|\nx\n|\nx')
         self.assertRegister('"', ['1', '2', '3', '4'])
         self.assertRegister('-', ['1', '2', '3', '4'])
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_C_multiple_selections_empty_lines(self):
         self.eq('x\n|1\n|\n|3\nx\n|\nx', 'C', 'i_x\n|\n|\n|\nx\n|\nx')
@@ -47,12 +47,12 @@ class Test_C(unittest.FunctionalTestCase):
         self.eq('one\n|two\n|three', 'v_C', 'i_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_l_C(self):
         self.eq('one\n|two\n|three', 'l_C', 'i_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')

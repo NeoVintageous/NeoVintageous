@@ -168,9 +168,6 @@ class ViewTestCase(unittest.TestCase):
 
         self.state.mode = mode
 
-    def normal(self, text):
-        self._setupView(text, NORMAL)
-
     def insert(self, text):
         self._setupView(text, INSERT)
 
@@ -180,23 +177,14 @@ class ViewTestCase(unittest.TestCase):
     def rInternalNormal(self, text):
         self._setupView(text, INTERNAL_NORMAL, reverse=True)
 
+    def normal(self, text):
+        self._setupView(text, NORMAL)
+
     def visual(self, text):
         self._setupView(text, VISUAL)
 
     def rvisual(self, text):
         self._setupView(text, VISUAL, reverse=True)
-
-    def vline(self, text):
-        self._setupView(text, VISUAL_LINE)
-
-    def rvline(self, text):
-        self._setupView(text, VISUAL_LINE, reverse=True)
-
-    def vblock(self, text):
-        self._setupView(text, VISUAL_BLOCK)
-
-    def rvblock(self, text):
-        self._setupView(text, VISUAL_BLOCK, reverse=True)
 
     def vselect(self, text):
         self._setupView(text, SELECT)
@@ -204,10 +192,19 @@ class ViewTestCase(unittest.TestCase):
     def rvselect(self, text):
         self._setupView(text, SELECT, reverse=True)
 
+    def vblock(self, text):
+        self._setupView(text, VISUAL_BLOCK)
+
+    def rvblock(self, text):
+        self._setupView(text, VISUAL_BLOCK, reverse=True)
+
+    def vline(self, text):
+        self._setupView(text, VISUAL_LINE)
+
+    def rvline(self, text):
+        self._setupView(text, VISUAL_LINE, reverse=True)
+
     def register(self, name, value=None, linewise=False):
-        # Args:
-        #   name (str)
-        #   value (str)
         if value is None:
             value = name[1:]
             name = name[0]
@@ -228,7 +225,13 @@ class ViewTestCase(unittest.TestCase):
         _State.macro_steps.clear()
         _vi_at._last_used = None
 
-    def _assertViewContent(self, sels, expected, msg=None):
+    def assertContent(self, expected, msg=None):
+        self.assertEqual(self.content(), expected, msg)
+
+    def assertContentRegex(self, expected_regex, msg=None):
+        self.assertRegex(self.content(), expected_regex, msg=msg)
+
+    def _assertContentSelection(self, sels, expected, msg=None):
         content = list(self.view.substr(Region(0, self.view.size())))
         counter = 0
         for sel in sels:
@@ -240,48 +243,43 @@ class ViewTestCase(unittest.TestCase):
 
         self.assertEquals(''.join(content), expected, msg)
 
-    def _assertViewRegionsContent(self, key, expected, msg=None):
-        self._assertViewContent(self.view.get_regions(key), expected, msg)
-
-    def _assertViewSelectionContent(self, expected, msg):
-        self._assertViewContent(self.view.sel(), expected, msg)
+    def _assertContentRegion(self, key, expected, msg=None):
+        self._assertContentSelection(self.view.get_regions(key), expected, msg)
 
     def _assertView(self, expected, mode, msg):
-        self._assertViewSelectionContent(expected, msg)
+        self._assertContentSelection(self.view.sel(), expected, msg)
         self._assertMode(mode)
 
     def assertSearch(self, expected: str, msg=None):
-        self._assertViewRegionsContent('vi_search', expected, msg)
+        self._assertContentRegion('vi_search', expected, msg)
         self._assertMode(NORMAL)
 
     def assertSearchCurrent(self, expected: str, msg=None):
-        self._assertViewRegionsContent('vi_search_current', expected, msg)
+        self._assertContentRegion('vi_search_current', expected, msg)
         self._assertMode(NORMAL)
-
-    def assertNormal(self, expected, msg=None):
-        self._assertView(expected, NORMAL, msg)
-        for sel in self.view.sel():
-            self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid NORMAL mode selection')
 
     def assertInsert(self, expected, msg=None):
         self._assertView(expected, INSERT, msg)
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid INSERT mode selection')
 
+    def assertInternalNormal(self, expected, strict=False, msg=None):
+        self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)
+        self.assertSelectionIsNotReversed()
+
+    def assertRInternalNormal(self, expected, strict=False, msg=None):
+        self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)
+        self.assertSelectionIsReversed()
+
+    def assertNormal(self, expected, msg=None):
+        self._assertView(expected, NORMAL, msg)
+        for sel in self.view.sel():
+            self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid NORMAL mode selection')
+
     def assertReplace(self, expected, msg=None):
         self._assertView(expected, REPLACE, msg)
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid REPLACE mode selection')
-
-    def assertInternalNormal(self, expected, strict=False, msg=None):
-        self._assertViewSelectionContent(expected, msg)
-        self._assertMode(INTERNAL_NORMAL if strict else NORMAL)
-        self.assertSelectionIsNotReversed()
-
-    def assertRInternalNormal(self, expected, strict=False, msg=None):
-        self._assertViewSelectionContent(expected, msg)
-        self._assertMode(INTERNAL_NORMAL if strict else NORMAL)
-        self.assertSelectionIsReversed()
 
     def assertVisual(self, expected, msg=None):
         self._assertView(expected, VISUAL, msg)
@@ -291,12 +289,12 @@ class ViewTestCase(unittest.TestCase):
         self._assertView(expected, VISUAL, msg)
         self.assertSelectionIsReversed()
 
-    def assertVline(self, expected, msg=None):
-        self._assertView(expected, VISUAL_LINE, msg)
+    def assertVselect(self, expected, msg=None):
+        self._assertView(expected, SELECT, msg)
         self.assertSelectionIsNotReversed()
 
-    def assertRVline(self, expected, msg=None):
-        self._assertView(expected, VISUAL_LINE, msg)
+    def assertRVselect(self, expected, msg=None):
+        self._assertView(expected, SELECT, msg)
         self.assertSelectionIsReversed()
 
     def assertVblock(self, expected, msg=None):
@@ -307,33 +305,13 @@ class ViewTestCase(unittest.TestCase):
         self._assertView(expected, VISUAL_BLOCK, msg)
         self.assertSelectionIsReversed()
 
-    def assertVSelect(self, expected, msg=None):
-        self._assertView(expected, SELECT, msg)
+    def assertVline(self, expected, msg=None):
+        self._assertView(expected, VISUAL_LINE, msg)
         self.assertSelectionIsNotReversed()
 
-    def assertRVSelect(self, expected, msg=None):
-        self._assertView(expected, SELECT, msg)
+    def assertRVline(self, expected, msg=None):
+        self._assertView(expected, VISUAL_LINE, msg)
         self.assertSelectionIsReversed()
-
-    def assertContent(self, expected, msg=None):
-        # Test that view contents and *expected* are equal.
-        #
-        # Args:
-        #   expected (str):
-        #       The expected contents of the view.
-        #   msg (str, optional):
-        #       If specified, is used as the error message on failure.
-        self.assertEqual(self.content(), expected, msg)
-
-    def assertContentRegex(self, expected, msg=None):
-        # Test that view contents matches (or does not match) *expected*.
-        #
-        # Args:
-        #   expected (str):
-        #       Regular expression that should match view contents.
-        #   msg (str):
-        #       If specified, is used as the error message on failure.
-        self.assertRegex(self.content(), expected, msg=msg)
 
     def _assertMode(self, mode):
         self.assertEquals(self.state.mode, mode)
@@ -412,8 +390,7 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise, msg)
 
-    # TODO Rename assertRegisterEmpty
-    def assertRegisterIsNone(self, name, linewise=False, msg=None):
+    def assertRegisterEmpty(self, name, linewise=False, msg=None):
         self._assertRegister(name, None, linewise, msg)
 
     def assertRegistersEqual(self, names, expected=None, linewise=False, msg=None):
@@ -460,11 +437,6 @@ class ViewTestCase(unittest.TestCase):
             self.assertEqual(expected, list(self.view.sel()), msg)
 
     def assertSelectionCount(self, expected):
-        # Test that view selection count and *expected* are equal.
-        #
-        # Args:
-        #   expected (int):
-        #       The expected number of selections in view.
         self.assertEqual(expected, len(self.view.sel()))
 
     def assertSelectionIsNotReversed(self):
@@ -475,14 +447,7 @@ class ViewTestCase(unittest.TestCase):
         for sel in self.view.sel():
             self.assertGreater(sel.a, sel.b, 'failed asserting selection is reversed')
 
-    # def assertSelectionIsNotReversed(self):
-
     def assertSize(self, expected):
-        # Test that number of view characters and *expected* are equal.
-        #
-        # Args:
-        #   expected (int):
-        #       The expected number of characters in view.
         self.assertEqual(expected, self.view.size())
 
     def _statusLine(self):
@@ -769,9 +734,9 @@ class FunctionalTestCase(ViewTestCase):
             self.assertInsert(expected, msg)
         elif expected_mode == 's':
             if reverse_expected:
-                self.assertRVSelect(expected, msg)
+                self.assertRVselect(expected, msg)
             else:
-                self.assertVSelect(expected, msg)
+                self.assertVselect(expected, msg)
         elif expected_mode == 'R':
             self.assertReplace(expected, msg)
         else:

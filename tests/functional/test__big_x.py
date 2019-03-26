@@ -34,19 +34,19 @@ class Test_X(unittest.FunctionalTestCase):
         self.eq('7654321|\n', '6X', '|7\n')
         self.assertRegister('"654321\n', linewise=True)
         self.assertRegister('1654321\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_v_X(self):
         self.eq('one\n|two\n|three', 'v_X', 'n_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_l_X(self):
         self.eq('one\n|two\n|three', 'l_X', 'n_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')

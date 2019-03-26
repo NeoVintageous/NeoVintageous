@@ -36,8 +36,8 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'de', 'one t| three')
         self.assertRegister('"wo')
         self.assertRegister('-wo')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
         self.eq('one\n|\ntwo\nthree', 'de', 'one\n|three')
         self.eq('one\n|\n\ntwo\nthree', 'de', 'one\n|three')
         self.eq('one\n|\n\n\ntwo\nthree', 'de', 'one\n|three')
@@ -49,16 +49,16 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('|a = 1', 'df=', '| 1')
         self.assertRegister('"a =')
         self.assertRegister('-a =')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_dw(self):
         self.eq('one |two three', 'dw', 'one |three')
         self.eq('one t|wo three', 'dw', 'one t|three')
         self.assertRegister('"wo ')
         self.assertRegister('-wo ')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
         self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
         self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
 
@@ -73,8 +73,8 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'd$', 'one |t')
         self.assertRegister('"wo three')
         self.assertRegister('-wo three')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_d__right_brace(self):
         self.eq('1\n\na|bc\n\n3', 'd}', '1\n\n|a\n\n3')
@@ -94,8 +94,8 @@ class Test_d(unittest.FunctionalTestCase):
         self.assertRegister('1two\n', linewise=True)
         self.assertRegister('2two\n', linewise=True)
         self.assertRegister('3one two three\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_dd_puts_cursor_on_first_non_blank(self):
         self.eq('one\n|two\n    three', 'dd', 'one\n    |three')
@@ -109,12 +109,12 @@ class Test_d(unittest.FunctionalTestCase):
         self.eq('x\n|abc\n|y', 'l_d', 'n_x\n|y')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('1abc\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_l_d_puts_cursors_on_first_non_blank(self):
         self.eq('    x\n|    a\n    b\n|    y\n', 'l_d', 'n_    x\n    |y\n')
         self.assertRegister('"    a\n    b\n', linewise=True)
         self.assertRegister('1    a\n    b\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')

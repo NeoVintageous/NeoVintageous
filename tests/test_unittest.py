@@ -605,8 +605,8 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.assertInsert = unittest.mock.Mock()
         self.instance.assertInternalNormal = unittest.mock.Mock()
         self.instance.assertRInternalNormal = unittest.mock.Mock()
-        self.instance.assertVSelect = unittest.mock.Mock()
-        self.instance.assertRVSelect = unittest.mock.Mock()
+        self.instance.assertVselect = unittest.mock.Mock()
+        self.instance.assertRVselect = unittest.mock.Mock()
         self.instance.assertVisual = unittest.mock.Mock()
         self.instance.assertVline = unittest.mock.Mock()
         self.instance.assertVblock = unittest.mock.Mock()
@@ -651,10 +651,10 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.assertRInternalNormal.assert_called_once_with(*args)
 
     def assert_assertVSelect(self, *args):
-        self.instance.assertVSelect.assert_called_once_with(*args)
+        self.instance.assertVselect.assert_called_once_with(*args)
 
     def assert_assertRVSelect(self, *args):
-        self.instance.assertRVSelect.assert_called_once_with(*args)
+        self.instance.assertRVselect.assert_called_once_with(*args)
 
     def assert_assertNormal(self, *args):
         self.instance.assertNormal.assert_called_once_with(*args)

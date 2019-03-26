@@ -30,8 +30,8 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'ce', 'i_one t| three')
         self.assertRegister('"wo')
         self.assertRegister('-wo')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_v_c(self):
         self.eq('fi|zz bu|zz', 'v_c', 'i_fi|zz')
@@ -42,16 +42,16 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('x fizz|buzz x', 'cb', 'i_x |buzz x')
         self.assertRegister('"fizz')
         self.assertRegister('-fizz')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_cw(self):
         self.eq('one |two three', 'cw', 'i_one | three')
         self.eq('one t|wo three', 'cw', 'i_one t| three')
         self.assertRegister('"wo')
         self.assertRegister('-wo')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
         self.eq('one t|wo\nthree four', '2cw', 'i_one t| four')
         self.eq('one |two\nthree four', '2cw', 'i_one | four')
         self.eq('one |two\nthree\nfour', '2cw', 'i_one |\nfour')
@@ -70,8 +70,8 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'c$', 'i_one t|')
         self.assertRegister('"wo three')
         self.assertRegister('-wo three')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_cc(self):
         self.eq('\n\n|\n\n', 'cc', 'i_\n\n|\n\n')
@@ -82,8 +82,8 @@ class Test_c(unittest.FunctionalTestCase):
         self.assertRegister('1ccc\n', linewise=True)
         self.assertRegister('2bbb\n', linewise=True)
         self.assertRegister('3aaa\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_cc_should_not_strip_preceding_whitespace(self):
         self.eq('    |one', 'cc', 'i_    |')
@@ -98,36 +98,36 @@ class Test_c(unittest.FunctionalTestCase):
         self.eq('"1|23"', 'ci"', 'i_"|"')
         self.assertRegister('"123')
         self.assertRegister('-123')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_ci__quote_multi_sel(self):
         self.eq('x"1|23"y\ni"ab|c"j\n', 'ci"', 'i_x"|"y\ni"|"j\n')
         self.assertRegister('"', ['123', 'abc'])
         self.assertRegister('-', ['123', 'abc'])
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_ci__quote__empty_should_not_fill_registers(self):
         self.eq('"|"', 'ci"', 'i_"|"')
-        self.assertRegisterIsNone('"')
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('"')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_ci__quote__multi_sels_empty_should_not_fill_registers(self):
         self.eq('"|"\n"|"', 'ci"', 'i_"|"\n"|"')
-        self.assertRegisterIsNone('"')
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
-        self.assertRegisterIsNone('1')
+        self.assertRegisterEmpty('"')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
 
     def test_c_visual_line_sets_linewise_register(self):
         self.eq('x\n|abc\n|y', 'l_c', 'i_x\n|y')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('1abc\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_c_(self):
         self.eq('1\nfi|zz\n2\n3', 'c_', 'i_1\n|\n2\n3')

@@ -33,8 +33,8 @@ class Test_S(unittest.FunctionalTestCase):
         self.assertRegister('1ccc\n', linewise=True)
         self.assertRegister('2bbb\n', linewise=True)
         self.assertRegister('3aaa\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_S_should_not_strip_preceding_whitespace(self):
         self.eq('    |one', 'S', 'i_    |')
@@ -47,12 +47,12 @@ class Test_S(unittest.FunctionalTestCase):
         self.eq('one\n|two\n|three', 'v_S', 'i_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
 
     def test_l_S(self):
         self.eq('one\n|two\n|three', 'l_S', 'i_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterIsNone('-')
-        self.assertRegisterIsNone('0')
+        self.assertRegisterEmpty('-')
+        self.assertRegisterEmpty('0')
