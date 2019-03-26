@@ -200,7 +200,7 @@ More examples: >
     " Or if you're using super-keys (disabled by default):
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
-    " Edit settings.
+    " Edit rc file.
     nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
 
     " Sorted.
@@ -208,10 +208,9 @@ More examples: >
     nnoremap <leader>s] vi]:sort iu<CR>
     nnoremap <leader>si vii:sort iu<CR>
     nnoremap <leader>sp vip:sort iu<CR>
-    nnoremap <leader>ss vii:sort iu<CR>
     vnoremap <leader>s :sort iu<CR>
 
-    " Windowing aliases (especially useful if you don't enable ctrl-keys keys).
+    " Windowing aliases (especially useful if you don't use ctrl-keys).
     nnoremap <leader>_ <C-w>_
     nnoremap <leader><bar> <C-w><bar>
     nnoremap <leader>= <C-w>=
@@ -238,9 +237,7 @@ To enable the ability to toggle the side bar when the side bar has focus:
             "keys": [",", "d"],
             "command": "neovintageous",
             "args": { "action": "toggle_side_bar" },
-            "context": [
-                { "key": "control", "operand": "sidebar_tree" }
-            ]
+            "context": [ { "key": "control", "operand": "sidebar_tree" } ]
         }
     ]
 
