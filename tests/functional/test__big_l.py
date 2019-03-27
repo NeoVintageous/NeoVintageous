@@ -65,6 +65,11 @@ class Test_L(unittest.FunctionalTestCase):
         self.eq('r_a|b|c\n2\n3\nxyz', 'v_L', 'a|bc\n2\n3\nx|yz')
         self.eq('r_a|bc\nab|c\n3\nxyz', 'v_L', 'abc\na|bc\n3\nx|yz')
         self.eq('a|bc\nab|c\n3\nxyz', 'v_L', 'a|bc\nabc\n3\nx|yz')
+        self.eq('1\n|2\n|3', 'v_L', '1\n|2\n3|')
+        self.eq('r_1\n|2\n|3', 'v_L', '1\n2\n|3|')
+        self.eq('r_1\n2\n    |f|izz', 'v_L', 'r_1\n2\n    |f|izz')
+        self.eq('r_1\n2\n  |  f|izz', 'v_L', 'r_1\n2\n    |f|izz')
+        self.eq('1\n2\n  |  f|izz', 'v_L', '1\n2\n  |  f|izz')
 
     @unittest.mock_ui()
     def test_l_L(self):
