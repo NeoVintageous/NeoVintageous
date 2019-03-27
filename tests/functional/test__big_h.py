@@ -55,6 +55,19 @@ class Test_H(unittest.FunctionalTestCase):
         self.eq('r_1\n2\na|b|c', 'v_H', 'r_|1\n2\nab|c')
         self.eq('1\n2\na|b|c', 'v_H', 'r_|1\n2\nab|c')
         self.eq('    1\n2\na|bc', 'v_H', 'r_    |1\n2\nab|c')
+        self.eq('r_    |fiz|z\n2\n3', 'v_H', 'r_    |fiz|z\n2\n3')
+        self.eq('    |1|\n2\n3', 'v_H', '    |1|\n2\n3')
+        self.eq('    |f|izz\n2\n3', 'v_H', '    |f|izz\n2\n3')
+        self.eq('    |fiz|z\n2\n3', 'v_H', '    |f|izz\n2\n3')
+
+    @unittest.mock_ui(visible_region=(4, 11))
+    def test_v_H_when_selection_is_partially_offscreen(self):
+        self.eq('|1\n2\n    fizz\n4\n5\n6|', 'v_H', '|1\n2\n    f|izz\n4\n5\n6')
+
+    @unittest.mock_ui(visible_region=(7, 11))
+    def test_v_H_when_selection_is_offscreen(self):
+        self.eq('r_|1\nfi|zz\n    buzz\n4\n5\n6', 'v_H', '1\nf|izz\n    b|uzz\n4\n5\n6')
+        self.eq('|1\nfi|zz\n    buzz\n4\n5\n6', 'v_H', '|1\nfizz\n    b|uzz\n4\n5\n6')
 
     @unittest.mock_ui(visible_region=(4, 7))
     def test_v_H_should_be_within_visible_region2(self):

@@ -70,6 +70,7 @@ from NeoVintageous.nv.utils import get_scroll_up_target_pt
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import lowest_visible_pt
+from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
@@ -4335,13 +4336,11 @@ class _vi_big_h(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                return Region(target_pt)
+                s = Region(target_pt)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, target_pt)
+                s = Region(s.a, target_pt)
             elif mode == VISUAL:
-                if s.a < s.b and target_pt < s.a:
-                    return Region(s.a + 1, target_pt)
-                return Region(s.a, target_pt)
+                s = resolve_visual_target(s, target_pt)
             elif mode == VISUAL_LINE:
                 if s.b > s.a and target_pt <= s.a:
                     a = self.view.full_line(s.a).b
@@ -4353,7 +4352,7 @@ class _vi_big_h(ViMotionCommand):
                     a = s.a
                     b = self.view.line(target_pt).a
 
-                return Region(a, b)
+                s = Region(a, b)
 
             return s
 

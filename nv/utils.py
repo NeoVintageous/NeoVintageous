@@ -250,22 +250,22 @@ def get_scroll_down_target_pt(view, number_of_scroll_lines):
 
 def resolve_visual_target(s, target):
     # type: (Region, int) -> Region
-    if s.a < s.b:
-        if target < s.a:
+    if s.a < s.b:               # A --> B
+        if target < s.a:        # TARGET < A --> B
             s.a += 1
             s.b = target
         else:
             s.b = target + 1
-    elif s.a > s.b:
-        if target > s.a:
+    elif s.a > s.b:             # B <-- A
+        if target > s.a:        # B <-- A < TARGET
             s.a -= 1
             s.b = target + 1
-        elif target == s.a:
+        elif target == s.a:     # B <-- A = TARGET
             s.b = target + 1
         else:
             s.b = target
-    elif s.a == s.b:
-        if target == s.b:
+    elif s.a == s.b:            # A === B
+        if target == s.b:       # A === B = TARGET
             s.b = target + 1
         else:
             s.b = target

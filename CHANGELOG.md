@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.11.1 - Unreleased
 
+* Fixed [#479](https://github.com/NeoVintageous/NeoVintageous/issues/479): `H` in Visual mode is inconsistent
 * Fixed [#478](https://github.com/NeoVintageous/NeoVintageous/issues/478): `:sort` should scroll cursor into view
 
 ## 1.11.0 - 2019-03-26
