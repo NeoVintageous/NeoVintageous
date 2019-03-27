@@ -29,6 +29,9 @@ class Test_ge(unittest.FunctionalTestCase):
         self.eq('1 two ab cd f|i|ve', 'v_3ge', 'r_1 tw|o ab cd fi|ve')
         self.eq('r_1 two a|b cd fi|ve', 'v_ge', 'r_1 tw|o ab cd fi|ve')
         self.eq('1 |two a|b', 'v_ge', '1 |two| ab')
+        self.eq('fi|.zz|', 'v_ge', 'r_fi|.|zz')
+        self.eq('fi|.|zz', 'v_ge', 'r_f|i.|zz')
+        self.eq('f|i.zz|', 'v_ge', 'f|i.|zz')
 
     def test_l_ge(self):
         self.eq('1\n|2\n|3\n', 'l_ge', '1\n|2\n|3\n')
