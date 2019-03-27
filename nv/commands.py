@@ -4392,7 +4392,7 @@ class _vi_big_l(ViMotionCommand):
 
 
 class _vi_big_m(ViMotionCommand):
-    def run(self, count=None, extend=False, mode=None):
+    def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
                 return Region(target_pt)
