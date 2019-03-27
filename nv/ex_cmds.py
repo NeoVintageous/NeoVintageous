@@ -935,6 +935,7 @@ def ex_sort(view, options='', **kwargs):
 
     regions_transformer(view, f)
     enter_normal_mode(view, None)
+    view.show(view.sel()[-1], False)
 
 
 def ex_split(window, file=None, **kwargs):

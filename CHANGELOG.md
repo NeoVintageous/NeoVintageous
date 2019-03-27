@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.11.1 - Unreleased
+
+* Fixed [#478](https://github.com/NeoVintageous/NeoVintageous/issues/478): `:sort` should scroll cursor into view
+
 ## 1.11.0 - 2019-03-26
 
 ### Added
