@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.11.1 - Unreleased
+## 1.11.1 - 2019-03027
 
 * Fixed [#481](https://github.com/NeoVintageous/NeoVintageous/issues/481): `M` in Visual mode is inconsistent
 * Fixed [#480](https://github.com/NeoVintageous/NeoVintageous/issues/480): `L` in Visual mode is inconsistent
