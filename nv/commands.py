@@ -5084,27 +5084,26 @@ class _vi_big_e(ViMotionCommand):
             pt = word_ends(view, b, count=count, big=True)
 
             if mode == NORMAL:
-                return Region(pt - 1)
-
+                s = Region(pt - 1)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, pt)
-
+                s = Region(s.a, pt)
             elif mode == VISUAL:
                 start = s.a
                 if s.b < s.a:
                     start = s.a - 1
                 end = pt - 1
                 if start <= end:
-                    return Region(start, end + 1)
+                    s = Region(start, end + 1)
                 else:
-                    return Region(start + 1, end)
-
+                    s = Region(start + 1, end)
             elif mode == VISUAL_BLOCK:
                 if s.a > s.b:
                     if pt > s.a:
-                        return Region(s.a - 1, pt)
-                    return Region(s.a, pt - 1)
-                return Region(s.a, pt)
+                        s = Region(s.a - 1, pt)
+                    else:
+                        s = Region(s.a, pt - 1)
+                else:
+                    s = Region(s.a, pt)
 
             return s
 
