@@ -130,7 +130,7 @@ class ViewTestCase(unittest.TestCase):
             if sel_len == 1:
                 sels.append(sels[0] + 2)
             elif sel_len % 2 != 0 or sel_len == 0:
-                raise Exception('invalid visual selection')
+                raise Exception('invalid visual selection: mode=%s reverse=%s' % (mode, reverse))
 
             if sels:
                 v_sels = []  # type: list
