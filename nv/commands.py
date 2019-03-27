@@ -4395,9 +4395,9 @@ class _vi_big_m(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                return Region(target_pt)
+                s = Region(target_pt)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, target_pt)
+                s = Region(s.a, target_pt)
             elif mode == VISUAL_LINE:
                 if s.b > s.a:
                     if target_pt < s.a:
@@ -4414,22 +4414,11 @@ class _vi_big_m(ViMotionCommand):
                         a = s.a
                         b = self.view.full_line(target_pt).a
 
-                return Region(a, b)
+                s = Region(a, b)
             elif mode == VISUAL:
-                a = s.a
-                b = target_pt
+                s = resolve_visual_target(s, target_pt)
 
-                if s.b > s.a and target_pt < s.a:
-                    a += 1
-                elif s.a > s.b and target_pt > s.a:
-                    a -= 1
-                    b += 1
-                elif s.b > s.a:
-                    b += 1
-
-                return Region(a, b)
-            else:
-                return s
+            return s
 
         highest_row, lowest_row = highlow_visible_rows(self.view)
         half_visible_lines = (lowest_row - highest_row) // 2
