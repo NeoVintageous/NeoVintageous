@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.11.2 - Unreleased
+
+* Fixed [#482](https://github.com/NeoVintageous/NeoVintageous/issues/482): `|` at start of line moves to previous line
+
 ## 1.11.1 - 2019-03-27
 
 * Fixed [#481](https://github.com/NeoVintageous/NeoVintageous/issues/481): `M` in Visual mode is inconsistent

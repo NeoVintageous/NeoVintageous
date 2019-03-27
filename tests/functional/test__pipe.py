@@ -23,13 +23,28 @@ class Test_pipe(unittest.FunctionalTestCase):
     def test_pipe(self):
         self.eq('12|3', 'n_|', '|123')
         self.eq('123x', 'n_3|', '12|3x')
+        self.eq('fi|zz', 'n_|', '|fizz')
+        self.eq('fi|zz', 'n_1|', '|fizz')
+        self.eq('|fizz', 'n_2|', 'f|izz')
+        self.eq('|fizz', 'n_3|', 'fi|zz')
+        self.eq('|fizz', 'n_4|', 'fiz|z')
+        self.eq('|fizz', 'n_9|', 'fiz|z')
+        self.eq('|fizz\nbuzz', 'n_4|', 'fiz|z\nbuzz')
+        self.eq('|fizz\nbuzz', 'n_5|', 'fiz|z\nbuzz')
+        self.eq('|fizz\nbuzz', 'n_6|', 'fiz|z\nbuzz')
+        self.eq('|fizz\nbuzz', 'n_9|', 'fiz|z\nbuzz')
         self.eq('x\n|123\nx', 'n_7|', 'x\n12|3\nx')
+        self.eq('fizz\n|buzz', 'n_|', 'fizz\n|buzz')
+        self.eq('\n\n|\n\n', 'n_|', '\n\n|\n\n')
 
     def test_v_pipe(self):
         self.eq('fi|zz buzz', 'v_7|', 'fi|zz bu|zz')
         self.eq('r_f|izz| buzz', 'v_7|', 'fiz|z bu|zz')
         self.eq('fizz b|uz|z', 'v_2|', 'r_f|izz bu|zz')
         self.eq('r_fizz b|uz|z', 'v_2|', 'r_f|izz buz|z')
+        self.eq('r_fizz\n|buzz|', 'v_|', 'r_fizz\n|buzz|')
+        self.eq('x\n|fizz\n|buzz', 'v_|', 'x\n|f|izz\nbuzz')
+        self.eq('r_x\n|fizz\n|buzz', 'v_|', 'r_x\n|fizz\n|buzz')
 
     def test_N_pipe(self):
         self.eq('fi|zz buzz', '7|', 'N_fiz|z b|uzz')

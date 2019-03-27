@@ -4805,38 +4805,34 @@ class _vi_ctrl_d(ViMotionCommand):
 
 class _vi_pipe(ViMotionCommand):
 
-    def _col_to_pt(self, pt, current_col):
-        if self.view.line(pt).size() < current_col:
-            return self.view.line(pt).b - 1
-
-        row = self.view.rowcol(pt)[0]
-
-        return self.view.text_point(row, current_col) - 1
-
     def run(self, mode=None, count=1):
+        def _to_col(start, col):
+            # type: (int, int) -> int
+            line = self.view.line(start)
+            if line.empty():
+                return start
+
+            target = line.a + (col - 1)
+
+            if target >= line.b:
+                target = line.b - 1
+
+            return target
+
         def f(view, s):
             if mode == NORMAL:
-                return Region(self._col_to_pt(s.b, count))
+                s = Region(_to_col(s.b, count))
             elif mode == VISUAL:
-                pt = self._col_to_pt(s.b - 1, count)
-                if s.a < s.b:
-                    if pt < s.a:
-                        return Region(s.a + 1, pt)
-                    else:
-                        return Region(s.a, pt + 1)
-                else:
-                    if pt > s.a:
-                        return Region(s.a - 1, pt + 1)
-                    else:
-                        return Region(s.a, pt)
-
+                start = s.b - 1 if s.b > s.a else s.b
+                target = _to_col(start, count)
+                s = resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                pt = self._col_to_pt(s.b, count)
+                target = _to_col(s.b, count)
 
                 if s.a < s.b:
-                    return Region(s.a, pt)
+                    s = Region(s.a, target)
                 else:
-                    return Region(s.a + 1, pt)
+                    s = Region(s.a + 1, target)
 
             return s
 
