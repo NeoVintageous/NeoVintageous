@@ -4655,15 +4655,16 @@ class _vi_hat(ViMotionCommand):
             bol = next_non_white_space_char(self.view, bol)
 
             if mode == NORMAL:
-                return Region(bol)
+                s = Region(bol)
             elif mode == INTERNAL_NORMAL:
                 # The character at the "end" of the region is skipped in both
-                # forward and reverse cases, so unlike other regions, no need to add 1 to it
-                return Region(a, bol)
+                # forward and reverse cases, so unlike other regions, no need to
+                # add 1 to it.
+                s = Region(a, bol)
             elif mode == VISUAL:
-                return new_inclusive_region(a, bol)
-            else:
-                return s
+                s = new_inclusive_region(a, bol)
+
+            return s
 
         regions_transformer(self.view, f)
 
