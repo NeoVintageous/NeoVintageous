@@ -3991,12 +3991,8 @@ class _vi_right_brace(ViMotionCommand):
                 # find the next non-empty row if needed
                 s = Region(next_paragraph_start(view, s.b, count))
             elif mode == VISUAL:
-                next_start = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
-
-                s = resize_visual_region(s, next_start)
-
-            # TODO Delete previous ws in remaining start line.
-            elif mode == INTERNAL_NORMAL:
+                s = resolve_visual_target(s, next_paragraph_start(view, s.b, count, skip_empty=count > 1))
+            elif mode == INTERNAL_NORMAL:  # TODO Delete previous ws in remaining start line.
                 par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if par_begin == (self.view.size() - 1):
                     s = Region(s.a, self.view.size())
