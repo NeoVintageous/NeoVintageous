@@ -333,51 +333,45 @@ class TestFeedKey(unittest.FunctionalTestCase):
     def test_marks(self):
         for key in ('\'', '`'):
             self.normal('1\n2\n|3\n4\n5\n6\n7')
-            self.feedkey('m')
-            self.feedkey('a')
-            self.feedkey('3')
-            self.feedkey('j')
-            self.assertNormal('1\n2\n3\n4\n5\n|6\n7')
-            self.feedkey('m')
-            self.feedkey('b')
-            self.feedkey(key)
-            self.feedkey('a')
+            self.feedkeys('ma')
+            self.feedkeys('6G')  # go to and mark line 6
+            self.feedkeys('mb')
+            self.feedkeys(key + 'a')  # goto mark a
             self.assertNormal('1\n2\n|3\n4\n5\n6\n7')
-            self.feedkey(key)
-            self.feedkey('b')
+            self.feedkeys(key + 'b')  # goto mark b
             self.assertNormal('1\n2\n3\n4\n5\n|6\n7')
-            self.feedkey('k')
-            self.feedkey(key)
-            self.feedkey('a')
+            self.feedkey('k')  # go up a line
+            self.feedkeys(key + 'a')  # goto mark a
             self.assertNormal('1\n2\n|3\n4\n5\n6\n7')
-            self.feedkey('v')
-            self.feedkey(key)
-            self.feedkey('b')
-            self.assertVisual('1\n2\n|3\n4\n5\n|6\n7')
+            self.feedkey('v')  # enter Visual
+            self.feedkeys(key + 'b')    # goto mark b
+            self.assertVisual('1\n2\n|3\n4\n5\n6|\n7')
+
+    def test_mark_move_to_first_non_blank(self):
+        for key in ('\'', '`'):
+            self.normal('1\n2\n|    fizz\n4\n')
+            self.feedkeys('ma')
+            self.feedkeys('1G')
+            self.feedkeys(key + 'a')
+            # FIXME
+            self.assertNormal('1\n2\n|    fizz\n4\n')
 
     def test_visual_marks(self):
         for key in ('\'', '`'):
             self.normal('one\ntwo\nthree\n|four\nfive')
-            self.feedkey('m')
-            self.feedkey('a')
-            self.feedkey('2')
-            self.feedkey('k')
-            self.feedkey('m')
-            self.feedkey('b')
+            self.feedkeys('ma')
+            self.feedkeys('2k')
+            self.feedkeys('mb')
             self.feedkey('v')
             self.assertVisual('one\n|t|wo\nthree\nfour\nfive')
-            self.feedkey(key)
-            self.feedkey('a')
-            self.assertVisual('one\n|two\nthree\n|four\nfive')
-            self.feedkey(key)
-            self.feedkey('b')
-            self.assertRVisual('one\n|t|wo\nthree\nfour\nfive')
-            self.feedkey('g')
-            self.feedkey('g')
+            self.feedkeys(key + 'a')
+            self.assertVisual('one\n|two\nthree\nf|our\nfive')
+            self.feedkeys(key + 'b')
+            self.assertVisual('one\n|t|wo\nthree\nfour\nfive')
+            self.feedkeys('gg')
             self.assertRVisual('|one\nt|wo\nthree\nfour\nfive')
-            self.feedkey(key)
-            self.feedkey('a')
-            self.assertVisual('one\ntw|o\nthree\n|four\nfive')
+            self.feedkeys(key + 'a')
+            self.assertVisual('one\n|two\nthree\nf|our\nfive')
 
     def test_mark_operations(self):
         for key in ('\'', '`'):

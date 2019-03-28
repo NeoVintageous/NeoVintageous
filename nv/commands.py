@@ -1751,22 +1751,23 @@ class _vi_quote(ViTextCommandBase):
 
     def run(self, edit, mode=None, character=None, count=1):
         def f(view, s):
-            if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+            if mode == VISUAL:
+                s = resolve_visual_target(s, address.b)
+            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
                 if s.a <= s.b:
                     if address.b < s.b:
-                        return Region(s.a + 1, address.b)
+                        s = Region(s.a + 1, address.b)
                     else:
-                        return Region(s.a, address.b)
+                        s = Region(s.a, address.b)
                 else:
-                    return Region(s.a + 1, address.b)
-
+                    s = Region(s.a + 1, address.b)
             elif mode == NORMAL:
-                return address
-
+                s = address
             elif mode == INTERNAL_NORMAL:
                 if s.a < address.a:
-                    return Region(view.full_line(s.b).a, view.line(address.b).b)
-                return Region(view.full_line(s.b).b, view.line(address.b).a)
+                    s = Region(view.full_line(s.b).a, view.line(address.b).b)
+                else:
+                    s = Region(view.full_line(s.b).b, view.line(address.b).a)
 
             return s
 
@@ -1797,19 +1798,15 @@ class _vi_backtick(ViTextCommandBase):
     def run(self, edit, count=1, mode=None, character=None):
         def f(view, s):
             if mode == VISUAL:
-                if s.a <= s.b:
-                    if address.b < s.b:
-                        return Region(s.a + 1, address.b)
-                    else:
-                        return Region(s.a, address.b)
-                else:
-                    return Region(s.a + 1, address.b)
+                s = resolve_visual_target(s, address.b)
             elif mode == NORMAL:
-                return address
+                s = address
             elif mode == INTERNAL_NORMAL:
                 if s.a < address.a:
-                    return Region(view.full_line(s.b).a, view.line(address.b).b)
-                return Region(view.full_line(s.b).b, view.line(address.b).a)
+                    s = Region(view.full_line(s.b).a, view.line(address.b).b)
+                else:
+                    s = Region(view.full_line(s.b).b, view.line(address.b).a)
+
             return s
 
         state = self.state

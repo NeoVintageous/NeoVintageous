@@ -77,7 +77,7 @@ class TestRightSquareBracketTarget(unittest.FunctionalTestCase):
         self.eq('r_{ a { b { x } c |} d }|', 'v_]}', 'r_{ a { b { x } c } d |}|')
         self.eq('r_{ a { b { x } |c } d }|', 'v_]}', 'r_{ a { b { x } c |} d }|')
         self.eq('r_{ a { b |{ x }| c } d }', 'v_]}', 'r_{ a { b { x |}| c } d }')
-        self.eq('r_{ a |{ b { x } c |} d }', 'v_]}', '{ a { b { x } c |}| d }')
+        self.eq('r_{ a |{ b { x } c |} d }', 'v_]}', '{ a { b { x } c| }| d }')
         self.eq('r_{ a |{ b { x } c } d }|', 'v_]}', 'r_{ a { b { x } c |} d }|')
         self.eq('r_{ a |{ b { x } c }| d }', 'v_]}', 'r_{ a { b { x } c |}| d }')
         self.eq('r_{ a |{ b { x| } c } d }', 'v_]}', '{ a { b { |x } c }| d }')

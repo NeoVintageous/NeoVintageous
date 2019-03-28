@@ -261,6 +261,7 @@ def resolve_visual_target(s, target):
             s.a -= 1
             s.b = target + 1
         elif target == s.a:     # B <-- A = TARGET
+            s.a -= 1
             s.b = target + 1
         else:
             s.b = target

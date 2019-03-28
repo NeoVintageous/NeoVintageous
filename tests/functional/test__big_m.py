@@ -53,8 +53,8 @@ class Test_M(unittest.FunctionalTestCase):
         self.eq('|1\n2\n    fizz\n4\n5\n6', 'v_M', '|1\n2\n    f|izz\n4\n5\n6')
         self.eq('|1\n2\n    |fizz\n4\n5\n6', 'v_M', '|1\n2\n    f|izz\n4\n5\n6')
         self.eq('|1\n2\n    |fizz\n4\n5\n6', 'v_M', '|1\n2\n    f|izz\n4\n5\n6')
-        self.eq('r_|1\n2\n    |fizz\n4\n5\n6', 'v_M', '1\n2\n    |f|izz\n4\n5\n6')
-        self.eq('r_1\n2\n  |  |fizz\n4\n5\n6', 'v_M', '1\n2\n    |f|izz\n4\n5\n6')
+        self.eq('r_|1\n2\n    |fizz\n4\n5\n6', 'v_M', '1\n2\n   | f|izz\n4\n5\n6')
+        self.eq('r_1\n2\n  |  |fizz\n4\n5\n6', 'v_M', '1\n2\n   | f|izz\n4\n5\n6')
 
     @unittest.mock_ui()
     def test_l_L(self):
