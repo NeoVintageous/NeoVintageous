@@ -4018,29 +4018,23 @@ class _vi_right_brace(ViMotionCommand):
 class _vi_left_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            # TODO: must skip empty paragraphs.
             start = previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
             par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
 
             if mode == NORMAL:
-                next_start = prev_paragraph_start(view, s.b, count)
-                return Region(next_start)
-
+                s = Region(prev_paragraph_start(view, s.b, count))
             elif mode == VISUAL:
-                next_start = prev_paragraph_start(view, s.b, count)
-                return resize_visual_region(s, next_start)
-
+                s = resize_visual_region(s, prev_paragraph_start(view, s.b, count))
             elif mode == INTERNAL_NORMAL:
-                next_start = prev_paragraph_start(view, s.b, count)
-                return Region(s.a, next_start)
-
+                s = Region(s.a, prev_paragraph_start(view, s.b, count))
             elif mode == VISUAL_LINE:
                 if s.a <= s.b:
                     if par_as_region.a < s.a:
-                        return Region(view.full_line(s.a).b, par_as_region.a)
-                    return Region(s.a, par_as_region.a + 1)
+                        s = Region(view.full_line(s.a).b, par_as_region.a)
+                    else:
+                        s = Region(s.a, par_as_region.a + 1)
                 else:
-                    return Region(s.a, par_as_region.a)
+                    s = Region(s.a, par_as_region.a)
 
             return s
 

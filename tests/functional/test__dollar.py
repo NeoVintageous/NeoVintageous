@@ -20,14 +20,14 @@ from NeoVintageous.tests import unittest
 
 class Test_dollar(unittest.FunctionalTestCase):
 
-    def test_dollar(self):
+    def test_n(self):
         self.eq('one |two three', 'n_$', 'one two thre|e')
         self.eq('one |two three\nfour', 'n_2$', 'one two three\nfou|r')
         self.eq('|abc\nabc\n', 'n_$', 'ab|c\nabc\n')
         self.eq('|abc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\n', 'n_5$', 'abc\nabc\nabc\nabc\nab|c\nabc\nabc\nabc\nabc\nabc\n')  # noqa: E501
         self.eq('abc\n|\nabc\n', 'n_$', 'abc\n|\nabc\n')
 
-    def test_v_dollar(self):
+    def test_v(self):
         self.eq('one |two three', 'v_$', 'one |two three|')
         self.eq('one |two three\nfour', 'v_$', 'one |two three\n|four')
         self.eq('one |two three\nfour', 'v_2$', 'one |two three\nfour|')
@@ -39,7 +39,7 @@ class Test_dollar(unittest.FunctionalTestCase):
         self.eq('r_abc\n|a|bc\n', 'v_2$', 'abc\n|abc\n|')
         self.eq('r_|abc|\nxy', 'v_$', 'ab|c\n|xy')
 
-    def test_l(self):
+    def test_V(self):
         self.eq('|abc\n|abc\nabc\n', 'l_$', '|abc\n|abc\nabc\n')
 
     def test_N(self):
