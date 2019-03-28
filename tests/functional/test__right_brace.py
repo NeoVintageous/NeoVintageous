@@ -44,3 +44,14 @@ class Test_right_brace(unittest.FunctionalTestCase):
         self.eq('r_|1\nfizz\n|2\n\n\n\n4', 'l_}', '1\n|fizz\n2\n\n|\n\n4')
         self.eq('r_|1\nfizz\n2\n|\n\n\n4', 'l_}', '1\nfizz\n|2\n\n|\n\n4')
         self.eq('r_|1\nfizz\nbuzz\n|\n\n\n4', 'l_}', '1\nfizz\n|buzz\n\n|\n\n4')
+
+    def test_d(self):
+        self.eq('1\n\na|bc\n\n3', 'd}', '1\n\n|a\n\n3')
+        self.eq('1\n\na|bc\ndef\n\n3', 'd}', '1\n\n|a\n\n3')
+        self.eq('1\n\nabc |def\n\n3', 'd}', '1\n\nabc| \n\n3')
+        self.eq('1\n\nabc| \n\n3', 'd}', '1\n\nab|c\n\n3')
+        self.eq('1\n\nab|c\n\n3', 'd}', '1\n\na|b\n\n3')
+        self.eq('1\n\na|b\n\n3', 'd}', '1\n\n|a\n\n3')
+        self.eq('1\n\n|a\n\n3', 'd}', '1\n\n|\n3')
+        self.eq('1\n\n|\n3\n\n4', 'd}', '1\n\n|\n4')
+        self.eq('1\n2\n\nfizz\n|one\ntwo', 'd}', '1\n2\n\nfizz\n|')

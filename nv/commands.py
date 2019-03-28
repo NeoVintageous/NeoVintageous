@@ -3988,34 +3988,31 @@ class _vi_right_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                par_begin = next_paragraph_start(view, s.b, count)
                 # find the next non-empty row if needed
-                return Region(par_begin)
-
+                s = Region(next_paragraph_start(view, s.b, count))
             elif mode == VISUAL:
                 next_start = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
 
-                return resize_visual_region(s, next_start)
+                s = resize_visual_region(s, next_start)
 
             # TODO Delete previous ws in remaining start line.
             elif mode == INTERNAL_NORMAL:
                 par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if par_begin == (self.view.size() - 1):
-                    return Region(s.a, self.view.size())
-                if view.substr(s.a - 1) == '\n' or s.a == 0:
-                    return Region(s.a, par_begin)
-
-                return Region(s.a, par_begin - 1)
-
+                    s = Region(s.a, self.view.size())
+                elif view.substr(s.a - 1) == '\n' or s.a == 0:
+                    s = Region(s.a, par_begin)
+                else:
+                    s = Region(s.a, par_begin - 1)
             elif mode == VISUAL_LINE:
                 par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
                 if s.a <= s.b:
-                    return Region(s.a, par_begin + 1)
+                    s = Region(s.a, par_begin + 1)
                 else:
                     if par_begin >= s.a:
-                        return Region(view.line(s.a - 1).a, par_begin + 1)
-
-                    return Region(s.a, par_begin)
+                        s = Region(view.line(s.a - 1).a, par_begin + 1)
+                    else:
+                        s = Region(s.a, par_begin)
 
             return s
 
