@@ -3850,28 +3850,14 @@ class _vi_dollar(ViMotionCommand):
             eol = view.line(target).b
 
             if mode == NORMAL:
-                return Region(eol if view.line(eol).empty() else (eol - 1))
-
+                s = Region(eol if view.line(eol).empty() else (eol - 1))
             elif mode == VISUAL:
-                # TODO is this really a special case? can we not include this
-                # case in .resize_visual_region()?
-                # Perhaps we should always ensure that a minimal visual sel
-                # was always such that .a < .b?
-                if (s.a == eol) and not view.line(eol).empty():
-                    return Region(s.a - 1, eol + 1)
-
-                return resize_visual_region(s, eol)
-
+                s = resolve_visual_target(s, eol)
             elif mode == INTERNAL_NORMAL:
-                # TODO perhaps create a .is_linewise_motion() helper?
                 if get_bol(view, s.a) == s.a:
-                    return Region(s.a, eol + 1)
-
-                return Region(s.a, eol)
-
-            elif mode == VISUAL_LINE:
-                # TODO: Implement this. Not too useful, though.
-                return s
+                    s = Region(s.a, eol + 1)
+                else:
+                    s = Region(s.a, eol)
 
             return s
 

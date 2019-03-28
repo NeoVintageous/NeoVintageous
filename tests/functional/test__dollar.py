@@ -23,8 +23,25 @@ class Test_dollar(unittest.FunctionalTestCase):
     def test_dollar(self):
         self.eq('one |two three', 'n_$', 'one two thre|e')
         self.eq('one |two three\nfour', 'n_2$', 'one two three\nfou|r')
+        self.eq('|abc\nabc\n', 'n_$', 'ab|c\nabc\n')
+        self.eq('|abc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\n', 'n_5$', 'abc\nabc\nabc\nabc\nab|c\nabc\nabc\nabc\nabc\nabc\n')  # noqa: E501
+        self.eq('abc\n|\nabc\n', 'n_$', 'abc\n|\nabc\n')
 
     def test_v_dollar(self):
         self.eq('one |two three', 'v_$', 'one |two three|')
         self.eq('one |two three\nfour', 'v_$', 'one |two three\n|four')
         self.eq('one |two three\nfour', 'v_2$', 'one |two three\nfour|')
+        self.eq('|abc\nabc\n', 'v_$', '|abc\n|abc\n')
+        self.eq('|abc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\nabc\n', 'v_5$', '|abc\nabc\nabc\nabc\nabc\n|abc\nabc\nabc\nabc\nabc\n')  # noqa: E501
+        self.eq('abc\n|\n|abc\n', 'v_$', 'abc\n|\n|abc\n')
+        self.eq('r_a|bc\nab|c\n', 'v_$', 'r_abc|\nab|c\n')
+        self.eq('ab|c|\nabc\n', 'v_$', 'ab|c\n|abc\n')
+        self.eq('r_abc\n|a|bc\n', 'v_2$', 'abc\n|abc\n|')
+        self.eq('r_|abc|\nxy', 'v_$', 'ab|c\n|xy')
+
+    def test_l(self):
+        self.eq('|abc\n|abc\nabc\n', 'l_$', '|abc\n|abc\nabc\n')
+
+    def test_N(self):
+        self.eq('|abc\nabc\n', '$', 'N_|abc\n|abc\n')
+        self.eq('|abc\nabc\nabc\nabc\n', '3$', 'N_|abc\nabc\nabc\n|abc\n')
