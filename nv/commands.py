@@ -127,7 +127,6 @@ from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import replace_sel
-from NeoVintageous.nv.vi.utils import resize_visual_region
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
 from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
@@ -4024,7 +4023,7 @@ class _vi_left_brace(ViMotionCommand):
             if mode == NORMAL:
                 s = Region(prev_paragraph_start(view, s.b, count))
             elif mode == VISUAL:
-                s = resize_visual_region(s, prev_paragraph_start(view, s.b, count))
+                s = resolve_visual_target(s, prev_paragraph_start(view, s.b, count))
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, prev_paragraph_start(view, s.b, count))
             elif mode == VISUAL_LINE:

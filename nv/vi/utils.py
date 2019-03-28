@@ -340,31 +340,6 @@ def replace_sel(view, new_sel):
     view.sel().add(new_sel)
 
 
-def resize_visual_region(r, b):
-    # type: (Region, int) -> Region
-    # Define a new visual mode region.
-    #
-    # Args:
-    #   r (Region): Existing region.
-    #   b (int): New end point.
-    #
-    # Returns:
-    #   Region: Where x.a != x.b (XXX what does this mean?).
-    if b < r.a:
-        if r.b > r.a:
-            return Region(r.a + 1, b)
-
-        return Region(r.a, b)
-
-    if b > r.a:
-        if r.b < r.a:
-            return Region(r.a - 1, b + 1)
-
-        return Region(r.a, b + 1)
-
-    return Region(b, b + 1)
-
-
 @contextmanager
 def adding_regions(view, name, regions, scope_name):
     view.add_regions(name, regions, scope_name)

@@ -22,7 +22,6 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import resolve_visual_target
-from NeoVintageous.nv.vi.utils import resize_visual_region
 
 
 class TestExtractFileName(unittest.ViewTestCase):
@@ -147,50 +146,3 @@ class TestResolveVisualTarget(unittest.TestCase):
         self.assertEqual(resolve_visual_target(Region(5, 5), 5), Region(5, 6))
         self.assertEqual(resolve_visual_target(Region(5, 5), 6), Region(5, 6))
         self.assertEqual(resolve_visual_target(Region(5, 5), 7), Region(5, 7))
-
-
-class TestResizeVisualRegion(unittest.TestCase):
-
-    def test_forward_visual_selection(self):
-        self.assertEqual(resize_visual_region(Region(5, 11), 14), Region(5, 15))
-        self.assertEqual(resize_visual_region(Region(5, 11), 13), Region(5, 14))
-        self.assertEqual(resize_visual_region(Region(5, 11), 12), Region(5, 13))
-        self.assertEqual(resize_visual_region(Region(5, 11), 11), Region(5, 12))
-        self.assertEqual(resize_visual_region(Region(5, 11), 10), Region(5, 11))
-        self.assertEqual(resize_visual_region(Region(5, 11), 9), Region(5, 10))
-        self.assertEqual(resize_visual_region(Region(5, 11), 8), Region(5, 9))
-        self.assertEqual(resize_visual_region(Region(5, 11), 7), Region(5, 8))
-        self.assertEqual(resize_visual_region(Region(5, 11), 6), Region(5, 7))
-        self.assertEqual(resize_visual_region(Region(5, 11), 5), Region(5, 6))
-        self.assertEqual(resize_visual_region(Region(5, 11), 4), Region(6, 4))
-        self.assertEqual(resize_visual_region(Region(5, 11), 3), Region(6, 3))
-        self.assertEqual(resize_visual_region(Region(5, 11), 2), Region(6, 2))
-        self.assertEqual(resize_visual_region(Region(5, 11), 1), Region(6, 1))
-        self.assertEqual(resize_visual_region(Region(5, 11), 0), Region(6, 0))
-
-    def test_backward_visual_selection(self):
-        self.assertEqual(resize_visual_region(Region(11, 5), 0), Region(11, 0))
-        self.assertEqual(resize_visual_region(Region(11, 5), 1), Region(11, 1))
-        self.assertEqual(resize_visual_region(Region(11, 5), 2), Region(11, 2))
-        self.assertEqual(resize_visual_region(Region(11, 5), 3), Region(11, 3))
-        self.assertEqual(resize_visual_region(Region(11, 5), 4), Region(11, 4))
-        self.assertEqual(resize_visual_region(Region(11, 5), 5), Region(11, 5))
-        self.assertEqual(resize_visual_region(Region(11, 5), 6), Region(11, 6))
-        self.assertEqual(resize_visual_region(Region(11, 5), 7), Region(11, 7))
-        self.assertEqual(resize_visual_region(Region(11, 5), 8), Region(11, 8))
-        self.assertEqual(resize_visual_region(Region(11, 5), 9), Region(11, 9))
-        self.assertEqual(resize_visual_region(Region(11, 5), 10), Region(11, 10))
-        # FIXME Should this be the same as resolve_visual_target()?
-        # self.assertEqual(resize_visual_region(Region(11, 5), 11), Region(10, 12))
-        self.assertEqual(resize_visual_region(Region(11, 5), 12), Region(10, 13))
-        self.assertEqual(resize_visual_region(Region(11, 5), 13), Region(10, 14))
-        self.assertEqual(resize_visual_region(Region(11, 5), 14), Region(10, 15))
-
-    def test_invalid_visual_selection_point_is_corrected(self):
-        self.assertEqual(resize_visual_region(Region(5, 5), 3), Region(5, 3))
-        self.assertEqual(resize_visual_region(Region(5, 5), 4), Region(5, 4))
-        self.assertEqual(resize_visual_region(Region(5, 5), 5), Region(5, 6))
-        # FIXME Should this be the same as resolve_visual_target()?
-        # self.assertEqual(resize_visual_region(Region(5, 5), 6), Region(5, 6))
-        # FIXME Should this be the same as resolve_visual_target()?
-        # self.assertEqual(resize_visual_region(Region(5, 5), 7), Region(5, 7))
