@@ -332,20 +332,20 @@ class TestFeedKey(unittest.FunctionalTestCase):
 
     def test_marks(self):
         for key in ('\'', '`'):
-            self.normal('1\n2\n|3\n4\n5\n6\n7')
+            self.normal('1\n2\n|fizz\n4\n5\n6\n7')
             self.feedkeys('ma')
             self.feedkeys('6G')  # go to and mark line 6
             self.feedkeys('mb')
             self.feedkeys(key + 'a')  # goto mark a
-            self.assertNormal('1\n2\n|3\n4\n5\n6\n7')
+            self.assertNormal('1\n2\n|fizz\n4\n5\n6\n7')
             self.feedkeys(key + 'b')  # goto mark b
-            self.assertNormal('1\n2\n3\n4\n5\n|6\n7')
+            self.assertNormal('1\n2\nfizz\n4\n5\n|6\n7')
             self.feedkey('k')  # go up a line
             self.feedkeys(key + 'a')  # goto mark a
-            self.assertNormal('1\n2\n|3\n4\n5\n6\n7')
+            self.assertNormal('1\n2\n|fizz\n4\n5\n6\n7')
             self.feedkey('v')  # enter Visual
             self.feedkeys(key + 'b')    # goto mark b
-            self.assertVisual('1\n2\n|3\n4\n5\n6|\n7')
+            self.assertVisual('1\n2\n|fizz\n4\n5\n6|\n7')
 
     def test_mark_move_to_first_non_blank(self):
         for key in ('\'', '`'):
@@ -353,8 +353,7 @@ class TestFeedKey(unittest.FunctionalTestCase):
             self.feedkeys('ma')
             self.feedkeys('1G')
             self.feedkeys(key + 'a')
-            # FIXME
-            self.assertNormal('1\n2\n|    fizz\n4\n')
+            self.assertNormal('1\n2\n    |fizz\n4\n')
 
     def test_visual_marks(self):
         for key in ('\'', '`'):
@@ -372,6 +371,15 @@ class TestFeedKey(unittest.FunctionalTestCase):
             self.assertRVisual('|one\nt|wo\nthree\nfour\nfive')
             self.feedkeys(key + 'a')
             self.assertVisual('one\n|two\nthree\nf|our\nfive')
+
+    def test_visual_mark_includes_first_non_blank(self):
+        for key in ('\'', '`'):
+            self.normal('1\n2\n|    fizz\n4\n')
+            self.feedkeys('ma')
+            self.feedkeys('1G')
+            self.feedkeys('v')
+            self.feedkeys(key + 'a')
+            self.assertVisual('|1\n2\n    f|izz\n4\n')
 
     def test_mark_operations(self):
         for key in ('\'', '`'):

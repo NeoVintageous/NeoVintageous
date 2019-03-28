@@ -1752,7 +1752,7 @@ class _vi_quote(ViTextCommandBase):
     def run(self, edit, mode=None, character=None, count=1):
         def f(view, s):
             if mode == VISUAL:
-                s = resolve_visual_target(s, address.b)
+                s = resolve_visual_target(s, next_non_blank(view, address.b))
             elif mode in (VISUAL_LINE, VISUAL_BLOCK):
                 if s.a <= s.b:
                     if address.b < s.b:
@@ -1762,7 +1762,7 @@ class _vi_quote(ViTextCommandBase):
                 else:
                     s = Region(s.a + 1, address.b)
             elif mode == NORMAL:
-                s = address
+                s = Region(next_non_blank(view, address.b))
             elif mode == INTERNAL_NORMAL:
                 if s.a < address.a:
                     s = Region(view.full_line(s.b).a, view.line(address.b).b)
@@ -1771,9 +1771,7 @@ class _vi_quote(ViTextCommandBase):
 
             return s
 
-        state = self.state
-        address = state.marks.get_as_encoded_address(character)
-
+        address = self.state.marks.get_as_encoded_address(character)
         if address is None:
             return
 
@@ -1783,6 +1781,7 @@ class _vi_quote(ViTextCommandBase):
             else:
                 # We get a command in this form: <command _vi_double_quote>
                 self.view.run_command(address.split(' ')[1][:-1])
+
             return
 
         jumplist_update(self.view)
@@ -1798,9 +1797,9 @@ class _vi_backtick(ViTextCommandBase):
     def run(self, edit, count=1, mode=None, character=None):
         def f(view, s):
             if mode == VISUAL:
-                s = resolve_visual_target(s, address.b)
+                s = resolve_visual_target(s, next_non_blank(view, address.b))
             elif mode == NORMAL:
-                s = address
+                s = Region(next_non_blank(view, address.b))
             elif mode == INTERNAL_NORMAL:
                 if s.a < address.a:
                     s = Region(view.full_line(s.b).a, view.line(address.b).b)
@@ -1809,18 +1808,16 @@ class _vi_backtick(ViTextCommandBase):
 
             return s
 
-        state = self.state
-        address = state.marks.get_as_encoded_address(character, exact=True)
-
+        address = self.state.marks.get_as_encoded_address(character, exact=True)
         if address is None:
             return
 
         if isinstance(address, str):
             if not address.startswith('<command'):
                 self.view.window().open_file(address, ENCODED_POSITION)
+
             return
 
-        # This is a motion in a composite command.
         jumplist_update(self.view)
         regions_transformer(self.view, f)
         jumplist_update(self.view)

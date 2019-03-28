@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.11.2 - Unreleased
 
+* Fixed [#485](https://github.com/NeoVintageous/NeoVintageous/issues/485): `'{a-z}` should jump to the first non-blank character in the line
 * Fixed [#484](https://github.com/NeoVintageous/NeoVintageous/issues/484): `]}` in Visual mode is off-by-one
 * Fixed [#483](https://github.com/NeoVintageous/NeoVintageous/issues/483): `'{a-z}` in Visual mode is inconsistent
 * Fixed [#482](https://github.com/NeoVintageous/NeoVintageous/issues/482): `|` at start of line moves to previous line
