@@ -88,6 +88,7 @@ class TestExtractUrl(unittest.ViewTestCase):
 
     def test_markdown_links(self):
         self.assertExtractUrl('http://example.com', '[title](http://example.com)')
+        self.assertExtractUrl('http://example.com', '[title](http://example.com):')
 
     def test_markdown_images(self):
         self.assertExtractUrl('https://example.com', '[![Alt](https://example.com)]')

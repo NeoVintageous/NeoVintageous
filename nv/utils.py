@@ -84,14 +84,15 @@ def extract_url(view):
             url = url.rstrip(')')
 
             # Remove closing tag markdown image e.g. `![alt](url)]`.
-            if url[-2:] == ')]':
+            # Remove trailing markdown punctuation e.g. ): int [title](url):
+            if url[-2:] in (')]', '):'):
                 url = url[:-2]
 
             # Remove trailing quote marks e.g. `"url"`, `'url'`.
             url = url.rstrip('"\'')
 
-            # Remove trailing quote-comma marks e.g. `"url",`, `'url',`.
-            if url[-2:] == '",' or url[-2:] == '\',':
+            # Remove trailing quote-comma marks e.g. ", and ,'
+            if url[-2:] in ('",', '\','):
                 url = url[:-2]
 
             return url
