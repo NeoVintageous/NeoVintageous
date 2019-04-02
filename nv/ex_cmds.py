@@ -891,6 +891,13 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
 
         cmd = _ex_shell_last_command
 
+    if '%' in cmd:
+        file_name = view.file_name()
+        if not file_name:
+            return status_message('E499: Empty file name for \'%\' or \'#\', only works with ":p:h"')
+
+        cmd = cmd.replace('%', file_name)
+
     try:
         if not line_range.is_empty:
             shell.filter_thru_shell(
@@ -907,7 +914,8 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
             output_view.settings().set("scroll_past_end", False)
             output_view = view.window().create_output_panel('vi_out')
             output_view.run_command('append', {'characters': output, 'force': True, 'scroll_to_end': True})
-            view.window().run_command("show_panel", {"panel": "output.vi_out"})
+            if not view.settings().get('vintageous_shell_silent'):
+                view.window().run_command("show_panel", {"panel": "output.vi_out"})
 
         # TODO: store only successful commands.
         _ex_shell_last_command = cmd

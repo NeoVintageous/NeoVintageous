@@ -424,6 +424,11 @@ OPTIONS SUMMARY                                            *nv-option-summary*
                         boolean (default on)
         Reset to normal mode when a tab is activated.
 
+                                                   *'vintageous_shell_silent'*
+'vintageous_shell_silent'
+                        boolean (default off)
+        Show output panel from shell commands.
+
                                                   *'vintageous_use_ctrl_keys'*
 'vintageous_use_ctrl_keys'
                         boolean (default: false)
