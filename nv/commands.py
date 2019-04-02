@@ -4294,12 +4294,12 @@ class _vi_big_m(ViMotionCommand):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target_pt)
-            elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target_pt)
-            elif mode == VISUAL_LINE:
-                s = resolve_visual_line_target(view, s, target_pt)
             elif mode == VISUAL:
                 s = resolve_visual_target(s, target_pt)
+            elif mode == VISUAL_LINE:
+                s = resolve_visual_line_target(view, s, target_pt)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(s.a, target_pt)
 
             return s
 
