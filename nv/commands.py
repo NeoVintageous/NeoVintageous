@@ -4499,13 +4499,13 @@ class _vi_hat(ViMotionCommand):
 
             if mode == NORMAL:
                 s = Region(bol)
+            elif mode == VISUAL:
+                s = new_inclusive_region(a, bol)
             elif mode == INTERNAL_NORMAL:
                 # The character at the "end" of the region is skipped in both
                 # forward and reverse cases, so unlike other regions, no need to
                 # add 1 to it.
                 s = Region(a, bol)
-            elif mode == VISUAL:
-                s = new_inclusive_region(a, bol)
 
             return s
 
