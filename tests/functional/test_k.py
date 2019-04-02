@@ -50,8 +50,11 @@ class Test_k(unittest.FunctionalTestCase):
         self.eq('aaa\n|\n', 'n_k', '|aaa\n\n')
         self.eq('aaa bbb\naa|a\n', 'n_k', 'aa|a bbb\naaa\n')
         self.eq('aaa\naaa bb|b\n', 'n_k', 'aa|a\naaa bbb\n')
-        self.eq('\t\taaa\naaa bbb |ccc\n', 'n_k', '  |      aaa\naaa bbb ccc\n')
         self.eq('aaa\naaa bbb |ccc\n', 'n_k', 'aa|a\naaa bbb ccc\n')
+
+    def test_n_tabs(self):
+        self.settings().set('translate_tabs_to_spaces', False)
+        self.eq('\t\taaa\naaa bbb |ccc\n', 'n_k', '\t\t|aaa\naaa bbb ccc\n')
 
     def test_v(self):
         self.eq('foo\nb|a|r\nbaz\n', 'v_k', 'r_f|oo\nba|r\nbaz\n')
