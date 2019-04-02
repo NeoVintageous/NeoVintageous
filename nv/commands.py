@@ -4428,8 +4428,6 @@ class _vi_big_b(ViMotionCommand):
         def do_motion(view, s):
             if mode == NORMAL:
                 s = Region(word_reverse(self.view, s.b, count, big=True))
-            elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, word_reverse(self.view, s.b, count, big=True))
             elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count, big=True)
@@ -4439,6 +4437,8 @@ class _vi_big_b(ViMotionCommand):
                         s = Region(s.a, pt + 1)
                 elif s.b < s.a:
                     s = Region(s.a, word_reverse(self.view, s.b, count, big=True))
+            elif mode == INTERNAL_NORMAL:
+                s = Region(s.a, word_reverse(self.view, s.b, count, big=True))
 
             return s
 
