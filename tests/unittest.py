@@ -1186,6 +1186,7 @@ _SEQ2CMD = {
     'dW':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_w'}}},  # noqa: E241,E501
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'd{':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_left_brace', 'is_jump': True}}},  # noqa: E241,E501
+    'd|':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_pipe'}}},  # noqa: E241,E501
     'd}':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace', 'is_jump': True}}},  # noqa: E241,E501
     'E':            {'command': '_vi_big_e'},  # noqa: E241
     'e':            {'command': '_vi_e'},  # noqa: E241

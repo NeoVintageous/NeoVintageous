@@ -46,7 +46,7 @@ class Test_pipe(unittest.FunctionalTestCase):
         self.eq('x\n|fizz\n|buzz', 'v_|', 'x\n|f|izz\nbuzz')
         self.eq('r_x\n|fizz\n|buzz', 'v_|', 'r_x\n|fizz\n|buzz')
 
-    def test_N_pipe(self):
-        self.eq('fi|zz buzz', '7|', 'N_fiz|z b|uzz')
-        self.eq('fi|zz| buzz', '8|', 'N_fiz|z bu|zz')
-        self.eq('r_fi|zz| buzz', '8|', 'N_fiz|z bu|zz')
+    def test_d(self):
+        self.eq('fi|zz buzz', '7d|', 'fiz|uzz')
+        self.eq('fi|zz| buzz', '8d|', 'fiz|zz')
+        self.eq('r_fi|zz| buzz', '8d|', 'fiz|zz')
