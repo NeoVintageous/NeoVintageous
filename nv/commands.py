@@ -4464,9 +4464,9 @@ class _vi_underscore(ViMotionCommand):
             bol = self.view.text_point(target_row, 0)
 
             if mode == NORMAL:
-                bol = next_non_white_space_char(self.view, bol)
-                return Region(bol)
-
+                s = Region(next_non_white_space_char(self.view, bol))
+            elif mode == VISUAL:
+                s = new_inclusive_region(a, next_non_white_space_char(self.view, bol))
             elif mode == INTERNAL_NORMAL:
                 # TODO: differentiate between 'd' and 'c'
                 begin = self.view.line(b).a
@@ -4476,15 +4476,11 @@ class _vi_underscore(ViMotionCommand):
                 # XXX: There may be better ways to communicate between actions
                 # and motions than by inspecting state.
                 if isinstance(self.state.action, ViChangeByChars):
-                    return Region(begin, end)
+                    s = Region(begin, end)
                 else:
-                    return Region(begin, end + 1)
+                    s = Region(begin, end + 1)
 
-            elif mode == VISUAL:
-                bol = next_non_white_space_char(self.view, bol)
-                return new_inclusive_region(a, bol)
-            else:
-                return s
+            return s
 
         regions_transformer(self.view, f)
 
