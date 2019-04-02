@@ -3896,7 +3896,7 @@ class _vi_big_w(ViMotionCommand):
                 if ((pt == view.size()) and (not view.line(pt).empty())):
                     pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
 
-                return Region(pt, pt)
+                s = Region(pt)
             elif mode == VISUAL:
                 s = resolve_visual_target(s, big_word_starts(view, start=max(s.b - 1, 0), count=count))
             elif mode == INTERNAL_NORMAL:
@@ -3905,7 +3905,7 @@ class _vi_big_w(ViMotionCommand):
                 if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
                     a = view.line(s.a).a
 
-                return Region(a, pt)
+                s = Region(a, pt)
 
             return s
 
