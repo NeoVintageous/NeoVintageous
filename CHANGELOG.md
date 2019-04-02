@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.11.3 - Unreleased
+
+* Fixed [#489](https://github.com/NeoVintageous/NeoVintageous/issues/489): `gg` in Visual mode is inconsistent
+
 ## 1.11.2 - 2019-04-02
 
 * Fixed [#488](https://github.com/NeoVintageous/NeoVintageous/issues/488): `gx` doesn't work on some markdown links
@@ -11,7 +15,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#484](https://github.com/NeoVintageous/NeoVintageous/issues/484): `]}` in Visual mode is off-by-one
 * Fixed [#483](https://github.com/NeoVintageous/NeoVintageous/issues/483): `'{a-z}` in Visual mode is inconsistent
 * Fixed [#482](https://github.com/NeoVintageous/NeoVintageous/issues/482): `|` at start of line moves to previous line
-
 
 ## 1.11.1 - 2019-03-27
 

@@ -275,3 +275,42 @@ def resolve_visual_target(s, target):
             s.b = target
 
     return s
+
+
+def resolve_visual_line_target(view, s, target):
+    # type: (...) -> Region
+    if s.a < s.b:                               # A --> B
+        if target < s.a:                        # TARGET < A --> B
+            s.a = view.full_line(s.a).b
+            s.b = view.line(target).a
+        elif target > s.a:
+            s.b = view.full_line(target).b
+        elif target == s.a:
+            s.b = s.a
+            s.a = view.full_line(target).b
+    elif s.a > s.b:                             # B <-- A
+        if target > s.a:                        # B <-- A < TARGET
+            s.a = view.line(s.a - 1).a
+            s.b = view.full_line(target).b
+        elif target < s.a:                      # TARGET < B <-- TARGET < A
+            s.b = view.line(target).a
+        elif target == s.a:                     # A === TARGET
+            s.a = view.line(s.a - 1).a
+            s.b = view.full_line(target).b
+    elif s.a == s.b:                            # A === B
+
+        # If A and B are equal, it means the Visual selection is not well
+        # formed. Instead of raising an error, or not resolving the selection,
+        # the selection is coerced to well formed selection and resolved.
+
+        if target > s.a:
+            s.a = view.line(s.a).a
+            s.b = view.full_line(target).b
+        elif target < s.a:
+            s.a = view.full_line(s.a).b
+            s.b = view.line(target).a
+        elif target == s.a:
+            s.a = view.line(target).a
+            s.b = view.full_line(target).b
+
+    return s

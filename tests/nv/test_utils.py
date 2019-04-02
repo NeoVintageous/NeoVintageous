@@ -21,6 +21,7 @@ from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
+from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 
 
@@ -107,7 +108,7 @@ class TestExtractUrl(unittest.ViewTestCase):
 
 class TestResolveVisualTarget(unittest.TestCase):
 
-    def test_forward_visual_selection(self):
+    def test_forwards(self):
         self.assertEqual(resolve_visual_target(Region(5, 11), 14), Region(5, 15))
         self.assertEqual(resolve_visual_target(Region(5, 11), 13), Region(5, 14))
         self.assertEqual(resolve_visual_target(Region(5, 11), 12), Region(5, 13))
@@ -124,7 +125,7 @@ class TestResolveVisualTarget(unittest.TestCase):
         self.assertEqual(resolve_visual_target(Region(5, 11), 1), Region(6, 1))
         self.assertEqual(resolve_visual_target(Region(5, 11), 0), Region(6, 0))
 
-    def test_backward_visual_selection(self):
+    def test_backwards(self):
         self.assertEqual(resolve_visual_target(Region(11, 5), 0), Region(11, 0))
         self.assertEqual(resolve_visual_target(Region(11, 5), 1), Region(11, 1))
         self.assertEqual(resolve_visual_target(Region(11, 5), 2), Region(11, 2))
@@ -141,9 +142,134 @@ class TestResolveVisualTarget(unittest.TestCase):
         self.assertEqual(resolve_visual_target(Region(11, 5), 13), Region(10, 14))
         self.assertEqual(resolve_visual_target(Region(11, 5), 14), Region(10, 15))
 
-    def test_invalid_visual_selection_point_is_corrected(self):
+    def test_malformed_visual_selections_are_corrected(self):
         self.assertEqual(resolve_visual_target(Region(5, 5), 3), Region(5, 3))
         self.assertEqual(resolve_visual_target(Region(5, 5), 4), Region(5, 4))
         self.assertEqual(resolve_visual_target(Region(5, 5), 5), Region(5, 6))
         self.assertEqual(resolve_visual_target(Region(5, 5), 6), Region(5, 6))
         self.assertEqual(resolve_visual_target(Region(5, 5), 7), Region(5, 7))
+
+
+class TestResolveVisualLineTarget(unittest.ViewTestCase):
+
+    def test_forwards(self):
+        self.vline('12\nabc\n|fizz\n|abc\n12')
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 0), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 1), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 2), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 3), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 4), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 5), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 6), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 7), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 8), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 9), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 10), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 11), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 12), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 13), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 14), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 15), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 16), Region(7, 18))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 17), Region(7, 18))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 12), 18), Region(7, 18))
+
+    def test_forwards_multiline(self):
+        self.vline('12\nabc\n|fizz\nbuzz\n|abc\n12')
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 0), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 1), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 2), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 3), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 4), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 5), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 6), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 7), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 8), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 9), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 10), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 11), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 12), Region(7, 17))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 13), Region(7, 17))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 14), Region(7, 17))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 15), Region(7, 17))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 16), Region(7, 17))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 17), Region(7, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 18), Region(7, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 19), Region(7, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 20), Region(7, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 21), Region(7, 23))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 22), Region(7, 23))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7, 17), 23), Region(7, 23))
+
+    def test_backwards(self):
+        self.rvline('12\nabc\n|fizz\n|abc\n12')
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 0), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 1), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 2), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 3), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 4), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 5), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 6), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 7), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 8), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 9), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 10), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 11), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 12), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 13), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 14), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 15), Region(7, 16))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 16), Region(7, 18))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 17), Region(7, 18))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(12, 7), 18), Region(7, 18))
+
+    def test_backwards_muliline(self):
+        self.rvline('12\nabc\n|fizz\nbuzz\n|abc\n12')
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 0), Region(17, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 1), Region(17, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 2), Region(17, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 3), Region(17, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 4), Region(17, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 5), Region(17, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 6), Region(17, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 7), Region(17, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 8), Region(17, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 9), Region(17, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 10), Region(17, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 11), Region(17, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 12), Region(17, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 13), Region(17, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 14), Region(17, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 15), Region(17, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 16), Region(17, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 17), Region(12, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 18), Region(12, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 19), Region(12, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 20), Region(12, 21))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 21), Region(12, 23))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 22), Region(12, 23))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(17, 7), 23), Region(12, 23))
+
+    def test_normal(self):
+        self.normal('12\nabc\n|fizz\nabc\n12')
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 0), Region(12, 0))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 4), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 5), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 6), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 7), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 8), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 11), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(7), 12), Region(7, 16))
+        self.normal('12\nabc\nfi|zz\nabc\n12')
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 5), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 6), Region(12, 3))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 7), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 8), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 9), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 10), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 11), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(9), 12), Region(7, 16))
+        self.normal('12\nabc\nfizz|\nabc\n12')
+        self.assertEqual(resolve_visual_line_target(self.view, Region(11), 10), Region(12, 7))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(11), 11), Region(7, 12))
+        self.assertEqual(resolve_visual_line_target(self.view, Region(11), 12), Region(7, 16))

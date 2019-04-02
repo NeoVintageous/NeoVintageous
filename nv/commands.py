@@ -70,6 +70,7 @@ from NeoVintageous.nv.utils import get_scroll_up_target_pt
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import lowest_visible_pt
+from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
@@ -3793,10 +3794,8 @@ class _vi_gg(ViMotionCommand):
             elif mode == INTERNAL_NORMAL:
                 return Region(view.full_line(s.b).b, 0)
             elif mode == VISUAL_LINE:
-                if s.a < s.b:
-                    return Region(s.b, 0)
-                else:
-                    return Region(s.a, 0)
+                s = resolve_visual_line_target(view, s, 0)
+
             return s
 
         jumplist_update(self.view)
