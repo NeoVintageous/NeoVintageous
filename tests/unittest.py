@@ -1247,7 +1247,7 @@ _SEQ2CMD = {
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
     'j':            {'command': '_vi_select_j'},  # noqa: E241
-    'k':            {'command': '_vi_select_k'},  # noqa: E241
+    'k':            {'command': '_vi_k'},  # noqa: E241
     'L':            {'command': '_vi_big_l'},  # noqa: E241
     'l':            {'command': '_vi_l'},  # noqa: E241
     'l_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
@@ -1269,7 +1269,10 @@ _SEQ2CMD = {
     'S"':           {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
+    's_2k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
+    's_6k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
     's_J':          {'command': '_vi_select_big_j'},  # noqa: E241
+    's_k':          {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
     't\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': False}},  # noqa: E241
     'tx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
     't|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': False}},  # noqa: E241
