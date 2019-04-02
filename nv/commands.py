@@ -4315,33 +4315,24 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
         def f(view, s):
             pattern = self.build_pattern(query)
             flags = self.calculate_flags(query)
-
-            if mode == INTERNAL_NORMAL:
-                match = find_wrapping(view,
-                                      term=pattern,
-                                      start=view.word(s.end()).end(),
-                                      end=view.size(),
-                                      flags=flags,
-                                      times=1)
-            else:
-                match = find_wrapping(view,
-                                      term=pattern,
-                                      start=view.word(s.end()).end(),
-                                      end=view.size(),
-                                      flags=flags,
-                                      times=1)
+            match = find_wrapping(
+                view,
+                term=pattern,
+                start=view.word(s.end()).end(),
+                end=view.size(),
+                flags=flags,
+                times=1
+            )
 
             if match:
                 if mode == INTERNAL_NORMAL:
-                    return Region(s.a, match.begin())
+                    s = Region(s.a, match.begin())
                 elif mode == VISUAL:
-                    return Region(s.a, match.begin())
+                    s = Region(s.a, match.begin())
                 elif mode == NORMAL:
-                    return Region(match.begin(), match.begin())
-
+                    s = Region(match.begin())
             elif mode == NORMAL:
-                pt = view.word(s.end()).begin()
-                return Region(pt)
+                s = Region(view.word(s.end()).begin())
 
             return s
 
@@ -4354,7 +4345,6 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
 
         if query:
             self.hilite(query)
-            # Ensure n and N can repeat this search later.
             state.last_buffer_search = query
 
         if not search_string:
