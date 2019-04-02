@@ -3841,6 +3841,8 @@ class _vi_dollar(ViMotionCommand):
                 s = Region(eol if view.line(eol).empty() else (eol - 1))
             elif mode == VISUAL:
                 s = resolve_visual_target(s, eol)
+            elif mode == VISUAL_LINE:
+                s = resolve_visual_line_target(view, s, eol)
             elif mode == INTERNAL_NORMAL:
                 if get_bol(view, s.a) == s.a:
                     s = Region(s.a, eol + 1)
