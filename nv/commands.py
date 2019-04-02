@@ -3808,17 +3808,13 @@ class _vi_big_g(ViMotionCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                eof_line = view.line(eof)
-                if not eof_line.empty():
-                    s = Region(next_non_blank(self.view, eof_line.a))
-                else:
-                    s = Region(eof_line.a)
+                s = Region(next_non_blank(self.view, view.line(eof).a))
             elif mode == VISUAL:
                 s = resolve_visual_target(s, next_non_blank(self.view, view.line(eof).a))
-            elif mode == INTERNAL_NORMAL:
-                s = Region(max(0, view.line(s.b).a), eof)
             elif mode == VISUAL_LINE:
                 s = resolve_visual_line_target(view, s, eof)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(max(0, view.line(s.b).a), eof)
 
             return s
 

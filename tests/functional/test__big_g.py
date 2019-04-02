@@ -36,6 +36,8 @@ class Test_G(unittest.FunctionalTestCase):
         self.eq('|1\n2\n3', 'n_9G', '1\n2\n|3')
         self.eq('|1\n2\n3\n', 'n_9G', '1\n2\n3|\n')
         self.eq('|1\n2\n3\n\n', 'n_9G', '1\n2\n3\n|\n')
+        self.eq('|', 'n_G', '|')
+        self.eq('|1\n2\n    fizz', 'n_G', '1\n2\n    |fizz')
 
     def test_v(self):
         self.eq('1\nab|cd\n3\n456\n', 'v_G', '1\nab|cd\n3\n456\n|')
@@ -45,6 +47,9 @@ class Test_G(unittest.FunctionalTestCase):
         self.eq('r_1\n2|2\nab|cd\n4\n    5xx\nx', 'v_5G', '1\n22\na|bcd\n4\n    5|xx\nx')
         self.eq('1\nab|cd\n3x\n4x\n    5x\n6x\n', 'v_5G', '1\nab|cd\n3x\n4x\n    5|x\n6x\n')
         self.eq('fi|zz\n2\n    buzz', 'v_G', 'fi|zz\n2\n    b|uzz')
+        self.eq('|1\nfizz\n    buzz', 'v_G', '|1\nfizz\n    b|uzz')
+
+    def test_V(self):
         self.eq('1\n|two\n|three\n4\nfive\n', 'l_G', '1\n|two\nthree\n4\nfive\n|')
         self.eq('|1\n2\n|3\n4\n55\nx', 'l_5G', '|1\n2\n3\n4\n55\n|x')
         self.eq('1\n2\n3\n|4\n55\n|x', 'l_1G', 'r_|1\n2\n3\n4\n|55\nx')
