@@ -4974,12 +4974,12 @@ class _vi_enter(ViMotionCommand):
 
         def advance(view, s):
             if mode == NORMAL:
-                return Region(next_non_white_space_char(view, s.b))
+                s = Region(next_non_white_space_char(view, s.b))
             elif mode == VISUAL:
                 if s.a < s.b:
-                    return Region(s.a, next_non_white_space_char(view, s.b - 1))
-
-                return Region(s.a, next_non_white_space_char(view, s.b))
+                    s = Region(s.a, next_non_white_space_char(view, s.b - 1))
+                else:
+                    s = Region(s.a, next_non_white_space_char(view, s.b))
 
             return s
 
