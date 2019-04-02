@@ -4703,6 +4703,8 @@ class _vi_left_paren(ViMotionCommand):
                 s = Region(previous_sentence.a)
             elif mode == VISUAL:
                 s = resolve_visual_target(s, previous_sentence.a)
+            elif mode == VISUAL_LINE:
+                s = resolve_visual_line_target(view, s, previous_sentence.a)
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, previous_sentence.a)
 
@@ -4722,6 +4724,8 @@ class _vi_right_paren(ViMotionCommand):
             if mode == NORMAL:
                 s = Region(min(next_sentence.b, view.size() - 1))
             elif mode == VISUAL:
+                s = Region(s.a, min(next_sentence.b + 1, view.size() - 1))
+            elif mode == VISUAL_LINE:
                 s = Region(s.a, min(next_sentence.b + 1, view.size() - 1))
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, next_sentence.b)
