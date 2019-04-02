@@ -25,6 +25,11 @@ class Test_c(unittest.FunctionalTestCase):
         self.settings().set('vintageous_use_sys_clipboard', False)
         self.resetRegisters()
 
+    def test_c0(self):
+        self.eq('1\nfi|zz\n2', 'c0', 'i_1\n|zz\n2')
+        self.assertRegistersEqual('"-', 'fi')
+        self.assertRegistersEmpty('01')
+
     def test_ce(self):
         self.eq('one |two three', 'ce', 'i_one | three')
         self.eq('one t|wo three', 'ce', 'i_one t| three')
