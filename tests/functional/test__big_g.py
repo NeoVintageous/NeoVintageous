@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_G(unittest.FunctionalTestCase):
 
-    def test_G(self):
+    def test_n(self):
         self.eq('|1\n2\n3\n4\n', 'n_G', '1\n2\n3\n4\n|')
         self.eq('1\n2\n|3\n4\n', 'n_G', '1\n2\n3\n4\n|')
         self.eq('1\n2\n3\n4\n|', 'n_G', '1\n2\n3\n4\n|')
@@ -37,10 +37,7 @@ class Test_G(unittest.FunctionalTestCase):
         self.eq('|1\n2\n3\n', 'n_9G', '1\n2\n3|\n')
         self.eq('|1\n2\n3\n\n', 'n_9G', '1\n2\n3\n|\n')
 
-    def test_N_G(self):
-        self.eq('|1\n2\n3\n4\n', 'G', 'N_|1\n2\n3\n4\n|')
-
-    def test_v_G(self):
+    def test_v(self):
         self.eq('1\nab|cd\n3\n456\n', 'v_G', '1\nab|cd\n3\n456\n|')
         self.eq('1\nab|cd\n3x\n4x\n5x\n6x\n', 'v_5G', '1\nab|cd\n3x\n4x\n5|x\n6x\n')
         self.eq('1\n    22\n3\n4a|bc\n5x|x\nx', 'v_2G', 'r_1\n    |22\n3\n4ab|c\n5xx\nx')
@@ -48,28 +45,24 @@ class Test_G(unittest.FunctionalTestCase):
         self.eq('r_1\n2|2\nab|cd\n4\n    5xx\nx', 'v_5G', '1\n22\na|bcd\n4\n    5|xx\nx')
         self.eq('1\nab|cd\n3x\n4x\n    5x\n6x\n', 'v_5G', '1\nab|cd\n3x\n4x\n    5|x\n6x\n')
         self.eq('fi|zz\n2\n    buzz', 'v_G', 'fi|zz\n2\n    b|uzz')
-
-    def test_V_G(self):
         self.eq('1\n|two\n|three\n4\nfive\n', 'l_G', '1\n|two\nthree\n4\nfive\n|')
         self.eq('|1\n2\n|3\n4\n55\nx', 'l_5G', '|1\n2\n3\n4\n55\n|x')
-
-    def test_V_G_2(self):
         self.eq('1\n2\n3\n|4\n55\n|x', 'l_1G', 'r_|1\n2\n3\n4\n|55\nx')
         self.eq('1\n2\n3\n|4\n55\n|x', 'l_2G', 'r_1\n|2\n3\n4\n|55\nx')
         self.eq('1\n2\n3\n|4\n55\n|x', 'l_3G', 'r_1\n2\n|3\n4\n|55\nx')
         self.eq('1\n2\n3\n|4\n55\n|x', 'l_4G', '1\n2\n3\n|4\n|55\nx')
         self.eq('1\n2\n3\n|4\n55\n|x', 'l_5G', '1\n2\n3\n|4\n55\n|x')
-
-    def test_V_G_3(self):
         self.eq('r_1\n2\n3\n|4\n55\n|x', 'l_1G', 'r_|1\n2\n3\n4\n55\n|x')
         self.eq('r_1\n2\n3\n|4\n55\n|x', 'l_2G', 'r_1\n|2\n3\n4\n55\n|x')
         self.eq('r_1\n2\n3\n|4\n55\n|x', 'l_3G', 'r_1\n2\n|3\n4\n55\n|x')
         self.eq('r_1\n2\n3\n|4\n55\n|x', 'l_4G', 'r_1\n2\n3\n|4\n55\n|x')
         self.eq('r_1\n2\n3\n|4\n55\n|x', 'l_5G', 'r_1\n2\n3\n4\n|55\n|x')
-
-    def test_V_G_4(self):
         self.eq('r_1\n|2\n3\n|4\n55\nx', 'l_1G', 'r_|1\n2\n3\n|4\n55\nx')
         self.eq('r_1\n|2\n3\n|4\n55\nx', 'l_2G', 'r_1\n|2\n3\n|4\n55\nx')
         self.eq('r_1\n|2\n3\n|4\n55\nx', 'l_3G', 'r_1\n2\n|3\n|4\n55\nx')
         self.eq('r_1\n|2\n3\n|4\n55\nx', 'l_4G', '1\n2\n|3\n4\n|55\nx')
         self.eq('r_1\n|2\n3\n|4\n55\nx', 'l_5G', '1\n2\n|3\n4\n55\n|x')
+
+    def test_d(self):
+        self.eq('1\n2\n|3\n4\n', 'dG', '1\n2\n|')
+        self.eq('1\n|2\n3\n4\n5\n6\n7', '5dG', '1\n|6\n7')
