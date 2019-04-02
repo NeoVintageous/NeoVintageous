@@ -4655,16 +4655,17 @@ class _vi_ge(ViMotionCommand):
     def run(self, mode=None, count=1):
         def to_word_end(view, s):
             if mode == NORMAL:
-                pt = word_end_reverse(view, s.b, count)
-                return Region(pt)
+                s = Region(word_end_reverse(view, s.b, count))
             elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_end_reverse(view, s.b - 1, count)
                     if pt > s.a:
-                        return Region(s.a, pt + 1)
-                    return Region(s.a + 1, pt)
-                pt = word_end_reverse(view, s.b, count)
-                return Region(s.a, pt)
+                        s = Region(s.a, pt + 1)
+                    else:
+                        s = Region(s.a + 1, pt)
+                else:
+                    s = Region(s.a, word_end_reverse(view, s.b, count))
+
             return s
 
         regions_transformer(self.view, to_word_end)
