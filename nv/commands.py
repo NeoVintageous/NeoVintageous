@@ -4358,47 +4358,38 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
         def f(view, s):
             pattern = self.build_pattern(query)
             flags = self.calculate_flags(query)
-
-            if mode == INTERNAL_NORMAL:
-                match = reverse_find_wrapping(view,
-                                              term=pattern,
-                                              start=0,
-                                              end=start_sel.a,
-                                              flags=flags,
-                                              times=1)
-            else:
-                match = reverse_find_wrapping(view,
-                                              term=pattern,
-                                              start=0,
-                                              end=start_sel.a,
-                                              flags=flags,
-                                              times=1)
+            match = reverse_find_wrapping(
+                view,
+                term=pattern,
+                start=0,
+                end=start_sel.a,
+                flags=flags,
+                times=1
+            )
 
             if match:
-                if mode == INTERNAL_NORMAL:
-                    return Region(s.b, match.begin())
+                if mode == NORMAL:
+                    s = Region(match.begin())
                 elif mode == VISUAL:
-                    return Region(s.b, match.begin())
-                elif mode == NORMAL:
-                    return Region(match.begin(), match.begin())
-
+                    s = resolve_visual_target(s, match.begin())
+                elif mode == INTERNAL_NORMAL:
+                    s = Region(s.b, match.begin())
             elif mode == NORMAL:
-                return Region(previous_white_space_char(view, s.b) + 1)
+                s = Region(previous_white_space_char(view, s.b) + 1)
 
             return s
 
         state = self.state
-
         query = search_string or self.get_query()
 
         jumplist_update(self.view)
         start_sel = self.view.sel()[0]
+
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
         if query:
             self.hilite(query)
-            # Ensure n and N can repeat this search later.
             state.last_buffer_search = query
 
         if not search_string:
