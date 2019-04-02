@@ -118,3 +118,8 @@ class Test_ctrl_d(unittest.FunctionalTestCase):
     def test_l_ctrl_d_invokes_bell_when_at_eof(self):
         self.eq('|1\n2\n3|', 'l_<C-d>', '|1\n2\n3|')
         self.assertBell()
+
+    @unittest.mock_ui()
+    def test_d(self):
+        self.eq('|1\n2\n3\n4\n5\n6', 'd<C-d>', '|4\n5\n6')
+        self.eq('1\n|2\n3\n4\n5\n6', 'd<C-d>', '1\n|5\n6')
