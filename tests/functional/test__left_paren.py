@@ -44,3 +44,12 @@ class Test_left_paren(unittest.FunctionalTestCase):
         self.assertNormal('one.\ntwo.\n\n|three.\n\n\nfour.\n\n\n\nfive.')
         self.feed('n_(')
         self.assertNormal('one.\ntwo.\n|\nthree.\n\n\nfour.\n\n\n\nfive.')
+
+    def test_v(self):
+        self.eq('one. two. th|ree.', 'v_(', 'r_one. two. |thr|ee.')
+        self.eq('one. two. |three.', 'v_(', 'r_one. |two. t|hree.')
+        self.eq('x. fiz|zbu|zz', 'v_(', 'r_x. |fizz|buzz')
+        self.eq('r_x. fiz|zbu|zz', 'v_(', 'r_x. |fizzbu|zz')
+
+    def test_d(self):
+        self.eq('one. fizz bu|zz', 'd(', 'r_one. |zz')

@@ -4700,11 +4700,11 @@ class _vi_left_paren(ViMotionCommand):
                 return s
 
             if mode == NORMAL:
-                return Region(previous_sentence.a)
+                s = Region(previous_sentence.a)
             elif mode == VISUAL:
-                return Region(s.a + 1, previous_sentence.a + 1)
+                s = resolve_visual_target(s, previous_sentence.a)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, previous_sentence.a + 1)
+                s = Region(s.a, previous_sentence.a)
 
             return s
 

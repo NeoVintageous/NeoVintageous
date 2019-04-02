@@ -12,6 +12,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#497](https://github.com/NeoVintageous/NeoVintageous/issues/497): `d(` should include first character of paragraph
+* Fixed [#496](https://github.com/NeoVintageous/NeoVintageous/issues/496): `(` in Visual mode is inconsistent
 * Fixed [#495](https://github.com/NeoVintageous/NeoVintageous/issues/495): `#` in Visual mode doesn't work after first jump
 * Fixed [#494](https://github.com/NeoVintageous/NeoVintageous/issues/494): `*` in Visual line mode should include first character of match
 
