@@ -71,8 +71,6 @@ class TestRightSquareBracketTarget(unittest.FunctionalTestCase):
         self.eq('{ a |{| b { x } c } d }', 'v_]}', '{ a |{ b { x } c }| d }')
         self.eq('|{ a { b { x }| c } d }', 'v_]}', '|{ a { b { x } c }| d }')
         self.eq('|{| a { b { x } c } d }', 'v_]}', '|{ a { b { x } c } d }|')
-
-    def test_v_reverse(self):
         self.eq('r_{ a { b { x |} c } d }|', 'v_]}', 'r_{ a { b { x } c |} d }|')
         self.eq('r_{ a { b { x } c |} d }|', 'v_]}', 'r_{ a { b { x } c } d |}|')
         self.eq('r_{ a { b { x } |c } d }|', 'v_]}', 'r_{ a { b { x } c |} d }|')
