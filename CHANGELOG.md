@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.11.2 - Unreleased
+## 1.11.2 - 2019-04-02
 
 * Fixed [#488](https://github.com/NeoVintageous/NeoVintageous/issues/488): `gx` doesn't work on some markdown links
 * Fixed [#487](https://github.com/NeoVintageous/NeoVintageous/issues/487): `{` in Visual mode is off-by-one
