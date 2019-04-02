@@ -20,12 +20,12 @@ from NeoVintageous.tests import unittest
 
 class Test_w(unittest.FunctionalTestCase):
 
-    def test_w(self):
+    def test_n(self):
         self.eq('one |two three', 'n_w', 'one two |three')
         self.eq('|one two three', 'n_2w', 'one two |three')
         self.eq('|one two', 'n_3w', 'one tw|o')
 
-    def test_v_w(self):
+    def test_v(self):
         self.eq('one |two three', 'v_w', 'one |two t|hree')
         self.eq('|one two three', 'v_2w', '|one two t|hree')
         self.eq('r_|on|e two three', 'v_w', 'o|ne t|wo three')
@@ -36,3 +36,16 @@ class Test_w(unittest.FunctionalTestCase):
         self.eq('r_|one t|wo', 'v_w', 'r_one |t|wo')
         self.eq('r_|one |two', 'v_w', 'one| t|wo')
         self.eq('fi|zz', 'v_w', 'fi|zz|')
+        self.eq('r_fi|zz b|uzz', 'v_w', 'r_fizz |b|uzz')
+        self.eq('r_fi|zz |buzz', 'v_w', 'fizz| b|uzz')
+
+    def test_b(self):
+        self.eq('|fi|zz buzz\n|fi|zz buzz\n', 'b_w', '|fizz b|uzz\n|fizz b|uzz\n')
+        self.eq('r_|fi|zz buzz\n|fi|zz buzz\n', 'b_w', 'f|izz b|uzz\nf|izz b|uzz\n')
+        self.eq('r_f|izz buz|z\nf|izz buz|z\n', 'b_w', 'r_fizz |buz|z\nfizz |buz|z\n')
+
+    def test_d(self):
+        self.eq('one |two three', 'dw', 'one |three')
+        self.eq('one t|wo three', 'dw', 'one t|three')
+        self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
+        self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
