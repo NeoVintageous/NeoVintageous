@@ -1011,6 +1011,7 @@ _SEQ2CMD = {
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-v>':        {'command': '_enter_visual_block_mode'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
+    '<CR>':         {'command': '_vi_enter'},  # noqa: E241
     '<esc>':        {'command': '_enter_normal_mode'},  # noqa: E241
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'is_jump': True}}},  # noqa: E241,E501
     '=':            {'command': '_vi_equal'},  # noqa: E241

@@ -4976,10 +4976,7 @@ class _vi_enter(ViMotionCommand):
             if mode == NORMAL:
                 s = Region(next_non_white_space_char(view, s.b))
             elif mode == VISUAL:
-                if s.a < s.b:
-                    s = Region(s.a, next_non_white_space_char(view, s.b - 1))
-                else:
-                    s = Region(s.a, next_non_white_space_char(view, s.b))
+                s = resolve_visual_target(s, next_non_white_space_char(view, s.b - 1 if s.a < s.b else s.b))
 
             return s
 
