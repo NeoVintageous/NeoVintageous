@@ -30,6 +30,7 @@ class Test_star(unittest.FunctionalTestCase):
         self.eq('x fi|zz x', 'n_*', 'x |fizz x')
         self.assertSearch('x |fizz| x')
         self.assertSearchCurrent('x |fizz| x')
+        self.eq('|', 'n_*', '|')
 
     def test_N_star(self):
         self.eq('a|bc\nx\nabc\nx\nabc\nx', '*', 'N_a|bc\nx\n|abc\nx\nabc\nx')
