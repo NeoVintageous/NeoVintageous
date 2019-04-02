@@ -10,6 +10,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[{`, `[(`, `]}`, and `])` in Visual line mode
 * Added [#284](https://github.com/NeoVintageous/NeoVintageous/issues/284): Support for `%` in shell commands
 
+### Fixed
+
+* Fixed [#494](https://github.com/NeoVintageous/NeoVintageous/issues/494): `*` in Visual line mode should include first character of match
+
 ## 1.11.3 - 2019-04-04
 
 * Fixed [#501](https://github.com/NeoVintageous/NeoVintageous/issues/501): Default `mapleader` does not appear to be working

@@ -40,7 +40,6 @@ class Test_octothorp(unittest.FunctionalTestCase):
 
     def test_N_octohorp(self):
         self.eq('abc\nx\nabc\nx\na|bc\nx', '#', 'r_N_abc\nx\n|abc\nx\na|bc\nx')
-        self.eq('fi|zz\nx\nabc\n', '*', 'r_N_|fi|zz\nx\nabc\n')
 
     def test_octothorp_select_match_middle(self):
         self.eq('abc\na|bc', 'n_#', '|abc\nabc')
@@ -83,4 +82,3 @@ class Test_octothorp(unittest.FunctionalTestCase):
 
     def test_v_octothorp(self):
         self.eq('x\nabc\nx\nab|c\nx', 'v_#', 'r_x\n|abc\nx\nabc|\nx')
-        self.eq('x\nabc\nx\nx ab|c x\nx', 'v_*', 'r_x\n|abc\nx\nx ab|c x\nx')

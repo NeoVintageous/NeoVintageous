@@ -34,6 +34,7 @@ class Test_star(unittest.FunctionalTestCase):
     def test_N_star(self):
         self.eq('a|bc\nx\nabc\nx\nabc\nx', '*', 'N_a|bc\nx\n|abc\nx\nabc\nx')
         self.eq('fi|zz\nx\nabc\n', '*', 'r_N_|fi|zz\nx\nabc\n')
+        self.eq('fi|zz\nx\nabc\n', '*', 'r_N_|fi|zz\nx\nabc\n')
 
     def test_star_no_match(self):
         self.eq('x\nfi|zz\nx\nabc\n', 'n_*', 'x\n|fizz\nx\nabc\n')
@@ -63,5 +64,7 @@ class Test_star(unittest.FunctionalTestCase):
         self.eq('fo|o\nfoox\nfoo\nxfoo\n', 'n_*', 'foo\nfoox\n|foo\nxfoo\n')
 
     def test_v_star(self):
-        self.eq('ab|c\nx\nabc\nx', 'v_*', 'ab|c\nx\n|abc\nx')
-        self.eq('ab|c\nx\nx abc x\nx', 'v_*', 'ab|c\nx\nx |abc x\nx')
+        self.eq('ab|c\nx\nabc\nx', 'v_*', 'ab|c\nx\na|bc\nx')
+        self.eq('ab|c\nx\nx abc x\nx', 'v_*', 'ab|c\nx\nx a|bc x\nx')
+        self.eq('x\nabc\nx\nx ab|c x\nx', 'v_*', 'r_x\n|abc\nx\nx abc| x\nx')
+        self.eq('fi|zz\nx\n    fizz\nx', 'v_*', 'fi|zz\nx\n    f|izz\nx')

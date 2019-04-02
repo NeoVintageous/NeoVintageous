@@ -4328,7 +4328,7 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
                 if mode == INTERNAL_NORMAL:
                     s = Region(s.a, match.begin())
                 elif mode == VISUAL:
-                    s = Region(s.a, match.begin())
+                    s = resolve_visual_target(s, match.begin())
                 elif mode == NORMAL:
                     s = Region(match.begin())
             elif mode == NORMAL:
