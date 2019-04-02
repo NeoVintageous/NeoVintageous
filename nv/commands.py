@@ -4325,12 +4325,12 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
             )
 
             if match:
-                if mode == INTERNAL_NORMAL:
-                    s = Region(s.a, match.begin())
+                if mode == NORMAL:
+                    s = Region(match.begin())
                 elif mode == VISUAL:
                     s = resolve_visual_target(s, match.begin())
-                elif mode == NORMAL:
-                    s = Region(match.begin())
+                elif mode == INTERNAL_NORMAL:
+                    s = Region(s.a, match.begin())
             elif mode == NORMAL:
                 s = Region(view.word(s.end()).begin())
 
