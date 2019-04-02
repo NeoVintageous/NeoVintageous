@@ -73,8 +73,8 @@ class Test_L(unittest.FunctionalTestCase):
 
     @unittest.mock_ui()
     def test_l_L(self):
-        self.eq('1x\n2x\n3x\n4x\n|5x|', 'l_L', '1x\n2x\n3x\n4x\n|5x|')
-        self.eq('1x\n2x\n3x\n4x\n|5x\n|', 'l_L', '1x\n2x\n3x\n4x\n|5x\n|')
+        self.eq('1x\n2x\n3x\n4x\n|5x|', 'l_L', 'r_1x\n2x\n3x\n4x\n|5x|')
+        self.eq('1x\n2x\n3x\n4x\n|5x\n|', 'l_L', 'r_1x\n2x\n3x\n4x\n|5x\n|')
         self.eq('1x\n2x\n3x\n|4x\n5x|', 'l_L', '1x\n2x\n3x\n|4x\n5x|')
         self.eq('1x\n2x\n3x\n|4x\n|5x', 'l_L', '1x\n2x\n3x\n|4x\n5x|')
         self.eq('1x\n2x\n|3x\n4x\n5x', 'l_L', '1x\n2x\n|3x\n4x\n5x|')
@@ -91,6 +91,6 @@ class Test_L(unittest.FunctionalTestCase):
         self.eq('r_1x\n2x\n|3x\n|4x\n5x', 'l_L', '1x\n2x\n|3x\n4x\n5x|')
         self.eq('r_1x\n|2x\n3x\n|4x\n5x', 'l_L', '1x\n2x\n|3x\n4x\n5x|')
         self.eq('r_|1x\n2x\n3x\n|4x\n5x', 'l_L', '1x\n2x\n|3x\n4x\n5x|')
-        self.eq('r_|1\n2x\n3x|', 'l_L', '1\n2x\n|3x|')
-        self.eq('r_|1\n2x\n3x\n|', 'l_L', '1\n2x\n|3x\n|')
-        self.eq('r_|1\n2x\n3x|\n', 'l_L', '1\n2x\n|3x|\n')
+        self.eq('r_|1\n2x\n3x|', 'l_L', 'r_1\n2x\n|3x|')
+        self.eq('r_|1\n2x\n3x\n|', 'l_L', 'r_1\n2x\n|3x\n|')
+        self.eq('r_|1\n2x\n3x|\n', 'l_L', 'r_1\n2x\n|3x|\n')

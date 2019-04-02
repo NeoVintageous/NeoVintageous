@@ -38,6 +38,10 @@ class Test_gg(unittest.FunctionalTestCase):
         self.eq('1x\n2x\n3|x\n4|x\n5x', 'v_2gg', 'r_1x\n|2x\n3x|\n4x\n5x')
         self.eq('r_1x\n2x\n3|x\n4|x\n5x', 'v_2gg', 'r_1x\n|2x\n3x\n4|x\n5x')
 
+    def test_l(self):
+        self.eq('11\n|2\n33\n|44', 'l_gg', 'r_|11\n2\n|33\n44')
+        self.eq('r_11\n|2\n33\n|44', 'l_gg', 'r_|11\n2\n33\n|44')
+
     def test_d(self):
         self.eq('foo\nb|ar', 'dgg', '|')
         self.eq('1x\n2x\n3x\n4|x\n5x', '2dgg', '1x\n|5x')

@@ -1546,7 +1546,7 @@ class _vi_visual_o(ViTextCommandBase):
     def run(self, edit, mode=None, count=1):
         def f(view, s):
             if mode in (VISUAL, VISUAL_LINE):
-                return Region(s.b, s.a)
+                s = Region(s.b, s.a)
 
             return s
 
@@ -3785,14 +3785,11 @@ class _vi_gg(ViMotionCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                return Region(next_non_blank(self.view, 0))
+                s = Region(next_non_blank(self.view, 0))
             elif mode == VISUAL:
-                if s.a < s.b:
-                    return Region(s.a + 1, next_non_blank(self.view, 0))
-                else:
-                    return Region(s.a, next_non_blank(self.view, 0))
+                s = resolve_visual_target(s, next_non_blank(self.view, 0))
             elif mode == INTERNAL_NORMAL:
-                return Region(view.full_line(s.b).b, 0)
+                s = Region(view.full_line(s.b).b, 0)
             elif mode == VISUAL_LINE:
                 s = resolve_visual_line_target(view, s, 0)
 
@@ -3813,19 +3810,15 @@ class _vi_big_g(ViMotionCommand):
             if mode == NORMAL:
                 eof_line = view.line(eof)
                 if not eof_line.empty():
-                    return Region(next_non_blank(self.view, eof_line.a))
-
-                return Region(eof_line.a)
+                    s = Region(next_non_blank(self.view, eof_line.a))
+                else:
+                    s = Region(eof_line.a)
             elif mode == VISUAL:
-                eof_line = view.line(eof)
-                if not eof_line.empty():
-                    return Region(s.a, next_non_blank(self.view, eof_line.a) + 1)
-
-                return Region(s.a, eof_line.a)
+                s = resolve_visual_target(s, next_non_blank(self.view, view.line(eof).a))
             elif mode == INTERNAL_NORMAL:
-                return Region(max(0, view.line(s.b).a), eof)
+                s = Region(max(0, view.line(s.b).a), eof)
             elif mode == VISUAL_LINE:
-                return Region(s.a, eof)
+                s = resolve_visual_line_target(view, s, eof)
 
             return s
 
@@ -3868,8 +3861,10 @@ class _vi_w(ViMotionCommand):
                     pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
 
                 return Region(pt, pt)
-
-            elif mode in (VISUAL, VISUAL_BLOCK):
+            elif mode == VISUAL:
+                start = (s.b - 1) if (s.a < s.b) else s.b
+                s = resolve_visual_target(s, word_starts(view, start=start, count=count))
+            elif mode == VISUAL_BLOCK:
                 start = (s.b - 1) if (s.a < s.b) else s.b
                 pt = word_starts(view, start=start, count=count)
 
@@ -3904,18 +3899,8 @@ class _vi_big_w(ViMotionCommand):
                     pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
 
                 return Region(pt, pt)
-
             elif mode == VISUAL:
-                pt = big_word_starts(view, start=max(s.b - 1, 0), count=count)
-                if s.a > s.b and pt >= s.a:
-                    return Region(s.a - 1, pt + 1)
-                elif s.a > s.b:
-                    return Region(s.a, pt)
-                elif (view.size() == pt):
-                    pt -= 1
-
-                return Region(s.a, pt + 1)
-
+                s = resolve_visual_target(s, big_word_starts(view, start=max(s.b - 1, 0), count=count))
             elif mode == INTERNAL_NORMAL:
                 a = s.a
                 pt = big_word_starts(view, start=s.b, count=count, internal=True)
@@ -3937,14 +3922,7 @@ class _vi_e(ViMotionCommand):
                 return Region(pt - 1)
 
             elif mode == VISUAL:
-                pt = word_ends(view, start=s.b - 1, count=count)
-                if (s.a > s.b) and (pt >= s.a):
-                    return Region(s.a - 1, pt)
-                elif (s.a > s.b):
-                    return Region(s.a, pt - 1)
-
-                return Region(s.a, pt)
-
+                s = resolve_visual_target(s, word_ends(view, start=s.b - 1, count=count) - 1)
             elif mode == INTERNAL_NORMAL:
                 a = s.a
                 pt = word_ends(view, start=s.b, count=count)
@@ -3968,14 +3946,7 @@ class _vi_zero(ViMotionCommand):
             elif mode == INTERNAL_NORMAL:
                 return Region(s.a, view.line(s.b).a)
             elif mode == VISUAL:
-                if s.a < s.b:
-                    line = view.line(s.b)
-                    if s.a > line.a:
-                        return Region(s.a + 1, line.a)
-                    else:
-                        return Region(s.a, line.a + 1)
-                else:
-                    return Region(s.a, view.line(s.b).a)
+                s = resolve_visual_target(s, view.line(s.b).a)
 
             return s
 
@@ -4000,13 +3971,7 @@ class _vi_right_brace(ViMotionCommand):
                     s = Region(s.a, par_begin - 1)
             elif mode == VISUAL_LINE:
                 par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
-                if s.a <= s.b:
-                    s = Region(s.a, par_begin + 1)
-                else:
-                    if par_begin >= s.a:
-                        s = Region(view.line(s.a - 1).a, par_begin + 1)
-                    else:
-                        s = Region(s.a, par_begin)
+                s = resolve_visual_line_target(view, s, par_begin)
 
             return s
 
@@ -4026,13 +3991,7 @@ class _vi_left_brace(ViMotionCommand):
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, prev_paragraph_start(view, s.b, count))
             elif mode == VISUAL_LINE:
-                if s.a <= s.b:
-                    if par_as_region.a < s.a:
-                        s = Region(view.full_line(s.a).b, par_as_region.a)
-                    else:
-                        s = Region(s.a, par_as_region.a + 1)
-                else:
-                    s = Region(s.a, par_as_region.a)
+                s = resolve_visual_line_target(view, s, par_as_region.a)
 
             return s
 
@@ -4307,17 +4266,7 @@ class _vi_big_h(ViMotionCommand):
             elif mode == VISUAL:
                 s = resolve_visual_target(s, target_pt)
             elif mode == VISUAL_LINE:
-                if s.b > s.a and target_pt <= s.a:
-                    a = self.view.full_line(s.a).b
-                    b = self.view.line(target_pt).a
-                elif s.b > s.a:
-                    a = s.a
-                    b = self.view.full_line(target_pt).b
-                else:
-                    a = s.a
-                    b = self.view.line(target_pt).a
-
-                s = Region(a, b)
+                s = resolve_visual_line_target(view, s, target_pt)
 
             return s
 
@@ -4338,17 +4287,7 @@ class _vi_big_l(ViMotionCommand):
             elif mode == VISUAL:
                 s = resolve_visual_target(s, target_pt)
             elif mode == VISUAL_LINE:
-                if s.a > s.b and target_pt >= s.a:
-                    a = self.view.line(s.a - 1).a
-                    b = self.view.full_line(target_pt).b
-                elif s.a > s.b:
-                    a = self.view.line(target_pt).a
-                    b = s.a
-                else:
-                    a = s.a
-                    b = self.view.full_line(target_pt).b
-
-                s = Region(a, b)
+                s = resolve_visual_line_target(view, s, target_pt)
 
             return s
 
@@ -4364,22 +4303,7 @@ class _vi_big_m(ViMotionCommand):
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, target_pt)
             elif mode == VISUAL_LINE:
-                if s.b > s.a:
-                    if target_pt < s.a:
-                        a = self.view.full_line(s.a).b
-                        b = self.view.line(target_pt).a
-                    else:
-                        a = s.a
-                        b = self.view.full_line(target_pt).b
-                else:
-                    if target_pt >= s.a:
-                        a = self.view.line(s.a - 1).a
-                        b = self.view.full_line(target_pt).b
-                    else:
-                        a = s.a
-                        b = self.view.full_line(target_pt).a
-
-                s = Region(a, b)
+                s = resolve_visual_line_target(view, s, target_pt)
             elif mode == VISUAL:
                 s = resolve_visual_target(s, target_pt)
 
@@ -4510,7 +4434,10 @@ class _vi_b(ViMotionCommand):
                 pt = word_reverse(self.view, s.b, count)
                 return Region(s.a, pt)
 
-            elif mode in (VISUAL, VISUAL_BLOCK):
+            elif mode == VISUAL:
+                start = s.b - 1 if s.a < s.b else s.b
+                return resolve_visual_target(s, word_reverse(self.view, start, count))
+            elif mode == VISUAL_BLOCK:
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count)
                     if pt < s.a:
@@ -4530,22 +4457,18 @@ class _vi_big_b(ViMotionCommand):
     def run(self, count=1, mode=None):
         def do_motion(view, s):
             if mode == NORMAL:
-                pt = word_reverse(self.view, s.b, count, big=True)
-                return Region(pt)
-
+                s = Region(word_reverse(self.view, s.b, count, big=True))
             elif mode == INTERNAL_NORMAL:
-                pt = word_reverse(self.view, s.b, count, big=True)
-                return Region(s.a, pt)
-
+                s = Region(s.a, word_reverse(self.view, s.b, count, big=True))
             elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count, big=True)
                     if pt < s.a:
-                        return Region(s.a + 1, pt)
-                    return Region(s.a, pt + 1)
+                        s = Region(s.a + 1, pt)
+                    else:
+                        s = Region(s.a, pt + 1)
                 elif s.b < s.a:
-                    pt = word_reverse(self.view, s.b, count, big=True)
-                    return Region(s.a, pt)
+                    s = Region(s.a, word_reverse(self.view, s.b, count, big=True))
 
             return s
 
@@ -4684,33 +4607,14 @@ class _vi_ctrl_u(ViMotionCommand):
     def run(self, count=0, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                return Region(scroll_target_pt)
+                s = Region(scroll_target_pt)
             elif mode == VISUAL:
-                a = s.a
-                b = scroll_target_pt
-
-                if s.b > s.a:
-                    if scroll_target_pt < s.a:
-                        a += 1
-                    else:
-                        b += 1
-
-                return Region(a, b)
+                s = resolve_visual_target(s, scroll_target_pt)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, scroll_target_pt)
+                s = Region(s.a, scroll_target_pt)
             elif mode == VISUAL_LINE:
-                if s.b > s.a:
-                    if scroll_target_pt < s.a:
-                        a = self.view.full_line(s.a).b
-                        b = self.view.line(scroll_target_pt).a
-                    else:
-                        a = self.view.line(s.a).a
-                        b = self.view.full_line(scroll_target_pt).b
-                else:
-                    a = s.a
-                    b = self.view.line(scroll_target_pt).a
+                s = resolve_visual_line_target(view, s, scroll_target_pt)
 
-                return Region(a, b)
             return s
 
         number_of_scroll_lines = count if count >= 1 else get_option_scroll(self.view)
@@ -4728,33 +4632,13 @@ class _vi_ctrl_d(ViMotionCommand):
     def run(self, count=0, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                return Region(scroll_target_pt)
+                s = Region(scroll_target_pt)
             elif mode == VISUAL:
-                a = s.a
-                b = scroll_target_pt
-
-                if s.b > s.a:
-                    b += 1
-                elif scroll_target_pt >= s.a:
-                    a -= 1
-                    b += 1
-
-                return Region(a, b)
+                s = resolve_visual_target(s, scroll_target_pt)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, scroll_target_pt)
+                s = Region(s.a, scroll_target_pt)
             elif mode == VISUAL_LINE:
-                if s.a > s.b:
-                    if scroll_target_pt >= s.a:
-                        a = self.view.line(s.a - 1).a
-                        b = self.view.full_line(scroll_target_pt).b
-                    else:
-                        a = s.a
-                        b = self.view.line(scroll_target_pt).a
-                else:
-                    a = s.a
-                    b = self.view.full_line(scroll_target_pt).b
-
-                return Region(a, b)
+                s = resolve_visual_line_target(view, s, scroll_target_pt)
 
             return s
 

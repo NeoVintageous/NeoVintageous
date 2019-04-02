@@ -107,7 +107,7 @@ class Test_ctrl_u(unittest.FunctionalTestCase):
         self.eq('1x\n2x\n3x\n|4x\n5x\n6x|', 'l_<C-u>', 'r_1x\n2x\n|3x\n4x\n|5x\n6x')
         self.eq('1x\n2x\n3x\n|4x\n5x\n|6x', 'l_<C-u>', 'r_1x\n|2x\n3x\n4x\n|5x\n6x')
         self.eq('1x\n2x\n|3x\n4x\n|5x\n6x', 'l_<C-u>', 'r_|1x\n2x\n3x\n|4x\n5x\n6x')
-        self.eq('1x\n2x\n|3x\n4x\n5x\n6x|', 'l_<C-u>', '1x\n2x\n|3x\n|4x\n5x\n6x')
+        self.eq('1x\n2x\n|3x\n4x\n5x\n6x|', 'l_<C-u>', 'r_1x\n2x\n|3x\n|4x\n5x\n6x')
         self.eq('1x\n|2x\n3x\n|4x\n5x\n6x', 'l_<C-u>', 'r_|1x\n2x\n|3x\n4x\n5x\n6x')
         self.eq('|1x\n2x\n3x\n4x\n5x\n6x|', 'l_<C-u>', '|1x\n2x\n3x\n|4x\n5x\n6x')
 
