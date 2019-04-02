@@ -3916,9 +3916,7 @@ class _vi_e(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                pt = word_ends(view, start=s.b, count=count)
-                return Region(pt - 1)
-
+                s = Region(word_ends(view, start=s.b, count=count) - 1)
             elif mode == VISUAL:
                 s = resolve_visual_target(s, word_ends(view, start=s.b - 1, count=count) - 1)
             elif mode == INTERNAL_NORMAL:
@@ -3929,7 +3927,7 @@ class _vi_e(ViMotionCommand):
                     if view.line(a).empty():
                         pt += 1
 
-                return Region(a, pt)
+                s = Region(a, pt)
 
             return s
 
