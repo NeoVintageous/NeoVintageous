@@ -4401,25 +4401,21 @@ class _vi_b(ViMotionCommand):
     def run(self, mode=None, count=1):
         def do_motion(view, s):
             if mode == NORMAL:
-                pt = word_reverse(self.view, s.b, count)
-                return Region(pt)
-
-            elif mode == INTERNAL_NORMAL:
-                pt = word_reverse(self.view, s.b, count)
-                return Region(s.a, pt)
-
+                s = Region(word_reverse(self.view, s.b, count))
             elif mode == VISUAL:
                 start = s.b - 1 if s.a < s.b else s.b
-                return resolve_visual_target(s, word_reverse(self.view, start, count))
+                s = resolve_visual_target(s, word_reverse(self.view, start, count))
             elif mode == VISUAL_BLOCK:
                 if s.a < s.b:
                     pt = word_reverse(self.view, s.b - 1, count)
                     if pt < s.a:
-                        return Region(s.a + 1, pt)
-                    return Region(s.a, pt + 1)
+                        s = Region(s.a + 1, pt)
+                    else:
+                        s = Region(s.a, pt + 1)
                 elif s.b < s.a:
-                    pt = word_reverse(self.view, s.b, count)
-                    return Region(s.a, pt)
+                    s = Region(s.a, word_reverse(self.view, s.b, count))
+            elif mode == INTERNAL_NORMAL:
+                s = Region(s.a, word_reverse(self.view, s.b, count))
 
             return s
 
