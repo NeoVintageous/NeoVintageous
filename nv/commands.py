@@ -3952,22 +3952,21 @@ class _vi_zero(ViMotionCommand):
 class _vi_right_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            target = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
+
             if mode == NORMAL:
-                # find the next non-empty row if needed
-                s = Region(next_paragraph_start(view, s.b, count))
+                s = Region(target)
             elif mode == VISUAL:
-                s = resolve_visual_target(s, next_paragraph_start(view, s.b, count, skip_empty=count > 1))
-            elif mode == INTERNAL_NORMAL:  # TODO Delete previous ws in remaining start line.
-                par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
-                if par_begin == (self.view.size() - 1):
+                s = resolve_visual_target(s, target)
+            elif mode == VISUAL_LINE:
+                s = resolve_visual_line_target(view, s, target)
+            elif mode == INTERNAL_NORMAL:
+                if target == (self.view.size() - 1):
                     s = Region(s.a, self.view.size())
                 elif view.substr(s.a - 1) == '\n' or s.a == 0:
-                    s = Region(s.a, par_begin)
+                    s = Region(s.a, target)
                 else:
-                    s = Region(s.a, par_begin - 1)
-            elif mode == VISUAL_LINE:
-                par_begin = next_paragraph_start(view, s.b, count, skip_empty=count > 1)
-                s = resolve_visual_line_target(view, s, par_begin)
+                    s = Region(s.a, target - 1)
 
             return s
 
