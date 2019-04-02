@@ -4598,10 +4598,10 @@ class _vi_ctrl_d(ViMotionCommand):
                 s = Region(scroll_target_pt)
             elif mode == VISUAL:
                 s = resolve_visual_target(s, scroll_target_pt)
-            elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, scroll_target_pt)
             elif mode == VISUAL_LINE:
                 s = resolve_visual_line_target(view, s, scroll_target_pt)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(s.a, scroll_target_pt)
 
             return s
 
