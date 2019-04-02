@@ -633,6 +633,9 @@ class FunctionalTestCase(ViewTestCase):
         except KeyError as e:
             raise KeyError('test command definition not found for feed %s' % str(e)) from None
 
+        self._run_feed_command(command, args)
+
+    def _run_feed_command(self, command, args):
         self.view.window().run_command(command, args)
 
     def eq(self, text, feed, expected=None, msg=None):
