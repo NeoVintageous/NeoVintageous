@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_gg(unittest.FunctionalTestCase):
 
-    def test_n_gg(self):
+    def test_n(self):
         self.eq('foo\nb|ar', 'n_gg', '|foo\nbar')
         self.eq('    foo\nb|ar', 'n_gg', '    |foo\nbar')
         self.eq('|1\n2\n3\n4\n5', 'n_3gg', '1\n2\n|3\n4\n5')
@@ -30,11 +30,7 @@ class Test_gg(unittest.FunctionalTestCase):
         self.eq('|1\n2\n3\n', 'n_9gg', '1\n2\n3|\n')
         self.eq('|1\n2\n3\n\n', 'n_9gg', '1\n2\n3\n|\n')
 
-    def test_N_gg(self):
-        self.eq('foo\nb|ar', 'gg', 'r_N_|foo\nbar|')
-        self.eq('r_1x\n2x\n3|x\n4|x\n5x', '2gg', 'r_N_1x\n|2x\n3x\n4x\n|5x')
-
-    def test_v_gg(self):
+    def test_v(self):
         self.eq('fizz\nb|u|zz', 'v_gg', 'r_|fizz\nbu|zz')
         self.eq('r_1x\n2x\n3|x\n4|x\n5x', 'v_gg', 'r_|1x\n2x\n3x\n4|x\n5x')
         self.eq('1x\n2x\n3|x\n4|x\n5x', 'v_gg', 'r_|1x\n2x\n3x|\n4x\n5x')
@@ -42,6 +38,6 @@ class Test_gg(unittest.FunctionalTestCase):
         self.eq('1x\n2x\n3|x\n4|x\n5x', 'v_2gg', 'r_1x\n|2x\n3x|\n4x\n5x')
         self.eq('r_1x\n2x\n3|x\n4|x\n5x', 'v_2gg', 'r_1x\n|2x\n3x\n4|x\n5x')
 
-    def test_l_gg(self):
-        self.eq('11\n|2\n33\n|44', 'l_gg', 'r_|11\n2\n33\n|44')
-        self.eq('r_11\n|2\n33\n|44', 'l_gg', 'r_|11\n2\n33\n|44')
+    def test_d(self):
+        self.eq('foo\nb|ar', 'dgg', '|')
+        self.eq('1x\n2x\n3x\n4|x\n5x', '2dgg', '1x\n|5x')

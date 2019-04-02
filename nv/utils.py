@@ -258,16 +258,18 @@ def resolve_visual_target(s, target):
         else:
             s.b = target + 1
     elif s.a > s.b:             # B <-- A
-        if target > s.a:        # B <-- A < TARGET
-            s.a -= 1
-            s.b = target + 1
-        elif target == s.a:     # B <-- A = TARGET
+        if target >= s.a:       # B <-- A <= TARGET
             s.a -= 1
             s.b = target + 1
         else:
             s.b = target
-    elif s.a == s.b:            # A === B
-        if target == s.b:       # A === B = TARGET
+    else:                       # A === B
+
+        # If A and B are equal, it means the Visual selection is not well
+        # formed. Instead of raising an error, or not resolving the selection,
+        # the selection is coerced to well formed selection and resolved.
+
+        if target == s.b:       # B === TARGET
             s.b = target + 1
         else:
             s.b = target

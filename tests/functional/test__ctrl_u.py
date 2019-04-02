@@ -110,3 +110,8 @@ class Test_ctrl_u(unittest.FunctionalTestCase):
         self.eq('1x\n2x\n|3x\n4x\n5x\n6x|', 'l_<C-u>', '1x\n2x\n|3x\n|4x\n5x\n6x')
         self.eq('1x\n|2x\n3x\n|4x\n5x\n6x', 'l_<C-u>', 'r_|1x\n2x\n|3x\n4x\n5x\n6x')
         self.eq('|1x\n2x\n3x\n4x\n5x\n6x|', 'l_<C-u>', '|1x\n2x\n3x\n|4x\n5x\n6x')
+
+    @unittest.mock_ui()
+    def test_d(self):
+        self.eq('1\n2\n3\n4\n5\n|6', 'd<C-u>', '1\n2\n|6')
+        self.eq('1\n2\n3\n4\n|5\n6', 'd<C-u>', '1\n|5\n6')
