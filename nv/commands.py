@@ -4546,22 +4546,19 @@ class _vi_g__(ViMotionCommand):
     def run(self, count=1, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                eol = view.line(s.b).b
-                return Region(eol - 1, eol - 1)
+                s = Region(view.line(s.b).b - 1)
             elif mode == VISUAL:
                 eol = None
                 if s.a < s.b:
-                    eol = view.line(s.b - 1).b
-                    return Region(s.a, eol)
+                    s = Region(s.a, view.line(s.b - 1).b)
                 else:
                     eol = view.line(s.b).b
                     if eol > s.a:
-                        return Region(s.a - 1, eol)
-                    return Region(s.a, eol)
-
+                        s = Region(s.a - 1, eol)
+                    else:
+                        s = Region(s.a, eol)
             elif mode == INTERNAL_NORMAL:
-                eol = view.line(s.b).b
-                return Region(s.a, eol)
+                s = Region(s.a, view.line(s.b).b)
 
             return s
 
