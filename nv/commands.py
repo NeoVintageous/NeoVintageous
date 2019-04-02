@@ -4992,14 +4992,13 @@ class _vi_minus(ViMotionCommand):
 
         def advance(view, s):
             if mode == NORMAL:
-                pt = next_non_white_space_char(view, s.b)
-                return Region(pt)
+                s = Region(next_non_white_space_char(view, s.b))
             elif mode == VISUAL:
                 if s.a < s.b:
-                    pt = next_non_white_space_char(view, s.b - 1)
-                    return Region(s.a, pt + 1)
-                pt = next_non_white_space_char(view, s.b)
-                return Region(s.a, pt)
+                    s = Region(s.a, next_non_white_space_char(view, s.b - 1) + 1)
+                else:
+                    s = Region(s.a, next_non_white_space_char(view, s.b))
+
             return s
 
         regions_transformer(self.view, advance)
