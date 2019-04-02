@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_0(unittest.FunctionalTestCase):
 
-    def test_n_0(self):
+    def test_n(self):
         self.eq('|abc', 'n_0', '|abc')
         self.eq('a|bc', 'n_0', '|abc')
         self.eq('ab|c', 'n_0', '|abc')
@@ -28,18 +28,17 @@ class Test_0(unittest.FunctionalTestCase):
         self.eq('x\na|b\nx', 'n_0', 'x\n|ab\nx')
         self.eq('x\nab|\nx', 'n_0', 'x\n|ab\nx')
 
-    def test_N_0(self):
-        self.eq('|abc', '0', '|abc')
-        self.eq('a|bc', '0', 'r_N_|a|bc')
-        self.eq('ab|c', '0', 'r_N_|ab|c')
-        self.eq('x\n|ab\nx', '0', 'N_x\n|ab\nx')
-        self.eq('x\na|b\nx', '0', 'r_N_x\n|a|b\nx')
-        self.eq('x\nab|\nx', '0', 'r_N_x\n|ab|\nx')
-
-    def test_v_0(self):
+    def test_v(self):
         self.eq('x\nab|c|d\nx', 'v_0', 'r_x\n|abc|d\nx')
         self.eq('x\na|bc|d\nx', 'v_0', 'r_x\n|ab|cd\nx')
         self.eq('x\n|abcd|\nx', 'v_0', 'x\n|a|bcd\nx')
-
-    def test_v_0_multiline(self):
+        self.eq('r_1\nfi|zz\nbu|zz', 'v_0', 'r_1\n|fizz\nbu|zz')
         self.eq('x|a\nabc|d\nx', 'v_0', 'x|a\na|bcd\nx')
+
+    def test_c(self):
+        self.eq('|abc', 'c0', 'i_|abc')
+        self.eq('a|bc', 'c0', 'i_|bc')
+        self.eq('ab|c', 'c0', 'i_|c')
+        self.eq('x\n|ab\nx', 'c0', 'i_x\n|ab\nx')
+        self.eq('x\na|b\nx', 'c0', 'i_x\n|b\nx')
+        self.eq('x\nab|\nx', 'c0', 'i_x\n|\nx')
