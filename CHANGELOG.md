@@ -12,6 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#495](https://github.com/NeoVintageous/NeoVintageous/issues/495): `#` in Visual mode doesn't work after first jump
 * Fixed [#494](https://github.com/NeoVintageous/NeoVintageous/issues/494): `*` in Visual line mode should include first character of match
 
 ## 1.11.3 - 2019-04-04

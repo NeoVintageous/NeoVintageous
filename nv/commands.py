@@ -4362,7 +4362,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
                 view,
                 term=pattern,
                 start=0,
-                end=start_sel.a,
+                end=(start_sel.b if s.a > s.b else start_sel.a),
                 flags=flags,
                 times=1
             )
@@ -4384,7 +4384,6 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 
         jumplist_update(self.view)
         start_sel = self.view.sel()[0]
-
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
