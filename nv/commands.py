@@ -3938,9 +3938,9 @@ class _vi_zero(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
-                return Region(view.line(s.b).a)
+                s = Region(view.line(s.b).a)
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, view.line(s.b).a)
+                s = Region(s.a, view.line(s.b).a)
             elif mode == VISUAL:
                 s = resolve_visual_target(s, view.line(s.b).a)
 
