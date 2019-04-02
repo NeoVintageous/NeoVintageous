@@ -27,3 +27,8 @@ class Test_minus(unittest.FunctionalTestCase):
 
     def test_v(self):
         self.eq('1\n    fizz\n3\n4\n5\nf|izz bu|zz\n7', 'v_4-', 'r_1\n    |fizz\n3\n4\n5\nfi|zz buzz\n7')
+
+    def test_V(self):
+        self.eq('1\nfizz\n|buzz\n|4', 'l_-', 'r_1\n|fizz\nbuzz\n|4')
+        self.eq('1|\nfizz\nbuzz\nthree\n|four\n', 'l_-', '1|\nfizz\nbuzz\n|three\nfour\n')
+        self.eq('r_1\nfizz\n|buzz\nthree\n|', 'l_-', 'r_1\n|fizz\nbuzz\nthree\n|')

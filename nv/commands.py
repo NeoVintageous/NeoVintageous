@@ -4998,6 +4998,8 @@ class _vi_minus(ViMotionCommand):
                 s = Region(next_non_white_space_char(view, s.b))
             elif mode == VISUAL:
                 s = resolve_visual_target(s, next_non_white_space_char(view, s.b - 1 if s.a < s.b else s.b))
+            elif mode == VISUAL_LINE:
+                s = resolve_visual_line_target(view, s, next_non_white_space_char(view, s.b - 1 if s.a < s.b else s.b))
 
             return s
 
