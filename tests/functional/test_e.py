@@ -20,15 +20,13 @@ from NeoVintageous.tests import unittest
 
 class Test_e(unittest.FunctionalTestCase):
 
-    def test_e(self):
-        self.eq('one |two three', 'e', 'N_one |two| three')
-        self.eq('one |two three', '2e', 'N_one |two three|')
-
-    def test_n_e(self):
+    def test_n(self):
         self.eq('one |two three', 'n_e', 'one tw|o three')
         self.eq('one |two three', 'n_2e', 'one two thre|e')
+        self.eq('f|izz', 'n_e', 'fiz|z')
+        self.eq('f|izz\n', 'n_e', 'fiz|z\n')
 
-    def test_v_e(self):
+    def test_v(self):
         self.visual('o|ne two three four five six\n')
         self.feed('v_e')
         self.assertVisual('o|ne| two three four five six\n')
@@ -41,3 +39,14 @@ class Test_e(unittest.FunctionalTestCase):
         self.eq('r_o|ne tw|o', 'v_e', 'r_on|e tw|o')
         self.eq('r_o|ne two three fo|ur', 'v_3e', 'r_one two thre|e fo|ur')
         self.eq('r_o|ne tw|o three four', 'v_3e', 'one t|wo three| four')
+        self.eq('f|izz', 'v_e', 'f|izz|')
+        self.eq('f|izz\n', 'v_e', 'f|izz|\n')
+
+    def test_d(self):
+        self.eq('one |two three', 'de', 'one | three')
+        self.eq('one t|wo three', 'de', 'one t| three')
+        self.eq('one\n|\ntwo\nthree', 'de', 'one\n|three')
+        self.eq('one\n|\n\ntwo\nthree', 'de', 'one\n|three')
+        self.eq('one\n|\n\n\ntwo\nthree', 'de', 'one\n|three')
+        self.eq('one\n|\n\n\n    two\nthree', 'de', 'one\n|three')
+        self.eq('one |two three', '2de', 'N_one| ')
