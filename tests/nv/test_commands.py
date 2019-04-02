@@ -188,6 +188,15 @@ class TestFeedKey(unittest.FunctionalTestCase):
         self.assertRegistersEqual('"-c', 'zz ')
         self.assertRegistersEmpty('012abde')
 
+    def test_undo_redo(self):
+        self.normal('fizz\n|xyz\nbuzz\nbong')
+        self.feedkeys('dd')
+        self.assertNormal('fizz\n|buzz\nbong')
+        self.feedkey('u')
+        self.assertNormal('fizz\n|xyz\nbuzz\nbong')
+        self.feedkey('<C-r>')
+        self.assertNormal('fizz\n|buzz\nbong')
+
     @unittest.mock_bell()
     def test_unknown_operator_motion_invokes_bell(self):
         self.normal('fi|zz')
