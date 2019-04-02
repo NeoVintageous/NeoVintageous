@@ -18,6 +18,7 @@
 from unittest import mock  # noqa: F401
 from unittest import skipIf  # noqa: F401
 from unittest import TestCase  # noqa: F401
+import copy
 import os
 import unittest
 
@@ -82,22 +83,47 @@ class ViewTestCase(unittest.TestCase):
         # Existing selections are cleared.
         #
         # Integers and tuples are converted to Regions:
-        # >>> select(3) is the short for: select(sublime.Region(3))
-        # >>> select((3, 5)) is short for: select(sublime.Region(3, 5))
         #
-        # Select a single point:
         # >>> select(3)
         #
-        # Select a region of text e.g. from point 3 to 5:
+        # is the short for:
+        #
+        # >>> select(sublime.Region(3))
+        #
         # >>> select((3, 5))
         #
-        # Select multiple point selections:
+        # is short for:
+        #
+        # >>> select(sublime.Region(3, 5))
+        #
+        # INT
+        #
+        # Select a single point:
+        #
+        # >>> select(3)
+        #
+        # TUPLE
+        #
+        # Select a region, for example, point 3 to 5:
+        #
+        # >>> select((3, 5))
+        #
+        # LIST of INTS
+        #
+        # Select multiple selections, for example, points, 3, 5, and 7:
+        #
         # >>> select([3, 5, 7])
         #
+        # LIST of TUPLES
+        #
         # Select multiple text selections:
+        #
         # >>> select([(3, 5), (7, 11)])
         #
+        # MIXED LIST
+        #
         # Select multiple points, and text selections:
+        #
         # >>> select([3, 5, (7, 11), 17, (19, 23)])
 
         self.view.sel().clear()
@@ -587,7 +613,7 @@ class FunctionalTestCase(ViewTestCase):
             command = _SEQ2CMD[seq]['command']
 
             if 'args' in _SEQ2CMD[seq]:
-                args = _SEQ2CMD[seq]['args'].copy()
+                args = copy.deepcopy(_SEQ2CMD[seq]['args'])
             else:
                 args = {}
 
