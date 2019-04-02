@@ -4734,14 +4734,14 @@ class _vi_right_paren(ViMotionCommand):
 class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string, mode=None, count=1, extend=False):
         def f(view, s):
-            if mode == VISUAL:
-                return Region(s.end(), found.a)
-            elif mode == INTERNAL_NORMAL:
-                return Region(s.end(), found.a)
-            elif mode == NORMAL:
-                return Region(found.a, found.a)
+            if mode == NORMAL:
+                s = Region(found.a, found.a)
+            elif mode == VISUAL:
+                s = Region(s.end(), found.a)
             elif mode == VISUAL_LINE:
-                return Region(s.end(), view.full_line(found.a).a)
+                s = Region(s.end(), view.full_line(found.a).a)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(s.end(), found.a)
 
             return s
 
