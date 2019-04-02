@@ -54,12 +54,13 @@ class Test_right_paren(unittest.FunctionalTestCase):
         self.feed('n_)')
         self.assertNormal('one.\ntwo.\n\nthree.\n\n\nfour.\n\n\n\n|five.')
 
-    def test_N(self):
-        self.eq('|a b c. xy', ')', 'N_|a b c. |xy')
-        self.eq('|a b c? xy', ')', 'N_|a b c? |xy')
-        self.eq('|a b c! xy', ')', 'N_|a b c! |xy')
-
     def test_v(self):
         self.eq('|a b c. xyz', 'v_)', '|a b c. x|yz')
         self.eq('|a b c? xyz', 'v_)', '|a b c? x|yz')
         self.eq('|a b c! xyz', 'v_)', '|a b c! x|yz')
+
+    def test_d(self):
+        self.eq('|a b c. xy', 'd)', '|xy')
+        self.eq('|a b c? xy', 'd)', '|xy')
+        self.eq('|a b c! xy', 'd)', '|xy')
+        self.eq('one. fi|zz buzz. xy', 'd)', 'one. fi|xy')

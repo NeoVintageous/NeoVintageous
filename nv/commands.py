@@ -4720,11 +4720,11 @@ class _vi_right_paren(ViMotionCommand):
                 return s
 
             if mode == NORMAL:
-                return Region(min(next_sentence.b, view.size() - 1))
+                s = Region(min(next_sentence.b, view.size() - 1))
             elif mode == VISUAL:
-                return Region(s.a, min(next_sentence.b + 1, view.size() - 1))
+                s = Region(s.a, min(next_sentence.b + 1, view.size() - 1))
             elif mode == INTERNAL_NORMAL:
-                return Region(s.a, next_sentence.b)
+                s = Region(s.a, next_sentence.b)
 
             return s
 
