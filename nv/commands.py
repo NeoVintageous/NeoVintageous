@@ -3976,17 +3976,16 @@ class _vi_right_brace(ViMotionCommand):
 class _vi_left_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            start = previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
-            par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
-
             if mode == NORMAL:
                 s = Region(prev_paragraph_start(view, s.b, count))
             elif mode == VISUAL:
                 s = resolve_visual_target(s, prev_paragraph_start(view, s.b, count))
+            elif mode == VISUAL_LINE:
+                start = previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
+                par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
+                s = resolve_visual_line_target(view, s, par_as_region.a)
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, prev_paragraph_start(view, s.b, count))
-            elif mode == VISUAL_LINE:
-                s = resolve_visual_line_target(view, s, par_as_region.a)
 
             return s
 
