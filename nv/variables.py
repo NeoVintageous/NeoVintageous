@@ -23,8 +23,8 @@ _special_strings = {
 
 
 _defaults = {
-    'mapleader': '\\',
-    'maplocalleader': '\\'
+    'mapleader': '<bslash>',
+    'maplocalleader': '<bslash>'
 }
 
 

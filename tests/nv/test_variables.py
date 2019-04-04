@@ -31,11 +31,11 @@ class TestVariables(unittest.TestCase):
 
     def test_special_keys_includes_leader_default(self):
         self.assertTrue(is_key_name('<Leader>'))
-        self.assertEqual(_defaults_struct_[_special_strings_struct_['<leader>']], '\\')
+        self.assertEqual(_defaults_struct_[_special_strings_struct_['<leader>']], '<bslash>')
 
     def test_special_keys_includes_local_leader_default(self):
         self.assertTrue(is_key_name('<LocalLeader>'))
-        self.assertEqual(_defaults_struct_[_special_strings_struct_['<localleader>']], '\\')
+        self.assertEqual(_defaults_struct_[_special_strings_struct_['<localleader>']], '<bslash>')
 
     @mock.patch.dict('NeoVintageous.nv.variables._special_strings', {'<testpresent>': 'testpresentvalue'})
     def test_is_key_name_returns_true_when_present(self):

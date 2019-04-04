@@ -2,8 +2,9 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.11.3 - Unreleased
+## 1.11.3 - 2019-04-04
 
+* Fixed [#501](https://github.com/NeoVintageous/NeoVintageous/issues/501): Default `mapleader` does not appear to be working
 * Fixed [#489](https://github.com/NeoVintageous/NeoVintageous/issues/489): `gg` in Visual mode is inconsistent
 
 ## 1.11.2 - 2019-04-02
