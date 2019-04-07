@@ -9,91 +9,32 @@ Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
 
 NeoVintageous                                             *neovintageous* *nv*
 
- 1. Navigation                      |nv-navigation|
- 2. Jumping to diffs                |nv-jumpto-diffs|
- 3. Opening a split window          |nv-splits|
- 4. Command Palette                 |nv-command-palette|
- 5. Toggle                          |nv-toggle|
- 6. neovintageousrc                 |nv-rc|
- 7. Multiple cursors                |nv-multiple-cursors|
- 8. Plugins out-of-the-box          |nv-plugins|
+ 1. Command Palette                 |nv-command-palette|
+ 2. Toggle Command                  |nv-toggle|
+ 3. Multiple cursors                |nv-multiple-cursors|
+ 4. Opening a view                  |nv-opening-views|
+ 5. neovintageousrc                 |nv-rc|
+ 6. Plugins out-of-the-box          |nv-plugins|
     1.1 Abolish                         |nv-abolish|
     1.2 Commentary                      |nv-commentary|
     1.3 HighlightedYank                 |nv-highlightedyank|
     1.4 Surround                        |nv-surround|
     1.5 Unimpaired                      |nv-unimpaired|
     1.6 Indent Object                   |nv-indent-object|
- 9. Plugins out-of-the-box          |nv-plugins|
-10. Options                         |nv-options|
-11. Search highlighting             |nv-search-highlighting|
-12. Disable arrow keys              |nv-disable-arrow-keys|
-13. Default options                 |nv-default-options|
+ 7. Options                         |nv-options|
+ 8. Search highlighting             |nv-search-highlighting|
+ 9. Jumping to diffs                |nv-jumpto-diffs|
 
 Neovintageous is an emulation of Vim: feature-parity is ongoing effort. If you
 are new to Vim see |help.txt|.
 
 ==============================================================================
 
-NAVIGATION                                                     *nv-navigation*
-
-Sidebar navigation
-
-CTRL-0                  Focus sidebar.
-j                       Move down.
-k                       Move up.
-h                       Close node / Goto parent node.
-l                       Open node.
-
-Overlay / autocomplete navigation
-
-CTRL-J
-CTRL-N                  Move selection down / Next selection.
-
-CTRL-P
-CTRL-K                  Move selection up / Previous selection.
-
-==============================================================================
-
-JUMPING TO DIFFS                                             *nv-jumpto-diffs*
-
-Two commands can be used to jump to diffs.
-
-                                *[c*
-    [c      Jump backwards to the previous start of a change.
-            When a count is used, do it that many times.
-                                *]c*
-    ]c      Jump forwards to the next start of a change.
-            When a count is used, do it that many times.
-
-It is an error if there is no change for the cursor to move to.
-
-In older versions of Sublime Text (builds < 3189) you will need the the
-GitGutter plugin: https://github.com/jisaacks/GitGutter.
-
-==============================================================================
-
-OPENING A WINDOW                                           *nv-opening-window*
-
-Two commands can be used to split views. Both command require the plugin
-Origami: https://github.com/SublimeText/Origami.
-
-CTRL-W s
-CTRL-W S
-CTRL-W CTRL-S
-:sp[lit] [file]         Split current window in two. The result is two views
-                        on the same file. See |CTRL-W_s|.
-
-CTRL-W CTRL-V
-CTRL-W v
-:vs[plit] [file]        Like |:split|, but split vertically. See |CTRL-W_v|.
-
-==============================================================================
-
 COMMAND PALETTE                                           *nv-command-palette*
 
 NeoVintageous: Changelog
-NeoVintageous: Open .neovintageousrc File
-NeoVintageous: Reload .neovintageousrc File
+NeoVintageous: Open RC File
+NeoVintageous: Reload RC File
 NeoVintageous: Toggle CTRL keys
 NeoVintageous: Toggle SUPER keys
 
@@ -101,145 +42,8 @@ NeoVintageous: Toggle SUPER keys
 
 TOGGLE COMMAND                                                     *nv-toggle*
 
-The official ToggleNeoVintageous plugin provides a toggle command:
-https://github.com/NeoVintageous/ToggleNeoVintageous
-
-==============================================================================
-
-NEOVINTAGEOUSRC                                                        *nv-rc*
-                                                                *vintageousrc*
-                                                             *neovintageousrc*
-
-In NeoVintageous, a file that contains initialization commands is called a
-neovintageousrc file. The file is located at "Packages/User/.neovintageousrc"
-and is read by during startup.
-
-The neovintageousrc file can be edited and reloaded via the Command Palette:
-
-* NeoVintageous: Open My .neovintageousrc File
-* NeoVintageous: Reload My .neovintageousrc File
-
-The |mapleader| variable is supported. To define a mapping which uses the
-"mapleader" variable, the special string "<leader>" can be used. It is
-replaced with the string value of "mapleader". If "mapleader" is not set or
-empty, a backslash is used instead. Example: >
-
-    nnoremap <leader>w 3w
-
-Works like: >
-
-    noremap \w  3w
-
-But after: >
-
-    let mapleader=,
-
-It works like: >
-
-    nnoremap ,w 3w
-
-The following |:map-commands| are supported ({lhs} means left-hand-side and
-{rhs} means right-hand-side).
-
-:noremap    {lhs} {rhs}         |:noremap|
-:nnoremap   {lhs} {rhs}         |:nnoremap|
-:onoremap   {lhs} {rhs}         |:onoremap|
-:snoremap   {lhs} {rhs}         |:snoremap|
-:vnoremap   {lhs} {rhs}         |:vnoremap|
-
-When mapping to Ex commands use <CR> (carriage-return) to indicate pressing
-enter, otherwise the Command-line with be invoked: >
-
-    nnoremap <C-s> :w<CR>
-    vnoremap <C-s> :w<CR>
-
-You can map to Sublime Text commands, these commands start with an uppercase
-letter (this is to avoid confusion with built-in Ex commands). The command is
-converted to snake_case and accepts args key=value format: >
-
-    nnoremap <leader>p :ShowOverlay overlay=goto show_files=true<CR>
-    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
-
-Super-keys, known as windows-keys or command-keys, are disabled by default: >
-
-    nnoremap <D-i> :GotoSymbolInProject<CR>
-
-Ex commands can be prefixed with key sequences too: >
-
-    nnoremap <leader>s) vi):sort iu<CR>
-
-More examples: >
-
-    " The character " (the double quote mark) starts a comment
-    " Type :h neovintageousrc for help.
-
-    let mapleader=,
-
-    " Toggle the side bar.
-    nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
-
-    " Saving.
-    nnoremap <C-s> :w<CR>
-    vnoremap <C-s> :w<CR>
-
-    " Yank and paste using system clipboard.
-    noremap <leader>y "+y
-    noremap <leader>Y "+Y
-    noremap <leader>p "+p
-    noremap <leader>P "+P
-
-    " History.
-    noremap <leader>hp :PasteFromHistory<CR>
-
-    " Show me the registers.
-    nnoremap <leader>r :reg<CR>
-
-    " Show me the symbols.
-    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
-    nnoremap <leader>i :GotoSymbolInProject<CR>
-    " Or if you're using super-keys (disabled by default):
-    nnoremap <D-i> :GotoSymbolInProject<CR>
-
-    " Edit rc file.
-    nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
-
-    " Sorted.
-    nnoremap <leader>s) vi):sort iu<CR>
-    nnoremap <leader>s] vi]:sort iu<CR>
-    nnoremap <leader>si vii:sort iu<CR>
-    nnoremap <leader>sp vip:sort iu<CR>
-    vnoremap <leader>s :sort iu<CR>
-
-    " Windowing aliases (especially useful if you don't use ctrl-keys).
-    nnoremap <leader>_ <C-w>_
-    nnoremap <leader><bar> <C-w><bar>
-    nnoremap <leader>= <C-w>=
-
-    " Origami: https://packagecontrol.io/packages/Origami.
-    nnoremap <leader>. :ToggleZoomPane<CR>
-    nnoremap <leader>ws :CarryFileToPane direction=down<CR>
-    nnoremap <leader>wv :CarryFileToPane direction=right<CR>
-    nnoremap <leader>wd :DestroyPane direction=self<CR>
-
-    " Toggle Zoom. Requires the Origami plugin:
-    " https://packagecontrol.io/packages/Origami.
-    nnoremap <leader>. :ToggleZoomPane fraction=0.98<CR>
-
-    " Git
-    nnoremap <leader>hu :RevertModification<CR>
-
-To enable the ability to toggle the side bar when the side bar has focus:
-
-`Menu > Preferences > Key Bindings`: >
-
-    [
-        {
-            "keys": [",", "d"],
-            "command": "neovintageous",
-            "args": { "action": "toggle_side_bar" },
-            "context": [ { "key": "control", "operand": "sidebar_tree" } ]
-        }
-    ]
+If you want to be able to toggle NeoVintageous on and off, you need to install
+the toggle package: https://packagecontrol.io/packages/ToggleNeoVintageous.
 
 ==============================================================================
 
@@ -273,41 +77,162 @@ Esc a second time, you will be left with one single caret in normal mode.
 
 ==============================================================================
 
-MODELINE                                                         *nv-modeline*
+OPENING A VIEW                                               *nv-opening-view*
 
-A feature comparative to Vim |modeline|: a number of lines at the beginning
-and end of the file are checked for set command, the settings will be applied
-to the view when it's opened. This is easiest to understand with some
-examples: >
+Some windowing commands require the Origami package, for example some of the
+windowing splitting commands: https://packagecontrol.io/packages/Origami.
 
-    # sublime: gutter false
-    # sublime: translate_tab_to_spaces true
-    # sublime: rulers [80, 120]
-    # sublime: tab_size 4
+CTRL-W CTRL-S
+CTRL-W s
+CTRL-W S
+:sp[lit] [file]         Split current window in two. The result is two views
+                        on the same file.
+
+                        See |CTRL-W_s|.
+
+CTRL-W CTRL-V
+CTRL-W v
+CTRL-W V
+:vs[plit] [file]        Like |:split|, but split vertically.
+
+                        See |CTRL-W_v|.
+
+==============================================================================
+
+NEOVINTAGEOUSRC                                                        *nv-rc*
+                                                                *vintageousrc*
+                                                             *neovintageousrc*
+
+In NeoVintageous, a file that contains initialization commands is called a
+neovintageousrc file. The file is located at "Packages/User/.neovintageousrc"
+and is read by during startup.
+
+To open and reload the neovintageousrc file use the Command Palette command:
+
+    NeoVintageous: Open My RC File
+    NeoVintageous: Reload My RC File
+
+The |mapleader| variable is supported, for example: >
+
+    let mapleader=,
+
+The non-recursive |:map-commands| are supported:
+
+:noremap    {lhs} {rhs}         |:noremap|
+:nnoremap   {lhs} {rhs}         |:nnoremap|
+:onoremap   {lhs} {rhs}         |:onoremap|
+:snoremap   {lhs} {rhs}         |:snoremap|
+:vnoremap   {lhs} {rhs}         |:vnoremap|
+
+When mapping Ex commands use <CR> to indicate pressing enter: >
+
+    nnoremap <C-s> :w<CR>
+    vnoremap <C-s> :w<CR>
+
+You can map to Sublime Text commands. Commands that begin with an uppercase
+letter are parsed as Sublime Text commands, whereas Ex commands always begin
+with a lowercase letter. Sublime Text commands are converted to snake_case
+before  being run and they accept args in a key=value format: >
+
+    nnoremap <leader>p :ShowOverlay overlay=goto show_files=true<CR>
+    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
+
+Super-keys, known as windows-keys or command-keys, are disabled by default,
+but can be mapped via the `<D-...>` special keys: >
+
+    nnoremap <D-i> :GotoSymbolInProject<CR>
+
+Note that you can prefix Ex command mappings with key sequences: >
+
+    nnoremap <leader>s) vi):sort iu<CR>
+
+Here is an example neovintageous file: >
+
+    " The character " (the double quote mark) starts a comment
+    " Type :h neovintageousrc for help.
+    let mapleader=,
+    " Toggle the side bar.
+    nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
+    " Saving.
+    nnoremap <C-s> :w<CR>
+    vnoremap <C-s> :w<CR>
+    " Yank and paste using system clipboard.
+    noremap <leader>y "+y
+    noremap <leader>Y "+Y
+    noremap <leader>p "+p
+    noremap <leader>P "+P
+    " History.
+    noremap <leader>hp :PasteFromHistory<CR>
+    " Show me the registers.
+    nnoremap <leader>r :reg<CR>
+    " Show me the symbols.
+    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
+    nnoremap <leader>i :GotoSymbolInProject<CR>
+    " Or if you're using super-keys (disabled by default):
+    nnoremap <D-i> :GotoSymbolInProject<CR>
+    " Edit rc file.
+    nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
+    " Sorted.
+    nnoremap <leader>s) vi):sort iu<CR>
+    nnoremap <leader>s] vi]:sort iu<CR>
+    nnoremap <leader>si vii:sort iu<CR>
+    nnoremap <leader>sp vip:sort iu<CR>
+    vnoremap <leader>s :sort iu<CR>
+    " Windowing aliases (especially useful if you don't use ctrl-keys).
+    nnoremap <leader>_ <C-w>_
+    nnoremap <leader><bar> <C-w><bar>
+    nnoremap <leader>= <C-w>=
+    " Origami: https://packagecontrol.io/packages/Origami.
+    nnoremap <leader>. :ToggleZoomPane<CR>
+    nnoremap <leader>ws :CarryFileToPane direction=down<CR>
+    nnoremap <leader>wv :CarryFileToPane direction=right<CR>
+    nnoremap <leader>wd :DestroyPane direction=self<CR>
+    " Toggle Zoom. Requires the Origami plugin:
+    " https://packagecontrol.io/packages/Origami.
+    nnoremap <leader>. :ToggleZoomPane fraction=0.98<CR>
+    " Git
+    nnoremap <leader>hu :RevertModification<CR>
+
+Note that to enable the toggle the side bar when the side bar has focus you
+need to configure a special key binding. Goto  Menu > Preferences > Key
+Bindings and add the following: >
+
+    [
+        {
+            "keys": [",", "d"],
+            "command": "neovintageous",
+            "args": { "action": "toggle_side_bar" },
+            "context": [ { "key": "control", "operand": "sidebar_tree" } ]
+        }
+    ]
 
 ==============================================================================
 
 PLUGINS                                                           *nv-plugins*
                                                                      *plugins*
 
+1. Abolish
+2. Commentary
+3. HighlightedYank
+4. Surround
+5. Unimpaired
+6. Indent Object
+
 ------------------------------------------------------------------------------
 
 ABOLISH                                                           *nv-abolish*
                                                                      *abolish*
 
-Only the abolish case mutating algorithms are supported, they can be applied
-to the word under the cursor.
-
-See |abolish.txt|.
+Note that only the "case mutating algorithms" are supported. See |abolish.txt|
+for more details.
 
 ------------------------------------------------------------------------------
 
 COMMENTARY                                                     *nv-commentary*
                                                                   *commentary*
 
-Comment stuff out. Then uncomment it later.
-
-See |commentary.txt|.
+Comment stuff out. Then uncomment it later. See |commentary.txt| for more
+details.
 
 ------------------------------------------------------------------------------
 
@@ -315,19 +240,15 @@ HIGHLIGHTEDYANK                                           *nv-highlightedyank*
                                                              *highlightedyank*
 
 A plugin to highlight yanked regions. That is a pretty trick to make your
-coding easier.
+coding easier. HighlightedYank is enabled by default.
 
-The plugin can be disabled by the 'highlightedyank' setting.
-
-The highlighted duration can be configured by the 'highlightedyank_duration'
-setting.
+You can disable the plugin via the 'highlightedyank' setting. The highlighted
+duration can be configured by the 'highlightedyank_duration' setting. The
+highlighted style can be configured by the 'highlightedyank_style' setting.
 
 When new text is yanked, the old highlighting is deleted. Or when former lines
 are edited, the highlighting is deleted to prevent shifting the position,
 also.
-
-The highlighted style can be configured by the 'highlightedyank_style'
-setting.
 
 To customise the colors, create a color scheme override for your color scheme:
 for example if you have the default Monokai color scheme enabled, create a
@@ -357,125 +278,78 @@ scope: >
 SURROUND                                                         *nv-surround*
                                                                     *surround*
 
-A plugin for deleting, changing, and adding "surroundings".
-
-See |surround.txt|.
+A plugin for deleting, changing, and adding "surroundings". See |surround.txt|
+for more details.
 
 ------------------------------------------------------------------------------
 
 UNIMPAIRED                                                     *nv-unimpaired*
                                                                   *unimpaired*
 
-This plugin provides several pairs of bracket maps.
+This plugin provides several pairs of bracket maps. See |unimpaired.txt| for
+more detials. Note that not all of the commands have been implemented. Below
+is a list of what has been implemented so far.
 
-The following maps all correspond to normal mode commands.  If a count is
-given, it becomes an argument to the command.
+[b                     |:bprevious|
+]b                     |:bnext|
+[B                     |:bfirst|
+]B                     |:blast|
+[t                     |:tprevious|
+]t                     |:tnext|
+[T                     |:tfirst|
+]T                     |:tlast|
+[<Space>                Add [count] blank lines above the cursor.
+]<Space>                Add [count] blank lines below the cursor.
+[e                      Exchange the current line with [count] lines above it.
+]e                      Exchange the current line with [count] lines below it.
 
-[b      |:bprevious|
-]b      |:bnext|
-[B      |:bfirst|
-]B      |:blast|
-[t      |:tprevious|
-]t      |:tnext|
-[T      |:tfirst|
-]T      |:tlast|
-
-Two commands can be used to jump to errors. Both command require the plugin
-SublimeLinter: https://github.com/SublimeLinter/SublimeLinter3.
+Note that the following two jump to error commands require you to install the
+SublimeLinter package: https://packagecontrol.io/packages/SublimeLinter.
 
 [l                      Jump to the [count] previous error.
 ]l                      Jump to the [count] next error.
 
-[<Space>                Add [count] blank lines above the cursor.
-]<Space>                Add [count] blank lines below the cursor.
+Option toggling.
 
-[e                      Exchange the current line with [count] lines above it.
-]e                      Exchange the current line with [count] lines below it.
-
-Option toggling (some are specific to NeoVintageous: meaning they are not
-available in the original Unimpaired plugin).
-
-On      Off     Toggle  Option
-*[oa*   *]oa*   *coa*   'menu' {Neovintageous specific}
+ On      Off    Toggle  Option
+*[oa*   *]oa*   *coa*   'menu'          {NeoVintageous specific}
 *[oc*   *]oc*   *coc*   'cursorline'
-*[oe*   *]oe*   *coe*   'statusbar' {Neovintageous specific}
+*[oe*   *]oe*   *coe*   'statusbar'     {NeoVintageous specific}
 *[ol*   *]ol*   *col*   'list'
-*[om*   *]om*   *com*   'minimap' {Neovintageous specific}
+*[om*   *]om*   *com*   'minimap'       {NeoVintageous specific}
 *[on*   *]on*   *con*   'number'
-*[ot*   *]ot*   *cot*   'sidebar' {Neovintageous specific}
+*[ot*   *]ot*   *cot*   'sidebar'       {NeoVintageous specific}
 *[os*   *]os*   *cos*   'spell'
 *[ow*   *]ow*   *cow*   'wrap'
-
-See |unimpaired.txt|.
 
 ------------------------------------------------------------------------------
 
 INDENT OBJECT                                               *nv-indent-object*
                                                                *indent-object*
 
-This plugin defines a new text object, based on indentation levels.
-
-See |indent-object.txt|.
+This plugin defines a new text object, based on indentation levels. See
+|indent-object.txt| for more details.
 
 ==============================================================================
 
 OPTIONS                                                           *nv-options*
 
-1. Setting options                                             *nv-set-option*
+Configure settings via `Menu > Preferences > Settings` or by the Command
+Palette. To use the command palette:
 
-`Menu > Preferences > Settings`: >
+1. Press `Ctrl+Shift+P`
+2. Select the "Preferences: Settings" command
+3. Press `Enter`
+
+For example to enable the ctrl keys: >
 
     {
         "vintageous_use_ctrl_keys": true
     }
 
-`Menu > Project > Edit Project`: >
-
-    {
-        "settings": {
-            "vintageous_use_ctrl_keys": true
-        }
-    }
-
 ------------------------------------------------------------------------------
 
-2. Mapping capslock to escape                                    *nv-capslock*
-
-Neovintageous cannot remap the CapsLock, however it can be remapped at an OS
-level e.g. in Ubuntu you can remap the CapsLock to Escape at the terminal: >
-
-    gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
-
-------------------------------------------------------------------------------
-
-3. Holding down a key like j does not repeat the command                *nv-j*
-
-This is a feature of OS X Lion and newer versions. To make a key repeat a
-command when holding it down, run this once at the terminal: >
-
-    defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
-
-------------------------------------------------------------------------------
-
-4. Mapping jj, jk, CTRL-[, etc. to Esc                             *nv-escape*
-
-`Menu > Preferences > Key Bindings`
-
-jj -> Esc: >
-
-    { "keys": ["j", "j"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
-
-jk -> Esc: >
-
-    { "keys": ["j", "k"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
-
-CTRL-[ -> Esc: >
-
-    { "keys": ["ctrl+["], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
-
-------------------------------------------------------------------------------
-
-5. Options summary                                         *nv-option-summary*
+OPTIONS SUMMARY                                            *nv-option-summary*
 
                                                            *'highlightedyank'*
 'highlightedyank' boolean (default on)
@@ -577,10 +451,45 @@ CTRL-[ -> Esc: >
         item        meaning when present    ~
         all         All events.
 
+------------------------------------------------------------------------------
+
+Mapping capslock to escape                                       *nv-capslock*
+
+Neovintageous cannot remap the CapsLock, however it can be remapped at an OS
+level e.g. in Ubuntu you can remap the CapsLock to Escape at the terminal: >
+
+    gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+
+------------------------------------------------------------------------------
+
+Holding down a key like j does not repeat the command                   *nv-j*
+
+This is a feature of OS X Lion and newer versions. To make a key repeat a
+command when holding it down, run this once at the terminal: >
+
+    defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
+
+------------------------------------------------------------------------------
+
+Mapping jj, jk, CTRL-[, etc. to Esc                                *nv-escape*
+
+`Menu > Preferences > Key Bindings`
+
+jj -> Esc: >
+
+    { "keys": ["j", "j"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
+
+jk -> Esc: >
+
+    { "keys": ["j", "k"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
+
+CTRL-[ -> Esc: >
+
+    { "keys": ["ctrl+["], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
+
 ==============================================================================
 
 SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
-                                                      *search-highlighting*
 
 Searches supporting highlighting include `/`, `?`, `*`, and `#`.
 
@@ -617,70 +526,19 @@ named `Monokai.sublime-color- scheme` in the Sublime Text User directory
 
 ==============================================================================
 
-DISABLE ARROW KEYS                                     *nv-disable-arrow-keys*
+JUMPING TO DIFFS                                             *nv-jumpto-diffs*
 
-Add as many of the following key bindings as you would like to disable: >
+Two commands can be used to jump to diffs.
 
-    {"keys": ["left"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["right"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["up"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["down"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["alt+left"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["alt+down"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["alt+up"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["alt+right"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+left"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+down"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+up"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+right"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+left"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+down"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+up"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+right"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+tab"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+left"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+down"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+up"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["ctrl+shift+right"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["shift+left"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["shift+down"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["shift+up"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]},
-    {"keys": ["shift+right"], "command": "null", "context": [{"key": "setting.neovintageous_disable_arrow_keys"}, {"key": "auto_complete_visible", "operand": false}, {"key": "overlay_visible", "operand": false}, {"key": "popup_visible", "operand": false}, {"key": "setting.is_widget", "operator": "equal", "operand": false}]}
+                                *[c*
+    [c      Jump backwards to the previous start of a change.
+            When a count is used, do it that many times.
 
-Then enable/disable keymaps:
+                                *]c*
+    ]c      Jump forwards to the next start of a change.
+            When a count is used, do it that many times.
 
-`Menu > Preferences > Settings`: >
+It is an error if there is no change for the cursor to move to.
 
-    {
-        "neovintageous_disable_arrow_keys": true
-    }
-
-==============================================================================
-
-DEFAULT OPTIONS                                           *nv-default-options*
-
-If you compare a fresh install of Vim to NeoVintageous you might find
-unexpected functionality. This is in part because NeoVintageous assumes some
-Vim options that may not be default in an out-of-the-box Vim installation.
-
-Here are some Vim options that NeoVintageous assumes as default:
-
->
-
-    " Use Vim settings, rather than Vi settings (much better!).
-    " This must be first, because it changes other options as a side effect.
-    " Avoid side effects when it was already reset.
-    if &compatible
-      set nocompatible
-    endif
-
-    " In many terminal emulators the mouse works just fine.  By enabling it you
-    " can position the cursor, Visually select and scroll with the mouse.
-    if has('mouse')
-      set mouse=a
-    endif
-
-    " Allow backspacing over everything in insert mode.
-    set backspace=indent,eol,start
-
-    set showcmd     " display incomplete commands
+Note that in older versions of Sublime Text (builds < 3189) you will need the
+the GitGutter package: https://github.com/jisaacks/GitGutter.
