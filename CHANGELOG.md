@@ -15,6 +15,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#234](https://github.com/NeoVintageous/NeoVintageous/issues/234): `<C-e>` and `<C-y>` in Normal mode cursor in wrapped lines
 * Fixed [#498](https://github.com/NeoVintageous/NeoVintageous/issues/498): `<CR>` in Visual mode should include first character of line
 * Fixed [#497](https://github.com/NeoVintageous/NeoVintageous/issues/497): `d(` should include first character of paragraph
 * Fixed [#496](https://github.com/NeoVintageous/NeoVintageous/issues/496): `(` in Visual mode is inconsistent

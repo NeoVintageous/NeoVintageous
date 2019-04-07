@@ -1525,10 +1525,6 @@ class ViRepeat(ViOperatorDef):
 
 @assign(seqs.CTRL_Y, _ACTION_MODES)
 class ViScrollByLinesUp(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
 
     def translate(self, state):
         return {
@@ -1560,10 +1556,6 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
 
 @assign(seqs.CTRL_E, _ACTION_MODES)
 class ViScrollByLinesDown(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
 
     def translate(self, state):
         return {
