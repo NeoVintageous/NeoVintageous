@@ -18,12 +18,11 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_x(unittest.FunctionalTestCase):
+class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
         self.settings().set('vintageous_use_sys_clipboard', False)
-        self.resetRegisters()
 
     def test_x(self):
         self.eq('|', 'x', '|')

@@ -18,11 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_Y(unittest.FunctionalTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.resetRegisters()
+class Test_Y(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_Y(self):
         self.eq('one\nt|wo\nthree', 'Y', 'one\nt|wo\nthree')

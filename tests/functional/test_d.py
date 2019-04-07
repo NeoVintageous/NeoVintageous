@@ -18,11 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_d(unittest.FunctionalTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.resetRegisters()
+class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_dB(self):
         self.eq('fizz bu.,!;|zz', 'dB', 'fizz |zz')

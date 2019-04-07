@@ -85,7 +85,7 @@ class TestConstants(unittest.TestCase):
         )))
 
 
-class RegistersTestCase(unittest.ViewTestCase):
+class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -101,7 +101,6 @@ class RegistersTestCase(unittest.ViewTestCase):
     def tearDown(self):
         super().tearDown()
         registers._reset_data()
-        self.resetRegisters()
 
     def assertEmptyRegisters(self):
         self.assertEqual(registers._data, {'0': None, '1-9': deque([None] * 9, maxlen=9)})

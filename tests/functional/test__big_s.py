@@ -18,11 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_S(unittest.FunctionalTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.resetRegisters()
+class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_S(self):
         self.eq('|', 'S', 'i_|')

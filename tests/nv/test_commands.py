@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class TestFeedKey(unittest.FunctionalTestCase):
+class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def feedkey(self, key):
         self.view.window().run_command('_nv_feed_key', {'key': key})
@@ -33,7 +33,6 @@ class TestFeedKey(unittest.FunctionalTestCase):
 
     def tearDown(self):
         super().tearDown()
-        self.resetRegisters()
         self.resetMacros()
 
     def test_esc(self):
