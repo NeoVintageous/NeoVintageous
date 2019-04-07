@@ -18,16 +18,13 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_r(unittest.FunctionalTestCase):
+class Test_r(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.resetRegisters()
-
-    def test_r(self):
+    def test_n(self):
         self.eq('|a', 'rx', '|x')
         self.eq('a|bc', 'rx', 'a|xc')
+        self.eq('ab\n|cd', 'rx', 'ab\n|xd')
 
-    def test_v_r(self):
+    def test_v(self):
         self.eq('ab|12345|cd', 'v_rx', 'n_ab|xxxxxcd')
         self.eq('ab|12345\n|cd', 'v_rx', 'n_ab|xxxxx\ncd')

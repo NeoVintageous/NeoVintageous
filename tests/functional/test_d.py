@@ -29,36 +29,99 @@ class Test_d(unittest.FunctionalTestCase):
         self.assertRegistersEqual('"-', 'bu.,!;')
         self.assertRegistersEmpty('01')
 
+    @unittest.mock_bell()
+    def test_dB_noop(self):
+        self.eq('|', 'dB', '|')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
+
     def test_de(self):
         self.eq('one t|wo three', 'de', 'one t| three')
-        self.assertRegister('"wo')
-        self.assertRegister('-wo')
-        self.assertRegisterEmpty('0')
-        self.assertRegisterEmpty('1')
+        self.assertRegistersEqual('"-', 'wo')
+        self.assertRegistersEmpty('01')
+
+    @unittest.mock_bell()
+    def test_de_noop(self):
+        self.eq('|', 'de', '|')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
 
     def test_df(self):
-        self.eq('one |two three', 'dft', 'one |hree')
-        self.eq('one |two three three', 'd2ft', 'one |hree')
         self.eq('|a = 1', 'df=', '| 1')
-        self.assertRegister('"a =')
-        self.assertRegister('-a =')
-        self.assertRegisterEmpty('0')
-        self.assertRegisterEmpty('1')
+        self.assertRegistersEqual('"-', 'a =')
+        self.assertRegistersEmpty('01')
+
+    @unittest.mock_bell()
+    def test_df_noop(self):
+        self.eq('0|x2345', 'dfx', '0|x2345')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
+
+    def test_dF(self):
+        self.eq('0x23|a5', 'dFx', '0|a5')
+        self.assertRegistersEqual('"-', 'x23')
+        self.assertRegistersEmpty('01')
+
+    @unittest.mock_bell()
+    def test_dF_noop(self):
+        self.eq('0123|x5', 'dFx', '0123|x5')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
+
+    def test_dt(self):
+        self.eq('0|a23x5', 'dtx', '0|x5')
+        self.assertRegistersEqual('"-', 'a23')
+        self.assertRegistersEmpty('01')
+
+    @unittest.mock_bell()
+    def test_dt_noop(self):
+        self.eq('0|x2345', 'dtx', '0|x2345')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
+
+    def test_dT(self):
+        self.eq('0x23|a5', 'dTx', 'r_0x|a5')
+        self.assertRegistersEqual('"-', '23')
+        self.assertRegistersEmpty('01')
+
+    @unittest.mock_bell()
+    def test_dT_noop(self):
+        self.eq('012x|a5', 'dTx', '012x|a5')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
 
     def test_dw(self):
         self.eq('one t|wo three', 'dw', 'one t|three')
-        self.assertRegister('"wo ')
-        self.assertRegister('-wo ')
-        self.assertRegisterEmpty('0')
-        self.assertRegisterEmpty('1')
+        self.assertRegistersEqual('"-', 'wo ')
+        self.assertRegistersEmpty('01')
+
+    @unittest.mock_bell()
+    def test_dw_noop(self):
+        self.eq('|', 'dw', '|')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
 
     def test_d__dollar(self):
-        self.eq('one |two three', 'd$', 'one| ')
         self.eq('one t|wo three', 'd$', 'one |t')
-        self.assertRegister('"wo three')
-        self.assertRegister('-wo three')
-        self.assertRegisterEmpty('0')
-        self.assertRegisterEmpty('1')
+        self.assertRegistersEqual('"-', 'wo three')
+        self.assertRegistersEmpty('01')
+
+    @unittest.mock_bell()
+    def test_d__dollar_noop(self):
+        self.eq('|', 'd$', '|')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
+
+    def test_d_underscore(self):
+        self.eq('| 12\n 56', 'd_', ' |56')
+        self.assertRegistersEqual('"1', ' 12\n')
+        self.assertRegistersEmpty('-0')
+
+    @unittest.mock_bell()
+    def test_d_underscore_noop(self):
+        self.eq('|', 'd_', '|')
+        self.assertRegistersEmpty('"-01')
+        self.assertBell()
 
     def test_dd(self):
         self.eq('one |two three', 'dd', '|')

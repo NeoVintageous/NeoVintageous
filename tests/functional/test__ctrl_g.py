@@ -14,3 +14,21 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
+
+from NeoVintageous.tests import unittest
+
+
+class Test_ctrl_g(unittest.FunctionalTestCase):
+
+    def onRunFeedCommand(self, command, args):
+        args.clear()
+
+    @unittest.mock_status_message()
+    def test_n(self):
+        self.eq('a|bc', 'n_<C-g>', 'a|bc')
+        self.assertStatusMessage('"[No Name]" [Modified] -- no lines in the buffer --')
+
+    @unittest.mock_status_message()
+    def test_n_with_lines(self):
+        self.eq('1\n|2\n3', 'n_<C-g>', '1\n|2\n3')
+        self.assertStatusMessage('"[No Name]" [Modified] 3 lines --66%--')

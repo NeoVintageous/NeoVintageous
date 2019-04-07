@@ -18,16 +18,20 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_p(unittest.FunctionalTestCase):
+class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
         self.settings().set('vintageous_use_sys_clipboard', False)
-        self.resetRegisters()
 
-    def test_p(self):
+    def test_n(self):
         self.register('"', 'one')
         self.eq('|xy', 'p', 'xon|ey')
+
+    @unittest.mock_status_message()
+    def test_nothing_in_register(self):
+        self.eq('fi|zz', 'p', 'fi|zz')
+        self.assertStatusMessage('E353: Nothing in register "')
 
     # TODO How paste works depends on how the register was created (not just the
     # contents of the register e.g. just because the register has newlines

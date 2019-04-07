@@ -18,9 +18,17 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gUU(unittest.FunctionalTestCase):
+class Test_g_(unittest.FunctionalTestCase):
 
-    def test_gUU(self):
-        self.eq('x\nfiZ|Z Buzz\nx', 'gUU', 'x\n|FIZZ BUZZ\nx')
-        self.eq('x\n    fiZ|Z Buzz\nx', 'gUU', 'x\n    |FIZZ BUZZ\nx')
-        self.eq('x\n    fiZ|Z\nBuzz\n  three\nx', '3gUU', 'x\n    |FIZZ\nBUZZ\n  THREE\nx')
+    def test_n(self):
+        self.eq('1\n|fizz\nbuzz', 'n_g_', '1\nfiz|z\nbuzz')
+
+    def test_v(self):
+        self.eq('1\n|fizz\nbuzz', 'v_g_', '1\n|fizz|\nbuzz')
+        self.eq('1\nfi|zz buzz\n3', 'v_g_', '1\nfi|zz buzz|\n3')
+        self.eq('r_1\nfi|zz b|uzz\n3', 'v_g_', '1\nfizz |buzz|\n3')
+
+    def test_d(self):
+        self.eq('|fizz\nbuzz', 'dg_', '|\nbuzz')
+        self.eq('1\n|fizz\nbuzz', 'dg_', '1\n|\nbuzz')
+        self.eq('1\nf|izz\nbuzz', 'dg_', '1\n|f\nbuzz')

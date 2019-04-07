@@ -20,7 +20,13 @@ from NeoVintageous.tests import unittest
 
 class Test_percent(unittest.FunctionalTestCase):
 
-    def test_percent(self):
+    def onRunFeedCommand(self, command, args):
+        # TODO Refactor command to use "count" param name.
+        if 'count' in args:
+            args['percent'] = args['count']
+            del args['count']
+
+    def test_n(self):
         self.eq('|', 'n_%', '|')
         self.eq('fi|zz', 'n_%', 'fi|zz')
         self.eq('|{ab}', 'n_%', '{ab|}')
@@ -30,6 +36,8 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('|12{}', 'n_%', '12{|}', 'should jump to the *match* of the next item in the line')
         self.eq('{}12|', 'n_%', '{}12|', 'should NOT jump backwards')
         self.eq('12{}3|4{}', 'n_%', '12{}34{|}', 'should jump forward')
+        self.eq('|1\n2\n3\n4\n5\n6\n7\n8\n9\n0', 'n_30%', '1\n2\n|3\n4\n5\n6\n7\n8\n9\n0')
+        self.eq('|1\n2\n3\n4\n5\n6', 'n_80%', '1\n2\n3\n4\n|5\n6')
 
     def test_percent_mutiple_selection(self):
         self.eq('1|{ab}2|{cd}3|{ef}x', 'n_%', '1{ab|}2{cd|}3{ef|}x')

@@ -18,23 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_k(unittest.FunctionalTestCase):
-
-    def _run_feed_command(self, command, args):
-        sel = self.view.sel()[-1]
-        xpos_pt = sel.b - 1 if sel.b > sel.a else sel.b
-        xpos = self.view.rowcol(xpos_pt)[1]
-
-        # Commands like k receive a motion xpos argument on operations like
-        # "dk". This updates the command with whatever the test fixture xpos
-        # should to be. It's a bit hacky, but just a temporary solution.
-        if 'motion' in args and 'motion_args' in args['motion']:
-            args['motion']['motion_args']['xpos'] = xpos
-        else:
-            args['xpos'] = xpos
-
-        self.state.settings.vi['visual_block_direction'] = None
-        super()._run_feed_command(command, args)
+class Test_k(unittest.PatchFeedCommandXpos, unittest.FunctionalTestCase):
 
     def test_n(self):
         self.eq('abc\na|bc', 'n_k', 'a|bc\nabc')
@@ -84,6 +68,7 @@ class Test_k(unittest.FunctionalTestCase):
         self.eq('fiz|z bu|zz\nfiz|z bu|zz\nfiz|z bu|zz\n', 'b_k', 'fiz|z bu|zz\nfiz|z bu|zz\nfizz buzz\n')
         self.eq('r_fi|zz bu|zz\n', 'b_k', 'r_fi|zz bu|zz\n')
         self.eq('fizzbuzz\nfizzbuzz\nfizzbuzz\nfi|zzbu|zz\n', 'b_2k', 'fizzbuzz\nfi|zzbu|zz\nfi|zzbu|zz\nfi|zzbu|zz\n')
+        self.eq('fizz\nfizz\nfizz\nfizz\nf|iz|z\n', 'b_3k', 'fizz\nf|iz|z\nf|iz|z\nf|iz|z\nf|iz|z\n')
 
     def test_d(self):
         self.eq('1\n2\n|3\n4\n5', 'dk', '1\n|4\n5')

@@ -18,12 +18,11 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_P(unittest.FunctionalTestCase):
+class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
         self.settings().set('vintageous_use_sys_clipboard', False)
-        self.resetRegisters()
 
     def test_P_paste_characterwise_content(self):
         self.register('"abc')
@@ -65,17 +64,6 @@ class Test_P(unittest.FunctionalTestCase):
         self.eq('x\ny|z', 'P', 'x\n    |fizz\n    buzz\nyz')
         self.assertRegister('"    fizz\n    buzz\n', linewise=True)
 
-
-class Test_v_P(unittest.FunctionalTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.settings().set('vintageous_use_sys_clipboard', False)
-
-    def tearDown(self):
-        super().tearDown()
-        self.resetRegisters()
-
     def test_v_P_paste_characterwise_content(self):
         self.register('"abc')
         self.eq('x|456|y', 'v_P', 'n_xab|cy')
@@ -100,3 +88,8 @@ class Test_v_P(unittest.FunctionalTestCase):
         self.register('"bc\n')
         self.eq('abc\nd|ef', 'P', 'abc\nd|bc\nef')
         self.assertRegister('"bc\n')
+
+    @unittest.mock_status_message()
+    def test_nothing_in_register(self):
+        self.eq('fi|zz', 'P', 'fi|zz')
+        self.assertStatusMessage('E353: Nothing in register "')

@@ -18,13 +18,9 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_X(unittest.FunctionalTestCase):
+class Test_X(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.resetRegisters()
-
-    def test_X(self):
+    def test_n(self):
         self.eq('|', 'X', '|')
         self.eq('|\n', 'X', '|\n')
         self.eq('|a\n', 'X', '|a\n')
@@ -32,21 +28,23 @@ class Test_X(unittest.FunctionalTestCase):
         self.eq('a|b\n', 'X', '|b\n')
         self.eq('x\nab|cd', '5X', 'x\n|cd')
         self.eq('7654321|\n', '6X', '|7\n')
-        self.assertRegister('"654321\n', linewise=True)
-        self.assertRegister('1654321\n', linewise=True)
-        self.assertRegisterEmpty('-')
-        self.assertRegisterEmpty('0')
+        self.assertRegistersEqual('"1', '654321\n', linewise=True)
+        self.assertRegistersEmpty('-0')
 
-    def test_v_X(self):
+    def test_v(self):
         self.eq('one\n|two\n|three', 'v_X', 'n_one\n|three')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterEmpty('-')
-        self.assertRegisterEmpty('0')
+        self.assertRegistersEqual('"1', 'two\n', linewise=True)
+        self.eq('fi|zz\nbu|zz', 'v_X', 'n_|')
+        self.assertRegistersEqual('"1', 'fizz\nbuzz\n', linewise=True)
+        self.eq('1\nfi|zz\nbu|zz\n2\n3', 'v_X', 'n_1\n|2\n3')
+        self.assertRegistersEqual('"1', 'fizz\nbuzz\n', linewise=True)
+        self.eq('1\n\n|\n\n|\n\n2\n3', 'v_X', 'n_1\n\n|\n\n2\n3')
+        self.assertRegistersEqual('"1', '\n\n\n', linewise=True)
+        self.eq('|\n|', 'v_X', 'n_|\n')
+        self.eq('r_|\n|', 'v_X', 'n_|\n')
+        self.assertRegistersEmpty('-0')
 
-    def test_l_X(self):
+    def test_V(self):
         self.eq('one\n|two\n|three', 'l_X', 'n_one\n|three')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('1two\n', linewise=True)
-        self.assertRegisterEmpty('-')
-        self.assertRegisterEmpty('0')
+        self.assertRegistersEqual('"1', 'two\n', linewise=True)
+        self.assertRegistersEmpty('-0')

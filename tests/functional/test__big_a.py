@@ -61,3 +61,6 @@ class Test_A(unittest.FunctionalTestCase):
 
     def test_b_A_eol(self):
         self.eq('x\na|bc\n|x\nd|ef\n|x', 'b_A', 'i_x\nabc|\nx\ndef|\nx')
+
+    def test_s(self):
+        self.eq('|fizz| buzz fizz buzz fizz', 's_A', '|fizz| buzz |fizz| buzz |fizz|')

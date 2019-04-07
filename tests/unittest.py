@@ -33,6 +33,8 @@ from NeoVintageous.nv.state import State as _State
 from NeoVintageous.nv.vi.macros import MacroRegisters as _MacroRegisters
 
 from NeoVintageous.nv.vi import registers
+from NeoVintageous.nv.vim import DIRECTION_DOWN
+from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
 from NeoVintageous.nv.vim import INTERNAL_NORMAL  # noqa: F401
 from NeoVintageous.nv.vim import NORMAL  # noqa: F401
@@ -184,6 +186,10 @@ class ViewTestCase(unittest.TestCase):
             # when the window loses focus: the on_activated() event fixes VISUAL
             # mode selections that don't have a correct caret state.
             self.view.settings().set('inverse_caret_state', True)
+
+            if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
+                self.state.visual_block_direction = DIRECTION_UP if reverse else DIRECTION_DOWN
+
         else:
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -600,8 +606,13 @@ class FunctionalTestCase(ViewTestCase):
 
         if seq[0].isdigit():
             if seq != '0':  # Special case motion.
-                seq_args['count'] = int(seq[0])
-                seq = seq[1:]
+                # XXX Quick hack to make digits greater than 9 work.
+                if seq[1].isdigit():
+                    seq_args['count'] = int(seq[0] + seq[1])
+                    seq = seq[2:]
+                else:
+                    seq_args['count'] = int(seq[0])
+                    seq = seq[1:]
 
         try:
             # The reason for this try catch is because  some sequences map to
@@ -633,10 +644,11 @@ class FunctionalTestCase(ViewTestCase):
         except KeyError as e:
             raise KeyError('test command definition not found for feed %s' % str(e)) from None
 
-        self._run_feed_command(command, args)
-
-    def _run_feed_command(self, command, args):
+        self.onRunFeedCommand(command, args)
         self.view.window().run_command(command, args)
+
+    def onRunFeedCommand(self, command, args):
+        pass
 
     def eq(self, text, feed, expected=None, msg=None):
         # Args:
@@ -772,6 +784,33 @@ class FunctionalTestCase(ViewTestCase):
             self.assertTrue(False, 'invalid expected mode')
 
 
+# Test case mixin for commands like j and k that need to extract the xpos from
+# the test fixture and then pass it to the command as an argument.
+class PatchFeedCommandXpos(FunctionalTestCase):
+
+    def onRunFeedCommand(self, command, args):
+        sel = self.view.sel()[-1]
+        xpos_pt = sel.b - 1 if sel.b > sel.a else sel.b
+        xpos = self.view.rowcol(xpos_pt)[1]
+
+        # Commands like k receive a motion xpos argument on operations like
+        # "dk". This updates the command with whatever the test fixture xpos
+        # should to be. It's a bit hacky, but just a temporary solution.
+        if 'motion' in args and 'motion_args' in args['motion']:
+            args['motion']['motion_args']['xpos'] = xpos
+        else:
+            args['xpos'] = xpos
+
+        super().onRunFeedCommand(command, args)
+
+
+class ResetRegisters(FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.resetRegisters()
+
+
 # DEPRECATED Use newer APIs.
 def _make_region(view, a, b=None):
     # type: (...) -> Region
@@ -794,14 +833,18 @@ def _make_region(view, a, b=None):
         return Region(a)
 
 
-# Usage:
-#
-#   @unitest.mock_bell()
-#   def test_bell(self):
-#       self.assertBell()
-#       self.assertNoBell()
-#
 def mock_bell():
+    """Mock the UI bell.
+
+    Usage:
+
+    @unittest.mock_bell()
+    def test_name(self):
+        self.assertBell()
+        self.assertBell('message')
+        self.assertNoBell()
+
+    """
     def wrapper(f):
         @mock.patch('NeoVintageous.nv.commands.ui_blink')
         def wrapped(self, *args, **kwargs):
@@ -832,13 +875,16 @@ def mock_bell():
     return wrapper
 
 
-# Usage:
-#
-#   @unitest.mock_status_message()
-#   def test_status_message(self):
-#       self.assertStatusMessage('msg')
-#
 def mock_status_message():
+    """Mock the status messenger.
+
+    Usage:
+
+    @unitest.mock_status_message()
+    def test_status_message(self):
+        self.assertStatusMessage('msg')
+
+    """
     def wrapper(f):
         @mock.patch('NeoVintageous.nv.vim._status_message')
         def wrapped(self, *args, **kwargs):
@@ -854,17 +900,19 @@ def mock_status_message():
     return wrapper
 
 
-# Usage:
-#
-#   @unittest.mock_mappings(
-#       (unittest.NORMAL, ',l', '3l'),
-#       (unittest.VISUAL, ',l', '3l'),
-#       # more mappings..
-#   )
-#   def test_mappings(self):
-#       # test something...
-#
 def mock_mappings(*mappings):
+    """Mock mappings.
+
+    Usage:
+
+    @unittest.mock_mappings(
+        (unittest.NORMAL, ',l', '3l'),
+        (unittest.VISUAL, ',l', '3l'),
+    )
+    def test_name(self):
+        pass
+
+    """
     def wrapper(f):
 
         from NeoVintageous.nv.mappings import _mappings
@@ -879,20 +927,27 @@ def mock_mappings(*mappings):
     return wrapper
 
 
-# Usage:
-#
-#   @unitest.mock_ui()
-#   def test_ui(self):
-#
-#   @unitest.mock_ui(screen_rows=10)
-#   def test_ui(self):
-#
-#   @unitest.mock_ui(visible_region=(2, 7))
-#   def test_ui(self):
-#
-#  Screen rows and visible region defaults to the current size of the view.
-#
 def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22.0):
+    """Mock the UI.
+
+    Note that the number of screen rows and visible region default to the size
+    of the view fixture content.
+
+    Usage:
+
+    @unitest.mock_ui()
+    def test_name(self):
+        pass
+
+    @unitest.mock_ui(screen_rows=10)
+    def test_name(self):
+        pass
+
+    @unitest.mock_ui(visible_region=(2, 7))
+    def test_name(self):
+        pass
+
+    """
     def wrapper(f):
         @mock_bell()
         @mock.patch('sublime.View.em_width')
@@ -944,15 +999,18 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
     return wrapper
 
 
-# Usage:
-#
-#   @unitest.mock_run_commands('redo', 'hide_panel')
-#   def test_run_command(self):
-#       self.assertRunCommand('redo')
-#       self.assertRunCommand('redo', count=3)
-#       self.assertRunCommand('hide_panel', {'cancel': True})
-#
 def mock_run_commands(*methods):
+    """Mock command runners.
+
+    Usage:
+
+    @unitest.mock_run_commands('redo', 'hide_panel')
+    def test_name(self):
+        self.assertRunCommand('redo')
+        self.assertRunCommand('redo', count=3)
+        self.assertRunCommand('hide_panel', {'cancel': True})
+
+    """
     def wrapper(f):
         import sublime_api
 
@@ -1008,6 +1066,7 @@ _SEQ2CMD = {
     '<<':           {'command': '_vi_less_than_less_than'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
     '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
+    '<C-g>':        {'command': '_vi_ctrl_g'},  # noqa: E241
     '<C-r>':        {'command': '_vi_ctrl_r'},  # noqa: E241
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-v>':        {'command': '_enter_visual_block_mode'},  # noqa: E241
@@ -1036,6 +1095,7 @@ _SEQ2CMD = {
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': '}'}},  # noqa: E241,E501
     '^':            {'command': '_vi_hat'},  # noqa: E241
+    '_':            {'command': '_vi_underscore'},  # noqa: E241
     'a"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': True}},  # noqa: E241,E501
     'a':            {'command': '_vi_a'},  # noqa: E241
     'A':            {'command': '_vi_big_a'},  # noqa: E241
@@ -1150,13 +1210,18 @@ _SEQ2CMD = {
     'd2ft':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 2, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
     'd<C-d>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_d'}}},  # noqa: E241,E501
     'd<C-u>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_u'}}},  # noqa: E241,E501
+    'd_':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_underscore'}}},  # noqa: E241,E501
     'dB':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_b'}}},  # noqa: E241,E501
     'dd':           {'command': '_vi_dd'},  # noqa: E241,E501
     'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_e'}}},  # noqa: E241,E501
     'df=':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': '='}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
     'dft':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'dfx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 'x'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'dFx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 'x'}, 'motion': '_vi_reverse_find_in_line'}}},  # noqa: E241,E501
     'dG':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
+    'dg_':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_g__'}}},  # noqa: E241,E501
     'dgg':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_gg'}}},  # noqa: E241,E501
+    'dj':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_j'}}},  # noqa: E241,E501
     'dk':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_k'}}},  # noqa: E241,E501
     'ds ':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': ' '}},  # noqa: E241
     'ds"':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '"'}},  # noqa: E241
@@ -1187,6 +1252,8 @@ _SEQ2CMD = {
     'dsW':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'W'}},  # noqa: E241
     'ds{':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '{'}},  # noqa: E241
     'ds}':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '}'}},  # noqa: E241
+    'dtx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'char': 'x'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'dTx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'char': 'x'}, 'motion': '_vi_reverse_find_in_line'}}},  # noqa: E241,E501
     'dW':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_w'}}},  # noqa: E241,E501
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'd{':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_left_brace', 'is_jump': True}}},  # noqa: E241,E501
@@ -1194,8 +1261,20 @@ _SEQ2CMD = {
     'd}':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace', 'is_jump': True}}},  # noqa: E241,E501
     'E':            {'command': '_vi_big_e'},  # noqa: E241
     'e':            {'command': '_vi_e'},  # noqa: E241
+    'F0':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '0', 'inclusive': True}},  # noqa: E241
+    'f2':           {'command': '_vi_find_in_line', 'args': {'char': '2', 'inclusive': True}},  # noqa: E241
+    'F4':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '4', 'inclusive': True}},  # noqa: E241
+    'F5':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '5', 'inclusive': True}},  # noqa: E241
+    'f6':           {'command': '_vi_find_in_line', 'args': {'char': '6', 'inclusive': True}},  # noqa: E241
+    'f8':           {'command': '_vi_find_in_line', 'args': {'char': '8', 'inclusive': True}},  # noqa: E241
+    'f:':           {'command': '_vi_find_in_line', 'args': {'char': ':', 'inclusive': True}},  # noqa: E241
     'f\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': True}},  # noqa: E241
+    'ff':           {'command': '_vi_find_in_line', 'args': {'char': 'f', 'inclusive': True}},  # noqa: E241
+    'Ff':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'f', 'inclusive': True}},  # noqa: E241
+    'fr':           {'command': '_vi_find_in_line', 'args': {'char': 'r', 'inclusive': True}},  # noqa: E241
+    'Fr':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'r', 'inclusive': True}},  # noqa: E241
     'fx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': True}},  # noqa: E241
+    'Fx':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'x', 'inclusive': True}},  # noqa: E241
     'f|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': True}},  # noqa: E241
     'G':            {'command': '_vi_big_g'},  # noqa: E241
     'g_':           {'command': '_vi_g__'},  # noqa: E241
@@ -1211,6 +1290,7 @@ _SEQ2CMD = {
     'gf':           {'command': '_vi_g', 'args': {'action': 'f'}},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241
     'gh':           {'command': '_enter_select_mode'},  # noqa: E241
+    'gH':           {'command': '_vi_g_big_h'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241
     'gk':           {'command': '_vi_gk'},  # noqa: E241
@@ -1251,7 +1331,7 @@ _SEQ2CMD = {
     'i{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': False}},  # noqa: E241,E501
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
     'J':            {'command': '_vi_big_j'},  # noqa: E241
-    'j':            {'command': '_vi_select_j'},  # noqa: E241
+    'j':            {'command': '_vi_j'},  # noqa: E241
     'k':            {'command': '_vi_k'},  # noqa: E241
     'L':            {'command': '_vi_big_l'},  # noqa: E241
     'l':            {'command': '_vi_l'},  # noqa: E241
@@ -1274,12 +1354,26 @@ _SEQ2CMD = {
     'S"':           {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
+    's_2j':         {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
     's_2k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
     's_6k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
     's_J':          {'command': '_vi_select_big_j'},  # noqa: E241
+    's_j':          {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
     's_k':          {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
+    'T0':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '0', 'inclusive': False}},  # noqa: E241
+    't2':           {'command': '_vi_find_in_line', 'args': {'char': '2', 'inclusive': False}},  # noqa: E241
+    'T4':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '4', 'inclusive': False}},  # noqa: E241
+    'T5':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '5', 'inclusive': False}},  # noqa: E241
+    't6':           {'command': '_vi_find_in_line', 'args': {'char': '6', 'inclusive': False}},  # noqa: E241
+    't8':           {'command': '_vi_find_in_line', 'args': {'char': '8', 'inclusive': False}},  # noqa: E241
+    't:':           {'command': '_vi_find_in_line', 'args': {'char': ':', 'inclusive': False}},  # noqa: E241
     't\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': False}},  # noqa: E241
+    'tf':           {'command': '_vi_find_in_line', 'args': {'char': 'f', 'inclusive': False}},  # noqa: E241
+    'Tf':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'f', 'inclusive': False}},  # noqa: E241
+    'tr':           {'command': '_vi_find_in_line', 'args': {'char': 'r', 'inclusive': False}},  # noqa: E241
+    'Tr':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'r', 'inclusive': False}},  # noqa: E241
     'tx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
+    'Tx':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
     't|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': False}},  # noqa: E241
     'u':            {'command': '_vi_u'},  # noqa: E241,E501
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501

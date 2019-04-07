@@ -20,8 +20,13 @@ from NeoVintageous.tests import unittest
 
 class Test_g_tilde(unittest.FunctionalTestCase):
 
-    def test_g_tilde(self):
+    def test_n(self):
         self.eq('fi|zzBUZZ', 'g~$', 'fi|ZZbuzz')
 
-    def test_v_g_tilde(self):
+    @unittest.mock_bell()
+    def test_n_noop(self):
+        self.eq('|', 'g~$', '|')
+        self.assertBell()
+
+    def test_v(self):
         self.eq('fi|zzBU|ZZ', 'v_g~', 'n_fi|ZZbuZZ')

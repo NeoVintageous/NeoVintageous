@@ -51,5 +51,9 @@ class Test_left_paren(unittest.FunctionalTestCase):
         self.eq('x. fiz|zbu|zz', 'v_(', 'r_x. |fizz|buzz')
         self.eq('r_x. fiz|zbu|zz', 'v_(', 'r_x. |fizzbu|zz')
 
+    def test_V(self):
+        self.eq('fizz\nx. y. z.\n|buzz\n|3', 'l_(', 'r_fizz\n|x. y. z.\nbuzz\n|3')
+        self.eq('r_1. 2. 3.\n|a. b. c.\nfizz\n|4', 'l_(', 'r_|1. 2. 3.\na. b. c.\nfizz\n|4')
+
     def test_d(self):
         self.eq('one. fizz bu|zz', 'd(', 'r_one. |zz')

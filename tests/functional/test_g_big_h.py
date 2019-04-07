@@ -18,9 +18,11 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gUU(unittest.FunctionalTestCase):
+class Test_gH(unittest.FunctionalTestCase):
 
-    def test_gUU(self):
-        self.eq('x\nfiZ|Z Buzz\nx', 'gUU', 'x\n|FIZZ BUZZ\nx')
-        self.eq('x\n    fiZ|Z Buzz\nx', 'gUU', 'x\n    |FIZZ BUZZ\nx')
-        self.eq('x\n    fiZ|Z\nBuzz\n  three\nx', '3gUU', 'x\n    |FIZZ\nBUZZ\n  THREE\nx')
+    @unittest.mock_bell()
+    @unittest.mock_status_message()
+    def test_n_noop(self):
+        self.eq('fi|zz', 'n_gH', 'fi|zz')
+        self.assertBell()
+        self.assertStatusMessage('no available search matches')

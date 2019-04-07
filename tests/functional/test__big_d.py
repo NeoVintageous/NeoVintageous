@@ -18,31 +18,22 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_D(unittest.FunctionalTestCase):
+class Test_D(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.resetRegisters()
-
-    def test_D(self):
+    def test_n(self):
         self.eq('12|34', 'D', '1|2')
         self.eq('12|34\n', 'D', '1|2\n')
         self.eq('12|34\nx', 'D', '1|2\nx')
-        self.assertRegister('"34')
-        self.assertRegister('-34')
-        self.assertRegisterEmpty('0')
-        self.assertRegisterEmpty('1')
+        self.assertRegistersEqual('"-', '34')
+        self.assertRegistersEmpty('01')
 
-    def test_v_D(self):
+    def test_v(self):
         self.eq('1|23|4', 'v_D', 'n_|')
         self.eq('x\n1|2\n34\n5|6\ny', 'v_D', 'n_x\n|y')
         self.eq('x\n12|34\n5|678\ny', 'v_D', 'n_x\n|y')
         self.assertRegister('"1234\n5678\n', linewise=True)
-        self.assertRegisterEmpty('-')
-        self.assertRegisterEmpty('0')
+        self.assertRegistersEmpty('-0')
         self.assertRegister('11234\n5678\n', linewise=True)
         self.assertRegister('212\n34\n56\n', linewise=True)
         self.assertRegister('31234\n', linewise=True)
-
-    def test_v_D_should_put_cursor_on_first_no_ws_char(self):
         self.eq('x\n1|2\n34\n5|6\n    y', 'v_D', 'n_x\n    |y')

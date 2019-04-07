@@ -1557,25 +1557,20 @@ class _vi_visual_o(ViTextCommandBase):
 class _vi_yy(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
-        def select(view, s):
-
+        def f(view, s):
             if mode == INTERNAL_NORMAL:
                 if count > 1:
                     row, col = self.view.rowcol(s.b)
                     end = view.text_point(row + count - 1, 0)
-
-                    return Region(view.line(s.a).a, view.full_line(end).b)
-
-                if view.line(s.b).empty():
-                    return Region(s.b, min(view.size(), s.b + 1))
-
-                return view.full_line(s.b)
-
+                    s = Region(view.line(s.a).a, view.full_line(end).b)
+                elif view.line(s.b).empty():
+                    s = Region(s.b, min(view.size(), s.b + 1))
+                else:
+                    s = view.full_line(s.b)
             elif mode == VISUAL:
                 startline = view.line(s.begin())
                 endline = view.line(s.end() - 1)
-
-                return Region(startline.a, endline.b)
+                s = Region(startline.a, endline.b)
 
             return s
 
@@ -1589,7 +1584,7 @@ class _vi_yy(ViTextCommandBase):
             return
 
         self.save_sel()
-        regions_transformer(self.view, select)
+        regions_transformer(self.view, f)
         ui_highlight_yank(self.view)
         self.state.registers.op_yank(register=register, linewise=True)
         restore()
@@ -1724,16 +1719,16 @@ class _vi_big_i(ViTextCommandBase):
 
     def run(self, edit, count=1, mode=None):
         def f(view, s):
-            if mode == VISUAL_BLOCK:
-                return Region(s.begin())
-            elif mode == VISUAL:
-                return Region(view.line(s.a).a)
+            if mode == VISUAL:
+                s = Region(view.line(s.a).a)
             elif mode == VISUAL_LINE:
-                return Region(next_non_white_space_char(view, view.line(s.begin()).a))
-            elif mode != INTERNAL_NORMAL:
-                return s
+                s = Region(next_non_white_space_char(view, view.line(s.begin()).a))
+            elif mode == VISUAL_BLOCK:
+                s = Region(s.begin())
+            elif mode == INTERNAL_NORMAL:
+                s = Region(next_non_white_space_char(view, view.line(s.b).a))
 
-            return Region(next_non_white_space_char(view, view.line(s.b).a))
+            return s
 
         regions_transformer(self.view, f)
         enter_insert_mode(self.view, mode)
@@ -1742,8 +1737,7 @@ class _vi_big_i(ViTextCommandBase):
 class _vi_m(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, character=None):
-        state = self.state
-        state.marks.add(character, self.view)
+        self.state.marks.add(character, self.view)
         enter_normal_mode(self.view, mode)
 
 
@@ -1830,13 +1824,13 @@ class _vi_big_d(ViTextCommandBase):
             if mode == INTERNAL_NORMAL:
                 if count == 1:
                     if view.line(s.b).size() > 0:
-                        return Region(s.b, view.line(s.b).b)
+                        s = Region(s.b, view.line(s.b).b)
 
             elif mode == VISUAL:
                 startline = view.line(s.begin())
                 endline = view.full_line(s.end())
 
-                return Region(startline.a, endline.b)
+                s = Region(startline.a, endline.b)
 
             return s
 
@@ -3365,17 +3359,14 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string='', mode=None, count=1):
         def f(view, s):
-            if mode == VISUAL:
-                return Region(s.a, match.a + 1)
-
-            elif mode == INTERNAL_NORMAL:
-                return Region(s.a, match.a)
-
-            elif mode == NORMAL:
-                return Region(match.a, match.a)
-
+            if mode == NORMAL:
+                s = Region(match.a, match.a)
+            elif mode == VISUAL:
+                s = Region(s.a, match.a + 1)
             elif mode == VISUAL_LINE:
-                return Region(s.a, view.full_line(match.b - 1).b)
+                s = Region(s.a, view.full_line(match.b - 1).b)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(s.a, match.a)
 
             return s
 
@@ -3600,6 +3591,7 @@ class _vi_j(ViMotionCommand):
         state = State(self.view)
 
         if mode == VISUAL_BLOCK:
+
             if len(self.view.sel()) == 1:
                 state.visual_block_direction = DIRECTION_DOWN
 
@@ -4446,7 +4438,7 @@ class _vi_big_b(ViMotionCommand):
 
 
 class _vi_underscore(ViMotionCommand):
-    def run(self, count=None, mode=None):
+    def run(self, count=1, mode=None):
         def f(view, s):
             a = s.a
             b = s.b
@@ -4695,7 +4687,8 @@ class _vi_left_paren(ViMotionCommand):
 
     def run(self, mode=None, count=1):
         def f(view, s):
-            previous_sentence = find_sentences_backward(self.view, s, count)
+            start = s.a if s.b >= s.a else s.b
+            previous_sentence = find_sentences_backward(self.view, start, count)
             if previous_sentence is None:
                 return s
 
@@ -4726,7 +4719,7 @@ class _vi_right_paren(ViMotionCommand):
             elif mode == VISUAL:
                 s = Region(s.a, min(next_sentence.b + 1, view.size() - 1))
             elif mode == VISUAL_LINE:
-                s = Region(s.a, min(next_sentence.b + 1, view.size() - 1))
+                s = resolve_visual_line_target(view, s, next_sentence.b)
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, next_sentence.b)
 

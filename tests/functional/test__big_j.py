@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_J(unittest.FunctionalTestCase):
 
-    def test_J(self):
+    def test_n(self):
         self.eq('|aaa\nbbb', 'J', 'aaa| bbb')
         self.eq('|aaa\nbbb', '1J', 'aaa| bbb')
         self.eq('|aaa\nbbb', '2J', 'aaa| bbb')
@@ -47,7 +47,7 @@ class Test_J(unittest.FunctionalTestCase):
         self.eq('|abc \n    abc  \n  abc', '3J', 'N_abc |abc  abc'),
         self.eq('|   abc\nabc   ', 'J', 'N_   abc| abc   '),
 
-    def test_v_J(self):
+    def test_v(self):
         self.eq('|abc\na|bc\nabc', 'v_J', 'n_abc| abc\nabc'),
         self.eq('a|bc\n    a|bc\nabc', 'v_J', 'n_abc| abc\nabc'),
         self.eq('a|bc\na|bc\nabc', 'v_J', 'n_abc| abc\nabc'),
@@ -69,7 +69,7 @@ class Test_J(unittest.FunctionalTestCase):
         self.eq('|   abc\nabc   |', 'v_J', 'n_   abc| abc   '),
         self.eq('|    abc\n\n\n|', 'v_J', 'n_    abc| \n'),
 
-    def test_b_J(self):
+    def test_b(self):
         self.eq('| |   abc  \n| |  abc\nabc', 'b_J', 'n_    abc  |abc\nabc'),
 
 
