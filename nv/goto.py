@@ -19,7 +19,7 @@ from sublime import Region
 from sublime import version
 
 from NeoVintageous.nv.jumplist import jumplist_update
-from NeoVintageous.nv.ui import ui_blink
+from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
@@ -154,7 +154,7 @@ def goto_prev_target(view, mode, count, target):
 
     brackets = targets.get(target)
     if not brackets or mode not in (NORMAL, VISUAL, VISUAL_LINE):
-        ui_blink()
+        ui_bell()
         return
 
     def f(view, s):
@@ -196,7 +196,7 @@ def goto_next_target(view, mode, count, target):
     brackets = targets.get(target)
 
     if not brackets or mode not in (NORMAL, VISUAL, VISUAL_LINE):
-        ui_blink()
+        ui_bell()
         return
 
     def f(view, s):

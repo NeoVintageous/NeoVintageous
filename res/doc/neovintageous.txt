@@ -445,6 +445,11 @@ OPTIONS SUMMARY                                            *nv-option-summary*
                         boolean (default off)
         Propagate copy actions to the system clipboard.
 
+                                                           *'vintageous_bell'*
+'vintageous_bell'       string (default "blink")
+        Style of visual bell. The available styles are: blink (default), view,
+        or views.
+
                                                         *'vintageous_belloff'*
 'vintageous_belloff'    string (default "")
         Specifies for which events the bell (visual blink) will not be rung. It

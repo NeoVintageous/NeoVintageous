@@ -56,7 +56,7 @@ from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
-from NeoVintageous.nv.ui import ui_blink
+from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
@@ -387,12 +387,12 @@ class _nv_cmdline_feed_key(TextCommand):
         if count == 0:
             _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
-            return ui_blink()
+            return ui_bell()
 
         if abs(_nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX) > count:
             _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -count
 
-            return ui_blink()
+            return ui_bell()
 
         if _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX >= 0:
             _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = 0
@@ -400,7 +400,7 @@ class _nv_cmdline_feed_key(TextCommand):
             if self.view.size() > 1:
                 return self.view.erase(edit, Region(1, self.view.size()))
             else:
-                return ui_blink()
+                return ui_bell()
 
         if self.view.size() > 1:
             self.view.erase(edit, Region(1, self.view.size()))
@@ -627,7 +627,7 @@ class _nv_feed_key(ViWindowCommandBase):
                 state.mode = NORMAL
 
             state.reset_command_data()
-            ui_blink()
+            ui_bell()
 
             return True
 
@@ -741,7 +741,7 @@ class _nv_process_notation(ViWindowCommandBase):
 
             if motion_data is None:
                 state.reset_command_data()
-                ui_blink()
+                ui_bell()
                 return
 
             self.window.run_command(motion_data['motion'], motion_data['motion_args'])
@@ -773,7 +773,7 @@ class _nv_process_notation(ViWindowCommandBase):
 
         except IndexError:
             _log.debug('could not find a command to collect more user input')
-            ui_blink()
+            ui_bell()
         finally:
             self.state.non_interactive = False
 
@@ -915,7 +915,7 @@ class _vi_g_big_u(ViTextCommandBase):
             if self.has_sel_changed():
                 regions_transformer(self.view, f)
             else:
-                ui_blink()
+                ui_bell()
         else:
             regions_transformer(self.view, f)
 
@@ -940,7 +940,7 @@ class _vi_gu(ViTextCommandBase):
             if self.has_sel_changed():
                 regions_transformer(self.view, f)
             else:
-                ui_blink()
+                ui_bell()
         else:
             regions_transformer(self.view, f)
 
@@ -997,7 +997,7 @@ class _vi_gq(ViTextCommandBase):
                     for s in self.old_sel:
                         self.view.sel().add(s.begin())
             else:
-                ui_blink()
+                ui_bell()
 
         enter_normal_mode(self.view, mode)
 
@@ -1029,7 +1029,7 @@ class _vi_ctrl_r(ViWindowCommandBase):
             self.view.run_command('redo')
 
         if self.view.change_count() == change_count_before:
-            return ui_blink()
+            return ui_bell()
 
         # Fix EOL issue.
         # See https://github.com/SublimeTextIssues/Core/issues/2121.
@@ -1357,7 +1357,7 @@ class _enter_visual_mode_impl(ViTextCommandBase):
                 return Region(s.a, s.b)
             else:
                 if s.empty() and (s.b == self.view.size()):
-                    ui_blink()
+                    ui_bell()
 
                     return s
 
@@ -1396,7 +1396,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
             # Abort if we are at EOF -- no newline char to hold on to.
             if any(s.b == self.view.size() for s in self.view.sel()):
-                return ui_blink()
+                return ui_bell()
 
         self.view.run_command('_enter_visual_line_mode_impl', {'mode': mode})
         state.enter_visual_line_mode()
@@ -1450,7 +1450,7 @@ class _vi_dot(ViWindowCommandBase):
             state.mode = NORMAL
 
         if repeat_data is None:
-            ui_blink()
+            ui_bell()
             return
 
         # TODO: Find out if the user actually meant '1'.
@@ -1464,9 +1464,9 @@ class _vi_dot(ViWindowCommandBase):
             state.restore_visual_data(visual_data)
         elif not visual_data and (mode == VISUAL):
             # Can't repeat normal mode commands in visual mode.
-            return ui_blink()
+            return ui_bell()
         elif mode not in (VISUAL, VISUAL_LINE, NORMAL, INTERNAL_NORMAL, INSERT):
-            return ui_blink()
+            return ui_bell()
 
         if type_ == 'vi':
             self.window.run_command('_nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
@@ -1580,7 +1580,7 @@ class _vi_yy(ViTextCommandBase):
 
         if mode not in (INTERNAL_NORMAL, VISUAL):
             enter_normal_mode(self.view, mode)
-            ui_blink()
+            ui_bell()
             return
 
         self.save_sel()
@@ -1637,12 +1637,12 @@ class _vi_d(ViTextCommandBase):
 
             if not self.has_sel_changed():
                 enter_normal_mode(self.view, mode)
-                ui_blink()
+                ui_bell()
                 return
 
             if all(s.empty() for s in self.view.sel()):
                 enter_normal_mode(self.view, mode)
-                ui_blink()
+                ui_bell()
                 return
 
         self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
@@ -1934,7 +1934,7 @@ class _vi_s(ViTextCommandBase):
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
             enter_normal_mode(self.view, mode)
-            ui_blink()
+            ui_bell()
             return
 
         self.save_sel()
@@ -1960,7 +1960,7 @@ class _vi_x(ViTextCommandBase):
 
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
             enter_normal_mode(self.view, mode)
-            ui_blink()
+            ui_bell()
             return
 
         if mode == INTERNAL_NORMAL and all(self.view.line(s.b).empty() for s in self.view.sel()):
@@ -2111,7 +2111,7 @@ class _vi_greater_than(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (VISUAL, VISUAL_LINE):
-            return ui_blink()
+            return ui_bell()
 
         for i in range(count):
             self.view.run_command('indent')
@@ -2134,7 +2134,7 @@ class _vi_less_than(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (VISUAL, VISUAL_LINE):
-            return ui_blink()
+            return ui_bell()
 
         for i in range(count):
             self.view.run_command('unindent')
@@ -2152,7 +2152,7 @@ class _vi_equal(ViTextCommandBase):
         if motion:
             self.view.run_command(motion['motion'], motion['motion_args'])
         elif mode not in (VISUAL, VISUAL_LINE):
-            return ui_blink()
+            return ui_bell()
 
         self.view.run_command('reindent', {'force_indent': False})
 
@@ -2589,7 +2589,7 @@ class _vi_modify_numbers(ViTextCommandBase):
         pts = self.find_next_num(regs)
 
         if not pts:
-            return ui_blink()
+            return ui_bell()
 
         end_sels = []
         count = count if not subtract else -count
@@ -2828,14 +2828,14 @@ class _vi_q(IrreversibleTextCommand):
                 return
 
             if name not in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"'):
-                return ui_blink("E354: Invalid register name: '" + name + "'")
+                return ui_bell("E354: Invalid register name: '" + name + "'")
 
             state.start_recording()
             self.__class__._current = name
         except (AttributeError, ValueError):
             state.stop_recording()
             self.__class__._current = None
-            ui_blink()
+            ui_bell()
 
 
 class _vi_at(IrreversibleTextCommand):
@@ -2844,20 +2844,20 @@ class _vi_at(IrreversibleTextCommand):
 
     def run(self, name, mode=None, count=1):
         if name not in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".=*+@'):
-            return ui_blink("E354: Invalid register name: '" + name + "'")
+            return ui_bell("E354: Invalid register name: '" + name + "'")
 
         if name == '@':
             name = self._last_used
             if not name:
-                return ui_blink('E748: No previously used register')
+                return ui_bell('E748: No previously used register')
 
         try:
             cmds = State.macro_registers[name]
         except (KeyError, ValueError):
-            return ui_blink()
+            return ui_bell()
 
         if not cmds:
-            ui_blink()
+            ui_bell()
             return
 
         self.__class__._last_used = name
@@ -2899,7 +2899,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
             if self.view.line(first.end() - 1).empty():
                 enter_normal_mode(self.view, mode)
-                ui_blink()
+                ui_bell()
                 return
 
             self.view.sel().clear()
@@ -3015,7 +3015,7 @@ class _vi_g_tilde(ViTextCommandBase):
             self.view.run_command(motion['motion'], motion['motion_args'])
 
             if not self.has_sel_changed():
-                ui_blink()
+                ui_bell()
                 enter_normal_mode(self.view, mode)
                 return
 
@@ -3119,7 +3119,7 @@ class _vi_g_big_h(ViWindowCommandBase):
             self.state.display_status()
             return
 
-        ui_blink()
+        ui_bell()
         status_message('no available search matches')
         self.state.reset_command_data()
 
@@ -3147,7 +3147,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
             raise ValueError('wrong mode')
 
         if (len(self.view.sel()) > 1 or not self.view.sel()[0].empty()):
-            return ui_blink()
+            return ui_bell()
 
         s = self.view.sel()[0]
         line_begin = self.view.text_point(row_at(self.view, s.b), 0)
@@ -3160,7 +3160,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
             state.reset_command_data()
             return
 
-        ui_blink()
+        ui_bell()
 
     def show_matches(self, items):
         self.view.window().show_quick_panel(items, self.replace, MONOSPACE_FONT)
@@ -4575,7 +4575,7 @@ class _vi_ctrl_u(ViMotionCommand):
         number_of_scroll_lines = count if count >= 1 else get_option_scroll(self.view)
         scroll_target_pt = get_scroll_up_target_pt(self.view, number_of_scroll_lines)
         if scroll_target_pt is None:
-            return ui_blink()
+            return ui_bell()
 
         regions_transformer(self.view, f)
         if not self.view.visible_region().contains(0):
@@ -4600,7 +4600,7 @@ class _vi_ctrl_d(ViMotionCommand):
         number_of_scroll_lines = count if count >= 1 else get_option_scroll(self.view)
         scroll_target_pt = get_scroll_down_target_pt(self.view, number_of_scroll_lines)
         if scroll_target_pt is None:
-            return ui_blink()
+            return ui_bell()
 
         regions_transformer(self.view, f)
         if not self.view.visible_region().contains(self.view.size()):
@@ -5102,7 +5102,7 @@ class _vi_gm(ViMotionCommand):
             return Region(min(row_start + mid_pt, line.b - 1))
 
         if mode != NORMAL:
-            return ui_blink()
+            return ui_bell()
 
         regions_transformer(self.view, advance)
 

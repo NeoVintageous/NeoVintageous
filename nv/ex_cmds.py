@@ -46,7 +46,7 @@ from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
-from NeoVintageous.nv.ui import ui_blink
+from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import set_cmdline_cwd
@@ -1232,12 +1232,12 @@ def ex_wq(window, view, forceit=False, **kwargs):
 
 def ex_wqall(window, **kwargs):
     if not all(view.file_name() for view in window.views()):
-        ui_blink()
+        ui_bell()
 
         return status_message("E32: No file name")
 
     if any(view.is_read_only() for view in window.views()):
-        ui_blink()
+        ui_bell()
 
         return status_message("E45: 'readonly' option is set (add ! to override)")
 
@@ -1334,12 +1334,12 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
 
             if not forceit:
                 if os.path.exists(fname):
-                    ui_blink()
+                    ui_bell()
 
                     return status_message("E13: File exists (add ! to override)")
 
                 if _check_is_readonly(fname):
-                    ui_blink()
+                    ui_bell()
 
                     return status_message("E45: 'readonly' option is set (add ! to override)")
 
@@ -1373,7 +1373,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
     read_only = (_check_is_readonly(view.file_name()) or view.is_read_only())
 
     if read_only and not forceit:
-        ui_blink()
+        ui_bell()
 
         return status_message("E45: 'readonly' option is set (add ! to override)")
 

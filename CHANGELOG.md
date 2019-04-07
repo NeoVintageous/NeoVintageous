@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles
 * Added [#500](https://github.com/NeoVintageous/NeoVintageous/issues/500): `-` in Visual line mode
 * Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `(` and `)` in Visual line mode
 * Added [#499](https://github.com/NeoVintageous/NeoVintageous/issues/499): `<CR>` in Visual line mode

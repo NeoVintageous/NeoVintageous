@@ -27,76 +27,60 @@ from sublime import set_timeout
 from NeoVintageous.nv.vim import status_message
 
 
-# TODO Implement bell. See :h 'belloff'. 'belloff' defaults to 'all' in Neovim. See https://github.com/neovim/neovim/issues/2676.  # noqa: E501
-# TODO How to make the bell theme adaptive i.e. work nice in light AND dark color schemes.
-def _ui_bell():
+def ui_bell(msg=None):
+    if msg:
+        status_message(msg)
+
     window = active_window()
+    if not window:
+        return
 
     view = window.active_view()
     if not view:
         return
 
     settings = view.settings()
-
     if settings.get('vintageous_belloff') == 'all':
         return
 
+    style = settings.get('vintageous_bell')
     theme = 'Packages/NeoVintageous/res/Bell.tmTheme'
-
     duration = int(0.3 * 1000)
+    times = 4
+    delay = 55
 
-    if settings.get('vintageous_wip_bell_all_active_views'):
+    if style == 'view':
+        settings.set('color_scheme', theme)
+
+        def remove_bell():
+            settings.erase('color_scheme')
+
+        set_timeout(remove_bell, duration)
+    elif style == 'views':
         views = []
         for group in range(window.num_groups()):
             view = window.active_view_in_group(group)
             if view:
-                settings = settings
-                settings.set('color_scheme', theme)
+                view.settings().set('color_scheme', theme)
                 views.append(view)
 
         def remove_bell():
             for view in views:
-                settings.erase('color_scheme')
+                view.settings().erase('color_scheme')
 
         set_timeout(remove_bell, duration)
+    elif style == 'blink':
+        # Ensure we leave the setting as we found it.
+        times = times if (times % 2) == 0 else times + 1
 
-    else:
-        def remove_bell():
-            settings.erase('color_scheme')
+        def do_blink():
+            nonlocal times
+            if times > 0:
+                settings.set('highlight_line', not settings.get('highlight_line'))
+                times -= 1
+                set_timeout(do_blink, delay)
 
-        settings.set('color_scheme', theme)
-        set_timeout(remove_bell, duration)
-
-
-# TODO [refactor] Rework this to use the _ui_bell().
-# TODO [refactor] Rework this to require a view or settings object.
-def ui_blink(msg=None, times=4, delay=55):
-    if msg:
-        status_message(msg)
-
-    view = active_window().active_view()
-    if not view:
-        return
-
-    settings = view.settings()
-
-    if settings.get('vintageous_belloff') == 'all':
-        return
-
-    if settings.get('vintageous_wip'):
-        return _ui_bell()
-
-    # Ensure we leave the setting as we found it.
-    times = times if (times % 2) == 0 else times + 1
-
-    def do_blink():
-        nonlocal times
-        if times > 0:
-            settings.set('highlight_line', not settings.get('highlight_line'))
-            times -= 1
-            set_timeout(do_blink, delay)
-
-    do_blink()
+        do_blink()
 
 
 def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):

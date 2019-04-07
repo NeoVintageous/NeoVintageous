@@ -107,5 +107,10 @@
 
     // Propagate copy actions to the system clipboard.
     // {not in Vim}
-    "vintageous_use_sys_clipboard": false
+    "vintageous_use_sys_clipboard": false,
+
+    // Visual bell type.
+    // Valid values are: blink, view, or views.
+    // {not in Vim}
+    "vintageous_bell": "blink"
 }
