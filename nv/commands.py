@@ -3488,46 +3488,70 @@ class _vi_h(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_j(ViMotionCommand):
-    def folded_rows(self, pt):
-        folds = self.view.folded_regions()
-        try:
-            fold = [f for f in folds if f.contains(pt)][0]
-            fold_row_a = self.view.rowcol(fold.a)[0]
-            fold_row_b = self.view.rowcol(fold.b - 1)[0]
-            # Return no. of hidden lines.
-            return (fold_row_b - fold_row_a)
-        except IndexError:
-            return 0
+def folded_rows(view, pt):
+    # type: (...) -> int
+    folds = view.folded_regions()
+    try:
+        fold = [f for f in folds if f.contains(pt)][0]
+        fold_row_a = view.rowcol(fold.a)[0]
+        fold_row_b = view.rowcol(fold.b - 1)[0]
+        # Return no. of hidden lines.
+        return (fold_row_b - fold_row_a)
+    except IndexError:
+        return 0
 
-    def next_non_folded_pt(self, pt):
-        # FIXME: If we have two contiguous folds, this method will fail.
-        # Handle folded regions.
-        folds = self.view.folded_regions()
-        try:
-            fold = [f for f in folds if f.contains(pt)][0]
-            non_folded_row = self.view.rowcol(self.view.full_line(fold.b).b)[0]
-            pt = self.view.text_point(non_folded_row, 0)
-        except IndexError:
-            pass
-        return pt
 
-    def calculate_xpos(self, start, xpos):
-        size = self.view.settings().get('tab_size')
-        if self.view.line(start).empty():
-            return start, 0
+# FIXME If we have two contiguous folds, this method will fail. Handle folded regions
+def previous_non_folded_pt(view, pt):
+    # type: (...) -> int
+    folds = view.folded_regions()
+    try:
+        fold = [f for f in folds if f.contains(pt)][0]
+        non_folded_row = view.rowcol(fold.a - 1)[0]
+        pt = view.text_point(non_folded_row, 0)
+    except IndexError:
+        pass
+
+    return pt
+
+
+# FIXME: If we have two contiguous folds, this method will fail. Handle folded regions
+def next_non_folded_pt(view, pt):
+    # type: (...) -> int
+    folds = view.folded_regions()
+    try:
+        fold = [f for f in folds if f.contains(pt)][0]
+        non_folded_row = view.rowcol(view.full_line(fold.b).b)[0]
+        pt = view.text_point(non_folded_row, 0)
+    except IndexError:
+        pass
+
+    return pt
+
+
+def calculate_xpos(view, start, xpos):
+    # type: (...) -> tuple
+    if view.line(start).empty():
+        return start, 0
+
+    size = view.settings().get('tab_size')
+    eol = view.line(start).b - 1
+    pt = 0
+    chars = 0
+    while (pt < xpos):
+        if view.substr(start + chars) == '\t':
+            pt += size
         else:
-            eol = self.view.line(start).b - 1
-        pt = 0
-        chars = 0
-        while (pt < xpos):
-            if self.view.substr(start + chars) == '\t':
-                pt += size
-            else:
-                pt += 1
-            chars += 1
-        pt = min(eol, start + chars)
-        return pt, chars
+            pt += 1
+
+        chars += 1
+
+    pt = min(eol, start + chars)
+
+    return (pt, chars)
+
+
+class _vi_j(ViMotionCommand):
 
     def run(self, count=1, mode=None, xpos=0, no_translation=False):
         def f(view, s):
@@ -3535,14 +3559,14 @@ class _vi_j(ViMotionCommand):
             if mode == NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
-                invisible_rows = self.folded_rows(view.line(s.b).b + 1)
+                invisible_rows = folded_rows(view, view.line(s.b).b + 1)
                 target_pt = view.text_point(target_row + invisible_rows, 0)
-                target_pt = self.next_non_folded_pt(target_pt)
+                target_pt = next_non_folded_pt(view, target_pt)
 
                 if view.line(target_pt).empty():
                     return Region(target_pt, target_pt)
 
-                pt = self.calculate_xpos(target_pt, xpos)[0]
+                pt = calculate_xpos(view, target_pt, xpos)[0]
 
                 return Region(pt)
 
@@ -3557,7 +3581,7 @@ class _vi_j(ViMotionCommand):
                 current_row = view.rowcol(exact_position)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
-                _, xpos = self.calculate_xpos(target_pt, xpos)
+                _, xpos = calculate_xpos(view, target_pt, xpos)
 
                 end = min(self.view.line(target_pt).b, target_pt + xpos)
                 if s.a < s.b:
@@ -3640,33 +3664,6 @@ class _vi_j(ViMotionCommand):
 
 
 class _vi_k(ViMotionCommand):
-    def previous_non_folded_pt(self, pt):
-        # FIXME: If we have two contiguous folds, this method will fail.
-        # Handle folded regions.
-        folds = self.view.folded_regions()
-        try:
-            fold = [f for f in folds if f.contains(pt)][0]
-            non_folded_row = self.view.rowcol(fold.a - 1)[0]
-            pt = self.view.text_point(non_folded_row, 0)
-        except IndexError:
-            pass
-        return pt
-
-    def calculate_xpos(self, start, xpos):
-        if self.view.line(start).empty():
-            return start, 0
-        size = self.view.settings().get('tab_size')
-        eol = self.view.line(start).b - 1
-        pt = 0
-        chars = 0
-        while (pt < xpos):
-            if self.view.substr(start + chars) == '\t':
-                pt += size
-            else:
-                pt += 1
-            chars += 1
-        pt = min(eol, start + chars)
-        return (pt, chars)
 
     def run(self, count=1, mode=None, xpos=0, no_translation=False):
         def f(view, s):
@@ -3675,12 +3672,12 @@ class _vi_k(ViMotionCommand):
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row - count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
-                target_pt = self.previous_non_folded_pt(target_pt)
+                target_pt = previous_non_folded_pt(view, target_pt)
 
                 if view.line(target_pt).empty():
                     return Region(target_pt, target_pt)
 
-                pt, _ = self.calculate_xpos(target_pt, xpos)
+                pt, _ = calculate_xpos(view, target_pt, xpos)
 
                 return Region(pt)
 
@@ -3696,7 +3693,7 @@ class _vi_k(ViMotionCommand):
                 current_row = view.rowcol(exact_position)[0]
                 target_row = max(current_row - count, 0)
                 target_pt = view.text_point(target_row, 0)
-                _, xpos = self.calculate_xpos(target_pt, xpos)
+                _, xpos = calculate_xpos(view, target_pt, xpos)
 
                 end = min(self.view.line(target_pt).b, target_pt + xpos)
                 if s.b >= s.a:
