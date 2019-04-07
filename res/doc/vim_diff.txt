@@ -6,8 +6,9 @@
 
 Differences between Nvim and Vim			       *vim-differences*
 
-Nvim differs from Vim in many ways, big and small.  This document is
-a complete and centralized reference of those differences.
+Nvim differs from Vim in many ways, although editor and VimL features are
+mostly identical.  This document is a complete and centralized reference of
+the differences.
 
 				      Type |gO| to see the table of contents.
 
@@ -133,6 +134,7 @@ Command-line highlighting:
   removed in the future).
 
 Commands:
+  |:autocmd| accepts the `++once` flag
   |:checkhealth|
   |:cquit| can use [count] to set the exit code
   |:drop| is always available
@@ -160,6 +162,7 @@ Functions:
 
 Highlight groups:
   |expr-highlight| highlight groups (prefixed with "Nvim")
+  |hl-NormalFloat| highlights floating window
   |hl-NormalNC| highlights non-current windows
   |hl-MsgSeparator| highlights separator for scrolled messages
   |hl-QuickFixLine|
@@ -191,9 +194,14 @@ Options:
   'listchars' local to window
   'pumblend' pseudo-transparent popupmenu
   'scrollback'
+  'signcolumn' supports up to 9 dynamic/fixed columns
   'statusline' supports unlimited alignment sections
   'tabline' %@Func@foo%X can call any function on mouse-click
+  'wildoptions' `pum` flag to use popupmenu for wildmode completion
   'winhighlight' window-local highlights
+
+Signs:
+  Signs are removed if the associated line is deleted.
 
 Variables:
   |v:event|
@@ -310,6 +318,9 @@ Macro/|recording| behavior
   'keymap' is implemented via :lmap instead of :lnoremap so that you can use
   macros and 'keymap' at the same time. This also means you can use |:imap| on
   the results of keys from 'keymap'.
+
+Motion:
+  The |jumplist| avoids useless/phantom jumps.
 
 Normal commands:
   |Q| is the same as |gQ|

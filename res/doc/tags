@@ -926,6 +926,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'viewdir'	options.txt	/*'viewdir'*
 'viewoptions'	options.txt	/*'viewoptions'*
 'viminfo'	deprecated.txt	/*'viminfo'*
+'vintageous_bell'	neovintageous.txt	/*'vintageous_bell'*
 'vintageous_belloff'	neovintageous.txt	/*'vintageous_belloff'*
 'vintageous_hlsearch'	neovintageous.txt	/*'vintageous_hlsearch'*
 'vintageous_ignorecase'	neovintageous.txt	/*'vintageous_ignorecase'*
@@ -934,6 +935,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_modeline'	neovintageous.txt	/*'vintageous_modeline'*
 'vintageous_modelines'	neovintageous.txt	/*'vintageous_modelines'*
 'vintageous_reset_mode_when_switching_tabs'	neovintageous.txt	/*'vintageous_reset_mode_when_switching_tabs'*
+'vintageous_shell_silent'	neovintageous.txt	/*'vintageous_shell_silent'*
 'vintageous_use_ctrl_keys'	neovintageous.txt	/*'vintageous_use_ctrl_keys'*
 'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
 'vintageous_use_sys_clipboard'	neovintageous.txt	/*'vintageous_use_sys_clipboard'*
@@ -3182,6 +3184,7 @@ CTRL-W_f	windows.txt	/*CTRL-W_f*
 CTRL-W_gF	windows.txt	/*CTRL-W_gF*
 CTRL-W_g]	windows.txt	/*CTRL-W_g]*
 CTRL-W_g_CTRL-]	windows.txt	/*CTRL-W_g_CTRL-]*
+CTRL-W_ge	windows.txt	/*CTRL-W_ge*
 CTRL-W_gf	windows.txt	/*CTRL-W_gf*
 CTRL-W_g}	windows.txt	/*CTRL-W_g}*
 CTRL-W_h	windows.txt	/*CTRL-W_h*
@@ -3226,6 +3229,7 @@ ColorScheme	autocmd.txt	/*ColorScheme*
 ColorSchemePre	autocmd.txt	/*ColorSchemePre*
 Command-line	cmdline.txt	/*Command-line*
 Command-line-mode	cmdline.txt	/*Command-line-mode*
+CompleteChanged	autocmd.txt	/*CompleteChanged*
 CompleteDone	autocmd.txt	/*CompleteDone*
 Contents	quickref.txt	/*Contents*
 Cscope	if_cscop.txt	/*Cscope*
@@ -4061,6 +4065,7 @@ E950	message.txt	/*E950*
 E951	pattern.txt	/*E951*
 E952	autocmd.txt	/*E952*
 E956	pattern.txt	/*E956*
+E957	eval.txt	/*E957*
 E96	diff.txt	/*E96*
 E960	options.txt	/*E960*
 E97	diff.txt	/*E97*
@@ -4580,6 +4585,7 @@ api-buffer	api.txt	/*api-buffer*
 api-buffer-updates	api.txt	/*api-buffer-updates*
 api-client	msgpack_rpc.txt	/*api-client*
 api-contract	api.txt	/*api-contract*
+api-floatwin	api.txt	/*api-floatwin*
 api-global	api.txt	/*api-global*
 api-global-events	api.txt	/*api-global-events*
 api-highlights	api.txt	/*api-highlights*
@@ -4641,7 +4647,8 @@ autocmd-groups	autocmd.txt	/*autocmd-groups*
 autocmd-intro	autocmd.txt	/*autocmd-intro*
 autocmd-list	autocmd.txt	/*autocmd-list*
 autocmd-nested	autocmd.txt	/*autocmd-nested*
-autocmd-patterns	autocmd.txt	/*autocmd-patterns*
+autocmd-once	autocmd.txt	/*autocmd-once*
+autocmd-pattern	autocmd.txt	/*autocmd-pattern*
 autocmd-remove	autocmd.txt	/*autocmd-remove*
 autocmd-searchpat	autocmd.txt	/*autocmd-searchpat*
 autocmd-use	autocmd.txt	/*autocmd-use*
@@ -5015,6 +5022,8 @@ complete_CTRL-E	insert.txt	/*complete_CTRL-E*
 complete_CTRL-Y	insert.txt	/*complete_CTRL-Y*
 complete_add()	eval.txt	/*complete_add()*
 complete_check()	eval.txt	/*complete_check()*
+complete_info()	eval.txt	/*complete_info()*
+complete_info_mode	eval.txt	/*complete_info_mode*
 completed_item-variable	eval.txt	/*completed_item-variable*
 completion-functions	usr_41.txt	/*completion-functions*
 complex-change	change.txt	/*complex-change*
@@ -6165,6 +6174,7 @@ hl-MoreMsg	syntax.txt	/*hl-MoreMsg*
 hl-MsgSeparator	syntax.txt	/*hl-MsgSeparator*
 hl-NonText	syntax.txt	/*hl-NonText*
 hl-Normal	syntax.txt	/*hl-Normal*
+hl-NormalFloat	syntax.txt	/*hl-NormalFloat*
 hl-NormalNC	syntax.txt	/*hl-NormalNC*
 hl-NvimAnd	eval.txt	/*hl-NvimAnd*
 hl-NvimArrow	eval.txt	/*hl-NvimArrow*
@@ -6533,12 +6543,20 @@ keymap-file-format	mbyte.txt	/*keymap-file-format*
 keymap-hebrew	mbyte.txt	/*keymap-hebrew*
 keypad-0	intro.txt	/*keypad-0*
 keypad-9	intro.txt	/*keypad-9*
+keypad-comma	intro.txt	/*keypad-comma*
+keypad-cursor-down	intro.txt	/*keypad-cursor-down*
+keypad-cursor-left	intro.txt	/*keypad-cursor-left*
+keypad-cursor-right	intro.txt	/*keypad-cursor-right*
+keypad-cursor-up	intro.txt	/*keypad-cursor-up*
+keypad-delete	intro.txt	/*keypad-delete*
 keypad-divide	intro.txt	/*keypad-divide*
 keypad-end	intro.txt	/*keypad-end*
 keypad-enter	intro.txt	/*keypad-enter*
+keypad-equal	intro.txt	/*keypad-equal*
 keypad-home	intro.txt	/*keypad-home*
 keypad-minus	intro.txt	/*keypad-minus*
 keypad-multiply	intro.txt	/*keypad-multiply*
+keypad-origin	intro.txt	/*keypad-origin*
 keypad-page-down	intro.txt	/*keypad-page-down*
 keypad-page-up	intro.txt	/*keypad-page-up*
 keypad-plus	intro.txt	/*keypad-plus*
@@ -7075,23 +7093,18 @@ nv-abolish	neovintageous.txt	/*nv-abolish*
 nv-capslock	neovintageous.txt	/*nv-capslock*
 nv-command-palette	neovintageous.txt	/*nv-command-palette*
 nv-commentary	neovintageous.txt	/*nv-commentary*
-nv-default-options	neovintageous.txt	/*nv-default-options*
-nv-disable-arrow-keys	neovintageous.txt	/*nv-disable-arrow-keys*
 nv-escape	neovintageous.txt	/*nv-escape*
 nv-highlightedyank	neovintageous.txt	/*nv-highlightedyank*
 nv-indent-object	neovintageous.txt	/*nv-indent-object*
 nv-j	neovintageous.txt	/*nv-j*
 nv-jumpto-diffs	neovintageous.txt	/*nv-jumpto-diffs*
-nv-modeline	neovintageous.txt	/*nv-modeline*
 nv-multiple-cursors	neovintageous.txt	/*nv-multiple-cursors*
-nv-navigation	neovintageous.txt	/*nv-navigation*
-nv-opening-window	neovintageous.txt	/*nv-opening-window*
+nv-opening-view	neovintageous.txt	/*nv-opening-view*
 nv-option-summary	neovintageous.txt	/*nv-option-summary*
 nv-options	neovintageous.txt	/*nv-options*
 nv-plugins	neovintageous.txt	/*nv-plugins*
 nv-rc	neovintageous.txt	/*nv-rc*
 nv-search-highlighting	neovintageous.txt	/*nv-search-highlighting*
-nv-set-option	neovintageous.txt	/*nv-set-option*
 nv-surround	neovintageous.txt	/*nv-surround*
 nv-toggle	neovintageous.txt	/*nv-toggle*
 nv-unimpaired	neovintageous.txt	/*nv-unimpaired*
@@ -7142,6 +7155,7 @@ nvim_call_dict_function()	api.txt	/*nvim_call_dict_function()*
 nvim_call_function()	api.txt	/*nvim_call_function()*
 nvim_command()	api.txt	/*nvim_command()*
 nvim_command_output()	api.txt	/*nvim_command_output()*
+nvim_create_buf()	api.txt	/*nvim_create_buf()*
 nvim_create_namespace()	api.txt	/*nvim_create_namespace()*
 nvim_del_current_line()	api.txt	/*nvim_del_current_line()*
 nvim_del_var()	api.txt	/*nvim_del_var()*
@@ -7178,6 +7192,7 @@ nvim_list_runtime_paths()	api.txt	/*nvim_list_runtime_paths()*
 nvim_list_tabpages()	api.txt	/*nvim_list_tabpages()*
 nvim_list_uis()	api.txt	/*nvim_list_uis()*
 nvim_list_wins()	api.txt	/*nvim_list_wins()*
+nvim_open_win()	api.txt	/*nvim_open_win()*
 nvim_out_write()	api.txt	/*nvim_out_write()*
 nvim_parse_expression()	api.txt	/*nvim_parse_expression()*
 nvim_replace_termcodes()	api.txt	/*nvim_replace_termcodes()*
@@ -7206,8 +7221,10 @@ nvim_ui_set_option()	api.txt	/*nvim_ui_set_option()*
 nvim_ui_try_resize()	api.txt	/*nvim_ui_try_resize()*
 nvim_ui_try_resize_grid()	api.txt	/*nvim_ui_try_resize_grid()*
 nvim_unsubscribe()	api.txt	/*nvim_unsubscribe()*
+nvim_win_close()	api.txt	/*nvim_win_close()*
 nvim_win_del_var()	api.txt	/*nvim_win_del_var()*
 nvim_win_get_buf()	api.txt	/*nvim_win_get_buf()*
+nvim_win_get_config()	api.txt	/*nvim_win_get_config()*
 nvim_win_get_cursor()	api.txt	/*nvim_win_get_cursor()*
 nvim_win_get_height()	api.txt	/*nvim_win_get_height()*
 nvim_win_get_number()	api.txt	/*nvim_win_get_number()*
@@ -7218,6 +7235,7 @@ nvim_win_get_var()	api.txt	/*nvim_win_get_var()*
 nvim_win_get_width()	api.txt	/*nvim_win_get_width()*
 nvim_win_is_valid()	api.txt	/*nvim_win_is_valid()*
 nvim_win_set_buf()	api.txt	/*nvim_win_set_buf()*
+nvim_win_set_config()	api.txt	/*nvim_win_set_config()*
 nvim_win_set_cursor()	api.txt	/*nvim_win_set_cursor()*
 nvim_win_set_height()	api.txt	/*nvim_win_set_height()*
 nvim_win_set_option()	api.txt	/*nvim_win_set_option()*
@@ -7404,6 +7422,7 @@ python-tabpage	if_pyth.txt	/*python-tabpage*
 python-tabpages	if_pyth.txt	/*python-tabpages*
 python-vars	if_pyth.txt	/*python-vars*
 python-vim	if_pyth.txt	/*python-vim*
+python-virtualenv	provider.txt	/*python-virtualenv*
 python-vvars	if_pyth.txt	/*python-vvars*
 python-window	if_pyth.txt	/*python-window*
 python-windows	if_pyth.txt	/*python-windows*
@@ -7637,7 +7656,6 @@ sdl.vim	syntax.txt	/*sdl.vim*
 search()	eval.txt	/*search()*
 search()-sub-match	eval.txt	/*search()-sub-match*
 search-commands	pattern.txt	/*search-commands*
-search-highlighting	neovintageous.txt	/*search-highlighting*
 search-offset	pattern.txt	/*search-offset*
 search-pattern	pattern.txt	/*search-pattern*
 search-range	pattern.txt	/*search-range*
@@ -8151,7 +8169,7 @@ ui-popupmenu	ui.txt	/*ui-popupmenu*
 ui-rgb	ui.txt	/*ui-rgb*
 ui-startup	ui.txt	/*ui-startup*
 ui-tabline	ui.txt	/*ui-tabline*
-ui-wildmenu	ui.txt	/*ui-wildmenu*
+ui-wildmenu	deprecated.txt	/*ui-wildmenu*
 ui.txt	ui.txt	/*ui.txt*
 undercurl	syntax.txt	/*undercurl*
 underline	syntax.txt	/*underline*

@@ -359,8 +359,8 @@ CTRL-\ CTRL-O	like CTRL-O but don't move the cursor	     *i_CTRL-\_CTRL-O*
 CTRL-L		when 'insertmode' is set: go to Normal mode  *i_CTRL-L*
 CTRL-G u	break undo sequence, start new change	     *i_CTRL-G_u*
 CTRL-G U	don't break undo with next left/right cursor *i_CTRL-G_U*
-		movement (but only if the cursor stays
-		within same the line)
+		movement, if the cursor stays within
+		same the line
 -----------------------------------------------------------------------
 
 The CTRL-O command sometimes has a side effect: If the cursor was beyond the
@@ -617,6 +617,7 @@ and one of the CTRL-X commands.  You exit CTRL-X mode by typing a key that is
 not a valid CTRL-X mode command.  Valid keys are the CTRL-X command itself,
 CTRL-N (next), and CTRL-P (previous).
 
+To get the current completion information, |complete_info()| can be used.
 Also see the 'infercase' option if you want to adjust the case of the match.
 
 							*complete_CTRL-E*
@@ -1074,6 +1075,9 @@ items:
 	icase		when non-zero case is to be ignored when comparing
 			items to be equal; when omitted zero is used, thus
 			items that only differ in case are added
+	equal		when non-zero, always treat this item to be equal when
+			comparing. Which means, "equal=1" disables filtering
+			of this item.
 	dup		when non-zero this match will be added even when an
 			item with the same word is already present.
 	empty		when non-zero this match will be added even when it is
@@ -1081,10 +1085,10 @@ items:
 	user_data 	custom data which is associated with the item and
 			available in |v:completed_item|
 
-All of these except "icase", "dup" and "empty" must be a string.  If an item
-does not meet these requirements then an error message is given and further
-items in the list are not used.  You can mix string and Dictionary items in
-the returned list.
+All of these except "icase", "equal", "dup" and "empty" must be a string.  If
+an item does not meet these requirements then an error message is given and
+further items in the list are not used.  You can mix string and Dictionary
+items in the returned list.
 
 The "menu" item is used in the popup menu and may be truncated, thus it should
 be relatively short.  The "info" item can be longer, it will  be displayed in
