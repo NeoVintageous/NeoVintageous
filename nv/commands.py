@@ -3553,7 +3553,7 @@ def calculate_xpos(view, start, xpos):
 
 class _vi_j(ViMotionCommand):
 
-    def run(self, count=1, mode=None, xpos=0, no_translation=False):
+    def run(self, count=1, mode=None, xpos=0):
         def f(view, s):
             nonlocal xpos
             if mode == NORMAL:
@@ -3665,7 +3665,7 @@ class _vi_j(ViMotionCommand):
 
 class _vi_k(ViMotionCommand):
 
-    def run(self, count=1, mode=None, xpos=0, no_translation=False):
+    def run(self, count=1, mode=None, xpos=0):
         def f(view, s):
             nonlocal xpos
             if mode == NORMAL:
