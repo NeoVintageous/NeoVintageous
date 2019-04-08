@@ -2884,17 +2884,11 @@ class _vi_at(IrreversibleTextCommand):
 class _enter_visual_block_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, force=False):
-        def f(view, s):
-            return Region(s.b, s.b + 1)
-
-        if mode in (VISUAL_LINE,):
-            return
-
-        if mode == VISUAL_BLOCK and not force:
+        if mode == VISUAL_LINE:
+            pass
+        elif mode == VISUAL_BLOCK and not force:
             enter_normal_mode(self.view, mode)
-            return
-
-        if mode == VISUAL:
+        elif mode == VISUAL:
             first = first_sel(self.view)
 
             if self.view.line(first.end() - 1).empty():
@@ -2937,21 +2931,21 @@ class _enter_visual_block_mode(ViTextCommandBase):
             self.view.sel().add_all(new_regs)
             state = State(self.view)
             state.enter_visual_block_mode()
-            return
+        else:
+            first = list(self.view.sel())[0]
+            self.view.sel().clear()
+            self.view.sel().add(first)
 
-        # Handling multiple visual blocks seems quite hard, so ensure we only
-        # have one.
-        first = list(self.view.sel())[0]
-        self.view.sel().clear()
-        self.view.sel().add(first)
+            state = State(self.view)
+            state.enter_visual_block_mode()
 
-        state = State(self.view)
-        state.enter_visual_block_mode()
+            def f(view, s):
+                return Region(s.b, s.b + 1)
 
-        if not self.view.has_non_empty_selection_region():
-            regions_transformer(self.view, f)
+            if not self.view.has_non_empty_selection_region():
+                regions_transformer(self.view, f)
 
-        state.display_status()
+            state.display_status()
 
 
 # TODO Refactor into _vi_j
@@ -3556,6 +3550,7 @@ class _vi_j(ViMotionCommand):
     def run(self, count=1, mode=None, xpos=0):
         def f(view, s):
             nonlocal xpos
+
             if mode == NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
@@ -3564,51 +3559,44 @@ class _vi_j(ViMotionCommand):
                 target_pt = next_non_folded_pt(view, target_pt)
 
                 if view.line(target_pt).empty():
-                    return Region(target_pt, target_pt)
-
-                pt = calculate_xpos(view, target_pt, xpos)[0]
-
-                return Region(pt)
-
-            if mode == INTERNAL_NORMAL:
+                    s = Region(target_pt, target_pt)
+                else:
+                    s = Region(calculate_xpos(view, target_pt, xpos)[0])
+            elif mode == INTERNAL_NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
-                return Region(view.line(s.a).a, view.full_line(target_pt).b)
-
-            if mode == VISUAL:
+                s = Region(view.line(s.a).a, view.full_line(target_pt).b)
+            elif mode == VISUAL:
                 exact_position = s.b - 1 if (s.a < s.b) else s.b
                 current_row = view.rowcol(exact_position)[0]
                 target_row = min(current_row + count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
                 _, xpos = calculate_xpos(view, target_pt, xpos)
-
                 end = min(self.view.line(target_pt).b, target_pt + xpos)
+
                 if s.a < s.b:
-                    return Region(s.a, end + 1)
-
-                if (target_pt + xpos) >= s.a:
-                    return Region(s.a - 1, end + 1)
-
-                return Region(s.a, target_pt + xpos)
-
-            if mode == VISUAL_LINE:
+                    s = Region(s.a, end + 1)
+                elif (target_pt + xpos) >= s.a:
+                    s = Region(s.a - 1, end + 1)
+                else:
+                    s = Region(s.a, target_pt + xpos)
+            elif mode == VISUAL_LINE:
                 if s.a < s.b:
                     current_row = view.rowcol(s.b - 1)[0]
                     target_row = min(current_row + count, view.rowcol(view.size())[0])
                     target_pt = view.text_point(target_row, 0)
 
-                    return Region(s.a, view.full_line(target_pt).b)
-
+                    s = Region(s.a, view.full_line(target_pt).b)
                 elif s.a > s.b:
                     current_row = view.rowcol(s.b)[0]
                     target_row = min(current_row + count, view.rowcol(view.size())[0])
                     target_pt = view.text_point(target_row, 0)
 
                     if target_row > view.rowcol(s.a - 1)[0]:
-                        return Region(view.line(s.a - 1).a, view.full_line(target_pt).b)
-
-                    return Region(s.a, view.full_line(target_pt).a)
+                        s = Region(view.line(s.a - 1).a, view.full_line(target_pt).b)
+                    else:
+                        s = Region(s.a, view.full_line(target_pt).a)
 
             return s
 
@@ -3668,6 +3656,7 @@ class _vi_k(ViMotionCommand):
     def run(self, count=1, mode=None, xpos=0):
         def f(view, s):
             nonlocal xpos
+
             if mode == NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row - count, view.rowcol(view.size())[0])
@@ -3675,59 +3664,54 @@ class _vi_k(ViMotionCommand):
                 target_pt = previous_non_folded_pt(view, target_pt)
 
                 if view.line(target_pt).empty():
-                    return Region(target_pt, target_pt)
-
-                pt, _ = calculate_xpos(view, target_pt, xpos)
-
-                return Region(pt)
-
-            if mode == INTERNAL_NORMAL:
+                    s = Region(target_pt, target_pt)
+                else:
+                    s = Region(calculate_xpos(view, target_pt, xpos)[0])
+            elif mode == INTERNAL_NORMAL:
                 current_row = view.rowcol(s.b)[0]
                 target_row = min(current_row - count, view.rowcol(view.size())[0])
                 target_pt = view.text_point(target_row, 0)
-
-                return Region(view.full_line(s.a).b, view.line(target_pt).a)
-
-            if mode == VISUAL:
+                s = Region(view.full_line(s.a).b, view.line(target_pt).a)
+            elif mode == VISUAL:
                 exact_position = s.b - 1 if (s.a < s.b) else s.b
                 current_row = view.rowcol(exact_position)[0]
                 target_row = max(current_row - count, 0)
                 target_pt = view.text_point(target_row, 0)
                 _, xpos = calculate_xpos(view, target_pt, xpos)
-
                 end = min(self.view.line(target_pt).b, target_pt + xpos)
                 if s.b >= s.a:
                     if (self.view.line(s.a).contains(s.b - 1) and not self.view.line(s.a).contains(target_pt)):
-                        return Region(s.a + 1, end)
+                        s = Region(s.a + 1, end)
                     else:
                         if (target_pt + xpos) < s.a:
-                            return Region(s.a + 1, end)
+                            s = Region(s.a + 1, end)
                         else:
-                            return Region(s.a, end + 1)
-
-                return Region(s.a, end)
-
-            if mode == VISUAL_LINE:
+                            s = Region(s.a, end + 1)
+                else:
+                    s = Region(s.a, end)
+            elif mode == VISUAL_LINE:
                 if s.a < s.b:
                     current_row = view.rowcol(s.b - 1)[0]
                     target_row = min(current_row - count, view.rowcol(view.size())[0])
                     target_pt = view.text_point(target_row, 0)
 
                     if target_row < view.rowcol(s.begin())[0]:
-                        return Region(view.full_line(s.a).b, view.full_line(target_pt).a)
-
-                    return Region(s.a, view.full_line(target_pt).b)
-
+                        s = Region(view.full_line(s.a).b, view.full_line(target_pt).a)
+                    else:
+                        s = Region(s.a, view.full_line(target_pt).b)
                 elif s.a > s.b:
                     current_row = view.rowcol(s.b)[0]
                     target_row = max(current_row - count, 0)
                     target_pt = view.text_point(target_row, 0)
 
-                    return Region(s.a, view.full_line(target_pt).a)
+                    s = Region(s.a, view.full_line(target_pt).a)
+
+            return s
 
         state = State(self.view)
 
         if mode == VISUAL_BLOCK:
+
             if len(self.view.sel()) == 1:
                 state.visual_block_direction = DIRECTION_UP
 
@@ -3736,7 +3720,6 @@ class _vi_k(ViMotionCommand):
                 return
 
             if state.visual_block_direction == DIRECTION_UP:
-
                 for i in range(count):
                     rect_b = max(self.view.rowcol(r.b - 1)[1] for r in self.view.sel())
                     row, rect_a = self.view.rowcol(self.view.sel()[0].a)
@@ -3755,12 +3738,9 @@ class _vi_k(ViMotionCommand):
 
                 self.view.show(new_region, False)
                 return
-
-            elif SELECT:
+            else:
                 # Must remove last selection.
                 self.view.sel().subtract(self.view.sel()[-1])
-                return
-            else:
                 return
 
         regions_transformer(self.view, f)

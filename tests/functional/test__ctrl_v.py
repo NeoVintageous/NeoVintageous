@@ -20,10 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_v(unittest.FunctionalTestCase):
 
-    def test_n_ctrl_v(self):
+    def test_n(self):
         self.eq('fi|zz', '<C-v>', 'b_fi|z|z')
         self.assertStatusLineIsVisualBlock()
 
-    def test_b_ctrl_v(self):
+    def test_b(self):
         self.eq('fi|zz bu|zz', 'b_<C-v>', 'n_fizz b|uzz')
         self.assertStatusLineIsBlank()

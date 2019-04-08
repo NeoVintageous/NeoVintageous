@@ -21,7 +21,7 @@ from NeoVintageous.tests import unittest
 class Test_v(unittest.FunctionalTestCase):
 
     @unittest.mock_bell()
-    def test_n_v(self):
+    def test_n(self):
         self.eq('fi|zz', 'n_v', 'v_fi|z|z')
         self.eq('\n|\n', 'n_v', 'v_\n|\n|')
         self.eq('\n|\n\n', 'n_v', 'v_\n|\n|\n')
@@ -29,7 +29,7 @@ class Test_v(unittest.FunctionalTestCase):
         self.assertNoBell()
 
     @unittest.mock_bell()
-    def test_n_v_empty_invokes_bell(self):
+    def test_n_noop(self):
         self.eq('|', 'n_v', 'n_|')
         self.assertBell()
 
@@ -37,7 +37,7 @@ class Test_v(unittest.FunctionalTestCase):
         self.eq('f|izz bu|zz', 'v_v', 'n_fizz b|uzz')
         self.eq('r_f|izz bu|zz', 'v_v', 'n_f|izz buzz')
 
-    def test_visual_line_enters_visual(self):
+    def test_V(self):
         self.eq('x\n|fizz\n|x', 'l_v', 'v_x\n|fizz\n|x')
         self.eq('r_x\n|fizz\n|x', 'l_v', 'r_v_x\n|fizz\n|x')
         self.assertStatusLineIsVisual()
