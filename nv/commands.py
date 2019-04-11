@@ -3123,7 +3123,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
 
     def find_matches(self, prefix, end):
         escaped = re.escape(prefix)
-        matches = []
+        matches = []  # type: list
         while end > 0:
             match = reverse_search(self.view, r'^\s*{0}'.format(escaped), 0, end, flags=0)
             if (match is None) or (len(matches) == self.MAX_MATCHES):
@@ -5087,7 +5087,7 @@ class _vi_gm(ViMotionCommand):
 class _vi_left_square_bracket(ViMotionCommand):
     def run(self, action, mode, count=1, **kwargs):
         if action == 'c':
-            goto_prev_change(self.view, mode, count, **kwargs)
+            goto_prev_change(self.view, mode, count)
         elif action == 'target':
             goto_prev_target(self.view, mode, count, **kwargs)
         else:
@@ -5097,7 +5097,7 @@ class _vi_left_square_bracket(ViMotionCommand):
 class _vi_right_square_bracket(ViMotionCommand):
     def run(self, action, mode, count=1, **kwargs):
         if action == 'c':
-            goto_next_change(self.view, mode, count, **kwargs)
+            goto_next_change(self.view, mode, count)
         elif action == 'target':
             goto_next_target(self.view, mode, count, **kwargs)
         else:

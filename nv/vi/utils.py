@@ -66,6 +66,7 @@ def is_view(view):
 
 
 def _regions_transformer(sels, view, f, with_idx):
+    # type: (...) -> None
     new = []
     for idx, sel in enumerate(sels):
         if with_idx:
@@ -89,36 +90,27 @@ def _regions_transformer(sels, view, f, with_idx):
 
 def regions_transformer(view, f):
     # type: (...) -> None
-    sels = list(view.sel())
-    _regions_transformer(sels, view, f, False)
+    _regions_transformer(list(view.sel()), view, f, False)
 
 
 def regions_transformer_indexed(view, f):
     # type: (...) -> None
-    sels = list(view.sel())
-    _regions_transformer(sels, view, f, True)
+    _regions_transformer(list(view.sel()), view, f, True)
 
 
 def regions_transformer_reversed(view, f):
     # type: (...) -> None
-    sels = reversed(list(view.sel()))
-    _regions_transformer(sels, view, f, False)
+    _regions_transformer(reversed(list(view.sel())), view, f, False)
 
 
-# Return the insertion point closest to region.b for a visual region. For
-# non-visual regions, the insertion point is always any of the region's ends, so
-# using this function is pointless.
 def resolve_insertion_point_at_b(region):
     # type: (Region) -> int
     if region.a < region.b:
-        return (region.b - 1)
+        return region.b - 1
 
     return region.b
 
 
-# Return the actual insertion point closest to region.a for a visual region. For
-# non-visual regions, the insertion point is always any of the region's ends, so
-# using this function is pointless.
 def resolve_insertion_point_at_a(region):
     # type: (Region) -> int
     if region.a < region.b:
@@ -156,6 +148,7 @@ def get_previous_selection(view):
 
 
 def show_if_not_visible(view):
+    # type: (...) -> None
     if view.sel():
         pt = view.sel()[0].b
         if not view.visible_region().contains(pt):
@@ -177,6 +170,7 @@ def row_at(view, pt):
 
 
 def col_at(view, pt):
+    # type: (...) -> int
     return view.rowcol(pt)[1]
 
 
@@ -197,6 +191,7 @@ def gluing_undo_groups(view, state):
 
 
 def next_non_blank(view, pt):
+    # type: (...) -> int
     limit = view.size()
     substr = view.substr
     while (substr(pt) in '\t ') and (pt <= limit):
