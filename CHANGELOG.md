@@ -16,6 +16,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#505](https://github.com/NeoVintageous/NeoVintageous/issues/505): `dE` should only delete to end of big word
+* Fixed [#504](https://github.com/NeoVintageous/NeoVintageous/issues/504): `e` in Visual mode doesn't work
 * Fixed [#508](https://github.com/NeoVintageous/NeoVintageous/issues/508): `zH`, `zL`, `zM`, `zR`, and some other `z{a-z}` commands don't work
 * Fixed [#234](https://github.com/NeoVintageous/NeoVintageous/issues/234): `<C-e>` and `<C-y>` in Normal mode cursor in wrapped lines
 * Fixed [#498](https://github.com/NeoVintageous/NeoVintageous/issues/498): `<CR>` in Visual mode should include first character of line

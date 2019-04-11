@@ -23,15 +23,19 @@ class Test_E(unittest.FunctionalTestCase):
     def test_n(self):
         self.eq('0|1. 4', 'n_E', '01|. 4')
 
-    def test_N(self):
-        self.eq('0|12 4', 'E', 'N_0|12| 4')
-
     def test_v(self):
         self.eq('0|ab|3 5', 'v_E', '0|ab3| 5')
         self.eq('r_0|b2 a|5', 'v_E', 'r_0b|2 a|5')
         self.eq('r_0|ba|3 5', 'v_E', '0b|a3| 5')
+        self.eq('r_fiz|z buzz fizz|', 'v_E', 'r_fizz buz|z fizz|')
+        self.eq('r_fi|zz buzz fizz|', 'v_E', 'r_fiz|z buzz fizz|')
 
     def test_b(self):
         self.eq('|fi|zz buzz\n|fi|zz buzz', 'b_E', '|fizz| buzz\n|fizz| buzz')
         self.eq('r_f|izz bu|zz\nf|izz bu|zz', 'b_E', 'r_fiz|z bu|zz\nfiz|z bu|zz')
         self.eq('r_|fi|zz buzz\n|fi|zz buzz', 'b_E', 'f|izz| buzz\nf|izz| buzz')
+
+    def test_d(self):
+        self.eq('fi|zz buzz', 'dE', 'fi| buzz')
+        self.eq('f|izz buzz', 'dE', 'f| buzz')
+        self.eq('f|izz        buzz', 'dE', 'f|        buzz')

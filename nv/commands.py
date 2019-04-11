@@ -1653,11 +1653,7 @@ class _vi_d(ViTextCommandBase):
         def advance_to_text_start(view, s):
             if motion:
                 if 'motion' in motion:
-                    if motion['motion'] == '_vi_e':
-                        return Region(s.begin())
-                    elif motion['motion'] == '_vi_dollar':
-                        return Region(s.begin())
-                    elif motion['motion'] == '_vi_find_in_line':
+                    if motion['motion'] in ('_vi_e', '_vi_big_e', '_vi_dollar', '_vi_find_in_line'):
                         return Region(s.begin())
 
             return Region(next_non_white_space_char(self.view, s.b))
@@ -3884,10 +3880,12 @@ class _vi_big_w(ViMotionCommand):
 class _vi_e(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            target = word_ends(view, start=resolve_insertion_point_at_b(s), count=count) - 1
+
             if mode == NORMAL:
-                s = Region(word_ends(view, start=s.b, count=count) - 1)
+                s = Region(target)
             elif mode == VISUAL:
-                s = resolve_visual_target(s, word_ends(view, start=s.b - 1, count=count) - 1)
+                s = resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
                 a = s.a
                 pt = word_ends(view, start=s.b, count=count)
@@ -4864,38 +4862,35 @@ class _vi_big_n(ViMotionCommand):
 
 class _vi_big_e(ViMotionCommand):
     def run(self, mode=None, count=1):
-        def do_move(view, s):
-            b = s.b
-            if s.a < s.b:
-                b = s.b - 1
-
-            pt = word_ends(view, b, count=count, big=True)
+        def f(view, s):
+            target = word_ends(view, resolve_insertion_point_at_b(s), count=count, big=True)
 
             if mode == NORMAL:
-                s = Region(pt - 1)
+                s = Region(target - 1)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, pt)
+                s = Region(s.a, target)
             elif mode == VISUAL:
                 start = s.a
                 if s.b < s.a:
                     start = s.a - 1
-                end = pt - 1
+
+                end = target - 1
                 if start <= end:
                     s = Region(start, end + 1)
                 else:
                     s = Region(start + 1, end)
             elif mode == VISUAL_BLOCK:
                 if s.a > s.b:
-                    if pt > s.a:
-                        s = Region(s.a - 1, pt)
+                    if target > s.a:
+                        s = Region(s.a - 1, target)
                     else:
-                        s = Region(s.a, pt - 1)
+                        s = Region(s.a, target - 1)
                 else:
-                    s = Region(s.a, pt)
+                    s = Region(s.a, target)
 
             return s
 
-        regions_transformer(self.view, do_move)
+        regions_transformer(self.view, f)
 
 
 class _vi_ctrl_f(ViMotionCommand):

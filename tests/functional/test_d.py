@@ -42,6 +42,11 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegistersEmpty('"-01')
         self.assertBell()
 
+    def test_dE(self):
+        self.eq('one t|wo three', 'dE', 'one t| three')
+        self.assertRegistersEqual('"-', 'wo')
+        self.assertRegistersEmpty('01')
+
     def test_df(self):
         self.eq('|a = 1', 'df=', '| 1')
         self.assertRegistersEqual('"-', 'a =')
