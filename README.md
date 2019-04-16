@@ -8,10 +8,10 @@ Neovintageous is a project that seeks to continue the development of the discont
 
 * Open source
 * Highly configurable
-* Plugins out-of-the-box
 * Strong defaults
 * Drop-in replacement for Vintageous
 * Integrates with [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3) and [Origami](https://github.com/SublimeText/Origami)
+* Plugins out-of-the-box: [Abolish](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/abolish.txt), [Commentary](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/commentary.txt), [Highlighted Yank](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/neovintageous.txt), [Surround](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/surround.txt), [Unimpaired](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/unimpaired.txt), and [Indent Object](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/indent-object.txt).
 
 ## Installation
 
@@ -29,9 +29,21 @@ Close Sublime Text, then download or clone this repository to a directory named 
 
 ## Documentation
 
-Neovintageous is an emulation of Vim: feature-parity is an ongoing effort. See the [`:help neovintageous`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) command to learn about the differences.
+Neovintageous is an emulation of Vim: feature-parity is an ongoing effort. See the [`:help neovintageous`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/neovintageous.txt) command to learn about the differences.
+
+* Jump to a subject: Position the cursor on a tag (e.g. `|bars|`) and hit `CTRL-]`.
+* Jump back: Type `CTRL-T` or `CTRL-O`.  Repeat to go further back.
 
 Vim's documentation system is accessible via the `:help` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [appspot](https://vimhelp.appspot.com).
+
+Plugin documentation is also accessible via he `:help` command:
+
+* [`:help abolish`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/abolish.txt)
+* [`:help commentary`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/commentary.txt)
+* [`:help highlightedyank`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/neovintageous.txt)
+* [`:help surround`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/surround.txt)
+* [`:help unimpaired`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/unimpaired.txt)
+* [`:help indent-object`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/indent-object.txt)
 
 ## Contributing
 
