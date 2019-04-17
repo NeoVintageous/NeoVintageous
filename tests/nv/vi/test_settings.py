@@ -34,10 +34,7 @@ class TestSublimeSettings(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         self.view.settings().erase('foo')
-        self.setts = _SublimeSettings(view=self.view)
-
-    def test_can_initialize_class(self):
-        self.assertEqual(self.setts.view, self.view)
+        self.setts = _SublimeSettings(self.view)
 
     def test_can_set_setting(self):
         self.assertEqual(self.view.settings().get('foo'), None)
@@ -84,18 +81,15 @@ class TestSettingsManager(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         self.view.settings().erase('vintage')
-        self.settsman = SettingsManager(view=self.view)
-
-    def test_can_initialize_class(self):
-        self.assertEqual(self.view, self.settsman.v)
+        self.manager = SettingsManager(self.view)
 
     def test_can_access_vi_ssettings(self):
-        self.settsman.vi['foo'] = 100
-        self.assertEqual(self.settsman.vi['foo'], 100)
+        self.manager.vi['foo'] = 100
+        self.assertEqual(self.manager.vi['foo'], 100)
 
     def test_can_access_view_settings(self):
-        self.settsman.view['foo'] = 100
-        self.assertEqual(self.settsman.view['foo'], 100)
+        self.manager.view['foo'] = 100
+        self.assertEqual(self.manager.view['foo'], 100)
 
 
 class TestViEditorSettings(unittest.ViewTestCase):

@@ -253,82 +253,39 @@ def _get_option(view, name):
 
 
 class _SublimeSettings():
-    def __init__(self, view=None):
-        self.view = view
-
-    def __get__(self, instance, owner):
-        if instance is not None:
-            return _SublimeSettings(instance.v)
-
-        return _SublimeSettings()
+    def __init__(self, container=None):
+        self.settings = container.settings()
 
     def __getitem__(self, key):
-        return self.view.settings().get(key)
+        return self.settings.get(key)
 
     def __setitem__(self, key, value):
-        self.view.settings().set(key, value)
-
-
-class _SublimeWindowSettings():
-    def __init__(self, view=None):
-        self.view = view
-
-    def __get__(self, instance, owner):
-        if instance is not None:
-            return _SublimeSettings(instance.v.window())
-
-        return _SublimeSettings()
-
-    def __getitem__(self, key):
-        return self.view.window().settings().get(key)
-
-    def __setitem__(self, key, value):
-        self.view.window().settings().set(key, value)
+        self.settings.set(key, value)
 
 
 class _VintageSettings():
-    """
-    Helper class for accessing settings related to Vintage.
 
-    Vintage settings data can be stored in:
+    _volatile_settings = []  # type: list
 
-      a) the view.Settings object
-      b) the window.Settings object
-      c) _VintageSettings._volatile
+    _volatile = defaultdict(dict)  # type: dict
 
-    This class knows where to store the settings' data it's passed.
-
-    It is meant to be used as a descriptor.
-    """
-
-    _volatile_settings = []
-    # Stores volatile settings indexed by view.id().
-    _volatile = defaultdict(dict)
-
-    def __init__(self, view=None):
+    def __init__(self, view):
         self.view = view
 
-        if view is not None and not isinstance(self.view.settings().get('vintage'), dict):
-            self.view.settings().set('vintage', dict())
+        if view is not None:
+            if not isinstance(view.settings().get('vintage'), dict):
+                view.settings().set('vintage', dict())
 
-        if view is not None and view.window() is not None and not isinstance(self.view.window().settings().get('vintage'), dict):  # FIXME # noqa: E501
-            self.view.window().settings().set('vintage', dict())
-
-    def __get__(self, instance, owner):
-        # This method is called when this class is accessed as a data member.
-        if instance is not None:
-            return _VintageSettings(instance.v)
-
-        return _VintageSettings()
+            window = view.window()
+            if window is not None and not isinstance(window.settings().get('vintage'), dict):
+                window.settings().set('vintage', dict())
 
     def __getitem__(self, key):
-        # Deal with editor options first.
         try:
             return _get_option(self.view, key)
         except KeyError:
             pass
 
-        # Deal with state settings.
         try:
             if key not in _WINDOW_SETTINGS:
                 try:
@@ -368,11 +325,9 @@ class _VintageSettings():
             raise KeyError('error while setting key "%s" to value "%s"' % (key, value))
 
 
-# TODO: Make this a descriptor; avoid instantiation.
 class SettingsManager():
-    window = _SublimeWindowSettings()
-    view = _SublimeSettings()
-    vi = _VintageSettings()
 
     def __init__(self, view):
-        self.v = view
+        self.window = _SublimeSettings(view.window())
+        self.view = _SublimeSettings(view)
+        self.vi = _VintageSettings(view)
