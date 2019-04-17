@@ -26,6 +26,7 @@ class Test_gq(unittest.FunctionalTestCase):
 
     def test_gqip(self):
         self.eq('|aaa\nbbb\nccc\n', 'gqip', '|aaa bbb ccc\n')
+        self.eq('x\n\n    |aaa\nbbb\nccc\n', 'gqip', 'x\n\n    |aaa bbb ccc\n')
 
     def test_gqip_should_only_mutate_current_paragraph(self):
         self.eq('x\n\na|a\nbb\ncc\n\nyyy', 'gqip', 'x\n\n|aa bb cc\n\nyyy')
@@ -59,6 +60,9 @@ class Test_gq_python_syntax(unittest.FunctionalTestCase):
     def feed(self, seq):
         self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
         super().feed(seq)
+
+    def test_gqip(self):
+        self.eq('x = 1\n\n    |# aaa\n    # bbb\n    # ccc\n', 'gqip', 'x = 1\n\n    |# aaa bbb ccc\n')
 
     def test_v_gq(self):
         self.eq('    if x:\n|        # fizz\n        # bu|zz\n\n', 'v_gq', 'n_    if x:\n        |# fizz buzz\n\n')

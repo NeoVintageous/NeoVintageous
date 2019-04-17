@@ -995,7 +995,7 @@ class _vi_gq(ViTextCommandBase):
                 else:
                     # Cursors should move to start position of motion.
                     for s in self.old_sel:
-                        self.view.sel().add(s.begin())
+                        self.view.sel().add(next_non_blank(self.view, s.begin()))
             else:
                 ui_bell()
 

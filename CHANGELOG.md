@@ -16,6 +16,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#506](https://github.com/NeoVintageous/NeoVintageous/issues/506): `gqip` should leave cursor on first non blank
 * Fixed [#505](https://github.com/NeoVintageous/NeoVintageous/issues/505): `dE` should only delete to end of big word
 * Fixed [#504](https://github.com/NeoVintageous/NeoVintageous/issues/504): `e` in Visual mode doesn't work
 * Fixed [#508](https://github.com/NeoVintageous/NeoVintageous/issues/508): `zH`, `zL`, `zM`, `zR`, and some other `z{a-z}` commands don't work
