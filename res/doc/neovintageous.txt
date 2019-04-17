@@ -4,8 +4,7 @@
                 NEOVINTAGEOUS - main help file
 
 Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
-   With the mouse:  Double-click the left mouse button on a tag, e.g. |bars|.
-    Jump back:  Type CTRL-T or CTRL-O.  Repeat to go further back.
+        Jump back:  Type CTRL-T or CTRL-O.  Repeat to go further back.
 
 NeoVintageous                                             *neovintageous* *nv*
 
