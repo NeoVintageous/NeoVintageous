@@ -2581,9 +2581,10 @@ class ViRepeatCharSearchForward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        forward = state.last_char_search_command in ('vi_t', 'vi_f')
-        inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
-        skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
+        last_search_cmd = state.last_char_search_command
+        forward = last_search_cmd in ('vi_t', 'vi_f')
+        inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
+        skipping = last_search_cmd in ('vi_t', 'vi_big_t')
         motion = '_vi_find_in_line' if forward else '_vi_reverse_find_in_line'
 
         return {
@@ -2825,9 +2826,10 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        forward = state.last_char_search_command in ('vi_t', 'vi_f')
-        inclusive = state.last_char_search_command in ('vi_f', 'vi_big_f')
-        skipping = state.last_char_search_command in ('vi_t', 'vi_big_t')
+        last_search_cmd = state.last_char_search_command
+        forward = last_search_cmd in ('vi_t', 'vi_f')
+        inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
+        skipping = last_search_cmd in ('vi_t', 'vi_big_t')
         motion = '_vi_find_in_line' if not forward else '_vi_reverse_find_in_line'
 
         return {

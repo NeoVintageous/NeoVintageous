@@ -2567,7 +2567,7 @@ class _vi_modify_numbers(ViTextCommandBase):
             regions[i] = Region(a)
 
         lines = [self.view.substr(Region(r.b, self.view.line(r.b).b)) for r in regions]
-        matches = [_vi_modify_numbers.NUM_PAT.search(text) for text in lines]
+        matches = [self.NUM_PAT.search(text) for text in lines]
         if all(matches):
             return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]
 
