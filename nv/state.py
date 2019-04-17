@@ -630,7 +630,7 @@ class State(object):
 
     def _set_parsers(self, command):
         # type: (ViCommandDefBase) -> None
-        if command.accept_input:
+        if command.accept_input and command.input_parser:
             if command.input_parser.type == INPUT_VIA_PANEL:
                 if self.non_interactive:
                     return
