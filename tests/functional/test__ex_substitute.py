@@ -74,8 +74,7 @@ class Test_ex_substitute(unittest.FunctionalTestCase):
         self.eq('a\n|b\n\nc\n\nd\n\n', ':%substitute/$/,/', 'a,\nb,\n,\nc,\n,\nd,\n|,\n')
         self.eq('a\n|b\n\nc\n\nd\n\n', ':%substitute/$/,/g', 'a,\nb,\n,\nc,\n,\nd,\n|,\n')
 
-    @unittest.mock.patch('NeoVintageous.nv.ex_cmds._ex_substitute_last_pattern', None)
-    @unittest.mock.patch('NeoVintageous.nv.ex_cmds._ex_substitute_last_replacement', '')
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds._session', {})
     @unittest.mock_status_message()
     def test_repeat_no_previous(self):
         self.eq('a|bc', ':substitute', 'a|bc')

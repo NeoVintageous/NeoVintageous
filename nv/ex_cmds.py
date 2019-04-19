@@ -75,6 +75,63 @@ from NeoVintageous.nv.window import window_tab_control
 
 _log = logging.getLogger(__name__)
 
+_session = {}  # type: dict
+_cache = {}  # type: dict
+
+
+def get_session_value(name, default=None):
+    try:
+        return _session[name]
+    except KeyError:
+        return default
+
+
+def set_session_value(name, value):
+    _session[name] = value
+
+
+def get_cache_value(name, default=None):
+    try:
+        return _cache[name]
+    except KeyError:
+        return default
+
+
+def set_cache_value(name, value):
+    _cache[name] = value
+
+
+def set_ex_substitute_last_pattern(pattern):
+    return set_session_value('ex_substitute_last_pattern', pattern)
+
+
+def get_ex_substitute_last_pattern():
+    return get_session_value('ex_substitute_last_pattern')
+
+
+def get_ex_substitute_last_replacement():
+    return get_session_value('ex_substitute_last_replacement')
+
+
+def set_ex_substitute_last_replacement(replacement):
+    return set_session_value('ex_substitute_last_replacement', replacement)
+
+
+def get_ex_shell_last_command():
+    return get_session_value('ex_shell_last_command')
+
+
+def set_ex_shell_last_command(cmd):
+    return set_session_value('ex_shell_last_command', cmd)
+
+
+def get_ex_global_last_pattern():
+    return get_session_value('ex_global_last_pattern')
+
+
+def set_ex_global_last_pattern(pattern):
+    return set_session_value('ex_global_last_pattern', pattern)
+
 
 def _init_cwd(f, *args, **kwargs):
     @wraps(f)
@@ -396,9 +453,6 @@ def ex_file(view, **kwargs):
     status_message('%s' % msg)
 
 
-_ex_global_most_recent_pat = None
-
-
 # At the time of writing, the only command that supports :global is the
 # "print" command e.g. print all lines matching \d+ into new buffer:
 #   :%global/\d+/print
@@ -408,11 +462,10 @@ def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
     else:
         global_range = line_range.resolve(view)
 
-    global _ex_global_most_recent_pat
-    if pattern:
-        _ex_global_most_recent_pat = pattern
+    if not pattern:
+        pattern = get_ex_global_last_pattern()
     else:
-        pattern = _ex_global_most_recent_pat
+        set_ex_global_last_pattern(pattern)
 
     if not cmd:
         cmd = 'print'
@@ -444,9 +497,6 @@ def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
     do_ex_command(window, cmd.target, cmd.params)
 
 
-_ex_help_tags_cache = {}
-
-
 def ex_help(window, subject=None, forceit=False, **kwargs):
     if not subject:
         subject = 'help.txt'
@@ -454,12 +504,12 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         if forceit:
             return status_message("E478: Don't panic!")
 
-    if not _ex_help_tags_cache:
+    help_tags = get_cache_value('help_tags')
+    if not help_tags:
         _log.debug('initializing help tags...')
+        help_tags = {}
 
-        tags_resources = [r for r in find_resources(
-            'tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
-
+        tags_resources = [r for r in find_resources('tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
         if not tags_resources:
             return status_message('tags file not found')
 
@@ -469,11 +519,11 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
             if line:
                 match = tags_matcher.match(line)
                 if match:
-                    _ex_help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
+                    help_tags[match.group(1)] = (match.group(2), match.group(3))
 
-        _log.debug('finished initializing help tags')
+        set_cache_value('help_tags', help_tags)
 
-    if subject not in _ex_help_tags_cache:
+    if subject not in help_tags:
 
         # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
         # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
@@ -492,7 +542,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
             for s in subject_candidates:
                 _subject = p + s
-                if _subject in _ex_help_tags_cache:
+                if _subject in help_tags:
                     subject = _subject
                     found = True
 
@@ -502,7 +552,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         if not found:
             return status_message('E149: Sorry, no help for %s' % subject)
 
-    tag = _ex_help_tags_cache[subject]
+    tag = help_tags[subject]
 
     doc_resources = [r for r in find_resources(
         tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
@@ -881,18 +931,12 @@ def ex_shell(view, **kwargs):
         status_message('not implemented')
 
 
-_ex_shell_last_command = None
-
-
 @_init_cwd
 def ex_shell_out(view, edit, cmd, line_range, **kwargs):
-    global _ex_shell_last_command
-
     if cmd == '!':
-        if not _ex_shell_last_command:
+        cmd = get_ex_shell_last_command()
+        if not cmd:
             return status_message('E34: No previous command')
-
-        cmd = _ex_shell_last_command
 
     if '%' in cmd:
         file_name = view.file_name()
@@ -921,7 +965,7 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
                 view.window().run_command("show_panel", {"panel": "output.vi_out"})
 
         # TODO: store only successful commands.
-        _ex_shell_last_command = cmd
+        set_ex_shell_last_command(cmd)
     except NotImplementedError:
         status_message('not implemented')
 
@@ -953,31 +997,24 @@ def ex_split(window, file=None, **kwargs):
     window_control(window, 's', file=file)
 
 
-_ex_substitute_last_pattern = None
-_ex_substitute_last_replacement = ''
-
-
 def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=None, count=1, **kwargs):
-    global _ex_substitute_last_pattern, _ex_substitute_last_replacement
-
     if flags is None:
         flags = []
 
-    # Repeat last substitute with same search
-    # pattern and substitute string, but
+    # Repeat last substitute with same search pattern and substitute string, but
     # without the same flags.
     if not pattern:
-        pattern = _ex_substitute_last_pattern
+        pattern = get_ex_substitute_last_pattern()
         if not pattern:
             return status_message('E33: No previous substitute regular expression')
 
-        replacement = _ex_substitute_last_replacement
+        replacement = get_ex_substitute_last_replacement()
 
     if replacement is None:
         return status_message('No substitute replacement string')
 
-    _ex_substitute_last_pattern = pattern
-    _ex_substitute_last_replacement = replacement
+    set_ex_substitute_last_pattern(pattern)
+    set_ex_substitute_last_replacement(replacement)
 
     computed_flags = re.MULTILINE
     computed_flags |= re.IGNORECASE if ('i' in flags) else 0
