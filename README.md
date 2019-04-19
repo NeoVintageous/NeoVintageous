@@ -31,12 +31,9 @@ Close Sublime Text, then download or clone this repository to a directory named 
 
 Neovintageous is an emulation of Vim: feature-parity is an ongoing effort. See the [`:help neovintageous`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/neovintageous.txt) command to learn about the differences.
 
-* Jump to a subject: Position the cursor on a tag (e.g. `|bars|`) and hit `CTRL-]`.
-* Jump back: Type `CTRL-T` or `CTRL-O`.  Repeat to go further back.
-
 Vim's documentation system is accessible via the `:help` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [appspot](https://vimhelp.appspot.com).
 
-Plugin documentation is also accessible via he `:help` command:
+Plugin documentation is also accessible via he `:help` command, feature-parity is an ongoing effort:
 
 * [`:help abolish`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/abolish.txt)
 * [`:help commentary`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/commentary.txt)
@@ -55,7 +52,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Acknowledgements
 
-Neovintageous is a fork of the discontinued [Vintageous](https://github.com/guillermooo/Vintageous) plugin.
+Neovintageous is a fork of the discontinued Vintageous plugin.
 
 ## License
 
