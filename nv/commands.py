@@ -1419,6 +1419,11 @@ class _enter_visual_line_mode_impl(ViTextCommandBase):
             else:
                 return view.full_line(s.b)
 
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_to_visual_line()
+            return
+
         regions_transformer(self.view, f)
 
 
