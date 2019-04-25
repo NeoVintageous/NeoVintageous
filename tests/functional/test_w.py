@@ -39,6 +39,12 @@ class Test_w(unittest.FunctionalTestCase):
         self.eq('r_fi|zz b|uzz', 'v_w', 'r_fizz |b|uzz')
         self.eq('r_fi|zz |buzz', 'v_w', 'fizz| b|uzz')
 
+    def test_d(self):
+        self.eq('one |two three', 'dw', 'one |three')
+        self.eq('one t|wo three', 'dw', 'one t|three')
+        self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
+        self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
+
     def test_b(self):
         self.eq('|fi|zz buzz\n|fi|zz buzz\n', 'b_w', '|fizz b|uzz\n|fizz b|uzz\n')
         self.eq('r_|fi|zz buzz\n|fi|zz buzz\n', 'b_w', 'f|izz b|uzz\nf|izz b|uzz\n')
@@ -46,9 +52,13 @@ class Test_w(unittest.FunctionalTestCase):
         self.eq('fizz |', 'b_w', 'fizz |')
         self.eq('fizz | |', 'b_w', 'fizz | |')
         self.eq('|', 'b_w', '|')
-
-    def test_d(self):
-        self.eq('one |two three', 'dw', 'one |three')
-        self.eq('one t|wo three', 'dw', 'one t|three')
-        self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
-        self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
+        self.eq('|fi|\n|fi|zz buzz\n', 'b_w', '|fi\n||fizz b|uzz\n')
+        self.eq('|fizzbuzz fizz|\n|fi|zz buzz\n', 'b_w', '|fizzbu|zz fizz\n|fizz b|uzz\n')
+        self.eq('u_|fi|zzbuzz fizz\n|bu|zz\nx', 'b_w', 'u_|fizzbuzz f|izz\n|buzz\n|x')
+        self.eq('|fizz|\n|buzz|\n quz', 'b_w', '|fi|zz\n|bu|zz\n| q|uz')
+        self.eq('d_fizz |buz|z\nfizz buzz\nfizz buzz\n', 'b_2w', 'd_fizz |b|uzz\nfizz |b|uzz\nfizz buzz\n')
+        self.eq('r_d_fizz |buz|z\nfizz buzz\nfizz buzz\n', 'b_2w', 'r_d_fizz |buz|z\nfizz |buz|z\nfizz buzz\n')
+        self.eq('d_fizz |b|uzz\nfizz\nfizz buzz\n', 'b_3w', 'd_fizz |b|uzz\nfizz\nfizz |b|uzz\n')
+        self.eq('r_d_fizz |buz|z\nfizz\nfizz buzz\n', 'b_3w', 'r_d_fizz |buz|z\nfizz\nfizz |buz|z\n')
+        self.eq('r_d_fi|zz| buzz\nfizz buzz\n', 'b_3w', 'd_fiz|z b|uzz\nfiz|z b|uzz\n')
+        self.eq('r_d_fi|zz| buzz\nx\nfizz buzz\n', 'b_4w', 'd_fiz|z b|uzz\nx\nfiz|z b|uzz\n')

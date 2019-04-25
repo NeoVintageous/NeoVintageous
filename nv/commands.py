@@ -3770,20 +3770,7 @@ class _vi_w(ViMotionCommand):
                 return Region(pt, pt)
             elif mode == VISUAL:
                 start = (s.b - 1) if (s.a < s.b) else s.b
-                s = resolve_visual_target(s, word_starts(view, start=start, count=count))
-            elif mode == VISUAL_BLOCK:
-                start = (s.b - 1) if (s.a < s.b) else s.b
-                pt = word_starts(view, start=start, count=count)
-
-                if (s.a > s.b) and (pt >= s.a):
-                    return Region(s.a - 1, pt + 1)
-                elif s.a > s.b:
-                    return Region(s.a, pt)
-                elif view.size() == pt:
-                    pt -= 1
-
-                return Region(s.a, pt + 1)
-
+                s = resolve_visual_target(s, word_starts(view, start, count))
             elif mode == INTERNAL_NORMAL:
                 a = s.a
                 pt = word_starts(view, start=s.b, count=count, internal=True)
@@ -3793,6 +3780,13 @@ class _vi_w(ViMotionCommand):
                 return Region(a, pt)
 
             return s
+
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_target(
+                word_starts(self.view, visual_block.insertion_point_b(), count)
+            )
+            return
 
         regions_transformer(self.view, f)
 
