@@ -4304,27 +4304,25 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 
 class _vi_b(ViMotionCommand):
     def run(self, mode=None, count=1):
-        def do_motion(view, s):
+        def f(view, s):
             if mode == NORMAL:
                 s = Region(word_reverse(self.view, s.b, count))
             elif mode == VISUAL:
-                start = s.b - 1 if s.a < s.b else s.b
-                s = resolve_visual_target(s, word_reverse(self.view, start, count))
-            elif mode == VISUAL_BLOCK:
-                if s.a < s.b:
-                    pt = word_reverse(self.view, s.b - 1, count)
-                    if pt < s.a:
-                        s = Region(s.a + 1, pt)
-                    else:
-                        s = Region(s.a, pt + 1)
-                elif s.b < s.a:
-                    s = Region(s.a, word_reverse(self.view, s.b, count))
+                start = resolve_insertion_point_at_b(s)
+                s = resolve_visual_target(s, word_reverse(view, start, count))
             elif mode == INTERNAL_NORMAL:
                 s = Region(s.a, word_reverse(self.view, s.b, count))
 
             return s
 
-        regions_transformer(self.view, do_motion)
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_target(
+                word_reverse(self.view, visual_block.insertion_point_b(), count)
+            )
+            return
+
+        regions_transformer(self.view, f)
 
 
 class _vi_big_b(ViMotionCommand):
