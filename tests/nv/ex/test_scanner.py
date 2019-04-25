@@ -483,8 +483,8 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['copy .', 'co .'], cmd('copy', params={'address': '.'}, addressable=True))
         self.assertRoute(['copy .+3', 'co .+3'], cmd('copy', params={'address': '.+3'}, addressable=True))
         self.assertRoute(['cquit', 'cq'], cmd('cquit'))
-        self.assertRoute(['delete x', 'd x'], cmd('delete', params={'count': None, 'register': 'x'}, addressable=True))
-        self.assertRoute(['delete', 'd'], cmd('delete', params={'count': None, 'register': '"'}, addressable=True))
+        self.assertRoute(['delete x', 'd x'], cmd('delete', params={'count': None, 'register': 'x'}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertRoute(['delete', 'd'], cmd('delete', params={'count': None, 'register': '"'}, addressable=True, cooperates_with_global=True))  # noqa: E501
         self.assertRoute(['edit file.txt', 'e file.txt'], cmd('edit', params={'file_name': 'file.txt'}))  # noqa: E501
         self.assertRoute(['edit x/y.txt', 'e x/y.txt'], cmd('edit', params={'file_name': 'x/y.txt'}))  # noqa: E501
         self.assertRoute(['edit!', 'e!'], cmd('edit', params={'file_name': None}, forced=True))  # noqa: E501

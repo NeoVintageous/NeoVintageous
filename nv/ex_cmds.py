@@ -337,10 +337,16 @@ def ex_cquit(window, **kwargs):
 
 
 @_serialize_deserialize
-def ex_delete(view, edit, register, line_range, **kwargs):
+def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
     r = line_range.resolve(view)
     if r == Region(-1, -1):
         r = view.full_line(0)
+
+    rs = [r]
+
+    # If :global called us, ignore the parsed range.
+    if global_lines:
+        rs = [Region(a, b) for (a, b) in global_lines]
 
     def _select(view, regions, register):
         view.sel().clear()
@@ -358,9 +364,25 @@ def ex_delete(view, edit, register, line_range, **kwargs):
             state = State(view)
             state.registers[register] = [text]
 
-    _select(view, [r], register)
-    view.erase(edit, r)
-    _set_next_sel(view, [(r.a, r.a)])
+    # Save stuff to be deleted in register
+    if global_lines:
+        _select(view, [Region(r.a, r.b - 1) for r in rs], register)
+    else:
+        _select(view, [Region(r.a, r.b) for r in rs], register)
+
+    # Build regions to be selected after deletion
+    deleted_so_far = 0
+    new_sel_pos = []
+    for r in rs:
+        new_sel_pos.append(r.a - deleted_so_far)
+        size_of_region = r.b - r.a
+        deleted_so_far += size_of_region
+
+    # Delete
+    for r in reversed(rs):
+        view.erase(edit, r)
+
+    _set_next_sel(view, [(p, p) for p in new_sel_pos])
 
 
 def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):

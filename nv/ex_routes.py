@@ -112,6 +112,7 @@ def _ex_route_cquit(state):
 
 def _ex_route_delete(state):
     command = TokenCommand('delete')
+    command.cooperates_with_global = True
     command.addressable = True
 
     params = {'register': '"', 'count': None}
