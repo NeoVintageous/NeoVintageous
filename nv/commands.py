@@ -105,6 +105,7 @@ from NeoVintageous.nv.vi.text_objects import get_closest_tag
 from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vi.text_objects import word_end_reverse
 from NeoVintageous.nv.vi.text_objects import word_reverse
+from NeoVintageous.nv.vi.units import big_word_ends
 from NeoVintageous.nv.vi.units import big_word_starts
 from NeoVintageous.nv.vi.units import inner_lines
 from NeoVintageous.nv.vi.units import lines
@@ -4822,16 +4823,15 @@ class _vi_big_e(ViMotionCommand):
                     s = Region(start, end + 1)
                 else:
                     s = Region(start + 1, end)
-            elif mode == VISUAL_BLOCK:
-                if s.a > s.b:
-                    if target > s.a:
-                        s = Region(s.a - 1, target)
-                    else:
-                        s = Region(s.a, target - 1)
-                else:
-                    s = Region(s.a, target)
 
             return s
+
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_target(
+                big_word_ends(self.view, visual_block.insertion_point_b(), count) - 1
+            )
+            return
 
         regions_transformer(self.view, f)
 

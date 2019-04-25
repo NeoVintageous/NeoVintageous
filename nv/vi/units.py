@@ -140,6 +140,7 @@ def word_starts(view, start, count=1, internal=False):
 
 
 def big_word_starts(view, start, count=1, internal=False):
+    # type: (...) -> int
     assert start >= 0
     assert count > 0
 
@@ -166,6 +167,7 @@ def big_word_starts(view, start, count=1, internal=False):
 
 
 def word_ends(view, start, count=1, big=False):
+    # type: (...) -> int
     assert start >= 0 and count > 0, 'bad call'
 
     pt = start
@@ -184,6 +186,11 @@ def word_ends(view, start, count=1, big=False):
             pt = next_word_end(view, pt)
 
     return pt
+
+
+def big_word_ends(view, start, count=1):
+    # type: (...) -> int
+    return word_ends(view, start, count, big=True)
 
 
 def lines(view, s, count=1):
