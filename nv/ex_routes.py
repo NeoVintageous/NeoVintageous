@@ -203,19 +203,15 @@ def _ex_route_file(state):
 
 
 def _ex_route_global(state):
-    command = TokenCommand('global')
-    command.addressable = True
-    params = {}
+    command = _literal_route(state, 'global', forcable=True, addressable=True)
 
-    c = state.consume()
-
-    bang = c == '!'
-    sep = c if not bang else state.consume()
-
-    if c not in '!:?/\\&$':
-        raise ValueError('bad separator: ' + c)
+    sep = state.consume()
+    if sep in tuple('\\"|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+        raise ValueError('bad separator')
 
     state.ignore()
+
+    params = {}
 
     while True:
         c = state.consume()
@@ -237,7 +233,6 @@ def _ex_route_global(state):
         params['cmd'] = cmd
 
     command.params = params
-    command.forced = bang
 
     return command
 

@@ -422,7 +422,10 @@ def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
     try:
         matches = find_all_in_range(view, pattern, global_range.begin(), global_range.end())
     except Exception as e:
-        return status_message("(global): %s ... in pattern '%s'" % (str(e), pattern))
+        return status_message("(global): %s ... in pattern '%s'", str(e), pattern)
+
+    if not matches:
+        return status_message("Pattern not found: %s", pattern)
 
     # The cooperates_with_global attribute indicates if the command supports
     # the :global command. This is special flag, because all ex commands

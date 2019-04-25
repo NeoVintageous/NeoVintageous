@@ -494,6 +494,9 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['global/^/', 'g/^/'], cmd('global', params={'pattern': '^'}, addressable=True))
         self.assertRoute(['global/^/y', 'g/^/y'], cmd('global', params={'pattern': '^', 'cmd': 'y'}, addressable=True))
         self.assertRoute(['global/x/y', 'g/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, addressable=True))
+        self.assertRoute(['global#x#y', 'g#x#y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, addressable=True))
+        self.assertRoute(['global!!x!y', 'g!!x!y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
+        self.assertRoute(['global!/x/y', 'g!/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
         self.assertRoute(['help fizz', 'h fizz'], cmd('help', params={'subject': 'fizz'}))
         self.assertRoute(['help!', 'h!'], cmd('help', params={'subject': None}, forced=True))
         self.assertRoute(['help', 'h'], cmd('help', params={'subject': None}))
@@ -616,8 +619,16 @@ class Test_scan_command(unittest.TestCase):
             'vunmap',
         ])
 
+        self.assertRaisesExeption(['globala', 'ga'], ValueError, 'bad separator')
         self.assertRaisesExeption(['globalx', 'gx'], ValueError, 'bad separator')
-        self.assertRaisesExeption(['global#', 'g#'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global"', 'g"'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global\\', 'g\\'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global|', 'g|'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global!a', 'g!a'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global!x', 'g!x'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global!"', 'g!"'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global!\\', 'g!\\'], ValueError, 'bad separator')
+        self.assertRaisesExeption(['global!|', 'g!|'], ValueError, 'bad separator')
         self.assertRaisesExeption(['global!/', 'g!/'], ValueError, 'unexpected EOF')
         self.assertRaisesExeption(['global/', 'g/'], ValueError, 'unexpected EOF')
         self.assertRaisesExeption(['substitute/x', 's/x'], ValueError, 'bad command')
