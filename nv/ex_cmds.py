@@ -382,7 +382,8 @@ def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
     for r in reversed(rs):
         view.erase(edit, r)
 
-    _set_next_sel(view, [(p, p) for p in new_sel_pos])
+    next_sel = view.sel()[-1]
+    _set_next_sel(view, [(next_sel.a, next_sel.b)])
 
 
 def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):
