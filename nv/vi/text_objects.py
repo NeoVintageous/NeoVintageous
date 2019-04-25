@@ -742,6 +742,7 @@ def find_line_text_object(view, s):
 
 # TODO: Move this to units.py.
 def word_reverse(view, pt, count=1, big=False):
+    # type: (...) -> int
     t = pt
     for _ in range(count):
         t = view.find_by_class(t, forward=False, classes=WORD_REVERSE_STOPS)
@@ -757,7 +758,14 @@ def word_reverse(view, pt, count=1, big=False):
 
 
 # TODO: Move this to units.py.
+def big_word_reverse(view, pt, count=1):
+    # type: (...) -> int
+    return word_reverse(view, pt, count, big=True)
+
+
+# TODO: Move this to units.py.
 def word_end_reverse(view, pt, count=1, big=False):
+    # type: (...) -> int
     t = pt
     for i in range(count):
         if big:
@@ -779,6 +787,12 @@ def word_end_reverse(view, pt, count=1, big=False):
             break
 
     return max(t - 1, 0)
+
+
+# TODO: Move this to units.py.
+def big_word_end_reverse(view, pt, count=1):
+    # type: (...) -> int
+    return word_end_reverse(view, pt, count, big=True)
 
 
 def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
