@@ -35,8 +35,12 @@ import re
 
 from sublime import Region
 
+from NeoVintageous.nv.vi.settings import get_visual_block_direction
+from NeoVintageous.nv.vi.settings import set_visual_block_direction
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
+from NeoVintageous.nv.vim import DIRECTION_DOWN
+from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 
@@ -265,9 +269,9 @@ def resolve_visual_target(s, target):
             s.b = target
     else:                       # A === B
 
-        # If A and B are equal, it means the Visual selection is not well
-        # formed. Instead of raising an error, or not resolving the selection,
-        # the selection is coerced to well formed selection and resolved.
+        # If A and B are equal, it means the Visual selection is not "well
+        # formed". Instead of raising an error, or not resolving the selection,
+        # the selection is coerced to be "well formed" and then resolved.
 
         if target == s.b:       # B === TARGET
             s.b = target + 1
@@ -299,9 +303,9 @@ def resolve_visual_line_target(view, s, target):
             s.b = view.full_line(target).b
     elif s.a == s.b:                            # A === B
 
-        # If A and B are equal, it means the Visual selection is not well
-        # formed. Instead of raising an error, or not resolving the selection,
-        # the selection is coerced to well formed selection and resolved.
+        # If A and B are equal, it means the Visual selection is not "well
+        # formed". Instead of raising an error, or not resolving the selection,
+        # the selection is coerced to be "well formed" and then resolved.
 
         if target > s.a:
             s.a = view.line(s.a).a
@@ -314,3 +318,266 @@ def resolve_visual_line_target(view, s, target):
             s.b = view.full_line(target).b
 
     return s
+
+
+class VisualBlockSelection():
+
+    # There are two "pivot" points: the direction of the Visual block, and the
+    # direction of selections (forward/reverse) within the Visual block.
+    #
+    # The reason for selections "within" the Visual block, is because Sublime
+    # doesn't support real block selections, to work around that limitation,
+    # normal selections grouped together are used to emulate a block selection.
+    #
+    # The direction of the Visual block is indicated as DOWN or UP.
+    #
+    # The "pivot" for the direction of the selections is the column at point A.
+    # Point B determines if the selections are REVERSED or FORWARD, if point B
+    # is to the LEFT of COL-A, then the selections are REVERSED, otherwise not.
+    #
+    # Here are some examples:
+    #
+    # (when the number of lines is equal to one, then ab==b and a==ba)
+    #
+    # Visual block is DOWN and contains FORWARD selections:
+    #
+    #   a     DOWN FORWARD  a----ab
+    #    \                  |     |
+    #     \                 | --> |
+    #      \                |     |
+    #       b               ba----b
+    #
+    # Visual block is DOWN and contains REVERSED selections:
+    #
+    #       a DOWN REVERSE  ab----a
+    #      /                |     |
+    #     /                 | <-- |
+    #    /                  |     |
+    #   b                   b----ba
+    #
+    # Visual block is UP and contains FORWARD selections:
+    #
+    #       b UP FORWARD    ba----b
+    #      /                |     |
+    #     /                 | --> |
+    #    /                  |     |
+    #   a                   a----ab
+    #
+    # Visual block is UP and contains REVERSED selections:
+    #
+    #   b     UP REVERSE    b----ba
+    #    \                  |     |
+    #     \                 | <-- |
+    #      \                |     |
+    #       a               ab----a
+
+    def __init__(self, view, direction=DIRECTION_DOWN):
+        self.view = view
+
+        visual_block_direction = get_visual_block_direction(view)
+        if visual_block_direction:
+            direction = visual_block_direction
+
+        self._set_direction(direction)
+
+    def _set_direction(self, direction):
+        # type: (int) -> None
+        set_visual_block_direction(self.view, direction)
+        self._direction = direction
+
+    def _a(self):
+        # type: () -> Region
+        index = 0 if self.is_direction_down() else -1
+        return self.view.sel()[index]
+
+    def _b(self):
+        # type: () -> Region
+        index = -1 if self.is_direction_down() else 0
+        return self.view.sel()[index]
+
+    def begin(self):
+        # type: () -> int
+        a = self._a()
+        b = self._b()
+
+        if a < b:
+            begin = a.begin()
+        else:
+            begin = b.begin()
+
+        return begin
+
+    def end(self):
+        # type: () -> int
+        a = self._a()
+        b = self._b()
+
+        if a < b:
+            end = b.end()
+        else:
+            end = a.end()
+
+        return end
+
+    @property
+    def a(self):
+        # type: () -> int
+        return self._a().a
+
+    @property
+    def ab(self):
+        # type: () -> int
+        return self._a().b
+
+    @property
+    def b(self):
+        # type: () -> int
+        return self._b().b
+
+    @property
+    def ba(self):
+        # type: () -> int
+        return self._b().a
+
+    def rowcolb(self):
+        # type: () -> tuple
+        return self.view.rowcol(self.insertion_point_b())
+
+    def to_visual(self):
+        if self.is_direction_down():
+            a = self.begin()
+            b = self.end()
+        else:
+            a = self.end()
+            b = self.begin()
+
+        return Region(a, b)
+
+    def to_visual_line(self):
+        a = self.view.full_line(self.begin()).a
+        b = self.view.full_line(self.end()).b
+
+        return Region(a, b)
+
+    def insertion_point_b(self):
+        # type: () -> int
+        b = self.b
+        ba = self.ba
+
+        return b - 1 if b > ba else b
+
+    def insertion_point_a(self):
+        # type: () -> int
+        a = self.a
+        ab = self.ab
+
+        return a - 1 if a > ab else a
+
+    def _is_direction(self, direction):
+        # type: (int) -> bool
+        return self._direction == direction
+
+    def is_direction_down(self):
+        # type: () -> bool
+        return self._is_direction(DIRECTION_DOWN)
+
+    def is_direction_up(self):
+        # type: () -> bool
+        return self._is_direction(DIRECTION_UP)
+
+    def resolve_target(self, target):
+        # type: (int) -> list
+
+        # When the TARGET is to the RIGHT of COL-A, then the Visual block will
+        # have FORWARD selections. When the TARGET is to the LEFT of COL-A, then
+        # the Visual block will have REVERSED selections.
+        #
+        # When the TARGET is to the LEFT of COL-A, the new Visual block will
+        # have REVERSED selections, when it's to the RIGHT of COL-A, the new
+        # Visual block will have FORWARD selections.
+        #
+        # When the TARGET is on the same side as the current column COL-B (the
+        # TARGET is changing point B, and thus COL-B), then the direction of the
+        # selections is inverted, for example:
+        #
+        #          a DOWN REVERSE
+        #         /|
+        #        / |
+        #       /  |
+        #      b   |
+        #          |
+        #          | T
+
+        a = self.a
+        ab = self.ab
+
+        begin = self.begin()
+        end = self.end()
+
+        col_a = self.view.rowcol(a - 1 if a > ab else a)[1]
+        col_t = self.view.rowcol(target)[1]
+
+        is_direction_down = self.is_direction_down()
+
+        block = []
+
+        if is_direction_down:
+            if target >= begin:
+                lines = self.view.lines(Region(begin, target + 1))
+            else:
+                lines = self.view.lines(Region(a + 1, target))
+        else:
+            if target >= end:
+                lines = self.view.lines(Region(a, target + 1))
+            else:
+                lines = self.view.lines(Region(a + 1, target))
+
+        if col_t >= col_a:
+            for line in lines:
+                # If the line size is less than COL-A (selection direction
+                # "pivot" point), the line is ommited from FORWARD Visual block.
+                if line.size() >= col_a:
+                    new_line = Region(
+                        min(line.a + col_a, line.b + 1),
+                        min(line.a + col_t + 1, line.b + 1)
+                    )
+
+                    block.append(new_line)
+        else:
+            for line in lines:
+                # If the line size is less than COL-T, in a REVERSE selection,
+                # then the line is ommited from a REVERSE Visual block.
+                if line.size() >= col_t:
+                    new_line = Region(
+                        min(line.a + col_a + 1, line.b + 1),
+                        min(line.a + col_t, line.b + 1)
+                    )
+
+                    block.append(new_line)
+
+        if is_direction_down:
+            if target < begin:
+                self._set_direction(DIRECTION_UP)
+        else:
+            if target >= end:
+                self._set_direction(DIRECTION_DOWN)
+
+        return block
+
+    def transform_target(self, target):
+        # type: (int) -> None
+        visual_block = self.resolve_target(target)
+        if visual_block:
+            self.view.sel().clear()
+            self.view.sel().add_all(visual_block)
+            self.view.show(target, False)
+
+    def _transform(self, region):
+        self.view.sel().clear()
+        self.view.sel().add(region)
+
+    def transform_to_visual(self):
+        self._transform(self.to_visual())
+
+    def transform_to_visual_line(self):
+        self._transform(self.to_visual_line())

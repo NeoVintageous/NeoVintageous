@@ -23,6 +23,9 @@ from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
+from NeoVintageous.nv.utils import VisualBlockSelection
+from NeoVintageous.nv.vim import DIRECTION_DOWN
+from NeoVintageous.nv.vim import DIRECTION_UP
 
 
 class TestExtractFileName(unittest.ViewTestCase):
@@ -273,3 +276,184 @@ class TestResolveVisualLineTarget(unittest.ViewTestCase):
         self.assertEqual(resolve_visual_line_target(self.view, Region(11), 10), Region(12, 7))
         self.assertEqual(resolve_visual_line_target(self.view, Region(11), 11), Region(7, 12))
         self.assertEqual(resolve_visual_line_target(self.view, Region(11), 12), Region(7, 16))
+
+
+class TestVisualBlockSelection(unittest.ViewTestCase):
+
+    def test_single_line_forward_down(self):
+        self.vblock('fi|zz bu|zz\n', DIRECTION_DOWN)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).a, 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).ab, 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).b, 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).ba, 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).begin(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).end(), 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).is_direction_down(), True)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).is_direction_up(), False)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).insertion_point_b(), 6)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).insertion_point_a(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).rowcolb(), (0, 6))
+
+    def test_single_line_forward_up(self):
+        self.rvblock('fi|zz bu|zz\n', DIRECTION_UP)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).a, 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).ab, 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).b, 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).ba, 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).begin(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).end(), 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).is_direction_down(), False)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).is_direction_up(), True)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).insertion_point_b(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).insertion_point_a(), 6)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).rowcolb(), (0, 2))
+
+    def test_multi_line_forward_down(self):
+        self.vblock('fi|zz bu|zz\nfi|zz bu|zz\n', DIRECTION_DOWN)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).a, 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).ab, 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).b, 17)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).ba, 12)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).begin(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).end(), 17)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).is_direction_down(), True)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).is_direction_up(), False)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).insertion_point_b(), 16)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).insertion_point_a(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_DOWN).rowcolb(), (1, 6))
+
+    def test_multi_line_forward_up(self):
+        self.rvblock('fi|zz bu|zz\nfi|zz bu|zz\n', DIRECTION_UP)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).a, 17)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).ab, 12)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).b, 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).ba, 7)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).begin(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).end(), 17)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).is_direction_down(), False)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).is_direction_up(), True)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).insertion_point_b(), 2)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).insertion_point_a(), 16)
+        self.assertEqual(VisualBlockSelection(self.view, DIRECTION_UP).rowcolb(), (0, 2))
+
+    def assertResolve(self, setup_fixture, target, expected_regions, expected_direction):
+        setup_fixture()
+
+        selection = VisualBlockSelection(self.view, self.getVblockDirection())
+
+        self.assertEqual(selection.resolve_target(target), expected_regions)
+        self.assertVblockDirection(expected_direction)
+
+    def assertTransform(self, setup_fixture, target, expected, expected_direction):
+        setup_fixture()
+
+        selection = VisualBlockSelection(self.view, self.getVblockDirection())
+        selection.transform_target(target)
+
+        if 'r_' == expected[:2]:
+            self.assertRVblock(expected[2:], direction=expected_direction)
+        else:
+            self.assertVblock(expected, direction=expected_direction)
+
+    def test_transform_forward_single_line_down(self):
+        def f(): self.vblock('fi|zz| b', DIRECTION_DOWN)  # noqa: E704
+        self.assertTransform(f, 0, 'r_|fiz|z b', DIRECTION_UP)
+        self.assertTransform(f, 1, 'r_f|iz|z b', DIRECTION_UP)
+        self.assertTransform(f, 2, 'fi|z|z b', DIRECTION_DOWN)
+        self.assertTransform(f, 3, 'fi|zz| b', DIRECTION_DOWN)
+        self.assertTransform(f, 4, 'fi|zz |b', DIRECTION_DOWN)
+        self.assertTransform(f, 5, 'fi|zz b|', DIRECTION_DOWN)
+
+    def test_transform_forward_single_line_up(self):
+        def f(): self.vblock('fi|zz| b', DIRECTION_UP)  # noqa: E704
+        self.assertTransform(f, 0, 'r_|fiz|z b', DIRECTION_UP)
+        self.assertTransform(f, 1, 'r_f|iz|z b', DIRECTION_UP)
+        self.assertTransform(f, 2, 'fi|z|z b', DIRECTION_UP)
+        self.assertTransform(f, 3, 'fi|zz| b', DIRECTION_UP)
+        self.assertTransform(f, 4, 'fi|zz |b', DIRECTION_DOWN)
+        self.assertTransform(f, 5, 'fi|zz b|', DIRECTION_DOWN)
+
+    def test_transform_reverse_single_line_down(self):
+        def f(): self.rvblock('fi|zz| b', DIRECTION_DOWN)  # noqa: E704
+        self.assertTransform(f, 0, 'r_|fizz| b', DIRECTION_UP)
+        self.assertTransform(f, 1, 'r_f|izz| b', DIRECTION_UP)
+        self.assertTransform(f, 2, 'r_fi|zz| b', DIRECTION_DOWN)
+        self.assertTransform(f, 3, 'fiz|z| b', DIRECTION_DOWN)
+        self.assertTransform(f, 4, 'fiz|z |b', DIRECTION_DOWN)
+        self.assertTransform(f, 5, 'fiz|z b|', DIRECTION_DOWN)
+
+    def test_transform_reverse_single_line_up(self):
+        def f(): self.rvblock('fi|zz| b', DIRECTION_UP)  # noqa: E704
+        self.assertTransform(f, 0, 'r_|fizz| b', DIRECTION_UP)
+        self.assertTransform(f, 1, 'r_f|izz| b', DIRECTION_UP)
+        self.assertTransform(f, 2, 'r_fi|zz| b', DIRECTION_UP)
+        self.assertTransform(f, 3, 'fiz|z| b', DIRECTION_UP)
+        self.assertTransform(f, 4, 'fiz|z |b', DIRECTION_DOWN)
+        self.assertTransform(f, 5, 'fiz|z b|', DIRECTION_DOWN)
+
+    def test_transform_multi_line_down(self):
+        for direction in (DIRECTION_DOWN, DIRECTION_UP):
+            def f(): self.vblock('fizzbuzz\nfizzbuzz\nfi|zzb|uzz\nfizzbuzz\nfizzbuzz\n', direction)  # noqa: E704
+            self.assertTransform(f, 0, 'r_|fiz|zbuzz\n|fiz|zbuzz\n|fiz|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 1, 'r_f|iz|zbuzz\nf|iz|zbuzz\nf|iz|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 2, 'fi|z|zbuzz\nfi|z|zbuzz\nfi|z|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 3, 'fi|zz|buzz\nfi|zz|buzz\nfi|zz|buzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 4, 'fi|zzb|uzz\nfi|zzb|uzz\nfi|zzb|uzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 5, 'fi|zzbu|zz\nfi|zzbu|zz\nfi|zzbu|zz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 6, 'fi|zzbuz|z\nfi|zzbuz|z\nfi|zzbuz|z\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 7, 'fi|zzbuzz|\nfi|zzbuzz|\nfi|zzbuzz|\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 8, 'fi|zzbuzz\n|fi|zzbuzz\n|fi|zzbuzz\n|fizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 9, 'r_fizzbuzz\n|fiz|zbuzz\n|fiz|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 10, 'r_fizzbuzz\nf|iz|zbuzz\nf|iz|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 11, 'fizzbuzz\nfi|z|zbuzz\nfi|z|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 12, 'fizzbuzz\nfi|zz|buzz\nfi|zz|buzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 13, 'fizzbuzz\nfi|zzb|uzz\nfi|zzb|uzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 14, 'fizzbuzz\nfi|zzbu|zz\nfi|zzbu|zz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 15, 'fizzbuzz\nfi|zzbuz|z\nfi|zzbuz|z\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 16, 'fizzbuzz\nfi|zzbuzz|\nfi|zzbuzz|\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 17, 'fizzbuzz\nfi|zzbuzz\n|fi|zzbuzz\n|fizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 18, 'r_fizzbuzz\nfizzbuzz\n|fiz|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 19, 'r_fizzbuzz\nfizzbuzz\nf|iz|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            if direction == DIRECTION_DOWN:
+                self.assertTransform(f, 20, 'fizzbuzz\nfizzbuzz\nfi|z|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+                self.assertTransform(f, 21, 'fizzbuzz\nfizzbuzz\nfi|zz|buzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+                self.assertTransform(f, 22, 'fizzbuzz\nfizzbuzz\nfi|zzb|uzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            else:
+                self.assertTransform(f, 20, 'fizzbuzz\nfizzbuzz\nfi|z|zbuzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+                self.assertTransform(f, 21, 'fizzbuzz\nfizzbuzz\nfi|zz|buzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+                self.assertTransform(f, 22, 'fizzbuzz\nfizzbuzz\nfi|zzb|uzz\nfizzbuzz\nfizzbuzz\n', DIRECTION_UP)
+            self.assertTransform(f, 23, 'fizzbuzz\nfizzbuzz\nfi|zzbu|zz\nfizzbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 24, 'fizzbuzz\nfizzbuzz\nfi|zzbuz|z\nfizzbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 25, 'fizzbuzz\nfizzbuzz\nfi|zzbuzz|\nfizzbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 26, 'fizzbuzz\nfizzbuzz\nfi|zzbuzz\n|fizzbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 27, 'r_fizzbuzz\nfizzbuzz\n|fiz|zbuzz\n|fiz|zbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 28, 'r_fizzbuzz\nfizzbuzz\nf|iz|zbuzz\nf|iz|zbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 29, 'fizzbuzz\nfizzbuzz\nfi|z|zbuzz\nfi|z|zbuzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 30, 'fizzbuzz\nfizzbuzz\nfi|zz|buzz\nfi|zz|buzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 31, 'fizzbuzz\nfizzbuzz\nfi|zzb|uzz\nfi|zzb|uzz\nfizzbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 36, 'r_fizzbuzz\nfizzbuzz\n|fiz|zbuzz\n|fiz|zbuzz\n|fiz|zbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 37, 'r_fizzbuzz\nfizzbuzz\nf|iz|zbuzz\nf|iz|zbuzz\nf|iz|zbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 38, 'fizzbuzz\nfizzbuzz\nfi|z|zbuzz\nfi|z|zbuzz\nfi|z|zbuzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 39, 'fizzbuzz\nfizzbuzz\nfi|zz|buzz\nfi|zz|buzz\nfi|zz|buzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 40, 'fizzbuzz\nfizzbuzz\nfi|zzb|uzz\nfi|zzb|uzz\nfi|zzb|uzz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 41, 'fizzbuzz\nfizzbuzz\nfi|zzbu|zz\nfi|zzbu|zz\nfi|zzbu|zz\n', DIRECTION_DOWN)
+            self.assertTransform(f, 42, 'fizzbuzz\nfizzbuzz\nfi|zzbuz|z\nfi|zzbuz|z\nfi|zzbuz|z\n', DIRECTION_DOWN)
+            self.assertTransform(f, 43, 'fizzbuzz\nfizzbuzz\nfi|zzbuzz|\nfi|zzbuzz|\nfi|zzbuzz|\n', DIRECTION_DOWN)
+            self.assertTransform(f, 44, 'fizzbuzz\nfizzbuzz\nfi|zzbuzz\n|fi|zzbuzz\n|fi|zzbuzz\n|', DIRECTION_DOWN)
+
+    def test_transform_reverse_low_line(self):
+        def f(): self.rvblock('fizzbuzz\nfizz\nfizzbu|zz|\n', DIRECTION_DOWN)  # noqa: E704
+        self.assertTransform(f, 4, 'r_fizz|buzz|\nfizz|\n|fizz|buzz|\n', DIRECTION_UP)
+        self.assertTransform(f, 6, 'r_fizzbu|zz|\nfizz\nfizzbu|zz|\n', DIRECTION_UP)
+        self.assertTransform(f, 7, 'fizzbuz|z|\nfizz\nfizzbuz|z|\n', DIRECTION_UP)
+
+    def test_transform_forward_low_line(self):
+        def f(): self.vblock('fizzbu|zz|\nx\nfizzbuzz\n', DIRECTION_DOWN)  # noqa: E704
+        self.assertTransform(f, 9, 'r_|fizzbuz|z\n|x\n|fizzbuzz\n', DIRECTION_DOWN)
+        self.assertTransform(f, 17, 'fizzbu|z|z\nx\nfizzbu|z|z\n', DIRECTION_DOWN)
+
+    def test_transform_forward_skip_line(self):
+        def f(): self.vblock('fizzbu|zz|\nx\nfizz\n', DIRECTION_DOWN)  # noqa: E704
+        self.assertTransform(f, 9, 'r_|fizzbuz|z\n|x\n|fizz\n', DIRECTION_DOWN)
+        self.assertTransform(f, 12, 'r_f|izzbuz|z\nx|\n|f|izz\n|', DIRECTION_DOWN)
+        self.assertTransform(f, 14, 'r_fiz|zbuz|z\nx\nfiz|z\n|', DIRECTION_DOWN)

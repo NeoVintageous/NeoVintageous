@@ -18,6 +18,7 @@
 from sublime import Region
 from sublime import Settings
 
+from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.tests import unittest
 
 
@@ -696,7 +697,7 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.eq('a', 'b', 'b_c')
         self.assert_normal('a')
         self.assert_feed('b')
-        self.assert_assertVblock('c', None)
+        self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_assertNormal_visual_line(self):
         self.instance.eq('a', 'b', 'l_c')
@@ -744,7 +745,7 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.eq('a', 'n_b', 'b_c')
         self.assert_normal('a')
         self.assert_feed('n_b')
-        self.assert_assertVblock('c', None)
+        self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_normal_assertNormal_visual_line(self):
         self.instance.eq('a', 'n_b', 'l_c')
@@ -774,7 +775,7 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.eq('a', 'v_b', 'b_c')
         self.assert_visual('a')
         self.assert_feed('v_b')
-        self.assert_assertVblock('c', None)
+        self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_visual_assertNormal_visual_line(self):
         self.instance.eq('a', 'v_b', 'l_c')
@@ -822,41 +823,41 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.instance.eq('a', 'l_b', 'b_c')
         self.assert_vline('a')
         self.assert_feed('l_b')
-        self.assert_assertVblock('c', None)
+        self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_visual_block(self):
         self.instance.eq('a', 'b_b', 'c')
-        self.assert_vblock('a')
+        self.assert_vblock('a', DIRECTION_DOWN)
         self.assert_feed('b_b')
-        self.assert_assertVblock('c', None)
+        self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_visual_block_assertNormal_insert(self):
         self.instance.eq('a', 'b_b', 'i_c')
-        self.assert_vblock('a')
+        self.assert_vblock('a', DIRECTION_DOWN)
         self.assert_feed('b_b')
         self.assert_assertInsert('c', None)
 
     def test_eq_visual_block_assertNormal_normal(self):
         self.instance.eq('a', 'b_b', 'n_c')
-        self.assert_vblock('a')
+        self.assert_vblock('a', DIRECTION_DOWN)
         self.assert_feed('b_b')
         self.assert_assertNormal('c', None)
 
     def test_eq_visual_block_assertNormal_visual(self):
         self.instance.eq('a', 'b_b', 'v_c')
-        self.assert_vblock('a')
+        self.assert_vblock('a', DIRECTION_DOWN)
         self.assert_feed('b_b')
         self.assert_assertVisual('c', None)
 
     def test_eq_visual_block_assertNormal_visual_block(self):
         self.instance.eq('a', 'b_b', 'b_c')
-        self.assert_vblock('a')
+        self.assert_vblock('a', DIRECTION_DOWN)
         self.assert_feed('b_b')
-        self.assert_assertVblock('c', None)
+        self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_visual_block_assertNormal_visual_line(self):
         self.instance.eq('a', 'b_b', 'l_c')
-        self.assert_vblock('a')
+        self.assert_vblock('a', DIRECTION_DOWN)
         self.assert_feed('b_b')
         self.assert_assertVline('c', None)
 

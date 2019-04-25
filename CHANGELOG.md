@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): Visual block mode
+* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles
 * Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles
 * Added [#500](https://github.com/NeoVintageous/NeoVintageous/issues/500): `-` in Visual line mode
 * Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `(` and `)` in Visual line mode
@@ -16,6 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#18](https://github.com/NeoVintageous/NeoVintageous/issues/18): Visual block do no span across empty lines
 * Fixed [#509](https://github.com/NeoVintageous/NeoVintageous/issues/509): `:global` should allow various separators and disallow others
 * Fixed [#506](https://github.com/NeoVintageous/NeoVintageous/issues/506): `gqip` should leave cursor on first non blank
 * Fixed [#505](https://github.com/NeoVintageous/NeoVintageous/issues/505): `dE` should only delete to end of big word

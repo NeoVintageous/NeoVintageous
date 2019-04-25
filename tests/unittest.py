@@ -149,7 +149,7 @@ class ViewTestCase(unittest.TestCase):
         # type: (str) -> None
         self.view.run_command('_nv_test_write', {'text': text})
 
-    def _setupView(self, text, mode, reverse=False):
+    def _setupView(self, text, mode, reverse=False, vblock_direction=None):
         if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL, SELECT):
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -187,9 +187,11 @@ class ViewTestCase(unittest.TestCase):
             # mode selections that don't have a correct caret state.
             self.view.settings().set('inverse_caret_state', True)
 
-            if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
-                self.state.visual_block_direction = DIRECTION_UP if reverse else DIRECTION_DOWN
-
+            if mode == VISUAL_BLOCK:
+                if vblock_direction:
+                    self.state.visual_block_direction = vblock_direction
+                elif len(self.view.sel()) > 1:
+                    self.state.visual_block_direction = DIRECTION_DOWN
         else:
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -224,11 +226,11 @@ class ViewTestCase(unittest.TestCase):
     def rvselect(self, text):
         self._setupView(text, SELECT, reverse=True)
 
-    def vblock(self, text):
-        self._setupView(text, VISUAL_BLOCK)
+    def vblock(self, text, direction=DIRECTION_DOWN):
+        self._setupView(text, VISUAL_BLOCK, vblock_direction=direction)
 
-    def rvblock(self, text):
-        self._setupView(text, VISUAL_BLOCK, reverse=True)
+    def rvblock(self, text, direction=DIRECTION_DOWN):
+        self._setupView(text, VISUAL_BLOCK, reverse=True, vblock_direction=direction)
 
     def vline(self, text):
         self._setupView(text, VISUAL_LINE)
@@ -329,13 +331,15 @@ class ViewTestCase(unittest.TestCase):
         self._assertView(expected, SELECT, msg)
         self.assertSelectionIsReversed()
 
-    def assertVblock(self, expected, msg=None):
+    def assertVblock(self, expected, direction=DIRECTION_DOWN, msg=None):
         self._assertView(expected, VISUAL_BLOCK, msg)
         self.assertSelectionIsNotReversed()
+        self.assertVblockDirection(direction)
 
-    def assertRVblock(self, expected, msg=None):
+    def assertRVblock(self, expected, direction=DIRECTION_UP, msg=None):
         self._assertView(expected, VISUAL_BLOCK, msg)
         self.assertSelectionIsReversed()
+        self.assertVblockDirection(direction, msg)
 
     def assertVline(self, expected, msg=None):
         self._assertView(expected, VISUAL_LINE, msg)
@@ -482,6 +486,12 @@ class ViewTestCase(unittest.TestCase):
     def assertSize(self, expected):
         self.assertEqual(expected, self.view.size())
 
+    def assertVblockDirection(self, expected, msg=None):
+        self.assertEqual(self.state.visual_block_direction, expected, msg=msg)
+
+    def getVblockDirection(self):
+        return self.state.visual_block_direction
+
     def _statusLine(self):
         return (
             self.view.get_status('vim-mode') + ' ' +
@@ -520,6 +530,9 @@ class ViewTestCase(unittest.TestCase):
 
     def assertXpos(self, expected, msg=None):
         self.assertEqual(self.state.xpos, expected, msg)
+
+    def setXpos(self, xpos):
+        self.state.xpos = xpos
 
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
@@ -598,7 +611,7 @@ class FunctionalTestCase(ViewTestCase):
             return _do_ex_cmdline(self.view.window(), seq)
 
         orig_seq = seq
-        seq_args = {}
+        seq_args = {}  # type: dict
 
         if seq[0] in 'vinlbs' and (len(seq) > 1 and seq[1] == '_'):
             seq_args['mode'] = _CHAR2MODE[seq[0]]
@@ -657,25 +670,34 @@ class FunctionalTestCase(ViewTestCase):
         #   expected (str)
         #   msg (str)
         #
-        # The feed and expected can be prefixed to specify a mode:
+        # The feed, text, and expected can use the following prefixes:
         #
-        #   * n_ - NORMAL
-        #   * i_ - INSERT
-        #   * v_ - VISUAL
-        #   * l_ - VISUAL LINE
-        #   * b_ - VISUAL BLOCK
-        #   * :<','> - VISUAL CMDLINE (feed parameter only)
-        #   * N_ - INTERNAL NORMAL (special mode; translates as NORMAL with
-        #          VISUAL selection)
-        #   * r_ - Specifies a reversed selection (must come first when joined
-        #          with mode prefix e.g. r_n_)
-        #
-        # The default mode is INTERNAL NORMAL.
+        #   * n_ - Normal
+        #   * i_ - Insert
+        #   * v_ - Visual
+        #   * l_ - Visual line
+        #   * b_ - Visual block
+        #   * s_ - Select
+        #   * R_ - Replace
+        #   * :<','> - Visual Command-line
+        #   * N_ - Internal Normal
         #
         # The mode specified by feed is used for the text, and the expected
         # arguments, unless a mode is otherwise specified.
         #
-        # Examples:
+        # Note the default mode is INTERNAL NORMAL.
+        #
+        # The text and expected can use the following prefixes:
+        #
+        #   * r_ - Reversed selection
+        #   * d_ - Visual block direction down
+        #   * u_ - Visual block direction up
+        #
+        # Note "r_" must go first when chaining prefixes: "r_d_".
+        #
+        # Note "d_" and "u_" are only useful when used with Visual block feeds.
+        #
+        # Usage:
         #
         # >>> eq('|Hello world!', 'n_w', 'Hello |world!')
         # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
@@ -728,10 +750,11 @@ class FunctionalTestCase(ViewTestCase):
             else:
                 self.vline(text)
         elif text_mode == 'b':
+            text, vblock_direction = self._filter_vblock_direction(text)
             if reverse_text:
-                self.rvblock(text)
+                self.rvblock(text, vblock_direction or DIRECTION_DOWN)
             else:
-                self.vblock(text)
+                self.vblock(text, vblock_direction or DIRECTION_DOWN)
         elif text_mode == 'N':
             if reverse_text:
                 self.rInternalNormal(text)
@@ -762,10 +785,11 @@ class FunctionalTestCase(ViewTestCase):
             else:
                 self.assertVline(expected, msg)
         elif expected_mode == 'b':
+            expected, vblock_direction = self._filter_vblock_direction(expected)
             if reverse_expected:
-                self.assertRVblock(expected, msg)
+                self.assertRVblock(expected, vblock_direction or DIRECTION_DOWN)
             else:
-                self.assertVblock(expected, msg)
+                self.assertVblock(expected, vblock_direction or DIRECTION_DOWN)
         elif expected_mode == 'N':
             if reverse_expected:
                 self.assertRInternalNormal(expected, msg)
@@ -782,6 +806,14 @@ class FunctionalTestCase(ViewTestCase):
             self.assertReplace(expected, msg)
         else:
             self.assertTrue(False, 'invalid expected mode')
+
+    def _filter_vblock_direction(self, content):
+        direction = None
+        if content[:2] in ('d_', 'u_'):
+            direction = DIRECTION_DOWN if content[:2] == 'd_' else DIRECTION_UP
+            content = content[2:]
+
+        return content, direction
 
 
 # Test case mixin for commands like j and k that need to extract the xpos from

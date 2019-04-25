@@ -74,6 +74,7 @@ from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
+from NeoVintageous.nv.utils import VisualBlockSelection
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_defs import ViChangeByChars
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
@@ -135,8 +136,6 @@ from NeoVintageous.nv.vi.utils import row_to_pt
 from NeoVintageous.nv.vi.utils import save_previous_selection
 from NeoVintageous.nv.vi.utils import show_if_not_visible
 from NeoVintageous.nv.vi.utils import translate_char
-from NeoVintageous.nv.vim import DIRECTION_DOWN
-from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INSERT
@@ -1344,12 +1343,6 @@ class _enter_visual_mode(ViTextCommandBase):
 
 
 class _enter_visual_mode_impl(ViTextCommandBase):
-    """
-    Transform the view's selections.
-
-    We don't do this inside the EnterVisualMode window command because ST seems
-    to neglect to repaint the selections. (bug?)
-    """
 
     def run(self, edit, mode=None):
         def f(view, s):
@@ -2637,7 +2630,7 @@ class _vi_big_j(ViTextCommandBase):
                 # Join current line and the next.
                 end = self.view.text_point(row_at(self.view, s.b) + 1, 0)
                 end = self.view.line(end).b
-        elif mode in [VISUAL, VISUAL_LINE, VISUAL_BLOCK]:
+        elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             if s.a < s.b:
                 end_pos = self.view.line(s.a).b
                 start = s.a
@@ -3599,50 +3592,14 @@ class _vi_j(ViMotionCommand):
         state = State(self.view)
 
         if mode == VISUAL_BLOCK:
-
-            if len(self.view.sel()) == 1:
-                state.visual_block_direction = DIRECTION_DOWN
-
-            # Don't do anything if we have reversed selections.
-            if any((r.b < r.a) for r in self.view.sel()):
-                return
-
-            if state.visual_block_direction == DIRECTION_DOWN:
-                for i in range(count):
-                    # FIXME: When there are multiple rectangular selections, S3 considers sel 0 to be the
-                    # active one in all cases, so we can't know the 'direction' of such a selection and,
-                    # therefore, we can't shrink it when we press k or j. We can only easily expand it.
-                    # We could, however, have some more global state to keep track of the direction of
-                    # visual block selections.
-                    row, rect_b = self.view.rowcol(self.view.sel()[-1].b - 1)
-
-                    # Don't do anything if the next row is empty or too short. Vim does a crazy thing: it
-                    # doesn't select it and it doesn't include it in actions, but you have to still navigate
-                    # your way through them.
-                    # TODO: Match Vim's behavior.
-                    next_line = self.view.line(self.view.text_point(row + 1, 0))
-                    if next_line.empty() or self.view.rowcol(next_line.b)[1] < rect_b:
-                        # TODO Fix Visual block select stops at empty lines.
-                        # See https://github.com/NeoVintageous/NeoVintageous/issues/227.
-                        # self.view.sel().add(next_line.begin())
-                        # TODO Fix Visual Block does not work across multiple indentation levels.
-                        # See https://github.com/NeoVintageous/NeoVintageous/issues/195.
-                        return
-
-                    max_size = max(r.size() for r in self.view.sel())
-                    row, col = self.view.rowcol(self.view.sel()[-1].a)
-                    start = self.view.text_point(row + 1, col)
-                    new_region = Region(start, start + max_size)
-                    self.view.sel().add(new_region)
-                    # FIXME: Perhaps we should scroll into view in a more general way...
-
-                self.view.show(new_region, False)
-                return
-
-            else:
-                # Must delete last sel.
-                self.view.sel().subtract(self.view.sel()[0])
-                return
+            visual_block = VisualBlockSelection(self.view)
+            row, col = visual_block.rowcolb()
+            next_line = self.view.full_line(self.view.text_point(row + count, 0))
+            next_line_row, next_line_max_col = self.view.rowcol(next_line.b - 1)
+            next_line_target_col = min(max(col, state.xpos), next_line_max_col)
+            next_line_target_pt = self.view.text_point(next_line_row, next_line_target_col)
+            visual_block.transform_target(next_line_target_pt)
+            return
 
         regions_transformer(self.view, f)
 
@@ -3707,37 +3664,14 @@ class _vi_k(ViMotionCommand):
         state = State(self.view)
 
         if mode == VISUAL_BLOCK:
-
-            if len(self.view.sel()) == 1:
-                state.visual_block_direction = DIRECTION_UP
-
-            # Don't do anything if we have reversed selections.
-            if any((r.b < r.a) for r in self.view.sel()):
-                return
-
-            if state.visual_block_direction == DIRECTION_UP:
-                for i in range(count):
-                    rect_b = max(self.view.rowcol(r.b - 1)[1] for r in self.view.sel())
-                    row, rect_a = self.view.rowcol(self.view.sel()[0].a)
-                    previous_line = self.view.line(self.view.text_point(row - 1, 0))
-                    # Don't do anything if previous row is empty. Vim does crazy stuff in that case.
-                    # Don't do anything either if the previous line can't accomodate a rectangular selection
-                    # of the required size.
-                    if (previous_line.empty() or self.view.rowcol(previous_line.b)[1] < rect_b):
-                        return
-                    rect_size = max(r.size() for r in self.view.sel())
-                    rect_a_pt = self.view.text_point(row - 1, rect_a)
-                    new_region = Region(rect_a_pt, rect_a_pt + rect_size)
-                    self.view.sel().add(new_region)
-                    # FIXME: We should probably scroll into view in a more general way.
-                    #        Or maybe every motion should handle this on their own.
-
-                self.view.show(new_region, False)
-                return
-            else:
-                # Must remove last selection.
-                self.view.sel().subtract(self.view.sel()[-1])
-                return
+            visual_block = VisualBlockSelection(self.view)
+            row, col = visual_block.rowcolb()
+            prev_line = self.view.full_line(self.view.text_point(row - count, 0))
+            prev_line_row, prev_line_max_col = self.view.rowcol(prev_line.b - 1)
+            prev_line_target_col = min(max(col, state.xpos), prev_line_max_col)
+            prev_line_target_pt = self.view.text_point(prev_line_row, prev_line_target_col)
+            visual_block.transform_target(prev_line_target_pt)
+            return
 
         regions_transformer(self.view, f)
 
