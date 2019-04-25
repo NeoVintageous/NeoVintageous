@@ -43,6 +43,9 @@ class Test_W(unittest.FunctionalTestCase):
         self.eq('r_|one |two', 'v_W', 'one| t|wo')
         self.eq('fi|zz', 'v_W', 'fi|zz|')
 
+    def test_b(self):
+        self.eq('f|i|zzbuzz\nf|i|zz buzz\n', 'b_W', 'f|izzbu|zz\nf|izz b|uzz\n')
+
     def test_d(self):
         self.eq('one |two three', 'dW', 'one |three')
         self.eq('one |t.$£;,wo three', 'dW', 'one |three')

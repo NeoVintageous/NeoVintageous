@@ -3812,6 +3812,13 @@ class _vi_big_w(ViMotionCommand):
 
             return s
 
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_target(
+                big_word_starts(self.view, visual_block.insertion_point_b(), count)
+            )
+            return
+
         regions_transformer(self.view, f)
 
 
