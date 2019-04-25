@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#512](https://github.com/NeoVintageous/NeoVintageous/issues/512): Visual block mode to Visual mode (`v`)
 * Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): Visual block mode
 * Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles
 * Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles

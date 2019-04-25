@@ -36,8 +36,17 @@ class Test_v(unittest.FunctionalTestCase):
     def test_v(self):
         self.eq('f|izz bu|zz', 'v_v', 'n_fizz b|uzz')
         self.eq('r_f|izz bu|zz', 'v_v', 'n_f|izz buzz')
+        self.assertStatusLineIsNormal()
 
     def test_V(self):
         self.eq('x\n|fizz\n|x', 'l_v', 'v_x\n|fizz\n|x')
         self.eq('r_x\n|fizz\n|x', 'l_v', 'r_v_x\n|fizz\n|x')
+        self.assertStatusLineIsVisual()
+
+    def test_b(self):
+        self.eq('f|iz|z', 'b_v', 'v_f|iz|z')
+        self.eq('f|iz|z\nb|uz|z\n', 'b_v', 'v_f|izz\nbuz|z\n')
+        self.eq('r_f|iz|z\nb|uz|z\n', 'b_v', 'v_f|izz\nbuz|z\n')
+        self.eq('u_f|iz|z\nb|uz|z\n', 'b_v', 'r_v_f|izz\nbuz|z\n')
+        self.eq('r_u_f|iz|z\nb|uz|z\n', 'b_v', 'r_v_f|izz\nbuz|z\n')
         self.assertStatusLineIsVisual()
