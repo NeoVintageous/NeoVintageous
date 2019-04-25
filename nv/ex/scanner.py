@@ -165,8 +165,6 @@ class _ScannerState:
 
             return m
 
-        return
-
 
 class Scanner:
 
@@ -337,8 +335,8 @@ def _scan_command(state):
 
             cmd = command(state)
 
-            state.expect_eof(lambda: Exception("E492: Not an editor command"))
+            state.expect_eof(lambda: Exception("E492: Not an editor command: %s" % state.source))
 
             return None, [cmd, TokenEof()]
 
-    raise Exception("E492: Not an editor command")
+    raise Exception("E492: Not an editor command: %s" % state.source)

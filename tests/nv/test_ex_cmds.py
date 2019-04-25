@@ -273,7 +273,7 @@ class Test_do_ex_cmdline(unittest.ViewTestCase):
     @unittest.mock_status_message()
     def test_raises_exception_on_unknown_ex_cmd(self):
         do_ex_cmdline(self.view.window(), ':foo')
-        self.assertStatusMessage('E492: Not an editor command')
+        self.assertStatusMessage('E492: Not an editor command: foo')
 
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.ex_pwd', 'ex_pwd')
     def test_raises_exception_on_unknown_ex_cmd_type(self):
