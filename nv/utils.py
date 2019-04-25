@@ -254,7 +254,7 @@ def get_scroll_down_target_pt(view, number_of_scroll_lines):
 
 
 def resolve_visual_target(s, target):
-    # type: (Region, int) -> Region
+    # type: (Region, int) -> None
     if s.a < s.b:               # A --> B
         if target < s.a:        # TARGET < A --> B
             s.a += 1
@@ -278,11 +278,9 @@ def resolve_visual_target(s, target):
         else:
             s.b = target
 
-    return s
-
 
 def resolve_visual_line_target(view, s, target):
-    # type: (...) -> Region
+    # type: (...) -> None
     if s.a < s.b:                               # A --> B
         if target < s.a:                        # TARGET < A --> B
             s.a = view.full_line(s.a).b
@@ -316,8 +314,6 @@ def resolve_visual_line_target(view, s, target):
         elif target == s.a:
             s.a = view.line(target).a
             s.b = view.full_line(target).b
-
-    return s
 
 
 class VisualBlockSelection():

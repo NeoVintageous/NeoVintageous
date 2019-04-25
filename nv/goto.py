@@ -178,9 +178,9 @@ def goto_prev_target(view, mode, count, target):
             prev_target = find_prev_lone_bracket(view, start, brackets)
             if prev_target:
                 if mode == VISUAL:
-                    s = resolve_visual_target(s, prev_target.a)
+                    resolve_visual_target(s, prev_target.a)
                 elif mode == VISUAL_LINE:
-                    s = resolve_visual_line_target(view, s, prev_target.a)
+                    resolve_visual_line_target(view, s, prev_target.a)
 
         return s
 
@@ -217,9 +217,9 @@ def goto_next_target(view, mode, count, target):
             next_target = find_next_lone_bracket(view, start, brackets)
             if next_target:
                 if mode == VISUAL:
-                    s = resolve_visual_target(s, next_target.a)
+                    resolve_visual_target(s, next_target.a)
                 elif mode == VISUAL_LINE:
-                    s = resolve_visual_line_target(view, s, next_target.a)
+                    resolve_visual_line_target(view, s, next_target.a)
 
         return s
 
