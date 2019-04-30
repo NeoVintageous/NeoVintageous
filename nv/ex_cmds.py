@@ -48,8 +48,18 @@ from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.vi.search import find_all_in_range
+from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
+from NeoVintageous.nv.vi.settings import get_ex_global_last_pattern
+from NeoVintageous.nv.vi.settings import get_ex_shell_last_command
+from NeoVintageous.nv.vi.settings import get_ex_substitute_last_pattern
+from NeoVintageous.nv.vi.settings import get_ex_substitute_last_replacement
+from NeoVintageous.nv.vi.settings import set_cache_value
 from NeoVintageous.nv.vi.settings import set_cmdline_cwd
+from NeoVintageous.nv.vi.settings import set_ex_global_last_pattern
+from NeoVintageous.nv.vi.settings import set_ex_shell_last_command
+from NeoVintageous.nv.vi.settings import set_ex_substitute_last_pattern
+from NeoVintageous.nv.vi.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
 from NeoVintageous.nv.vi.utils import adding_regions
@@ -74,63 +84,6 @@ from NeoVintageous.nv.window import window_tab_control
 
 
 _log = logging.getLogger(__name__)
-
-_session = {}  # type: dict
-_cache = {}  # type: dict
-
-
-def get_session_value(name, default=None):
-    try:
-        return _session[name]
-    except KeyError:
-        return default
-
-
-def set_session_value(name, value):
-    _session[name] = value
-
-
-def get_cache_value(name, default=None):
-    try:
-        return _cache[name]
-    except KeyError:
-        return default
-
-
-def set_cache_value(name, value):
-    _cache[name] = value
-
-
-def set_ex_substitute_last_pattern(pattern):
-    return set_session_value('ex_substitute_last_pattern', pattern)
-
-
-def get_ex_substitute_last_pattern():
-    return get_session_value('ex_substitute_last_pattern')
-
-
-def get_ex_substitute_last_replacement():
-    return get_session_value('ex_substitute_last_replacement')
-
-
-def set_ex_substitute_last_replacement(replacement):
-    return set_session_value('ex_substitute_last_replacement', replacement)
-
-
-def get_ex_shell_last_command():
-    return get_session_value('ex_shell_last_command')
-
-
-def set_ex_shell_last_command(cmd):
-    return set_session_value('ex_shell_last_command', cmd)
-
-
-def get_ex_global_last_pattern():
-    return get_session_value('ex_global_last_pattern')
-
-
-def set_ex_global_last_pattern(pattern):
-    return set_session_value('ex_global_last_pattern', pattern)
 
 
 def _init_cwd(f, *args, **kwargs):

@@ -38,6 +38,64 @@ _SCOPE_VI_VIEW = 3
 _SCOPE_VI_WINDOW = 4
 
 
+_session = {}  # type: dict
+_cache = {}  # type: dict
+
+
+def _get_session_value(name, default=None):
+    try:
+        return _session[name]
+    except KeyError:
+        return default
+
+
+def _set_session_value(name, value):
+    _session[name] = value
+
+
+def get_cache_value(name, default=None):
+    try:
+        return _cache[name]
+    except KeyError:
+        return default
+
+
+def set_cache_value(name, value):
+    _cache[name] = value
+
+
+def set_ex_substitute_last_pattern(pattern):
+    return _set_session_value('ex_substitute_last_pattern', pattern)
+
+
+def get_ex_substitute_last_pattern():
+    return _get_session_value('ex_substitute_last_pattern')
+
+
+def get_ex_substitute_last_replacement():
+    return _get_session_value('ex_substitute_last_replacement')
+
+
+def set_ex_substitute_last_replacement(replacement):
+    return _set_session_value('ex_substitute_last_replacement', replacement)
+
+
+def get_ex_shell_last_command():
+    return _get_session_value('ex_shell_last_command')
+
+
+def set_ex_shell_last_command(cmd):
+    return _set_session_value('ex_shell_last_command', cmd)
+
+
+def get_ex_global_last_pattern():
+    return _get_session_value('ex_global_last_pattern')
+
+
+def set_ex_global_last_pattern(pattern):
+    return _set_session_value('ex_global_last_pattern', pattern)
+
+
 def volatile(f):
     _VintageSettings._volatile_settings.append(f.__name__)
 
