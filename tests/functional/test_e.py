@@ -23,6 +23,9 @@ class Test_e(unittest.FunctionalTestCase):
     def test_n(self):
         self.eq('one |two three', 'n_e', 'one tw|o three')
         self.eq('one |two three', 'n_2e', 'one two thre|e')
+        self.eq('on|e\ntwo three', 'n_e', 'one\ntw|o three')
+        self.eq('on|e  \ntwo three', 'n_e', 'one  \ntw|o three')
+        self.eq('on|e\n\n\n\ntwo three', 'n_e', 'one\n\n\n\ntw|o three')
         self.eq('f|izz', 'n_e', 'fiz|z')
         self.eq('f|izz\n', 'n_e', 'fiz|z\n')
 
@@ -57,3 +60,12 @@ class Test_e(unittest.FunctionalTestCase):
         self.eq('one |two three', 'de', 'one | three')
         self.eq('f|izz buzz', 'de', 'f| buzz')
         self.eq('f|izz        buzz', 'de', 'f|        buzz')
+        self.eq('fi|zz    buzz', 'de', 'fi|    buzz')
+        self.eq('one tw|o\n\n\none two', 'de', 'one tw| two')
+        self.eq('x\n\n|\n\none\ntwo', 'de', 'x\n\n|two')
+        self.eq('x\n\n    o|ne two\nthree four\n', '3de', 'x\n\n    o| four\n')
+        self.eq('    o|ne\n\n\ntwo three\nx', '2de', '    o| three\nx')
+        self.eq('    |one\n\n\ntwo three\nx', '2de', '    | three\nx')
+        self.eq('  |  one\n\n\ntwo three\nx', '2de', '  | three\nx')
+        self.eq('|    one\n\n\ntwo three\nx', '2de', '| three\nx')
+        self.eq('    o|ne\n\n\ntwo\nthree\nx', '2de', '    |o\nthree\nx')
