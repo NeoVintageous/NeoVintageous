@@ -18,9 +18,9 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_pipe(unittest.FunctionalTestCase):
+class Test_bar(unittest.FunctionalTestCase):
 
-    def test_pipe(self):
+    def test_n(self):
         self.eq('12|3', 'n_|', '|123')
         self.eq('123x', 'n_3|', '12|3x')
         self.eq('fi|zz', 'n_|', '|fizz')
@@ -37,7 +37,7 @@ class Test_pipe(unittest.FunctionalTestCase):
         self.eq('fizz\n|buzz', 'n_|', 'fizz\n|buzz')
         self.eq('\n\n|\n\n', 'n_|', '\n\n|\n\n')
 
-    def test_v_pipe(self):
+    def test_v(self):
         self.eq('fi|zz buzz', 'v_7|', 'fi|zz bu|zz')
         self.eq('r_f|izz| buzz', 'v_7|', 'fiz|z bu|zz')
         self.eq('fizz b|uz|z', 'v_2|', 'r_f|izz bu|zz')

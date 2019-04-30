@@ -2790,7 +2790,7 @@ class ViMoveByLineCols(ViMotionDef):
 
     def translate(self, state):
         return {
-            'motion': '_vi_pipe',
+            'motion': '_vi_bar',
             'motion_args': {
                 'mode': state.mode,
                 'count': state.count

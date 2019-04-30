@@ -186,6 +186,7 @@ __all__ = [
     '_vi_at',
     '_vi_b',
     '_vi_backtick',
+    '_vi_bar',
     '_vi_big_a',
     '_vi_big_b',
     '_vi_big_c',
@@ -270,7 +271,6 @@ __all__ = [
     '_vi_octothorp',
     '_vi_p',
     '_vi_percent',
-    '_vi_pipe',
     '_vi_q',
     '_vi_question_mark',
     '_vi_question_mark_impl',
@@ -4478,7 +4478,7 @@ class _vi_ctrl_d(ViMotionCommand):
             scroll_viewport_position(self.view, number_of_scroll_lines)
 
 
-class _vi_pipe(ViMotionCommand):
+class _vi_bar(ViMotionCommand):
 
     def run(self, mode=None, count=1):
         def _to_col(start, col):
