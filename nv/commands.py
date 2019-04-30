@@ -1662,7 +1662,7 @@ class _vi_d(ViTextCommandBase):
             if motion:
                 if 'motion' in motion:
                     if motion['motion'] in ('_vi_g__',):
-                        return
+                        return s
 
                     if motion['motion'] in ('_vi_e', '_vi_big_e', '_vi_dollar', '_vi_find_in_line'):
                         return Region(s.begin())
