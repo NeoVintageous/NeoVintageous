@@ -32,6 +32,7 @@ from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import run_motion
 from sublime import Region
 
 
@@ -120,7 +121,7 @@ def _do_c(view, edit, mode, count=1, motion=None):
         return Region(s.begin())
 
     if motion:
-        view.run_command(motion['motion'], motion['motion_args'])
+        run_motion(view, motion)
     elif mode not in (VISUAL, VISUAL_LINE):
         return ui_bell()
 
@@ -191,7 +192,7 @@ def _do_C(view, edit, mode, count=1, motion=None):
         return Region(s.begin())
 
     if motion:
-        view.run_command(motion['motion'], motion['motion_args'])
+        run_motion(view, motion)
     elif mode not in (VISUAL, VISUAL_LINE):
         return ui_bell()
 

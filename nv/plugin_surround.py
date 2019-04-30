@@ -35,6 +35,7 @@ from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import run_motion
 
 
 __all__ = [
@@ -464,7 +465,7 @@ def _do_ys(view, edit, mode=None, motion=None, replacement='"', count=1):
         raise ValueError('motion required')
 
     if mode == INTERNAL_NORMAL:
-        view.run_command(motion['motion'], motion['motion_args'])
+        run_motion(view, motion)
 
     if replacement:
         _rsynced_regions_transformer(view, f)

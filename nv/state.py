@@ -45,7 +45,8 @@ from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
-from NeoVintageous.nv.vim import run_view_command
+from NeoVintageous.nv.vim import run_action
+from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import run_window_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
@@ -828,7 +829,7 @@ class State(object):
 
             # All motions are subclasses of ViTextCommandBase, so it's safe to
             # run the command via the current view.
-            run_view_command(self.view, motion_cmd['motion'], motion_cmd['motion_args'])
+            run_motion(self.view, motion_cmd)
 
         if self.action:
             action_cmd = self.action.translate(self)
@@ -865,7 +866,7 @@ class State(object):
             action = self.action
 
             self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
-            run_window_command(action_cmd['action'], action_cmd['action_args'])
+            run_action(active_window(), action_cmd)
 
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:

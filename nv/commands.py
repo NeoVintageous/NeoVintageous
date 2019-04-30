@@ -153,6 +153,7 @@ from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
+from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import UNKNOWN
@@ -752,7 +753,7 @@ class _nv_process_notation(ViWindowCommandBase):
                 ui_bell()
                 return
 
-            self.window.run_command(motion_data['motion'], motion_data['motion_args'])
+            run_motion(self.window, motion_data)
             return
 
         self.collect_input()
@@ -914,8 +915,7 @@ class _vi_g_big_u(ViTextCommandBase):
                 raise ValueError('motion data required')
 
             self.save_sel()
-            self.view.run_command(motion['motion'], motion['motion_args'])
-
+            run_motion(self.view, motion)
             if self.has_sel_changed():
                 regions_transformer(self.view, f)
             else:
@@ -939,8 +939,7 @@ class _vi_gu(ViTextCommandBase):
                 raise ValueError('motion data required')
 
             self.save_sel()
-            self.view.run_command(motion['motion'], motion['motion_args'])
-
+            run_motion(self.view, motion)
             if self.has_sel_changed():
                 regions_transformer(self.view, f)
             else:
@@ -988,8 +987,7 @@ class _vi_gq(ViTextCommandBase):
                 raise ValueError('motion data required')
 
             self.save_sel()
-            self.view.run_command(motion['motion'], motion['motion_args'])
-
+            run_motion(self.view, motion)
             if self.has_sel_changed():
                 self.save_sel()
                 self.view.run_command(get_wrap_lines_command(self.view))
@@ -1108,7 +1106,7 @@ class _vi_c(ViTextCommandBase):
         self.save_sel()
 
         if motion:
-            self.view.run_command(motion['motion'], motion['motion_args'])
+            run_motion(self.view, motion)
 
             # Vim ignores trailing white space for c. XXX Always?
             if mode == INTERNAL_NORMAL:
@@ -1612,7 +1610,7 @@ class _vi_y(ViTextCommandBase):
             if motion is None:
                 raise ValueError('motion data required')
 
-            self.view.run_command(motion['motion'], motion['motion_args'])
+            run_motion(self.view, motion)
 
             # Some text object motions should be treated as a linewise
             # operation, but only if the motion contains a newline.
@@ -1642,8 +1640,7 @@ class _vi_d(ViTextCommandBase):
 
         if motion:
             self.save_sel()
-            self.view.run_command(motion['motion'], motion['motion_args'])
-
+            run_motion(self.view, motion)
             if not self.has_sel_changed():
                 enter_normal_mode(self.view, mode)
                 ui_bell()
@@ -2114,7 +2111,7 @@ class _vi_greater_than(ViTextCommandBase):
             return
 
         if motion:
-            self.view.run_command(motion['motion'], motion['motion_args'])
+            run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE):
             return ui_bell()
 
@@ -2137,7 +2134,7 @@ class _vi_less_than(ViTextCommandBase):
         # Note: Vim does not unindent in visual block mode.
 
         if motion:
-            self.view.run_command(motion['motion'], motion['motion_args'])
+            run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE):
             return ui_bell()
 
@@ -2155,7 +2152,7 @@ class _vi_equal(ViTextCommandBase):
             return Region(s.begin())
 
         if motion:
-            self.view.run_command(motion['motion'], motion['motion_args'])
+            run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE):
             return ui_bell()
 
@@ -3011,9 +3008,7 @@ class _vi_g_tilde(ViTextCommandBase):
 
         if motion:
             self.save_sel()
-
-            self.view.run_command(motion['motion'], motion['motion_args'])
-
+            run_motion(self.view, motion)
             if not self.has_sel_changed():
                 ui_bell()
                 enter_normal_mode(self.view, mode)
