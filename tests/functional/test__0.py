@@ -47,3 +47,8 @@ class Test_0(unittest.FunctionalTestCase):
         self.eq('x\n|ab\nx', 'c0', 'i_x\n|ab\nx')
         self.eq('x\na|b\nx', 'c0', 'i_x\n|b\nx')
         self.eq('x\nab|\nx', 'c0', 'i_x\n|\nx')
+
+    def test_d(self):
+        self.eq('123|456', 'd0', '|456')
+        self.eq('x\n123|456\nx', 'd0', 'x\n|456\nx')
+        self.eq('x\n\n|\n\nx', 'd0', 'x\n\n|\n\nx')
