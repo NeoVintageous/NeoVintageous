@@ -41,11 +41,8 @@ VISUAL = 'mode_visual'
 VISUAL_BLOCK = 'mode_visual_block'
 VISUAL_LINE = 'mode_visual_line'
 
-DIRECTION_NONE = 0
 DIRECTION_UP = 1
 DIRECTION_DOWN = 2
-DIRECTION_LEFT = 3
-DIRECTION_RIGHT = 4
 
 EOF = '\x00'
 NL = '\n'

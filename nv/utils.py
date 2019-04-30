@@ -370,12 +370,7 @@ class VisualBlockSelection():
 
     def __init__(self, view, direction=DIRECTION_DOWN):
         self.view = view
-
-        visual_block_direction = get_visual_block_direction(view)
-        if visual_block_direction:
-            direction = visual_block_direction
-
-        self._set_direction(direction)
+        self._set_direction(get_visual_block_direction(view, direction))
 
     def _set_direction(self, direction):
         # type: (int) -> None

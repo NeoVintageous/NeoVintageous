@@ -214,8 +214,8 @@ def set_cmdline_cwd(path):
     _storage['cmdline_cwd'] = path
 
 
-def get_visual_block_direction(view):
-    return view.settings().get('_nv_visual_block_direction', DIRECTION_DOWN)
+def get_visual_block_direction(view, default=DIRECTION_DOWN):
+    return view.settings().get('_nv_visual_block_direction', default)
 
 
 def set_visual_block_direction(view, direction):
