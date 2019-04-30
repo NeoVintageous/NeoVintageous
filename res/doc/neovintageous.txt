@@ -9,20 +9,20 @@ Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
 NeoVintageous                                             *neovintageous* *nv*
 
  1. Command Palette                 |nv-command-palette|
- 2. Toggle Command                  |nv-toggle|
- 3. Multiple cursors                |nv-multiple-cursors|
- 4. Opening a view                  |nv-opening-views|
- 5. neovintageousrc                 |nv-rc|
- 6. Plugins out-of-the-box          |nv-plugins|
+ 2. Multiple cursors                |nv-multiple-cursors|
+ 3. Opening a view                  |nv-opening-views|
+ 4. neovintageousrc                 |nv-rc|
+ 5. Plugins out-of-the-box          |nv-plugins|
     1.1 Abolish                         |nv-abolish|
     1.2 Commentary                      |nv-commentary|
     1.3 HighlightedYank                 |nv-highlightedyank|
     1.4 Surround                        |nv-surround|
     1.5 Unimpaired                      |nv-unimpaired|
     1.6 Indent Object                   |nv-indent-object|
- 7. Options                         |nv-options|
- 8. Search highlighting             |nv-search-highlighting|
- 9. Jumping to diffs                |nv-jumpto-diffs|
+ 6. Options                         |nv-options|
+ 7. Search highlighting             |nv-search-highlighting|
+ 8. Jumping to diffs                |nv-jumpto-diffs|
+ 9. Toggle Command                  |nv-toggle|
 
 Neovintageous is an emulation of Vim: feature-parity is ongoing effort. If you
 are new to Vim see |help.txt|.
@@ -36,13 +36,6 @@ NeoVintageous: Open RC File
 NeoVintageous: Reload RC File
 NeoVintageous: Toggle CTRL keys
 NeoVintageous: Toggle SUPER keys
-
-==============================================================================
-
-TOGGLE COMMAND                                                     *nv-toggle*
-
-If you want to be able to toggle NeoVintageous on and off, you need to install
-the toggle package: https://packagecontrol.io/packages/ToggleNeoVintageous.
 
 ==============================================================================
 
@@ -346,13 +339,11 @@ For example to enable the ctrl keys: >
         "vintageous_use_ctrl_keys": true
     }
 
-------------------------------------------------------------------------------
-
-OPTIONS SUMMARY                                            *nv-option-summary*
+List of available options:
 
                                                            *'highlightedyank'*
 'highlightedyank' boolean (default on)
-    Enable/disable the plugin.
+    Enable or disable the HighlightedYank plugin.
 
                                                   *'highlightedyank_duration'*
 'highlightedyank_duration' number (default 1000)
@@ -480,37 +471,59 @@ command when holding it down, run this once at the terminal: >
 
 ------------------------------------------------------------------------------
 
-Mapping jj, jk, CTRL-[, etc. to Esc                                *nv-escape*
+Mapping jj or jk to Esc                                            *nv-escape*
 
 `Menu > Preferences > Key Bindings`
 
 jj -> Esc: >
 
-    { "keys": ["j", "j"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
+    {
+        "keys": ["j", "j"],
+        "command": "_enter_normal_mode",
+        "args": {"mode": "mode_insert"},
+        "context": [{"key": "vi_insert_mode_aware"}]
+    }
 
 jk -> Esc: >
 
-    { "keys": ["j", "k"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
-
-CTRL-[ -> Esc: >
-
-    { "keys": ["ctrl+["], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}] }
+    {
+        "keys": ["j", "k"],
+        "command": "_enter_normal_mode",
+        "args": {"mode": "mode_insert"},
+        "context": [{"key": "vi_insert_mode_aware"}]
+    }
 
 ==============================================================================
 
 SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
 
-Searches supporting highlighting include `/`, `?`, `*`, and `#`.
+Search highlighting can be customized. The styles can be configured via
+the following settings:
 
-The highlighted styles can be configured by the settings
-'neovintageous_search_cur_style', 'neovintageous_search_inc_style', and
-'neovintageous_search_occ_style'.
+    Configure settings via `Menu > Preferences > Settings` or by the Command
+    Palette. To use the command palette:
 
-To customise the colors of each state, create a color scheme override: for
-example if you have the default Monokai color scheme enabled - create a file
-named `Monokai.sublime-color- scheme` in the Sublime Text User directory
-(`Menu > Preferences > Browse Packages...`), and create the styles using the
-`neovintageous_search_*` scopes: >
+    1. Press `Ctrl+Shift+P`
+    2. Select the "Preferences: Settings" command
+    3. Press `Enter`
+
+    'neovintageous_search_cur_style' Current search match.
+    'neovintageous_search_inc_style' Incremental search match.
+    'neovintageous_search_occ_style' Search occurrence matches.
+
+    Each option accepts any of the following styles:
+
+        fill
+        outline
+        underline
+        squiggly_underline
+        stippled_underline
+
+To customise the colors, use a color scheme override: For example if you have
+the default Monokai color scheme enabled - create a file named
+`Monokai.sublime-color- scheme` in the Sublime Text User directory (`Menu >
+Preferences > Browse Packages...`), and create the styles using the
+neovintageous_search_* scopes: >
 
     {
         "rules":
@@ -551,3 +564,11 @@ It is an error if there is no change for the cursor to move to.
 
 Note that in older versions of Sublime Text (builds < 3189) you will need the
 the GitGutter package: https://github.com/jisaacks/GitGutter.
+
+
+==============================================================================
+
+TOGGLE COMMAND                                                     *nv-toggle*
+
+If you want to be able to toggle NeoVintageous on and off, you need to install
+the toggle package: https://packagecontrol.io/packages/ToggleNeoVintageous.
