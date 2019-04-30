@@ -134,9 +134,9 @@ from NeoVintageous.nv.vi.utils import is_at_eol
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import new_inclusive_region
 from NeoVintageous.nv.vi.utils import next_non_blank
+from NeoVintageous.nv.vi.utils import prev_blank
 from NeoVintageous.nv.vi.utils import prev_non_blank
 from NeoVintageous.nv.vi.utils import previous_non_white_space_char
-from NeoVintageous.nv.vi.utils import previous_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
@@ -4229,7 +4229,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
                 elif mode == INTERNAL_NORMAL:
                     s = Region(s.b, match.begin())
             elif mode == NORMAL:
-                s = Region(previous_white_space_char(view, s.b) + 1)
+                s = Region(prev_blank(view, s.b) + 1)
 
             return s
 

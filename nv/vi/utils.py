@@ -209,20 +209,19 @@ def prev_non_blank(view, pt):
     return pt
 
 
-def previous_non_white_space_char(view, pt, white_space='\t \n'):
+def prev_blank(view, pt):
     # type: (...) -> int
     substr = view.substr
-    while substr(pt) in white_space and pt > 0:
+    while pt >= 0 and substr(pt) not in '\t ':
         pt -= 1
 
     return pt
 
 
-# TODO [review] DEPRECATED; Refactor and remove.
-def previous_white_space_char(view, pt, white_space='\t '):
+def previous_non_white_space_char(view, pt, white_space='\t \n'):
     # type: (...) -> int
     substr = view.substr
-    while pt >= 0 and substr(pt) not in white_space:
+    while substr(pt) in white_space and pt > 0:
         pt -= 1
 
     return pt
