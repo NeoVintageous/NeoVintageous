@@ -4280,19 +4280,12 @@ class _vi_big_b(ViMotionCommand):
 
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = big_word_reverse(view, s.b, count)
+            target = big_word_reverse(view, resolve_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
                 s = Region(target)
-            elif mode in (VISUAL, VISUAL_BLOCK):
-                if s.a < s.b:
-                    pt = big_word_reverse(view, s.b - 1, count)
-                    if pt < s.a:
-                        s = Region(s.a + 1, pt)
-                    else:
-                        s = Region(s.a, pt + 1)
-                elif s.b < s.a:
-                    s.b = target
+            elif mode == VISUAL:
+                resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
                 s.b = target
 

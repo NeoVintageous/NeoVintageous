@@ -40,20 +40,6 @@ class Test_b(unittest.FunctionalTestCase):
         self.feed('v_b')
         self.assertRVisual('|one two three four fi|ve six seven eight')
 
-    def test_V(self):
-        self.eq('x\n|one\n|y\n', 'l_b')
-        self.eq('x\n|one\ntwo\n|y\n', 'l_b')
-
-    def test_c(self):
-        self.eq('x fizz|buzz x', 'cb', 'i_x |buzz x')
-        self.eq('ab|c', 'cb', 'i_|c')
-        self.eq('abc\n|', 'cb', 'i_|\n')
-        self.eq('one two thr|ee', 'cb', 'i_one two |ee')
-        self.eq('one two |three', 'cb', 'i_one | three')
-        self.eq('one two three fo|ur', '3cb', 'i_one |ur')
-        self.eq('one two |three', 'cb', 'i_one | three')
-        self.eq('one two three fo|ur', '3cb', 'i_one |ur')
-
     def test_b(self):
         self.eq('one t|w|o\none t|w|o', 'b_b', 'r_one |tw|o\none |tw|o')
         self.eq('one two t|hr|ee\none two t|hr|ee', 'b_2b', 'r_one |two th|ree\none |two th|ree')
@@ -66,3 +52,13 @@ class Test_b(unittest.FunctionalTestCase):
         self.eq('r_u_fizz b|uz|z\nfizz b|uz|z\n', 'b_b', 'r_u_fizz |buz|z\nfizz |buz|z\n')
         self.eq('d_fizzbu|zz|\n  fizz|bu|zz\n', 'b_b', 'r_d_fi|zzbuz|z\n  |fizzb|uzz\n')
         self.eq('r_d_fizzbu|zz|\n  fizz|bu|zz\n', 'b_b', 'r_d_fi|zzbuzz|\n  |fizzbu|zz\n')
+
+    def test_c(self):
+        self.eq('x fizz|buzz x', 'cb', 'i_x |buzz x')
+        self.eq('ab|c', 'cb', 'i_|c')
+        self.eq('abc\n|', 'cb', 'i_|\n')
+        self.eq('one two thr|ee', 'cb', 'i_one two |ee')
+        self.eq('one two |three', 'cb', 'i_one | three')
+        self.eq('one two three fo|ur', '3cb', 'i_one |ur')
+        self.eq('one two |three', 'cb', 'i_one | three')
+        self.eq('one two three fo|ur', '3cb', 'i_one |ur')

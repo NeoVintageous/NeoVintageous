@@ -27,6 +27,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#522](https://github.com/NeoVintageous/NeoVintageous/issues/522): `B` in Visual mode is off-by-one
 * Fixed [#521](https://github.com/NeoVintageous/NeoVintageous/issues/521): `[count]d|` off-by-one
 * Fixed [#453](https://github.com/NeoVintageous/NeoVintageous/issues/453): `:%g/^$/d` doesn't work
 * Fixed [#520](https://github.com/NeoVintageous/NeoVintageous/issues/520): Entering Visual block from Visual doesn't update status line
