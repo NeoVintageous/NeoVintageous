@@ -132,17 +132,19 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
     def test_c_tab_completions(self):
         self.eq(':bl|', '<tab>', ':blast|')
         self.eq(':bN|', '<tab>', ':bNext|')
-        self.eq(':n|', '<tab>', ':noremap|')
-        self.feed('<tab>')
-        self.assertNormal(':new|')
+        self.eq(':n|', '<tab>', ':new|')
         self.feed('<tab>')
         self.assertNormal(':nnoremap|')
+        self.feed('<tab>')
+        self.assertNormal(':nohlsearch|')
+        self.feed('<tab>')
+        self.assertNormal(':noremap|')
         self.feed('<tab>')
         self.assertNormal(':nunmap|')
         self.feed('<tab>')
         self.assertNormal(':n|')
         self.feed('<tab>')
-        self.assertNormal(':noremap|')
+        self.assertNormal(':new|')
 
     def test_c_tab_set_completions(self):
         self.eq(':set |', '<tab>', ':set autoindent|')
