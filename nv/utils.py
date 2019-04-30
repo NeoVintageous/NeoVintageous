@@ -119,15 +119,15 @@ def extract_url(view):
 # these issues can't be worked-around e.g. the mouse click issue described
 # above. See https://github.com/SublimeTextIssues/Core/issues/2121.
 def fix_eol_cursor(view, mode):
-    def f(view, s):
-        b = s.b
-
-        if ((view.substr(b) == '\n' or b == view.size()) and not view.line(b).empty()):
-            return Region(b - 1)
-
-        return s
-
     if mode in (NORMAL, INTERNAL_NORMAL):
+        def f(view, s):
+            b = s.b
+
+            if ((view.substr(b) == '\n' or b == view.size()) and not view.line(b).empty()):
+                return Region(b - 1)
+
+            return s
+
         regions_transformer(view, f)
 
 
