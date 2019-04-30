@@ -38,7 +38,6 @@ from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import save_previous_selection
-from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -401,20 +400,6 @@ class State(object):
         # type: (int) -> None
         assert isinstance(value, int), '`value` must be an int'
         self.settings.vi['xpos'] = value
-
-    @property
-    def visual_block_direction(self):
-        # type: () -> int
-        # Accessor for the visual block direction for current selection.
-        # Returns:
-        #   int: Representing direction, default is DOWN.
-        return self.settings.vi['visual_block_direction'] or DIRECTION_DOWN
-
-    @visual_block_direction.setter
-    def visual_block_direction(self, value):
-        # type: (int) -> None
-        assert isinstance(value, int), '`value` must be an int'
-        self.settings.vi['visual_block_direction'] = value
 
     @property
     def register(self):

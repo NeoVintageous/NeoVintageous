@@ -25,7 +25,6 @@ from sublime import load_settings
 from sublime import save_settings
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
-from NeoVintageous.nv.vim import DIRECTION_UP
 
 _vi_user_setting = namedtuple('vi_editor_setting', 'scope values default parser action negatable')
 
@@ -216,24 +215,13 @@ def set_cmdline_cwd(path):
 
 
 def get_visual_block_direction(view):
-    settings = view.settings().get('vintage')
-
-    return settings['visual_block_direction'] if 'visual_block_direction' in settings else None
-
-
-def _is_valid_direction(direction):
-    return direction in (DIRECTION_DOWN, DIRECTION_UP)
+    return view.settings().get('_nv_visual_block_direction', DIRECTION_DOWN)
 
 
 def set_visual_block_direction(view, direction):
-    if not _is_valid_direction(direction):
-        raise ValueError('invalid direction')
-
-    visual_block_direction = get_visual_block_direction(view)
-    if visual_block_direction != direction:
-        settings = view.settings().get('vintage')
-        settings['visual_block_direction'] = direction
-        view.settings().set('vintage', settings)
+    current_direction = get_visual_block_direction(view)
+    if direction != current_direction:
+        view.settings().set('_nv_visual_block_direction', direction)
 
 
 def _toggle_preference(name):

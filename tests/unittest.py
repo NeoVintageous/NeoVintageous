@@ -31,6 +31,8 @@ from NeoVintageous.nv.commands import _vi_at
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.state import State as _State
 from NeoVintageous.nv.vi.macros import MacroRegisters as _MacroRegisters
+from NeoVintageous.nv.vi.settings import get_visual_block_direction as _get_visual_block_direction
+from NeoVintageous.nv.vi.settings import set_visual_block_direction as _set_visual_block_direction
 
 from NeoVintageous.nv.vi import registers
 from NeoVintageous.nv.vim import DIRECTION_DOWN
@@ -189,9 +191,9 @@ class ViewTestCase(unittest.TestCase):
 
             if mode == VISUAL_BLOCK:
                 if vblock_direction:
-                    self.state.visual_block_direction = vblock_direction
+                    _set_visual_block_direction(self.view, vblock_direction)
                 elif len(self.view.sel()) > 1:
-                    self.state.visual_block_direction = DIRECTION_DOWN
+                    _set_visual_block_direction(self.view, DIRECTION_DOWN)
         else:
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -336,7 +338,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsNotReversed()
         self.assertVblockDirection(direction)
 
-    def assertRVblock(self, expected, direction=DIRECTION_UP, msg=None):
+    def assertRVblock(self, expected, direction=DIRECTION_DOWN, msg=None):
         self._assertView(expected, VISUAL_BLOCK, msg)
         self.assertSelectionIsReversed()
         self.assertVblockDirection(direction, msg)
@@ -487,10 +489,10 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(expected, self.view.size())
 
     def assertVblockDirection(self, expected, msg=None):
-        self.assertEqual(self.state.visual_block_direction, expected, msg=msg)
+        self.assertEqual(self.getVblockDirection(), expected, msg=msg)
 
     def getVblockDirection(self):
-        return self.state.visual_block_direction
+        return _get_visual_block_direction(self.view)
 
     def _statusLine(self):
         return (
@@ -787,9 +789,9 @@ class FunctionalTestCase(ViewTestCase):
         elif expected_mode == 'b':
             expected, vblock_direction = self._filter_vblock_direction(expected)
             if reverse_expected:
-                self.assertRVblock(expected, vblock_direction or DIRECTION_DOWN)
+                self.assertRVblock(expected, vblock_direction)
             else:
-                self.assertVblock(expected, vblock_direction or DIRECTION_DOWN)
+                self.assertVblock(expected, vblock_direction)
         elif expected_mode == 'N':
             if reverse_expected:
                 self.assertRInternalNormal(expected, msg)
@@ -808,10 +810,11 @@ class FunctionalTestCase(ViewTestCase):
             self.assertTrue(False, 'invalid expected mode')
 
     def _filter_vblock_direction(self, content):
-        direction = None
         if content[:2] in ('d_', 'u_'):
             direction = DIRECTION_DOWN if content[:2] == 'd_' else DIRECTION_UP
             content = content[2:]
+        else:
+            direction = DIRECTION_DOWN
 
         return content, direction
 
