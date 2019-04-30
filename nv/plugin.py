@@ -15,12 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.vi import inputs  # noqa: F401
+from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef  # noqa: F401
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef  # noqa: F401
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef  # noqa: F401
-from NeoVintageous.nv.vim import INPUT_AFTER_MOTION  # noqa: F401
-from NeoVintageous.nv.vim import INPUT_IMMEDIATE  # noqa: F401
-from NeoVintageous.nv.vim import INPUT_VIA_PANEL  # noqa: F401
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
 from NeoVintageous.nv.vim import INTERNAL_NORMAL  # noqa: F401
 from NeoVintageous.nv.vim import NORMAL  # noqa: F401

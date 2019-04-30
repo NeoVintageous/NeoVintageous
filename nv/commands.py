@@ -766,12 +766,8 @@ class _nv_process_notation(ViWindowCommandBase):
             else:
                 command = action or motion
 
-            parser = command.input_parser
-
-            if parser.interactive_command:
-                cmd = parser.interactive_command
-                args = {parser.input_param: command.inp}
-                self.window.run_command(cmd, args)
+            if command.input_parser and command.input_parser.is_interactive():
+                command.input_parser.run_interactive_command(self.window, command.inp)
 
         except IndexError:
             _log.debug('could not find a command to collect more user input')

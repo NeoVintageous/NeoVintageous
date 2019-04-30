@@ -19,12 +19,11 @@
 
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import INPUT_IMMEDIATE
-from NeoVintageous.nv.plugin import inputs
 from NeoVintageous.nv.plugin import NORMAL
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.plugin import ViOperatorDef
 from NeoVintageous.nv.plugin import VISUAL
+from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_tab_control
 
@@ -221,13 +220,7 @@ class _BaseToggleDef(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.input_parser = inputs.parser_def(
-            command=inputs.one_char,
-            interactive_command=None,
-            input_param=None,
-            on_done=None,
-            type=INPUT_IMMEDIATE
-        )
+        self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     @property
     def accept_input(self):

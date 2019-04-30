@@ -21,10 +21,9 @@ import re
 
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import INPUT_IMMEDIATE
-from NeoVintageous.nv.plugin import inputs
 from NeoVintageous.nv.plugin import NORMAL
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.plugin import RequiresOneCharMixinDef
 from NeoVintageous.nv.plugin import ViOperatorDef
 
 
@@ -94,6 +93,7 @@ _ALIASES = {
     'U': 'uppercase',
     '-': 'dashcase',
     'k': 'dashcase',
+    ' ': 'spacecase',
     '<space>': 'spacecase',
     '.': 'dotcase',
     't': 'titlecase'
@@ -101,27 +101,11 @@ _ALIASES = {
 
 
 @register(seq='cr', modes=(NORMAL,))
-class _AbolishCoercions(ViOperatorDef):
+class _AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.input_parser = inputs.parser_def(
-            command=inputs.one_char,
-            interactive_command=None,
-            input_param=None,
-            on_done=None,
-            type=INPUT_IMMEDIATE
-        )
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        self.inp = key
-
-        return True
 
     def translate(self, state):
         return {

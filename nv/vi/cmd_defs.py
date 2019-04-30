@@ -15,15 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
+from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
-from NeoVintageous.nv.vi.inputs import one_char
-from NeoVintageous.nv.vi.inputs import parser_def
 from NeoVintageous.nv.vi.keys import assign
-from NeoVintageous.nv.vi.utils import translate_char
-from NeoVintageous.nv.vim import INPUT_IMMEDIATE
-from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -1596,26 +1593,11 @@ class StBuild(ViOperatorDef):
 
 
 @assign(seqs.AT, _ACTION_MODES)
-class ViOpenMacrosForRepeating(ViOperatorDef):
+class ViOpenMacrosForRepeating(RequiresOneCharMixinDef, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        assert len(key) == 1, '`@` only accepts a single char'
-        self.inp = key
-
-        return True
 
     def translate(self, state):
         return {
@@ -1628,26 +1610,11 @@ class ViOpenMacrosForRepeating(ViOperatorDef):
 
 
 @assign(seqs.Q, _ACTION_MODES)
-class ViToggleMacroRecorder(ViOperatorDef):
+class ViToggleMacroRecorder(RequiresOneCharMixinDef, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        assert len(key) == 1, '`q` only accepts a single char'
-        self.inp = key
-
-        return True
 
     def translate(self, state):
         return {
@@ -2413,26 +2380,11 @@ class ViMoveScreenUp(ViMotionDef):
 
 
 @assign(seqs.BACKTICK, _MOTION_MODES)
-class ViGotoExactMarkXpos(ViMotionDef):
+class ViGotoExactMarkXpos(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        assert len(key) == 1, '``` only accepts a single char'
-        self.inp = key
-
-        return True
 
     def translate(self, state):
         return {
@@ -2600,26 +2552,11 @@ class ViRepeatCharSearchForward(ViMotionDef):
 
 
 @assign(seqs.QUOTE, _MOTION_MODES)
-class ViGotoMark(ViMotionDef):
+class ViGotoMark(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        assert len(key) == 1, '`\'` only accepts a single char'
-        self.inp = key
-
-        return True
 
     def translate(self, state):
         return {
@@ -3062,9 +2999,6 @@ class ViFindWord(ViMotionDef):
 
 @assign(seqs.OCTOTHORP, _MOTION_MODES)
 class ViReverseFindWord(ViMotionDef):
-    # Trivia: Octothorp seems to be a symbol used in maps to represent a
-    # small village surrounded by eight fields.
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -3143,28 +3077,12 @@ class ViGotoEof(ViMotionDef):
 
 
 @assign(seqs.R, _ACTION_MODES)
-class ViReplaceCharacters(ViOperatorDef):
+class ViReplaceCharacters(RequiresOneCharMixinDef, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        translated = translate_char(key)
-        assert len(translated) == 1, '`r` only accepts a single char'
-        self.inp = translated
-
-        return True
 
     def translate(self, state):
         return {
@@ -3179,25 +3097,10 @@ class ViReplaceCharacters(ViOperatorDef):
 
 
 @assign(seqs.M, _ACTION_MODES)
-class ViSetMark(ViOperatorDef):
+class ViSetMark(RequiresOneCharMixinDef, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        assert len(key) == 1, '`m` only accepts a single char'
-        self.inp = key
-
-        return True
 
     def translate(self, state):
         return {
@@ -3212,29 +3115,13 @@ class ViSetMark(ViOperatorDef):
 
 @assign(seqs.T, _MOTION_MODES)
 @assign(seqs.F, _MOTION_MODES, inclusive=True)
-class ViSearchCharForward(ViMotionDef):
+class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._serializable.append('inclusive')
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        translated = translate_char(key)
-        assert len(translated) == 1, '`f`, `t`, `F`, `T` only accept a single char'
-        self.inp = translated
-
-        return True
 
     def translate(self, state):
         if self.inclusive:
@@ -3256,28 +3143,12 @@ class ViSearchCharForward(ViMotionDef):
 
 
 @assign(seqs.A, (OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
-class ViATextObject(ViMotionDef):
+class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        translated = translate_char(key)
-        assert len(translated) == 1, '`a` only accepts a single char'
-        self.inp = translated
-
-        return True
 
     def translate(self, state):
         return {
@@ -3292,28 +3163,12 @@ class ViATextObject(ViMotionDef):
 
 
 @assign(seqs.I, (OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
-class ViITextObject(ViMotionDef):
+class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        translated = translate_char(key)
-        assert len(translated) == 1, '`i` only accepts a single char'
-        self.inp = translated
-
-        return True
 
     def translate(self, state):
         return {
@@ -3329,29 +3184,13 @@ class ViITextObject(ViMotionDef):
 
 @assign(seqs.BIG_T, _MOTION_MODES)
 @assign(seqs.BIG_F, _MOTION_MODES, inclusive=True)
-class ViSearchCharBackward(ViMotionDef):
+class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._serializable.append('inclusive')
         self.scroll_into_view = True
         self.updates_xpos = True
         self.inclusive = inclusive
-        self.input_parser = parser_def(command=one_char,
-                                       interactive_command=None,
-                                       input_param=None,
-                                       on_done=None,
-                                       type=INPUT_IMMEDIATE)
-
-    @property
-    def accept_input(self):
-        return self.inp == ''
-
-    def accept(self, key):
-        translated = translate_char(key)
-        assert len(translated) == 1, '`t` only accepts a single char'
-        self.inp = translated
-
-        return True
 
     def translate(self, state):
         if self.inclusive:
@@ -3378,11 +3217,12 @@ class ViSearchForward(ViMotionDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.input_parser = parser_def(command='_vi_slash',
-                                       interactive_command='_vi_slash',
-                                       type=INPUT_VIA_PANEL,
-                                       on_done=None,
-                                       input_param='pattern')
+        self.input_parser = InputParser(
+            type=InputParser.VIA_PANEL,
+            command='_vi_slash',
+            interactive_command='_vi_slash',
+            param='pattern'
+        )
 
     @property
     def accept_input(self):
@@ -3435,11 +3275,12 @@ class ViSearchBackward(ViMotionDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.input_parser = parser_def(command='_vi_question_mark',
-                                       interactive_command='_vi_question_mark',
-                                       type=INPUT_VIA_PANEL,
-                                       on_done=None,
-                                       input_param='pattern')
+        self.input_parser = InputParser(
+            type=InputParser.VIA_PANEL,
+            command='_vi_question_mark',
+            interactive_command='_vi_question_mark',
+            param='pattern'
+        )
 
     @property
     def accept_input(self):

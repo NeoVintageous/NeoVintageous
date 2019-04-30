@@ -39,9 +39,6 @@ from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import save_previous_selection
 from NeoVintageous.nv.vim import DIRECTION_DOWN
-from NeoVintageous.nv.vim import INPUT_AFTER_MOTION
-from NeoVintageous.nv.vim import INPUT_IMMEDIATE
-from NeoVintageous.nv.vim import INPUT_VIA_PANEL
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -445,14 +442,14 @@ class State(object):
             if motion.accept_input:
                 return True
 
-            return (action.accept_input and action.input_parser.type == INPUT_AFTER_MOTION)
+            return (action.accept_input and action.input_parser and action.input_parser.is_type_after_motion())
 
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
         if (isinstance(action, ViToggleMacroRecorder) and self.is_recording):
             return False
 
-        if (action and action.accept_input and action.input_parser.type == INPUT_IMMEDIATE):
+        if (action and action.accept_input and action.input_parser and action.input_parser.is_type_immediate()):
             return True
 
         if motion:
@@ -631,11 +628,9 @@ class State(object):
     def _set_parsers(self, command):
         # type: (ViCommandDefBase) -> None
         if command.accept_input and command.input_parser:
-            if command.input_parser.type == INPUT_VIA_PANEL:
-                if self.non_interactive:
-                    return
-
-                run_window_command(command.input_parser.command)
+            if not self.non_interactive:
+                if command.input_parser.is_type_via_panel():
+                    command.input_parser.run_command()
 
     def process_input(self, key):
         # type: (str) -> bool

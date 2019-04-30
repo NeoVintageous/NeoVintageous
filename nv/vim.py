@@ -41,10 +41,6 @@ VISUAL = 'mode_visual'
 VISUAL_BLOCK = 'mode_visual_block'
 VISUAL_LINE = 'mode_visual_line'
 
-INPUT_IMMEDIATE = 1
-INPUT_VIA_PANEL = 2
-INPUT_AFTER_MOTION = 3
-
 DIRECTION_NONE = 0
 DIRECTION_UP = 1
 DIRECTION_DOWN = 2

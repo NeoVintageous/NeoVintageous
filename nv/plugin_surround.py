@@ -24,9 +24,6 @@ from sublime import LITERAL
 from sublime import Region
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import INPUT_AFTER_MOTION
-from NeoVintageous.nv.plugin import INPUT_IMMEDIATE
-from NeoVintageous.nv.plugin import inputs
 from NeoVintageous.nv.plugin import INTERNAL_NORMAL
 from NeoVintageous.nv.plugin import NORMAL
 from NeoVintageous.nv.plugin import OPERATOR_PENDING
@@ -34,6 +31,7 @@ from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.plugin import ViOperatorDef
 from NeoVintageous.nv.plugin import VISUAL
 from NeoVintageous.nv.plugin import VISUAL_BLOCK
+from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import enter_normal_mode
@@ -57,13 +55,7 @@ class _surround_ys(ViOperatorDef, _IsDefinitionEnabledAware):
         self.updates_xpos = True
         self.repeatable = True
         self.motion_required = True
-        self.input_parser = inputs.parser_def(
-            command=inputs.one_char,
-            interactive_command=None,
-            input_param=None,
-            on_done=None,
-            type=INPUT_AFTER_MOTION
-        )
+        self.input_parser = InputParser(InputParser.AFTER_MOTION)
 
     @property
     def accept_input(self):
@@ -91,13 +83,7 @@ class _surround_yss(_surround_ys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
-        self.input_parser = inputs.parser_def(
-            command=inputs.one_char,
-            interactive_command=None,
-            input_param=None,
-            on_done=None,
-            type=INPUT_IMMEDIATE
-        )
+        self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     def translate(self, state):
         return {
@@ -124,13 +110,7 @@ class _surround_S(_surround_ys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
-        self.input_parser = inputs.parser_def(
-            command=inputs.one_char,
-            interactive_command=None,
-            input_param=None,
-            on_done=None,
-            type=INPUT_IMMEDIATE
-        )
+        self.input_parser = InputParser(InputParser.IMMEDIATE)
 
 
 @register(seq='ds', modes=(NORMAL, OPERATOR_PENDING))
@@ -140,13 +120,7 @@ class _surround_ds(ViOperatorDef, _IsDefinitionEnabledAware):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-        self.input_parser = inputs.parser_def(
-            command=inputs.one_char,
-            interactive_command=None,
-            input_param=None,
-            on_done=None,
-            type=INPUT_IMMEDIATE
-        )
+        self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     # TODO Fix ds should not accept input
     @property
@@ -177,13 +151,7 @@ class _surround_cs(ViOperatorDef, _IsDefinitionEnabledAware):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-        self.input_parser = inputs.parser_def(
-            command=inputs.one_char,
-            interactive_command=None,
-            input_param=None,
-            on_done=None,
-            type=INPUT_IMMEDIATE
-        )
+        self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     @property
     def accept_input(self):

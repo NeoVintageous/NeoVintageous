@@ -15,12 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.utils import InputParser
+from NeoVintageous.nv.vi.utils import translate_char
+
 
 class ViCommandDefBase:
 
     _serializable = ['_inp', ]
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.input_parser = None
         self.inp = ''
 
@@ -91,3 +94,21 @@ class ViOperatorDef(ViCommandDefBase):
         self.scroll_into_view = False
         self.motion_required = False
         self.repeatable = False
+
+
+class RequiresOneCharMixinDef(ViCommandDefBase):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.input_parser = InputParser(InputParser.IMMEDIATE)
+
+    @property
+    def accept_input(self):
+        return self.inp == ''
+
+    def accept(self, key):
+        key = translate_char(key)
+        assert len(key) == 1, 'only accepts a single char'
+        self.inp = key
+
+        return True

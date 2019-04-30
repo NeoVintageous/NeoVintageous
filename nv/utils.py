@@ -43,6 +43,7 @@ from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import run_window_command
 
 
 def extract_file_name(view):
@@ -577,3 +578,39 @@ class VisualBlockSelection():
 
     def transform_to_visual_line(self):
         self._transform(self.to_visual_line())
+
+
+class InputParser():
+
+    IMMEDIATE = 1
+    VIA_PANEL = 2
+    AFTER_MOTION = 3
+
+    def __init__(self, type=None, command=None, interactive_command=None, param=None):
+        self._type = type
+        self._command = command
+        self._interactive_command = interactive_command
+        self._param = param
+
+    def is_interactive(self):
+        # type: () -> bool
+        return bool(self._interactive_command)
+
+    def is_type_after_motion(self):
+        return self._type == self.AFTER_MOTION
+
+    def is_type_immediate(self):
+        return self._type == self.IMMEDIATE
+
+    def is_type_via_panel(self):
+        return self._type == self.VIA_PANEL
+
+    def run_interactive_command(self, window, param_value):
+        # type: (...) -> None
+        cmd = self._interactive_command
+        args = {self._param: param_value}
+
+        window.run_command(cmd, args)
+
+    def run_command(self):
+        run_window_command(self._command)
