@@ -36,6 +36,9 @@ class Test_B(unittest.FunctionalTestCase):
         self.eq('abc |abc|', 'v_B', 'abc |a|bc')
         self.eq('|abc abc|', 'v_B', '|abc a|bc')
 
+    def test_b(self):
+        self.eq('fi|zz buz|z\nfi|zz buz|z\n', 'b_B', 'fi|zz b|uzz\nfi|zz b|uzz\n')
+
     def test_d(self):
         self.eq('fi|zz', 'dB', '|zz')
         self.eq('fizz bu|zz', 'dB', 'fizz |zz')
