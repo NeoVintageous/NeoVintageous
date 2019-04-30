@@ -26,14 +26,52 @@ from NeoVintageous.nv.ui import ui_region_flags
 from NeoVintageous.nv.utils import clear_search_highlighting
 
 
+# Polyfill to workaround Sublime view.find() return value issue:
+# https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866
+# https://github.com/SublimeTextIssues/Core/issues/534
+def view_find(view, pattern, start_pt, flags=0):
+    match = view.find(pattern, start_pt, flags)
+    if match is None or match.b == -1:
+        return None
+
+    return match
+
+
+# A possible replacement for find_in_range(). One difference is this function
+# returns zero-length matches, see view_find() polyfill.
+def view_find_in_range(view, pattern, pos, endpos, flags=0):
+    match = view_find(pattern, pos, flags)
+    if match is not None and match.b <= endpos:
+        return match
+
+
+# A possible replacement for find_all_in_range(). One difference is this
+# function returns zero-length matches, see view_find() polyfill.
+def view_find_all_in_range(view, pattern, pos, endpos, flags=0):
+    matches = []
+    while pos <= endpos:
+        match = view.find(pattern, pos)
+        if match is None or match.b == -1:
+            break
+
+        pos = match.b
+        if match.size() == 0:
+            pos += 1
+
+        if match.b <= endpos:
+            matches.append(match)
+
+    return matches
+
+
+# DEPRECATED Use view_find_in_range()
 def find_in_range(view, term, start, end, flags=0):
-    # Returns:
-    #   Region|None
     found = view.find(term, start, flags)
     if found and found.b <= end:
         return found
 
 
+# DEPRECATED Use view_find_all()
 def find_all_in_range(view, term, start, end, flags=0):
     matches = []
     while True:

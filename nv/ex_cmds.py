@@ -50,7 +50,7 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import CmdlineOutput
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import clear_search_highlighting
-from NeoVintageous.nv.vi.search import find_all_in_range
+from NeoVintageous.nv.vi.search import view_find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import get_ex_global_last_pattern
@@ -432,41 +432,27 @@ def ex_file(view, **kwargs):
     status_message('%s' % msg)
 
 
-# At the time of writing, the only command that supports :global is the
-# "print" command e.g. print all lines matching \d+ into new buffer:
-#   :%global/\d+/print
 def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
-    if line_range.is_empty:
-        global_range = Region(0, view.size())
-    else:
-        global_range = line_range.resolve(view)
-
     if not pattern:
         pattern = get_ex_global_last_pattern()
-    else:
-        set_ex_global_last_pattern(pattern)
-
-    if not cmd:
-        cmd = 'print'
+        if not pattern:
+            return status_message('E35: No previous regular expression')
 
     cmd = parse_command_line(cmd).command
+    # The cooperates_with_global flag indicates if a command supports :global.
+    if not cmd.cooperates_with_global:
+        return status_message('command "%s" does not support :global', cmd.target)
 
-    try:
-        matches = find_all_in_range(view, pattern, global_range.begin(), global_range.end())
-    except Exception as e:
-        return status_message("(global): %s ... in pattern '%s'", str(e), pattern)
+    # The default line specifier for most commands is the cursor position, but
+    # the commands :write and :global have the whole file (1,$) as default.
+    if line_range.is_empty:
+        region = Region(0, view.size())
+    else:
+        region = line_range.resolve(view)
 
+    matches = view_find_all_in_range(view, pattern, region.a, region.b - 1)
     if not matches:
-        return status_message("Pattern not found: %s", pattern)
-
-    # The cooperates_with_global attribute indicates if the command supports
-    # the :global command. This is special flag, because all ex commands
-    # don't yet support a global_lines argument. See TokenOfCommand. At time
-    # of writing, the only command that supports the global_lines argument
-    # is the "print" command e.g. print all lines matching \d+ into new
-    # buffer: ":%global/\d+/print".
-    if not matches or not cmd.cooperates_with_global:
-        return status_message("command does not support :global")
+        return status_message('Pattern not found: %s', pattern)
 
     matches = [view.full_line(r.begin()) for r in matches]
     matches = [[r.a, r.b] for r in matches]
@@ -474,6 +460,7 @@ def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
     cmd.params['global_lines'] = matches
 
     do_ex_command(window, cmd.target, cmd.params)
+    set_ex_global_last_pattern(pattern)
 
 
 def ex_help(window, subject=None, forceit=False, **kwargs):
