@@ -47,6 +47,6 @@ class Test_bar(unittest.FunctionalTestCase):
         self.eq('r_x\n|fizz\n|buzz', 'v_|', 'r_x\n|fizz\n|buzz')
 
     def test_d(self):
-        self.eq('fi|zz buzz', '7d|', 'fiz|uzz')
-        self.eq('fi|zz| buzz', '8d|', 'fiz|zz')
-        self.eq('r_fi|zz| buzz', '8d|', 'fiz|zz')
+        self.eq('12|34567890', '7d|', '12|7890')
+        self.eq('123456|7890', '2d|', '1|7890')
+        self.eq('123456|7890', 'd|', '|7890')

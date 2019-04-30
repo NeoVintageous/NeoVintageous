@@ -4495,19 +4495,14 @@ class _vi_bar(ViMotionCommand):
             return target
 
         def f(view, s):
-            target = _to_col(s.b, count)
+            target = _to_col(resolve_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
                 s = Region(target)
             elif mode == VISUAL:
-                start = s.b - 1 if s.b > s.a else s.b
-                target = _to_col(start, count)
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                if s.a < s.b:
-                    s = Region(s.a, target)
-                else:
-                    s = Region(s.a + 1, target)
+                s.b = target
 
             return s
 
