@@ -609,3 +609,66 @@ class InputParser():
 
     def run_command(self):
         run_window_command(self._command)
+
+
+def folded_rows(view, pt):
+    # type: (...) -> int
+    folds = view.folded_regions()
+    try:
+        fold = [f for f in folds if f.contains(pt)][0]
+        fold_row_a = view.rowcol(fold.a)[0]
+        fold_row_b = view.rowcol(fold.b - 1)[0]
+        # Return no. of hidden lines.
+        return (fold_row_b - fold_row_a)
+    except IndexError:
+        return 0
+
+
+# FIXME If we have two contiguous folds, this method will fail. Handle folded regions
+def previous_non_folded_pt(view, pt):
+    # type: (...) -> int
+    folds = view.folded_regions()
+    try:
+        fold = [f for f in folds if f.contains(pt)][0]
+        non_folded_row = view.rowcol(fold.a - 1)[0]
+        pt = view.text_point(non_folded_row, 0)
+    except IndexError:
+        pass
+
+    return pt
+
+
+# FIXME: If we have two contiguous folds, this method will fail. Handle folded regions
+def next_non_folded_pt(view, pt):
+    # type: (...) -> int
+    folds = view.folded_regions()
+    try:
+        fold = [f for f in folds if f.contains(pt)][0]
+        non_folded_row = view.rowcol(view.full_line(fold.b).b)[0]
+        pt = view.text_point(non_folded_row, 0)
+    except IndexError:
+        pass
+
+    return pt
+
+
+def calculate_xpos(view, start, xpos):
+    # type: (...) -> tuple
+    if view.line(start).empty():
+        return start, 0
+
+    size = view.settings().get('tab_size')
+    eol = view.line(start).b - 1
+    pt = 0
+    chars = 0
+    while (pt < xpos):
+        if view.substr(start + chars) == '\t':
+            pt += size
+        else:
+            pt += 1
+
+        chars += 1
+
+    pt = min(eol, start + chars)
+
+    return (pt, chars)
