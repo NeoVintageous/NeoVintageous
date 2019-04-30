@@ -19,6 +19,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[{`, `[(`, `]}`, and `])` in Visual line mode
 * Added [#284](https://github.com/NeoVintageous/NeoVintageous/issues/284): Support for `%` in shell commands
 
+### Changed
+
+* Added [#516](https://github.com/NeoVintageous/NeoVintageous/issues/516): Search occurrence style now defaults to "fill" option
+
 ### Fixed
 
 * Fixed [#515](https://github.com/NeoVintageous/NeoVintageous/issues/515): `0` in Visual mode off-by-one

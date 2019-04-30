@@ -39,7 +39,7 @@
     // * underline
     // * squiggly_underline
     // * stippled_underline
-    "neovintageous_search_occ_style": "outline",
+    "neovintageous_search_occ_style": "fill",
 
     // Specifies for which events the bell (visual blink) will not be rung. It
     // is a comma separated list of items. For each item that is present, the
