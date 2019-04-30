@@ -3797,7 +3797,7 @@ class _vi_zero(ViMotionCommand):
             if mode == NORMAL:
                 s = Region(target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3823,7 +3823,7 @@ class _vi_right_brace(ViMotionCommand):
                 if target == (view.size() - 1):
                     s = Region(s.a, view.size())
                 elif view.substr(s.a - 1) == '\n' or s.a == 0:
-                    s = Region(s.a, target)
+                    s.b = target
                 else:
                     s = Region(s.a, target - 1)
 
@@ -3847,7 +3847,7 @@ class _vi_left_brace(ViMotionCommand):
                 target = par_as_region.a
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4122,7 +4122,7 @@ class _vi_big_h(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4141,9 +4141,9 @@ class _vi_big_l(ViMotionCommand):
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
                 if s.b >= target:
-                    s = Region(s.a + 1, target)
-                else:
-                    s = Region(s.a, target)
+                    s.a += 1
+
+                s.b = target
 
             return s
 
@@ -4161,7 +4161,7 @@ class _vi_big_m(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4269,7 +4269,7 @@ class _vi_b(ViMotionCommand):
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4299,9 +4299,9 @@ class _vi_big_b(ViMotionCommand):
                     else:
                         s = Region(s.a, pt + 1)
                 elif s.b < s.a:
-                    s = Region(s.a, target)
+                    s.b = target
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4421,7 +4421,7 @@ class _vi_g__(ViMotionCommand):
                     else:
                         s = Region(s.a, eol)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, view.line(s.b).b)
+                s.b = view.line(s.b).b
 
             return s
 
@@ -4439,7 +4439,7 @@ class _vi_ctrl_u(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4464,7 +4464,7 @@ class _vi_ctrl_d(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4572,7 +4572,7 @@ class _vi_left_paren(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4596,7 +4596,7 @@ class _vi_right_paren(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4768,7 +4768,7 @@ class _vi_big_e(ViMotionCommand):
             if mode == NORMAL:
                 s = Region(target - 1)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
             elif mode == VISUAL:
                 start = s.a
                 if s.b < s.a:
