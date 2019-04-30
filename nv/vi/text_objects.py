@@ -32,7 +32,8 @@ from NeoVintageous.nv.vi.search import reverse_search_by_pt
 from NeoVintageous.nv.vi.units import word_starts
 from NeoVintageous.nv.vi.utils import get_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import next_non_blank
-from NeoVintageous.nv.vi.utils import previous_non_white_space_char
+from NeoVintageous.nv.vi.utils import prev_non_blank
+from NeoVintageous.nv.vi.utils import prev_non_ws
 
 
 RX_ANY_TAG = r'</?([0-9A-Za-z-]+).*?>'
@@ -189,7 +190,7 @@ def a_word(view, pt, inclusive=True, count=1):
         # If there is no space at the end of our word text object, include any
         # preceding spaces. (Follows Vim behavior.)
         if (not view.substr(end - 1).isspace() and view.substr(start - 1).isspace()):
-            start = previous_non_white_space_char(view, start - 1, white_space=' \t') + 1
+            start = prev_non_blank(view, start - 1) + 1
 
         # Vim does some inconsistent stuff here...
         if count > 1 and view.substr(end) == '\n':
@@ -555,7 +556,7 @@ def find_sentences_backward(view, start_pt, count=1):
     if isinstance(start_pt, Region):
         start_pt = start_pt.a
 
-    pt = previous_non_white_space_char(view, start_pt, white_space='\n \t')
+    pt = prev_non_ws(view, start_pt)
     sen = Region(pt)
     prev = sen
     while True:

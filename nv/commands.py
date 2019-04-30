@@ -136,7 +136,8 @@ from NeoVintageous.nv.vi.utils import new_inclusive_region
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import prev_blank
 from NeoVintageous.nv.vi.utils import prev_non_blank
-from NeoVintageous.nv.vi.utils import previous_non_white_space_char
+from NeoVintageous.nv.vi.utils import prev_non_nl
+from NeoVintageous.nv.vi.utils import prev_non_ws
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
@@ -1087,11 +1088,11 @@ class _vi_c(ViTextCommandBase):
         def compact(view, s):
             if view.substr(s).strip():
                 if s.b > s.a:
-                    pt = previous_non_white_space_char(view, s.b - 1, white_space=' \t\n')
+                    pt = prev_non_ws(view, s.b - 1)
 
                     return Region(s.a, pt + 1)
 
-                pt = previous_non_white_space_char(view, s.a - 1, white_space=' \t\n')
+                pt = prev_non_ws(view, s.a - 1)
 
                 return Region(pt + 1, s.b)
 
@@ -3705,7 +3706,7 @@ class _vi_dollar(ViMotionCommand):
 def fixup_eof(view, pt):
     # type: (...) -> int
     if ((pt == view.size()) and (not view.line(pt).empty())):
-        pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
+        pt = prev_non_nl(view, pt - 1)
 
     return pt
 
@@ -3834,7 +3835,7 @@ class _vi_left_brace(ViMotionCommand):
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                start = previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
+                start = prev_non_ws(view, s.b - 1)
                 par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
                 target = par_as_region.a
                 resolve_visual_line_target(view, s, target)

@@ -218,10 +218,19 @@ def prev_blank(view, pt):
     return pt
 
 
-def previous_non_white_space_char(view, pt, white_space='\t \n'):
+def prev_non_nl(view, pt):
     # type: (...) -> int
     substr = view.substr
-    while substr(pt) in white_space and pt > 0:
+    while substr(pt) in '\n' and pt > 0:
+        pt -= 1
+
+    return pt
+
+
+def prev_non_ws(view, pt):
+    # type: (...) -> int
+    substr = view.substr
+    while substr(pt) in ' \t\n' and pt > 0:
         pt -= 1
 
     return pt
