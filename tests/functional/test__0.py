@@ -33,7 +33,12 @@ class Test_0(unittest.FunctionalTestCase):
         self.eq('x\na|bc|d\nx', 'v_0', 'r_x\n|ab|cd\nx')
         self.eq('x\n|abcd|\nx', 'v_0', 'x\n|a|bcd\nx')
         self.eq('r_1\nfi|zz\nbu|zz', 'v_0', 'r_1\n|fizz\nbu|zz')
+        self.eq('fi|zz\n|buzz\n', 'v_0', 'r_|fiz|z\nbuzz\n')
         self.eq('x|a\nabc|d\nx', 'v_0', 'x|a\na|bcd\nx')
+
+    def test_V(self):
+        self.eq('fizz\n|buzz\n|fizz', 'l_0', 'r_fizz\n|buzz\n|fizz')
+        self.eq('fizz\n|buzz\nfizz\n|buzz\n', 'l_0', 'fizz\n|buzz\nfizz\n|buzz\n')
 
     def test_c(self):
         self.eq('|abc', 'c0', 'i_|abc')

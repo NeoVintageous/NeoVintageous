@@ -21,6 +21,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#515](https://github.com/NeoVintageous/NeoVintageous/issues/515): `0` in Visual mode off-by-one
 * Fixed [#18](https://github.com/NeoVintageous/NeoVintageous/issues/18): Visual block do no span across empty lines
 * Fixed [#509](https://github.com/NeoVintageous/NeoVintageous/issues/509): `:global` should allow various separators and disallow others
 * Fixed [#506](https://github.com/NeoVintageous/NeoVintageous/issues/506): `gqip` should leave cursor on first non blank

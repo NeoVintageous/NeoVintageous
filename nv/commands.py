@@ -3789,12 +3789,16 @@ class _vi_e(ViMotionCommand):
 class _vi_zero(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            target = view.line(resolve_insertion_point_at_b(s)).a
+
             if mode == NORMAL:
-                s = Region(view.line(s.b).a)
+                s = Region(target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, view.line(s.b).a)
+                s = Region(s.a, target)
             elif mode == VISUAL:
-                resolve_visual_target(s, view.line(s.b).a)
+                resolve_visual_target(s, target)
+            elif mode == VISUAL_LINE:
+                resolve_visual_line_target(view, s, target)
 
             return s
 
