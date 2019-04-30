@@ -2936,6 +2936,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
             self.view.sel().add_all(new_regs)
             state = State(self.view)
             state.enter_visual_block_mode()
+            state.display_status()
         else:
             first = list(self.view.sel())[0]
             self.view.sel().clear()

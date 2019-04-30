@@ -27,6 +27,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#520](https://github.com/NeoVintageous/NeoVintageous/issues/520): Entering Visual block from Visual doesn't update status line
 * Fixed [#517](https://github.com/NeoVintageous/NeoVintageous/issues/517): `gq` in reverse Visual line mode includes too many lines
 * Fixed [#515](https://github.com/NeoVintageous/NeoVintageous/issues/515): `0` in Visual mode off-by-one
 * Fixed [#18](https://github.com/NeoVintageous/NeoVintageous/issues/18): Visual block do no span across empty lines
