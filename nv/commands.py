@@ -125,6 +125,8 @@ from NeoVintageous.nv.vi.units import word_starts
 from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import get_bol
 from NeoVintageous.nv.vi.utils import get_eol
+from NeoVintageous.nv.vi.utils import get_insertion_point_at_a
+from NeoVintageous.nv.vi.utils import get_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import get_previous_selection
 from NeoVintageous.nv.vi.utils import gluing_undo_groups
 from NeoVintageous.nv.vi.utils import is_at_bol
@@ -140,8 +142,6 @@ from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_indexed
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import replace_sel
-from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_a
-from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vi.utils import row_to_pt
 from NeoVintageous.nv.vi.utils import save_previous_selection
@@ -2487,7 +2487,7 @@ class _vi_ctrl_w(WindowCommand):
 class _vi_z_enter(IrreversibleTextCommand):
 
     def run(self, mode=None, count=1):
-        pt = resolve_insertion_point_at_b(first_sel(self.view))
+        pt = get_insertion_point_at_b(first_sel(self.view))
         home_line = self.view.line(pt)
         taget_pt = self.view.text_to_layout(home_line.begin())
         self.view.set_viewport_position(taget_pt)
@@ -3184,7 +3184,7 @@ class _vi_find_in_line(ViMotionCommand):
             b = s.b
             # If we are in any visual mode, get the actual insertion point.
             if s.size() > 0:
-                b = resolve_insertion_point_at_b(s)
+                b = get_insertion_point_at_b(s)
 
             # Vim skips a character while performing the search
             # if the command is ';' or ',' after a 't' or 'T'
@@ -3212,7 +3212,7 @@ class _vi_find_in_line(ViMotionCommand):
             elif mode == INTERNAL_NORMAL:
                 return Region(s.a, target_pos + 1)
             else:  # For visual modes...
-                new_a = resolve_insertion_point_at_a(s)
+                new_a = get_insertion_point_at_a(s)
                 return new_inclusive_region(new_a, target_pos)
 
         if not all([char, mode]):
@@ -3234,7 +3234,7 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
             b = s.b
             if s.size() > 0:
-                b = resolve_insertion_point_at_b(s)
+                b = get_insertion_point_at_b(s)
 
             # Vim skips a character while performing the search
             # if the command is ';' or ',' after a 't' or 'T'
@@ -3262,7 +3262,7 @@ class _vi_reverse_find_in_line(ViMotionCommand):
             elif mode == INTERNAL_NORMAL:
                 return Region(b, target_pos)
             else:  # For visual modes...
-                new_a = resolve_insertion_point_at_a(s)
+                new_a = get_insertion_point_at_a(s)
                 return new_inclusive_region(new_a, target_pos)
 
         if not all([char, mode]):
@@ -3679,7 +3679,7 @@ class _vi_big_g(ViMotionCommand):
 class _vi_dollar(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = resolve_insertion_point_at_b(s)
+            target = get_insertion_point_at_b(s)
             if count > 1:
                 target = row_to_pt(view, row_at(view, target) + (count - 1))
 
@@ -3713,7 +3713,7 @@ def fixup_eof(view, pt):
 class _vi_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = word_starts(view, resolve_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
+            target = word_starts(view, get_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
 
             if mode == NORMAL:
                 s = Region(fixup_eof(view, target))
@@ -3737,7 +3737,7 @@ class _vi_w(ViMotionCommand):
 class _vi_big_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = big_word_starts(view, resolve_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
+            target = big_word_starts(view, get_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
 
             if mode == NORMAL:
                 s = Region(fixup_eof(view, target))
@@ -3761,7 +3761,7 @@ class _vi_big_w(ViMotionCommand):
 class _vi_e(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = word_ends(view, resolve_insertion_point_at_b(s), count) - 1
+            target = word_ends(view, get_insertion_point_at_b(s), count) - 1
 
             if mode == NORMAL:
                 s = Region(target)
@@ -3784,7 +3784,7 @@ class _vi_e(ViMotionCommand):
 class _vi_zero(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = view.line(resolve_insertion_point_at_b(s)).a
+            target = view.line(get_insertion_point_at_b(s)).a
 
             if mode == NORMAL:
                 s = Region(target)
@@ -4254,7 +4254,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 class _vi_b(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = word_reverse(view, resolve_insertion_point_at_b(s), count)
+            target = word_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
                 s = Region(target)
@@ -4276,7 +4276,7 @@ class _vi_big_b(ViMotionCommand):
 
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = big_word_reverse(view, resolve_insertion_point_at_b(s), count)
+            target = big_word_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
                 s = Region(target)
@@ -4300,8 +4300,8 @@ class _vi_underscore(ViMotionCommand):
             a = s.a
             b = s.b
             if s.size() > 0:
-                a = resolve_insertion_point_at_a(s)
-                b = resolve_insertion_point_at_b(s)
+                a = get_insertion_point_at_a(s)
+                b = get_insertion_point_at_b(s)
 
             current_row = view.rowcol(b)[0]
             target_row = current_row + (count - 1)
@@ -4340,8 +4340,8 @@ class _vi_hat(ViMotionCommand):
             a = s.a
             b = s.b
             if s.size() > 0:
-                a = resolve_insertion_point_at_a(s)
-                b = resolve_insertion_point_at_b(s)
+                a = get_insertion_point_at_a(s)
+                b = get_insertion_point_at_b(s)
 
             bol = view.line(b).a
             bol = next_non_white_space_char(view, bol)
@@ -4394,7 +4394,7 @@ class _vi_gk(ViMotionCommand):
 class _vi_g__(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            line = view.line(resolve_insertion_point_at_b(s))
+            line = view.line(get_insertion_point_at_b(s))
             eol = line.b
             if line.size() > 0:
                 eol = prev_non_blank(view, eol - 1)
@@ -4478,7 +4478,7 @@ class _vi_bar(ViMotionCommand):
             return target
 
         def f(view, s):
-            target = _to_col(resolve_insertion_point_at_b(s), count)
+            target = _to_col(get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
                 s = Region(target)
@@ -4744,7 +4744,7 @@ class _vi_big_e(ViMotionCommand):
             return big_word_ends(view, start, count) - 1
 
         def f(view, s):
-            target = _big_word_ends(view, resolve_insertion_point_at_b(s), count)
+            target = _big_word_ends(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
                 s = Region(target)

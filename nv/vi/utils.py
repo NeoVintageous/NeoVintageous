@@ -103,7 +103,7 @@ def regions_transformer_reversed(view, f):
     _regions_transformer(reversed(list(view.sel())), view, f, False)
 
 
-def resolve_insertion_point_at_b(region):
+def get_insertion_point_at_b(region):
     # type: (Region) -> int
     if region.a < region.b:
         return region.b - 1
@@ -111,7 +111,7 @@ def resolve_insertion_point_at_b(region):
     return region.b
 
 
-def resolve_insertion_point_at_a(region):
+def get_insertion_point_at_a(region):
     # type: (Region) -> int
     if region.a < region.b:
         return region.a

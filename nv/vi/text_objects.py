@@ -30,9 +30,9 @@ from sublime import Region
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
 from NeoVintageous.nv.vi.units import word_starts
+from NeoVintageous.nv.vi.utils import get_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import previous_non_white_space_char
-from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 
 
 RX_ANY_TAG = r'</?([0-9A-Za-z-]+).*?>'
@@ -304,7 +304,7 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         return find_paragraph_text_object(view, s, inclusive=inclusive, count=count)
 
     if type_ == BRACKET:
-        b = resolve_insertion_point_at_b(s)
+        b = get_insertion_point_at_b(s)
         opening = find_prev_lone_bracket(view, b, delims)
         closing = find_next_lone_bracket(view, b, delims)
 

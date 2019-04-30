@@ -67,11 +67,11 @@ from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
 from NeoVintageous.nv.vi.utils import adding_regions
 from NeoVintageous.nv.vi.utils import first_sel
+from NeoVintageous.nv.vi.utils import get_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import has_dirty_buffers
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import replace_sel
-from NeoVintageous.nv.vi.utils import resolve_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import row_at
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import NORMAL
@@ -1328,7 +1328,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
             text = view.substr(r)
             text = text if text.startswith('\n') else '\n' + text
 
-            location = resolve_insertion_point_at_b(first_sel(view))
+            location = get_insertion_point_at_b(first_sel(view))
 
             view.run_command('append', {'characters': text})
 
