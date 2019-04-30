@@ -24,8 +24,8 @@ from NeoVintageous.nv.history import _HIST_EXPR
 from NeoVintageous.nv.history import _HIST_INPUT
 from NeoVintageous.nv.history import _HIST_INVALID
 from NeoVintageous.nv.history import _HIST_SEARCH
-from NeoVintageous.nv.history import _history
 from NeoVintageous.nv.history import _name2type
+from NeoVintageous.nv.history import history
 from NeoVintageous.nv.history import history_add
 from NeoVintageous.nv.history import history_clear
 from NeoVintageous.nv.history import history_del
@@ -33,6 +33,7 @@ from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_nr
+from NeoVintageous.nv.history import history_update
 
 # We need to patch the entries storage dictionary so that out tests don't mess
 # up our userland entries, which would obviously be bad.
@@ -248,6 +249,22 @@ class TestHistory(unittest.TestCase):
         self.assertEqual(history_len(':'), 5)
 
     @_patch_storage
+    def test_history_update(self, _storage):
+        self.assertEqual(history_get(':'), '')
+        history_update(':fizz')
+        self.assertEqual(history_get(':'), 'fizz')
+        history_update(':buzz')
+        self.assertEqual(history_get(':'), 'buzz')
+        history_update(':foo')
+        self.assertEqual(history_get(':'), 'foo')
+        history_update('/bar')
+        self.assertEqual(history_get(':'), 'foo')
+        self.assertEqual(history_get('/'), 'bar')
+        history_update('/bat')
+        self.assertEqual(history_get(':'), 'foo')
+        self.assertEqual(history_get('/'), 'bat')
+
+    @_patch_storage
     def test_all(self, _storage):
         for test in self.histories:
             self.assertTrue(history_add(test, 'dummy'))
@@ -273,8 +290,8 @@ class TestHistory(unittest.TestCase):
             self.assertEqual('ls', history_get(test, -1))
             self.assertEqual(4, history_nr(test))
 
-            self.assertRegex(_history(test), "^     #  [a-z]+ history\n     3  buffers\n>    4  ls$")
-            self.assertRegex(_history('all'), "     #  [a-z]+ history\n     3  buffers\n>    4  ls")
+            self.assertRegex(history(test), "^     #  [a-z]+ history\n     3  buffers\n>    4  ls$")
+            self.assertRegex(history('all'), "     #  [a-z]+ history\n     3  buffers\n>    4  ls")
             # TODO test history ranges e.g. `:history : 3,4`
 
             # TODO Test for removing entries matching a pattern
@@ -363,7 +380,7 @@ class TestHistory(unittest.TestCase):
             "     #  cmd history\n"
             "     1  a\n"
             ">    2  b"
-        ), _history(':'))
+        ), history(':'))
 
         self.assertEqual((
             "     #  search history\n"
@@ -371,22 +388,22 @@ class TestHistory(unittest.TestCase):
             "     2  s2\n"
             "     3  s3\n"
             ">    4  s4"
-        ), _history('/'))
+        ), history('/'))
 
         self.assertEqual((
             "     #  expr history"
-        ), _history('='))
+        ), history('='))
 
         self.assertEqual((
             "     #  input history\n"
             "     1  i1\n"
             "     2  i2\n"
             ">    3  i3"
-        ), _history('@'))
+        ), history('@'))
 
         self.assertEqual((
             "     #  debug history"
-        ), _history('>'))
+        ), history('>'))
 
         self.assertEqual((
             "     #  cmd history\n"
@@ -403,4 +420,6 @@ class TestHistory(unittest.TestCase):
             "     2  i2\n"
             ">    3  i3\n"
             "     #  debug history"
-        ), _history('all'))
+        ), history('all'))
+
+        self.assertEqual('', history('foobar'))

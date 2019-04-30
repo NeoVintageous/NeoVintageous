@@ -43,9 +43,11 @@ from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
 from NeoVintageous.nv.ex.parser import parse_command_line_address
 from NeoVintageous.nv.goto import goto_line
+from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.ui import CmdlineOutput
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cache_value
@@ -588,6 +590,12 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
     # animation_enabled is true, which the default in Sublime.
     xy = view.text_to_layout(view.text_point(view.rowcol(c_pt)[0], 0))
     view.set_viewport_position(xy)
+
+
+def ex_history(window, name='all', **kwargs):
+    output = CmdlineOutput(window)
+    output.write(history(name))
+    output.show()
 
 
 def ex_let(name, value, **kwargs):

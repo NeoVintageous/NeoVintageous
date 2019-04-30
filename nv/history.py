@@ -70,7 +70,7 @@ _storage = {
         'num': 0,
         'items': {}
     }
-}
+}  # type: dict
 
 
 def _char2type(char):
@@ -116,9 +116,7 @@ def history_update(item):
 
 def history_add(history, item):
     # type: (str, str) -> int
-    # Add an item to a history.
-    #
-    # Add the item to the history which can be one of:
+    # Add an string {item} to the history {history}, which can be one of:
     #
     #   "cmd"     or ":"         command line history
     #   "search"  or "/"  or "?" search pattern history
@@ -126,11 +124,11 @@ def history_add(history, item):
     #   "input"   or "@"         input line history
     #   "debug"   or ">"         debug command history
     #
-    # The history string does not need to be the whole name, one character is
-    # sufficient.
-    #
     # If item already exists in the history, it will be shifted to become the
     # newest entry.
+    #
+    # The result is a Number: 1 if the operation was successful, otherwise 0 is
+    # returned.
     #
     # Args:
     #   :history (str): See |hist-names| for the possible values of history.
@@ -179,6 +177,7 @@ def history_del(history, item=None):
     #
     # Returns:
     #   int: 1 for a successful operation, otherwise 0
+
     history_type = history_get_type(history)
     if history_type == _HIST_INVALID:
         return 0
@@ -268,12 +267,11 @@ def history_nr(history):
     return num
 
 
-# TODO :history
-def _history(history):
+def history(name):
     # type: (str) -> str
     #
     # Args:
-    #   :history (str): See |hist-names| for the possible values of history.
+    #   :name (str): See |hist-names| for the possible values of name.
     #
     # Returns:
     #   str:
@@ -281,10 +279,10 @@ def _history(history):
     # TODO use 'history' option (default=50)
     # TODO if 'history' option is 0 then print message "'history' option is zero"
 
-    if history == 'all':
+    if name == 'all':
         history_types = sorted([_HIST_CMD, _HIST_EXPR, _HIST_INPUT, _HIST_DEBUG, _HIST_SEARCH])
     else:
-        history_type = history_get_type(history)
+        history_type = history_get_type(name)
         if history_type == _HIST_INVALID:
             return ''
 

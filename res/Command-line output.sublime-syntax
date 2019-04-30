@@ -1,0 +1,10 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+name: NeoVintageous Command-line output
+scope: text.excmdline-output
+hidden: true
+contexts:
+  main:
+    - match: ' {5}\# {2}.*'
+      scope: entity.name.excmdline-output

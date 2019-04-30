@@ -83,6 +83,23 @@ def ui_bell(msg=None):
         do_blink()
 
 
+def _apply_cmdline_panel_settings(panel):
+    _set = panel.settings().set
+
+    _set('auto_complete', False)
+    _set('auto_indent', False)
+    _set('auto_match_enabled', False)
+    _set('draw_centered', False)
+    _set('draw_indent_guides', False)
+    _set('gutter', False)
+    _set('match_selection', False)
+    _set('rulers', [])
+    _set('scroll_past_end', False)
+    _set('smart_indent', False)
+    _set('translate_tabs_to_spaces', False)
+    _set('word_wrap', False)
+
+
 def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
     # type: (...) -> None
     input_panel = window.show_input_panel(
@@ -94,6 +111,8 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
     )
 
     input_panel.set_name('Command-line mode')
+    input_panel.assign_syntax(
+        'Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
 
     _set = input_panel.settings().set
 
@@ -109,22 +128,24 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
     _set('is_widget', True)
     _set('is_vintageous_widget', True)
 
-    _set('auto_complete', False)
-    _set('auto_indent', False)
-    _set('auto_match_enabled', False)
-    _set('draw_centered', False)
-    _set('draw_indent_guides', False)
-    _set('gutter', False)
-    _set('margin', 1)
-    _set('match_selection', False)
-    _set('rulers', [])
-    _set('scroll_past_end', False)
-    _set('smart_indent', False)
-    _set('translate_tabs_to_spaces', False)
-    _set('word_wrap', False)
+    _apply_cmdline_panel_settings(input_panel)
 
-    input_panel.assign_syntax(
-        'Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
+
+class CmdlineOutput():
+
+    def __init__(self, window):
+        self._window = window
+
+        self._output = self._window.create_output_panel('command-line')
+        self._output.assign_syntax('Packages/NeoVintageous/res/Command-line output.sublime-syntax')
+
+        _apply_cmdline_panel_settings(self._output)
+
+    def show(self):
+        self._window.run_command('show_panel', {'panel': 'output.command-line'})
+
+    def write(self, text):
+        self._output.run_command('insert', {'characters': text})
 
 
 _REGION_FLAGS = {

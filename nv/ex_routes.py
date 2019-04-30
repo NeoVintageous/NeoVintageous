@@ -250,6 +250,14 @@ def _ex_route_help(state):
     return command
 
 
+def _ex_route_history(state):
+    command = _literal_route(state, 'history')
+
+    _resolve(state, command, r'\s*(?P<name>.+)')
+
+    return command
+
+
 def _ex_route_let(state):
     command = TokenCommand('let')
     params = {'name': None, 'value': None}
@@ -709,6 +717,7 @@ ex_routes[r'exi(?:t)?'] = _ex_route_exit
 ex_routes[r'e(?:dit)?(?= |$)?'] = _ex_route_edit
 ex_routes[r'f(?:ile)?'] = _ex_route_file
 ex_routes[r'g(?:lobal)?'] = _ex_route_global
+ex_routes[r'his(?:tory)?'] = _ex_route_history
 ex_routes[r'h(?:elp)?'] = _ex_route_help
 ex_routes[r'let\s'] = _ex_route_let
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move

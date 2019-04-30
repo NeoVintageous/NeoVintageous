@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:history` command
 * Added [#513](https://github.com/NeoVintageous/NeoVintageous/issues/513): `:g[lobal]/{pattern}/d[elete]`
 * Added [#512](https://github.com/NeoVintageous/NeoVintageous/issues/512): Visual block mode to Visual mode (`v`)
 * Added [#511](https://github.com/NeoVintageous/NeoVintageous/issues/511): Visual block mode to Visual line mode (`V`)
