@@ -785,18 +785,17 @@ class State(object):
 
         if self.action and self.motion:
             action_cmd = self.action.translate(self)
+            _log.debug('action_cmd = %s', action_cmd)
             motion_cmd = self.motion.translate(self)
+            _log.debug('motion_cmd = %s', motion_cmd)
 
             _log.debug('changing to INTERNAL_NORMAL...')
             self.mode = INTERNAL_NORMAL
 
-            # TODO Make motions and actions require a 'mode' param.
             if 'mode' in action_cmd['action_args']:
-                _log.debug('action has a mode, changing to INTERNAL_NORMAL...')
                 action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
             if 'mode' in motion_cmd['motion_args']:
-                _log.debug('motion has a mode, changing to INTERNAL_NORMAL...')
                 motion_cmd['motion_args']['mode'] = INTERNAL_NORMAL
 
             args = action_cmd['action_args']
@@ -912,6 +911,8 @@ def init_state(view):
         state.reset_during_init = True
         return
 
+    mode = state.mode
+
     # Non-standard user setting.
     reset = state.settings.view['vintageous_reset_mode_when_switching_tabs']
     # XXX: If the view was already in normal mode, we still need to run the
@@ -920,23 +921,22 @@ def init_state(view):
     # first loading a file.
     # If the mode is unknown, it might be a new file. Let normal mode setup
     # continue.
-    if not reset and (state.mode not in (NORMAL, UNKNOWN)):
+    if not reset and (mode not in (NORMAL, UNKNOWN)):
         return
 
     # If we have no selections, add one.
-    if len(state.view.sel()) == 0:
-        _log.debug('no selection, adding one at 0...')
-        state.view.sel().add(Region(0))
+    if len(view.sel()) == 0:
+        view.sel().add(Region(0))
 
-    if state.mode in (VISUAL, VISUAL_LINE):
+    if mode in (VISUAL, VISUAL_LINE):
         # TODO: Don't we need to pass a mode here?
         view.window().run_command('_enter_normal_mode', {'from_init': True})
 
-    elif state.mode in (INSERT, REPLACE):
+    elif mode in (INSERT, REPLACE):
         # TODO: Don't we need to pass a mode here?
         view.window().run_command('_enter_normal_mode', {'from_init': True})
 
-    elif (view.has_non_empty_selection_region() and state.mode != VISUAL):
+    elif view.has_non_empty_selection_region() and mode != VISUAL:
         # Runs, for example, when we've performed a search via ST3 search panel
         # and we've pressed 'Find All'. In this case, we want to ensure a
         # consistent state for multiple selections.
@@ -944,9 +944,7 @@ def init_state(view):
         state.mode = VISUAL
     else:
         # This may be run when we're coming from cmdline mode.
-        pseudo_visual = view.has_non_empty_selection_region()
-        mode = VISUAL if pseudo_visual else state.mode
-        # TODO: Maybe the above should be handled by State?
+        mode = VISUAL if view.has_non_empty_selection_region() else mode
         state.enter_normal_mode()
         view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
 
