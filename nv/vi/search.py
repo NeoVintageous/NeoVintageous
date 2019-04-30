@@ -23,6 +23,7 @@ from sublime import Region
 import sublime_plugin
 
 from NeoVintageous.nv.ui import ui_region_flags
+from NeoVintageous.nv.utils import clear_search_highlighting
 
 
 def find_in_range(view, term, start, end, flags=0):
@@ -244,8 +245,7 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         )
 
         if not regions:
-            self.view.erase_regions('vi_search')
-            self.view.erase_regions('vi_search_current')
+            clear_search_highlighting(self.view)
             return
 
         sels = self.view.sel()

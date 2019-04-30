@@ -62,6 +62,7 @@ from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
 from NeoVintageous.nv.ui import ui_region_flags
 from NeoVintageous.nv.utils import calculate_xpos
+from NeoVintageous.nv.utils import clear_search_highlighting
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import fix_eol_cursor
@@ -69,6 +70,7 @@ from NeoVintageous.nv.utils import folded_rows
 from NeoVintageous.nv.utils import get_option_scroll
 from NeoVintageous.nv.utils import get_scroll_down_target_pt
 from NeoVintageous.nv.utils import get_scroll_up_target_pt
+from NeoVintageous.nv.utils import get_search_regions
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import lowest_visible_pt
@@ -1287,8 +1289,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
             self.view.sel().clear()
             self.view.sel().add(Region(sel.b))
 
-        self.view.erase_regions('vi_search')
-        self.view.erase_regions('vi_search_current')
+        clear_search_highlighting(self.view)
         fix_eol_cursor(self.view, mode)
 
 
@@ -3108,10 +3109,9 @@ class _vi_g_big_h(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
         view = self.window.active_view()
-
-        regs = view.get_regions('vi_search')
-        if regs:
-            view.sel().add_all(view.get_regions('vi_search'))
+        search_regions = get_search_regions(view)
+        if search_regions:
+            view.sel().add_all(search_regions)
 
             self.state.enter_select_mode()
             self.state.display_status()

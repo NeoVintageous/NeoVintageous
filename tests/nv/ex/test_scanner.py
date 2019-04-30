@@ -512,6 +512,7 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['new'], cmd('new'))
         self.assertRoute(['nnoremap abc xyz', 'nn abc xyz'], cmd('nnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
         self.assertRoute(['nnoremap', 'nn'], cmd('nnoremap'))
+        self.assertRoute(['nohlsearch', 'noh'], cmd('nohlsearch'))
         self.assertRoute(['noremap abc xyz', 'no abc xyz'], cmd('noremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
         self.assertRoute(['noremap', 'no'], cmd('noremap'))
         self.assertRoute(['nunmap xyz', 'nun xyz'], cmd('nunmap', params={'lhs': 'xyz'}))

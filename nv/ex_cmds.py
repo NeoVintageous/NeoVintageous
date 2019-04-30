@@ -49,6 +49,7 @@ from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import CmdlineOutput
 from NeoVintageous.nv.ui import ui_bell
+from NeoVintageous.nv.utils import clear_search_highlighting
 from NeoVintageous.nv.vi.search import find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
@@ -647,6 +648,10 @@ def ex_nnoremap(lhs=None, rhs=None, **kwargs):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(NORMAL, lhs, rhs)
+
+
+def ex_nohlsearch(view, **kwargs):
+    clear_search_highlighting(view)
 
 
 def ex_noremap(lhs=None, rhs=None, **kwargs):

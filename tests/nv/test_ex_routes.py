@@ -267,6 +267,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_let', ['let '])
         self.assertRoute('_ex_route_move', ['move', 'm'])
         self.assertRoute('_ex_route_new', ['new'])
+        self.assertRoute('_ex_route_nohlsearch', ['nohlsearch', 'noh'])
         self.assertRoute('_ex_route_nnoremap', ['nnoremap', 'nn'])
         self.assertRoute('_ex_route_noremap', ['noremap', 'no'])
         self.assertRoute('_ex_route_nunmap', ['nunmap', 'nun'])

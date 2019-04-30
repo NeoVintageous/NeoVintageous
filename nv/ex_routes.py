@@ -295,6 +295,10 @@ def _ex_route_nnoremap(state):
     return _create_map_route(state, 'nnoremap')
 
 
+def _ex_route_nohlsearch(state):
+    return _literal_route(state, 'nohlsearch')
+
+
 def _ex_route_noremap(state):
     return _create_map_route(state, 'noremap')
 
@@ -723,6 +727,7 @@ ex_routes[r'let\s'] = _ex_route_let
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
 ex_routes[r'new'] = _ex_route_new
 ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap
+ex_routes[r'noh(?:lsearch)?'] = _ex_route_nohlsearch
 ex_routes[r'no(?:remap)?'] = _ex_route_noremap
 ex_routes[r'nun(?:map)?'] = _ex_route_nunmap
 ex_routes[r'ono(?:remap)?'] = _ex_route_onoremap
