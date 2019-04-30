@@ -209,16 +209,6 @@ def prev_non_blank(view, pt):
     return pt
 
 
-def next_non_white_space_char(view, pt, white_space='\t '):
-    # type: (...) -> int
-    limit = view.size()
-    substr = view.substr
-    while (substr(pt) in white_space) and (pt <= limit):
-        pt += 1
-
-    return pt
-
-
 def previous_non_white_space_char(view, pt, white_space='\t \n'):
     # type: (...) -> int
     substr = view.substr
@@ -233,14 +223,6 @@ def previous_white_space_char(view, pt, white_space='\t '):
     # type: (...) -> int
     substr = view.substr
     while pt >= 0 and substr(pt) not in white_space:
-        pt -= 1
-
-    return pt
-
-
-def move_backward_while(view, pt, func):
-    # type: (...) -> int
-    while (pt >= 0) and func(pt):
         pt -= 1
 
     return pt

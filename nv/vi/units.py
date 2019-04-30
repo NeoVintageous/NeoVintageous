@@ -26,7 +26,7 @@ from sublime import CLASS_WORD_START
 from sublime import Region
 
 from NeoVintageous.nv.vi.utils import last_row
-from NeoVintageous.nv.vi.utils import next_non_white_space_char
+from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import row_at
 
 
@@ -128,10 +128,10 @@ def word_starts(view, start, count=1, internal=False):
 
         pt = next_word_start(view, pt)
         if not internal or (i != count - 1):
-            pt = next_non_white_space_char(view, pt, white_space=' \t')
+            pt = next_non_blank(view, pt)
             while not (view.size() == pt or view.line(pt).empty() or view.substr(view.line(pt)).strip()):
                 pt = next_word_start(view, pt)
-                pt = next_non_white_space_char(view, pt, white_space=' \t')
+                pt = next_non_blank(view, pt)
 
     if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):  # FIXME # noqa: E501
         pt -= 1
@@ -153,12 +153,12 @@ def big_word_starts(view, start, count=1, internal=False):
 
         pt = next_big_word_start(view, pt)
         if not internal or i != count - 1:
-            pt = next_non_white_space_char(view, pt, white_space=' \t')
+            pt = next_non_blank(view, pt)
             while not (view.size() == pt or
                        view.line(pt).empty() or
                        view.substr(view.line(pt)).strip()):
                 pt = next_big_word_start(view, pt)
-                pt = next_non_white_space_char(view, pt, white_space=' \t')
+                pt = next_non_blank(view, pt)
 
     if (internal and (view.line(start) != view.line(pt)) and (start != view.line(start).a and not view.substr(view.line(pt - 1)).isspace()) and at_eol(view, pt - 1)):  # FIXME # noqa: E501
         pt -= 1
@@ -233,7 +233,7 @@ def inner_lines(view, s, count=1):
     """
     end = view.text_point(row_at(view, s.b) + (count - 1), 0)
     begin = view.line(s.b).a
-    begin = next_non_white_space_char(view, begin, white_space=' \t')
+    begin = next_non_blank(view, begin)
 
     return Region(begin, view.line(end).b)
 

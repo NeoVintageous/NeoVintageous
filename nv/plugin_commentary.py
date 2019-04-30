@@ -27,7 +27,7 @@ from NeoVintageous.nv.plugin import VISUAL
 from NeoVintageous.nv.plugin import VISUAL_BLOCK
 from NeoVintageous.nv.plugin import VISUAL_LINE
 from NeoVintageous.nv.ui import ui_bell
-from NeoVintageous.nv.vi.utils import next_non_white_space_char
+from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vi.utils import regions_transformer_reversed
 from NeoVintageous.nv.vi.utils import row_at
@@ -146,9 +146,9 @@ def _do_cc(view, edit, mode, count=1):
         if mode == INTERNAL_NORMAL:
             view.run_command('toggle_comment')
             if row_at(view, s.a) != row_at(view, view.size()):
-                pt = next_non_white_space_char(view, s.a, white_space=' \t')
+                pt = next_non_blank(view, s.a)
             else:
-                pt = next_non_white_space_char(view, view.line(s.a).a, white_space=' \t')
+                pt = next_non_blank(view, view.line(s.a).a)
 
             return Region(pt)
 

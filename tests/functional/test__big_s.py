@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
-    def test_S(self):
+    def test_n(self):
         self.eq('|', 'S', 'i_|')
         self.eq('|aaa\nbbb\nccc', 'S', 'i_|\nbbb\nccc')
         self.eq('aaa\nbb|b\nccc', 'S', 'i_aaa\n|\nccc')
@@ -31,22 +31,18 @@ class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('3aaa\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
-
-    def test_S_should_not_strip_preceding_whitespace(self):
         self.eq('    |one', 'S', 'i_    |')
-
-    def test_S_last_line(self):
         self.eq('1\ntw|o', 'S', 'i_1\n|')
         self.eq('1\ntw|o\n', 'S', 'i_1\n|\n')
 
-    def test_v_S(self):
+    def test_v(self):
         self.eq('one\n|two\n|three', 'v_S', 'i_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
-    def test_l_S(self):
+    def test_l(self):
         self.eq('one\n|two\n|three', 'l_S', 'i_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
