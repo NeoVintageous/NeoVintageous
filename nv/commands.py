@@ -3702,25 +3702,28 @@ class _vi_dollar(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
+def fixup_eof(view, pt):
+    # type: (...) -> int
+    if ((pt == view.size()) and (not view.line(pt).empty())):
+        pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
+
+    return pt
+
+
 class _vi_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            target = word_starts(view, resolve_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
+
             if mode == NORMAL:
-                pt = word_starts(view, s.b, count)
-                if ((pt == view.size()) and (not view.line(pt).empty())):
-                    pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
-
-                return Region(pt, pt)
+                s = Region(fixup_eof(view, target))
             elif mode == VISUAL:
-                start = (s.b - 1) if (s.a < s.b) else s.b
-                resolve_visual_target(s, word_starts(view, start, count))
+                resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                a = s.a
-                pt = word_starts(view, s.b, count, internal=True)
-                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
-                    a = view.line(s.a).a
+                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(target)):
+                    s.a = view.line(s.a).a
 
-                return Region(a, pt)
+                s.b = target
 
             return s
 
@@ -3737,21 +3740,17 @@ class _vi_w(ViMotionCommand):
 class _vi_big_w(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            target = big_word_starts(view, resolve_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
+
             if mode == NORMAL:
-                pt = big_word_starts(view, s.b, count)
-                if ((pt == view.size()) and (not view.line(pt).empty())):
-                    pt = previous_non_white_space_char(view, pt - 1, white_space='\n')
-
-                s = Region(pt)
+                s = Region(fixup_eof(view, target))
             elif mode == VISUAL:
-                resolve_visual_target(s, big_word_starts(view, max(s.b - 1, 0), count))
+                resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                a = s.a
-                pt = big_word_starts(view, s.b, count, internal=True)
-                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
-                    a = view.line(s.a).a
+                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(target)):
+                    s.a = view.line(s.a).a
 
-                s = Region(a, pt)
+                s.b = target
 
             return s
 
@@ -3775,14 +3774,13 @@ class _vi_e(ViMotionCommand):
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                a = s.a
-                pt = word_ends(view, s.b, count)
-                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(pt)):
-                    a = view.line(s.a).a
-                    if view.line(a).empty():
-                        pt += 1
+                if (not view.substr(view.line(s.a)).strip() and view.line(s.b) != view.line(target)):
+                    if view.line(s.a).empty():
+                        target += 1
 
-                s = Region(a, pt)
+                    s.a = view.line(s.a).a
+
+                s.b = target + 1
 
             return s
 
