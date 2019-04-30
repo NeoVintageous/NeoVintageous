@@ -66,7 +66,6 @@ from NeoVintageous.nv.vi.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
 from NeoVintageous.nv.vi.utils import adding_regions
-from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import get_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import has_dirty_buffers
 from NeoVintageous.nv.vi.utils import next_non_blank
@@ -1022,7 +1021,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
 
                 # no match or match out of range -- stop
                 if (match == Region(-1)) or (row_at(view, match.a) > last_row):
-                    view.show(first_sel(view).begin())
+                    view.show(view.sel()[0].begin())
                     return
 
                 size_before = view.size()
@@ -1328,7 +1327,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
             text = view.substr(r)
             text = text if text.startswith('\n') else '\n' + text
 
-            location = get_insertion_point_at_b(first_sel(view))
+            location = get_insertion_point_at_b(view.sel()[0])
 
             view.run_command('append', {'characters': text})
 

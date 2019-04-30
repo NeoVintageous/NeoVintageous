@@ -103,6 +103,19 @@ def regions_transformer_reversed(view, f):
     _regions_transformer(reversed(list(view.sel())), view, f, False)
 
 
+def replace_sel(view, new_sel):
+    # type: (...) -> None
+    if new_sel is None or new_sel == []:
+        raise ValueError('no new_sel')
+
+    view.sel().clear()
+    if isinstance(new_sel, list):
+        view.sel().add_all(new_sel)
+        return
+
+    view.sel().add(new_sel)
+
+
 def get_insertion_point_at_b(region):
     # type: (Region) -> int
     if region.a < region.b:
@@ -113,25 +126,10 @@ def get_insertion_point_at_b(region):
 
 def get_insertion_point_at_a(region):
     # type: (Region) -> int
-    if region.a < region.b:
-        return region.a
-    elif region.b < region.a:
+    if region.b < region.a:
         return region.a - 1
-    else:
-        raise TypeError('not a visual region')
 
-
-# TODO [review] this function looks unused; it was refactored from an obsolete module.
-@contextmanager
-def restoring_sels(view):
-    old_sels = list(view.sel())
-
-    yield
-
-    # TODO REVIEW Possible race-condition? If the buffer has changed.
-    view.sel().clear()
-    for s in old_sels:
-        view.sel().add(s)
+    return region.a
 
 
 # Save selection, but only if it's not empty.
@@ -177,17 +175,6 @@ def col_at(view, pt):
 def row_to_pt(view, row, col=0):
     # type: (...) -> int
     return view.text_point(row, col)
-
-
-@contextmanager
-def gluing_undo_groups(view, state):
-    state.processing_notation = True
-    view.run_command('mark_undo_groups_for_gluing')
-
-    yield
-
-    view.run_command('glue_marked_undo_groups')
-    state.processing_notation = False
 
 
 def next_non_blank(view, pt):
@@ -280,58 +267,14 @@ def translate_char(char):
 
 
 @contextmanager
-def restoring_sel(view):
-    regs = list(view.sel())
-    view.sel().clear()
+def gluing_undo_groups(view, state):
+    state.processing_notation = True
+    view.run_command('mark_undo_groups_for_gluing')
+
     yield
-    view.sel().clear()
-    view.sel().add_all(regs)
 
-
-def last_sel(view):
-    # type: (...) -> Region
-    return get_sel(view, -1)
-
-
-def second_sel(view):
-    # type: (...) -> Region
-    return get_sel(view, 1)
-
-
-def first_sel(view):
-    # type: (...) -> Region
-    return get_sel(view, 0)
-
-
-def get_sel(view, i=0):
-    # type: (...) -> Region
-    return view.sel()[i]
-
-
-def get_eol(view, pt, inclusive=False):
-    # type: (...) -> int
-    if not inclusive:
-        return view.line(pt).end()
-
-    return view.full_line(pt).end()
-
-
-def get_bol(view, pt):
-    # type: (...) -> int
-    return view.line(pt).a
-
-
-def replace_sel(view, new_sel):
-    # type: (...) -> None
-    if new_sel is None or new_sel == []:
-        raise ValueError('no new_sel')
-
-    view.sel().clear()
-    if isinstance(new_sel, list):
-        view.sel().add_all(new_sel)
-        return
-
-    view.sel().add(new_sel)
+    view.run_command('glue_marked_undo_groups')
+    state.processing_notation = False
 
 
 @contextmanager

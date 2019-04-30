@@ -122,9 +122,6 @@ from NeoVintageous.nv.vi.units import next_paragraph_start
 from NeoVintageous.nv.vi.units import prev_paragraph_start
 from NeoVintageous.nv.vi.units import word_ends
 from NeoVintageous.nv.vi.units import word_starts
-from NeoVintageous.nv.vi.utils import first_sel
-from NeoVintageous.nv.vi.utils import get_bol
-from NeoVintageous.nv.vi.utils import get_eol
 from NeoVintageous.nv.vi.utils import get_insertion_point_at_a
 from NeoVintageous.nv.vi.utils import get_insertion_point_at_b
 from NeoVintageous.nv.vi.utils import get_previous_selection
@@ -1962,7 +1959,7 @@ class _vi_x(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
             if mode == INTERNAL_NORMAL:
-                return Region(s.b, min(s.b + count, get_eol(view, s.b)))
+                return Region(s.b, min(s.b + count, view.line(s.b).b))
 
             return s
 
@@ -2033,12 +2030,12 @@ class _vi_less_than_less_than(ViTextCommandBase):
             if count <= 1:
                 return s
 
-            a = get_bol(view, s.a)
+            a = view.line(s.a).a
             pt = view.text_point(row_at(view, a) + (count - 1), 0)
-            return Region(a, get_eol(view, pt))
+            return Region(a, view.line(pt).b)
 
         def action(view, s):
-            bol = get_bol(view, s.begin())
+            bol = view.line(s.begin()).a
             pt = next_non_blank(view, bol)
             return Region(pt)
 
@@ -2054,10 +2051,10 @@ class _vi_equal_equal(ViTextCommandBase):
             return Region(s.begin())
 
         def select(view):
-            s0 = first_sel(self.view)
-            end_row = row_at(view, s0.b) + (count - 1)
+            s = view.sel()[0]
+            end_row = row_at(view, s.b) + (count - 1)
             view.sel().clear()
-            view.sel().add(Region(s0.begin(), view.text_point(end_row, 1)))
+            view.sel().add(Region(s.begin(), view.text_point(end_row, 1)))
 
         if count > 1:
             select(self.view)
@@ -2071,14 +2068,14 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            bol = get_bol(view, s.begin())
+            bol = view.line(s.begin()).a
             pt = next_non_blank(view, bol)
             return Region(pt)
 
         def select(view):
-            s0 = first_sel(view)
-            end_row = row_at(view, s0.b) + (count - 1)
-            replace_sel(view, Region(s0.begin(), view.text_point(end_row, 1)))
+            s = view.sel()[0]
+            end_row = row_at(view, s.b) + (count - 1)
+            replace_sel(view, Region(s.begin(), view.text_point(end_row, 1)))
 
         if count > 1:
             select(self.view)
@@ -2092,7 +2089,7 @@ class _vi_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            bol = get_bol(view, s.begin())
+            bol = view.line(s.begin()).a
             pt = next_non_blank(view, bol)
 
             return Region(pt)
@@ -2111,7 +2108,7 @@ class _vi_greater_than(ViTextCommandBase):
             regions_transformer(self.view, f)
 
             # Restore only the first sel.
-            s = first_sel(self.view)
+            s = self.view.sel()[0]
             replace_sel(self.view, s.a + 1)
             enter_normal_mode(self.view, mode)
             return
@@ -2132,7 +2129,7 @@ class _vi_less_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
-            bol = get_bol(view, s.begin())
+            bol = view.line(s.begin()).a
             pt = next_non_blank(view, bol)
 
             return Region(pt)
@@ -2488,7 +2485,7 @@ class _vi_ctrl_w(WindowCommand):
 class _vi_z_enter(IrreversibleTextCommand):
 
     def run(self, mode=None, count=1):
-        pt = get_insertion_point_at_b(first_sel(self.view))
+        pt = get_insertion_point_at_b(self.view.sel()[0])
         home_line = self.view.line(pt)
         taget_pt = self.view.text_to_layout(home_line.begin())
         self.view.set_viewport_position(taget_pt)
@@ -2497,7 +2494,7 @@ class _vi_z_enter(IrreversibleTextCommand):
 class _vi_z_minus(IrreversibleTextCommand):
 
     def run(self, mode=None, count=1):
-        layout_coord = self.view.text_to_layout(first_sel(self.view).b)
+        layout_coord = self.view.text_to_layout(self.view.sel()[0].b)
         viewport_extent = self.view.viewport_extent()
         new_pos = (0.0, layout_coord[1] - viewport_extent[1])
         self.view.set_viewport_position(new_pos)
@@ -2897,7 +2894,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
         elif mode == VISUAL_BLOCK and not force:
             enter_normal_mode(self.view, mode)
         elif mode == VISUAL:
-            first = first_sel(self.view)
+            first = self.view.sel()[0]
 
             if self.view.line(first.end() - 1).empty():
                 enter_normal_mode(self.view, mode)
@@ -3641,10 +3638,10 @@ class _vi_gg(ViMotionCommand):
                 s = Region(next_non_blank(view, 0))
             elif mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, 0))
-            elif mode == INTERNAL_NORMAL:
-                s = Region(view.full_line(s.b).b, 0)
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, 0)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(view.full_line(s.b).b, 0)
 
             return s
 
@@ -3693,7 +3690,7 @@ class _vi_dollar(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, eol)
             elif mode == INTERNAL_NORMAL:
-                if get_bol(view, s.a) == s.a:
+                if view.line(s.a).a == s.a:
                     s = Region(s.a, eol + 1)
                 else:
                     s = Region(s.a, eol)
@@ -4811,34 +4808,38 @@ class _vi_enter(ViMotionCommand):
     def run(self, mode=None, count=1):
         self.view.run_command('_vi_j', {'mode': mode, 'count': count})
 
-        def advance(view, s):
+        def f(view, s):
+            target = next_non_blank(view, get_insertion_point_at_b(s))
+
             if mode == NORMAL:
-                s = Region(next_non_blank(view, s.b))
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, s.b - 1 if s.a < s.b else s.b))
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, next_non_blank(view, s.b - 1 if s.a < s.b else s.b))
+                resolve_visual_line_target(view, s, target)
 
             return s
 
-        regions_transformer(self.view, advance)
+        regions_transformer(self.view, f)
 
 
 class _vi_minus(ViMotionCommand):
     def run(self, mode=None, count=1):
         self.view.run_command('_vi_k', {'mode': mode, 'count': count})
 
-        def advance(view, s):
+        def f(view, s):
+            target = next_non_blank(view, get_insertion_point_at_b(s))
+
             if mode == NORMAL:
-                s = Region(next_non_blank(view, s.b))
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, s.b - 1 if s.a < s.b else s.b))
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, next_non_blank(view, s.b - 1 if s.a < s.b else s.b))
+                resolve_visual_line_target(view, s, target)
 
             return s
 
-        regions_transformer(self.view, advance)
+        regions_transformer(self.view, f)
 
 
 class _vi_shift_enter(ViMotionCommand):
@@ -4894,11 +4895,9 @@ class _vi_go_to_symbol(ViMotionCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                return Region(location, location)
-
+                return Region(location)
             elif mode == VISUAL:
                 return Region(s.a + 1, location)
-
             elif mode == INTERNAL_NORMAL:
                 return Region(s.a, location)
 

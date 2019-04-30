@@ -27,7 +27,6 @@ from NeoVintageous.nv.ex.tokens import TokenPercent
 from NeoVintageous.nv.ex.tokens import TokenSearchBackward
 from NeoVintageous.nv.ex.tokens import TokenSearchForward
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
-from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import row_at
 
 
@@ -107,7 +106,7 @@ def _resolve_line_reference(view, line_reference, current=0):
     #   current (int): Line number where we are now.
     last_token = None
     # XXX: what happens if there is no selection in the view?
-    current = row_at(view, first_sel(view).b)
+    current = row_at(view, view.sel()[0].b)
     for token in line_reference:
         # Make sure a search forward doesn't overlap with
         # a match obtained right before this search.

@@ -33,7 +33,6 @@ from NeoVintageous.nv.vi.marks import Marks
 from NeoVintageous.nv.vi.registers import Registers
 from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vi.utils import col_at
-from NeoVintageous.nv.vi.utils import first_sel
 from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import row_at
@@ -694,7 +693,7 @@ class State(object):
         if self.mode not in (VISUAL, VISUAL_LINE):
             return
 
-        first = first_sel(self.view)
+        first = self.view.sel()[0]
         lines = (row_at(self.view, first.end()) -
                  row_at(self.view, first.begin()))
 
@@ -707,7 +706,7 @@ class State(object):
 
     def restore_visual_data(self, data):
         rows, chars, old_mode = data
-        first = first_sel(self.view)
+        first = self.view.sel()[0]
 
         if old_mode == VISUAL:
             if rows > 0:

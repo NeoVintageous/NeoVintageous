@@ -50,7 +50,7 @@ def view_find_in_range(view, pattern, pos, endpos, flags=0):
 def view_find_all_in_range(view, pattern, pos, endpos, flags=0):
     matches = []
     while pos <= endpos:
-        match = view.find(pattern, pos)
+        match = view.find(pattern, pos, flags)
         if match is None or match.b == -1:
             break
 
