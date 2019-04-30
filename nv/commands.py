@@ -963,7 +963,9 @@ class _vi_gq(ViTextCommandBase):
 
         def shrink(view, s):
             if s.b > s.a and view.substr(s.b - 1) == '\n':
-                return Region(s.a, s.b - 1)
+                s.b -= 1
+            elif s.b < s.a and view.substr(s.a - 1) == '\n':
+                s.a -= 1
 
             return s
 
