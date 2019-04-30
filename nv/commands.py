@@ -76,6 +76,7 @@ from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import next_non_folded_pt
 from NeoVintageous.nv.utils import previous_non_folded_pt
+from NeoVintageous.nv.utils import resolve_visual_block_target
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import scroll_horizontally
@@ -3723,10 +3724,7 @@ class _vi_w(ViMotionCommand):
             return s
 
         if mode == VISUAL_BLOCK:
-            visual_block = VisualBlockSelection(self.view)
-            visual_block.transform_target(
-                word_starts(self.view, visual_block.insertion_point_b(), count)
-            )
+            resolve_visual_block_target(self.view, word_starts, count)
             return
 
         regions_transformer(self.view, f)
@@ -3750,10 +3748,7 @@ class _vi_big_w(ViMotionCommand):
             return s
 
         if mode == VISUAL_BLOCK:
-            visual_block = VisualBlockSelection(self.view)
-            visual_block.transform_target(
-                big_word_starts(self.view, visual_block.insertion_point_b(), count)
-            )
+            resolve_visual_block_target(self.view, big_word_starts, count)
             return
 
         regions_transformer(self.view, f)
@@ -4267,10 +4262,7 @@ class _vi_b(ViMotionCommand):
             return s
 
         if mode == VISUAL_BLOCK:
-            visual_block = VisualBlockSelection(self.view)
-            visual_block.transform_target(
-                word_reverse(self.view, visual_block.insertion_point_b(), count)
-            )
+            resolve_visual_block_target(self.view, word_reverse, count)
             return
 
         regions_transformer(self.view, f)
@@ -4292,10 +4284,7 @@ class _vi_big_b(ViMotionCommand):
             return s
 
         if mode == VISUAL_BLOCK:
-            visual_block = VisualBlockSelection(self.view)
-            visual_block.transform_target(
-                big_word_reverse(self.view, visual_block.insertion_point_b(), count)
-            )
+            resolve_visual_block_target(self.view, big_word_reverse, count)
             return
 
         regions_transformer(self.view, f)
@@ -4750,31 +4739,23 @@ class _vi_big_n(ViMotionCommand):
 
 class _vi_big_e(ViMotionCommand):
     def run(self, mode=None, count=1):
+        def _big_word_ends(view, start, count):
+            return big_word_ends(view, start, count) - 1
+
         def f(view, s):
-            target = big_word_ends(view, resolve_insertion_point_at_b(s), count)
+            target = _big_word_ends(view, resolve_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target - 1)
-            elif mode == INTERNAL_NORMAL:
-                s.b = target
+                s = Region(target)
             elif mode == VISUAL:
-                start = s.a
-                if s.b < s.a:
-                    start = s.a - 1
-
-                end = target - 1
-                if start <= end:
-                    s = Region(start, end + 1)
-                else:
-                    s = Region(start + 1, end)
+                resolve_visual_target(s, target)
+            elif mode == INTERNAL_NORMAL:
+                s.b = target + 1
 
             return s
 
         if mode == VISUAL_BLOCK:
-            visual_block = VisualBlockSelection(self.view)
-            visual_block.transform_target(
-                big_word_ends(self.view, visual_block.insertion_point_b(), count) - 1
-            )
+            resolve_visual_block_target(self.view, _big_word_ends, count)
             return
 
         regions_transformer(self.view, f)

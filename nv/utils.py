@@ -575,6 +575,13 @@ class VisualBlockSelection():
         self._transform(self.to_visual_line())
 
 
+def resolve_visual_block_target(view, target, count):
+    visual_block = VisualBlockSelection(view)
+    visual_block.transform_target(
+        target(view, visual_block.insertion_point_b(), count)
+    )
+
+
 class InputParser():
 
     IMMEDIATE = 1
