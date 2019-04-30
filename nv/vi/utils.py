@@ -200,6 +200,15 @@ def next_non_blank(view, pt):
     return pt
 
 
+def prev_non_blank(view, pt):
+    # type: (...) -> int
+    substr = view.substr
+    while substr(pt) in '\t ' and pt > 0:
+        pt -= 1
+
+    return pt
+
+
 def next_non_white_space_char(view, pt, white_space='\t '):
     # type: (...) -> int
     limit = view.size()

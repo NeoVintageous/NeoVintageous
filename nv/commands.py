@@ -133,6 +133,7 @@ from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vi.utils import new_inclusive_region
 from NeoVintageous.nv.vi.utils import next_non_blank
 from NeoVintageous.nv.vi.utils import next_non_white_space_char
+from NeoVintageous.nv.vi.utils import prev_non_blank
 from NeoVintageous.nv.vi.utils import previous_non_white_space_char
 from NeoVintageous.nv.vi.utils import previous_white_space_char
 from NeoVintageous.nv.vi.utils import regions_transformer
@@ -1660,6 +1661,9 @@ class _vi_d(ViTextCommandBase):
         def advance_to_text_start(view, s):
             if motion:
                 if 'motion' in motion:
+                    if motion['motion'] in ('_vi_g__',):
+                        return
+
                     if motion['motion'] in ('_vi_e', '_vi_big_e', '_vi_dollar', '_vi_find_in_line'):
                         return Region(s.begin())
 
@@ -4390,20 +4394,17 @@ class _vi_gk(ViMotionCommand):
 class _vi_g__(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            line = view.line(resolve_insertion_point_at_b(s))
+            eol = line.b
+            if line.size() > 0:
+                eol = prev_non_blank(view, eol - 1)
+
             if mode == NORMAL:
-                s = Region(view.line(s.b).b - 1)
+                s = Region(eol)
             elif mode == VISUAL:
-                eol = None
-                if s.a < s.b:
-                    s = Region(s.a, view.line(s.b - 1).b)
-                else:
-                    eol = view.line(s.b).b
-                    if eol > s.a:
-                        s = Region(s.a - 1, eol)
-                    else:
-                        s = Region(s.a, eol)
+                resolve_visual_target(s, eol)
             elif mode == INTERNAL_NORMAL:
-                s.b = view.line(s.b).b
+                s.b = eol + 1
 
             return s
 
