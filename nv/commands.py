@@ -1010,7 +1010,7 @@ class _vi_gq(ViTextCommandBase):
 
 class _vi_u(ViWindowCommandBase):
 
-    def run(self, count=1, **kwargs):
+    def run(self, mode=None, count=1, **kwargs):
         for i in range(count):
             self.view.run_command('undo')
 
@@ -1028,7 +1028,7 @@ class _vi_u(ViWindowCommandBase):
 
 class _vi_ctrl_r(ViWindowCommandBase):
 
-    def run(self, count=1, **kwargs):
+    def run(self, mode=None, count=1, **kwargs):
         change_count_before = self.view.change_count()
 
         for i in range(count):
@@ -1055,7 +1055,7 @@ class _vi_ctrl_r(ViWindowCommandBase):
 
 class _vi_a(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             if view.substr(s.b) != '\n' and s.b < view.size():
                 return Region(s.b + 1)
@@ -1085,7 +1085,7 @@ class _vi_a(ViTextCommandBase):
 
 class _vi_c(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None, motion=None, register=None):
+    def run(self, edit, mode=None, count=1, motion=None, register=None):
         def compact(view, s):
             if view.substr(s).strip():
                 if s.b > s.a:
@@ -1633,7 +1633,7 @@ class _vi_y(ViTextCommandBase):
 
 class _vi_d(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None, motion=None, register=None):
+    def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE):
             raise ValueError('wrong mode')
 
@@ -1722,7 +1722,7 @@ class _vi_big_a(ViTextCommandBase):
 
 class _vi_big_i(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             if mode == VISUAL:
                 s = Region(view.line(s.a).a)
@@ -1793,7 +1793,7 @@ class _vi_quote(ViTextCommandBase):
 
 class _vi_backtick(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None, character=None):
+    def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, address.b))
@@ -2167,7 +2167,7 @@ class _vi_equal(ViTextCommandBase):
 
 class _vi_big_o(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None):
+    def run(self, edit, mode=None, count=1):
         def create_selections(view, sel, index):
             real_sel = Region(sel.a + index * count, sel.b + index * count)
             start_of_line = view.full_line(real_sel).begin()
@@ -2183,7 +2183,7 @@ class _vi_big_o(ViTextCommandBase):
 
 
 class _vi_o(ViTextCommandBase):
-    def run(self, edit, count=1, mode=None):
+    def run(self, edit, mode=None, count=1):
         def create_selections(view, sel, index):
             real_sel = sel if index == 0 else Region(sel.a + index * count, sel.b + index * count)
             end_of_line = view.line(real_sel).end()
@@ -2203,7 +2203,7 @@ class _vi_big_x(ViTextCommandBase):
     def line_start(self, pt):
         return self.view.line(pt).begin()
 
-    def run(self, edit, count=1, mode=None, register=None):
+    def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
             nonlocal abort
             if mode == INTERNAL_NORMAL:
@@ -2246,7 +2246,7 @@ class _vi_big_z_big_z(WindowCommand):
 
 class _vi_big_p(ViTextCommandBase):
 
-    def run(self, edit, register=None, count=1, mode=None):
+    def run(self, edit, register=None, mode=None, count=1):
         if len(self.view.sel()) > 1:
             return  # TODO Support multiple selections
 
@@ -2304,7 +2304,7 @@ class _vi_big_p(ViTextCommandBase):
 
 class _vi_p(ViTextCommandBase):
 
-    def run(self, edit, register=None, count=1, mode=None):
+    def run(self, edit, register=None, mode=None, count=1):
         state = self.state
 
         register_values, linewise = state.registers.get_for_p(register, state.mode)
@@ -2450,7 +2450,7 @@ class _vi_gt(WindowCommand):
 
 class _vi_g_big_t(WindowCommand):
 
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         window_tab_control(self.window, action='previous')
         enter_normal_mode(self.window, mode)
 
@@ -2484,7 +2484,7 @@ class _vi_ctrl_w(WindowCommand):
 
 class _vi_z_enter(IrreversibleTextCommand):
 
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         pt = resolve_insertion_point_at_b(first_sel(self.view))
         home_line = self.view.line(pt)
         taget_pt = self.view.text_to_layout(home_line.begin())
@@ -2493,7 +2493,7 @@ class _vi_z_enter(IrreversibleTextCommand):
 
 class _vi_z_minus(IrreversibleTextCommand):
 
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         layout_coord = self.view.text_to_layout(first_sel(self.view).b)
         viewport_extent = self.view.viewport_extent()
         new_pos = (0.0, layout_coord[1] - viewport_extent[1])
@@ -2502,7 +2502,7 @@ class _vi_z_minus(IrreversibleTextCommand):
 
 class _vi_zz(IrreversibleTextCommand):
 
-    def run(self, count=1, mode=None, first_non_blank=False):
+    def run(self, mode=None, count=1, first_non_blank=False):
         first_sel = self.view.sel()[0]
         current_position = self.view.text_to_layout(first_sel.b)
         viewport_dim = self.view.viewport_extent()
@@ -2582,7 +2582,7 @@ class _vi_modify_numbers(ViTextCommandBase):
 
         return []
 
-    def run(self, edit, count=1, mode=None, subtract=False):
+    def run(self, edit, mode=None, count=1, subtract=False):
         # TODO Implement {Visual}CTRL-A
         # TODO Implement {Visual}CTRL-X
         if mode != INTERNAL_NORMAL:
@@ -2957,7 +2957,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
 # TODO Refactor into _vi_j
 class _vi_select_j(ViWindowCommandBase):
 
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         if mode != SELECT:
             raise ValueError('wrong mode')
 
@@ -2968,7 +2968,7 @@ class _vi_select_j(ViWindowCommandBase):
 # TODO Refactor into _vi_k
 class _vi_select_k(ViWindowCommandBase):
 
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         if mode != SELECT:
             raise ValueError('wrong mode')
 
@@ -2981,7 +2981,7 @@ class _vi_select_k(ViWindowCommandBase):
 
 class _vi_tilde(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None, motion=None):
+    def run(self, edit, mode=None, count=1, motion=None):
         def select(view, s):
             if mode == VISUAL:
                 return Region(s.end(), s.begin())
@@ -3001,7 +3001,7 @@ class _vi_tilde(ViTextCommandBase):
 
 class _vi_g_tilde(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None, motion=None):
+    def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
             return Region(s.end(), s.begin())
 
@@ -3057,7 +3057,7 @@ class _vi_visual_big_u(ViTextCommandBase):
 
 class _vi_g_tilde_g_tilde(ViTextCommandBase):
 
-    def run(self, edit, count=1, mode=None):
+    def run(self, edit, mode=None, count=1):
         def select(view, s):
             line = view.line(s.b)
 
@@ -3438,7 +3438,7 @@ class _vi_l(ViMotionCommand):
 
 
 class _vi_h(ViMotionCommand):
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
                 x_limit = max(view.line(s.b).a, s.b - count)
@@ -3489,7 +3489,7 @@ class _vi_h(ViMotionCommand):
 
 class _vi_j(ViMotionCommand):
 
-    def run(self, count=1, mode=None, xpos=0):
+    def run(self, mode=None, count=1, xpos=0):
         def f(view, s):
             nonlocal xpos
 
@@ -3559,7 +3559,7 @@ class _vi_j(ViMotionCommand):
 
 class _vi_k(ViMotionCommand):
 
-    def run(self, count=1, mode=None, xpos=0):
+    def run(self, mode=None, count=1, xpos=0):
         def f(view, s):
             nonlocal xpos
 
@@ -4173,7 +4173,7 @@ class _vi_big_m(ViMotionCommand):
 
 
 class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
-    def run(self, count=1, mode=None, search_string=None):
+    def run(self, mode=None, count=1, search_string=None):
         def f(view, s):
             pattern = self.build_pattern(query)
             flags = self.calculate_flags(query)
@@ -4216,7 +4216,7 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
 
 
 class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
-    def run(self, count=1, mode=None, search_string=None):
+    def run(self, mode=None, count=1, search_string=None):
         def f(view, s):
             pattern = self.build_pattern(query)
             flags = self.calculate_flags(query)
@@ -4285,7 +4285,7 @@ class _vi_b(ViMotionCommand):
 
 class _vi_big_b(ViMotionCommand):
 
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         def f(view, s):
             target = big_word_reverse(view, s.b, count)
 
@@ -4309,7 +4309,7 @@ class _vi_big_b(ViMotionCommand):
 
 
 class _vi_underscore(ViMotionCommand):
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         def f(view, s):
             a = s.a
             b = s.b
@@ -4406,7 +4406,7 @@ class _vi_gk(ViMotionCommand):
 
 
 class _vi_g__(ViMotionCommand):
-    def run(self, count=1, mode=None):
+    def run(self, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(view.line(s.b).b - 1)
@@ -4756,7 +4756,7 @@ class _vi_n(ViMotionCommand):
 
 class _vi_big_n(ViMotionCommand):
 
-    def run(self, count=1, mode=None, search_string=''):
+    def run(self, mode=None, count=1, search_string=''):
         self.view.run_command('_vi_question_mark_impl', {'mode': mode, 'count': count, 'search_string': search_string})
 
 
@@ -4919,7 +4919,7 @@ class _vi_go_to_symbol(ViMotionCommand):
         except IndexError:
             return
 
-    def run(self, count=1, mode=None, globally=False):
+    def run(self, mode=None, count=1, globally=False):
 
         def f(view, s):
             if mode == NORMAL:

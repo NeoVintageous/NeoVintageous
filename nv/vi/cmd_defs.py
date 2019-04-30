@@ -248,6 +248,7 @@ class ViUndo(ViOperatorDef):
         return {
             'action': '_vi_u',
             'action_args': {
+                'mode': state.mode,
                 'count': state.count
             }
         }
