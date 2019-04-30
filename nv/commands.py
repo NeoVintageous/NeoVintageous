@@ -3832,16 +3832,19 @@ class _vi_right_brace(ViMotionCommand):
 class _vi_left_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            target = prev_paragraph_start(view, s.b, count)
+
             if mode == NORMAL:
-                s = Region(prev_paragraph_start(view, s.b, count))
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, prev_paragraph_start(view, s.b, count))
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
                 start = previous_non_white_space_char(view, s.b - 1, white_space='\n \t')
                 par_as_region = view.expand_by_class(start, CLASS_EMPTY_LINE)
-                resolve_visual_line_target(view, s, par_as_region.a)
+                target = par_as_region.a
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, prev_paragraph_start(view, s.b, count))
+                s = Region(s.a, target)
 
             return s
 
@@ -4110,17 +4113,17 @@ class _vi_big_h(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target_pt)
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, target_pt)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, target_pt)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target_pt)
+                s = Region(s.a, target)
 
             return s
 
-        target_pt = next_non_blank(self.view, highest_visible_pt(self.view))
+        target = next_non_blank(self.view, highest_visible_pt(self.view))
         regions_transformer(self.view, f)
 
 
@@ -4128,20 +4131,20 @@ class _vi_big_l(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target_pt)
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, target_pt)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, target_pt)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                if s.b >= target_pt:
-                    s = Region(s.a + 1, target_pt)
+                if s.b >= target:
+                    s = Region(s.a + 1, target)
                 else:
-                    s = Region(s.a, target_pt)
+                    s = Region(s.a, target)
 
             return s
 
-        target_pt = next_non_blank(self.view, lowest_visible_pt(self.view))
+        target = next_non_blank(self.view, lowest_visible_pt(self.view))
         regions_transformer(self.view, f)
 
 
@@ -4149,20 +4152,20 @@ class _vi_big_m(ViMotionCommand):
     def run(self, count=None, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target_pt)
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, target_pt)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, target_pt)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target_pt)
+                s = Region(s.a, target)
 
             return s
 
         highest_row, lowest_row = highlow_visible_rows(self.view)
         half_visible_lines = (lowest_row - highest_row) // 2
         middle_row = highest_row + half_visible_lines
-        target_pt = next_non_blank(self.view, self.view.text_point(middle_row, 0))
+        target = next_non_blank(self.view, self.view.text_point(middle_row, 0))
         regions_transformer(self.view, f)
 
 
@@ -4256,13 +4259,14 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 class _vi_b(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
+            target = word_reverse(view, resolve_insertion_point_at_b(s), count)
+
             if mode == NORMAL:
-                s = Region(word_reverse(view, s.b, count))
+                s = Region(target)
             elif mode == VISUAL:
-                start = resolve_insertion_point_at_b(s)
-                resolve_visual_target(s, word_reverse(view, start, count))
+                resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, word_reverse(view, s.b, count))
+                s = Region(s.a, target)
 
             return s
 
@@ -4279,9 +4283,11 @@ class _vi_b(ViMotionCommand):
 class _vi_big_b(ViMotionCommand):
 
     def run(self, count=1, mode=None):
-        def do_motion(view, s):
+        def f(view, s):
+            target = big_word_reverse(view, s.b, count)
+
             if mode == NORMAL:
-                s = Region(big_word_reverse(view, s.b, count))
+                s = Region(target)
             elif mode in (VISUAL, VISUAL_BLOCK):
                 if s.a < s.b:
                     pt = big_word_reverse(view, s.b - 1, count)
@@ -4290,13 +4296,13 @@ class _vi_big_b(ViMotionCommand):
                     else:
                         s = Region(s.a, pt + 1)
                 elif s.b < s.a:
-                    s = Region(s.a, big_word_reverse(view, s.b, count))
+                    s = Region(s.a, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, big_word_reverse(view, s.b, count))
+                s = Region(s.a, target)
 
             return s
 
-        regions_transformer(self.view, do_motion)
+        regions_transformer(self.view, f)
 
 
 class _vi_underscore(ViMotionCommand):
@@ -4424,19 +4430,19 @@ class _vi_ctrl_u(ViMotionCommand):
     def run(self, count=0, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(scroll_target_pt)
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, scroll_target_pt)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, scroll_target_pt)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, scroll_target_pt)
+                s = Region(s.a, target)
 
             return s
 
         number_of_scroll_lines = count if count >= 1 else get_option_scroll(self.view)
-        scroll_target_pt = get_scroll_up_target_pt(self.view, number_of_scroll_lines)
-        if scroll_target_pt is None:
+        target = get_scroll_up_target_pt(self.view, number_of_scroll_lines)
+        if target is None:
             return ui_bell()
 
         regions_transformer(self.view, f)
@@ -4449,19 +4455,19 @@ class _vi_ctrl_d(ViMotionCommand):
     def run(self, count=0, mode=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(scroll_target_pt)
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, scroll_target_pt)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, scroll_target_pt)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, scroll_target_pt)
+                s = Region(s.a, target)
 
             return s
 
         number_of_scroll_lines = count if count >= 1 else get_option_scroll(self.view)
-        scroll_target_pt = get_scroll_down_target_pt(self.view, number_of_scroll_lines)
-        if scroll_target_pt is None:
+        target = get_scroll_down_target_pt(self.view, number_of_scroll_lines)
+        if target is None:
             return ui_bell()
 
         regions_transformer(self.view, f)
@@ -4486,15 +4492,15 @@ class _vi_pipe(ViMotionCommand):
             return target
 
         def f(view, s):
+            target = _to_col(s.b, count)
+
             if mode == NORMAL:
-                s = Region(_to_col(s.b, count))
+                s = Region(target)
             elif mode == VISUAL:
                 start = s.b - 1 if s.b > s.a else s.b
                 target = _to_col(start, count)
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
-                target = _to_col(s.b, count)
-
                 if s.a < s.b:
                     s = Region(s.a, target)
                 else:
@@ -4554,14 +4560,16 @@ class _vi_left_paren(ViMotionCommand):
             if previous_sentence is None:
                 return s
 
+            target = previous_sentence.a
+
             if mode == NORMAL:
-                s = Region(previous_sentence.a)
+                s = Region(target)
             elif mode == VISUAL:
-                resolve_visual_target(s, previous_sentence.a)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, previous_sentence.a)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, previous_sentence.a)
+                s = Region(s.a, target)
 
             return s
 
@@ -4576,14 +4584,16 @@ class _vi_right_paren(ViMotionCommand):
             if next_sentence is None:
                 return s
 
+            target = next_sentence.b
+
             if mode == NORMAL:
-                s = Region(min(next_sentence.b, view.size() - 1))
+                s = Region(min(target, view.size() - 1))
             elif mode == VISUAL:
-                s = Region(s.a, min(next_sentence.b + 1, view.size() - 1))
+                s = Region(s.a, min(target + 1, view.size() - 1))
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, next_sentence.b)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, next_sentence.b)
+                s = Region(s.a, target)
 
             return s
 
