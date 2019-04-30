@@ -42,6 +42,12 @@ class Test_w(unittest.FunctionalTestCase):
     def test_d(self):
         self.eq('one |two three', 'dw', 'one |three')
         self.eq('one t|wo three', 'dw', 'one t|three')
+        self.eq('one t|wo\nthree four\nfive', '2dw', 'one t|four\nfive')
+        self.eq('one\n\n|\ntwo three', 'dw', 'one\n\n|two three')
+        self.eq('one\n\n|\n\n\ntwo three', 'dw', 'one\n\n|\n\ntwo three')
+        self.eq('fi|zz\n\n\n\n', 'dw', 'f|i\n\n\n\n')
+        self.eq('fi|zz\n\n\n\n', '2dw', 'f|i\n\n\n')
+        self.eq('fi|zz\n\n\n\n', '3dw', 'f|i\n\n')
         self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
         self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
 
