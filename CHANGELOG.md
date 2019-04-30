@@ -27,7 +27,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* Fixed [#524](https://github.com/NeoVintageous/NeoVintageous/issues/524): `g_` should not include trailing whitespace
+* Fixed [#525](https://github.com/NeoVintageous/NeoVintageous/issues/525): `I` in reverse Visual mode should enter Insert mode at SOL
+* Fixed [#524](https://github.com/NeoVintageous/NeoVintageous/issues/524): `g_` should not include trailing WS
 * Fixed [#523](https://github.com/NeoVintageous/NeoVintageous/issues/523): `g_` in Visual mode is off-by-one
 * Fixed [#522](https://github.com/NeoVintageous/NeoVintageous/issues/522): `B` in Visual mode is off-by-one
 * Fixed [#521](https://github.com/NeoVintageous/NeoVintageous/issues/521): `[count]d|` off-by-one

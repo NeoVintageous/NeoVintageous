@@ -1726,14 +1726,16 @@ class _vi_big_i(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
+            begin = view.line(s.begin()).a
+
             if mode == VISUAL:
-                s = Region(view.line(s.a).a)
+                s = Region(begin)
             elif mode == VISUAL_LINE:
-                s = Region(next_non_white_space_char(view, view.line(s.begin()).a))
+                s = Region(begin)
             elif mode == VISUAL_BLOCK:
                 s = Region(s.begin())
             elif mode == INTERNAL_NORMAL:
-                s = Region(next_non_white_space_char(view, view.line(s.b).a))
+                s = Region(begin)
 
             return s
 
