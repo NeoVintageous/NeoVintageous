@@ -15,31 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef  # noqa: F401
-from NeoVintageous.nv.vi.cmd_base import ViMotionDef  # noqa: F401
-from NeoVintageous.nv.vi.cmd_base import ViOperatorDef  # noqa: F401
-from NeoVintageous.nv.vim import INSERT  # noqa: F401
-from NeoVintageous.nv.vim import INTERNAL_NORMAL  # noqa: F401
-from NeoVintageous.nv.vim import NORMAL  # noqa: F401
-from NeoVintageous.nv.vim import OPERATOR_PENDING  # noqa: F401
-from NeoVintageous.nv.vim import SELECT  # noqa: F401
-from NeoVintageous.nv.vim import VISUAL  # noqa: F401
-from NeoVintageous.nv.vim import VISUAL_BLOCK  # noqa: F401
-from NeoVintageous.nv.vim import VISUAL_LINE  # noqa: F401
+from NeoVintageous.nv.vim import INSERT as _INSERT
+from NeoVintageous.nv.vim import NORMAL as _NORMAL
+from NeoVintageous.nv.vim import OPERATOR_PENDING as _OPERATOR_PENDING
+from NeoVintageous.nv.vim import SELECT as _SELECT
+from NeoVintageous.nv.vim import VISUAL as _VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK as _VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE as _VISUAL_LINE
 
 
 mappings = {
-    INSERT: {},
-    NORMAL: {},
-    OPERATOR_PENDING: {},
-    SELECT: {},
-    VISUAL: {},
-    VISUAL_BLOCK: {},
-    VISUAL_LINE: {}
-}
+    _INSERT: {},
+    _NORMAL: {},
+    _OPERATOR_PENDING: {},
+    _SELECT: {},
+    _VISUAL: {},
+    _VISUAL_BLOCK: {},
+    _VISUAL_LINE: {}
+}  # type: dict
 
 
-classes = {}
+classes = {}  # type: dict
 
 
 def register(seq, modes, *args, **kwargs):

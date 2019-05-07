@@ -21,10 +21,10 @@ import re
 
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import NORMAL
 from NeoVintageous.nv.plugin import register
-from NeoVintageous.nv.plugin import RequiresOneCharMixinDef
-from NeoVintageous.nv.plugin import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
+from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vim import NORMAL
 
 
 __all__ = [

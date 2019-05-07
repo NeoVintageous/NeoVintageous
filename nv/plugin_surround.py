@@ -24,18 +24,18 @@ from sublime import LITERAL
 from sublime import Region
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import INTERNAL_NORMAL
-from NeoVintageous.nv.plugin import NORMAL
-from NeoVintageous.nv.plugin import OPERATOR_PENDING
 from NeoVintageous.nv.plugin import register
-from NeoVintageous.nv.plugin import ViOperatorDef
-from NeoVintageous.nv.plugin import VISUAL
-from NeoVintageous.nv.plugin import VISUAL_BLOCK
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
+from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import INTERNAL_NORMAL
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import run_motion
+from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
 
 
 __all__ = [

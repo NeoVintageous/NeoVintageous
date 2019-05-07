@@ -19,11 +19,11 @@
 
 from sublime_plugin import TextCommand
 
-from NeoVintageous.nv.plugin import NORMAL
 from NeoVintageous.nv.plugin import register
-from NeoVintageous.nv.plugin import ViOperatorDef
-from NeoVintageous.nv.plugin import VISUAL
 from NeoVintageous.nv.utils import InputParser
+from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_tab_control
 
