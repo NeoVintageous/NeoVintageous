@@ -47,14 +47,16 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bells color scheme is now configurable including "light" and "dark" schemes
 * Added [#284](https://github.com/NeoVintageous/NeoVintageous/issues/284): Support `%` (current file name) in `!` shell commands
 
-
 ### Changed
 
+* Changed [#531](https://github.com/NeoVintageous/NeoVintageous/issues/531): `q{a-zA-Z}` now records macros per window
 * Changed [#516](https://github.com/NeoVintageous/NeoVintageous/issues/516): Search occurrences default style is now set to "fill"
 * Changed [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): Visual block mode now works closer to the way Vim block mode works
 
 ### Fixed
 
+* Fixed [#526](https://github.com/NeoVintageous/NeoVintageous/issues/526): Status line should show current register when recording
+* Fixed [#532](https://github.com/NeoVintageous/NeoVintageous/issues/532): Window commands don't execute in macros `@{a-z}`
 * Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` inconsistencies in Visual mode
 * Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` inconsistencies for c operator
 * Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` inconsistencies for d operator

@@ -27,10 +27,9 @@ from sublime import active_window as _active_window
 from sublime import Region
 
 # Use aliases to indicate that they are not public testing APIs.
-from NeoVintageous.nv.commands import _vi_at
+from NeoVintageous.nv import macros as _macros
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.state import State as _State
-from NeoVintageous.nv.vi.macros import MacroRegisters as _MacroRegisters
 from NeoVintageous.nv.vi.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction as _set_visual_block_direction
 
@@ -257,9 +256,7 @@ class ViewTestCase(unittest.TestCase):
         registers._reset_data()
 
     def resetMacros(self):
-        _State.macro_registers = _MacroRegisters()
-        _State.macro_steps.clear()
-        _vi_at._last_used = None
+        _macros._state.clear()
 
     def assertContent(self, expected, msg=None):
         self.assertEqual(self.content(), expected, msg)
@@ -1117,6 +1114,8 @@ _SEQ2CMD = {
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     '>ip':          {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     '?abc':         {'command': '_vi_question_mark_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
+    '@#':           {'command': '_vi_at', 'args': {'name': '#'}},  # noqa: E241
+    '@%':           {'command': '_vi_at', 'args': {'name': '%'}},  # noqa: E241
     '@-':           {'command': '_vi_at', 'args': {'name': '-'}},  # noqa: E241
     '@@':           {'command': '_vi_at', 'args': {'name': '@'}},  # noqa: E241
     '@a':           {'command': '_vi_at', 'args': {'name': 'a'}},  # noqa: E241

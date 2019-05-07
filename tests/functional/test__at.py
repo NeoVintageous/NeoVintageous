@@ -35,6 +35,20 @@ class Test_at(unittest.FunctionalTestCase):
         self.assertStatusLineIsNormal()
 
     @unittest.mock_bell()
+    def test_invalid_register_name__percent__(self):
+        self.normal('fi|zz')
+        self.feed('n_@%')
+        self.assertBell("E354: Invalid register name: '%'")
+        self.assertStatusLineIsNormal()
+
+    @unittest.mock_bell()
+    def test_invalid_register_name__hash__(self):
+        self.normal('fi|zz')
+        self.feed('n_@#')
+        self.assertBell("E354: Invalid register name: '#'")
+        self.assertStatusLineIsNormal()
+
+    @unittest.mock_bell()
     def test_no_previously_used_register(self):
         self.normal('fi|zz')
         self.feed('n_@@')
@@ -45,7 +59,6 @@ class Test_at(unittest.FunctionalTestCase):
     def test_no_such_macro(self):
         self.normal('fi|zz')
         self.feed('n_@a')
-        self.assertBell()
         self.assertStatusLineIsNormal()
 
     @unittest.mock_bell()
@@ -54,6 +67,5 @@ class Test_at(unittest.FunctionalTestCase):
         self.feed('n_qa')
         self.feed('n_q')
         self.feed('n_@a')
-        self.assertBell()
         self.assertNormal('fi|zz')
         self.assertStatusLineIsNormal()

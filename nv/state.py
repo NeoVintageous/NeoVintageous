@@ -21,6 +21,7 @@ import logging
 from sublime import active_window
 from sublime import Region
 
+from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import settings
@@ -28,7 +29,6 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
-from NeoVintageous.nv.vi.macros import MacroRegisters
 from NeoVintageous.nv.vi.marks import Marks
 from NeoVintageous.nv.vi.registers import Registers
 from NeoVintageous.nv.vi.settings import SettingsManager
@@ -73,9 +73,7 @@ class State(object):
     """
 
     registers = Registers()
-    macro_registers = MacroRegisters()
     marks = Marks()
-    macro_steps = []
 
     def __init__(self, view):
         self.view = view
@@ -431,7 +429,7 @@ class State(object):
 
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
-        if (isinstance(action, ViToggleMacroRecorder) and self.is_recording):
+        if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(self.view.window())):
             return False
 
         if (action and action.accept_input and action.input_parser and action.input_parser.is_type_immediate()):
@@ -456,16 +454,6 @@ class State(object):
             return True
 
         return False
-
-    @property
-    def is_recording(self):
-        # type: () -> bool
-        return self.settings.vi['recording'] or False
-
-    @is_recording.setter
-    def is_recording(self, value):
-        assert isinstance(value, bool), 'bad call'
-        self.settings.vi['recording'] = value
 
     def enter_normal_mode(self):
         self.mode = NORMAL
@@ -726,24 +714,6 @@ class State(object):
             self.view.sel().add(Region(begin, end))
             self.mode = VISUAL_LINE
 
-    def start_recording(self):
-        self.is_recording = True
-        State.macro_steps = []
-        self.view.set_status('vim-recorder', 'Recording...')
-
-    def stop_recording(self):
-        self.is_recording = False
-        self.view.erase_status('vim-recorder')
-
-    def add_macro_step(self, cmd_name, args):
-        if self.is_recording:
-            if cmd_name == '_vi_q':
-                # don't store the ending macro step
-                return
-
-            if self.runnable and not self.glue_until_normal_mode:
-                State.macro_steps.append((cmd_name, args))
-
     def runnable(self):
         # type: () -> bool
         # Returns:
@@ -808,7 +778,7 @@ class State(object):
                 # until we enter normal mode again.
                 run_window_command('mark_undo_groups_for_gluing')
 
-            self.add_macro_step(action_cmd['action'], args)
+            macros.add_step(self, action_cmd['action'], args)
             run_window_command(action_cmd['action'], args)
 
             if not self.non_interactive:
@@ -823,7 +793,7 @@ class State(object):
         if self.motion:
             motion_cmd = self.motion.translate(self)
 
-            self.add_macro_step(motion_cmd['motion'], motion_cmd['motion_args'])
+            macros.add_step(self, motion_cmd['motion'], motion_cmd['motion_args'])
 
             # All motions are subclasses of ViTextCommandBase, so it's safe to
             # run the command via the current view.
@@ -863,7 +833,7 @@ class State(object):
             visual_repeat_data = self.get_visual_repeat_data()
             action = self.action
 
-            self.add_macro_step(action_cmd['action'], action_cmd['action_args'])
+            macros.add_step(self, action_cmd['action'], action_cmd['action_args'])
             run_action(active_window(), action_cmd)
 
             if not (self.processing_notation and self.glue_until_normal_mode):

@@ -31,6 +31,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
+from NeoVintageous.nv import macros
 from NeoVintageous.nv import rc
 from NeoVintageous.nv.ex.completions import insert_best_cmdline_completion
 from NeoVintageous.nv.ex.completions import on_change_cmdline_completion_prefix
@@ -1181,10 +1182,10 @@ class _enter_normal_mode(ViTextCommandBase):
                 state.repeat_data = ('native', self.view.command_history(0)[:2], mode, None)
                 # Required here so that the macro gets recorded.
                 state.glue_until_normal_mode = False
-                state.add_macro_step(*self.view.command_history(0)[:2])
-                state.add_macro_step('_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                macros.add_step(state, *self.view.command_history(0)[:2])
+                macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
             else:
-                state.add_macro_step('_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
                 state.glue_until_normal_mode = False
 
@@ -2820,58 +2821,40 @@ class _vi_ctrl_r_equal(ViTextCommandBase):
 
 class _vi_q(IrreversibleTextCommand):
 
-    _current = None
+    def run(self, mode=None, count=1, name=None):
+        window = self.view.window()
 
-    def run(self, name=None, mode=None, count=1):
-        state = State(self.view)
-
-        try:
-            if state.is_recording:
-                State.macro_registers[self._current] = list(State.macro_steps)
-                state.stop_recording()
-                self.__class__._current = None
-                return
-
-            if name not in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"'):
+        if macros.is_recording(window):
+            macros.stop_recording(window)
+        else:
+            if not macros.is_valid_writable_register(name):
                 return ui_bell("E354: Invalid register name: '" + name + "'")
 
-            state.start_recording()
-            self.__class__._current = name
-        except (AttributeError, ValueError):
-            state.stop_recording()
-            self.__class__._current = None
-            ui_bell()
+            macros.start_recording(window, name)
 
 
 class _vi_at(IrreversibleTextCommand):
 
-    _last_used = None
-
     def run(self, name, mode=None, count=1):
-        if name not in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".=*+@'):
-            return ui_bell("E354: Invalid register name: '" + name + "'")
+        window = self.view.window()
 
         if name == '@':
-            name = self._last_used
+            name = macros.get_last_used_register_name(window)
             if not name:
                 return ui_bell('E748: No previously used register')
 
-        try:
-            cmds = State.macro_registers[name]
-        except (KeyError, ValueError):
-            return ui_bell()
+        if not macros.is_valid_readable_register(name):
+            return ui_bell("E354: Invalid register name: '" + name + "'")
 
+        cmds = macros.get_recorded(window, name)
         if not cmds:
-            ui_bell()
             return
 
-        self.__class__._last_used = name
+        macros.set_last_used_register_name(window, name)
 
         state = State(self.view)
-
         for i in range(count):
             for cmd, args in cmds:
-                # TODO Is this robust enough?
                 if 'xpos' in args:
                     state.update_xpos(force=True)
                     args['xpos'] = State(self.view).xpos
@@ -2883,7 +2866,7 @@ class _vi_at(IrreversibleTextCommand):
                         motion['motion_args']['xpos'] = State(self.view).xpos
                         args['motion'] = motion
 
-                self.view.run_command(cmd, args)
+                self.view.window().run_command(cmd, args)
 
 
 class _enter_visual_block_mode(ViTextCommandBase):

@@ -16,20 +16,14 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-class MacroRegisters(dict):
-    """Crude implementation of macro registers."""
+# *sigh* Sublime has no API to set the status for a Window:
+# https://github.com/SublimeTextIssues/Core/issues/627
+def set_window_status(window, key, value):
+    for view in window.views():
+        view.set_status(key, value)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-    def __setitem__(self, key, value):
-        if key in ('%', '#'):
-            raise ValueError('invalid register key: %s' % key)
-
-        super().__setitem__(key.lower(), value)
-
-    def __getitem__(self, key):
-        if key in ('%', '#'):
-            raise ValueError('unsupported key: %s' % key)
-
-        return super().__getitem__(key.lower())
+# See set_window_status()
+def erase_window_status(window, key):
+    for view in window.views():
+        view.erase_status(key)
