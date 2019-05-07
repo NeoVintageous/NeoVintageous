@@ -6,9 +6,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#519](https://github.com/NeoVintageous/NeoVintageous/issues/519): `:noh[lsearch]` command
-* Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:his[tory]` command
+* Added [#493](https://github.com/NeoVintageous/NeoVintageous/issues/493): `:sil[ent]` command
 * Added [#513](https://github.com/NeoVintageous/NeoVintageous/issues/513): `:g[lobal]/{pattern}/d[elete]` command
+* Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:his[tory]` command
+* Added [#519](https://github.com/NeoVintageous/NeoVintageous/issues/519): `:noh[lsearch]` command
 * Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `[count]g_`
 * Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cge`
 * Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cgE`

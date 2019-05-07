@@ -491,21 +491,21 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['edit', 'e'], cmd('edit', params={'file_name': None}))  # noqa: E501
         self.assertRoute(['exit', 'exi', 'xit', 'x'], cmd('exit'))
         self.assertRoute(['file', 'f'], cmd('file'))
+        self.assertRoute(['global!!x!y', 'g!!x!y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
+        self.assertRoute(['global!/x/y', 'g!/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
+        self.assertRoute(['global#x#y', 'g#x#y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, addressable=True))
         self.assertRoute(['global/^/', 'g/^/'], cmd('global', params={'pattern': '^'}, addressable=True))
         self.assertRoute(['global/^/y', 'g/^/y'], cmd('global', params={'pattern': '^', 'cmd': 'y'}, addressable=True))
         self.assertRoute(['global/x/y', 'g/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, addressable=True))
-        self.assertRoute(['global#x#y', 'g#x#y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, addressable=True))
-        self.assertRoute(['global!!x!y', 'g!!x!y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
-        self.assertRoute(['global!/x/y', 'g!/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
-        self.assertRoute(['history', 'his'], cmd('history'))
-        self.assertRoute(['history all', 'his all'], cmd('history', params={'name': 'all'}))
-        self.assertRoute(['history search', 'his search'], cmd('history', params={'name': 'search'}))
-        self.assertRoute(['history /', 'his /'], cmd('history', params={'name': '/'}))
-        self.assertRoute(['history ?', 'his ?'], cmd('history', params={'name': '?'}))
-        self.assertRoute(['history :', 'his :'], cmd('history', params={'name': ':'}))
         self.assertRoute(['help fizz', 'h fizz'], cmd('help', params={'subject': 'fizz'}))
         self.assertRoute(['help!', 'h!'], cmd('help', params={'subject': None}, forced=True))
         self.assertRoute(['help', 'h'], cmd('help', params={'subject': None}))
+        self.assertRoute(['history /', 'his /'], cmd('history', params={'name': '/'}))
+        self.assertRoute(['history :', 'his :'], cmd('history', params={'name': ':'}))
+        self.assertRoute(['history ?', 'his ?'], cmd('history', params={'name': '?'}))
+        self.assertRoute(['history all', 'his all'], cmd('history', params={'name': 'all'}))
+        self.assertRoute(['history search', 'his search'], cmd('history', params={'name': 'search'}))
+        self.assertRoute(['history', 'his'], cmd('history'))
         self.assertRoute(['let n=v'], cmd('let', params={'name': 'n', 'value': 'v'}))
         self.assertRoute(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
         self.assertRoute(['move', 'm'], cmd('move', params={'address': '.'}, addressable=True))
@@ -540,6 +540,7 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['set opt=val', 'se opt=val'], cmd('set', params={'option': 'opt', 'value': 'val'}))
         self.assertRoute(['setlocal opt=val', 'setl opt=val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
         self.assertRoute(['shell', 'sh'], cmd('shell'))
+        self.assertRoute(['silent ls', 'sil ls'], cmd('silent', params={'command': 'ls'}))  # noqa: E501
         self.assertRoute(['snoremap abc xyz', 'snor abc xyz'], cmd('snoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))  # noqa: E501
         self.assertRoute(['snoremap', 'snor'], cmd('snoremap'))
         self.assertRoute(['sort i', 'sor i'], cmd('sort', params={'options': 'i'}, addressable=True))

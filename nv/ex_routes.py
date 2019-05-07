@@ -252,7 +252,6 @@ def _ex_route_help(state):
 
 def _ex_route_history(state):
     command = _literal_route(state, 'history')
-
     _resolve(state, command, r'\s*(?P<name>.+)')
 
     return command
@@ -429,6 +428,13 @@ def _ex_route_shell(state):
     return _literal_route(state, 'shell')
 
 
+def _ex_route_silent(state):
+    command = _literal_route(state, 'silent', forcable=True)
+    _resolve(state, command, r'\s*(?P<command>.+)')
+
+    return command
+
+
 def _ex_route_shell_out(state):
     command = TokenCommand('!', target='shell_out')
     command.addressable = True
@@ -452,7 +458,6 @@ def _ex_route_sunmap(state):
 
 def _ex_route_sort(state):
     command = _literal_route(state, 'sort', addressable=True)
-
     _resolve(state, command, r'\s*(?P<options>[iu]+)')
 
     return command
@@ -460,7 +465,6 @@ def _ex_route_sort(state):
 
 def _ex_route_split(state):
     command = _literal_route(state, 'split')
-
     _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
@@ -572,7 +576,6 @@ def _ex_route_vnoremap(state):
 
 def _ex_route_vsplit(state):
     command = _literal_route(state, 'vsplit')
-
     _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
@@ -743,6 +746,7 @@ ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
 ex_routes[r'se(?:t)?(?=$|\s)'] = _ex_route_set
 ex_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = _ex_route_substitute
 ex_routes[r'sh(?:ell)?'] = _ex_route_shell
+ex_routes[r'sil(ent)?'] = _ex_route_silent
 ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
 ex_routes[r'sor(?:t)?'] = _ex_route_sort
 ex_routes[r'sp(?:lit)?'] = _ex_route_split
