@@ -68,6 +68,7 @@ def stop_recording(window):
         state['recorded'][name] = _get_steps(window)
 
     state['recording'] = False
+    state['recording_steps'] = []
     state['recording_register_name'] = None
 
     erase_window_status(window, 'vim-recorder')
