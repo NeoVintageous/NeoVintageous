@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_I(unittest.FunctionalTestCase):
 
-    def test_I(self):
+    def test_n(self):
         self.eq('|', 'I', 'i_|')
         self.eq('abc|d', 'I', 'i_|abcd')
         self.eq('x\nab|cd', 'I', 'i_x\n|abcd')
@@ -34,5 +34,14 @@ class Test_I(unittest.FunctionalTestCase):
         self.eq('r_|    fizz\n|x', 'l_I', 'i_|    fizz\nx')
         self.eq('fizz\nbu|zz\nfi|zz', 'l_I', 'i_fizz\n|buzz\nfizz')
 
+    def test_V(self):
+        self.eq('x\n|two\n|y', 'l_I', 'i_x\n|two\ny')
+
     def test_b(self):
         self.eq('x\na|bc|d\nx\nc|de|f\nx', 'b_I', 'i_x\na|bcd\nx\nc|def\nx')
+
+    def test_s(self):
+        self.eq('|fizz|', 's_I', 'i_|fizz')
+        self.eq('x |fizz| y', 's_I', 'i_x |fizz y')
+        self.eq('x |fizz| |buzz| y', 's_I', 'i_x |fizz |buzz y')
+        self.eq('x |fizz| y\nx |buzz| y', 's_I', 'i_x |fizz y\nx |buzz y')

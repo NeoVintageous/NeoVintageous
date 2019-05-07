@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
-    def test_s(self):
+    def test_n(self):
         self.eq('|', 's', 'i_|')
         self.eq('a|bc', 's', 'i_a|c')
         self.eq('a|bc\n', 's', 'i_a|c\n')
@@ -30,17 +30,17 @@ class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('0')
         self.assertRegisterEmpty('1')
 
-    def test_s_should_not_delete_past_the_eol(self):
+    def test_n_should_not_delete_past_the_eol(self):
         self.eq('a|bc\n456789', '5s', 'i_a|\n456789')
 
-    def test_v_s(self):
+    def test_v(self):
         self.eq('a|bc|d', 'v_s', 'i_a|d')
         self.assertRegister('"bc')
         self.assertRegister('-bc')
         self.assertRegisterEmpty('0')
         self.assertRegisterEmpty('1')
 
-    def test_v_s_multiline(self):
+    def test_v_multiline(self):
         self.eq('ab|12\n34|cd', 'v_s', 'i_ab|cd')
         self.eq('ab|12\n34\n56|cd\n', 'v_s', 'i_ab|cd\n')
         self.assertRegister('"12\n34\n56')
@@ -49,7 +49,7 @@ class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('112\n34\n56')
         self.assertRegister('212\n34')
 
-    def test_l_s(self):
+    def test_l(self):
         self.eq('x\n|ab\n|y', 'l_s', 'i_x\n|\ny')
         self.eq('x\n|ab\ncd\n|y\n', 'l_s', 'i_x\n|\ny\n')
         self.assertRegister('"ab\ncd\n', linewise=True)
@@ -58,9 +58,12 @@ class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('1ab\ncd\n', linewise=True)
         self.assertRegister('2ab\n', linewise=True)
 
-    def test_l_s_empty_lines(self):
+    def test_l_empty_lines(self):
         self.eq('\n|\n\n|\n', 'l_s', 'i_\n|\n\n')
         self.assertRegister('"\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
         self.assertRegister('1\n', linewise=True)
+
+    def test_s(self):
+        self.eq('a|fizz|b', 's_s', 'i_a|b')

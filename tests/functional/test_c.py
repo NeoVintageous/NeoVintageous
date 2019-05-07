@@ -37,10 +37,13 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('0')
         self.assertRegisterEmpty('1')
 
-    def test_v_c(self):
+    def test_v(self):
         self.eq('fi|zz bu|zz', 'v_c', 'i_fi|zz')
         self.eq('r_fi|zz bu|zz', 'v_c', 'i_fi|zz')
         self.eq('r_fi|   |zz', 'v_c', 'i_fi|zz')
+
+    def test_s(self):
+        self.eq('fi|zz bu|zz', 's_c', 'i_fi|zz')
 
     def test_cb(self):
         self.eq('x fizz|buzz x', 'cb', 'i_x |buzz x')

@@ -1723,16 +1723,10 @@ class _vi_big_i(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            begin = view.line(s.begin()).a
-
-            if mode == VISUAL:
-                s = Region(begin)
-            elif mode == VISUAL_LINE:
-                s = Region(begin)
-            elif mode == VISUAL_BLOCK:
+            if mode in (VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
+                s = Region(view.line(s.begin()).a)
+            elif mode in (VISUAL_BLOCK, SELECT):
                 s = Region(s.begin())
-            elif mode == INTERNAL_NORMAL:
-                s = Region(begin)
 
             return s
 
@@ -1924,7 +1918,7 @@ class _vi_big_s(ViTextCommandBase):
 class _vi_s(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
-        def select(view, s):
+        def f(view, s):
             if mode == INTERNAL_NORMAL:
                 line = view.line(s.b)
                 if line.empty():
@@ -1938,13 +1932,13 @@ class _vi_s(ViTextCommandBase):
 
             return Region(s.begin(), s.end())
 
-        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
+        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL, SELECT):
             enter_normal_mode(self.view, mode)
             ui_bell()
             return
 
         self.save_sel()
-        regions_transformer(self.view, select)
+        regions_transformer(self.view, f)
 
         if not self.has_sel_changed() and mode == INTERNAL_NORMAL:
             enter_insert_mode(self.view, mode)

@@ -42,19 +42,26 @@ MULTIPLE CURSORS                                         *nv-multiple-cursors*
 
 Normal mode / Visual mode
 
-    - start:    gh start multi cursor and add a virtual cursor + selection on the match
-      + next:   j add a new virtual cursor + selection on the match
-      + skip:   l skip the next match
-      + prev:   k remove current virtual cursor + selection and go back on previous match
+- Start:    gh          Start multi cursor and add a virtual cursor +
+                        selection on the match.
+  + Next:   <C-n> or j  Add a new virtual cursor + selection on the match.
+  + Skip:   <C-x> or l  Skip the next match.
+  + Prev:   <C-p> or k  Remove current virtual cursor + selection and go back
+                        on previous match.
 
 gh                      Start multiple cursor.
-j                       Add next match.
-l                       Skip next match.
-k                       Remove current match and go back on previous match.
+<C-n> or j              Add next match.
+<C-x> or l              Skip next match.
+<C-p> or k              Remove current match and go back on previous match.
 A                       Select all instances.
 i                       Enter visual mode (preserving selections).
 J                       Clear multiple selections and enter normal mode.
 gH                      After a search with / or ? (select all matches).
+
+You can now change the virtual cursors + visual selection with |Visual-mode|
+commands. For instance: c, s, I work without any issues.
+
+You could also go to |Normal-mode| by pressing `v` and use normal commands there.
 
 At any time, you can press J to exit back to Normal mode.
 

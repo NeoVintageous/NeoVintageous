@@ -119,7 +119,7 @@ class ViRightDeleteChars(ViOperatorDef):
         }
 
 
-@assign(seqs.S, _ACTION_MODES)
+@assign(seqs.S, _ACTION_MODES + (SELECT,))
 class ViSubstituteChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -222,6 +222,27 @@ class ViChangeByChars(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
+        self.repeatable = True
+
+    def translate(self, state):
+        state.glue_until_normal_mode = True
+
+        return {
+            'action': '_vi_c',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
+
+
+@assign(seqs.C, (SELECT,))
+class ChangeMultipleCursor(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
         self.repeatable = True
 
     def translate(self, state):
@@ -1752,6 +1773,7 @@ class Vi_gf(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_N, (SELECT,))
 @assign(seqs.J, (SELECT,))
 class ViAddSelection(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1876,6 +1898,7 @@ class ViEnterInserMode(ViOperatorDef):
         }
 
 
+@assign(seqs.V, (SELECT, ))
 @assign(seqs.ESC, _ACTION_MODES)
 @assign(seqs.CTRL_C, _ACTION_MODES + (SELECT,))
 @assign(seqs.CTRL_LEFT_SQUARE_BRACKET, _ACTION_MODES + (SELECT,))
@@ -1948,7 +1971,7 @@ class ViInsertAtEol(ViOperatorDef):
         return cmd
 
 
-@assign(seqs.BIG_I, _ACTION_MODES)
+@assign(seqs.BIG_I, _ACTION_MODES + (SELECT,))
 class ViInsertAtBol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2069,6 +2092,7 @@ class ViGotoSymbolInProject(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_P, (SELECT,))
 @assign(seqs.K, (SELECT,))
 class ViDeselectInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -2086,6 +2110,7 @@ class ViDeselectInstance(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_X, (SELECT,))
 @assign(seqs.L, (SELECT,))
 class ViSkipInstance(ViOperatorDef):
     def __init__(self, *args, **kwargs):

@@ -6,6 +6,13 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-n>` in multiple cursor mode (add next match)
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-p>` in multiple cursor mode (remove current match)
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-x>` in multiple cursor mode (skip next match)
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `c` in multiple cursor mode
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `I` in multiple cursor mode
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `s` in multiple cursor mode
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `v` in multiple cursor mode (go to Normal mode)
 * Added [#493](https://github.com/NeoVintageous/NeoVintageous/issues/493): `:sil[ent]` command
 * Added [#513](https://github.com/NeoVintageous/NeoVintageous/issues/513): `:g[lobal]/{pattern}/d[elete]` command
 * Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:his[tory]` command
@@ -55,6 +62,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#530](https://github.com/NeoVintageous/NeoVintageous/issues/530): `c` does not work with multiple selections
 * Fixed [#526](https://github.com/NeoVintageous/NeoVintageous/issues/526): Status line should show current register when recording
 * Fixed [#532](https://github.com/NeoVintageous/NeoVintageous/issues/532): Window commands don't execute in macros `@{a-z}`
 * Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` inconsistencies in Visual mode
@@ -63,8 +71,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `M` operations should be linewise
 * Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `L` operations should be linewise
 * Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `H` operations should be linewise
-* Fixed [#525](https://github.com/NeoVintageous/NeoVintageous/issues/525): `I` in reverse Visual mode should enter Insert mode at SOL
-* Fixed [#524](https://github.com/NeoVintageous/NeoVintageous/issues/524): `g_` should not include trailing WS
+* Fixed [#525](https://github.com/NeoVintageous/NeoVintageous/issues/525): `I` in reverse Visual mode should enter Insert mode at start of line
+* Fixed [#524](https://github.com/NeoVintageous/NeoVintageous/issues/524): `g_` should not include trailing white-space
 * Fixed [#523](https://github.com/NeoVintageous/NeoVintageous/issues/523): `g_` in Visual mode is off-by-one
 * Fixed [#522](https://github.com/NeoVintageous/NeoVintageous/issues/522): `B` in Visual mode is off-by-one
 * Fixed [#521](https://github.com/NeoVintageous/NeoVintageous/issues/521): `[count]d|` off-by-one
