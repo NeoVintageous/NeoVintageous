@@ -1,0 +1,22 @@
+{
+    "name": "NeoVintageous Light Bell",
+    "variables":
+    {
+        "dim-bg": "#ebedee",
+        "dim-fg": "#cecdc2"
+    },
+    "globals": {
+        "background": "var(dim-bg)",
+        "foreground": "var(dim-fg)",
+        "line_highlight": "var(dim-bg)",
+        "caret": "var(dim-fg)",
+        "selection": "var(dim-fg)",
+        "selection_foreground": "var(dim-bg)"
+    },
+    "rules": [
+        {
+            "scope": "markup,region,source,string,sublimelinter,text",
+            "background": "var(dim-bg)"
+        }
+    ]
+}

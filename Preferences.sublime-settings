@@ -112,5 +112,12 @@
     // Visual bell type.
     // Valid values are: blink, view, or views.
     // {not in Vim}
-    "vintageous_bell": "blink"
+    "vintageous_bell": "blink",
+
+    // Visual bell color scheme.
+    // Two color schemes are provided: "dark" and "light"
+    // You can also specify a path to custom one, for example:
+    // "Packages/NeoVintageous/res/Bell-dark.hidden-color-scheme"
+    // {not in Vim}
+    "vintageous_bell_color_scheme": "dark"
 }

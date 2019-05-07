@@ -12,8 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#512](https://github.com/NeoVintageous/NeoVintageous/issues/512): Visual block mode to Visual mode (`v`)
 * Added [#511](https://github.com/NeoVintageous/NeoVintageous/issues/511): Visual block mode to Visual line mode (`V`)
 * Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): Visual block mode
-* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles
-* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles
+* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles including configurable dark and light color schemes
 * Added [#500](https://github.com/NeoVintageous/NeoVintageous/issues/500): `-` in Visual line mode
 * Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `(` and `)` in Visual line mode
 * Added [#499](https://github.com/NeoVintageous/NeoVintageous/issues/499): `<CR>` in Visual line mode

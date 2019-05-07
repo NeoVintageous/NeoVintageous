@@ -43,14 +43,18 @@ def ui_bell(msg=None):
     if settings.get('vintageous_belloff') == 'all':
         return
 
-    style = settings.get('vintageous_bell')
-    theme = 'Packages/NeoVintageous/res/Bell.tmTheme'
+    color_scheme = settings.get('vintageous_bell_color_scheme', 'dark')
+    if color_scheme in ('dark', 'light'):
+        color_scheme = 'Packages/NeoVintageous/res/Bell-%s.hidden-color-scheme' % color_scheme
+
     duration = int(0.3 * 1000)
     times = 4
     delay = 55
 
+    style = settings.get('vintageous_bell')
+
     if style == 'view':
-        settings.set('color_scheme', theme)
+        settings.set('color_scheme', color_scheme)
 
         def remove_bell():
             settings.erase('color_scheme')
@@ -61,7 +65,7 @@ def ui_bell(msg=None):
         for group in range(window.num_groups()):
             view = window.active_view_in_group(group)
             if view:
-                view.settings().set('color_scheme', theme)
+                view.settings().set('color_scheme', color_scheme)
                 views.append(view)
 
         def remove_bell():

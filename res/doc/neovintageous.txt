@@ -431,6 +431,14 @@ List of available options:
         Style of visual bell. The available styles are: blink (default), view,
         or views.
 
+                                              *'vintageous_bell_color_scheme'*
+'vintageous_bell_color_scheme'
+                        string (default "dark")
+        Color scheme to use for visual bells. Two color schemes are provided,
+        a dark and light variant, but you can specify a custom one too:
+        - Packages/NeoVintageous/res/Bell-dark.hidden-color-scheme
+        - Packages/NeoVintageous/res/Bell-light.hidden-color-scheme
+
                                                         *'vintageous_belloff'*
 'vintageous_belloff'    string (default "")
         Specifies for which events the bell (visual blink) will not be rung. It
