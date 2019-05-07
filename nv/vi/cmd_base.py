@@ -16,7 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.nv.utils import InputParser
-from NeoVintageous.nv.vi.utils import translate_char
+from NeoVintageous.nv.utils import translate_char
 
 
 class ViCommandDefBase:

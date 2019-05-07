@@ -23,8 +23,8 @@ from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.utils import fix_eol_cursor
+from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.vi import settings
-from NeoVintageous.nv.vi.utils import is_view
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK

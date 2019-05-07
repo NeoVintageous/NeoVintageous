@@ -23,9 +23,25 @@ from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
+from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import VisualBlockSelection
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
+
+
+class TestTranslateChar(unittest.TestCase):
+
+    def test_enter(self):
+        self.assertEqual(translate_char('<bar>'), '|')
+        self.assertEqual(translate_char('<bslash>'), '\\')
+        self.assertEqual(translate_char('<cr>'), '\n')
+        self.assertEqual(translate_char('<enter>'), '\n')
+        self.assertEqual(translate_char('<lt>'), '<')
+        self.assertEqual(translate_char('<sp>'), ' ')
+        self.assertEqual(translate_char('<space>'), ' ')
+        self.assertEqual(translate_char('<tab>'), '\t')
+        self.assertEqual(translate_char('a'), 'a')
+        self.assertEqual(translate_char('w'), 'w')
 
 
 class TestExtractFileName(unittest.ViewTestCase):

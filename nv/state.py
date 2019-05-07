@@ -23,6 +23,11 @@ from sublime import Region
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.utils import col_at
+from NeoVintageous.nv.utils import is_ignored_but_command_mode
+from NeoVintageous.nv.utils import is_view
+from NeoVintageous.nv.utils import row_at
+from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
@@ -32,11 +37,6 @@ from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
 from NeoVintageous.nv.vi.marks import Marks
 from NeoVintageous.nv.vi.registers import Registers
 from NeoVintageous.nv.vi.settings import SettingsManager
-from NeoVintageous.nv.vi.utils import col_at
-from NeoVintageous.nv.vi.utils import is_ignored_but_command_mode
-from NeoVintageous.nv.vi.utils import is_view
-from NeoVintageous.nv.vi.utils import row_at
-from NeoVintageous.nv.vi.utils import save_previous_selection
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode

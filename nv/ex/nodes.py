@@ -26,8 +26,8 @@ from NeoVintageous.nv.ex.tokens import TokenOfSearch
 from NeoVintageous.nv.ex.tokens import TokenPercent
 from NeoVintageous.nv.ex.tokens import TokenSearchBackward
 from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
-from NeoVintageous.nv.vi.utils import row_at
 
 
 class Node:

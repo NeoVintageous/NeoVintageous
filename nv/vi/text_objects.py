@@ -27,13 +27,13 @@ from sublime import CLASS_WORD_START
 from sublime import IGNORECASE
 from sublime import Region
 
+from NeoVintageous.nv.utils import get_insertion_point_at_b
+from NeoVintageous.nv.utils import next_non_blank
+from NeoVintageous.nv.utils import prev_non_blank
+from NeoVintageous.nv.utils import prev_non_ws
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
 from NeoVintageous.nv.vi.units import word_starts
-from NeoVintageous.nv.vi.utils import get_insertion_point_at_b
-from NeoVintageous.nv.vi.utils import next_non_blank
-from NeoVintageous.nv.vi.utils import prev_non_blank
-from NeoVintageous.nv.vi.utils import prev_non_ws
 
 
 RX_ANY_TAG = r'</?([0-9A-Za-z-]+).*?>'

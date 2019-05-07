@@ -32,8 +32,8 @@ from NeoVintageous.nv.plugin import ViOperatorDef
 from NeoVintageous.nv.plugin import VISUAL
 from NeoVintageous.nv.plugin import VISUAL_BLOCK
 from NeoVintageous.nv.utils import InputParser
+from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi.search import reverse_search
-from NeoVintageous.nv.vi.utils import translate_char
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
 

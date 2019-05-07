@@ -25,9 +25,9 @@ from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 from sublime import Region
 
-from NeoVintageous.nv.vi.utils import last_row
-from NeoVintageous.nv.vi.utils import next_non_blank
-from NeoVintageous.nv.vi.utils import row_at
+from NeoVintageous.nv.utils import last_row
+from NeoVintageous.nv.utils import next_non_blank
+from NeoVintageous.nv.utils import row_at
 
 
 _WORD_PATTERN = re.compile('\\w')

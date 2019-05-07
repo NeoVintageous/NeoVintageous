@@ -27,10 +27,10 @@ from NeoVintageous.nv.plugin import VISUAL
 from NeoVintageous.nv.plugin import VISUAL_BLOCK
 from NeoVintageous.nv.plugin import VISUAL_LINE
 from NeoVintageous.nv.ui import ui_bell
-from NeoVintageous.nv.vi.utils import next_non_blank
-from NeoVintageous.nv.vi.utils import regions_transformer
-from NeoVintageous.nv.vi.utils import regions_transformer_reversed
-from NeoVintageous.nv.vi.utils import row_at
+from NeoVintageous.nv.utils import next_non_blank
+from NeoVintageous.nv.utils import regions_transformer
+from NeoVintageous.nv.utils import regions_transformer_reversed
+from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
 from sublime import Region

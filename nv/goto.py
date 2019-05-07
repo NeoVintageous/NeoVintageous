@@ -20,12 +20,12 @@ from sublime import version
 
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.ui import ui_bell
+from NeoVintageous.nv.utils import next_non_blank
+from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
-from NeoVintageous.nv.vi.utils import next_non_blank
-from NeoVintageous.nv.vi.utils import regions_transformer
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import EOF
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
