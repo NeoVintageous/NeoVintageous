@@ -6,23 +6,28 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#519](https://github.com/NeoVintageous/NeoVintageous/issues/519): `:nohlsearch` command
-* Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:history` command
-* Added [#513](https://github.com/NeoVintageous/NeoVintageous/issues/513): `:g[lobal]/{pattern}/d[elete]`
-* Added [#512](https://github.com/NeoVintageous/NeoVintageous/issues/512): Visual block mode to Visual mode (`v`)
-* Added [#511](https://github.com/NeoVintageous/NeoVintageous/issues/511): Visual block mode to Visual line mode (`V`)
-* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): Visual block mode
-* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bell styles including configurable dark and light color schemes
+* Added [#519](https://github.com/NeoVintageous/NeoVintageous/issues/519): `:noh[lsearch]` command
+* Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:his[tory]` command
+* Added [#513](https://github.com/NeoVintageous/NeoVintageous/issues/513): `:g[lobal]/{pattern}/d[elete]` command
+* Added [#512](https://github.com/NeoVintageous/NeoVintageous/issues/512): `v` in Visual block mode (converts to Visual mode)
+* Added [#511](https://github.com/NeoVintageous/NeoVintageous/issues/511): `V` in Visual block mode (converts to Visual line mode)
 * Added [#500](https://github.com/NeoVintageous/NeoVintageous/issues/500): `-` in Visual line mode
-* Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `(` and `)` in Visual line mode
-* Added [#499](https://github.com/NeoVintageous/NeoVintageous/issues/499): `<CR>` in Visual line mode
+* Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `(` in Visual line mode
+* Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `)` in Visual line mode
 * Added [#491](https://github.com/NeoVintageous/NeoVintageous/issues/491): `$` in Visual line mode
-* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[{`, `[(`, `]}`, and `])` in Visual line mode
-* Added [#284](https://github.com/NeoVintageous/NeoVintageous/issues/284): Support for `%` in shell commands
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[{` in Visual line mode
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `]}` in Visual line mode
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[(` in Visual line mode
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `])` in Visual line mode
+* Added [#499](https://github.com/NeoVintageous/NeoVintageous/issues/499): `<CR>` in Visual line mode
+* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bells are now configurable including styles "view", "views", and "blink"
+* Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bells color scheme is now configurable including "light" and "dark" schemes
+* Added [#284](https://github.com/NeoVintageous/NeoVintageous/issues/284): Support `%` (current file name) in `!` shell commands
 
 ### Changed
 
-* Added [#516](https://github.com/NeoVintageous/NeoVintageous/issues/516): Search occurrence style now defaults to "fill" option
+* Changed [#516](https://github.com/NeoVintageous/NeoVintageous/issues/516): Search occurrences default style is now set to "fill"
+* Changed [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): Visual block mode now works closer to the way Vim block mode works
 
 ### Fixed
 
