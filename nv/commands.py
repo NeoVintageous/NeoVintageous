@@ -1748,7 +1748,7 @@ class _vi_m(ViTextCommandBase):
 
 class _vi_quote(ViTextCommandBase):
 
-    def run(self, edit, mode=None, character=None, count=1):
+    def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, address.b))
@@ -2246,7 +2246,7 @@ class _vi_big_z_big_z(WindowCommand):
 
 class _vi_big_p(ViTextCommandBase):
 
-    def run(self, edit, register=None, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         if len(self.view.sel()) > 1:
             return  # TODO Support multiple selections
 
@@ -2304,7 +2304,7 @@ class _vi_big_p(ViTextCommandBase):
 
 class _vi_p(ViTextCommandBase):
 
-    def run(self, edit, register=None, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         state = self.state
 
         register_values, linewise = state.registers.get_for_p(register, state.mode)
@@ -2439,7 +2439,7 @@ class _vi_ga(WindowCommand):
 
 class _vi_gt(WindowCommand):
 
-    def run(self, count=0, mode=None):
+    def run(self, mode=None, count=0):
         if count > 0:
             window_tab_control(self.window, action='goto', index=count)
         else:
@@ -4103,7 +4103,7 @@ class _vi_percent(ViMotionCommand):
 
 
 class _vi_big_h(ViMotionCommand):
-    def run(self, count=None, mode=None):
+    def run(self, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -4121,7 +4121,7 @@ class _vi_big_h(ViMotionCommand):
 
 
 class _vi_big_l(ViMotionCommand):
-    def run(self, count=None, mode=None):
+    def run(self, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -4142,7 +4142,7 @@ class _vi_big_l(ViMotionCommand):
 
 
 class _vi_big_m(ViMotionCommand):
-    def run(self, count=None, mode=None):
+    def run(self, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -4410,8 +4410,7 @@ class _vi_g__(ViMotionCommand):
 
 
 class _vi_ctrl_u(ViMotionCommand):
-
-    def run(self, count=0, mode=None):
+    def run(self, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -4435,8 +4434,7 @@ class _vi_ctrl_u(ViMotionCommand):
 
 
 class _vi_ctrl_d(ViMotionCommand):
-
-    def run(self, count=0, mode=None):
+    def run(self, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
