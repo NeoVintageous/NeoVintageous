@@ -1,6 +1,5 @@
 *neovintageous.txt*  Neovintageous
 
-
                 NEOVINTAGEOUS - main help file
 
 Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
@@ -12,7 +11,7 @@ NeoVintageous                                             *neovintageous* *nv*
  2. Multiple cursors                |nv-multiple-cursors|
  3. Opening a view                  |nv-opening-views|
  4. neovintageousrc                 |nv-rc|
- 5. Plugins out-of-the-box          |nv-plugins|
+ 5. Plugins                         |nv-plugins|
     1.1 Abolish                         |nv-abolish|
     1.2 Commentary                      |nv-commentary|
     1.3 HighlightedYank                 |nv-highlightedyank|
@@ -41,31 +40,23 @@ NeoVintageous: Toggle SUPER keys
 
 MULTIPLE CURSORS                                         *nv-multiple-cursors*
 
-There two ways to use multiple cursors in Neovintageous.
+Normal mode / Visual mode
 
-The first is to enter insert mode, i, then use CTRL-D to make multiple
-selections, press Esc to enter normal mode, from here you can use
-NeoVintageous normally e.g. $ will jump the cursors to the end of line, ^ all
-cursors to the start of line, v enters all cursors into visual mode, f{char}
-makes all cursors visually select to {char}, etc.
+    - start:    gh start multi cursor and add a virtual cursor + selection on the match
+      + next:   j add a new virtual cursor + selection on the match
+      + skip:   l skip the next match
+      + prev:   k remove current virtual cursor + selection and go back on previous match
 
-The second way is enter select mode, a non-standard mode that is used for
-multiple selections. This mode is not the same as select mode in Vim.
-
-gh                      Enter select mode (from normal or visual mode).
-j                       Add selection.
-k                       Remove selection.
-l                       Skip current selection.
+gh                      Start multiple cursor.
+j                       Add next match.
+l                       Skip next match.
+k                       Remove current match and go back on previous match.
 A                       Select all instances.
 i                       Enter visual mode (preserving selections).
 J                       Clear multiple selections and enter normal mode.
 gH                      After a search with / or ? (select all matches).
 
-Once you've created visual selections in select mode, you must return to
-insert mode by pressing i in order to edit text. Once in insert mode, you can
-switch to normal mode, etc. If you press Esc while in select mode, you will
-return to normal mode, but multiple carets won't be destroyed. If you press
-Esc a second time, you will be left with one single caret in normal mode.
+At any time, you can press J to exit back to Normal mode.
 
 ==============================================================================
 
@@ -500,24 +491,24 @@ SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
 Search highlighting can be customized. The styles can be configured via
 the following settings:
 
-    Configure settings via `Menu > Preferences > Settings` or by the Command
-    Palette. To use the command palette:
+Configure settings via `Menu > Preferences > Settings` or by the Command
+Palette. To use the command palette:
 
-    1. Press `Ctrl+Shift+P`
-    2. Select the "Preferences: Settings" command
-    3. Press `Enter`
+1. Press `Ctrl+Shift+P`
+2. Select the "Preferences: Settings" command
+3. Press `Enter`
 
-    'neovintageous_search_cur_style' Current search match.
-    'neovintageous_search_inc_style' Incremental search match.
-    'neovintageous_search_occ_style' Search occurrence matches.
+'neovintageous_search_cur_style' Current search match.
+'neovintageous_search_inc_style' Incremental search match.
+'neovintageous_search_occ_style' Search occurrence matches.
 
-    Each option accepts any of the following styles:
+Each option accepts any of the following styles:
 
-        fill
-        outline
-        underline
-        squiggly_underline
-        stippled_underline
+    fill
+    outline
+    underline
+    squiggly_underline
+    stippled_underline
 
 To customise the colors, use a color scheme override: For example if you have
 the default Monokai color scheme enabled - create a file named
@@ -564,7 +555,6 @@ It is an error if there is no change for the cursor to move to.
 
 Note that in older versions of Sublime Text (builds < 3189) you will need the
 the GitGutter package: https://github.com/jisaacks/GitGutter.
-
 
 ==============================================================================
 

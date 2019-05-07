@@ -11,36 +11,44 @@ Neovintageous is a project that seeks to continue the development of the discont
 * Strong defaults
 * Drop-in replacement for Vintageous
 * Integrates with [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3) and [Origami](https://github.com/SublimeText/Origami)
-* Plugins out-of-the-box: [Abolish](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/abolish.txt), [Commentary](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/commentary.txt), [Highlighted Yank](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/neovintageous.txt), [Surround](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/surround.txt), [Unimpaired](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/unimpaired.txt), and [Indent Object](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/indent-object.txt).
+* Plugins out-of-the-box: [Abolish](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/abolish.txt), [Commentary](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/commentary.txt), [Highlighted Yank](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Surround](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/surround.txt), [Unimpaired](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/unimpaired.txt) and [Indent Object](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/indent-object.txt).
 
 ## Installation
 
 ### Package Control installation
 
-The preferred method of installation is [Package Control](https://packagecontrol.io/packages/NeoVintageous).
+Th# be preferred method of installation is [Package Control](https://packagecontrol.io/packages/NeoVintageous).
+
 
 ### Manual installation
 
-Close Sublime Text, then download or clone this repository to a directory named `NeoVintageous` in the Sublime Text Packages directory for your platform:
+Close Sublime Text, then download or clone this repository to a directory named **NeoVintageous** in the Sublime Text Packages directory for your platform:
 
-* Linux: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
-* OSX: `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
-* Windows: `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
+OS | Command
+-- | -----
+Linux | `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
+OSX | `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
+Windows | `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
 
 ## Documentation
 
-Neovintageous is an emulation of Vim: feature-parity is an ongoing effort. See the [`:help neovintageous`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/neovintageous.txt) command to learn about the differences.
+Neovintageous is an emulation of Vim (feature-parity is an ongoing effort). See the [`:help neovintageous`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) command to learn about the differences.
 
 Vim's documentation system is accessible via the `:help` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [appspot](https://vimhelp.appspot.com).
 
-Plugin documentation is also accessible via he `:help` command, feature-parity is an ongoing effort:
+## Plugins
 
-* [`:help abolish`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/abolish.txt)
-* [`:help commentary`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/commentary.txt)
-* [`:help highlightedyank`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/neovintageous.txt)
-* [`:help surround`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/surround.txt)
-* [`:help unimpaired`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/unimpaired.txt)
-* [`:help indent-object`](https://raw.githubusercontent.com/NeoVintageous/NeoVintageous/master/res/doc/indent-object.txt)
+The following plugins are available out-of-the-box (feature-parity is an ongoing effort):
+
+Plugin | Documentation | Original Vim Plugin
+------ | ------------- | -------------------
+Abolish | [`:help abolish`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/abolish.txt) | [vim-abolish](https://github.com/tpope/vim-abolish)
+Commentary | [`:help commentary`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/commentary.txt) | [vim-commentary](https://github.com/tpope/vim-commentary)
+Highlighted Yank | [`:help highlightedyank`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
+Indent Object | [`:help indent-object`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/indent-object.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
+Multiple Cursors | [`:help multiple-cursors`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
+Surround | [`:help surround`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/surround.txt) | [vim-surround](https://github.com/tpope/vim-surround)
+Unimpaired | [`:help unimpaired`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/unimpaired.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
 ## Contributing
 
@@ -50,7 +58,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See [CHANGELOG.md](CHANGELOG.md).
 
-## Acknowledgements
+## Credits
 
 Neovintageous is a fork of the discontinued Vintageous plugin.
 
