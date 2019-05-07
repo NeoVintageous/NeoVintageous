@@ -23,6 +23,9 @@ class Test_g_(unittest.FunctionalTestCase):
     def test_n(self):
         self.eq('1\n|fizz\nbuzz', 'n_g_', '1\nfiz|z\nbuzz')
         self.eq('1\n|fizz    \nbuzz', 'n_g_', '1\nfiz|z    \nbuzz')
+        self.eq('|fizz\nbuzz  \nx', 'n_2g_', 'fizz\nbuz|z  \nx')
+        self.eq('|', 'n_g_', '|')
+        self.eq('| ', 'n_g_', '| ')
 
     def test_v(self):
         self.eq('1\n|fizz\nbuzz', 'v_g_', '1\n|fizz|\nbuzz')
@@ -35,8 +38,21 @@ class Test_g_(unittest.FunctionalTestCase):
         self.eq('r_1\nfi|zz buzz|\n3', 'v_g_', 'r_1\nfizz buz|z|\n3')
         self.eq('|f|izz    \nx', 'v_g_', '|fizz|    \nx')
 
+    def test_V(self):
+        self.eq('fizz1\n|fizz2\n|fizz3  \nfizz4\n', 'l_2g_', 'fizz1\n|fizz2\nfizz3  \n|fizz4\n')
+
+    def test_b(self):
+        self.eq('|fi|zzbuzz\n|fi|zz    \n', 'b_g_', '|fizz|buzz\n|fizz|    \n')
+
+    def test_c(self):
+        self.eq('fi|zz\nbuzz', 'cg_', 'i_fi|\nbuzz')
+        self.eq('fi|zz  \nbuzz', 'cg_', 'i_fi|  \nbuzz')
+        self.eq('fi|zz\nbuzz\nfizz', '2cg_', 'i_fi|\nfizz')
+        self.eq('fi|zz\nbuzz  \nfizz', '2cg_', 'i_fi|  \nfizz')
+
     def test_d(self):
         self.eq('|fizz\nbuzz', 'dg_', '|\nbuzz')
+        self.eq('|fizz  \nbuzz', 'dg_', '|  \nbuzz')
         self.eq('1\n|fizz\nbuzz', 'dg_', '1\n|\nbuzz')
         self.eq('1\nf|izz\nbuzz', 'dg_', '1\n|f\nbuzz')
         self.eq('fi|zz    \nbuzz', 'dg_', 'fi|    \nbuzz')

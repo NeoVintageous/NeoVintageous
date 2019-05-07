@@ -20,16 +20,22 @@ from NeoVintageous.tests import unittest
 
 class Test_gE(unittest.FunctionalTestCase):
 
-    def test_n_gE(self):
+    def test_n(self):
         self.eq('one t|wo', 'n_ge', 'on|e two')
         self.eq('one.,()$ t|wo', 'n_gE', 'one.,()|$ two')
         self.eq('one two ,.$;_() four fi|ve', 'n_3gE', 'one tw|o ,.$;_() four five')
 
-    def test_v_gE(self):
+    def test_v(self):
         self.eq('one t|w|o', 'v_gE', 'r_on|e tw|o')
         self.eq('1 two ab cd f|i|ve', 'v_3gE', 'r_1 tw|o ab cd fi|ve')
         self.eq('r_1 two a|b cd fi|ve', 'v_gE', 'r_1 tw|o ab cd fi|ve')
         self.eq('1 |two a|b', 'v_gE', '1 |two| ab')
 
-    def test_l_gE(self):
-        self.eq('1\n|2\n|3\n', 'l_gE', '1\n|2\n|3\n')
+    def test_b(self):
+        self.eq('r_one t|wo|\none t|wo|\n', 'b_gE', 'r_on|e two|\non|e two|\n')
+
+    def test_c(self):
+        self.eq('fizzx ab|cbuzz', 'cgE', 'i_fizz|buzz')
+
+    def test_d(self):
+        self.eq('fizzx ab|cbuzz', 'dgE', 'fizz|buzz')

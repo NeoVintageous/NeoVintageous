@@ -21,7 +21,7 @@ from NeoVintageous.tests import unittest
 class Test_L(unittest.FunctionalTestCase):
 
     @unittest.mock_ui()
-    def test_L(self):
+    def test_n(self):
         self.eq('|1\n2\n3', 'n_L', '1\n2\n|3')
         self.eq('|1\n2\n3', 'n_L', '1\n2\n|3')
         self.eq('1\n|2\n3', 'n_L', '1\n2\n|3')
@@ -29,33 +29,34 @@ class Test_L(unittest.FunctionalTestCase):
         self.eq('|1\n2\n    3', 'n_L', '1\n2\n    |3')
 
     @unittest.mock_ui(visible_region=(0, 5))
-    def test_L_should_be_within_visible_region(self):
+    def test_n_L_should_be_within_visible_region(self):
         self.eq('|1\n2\n3\n4', 'n_L', '1\n2\n|3\n4')
         self.eq('1\n|2\n3\n4', 'n_L', '1\n2\n|3\n4')
         self.eq('1\n2\n|3\n4', 'n_L', '1\n2\n|3\n4')
         self.eq('|1\n2\n    3\n4', 'n_L', '1\n2\n    |3\n4')
 
     @unittest.mock_ui(visible_region=(0, 3))
-    def test_L_should_be_within_visible_region2(self):
+    def test_n_L_should_be_within_visible_region2(self):
         self.eq('|1\n2\n3\n4', 'n_L', '1\n|2\n3\n4')
         self.eq('1\n|2\n3\n4', 'n_L', '1\n|2\n3\n4')
 
     @unittest.mock_ui()
-    def test_N_L(self):
-        self.eq('1\n2\n|3', 'L', 'r_N_1\n2\n|3|')
-        self.eq('1\n2\n|3x', 'L', 'r_N_1\n2\n|3|x')
-        self.eq('|1\n2\n3', 'L', 'N_|1\n2\n|3')
-        self.eq('|1\n2\n3x', 'L', 'N_|1\n2\n|3x')
-        self.eq('x|1\n2\n3x', 'L', 'N_x|1\n2\n|3x')
-        self.eq('x|1\n2\nx3', 'L', 'N_x|1\n2\n|x3')
-        self.eq('1\n|2\n3', 'L', 'N_1\n|2\n|3')
-        self.eq('1\n|2\n3\n', 'L', 'N_1\n|2\n|3\n')
-        self.eq('1\n|2\n    3', 'L', 'N_1\n|2\n    |3')
-        self.eq('1\n|2\n    3\n', 'L', 'N_1\n|2\n    |3\n')
-        self.eq('    x|1\n2\n    x3', 'L', 'N_    x|1\n2\n    |x3')
+    def test_d(self):
+        self.eq('1\n2\n|3', 'dL', '1\n2\n|')
+        self.eq('1\n2\n|3x', 'dL', '1\n2\n|')
+        self.eq('|1\n2\n3', 'dL', '|')
+        self.eq('|1\n2\n3x', 'dL', '|')
+        self.eq('x|1\n2\n3x', 'dL', '|')
+        self.eq('x|1\n2\nx3', 'dL', '|')
+        self.eq('1\n|2\n3', 'dL', '1\n|')
+        self.eq('1\n|2\n3\n', 'dL', '1\n|')
+        self.eq('1\n|2\n    3', 'dL', '1\n|')
+        self.eq('1\n|2\n    3\n', 'dL', '1\n|')
+        self.eq('    x|1\n2\n    x3', 'dL', '|')
+        self.eq('fizz\nbu|zz\nfizz\n', 'dL', 'fizz\n|')
 
     @unittest.mock_ui()
-    def test_v_L(self):
+    def test_v(self):
         self.eq('|1\n2\n3', 'v_L', '|1\n2\n3|')
         self.eq('|1\n2\n3x', 'v_L', '|1\n2\n3|x')
         self.eq('|1\n2\n    3x', 'v_L', '|1\n2\n    3|x')
@@ -72,7 +73,7 @@ class Test_L(unittest.FunctionalTestCase):
         self.eq('1\n2\n  |  f|izz', 'v_L', '1\n2\n  |  f|izz')
 
     @unittest.mock_ui()
-    def test_l_L(self):
+    def test_V(self):
         self.eq('1x\n2x\n3x\n4x\n|5x|', 'l_L', 'r_1x\n2x\n3x\n4x\n|5x|')
         self.eq('1x\n2x\n3x\n4x\n|5x\n|', 'l_L', 'r_1x\n2x\n3x\n4x\n|5x\n|')
         self.eq('1x\n2x\n3x\n|4x\n5x|', 'l_L', '1x\n2x\n3x\n|4x\n5x|')

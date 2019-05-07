@@ -48,6 +48,9 @@ class Test_dollar(unittest.FunctionalTestCase):
         self.eq('r_1\n|fizz\nbuzz\n|four\nfive', 'l_2$', 'r_1\nfizz\n|buzz\n|four\nfive')
         self.eq('r_1\n|fizz\nbuzz\n|four\nfive', 'l_3$', '1\nfizz\n|buzz\nfour\n|five')
 
+    def test_b(self):
+        self.eq('x\n|fizz| buzz\n|fizz| buzz\ny', 'b_$', 'x\n|fizz buzz\n||fizz buzz\n|y')
+
     def test_d(self):
         self.eq('one |two three', 'd$', 'one| ')
         self.eq('one t|wo three', 'd$', 'one |t')

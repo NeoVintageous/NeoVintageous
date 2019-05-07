@@ -317,6 +317,41 @@ def resolve_visual_line_target(view, s, target):
             s.b = view.full_line(target).b
 
 
+def resolve_internal_normal_target(view, s, target, linewise=None, inclusive=None):
+    # type: (...) -> None
+
+    # An Internal Normal resolver may have modifiers such as linewise,
+    # inclusive, exclusive, etc. Modifiers determine how the selection, relative
+    # to the target should be resolved.
+
+    # XXX Should modifiers be a bitwise options param rather than indivisual
+    # params? This can be easily refactored later!
+    # * For the moment, ensure at least one modifier is specified!
+    # * For the moment, modifier can only be used individually!
+    if linewise is None and inclusive is None:
+        raise NotImplementedError()
+    if linewise is not None and inclusive is not None:
+        raise NotImplementedError()
+
+    if linewise:
+        resolve_visual_target(s, target)
+
+        if s.b >= s.a:
+            s.a = view.line(s.a).a
+            s.b = view.full_line(s.b).b
+        else:
+            s.b = view.line(s.b).a
+            s.a = view.full_line(s.a).b
+
+    if inclusive:
+        s.b = target
+
+        if s.b >= s.a:
+            s.b += 1
+        else:
+            s.a += 1
+
+
 class VisualBlockSelection():
 
     # There are two "pivot" points: the direction of the Visual block, and the

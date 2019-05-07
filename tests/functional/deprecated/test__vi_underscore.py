@@ -30,8 +30,8 @@ NORMAL_CASES = (
 INTERNAL_NORMAL_CASES = (
     # Test cases for 'c' behavior, 'd' behaves differently
     test_data(' 12\n 56', (0, 0), unittest.INTERNAL_NORMAL, 1, (0, 4), 'Internal before first space'),
-    test_data(' 12\n 56', (2, 2), unittest.INTERNAL_NORMAL, 1, (0, 4), 'Internal after first space'),
-    test_data(' 12\n 56', (6, 6), unittest.INTERNAL_NORMAL, 1, (4, 7), 'Internal from 2nd line'),
+    test_data(' 12\n 56', (2, 2), unittest.INTERNAL_NORMAL, 1, (4, 0), 'Internal after first space'),
+    test_data(' 12\n 56', (6, 6), unittest.INTERNAL_NORMAL, 1, (7, 4), 'Internal from 2nd line'),
 )
 
 VISUAL_MULTI_CHAR_CASES = (

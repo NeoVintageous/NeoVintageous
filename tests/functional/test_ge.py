@@ -20,18 +20,24 @@ from NeoVintageous.tests import unittest
 
 class Test_ge(unittest.FunctionalTestCase):
 
-    def test_n_ge(self):
+    def test_n(self):
         self.eq('one t|wo', 'n_ge', 'on|e two')
         self.eq('one two three four fi|ve', 'n_3ge', 'one tw|o three four five')
 
-    def test_v_ge(self):
+    def test_v(self):
         self.eq('one t|w|o', 'v_ge', 'r_on|e tw|o')
         self.eq('1 two ab cd f|i|ve', 'v_3ge', 'r_1 tw|o ab cd fi|ve')
         self.eq('r_1 two a|b cd fi|ve', 'v_ge', 'r_1 tw|o ab cd fi|ve')
         self.eq('1 |two a|b', 'v_ge', '1 |two| ab')
-        self.eq('fi|.zz|', 'v_ge', 'r_fi|.|zz')
+        self.eq('fi|.zz|', 'v_ge', 'fi|.|zz')
         self.eq('fi|.|zz', 'v_ge', 'r_f|i.|zz')
         self.eq('f|i.zz|', 'v_ge', 'f|i.|zz')
 
-    def test_l_ge(self):
-        self.eq('1\n|2\n|3\n', 'l_ge', '1\n|2\n|3\n')
+    def test_b(self):
+        self.eq('r_one t|wo|\none t|wo|\n', 'b_ge', 'r_on|e two|\non|e two|\n')
+
+    def test_c(self):
+        self.eq('fizzx ab|cbuzz', 'cge', 'i_fizz|buzz')
+
+    def test_d(self):
+        self.eq('fizzx ab|cbuzz', 'dge', 'fizz|buzz')

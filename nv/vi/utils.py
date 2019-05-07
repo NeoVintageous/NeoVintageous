@@ -181,7 +181,7 @@ def next_non_blank(view, pt):
     # type: (...) -> int
     limit = view.size()
     substr = view.substr
-    while (substr(pt) in '\t ') and (pt <= limit):
+    while substr(pt) in ' \t' and pt <= limit:
         pt += 1
 
     return pt
@@ -190,7 +190,7 @@ def next_non_blank(view, pt):
 def prev_non_blank(view, pt):
     # type: (...) -> int
     substr = view.substr
-    while substr(pt) in '\t ' and pt > 0:
+    while substr(pt) in ' \t' and pt > 0:
         pt -= 1
 
     return pt

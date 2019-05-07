@@ -46,7 +46,25 @@ class Test_bar(unittest.FunctionalTestCase):
         self.eq('x\n|fizz\n|buzz', 'v_|', 'x\n|f|izz\nbuzz')
         self.eq('r_x\n|fizz\n|buzz', 'v_|', 'r_x\n|fizz\n|buzz')
 
+    def test_b(self):
+        self.eq('12|345|67\n12|345|67\n', 'b_|', 'r_|123|4567\n|123|4567\n')
+        self.eq('12|345|67\n12|345|67\n', 'b_2|', 'r_1|23|4567\n1|23|4567\n')
+        self.eq('1|23|4567\n1|23|4567\n', 'b_6|', '1|23456|7\n1|23456|7\n')
+
+    def test_c(self):
+        self.eq('123456|7890', 'c|', 'i_|7890')
+        self.eq('123456|7890', '1c|', 'i_|7890')
+        self.eq('123456|7890', '2c|', 'i_1|7890')
+        self.eq('123456|7890', '3c|', 'i_12|7890')
+        self.eq('123|4567', '7c|', 'i_123|7')
+        self.eq('123|4567', '8c|', 'i_123|7')
+        self.eq('123|4567', '9c|', 'i_123|7')
+        self.eq('123|4567\nx', '8c|', 'i_123|7\nx')
+        self.eq('123|4567\nx', '9c|', 'i_123|7\nx')
+
     def test_d(self):
         self.eq('12|34567890', '7d|', '12|7890')
         self.eq('123456|7890', '2d|', '1|7890')
         self.eq('123456|7890', 'd|', '|7890')
+        self.eq('123|4567', '9d|', '123|7')
+        self.eq('123|4567\nx', '9d|', '123|7\nx')

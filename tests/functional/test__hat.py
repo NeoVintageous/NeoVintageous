@@ -20,18 +20,14 @@ from NeoVintageous.tests import unittest
 
 class Test_hat(unittest.FunctionalTestCase):
 
-    def test_n_hat(self):
+    def test_n(self):
+        self.eq('', 'n_^', '|')
         self.eq('012|a4', 'n_^', '|012a4')
         self.eq('  2|a4', 'n_^', '  |2a4')
         self.eq(' | 234', 'n_^', '  |234')
+        self.eq('    fi|zz', 'n_^', '    |fizz')
 
-    def test_N_hat(self):
-        self.eq('012|a4', '^', 'r_N_|012|a4')
-        self.eq('  2|a4', '^', 'r_N_  |2|a4')
-        self.eq('|  234', '^', 'N_|  |234')
-        self.eq('  |a|34', '^', 'r_N_  |a|34')
-
-    def test_v_hat(self):
+    def test_v(self):
         self.eq('r_0|b2a|45', 'v_^', 'r_v_|0b2a|45')
         self.eq('0|a2b4|5', 'v_^', 'r_v_|0a|2b45')
         self.eq('r_  2|ba5|', 'v_^', 'r_v_  |2ba5|')
@@ -40,8 +36,23 @@ class Test_hat(unittest.FunctionalTestCase):
         self.eq('r_ | 23a5|', 'v_^', 'r_v_  |23a5|')
         self.eq(' | 23b5|', 'v_^', 'v_ | 2|3b5')
         self.eq('|f|', 'v_^', '|f|')
-        self.eq('r_|x|', 'v_^', '|x|')
+        self.eq('r_|x|', 'v_^', 'r_|x|')
         self.eq('| 123\n| 678', 'v_^', '| 1|23\n 678')
         self.eq('r_ 123|\n 67|8', 'v_^', 'r_ |123\n 67|8')
         self.eq(' 1|23\n 67|8', 'v_^', ' 1|23\n 6|78')
         self.eq('r_ 1|23\n 67|8', 'v_^', 'r_ |123\n 67|8')
+
+    def test_b(self):
+        self.eq('  fi|zz|buzz\n  fi|zz|buzz\n', 'b_^', 'r_  |fiz|zbuzz\n  |fiz|zbuzz\n')
+        self.eq('|  |  fizzbuzz\n|  |  fizzbuzz\n', 'b_^', '|    f|izzbuzz\n|    f|izzbuzz\n')
+
+    def test_c(self):
+        self.eq('    fi|zz', 'c^', 'i_    |zz')
+        self.eq('|', 'c^', 'i_|')
+
+    def test_d(self):
+        self.eq('012|a4', 'd^', '|a4')
+        self.eq('  2|a4', 'd^', '  |a4')
+        self.eq('    fi|zz', 'd^', '    |zz')
+        self.eq('|  234', 'd^', '|234')
+        self.eq('|', 'd^', '|')

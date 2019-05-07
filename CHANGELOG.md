@@ -9,20 +9,43 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#519](https://github.com/NeoVintageous/NeoVintageous/issues/519): `:noh[lsearch]` command
 * Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:his[tory]` command
 * Added [#513](https://github.com/NeoVintageous/NeoVintageous/issues/513): `:g[lobal]/{pattern}/d[elete]` command
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `[count]g_`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cge`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cgE`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `dge`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `dgE`
 * Added [#512](https://github.com/NeoVintageous/NeoVintageous/issues/512): `v` in Visual block mode (converts to Visual mode)
 * Added [#511](https://github.com/NeoVintageous/NeoVintageous/issues/511): `V` in Visual block mode (converts to Visual line mode)
-* Added [#500](https://github.com/NeoVintageous/NeoVintageous/issues/500): `-` in Visual line mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `$` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `0` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `^` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `_` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `b` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `B` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `e` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `E` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `g_` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `ge` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `gE` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `w` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `W` in Visual block mode
+* Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `|` in Visual block mode
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[(` in Visual line mode
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[{` in Visual line mode
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `])` in Visual line mode
+* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `]}` in Visual line mode
+* Added [#491](https://github.com/NeoVintageous/NeoVintageous/issues/491): `$` in Visual line mode
 * Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `(` in Visual line mode
 * Added [#492](https://github.com/NeoVintageous/NeoVintageous/issues/492): `)` in Visual line mode
-* Added [#491](https://github.com/NeoVintageous/NeoVintageous/issues/491): `$` in Visual line mode
-* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[{` in Visual line mode
-* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `]}` in Visual line mode
-* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `[(` in Visual line mode
-* Added [#490](https://github.com/NeoVintageous/NeoVintageous/issues/490): `])` in Visual line mode
 * Added [#499](https://github.com/NeoVintageous/NeoVintageous/issues/499): `<CR>` in Visual line mode
+* Added [#500](https://github.com/NeoVintageous/NeoVintageous/issues/500): `-` in Visual line mode
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` in Visual line mode
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `e` in Visual line mode
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `g_` in Visual line mode
 * Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bells are now configurable including styles "view", "views", and "blink"
 * Added [#502](https://github.com/NeoVintageous/NeoVintageous/issues/502): Visual bells color scheme is now configurable including "light" and "dark" schemes
 * Added [#284](https://github.com/NeoVintageous/NeoVintageous/issues/284): Support `%` (current file name) in `!` shell commands
+
 
 ### Changed
 
@@ -31,6 +54,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` inconsistencies in Visual mode
+* Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` inconsistencies for c operator
+* Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `_` inconsistencies for d operator
+* Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `M` operations should be linewise
+* Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `L` operations should be linewise
+* Fixed [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `H` operations should be linewise
 * Fixed [#525](https://github.com/NeoVintageous/NeoVintageous/issues/525): `I` in reverse Visual mode should enter Insert mode at SOL
 * Fixed [#524](https://github.com/NeoVintageous/NeoVintageous/issues/524): `g_` should not include trailing WS
 * Fixed [#523](https://github.com/NeoVintageous/NeoVintageous/issues/523): `g_` in Visual mode is off-by-one

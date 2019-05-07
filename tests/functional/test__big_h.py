@@ -21,32 +21,26 @@ from NeoVintageous.tests import unittest
 class Test_H(unittest.FunctionalTestCase):
 
     @unittest.mock_ui()
-    def test_H(self):
+    def test_n(self):
         self.eq('1\n2\n|3', 'n_H', '|1\n2\n3')
         self.eq('1\n|2\n3', 'n_H', '|1\n2\n3')
         self.eq('|1\n2\n3', 'n_H', '|1\n2\n3')
         self.eq('    1\n2\n|3', 'n_H', '    |1\n2\n3')
 
     @unittest.mock_ui(visible_region=(2, 7))
-    def test_H_should_be_within_visible_region(self):
+    def test_n_H_should_be_within_visible_region(self):
         self.eq('1\n2\n3\n|4', 'n_H', '1\n|2\n3\n4')
         self.eq('1\n2\n|3\n4', 'n_H', '1\n|2\n3\n4')
         self.eq('1\n|2\n3\n4', 'n_H', '1\n|2\n3\n4')
         self.eq('1\n    2\n3\n|4', 'n_H', '1\n    |2\n3\n4')
 
     @unittest.mock_ui(visible_region=(4, 7))
-    def test_H_should_be_within_visible_region2(self):
+    def test_n_H_should_be_within_visible_region2(self):
         self.eq('1\n2\n3\n|4', 'n_H', '1\n2\n|3\n4')
         self.eq('1\n2\n|3\n4', 'n_H', '1\n2\n|3\n4')
 
     @unittest.mock_ui()
-    def test_N_H(self):
-        self.eq('1\n2\n|3', 'H', 'r_N_|1\n2\n|3')
-        self.eq('1\n2\n|3xx', 'H', 'r_N_|1\n2\n|3xx')
-        self.eq('|1\n2', 'H', 'N_|1\n2')
-
-    @unittest.mock_ui()
-    def test_v_H(self):
+    def test_v(self):
         self.eq('1\n2\n|3', 'v_H', 'r_|1\n2\n3|')
         self.eq('1\n2\n|3xx', 'v_H', 'r_|1\n2\n3|xx')
         self.eq('1\n2\n|3\n4', 'v_H', 'r_|1\n2\n3|\n4')
@@ -75,7 +69,7 @@ class Test_H(unittest.FunctionalTestCase):
         self.eq('1\n2\n    3\n456\n|xyz', 'v_H', 'r_1\n2\n    |3\n456\nx|yz')
 
     @unittest.mock_ui()
-    def test_l_H(self):
+    def test_V(self):
         self.eq('1\n|2\n|x', 'l_H', 'r_|1\n2\n|x')
         self.eq('1\n|2\n3\n|x', 'l_H', 'r_|1\n2\n|3\nx')
         self.eq('1\n|2\n3\n4\n|x', 'l_H', 'r_|1\n2\n|3\n4\nx')
@@ -85,6 +79,13 @@ class Test_H(unittest.FunctionalTestCase):
         self.eq('|1xx\n2\n3\n|4\nx', 'l_H', 'r_|1xx\n|2\n3\n4\nx')
 
     @unittest.mock_ui(visible_region=(2, 17))
-    def test_l_H_visible_regions(self):
+    def test_V_H_visible_regions(self):
         self.eq('x\n|1xx\n2\n3\n|4\nx', 'l_H', 'r_x\n|1xx\n|2\n3\n4\nx')
         self.eq('x\n|    1xx\n2\n3\n|4\nx', 'l_H', 'x\n|    1xx\n|2\n3\n4\nx')
+
+    @unittest.mock_ui()
+    def test_d(self):
+        self.eq('1\n2\n|3', 'dH', '|')
+        self.eq('1\n2\n|3xx', 'dH', '|')
+        self.eq('|1\n2', 'dH', '|2')
+        self.eq('one\ntwo\nth|ree\nfour\nfive', 'dH', '|four\nfive')
