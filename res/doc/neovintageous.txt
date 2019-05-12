@@ -69,23 +69,19 @@ At any time, you can press J to exit back to Normal mode.
 
 OPENING A VIEW                                               *nv-opening-view*
 
-Some windowing commands require the Origami package, for example some of the
-windowing splitting commands: https://packagecontrol.io/packages/Origami.
+Note that some windowing commands require the Origami package e.g. windowing
+splitting commands: https://packagecontrol.io/packages/Origami.
 
 CTRL-W CTRL-S
 CTRL-W s
 CTRL-W S
 :sp[lit] [file]         Split current window in two. The result is two views
-                        on the same file.
-
-                        See |CTRL-W_s|.
+                        on the same file. See |CTRL-W_s|.
 
 CTRL-W CTRL-V
 CTRL-W v
 CTRL-W V
-:vs[plit] [file]        Like |:split|, but split vertically.
-
-                        See |CTRL-W_v|.
+:vs[plit] [file]        Like |:split|, but split vertically. See |CTRL-W_v|.
 
 ==============================================================================
 
@@ -277,7 +273,7 @@ UNIMPAIRED                                                     *nv-unimpaired*
                                                                   *unimpaired*
 
 This plugin provides several pairs of bracket maps. See |unimpaired.txt| for
-more detials. Note that not all of the commands have been implemented. Below
+more details. Note that not all of the commands have been implemented. Below
 is a list of what has been implemented so far.
 
 [b                     |:bprevious|

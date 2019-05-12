@@ -4,7 +4,7 @@ An advanced Vim emulation layer for Sublime Text.
 
 [![Build Status](https://img.shields.io/travis/NeoVintageous/NeoVintageous/master.svg?style=flat-square)](https://travis-ci.org/NeoVintageous/NeoVintageous) [![Build status](https://img.shields.io/appveyor/ci/gerardroche/neovintageous/master.svg?style=flat-square)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Coverage Status](https://img.shields.io/coveralls/NeoVintageous/NeoVintageous/master.svg?style=flat-square)](https://coveralls.io/github/NeoVintageous/NeoVintageous?branch=master) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg?style=flat-square)](https://sublimetext.com) [![Latest Stable Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?style=flat-square&label=stable)](https://github.com/NeoVintageous/NeoVintageous/tags) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Downloads](https://img.shields.io/packagecontrol/dt/NeoVintageous.svg?style=flat-square)](https://packagecontrol.io/packages/NeoVintageous)
 
-Neovintageous is a project that seeks to continue the development of the discontinued Vintageous plugin.
+NeoVintageous is a project that seeks to continue the development of the discontinued Vintageous plugin.
 
 * Open source
 * Highly configurable
@@ -17,8 +17,7 @@ Neovintageous is a project that seeks to continue the development of the discont
 
 ### Package Control installation
 
-Th# be preferred method of installation is [Package Control](https://packagecontrol.io/packages/NeoVintageous).
-
+The preferred method of installation is [Package Control](https://packagecontrol.io/packages/NeoVintageous).
 
 ### Manual installation
 
@@ -32,7 +31,7 @@ Windows | `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA
 
 ## Documentation
 
-Neovintageous is an emulation of Vim (feature-parity is an ongoing effort). See the [`:help neovintageous`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) command to learn about the differences.
+NeoVintageous is an emulation of Vim (feature-parity is an ongoing effort). See the [`:help neovintageous`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) command to learn about the differences.
 
 Vim's documentation system is accessible via the `:help` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [appspot](https://vimhelp.appspot.com).
 
@@ -60,7 +59,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Credits
 
-Neovintageous is a fork of the discontinued Vintageous plugin.
+NeoVintageous is a fork of the discontinued Vintageous plugin.
 
 ## License
 

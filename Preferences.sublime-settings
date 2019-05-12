@@ -1,9 +1,11 @@
 {
     // A port of https://github.com/machakann/vim-highlightedyank.
     // See http://vimcasts.org/episodes/neovim-eyecandy/#shownotes.
+    // {not in Vim}
     "highlightedyank": true,
 
     // Assign number of time in milliseconds.
+    // {not in Vim}
     "highlightedyank_duration": 1000,
 
     // Accepts any of the following:
@@ -12,6 +14,7 @@
     // * underline
     // * squiggly_underline
     // * stippled_underline
+    // {not in Vim}
     "highlightedyank_style": "fill",
 
     // Current search style.
@@ -21,6 +24,7 @@
     // * underline
     // * squiggly_underline
     // * stippled_underline
+    // {not in Vim}
     "neovintageous_search_cur_style": "fill",
 
     // Incremental search style.
@@ -30,6 +34,7 @@
     // * underline
     // * squiggly_underline
     // * stippled_underline
+    // {not in Vim}
     "neovintageous_search_inc_style": "fill",
 
     // Search occurences style.
@@ -39,6 +44,7 @@
     // * underline
     // * squiggly_underline
     // * stippled_underline
+    // {not in Vim}
     "neovintageous_search_occ_style": "fill",
 
     // Specifies for which events the bell (visual blink) will not be rung. It
@@ -48,6 +54,7 @@
     "vintageous_belloff": "",
 
     // Port of https://github.com/tpope/vim-surround
+    // {not in Vim}
     "vintageous_enable_surround": true,
 
     // Highlight searches in '/', '?', etc.
@@ -105,15 +112,14 @@
     // {not in Vim}
     "vintageous_use_sys_clipboard": false,
 
-    // Visual bell type.
+    // Visual bell style type.
     // Valid values are: blink, view, or views.
     // {not in Vim}
     "vintageous_bell": "blink",
 
     // Visual bell color scheme.
-    // Two color schemes are provided: "dark" and "light"
-    // You can also specify a path to custom one, for example:
-    // "Packages/NeoVintageous/res/Bell-dark.hidden-color-scheme"
+    // Valid values are: "dark", "light", or color scheme path. The color scheme
+    // path should be in the format Packages/Name/name.hidden-color-scheme
     // {not in Vim}
     "vintageous_bell_color_scheme": "dark"
 }

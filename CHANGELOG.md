@@ -13,7 +13,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `I` in multiple cursor mode
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `s` in multiple cursor mode
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `v` in multiple cursor mode (go to Normal mode)
-* Added [#493](https://github.com/NeoVintageous/NeoVintageous/issues/493): `:sil[ent]` command
+* Added [#493](https://github.com/NeoVintageous/NeoVintageous/issues/493): `:sil[ent] {command}` command
 * Added [#513](https://github.com/NeoVintageous/NeoVintageous/issues/513): `:g[lobal]/{pattern}/d[elete]` command
 * Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:his[tory]` command
 * Added [#519](https://github.com/NeoVintageous/NeoVintageous/issues/519): `:noh[lsearch]` command
