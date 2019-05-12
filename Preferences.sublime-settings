@@ -47,10 +47,6 @@
     // https://vimhelp.org/options.txt.html#%27belloff%27
     "vintageous_belloff": "",
 
-    // Enable ':' and ex commands.
-    // {not in Vim}
-    "vintageous_enable_cmdline_mode": true,
-
     // Port of https://github.com/tpope/vim-surround
     "vintageous_enable_surround": true,
 
