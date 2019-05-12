@@ -128,6 +128,14 @@ def regions_transformer_reversed(view, f):
     _regions_transformer(reversed(list(view.sel())), view, f, False)
 
 
+def _transform_first_non_blank(view, s):
+    return Region(next_non_blank(view, view.line(s.begin()).a))
+
+
+def regions_transform_to_first_non_blank(view):
+    regions_transformer(view, _transform_first_non_blank)
+
+
 def replace_sel(view, new_sel):
     # type: (...) -> None
     if new_sel is None or new_sel == []:

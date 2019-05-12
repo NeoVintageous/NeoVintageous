@@ -23,11 +23,12 @@ class Test_less_than_less_than(unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.settings().set('translate_tabs_to_spaces', True)
-        self.settings().set('tab_size', 4)
+        self.settings().set('tab_size', 2)
 
-    def test_n(self):
-        self.eq('    |fizz', 'n_<<', '|fizz')
-        self.eq('|        abc', 'n_<<', '    |abc')
-        self.eq('|        abc', '1<<', '    |abc')
-        self.eq('|    abc\n    abc', '2<<', '|abc\nabc')
-        self.eq('|    abc\n    abc\n    abc', '3<<', '|abc\nabc\nabc')
+    def test_N(self):
+        self.eq('|    abc', '1<<', '  |abc')
+        self.eq('|  abc\n  abc', '2<<', '|abc\nabc')
+        self.eq('|  abc\n  abc\n  abc', '3<<', '|abc\nabc\nabc')
+        self.eq('|  abc\n  abc\n  abc\n  x\n  y', '3<<', '|abc\nabc\nabc\n  x\n  y')
+        self.eq('|    1x\n    2\n    3\n    4\n    5\n', '3<<', '  |1x\n  2\n  3\n    4\n    5\n')
+        self.eq('    fi|zz\n    buzz\n    3\n    4\n', '2<<', '  |fizz\n  buzz\n    3\n    4\n')

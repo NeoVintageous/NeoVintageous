@@ -90,6 +90,7 @@ from NeoVintageous.nv.utils import prev_non_blank
 from NeoVintageous.nv.utils import prev_non_nl
 from NeoVintageous.nv.utils import prev_non_ws
 from NeoVintageous.nv.utils import previous_non_folded_pt
+from NeoVintageous.nv.utils import regions_transform_to_first_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
@@ -2017,26 +2018,18 @@ class _vi_r(ViTextCommandBase):
 
 class _vi_less_than_less_than(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=None):
-        def motion(view, s):
-            if mode != INTERNAL_NORMAL:
-                return s
+    def run(self, edit, mode=None, count=1):
+        def f(view, s):
+            if count > 1:
+                s.a = view.line(s.begin()).a
+                s.b = view.line(view.text_point(row_at(view, s.a) + (count - 1), 0)).b
 
-            if count <= 1:
-                return s
+            return s
 
-            a = view.line(s.a).a
-            pt = view.text_point(row_at(view, a) + (count - 1), 0)
-            return Region(a, view.line(pt).b)
-
-        def action(view, s):
-            bol = view.line(s.begin()).a
-            pt = next_non_blank(view, bol)
-            return Region(pt)
-
-        regions_transformer(self.view, motion)
+        regions_transformer(self.view, f)
         self.view.run_command('unindent')
-        regions_transformer(self.view, action)
+        regions_transform_to_first_non_blank(self.view)
+        enter_normal_mode(self.view, mode)
 
 
 class _vi_equal_equal(ViTextCommandBase):
