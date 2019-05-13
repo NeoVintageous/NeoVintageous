@@ -12,6 +12,9 @@ updated.
 
 ==============================================================================
 
+API ~
+*nvim_buf_clear_highlight()*	Use |nvim_buf_clear_namespace()| instead.
+
 Commands ~
 *:rv*
 *:rviminfo*		Deprecated alias to |:rshada| command.
@@ -62,12 +65,11 @@ Options ~
 *'langnoremap'*		Deprecated alias to 'nolangremap'.
 *'vi'*
 *'viminfo'*		Deprecated alias to 'shada' option.
+*'viminfofile'*		Deprecated alias to 'shadafile' option.
 
 UI extensions~
-*ui-wildmenu*		Use `ext_cmdline` and `ext_popupmenu` instead.
-			Enabled by `ext_wildmenu` |ui-options|.
-			If `ext_wildmenu` is set, these events are emitted for
-			backwards-compatibility:
+*ui-wildmenu*		Use |ui-cmdline| with |ui-popupmenu| instead. Enabled
+			by the `ext_wildmenu` |ui-option|. Emits these events:
 				["wildmenu_show", items]
 				["wildmenu_select", selected]
 				["wildmenu_hide"]

@@ -8,10 +8,6 @@ Expression evaluation			*expression* *expr* *E15* *eval*
 
 Using expressions is introduced in chapter 41 of the user manual |usr_41.txt|.
 
-Note: Expression evaluation can be disabled at compile time.  If this has been
-done, the features in this document are not available.	See |+eval| and
-|no-eval-feature|.
-
 				      Type |gO| to see the table of contents.
 
 ==============================================================================
@@ -22,8 +18,6 @@ done, the features in this document are not available.	See |+eval| and
 There are six types of variables:
 
 Number		A 32 or 64 bit signed number.  |expr-number| *Number*
-		64-bit Number is available only when compiled with the
-		|+num64| feature.
 		Examples:  -123  0x10  0177  0b1011
 
 Float		A floating point number. |floating-point-format| *Float*
@@ -1307,8 +1301,7 @@ is deleted when the window is closed.
 
 						*tabpage-variable* *t:var* *t:*
 A variable name that is preceded with "t:" is local to the current tab page,
-It is deleted when the tab page is closed. {not available when compiled
-without the |+windows| feature}
+It is deleted when the tab page is closed.
 
 						*global-variable* *g:var* *g:*
 Inside functions global variables are accessed with "g:".  Omitting this will
@@ -1419,7 +1412,7 @@ v:beval_text	The text under or after the mouse pointer.  Usually a word as
 		but a dot and "->" before the position is included.  When on a
 		']' the text before it is used, including the matching '[' and
 		word before it.  When on a Visual area within one line the
-		highlighted text is used.
+		highlighted text is used.  Also see |<cexpr>|.
 		Only valid while evaluating the 'balloonexpr' option.
 
 					*v:beval_winnr* *beval_winnr-variable*
@@ -1509,7 +1502,8 @@ v:dying		Normally zero.	When a deadly signal is caught it's set to
 v:exiting	Exit code, or |v:null| if not exiting. |VimLeave|
 
 					*v:errmsg* *errmsg-variable*
-v:errmsg	Last given error message.  It's allowed to set this variable.
+v:errmsg	Last given error message.
+		Modifiable (can be set).
 		Example: >
 	:let v:errmsg = ""
 	:silent! next
@@ -1745,7 +1739,6 @@ v:oldfiles	List of file names that is loaded from the |shada| file on
 		The List can be modified, but this has no effect on what is
 		stored in the |shada| file later.  If you use values other
 		than String this will cause trouble.
-		{only when compiled with the |+shada| feature}
 
 						    *v:option_new*
 v:option_new    New value of the option. Valid while executing an |OptionSet|
@@ -1835,7 +1828,8 @@ v:shell_error	Result of the last shell command.  When non-zero, the last
 	:endif
 <
 					*v:statusmsg* *statusmsg-variable*
-v:statusmsg	Last given status message.  It's allowed to set this variable.
+v:statusmsg	Last given status message.
+		Modifiable (can be set).
 
 					*v:stderr* *stderr-variable*
 v:stderr	|channel-id| corresponding to stderr. The value is always 2;
@@ -1896,15 +1890,14 @@ v:termresponse	The escape sequence returned by the terminal for the DA
 		is the terminal type: 0 for vt100 and 1 for vt220.  Pv is the
 		patch level (since this was introduced in patch 95, it's
 		always 95 or bigger).  Pc is always zero.
-		{only when compiled with |+termresponse| feature}
 
 					*v:testing* *testing-variable*
 v:testing	Must be set before using `test_garbagecollect_now()`.
 
 				*v:this_session* *this_session-variable*
-v:this_session	Full filename of the last loaded or saved session file.  See
-		|:mksession|.  It is allowed to set this variable.  When no
-		session file has been saved, this variable is empty.
+v:this_session	Full filename of the last loaded or saved session file.
+		Empty when no session file has been saved.  See |:mksession|.
+		Modifiable (can be set).
 
 					*v:throwpoint* *throwpoint-variable*
 v:throwpoint	The point where the exception most recently caught and not
@@ -1931,22 +1924,20 @@ v:val		Value of the current item of a |List| or |Dictionary|.	Only
 		|filter()|.  Read-only.
 
 					*v:version* *version-variable*
-v:version	Version number of Vim: Major version number times 100 plus
-		minor version number.  Version 5.0 is 500.  Version 5.1 (5.01)
-		is 501.  Read-only.  "version" also works, for backwards
-		compatibility.
-		Use |has()| to check if a certain patch was included, e.g.: >
-			if has("patch-7.4.123")
-<		Note that patch numbers are specific to the version, thus both
-		version 5.0 and 5.1 may have a patch 123, but these are
-		completely different.
+v:version	Vim version number: major version times 100 plus minor
+		version.  Vim 5.0 is 500, Vim 5.1 is 501.
+		Read-only.
+		Use |has()| to check the Nvim (not Vim) version: >
+			:if has("nvim-0.2.1")
+<
 
 				*v:vim_did_enter* *vim_did_enter-variable*
-v:vim_did_enter	Zero until most of startup is done.  It is set to one just
-		before |VimEnter| autocommands are triggered.
+v:vim_did_enter	0 during startup, 1 just before |VimEnter|.
+		Read-only.
 
 					*v:warningmsg* *warningmsg-variable*
-v:warningmsg	Last given warning message.  It's allowed to set this variable.
+v:warningmsg	Last given warning message.
+		Modifiable (can be set).
 
 					*v:windowid* *windowid-variable*
 v:windowid	Application-specific window "handle" which may be set by any
@@ -1975,6 +1966,7 @@ argidx()			Number	current index in the argument list
 arglistid([{winnr} [, {tabnr}]]) Number	argument list id
 argv({nr} [, {winid}])		String	{nr} entry of the argument list
 argv([-1, {winid}])		List	the argument list
+assert_beeps({cmd})		none	assert {cmd} causes a beep
 assert_equal({exp}, {act} [, {msg}])
 				none	assert {exp} is equal to {act}
 assert_exception({error} [, {msg}])
@@ -2120,10 +2112,11 @@ gettabvar({nr}, {varname} [, {def}])
 				any	variable {varname} in tab {nr} or {def}
 gettabwinvar({tabnr}, {winnr}, {name} [, {def}])
 				any	{name} in {winnr} in tab page {tabnr}
+gettagstack([{nr}])		Dict	get the tag stack of window {nr}
 getwininfo([{winid}])		List	list of windows
 getwinpos([{timeout}])		List	X and Y coord in pixels of the Vim window
-getwinposx()			Number	X coord in pixels of GUI Vim window
-getwinposy()			Number	Y coord in pixels of GUI Vim window
+getwinposx()			Number	X coord in pixels of Vim window
+getwinposy()			Number	Y coord in pixels of Vim window
 getwinvar({nr}, {varname} [, {def}])
 				any	variable {varname} in window {nr}
 glob({expr} [, {nosuf} [, {list} [, {alllinks}]]])
@@ -2285,6 +2278,8 @@ setreg({n}, {v}[, {opt}])	Number	set register to value and type
 settabvar({nr}, {varname}, {val})	set {varname} in tab page {nr} to {val}
 settabwinvar({tabnr}, {winnr}, {varname}, {val})    set {varname} in window
 					{winnr} in tab page {tabnr} to {val}
+settagstack({nr}, {dict} [, {action}])
+				Number	modify tag stack using {dict}
 setwinvar({nr}, {varname}, {val})	set {varname} in window {nr} to {val}
 sha256({string})		String	SHA256 checksum of {string}
 shellescape({string} [, {special}])
@@ -2329,6 +2324,8 @@ submatch({nr} [, {list}])	String or List
 					specific match in ":s" or substitute()
 substitute({expr}, {pat}, {sub}, {flags})
 				String	all {pat} in {expr} replaced with {sub}
+swapinfo({fname})		Dict	information about swap file {fname}
+swapname({expr})		String	swap file of buffer {expr}
 synID({lnum}, {col}, {trans})	Number	syntax ID at {lnum} and {col}
 synIDattr({synID}, {what} [, {mode}])
 				String	attribute {what} of syntax ID {synID}
@@ -2488,6 +2485,11 @@ argv([{nr} [, {winid}])
 
 		The {winid} argument specifies the window ID, see |argc()|.
 
+assert_beeps({cmd})					*assert_beeps()*
+		Run {cmd} and add an error message to |v:errors| if it does
+		NOT produce a beep or visual bell.
+		Also see |assert_fails()|.
+
 							*assert_equal()*
 assert_equal({expected}, {actual}, [, {msg}])
 		When {expected} and {actual} are not equal an error message is
@@ -2520,6 +2522,8 @@ assert_fails({cmd} [, {error} [, {msg}]])			*assert_fails()*
 		Run {cmd} and add an error message to |v:errors| if it does
 		NOT produce an error.
 		When {error} is given it must match in |v:errmsg|.
+		Note that beeping is not considered an error, and some failing
+		commands only beep.  Use |assert_beeps()| for those.
 
 assert_false({actual} [, {msg}])				*assert_false()*
 		When {actual} is not false an error message is added to
@@ -3279,7 +3283,7 @@ escape({string}, {chars})				*escape()*
 			:echo escape('c:\program files\vim', ' \')
 <		results in: >
 			c:\\program\ files\\vim
-<		Also see |shellescape()|.
+<		Also see |shellescape()| and |fnameescape()|.
 
 							*eval()*
 eval({string})	Evaluate {string} and return the result.  Especially useful to
@@ -3673,8 +3677,6 @@ finddir({name} [, {path} [, {count}]])				*finddir()*
 		{name} in {path} instead of the first one.
 		When {count} is negative return all the matches in a |List|.
 		This is quite similar to the ex-command |:find|.
-		{only available when compiled with the |+file_in_path|
-		feature}
 
 findfile({name} [, {path} [, {count}]])				*findfile()*
 		Just like |finddir()|, but find a file instead of a directory.
@@ -3691,7 +3693,7 @@ float2nr({expr})					*float2nr()*
 		When the value of {expr} is out of range for a |Number| the
 		result is truncated to 0x7fffffff or -0x7fffffff (or when
 		64-bit Number support is enabled, 0x7fffffffffffffff or
-		-0x7fffffffffffffff.  NaN results in -0x80000000 (or when
+		-0x7fffffffffffffff).  NaN results in -0x80000000 (or when
 		64-bit Number support is enabled, -0x8000000000000000).
 		Examples: >
 			echo float2nr(3.95)
@@ -3795,7 +3797,6 @@ foldtext()	Returns a String, to be displayed for a closed fold.  This is
 		When used to draw the actual foldtext, the rest of the line
 		will be filled with the fold char from the 'fillchars'
 		setting.
-		{not available when compiled without the |+folding| feature}
 
 foldtextresult({lnum})					*foldtextresult()*
 		Returns the text that is displayed for the closed fold at line
@@ -3805,7 +3806,6 @@ foldtextresult({lnum})					*foldtextresult()*
 		{lnum} is used like with |getline()|.  Thus "." is the current
 		line, "'m" mark m, etc.
 		Useful when exporting folded text, e.g., to HTML.
-		{not available when compiled without the |+folding| feature}
 
 							*foreground()*
 foreground()	Move the Vim window to the foreground.	Useful when sent from
@@ -4020,14 +4020,14 @@ getchar([expr])						*getchar()*
 			not consumed.  Return zero if no character available.
 
 		Without [expr] and when [expr] is 0 a whole character or
-		special key is returned.  If it is an 8-bit character, the
+		special key is returned.  If it is a single character, the
 		result is a number.  Use nr2char() to convert it to a String.
 		Otherwise a String is returned with the encoded character.
-		For a special key it's a sequence of bytes starting with 0x80
-		(decimal: 128).  This is the same value as the string
-		"\<Key>", e.g., "\<Left>".  The returned value is also a
-		String when a modifier (shift, control, alt) was used that is
-		not included in the character.
+		For a special key it's a String with a sequence of bytes
+		starting with 0x80 (decimal: 128).  This is the same value as
+		the String "\<Key>", e.g., "\<Left>".  The returned value is
+		also a String when a modifier (shift, control, alt) was used
+		that is not included in the character.
 
 		When [expr] is 0 and Esc is typed, there will be a short delay
 		while Vim waits to see if this is the start of an escape
@@ -4555,6 +4555,41 @@ gettabwinvar({tabnr}, {winnr}, {varname} [, {def}])		*gettabwinvar()*
 		To obtain all window-local variables use: >
 			gettabwinvar({tabnr}, {winnr}, '&')
 
+gettagstack([{nr}])					*gettagstack()*
+		The result is a Dict, which is the tag stack of window {nr}.
+		{nr} can be the window number or the |window-ID|.
+		When {nr} is not specified, the current window is used.
+		When window {nr} doesn't exist, an empty Dict is returned.
+
+		The returned dictionary contains the following entries:
+			curidx		Current index in the stack. When at
+					top of the stack, set to (length + 1).
+					Index of bottom of the stack is 1.
+			items		List of items in the stack. Each item
+					is a dictionary containing the
+					entries described below.
+			length		Number of entries in the stack.
+
+		Each item in the stack is a dictionary with the following
+		entries:
+			bufnr		buffer number of the current jump
+			from		cursor position before the tag jump.
+					See |getpos()| for the format of the
+					returned list.
+			matchnr		current matching tag number. Used when
+					multiple matching tags are found for a
+					name.
+			tagname		name of the tag
+
+		See |tagstack| for more information about the tag stack.
+
+getwinpos([{timeout}])					*getwinpos()*
+		The result is a list with two numbers, the result of
+		getwinposx() and getwinposy() combined: 
+			[x-pos, y-pos]
+		{timeout} can be used to specify how long to wait in msec for
+		a response from the terminal.  When omitted 100 msec is used.
+
 							*getwinposx()*
 getwinposx()	The result is a Number, which is the X coordinate in pixels of
 		the left hand side of the GUI Vim window.  The result will be
@@ -4683,10 +4718,47 @@ globpath({path}, {expr} [, {nosuf} [, {list} [, {allinks}]]])
 		supported, thus using 'path' will not always work properly.
 
 							*has()*
-has({feature})	The result is a Number, which is 1 if the feature {feature} is
-		supported, zero otherwise.  The {feature} argument is a
-		string.  See |feature-list| below.
-		Also see |exists()|.
+has({feature})	Returns 1 if {feature} is supported, 0 otherwise.  The
+		{feature} argument is a feature name like "nvim-0.2.1" or
+		"win32", see below.  See also |exists()|.
+
+		Vim's compile-time feature-names (prefixed with "+") are not
+		recognized because Nvim is always compiled with all possible
+		features. |feature-compile| 
+
+		Feature names can be:
+		1.  Nvim version. For example the "nvim-0.2.1" feature means
+		    that Nvim is version 0.2.1 or later: >
+			:if has("nvim-0.2.1")
+
+<		2.  Runtime condition or other pseudo-feature. For example the
+		    "win32" feature checks if the current system is Windows: >
+			:if has("win32")
+<							*feature-list*
+		    List of supported pseudo-feature names:
+		        acl		|ACL| support
+		        iconv		Can use |iconv()| for conversion.
+		        +shellslash	Can use backslashes in filenames (Windows)
+			clipboard	|clipboard| provider is available.
+			nvim		This is Nvim.
+			python2		Legacy Vim |python2| interface. |has-python|
+			python3		Legacy Vim |python3| interface. |has-python|
+			pythonx		Legacy Vim |python_x| interface. |has-pythonx|
+			ttyin		input is a terminal (tty)
+			ttyout		output is a terminal (tty)
+			unix		Unix system.
+			*vim_starting*	True during |startup|. 
+			win32		Windows system (32 or 64 bit).
+			wsl		WSL (Windows Subsystem for Linux) system
+
+							*has-patch*
+		3.  Vim patch. For example the "patch123" feature means that
+		    Vim patch 123 at the current |v:version| was included: >
+			:if v:version > 602 || v:version == 602 && has("patch148")
+
+<		4.  Vim version. For example the "patch-7.4.237" feature means
+		    that Nvim is Vim-compatible to version 7.4.237 or later. >
+			:if has("patch-7.4.237")
 
 
 has_key({dict}, {key})					*has_key()*
@@ -6907,6 +6979,7 @@ setline({lnum}, {text})					*setline()*
 			:for [n, l] in [[5, 'aaa'], [6, 'bbb'], [7, 'ccc']]
 			:  call setline(n, l)
 			:endfor
+
 <		Note: The '[ and '] marks are not set.
 
 setloclist({nr}, {list} [, {action}[, {what}]])		*setloclist()*
@@ -6991,6 +7064,8 @@ setqflist({list} [, {action}[, {what}]])		*setqflist()*
 				buffer
 		    filename	name of a file; only used when "bufnr" is not
 				present or it is invalid.
+		    module	name of a module; if given it will be used in
+				quickfix error window instead of the filename
 		    lnum	line number in the file
 		    pattern	search pattern used to locate the error
 		    col		column number
@@ -7034,9 +7109,6 @@ setqflist({list} [, {action}[, {what}]])		*setqflist()*
 		quickfix list in the stack and all the following lists are
 		freed. To add a new quickfix list at the end of the stack,
 		set "nr" in {what} to "$".
-
-		If {title} is given, it will be used to set |w:quickfix_title|
-		after opening the quickfix window.
 
 		If the optional {what} dictionary argument is supplied, then
 		only the items listed in {what} are set. The first {list}
@@ -7111,16 +7183,17 @@ setreg({regname}, {value} [, {options}])
 			:call setreg('a', "1\n2\n3", 'b5')
 
 <		This example shows using the functions to save and restore a
-		register (note: you may not reliably restore register value
-		without using the third argument to |getreg()| as without it
-		newlines are represented as newlines AND Nul bytes are
-		represented as newlines as well, see |NL-used-for-Nul|). >
+		register: >
 			:let var_a = getreg('a', 1, 1)
 			:let var_amode = getregtype('a')
 			    ....
 			:call setreg('a', var_a, var_amode)
+<		Note: you may not reliably restore register value
+		without using the third argument to |getreg()| as without it
+		newlines are represented as newlines AND Nul bytes are
+		represented as newlines as well, see |NL-used-for-Nul|.
 
-<		You can also change the type of a register by appending
+		You can also change the type of a register by appending
 		nothing: >
 			:call setreg('a', '', 'al')
 
@@ -7146,6 +7219,38 @@ settabwinvar({tabnr}, {winnr}, {varname}, {val})	*settabwinvar()*
 			:call settabwinvar(1, 1, "&list", 0)
 			:call settabwinvar(3, 2, "myvar", "foobar")
 <		This function is not available in the |sandbox|.
+
+settagstack({nr}, {dict} [, {action}])			*settagstack()*
+		Modify the tag stack of the window {nr} using {dict}.
+		{nr} can be the window number or the |window-ID|.
+
+		For a list of supported items in {dict}, refer to
+		|gettagstack()|
+							*E962*
+		If {action} is not present or is set to 'r', then the tag
+		stack is replaced. If {action} is set to 'a', then new entries
+		from {dict} are pushed onto the tag stack.
+
+		Returns zero for success, -1 for failure.
+
+		Examples:
+		    Set current index of the tag stack to 4: >
+			call settagstack(1005, {'curidx' : 4})
+
+<		    Empty the tag stack of window 3: >
+			call settagstack(3, {'items' : []})
+
+<		    Push a new item onto the tag stack: >
+			let pos = [bufnr('myfile.txt'), 10, 1, 0]
+			let newtag = [{'tagname' : 'mytag', 'from' : pos}]
+			call settagstack(2, {'items' : newtag}, 'a')
+
+<		    Save and restore the tag stack: >
+			let stack = gettagstack(1003)
+			" do something else
+			call settagstack(1003, stack)
+			unlet stack
+<
 
 setwinvar({nr}, {varname}, {val})			*setwinvar()*
 		Like |settabwinvar()| for the current tab page.
@@ -7717,6 +7822,31 @@ substitute({expr}, {pat}, {sub}, {flags})		*substitute()*
 		|submatch()| returns. Example: >
 		   :echo substitute(s, '\(\x\x\)', {m -> '0x' . m[1]}, 'g')
 
+swapinfo({fname})					*swapinfo()*
+		The result is a dictionary, which holds information about the
+		swapfile {fname}. The available fields are:
+			version VIM version
+			user	user name
+			host	host name
+			fname	original file name
+			pid	PID of the VIM process that created the swap
+				file
+			mtime	last modification time in seconds
+			inode	Optional: INODE number of the file
+			dirty	1 if file was modified, 0 if not
+		In case of failure an "error" item is added with the reason:
+			Cannot open file: file not found or in accessible
+			Cannot read file: cannot read first block
+			Not a swap file: does not contain correct block ID
+			Magic number mismatch: Info in first block is invalid
+
+swapname({expr})					*swapname()*
+		The result is the swap file path of the buffer {expr}.
+		For the use of {expr}, see |bufname()| above.
+		If buffer {expr} is the current buffer, the result is equal to
+		|:swapname| (unless no swap file).
+		If buffer {expr} has no swap file, returns an empty string.
+
 synID({lnum}, {col}, {trans})				*synID()*
 		The result is a Number, which is the syntax ID at the position
 		{lnum} and {col} in the current window.
@@ -7839,7 +7969,7 @@ system({cmd} [, {input}])				*system()* *E677*
 		items converted to NULs).
 		When {input} is given and is a valid buffer id, the content of
 		the buffer is written to the file line by line, each line
-		terminated by a NL (and NUL where the text has NL).
+		terminated by NL (and NUL where the text has NL).
 								*E5677*
 		Note: system() cannot write to or read from backgrounded ("&")
 		shell commands, e.g.: >
@@ -7856,7 +7986,7 @@ system({cmd} [, {input}])				*system()* *E677*
 		The characters in 'shellquote' and 'shellxquote' may also
 		cause trouble.
 
-		The result is a String.  Example: >
+		Result is a String.  Example: >
 		    :let files = system("ls " .  shellescape(expand('%:h')))
 		    :let files = system('ls ' . expand('%:h:S'))
 
@@ -8070,6 +8200,10 @@ timer_start({time}, {callback} [, {options}])
 		   "repeat"	Number of times to repeat calling the
 				callback.  -1 means forever.  When not present
 				the callback will be called once.
+				If the timer causes an error three times in a
+				row the repeat is cancelled.  This avoids that
+				Vim becomes unusable because of all the error
+				messages.
 
 		Example: >
 			func MyHandler(timer)
@@ -8313,7 +8447,7 @@ win_getid([{win} [, {tab}]])				*win_getid()*
 		Get the |window-ID| for the specified window.
 		When {win} is missing use the current window.
 		With {win} this is the window number.  The top window has
-		number 1.
+		number 1.  Use `win_getid(winnr())` for the current window.
 		Without {tab} use the current tab, otherwise the tab with
 		number {tab}.  The first tab has number one.
 		Return zero if the window cannot be found.
@@ -8375,17 +8509,30 @@ winline()	The result is a Number, which is the screen line of the cursor
 							*winnr()*
 winnr([{arg}])	The result is a Number, which is the number of the current
 		window.  The top window has number 1.
-		When the optional argument is "$", the number of the
-		last window is returned (the window count). >
-			let window_count = winnr('$')
-<		When the optional argument is "#", the number of the last
-		accessed window is returned (where |CTRL-W_p| goes to).
-		If there is no previous window or it is in another tab page 0
-		is returned.
+
+		The optional argument {arg} supports the following values:
+			$	the number of the last window (the window
+				count).
+			#	the number of the last accessed window (where
+				|CTRL-W_p| goes to).  If there is no previous
+				window or it is in another tab page 0 is
+				returned.
+			{N}j	the number of the Nth window below the
+				current window (where |CTRL-W_j| goes to).
+			{N}k	the number of the Nth window above the current
+				window (where |CTRL-W_k| goes to).
+			{N}h	the number of the Nth window left of the
+				current window (where |CTRL-W_h| goes to).
+			{N}l	the number of the Nth window right of the
+				current window (where |CTRL-W_l| goes to).
 		The number can be used with |CTRL-W_w| and ":wincmd w"
 		|:wincmd|.
 		Also see |tabpagewinnr()| and |win_getid()|.
-
+		Examples: >
+			let window_count = winnr('$')
+			let prev_window = winnr('#')
+			let wnum = winnr('3k')
+<
 							*winrestcmd()*
 winrestcmd()	Returns a sequence of |:resize| commands that should restore
 		the current window sizes.  Only works properly when no windows
@@ -8513,154 +8660,6 @@ xor({expr}, {expr})					*xor()*
 			:let bits = xor(bits, 0x80)
 <
 
-
-							*feature-list*
-There are four types of features:
-1.  Features that are only supported when they have been enabled when Vim
-    was compiled |+feature-list|.  Example: >
-	:if has("cindent")
-2.  Features that are only supported when certain conditions have been met.
-    Example: >
-	:if has("win32")
-<							*has-patch*
-3.  Nvim version. The "nvim-0.2.1" feature means that the Nvim version is
-    0.2.1 or later. Example: >
-	:if has("nvim-0.2.1")
-<
-4.  Included patches.  The "patch123" feature means that patch 123 has been
-    included.  Note that this form does not check the version of Vim, you need
-    to inspect |v:version| for that.
-    Example (checking version 6.2.148 or later): >
-	:if v:version > 602 || v:version == 602 && has("patch148")
-<    Note that it's possible for patch 147 to be omitted even though 148 is
-    included.
-
-5.  Beyond a certain version or at a certain version and including a specific
-    patch.  The "patch-7.4.237" feature means that the Vim version is 7.5 or
-    later, or it is version 7.4 and patch 237 was included.
-    Note that this only works for patch 7.4.237 and later, before that you
-    need to use the example above that checks v:version.  Example: >
-	:if has("patch-7.4.248")
-<    Note that it's possible for patch 147 to be omitted even though 148 is
-    included.
-
-Hint: To find out if Vim supports backslashes in a file name (MS-Windows),
-use: `if exists('+shellslash')`
-
-
-acl			Compiled with |ACL| support.
-arabic			Compiled with Arabic support |Arabic|.
-autocmd			Compiled with autocommand support. |autocommand|
-browse			Compiled with |:browse| support, and browse() will
-			work.
-browsefilter		Compiled with support for |browsefilter|.
-byte_offset		Compiled with support for 'o' in 'statusline'
-cindent			Compiled with 'cindent' support.
-clipboard		Compiled with 'clipboard' support.
-cmdline_compl		Compiled with |cmdline-completion| support.
-cmdline_hist		Compiled with |cmdline-history| support.
-cmdline_info		Compiled with 'showcmd' and 'ruler' support.
-comments		Compiled with |'comments'| support.
-cscope			Compiled with |cscope| support.
-debug			Compiled with "DEBUG" defined.
-dialog_con		Compiled with console dialog support.
-digraphs		Compiled with support for digraphs.
-eval			Compiled with expression evaluation support.  Always
-			true, of course!
-ex_extra		|+ex_extra|, always true now
-extra_search		Compiled with support for |'incsearch'| and
-			|'hlsearch'|
-file_in_path		Compiled with support for |gf| and |<cfile>|
-filterpipe		When 'shelltemp' is off pipes are used for shell
-			read/write/filter commands
-find_in_path		Compiled with support for include file searches
-			|+find_in_path|.
-float			Compiled with support for |Float|.
-fname_case		Case in file names matters (for Windows this is not
-			present).
-folding			Compiled with |folding| support.
-gettext			Compiled with message translation |multi-lang|
-iconv			Can use iconv() for conversion.
-insert_expand		Compiled with support for CTRL-X expansion commands in
-			Insert mode.
-jumplist		Compiled with |jumplist| support.
-keymap			Compiled with 'keymap' support.
-lambda			Compiled with |lambda| support.
-langmap			Compiled with 'langmap' support.
-libcall			Compiled with |libcall()| support.
-linebreak		Compiled with 'linebreak', 'breakat', 'showbreak' and
-			'breakindent' support.
-lispindent		Compiled with support for lisp indenting.
-listcmds		Compiled with commands for the buffer list |:files|
-			and the argument list |arglist|.
-localmap		Compiled with local mappings and abbr. |:map-local|
-mac			macOS version of Nvim.
-menu			Compiled with support for |:menu|.
-mksession		Compiled with support for |:mksession|.
-modify_fname		Compiled with file name modifiers. |filename-modifiers|
-mouse			Compiled with support mouse.
-mouseshape		Compiled with support for 'mouseshape'.
-multi_byte		Compiled with support for 'encoding'
-multi_byte_encoding	'encoding' is set to a multi-byte encoding.
-multi_lang		Compiled with support for multiple languages.
-num64			Compiled with 64-bit |Number| support.
-nvim			This is Nvim. |has-patch|
-path_extra		Compiled with up/downwards search in 'path' and 'tags'
-persistent_undo		Compiled with support for persistent undo history.
-postscript		Compiled with PostScript file printing.
-printer			Compiled with |:hardcopy| support.
-profile			Compiled with |:profile| support.
-python			Legacy Vim Python 2.x API is available. |has-python|
-python3			Legacy Vim Python 3.x API is available. |has-python|
-pythonx			Compiled with |python_x| interface. |has-pythonx|
-quickfix		Compiled with |quickfix| support.
-reltime			Compiled with |reltime()| support.
-rightleft		Compiled with 'rightleft' support.
-scrollbind		Compiled with 'scrollbind' support.
-shada			Compiled with shada support.
-showcmd			Compiled with 'showcmd' support.
-signs			Compiled with |:sign| support.
-smartindent		Compiled with 'smartindent' support.
-spell			Compiled with spell checking support |spell|.
-startuptime		Compiled with |--startuptime| support.
-statusline		Compiled with support for 'statusline', 'rulerformat'
-			and special formats of 'titlestring' and 'iconstring'.
-syntax			Compiled with syntax highlighting support |syntax|.
-syntax_items		There are active syntax highlighting items for the
-			current buffer.
-tablineat		'tabline' option accepts %@Func@ items.
-tag_binary		Compiled with binary searching in tags files
-			|tag-binary-search|.
-tag_old_static		Compiled with support for old static tags
-			|tag-old-static|.
-tag_any_white		Compiled with support for any white characters in tags
-			files |tag-any-white|.
-termresponse		Compiled with support for t_RV and |v:termresponse|.
-textobjects		Compiled with support for |text-objects|.
-timers			Compiled with |timer_start()| support.
-title			Compiled with window title support |'title'|.
-ttyin			input is a terminal (tty)
-ttyout			output is a terminal (tty)
-unix			Unix version of Vim.
-unnamedplus		Compiled with support for "unnamedplus" in 'clipboard'
-user_commands		User-defined commands.
-vertsplit		Compiled with vertically split windows |:vsplit|.
-vim_starting		True while initial source'ing takes place. |startup|
-			*vim_starting*
-virtualedit		Compiled with 'virtualedit' option.
-visual			Compiled with Visual mode.
-visualextra		Compiled with extra Visual mode commands.
-			|blockwise-operators|.
-vreplace		Compiled with |gR| and |gr| commands.
-vtp			Compiled for vcon support |+vtp| (check vcon to find
-			out if it works in the current console)).
-wildignore		Compiled with 'wildignore' option.
-wildmenu		Compiled with 'wildmenu' option.
-win32			Windows version of Vim (32 or 64 bit).
-winaltkeys		Compiled with 'winaltkeys' option.
-windows			Compiled with support for more than one window.
-writebackup		Compiled with 'writebackup' default on.
-wsl			WSL (Windows Subsystem for Linux) version of Vim.
 
 							*string-match*
 Matching a pattern in a String

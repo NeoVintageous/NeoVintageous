@@ -46,7 +46,7 @@ version.api_prerelease	Declares the API as unstable/unreleased >
 			(version.api_prerelease && fn.since == version.api_level)
 functions		API function signatures
 ui_events		UI event signatures |ui|
-ui_options		Supported |ui-options|
+ui_options		Supported |ui-option|s
 {fn}.since		API level where function {fn} was introduced
 {fn}.deprecated_since	API level where function {fn} was deprecated
 types			Custom handle types defined by Nvim
@@ -206,17 +206,15 @@ Highlights are registered using the |nvim_buf_add_highlight()| function. If an
 external highlighter plugin wants to add many highlights in a batch,
 performance can be improved by calling |nvim_buf_add_highlight()| as an
 asynchronous notification, after first (synchronously) reqesting a source id.
-Example using the Nvim python-client:
+
+Example using the Python API client (|pynvim|):
 >
     src = vim.new_highlight_source()
-
     buf = vim.current.buffer
     for i in range(5):
         buf.add_highlight("String",i,0,-1,src_id=src)
-
-    # some time later
-
-    buf.clear_highlight(src)
+    # some time later ...
+    buf.clear_namespace(src)
 <
 If the highlights don't need to be deleted or updated, just pass -1 as
 src_id (this is the default in python). Use |nvim_buf_clear_namespace()| to
@@ -224,13 +222,12 @@ clear highlights from a specific source, in a specific line range or the
 entire buffer by passing in the line range 0, -1 (the latter is the default in
 python as used above).
 
-An example of calling the api from vimscript: >
+Example using the API from Vimscript: >
 
     call nvim_buf_set_lines(0, 0, 0, v:true, ["test text"])
     let src = nvim_buf_add_highlight(0, 0, "String", 1, 0, 4)
     call nvim_buf_add_highlight(0, src, "Identifier", 0, 5, -1)
-
-    " later
+    " some time later ...
     call nvim_buf_clear_namespace(0, src, 0, -1)
 
 
@@ -251,7 +248,7 @@ of some window, or a position relative to the current window cursor.  The
 parameters for positioning are described in detail at |nvim_open_win()|.
 
 |nvim_open_win()| assumes an existing buffer to display in the window. To create
-a scratch buffer for the float, |nvim_create_buffer()| can be used. The text in
+a scratch buffer for the float, |nvim_create_buf()| can be used. The text in
 the buffer can be highlighted using standard functionality, such as syntax
 highlighting, or |api-highlights|.
 
@@ -494,8 +491,6 @@ nvim_set_current_dir({dir})                           *nvim_set_current_dir()*
 nvim_get_current_line()                              *nvim_get_current_line()*
                 Gets the current line.
 
-                Parameters: ~
-
                 Return: ~
                     Current line string
 
@@ -507,8 +502,6 @@ nvim_set_current_line({line})                        *nvim_set_current_line()*
 
 nvim_del_current_line()                              *nvim_del_current_line()*
                 Deletes the current line.
-
-                Parameters: ~
 
 nvim_get_var({name})                                          *nvim_get_var()*
                 Gets a global (g:) variable.
@@ -656,6 +649,7 @@ nvim_open_win({buffer}, {enter}, {config})                   *nvim_open_win()*
                 For a general overview of floats, see |api-floatwin|.
 
                 Exactly one of `external` and `relative` must be specified.
+                The `width` and `height` of the new window must be specified.
 
                 With editor positioning row=0, col=0 refers to the top-left
                 corner of the screen-grid and row=Lines-1, Columns-1 refers to
@@ -697,7 +691,7 @@ nvim_open_win({buffer}, {enter}, {config})                   *nvim_open_win()*
                               - `height` : window height (in character cells).
                                 Minimum of 1.
                               - `width` : window width (in character cells).
-                                Minimum of 2.
+                                Minimum of 1.
                               - `row` : row position. Screen cell height are
                                 used as unit. Can be floating point.
                               - `col` : column position. Screen cell width is
@@ -769,10 +763,28 @@ nvim_unsubscribe({event})                                 *nvim_unsubscribe()*
                     {event}  Event type string
 
 nvim_get_color_by_name({name})                      *nvim_get_color_by_name()*
-                TODO: Documentation
+                Returns the 24-bit RGB value of a |nvim_get_color_map()| color
+                name or "#rrggbb" hexadecimal string.
+
+                Example: >
+                    :echo nvim_get_color_by_name("Pink")
+                    :echo nvim_get_color_by_name("#cbcbcb")
+<
+
+                Parameters: ~
+                    {name}  Color name or "#rrggbb" string
+
+                Return: ~
+                    24-bit RGB value, or -1 for invalid argument.
 
 nvim_get_color_map()                                    *nvim_get_color_map()*
-                TODO: Documentation
+                Returns a map of color names and RGB values.
+
+                Keys are color names (e.g. "Aqua") and values are 24-bit RGB
+                color values (e.g. 65535).
+
+                Return: ~
+                    Map of color names and RGB values.
 
 nvim_get_mode()                                              *nvim_get_mode()*
                 Gets the current mode. |mode()| "blocking" is true if Nvim is
@@ -794,6 +806,42 @@ nvim_get_keymap({mode})                                    *nvim_get_keymap()*
                 Return: ~
                     Array of maparg()-like dictionaries describing mappings.
                     The "buffer" key is always zero.
+
+nvim_set_keymap({mode}, {lhs}, {rhs}, {opts})              *nvim_set_keymap()*
+                Sets a global |mapping| for the given mode.
+
+                To set a buffer-local mapping, use |nvim_buf_set_keymap()|.
+
+                Unlike |:map|, leading/trailing whitespace is accepted as part
+                of the {lhs} or {rhs}. Empty {rhs} is |<Nop>|. |keycodes| are
+                replaced as usual.
+
+                Example: >
+                    call nvim_set_keymap('n', ' <NL>', '', {'nowait': v:true})
+<
+
+                is equivalent to: >
+                    nmap <nowait> <Space><NL> <Nop>
+<
+
+                Parameters: ~
+                    {mode}  Mode short-name (map command prefix: "n", "i",
+                            "v", "x", …) or "!" for |:map!|, or empty string
+                            for |:map|.
+                    {lhs}   Left-hand-side |{lhs}| of the mapping.
+                    {rhs}   Right-hand-side |{rhs}| of the mapping.
+                    {opts}  Optional parameters map. Accepts all
+                            |:map-arguments| as keys excluding |<buffer>| but
+                            including |noremap|. Values are Booleans. Unknown
+                            key is an error.
+
+nvim_del_keymap({mode}, {lhs})                             *nvim_del_keymap()*
+                Unmaps a global |mapping| for the given mode.
+
+                To unmap a buffer-local mapping, use |nvim_buf_del_keymap()|.
+
+                See also: ~
+                    |nvim_set_keymap()|
 
 nvim_get_commands({opts})                                *nvim_get_commands()*
                 Gets a map of global (non-buffer-local) Ex commands.
@@ -1092,11 +1140,11 @@ nvim_list_uis()                                              *nvim_list_uis()*
 
                 Return: ~
                     Array of UI dictionaries, each with these keys:
-                    - "height" requested height of the UI
-                    - "width" requested width of the UI
+                    - "height" Requested height of the UI
+                    - "width" Requested width of the UI
                     - "rgb" true if the UI uses RGB colors (false implies
                       |cterm-colors|)
-                    - "ext_..." Requested UI extensions, see |ui-options|
+                    - "ext_..." Requested UI extensions, see |ui-option|
                     - "chan" Channel id of remote UI (not present for TUI)
 
 nvim_get_proc_children({pid})                       *nvim_get_proc_children()*
@@ -1161,7 +1209,7 @@ nvim_buf_line_count({buffer})                          *nvim_buf_line_count()*
                     Line count, or 0 for unloaded buffer. |api-buffer|
 
 nvim_buf_attach({buffer}, {send_buffer}, {opts})           *nvim_buf_attach()*
-                Activate updates from this buffer to the current channel.
+                Activates buffer-update events on the channel.
 
                 Parameters: ~
                     {buffer}       Buffer handle, or 0 for current buffer
@@ -1180,7 +1228,7 @@ nvim_buf_attach({buffer}, {send_buffer}, {opts})           *nvim_buf_attach()*
                     True.
 
 nvim_buf_detach({buffer})                                  *nvim_buf_detach()*
-                Deactivate updates from this buffer to the current channel.
+                Deactivates buffer-update events on the channel.
 
                 Parameters: ~
                     {buffer}  Buffer handle, or 0 for current buffer
@@ -1283,6 +1331,25 @@ nvim_buf_get_keymap({buffer}, {mode})                  *nvim_buf_get_keymap()*
                 Return: ~
                     Array of maparg()-like dictionaries describing mappings.
                     The "buffer" key holds the associated buffer handle.
+
+                                                       *nvim_buf_set_keymap()*
+nvim_buf_set_keymap({buffer}, {mode}, {lhs}, {rhs}, {opts})
+                Sets a buffer-local |mapping| for the given mode.
+
+                Parameters: ~
+                    {buffer}  Buffer handle, or 0 for current buffer
+
+                See also: ~
+                    |nvim_set_keymap()|
+
+nvim_buf_del_keymap({buffer}, {mode}, {lhs})           *nvim_buf_del_keymap()*
+                Unmaps a buffer-local |mapping| for the given mode.
+
+                Parameters: ~
+                    {buffer}  Buffer handle, or 0 for current buffer
+
+                See also: ~
+                    |nvim_del_keymap()|
 
 nvim_buf_get_commands({buffer}, {opts})              *nvim_buf_get_commands()*
                 Gets a map of buffer-local |user-commands|.
@@ -1738,10 +1805,27 @@ nvim_tabpage_is_valid({tabpage})                     *nvim_tabpage_is_valid()*
 UI Functions                                                          *api-ui*
 
 nvim_ui_attach({width}, {height}, {options})                *nvim_ui_attach()*
-                TODO: Documentation
+                Activates UI events on the channel.
+
+                Entry point of all UI clients. Allows |--embed| to continue
+                startup. Implies that the client is ready to show the UI. Adds
+                the client to the list of UIs. |nvim_list_uis()|
+
+                Note:
+                    If multiple UI clients are attached, the global screen
+                    dimensions degrade to the smallest client. E.g. if client
+                    A requests 80x40 but client B requests 200x100, the global
+                    screen has size 80x40.
+
+                Parameters: ~
+                    {width}    Requested screen columns
+                    {height}   Requested screen rows
+                    {options}  |ui-option| map
 
 nvim_ui_detach()                                            *nvim_ui_detach()*
-                TODO: Documentation
+                Deactivates UI events on the channel.
+
+                Removes the client from the list of UIs. |nvim_list_uis()|
 
 nvim_ui_try_resize({width}, {height})                   *nvim_ui_try_resize()*
                 TODO: Documentation
