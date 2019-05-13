@@ -6,6 +6,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#534](https://github.com/NeoVintageous/NeoVintageous/issues/534): `gn` search forward for the last used search pattern
+* Added [#535](https://github.com/NeoVintageous/NeoVintageous/issues/535): `gN` like `gn` but searches backward, like with `N`
+* Added [#382](https://github.com/NeoVintageous/NeoVintageous/issues/382): `cgn` change `gn` search forward for the last used search pattern
+* Added [#536](https://github.com/NeoVintageous/NeoVintageous/issues/536): `cgN` change `gN` like `gn` but searches backward, like with `N`
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): option `vintageous_multi_cursor_exit_from_visual_mode` (quit or enter normal mode)
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-n>` and `gh` from Visual mode now includes the next match
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-n>` start multiple cursor

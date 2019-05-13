@@ -249,6 +249,16 @@ def prev_blank(view, pt):
     return pt
 
 
+def next_blank(view, pt):
+    # type: (...) -> int
+    limit = view.size()
+    substr = view.substr
+    while substr(pt) not in ' \t' and pt <= limit:
+        pt += 1
+
+    return pt
+
+
 def prev_non_nl(view, pt):
     # type: (...) -> int
     substr = view.substr

@@ -2965,6 +2965,27 @@ class ViMoveToHardBol(ViMotionDef):
         }
 
 
+@assign(seqs.GN, _MOTION_MODES)
+@assign(seqs.G_BIG_N, _MOTION_MODES, forward=False)
+class ViSearchLastUsedPattern(ViMotionDef):
+    def __init__(self, *args, forward=True, **kwargs):
+        self._serializable.append('forward')
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+        self.forward = forward
+
+    def translate(self, state):
+        return {
+            'motion': '_vi_search',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'forward': self.forward
+            }
+        }
+
+
 @assign(seqs.N, _MOTION_MODES)
 class ViRepeatSearchForward(ViMotionDef):
     def __init__(self, *args, **kwargs):

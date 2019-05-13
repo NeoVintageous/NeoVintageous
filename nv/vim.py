@@ -119,3 +119,7 @@ def enter_normal_mode(view_or_window, mode):
 
 def enter_insert_mode(view_or_window, mode):
     view_or_window.run_command('_enter_insert_mode', {'mode': mode})
+
+
+def enter_visual_mode(view_or_window, mode):
+    view_or_window.run_command('_enter_visual_mode', {'mode': mode})

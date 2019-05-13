@@ -83,6 +83,7 @@ from NeoVintageous.nv.utils import is_at_eol
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import new_inclusive_region
+from NeoVintageous.nv.utils import next_blank
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import next_non_folded_pt
 from NeoVintageous.nv.utils import prev_blank
@@ -149,6 +150,7 @@ from NeoVintageous.nv.vi.units import word_ends
 from NeoVintageous.nv.vi.units import word_starts
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -286,6 +288,7 @@ __all__ = [
     '_vi_right_paren',
     '_vi_right_square_bracket',
     '_vi_s',
+    '_vi_search',
     '_vi_select_big_j',
     '_vi_select_j',
     '_vi_select_k',
@@ -4683,6 +4686,46 @@ class _vi_repeat_buffer_search(ViMotionCommand):
         })
 
         self.view.show(self.view.sel(), show_surrounds=True)
+
+
+class _vi_search(ViMotionCommand):
+
+    def run(self, mode=None, count=1, forward=True):
+        last_search = self.state.last_buffer_search
+
+        def f(view, s):
+            b = get_insertion_point_at_b(s)
+
+            if forward:
+                start = prev_blank(view, b) if mode in (NORMAL, INTERNAL_NORMAL) else b
+                target = find_wrapping(self.view, last_search, start, self.view.size())
+                if target is not None:
+                    if mode in (NORMAL, INTERNAL_NORMAL):
+                        s.a = target.a
+                        s.b = target.a + 1
+
+                    resolve_visual_target(s, target.b - 1)
+
+            else:
+                start = next_blank(view, b) if mode in (NORMAL, INTERNAL_NORMAL) else b
+                target = reverse_find_wrapping(self.view, last_search, 0, start)
+                if target is not None:
+                    if mode in (NORMAL, INTERNAL_NORMAL):
+                        s.a = target.b
+                        s.b = target.b - 1
+
+                    resolve_visual_target(s, target.a)
+
+            return s
+
+        regions_transformer(self.view, f)
+
+        # Ensure we're in Visual mode, but only if a match was found.
+        if mode in (NORMAL, VISUAL_LINE, VISUAL_BLOCK):
+            for sel in self.view.sel():
+                if not sel.empty():
+                    enter_visual_mode(self.view, mode)
+                    break
 
 
 class _vi_n(ViMotionCommand):
