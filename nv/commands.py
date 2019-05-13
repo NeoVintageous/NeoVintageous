@@ -2067,12 +2067,6 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
 class _vi_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
-        def f(view, s):
-            bol = view.line(s.begin()).a
-            pt = next_non_blank(view, bol)
-
-            return Region(pt)
-
         def indent_from_begin(view, s, level=1):
             block = '\t' if not translate else ' ' * size
             self.view.insert(edit, s.begin(), block * level)
@@ -2084,7 +2078,7 @@ class _vi_greater_than(ViTextCommandBase):
             indent = partial(indent_from_begin, level=count)
 
             regions_transformer_reversed(self.view, indent)
-            regions_transformer(self.view, f)
+            regions_transform_to_first_non_blank(self.view)
 
             # Restore only the first sel.
             s = self.view.sel()[0]
@@ -2100,7 +2094,7 @@ class _vi_greater_than(ViTextCommandBase):
         for i in range(count):
             self.view.run_command('indent')
 
-        regions_transformer(self.view, f)
+        regions_transform_to_first_non_blank(self.view)
         enter_normal_mode(self.view, mode)
 
 
