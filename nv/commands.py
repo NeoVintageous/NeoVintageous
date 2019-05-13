@@ -2118,7 +2118,7 @@ class _vi_equal(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, motion=None):
         if motion:
             run_motion(self.view, motion)
-        elif mode not in (VISUAL, VISUAL_LINE):
+        elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return ui_bell()
 
         self.view.run_command('reindent', {'force_indent': False})

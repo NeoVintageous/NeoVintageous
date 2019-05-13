@@ -34,3 +34,6 @@ class Test_equal(unittest.FunctionalTestCase):
 
     def test_V(self):
         self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'l_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
+
+    def test_b(self):
+        self.eq('def x():\n|x = |1\n|x = |2\nx = 3\n', 'b_=', 'n_def x():\n  x = 1\n  |x = 2\nx = 3\n')

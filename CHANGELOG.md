@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#540](https://github.com/NeoVintageous/NeoVintageous/issues/540): `=` in Visual block mode
 * Added [#541](https://github.com/NeoVintageous/NeoVintageous/issues/541): `<` in Visual block mode
 * Added [#539](https://github.com/NeoVintageous/NeoVintageous/issues/539): `=` now leaves cursor on first non-blank
 * Added [#538](https://github.com/NeoVintageous/NeoVintageous/issues/538): `>>` in multiple cursor mode
