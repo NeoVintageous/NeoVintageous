@@ -2036,19 +2036,15 @@ class _vi_equal_equal(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            return Region(s.begin())
+            if count > 1:
+                s.a = view.line(s.begin()).a
+                s.b = view.line(view.text_point(row_at(view, s.a) + (count - 1), 0)).b
 
-        def select(view):
-            s = view.sel()[0]
-            end_row = row_at(view, s.b) + (count - 1)
-            view.sel().clear()
-            view.sel().add(Region(s.begin(), view.text_point(end_row, 1)))
+            return s
 
-        if count > 1:
-            select(self.view)
-
-        self.view.run_command('reindent', {'force_indent': False})
         regions_transformer(self.view, f)
+        self.view.run_command('reindent', {'force_indent': False})
+        regions_transform_to_first_non_blank(self.view)
         enter_normal_mode(self.view, mode)
 
 
