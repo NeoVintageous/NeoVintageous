@@ -54,6 +54,27 @@ class ViDeleteByChars(ViOperatorDef):
         }
 
 
+@assign(seqs.D, (SELECT,))
+class DeleteMultipleCursor(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        state.glue_until_normal_mode = True
+
+        return {
+            'action': '_vi_d',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
+
+
 @assign(seqs.BIG_O, _ACTION_MODES)
 class ViInsertLineBefore(ViOperatorDef):
     def __init__(self, *args, **kwargs):

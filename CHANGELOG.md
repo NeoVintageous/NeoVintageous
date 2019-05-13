@@ -13,6 +13,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): option `vintageous_multi_cursor_exit_from_visual_mode` (quit or enter normal mode)
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-n>` and `gh` from Visual mode now includes the next match
 * Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-n>` start multiple cursor
+* Added [#543](https://github.com/NeoVintageous/NeoVintageous/issues/543): `d` delete text in multiple cursor mode
 * Added [#542](https://github.com/NeoVintageous/NeoVintageous/issues/542): `Esc` in Visual block mode now leaves cursor on first non-blank
 * Added [#540](https://github.com/NeoVintageous/NeoVintageous/issues/540): `=` in Visual block mode
 * Added [#541](https://github.com/NeoVintageous/NeoVintageous/issues/541): `<` in Visual block mode

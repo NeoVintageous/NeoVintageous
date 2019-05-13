@@ -1647,7 +1647,7 @@ class _vi_y(ViTextCommandBase):
 class _vi_d(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
-        if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE):
+        if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, SELECT):
             raise ValueError('wrong mode')
 
         if mode == INTERNAL_NORMAL and not motion:

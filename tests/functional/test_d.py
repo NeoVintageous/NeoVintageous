@@ -143,14 +143,21 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('1\n2\n3\n|', 'dd', '1\n2\n|3')
         self.eq('1\n2\n|3\n', 'dd', '1\n2\n|')
 
-    def test_d_visual_line_sets_linewise_register(self):
+    def test_v(self):
+        self.eq('x\nfi|zz bu|zz\ny', 'v_d', 'n_x\nfi|zz\ny')
+
+    def test_s(self):
+        self.eq('x\nfi|zz bu|zz\ny', 's_d', 'n_x\nfi|zz\ny')
+        self.eq('f|iz|z\nf|iz|z\nf|iz|z\nfizz', 's_d', 'n_f|z\nf|z\nf|z\nfizz')
+
+    def test_V_d_visual_line_sets_linewise_register(self):
         self.eq('x\n|abc\n|y', 'l_d', 'n_x\n|y')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('1abc\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
-    def test_l_d_puts_cursors_on_first_non_blank(self):
+    def test_V_d_puts_cursors_on_first_non_blank(self):
         self.eq('    x\n|    a\n    b\n|    y\n', 'l_d', 'n_    x\n    |y\n')
         self.assertRegister('"    a\n    b\n', linewise=True)
         self.assertRegister('1    a\n    b\n', linewise=True)

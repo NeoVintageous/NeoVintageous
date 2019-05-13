@@ -66,6 +66,7 @@ option 'vintageous_multi_cursor_exit_from_visual_mode'.
 v                       Enter normal mode.
 A                       Select all instances.
 c                       Delete text and enter insert mode.
+d                       Delete text and enter normal mode.
 s                       Delete text and enter insert mode.
 i                       Enter insert mode at end of selections.
 I                       Enter insert mode at start of selections.
