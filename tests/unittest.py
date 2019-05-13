@@ -1405,6 +1405,7 @@ _SEQ2CMD = {
     's_2j':         {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
     's_2k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
     's_6k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
+    's_<esc>':      {'command': '_vi_select_big_j'},  # noqa: E241
     's_J':          {'command': '_vi_select_big_j'},  # noqa: E241
     's_j':          {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
     's_k':          {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241

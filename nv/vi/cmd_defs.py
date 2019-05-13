@@ -2118,11 +2118,6 @@ class ViSkipInstance(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        # Non-standard
-        if state.mode != SELECT:
-            raise ValueError(
-                'bad mode, expected SELECT mode, got {0}'.format(state.mode))
-
         return {
             'action': 'find_under_expand_skip',
             'action_args': {}

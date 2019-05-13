@@ -55,6 +55,10 @@
 
     // Port of https://github.com/tpope/vim-surround
     // {not in Vim}
+    "vintageous_enable_multiple_cursors": true,
+
+    // Port of https://github.com/tpope/vim-surround
+    // {not in Vim}
     "vintageous_enable_surround": true,
 
     // Highlight searches in '/', '?', etc.
@@ -83,6 +87,12 @@
     // lines that is checked for set commands.
     // https://vimhelp.appspot.com/options.txt.html#'modelines'
     "vintageous_modelines": 5,
+
+    // If set to false, then pressing the quit key (<Esc> or J) in Visual mode
+    // will not quit and delete all existing cursors. Useful if you want to go
+    // back to Normal mode, and still be able to operate on all the cursors.
+    // {not in Vim}
+    "vintageous_multi_cursor_exit_from_visual_mode": true,
 
     // Reset to normal mode when a tab is activated.
     // {not in Vim}

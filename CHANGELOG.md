@@ -6,6 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): option `vintageous_multi_cursor_exit_from_visual_mode` (quit or enter normal mode)
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-n>` and `gh` from Visual mode now includes the next match
+* Added [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `<C-n>` start multiple cursor
 * Added [#542](https://github.com/NeoVintageous/NeoVintageous/issues/542): `Esc` in Visual block mode now leaves cursor on first non-blank
 * Added [#540](https://github.com/NeoVintageous/NeoVintageous/issues/540): `=` in Visual block mode
 * Added [#541](https://github.com/NeoVintageous/NeoVintageous/issues/541): `<` in Visual block mode
@@ -13,6 +16,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#538](https://github.com/NeoVintageous/NeoVintageous/issues/538): `>>` in multiple cursor mode
 * Added [#537](https://github.com/NeoVintageous/NeoVintageous/issues/537): `==` in multiple cursor mode
 * Added [#533](https://github.com/NeoVintageous/NeoVintageous/issues/533): `==` now leaves cursor on first non-blank
+
+### Fixed
+
+* Fixed [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `i` in multiple cursor mode should clear visual selection
 
 ## 1.12.0 - 2019-05-09
 

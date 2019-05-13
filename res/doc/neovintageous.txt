@@ -42,28 +42,34 @@ MULTIPLE CURSORS                                         *nv-multiple-cursors*
 
 Normal mode / Visual mode
 
-- Start:    gh          Start multi cursor and add a virtual cursor +
+- start:    <C-n> or gh Start multi cursor and add a virtual cursor +
                         selection on the match.
-  + Next:   <C-n> or j  Add a new virtual cursor + selection on the match.
-  + Skip:   <C-x> or l  Skip the next match.
-  + Prev:   <C-p> or k  Remove current virtual cursor + selection and go back
+  + next:   <C-n> or j  Add a new virtual cursor + selection on the match.
+  + skip:   <C-x> or l  Skip the next match.
+  + prev:   <C-p> or k  Remove current virtual cursor + selection and go back
                         on previous match.
 
-gh                      Start multiple cursor.
+You can now change the virtual cursors + selection with |Visual-mode| commands.
+For instance: c, s, I work without any issues.
+You could also go to |Normal-mode| by pressing `v` and use normal commands
+there, for example commands like ciw work without any issues.
+
+At any time, you can press <Esc> or J to exit back to regular Vim.
+You can change the behaviour of exiting from Visual mode, for details see the
+option 'vintageous_multi_cursor_exit_from_visual_mode'.
+
+<C-n> or gh             Start multiple cursor.
 <C-n> or j              Add next match.
 <C-x> or l              Skip next match.
 <C-p> or k              Remove current match and go back on previous match.
+<Esc> or J              Clear multiple selections and enter normal mode.
+v                       Enter normal mode.
 A                       Select all instances.
-i                       Enter visual mode (preserving selections).
-J                       Clear multiple selections and enter normal mode.
+c                       Delete text and enter insert mode.
+s                       Delete text and enter insert mode.
+i                       Enter insert mode at end of selections.
+I                       Enter insert mode at start of selections.
 gH                      After a search with / or ? (select all matches).
-
-You can now change the virtual cursors + visual selection with |Visual-mode|
-commands. For instance: c, s, I work without any issues.
-
-You could also go to |Normal-mode| by pressing `v` and use normal commands there.
-
-At any time, you can press J to exit back to Normal mode.
 
 ==============================================================================
 
@@ -402,6 +408,14 @@ List of available options:
                                                       *'vintageous_modelines'*
 'vintageous_modelines'  number (default 5)
         See 'modelines'.
+
+                             *'vintageous_multi_cursor_exit_from_visual_mode'*
+'vintageous_multi_cursor_exit_from_visual_mode'
+                        boolean (default on)
+        If set to false, then pressing the quit key (<Esc> or J) in Visual
+        mode will not quit and delete all existing cursors. Useful if you want
+        to go back to Normal mode, and still be able to operate on all the
+        cursors.
 
                                  *'vintageous_reset_mode_when_switching_tabs'*
 'vintageous_reset_mode_when_switching_tabs'

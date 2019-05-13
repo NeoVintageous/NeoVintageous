@@ -481,8 +481,11 @@ class _nv_feed_key(ViWindowCommandBase):
             init_state(state.view)
 
         if key.lower() == '<esc>':
-            enter_normal_mode(self.window, mode)
-            state.reset_command_data()
+            if mode == SELECT:
+                self.window.run_command('_vi_select_big_j', {'mode': mode})
+            else:
+                enter_normal_mode(self.window, mode)
+                state.reset_command_data()
             return
 
         state.sequence += key
@@ -1295,21 +1298,29 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 class _enter_select_mode(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
-        self.state.enter_select_mode()
+        state = self.state
+        state.enter_select_mode()
 
-        view = self.window.active_view()
-
-        # If there are no visual selections, do some work work for the user.
-        if not view.has_non_empty_selection_region():
+        if not self.view.has_non_empty_selection_region():
             self.window.run_command('find_under_expand')
 
-        state = State(view)
+        if mode == VISUAL:
+            self.window.run_command('_vi_select_j', {'mode': state.mode})
+
         state.display_status()
 
 
 class _enter_insert_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
+        def f(view, s):
+            if mode == SELECT:
+                s = Region(s.b)
+
+            return s
+
+        regions_transformer(self.view, f)
+
         self.view.settings().set('inverse_caret_state', False)
         self.view.settings().set('command_mode', False)
         self.state.enter_insert_mode()
@@ -2563,12 +2574,13 @@ class _vi_modify_numbers(ViTextCommandBase):
 
 class _vi_select_big_j(IrreversibleTextCommand):
 
-    # Clears multiple selections and returns to normal mode. Should be more
-    # convenient than having to reach for Esc.
     def run(self, mode=None, count=1):
-        s = self.view.sel()[0]
-        self.view.sel().clear()
-        self.view.sel().add(s)
+        exit_from_visual_mode = self.view.settings().get('vintageous_multi_cursor_exit_from_visual_mode')
+        if exit_from_visual_mode:
+            s = self.view.sel()[0]
+            self.view.sel().clear()
+            self.view.sel().add(s)
+
         enter_normal_mode(self.view, mode)
 
 
