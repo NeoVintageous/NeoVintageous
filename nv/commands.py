@@ -1284,9 +1284,9 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         regions_transformer(self.view, f)
 
         if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
-            sel = self.view.sel()[-1]
+            target = VisualBlockSelection(self.view).b
             self.view.sel().clear()
-            self.view.sel().add(Region(sel.b))
+            self.view.sel().add(Region(target))
 
         clear_search_highlighting(self.view)
         fix_eol_cursor(self.view, mode)
