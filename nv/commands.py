@@ -2116,9 +2116,6 @@ class _vi_less_than(ViTextCommandBase):
 class _vi_equal(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None):
-        def f(view, s):
-            return Region(s.begin())
-
         if motion:
             run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE):
@@ -2126,7 +2123,7 @@ class _vi_equal(ViTextCommandBase):
 
         self.view.run_command('reindent', {'force_indent': False})
 
-        regions_transformer(self.view, f)
+        regions_transform_to_first_non_blank(self.view)
         enter_normal_mode(self.view, mode)
 
 

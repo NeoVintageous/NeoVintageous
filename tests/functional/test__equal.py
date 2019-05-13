@@ -24,15 +24,13 @@ class Test_equal(unittest.FunctionalTestCase):
         super().setUp()
         self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
         self.settings().set('translate_tabs_to_spaces', True)
-        self.settings().set('tab_size', 4)
+        self.settings().set('tab_size', 2)
 
-    def test_v_equal(self):
-        self.eq('fi|zz', 'v_=', 'n_fi|zz')
-        self.eq('def x():\n|x =| 1\nx = 2\n', 'v_=', 'n_def x():\n    |x = 1\nx = 2\n')
-        self.eq('def x():\n|x = 1\nx| = 2\nx = 3\n', 'v_=', 'n_def x():\n    |x = 1\n    x = 2\nx = 3\n')
+    def test_v(self):
+        self.eq('fi|zz', 'v_=', 'n_|fizz')
+        self.eq('def x():\n|x =| 1\nx = 2\n', 'v_=', 'n_def x():\n  |x = 1\nx = 2\n')
+        self.eq('def x():\n|x = 1\nx| = 2\nx = 3\n', 'v_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
+        self.eq('def x():\n|x=1\nx=2\nx=3\n\nx=4\n', 'v_=}', 'n_def x():\n  |x=1\n  x=2\n  x=3\n\nx=4\n')
 
-    def test_equal_brace(self):
-        self.eq('def x():\n|x=1\nx=2\nx=3\n\nx=4\n', 'v_=}', 'n_def x():\n    |x=1\n    x=2\n    x=3\n\nx=4\n')
-
-    def test_l_equal(self):
-        self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'l_=', 'n_def x():\n    |x = 1\n    x = 2\nx = 3\n')
+    def test_V(self):
+        self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'l_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
