@@ -50,6 +50,7 @@ class Test_esc(unittest.FunctionalTestCase):
         self.assertStatusLineIsBlank()
 
     def test_s(self):
+        self.settings().set('vintageous_multi_cursor_exit_from_visual_mode', True)
         self.eq('f|iz|z\nb|uz|z\n', 's_<esc>', 'n_f|izz\nbuzz\n')
         self.settings().set('vintageous_multi_cursor_exit_from_visual_mode', False)
         self.eq('f|iz|z\nb|uz|z\n', 's_<esc>', 'n_f|izz\nb|uzz\n')

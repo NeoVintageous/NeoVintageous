@@ -76,6 +76,7 @@ class Test_gh(unittest.FunctionalTestCase):
         self.assertStatusLineIsBlank()
 
     def test_gh_J(self):
+        self.settings().set('vintageous_multi_cursor_exit_from_visual_mode', True)
         self.eq('fizz fi|zz fizz fizz fizz', 'gh', 's_fizz |fizz| fizz fizz fizz')
         self.feed('s_j')
         self.feed('s_j')
