@@ -2103,7 +2103,7 @@ class _vi_less_than(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, motion=None):
         if motion:
             run_motion(self.view, motion)
-        elif mode not in (VISUAL, VISUAL_LINE):
+        elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             return ui_bell()
 
         for i in range(count):

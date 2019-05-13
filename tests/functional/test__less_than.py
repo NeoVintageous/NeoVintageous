@@ -23,19 +23,22 @@ class Test_less_than(unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.settings().set('translate_tabs_to_spaces', True)
-        self.settings().set('tab_size', 4)
+        self.settings().set('tab_size', 2)
 
-    def test_v_less_than(self):
-        self.eq('        |abc\ndef\n', 'v_<', 'n_    |abc\ndef\n')
-        self.eq('|        abc\ndef\n', 'v_<', 'n_    |abc\ndef\n')
-        self.eq('    x\n        fi|zz\n        bu|zz\n    x', 'v_<', 'n_    x\n    |fizz\n    buzz\n    x')
-        self.eq('    x\n        fi|zz\n    bu|zz\n    x', 'v_<', 'n_    x\n    |fizz\nbuzz\n    x')
+    def test_v(self):
+        self.eq('    |abc\ndef\n', 'v_<', 'n_  |abc\ndef\n')
+        self.eq('|    abc\ndef\n', 'v_<', 'n_  |abc\ndef\n')
+        self.eq('  x\n    fi|zz\n    bu|zz\n  x', 'v_<', 'n_  x\n  |fizz\n  buzz\n  x')
+        self.eq('  x\n    fi|zz\n  bu|zz\n  x', 'v_<', 'n_  x\n  |fizz\nbuzz\n  x')
 
-    def test_l_less_than(self):
-        self.eq('    x\n            |fizz\n    buzz\n|    x', 'l_<', 'n_    x\n        |fizz\nbuzz\n    x')
+    def test_b(self):
+        self.eq('    f|iz|z\n    b|uz|z\n', 'b_<', 'n_  fizz\n  |buzz\n')
 
-    def test_less_than_paragraph(self):
+    def test_V(self):
+        self.eq('  x\n      |fizz\n  buzz\n|  x', 'l_<', 'n_  x\n    |fizz\nbuzz\n  x')
+
+    def test_n_brace(self):
         self.eq(
-            '        x\n\n        1\n        2\n        |3\n        4\n\n        x',
+            '    x\n\n    1\n    2\n    |3\n    4\n\n    x',
             '<{',
-            '        x\n|\n    1\n    2\n    3\n        4\n\n        x')
+            '    x\n|\n  1\n  2\n  3\n    4\n\n    x')
