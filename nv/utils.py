@@ -136,6 +136,17 @@ def regions_transform_to_first_non_blank(view):
     regions_transformer(view, _transform_first_non_blank)
 
 
+def regions_transform_extend_to_line_count(view, count):
+    def f(view, s):
+        if count > 1:
+            s.a = view.line(s.begin()).a
+            s.b = view.line(view.text_point(row_at(view, s.a) + (count - 1), 0)).b
+
+        return s
+
+    regions_transformer(view, f)
+
+
 def replace_sel(view, new_sel):
     # type: (...) -> None
     if new_sel is None or new_sel == []:
