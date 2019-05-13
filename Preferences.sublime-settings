@@ -47,6 +47,17 @@
     // {not in Vim}
     "neovintageous_search_occ_style": "fill",
 
+    // Visual bell style type.
+    // Valid values are: blink, view, or views.
+    // {not in Vim}
+    "vintageous_bell": "blink",
+
+    // Visual bell color scheme.
+    // Valid values are: "dark", "light", or color scheme path. The color scheme
+    // path should be in the format Packages/Name/name.hidden-color-scheme
+    // {not in Vim}
+    "vintageous_bell_color_scheme": "dark",
+
     // Specifies for which events the bell (visual blink) will not be rung. It
     // is a comma separated list of items. For each item that is present, the
     // bell will be silenced. Currently only the "all" event is supported.
@@ -120,16 +131,5 @@
 
     // Propagate copy actions to the system clipboard.
     // {not in Vim}
-    "vintageous_use_sys_clipboard": false,
-
-    // Visual bell style type.
-    // Valid values are: blink, view, or views.
-    // {not in Vim}
-    "vintageous_bell": "blink",
-
-    // Visual bell color scheme.
-    // Valid values are: "dark", "light", or color scheme path. The color scheme
-    // path should be in the format Packages/Name/name.hidden-color-scheme
-    // {not in Vim}
-    "vintageous_bell_color_scheme": "dark"
+    "vintageous_use_sys_clipboard": false
 }
