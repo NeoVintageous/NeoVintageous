@@ -2052,20 +2052,15 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            bol = view.line(s.begin()).a
-            pt = next_non_blank(view, bol)
-            return Region(pt)
+            if count > 1:
+                s.a = view.line(s.begin()).a
+                s.b = view.line(view.text_point(row_at(view, s.a) + (count - 1), 0)).b
 
-        def select(view):
-            s = view.sel()[0]
-            end_row = row_at(view, s.b) + (count - 1)
-            replace_sel(view, Region(s.begin(), view.text_point(end_row, 1)))
+            return s
 
-        if count > 1:
-            select(self.view)
-
-        self.view.run_command('indent')
         regions_transformer(self.view, f)
+        self.view.run_command('indent')
+        regions_transform_to_first_non_blank(self.view)
         enter_normal_mode(self.view, mode)
 
 

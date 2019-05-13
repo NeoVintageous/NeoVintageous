@@ -23,11 +23,13 @@ class Test_greater_than_greater_than(unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.settings().set('translate_tabs_to_spaces', True)
-        self.settings().set('tab_size', 4)
+        self.settings().set('tab_size', 2)
 
-    def test_shift_lines_rightwards(self):
-        self.eq('x\n|ab\nx', '>>', 'x\n    |ab\nx')
-        self.eq('x\n    fi|zz\nx', '>>', 'x\n        |fizz\nx')
-
-    def test_shift_count_lines_rightwards(self):
-        self.eq('1\n|2\n3\n4\n5\n', '3>>', '1\n    |2\n    3\n    4\n5\n')
+    def test_N(self):
+        self.eq('x\n|ab\nx', '>>', 'x\n  |ab\nx')
+        self.eq('x\n  fi|zz\nx', '>>', 'x\n    |fizz\nx')
+        self.eq('x\n|  fizz\nx', '>>', 'x\n    |fizz\nx')
+        self.eq('x\n  fiz|z\nx', '>>', 'x\n    |fizz\nx')
+        self.eq('1\n|2\n3\n4\n5\n', '3>>', '1\n  |2\n  3\n  4\n5\n')
+        self.eq('1\nfi|zz\n3\n4\n5\n', '3>>', '1\n  |fizz\n  3\n  4\n5\n')
+        self.eq('1\nfi|zz\n3\n4\n5\n1\nbu|zz\n3\n4\n5\n', '3>>', '1\n  |fizz\n  3\n  4\n5\n1\n  |buzz\n  3\n  4\n5\n')
