@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.14.0 - 2019-05-14
+
+### Added
+
+* Added [#546](https://github.com/NeoVintageous/NeoVintageous/issues/546): Support for mapping `super+]`
+* Added [#545](https://github.com/NeoVintageous/NeoVintageous/issues/545): Support for mapping `super+[`
+
 ## 1.13.0 - 2019-05-14
 
 ### Added
