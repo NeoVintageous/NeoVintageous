@@ -2,6 +2,11 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.14.1 - 2019-05-14
+
+* Fixed [#548](https://github.com/NeoVintageous/NeoVintageous/issues/548): Visual selection should not be cleared when Sublime loses focus
+* Fixed [#547](https://github.com/NeoVintageous/NeoVintageous/issues/547): `vnoremap` doesn't work for super keys in visual mode
+
 ## 1.14.0 - 2019-05-14
 
 ### Added

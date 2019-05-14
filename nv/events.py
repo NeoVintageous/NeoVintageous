@@ -25,6 +25,7 @@ from NeoVintageous.nv.state import State
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.vi import settings
+from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
@@ -238,9 +239,7 @@ class NeoVintageousEvents(EventListener):
                         if other_view and other_view != view:
                             sel = other_view.sel()
                             if len(sel) > 0 and any([not s.empty() for s in sel]):
-                                sels_begin_at_pt = sel[0].begin()
-                                sel.clear()
-                                sel.add(sels_begin_at_pt)
+                                enter_normal_mode(other_view, State(other_view).mode)
 
         # Initialise view state.
         init_state(view)
