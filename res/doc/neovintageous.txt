@@ -61,13 +61,13 @@ option 'vintageous_multi_cursor_exit_from_visual_mode'.
 <C-n> or gh             Start multiple cursor.
 <C-n> or j              Add next match.
 <C-x> or l              Skip next match.
-<C-p> or k              Remove current match and go back on previous match.
-<Esc> or J              Clear multiple selections and enter normal mode.
+<C-p> or k              Remove current match and go back on previous.
+<Esc> or J              Quit and enter normal mode.
 v                       Enter normal mode.
-A                       Select all instances.
-c                       Delete text and enter insert mode.
-d                       Delete text and enter normal mode.
-s                       Delete text and enter insert mode.
+A                       Select all.
+c                       Delete selection and enter insert mode.
+d                       Delete selection and enter normal mode.
+s                       Delete selection and enter insert mode.
 i                       Enter insert mode at end of selections.
 I                       Enter insert mode at start of selections.
 gH                      After a search with / or ? (select all matches).
