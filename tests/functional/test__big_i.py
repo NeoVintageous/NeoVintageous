@@ -20,10 +20,15 @@ from NeoVintageous.tests import unittest
 
 class Test_I(unittest.FunctionalTestCase):
 
+    @unittest.mock_bell()
     def test_n(self):
         self.eq('|', 'I', 'i_|')
         self.eq('abc|d', 'I', 'i_|abcd')
         self.eq('x\nab|cd', 'I', 'i_x\n|abcd')
+        self.eq('    fi|zz', 'I', 'i_    |fizz')
+        self.eq('fizz\n    bu|zz\nfizz\n', 'I', 'i_fizz\n    |buzz\nfizz\n')
+        self.assertStatusLineIsInsert()
+        self.assertNoBell()
 
     def test_v(self):
         self.eq('x|ab|x', 'v_I', 'i_|xabx')
@@ -33,15 +38,19 @@ class Test_I(unittest.FunctionalTestCase):
         self.eq('r_x\n|ab\n|x', 'l_I', 'i_x\n|ab\nx')
         self.eq('r_|    fizz\n|x', 'l_I', 'i_|    fizz\nx')
         self.eq('fizz\nbu|zz\nfi|zz', 'l_I', 'i_fizz\n|buzz\nfizz')
+        self.assertStatusLineIsInsert()
 
     def test_V(self):
         self.eq('x\n|two\n|y', 'l_I', 'i_x\n|two\ny')
+        self.assertStatusLineIsInsert()
 
     def test_b(self):
         self.eq('x\na|bc|d\nx\nc|de|f\nx', 'b_I', 'i_x\na|bcd\nx\nc|def\nx')
+        self.assertStatusLineIsInsert()
 
     def test_s(self):
         self.eq('|fizz|', 's_I', 'i_|fizz')
         self.eq('x |fizz| y', 's_I', 'i_x |fizz y')
         self.eq('x |fizz| |buzz| y', 's_I', 'i_x |fizz |buzz y')
         self.eq('x |fizz| y\nx |buzz| y', 's_I', 'i_x |fizz y\nx |buzz y')
+        self.assertStatusLineIsInsert()

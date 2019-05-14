@@ -1739,8 +1739,10 @@ class _vi_big_i(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            if mode in (VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
+            if mode in (VISUAL, VISUAL_LINE):
                 s = Region(view.line(s.begin()).a)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(next_non_blank(view, view.line(s.begin()).a))
             elif mode in (VISUAL_BLOCK, SELECT):
                 s = Region(s.begin())
 

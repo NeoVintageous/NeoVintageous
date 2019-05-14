@@ -24,6 +24,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#544](https://github.com/NeoVintageous/NeoVintageous/issues/544): `I` command has been broken in the last update (regression)
 * Fixed [#251](https://github.com/NeoVintageous/NeoVintageous/issues/251): `i` in multiple cursor mode should clear visual selection
 
 ## 1.12.0 - 2019-05-09
