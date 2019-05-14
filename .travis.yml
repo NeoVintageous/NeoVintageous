@@ -37,21 +37,17 @@ install:
                 pip install flake8-docstrings;
                 pip install python-coveralls;
             fi
-      elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
-            brew update;
-            brew upgrade python;
-            pip3 install flake8;
-            pip3 install flake8-docstrings;
-            pip3 install python-coveralls;
       fi
     - sh travis.sh bootstrap
     - python --version
-    - flake8 --version
 
 script:
     - sh travis.sh run_tests --coverage
     - sh travis.sh run_syntax_tests
-    - flake8
+    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+            flake8 --version;
+            flake8;
+      fi
 
 after_success:
     - coveralls
