@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.14.2 - Unreleased
+
+* Fixed [#549](https://github.com/NeoVintageous/NeoVintageous/issues/549): Upward paragraph motion in visual mode not working
+
 ## 1.14.1 - 2019-05-14
 
 * Fixed [#548](https://github.com/NeoVintageous/NeoVintageous/issues/548): Visual selection should not be cleared when Sublime loses focus

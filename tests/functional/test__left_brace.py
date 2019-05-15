@@ -38,6 +38,7 @@ class Test_left_brace(unittest.FunctionalTestCase):
         self.eq('|f|izz', 'v_{', '|f|izz')
         self.eq('|a|', 'v_{', '|a|')
         self.eq('r_|a|', 'v_{', 'r_|a|')
+        self.eq('|1\n2\n\n3\n4\n\n|5\n', 'v_{', '|1\n2\n\n|3\n4\n\n5\n')
 
     def test_V(self):
         self.eq('|1\n2\n\n3\n\n\n\n4\n5|', 'l_{', '|1\n2\n\n3\n\n\n\n|4\n5')
