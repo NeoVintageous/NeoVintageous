@@ -445,10 +445,6 @@ class TestViewTestCase(unittest.ViewTestCase):
         with self.assertRaises(AssertionError):
             self.assertSize(12)
 
-    def test_invalid_register_value(self):
-        with self.assertRaisesRegex(ValueError, 'not a valid str'):
-            self.register('x', [])
-
     def test_numbered_register(self):
         self.settings().set('vintageous_use_sys_clipboard', False)
         self.register('"x')

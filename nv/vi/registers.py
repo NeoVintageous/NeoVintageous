@@ -37,6 +37,7 @@ except Exception:
         print('NeoVintageous: could not update clipboard history: import error')
 
 from NeoVintageous.nv.vim import is_visual_mode
+from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
@@ -370,7 +371,8 @@ class Registers:
         if not register:
             register = _UNNAMED
 
-        as_str = ''
+        filtered = []
+
         values = self._get(register)
         linewise = _is_register_linewise(register)
 
@@ -383,13 +385,16 @@ class Registers:
                 if current_content:
                     self._set(_UNNAMED, current_content, linewise=(mode == VISUAL_LINE))
 
-            # If register content is from a linewise operation, and in VISUAL
-            # mode, and doesn't begin with newline, then a newline is prefixed.
-            as_str = ''.join(values)
-            if as_str and linewise and is_visual_mode(mode) and as_str[0] != '\n':
-                as_str = '\n' + as_str
+            for value in values:
+                if value and linewise and mode == VISUAL and value[0] != '\n':
+                    value = '\n' + value
 
-        return as_str, linewise
+                if mode == VISUAL_LINE and value[-1] != '\n':
+                    value = value + '\n'
+
+                filtered.append(value)
+
+        return filtered, linewise
 
     def get_for_p(self, register, mode):
         if not register:
@@ -398,13 +403,14 @@ class Registers:
         values = self._get(register)
         linewise = _is_register_linewise(register)
 
-        # Populate unnamed register with the text we're about to paste into (the
-        # text we're about to replace), but only if there was something in
-        # requested register (not empty), and we're in VISUAL mode.
-        if values and is_visual_mode(mode):
-            content = self._get_selected_text(linewise=(mode == VISUAL_LINE))
-            if content:
-                self._set(_UNNAMED, content, linewise=(mode == VISUAL_LINE))
+        if values:
+            # Populate unnamed register with the text we're about to paste into
+            # (the text we're about to replace), but only if there was something
+            # in requested register (not empty), and we're in VISUAL mode.
+            if is_visual_mode(mode):
+                current_content = self._get_selected_text(linewise=(mode == VISUAL_LINE))
+                if current_content:
+                    self._set(_UNNAMED, current_content, linewise=(mode == VISUAL_LINE))
 
         return values, linewise
 

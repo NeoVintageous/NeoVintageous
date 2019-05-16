@@ -65,6 +65,7 @@ option 'vintageous_multi_cursor_exit_from_visual_mode'.
 <Esc> or J              Quit and enter normal mode.
 v                       Enter normal mode.
 A                       Select all.
+y                       Yank the selection.
 c                       Delete selection and enter insert mode.
 d                       Delete selection and enter normal mode.
 s                       Delete selection and enter insert mode.

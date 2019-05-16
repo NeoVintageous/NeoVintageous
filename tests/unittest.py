@@ -243,13 +243,14 @@ class ViewTestCase(unittest.TestCase):
         if value is None:
             value = name[1:]
             name = name[0]
-        elif not isinstance(value, str):
-            raise ValueError('argument #2 is not a valid str')
+
+        if not isinstance(value, list):
+            value = [value]
 
         if name.isdigit() and name != '0':
-            registers._set_numbered_register(name, [value])
+            registers._set_numbered_register(name, value)
         else:
-            registers._data[name] = [value]
+            registers._data[name] = value
             registers._linewise[name] = linewise
 
     def resetRegisters(self):
@@ -405,23 +406,21 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.state.registers[name], expected, msg or 'register = "' + name)
         if expected is not None:
             # FIXME digit registers linewise state is not implemented properly yet
-            if not name.isdigit():
+            if not name.isdigit() or name == '0':
                 self.assertEqual(registers._linewise[name], linewise, msg or 'linewise register = "' + name)
 
     def assertRegister(self, name, expected=None, linewise=False, msg=None):
         # Test that the value of the named register and *expected* are equal.
         #
-        # Example:
-        #
-        #   assertRegister('"', 'text')
-        #   assertRegister('-', 'text')
-        #   assertRegister('"text')
-        #   assertRegister('-text')
-        #
         # Args:
-        #   name (str):
-        #       The name of the register.
-        #   expected (str)
+        #   name (str): The name of the register.
+        #   expected (str|list): The expected registered content.
+        #
+        # Usage:
+        #
+        #   assertRegister('"text')
+        #   assertRegister('"', 'text')
+        #   assertRegister('"', ['text1', 'text2'])  # multiple cursor content
         if expected is None:
             expected = name[1:]
             name = name[0]

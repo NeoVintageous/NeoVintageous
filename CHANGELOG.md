@@ -6,6 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#565](https://github.com/NeoVintageous/NeoVintageous/issues/565): `P` in multiple cursor mode
+* Added [#552](https://github.com/NeoVintageous/NeoVintageous/issues/552): `y` in multiple cursor mode
+* Added [#553](https://github.com/NeoVintageous/NeoVintageous/issues/553): `[count]P` Put the text before the cursor `[count]` times
 * Added [#559](https://github.com/NeoVintageous/NeoVintageous/issues/559): `i` text object selection in Visual line mode e.g. `ip`, `iw`, `i'`
 * Added [#562](https://github.com/NeoVintageous/NeoVintageous/issues/562): `a` text object selection in Visual line mode e.g. `ap`, `aw`, `a'`
 * Added [#560](https://github.com/NeoVintageous/NeoVintageous/issues/560): `i` text object selection in Visual block mode e.g. `ip`, `iw`, `i'`
@@ -18,6 +21,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#222](https://github.com/NeoVintageous/NeoVintageous/issues/222): `P` in Visual line mode
 * Fixed [#554](https://github.com/NeoVintageous/NeoVintageous/issues/554): `dl` should not advance to first non-blank
 * Fixed [#555](https://github.com/NeoVintageous/NeoVintageous/issues/555): `cl` should include trailing whitespace
 * Fixed [#556](https://github.com/NeoVintageous/NeoVintageous/issues/556): `d$` on a blank line should not delete the line

@@ -20,12 +20,24 @@ from NeoVintageous.tests import unittest
 
 class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
-    def test_v_y(self):
+    def test_v(self):
         self.eq('x|ab|x', 'v_y', 'n_x|abx')
         self.assertRegister('"ab')
         self.assertRegister('0ab')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
+        self.eq('|fizz| |buzz|', 'v_y', 'n_|fizz |buzz')
+        self.assertRegistersEqual('"0', ['fizz', 'buzz'])
+        self.eq('a\n|fizz\n|b\n|buzz\n|c', 'v_y', 'n_a\n|fizz\nb\n|buzz\nc')
+        self.assertRegistersEqual('"0', ['fizz\n', 'buzz\n'])
+        self.assertRegistersEmpty('-1')
+
+    def test_s(self):
+        self.eq('x|ab|x', 's_y', 'n_x|abx')
+        self.assertRegistersEqual('"0', 'ab')
+        self.assertRegistersEmpty('-1')
+        self.eq('|fizz| |buzz|', 's_y', 'n_|fizz |buzz')
+        self.assertRegistersEqual('"0', ['fizz', 'buzz'])
 
     def test_v_y_should_not_capture_newline(self):
         self.eq('x|ab|\nx', 'v_y', 'n_x|ab\nx')
@@ -104,9 +116,12 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
 
-    def test_yank_visual_line_sets_linewise_register(self):
+    def test_V(self):
         self.eq('x\n|abc\n|y', 'l_y', 'n_x\n|abc\ny')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('0abc\n', linewise=True)
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
+        self.eq('a\n|fizz\n|b\n|buzz\n|c', 'l_y', 'n_a\n|fizz\nb\n|buzz\nc')
+        self.assertRegistersEqual('"0', ['fizz\n', 'buzz\n'], linewise=True)
+        self.assertRegistersEmpty('-1')

@@ -179,6 +179,24 @@ class ViYankByChars(ViOperatorDef):
         }
 
 
+@assign(seqs.Y, (SELECT,))
+class ViYankSelectByChars(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_y',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register
+            }
+        }
+
+
 @assign(seqs.EQUAL, _ACTION_MODES)
 class ViReindent(ViOperatorDef):
     def __init__(self, *args, **kwargs):

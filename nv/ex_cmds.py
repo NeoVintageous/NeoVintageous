@@ -822,16 +822,20 @@ def ex_registers(window, view, **kwargs):
     items = []
     for k, v in state.registers.to_dict().items():
         if v:
-            if len(v) > 0 and v[0]:
-                lines = v[0].splitlines()
-                value = '^J'.join(lines)
+            multiple_values = []
+
+            for part in v:
+                lines = part.splitlines()
+                part_value = '^J'.join(lines)
 
                 # The splitlines function will remove any trailing newlines. We
                 # need to append one if splitlines() removed a trailing one.
                 if len(''.join(lines)) < len(v[0]):
-                    value += '^J'
+                    part_value += '^J'
 
-                items.append('"{}   {}'.format(k, _truncate(value, 78)))
+                multiple_values.append(part_value)
+
+            items.append('"{}   {}'.format(k, _truncate('|'.join(multiple_values), 78)))
 
     def on_done(idx):
         if idx == -1:

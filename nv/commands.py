@@ -1630,7 +1630,7 @@ class _vi_y(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         def f(view, s):
-            return Region(next_non_blank(self.view, s.begin()))
+            return Region(next_non_blank(view, s.begin()))
 
         linewise = (mode == VISUAL_LINE)
 
@@ -1647,7 +1647,7 @@ class _vi_y(ViTextCommandBase):
                     if not linewise:
                         linewise = 'maybe'
 
-        elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+        elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
             return
 
         ui_highlight_yank(self.view)
@@ -2215,59 +2215,66 @@ class _vi_big_z_big_z(WindowCommand):
 class _vi_big_p(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
-        if len(self.view.sel()) > 1:
-            return  # TODO Support multiple selections
-
-        state = self.state
-
-        text, linewise = state.registers.get_for_big_p(register, state.mode)
-        if not text:
+        contents, linewise = self.state.registers.get_for_big_p(register, mode)
+        if not contents:
             return status_message('E353: Nothing in register ' + register)
 
-        sel = self.view.sel()[0]
+        sels = list(self.view.sel())
+
+        # Multiple cursor content is concatinated into one string when the
+        # selection count is one, but if the selection count and content count
+        # are greater than one and not equal an error bell is rung.
+
+        if len(sels) > 1 and len(contents) != len(sels):
+            return ui_bell()
+
+        if len(sels) == 1 and len(contents) > 1:
+            contents = [''.join(contents)]
+
+        contents = zip(reversed(contents), reversed(sels))
 
         if mode == INTERNAL_NORMAL:
+            self.view.sel().clear()
 
-            # If register content is from a linewise operation, then the cursor
-            # is put on the first non-blank character of the first line of the
-            # content after the content is inserted.
-            if linewise:
-                row = self.view.rowcol(self.view.line(sel.a).a)[0]
-                pt = self.view.text_point(row, 0)
+            for text, sel in contents:
+                text *= count
 
-                self.view.insert(edit, pt, text)
+                # If register content is from a linewise operation, then the cursor
+                # is put on the first non-blank character of the first line of the
+                # content after the content is inserted.
+                if linewise:
+                    row = self.view.rowcol(self.view.line(sel.a).a)[0]
+                    pt = self.view.text_point(row, 0)
+                    self.view.insert(edit, pt, text)
+                    pt = next_non_blank(self.view, pt)
+                    self.view.sel().add(pt)
 
-                pt = next_non_blank(self.view, pt)
-
-                self.view.sel().clear()
-                self.view.sel().add(pt)
-
-            # If register is charactwise but contains a newline, then the cursor
-            # is put at the start of of the text pasted, otherwise the cursor is
-            # put on the last character of the text pasted.
-            else:
-                if '\n' in text:
-                    pt = sel.a
+                # If register is charactwise but contains a newline, then the cursor
+                # is put at the start of of the text pasted, otherwise the cursor is
+                # put on the last character of the text pasted.
                 else:
-                    pt = sel.a + len(text) - 1
+                    if '\n' in text:
+                        pt = sel.a
+                    else:
+                        pt = sel.a + len(text) - 1
 
-                self.view.insert(edit, sel.a, text)
-                self.view.sel().clear()
-                self.view.sel().add(pt)
+                    self.view.insert(edit, sel.a, text)
+                    self.view.sel().add(pt)
 
             enter_normal_mode(self.view, mode)
 
-        elif mode == VISUAL:
-            self.view.replace(edit, sel, text)
-            enter_normal_mode(self.view, mode)
+        elif mode in (VISUAL, VISUAL_LINE):
+            for text, sel in contents:
+                self.view.replace(edit, sel, text)
+                enter_normal_mode(self.view, mode)
 
-            # If register content is linewise, then the cursor is put on the
-            # first non blank of the line.
-            if linewise:
-                def selection_first_non_blank(view, s):
-                    return Region(next_non_blank(view, view.line(s).a))
+                # If register content is linewise, then the cursor is put on the
+                # first non blank of the line.
+                if linewise:
+                    def f(view, s):
+                        return Region(next_non_blank(view, view.line(s).a))
 
-                regions_transformer(self.view, selection_first_non_blank)
+                    regions_transformer(self.view, f)
 
 
 class _vi_p(ViTextCommandBase):
