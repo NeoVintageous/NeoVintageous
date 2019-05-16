@@ -14,6 +14,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#554](https://github.com/NeoVintageous/NeoVintageous/issues/554): `dl` should not advance to first non-blank
+* Fixed [#555](https://github.com/NeoVintageous/NeoVintageous/issues/555): `cl` should include trailing whitespace
+* Fixed [#556](https://github.com/NeoVintageous/NeoVintageous/issues/556): `d$` on a blank line should not delete the line
+* Fixed [#557](https://github.com/NeoVintageous/NeoVintageous/issues/557): `c$` should include whitespace
+* Fixed [#558](https://github.com/NeoVintageous/NeoVintageous/issues/558): `d|` should not move to first non-blank
 * Fixed [#528](https://github.com/NeoVintageous/NeoVintageous/issues/528): Command-line input has dark bg in adaptive light theme
 
 ## 1.14.2 - 2019-05-16

@@ -20,22 +20,23 @@ from NeoVintageous.tests import unittest
 
 class Test_A(unittest.FunctionalTestCase):
 
-    def test_A(self):
+    def test_N(self):
         self.eq('|', 'A', 'i_|')
         self.eq('|ab', 'A', 'i_ab|')
         self.eq('a|b', 'A', 'i_ab|')
         self.eq('a|b\n', 'A', 'i_ab|\n')
         self.eq('a|b\nx', 'A', 'i_ab|\nx')
+        self.assertStatusLineIsInsert()
 
-    def test_v_A(self):
+    def test_v(self):
         self.eq('x|ab|x', 'v_A', 'i_xab|x')
         self.eq('x|abx|\n', 'v_A', 'i_xabx|\n')
         self.eq('x|abx\n|', 'v_A', 'i_xabx|\n')
-
-    def test_v_A_reverse(self):
+        self.eq('fi|zz bu|zz', 'v_A', 'i_fizz bu|zz')
         self.eq('r_fi|zz bu|zz', 'v_A', 'i_fi|zz buzz')
+        self.assertStatusLineIsInsert()
 
-    def test_l_A(self):
+    def test_V(self):
         self.eq('|a|', 'l_A', 'i_a|')
         self.eq('|a\n|', 'l_A', 'i_a|\n')
         self.eq('|a\n|x', 'l_A', 'i_a|\nx')
@@ -46,21 +47,22 @@ class Test_A(unittest.FunctionalTestCase):
         self.eq('|ab\n|\nx', 'l_A', 'i_ab|\n\nx')
         self.eq('|ab\ncd|', 'l_A', 'i_ab\ncd|')
         self.eq('|ab\ncd\n|', 'l_A', 'i_ab\ncd|\n')
-
-    def test_l_A_multiple_selections(self):
         self.eq('|ab\n||cd|', 'l_A', 'i_ab|\ncd|')
         self.eq('|ab\n||cd\n|', 'l_A', 'i_ab|\ncd|\n')
+        self.eq('first\n|fizz\n|buzz\n', 'v_A', 'i_first\nfizz|\nbuzz\n')
+        self.eq('r_first\n|fizz\n|buzz\n', 'v_A', 'i_first\n|fizz\nbuzz\n')
+        self.assertStatusLineIsInsert()
+
+    def test_b(self):
+        self.eq('x\n1|11|1\nx\n2|22|2\nx', 'b_A', 'i_x\n111|1\nx\n222|2\nx')
+        self.eq('x\na|bc\n|x\nd|ef\n|x', 'b_A', 'i_x\nabc|\nx\ndef|\nx')
+        self.assertStatusLineIsInsert()
+
+    def test_s(self):
+        self.eq('|fizz| buzz fizz buzz fizz', 's_A', '|fizz| buzz |fizz| buzz |fizz|')
 
     def test_issue_291_append_multi_line_is_off_by_one_char(self):
         self.eq('|aaaaa\n||bbbbb\n||ccccc|', 'l_A', 'i_aaaaa|\nbbbbb|\nccccc|')
         self.eq('|aaaaa\n||bbbbb\n||ccccc\n|', 'l_A', 'i_aaaaa|\nbbbbb|\nccccc|\n')
         self.eq('|aaaaa\n||bbbbb\n||ccccc\n|x', 'l_A', 'i_aaaaa|\nbbbbb|\nccccc|\nx')
-
-    def test_b_A(self):
-        self.eq('x\n1|11|1\nx\n2|22|2\nx', 'b_A', 'i_x\n111|1\nx\n222|2\nx')
-
-    def test_b_A_eol(self):
-        self.eq('x\na|bc\n|x\nd|ef\n|x', 'b_A', 'i_x\nabc|\nx\ndef|\nx')
-
-    def test_s(self):
-        self.eq('|fizz| buzz fizz buzz fizz', 's_A', '|fizz| buzz |fizz| buzz |fizz|')
+        self.assertStatusLineIsInsert()

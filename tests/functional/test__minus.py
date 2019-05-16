@@ -32,3 +32,11 @@ class Test_minus(unittest.FunctionalTestCase):
         self.eq('1\nfizz\n|buzz\n|4', 'l_-', 'r_1\n|fizz\nbuzz\n|4')
         self.eq('1|\nfizz\nbuzz\nthree\n|four\n', 'l_-', '1|\nfizz\nbuzz\n|three\nfour\n')
         self.eq('r_1\nfizz\n|buzz\nthree\n|', 'l_-', 'r_1\n|fizz\nbuzz\nthree\n|')
+
+    @unittest.mock_bell()
+    def test_d(self):
+        self.eq('1\n2\n|3\n4\n5\n', 'd-', '1\n|4\n5\n')
+        self.eq('1\n2\n3\n4\n5\n|6\n7\n8', '3d-', '1\n2\n|7\n8')
+        self.eq('  1\n  2\n  |3\n  4\n  5\n', 'd-', '  1\n  |4\n  5\n')
+        self.eq('  1\n  2\n|  3\n  4\n  5\n', 'd-', '  1\n  |4\n  5\n')
+        self.assertNoBell()

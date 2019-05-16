@@ -20,17 +20,15 @@ from NeoVintageous.tests import unittest
 
 class Test_l(unittest.FunctionalTestCase):
 
-    def test_n_l(self):
+    def test_n(self):
         self.eq('|abc', 'n_l', 'a|bc')
         self.eq('|foo bar baz', 'n_9l', 'foo bar b|az')
         self.eq('|ping', 'n_9l', 'pin|g')
         self.eq('|ping\n', 'n_9l', 'pin|g\n')
-
-    def test_n_l_empty_lines(self):
         self.eq('|', 'n_l', '|')
         self.eq('\n\n|\n\n', 'n_l', '\n\n|\n\n')
 
-    def test_v_l(self):
+    def test_v(self):
         self.eq('|abc', 'v_l', '|ab|c')
         self.eq('|abc', 'v_1l', '|ab|c')
         self.eq('f|oo bar baz', 'v_5l', 'f|oo bar| baz')
@@ -38,25 +36,41 @@ class Test_l(unittest.FunctionalTestCase):
         self.eq('p|ing\n', 'v_9l', 'p|ing\n|')
         self.eq('a|bc\nx', 'v_5l', 'a|bc\n|x')
         self.eq('a|bc\nd|ef\nx', 'v_9l', 'a|bc\ndef\n|x')
-
-    def test_v_l_empty_lines(self):
         self.eq('|', 'v_l', '|')
         self.eq('\n\n|\n|\n', 'v_l', '\n\n|\n|\n')
-
-    def test_v_l_reversed_selections(self):
         self.eq('r_h|el|lo world', 'v_5l', 'he|llo w|orld')
-
-    def test_v_l_reversed_selections_to_eol(self):
         self.eq('r_h|el|lo\n', 'v_5l', 'he|llo\n|')
-
-    def test_v_l_reversed_selections_to_eol_2(self):
         self.eq('r_a|\n|', 'v_5l', 'r_a|\n|')
-
-    def test_v_l_reversed_selections_to_eol_3(self):
         self.eq('r_|ab|\n', 'v_9l', 'a|b\n|')
-
-    def test_v_l_reversed_selections_to_eol_4(self):
         self.eq('r_|ab\n|', 'v_9l', 'r_ab|\n|')
 
-    def test_l_internal_mode(self):
-        self.eq('|abc', 'l', 'N_|a|bc')
+    def test_V(self):
+        self.eq('ab\n|cd\n|ef\n', 'l_l', 'ab\n|cd\n|ef\n')
+
+    @unittest.mock_bell()
+    def test_c(self):
+        self.eq('12|34', 'cl', 'i_12|4')
+        self.eq('12| 4', 'cl', 'i_12|4')
+        self.eq('12|  ', 'cl', 'i_12| ')
+        self.eq('1|234567890', '4cl', 'i_1|67890')
+        self.eq('1|23     90', '4cl', 'i_1|   90')
+        self.eq('|', 'cl', 'i_|')
+        self.eq('\n\n|\n\n', 'cl', 'i_\n\n|\n\n')
+        self.assertNoBell()
+
+    @unittest.mock_bell()
+    def test_d(self):
+        self.eq('1|234', 'dl', '1|34')
+        self.eq('|abc', 'dl', '|bc')
+        self.eq('1|234567890', '4dl', '1|67890')
+        self.eq('1|23     90', '4dl', '1|   90')
+        self.eq('ab|c', 'dl', 'a|b')
+        self.eq('|a', 'dl', '|')
+        self.eq('\n\n|a\n\n', 'dl', '\n\n|\n\n')
+        self.eq('12|34', '9dl', '1|2')
+        self.eq('12|34\n', '9dl', '1|2\n')
+        self.eq('12|34\nx', '9dl', '1|2\nx')
+        self.assertNoBell()
+        self.eq('\n\n|\n\n', 'dl', '\n\n|\n\n')
+        self.eq('|', 'dl', '|')
+        self.assertBellCount(2)

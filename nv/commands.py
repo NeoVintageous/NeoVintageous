@@ -1088,6 +1088,23 @@ class _vi_a(ViTextCommandBase):
         })
 
 
+# A temporary hack because *most*, and maybe all, motions shouldn't move the
+# cursor after an operation, but changing it for all commands could cause some
+# regressions. TODO When enough commands are updated, this should be removed.
+def _should_motion_apply_op_transformer(motion):
+    blacklist = (
+        '_vi_bar',
+        '_vi_dollar',
+        '_vi_find_in_line',
+        '_vi_g__',
+        '_vi_h',
+        '_vi_hat',
+        '_vi_l',
+    )
+
+    return motion and 'motion' in motion and motion['motion'] not in blacklist
+
+
 class _vi_c(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
@@ -1115,17 +1132,14 @@ class _vi_c(ViTextCommandBase):
         if motion:
             run_motion(self.view, motion)
 
-            # Vim ignores trailing white space for c. XXX Always?
             if mode == INTERNAL_NORMAL:
-                regions_transformer(self.view, compact)
+                if _should_motion_apply_op_transformer(motion):
+                    regions_transformer(self.view, compact)
 
             if not self.has_sel_changed():
                 enter_insert_mode(self.view, mode)
                 return
 
-            # If we ci' and the target is an empty pair of quotes, we should
-            # not delete anything.
-            # FIXME: This will not work well with multiple selections.
             if all(s.empty() for s in self.view.sel()):
                 enter_insert_mode(self.view, mode)
                 return
@@ -1317,8 +1331,7 @@ class _enter_insert_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
-            if mode == SELECT:
-                s = Region(s.b)
+            s.a = s.b = get_insertion_point_at_b(s)
 
             return s
 
@@ -1671,21 +1684,18 @@ class _vi_d(ViTextCommandBase):
         fix_eol_cursor(self.view, mode)
         enter_normal_mode(self.view, mode)
 
-        def advance_to_text_start(view, s):
-            if motion:
-                if 'motion' in motion:
-                    if motion['motion'] in ('_vi_g__',):
-                        return s
-
-                    if motion['motion'] in ('_vi_e', '_vi_big_e', '_vi_dollar', '_vi_find_in_line'):
-                        return Region(s.begin())
-
-            return Region(next_non_blank(self.view, s.b))
-
         if mode == INTERNAL_NORMAL:
-            regions_transformer(self.view, advance_to_text_start)
+            if _should_motion_apply_op_transformer(motion):
+                def f(view, s):
+                    if motion:
+                        if 'motion' in motion:
+                            if motion['motion'] in ('_vi_e', '_vi_big_e'):
+                                return Region(s.begin())
 
-        if mode == VISUAL_LINE:
+                    return Region(next_non_blank(self.view, s.b))
+
+                regions_transformer(self.view, f)
+        elif mode == VISUAL_LINE:
             def f(view, s):
                 return Region(next_non_blank(self.view, s.b))
 
@@ -3639,10 +3649,10 @@ class _vi_dollar(ViMotionCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                if view.line(s.a).a == s.a:
-                    s = Region(s.a, target + 1)
-                else:
-                    s = Region(s.a, target)
+                if count > 1 and view.rowcol(s.a)[1] == 0:
+                    target += 1
+
+                s.b = target
 
             return s
 

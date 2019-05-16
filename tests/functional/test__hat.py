@@ -41,18 +41,29 @@ class Test_hat(unittest.FunctionalTestCase):
         self.eq('r_ 123|\n 67|8', 'v_^', 'r_ |123\n 67|8')
         self.eq(' 1|23\n 67|8', 'v_^', ' 1|23\n 6|78')
         self.eq('r_ 1|23\n 67|8', 'v_^', 'r_ |123\n 67|8')
+        self.eq('r_|    |fizz', 'v_^', 'v_   | f|izz')
+        self.eq('r_|    f|izz', 'v_^', 'r_v_    |f|izz')
 
     def test_b(self):
         self.eq('  fi|zz|buzz\n  fi|zz|buzz\n', 'b_^', 'r_  |fiz|zbuzz\n  |fiz|zbuzz\n')
         self.eq('|  |  fizzbuzz\n|  |  fizzbuzz\n', 'b_^', '|    f|izzbuzz\n|    f|izzbuzz\n')
 
+    @unittest.mock_bell()
     def test_c(self):
         self.eq('    fi|zz', 'c^', 'i_    |zz')
+        self.eq('  |  fizz', 'c^', 'i_  |fizz')
+        self.eq('|  fizz', 'c^', 'i_|fizz')
+        self.eq('  |fizz', 'c^', 'i_  |fizz')
+        self.eq('\n\n|\n\n', 'c^', 'i_\n\n|\n\n')
         self.eq('|', 'c^', 'i_|')
+        self.assertNoBell()
 
+    @unittest.mock_bell()
     def test_d(self):
         self.eq('012|a4', 'd^', '|a4')
         self.eq('  2|a4', 'd^', '  |a4')
         self.eq('    fi|zz', 'd^', '    |zz')
         self.eq('|  234', 'd^', '|234')
+        self.assertNoBell()
         self.eq('|', 'd^', '|')
+        self.eq('    |fizz', 'd^', '    |fizz')

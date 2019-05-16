@@ -20,24 +20,23 @@ from NeoVintageous.tests import unittest
 
 class Test_o(unittest.FunctionalTestCase):
 
-    def test_o(self):
+    def test_N(self):
         self.eq('|', 'o', 'i_\n|')
         self.eq('|\n', 'o', 'i_\n|\n')
         self.eq('|a\nb\n', 'o', 'i_a\n|\nb\n')
+        self.eq('|', '2o', 'i_\n|\n|')
+        self.eq('fo|o\nba|r', '2o', 'i_foo\n|\n|\nbar\n|\n|')
+        self.assertStatusLineIsInsert()
 
-    def test_v_o(self):
+    def test_v(self):
         self.eq('x|fizz|x', 'v_o', 'r_x|fizz|x')
         self.eq('r_x|fizz|x', 'v_o', 'x|fizz|x')
+        self.assertStatusLineIsNormal()
 
-    def test_l_o(self):
+    def test_V(self):
         self.eq('x\n|fizz\n|x', 'l_o', 'r_x\n|fizz\n|x')
         self.eq('r_x\n|fizz\n|x', 'l_o', 'x\n|fizz\n|x')
-
-    def test_multiple_count_o(self):
-        self.eq('|', '2o', 'i_\n|\n|')
-
-    def test_multiple_count_v_o(self):
-        self.eq('fo|o\nba|r', '2o', 'i_foo\n|\n|\nbar\n|\n|')
+        self.assertStatusLineIsNormal()
 
 
 class Test_o_auto_indent(unittest.FunctionalTestCase):
@@ -47,9 +46,8 @@ class Test_o_auto_indent(unittest.FunctionalTestCase):
         self.settings().set('translate_tabs_to_spaces', True)
         self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
 
-    def test_O(self):
+    def test_N(self):
         self.eq('def x():\n    |x = 1', 'o', 'i_def x():\n    x = 1\n    |')
         self.eq('def x():\n    def y():\n        |x = 1', 'o', 'i_def x():\n    def y():\n        x = 1\n        |')
-
-    def test_O_count(self):
         self.eq('def x():\n    |x = 1', '3o', 'i_def x():\n    x = 1\n    |\n    |\n    |')
+        self.assertStatusLineIsInsert()

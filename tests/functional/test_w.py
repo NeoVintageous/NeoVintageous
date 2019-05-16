@@ -39,18 +39,6 @@ class Test_w(unittest.FunctionalTestCase):
         self.eq('r_fi|zz b|uzz', 'v_w', 'r_fizz |b|uzz')
         self.eq('r_fi|zz |buzz', 'v_w', 'fizz| b|uzz')
 
-    def test_d(self):
-        self.eq('one |two three', 'dw', 'one |three')
-        self.eq('one t|wo three', 'dw', 'one t|three')
-        self.eq('one t|wo\nthree four\nfive', '2dw', 'one t|four\nfive')
-        self.eq('one\n\n|\ntwo three', 'dw', 'one\n\n|two three')
-        self.eq('one\n\n|\n\n\ntwo three', 'dw', 'one\n\n|\n\ntwo three')
-        self.eq('fi|zz\n\n\n\n', 'dw', 'f|i\n\n\n\n')
-        self.eq('fi|zz\n\n\n\n', '2dw', 'f|i\n\n\n')
-        self.eq('fi|zz\n\n\n\n', '3dw', 'f|i\n\n')
-        self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
-        self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
-
     def test_b(self):
         self.eq('|fi|zz buzz\n|fi|zz buzz\n', 'b_w', '|fizz b|uzz\n|fizz b|uzz\n')
         self.eq('r_|fi|zz buzz\n|fi|zz buzz\n', 'b_w', 'f|izz b|uzz\nf|izz b|uzz\n')
@@ -68,3 +56,18 @@ class Test_w(unittest.FunctionalTestCase):
         self.eq('r_d_fizz |buz|z\nfizz\nfizz buzz\n', 'b_3w', 'r_d_fizz |buz|z\nfizz\nfizz |buz|z\n')
         self.eq('r_d_fi|zz| buzz\nfizz buzz\n', 'b_3w', 'd_fiz|z b|uzz\nfiz|z b|uzz\n')
         self.eq('r_d_fi|zz| buzz\nx\nfizz buzz\n', 'b_4w', 'd_fiz|z b|uzz\nx\nfiz|z b|uzz\n')
+
+    @unittest.mock_bell()
+    def test_d(self):
+        self.eq('one |two three', 'dw', 'one |three')
+        self.eq('one t|wo three', 'dw', 'one t|three')
+        self.eq('one t|wo\nthree four\nfive', '2dw', 'one t|four\nfive')
+        self.eq('one\n\n|\ntwo three', 'dw', 'one\n\n|two three')
+        self.eq('one\n\n|\n\n\ntwo three', 'dw', 'one\n\n|\n\ntwo three')
+        self.eq('fi|zz\n\n\n\n', 'dw', 'f|i\n\n\n\n')
+        self.eq('fi|zz\n\n\n\n', '2dw', 'f|i\n\n\n')
+        self.eq('fi|zz\n\n\n\n', '3dw', 'f|i\n\n')
+        self.eq('1\n|\n2\n3', 'dw', '1\n|2\n3')
+        self.eq('1\n|\n\n2\n3', 'dw', '1\n|\n2\n3')
+        self.eq('fi|zz     buzz', 'dw', 'fi|buzz')
+        self.assertNoBell()

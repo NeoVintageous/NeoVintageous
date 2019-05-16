@@ -61,7 +61,7 @@ TESTS_INTERNAL_NORMAL = (
               expected=region_data([0, 4]), actual_func=first_sel, msg='can move in visual mode with revesed sel cross over'),  # noqa: E241,E501
 
     test_data(cmd='_vi_dollar', initial_text='abc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL},  # noqa: E241,E501
-              expected=region_data([0, 4]), actual_func=first_sel, msg=''),
+              expected=region_data([0, 3]), actual_func=first_sel, msg=''),
 
     test_data(cmd='_vi_dollar', initial_text='abc\nabc\nabc\nabc\n', regions=[[0, 0]], cmd_params={'mode': unittest.INTERNAL_NORMAL, 'count': 3},  # noqa: E241,E501
               expected=region_data([0, 12]), actual_func=first_sel, msg=''),
