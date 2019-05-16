@@ -386,6 +386,18 @@ List of available options:
         squiggly_underline
         stippled_underline
 
+                                                   *'vintageous_default_mode'*
+'vintageous_default_mode'
+                        string (default "")
+    Default mode to use when activating or switching views.
+    Valid values are: "insert"
+
+    mode   | description
+    ------ | -----------
+    insert | Enter insert mode when opening or switching views or when
+             the window receives focus and is not in visual mode i.e. visual
+             mode selections are retained when the window loses focus.
+
                                                        *'vintageous_hlsearch'*
 'vintageous_hlsearch'   boolean (default on)
         See 'hlsearch'.

@@ -37,6 +37,7 @@ from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
 from NeoVintageous.nv.vi.marks import Marks
 from NeoVintageous.nv.vi.registers import Registers
 from NeoVintageous.nv.vi.settings import SettingsManager
+from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import is_visual_mode
@@ -895,9 +896,14 @@ def init_state(view):
 
     # If we have no selections, add one.
     if len(view.sel()) == 0:
-        view.sel().add(Region(0))
+        view.sel().add(0)
 
-    if mode in (VISUAL, VISUAL_LINE):
+    default_mode = view.settings().get('vintageous_default_mode')
+
+    if default_mode == 'insert':
+        if mode in (NORMAL, UNKNOWN):
+            enter_insert_mode(view, mode)
+    elif mode in (VISUAL, VISUAL_LINE):
         # This was commented out to fix the issue of visual selections being
         # lost because some keys, like the super key, cause Sublime to lose
         # focus, and when focus comes back it triggers the on_activated() event,
