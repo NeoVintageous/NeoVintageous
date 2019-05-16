@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.14.2 - Unreleased
+## 1.14.2 - 2019-05-16
 
 * Fixed [#550](https://github.com/NeoVintageous/NeoVintageous/issues/550): backslash is converted to `<bslash>` when send to command line by a mapping
 * Fixed [#549](https://github.com/NeoVintageous/NeoVintageous/issues/549): Upward paragraph motion in visual mode not working
