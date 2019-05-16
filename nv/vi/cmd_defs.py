@@ -1431,6 +1431,7 @@ class ViJumpBack(ViOperatorDef):
 
 
 @assign(seqs.CTRL_I, _ACTION_MODES)
+@assign(seqs.TAB, _ACTION_MODES)
 class ViJumpForward(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2513,6 +2514,7 @@ class ViMoveToSoftEol(ViMotionDef):
         }
 
 
+@assign(seqs.G_DOWN, _MOTION_MODES)
 @assign(seqs.GJ, _MOTION_MODES)
 class ViMoveByScreenLineDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -2531,6 +2533,7 @@ class ViMoveByScreenLineDown(ViMotionDef):
         }
 
 
+@assign(seqs.G_UP, _MOTION_MODES)
 @assign(seqs.GK, _MOTION_MODES)
 class ViMoveByScreenLineUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -2857,9 +2860,10 @@ class ViMoveByBigWordEnds(ViMotionDef):
         }
 
 
+@assign(seqs.BACKSPACE, _MOTION_MODES)
+@assign(seqs.CTRL_H, _MOTION_MODES)
 @assign(seqs.H, _MOTION_MODES)
 @assign(seqs.LEFT, _MOTION_MODES)
-@assign(seqs.BACKSPACE, _MOTION_MODES)
 class ViMoveLeftByChars(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
