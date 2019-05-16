@@ -446,25 +446,21 @@ List of available options:
 
                                                            *'vintageous_bell'*
 'vintageous_bell'       string (default "blink")
-        Style of visual bell. The available styles are: blink (default), view,
-        or views.
+        Visual bell style type. Valid values are: blink, view, or views.
 
                                               *'vintageous_bell_color_scheme'*
 'vintageous_bell_color_scheme'
                         string (default "dark")
-        Color scheme to use for visual bells. Two color schemes are provided,
-        a dark and light variant, but you can specify a custom one too:
-        - Packages/NeoVintageous/res/Bell-dark.hidden-color-scheme
-        - Packages/NeoVintageous/res/Bell-light.hidden-color-scheme
+        Visual bell color scheme. Valid values are: "dark", "light", or color
+        scheme path. The color scheme path should be in the format:
+        Packages/Name/name.hidden-color-scheme
 
                                                         *'vintageous_belloff'*
 'vintageous_belloff'    string (default "")
         Specifies for which events the bell (visual blink) will not be rung. It
         is a comma separated list of items. For each item that is present, the
         bell will be silenced.
-
         Currently only the "all" event is supported.
-
         item        meaning when present    ~
         all         All events.
 

@@ -9,41 +9,26 @@
     "highlightedyank_duration": 1000,
 
     // Accepts any of the following:
-    // * fill
-    // * outline
-    // * underline
-    // * squiggly_underline
-    // * stippled_underline
+    // Valid values are: fill, outline, underline, squiggly_underline,
+    // stippled_underline.
     // {not in Vim}
     "highlightedyank_style": "fill",
 
     // Current search style.
-    // Accepts any of the following:
-    // * fill
-    // * outline
-    // * underline
-    // * squiggly_underline
-    // * stippled_underline
+    // Valid values are: fill, outline, underline, squiggly_underline,
+    // stippled_underline.
     // {not in Vim}
     "neovintageous_search_cur_style": "fill",
 
     // Incremental search style.
-    // Accepts any of the following:
-    // * fill
-    // * outline
-    // * underline
-    // * squiggly_underline
-    // * stippled_underline
+    // Valid values are: fill, outline, underline, squiggly_underline,
+    // stippled_underline.
     // {not in Vim}
     "neovintageous_search_inc_style": "fill",
 
     // Search occurences style.
-    // Accepts any of the following:
-    // * fill
-    // * outline
-    // * underline
-    // * squiggly_underline
-    // * stippled_underline
+    // Valid values are: fill, outline, underline, squiggly_underline,
+    // stippled_underline.
     // {not in Vim}
     "neovintageous_search_occ_style": "fill",
 
