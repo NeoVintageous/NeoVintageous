@@ -23,6 +23,7 @@ from sublime import Region
 
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import iter_settings
+from NeoVintageous.nv.vim import is_ex_mode
 
 
 _completion_types = [
@@ -245,7 +246,7 @@ def reset_cmdline_completion_state():
 
 
 def insert_best_cmdline_completion(view, edit):
-    if view.score_selector(0, 'text.excmdline') > 0:
+    if is_ex_mode(view):
         if _is_setting_completion(view):
             _SettingCompletion(view).run(edit)
         elif _is_fs_completion(view):

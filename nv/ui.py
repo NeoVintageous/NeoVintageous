@@ -115,8 +115,6 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
     )
 
     input_panel.set_name('Command-line mode')
-    input_panel.assign_syntax(
-        'Packages/NeoVintageous/res/Command-line mode.sublime-syntax')
 
     _set = input_panel.settings().set
 
@@ -131,6 +129,7 @@ def ui_cmdline_prompt(window, initial_text, on_done, on_change, on_cancel):
     # the race-condition issue described above.
     _set('is_widget', True)
     _set('is_vintageous_widget', True)
+    _set('_nv_ex_mode', True)
 
     _apply_cmdline_panel_settings(input_panel)
 

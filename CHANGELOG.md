@@ -11,6 +11,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<down>` display lines downward (alias of `gj`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `<tab>` go to newer cursor position in jump list (alias of `<C-i>`)
 
+### Fixed
+
+* Fixed [#528](https://github.com/NeoVintageous/NeoVintageous/issues/528): Command-line input has dark bg in adaptive light theme
+
 ## 1.14.2 - 2019-05-16
 
 * Fixed [#550](https://github.com/NeoVintageous/NeoVintageous/issues/550): backslash is converted to `<bslash>` when send to command line by a mapping

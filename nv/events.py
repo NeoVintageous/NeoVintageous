@@ -26,6 +26,7 @@ from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import is_ex_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
@@ -122,7 +123,7 @@ class NeoVintageousEvents(EventListener):
     # listener that is attached to the cmdline view when it is opened. That will
     # avoid the performance overhead of running this event for all views.
     def on_query_completions(self, view, prefix, locations):
-        if view.score_selector(0, 'text.excmdline') == 0:
+        if not is_ex_mode(view):
             return None
 
         if len(prefix) + 1 != view.size():

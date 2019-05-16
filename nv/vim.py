@@ -73,6 +73,10 @@ def is_visual_mode(mode):
     return mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
+def is_ex_mode(view):
+    return view.settings().get('_nv_ex_mode')
+
+
 def _format_message(msg, *args):
     # type: (str, *str) -> str
     if args:
