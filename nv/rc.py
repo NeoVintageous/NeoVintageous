@@ -105,13 +105,6 @@ def _parse_line(line):
                 # translating escaped bar to <bar> into mapping internals.
                 cmdline = cmdline.replace('\\|', '<bar>')
 
-                # To map a backslash, or use a backslash literally in the {rhs},
-                # the special sequence "<bslash>" can be used. This avoids the
-                # need to double backslashes when using nested mappings. See :h
-                # map-backslash. TODO Refactor logic for translating escaped
-                # backslash to <bslash> into mapping internals.
-                cmdline = cmdline.replace('\\', '<bslash>')
-
                 if '|' in cmdline:
                     # Using '|' to separate map commands is currently not supported.
                     raise Exception('E488: Trailing characters: {}'.format(line.rstrip()))
