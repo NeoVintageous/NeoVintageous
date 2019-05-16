@@ -2387,7 +2387,7 @@ class _vi_ga(WindowCommand):
         view = self.window.active_view()
 
         for region in view.sel():
-            c_str = view.substr(region.begin())
+            c_str = view.substr(get_insertion_point_at_b(region))
             c_ord = ord(c_str)
             c_hex = hex(c_ord)
             c_oct = oct(c_ord)

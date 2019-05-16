@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#563](https://github.com/NeoVintageous/NeoVintageous/issues/563): `ga` print the ascii value, in Visual modes
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `<C-h>` `[count]` characters to the left (alias of `h`, `<left>`, and `<BS>`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<up>` display lines upward (alias of `gk`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<down>` display lines downward (alias of `gj`)
