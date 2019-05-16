@@ -1902,7 +1902,7 @@ class StFocusSideBar(ViOperatorDef):
         }
 
 
-@assign(seqs.I, (NORMAL, VISUAL_LINE, SELECT))
+@assign(seqs.I, (NORMAL, SELECT))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1950,7 +1950,7 @@ class ViJumpToDefinition(ViOperatorDef):
         }
 
 
-@assign(seqs.A, (NORMAL, VISUAL_LINE))
+@assign(seqs.A, (NORMAL,))
 class ViInsertAfterChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3209,7 +3209,7 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
         }
 
 
-@assign(seqs.A, (OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
+@assign(seqs.A, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -3229,7 +3229,7 @@ class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
         }
 
 
-@assign(seqs.I, (OPERATOR_PENDING, VISUAL, VISUAL_BLOCK))
+@assign(seqs.I, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)

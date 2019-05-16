@@ -6,7 +6,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#563](https://github.com/NeoVintageous/NeoVintageous/issues/563): `ga` print the ascii value, in Visual modes
+* Added [#559](https://github.com/NeoVintageous/NeoVintageous/issues/559): `i` text object selection in Visual line mode e.g. `ip`, `iw`, `i'`
+* Added [#562](https://github.com/NeoVintageous/NeoVintageous/issues/562): `a` text object selection in Visual line mode e.g. `ap`, `aw`, `a'`
+* Added [#560](https://github.com/NeoVintageous/NeoVintageous/issues/560): `i` text object selection in Visual block mode e.g. `ip`, `iw`, `i'`
+* Added [#561](https://github.com/NeoVintageous/NeoVintageous/issues/561): `a` text object selection in Visual block mode e.g. `ap`, `aw`, `a'`
+* Added [#563](https://github.com/NeoVintageous/NeoVintageous/issues/563): `ga` print the ascii value in Visual modes
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `<C-h>` `[count]` characters to the left (alias of `h`, `<left>`, and `<BS>`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<up>` display lines upward (alias of `gk`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<down>` display lines downward (alias of `gj`)
