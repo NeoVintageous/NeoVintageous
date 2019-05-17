@@ -86,7 +86,20 @@ def _is_insert_mode(view, operator, operand, match_all):
     )
 
 
+def _is_key_enabled(view, operator, operand, match_all):
+    if view.settings().get('vintageous_use_ctrl_keys'):
+        ignored_keys = view.settings().get('vintageous_ignore_keys')
+        if not ignored_keys:
+            return True
+
+        if operand + ',' not in ignored_keys + ',':
+            return True
+
+    return False
+
+
 _query_contexts = {
+    'nv_is_key_enabled': _is_key_enabled,
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
 }
