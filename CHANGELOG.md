@@ -6,14 +6,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#565](https://github.com/NeoVintageous/NeoVintageous/issues/565): `P` in multiple cursor mode
-* Added [#552](https://github.com/NeoVintageous/NeoVintageous/issues/552): `y` in multiple cursor mode
-* Added [#553](https://github.com/NeoVintageous/NeoVintageous/issues/553): `[count]P` Put the text before the cursor `[count]` times
-* Added [#559](https://github.com/NeoVintageous/NeoVintageous/issues/559): `i` text object selection in Visual line mode e.g. `ip`, `iw`, `i'`
-* Added [#562](https://github.com/NeoVintageous/NeoVintageous/issues/562): `a` text object selection in Visual line mode e.g. `ap`, `aw`, `a'`
-* Added [#560](https://github.com/NeoVintageous/NeoVintageous/issues/560): `i` text object selection in Visual block mode e.g. `ip`, `iw`, `i'`
-* Added [#561](https://github.com/NeoVintageous/NeoVintageous/issues/561): `a` text object selection in Visual block mode e.g. `ap`, `aw`, `a'`
-* Added [#563](https://github.com/NeoVintageous/NeoVintageous/issues/563): `ga` print the ascii value in Visual modes
+* Added [#565](https://github.com/NeoVintageous/NeoVintageous/issues/565): `P` put multiple cursor text before the cursor
+* Added [#222](https://github.com/NeoVintageous/NeoVintageous/issues/222): `P` put text before cursor in visual line mode
+* Added [#552](https://github.com/NeoVintageous/NeoVintageous/issues/552): `y` yank selection in multiple cursor mode
+* Added [#553](https://github.com/NeoVintageous/NeoVintageous/issues/553): `[count]P` put the text before the cursor `[count]` times
+* Added [#559](https://github.com/NeoVintageous/NeoVintageous/issues/559): `i` text object selection in visual line mode e.g. `ip`, `iw`, `i'`
+* Added [#562](https://github.com/NeoVintageous/NeoVintageous/issues/562): `a` text object selection in visual line mode e.g. `ap`, `aw`, `a'`
+* Added [#560](https://github.com/NeoVintageous/NeoVintageous/issues/560): `i` text object selection in visual block mode e.g. `ip`, `iw`, `i'`
+* Added [#561](https://github.com/NeoVintageous/NeoVintageous/issues/561): `a` text object selection in visual block mode e.g. `ap`, `aw`, `a'`
+* Added [#563](https://github.com/NeoVintageous/NeoVintageous/issues/563): `ga` print the ascii value in visual modes
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `<C-h>` `[count]` characters to the left (alias of `h`, `<left>`, and `<BS>`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<up>` display lines upward (alias of `gk`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<down>` display lines downward (alias of `gj`)
@@ -21,7 +22,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* Fixed [#222](https://github.com/NeoVintageous/NeoVintageous/issues/222): `P` in Visual line mode
 * Fixed [#554](https://github.com/NeoVintageous/NeoVintageous/issues/554): `dl` should not advance to first non-blank
 * Fixed [#555](https://github.com/NeoVintageous/NeoVintageous/issues/555): `cl` should include trailing whitespace
 * Fixed [#556](https://github.com/NeoVintageous/NeoVintageous/issues/556): `d$` on a blank line should not delete the line
@@ -87,10 +87,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#518](https://github.com/NeoVintageous/NeoVintageous/issues/518): `:his[tory]` command
 * Added [#519](https://github.com/NeoVintageous/NeoVintageous/issues/519): `:noh[lsearch]` command
 * Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `[count]g_`
-* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cge`
-* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cgE`
-* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `dge`
-* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `dgE`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cge` change backward to the end of word `[count]`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `cgE` change backward to the end of WORD `[count]`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `dge` delete backward to the end of word `[count]`
+* Added [#527](https://github.com/NeoVintageous/NeoVintageous/issues/527): `dgE` delete backward to the end of WORD `[count]`
 * Added [#512](https://github.com/NeoVintageous/NeoVintageous/issues/512): `v` in Visual block mode (converts to Visual mode)
 * Added [#511](https://github.com/NeoVintageous/NeoVintageous/issues/511): `V` in Visual block mode (converts to Visual line mode)
 * Added [#510](https://github.com/NeoVintageous/NeoVintageous/issues/510): `$` in Visual block mode
