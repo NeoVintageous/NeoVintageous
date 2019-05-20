@@ -88,6 +88,8 @@ class key_names:
     SPACE_LONG = '<space>'
     TAB = '<tab>'
     UP = '<up>'
+    PAGE_UP = '<pageup>'
+    PAGE_DOWN = '<pagedown>'
 
     F1 = '<f1>'
     F2 = '<f2>'
@@ -119,6 +121,8 @@ class key_names:
         HOME,
         LEFT,
         LESS_THAN,
+        PAGE_DOWN,
+        PAGE_UP,
         RIGHT,
         SPACE,
         SPACE_LONG,

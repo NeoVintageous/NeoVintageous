@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#73](https://github.com/NeoVintageous/NeoVintageous/issues/73): `<PageUp>` scroll window `[count]` pages Backwards (upwards) (alias of `<C-b>`)
+* Added [#73](https://github.com/NeoVintageous/NeoVintageous/issues/73): `<PageDown>` scroll window `[count]` pages Forwards (downwards) (alias of `<C-f>`)
 * Added [#565](https://github.com/NeoVintageous/NeoVintageous/issues/565): `P` put multiple cursor text before the cursor
 * Added [#222](https://github.com/NeoVintageous/NeoVintageous/issues/222): `P` put text before cursor in visual line mode
 * Added [#552](https://github.com/NeoVintageous/NeoVintageous/issues/552): `y` yank selection in multiple cursor mode
