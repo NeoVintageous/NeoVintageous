@@ -36,13 +36,14 @@
 
     {"keys": ["escape"],            "command": "_nv_feed_key",       "args": {"key": "<esc>"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["escape"],            "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}]},
+
     {"keys": ["ctrl+["],            "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    {"keys": ["enter"],             "command": "_nv_feed_key",       "args": {"key": "<cr>"},         "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ctrl+enter"],        "command": "_nv_feed_key",       "args": {"key": "<C-cr>"},       "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["enter"],             "command": "_nv_feed_key",       "args": {"key": "<cr>"},         "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["shift+ctrl+enter"],  "command": "_nv_feed_key",       "args": {"key": "<C-S-cr>"},     "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+enter"],       "command": "_nv_feed_key",       "args": {"key": "<S-cr>"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+space"],       "command": "_nv_feed_key",       "args": {"key": "<S-space>"},    "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["shift+ctrl+enter"],  "command": "_nv_feed_key",       "args": {"key": "<C-S-cr>"},     "context": [{"key": "vi_command_mode_aware"}]},
 
     {"keys": ["shift+ctrl+p"], "command": "_nv_feed_key", "args": {"key": "<C-P>"}, "context": [{"key": "vi_insert_mode_aware"}]},
 
