@@ -22,6 +22,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#567](https://github.com/NeoVintageous/NeoVintageous/issues/567): `ctrl` are not controlled by `'vintageous_use_ctrl_keys'`
 * Fixed [#554](https://github.com/NeoVintageous/NeoVintageous/issues/554): `dl` should not advance to first non-blank
 * Fixed [#555](https://github.com/NeoVintageous/NeoVintageous/issues/555): `cl` should include trailing whitespace
 * Fixed [#556](https://github.com/NeoVintageous/NeoVintageous/issues/556): `d$` on a blank line should not delete the line
