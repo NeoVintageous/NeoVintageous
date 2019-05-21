@@ -332,10 +332,11 @@ class _nv_cmdline_feed_key(TextCommand):
         if self.view.size() == 0:
             raise RuntimeError('expected a non-empty command-line')
 
-        if self.view.size() == 1 and key not in ('<up>', '<C-n>', '<down>', '<C-p>', '<C-c>', '<C-[>', '<tab>'):
+        keys_allow_empty = ('<up>', '<C-n>', '<down>', '<C-p>', '<C-c>', '<C-[>', '<tab>', '<S-tab>')
+        if self.view.size() == 1 and key not in keys_allow_empty:
             return
 
-        if key == '<tab>':
+        if key in ('<tab>', '<S-tab>'):
             insert_best_cmdline_completion(self.view, edit)
 
         elif key in ('<up>', '<C-p>'):
