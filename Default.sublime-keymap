@@ -109,7 +109,6 @@
     {"keys": ["Z"],         "command": "_nv_feed_key", "args": {"key": "Z"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["["],         "command": "_nv_feed_key", "args": {"key": "["},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["\""],        "command": "_nv_feed_key", "args": {"key": "\""},       "context": [{"key": "vi_command_mode_aware"}]},
-    {"keys": ["\""],        "command": "_nv_feed_key", "args": {"key": "`"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["\\"],        "command": "_nv_feed_key", "args": {"key": "<bslash>"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["]"],         "command": "_nv_feed_key", "args": {"key": "]"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["^"],         "command": "_nv_feed_key", "args": {"key": "^"},        "context": [{"key": "vi_command_mode_aware"}]},
