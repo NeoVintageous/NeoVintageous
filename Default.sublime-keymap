@@ -165,7 +165,6 @@
     {"keys": ["ctrl+n"], "command": "_nv_feed_key", "args": {"key": "<C-n>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+o"], "command": "_nv_feed_key", "args": {"key": "<C-o>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+p"], "command": "_nv_feed_key", "args": {"key": "<C-p>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
-    {"keys": ["ctrl+r"], "command": "_nv_feed_key", "args": {"key": "<C-r>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+q"], "command": "_nv_feed_key", "args": {"key": "<C-q>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+r"], "command": "_nv_feed_key", "args": {"key": "<C-r>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+s"], "command": "_nv_feed_key", "args": {"key": "<C-s>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
