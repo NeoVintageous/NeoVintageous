@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#277](https://github.com/NeoVintageous/NeoVintageous/issues/277): Configure Insert Mode by default
 * Added [#49](https://github.com/NeoVintageous/NeoVintageous/issues/49): `<S-Tab>` in ex mode go to previous match auto-complete (alias of `<C-p>`)
 * Added [#73](https://github.com/NeoVintageous/NeoVintageous/issues/73): `<PageUp>` scroll window `[count]` pages Backwards (upwards) (alias of `<C-b>`)
 * Added [#73](https://github.com/NeoVintageous/NeoVintageous/issues/73): `<PageDown>` scroll window `[count]` pages Forwards (downwards) (alias of `<C-f>`)
@@ -17,7 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#562](https://github.com/NeoVintageous/NeoVintageous/issues/562): `a` text object selection in visual line mode e.g. `ap`, `aw`, `a'`
 * Added [#560](https://github.com/NeoVintageous/NeoVintageous/issues/560): `i` text object selection in visual block mode e.g. `ip`, `iw`, `i'`
 * Added [#561](https://github.com/NeoVintageous/NeoVintageous/issues/561): `a` text object selection in visual block mode e.g. `ap`, `aw`, `a'`
-* Added [#563](https://github.com/NeoVintageous/NeoVintageous/issues/563): `ga` print the ascii value in visual modes
+* Added [#563](https://github.com/NeoVintageous/NeoVintageous/issues/563): `ga` print the ASCII value in visual modes
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `<C-h>` `[count]` characters to the left (alias of `h`, `<left>`, and `<BS>`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<up>` display lines upward (alias of `gk`)
 * Added [#551](https://github.com/NeoVintageous/NeoVintageous/issues/551): `g<down>` display lines downward (alias of `gj`)
@@ -25,17 +26,17 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* Fixed [#567](https://github.com/NeoVintageous/NeoVintageous/issues/567): `ctrl` are not controlled by `'vintageous_use_ctrl_keys'`
+* Fixed [#567](https://github.com/NeoVintageous/NeoVintageous/issues/567): some `ctrl` keys are not controlled by `'vintageous_use_ctrl_keys'`
 * Fixed [#554](https://github.com/NeoVintageous/NeoVintageous/issues/554): `dl` should not advance to first non-blank
 * Fixed [#555](https://github.com/NeoVintageous/NeoVintageous/issues/555): `cl` should include trailing whitespace
 * Fixed [#556](https://github.com/NeoVintageous/NeoVintageous/issues/556): `d$` on a blank line should not delete the line
 * Fixed [#557](https://github.com/NeoVintageous/NeoVintageous/issues/557): `c$` should include whitespace
 * Fixed [#558](https://github.com/NeoVintageous/NeoVintageous/issues/558): `d|` should not move to first non-blank
-* Fixed [#528](https://github.com/NeoVintageous/NeoVintageous/issues/528): Command-line input has dark bg in adaptive light theme
+* Fixed [#528](https://github.com/NeoVintageous/NeoVintageous/issues/528): Command-line input has dark background in adaptive light theme
 
 ## 1.14.2 - 2019-05-16
 
-* Fixed [#550](https://github.com/NeoVintageous/NeoVintageous/issues/550): backslash is converted to `<bslash>` when send to command line by a mapping
+* Fixed [#550](https://github.com/NeoVintageous/NeoVintageous/issues/550): backslash is converted to `<bslash>` when sent to command line by a mapping
 * Fixed [#549](https://github.com/NeoVintageous/NeoVintageous/issues/549): Upward paragraph motion in visual mode not working
 
 ## 1.14.1 - 2019-05-14
