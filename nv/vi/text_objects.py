@@ -27,7 +27,6 @@ from sublime import CLASS_WORD_START
 from sublime import IGNORECASE
 from sublime import Region
 
-from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import prev_non_blank
 from NeoVintageous.nv.utils import prev_non_ws
