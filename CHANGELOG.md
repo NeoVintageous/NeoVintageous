@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.15.1 - Unreleased
+
+* Fixed [#569](https://github.com/NeoVintageous/NeoVintageous/issues/569): Repeated object select in visual mode doesn't work consistently
+
 ## 1.15.0 - 2019-05-22
 
 ### Added

@@ -93,6 +93,14 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('x(fi|zz)x', 'v_a' + target, 'x|(fizz)|x')
             self.eq('x(\nfi|zz\n)x', 'v_a' + target, 'x|(\nfizz\n)|x')
             self.eq('x(\n\n  \n    fi|zz\n\n\n)x', 'v_a' + target, 'x|(\n\n  \n    fizz\n\n\n)|x')
+            self.eq('(hello, (w|orl|d))', 'v_a' + target, '(hello, |(world)|)')
+            self.eq('(hello, |(world)|)', 'v_a' + target, '|(hello, (world))|')
+            self.eq('r_(hello, (w|orl|d))', 'v_a' + target, '(hello, |(world)|)')
+            self.eq('r_(hello, |(world)|)', 'v_a' + target, '|(hello, (world))|')
+            self.eq('fizz (hello, |(world)|) buzz', 'v_a' + target, 'fizz |(hello, (world))| buzz')
+            self.eq('(fizz (hello, |(world)|) buzz)', 'v_a' + target, '(fizz |(hello, (world))| buzz)')
+            self.eq('(fizz |(hello, (world))| buzz)', 'v_a' + target, '|(fizz (hello, (world)) buzz)|')
+            self.eq('r_(fizz |(hello, (world))| buzz)', 'v_a' + target, '|(fizz (hello, (world)) buzz)|')
 
     def test_v_i_paren(self):
         for target in ('(', ')', 'b'):
@@ -112,6 +120,16 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
     def test_v_at(self):
         self.eq('x<p>a|bc</p>x', 'v_at', 'x|<p>abc</p>|x')
         self.eq('x<p><b>_</b>a|bc<i>_</i>e</p>x', 'v_at', 'x|<p><b>_</b>abc<i>_</i>e</p>|x')
+        self.eq('x<p>fi|zz bu|zz</p>y', 'v_at', 'x|<p>fizz buzz</p>|y')
+        self.eq('r_x<p>fi|zz bu|zz</p>y', 'v_at', 'x|<p>fizz buzz</p>|y')
+        self.eq('x<div> |<p>fizz buzz</p>| </div>x', 'v_at', 'x|<div> <p>fizz buzz</p> </div>|x')
+        self.eq('r_x<div> |<p>fizz buzz</p>| </div>x', 'v_at', 'x|<div> <p>fizz buzz</p> </div>|x')
+        self.eq('abc<p>fizz|<i>fizz buzz</i>|buzz</p>abc', 'v_at', 'abc|<p>fizz<i>fizz buzz</i>buzz</p>|abc')
+        self.eq('<tag>|<sub>hello world</sub>|</tag>', 'v_at', '|<tag><sub>hello world</sub></tag>|')
+        self.eq('<tag>  |<sub>hello world</sub>|  </tag>', 'v_at', '|<tag>  <sub>hello world</sub>  </tag>|')
+        self.eq('<tag>\n  |<sub>hello world</sub>|\n</tag>', 'v_at', '|<tag>\n  <sub>hello world</sub>\n</tag>|')
+        self.eq('r_<tag>\n  |<sub>hello world</sub>|\n</tag>', 'v_at', '|<tag>\n  <sub>hello world</sub>\n</tag>|')
+        self.eq('xx<tag>\n  |<sub>hello</sub>|\n</tag>xx', 'v_at', 'xx|<tag>\n  <sub>hello</sub>\n</tag>|xx')
 
     def test_v_it(self):
         self.eq('x<p>a|bc</p>x', 'v_it', 'x<p>|abc|</p>x')

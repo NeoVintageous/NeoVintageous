@@ -291,7 +291,7 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         return s
 
     if type_ == TAG:
-        begin_tag, end_tag, _ = find_containing_tag(view, s.b)
+        begin_tag, end_tag, _ = find_containing_tag(view, s.begin())
 
         if not (begin_tag and end_tag):
             return s
@@ -305,9 +305,8 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         return find_paragraph_text_object(view, s, inclusive=inclusive, count=count)
 
     if type_ == BRACKET:
-        b = get_insertion_point_at_b(s)
-        opening = find_prev_lone_bracket(view, b, delims)
-        closing = find_next_lone_bracket(view, b, delims)
+        opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
+        closing = find_next_lone_bracket(view, s.end(), delims)
 
         if not (opening and closing):
             return s
