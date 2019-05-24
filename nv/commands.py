@@ -19,6 +19,7 @@ from functools import partial
 from itertools import chain
 import logging
 import re
+import textwrap
 import time
 import webbrowser
 
@@ -2239,18 +2240,37 @@ class _vi_big_z_big_z(WindowCommand):
         do_ex_command(self.window, 'exit')
 
 
+def _get_indent(view, level):
+    # type: (...) -> str
+    translate = view.settings().get('translate_tabs_to_spaces')
+    tab_size = int(view.settings().get('tab_size'))
+    tab_text = ' ' * tab_size if translate else '\t'
+
+    return tab_text * level
+
+
+def _indent_text(view, text, sel):
+    # type: (...) -> str
+    indentation_level = view.indentation_level(get_insertion_point_at_b(sel))
+
+    return textwrap.indent(
+        textwrap.dedent(text),
+        _get_indent(view, indentation_level)
+    )
+
+
 class _vi_big_p(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=1, register=None):
+    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False):
         contents, linewise = self.state.registers.get_for_big_p(register, mode)
         if not contents:
             return status_message('E353: Nothing in register ' + register)
 
         sels = list(self.view.sel())
 
-        # Multiple cursor content is concatinated into one string when the
-        # selection count is one, but if the selection count and content count
-        # are greater than one and not equal an error bell is rung.
+        # The register contents are concatenated into one string when the
+        # current selection count is 1; otherwise if the register content count
+        # is not equal to the current selection count a bell is rung.
 
         if len(sels) > 1 and len(contents) != len(sels):
             return ui_bell()
@@ -2264,6 +2284,13 @@ class _vi_big_p(ViTextCommandBase):
             self.view.sel().clear()
 
             for text, sel in contents:
+                if adjust_indent:
+                    text = _indent_text(self.view, text, sel)
+                    if text[-1] != '\n':
+                        text += '\n'
+
+                    linewise = True
+
                 text *= count
 
                 # If register content is from a linewise operation, then the cursor
@@ -2315,52 +2342,61 @@ class _vi_big_p(ViTextCommandBase):
 
 class _vi_p(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=1, register=None):
+    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False):
         state = self.state
 
-        register_values, linewise = state.registers.get_for_p(register, state.mode)
-        if not register_values:
+        contents, linewise = state.registers.get_for_p(register, state.mode)
+        if not contents:
             return status_message('E353: Nothing in register ' + register)
 
         sels = list(self.view.sel())
+
         # If we have the same number of pastes and selections, map 1:1,
         # otherwise paste paste[0] to all target selections.
-        if len(sels) == len(register_values):
-            sel_to_frag_mapped = zip(sels, register_values)
-        else:
-            sel_to_frag_mapped = zip(sels, [register_values[0], ] * len(sels))
 
-        # FIXME: Fix this mess. Separate linewise from charwise pasting.
-        pasting_linewise = True
+        if len(sels) == len(contents):
+            contents = zip(sels, contents)
+        else:
+            contents = zip(sels, [contents[0], ] * len(sels))
+
+        linewise = True
         offset = 0
-        paste_locations = []
-        for selection, fragment in reversed(list(sel_to_frag_mapped)):
-            fragment = self.prepare_fragment(fragment)
-            if fragment.startswith('\n'):
-                # Pasting linewise...
-                # If pasting at EOL or BOL, make sure we paste before the newline character.
-                if (is_at_eol(self.view, selection) or is_at_bol(self.view, selection)):
-                    pa = self.paste_all(edit, selection, self.view.line(selection.b).b, fragment, count)
-                    paste_locations.append(pa)
-                else:
-                    pa = self.paste_all(edit, selection, self.view.line(selection.b - 1).b, fragment, count)
-                    paste_locations.append(pa)
-            else:
-                pasting_linewise = False
-                # Pasting charwise...
-                # If pasting at EOL, make sure we don't paste after the newline character.
-                if self.view.substr(selection.b) == '\n':
-                    pa = self.paste_all(edit, selection, selection.b + offset, fragment, count)
-                    paste_locations.append(pa)
-                else:
-                    pa = self.paste_all(edit, selection, selection.b + offset + 1, fragment, count)
-                    paste_locations.append(pa)
-                offset += len(fragment) * count
+        locations = []
+        for sel, text in reversed(list(contents)):
+            if not is_visual_mode(mode):
+                if adjust_indent:
+                    text = _indent_text(self.view, text, sel)
+                    if text[-1] != '\n':
+                        text += '\n'
 
-        if pasting_linewise:
-            self.reset_carets_linewise(paste_locations)
+                    linewise = True
+
+            text = self.prepare_fragment(text)
+            if text.startswith('\n'):
+                # Pasting linewise... If pasting at EOL or BOL, make sure we
+                # paste before the newline character.
+                if (is_at_eol(self.view, sel) or is_at_bol(self.view, sel)):
+                    pa = self.paste_all(edit, sel, self.view.line(sel.b).b, text, count)
+                    locations.append(pa)
+                else:
+                    pa = self.paste_all(edit, sel, self.view.line(sel.b - 1).b, text, count)
+                    locations.append(pa)
+            else:
+                linewise = False
+                # Pasting charwise... If pasting at EOL, make sure we don't
+                # paste after the newline character.
+                if self.view.substr(sel.b) == '\n':
+                    pa = self.paste_all(edit, sel, sel.b + offset, text, count)
+                    locations.append(pa)
+                else:
+                    pa = self.paste_all(edit, sel, sel.b + offset + 1, text, count)
+                    locations.append(pa)
+                offset += len(text) * count
+
+        if linewise:
+            self.reset_carets_linewise(locations)
         else:
-            self.reset_carets_charwise(paste_locations, len(fragment))
+            self.reset_carets_charwise(locations, len(text))
 
         enter_normal_mode(self.view, mode)
 

@@ -1412,6 +1412,8 @@ _SEQ2CMD = {
     'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
+    '[P':           {'command': '_vi_big_p', 'args': {'register': '"', 'adjust_indent': True}},  # noqa: E241
+    ']P':           {'command': '_vi_p', 'args': {'register': '"', 'adjust_indent': True}},  # noqa: E241
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
     'q':            {'command': '_vi_q'},  # noqa: E241

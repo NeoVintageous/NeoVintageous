@@ -897,6 +897,48 @@ class ViPasteBefore(ViOperatorDef):
         }
 
 
+@assign(seqs.RIGHT_SQUARE_BRACKET_BIG_P, _ACTION_MODES)
+@assign(seqs.RIGHT_SQUARE_BRACKET_P, _ACTION_MODES)
+class ViPasteAfterAndIndent(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_indent': True
+            }
+        }
+
+
+@assign(seqs.LEFT_SQUARE_BRACKET_BIG_P, _ACTION_MODES)
+@assign(seqs.LEFT_SQUARE_BRACKET_P, _ACTION_MODES)
+class ViPasteBeforeAndIndent(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_big_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_indent': True
+            }
+        }
+
+
 @assign(seqs.BIG_X, _ACTION_MODES)
 class ViLeftDeleteChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
