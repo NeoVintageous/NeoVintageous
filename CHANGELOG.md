@@ -4,6 +4,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.16.0 - Unreleased
 
+### Added
+
+* Added [#575](https://github.com/NeoVintageous/NeoVintageous/issues/575): `x` delete characters under cursor (multi cursor mode)
+
+### Fixed
+
 * Fixed [#573](https://github.com/NeoVintageous/NeoVintageous/issues/573): `P` in visual line mode characterwise should preserve trailing newline
 * Fixed [#572](https://github.com/NeoVintageous/NeoVintageous/issues/572): `P` in visual line mode should leave cursor at start of selection
 

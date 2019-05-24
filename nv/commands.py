@@ -1988,7 +1988,7 @@ class _vi_x(ViTextCommandBase):
 
             return s
 
-        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
+        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL, SELECT):
             enter_normal_mode(self.view, mode)
             ui_bell()
             return
