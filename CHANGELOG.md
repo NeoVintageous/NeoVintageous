@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.15.1 - Unreleased
+## 1.15.1 - 2019-05-24
 
 * Fixed [#440](https://github.com/NeoVintageous/NeoVintageous/issues/440): Use setting `'vintageous_clear_auto_indent_on_esc'` to preserve leading whitespace on `<Esc>`
 * Fixed [#569](https://github.com/NeoVintageous/NeoVintageous/issues/569): Repeated object select in visual mode doesn't work consistently
