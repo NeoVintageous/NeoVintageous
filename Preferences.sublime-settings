@@ -49,6 +49,11 @@
     // https://vimhelp.org/options.txt.html#%27belloff%27
     "vintageous_belloff": "",
 
+    // If you do not type anything on a new line e.g. pressing <Esc> after "o"
+    // or "O", the indent is deleted again. To preserve the leading whitespace
+    // on after pressing <esc> set this setting to false.
+    "vintageous_clear_auto_indent_on_esc": true,
+
     // Default mode to use when activating or switching views.
     // Valid values are: "insert"
     //
