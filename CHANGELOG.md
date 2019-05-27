@@ -6,6 +6,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `J` go to last child (sidebar mode)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to parent (sidebar mode)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to root (sidebar mode)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `q` close the sidebar (sidebar mode)
 * Added [#575](https://github.com/NeoVintageous/NeoVintageous/issues/575): `x` delete characters under cursor (multi cursor mode)
 
 ### Fixed
