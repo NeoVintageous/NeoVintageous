@@ -169,7 +169,9 @@
     {"keys": ["ctrl+w"], "command": "delete_word",        "args": {"forward": false},      "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+x"], "command": "_nv_feed_key",       "args": {"key": "<C-x>"},        "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
+    {"keys": ["ctrl+down"], "command": "_nv_feed_key", "args": {"key": "<C-down>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+enter"], "command": "_nv_feed_key", "args": {"key": "<C-cr>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+up"], "command": "_nv_feed_key", "args": {"key": "<C-up>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
     {"keys": ["ctrl+."], "command": "_nv_feed_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+0"], "command": "_nv_feed_key", "args": {"key": "<C-0>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},

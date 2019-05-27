@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#577](https://github.com/NeoVintageous/NeoVintageous/issues/577): `<C-Down>` (alias of `j` and `<down>`) can now be mapped
+* Added [#576](https://github.com/NeoVintageous/NeoVintageous/issues/576): `<C-Up>` (alias of `k` and `<up>`) can now be mapped
 * Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `J` go to last child (sidebar mode)
 * Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to parent (sidebar mode)
 * Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to root (sidebar mode)
