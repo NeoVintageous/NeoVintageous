@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#578](https://github.com/NeoVintageous/NeoVintageous/issues/578): Support trailing sequences in command mappings
 * Added [#577](https://github.com/NeoVintageous/NeoVintageous/issues/577): `<C-Down>` (alias of `j` and `<down>`) can now be mapped
 * Added [#576](https://github.com/NeoVintageous/NeoVintageous/issues/576): `<C-Up>` (alias of `k` and `<up>`) can now be mapped
 * Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `J` go to last child (sidebar mode)

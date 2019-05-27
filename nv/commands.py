@@ -562,16 +562,41 @@ class _nv_feed_key(ViWindowCommandBase):
                 _log.info('user mapping %s -> %s', command.lhs, rhs)
 
                 if ':' in rhs:
-                    # Supports mappings in the form: sequence and command
-                    # separated by a colon. The sequence is optional e.g.
-                    # ':sort<CR>', 'vi]:sort u<CR>'. The keys up to the first
-                    # colon character are processed separately from the command.
-                    colon_pos = rhs.find(':')
-                    keys = rhs[:colon_pos]
-                    if keys:
-                        self.window.run_command('_nv_process_notation', {'keys': keys, 'check_user_mappings': False})
 
-                    do_ex_user_cmdline(self.window, rhs[colon_pos:])
+                    # This hacky piece of code (needs refactoring), is to
+                    # support mappings in the format of {seq}:{ex-cmd}<CR>{seq},
+                    # where leading and trailing sequences are optional.
+                    #
+                    # Examples:
+                    #
+                    # * :sort<CR>
+                    # * vi]:sort u<CR>
+                    # * vi]:sort u<CR>vi]y<Esc>
+
+                    colon_pos = rhs.find(':')
+                    leading = rhs[:colon_pos]
+                    rhs = rhs[colon_pos:]
+
+                    cr_pos = rhs.lower().find('<cr>')
+                    if cr_pos == -1:
+                        status_message('invalid malformed mapping')
+                        return
+
+                    command = rhs[:cr_pos + 4]
+                    trailing = rhs[cr_pos + 4:]
+
+                    _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
+
+                    if leading:
+                        self.window.run_command('_nv_process_notation', {
+                            'keys': leading, 'check_user_mappings': False})
+
+                    do_ex_user_cmdline(self.window, command)
+
+                    if trailing:
+                        self.window.run_command('_nv_process_notation', {
+                            'keys': trailing, 'check_user_mappings': False})
+
                 else:
                     self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
 
