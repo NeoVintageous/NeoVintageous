@@ -2,6 +2,11 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.16.0 - Unreleased
+
+* Fixed [#573](https://github.com/NeoVintageous/NeoVintageous/issues/573): `P` in visual line mode characterwise should preserve trailing newline
+* Fixed [#572](https://github.com/NeoVintageous/NeoVintageous/issues/572): `P` in visual line mode should leave cursor at start of selection
+
 ## 1.15.1 - 2019-05-24
 
 * Fixed [#440](https://github.com/NeoVintageous/NeoVintageous/issues/440): Use setting `'vintageous_clear_auto_indent_on_esc'` to preserve leading whitespace on `<Esc>`

@@ -371,10 +371,10 @@ class Registers:
         if not register:
             register = _UNNAMED
 
-        filtered = []
-
         values = self._get(register)
         linewise = _is_register_linewise(register)
+
+        filtered = []
 
         if values:
             # Populate unnamed register with the text we're about to paste into
@@ -386,11 +386,15 @@ class Registers:
                     self._set(_UNNAMED, current_content, linewise=(mode == VISUAL_LINE))
 
             for value in values:
-                if value and linewise and mode == VISUAL and value[0] != '\n':
-                    value = '\n' + value
+                if mode == VISUAL:
+                    if linewise and value and value[0] != '\n':
+                        value = '\n' + value
 
-                if mode == VISUAL_LINE and value[-1] != '\n':
-                    value = value + '\n'
+                if mode == VISUAL_LINE:
+                    # Pasting characterwise content in visual line mode needs an
+                    # extra newline to account for visual line eol newline.
+                    if not linewise:
+                        value += '\n'
 
                 filtered.append(value)
 

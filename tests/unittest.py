@@ -253,6 +253,9 @@ class ViewTestCase(unittest.TestCase):
             registers._data[name] = value
             registers._linewise[name] = linewise
 
+    def registerLinewise(self, name, value=None):
+        self.register(name, value, linewise=True)
+
     def resetRegisters(self):
         registers._reset_data()
 
@@ -426,6 +429,9 @@ class ViewTestCase(unittest.TestCase):
             name = name[0]
 
         self._assertRegister(name, expected, linewise, msg)
+
+    def assertLinewiseRegister(self, name, expected=None, msg=None):
+        self.assertRegister(name, expected, linewise=True, msg=msg)
 
     def assertRegisterEmpty(self, name, linewise=False, msg=None):
         self._assertRegister(name, None, linewise, msg)

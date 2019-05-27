@@ -48,25 +48,25 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('"fizz\nbuzz\n')
 
     def test_P_paste_linewise_content(self):
-        self.register('"abc\n', linewise=True)
+        self.registerLinewise('"abc\n')
         self.eq('x\ny|z', 'P', 'x\n|abc\nyz')
-        self.assertRegister('"abc\n', linewise=True)
+        self.assertLinewiseRegister('"abc\n')
         self.eq('a\n|b\nc', '3P', 'a\n|abc\nabc\nabc\nb\nc')
 
     def test_P_paste_linewise_content_multiline(self):
-        self.register('"fizz\nbuzz\n', linewise=True)
+        self.registerLinewise('"fizz\nbuzz\n')
         self.eq('x\ny|z', 'P', 'x\n|fizz\nbuzz\nyz')
-        self.assertRegister('"fizz\nbuzz\n', linewise=True)
+        self.assertLinewiseRegister('"fizz\nbuzz\n')
 
     def test_P_paste_linewise_content_puts_cursor_on_first_non_whitespace_character(self):
-        self.register('"    abc\n', linewise=True)
+        self.registerLinewise('"    abc\n')
         self.eq('x\ny|z', 'P', 'x\n    |abc\nyz')
-        self.assertRegister('"    abc\n', linewise=True)
+        self.assertLinewiseRegister('"    abc\n')
 
     def test_P_paste_linewise_content_puts_cursor_on_first_non_whitespace_character_multiline(self):
-        self.register('"    fizz\n    buzz\n', linewise=True)
+        self.registerLinewise('"    fizz\n    buzz\n')
         self.eq('x\ny|z', 'P', 'x\n    |fizz\n    buzz\nyz')
-        self.assertRegister('"    fizz\n    buzz\n', linewise=True)
+        self.assertLinewiseRegister('"    fizz\n    buzz\n')
 
     def test_v_P_paste_characterwise_content(self):
         self.register('"abc')
@@ -79,12 +79,12 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('"456')
 
     def test_v_P_paste_linewise_content(self):
-        self.register('"abc\n', linewise=True)
+        self.registerLinewise('"abc\n')
         self.eq('x|456|y', 'v_P', 'n_x\n|abc\ny')
         self.assertRegister('"456')
 
     def test_v_P_paste_linewise_content_puts_cursor_on_first_non_whitespace_character(self):
-        self.register('"    abc\n', linewise=True)
+        self.registerLinewise('"    abc\n')
         self.eq('x|456|y', 'v_P', 'n_x\n    |abc\ny')
         self.assertRegister('"456')
 
@@ -123,3 +123,20 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_nothing_in_register(self):
         self.eq('fi|zz', 'P', 'fi|zz')
         self.assertStatusMessage('E353: Nothing in register "')
+
+    def test_V(self):
+        self.register('"', 'fizz')
+        self.eq('one\n|two\n|three', 'l_P', 'n_one\n|fizz\nthree')
+        self.assertLinewiseRegister('"two\n')
+        self.register('"', 'fizz')
+        self.eq('one\n|    1234567890\n|three', 'l_P', 'n_one\n|fizz\nthree')
+        self.register('"', '    fizz')
+        self.eq('one\n|  foo  \n|three', 'l_P', 'n_one\n    |fizz\nthree')
+        self.eq('one\n|xxx\n|three', 'l_P', 'n_one\n  |foo  \nthree')
+        self.registerLinewise('"', 'fizz\n')
+        self.eq('one\n|xxx\n|three', 'l_P', 'n_one\n|fizz\nthree')
+        self.registerLinewise('"', '  fizz\n')
+        self.eq('one\n|xxx\n|three', 'l_P', 'n_one\n  |fizz\nthree')
+        self.assertLinewiseRegister('"xxx\n')
+        self.register('"', '  fizz\n')
+        self.eq('one\n|xxx\n|three', 'l_P', 'n_one\n  |fizz\n\nthree')

@@ -2266,8 +2266,13 @@ class _vi_big_p(ViTextCommandBase):
             enter_normal_mode(self.view, mode)
 
         elif mode in (VISUAL, VISUAL_LINE):
+            new_sels = []
             for text, sel in contents:
                 self.view.replace(edit, sel, text)
+
+                if mode == VISUAL_LINE:
+                    new_sels.append(next_non_blank(self.view, sel.begin()))
+
                 enter_normal_mode(self.view, mode)
 
                 # If register content is linewise, then the cursor is put on the
@@ -2277,6 +2282,10 @@ class _vi_big_p(ViTextCommandBase):
                         return Region(next_non_blank(view, view.line(s).a))
 
                     regions_transformer(self.view, f)
+
+            if new_sels:
+                self.view.sel().clear()
+                self.view.sel().add_all(new_sels)
 
 
 class _vi_p(ViTextCommandBase):
