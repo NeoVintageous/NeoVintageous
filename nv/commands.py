@@ -2261,7 +2261,7 @@ def _indent_text(view, text, sel):
 
 class _vi_big_p(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False):
+    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
         contents, linewise = self.state.registers.get_for_big_p(register, mode)
         if not contents:
             return status_message('E353: Nothing in register ' + register)
@@ -2300,19 +2300,28 @@ class _vi_big_p(ViTextCommandBase):
                     row = self.view.rowcol(self.view.line(sel.a).a)[0]
                     pt = self.view.text_point(row, 0)
                     self.view.insert(edit, pt, text)
-                    pt = next_non_blank(self.view, pt)
+
+                    if adjust_cursor:
+                        pt = pt + len(text) + 1
+                    else:
+                        pt = next_non_blank(self.view, pt)
+
                     self.view.sel().add(pt)
 
                 # If register is charactwise but contains a newline, then the cursor
                 # is put at the start of of the text pasted, otherwise the cursor is
                 # put on the last character of the text pasted.
                 else:
-                    if '\n' in text:
-                        pt = sel.a
-                    else:
-                        pt = sel.a + len(text) - 1
-
                     self.view.insert(edit, sel.a, text)
+
+                    if adjust_cursor:
+                        pt = sel.a + len(text)
+                    else:
+                        if '\n' in text:
+                            pt = sel.a
+                        else:
+                            pt = sel.a + len(text) - 1
+
                     self.view.sel().add(pt)
 
             enter_normal_mode(self.view, mode)
@@ -2342,7 +2351,7 @@ class _vi_big_p(ViTextCommandBase):
 
 class _vi_p(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False):
+    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
         state = self.state
 
         contents, linewise = state.registers.get_for_p(register, state.mode)
@@ -2394,24 +2403,27 @@ class _vi_p(ViTextCommandBase):
                 offset += len(text) * count
 
         if linewise:
-            self.reset_carets_linewise(locations)
+            self.reset_carets_linewise(locations, adjust_cursor)
         else:
-            self.reset_carets_charwise(locations, len(text))
+            self.reset_carets_charwise(locations, len(text), adjust_cursor)
 
         enter_normal_mode(self.view, mode)
 
-    def reset_carets_charwise(self, pts, paste_len):
+    def reset_carets_charwise(self, pts, paste_len, adjust_cursor):
         # FIXME: Won't work for multiple jagged pastes...
         b_pts = [s.b for s in list(self.view.sel())]
         if len(b_pts) > 1:
             self.view.sel().clear()
-            self.view.sel().add_all([Region(ploc + paste_len - 1, ploc + paste_len - 1)
-                                    for ploc in pts])
+            self.view.sel().add_all([Region(ploc + paste_len - 1) for ploc in pts])
         else:
             self.view.sel().clear()
-            self.view.sel().add(Region(pts[0] + paste_len - 1, pts[0] + paste_len - 1))
+            pt = pts[0] + paste_len
+            if not adjust_cursor:
+                pt -= 1
 
-    def reset_carets_linewise(self, pts):
+            self.view.sel().add(pt)
+
+    def reset_carets_linewise(self, pts, adjust_cursor):
         self.view.sel().clear()
 
         if self.state.mode == VISUAL_LINE:

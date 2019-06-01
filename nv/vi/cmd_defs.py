@@ -939,6 +939,46 @@ class ViPasteBeforeAndIndent(ViOperatorDef):
         }
 
 
+@assign(seqs.GP, _ACTION_MODES)
+class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_cursor': True
+            }
+        }
+
+
+@assign(seqs.G_BIG_P, _ACTION_MODES)
+class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_big_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_cursor': True
+            }
+        }
+
+
 @assign(seqs.BIG_X, _ACTION_MODES)
 class ViLeftDeleteChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):

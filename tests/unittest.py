@@ -1365,6 +1365,8 @@ _SEQ2CMD = {
     'gk':           {'command': '_vi_gk'},  # noqa: E241
     'gN':           {'command': '_vi_search', 'args': {'forward': False}},  # noqa: E241
     'gn':           {'command': '_vi_search'},  # noqa: E241
+    'gP':           {'command': '_vi_big_p', 'args': {'register': '"', 'adjust_cursor': True}},  # noqa: E241
+    'gp':           {'command': '_vi_p', 'args': {'register': '"', 'adjust_cursor': True}},  # noqa: E241
     'gq':           {'command': '_vi_gq'},  # noqa: E241
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501

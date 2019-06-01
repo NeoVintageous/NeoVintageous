@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#48](https://github.com/NeoVintageous/NeoVintageous/issues/48): `gP` just like `P`, but leave the cursor just after the new text
+* Added [#48](https://github.com/NeoVintageous/NeoVintageous/issues/48): `gp` just like `p`, but leave the cursor just after the new text
 * Added [#339](https://github.com/NeoVintageous/NeoVintageous/issues/339): `[p` and `[P` like `P`, but adjust the indent to current line
 * Added [#339](https://github.com/NeoVintageous/NeoVintageous/issues/339): `]p` and `]P` like `p`, but adjust the indent to current line
 * Added [#578](https://github.com/NeoVintageous/NeoVintageous/issues/578): Support trailing sequences in command mappings
