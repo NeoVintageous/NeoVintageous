@@ -253,6 +253,9 @@ class ViewTestCase(unittest.TestCase):
             registers._data[name] = value
             registers._linewise[name] = linewise
 
+    def registerLinewise(self, name, value=None):
+        self.register(name, value, linewise=True)
+
     def resetRegisters(self):
         registers._reset_data()
 
@@ -426,6 +429,9 @@ class ViewTestCase(unittest.TestCase):
             name = name[0]
 
         self._assertRegister(name, expected, linewise, msg)
+
+    def assertLinewiseRegister(self, name, expected=None, msg=None):
+        self.assertRegister(name, expected, linewise=True, msg=msg)
 
     def assertRegisterEmpty(self, name, linewise=False, msg=None):
         self._assertRegister(name, None, linewise, msg)
@@ -1359,6 +1365,8 @@ _SEQ2CMD = {
     'gk':           {'command': '_vi_gk'},  # noqa: E241
     'gN':           {'command': '_vi_search', 'args': {'forward': False}},  # noqa: E241
     'gn':           {'command': '_vi_search'},  # noqa: E241
+    'gP':           {'command': '_vi_big_p', 'args': {'register': '"', 'adjust_cursor': True}},  # noqa: E241
+    'gp':           {'command': '_vi_p', 'args': {'register': '"', 'adjust_cursor': True}},  # noqa: E241
     'gq':           {'command': '_vi_gq'},  # noqa: E241
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
@@ -1406,6 +1414,8 @@ _SEQ2CMD = {
     'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
+    '[P':           {'command': '_vi_big_p', 'args': {'register': '"', 'adjust_indent': True}},  # noqa: E241
+    ']P':           {'command': '_vi_p', 'args': {'register': '"', 'adjust_indent': True}},  # noqa: E241
     'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
     'q':            {'command': '_vi_q'},  # noqa: E241

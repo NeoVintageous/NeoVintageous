@@ -19,6 +19,7 @@ from functools import partial
 from itertools import chain
 import logging
 import re
+import textwrap
 import time
 import webbrowser
 
@@ -78,8 +79,6 @@ from NeoVintageous.nv.utils import get_search_regions
 from NeoVintageous.nv.utils import gluing_undo_groups
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
-from NeoVintageous.nv.utils import is_at_bol
-from NeoVintageous.nv.utils import is_at_eol
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import new_inclusive_region
@@ -562,16 +561,41 @@ class _nv_feed_key(ViWindowCommandBase):
                 _log.info('user mapping %s -> %s', command.lhs, rhs)
 
                 if ':' in rhs:
-                    # Supports mappings in the form: sequence and command
-                    # separated by a colon. The sequence is optional e.g.
-                    # ':sort<CR>', 'vi]:sort u<CR>'. The keys up to the first
-                    # colon character are processed separately from the command.
-                    colon_pos = rhs.find(':')
-                    keys = rhs[:colon_pos]
-                    if keys:
-                        self.window.run_command('_nv_process_notation', {'keys': keys, 'check_user_mappings': False})
 
-                    do_ex_user_cmdline(self.window, rhs[colon_pos:])
+                    # This hacky piece of code (needs refactoring), is to
+                    # support mappings in the format of {seq}:{ex-cmd}<CR>{seq},
+                    # where leading and trailing sequences are optional.
+                    #
+                    # Examples:
+                    #
+                    # * :sort<CR>
+                    # * vi]:sort u<CR>
+                    # * vi]:sort u<CR>vi]y<Esc>
+
+                    colon_pos = rhs.find(':')
+                    leading = rhs[:colon_pos]
+                    rhs = rhs[colon_pos:]
+
+                    cr_pos = rhs.lower().find('<cr>')
+                    if cr_pos == -1:
+                        status_message('invalid malformed mapping')
+                        return
+
+                    command = rhs[:cr_pos + 4]
+                    trailing = rhs[cr_pos + 4:]
+
+                    _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
+
+                    if leading:
+                        self.window.run_command('_nv_process_notation', {
+                            'keys': leading, 'check_user_mappings': False})
+
+                    do_ex_user_cmdline(self.window, command)
+
+                    if trailing:
+                        self.window.run_command('_nv_process_notation', {
+                            'keys': trailing, 'check_user_mappings': False})
+
                 else:
                     self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
 
@@ -1988,7 +2012,7 @@ class _vi_x(ViTextCommandBase):
 
             return s
 
-        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL):
+        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, INTERNAL_NORMAL, SELECT):
             enter_normal_mode(self.view, mode)
             ui_bell()
             return
@@ -2214,18 +2238,37 @@ class _vi_big_z_big_z(WindowCommand):
         do_ex_command(self.window, 'exit')
 
 
+def _get_indent(view, level):
+    # type: (...) -> str
+    translate = view.settings().get('translate_tabs_to_spaces')
+    tab_size = int(view.settings().get('tab_size'))
+    tab_text = ' ' * tab_size if translate else '\t'
+
+    return tab_text * level
+
+
+def _indent_text(view, text, sel):
+    # type: (...) -> str
+    indentation_level = view.indentation_level(get_insertion_point_at_b(sel))
+
+    return textwrap.indent(
+        textwrap.dedent(text),
+        _get_indent(view, indentation_level)
+    )
+
+
 class _vi_big_p(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=1, register=None):
+    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
         contents, linewise = self.state.registers.get_for_big_p(register, mode)
         if not contents:
             return status_message('E353: Nothing in register ' + register)
 
         sels = list(self.view.sel())
 
-        # Multiple cursor content is concatinated into one string when the
-        # selection count is one, but if the selection count and content count
-        # are greater than one and not equal an error bell is rung.
+        # The register contents are concatenated into one string when the
+        # current selection count is 1; otherwise if the register content count
+        # is not equal to the current selection count a bell is rung.
 
         if len(sels) > 1 and len(contents) != len(sels):
             return ui_bell()
@@ -2239,35 +2282,61 @@ class _vi_big_p(ViTextCommandBase):
             self.view.sel().clear()
 
             for text, sel in contents:
+                if adjust_indent:
+                    text = _indent_text(self.view, text, sel)
+                    if text[-1] != '\n':
+                        text += '\n'
+
+                    linewise = True
+
                 text *= count
 
                 # If register content is from a linewise operation, then the cursor
                 # is put on the first non-blank character of the first line of the
                 # content after the content is inserted.
                 if linewise:
-                    row = self.view.rowcol(self.view.line(sel.a).a)[0]
+                    line = self.view.line(sel.a)
+                    row = self.view.rowcol(line.a)[0]
                     pt = self.view.text_point(row, 0)
+
                     self.view.insert(edit, pt, text)
-                    pt = next_non_blank(self.view, pt)
+
+                    if adjust_cursor:
+                        pt += len(text) + 1
+                    else:
+                        pt = next_non_blank(self.view, pt)
+
                     self.view.sel().add(pt)
 
                 # If register is charactwise but contains a newline, then the cursor
                 # is put at the start of of the text pasted, otherwise the cursor is
                 # put on the last character of the text pasted.
                 else:
-                    if '\n' in text:
-                        pt = sel.a
-                    else:
-                        pt = sel.a + len(text) - 1
+                    pt = sel.a
 
-                    self.view.insert(edit, sel.a, text)
+                    self.view.insert(edit, pt, text)
+
+                    if adjust_cursor:
+                        pt += len(text)
+                    elif '\n' not in text:
+                        pt += len(text) - 1
+
                     self.view.sel().add(pt)
 
             enter_normal_mode(self.view, mode)
 
         elif mode in (VISUAL, VISUAL_LINE):
+            new_sels = []
             for text, sel in contents:
                 self.view.replace(edit, sel, text)
+
+                if mode == VISUAL:
+                    if '\n' in text and not linewise:
+                        new_sels.append(sel.begin())
+
+                elif mode == VISUAL_LINE:
+                    new_sels.append(next_non_blank(self.view, sel.begin()))
+
                 enter_normal_mode(self.view, mode)
 
                 # If register content is linewise, then the cursor is put on the
@@ -2278,111 +2347,103 @@ class _vi_big_p(ViTextCommandBase):
 
                     regions_transformer(self.view, f)
 
+            if new_sels:
+                self.view.sel().clear()
+                self.view.sel().add_all(new_sels)
+
 
 class _vi_p(ViTextCommandBase):
 
-    def run(self, edit, mode=None, count=1, register=None):
-        state = self.state
-
-        register_values, linewise = state.registers.get_for_p(register, state.mode)
-        if not register_values:
+    def run(self, edit, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
+        contents, linewise = self.state.registers.get_for_p(register, mode)
+        if not contents:
             return status_message('E353: Nothing in register ' + register)
 
         sels = list(self.view.sel())
-        # If we have the same number of pastes and selections, map 1:1,
-        # otherwise paste paste[0] to all target selections.
-        if len(sels) == len(register_values):
-            sel_to_frag_mapped = zip(sels, register_values)
-        else:
-            sel_to_frag_mapped = zip(sels, [register_values[0], ] * len(sels))
 
-        # FIXME: Fix this mess. Separate linewise from charwise pasting.
-        pasting_linewise = True
-        offset = 0
-        paste_locations = []
-        for selection, fragment in reversed(list(sel_to_frag_mapped)):
-            fragment = self.prepare_fragment(fragment)
-            if fragment.startswith('\n'):
-                # Pasting linewise...
-                # If pasting at EOL or BOL, make sure we paste before the newline character.
-                if (is_at_eol(self.view, selection) or is_at_bol(self.view, selection)):
-                    pa = self.paste_all(edit, selection, self.view.line(selection.b).b, fragment, count)
-                    paste_locations.append(pa)
-                else:
-                    pa = self.paste_all(edit, selection, self.view.line(selection.b - 1).b, fragment, count)
-                    paste_locations.append(pa)
-            else:
-                pasting_linewise = False
-                # Pasting charwise...
-                # If pasting at EOL, make sure we don't paste after the newline character.
-                if self.view.substr(selection.b) == '\n':
-                    pa = self.paste_all(edit, selection, selection.b + offset, fragment, count)
-                    paste_locations.append(pa)
-                else:
-                    pa = self.paste_all(edit, selection, selection.b + offset + 1, fragment, count)
-                    paste_locations.append(pa)
-                offset += len(fragment) * count
+        # The register contents are concatenated into one string when the
+        # current selection count is 1; otherwise if the register content count
+        # is not equal to the current selection count a bell is rung.
 
-        if pasting_linewise:
-            self.reset_carets_linewise(paste_locations)
-        else:
-            self.reset_carets_charwise(paste_locations, len(fragment))
+        if len(sels) > 1 and len(contents) != len(sels):
+            return ui_bell()
 
-        enter_normal_mode(self.view, mode)
+        if len(sels) == 1 and len(contents) > 1:
+            contents = [''.join(contents)]
 
-    def reset_carets_charwise(self, pts, paste_len):
-        # FIXME: Won't work for multiple jagged pastes...
-        b_pts = [s.b for s in list(self.view.sel())]
-        if len(b_pts) > 1:
+        contents = zip(reversed(contents), reversed(sels))
+
+        if mode == INTERNAL_NORMAL:
             self.view.sel().clear()
-            self.view.sel().add_all([Region(ploc + paste_len - 1, ploc + paste_len - 1)
-                                    for ploc in pts])
-        else:
-            self.view.sel().clear()
-            self.view.sel().add(Region(pts[0] + paste_len - 1, pts[0] + paste_len - 1))
 
-    def reset_carets_linewise(self, pts):
-        self.view.sel().clear()
+            for text, sel in contents:
+                if adjust_indent:
+                    text = _indent_text(self.view, text, sel)
+                    if text[-1] != '\n':
+                        text += '\n'
 
-        if self.state.mode == VISUAL_LINE:
-            self.view.sel().add_all([Region(loc) for loc in pts])
-            return
+                    linewise = True
 
-        pts = [next_non_blank(self.view, pt + 1) for pt in pts]
+                text *= count
 
-        self.view.sel().add_all([Region(pt) for pt in pts])
+                # If register content is from a linewise operation, then the cursor
+                # is put on the first non-blank character of the first line of the
+                # content after the content is inserted.
+                if linewise:
+                    line = self.view.line(sel.a)
+                    row = self.view.rowcol(line.a)[0]
+                    pt = self.view.text_point(row + 1, 0)
 
-    def prepare_fragment(self, text):
-        if text.endswith('\n') and text != '\n':
-            text = '\n' + text[0:-1]
-        return text
+                    self.view.insert(edit, pt, text)
 
-    # TODO: Improve this signature.
-    def paste_all(self, edit, sel, at, text, count):
-        state = self.state
+                    if adjust_cursor:
+                        pt += len(text) + 1
+                    else:
+                        pt = next_non_blank(self.view, pt)
 
-        if state.mode not in (VISUAL, VISUAL_LINE):
-            # TODO: generate string first, then insert?
-            # Make sure we can paste at EOF.
-            at = at if at <= self.view.size() else self.view.size()
-            for x in range(count):
-                self.view.insert(edit, at, text)
-            return at
+                    self.view.sel().add(pt)
 
-        else:
-            if text.startswith('\n'):
-                text = text * count
-                if not text.endswith('\n'):
-                    text = text + '\n'
-            else:
-                text = text * count
+                # If register is charactwise but contains a newline, then the cursor
+                # is put at the start of of the text pasted, otherwise the cursor is
+                # put on the last character of the text pasted.
+                else:
+                    pt = min(sel.a + 1, self.view.size())
 
-            if state.mode == VISUAL_LINE:
-                if text.startswith('\n'):
-                    text = text[1:]
+                    self.view.insert(edit, pt, text)
 
-            self.view.replace(edit, sel, text)
-            return sel.begin()
+                    if adjust_cursor:
+                        pt += len(text)
+                    elif '\n' not in text:
+                        pt += len(text) - 1
+
+                    self.view.sel().add(pt)
+
+            enter_normal_mode(self.view, mode)
+        elif mode in (VISUAL, VISUAL_LINE):
+            new_sels = []
+            for text, sel in contents:
+                self.view.replace(edit, sel, text)
+
+                if mode == VISUAL:
+                    if '\n' in text and not linewise:
+                        new_sels.append(sel.begin())
+
+                elif mode == VISUAL_LINE:
+                    new_sels.append(next_non_blank(self.view, sel.begin()))
+
+                enter_normal_mode(self.view, mode)
+
+                # If register content is linewise, then the cursor is put on the
+                # first non blank of the line.
+                if linewise:
+                    def f(view, s):
+                        return Region(next_non_blank(view, view.line(s).a))
+
+                    regions_transformer(self.view, f)
+
+            if new_sels:
+                self.view.sel().clear()
+                self.view.sel().add_all(new_sels)
 
 
 class _vi_ga(WindowCommand):

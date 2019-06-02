@@ -2,6 +2,30 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.16.0 - Unreleased
+
+### Added
+
+* Added [#48](https://github.com/NeoVintageous/NeoVintageous/issues/48): `gP` just like `P`, but leave the cursor just after the new text
+* Added [#48](https://github.com/NeoVintageous/NeoVintageous/issues/48): `gp` just like `p`, but leave the cursor just after the new text
+* Added [#339](https://github.com/NeoVintageous/NeoVintageous/issues/339): `[p` and `[P` like `P`, but adjust the indent to current line
+* Added [#339](https://github.com/NeoVintageous/NeoVintageous/issues/339): `]p` and `]P` like `p`, but adjust the indent to current line
+* Added [#578](https://github.com/NeoVintageous/NeoVintageous/issues/578): Support trailing sequences in command mappings
+* Added [#577](https://github.com/NeoVintageous/NeoVintageous/issues/577): `<C-Down>` (alias of `j` and `<down>`) can now be mapped
+* Added [#576](https://github.com/NeoVintageous/NeoVintageous/issues/576): `<C-Up>` (alias of `k` and `<up>`) can now be mapped
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `J` go to last child (sidebar mode)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to parent (sidebar mode)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to root (sidebar mode)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `q` close the sidebar (sidebar mode)
+* Added [#575](https://github.com/NeoVintageous/NeoVintageous/issues/575): `x` delete characters under cursor (multi cursor mode)
+
+### Fixed
+
+* Fixed [#93](https://github.com/NeoVintageous/NeoVintageous/issues/93): `p` is inconsistent
+* Fixed [#93](https://github.com/NeoVintageous/NeoVintageous/issues/93): multi line paste works badly
+* Fixed [#573](https://github.com/NeoVintageous/NeoVintageous/issues/573): `P` in visual line mode characterwise should preserve trailing newline
+* Fixed [#572](https://github.com/NeoVintageous/NeoVintageous/issues/572): `P` in visual line mode should leave cursor at start of selection
+
 ## 1.15.1 - 2019-05-24
 
 * Fixed [#440](https://github.com/NeoVintageous/NeoVintageous/issues/440): Use setting `'vintageous_clear_auto_indent_on_esc'` to preserve leading whitespace on `<Esc>`

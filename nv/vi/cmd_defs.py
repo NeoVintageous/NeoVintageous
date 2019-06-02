@@ -121,7 +121,7 @@ class ViInsertLineAfter(ViOperatorDef):
             }
 
 
-@assign(seqs.X, _ACTION_MODES)
+@assign(seqs.X, _ACTION_MODES + (SELECT,))
 class ViRightDeleteChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -893,6 +893,88 @@ class ViPasteBefore(ViOperatorDef):
                 'mode': state.mode,
                 'count': state.count,
                 'register': state.register
+            }
+        }
+
+
+@assign(seqs.RIGHT_SQUARE_BRACKET_BIG_P, _ACTION_MODES)
+@assign(seqs.RIGHT_SQUARE_BRACKET_P, _ACTION_MODES)
+class ViPasteAfterAndIndent(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_indent': True
+            }
+        }
+
+
+@assign(seqs.LEFT_SQUARE_BRACKET_BIG_P, _ACTION_MODES)
+@assign(seqs.LEFT_SQUARE_BRACKET_P, _ACTION_MODES)
+class ViPasteBeforeAndIndent(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_big_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_indent': True
+            }
+        }
+
+
+@assign(seqs.GP, _ACTION_MODES)
+class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_cursor': True
+            }
+        }
+
+
+@assign(seqs.G_BIG_P, _ACTION_MODES)
+class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_big_p',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'register': state.register,
+                'adjust_cursor': True
             }
         }
 
@@ -2920,10 +3002,11 @@ class ViMoveByWords(ViMotionDef):
         }
 
 
-@assign(seqs.J, _MOTION_MODES)
-@assign(seqs.DOWN, _MOTION_MODES)
+@assign(seqs.CTRL_DOWN, _MOTION_MODES)
 @assign(seqs.CTRL_J, _MOTION_MODES)
 @assign(seqs.CTRL_N, _MOTION_MODES)
+@assign(seqs.DOWN, _MOTION_MODES)
+@assign(seqs.J, _MOTION_MODES)
 class ViMoveDownByLines(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2940,6 +3023,7 @@ class ViMoveDownByLines(ViMotionDef):
         }
 
 
+@assign(seqs.CTRL_UP, _MOTION_MODES)
 @assign(seqs.K, _MOTION_MODES)
 @assign(seqs.UP, _MOTION_MODES)
 class ViMoveUpByLines(ViMotionDef):
