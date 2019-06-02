@@ -22,8 +22,9 @@ class Test_right_square_bracket_P(unittest.ResetRegisters, unittest.FunctionalTe
 
     def setUp(self):
         super().setUp()
-        self.settings().set('vintageous_use_sys_clipboard', False)
         self.settings().set('tab_size', 2)
+        self.settings().set('translate_tabs_to_spaces', True)
+        self.settings().set('vintageous_use_sys_clipboard', False)
 
     def test_n(self):
         self.register('"fizz')
