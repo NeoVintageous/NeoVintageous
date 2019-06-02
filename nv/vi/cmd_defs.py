@@ -3315,11 +3315,10 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
 
 @assign(seqs.A, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, inclusive=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.inclusive = inclusive
 
     def translate(self, state):
         return {
@@ -3335,11 +3334,10 @@ class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
 
 @assign(seqs.I, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, inclusive=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.inclusive = inclusive
 
     def translate(self, state):
         return {
