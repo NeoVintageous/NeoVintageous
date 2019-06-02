@@ -28,30 +28,30 @@ TESTS = (
     # INTERNAL NORMAL MODE
     test_data(content='abc',
               regions=[[(0, 0), (0, 0)]],
-              in_register=['xxx'], params={'mode': unittest.INTERNAL_NORMAL, 'count': 1},
+              in_register=['xxx'], params={'mode': unittest.INTERNAL_NORMAL, 'count': 1, 'before_cursor': True},
               expected=('xxxabc', unittest.Region(2, 2)), msg='failed in {0}'),
 
     # INTERNAL NORMAL MODE - linewise
     test_data(content='abc',
               regions=[[(0, 0), (0, 0)]],
-              in_register=['xxx\n'], params={'mode': unittest.INTERNAL_NORMAL, 'count': 1},
+              in_register=['xxx\n'], params={'mode': unittest.INTERNAL_NORMAL, 'count': 1, 'before_cursor': True},
               expected=('xxx\nabc', unittest.Region(0, 0)), msg='failed in {0}'),
 
     # VISUAL MODE
     test_data(content='abc',
               regions=[[(0, 0), (0, 3)]],
-              in_register=['xxx'], params={'mode': unittest.VISUAL, 'count': 1},
+              in_register=['xxx'], params={'mode': unittest.VISUAL, 'count': 1, 'before_cursor': True},
               expected=('xxx', unittest.Region(2, 2)), msg='failed in {0}'),
 
     # VISUAL MODE - linewise
     test_data(content='aaa bbb ccc',
               regions=[[(0, 4), (0, 7)]],
-              in_register=['xxx\n'], params={'mode': unittest.VISUAL, 'count': 1},
+              in_register=['xxx\n'], params={'mode': unittest.VISUAL, 'count': 1, 'before_cursor': True},
               expected=('aaa xxx\n ccc', unittest.Region(4)), msg='failed in {0}'),
 )
 
 
-class Test__vi_big_p(unittest.ViewTestCase):
+class Test__P(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
@@ -62,7 +62,7 @@ class Test__vi_big_p(unittest.ViewTestCase):
             registers._data['"'] = data.in_register
             registers._linewise['"'] = False
 
-            self.view.run_command('_vi_big_p', data.params)
+            self.view.run_command('_vi_paste', data.params)
 
             msg = "[{0}] {1}".format(i, data.msg)
             self.assertEqual(data.expected[0], self.content(), msg.format(i))

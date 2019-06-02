@@ -1151,7 +1151,7 @@ _SEQ2CMD = {
     'M':            {'command': '_vi_big_m'},  # noqa: E241
     'N':            {'command': '_vi_repeat_buffer_search', 'args': {'reverse': True}},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
-    'P':            {'command': '_vi_big_p', 'args': {'register': '"'}},  # noqa: E241
+    'P':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True}},  # noqa: E241
     'R':            {'command': '_enter_replace_mode'},  # noqa: E241
     'S"':           {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
@@ -1169,12 +1169,12 @@ _SEQ2CMD = {
     'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
     '[ ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_up'}},  # noqa: E241
     '[(':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '('}},  # noqa: E241,E501
-    '[P':           {'command': '_vi_big_p', 'args': {'register': '"', 'adjust_indent': True}},  # noqa: E241
+    '[P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True, 'adjust_indent': True}},  # noqa: E241,E501
     '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
     '[{':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '{'}},  # noqa: E241,E501
     '] ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_down'}},  # noqa: E241
     '])':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': ')'}},  # noqa: E241,E501
-    ']P':           {'command': '_vi_p', 'args': {'register': '"', 'adjust_indent': True}},  # noqa: E241
+    ']P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_indent': True}},  # noqa: E241,E501
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': '}'}},  # noqa: E241,E501
     '^':            {'command': '_vi_hat'},  # noqa: E241
@@ -1378,7 +1378,7 @@ _SEQ2CMD = {
     'gH':           {'command': '_vi_g_big_h'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gN':           {'command': '_vi_search', 'args': {'forward': False}},  # noqa: E241
-    'gP':           {'command': '_vi_big_p', 'args': {'register': '"', 'adjust_cursor': True}},  # noqa: E241
+    'gP':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True, 'adjust_cursor': True}},  # noqa: E241,E501
     'gU':           {'command': '_vi_g_big_u'},  # noqa: E241
     'gUU':          {'command': '_vi_g_big_u_big_u'},  # noqa: E241
     'gUip':         {'command': '_vi_g_big_u', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
@@ -1395,7 +1395,7 @@ _SEQ2CMD = {
     'gj':           {'command': '_vi_gj'},  # noqa: E241
     'gk':           {'command': '_vi_gk'},  # noqa: E241
     'gn':           {'command': '_vi_search'},  # noqa: E241
-    'gp':           {'command': '_vi_p', 'args': {'register': '"', 'adjust_cursor': True}},  # noqa: E241
+    'gp':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_cursor': True}},  # noqa: E241,E501
     'gq':           {'command': '_vi_gq'},  # noqa: E241
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
@@ -1433,7 +1433,7 @@ _SEQ2CMD = {
     'l':            {'command': '_vi_l'},  # noqa: E241
     'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
-    'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241
+    'p':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False}},  # noqa: E241
     'q':            {'command': '_vi_q'},  # noqa: E241
     'q-':           {'command': '_vi_q', 'args': {'name': '-'}},  # noqa: E241
     'q@':           {'command': '_vi_q', 'args': {'name': '@'}},  # noqa: E241

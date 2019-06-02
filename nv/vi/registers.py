@@ -400,12 +400,6 @@ class Registers:
 
         return filtered, linewise
 
-    def get_for_big_p(self, register, mode):
-        return self.get_for_paste(register, mode)
-
-    def get_for_p(self, register, mode):
-        return self.get_for_paste(register, mode)
-
     def _get_selected_text(self, new_line_at_eof=False, linewise=False):
         # Inspect settings and populate registers as needed.
         #

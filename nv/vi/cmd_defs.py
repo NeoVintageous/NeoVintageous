@@ -869,11 +869,12 @@ class ViPasteAfter(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_p',
+            'action': '_vi_paste',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': state.register,
+                'before_cursor': False
             }
         }
 
@@ -888,11 +889,12 @@ class ViPasteBefore(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_big_p',
+            'action': '_vi_paste',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': state.register,
+                'before_cursor': True
             }
         }
 
@@ -908,11 +910,12 @@ class ViPasteAfterAndIndent(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_p',
+            'action': '_vi_paste',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
                 'register': state.register,
+                'before_cursor': False,
                 'adjust_indent': True
             }
         }
@@ -929,11 +932,12 @@ class ViPasteBeforeAndIndent(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_big_p',
+            'action': '_vi_paste',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
                 'register': state.register,
+                'before_cursor': True,
                 'adjust_indent': True
             }
         }
@@ -949,11 +953,12 @@ class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_p',
+            'action': '_vi_paste',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
                 'register': state.register,
+                'before_cursor': False,
                 'adjust_cursor': True
             }
         }
@@ -969,11 +974,12 @@ class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': '_vi_big_p',
+            'action': '_vi_paste',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
                 'register': state.register,
+                'before_cursor': True,
                 'adjust_cursor': True
             }
         }
