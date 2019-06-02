@@ -79,8 +79,6 @@ from NeoVintageous.nv.utils import get_search_regions
 from NeoVintageous.nv.utils import gluing_undo_groups
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
-from NeoVintageous.nv.utils import is_at_bol
-from NeoVintageous.nv.utils import is_at_eol
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import new_inclusive_region
@@ -2297,12 +2295,14 @@ class _vi_big_p(ViTextCommandBase):
                 # is put on the first non-blank character of the first line of the
                 # content after the content is inserted.
                 if linewise:
-                    row = self.view.rowcol(self.view.line(sel.a).a)[0]
+                    line = self.view.line(sel.a)
+                    row = self.view.rowcol(line.a)[0]
                     pt = self.view.text_point(row, 0)
+
                     self.view.insert(edit, pt, text)
 
                     if adjust_cursor:
-                        pt = pt + len(text) + 1
+                        pt += len(text) + 1
                     else:
                         pt = next_non_blank(self.view, pt)
 
@@ -2312,15 +2312,14 @@ class _vi_big_p(ViTextCommandBase):
                 # is put at the start of of the text pasted, otherwise the cursor is
                 # put on the last character of the text pasted.
                 else:
-                    self.view.insert(edit, sel.a, text)
+                    pt = sel.a
+
+                    self.view.insert(edit, pt, text)
 
                     if adjust_cursor:
-                        pt = sel.a + len(text)
-                    else:
-                        if '\n' in text:
-                            pt = sel.a
-                        else:
-                            pt = sel.a + len(text) - 1
+                        pt += len(text)
+                    elif '\n' not in text:
+                        pt += len(text) - 1
 
                     self.view.sel().add(pt)
 
@@ -2331,7 +2330,11 @@ class _vi_big_p(ViTextCommandBase):
             for text, sel in contents:
                 self.view.replace(edit, sel, text)
 
-                if mode == VISUAL_LINE:
+                if mode == VISUAL:
+                    if '\n' in text and not linewise:
+                        new_sels.append(sel.begin())
+
+                elif mode == VISUAL_LINE:
                     new_sels.append(next_non_blank(self.view, sel.begin()))
 
                 enter_normal_mode(self.view, mode)
@@ -2352,27 +2355,28 @@ class _vi_big_p(ViTextCommandBase):
 class _vi_p(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
-        state = self.state
-
-        contents, linewise = state.registers.get_for_p(register, state.mode)
+        contents, linewise = self.state.registers.get_for_p(register, mode)
         if not contents:
             return status_message('E353: Nothing in register ' + register)
 
         sels = list(self.view.sel())
 
-        # If we have the same number of pastes and selections, map 1:1,
-        # otherwise paste paste[0] to all target selections.
+        # The register contents are concatenated into one string when the
+        # current selection count is 1; otherwise if the register content count
+        # is not equal to the current selection count a bell is rung.
 
-        if len(sels) == len(contents):
-            contents = zip(sels, contents)
-        else:
-            contents = zip(sels, [contents[0], ] * len(sels))
+        if len(sels) > 1 and len(contents) != len(sels):
+            return ui_bell()
 
-        linewise = True
-        offset = 0
-        locations = []
-        for sel, text in reversed(list(contents)):
-            if not is_visual_mode(mode):
+        if len(sels) == 1 and len(contents) > 1:
+            contents = [''.join(contents)]
+
+        contents = zip(reversed(contents), reversed(sels))
+
+        if mode == INTERNAL_NORMAL:
+            self.view.sel().clear()
+
+            for text, sel in contents:
                 if adjust_indent:
                     text = _indent_text(self.view, text, sel)
                     if text[-1] != '\n':
@@ -2380,91 +2384,66 @@ class _vi_p(ViTextCommandBase):
 
                     linewise = True
 
-            text = self.prepare_fragment(text)
-            if text.startswith('\n'):
-                # Pasting linewise... If pasting at EOL or BOL, make sure we
-                # paste before the newline character.
-                if (is_at_eol(self.view, sel) or is_at_bol(self.view, sel)):
-                    pa = self.paste_all(edit, sel, self.view.line(sel.b).b, text, count)
-                    locations.append(pa)
+                text *= count
+
+                # If register content is from a linewise operation, then the cursor
+                # is put on the first non-blank character of the first line of the
+                # content after the content is inserted.
+                if linewise:
+                    line = self.view.line(sel.a)
+                    row = self.view.rowcol(line.a)[0]
+                    pt = self.view.text_point(row + 1, 0)
+
+                    self.view.insert(edit, pt, text)
+
+                    if adjust_cursor:
+                        pt += len(text) + 1
+                    else:
+                        pt = next_non_blank(self.view, pt)
+
+                    self.view.sel().add(pt)
+
+                # If register is charactwise but contains a newline, then the cursor
+                # is put at the start of of the text pasted, otherwise the cursor is
+                # put on the last character of the text pasted.
                 else:
-                    pa = self.paste_all(edit, sel, self.view.line(sel.b - 1).b, text, count)
-                    locations.append(pa)
-            else:
-                linewise = False
-                # Pasting charwise... If pasting at EOL, make sure we don't
-                # paste after the newline character.
-                if self.view.substr(sel.b) == '\n':
-                    pa = self.paste_all(edit, sel, sel.b + offset, text, count)
-                    locations.append(pa)
-                else:
-                    pa = self.paste_all(edit, sel, sel.b + offset + 1, text, count)
-                    locations.append(pa)
-                offset += len(text) * count
+                    pt = min(sel.a + 1, self.view.size())
 
-        if linewise:
-            self.reset_carets_linewise(locations, adjust_cursor)
-        else:
-            self.reset_carets_charwise(locations, len(text), adjust_cursor)
+                    self.view.insert(edit, pt, text)
 
-        enter_normal_mode(self.view, mode)
+                    if adjust_cursor:
+                        pt += len(text)
+                    elif '\n' not in text:
+                        pt += len(text) - 1
 
-    def reset_carets_charwise(self, pts, paste_len, adjust_cursor):
-        # FIXME: Won't work for multiple jagged pastes...
-        b_pts = [s.b for s in list(self.view.sel())]
-        if len(b_pts) > 1:
-            self.view.sel().clear()
-            self.view.sel().add_all([Region(ploc + paste_len - 1) for ploc in pts])
-        else:
-            self.view.sel().clear()
-            pt = pts[0] + paste_len
-            if not adjust_cursor:
-                pt -= 1
+                    self.view.sel().add(pt)
 
-            self.view.sel().add(pt)
+            enter_normal_mode(self.view, mode)
+        elif mode in (VISUAL, VISUAL_LINE):
+            new_sels = []
+            for text, sel in contents:
+                self.view.replace(edit, sel, text)
 
-    def reset_carets_linewise(self, pts, adjust_cursor):
-        self.view.sel().clear()
+                if mode == VISUAL:
+                    if '\n' in text and not linewise:
+                        new_sels.append(sel.begin())
 
-        if self.state.mode == VISUAL_LINE:
-            self.view.sel().add_all([Region(loc) for loc in pts])
-            return
+                elif mode == VISUAL_LINE:
+                    new_sels.append(next_non_blank(self.view, sel.begin()))
 
-        pts = [next_non_blank(self.view, pt + 1) for pt in pts]
+                enter_normal_mode(self.view, mode)
 
-        self.view.sel().add_all([Region(pt) for pt in pts])
+                # If register content is linewise, then the cursor is put on the
+                # first non blank of the line.
+                if linewise:
+                    def f(view, s):
+                        return Region(next_non_blank(view, view.line(s).a))
 
-    def prepare_fragment(self, text):
-        if text.endswith('\n') and text != '\n':
-            text = '\n' + text[0:-1]
-        return text
+                    regions_transformer(self.view, f)
 
-    # TODO: Improve this signature.
-    def paste_all(self, edit, sel, at, text, count):
-        state = self.state
-
-        if state.mode not in (VISUAL, VISUAL_LINE):
-            # TODO: generate string first, then insert?
-            # Make sure we can paste at EOF.
-            at = at if at <= self.view.size() else self.view.size()
-            for x in range(count):
-                self.view.insert(edit, at, text)
-            return at
-
-        else:
-            if text.startswith('\n'):
-                text = text * count
-                if not text.endswith('\n'):
-                    text = text + '\n'
-            else:
-                text = text * count
-
-            if state.mode == VISUAL_LINE:
-                if text.startswith('\n'):
-                    text = text[1:]
-
-            self.view.replace(edit, sel, text)
-            return sel.begin()
+            if new_sels:
+                self.view.sel().clear()
+                self.view.sel().add_all(new_sels)
 
 
 class _vi_ga(WindowCommand):

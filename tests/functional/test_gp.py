@@ -27,3 +27,8 @@ class Test_gp(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_n(self):
         self.register('"fizz')
         self.eq('a|bc', 'gp', 'abfizz|c')
+        self.eq('ab|c', 'gp', 'abcfiz|z')
+        self.register('"fizz\n')
+        self.eq('a|bc', 'gp', 'abfizz\n|c')
+        self.registerLinewise('"fizz\n')
+        self.eq('a\n|b\nc\n', 'gp', 'a\nb\nfizz\n|c\n')

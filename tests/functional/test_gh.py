@@ -84,3 +84,8 @@ class Test_gh(unittest.FunctionalTestCase):
         self.feed('s_J')
         self.assertNormal('fizz |fizz fizz fizz fizz')
         self.assertStatusLineIsBlank()
+
+    def test_v(self):
+        self.settings().set('vintageous_multi_cursor_exit_from_visual_mode', True)
+        self.eq('|fizz| buzz\nfizz buzz\nfizz buzz\n', 'v_gh', 's_|fizz| buzz\n|fizz| buzz\nfizz buzz\n')
+        self.assertStatusLineIsSelect()

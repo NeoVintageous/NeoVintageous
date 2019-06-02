@@ -367,7 +367,7 @@ class Registers:
             if all(is_same_line(x) for x in list(self.view.sel())):
                 self._set(_SMALL_DELETE, selected_text, linewise)
 
-    def get_for_big_p(self, register, mode):
+    def get_for_paste(self, register, mode):
         if not register:
             register = _UNNAMED
 
@@ -400,23 +400,11 @@ class Registers:
 
         return filtered, linewise
 
+    def get_for_big_p(self, register, mode):
+        return self.get_for_paste(register, mode)
+
     def get_for_p(self, register, mode):
-        if not register:
-            register = _UNNAMED
-
-        values = self._get(register)
-        linewise = _is_register_linewise(register)
-
-        if values:
-            # Populate unnamed register with the text we're about to paste into
-            # (the text we're about to replace), but only if there was something
-            # in requested register (not empty), and we're in VISUAL mode.
-            if is_visual_mode(mode):
-                current_content = self._get_selected_text(linewise=(mode == VISUAL_LINE))
-                if current_content:
-                    self._set(_UNNAMED, current_content, linewise=(mode == VISUAL_LINE))
-
-        return values, linewise
+        return self.get_for_paste(register, mode)
 
     def _get_selected_text(self, new_line_at_eof=False, linewise=False):
         # Inspect settings and populate registers as needed.

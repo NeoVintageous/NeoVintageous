@@ -47,7 +47,7 @@ TESTS = (
     test_data(content='aaa bbb ccc',
               regions=[[(0, 4), (0, 7)]],
               in_register=['xxx\n'], params={'mode': unittest.VISUAL, 'count': 1},
-              expected=('aaa xxx\n ccc', unittest.Region(6, 6)), msg='failed in {0}'),
+              expected=('aaa xxx\n ccc', unittest.Region(4)), msg='failed in {0}'),
 )
 
 

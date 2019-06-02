@@ -21,6 +21,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#93](https://github.com/NeoVintageous/NeoVintageous/issues/93): `p` is inconsistent
+* Fixed [#93](https://github.com/NeoVintageous/NeoVintageous/issues/93): multi line paste works badly
 * Fixed [#573](https://github.com/NeoVintageous/NeoVintageous/issues/573): `P` in visual line mode characterwise should preserve trailing newline
 * Fixed [#572](https://github.com/NeoVintageous/NeoVintageous/issues/572): `P` in visual line mode should leave cursor at start of selection
 
