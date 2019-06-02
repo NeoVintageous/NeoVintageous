@@ -67,5 +67,5 @@ class Test_gq_python_syntax(unittest.FunctionalTestCase):
     def test_v_gq(self):
         self.eq('    if x:\n|        # fizz\n        # bu|zz\n\n', 'v_gq', 'n_    if x:\n        |# fizz buzz\n\n')
         self.eq('r_    if x:\n|        # fizz\n        # bu|zz\n\n', 'v_gq', 'n_    if x:\n        |# fizz buzz\n\n')
-        self.eq('#\n#\n|# one\n# two\n|#\n#\n', 'l_gq', 'n_#\n#\n|# one two\n#\n#\n')
-        self.eq('r_#\n#\n|# one\n# two\n|#\n#\n', 'l_gq', 'n_#\n#\n|# one two\n#\n#\n')
+        self.eq('#\n#\n|# one\n# two\n|#\n#\n', 'V_gq', 'n_#\n#\n|# one two\n#\n#\n')
+        self.eq('r_#\n#\n|# one\n# two\n|#\n#\n', 'V_gq', 'n_#\n#\n|# one two\n#\n#\n')

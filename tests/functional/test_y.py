@@ -117,11 +117,11 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('-')
 
     def test_V(self):
-        self.eq('x\n|abc\n|y', 'l_y', 'n_x\n|abc\ny')
+        self.eq('x\n|abc\n|y', 'V_y', 'n_x\n|abc\ny')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('0abc\n', linewise=True)
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
-        self.eq('a\n|fizz\n|b\n|buzz\n|c', 'l_y', 'n_a\n|fizz\nb\n|buzz\nc')
+        self.eq('a\n|fizz\n|b\n|buzz\n|c', 'V_y', 'n_a\n|fizz\nb\n|buzz\nc')
         self.assertRegistersEqual('"0', ['fizz\n', 'buzz\n'], linewise=True)
         self.assertRegistersEmpty('-1')

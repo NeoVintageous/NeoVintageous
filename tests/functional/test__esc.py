@@ -37,11 +37,11 @@ class Test_esc(unittest.FunctionalTestCase):
         self.eq('1\n2|\n|3', 'v_<esc>', 'n_1\n|2\n3')
         self.assertStatusLineIsBlank()
 
-    def test_l_esc(self):
-        self.eq('1\n|fizz|', 'l_<esc>', 'n_1\nfiz|z')
-        self.eq('1\n|fizz|\n', 'l_<esc>', 'n_1\nfiz|z\n')
-        self.eq('1\n|fizz\n|3', 'l_<esc>', 'n_1\nfiz|z\n3')
-        self.eq('r_1\n|fizz|', 'l_<esc>', 'n_1\n|fizz')
+    def test_V(self):
+        self.eq('1\n|fizz|', 'V_<esc>', 'n_1\nfiz|z')
+        self.eq('1\n|fizz|\n', 'V_<esc>', 'n_1\nfiz|z\n')
+        self.eq('1\n|fizz\n|3', 'V_<esc>', 'n_1\nfiz|z\n3')
+        self.eq('r_1\n|fizz|', 'V_<esc>', 'n_1\n|fizz')
         self.assertStatusLineIsBlank()
 
     def test_b_esc(self):

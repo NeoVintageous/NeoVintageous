@@ -72,17 +72,17 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a|xb|xc|xd', 'x', 'a|b|c|d', 'should work for multiple selection')
         self.eq('a|x1|b|x2|c|x3|d', 'v_x', 'n_a|b|c|d', 'should work for multiple selection')
 
-    def test_l_x(self):
-        self.eq('ab\n|xy\n|cd\n', 'l_x', 'n_ab\n|cd\n', 'should delete full line')
-        self.eq('ab\n|x1\nx2\nx3\n|cd\n', 'l_x', 'n_ab\n|cd\n', 'should delete multiple full lines')
+    def test_V_x(self):
+        self.eq('ab\n|xy\n|cd\n', 'V_x', 'n_ab\n|cd\n', 'should delete full line')
+        self.eq('ab\n|x1\nx2\nx3\n|cd\n', 'V_x', 'n_ab\n|cd\n', 'should delete multiple full lines')
         self.assertRegister('"x1\nx2\nx3\n', linewise=True)
         self.assertRegister('1x1\nx2\nx3\n', linewise=True)
         self.assertRegister('2xy\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
-    def test_l_x_empty_lines(self):
-        self.eq('\n|\n\n|\n', 'l_x', 'n_\n|\n')
+    def test_V_x_empty_lines(self):
+        self.eq('\n|\n\n|\n', 'V_x', 'n_\n|\n')
         self.assertRegister('"\n\n\n', linewise=True)
         self.assertRegister('1\n\n\n', linewise=True)
         self.assertRegisterEmpty('-')
@@ -93,7 +93,7 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a\n\n|\n\nb', 'x', 'a\n\n|\n\nb')
 
     def test_x_visual_line_sets_linewise_register(self):
-        self.eq('x\n|abc\n|y', 'l_x', 'n_x\n|y')
+        self.eq('x\n|abc\n|y', 'V_x', 'n_x\n|y')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('1abc\n', linewise=True)
         self.assertRegisterEmpty('-')

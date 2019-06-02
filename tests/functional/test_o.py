@@ -34,8 +34,8 @@ class Test_o(unittest.FunctionalTestCase):
         self.assertStatusLineIsNormal()
 
     def test_V(self):
-        self.eq('x\n|fizz\n|x', 'l_o', 'r_x\n|fizz\n|x')
-        self.eq('r_x\n|fizz\n|x', 'l_o', 'x\n|fizz\n|x')
+        self.eq('x\n|fizz\n|x', 'V_o', 'r_x\n|fizz\n|x')
+        self.eq('r_x\n|fizz\n|x', 'V_o', 'x\n|fizz\n|x')
         self.assertStatusLineIsNormal()
 
 

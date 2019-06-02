@@ -55,13 +55,13 @@ class Test_dollar(unittest.FunctionalTestCase):
         self.eq('fi|zz    \nbuzz', 'v_$', 'fi|zz    \n|buzz')
 
     def test_V(self):
-        self.eq('|abc\n|abc\nabc\n', 'l_$', '|abc\n|abc\nabc\n')
-        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'l_2$', '1\n|fizz\nbuzz\n|four\nfive')
-        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'l_3$', '1\n|fizz\nbuzz\nfour\n|five')
-        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'l_4$', '1\n|fizz\nbuzz\nfour\nfive|')
-        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'l_9$', '1\n|fizz\nbuzz\nfour\nfive|')
-        self.eq('r_1\n|fizz\nbuzz\n|four\nfive', 'l_2$', 'r_1\nfizz\n|buzz\n|four\nfive')
-        self.eq('r_1\n|fizz\nbuzz\n|four\nfive', 'l_3$', '1\nfizz\n|buzz\nfour\n|five')
+        self.eq('|abc\n|abc\nabc\n', 'V_$', '|abc\n|abc\nabc\n')
+        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'V_2$', '1\n|fizz\nbuzz\n|four\nfive')
+        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'V_3$', '1\n|fizz\nbuzz\nfour\n|five')
+        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'V_4$', '1\n|fizz\nbuzz\nfour\nfive|')
+        self.eq('1\n|fizz\n|buzz\nfour\nfive', 'V_9$', '1\n|fizz\nbuzz\nfour\nfive|')
+        self.eq('r_1\n|fizz\nbuzz\n|four\nfive', 'V_2$', 'r_1\nfizz\n|buzz\n|four\nfive')
+        self.eq('r_1\n|fizz\nbuzz\n|four\nfive', 'V_3$', '1\nfizz\n|buzz\nfour\n|five')
 
     def test_b(self):
         self.eq('x\n|fizz| buzz\n|fizz| buzz\ny', 'b_$', 'x\n|fizz buzz\n||fizz buzz\n|y')

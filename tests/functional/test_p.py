@@ -109,10 +109,10 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_V(self):
         self.register('"', 'fizz')
-        self.eq('a\n|xyz\n|b\n', 'l_p', 'n_a\n|fizz\nb\n')
+        self.eq('a\n|xyz\n|b\n', 'V_p', 'n_a\n|fizz\nb\n')
         self.register('"', 'fizz\n')
-        self.eq('a\n|xyz\n|b\n', 'l_p', 'n_a\n|fizz\n\nb\n')
+        self.eq('a\n|xyz\n|b\n', 'V_p', 'n_a\n|fizz\n\nb\n')
         self.registerLinewise('"', 'fizz\n')
-        self.eq('a\n|xyz\n|b\n', 'l_p', 'n_a\n|fizz\nb\n')
+        self.eq('a\n|xyz\n|b\n', 'V_p', 'n_a\n|fizz\nb\n')
         self.registerLinewise('"', 'fizz\nbuzz\nab\n')
-        self.eq('a\n|xyz\n|b\n', 'l_p', 'n_a\n|fizz\nbuzz\nab\nb\n')
+        self.eq('a\n|xyz\n|b\n', 'V_p', 'n_a\n|fizz\nbuzz\nab\nb\n')

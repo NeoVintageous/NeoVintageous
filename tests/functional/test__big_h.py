@@ -70,18 +70,18 @@ class Test_H(unittest.FunctionalTestCase):
 
     @unittest.mock_ui()
     def test_V(self):
-        self.eq('1\n|2\n|x', 'l_H', 'r_|1\n2\n|x')
-        self.eq('1\n|2\n3\n|x', 'l_H', 'r_|1\n2\n|3\nx')
-        self.eq('1\n|2\n3\n4\n|x', 'l_H', 'r_|1\n2\n|3\n4\nx')
-        self.eq('r_1\n2\n|3\n|x', 'l_H', 'r_|1\n2\n3\n|x')
-        self.eq('r_    1\n|2\n3\n|x', 'l_H', 'r_|    1\n2\n3\n|x')
-        self.eq('r_|1\n2\n3\n|x', 'l_H', 'r_|1\n2\n3\n|x')
-        self.eq('|1xx\n2\n3\n|4\nx', 'l_H', 'r_|1xx\n|2\n3\n4\nx')
+        self.eq('1\n|2\n|x', 'V_H', 'r_|1\n2\n|x')
+        self.eq('1\n|2\n3\n|x', 'V_H', 'r_|1\n2\n|3\nx')
+        self.eq('1\n|2\n3\n4\n|x', 'V_H', 'r_|1\n2\n|3\n4\nx')
+        self.eq('r_1\n2\n|3\n|x', 'V_H', 'r_|1\n2\n3\n|x')
+        self.eq('r_    1\n|2\n3\n|x', 'V_H', 'r_|    1\n2\n3\n|x')
+        self.eq('r_|1\n2\n3\n|x', 'V_H', 'r_|1\n2\n3\n|x')
+        self.eq('|1xx\n2\n3\n|4\nx', 'V_H', 'r_|1xx\n|2\n3\n4\nx')
 
     @unittest.mock_ui(visible_region=(2, 17))
     def test_V_H_visible_regions(self):
-        self.eq('x\n|1xx\n2\n3\n|4\nx', 'l_H', 'r_x\n|1xx\n|2\n3\n4\nx')
-        self.eq('x\n|    1xx\n2\n3\n|4\nx', 'l_H', 'x\n|    1xx\n|2\n3\n4\nx')
+        self.eq('x\n|1xx\n2\n3\n|4\nx', 'V_H', 'r_x\n|1xx\n|2\n3\n4\nx')
+        self.eq('x\n|    1xx\n2\n3\n|4\nx', 'V_H', 'x\n|    1xx\n|2\n3\n4\nx')
 
     @unittest.mock_ui()
     def test_d(self):

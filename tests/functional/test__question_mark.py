@@ -64,6 +64,6 @@ class Test_question_mark(unittest.FunctionalTestCase):
         self.eq('foo\nabc\nbar\nabc\nmoo\nabc\nend|', '?abc', 'r_N_foo\nabc\nbar\nabc\nmoo\n|abc\nend|')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
 
-    def test_l_question_mark(self):
-        self.eq('x\nabc\n|y\n|x', 'l_?abc', 'r_x\n|abc\ny\n|x')
-        self.eq('x\nabc\n|x\n|x\nabc\ny', 'l_?abc', 'r_x\n|abc\nx\n|x\nabc\ny')
+    def test_V(self):
+        self.eq('x\nabc\n|y\n|x', 'V_?abc', 'r_x\n|abc\ny\n|x')
+        self.eq('x\nabc\n|x\n|x\nabc\ny', 'V_?abc', 'r_x\n|abc\nx\n|x\nabc\ny')

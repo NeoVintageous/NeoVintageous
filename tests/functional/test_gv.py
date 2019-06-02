@@ -28,7 +28,7 @@ class Test_gv(unittest.FunctionalTestCase):
         self.assertVisual('a|b\nc|d\n')
         self.assertStatusLineIsVisual()
 
-    def test_l_gv(self):
+    def test_V_gv(self):
         self.vline('ab\n|cd|\ne\n')
         self.feed('<Esc>')
         self.assertNormal('ab\nc|d\ne\n')
@@ -36,7 +36,7 @@ class Test_gv(unittest.FunctionalTestCase):
         self.assertVline('ab\n|cd\n|e\n')
         self.assertStatusLineIsVisualLine()
 
-    def test_l_gv_many_lines(self):
+    def test_V_gv_many_lines(self):
         self.vline('ab\n|cd\nef|\ng\n')
         self.feed('<Esc>')
         self.assertNormal('ab\ncd\ne|f\ng\n')
@@ -44,28 +44,28 @@ class Test_gv(unittest.FunctionalTestCase):
         self.assertVline('ab\n|cd\nef\n|g\n')
         self.assertStatusLineIsVisualLine()
 
-    def test_l_gv_empty_line(self):
+    def test_V_gv_empty_line(self):
         self.vline('x\n|\n\n\n|\n\ny')
         self.feed('<Esc>')
         self.feed('gv')
         self.assertVline('x\n|\n\n\n|\n\ny')
         self.assertStatusLineIsVisualLine()
 
-    def test_l_gv_eof(self):
+    def test_V_gv_eof(self):
         self.vline('1\n|2\n3\ny|')
         self.feed('<Esc>')
         self.feed('gv')
         self.assertVline('1\n|2\n3\ny|')
         self.assertStatusLineIsVisualLine()
 
-    def test_l_gv_reverse(self):
+    def test_V_gv_reverse(self):
         self.rvline('1\n|2\n3\n|xy')
         self.feed('<Esc>')
         self.feed('gv')
         self.assertRVline('1\n|2\n3\n|xy')
         self.assertStatusLineIsVisualLine()
 
-    def test_l_gv_reverse_eof(self):
+    def test_V_gv_reverse_eof(self):
         self.rvline('1\n|2\n3\ny|')
         self.feed('<Esc>')
         self.feed('gv')
@@ -96,7 +96,7 @@ class Test_gv(unittest.FunctionalTestCase):
         self.assertVline('1111\n2222\n|    3333\n    4444\n|')
         self.assertStatusLineIsVisualLine()
 
-    def test_issue_426_l_eol_newline(self):
+    def test_issue_426_V_eol_newline(self):
         self.vline('111\n|222\n333\n|\n5')
         self.feed('<Esc>')
         self.feed('gv')

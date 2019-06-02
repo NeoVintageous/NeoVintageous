@@ -50,16 +50,16 @@ class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('212\n34')
 
     def test_l(self):
-        self.eq('x\n|ab\n|y', 'l_s', 'i_x\n|\ny')
-        self.eq('x\n|ab\ncd\n|y\n', 'l_s', 'i_x\n|\ny\n')
+        self.eq('x\n|ab\n|y', 'V_s', 'i_x\n|\ny')
+        self.eq('x\n|ab\ncd\n|y\n', 'V_s', 'i_x\n|\ny\n')
         self.assertRegister('"ab\ncd\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
         self.assertRegister('1ab\ncd\n', linewise=True)
         self.assertRegister('2ab\n', linewise=True)
 
-    def test_l_empty_lines(self):
-        self.eq('\n|\n\n|\n', 'l_s', 'i_\n|\n\n')
+    def test_V_empty_lines(self):
+        self.eq('\n|\n\n|\n', 'V_s', 'i_\n|\n\n')
         self.assertRegister('"\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')

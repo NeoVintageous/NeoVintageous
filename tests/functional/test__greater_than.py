@@ -39,7 +39,7 @@ class Test_greater_than(unittest.FunctionalTestCase):
         self.eq('x\nfi|zz\n    bu|zz\nx', 'v_>', 'n_x\n    |fizz\n        buzz\nx')
 
     def test_l(self):
-        self.eq('x\n|fizz\nbuzz\n|x', 'l_>', 'n_x\n    |fizz\n    buzz\nx')
+        self.eq('x\n|fizz\nbuzz\n|x', 'V_>', 'n_x\n    |fizz\n    buzz\nx')
 
     def test_b(self):
         self.eq('x\nf|iz|z\nb|uz|z\nx', 'b_>', 'n_x\nf|    izz\nb    uzz\nx')

@@ -50,11 +50,11 @@ class Test_j(unittest.PatchFeedCommandXpos, unittest.FunctionalTestCase):
         self.eq('|\n|aaa\n', 'v_j', '|\na|aa\n')
 
     def test_V(self):
-        self.eq('|abc\n|abc\nabc', 'l_j', '|abc\nabc\n|abc')
-        self.eq('|\n|foo\nbar', 'l_j', '|\nfoo\n|bar')
-        self.eq('r_|\n|\nbar', 'l_j', '|\n\n|bar')
-        self.eq('|foo\n|bar\nbaz', 'l_9j', '|foo\nbar\nbaz|')
-        self.eq('r_1\n|2\n3\n4\n5\n|6\n7', 'l_j', 'r_1\n2\n|3\n4\n5\n|6\n7')
+        self.eq('|abc\n|abc\nabc', 'V_j', '|abc\nabc\n|abc')
+        self.eq('|\n|foo\nbar', 'V_j', '|\nfoo\n|bar')
+        self.eq('r_|\n|\nbar', 'V_j', '|\n\n|bar')
+        self.eq('|foo\n|bar\nbaz', 'V_9j', '|foo\nbar\nbaz|')
+        self.eq('r_1\n|2\n3\n4\n5\n|6\n7', 'V_j', 'r_1\n2\n|3\n4\n5\n|6\n7')
 
     def test_d(self):
         self.eq('a|bc\nabc\nabc', 'dj', '|abc')

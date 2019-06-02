@@ -45,7 +45,7 @@ class Test_l(unittest.FunctionalTestCase):
         self.eq('r_|ab\n|', 'v_9l', 'r_ab|\n|')
 
     def test_V(self):
-        self.eq('ab\n|cd\n|ef\n', 'l_l', 'ab\n|cd\n|ef\n')
+        self.eq('ab\n|cd\n|ef\n', 'V_l', 'ab\n|cd\n|ef\n')
 
     @unittest.mock_bell()
     def test_c(self):

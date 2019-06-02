@@ -39,7 +39,7 @@ class Test_g_(unittest.FunctionalTestCase):
         self.eq('|f|izz    \nx', 'v_g_', '|fizz|    \nx')
 
     def test_V(self):
-        self.eq('fizz1\n|fizz2\n|fizz3  \nfizz4\n', 'l_2g_', 'fizz1\n|fizz2\nfizz3  \n|fizz4\n')
+        self.eq('fizz1\n|fizz2\n|fizz3  \nfizz4\n', 'V_2g_', 'fizz1\n|fizz2\nfizz3  \n|fizz4\n')
 
     def test_b(self):
         self.eq('|fi|zzbuzz\n|fi|zz    \n', 'b_g_', '|fizz|buzz\n|fizz|    \n')

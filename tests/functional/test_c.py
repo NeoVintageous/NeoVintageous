@@ -130,7 +130,7 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('1')
 
     def test_c_visual_line_sets_linewise_register(self):
-        self.eq('x\n|abc\n|y', 'l_c', 'i_x\n|y')
+        self.eq('x\n|abc\n|y', 'V_c', 'i_x\n|y')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('1abc\n', linewise=True)
         self.assertRegisterEmpty('-')

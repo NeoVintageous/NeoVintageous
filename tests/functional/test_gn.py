@@ -42,7 +42,7 @@ class Test_gn(unittest.FunctionalTestCase):
         self.eq('r_a fiz|z f|izz fizz b', 'v_gn', 'a fizz |fizz| fizz b')
 
     def test_V(self):
-        self.eq('a fizz b\n|a fizz b\n|a fizz b\n', 'l_gn', 'v_a fizz b\n|a fizz b\na fizz| b\n')
+        self.eq('a fizz b\n|a fizz b\n|a fizz b\n', 'V_gn', 'v_a fizz b\n|a fizz b\na fizz| b\n')
         self.assertStatusLineIsVisual()
 
     def test_c(self):

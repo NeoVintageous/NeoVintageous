@@ -62,6 +62,6 @@ class Test_slash(unittest.FunctionalTestCase):
         self.eq('|x abc y', 'v_/abc', '|x a|bc y')
         self.eq('x abc |y abc z', 'v_/abc', 'x abc |y a|bc z')
 
-    def test_l_slash(self):
-        self.eq('|x\n|abc\ny', 'l_/abc', '|x\nabc\n|y')
-        self.eq('abc\n|x\n|abc\ny', 'l_/abc', 'abc\n|x\nabc\n|y')
+    def test_V(self):
+        self.eq('|x\n|abc\ny', 'V_/abc', '|x\nabc\n|y')
+        self.eq('abc\n|x\n|abc\ny', 'V_/abc', 'abc\n|x\nabc\n|y')

@@ -34,14 +34,14 @@ class Test_I(unittest.FunctionalTestCase):
         self.eq('x|ab|x', 'v_I', 'i_|xabx')
         self.eq('x\na|bx|\n', 'v_I', 'i_x\n|abx\n')
         self.eq('r_xa|bc|x', 'v_I', 'i_|xabcx')
-        self.eq('x\n|ab\n|x', 'l_I', 'i_x\n|ab\nx')
-        self.eq('r_x\n|ab\n|x', 'l_I', 'i_x\n|ab\nx')
-        self.eq('r_|    fizz\n|x', 'l_I', 'i_|    fizz\nx')
-        self.eq('fizz\nbu|zz\nfi|zz', 'l_I', 'i_fizz\n|buzz\nfizz')
+        self.eq('x\n|ab\n|x', 'V_I', 'i_x\n|ab\nx')
+        self.eq('r_x\n|ab\n|x', 'V_I', 'i_x\n|ab\nx')
+        self.eq('r_|    fizz\n|x', 'V_I', 'i_|    fizz\nx')
+        self.eq('fizz\nbu|zz\nfi|zz', 'V_I', 'i_fizz\n|buzz\nfizz')
         self.assertStatusLineIsInsert()
 
     def test_V(self):
-        self.eq('x\n|two\n|y', 'l_I', 'i_x\n|two\ny')
+        self.eq('x\n|two\n|y', 'V_I', 'i_x\n|two\ny')
         self.assertStatusLineIsInsert()
 
     def test_b(self):

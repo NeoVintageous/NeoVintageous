@@ -64,11 +64,11 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('(|)|', 'v_%', 'r_|()|')
         self.eq('r_|(|)', 'v_%', '|()|')
 
-    def test_l_percent(self):
-        self.eq('|\n|', 'l_%', '|\n|')
-        self.eq('|ab\n|', 'l_%', '|ab\n|')
-        self.eq('1| \n|2', 'l_%', '1| \n|2', 'single space lines should be noop')
-        self.eq('\n|\n\n|\n', 'l_%', '\n|\n\n|\n', 'empty lines should be noop')
+    def test_V(self):
+        self.eq('|\n|', 'V_%', '|\n|')
+        self.eq('|ab\n|', 'V_%', '|ab\n|')
+        self.eq('1| \n|2', 'V_%', '1| \n|2', 'single space lines should be noop')
+        self.eq('\n|\n\n|\n', 'V_%', '\n|\n\n|\n', 'empty lines should be noop')
 
     def test_N_percent(self):
         self.eq('abc (a|bc) abc', '%', 'r_N_abc |(ab|c) abc')
@@ -98,57 +98,57 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
     def test_if_forward_vline_and_target_is_after_selection_it_should_extend_forward(self):
         start = 'x\n|f {\n|a\nb\nc\n}\nx\n'
         self.vline(start)
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertVline('x\n|f {\na\nb\nc\n}\n|x\n')
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertVline(start)
 
     def test_if_forward_vlines_and_target_is_after_selection_it_should_extend_forward(self):
         start = 'x\n|y\nz\nf {\n|a\nb\nc\n}\nx\n'
         self.vline(start)
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertVline('x\n|y\nz\nf {\na\nb\nc\n}\n|x\n')
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertVline(start)
 
     def test_if_forward_vline_and_target_is_before_selection_it_should_reverse_selection_and_extend_backward(self):
         start = 'x\nf {\na\nb\nc\n|}\n|x\n'
         self.vline(start)
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline('x\n|f {\na\nb\nc\n}\n|x\n')
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline(start)
 
     def test_if_forward_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
         start = 'x\nf {\na\n|b\nc\n}\n|x\n'
         self.vline(start)
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline('x\n|f {\na\nb\n|c\n}\nx\n')
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertVline(start)
 
     def test_if_backward_vline_and_target_is_before_selection_it_should_extend_selection(self):
         start = 'x\nf {\na\nb\nc\n|}\n|x\n'
         self.rvline(start)
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline('x\n|f {\na\nb\nc\n}\n|x\n')
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline(start)
 
     def test_if_backward_vlines_and_target_is_before_selection_it_should_extend_selection(self):
         start = 'x\nf {\na\nb\nc\n|}\nx\ny\n|z\n'
         self.rvline(start)
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline('x\n|f {\na\nb\nc\n}\nx\ny\n|z\n')
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline(start)
 
     def test_if_reverse_vlines_within_targets_and_target_is_before_selection_it_should_flip_and_reverse_selection(self):
         start = 'x\n|f {\na\nb\n|c\n}\nx\n'
         self.rvline(start)
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertVline('x\nf {\na\n|b\nc\n}\n|x\n')
-        self.feed('l_%')
+        self.feed('V_%')
         self.assertRVline(start)
 
 

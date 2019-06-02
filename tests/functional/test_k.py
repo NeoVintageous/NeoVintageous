@@ -56,10 +56,10 @@ class Test_k(unittest.PatchFeedCommandXpos, unittest.FunctionalTestCase):
         self.eq('r_fizz\nb|uz|z\n', 'v_k', 'r_f|izz\nbuz|z\n')
 
     def test_V(self):
-        self.eq('1x\nfizz\n|buzz\n|4x', 'l_k', 'r_1x\n|fizz\nbuzz\n|4x')
-        self.eq('|fizz\n|buzz\n', 'l_k', 'r_|fizz\n|buzz\n')
-        self.eq('r_1x\nfizz\n|buzz\n|4x', 'l_k', 'r_1x\n|fizz\nbuzz\n|4x')
-        self.eq('1x\n|fizz\nbuzz\n|4x', 'l_k', '1x\n|fizz\n|buzz\n4x')
+        self.eq('1x\nfizz\n|buzz\n|4x', 'V_k', 'r_1x\n|fizz\nbuzz\n|4x')
+        self.eq('|fizz\n|buzz\n', 'V_k', 'r_|fizz\n|buzz\n')
+        self.eq('r_1x\nfizz\n|buzz\n|4x', 'V_k', 'r_1x\n|fizz\nbuzz\n|4x')
+        self.eq('1x\n|fizz\nbuzz\n|4x', 'V_k', '1x\n|fizz\n|buzz\n4x')
 
     def test_d(self):
         self.eq('1\n2\n|3\n4\n5', 'dk', '1\n|4\n5')

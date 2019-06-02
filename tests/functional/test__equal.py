@@ -33,7 +33,7 @@ class Test_equal(unittest.FunctionalTestCase):
         self.eq('def x():\n|x=1\nx=2\nx=3\n\nx=4\n', 'v_=}', 'n_def x():\n  |x=1\n  x=2\n  x=3\n\nx=4\n')
 
     def test_V(self):
-        self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'l_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
+        self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'V_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
 
     def test_b(self):
         self.eq('def x():\n|x = |1\n|x = |2\nx = 3\n', 'b_=', 'n_def x():\n  x = 1\n  |x = 2\nx = 3\n')

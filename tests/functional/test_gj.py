@@ -50,6 +50,6 @@ class Test_gj(unittest.FunctionalTestCase):
         self.eq('1|234567890', 'v_gj', '1|234567|890')
         self.eq('1|23|4567890', 'v_gj', '1|2345678|90')
 
-    def test_l_gj(self):
-        self.eq('|123\n|456\nx\n', 'l_gj', '|123\n456\n|x\n')
-        self.eq('x\n|123456\n|123456\ny', 'l_gj', 'x\n|123456\n123456\n|y')
+    def test_V(self):
+        self.eq('|123\n|456\nx\n', 'V_gj', '|123\n456\n|x\n')
+        self.eq('x\n|123456\n|123456\ny', 'V_gj', 'x\n|123456\n123456\n|y')

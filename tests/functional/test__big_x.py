@@ -45,6 +45,6 @@ class Test_X(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegistersEmpty('-0')
 
     def test_V(self):
-        self.eq('one\n|two\n|three', 'l_X', 'n_one\n|three')
+        self.eq('one\n|two\n|three', 'V_X', 'n_one\n|three')
         self.assertRegistersEqual('"1', 'two\n', linewise=True)
         self.assertRegistersEmpty('-0')

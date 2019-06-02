@@ -151,14 +151,14 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('f|iz|z\nf|iz|z\nf|iz|z\nfizz', 's_d', 'n_f|z\nf|z\nf|z\nfizz')
 
     def test_V_d_visual_line_sets_linewise_register(self):
-        self.eq('x\n|abc\n|y', 'l_d', 'n_x\n|y')
+        self.eq('x\n|abc\n|y', 'V_d', 'n_x\n|y')
         self.assertRegister('"abc\n', linewise=True)
         self.assertRegister('1abc\n', linewise=True)
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
     def test_V_d_puts_cursors_on_first_non_blank(self):
-        self.eq('    x\n|    a\n    b\n|    y\n', 'l_d', 'n_    x\n    |y\n')
+        self.eq('    x\n|    a\n    b\n|    y\n', 'V_d', 'n_    x\n    |y\n')
         self.assertRegister('"    a\n    b\n', linewise=True)
         self.assertRegister('1    a\n    b\n', linewise=True)
         self.assertRegisterEmpty('-')

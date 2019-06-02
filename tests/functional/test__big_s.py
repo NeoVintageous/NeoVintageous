@@ -43,7 +43,7 @@ class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('0')
 
     def test_l(self):
-        self.eq('one\n|two\n|three', 'l_S', 'i_one\n|three')
+        self.eq('one\n|two\n|three', 'V_S', 'i_one\n|three')
         self.assertRegister('"two\n', linewise=True)
         self.assertRegister('1two\n', linewise=True)
         self.assertRegisterEmpty('-')

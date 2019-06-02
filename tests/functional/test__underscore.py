@@ -46,13 +46,13 @@ class Test_underscore(unittest.FunctionalTestCase):
         self.eq('r_|fiz|z\n  buzz\n', 'v_2_', 'fi|zz\n  b|uzz\n')
 
     def test_V(self):
-        self.eq('fizz1\n|fizz2\n|fizz3\nfizz4\n', 'l_2_', 'fizz1\n|fizz2\nfizz3\n|fizz4\n')
-        self.eq('fizz1\n|fizz2\n|fizz3\nfizz4\n5', 'l_3_', 'fizz1\n|fizz2\nfizz3\nfizz4\n|5')
-        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5', 'l_2_', 'r_fizz1\n|fizz2\n|fizz3\nfizz4\n5')
-        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5', 'l_3_', 'fizz1\n|fizz2\nfizz3\n|fizz4\n5')
-        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5', 'l_4_', 'fizz1\n|fizz2\nfizz3\nfizz4\n|5')
-        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5x', 'l_6_', 'fizz1\n|fizz2\nfizz3\nfizz4\n5x|')
-        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5x', 'l_9_', 'fizz1\n|fizz2\nfizz3\nfizz4\n5x|')
+        self.eq('fizz1\n|fizz2\n|fizz3\nfizz4\n', 'V_2_', 'fizz1\n|fizz2\nfizz3\n|fizz4\n')
+        self.eq('fizz1\n|fizz2\n|fizz3\nfizz4\n5', 'V_3_', 'fizz1\n|fizz2\nfizz3\nfizz4\n|5')
+        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5', 'V_2_', 'r_fizz1\n|fizz2\n|fizz3\nfizz4\n5')
+        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5', 'V_3_', 'fizz1\n|fizz2\nfizz3\n|fizz4\n5')
+        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5', 'V_4_', 'fizz1\n|fizz2\nfizz3\nfizz4\n|5')
+        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5x', 'V_6_', 'fizz1\n|fizz2\nfizz3\nfizz4\n5x|')
+        self.eq('r_|fizz1\nfizz2\n|fizz3\nfizz4\n5x', 'V_9_', 'fizz1\n|fizz2\nfizz3\nfizz4\n5x|')
 
     def test_b(self):
         self.eq('  fiz|zbu|zz\n  fiz|zbu|zz\n', 'b__', 'r_  |fizz|buzz\n  |fizz|buzz\n')

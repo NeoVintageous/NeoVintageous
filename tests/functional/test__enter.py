@@ -30,6 +30,6 @@ class Test_enter(unittest.FunctionalTestCase):
         self.eq('1\n|2\n3\n4\n5\n    fizz\n7', 'v_4<CR>', '1\n|2\n3\n4\n5\n    f|izz\n7')
 
     def test_V(self):
-        self.eq('1\n|fizz\n|buzz\n4', 'l_<CR>', '1\n|fizz\nbuzz\n|4')
-        self.eq('1\n|fizz\nbuzz\n|three\nfour\n', 'l_<CR>', '1\n|fizz\nbuzz\nthree\n|four\n')
-        self.eq('r_1\n|fizz\nbuzz\n|three\n', 'l_<CR>', 'r_1\nfizz\n|buzz\n|three\n')
+        self.eq('1\n|fizz\n|buzz\n4', 'V_<CR>', '1\n|fizz\nbuzz\n|4')
+        self.eq('1\n|fizz\nbuzz\n|three\nfour\n', 'V_<CR>', '1\n|fizz\nbuzz\nthree\n|four\n')
+        self.eq('r_1\n|fizz\nbuzz\n|three\n', 'V_<CR>', 'r_1\nfizz\n|buzz\n|three\n')

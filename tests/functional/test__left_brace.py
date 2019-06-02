@@ -41,14 +41,14 @@ class Test_left_brace(unittest.FunctionalTestCase):
         self.eq('|1\n2\n\n3\n4\n\n|5\n', 'v_{', '|1\n2\n\n|3\n4\n\n5\n')
 
     def test_V(self):
-        self.eq('|1\n2\n\n3\n\n\n\n4\n5|', 'l_{', '|1\n2\n\n3\n\n\n\n|4\n5')
-        self.eq('3\n\n\n\n4\n|fizz\n5|', 'l_{', 'r_3\n\n\n|\n4\nfizz\n|5')
-        self.eq('r_1\n2\n\n3\n\n\n\n4\n|5|', 'l_{', 'r_1\n2\n\n3\n\n\n|\n4\n5|')
-        self.eq('r_1\n2\n\n3\n\n|\n\n4\n5|', 'l_{', 'r_1\n2\n|\n3\n\n\n\n4\n5|')
-        self.eq('|fizz\n|', 'l_{', 'r_|fizz\n|')
-        self.eq('|fizz|', 'l_{', 'r_|fizz|')
-        self.eq('|x\n|', 'l_{', 'r_|x\n|')
-        self.eq('|x|', 'l_{', 'r_|x|')
+        self.eq('|1\n2\n\n3\n\n\n\n4\n5|', 'V_{', '|1\n2\n\n3\n\n\n\n|4\n5')
+        self.eq('3\n\n\n\n4\n|fizz\n5|', 'V_{', 'r_3\n\n\n|\n4\nfizz\n|5')
+        self.eq('r_1\n2\n\n3\n\n\n\n4\n|5|', 'V_{', 'r_1\n2\n\n3\n\n\n|\n4\n5|')
+        self.eq('r_1\n2\n\n3\n\n|\n\n4\n5|', 'V_{', 'r_1\n2\n|\n3\n\n\n\n4\n5|')
+        self.eq('|fizz\n|', 'V_{', 'r_|fizz\n|')
+        self.eq('|fizz|', 'V_{', 'r_|fizz|')
+        self.eq('|x\n|', 'V_{', 'r_|x\n|')
+        self.eq('|x|', 'V_{', 'r_|x|')
 
     def test_d(self):
         self.eq('fizz\n\n\n\nb|uzz', 'd{', 'fizz\n\n\n|uzz')

@@ -53,12 +53,12 @@ class Test_M(unittest.FunctionalTestCase):
 
     @unittest.mock_ui()
     def test_V(self):
-        self.eq('|1\n2\n|3\n4\n5\n6', 'l_M', '|1\n2\n3\n|4\n5\n6')
-        self.eq('|1\n2\n3\n4\n5\n|6', 'l_M', '|1\n2\n3\n|4\n5\n6')
-        self.eq('r_1\n2\n3\n|4\n5\n|6', 'l_M', 'r_1\n2\n|3\n4\n5\n|6')
-        self.eq('r_1\n|2\n3\n4\n5\n|6', 'l_M', 'r_1\n2\n|3\n4\n5\n|6')
-        self.eq('1\n2\n3\n|4\n5\n|6', 'l_M', 'r_1\n2\n|3\n4\n|5\n6')
-        self.eq('r_|1\n2\n|3\n4\n5\n6', 'l_M', '1\n|2\n3\n|4\n5\n6')
+        self.eq('|1\n2\n|3\n4\n5\n6', 'V_M', '|1\n2\n3\n|4\n5\n6')
+        self.eq('|1\n2\n3\n4\n5\n|6', 'V_M', '|1\n2\n3\n|4\n5\n6')
+        self.eq('r_1\n2\n3\n|4\n5\n|6', 'V_M', 'r_1\n2\n|3\n4\n5\n|6')
+        self.eq('r_1\n|2\n3\n4\n5\n|6', 'V_M', 'r_1\n2\n|3\n4\n5\n|6')
+        self.eq('1\n2\n3\n|4\n5\n|6', 'V_M', 'r_1\n2\n|3\n4\n|5\n6')
+        self.eq('r_|1\n2\n|3\n4\n5\n6', 'V_M', '1\n|2\n3\n|4\n5\n6')
 
     @unittest.mock_ui()
     def test_c(self):

@@ -60,7 +60,7 @@ class Test_right_paren(unittest.FunctionalTestCase):
         self.eq('|a b c! xyz', 'v_)', '|a b c! x|yz')
 
     def test_V(self):
-        self.eq('1\n|fizz. buzz.\n|fizz. buzz.\n4', 'l_)', '1\n|fizz. buzz.\nfizz. buzz.\n|4')
+        self.eq('1\n|fizz. buzz.\n|fizz. buzz.\n4', 'V_)', '1\n|fizz. buzz.\nfizz. buzz.\n|4')
 
     def test_d(self):
         self.eq('|a b c. xy', 'd)', '|xy')

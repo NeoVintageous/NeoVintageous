@@ -575,7 +575,7 @@ _CHAR2MODE = {
     'n': NORMAL,
     's': SELECT,
     'v': VISUAL,
-    'l': VISUAL_LINE,
+    'V': VISUAL_LINE,
     'b': VISUAL_BLOCK
 }
 
@@ -620,7 +620,7 @@ class FunctionalTestCase(ViewTestCase):
         orig_seq = seq
         seq_args = {}  # type: dict
 
-        if seq[0] in 'vinlbs' and (len(seq) > 1 and seq[1] == '_'):
+        if seq[0] in 'vinVbs' and (len(seq) > 1 and seq[1] == '_'):
             seq_args['mode'] = _CHAR2MODE[seq[0]]
             seq = seq[2:]
 
@@ -682,7 +682,7 @@ class FunctionalTestCase(ViewTestCase):
         #   * n_ - Normal
         #   * i_ - Insert
         #   * v_ - Visual
-        #   * l_ - Visual line
+        #   * V_ - Visual line
         #   * b_ - Visual block
         #   * s_ - Select
         #   * R_ - Replace
@@ -725,19 +725,19 @@ class FunctionalTestCase(ViewTestCase):
         else:
             reverse_expected = False
 
-        is_feed_visual = feed[0] in 'vlb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>'))
+        is_feed_visual = feed[0] in 'vVb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>'))
 
-        if feed[:2] in ('l_', 'b_', 'i_', 'N_', 's_'):
+        if feed[:2] in ('V_', 'b_', 'i_', 'N_', 's_'):
             text_mode = feed[0]
         elif is_feed_visual:
             text_mode = 'v'
         else:
             text_mode = 'n'
 
-        if expected[:2] in ('n_', 'v_', 'l_', 'b_', 'i_', 'N_', 's_', 'R_'):
+        if expected[:2] in ('n_', 'v_', 'V_', 'b_', 'i_', 'N_', 's_', 'R_'):
             expected_mode = expected[0]
             expected = expected[2:]
-        elif feed[:2] in ('l_', 'b_', 'i_', 'N_', 's_'):
+        elif feed[:2] in ('V_', 'b_', 'i_', 'N_', 's_'):
             expected_mode = feed[0]
         elif is_feed_visual:
             expected_mode = 'v'
@@ -751,7 +751,7 @@ class FunctionalTestCase(ViewTestCase):
                 self.rvisual(text)
             else:
                 self.visual(text)
-        elif text_mode == 'l':
+        elif text_mode == 'V':
             if reverse_text:
                 self.rvline(text)
             else:
@@ -786,7 +786,7 @@ class FunctionalTestCase(ViewTestCase):
                 self.assertRVisual(expected, msg)
             else:
                 self.assertVisual(expected, msg)
-        elif expected_mode == 'l':
+        elif expected_mode == 'V':
             if reverse_expected:
                 self.assertRVline(expected, msg)
             else:
@@ -1163,6 +1163,7 @@ _SEQ2CMD = {
     'Tx':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241
+    'V_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
     'W':            {'command': '_vi_big_w'},  # noqa: E241
     'X':            {'command': '_vi_big_x'},  # noqa: E241
     'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
@@ -1430,7 +1431,6 @@ _SEQ2CMD = {
     'j':            {'command': '_vi_j'},  # noqa: E241
     'k':            {'command': '_vi_k'},  # noqa: E241
     'l':            {'command': '_vi_l'},  # noqa: E241
-    'l_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
     'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
     'p':            {'command': '_vi_p', 'args': {'register': '"'}},  # noqa: E241

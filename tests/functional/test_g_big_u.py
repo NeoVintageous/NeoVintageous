@@ -29,4 +29,4 @@ class Test_gU(unittest.FunctionalTestCase):
         self.eq('f|izz b|uzz', 'v_gU', 'n_f|IZZ Buzz')
 
     def test_V_gU(self):
-        self.eq('x\n|one\n|y', 'l_gU', 'n_x\n|ONE\ny')
+        self.eq('x\n|one\n|y', 'V_gU', 'n_x\n|ONE\ny')

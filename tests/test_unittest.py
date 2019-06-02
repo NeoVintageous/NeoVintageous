@@ -523,7 +523,7 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
         self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.INSERT})
         self.instance.feed('n_b')
         self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.NORMAL})
-        self.instance.feed('l_b')
+        self.instance.feed('V_b')
         self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.VISUAL_LINE})
         self.instance.feed('b_b')
         self.window.run_command.assert_called_with('cmd_b', {'mode': unittest.VISUAL_BLOCK})
@@ -538,7 +538,7 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.INSERT})
         self.instance.feed('n_w')
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.NORMAL})
-        self.instance.feed('l_w')
+        self.instance.feed('V_w')
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_LINE})
         self.instance.feed('b_w')
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_BLOCK})
@@ -553,7 +553,7 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.INSERT, 'count': 2})
         self.instance.feed('n_2w')
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.NORMAL, 'count': 2})
-        self.instance.feed('l_2w')
+        self.instance.feed('V_2w')
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_LINE, 'count': 2})
         self.instance.feed('b_2w')
         self.window.run_command.assert_called_with('cmd_w', {'mode': unittest.VISUAL_BLOCK, 'count': 2})
@@ -696,7 +696,7 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_assertNormal_visual_line(self):
-        self.instance.eq('a', 'b', 'l_c')
+        self.instance.eq('a', 'b', 'V_c')
         self.assert_normal('a')
         self.assert_feed('b')
         self.assert_assertVline('c', None)
@@ -744,7 +744,7 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_normal_assertNormal_visual_line(self):
-        self.instance.eq('a', 'n_b', 'l_c')
+        self.instance.eq('a', 'n_b', 'V_c')
         self.assert_normal('a')
         self.assert_feed('n_b')
         self.assert_assertVline('c', None)
@@ -774,15 +774,15 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_visual_assertNormal_visual_line(self):
-        self.instance.eq('a', 'v_b', 'l_c')
+        self.instance.eq('a', 'v_b', 'V_c')
         self.assert_visual('a')
         self.assert_feed('v_b')
         self.assert_assertVline('c', None)
 
     def test_eq_visual_line(self):
-        self.instance.eq('a', 'l_b', 'c')
+        self.instance.eq('a', 'V_b', 'c')
         self.assert_vline('a')
-        self.assert_feed('l_b')
+        self.assert_feed('V_b')
         self.assert_assertVline('c', None)
 
     def test_eq_vselect(self):
@@ -798,27 +798,27 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.assert_assertRVSelect('c', None)
 
     def test_eq_visual_line_assertNormal_insert(self):
-        self.instance.eq('a', 'l_b', 'i_c')
+        self.instance.eq('a', 'V_b', 'i_c')
         self.assert_vline('a')
-        self.assert_feed('l_b')
+        self.assert_feed('V_b')
         self.assert_assertInsert('c', None)
 
     def test_eq_visual_line_assertNormal_normal(self):
-        self.instance.eq('a', 'l_b', 'n_c')
+        self.instance.eq('a', 'V_b', 'n_c')
         self.assert_vline('a')
-        self.assert_feed('l_b')
+        self.assert_feed('V_b')
         self.assert_assertNormal('c', None)
 
     def test_eq_visual_line_assertNormal_visual(self):
-        self.instance.eq('a', 'l_b', 'v_c')
+        self.instance.eq('a', 'V_b', 'v_c')
         self.assert_vline('a')
-        self.assert_feed('l_b')
+        self.assert_feed('V_b')
         self.assert_assertVisual('c', None)
 
     def test_eq_visual_line_assertNormal_visual_block(self):
-        self.instance.eq('a', 'l_b', 'b_c')
+        self.instance.eq('a', 'V_b', 'b_c')
         self.assert_vline('a')
-        self.assert_feed('l_b')
+        self.assert_feed('V_b')
         self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_visual_block(self):
@@ -852,7 +852,7 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.assert_assertVblock('c', DIRECTION_DOWN)
 
     def test_eq_visual_block_assertNormal_visual_line(self):
-        self.instance.eq('a', 'b_b', 'l_c')
+        self.instance.eq('a', 'b_b', 'V_c')
         self.assert_vblock('a', DIRECTION_DOWN)
         self.assert_feed('b_b')
         self.assert_assertVline('c', None)
