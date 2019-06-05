@@ -2,22 +2,22 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.16.0 - Unreleased
+## 1.16.0 - 2019-06-05
 
 ### Added
 
-* Added [#48](https://github.com/NeoVintageous/NeoVintageous/issues/48): `gP` just like `P`, but leave the cursor just after the new text
 * Added [#48](https://github.com/NeoVintageous/NeoVintageous/issues/48): `gp` just like `p`, but leave the cursor just after the new text
+* Added [#48](https://github.com/NeoVintageous/NeoVintageous/issues/48): `gP` just like `P`, but leave the cursor just after the new text
 * Added [#339](https://github.com/NeoVintageous/NeoVintageous/issues/339): `[p` and `[P` like `P`, but adjust the indent to current line
 * Added [#339](https://github.com/NeoVintageous/NeoVintageous/issues/339): `]p` and `]P` like `p`, but adjust the indent to current line
 * Added [#578](https://github.com/NeoVintageous/NeoVintageous/issues/578): Support trailing sequences in command mappings
 * Added [#577](https://github.com/NeoVintageous/NeoVintageous/issues/577): `<C-Down>` (alias of `j` and `<down>`) can now be mapped
 * Added [#576](https://github.com/NeoVintageous/NeoVintageous/issues/576): `<C-Up>` (alias of `k` and `<up>`) can now be mapped
-* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `J` go to last child (sidebar mode)
-* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to parent (sidebar mode)
-* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to root (sidebar mode)
-* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `q` close the sidebar (sidebar mode)
-* Added [#575](https://github.com/NeoVintageous/NeoVintageous/issues/575): `x` delete characters under cursor (multi cursor mode)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `J` go to last child (sidebar)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to parent (sidebar)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `p` go to root (sidebar)
+* Added [#574](https://github.com/NeoVintageous/NeoVintageous/issues/574): `q` close (sidebar)
+* Added [#575](https://github.com/NeoVintageous/NeoVintageous/issues/575): `x` delete characters under cursor in multi cursor mode
 
 ### Fixed
 
