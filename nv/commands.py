@@ -1012,17 +1012,22 @@ class _vi_gq(ViTextCommandBase):
                 self.view.sel().add(first_non_ws_char_region.begin())
 
         elif mode == INTERNAL_NORMAL:
-            if motion is None:
-                raise ValueError('motion data required')
+            if motion is None and not linewise:
+                raise ValueError('motion is required or must be linewise')
 
             self.save_sel()
-            run_motion(self.view, motion)
+
+            if motion:
+                run_motion(self.view, motion)
+            else:
+                regions_transform_extend_to_line_count(self.view, count)
+
             if self.has_sel_changed():
                 self.save_sel()
                 self.view.run_command(get_wrap_lines_command(self.view))
                 self.view.sel().clear()
 
-                if 'is_jump' in motion and motion['is_jump']:
+                if motion and 'is_jump' in motion and motion['is_jump']:
                     # Cursors should move to end position of motion (exclusive-linewise).
                     self.view.sel().add_all(self.old_sel)
                 else:

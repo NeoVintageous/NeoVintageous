@@ -22,7 +22,8 @@ class Test_gq(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.view.settings().set('WrapPlus.include_line_endings', None)
+        self.settings().set('WrapPlus.include_line_endings', None)
+        self.settings().set('wrap_width', 80)
 
     def test_gqip(self):
         self.eq('|aaa\nbbb\nccc\n', 'gqip', '|aaa bbb ccc\n')
@@ -56,6 +57,11 @@ class Test_gq(unittest.FunctionalTestCase):
 
 
 class Test_gq_python_syntax(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.settings().set('WrapPlus.include_line_endings', None)
+        self.settings().set('wrap_width', 80)
 
     def feed(self, seq):
         self.syntax('Packages/Python/Python.sublime-syntax')

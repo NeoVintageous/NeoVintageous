@@ -1400,7 +1400,9 @@ _SEQ2CMD = {
     'gn':           {'command': '_vi_search'},  # noqa: E241
     'gp':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_cursor': True}},  # noqa: E241,E501
     'gq':           {'command': '_vi_gq'},  # noqa: E241
+    'gqgq':         {'command': '_vi_gq', 'args': {'linewise': True}},  # noqa: E241
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'gqq':          {'command': '_vi_gq', 'args': {'linewise': True}},  # noqa: E241
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'is_jump': True, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
     'gu':           {'command': '_vi_gu'},  # noqa: E241
     'guis':         {'command': '_vi_gu', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 's'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501

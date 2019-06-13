@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.0 - Unreleased
+
+### Added
+
+* Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqq` format the current line with a count format that many lines
+* Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqgq` format the current line with a count format that many lines (alias of `gqq`)
+
 ## 1.16.1 - 2019-06-13
 
 ### Fixed

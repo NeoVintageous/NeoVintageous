@@ -138,7 +138,7 @@ def regions_transform_to_first_non_blank(view):
 
 def regions_transform_extend_to_line_count(view, count):
     def f(view, s):
-        if count > 1:
+        if count > 0:
             s.a = view.line(s.begin()).a
             s.b = view.line(view.text_point(row_at(view, s.a) + (count - 1), 0)).b
 

@@ -859,6 +859,25 @@ class ViReformat(ViOperatorDef):
         }
 
 
+@assign(seqs.GQGQ, (NORMAL,))
+@assign(seqs.GQQ, (NORMAL,))
+class ViReformatLinewise(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_gq',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'linewise': True
+            }
+        }
+
+
 @assign(seqs.P, _ACTION_MODES)
 class ViPasteAfter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
