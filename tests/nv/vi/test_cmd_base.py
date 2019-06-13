@@ -77,11 +77,6 @@ class TestViCommandDefBase(unittest.TestCase):
         self.command.command = 'fizz'
         self.assertEqual('<ViCommandDefBase>', str(self.command))
 
-    def test__getitem__(self):
-        self.command.foo = 'bar'
-        self.assertEqual('bar', self.command.foo)
-        self.assertEqual('bar', self.command['foo'])
-
 
 class ViCommandDefBaseImplementation(ViCommandDefBase):
     pass

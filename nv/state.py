@@ -599,13 +599,6 @@ class State(object):
                 _log.debug('error updating xpos; default to 0')
                 self.xpos = 0
 
-    def _set_parsers(self, command):
-        # type: (ViCommandDefBase) -> None
-        if command.accept_input and command.input_parser:
-            if not self.non_interactive:
-                if command.input_parser.is_type_via_panel():
-                    command.input_parser.run_command()
-
     def process_input(self, key):
         # type: (str) -> bool
         _log.info('process input key %s', key)
@@ -647,7 +640,6 @@ class State(object):
 
         if isinstance(command, ViMotionDef):
             if is_runnable:
-                # We already have a motion, so this looks like an error.
                 raise ValueError('too many motions')
 
             self.motion = command
@@ -655,22 +647,22 @@ class State(object):
             if self.mode == OPERATOR_PENDING:
                 self.mode = NORMAL
 
-            self._set_parsers(command)
-
         elif isinstance(command, ViOperatorDef):
             if is_runnable:
-                # We already have an action, so this looks like an error.
                 raise ValueError('too many actions')
 
             self.action = command
 
-            if (self.action.motion_required and not is_visual_mode(self.mode)):
+            if command.motion_required and not is_visual_mode(self.mode):
                 self.mode = OPERATOR_PENDING
-
-            self._set_parsers(command)
 
         else:
             raise ValueError('unexpected command type')
+
+        if command.accept_input and command.input_parser:
+            if not self.non_interactive:
+                if command.input_parser.is_type_via_panel():
+                    command.input_parser.run_command()
 
     def get_visual_repeat_data(self):
         # Return the data needed to restore visual selections.
@@ -734,7 +726,7 @@ class State(object):
 
             return True
 
-        if (action and (not action['motion_required'] or is_visual_mode(mode))):
+        if (action and (not action.motion_required or is_visual_mode(mode))):
             if mode == OPERATOR_PENDING:
                 raise ValueError('action has invalid mode')
 

@@ -633,7 +633,7 @@ class _nv_feed_key(ViWindowCommandBase):
             if self._handle_missing_command(state, command):
                 return
 
-            if not command['motion_required']:
+            if not command.motion_required:
                 state.mode = NORMAL
 
         state.set_command(command)

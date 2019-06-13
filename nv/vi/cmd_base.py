@@ -27,10 +27,6 @@ class ViCommandDefBase:
         self.input_parser = None
         self.inp = ''
 
-    # TODO For compatibility. Should be removed eventually.
-    def __getitem__(self, key):
-        return self.__dict__[key]
-
     def __str__(self):
         return '<{}>'.format(self.__class__.__qualname__)
 
