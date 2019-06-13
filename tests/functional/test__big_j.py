@@ -78,7 +78,7 @@ class Test_J_c_syntax(unittest.FunctionalTestCase):
     def feed(self, seq):
         # Test against a specific syntax, because views that
         # have no syntax applied have no comment behaviours.
-        self.view.assign_syntax('Packages/C++/C.sublime-syntax')
+        self.syntax('Packages/C++/C.sublime-syntax')
         super().feed(seq)
 
     def test_J_strips_leading_comment_tokens(self):
@@ -109,7 +109,7 @@ class Test_J_python_syntax(unittest.FunctionalTestCase):
     def feed(self, seq):
         # Test against a specific syntax, because views that
         # have no syntax applied have no comment behaviours.
-        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+        self.syntax('Packages/Python/Python.sublime-syntax')
         super().feed(seq)
 
     def test_J_strips_leading_comment_tokens(self):

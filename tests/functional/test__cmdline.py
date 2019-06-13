@@ -25,7 +25,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.view.settings().set('_nv_ex_mode', True)
+        self.settings().set('_nv_ex_mode', True)
         reset_cmdline_completion_state()
 
     # TODO [refactor] Into usable run test command-line mode command via feed.

@@ -143,6 +143,9 @@ class ViewTestCase(unittest.TestCase):
     def settings(self):
         return self.view.settings()
 
+    def syntax(self, syntax_file):
+        self.view.assign_syntax(syntax_file)
+
     def fixturePath(self, *args):
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
 

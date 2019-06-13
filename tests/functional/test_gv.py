@@ -83,7 +83,7 @@ class Test_gv(unittest.FunctionalTestCase):
     def test_noop(self):
         self.normal('a|bc')
         self.view.erase_regions('visual_sel')
-        self.view.settings().erase('_nv_visual_sel_mode')
+        self.settings().erase('_nv_visual_sel_mode')
         self.feed('gv')
         self.assertNormal('a|bc')
         self.assertStatusLineIsBlank()

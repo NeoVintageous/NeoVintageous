@@ -58,7 +58,7 @@ class Test_gq(unittest.FunctionalTestCase):
 class Test_gq_python_syntax(unittest.FunctionalTestCase):
 
     def feed(self, seq):
-        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+        self.syntax('Packages/Python/Python.sublime-syntax')
         super().feed(seq)
 
     def test_gqip(self):

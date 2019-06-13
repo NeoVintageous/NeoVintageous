@@ -81,7 +81,7 @@ class Test_percent_in_php_syntax(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.view.assign_syntax('Packages/PHP/PHP.sublime-syntax')
+        self.syntax('Packages/PHP/PHP.sublime-syntax')
 
     def test_percent(self):
         self.eq('<?php\nfunct|ion x() {\n//...\n}\n', 'n_%', '<?php\nfunction x(|) {\n//...\n}\n')
@@ -156,7 +156,7 @@ class Test_percent_tags(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.view.assign_syntax('Packages/HTML/HTML.sublime-syntax')
+        self.syntax('Packages/HTML/HTML.sublime-syntax')
 
     def test_percent(self):
         self.eq('|<div>fizz</div>', 'n_%', '<div|>fizz</div>')

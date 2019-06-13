@@ -25,7 +25,7 @@ class Test_greater_than_greater_than(unittest.FunctionalTestCase):
         self.settings().set('translate_tabs_to_spaces', True)
         self.settings().set('tab_size', 2)
 
-    def test_N(self):
+    def test_n(self):
         self.eq('x\n|ab\nx', '>>', 'x\n  |ab\nx')
         self.eq('x\n  fi|zz\nx', '>>', 'x\n    |fizz\nx')
         self.eq('x\n|  fizz\nx', '>>', 'x\n    |fizz\nx')

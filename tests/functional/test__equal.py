@@ -22,7 +22,7 @@ class Test_equal(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+        self.syntax('Packages/Python/Python.sublime-syntax')
         self.settings().set('translate_tabs_to_spaces', True)
         self.settings().set('tab_size', 2)
 

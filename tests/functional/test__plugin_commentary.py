@@ -23,7 +23,7 @@ class TestCommentary(unittest.FunctionalTestCase):
     def feed(self, seq):
         # Assign a specific syntax before feed, because our  tests would fail,
         # because views that have no syntax applied have no comment behaviours.
-        self.view.assign_syntax('Packages/Python/Python.sublime-syntax')
+        self.syntax('Packages/Python/Python.sublime-syntax')
         super().feed(seq)
 
     def test_gcc_comment(self):
@@ -75,7 +75,7 @@ class TestCommentaryPHP(unittest.FunctionalTestCase):
     def feed(self, seq):
         # Assign a specific syntax before feed, because our  tests would fail,
         # because views that have no syntax applied have no comment behaviours.
-        self.view.assign_syntax('Packages/PHP/PHP.sublime-syntax')
+        self.syntax('Packages/PHP/PHP.sublime-syntax')
         super().feed(seq)
 
     def test_v_gc(self):
