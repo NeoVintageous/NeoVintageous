@@ -83,13 +83,13 @@ class key_names:
     HOME = '<home>'
     LEFT = '<left>'
     LESS_THAN = '<lt>'
+    PAGE_DOWN = '<pagedown>'
+    PAGE_UP = '<pageup>'
     RIGHT = '<right>'
     SPACE = '<sp>'
     SPACE_LONG = '<space>'
     TAB = '<tab>'
     UP = '<up>'
-    PAGE_UP = '<pageup>'
-    PAGE_DOWN = '<pagedown>'
 
     F1 = '<f1>'
     F2 = '<f2>'
@@ -106,6 +106,7 @@ class key_names:
     F13 = '<f13>'
     F14 = '<f14>'
     F15 = '<f15>'
+
     Leader = '<leader>'
 
     as_list = [
