@@ -968,6 +968,7 @@ def ex_snoremap(lhs=None, rhs=None, **kwargs):
 def ex_sort(view, options='', **kwargs):
     case_sensitive = True if 'i' not in options else False
 
+    view.run_command('mark_undo_groups_for_gluing')
     view.run_command('sort_lines', {'case_sensitive': case_sensitive})
 
     if 'u' in options:
@@ -979,6 +980,7 @@ def ex_sort(view, options='', **kwargs):
     regions_transformer(view, f)
     enter_normal_mode(view, None)
     view.show(view.sel()[-1], False)
+    view.run_command('glue_marked_undo_groups')
 
 
 def ex_split(window, file=None, **kwargs):
