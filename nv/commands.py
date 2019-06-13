@@ -2263,6 +2263,8 @@ class _vi_paste(ViTextCommandBase):
         if not contents:
             return status_message('E353: Nothing in register ' + register)
 
+        _log.debug('paste %s count=%s register=%s before=%s indent=%s end=%s linewise=%s content >>>%s<<<', mode, count, register, before_cursor, adjust_indent, adjust_cursor, linewise, contents)  # noqa: E501
+
         sels = list(self.view.sel())
 
         # The register contents are concatenated into one string when the
@@ -2314,7 +2316,8 @@ class _vi_paste(ViTextCommandBase):
                 # is put at the start of of the text pasted, otherwise the cursor is
                 # put on the last character of the text pasted.
                 else:
-                    if before_cursor:
+                    # Paste before the cursor if the current line is empty.
+                    if before_cursor or self.view.line(sel.a).empty():
                         pt = sel.a
                     else:
                         pt = min(sel.a + 1, self.view.size())

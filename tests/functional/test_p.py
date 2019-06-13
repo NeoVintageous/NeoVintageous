@@ -57,6 +57,8 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('|', 'p', '|fizz\nbuzz\n')
         self.eq('x\na|bc\ny', 'p', 'x\nabc\n|fizz\nbuzz\ny')
         self.eq('x\na|bc\ny', '2p', 'x\nabc\n|fizz\nbuzz\nfizz\nbuzz\ny')
+        self.register('"', 'buzz')
+        self.eq('fizz\n|\na\nb', 'p', 'fizz\nbuz|z\na\nb')
 
     def test_n_multi_cursor(self):
         self.register('"', ['fizz', 'buzz'])

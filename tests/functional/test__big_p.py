@@ -31,6 +31,8 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x|y', '2P', 'xabcab|cy')
         self.eq('x|y', '3P', 'xabcabcab|cy')
         self.eq('|', 'P', 'ab|c')
+        self.register('"', 'buzz')
+        self.eq('fizz\n|\na\nb', 'P', 'fizz\nbuz|z\na\nb')
 
     def test_n_characterwise_content_multiline(self):
         self.register('"fizz\nbuzz')

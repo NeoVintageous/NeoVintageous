@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#581](https://github.com/NeoVintageous/NeoVintageous/issues/581): Pasting complete line is invading new line
 * Fixed [#582](https://github.com/NeoVintageous/NeoVintageous/issues/582): `u` (undo) after `:sort u` command needs to be pressed twice to fully undo
 
 ## 1.16.0 - 2019-06-05
