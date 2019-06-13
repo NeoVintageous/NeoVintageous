@@ -277,7 +277,6 @@ __all__ = [
     '_vi_q',
     '_vi_question_mark',
     '_vi_question_mark_impl',
-    '_vi_question_mark_on_parser_done',
     '_vi_quote',
     '_vi_r',
     '_vi_repeat_buffer_search',
@@ -294,7 +293,6 @@ __all__ = [
     '_vi_shift_enter',
     '_vi_slash',
     '_vi_slash_impl',
-    '_vi_slash_on_parser_done',
     '_vi_star',
     '_vi_tilde',
     '_vi_u',
@@ -3325,14 +3323,6 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         self.hilite(search_string)
 
 
-class _vi_slash_on_parser_done(WindowCommand):
-
-    def run(self, key=None):
-        state = State(self.window.active_view())
-        state.motion = ViSearchForwardImpl()
-        state.last_buffer_search = (state.motion.inp or state.last_buffer_search)
-
-
 class _vi_l(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
@@ -4649,14 +4639,6 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         if force:
             self.view.window().run_command('hide_panel', {'cancel': True})
-
-
-class _vi_question_mark_on_parser_done(WindowCommand):
-
-    def run(self, key=None):
-        state = State(self.window.active_view())
-        state.motion = ViSearchBackwardImpl()
-        state.last_buffer_search = (state.motion.inp or state.last_buffer_search)
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):
