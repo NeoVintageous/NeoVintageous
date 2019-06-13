@@ -3104,8 +3104,8 @@ class ViMoveToHardBol(ViMotionDef):
 @assign(seqs.G_BIG_N, _MOTION_MODES, forward=False)
 class ViSearchLastUsedPattern(ViMotionDef):
     def __init__(self, *args, forward=True, **kwargs):
-        self._serializable.append('forward')
         super().__init__(*args, **kwargs)
+        self._serializable.append('forward')
         self.scroll_into_view = True
         self.updates_xpos = True
         self.forward = forward
