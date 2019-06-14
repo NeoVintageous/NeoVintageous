@@ -572,7 +572,7 @@ def ex_move(view, edit, line_range, address=None, **kwargs):
         text = '\n' + text.rstrip()
         new_sel += 1
 
-    if destination.end() < source.begin():
+    if destination.end() <= source.begin():
         if not text.endswith('\n'):
             text += '\n'
 

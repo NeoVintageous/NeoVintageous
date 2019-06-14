@@ -22,7 +22,7 @@ class Test_ex_move(unittest.FunctionalTestCase):
 
     def test_n(self):
         self.eq('a\n|b\nc', ':move 0', '|b\na\nc')
-        self.eq('a\n|b\nc', ':move 1', '|a\nb\nc')
+        self.eq('a\n|b\nc', ':move 1', 'a\n|b\nc')
         self.eq('a\n|b\nc', ':move 2', 'a\n|b\nc')
         self.eq('a\n|b\nc', ':move 3', 'a\nc\n|b')
 
@@ -32,7 +32,7 @@ class Test_ex_move(unittest.FunctionalTestCase):
         self.eq('a\n|b\nc', ':m2', 'a\n|b\nc')
 
         self.eq('a\n|b\nc\n', ':move 0', '|b\na\nc\n')
-        self.eq('a\n|b\nc\n', ':move 1', '|a\nb\nc\n')
+        self.eq('a\n|b\nc\n', ':move 1', 'a\n|b\nc\n')
         self.eq('a\n|b\nc\n', ':move 2', 'a\n|b\nc\n')
         self.eq('a\n|b\nc\n', ':move 3', 'a\nc\n|b\n')
 
@@ -49,6 +49,8 @@ class Test_ex_move(unittest.FunctionalTestCase):
 
         self.eq('a\nb\n|x\nc\n', ':move 0', '|x\na\nb\nc\n')
         self.eq('a\nb\n|x\nc\n', ':move 1', 'a\n|x\nb\nc\n')
+
+        self.eq('1\n|fizz\nbuzz\n4\n', ':move 1', '1\n|fizz\nbuzz\n4\n')
 
         self.eq('abc\n|xxx\nabc\nabc', ':move 2', 'abc\n|xxx\nabc\nabc')
         self.eq('abc\n|xxx\nabc\nabc', ':move 3', 'abc\nabc\n|xxx\nabc')
