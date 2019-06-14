@@ -72,20 +72,25 @@ from NeoVintageous.nv.vi.settings import set_ex_substitute_last_pattern
 from NeoVintageous.nv.vi.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.vi.settings import set_global
 from NeoVintageous.nv.vi.settings import set_local
-from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
-from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_tab_control
 
 
 _log = logging.getLogger(__name__)
+
+
+# TODO Refactor into utils
+def has_newline_at_eof(view):
+    return view.substr(view.size() - 1) == '\n'
 
 
 def _init_cwd(f, *args, **kwargs):
@@ -115,48 +120,6 @@ def _init_cwd(f, *args, **kwargs):
     return inner
 
 
-def _set_next_sel(view, data):
-    # TODO [review] Should this overwrite "ex_data": For example it may contain things like the "prev_sel".
-    view.settings().set('ex_data', {'next_sel': data})
-
-
-def _serialize_deserialize(f, *args, **kwargs):
-
-    @wraps(f)
-    def inner(*args, **kwargs):
-        view = kwargs.get('view')
-        if not view:
-            raise RuntimeError('view is required')
-
-        # Serialize previous selection.
-
-        sels = [(r.a, r.b) for r in list(view.sel())]
-        view.settings().set('ex_data', {'prev_sel': sels})
-
-        f(*args, **kwargs)
-
-        # Deserialise and apply next selection.
-
-        ex_data = view.settings().get('ex_data')
-        if 'next_sel' in ex_data:
-            next_sel = ex_data['next_sel']
-        else:
-            next_sel = []
-
-        if next_sel:
-            view.sel().clear()
-            view.sel().add_all([Region(b) for (a, b) in next_sel])
-
-        # Return to enter normal mode.
-        # TODO [review] State dependency
-        state = State(view)
-        # TODO [review] enter normal mode dependency
-        state.enter_normal_mode()
-        enter_normal_mode(view, None)
-
-    return inner
-
-
 def ex_bfirst(window, **kwargs):
     window_buffer_control(window, action='first')
 
@@ -174,9 +137,7 @@ def ex_bprevious(window, **kwargs):
 
 
 def ex_browse(window, view, **kwargs):
-    window.run_command('prompt_open_file', {
-        'initial_directory': get_cmdline_cwd()
-    })
+    window.run_command('prompt_open_file', {'initial_directory': get_cmdline_cwd()})
 
 
 def ex_buffers(window, **kwargs):
@@ -240,9 +201,7 @@ def ex_close(window, forceit=False, **kwargs):
     window_control(window, 'c', close_if_last=forceit),
 
 
-@_serialize_deserialize
 def ex_copy(view, edit, address, line_range, **kwargs):
-    # Copy the lines given by [range] to below the line given by {address}.
     def _calculate_address(address):
         # TODO: must calc only the first line ref?
         # TODO [refactor] parsing the address
@@ -267,7 +226,7 @@ def ex_copy(view, edit, address, line_range, **kwargs):
     # TODO: how do we signal row 0?
     target_region = unresolved.resolve(view)
 
-    if target_region == Region(-1, -1):
+    if target_region == Region(-1):
         address = 0
     else:
         row = row_at(view, target_region.begin()) + 1
@@ -276,14 +235,17 @@ def ex_copy(view, edit, address, line_range, **kwargs):
     source = line_range.resolve(view)
     text = view.substr(source)
 
-    if address >= view.size():
+    if address >= view.size() and not has_newline_at_eof(view):
         address = view.size()
         text = '\n' + text[:-1]
 
     view.insert(edit, address, text)
 
-    cursor_dest = view.line(address + len(text) - 1).begin()
-    _set_next_sel(view, [(cursor_dest, cursor_dest)])
+    new_sel = view.line(address + len(text) - 1).begin()
+
+    view.sel().clear()
+    view.sel().add(new_sel)
+    enter_normal_mode(view, None)
 
 
 # TODO [refactor] into window module
@@ -291,7 +253,6 @@ def ex_cquit(window, **kwargs):
     window.run_command('exit')
 
 
-@_serialize_deserialize
 def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
     r = line_range.resolve(view)
     if r == Region(-1, -1):
@@ -337,8 +298,11 @@ def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
     for r in reversed(rs):
         view.erase(edit, r)
 
-    next_sel = view.sel()[-1]
-    _set_next_sel(view, [(next_sel.a, next_sel.b)])
+    new_sel = view.sel()[-1].b
+
+    view.sel().clear()
+    view.sel().add(new_sel)
+    enter_normal_mode(view, None)
 
 
 def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):
@@ -589,9 +553,7 @@ def ex_let(name, value, **kwargs):
     variables.set(name, re.sub('^(?:"|\')(.*)(?:"|\')$', '\\1', value))
 
 
-@_serialize_deserialize
 def ex_move(view, edit, line_range, address=None, **kwargs):
-    # Move the lines given by [range] to below the line given by {address}.
     if address is None:
         return status_message("E14: Invalid address")
 
@@ -600,27 +562,35 @@ def ex_move(view, edit, line_range, address=None, **kwargs):
         return status_message("E134: Move lines into themselves")
 
     # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
-    parsed_address_command = parse_command_line_address(address).line_range
-    destination = parsed_address_command.resolve(view)
+    destination = parse_command_line_address(address).line_range.resolve(view)
     if destination == source:
         return
-
-    text = view.substr(source)
-    if destination.end() >= view.size():
-        text = '\n' + text.rstrip()
 
     if destination == Region(-1):
         destination = Region(0)
 
+    text = view.substr(source)
+    new_sel = destination.end() - source.size()
+
+    if destination.end() >= view.size() and not has_newline_at_eof(view):
+        text = '\n' + text.rstrip()
+        new_sel += 1
+
     if destination.end() < source.begin():
+        if not text.endswith('\n'):
+            text += '\n'
+
+        new_sel = destination.b
+
         view.erase(edit, source)
         view.insert(edit, destination.end(), text)
-        _set_next_sel(view, [[destination.a, destination.b]])
-        return
+    else:
+        view.insert(edit, destination.end(), text)
+        view.erase(edit, source)
 
-    view.insert(edit, destination.end(), text)
-    view.erase(edit, source)
-    _set_next_sel(view, [[destination.a, destination.a]])
+    view.sel().clear()
+    view.sel().add(new_sel)
+    enter_normal_mode(view, None)
 
 
 # TODO [refactor] into window module
