@@ -41,7 +41,7 @@ from NeoVintageous.nv import shell
 from NeoVintageous.nv import variables
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
-from NeoVintageous.nv.ex.parser import parse_command_line_address
+from NeoVintageous.nv.ex.parser import resolve_address
 from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
@@ -197,47 +197,27 @@ def ex_close(window, forceit=False, **kwargs):
     window_control(window, 'c', close_if_last=forceit),
 
 
-def ex_copy(view, edit, address, line_range, **kwargs):
-    def _calculate_address(address):
-        # TODO: must calc only the first line ref?
-        # TODO [refactor] parsing the address
-        calculated = parse_command_line_address(address)
-        if calculated is None:
-            return None
-
-        # TODO Refactor and remove assertions
-        assert calculated.command is None, 'bad address'
-        assert calculated.line_range.separator is None, 'bad address'
-
-        return calculated.line_range
-
-    try:
-        unresolved = _calculate_address(address)
-    except Exception:
+def ex_copy(view, edit, line_range, address=None, **kwargs):
+    if address is None:
         return status_message("E14: Invalid address")
-
-    if unresolved is None:
-        return status_message("E14: Invalid address")
-
-    # TODO: how do we signal row 0?
-    target_region = unresolved.resolve(view)
-
-    if target_region == Region(-1):
-        address = 0
-    else:
-        row = row_at(view, target_region.begin()) + 1
-        address = view.text_point(row, 0)
 
     source = line_range.resolve(view)
+
+    destination = resolve_address(view, address)
+    if destination == Region(-1):
+        destination_pt = 0
+    else:
+        destination_pt = view.text_point(row_at(view, destination.begin()) + 1, 0)
+
     text = view.substr(source)
 
-    if address >= view.size() and not has_newline_at_eof(view):
-        address = view.size()
+    if destination_pt >= view.size() and not has_newline_at_eof(view):
+        destination_pt = view.size()
         text = '\n' + text[:-1]
 
-    view.insert(edit, address, text)
+    view.insert(edit, destination_pt, text)
 
-    new_sel = view.line(address + len(text) - 1).begin()
+    new_sel = view.line(destination_pt + len(text) - 1).begin()
 
     view.sel().clear()
     view.sel().add(new_sel)
@@ -557,8 +537,7 @@ def ex_move(view, edit, line_range, address=None, **kwargs):
     if any(s.contains(source) for s in view.sel()):
         return status_message("E134: Move lines into themselves")
 
-    # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
-    destination = parse_command_line_address(address).line_range.resolve(view)
+    destination = resolve_address(view, address)
     if destination == source:
         return
 

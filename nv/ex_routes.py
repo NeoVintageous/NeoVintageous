@@ -99,9 +99,14 @@ def _ex_route_close(state):
 
 
 def _ex_route_copy(state):
-    command = TokenCommand('copy')
-    command.addressable = True
-    command.params = state.expect_match(r'\s*(?P<address>.+?)\s*$').groupdict()
+    command = _literal_route(state, 'copy', addressable=True)
+
+    state.skip(' ')
+    state.ignore()
+
+    m = state.match(r'(?P<address>.+$)')
+    if m:
+        command.params.update(m.groupdict())
 
     return command
 
@@ -273,15 +278,14 @@ def _ex_route_let(state):
 
 
 def _ex_route_move(state):
-    command = TokenCommand('move')
-    command.addressable = True
+    command = _literal_route(state, 'move', addressable=True)
 
     state.skip(' ')
     state.ignore()
 
-    m = state.match(r'(?P<address>.*$)')
+    m = state.match(r'(?P<address>.+$)')
     if m:
-        command.params['address'] = m.group(0).strip() or '.'
+        command.params.update(m.groupdict())
 
     return command
 

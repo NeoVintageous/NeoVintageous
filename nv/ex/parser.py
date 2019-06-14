@@ -94,6 +94,13 @@ def _init_line_range(command_line):
     command_line.line_range = RangeNode()
 
 
+def resolve_address(view, address):
+    _log.debug('parsing address >>>%s<<<', address)
+
+    # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
+    return parse_command_line(address).line_range.resolve(view)
+
+
 def _parse_line_ref(state, command_line):
     token = state.next_token()
 

@@ -49,7 +49,7 @@ class Test_ex_copy(unittest.FunctionalTestCase):
         self.eq('a\n|b\nc\n', ':%copy 0', 'a\nb\n|c\na\nb\nc\n')
         self.eq('a\n|b\nc\n', ':%copy 2', 'a\nb\na\nb\n|c\nc\n')
 
-        self.eq('|abc', ':copy 1,10', '|abc')
+        self.eq('|abc\n', ':copy 1,10', 'abc\n|abc\n')
 
         self.eq('abc\n|xxx\nxxx\nabc\nabc', ':.,.+1copy0', 'xxx\n|xxx\nabc\nxxx\nxxx\nabc\nabc')
         self.eq('abc\n|xxx\nxxx\nabc\nabc', ':.,.+1copy2', 'abc\nxxx\nxxx\n|xxx\nxxx\nabc\nabc')
@@ -61,3 +61,8 @@ class Test_ex_copy(unittest.FunctionalTestCase):
         self.eq('1\n|buzz\nfizz\n4\n', ':copy 3', '1\nbuzz\nfizz\n|buzz\n4\n')
         self.eq('1\n|buzzer\nfizz\n4\n', ':copy 3', '1\nbuzzer\nfizz\n|buzzer\n4\n')
         self.eq('1\n|buzz\nfizzer\n4\n', ':copy 3', '1\nbuzz\nfizzer\n|buzz\n4\n')
+
+    @unittest.mock_status_message()
+    def test_invalid_address(self):
+        self.eq('1\n|buzz\nfizz\n4\n', ':copy', '1\n|buzz\nfizz\n4\n')
+        self.assertStatusMessage('E14: Invalid address')

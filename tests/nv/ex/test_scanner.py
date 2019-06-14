@@ -468,9 +468,9 @@ class Test_scan_command(unittest.TestCase):
 
         self.assertRoute(['!ls'], cmd('!', target='shell_out', params={'cmd': 'ls'}, addressable=True))
         self.assertRoute(['&&'], cmd('&&', target='double_ampersand', params={'count': '', 'flags': []}, addressable=True))  # noqa: E501
+        self.assertRoute(['bNext', 'bN', 'bprevious', 'bp'], cmd('bprevious'))
         self.assertRoute(['bfirst', 'bf', 'brewind', 'br'], cmd('bfirst'))
         self.assertRoute(['blast', 'bl'], cmd('blast'))
-        self.assertRoute(['bNext', 'bN', 'bprevious', 'bp'], cmd('bprevious'))
         self.assertRoute(['bnext', 'bn'], cmd('bnext'))
         self.assertRoute(['browse', 'bro'], cmd('browse'))
         self.assertRoute(['buffers', 'files', 'ls'], cmd('buffers'))
@@ -480,6 +480,7 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['cd'], cmd('cd'))
         self.assertRoute(['close!', 'clo!'], cmd('close', forced=True))
         self.assertRoute(['close', 'clo'], cmd('close'))
+        self.assertRoute(['copy', 'co'], cmd('copy', addressable=True))
         self.assertRoute(['copy .', 'co .'], cmd('copy', params={'address': '.'}, addressable=True))
         self.assertRoute(['copy .+3', 'co .+3'], cmd('copy', params={'address': '.+3'}, addressable=True))
         self.assertRoute(['cquit', 'cq'], cmd('cquit'))
@@ -508,7 +509,8 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['history', 'his'], cmd('history'))
         self.assertRoute(['let n=v'], cmd('let', params={'name': 'n', 'value': 'v'}))
         self.assertRoute(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
-        self.assertRoute(['move', 'm'], cmd('move', params={'address': '.'}, addressable=True))
+        self.assertRoute(['move .', 'm .'], cmd('move', params={'address': '.'}, addressable=True))
+        self.assertRoute(['move', 'm'], cmd('move', addressable=True))
         self.assertRoute(['new'], cmd('new'))
         self.assertRoute(['nnoremap abc xyz', 'nn abc xyz'], cmd('nnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
         self.assertRoute(['nnoremap', 'nn'], cmd('nnoremap'))
@@ -556,15 +558,15 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['substitute/x/y/', 's/x/y/'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
         self.assertRoute(['substitute/x/y/ic', 's/x/y/ic'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': ['i', 'c'], 'count': 1}, addressable=True))  # noqa: E501
         self.assertRoute(['sunmap xyz', 'sunm xyz'], cmd('sunmap', params={'lhs': 'xyz'}))
+        self.assertRoute(['tabNext!', 'tabN!', 'tabprevious!', 'tabp!'], cmd('tabprevious', forced=True))
+        self.assertRoute(['tabNext', 'tabN', 'tabprevious', 'tabp'], cmd('tabprevious'))
         self.assertRoute(['tabclose!', 'tabc!'], cmd('tabclose', forced=True))
         self.assertRoute(['tabclose', 'tabc'], cmd('tabclose'))
         self.assertRoute(['tabfirst!', 'tabfir!', 'tabrewind!', 'tabr!'], cmd('tabfirst', forced=True))
         self.assertRoute(['tabfirst', 'tabfir', 'tabrewind', 'tabr'], cmd('tabfirst'))
         self.assertRoute(['tablast!', 'tabl!'], cmd('tablast', forced=True))
         self.assertRoute(['tablast', 'tabl'], cmd('tablast'))
-        self.assertRoute(['tabNext!', 'tabN!', 'tabprevious!', 'tabp!'], cmd('tabprevious', forced=True))
         self.assertRoute(['tabnext!', 'tabn!'], cmd('tabnext', forced=True))
-        self.assertRoute(['tabNext', 'tabN', 'tabprevious', 'tabp'], cmd('tabprevious'))
         self.assertRoute(['tabnext', 'tabn'], cmd('tabnext'))
         self.assertRoute(['tabonly!', 'tabo!'], cmd('tabonly', forced=True))
         self.assertRoute(['tabonly', 'tabo'], cmd('tabonly'))
@@ -615,7 +617,6 @@ class Test_scan_command(unittest.TestCase):
 
     def test_invalid_command_routes(self):
         self.assertRaisesExpectMatch([
-            'copy',
             'nunmap',
             'ounmap',
             'print 4 x',

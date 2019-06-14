@@ -83,3 +83,8 @@ class Test_ex_move(unittest.FunctionalTestCase):
     def test_cannot_move_lines_into_themselves(self):
         self.eq('|1\n2\n3\n|4', ':\'<,\'>move 2', 'v_|1\n2\n3\n|4')
         self.assertStatusMessage('E134: Move lines into themselves')
+
+    @unittest.mock_status_message()
+    def test_invalid_address(self):
+        self.eq('1\n|buzz\nfizz\n4\n', ':move', '1\n|buzz\nfizz\n4\n')
+        self.assertStatusMessage('E14: Invalid address')
