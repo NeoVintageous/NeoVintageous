@@ -117,7 +117,7 @@ def run_action(instance, action):
     instance.run_command(action['action'], action['action_args'])
 
 
-def enter_normal_mode(view_or_window, mode):
+def enter_normal_mode(view_or_window, mode=None):
     view_or_window.run_command('_enter_normal_mode', {'mode': mode})
 
 

@@ -743,7 +743,7 @@ class _nv_process_notation(ViWindowCommandBase):
                     for key in KeySequenceTokenizer(keys).iter_tokenize():
                         if key.lower() == '<esc>':
                             # XXX: We should pass a mode here?
-                            enter_normal_mode(self.window, None)
+                            enter_normal_mode(self.window)
                             continue
 
                         elif state.mode not in (INSERT, REPLACE):

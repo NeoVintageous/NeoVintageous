@@ -241,7 +241,7 @@ def ex_copy(view, edit, address, line_range, **kwargs):
 
     view.sel().clear()
     view.sel().add(new_sel)
-    enter_normal_mode(view, None)
+    enter_normal_mode(view)
 
 
 # TODO [refactor] into window module
@@ -298,7 +298,7 @@ def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
 
     view.sel().clear()
     view.sel().add(new_sel)
-    enter_normal_mode(view, None)
+    enter_normal_mode(view)
 
 
 def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):
@@ -586,7 +586,7 @@ def ex_move(view, edit, line_range, address=None, **kwargs):
 
     view.sel().clear()
     view.sel().add(new_sel)
-    enter_normal_mode(view, None)
+    enter_normal_mode(view)
 
 
 # TODO [refactor] into window module
@@ -944,7 +944,7 @@ def ex_sort(view, options='', **kwargs):
         return Region(next_non_blank(view, s.begin()))
 
     regions_transformer(view, f)
-    enter_normal_mode(view, None)
+    enter_normal_mode(view)
     view.show(view.sel()[-1], False)
     view.run_command('glue_marked_undo_groups')
 
@@ -1057,7 +1057,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
         view.sel().clear()
         view.sel().add(pt)
 
-    enter_normal_mode(view, None)
+    enter_normal_mode(view)
 
 
 def ex_sunmap(lhs, **kwargs):
