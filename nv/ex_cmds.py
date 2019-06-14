@@ -53,6 +53,7 @@ from NeoVintageous.nv.utils import adding_regions
 from NeoVintageous.nv.utils import clear_search_highlighting
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import has_dirty_buffers
+from NeoVintageous.nv.utils import has_newline_at_eof
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import replace_sel
@@ -86,11 +87,6 @@ from NeoVintageous.nv.window import window_tab_control
 
 
 _log = logging.getLogger(__name__)
-
-
-# TODO Refactor into utils
-def has_newline_at_eof(view):
-    return view.substr(view.size() - 1) == '\n'
 
 
 def _init_cwd(f, *args, **kwargs):

@@ -54,6 +54,10 @@ def has_dirty_buffers(window):
     return False
 
 
+def has_newline_at_eof(view):
+    return view.substr(view.size() - 1) == '\n'
+
+
 # Useful for external plugins to disable NeoVintageous for specific views.
 def is_ignored(view):
     # type: (...) -> bool
