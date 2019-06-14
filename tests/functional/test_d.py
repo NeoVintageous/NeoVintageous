@@ -81,7 +81,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertBell()
 
     def test_dT(self):
-        self.eq('0x23|a5', 'dTx', 'r_0x|a5')
+        self.eq('0x23|a5', 'dTx', '0x|a5')
         self.assertRegistersEqual('"-', '23')
         self.assertRegistersEmpty('01')
 

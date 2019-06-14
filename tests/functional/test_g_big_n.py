@@ -25,12 +25,12 @@ class Test_gN(unittest.FunctionalTestCase):
         self.setLastSearch('fizz')
 
     def test_n(self):
-        self.eq('r_a fizz| fizz fizz b', 'n_gN', 'r_v_a |fizz| fizz fizz b')
-        self.eq('r_a fizz |fizz fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
-        self.eq('r_a fizz fi|zz fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
-        self.eq('r_a fizz fiz|z fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
-        self.eq('r_a fizz fizz| fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
-        self.eq('r_a fizz fizz |fizz b', 'n_gN', 'r_v_a fizz fizz |fizz| b')
+        self.eq('a fizz| fizz fizz b', 'n_gN', 'r_v_a |fizz| fizz fizz b')
+        self.eq('a fizz |fizz fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
+        self.eq('a fizz fi|zz fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
+        self.eq('a fizz fiz|z fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
+        self.eq('a fizz fizz| fizz b', 'n_gN', 'r_v_a fizz |fizz| fizz b')
+        self.eq('a fizz fizz |fizz b', 'n_gN', 'r_v_a fizz fizz |fizz| b')
 
     def test_v(self):
         self.eq('r_a fizz fizz |fizz| b', 'v_gN', 'r_a fizz |fizz fizz| b')

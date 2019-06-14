@@ -8,6 +8,7 @@ max-line-length = 120
 # D104  Missing docstring in public package
 # D105  Missing docstring in magic method
 # D107  Missing docstring in __init__
+# W504  https://gitlab.com/pycqa/flake8/issues/463
 ignore = D100,D101,D102,D103,D104,D105,D107,W504
 
-max-complexity = 35
+max-complexity = 29

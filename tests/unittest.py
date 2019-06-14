@@ -212,7 +212,7 @@ class ViewTestCase(unittest.TestCase):
     def internalNormal(self, text):
         self._setupView(text, INTERNAL_NORMAL)
 
-    def rInternalNormal(self, text):
+    def rinternalNormal(self, text):
         self._setupView(text, INTERNAL_NORMAL, reverse=True)
 
     def normal(self, text):
@@ -674,38 +674,25 @@ class FunctionalTestCase(ViewTestCase):
         pass
 
     def eq(self, text, feed, expected=None, msg=None):
-        # Args:
-        #   text (str)
-        #   feed (str)
-        #   expected (str)
-        #   msg (str)
+        # The text, feed, and expected arguments can use the following special
+        # prefixes to indicate a specific mode. The text and expected modes
+        # default to the feed mode, otherwise the default is Internal Normal.
         #
-        # The feed, text, and expected can use the following prefixes:
+        # * n_ - Normal
+        # * i_ - Insert
+        # * v_ - Visual
+        # * V_ - Visual line
+        # * b_ - Visual block
+        # * s_ - Select
+        # * R_ - Replace
+        # * :<','> - Visual Command-line
+        # * N_ - Internal Normal
         #
-        #   * n_ - Normal
-        #   * i_ - Insert
-        #   * v_ - Visual
-        #   * V_ - Visual line
-        #   * b_ - Visual block
-        #   * s_ - Select
-        #   * R_ - Replace
-        #   * :<','> - Visual Command-line
-        #   * N_ - Internal Normal
+        # The text and expected arguments also accept the following prefixes:
         #
-        # The mode specified by feed is used for the text, and the expected
-        # arguments, unless a mode is otherwise specified.
-        #
-        # Note the default mode is INTERNAL NORMAL.
-        #
-        # The text and expected can use the following prefixes:
-        #
-        #   * r_ - Reversed selection
-        #   * d_ - Visual block direction down
-        #   * u_ - Visual block direction up
-        #
-        # Note "r_" must go first when chaining prefixes: "r_d_".
-        #
-        # Note "d_" and "u_" are only useful when used with Visual block feeds.
+        # * r_ - Reversed selection (must be first e.g. "r_d_*")
+        # * d_ - Visual block direction down (only valid in visual block)
+        # * u_ - Visual block direction up (only valid in visual block)
         #
         # Usage:
         #
@@ -713,109 +700,83 @@ class FunctionalTestCase(ViewTestCase):
         # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
         # >>> eq('xxx\nbu|zz\nxxx', 'n_cc', 'i_xxx\n|\nxxx')
 
+        def _parse_reversed(text):
+            if text[:2] == 'r_':
+                return text[2:], True
+
+            return text, False
+
+        def _parse_mode(text, default):
+            if text[:2] in modes:
+                return text[2:], text[0]
+
+            return text, default
+
+        def _parse(text, default_mode):
+            text, is_reversed = _parse_reversed(text)
+            text, mode = _parse_mode(text, default_mode)
+
+            return text, mode, is_reversed
+
         if expected is None:
             expected = text
 
-        if text[:2] == 'r_':
-            text = text[2:]
-            reverse_text = True
+        modes = ('N_', 'R_', 'V_', 'b_', 'i_', 'n_', 's_', 'v_')
+
+        if feed[:2] in modes:
+            default_mode = feed[0]
+        elif feed[:6] == ':\'<,\'>':
+            default_mode = 'v'
         else:
-            reverse_text = False
+            default_mode = 'n'
 
-        if expected[:2] == 'r_':
-            expected = expected[2:]
-            reverse_expected = True
-        else:
-            reverse_expected = False
+        text, text_mode, reverse_text = _parse(text, default_mode)
+        expected, expected_mode, reverse_expected = _parse(expected, default_mode)
 
-        is_feed_visual = feed[0] in 'vVb:' and (len(feed) > 1 and (feed[1] == '_') or feed.startswith(':\'<,\'>'))
+        methods = {
+            'N': 'internalNormal',
+            'R': 'replace',
+            'V': 'vline',
+            'b': 'vblock',
+            'i': 'insert',
+            'n': 'normal',
+            's': 'vselect',
+            'v': 'visual',
+        }
 
-        if feed[:2] in ('V_', 'b_', 'i_', 'N_', 's_'):
-            text_mode = feed[0]
-        elif is_feed_visual:
-            text_mode = 'v'
-        else:
-            text_mode = 'n'
-
-        if expected[:2] in ('n_', 'v_', 'V_', 'b_', 'i_', 'N_', 's_', 'R_'):
-            expected_mode = expected[0]
-            expected = expected[2:]
-        elif feed[:2] in ('V_', 'b_', 'i_', 'N_', 's_'):
-            expected_mode = feed[0]
-        elif is_feed_visual:
-            expected_mode = 'v'
-        else:
-            expected_mode = 'n'
-
-        if text_mode == 'n':
-            self.normal(text)
-        elif text_mode == 'v':
-            if reverse_text:
-                self.rvisual(text)
-            else:
-                self.visual(text)
-        elif text_mode == 'V':
-            if reverse_text:
-                self.rvline(text)
-            else:
-                self.vline(text)
-        elif text_mode == 'b':
-            text, vblock_direction = self._filter_vblock_direction(text)
-            if reverse_text:
-                self.rvblock(text, vblock_direction or DIRECTION_DOWN)
-            else:
-                self.vblock(text, vblock_direction or DIRECTION_DOWN)
-        elif text_mode == 'N':
-            if reverse_text:
-                self.rInternalNormal(text)
-            else:
-                self.internalNormal(text)
-        elif text_mode == 'i':
-            self.insert(text)
-        elif text_mode == 's':
-            if reverse_text:
-                self.rvselect(text)
-            else:
-                self.vselect(text)
+        if text_mode in methods:
+            method_name = methods[text_mode]
         else:
             self.assertTrue(False, 'invalid text mode')
 
+        if reverse_text:
+            method_name = 'r' + method_name
+
+        args = []
+        if text_mode == 'b':
+            text, arg = self._filter_vblock_direction(text)
+            args.append(arg)
+
+        getattr(self, method_name)(text, *args)
+
         self.feed(feed)
 
-        if expected_mode == 'n':
-            self.assertNormal(expected, msg)
-        elif expected_mode == 'v':
-            if reverse_expected:
-                self.assertRVisual(expected, msg)
-            else:
-                self.assertVisual(expected, msg)
-        elif expected_mode == 'V':
-            if reverse_expected:
-                self.assertRVline(expected, msg)
-            else:
-                self.assertVline(expected, msg)
-        elif expected_mode == 'b':
-            expected, vblock_direction = self._filter_vblock_direction(expected)
-            if reverse_expected:
-                self.assertRVblock(expected, vblock_direction)
-            else:
-                self.assertVblock(expected, vblock_direction)
-        elif expected_mode == 'N':
-            if reverse_expected:
-                self.assertRInternalNormal(expected, msg)
-            else:
-                self.assertInternalNormal(expected, msg)
-        elif expected_mode == 'i':
-            self.assertInsert(expected, msg)
-        elif expected_mode == 's':
-            if reverse_expected:
-                self.assertRVselect(expected, msg)
-            else:
-                self.assertVselect(expected, msg)
-        elif expected_mode == 'R':
-            self.assertReplace(expected, msg)
+        if expected_mode in methods:
+            method_name = methods[expected_mode]
         else:
             self.assertTrue(False, 'invalid expected mode')
+
+        if reverse_expected:
+            method_name = 'r' + method_name[0].upper() + method_name[1:]
+
+        args = []
+        if expected_mode == 'b':
+            expected, arg = self._filter_vblock_direction(expected)
+            args.append(arg)
+
+        method_name = 'assert' + method_name[0].upper() + method_name[1:]
+        args.append(msg)
+        getattr(self, method_name)(expected, *args)
 
     def _filter_vblock_direction(self, content):
         if content[:2] in ('d_', 'u_'):
