@@ -3230,14 +3230,14 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         history_update(s)
         _nv_cmdline_feed_key.reset_last_history_index()
 
-        state = self.state
+        pattern = s[1:]
 
-        search_string = s[1:]
-        state.sequence += search_string + '<CR>'
+        state = self.state
+        state.sequence += pattern + '<CR>'
         self.view.erase_regions('vi_inc_search')
         state.last_buffer_search_command = 'vi_slash'
-        state.motion = ViSearchForwardImpl(term=search_string)
-        state.last_buffer_search = search_string or state.last_buffer_search
+        state.motion = ViSearchForwardImpl(term=pattern)
+        state.last_buffer_search = pattern or state.last_buffer_search
         state.eval()
 
     def on_change(self, s):
@@ -4540,7 +4540,7 @@ class _vi_right_paren(ViMotionCommand):
 
 
 class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
-    def run(self, search_string, mode=None, count=1, extend=False):
+    def run(self, search_string, mode=None, count=1):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
         # This happens when we attempt to repeat the search and there's no
@@ -4601,14 +4601,14 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         history_update(s)
         _nv_cmdline_feed_key.reset_last_history_index()
 
-        state = self.state
+        pattern = s[1:]
 
-        search_string = s[1:]
-        state.sequence += search_string + '<CR>'
+        state = self.state
+        state.sequence += pattern + '<CR>'
         self.view.erase_regions('vi_inc_search')
         state.last_buffer_search_command = 'vi_question_mark'
-        state.motion = ViSearchBackwardImpl(term=search_string)
-        state.last_buffer_search = search_string or state.last_buffer_search
+        state.motion = ViSearchBackwardImpl(term=pattern)
+        state.last_buffer_search = pattern or state.last_buffer_search
         state.eval()
 
     def on_change(self, s):

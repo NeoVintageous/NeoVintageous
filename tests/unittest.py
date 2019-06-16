@@ -292,11 +292,9 @@ class ViewTestCase(unittest.TestCase):
 
     def assertSearch(self, expected: str, msg=None):
         self._assertContentRegion('vi_search', expected, msg)
-        self._assertMode(NORMAL)
 
     def assertSearchCurrent(self, expected: str, msg=None):
         self._assertContentRegion('vi_search_current', expected, msg)
-        self._assertMode(NORMAL)
 
     def setLastSearch(self, term):
         self.state.last_buffer_search = term
