@@ -1185,7 +1185,8 @@ def ex_wall(window, forceit=False, **kwargs):
         if v.is_read_only() and not forceit:
             continue
 
-        v.run_command('save')
+        if v.is_dirty():
+            v.run_command('save')
 
 
 # TODO [refactor] into window module

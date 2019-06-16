@@ -9,6 +9,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqq` format the current line with a count format that many lines
 * Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqgq` format the current line with a count format that many lines (alias of `gqq`)
 
+## 1.16.3 - Unreleased
+
+* Fixed [#579](https://github.com/NeoVintageous/NeoVintageous/issues/579):  error `'A-j'` is not a known key
+* Fixed [#587](https://github.com/NeoVintageous/NeoVintageous/issues/587): `:wall` should only save dirty views
+
 ## 1.16.2 - 2019-06-14
 
 ### Fixed

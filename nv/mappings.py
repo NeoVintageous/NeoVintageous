@@ -61,7 +61,10 @@ def _find_full_match(mode, lhs):
 
 def _normalise_lhs(lhs):
     # type: (str) -> str
-    return ''.join(KeySequenceTokenizer(expand_keys(lhs)).iter_tokenize())
+    try:
+        return ''.join(KeySequenceTokenizer(expand_keys(lhs)).iter_tokenize())
+    except ValueError:
+        return lhs
 
 
 def mappings_add(mode, lhs, rhs):
