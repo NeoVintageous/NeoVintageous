@@ -260,12 +260,12 @@ class Test_do_ex_cmdline(unittest.ViewTestCase):
     def test_can_run_default_command(self, _default_ex_cmd):
         _default_ex_cmd.return_value = None
 
-        self.assertEqual(do_ex_cmdline(self.view.window(), ':215'), None)
+        do_ex_cmdline(self.view.window(), ':215')
         _default_ex_cmd.assert_called_with(window=self.view.window(),
                                            view=self.view,
                                            line_range=RangeNode([TokenDigits('215')]))
 
-        self.assertEqual(do_ex_cmdline(self.view.window(), ':$'), None)
+        do_ex_cmdline(self.view.window(), ':$')
         _default_ex_cmd.assert_called_with(window=self.view.window(),
                                            view=self.view,
                                            line_range=RangeNode([TokenDollar()]))
@@ -367,7 +367,7 @@ class Test_do_ex_cmdline(unittest.ViewTestCase):
         mem = {'run_command_count': 0}
 
         def assert_runs_cmd(line, expected_cmd, expected_args):
-            self.assertEqual(do_ex_cmdline(window, line), None)
+            do_ex_cmdline(window, line)
             mem['run_command_count'] += 1
             window.run_command.assert_called_with(expected_cmd, expected_args)
             self.assertEqual(window.run_command.call_count, mem['run_command_count'])
@@ -410,7 +410,7 @@ class Test_do_ex_cmdline(unittest.ViewTestCase):
         window = unittest.mock.Mock()
 
         def assert_is_none(line):
-            self.assertEqual(do_ex_cmdline(window, line), None)
+            do_ex_cmdline(window, line)
             self.assertEqual(window.run_command.call_count, 0)
             self.assertEqual(default_ex_cmd.call_count, 0)
 

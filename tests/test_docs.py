@@ -42,7 +42,8 @@ class TestDocs(unittest.TestCase):
             if f.endswith('.txt'):
                 resource = 'Packages/NeoVintageous/res/doc/%s' % f
 
-                exception = False
+                exception = None
+
                 try:
                     load_resource(resource)
                 except Exception as e:

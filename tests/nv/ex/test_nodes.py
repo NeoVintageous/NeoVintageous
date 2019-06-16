@@ -413,8 +413,9 @@ class TestCommandLineNode(unittest.TestCase):
         class AddressableCommand:
             addressable = True
 
-        self.assertIsNone(CommandLineNode(RangeNode(), AddressableCommand()).validate())
-        self.assertIsNone(CommandLineNode(RangeNode(), NotAddressableCommand()).validate())
-        self.assertIsNone(CommandLineNode(RangeNode('1', '2', ';'), AddressableCommand()).validate())
+        CommandLineNode(RangeNode(), AddressableCommand()).validate()
+        CommandLineNode(RangeNode(), NotAddressableCommand()).validate()
+        CommandLineNode(RangeNode('1', '2', ';'), AddressableCommand()).validate()
+
         with self.assertRaisesRegex(Exception, 'E481: No range allowed'):
             CommandLineNode(RangeNode('1', '2', ';'), NotAddressableCommand()).validate()
