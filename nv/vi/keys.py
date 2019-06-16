@@ -198,7 +198,11 @@ class KeySequenceTokenizer(object):
             if c == EOF:
                 raise ValueError("expected '>' at index {0}".format(self.idx))
 
-            elif (c.lower() in ('c', 's', 'm', 'd')) and (self.peek_one() == '-'):
+            elif (c.lower() in ('c', 's', 'm', 'd', 'a')) and (self.peek_one() == '-'):
+                # <A-...> is aliased to <M-...>
+                if c.lower() == 'a':
+                    c = 'm'
+
                 if c.lower() in modifiers.lower():
                     raise ValueError('invalid modifier sequence: {0}'.format(self.source))
 
