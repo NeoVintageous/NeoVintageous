@@ -162,7 +162,7 @@ def history_clear():
 
 
 def history_del(history, item=None):
-    # type: (str, str) -> int
+    # type: (...) -> int
     # Delete an item from a history.
     #
     # Clear history, i.e. delete all its entries. See |hist-names| for the

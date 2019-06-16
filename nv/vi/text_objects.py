@@ -84,7 +84,7 @@ PAIRS = {
     'w': (None, WORD),
     'i': (None, INDENT),
     'l': (None, LINE),
-}
+}  # type: dict
 
 
 def is_at_punctuation(view, pt):

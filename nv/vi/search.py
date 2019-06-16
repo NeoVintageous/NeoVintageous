@@ -73,7 +73,8 @@ def find_in_range(view, term, start, end, flags=0):
 
 # DEPRECATED Use view_find_all()
 def find_all_in_range(view, term, start, end, flags=0):
-    matches = []
+    matches = []  # type: list
+
     while True:
         m = find_in_range(view, term, start, end, flags)
 

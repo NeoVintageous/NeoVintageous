@@ -48,6 +48,7 @@ class Marks(object):
           the relevant row's 0 column is returned.
         """
         win, view, rowcol = None, None, None
+
         if name == "'" or name == "`":
             # Note: We might get a selection outside the current view, which
             # deviates from vim behaviour.
@@ -61,9 +62,9 @@ class Marks(object):
 
         if win:
             if exact:
-                rowcol_encoded = ':'.join(str(i) for i in rowcol)
+                rowcol_encoded = ':'.join(str(i) for i in rowcol)  # type: ignore
             else:
-                rowcol_encoded = ':'.join(str(i) for i in (rowcol[0], 0))
+                rowcol_encoded = ':'.join(str(i) for i in (rowcol[0], 0))  # type: ignore
 
             fname = view.file_name()
 
@@ -71,7 +72,7 @@ class Marks(object):
             # views are returned as encoded addresses that Sublime Text understands.
             if view and view.view_id == self.state.view.view_id:
                 if not exact:
-                    rowcol = (rowcol[0], 0)
+                    rowcol = (rowcol[0], 0)  # type: ignore
 
                 return Region(view.text_point(*rowcol))
             else:

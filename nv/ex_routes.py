@@ -490,7 +490,7 @@ def _ex_route_substitute(state):
         "replacement": None,
         "count": 1,
         "flags": [],
-    }
+    }  # type: dict
 
     while True:
         c = state.consume()

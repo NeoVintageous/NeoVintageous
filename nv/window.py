@@ -381,7 +381,7 @@ def _get_group(window, direction, count):
     current_cell_x2 = current_cell[2]
     current_cell_y2 = current_cell[3]
 
-    cell_group_candidates = {}
+    cell_group_candidates = {}  # type: dict
     for group_num, cell in enumerate(layout['cells']):
         cell_x1 = cell[0]
         cell_y1 = cell[1]

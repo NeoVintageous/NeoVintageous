@@ -40,7 +40,7 @@ _TEST_HEADER_DELIM = '***\n'  # Comes after the header.
 _TEST_DELIM = '\n---///---\n'  # Delimits tests.
 _TEST_RESULTS_DELIM = '\n---\n'  # Separates the test declaration from the expected result.
 
-_CONVERTERS = defaultdict(lambda: (lambda x: str(x)))
+_CONVERTERS = defaultdict(lambda: (lambda x: str(x)))  # type: dict
 _CONVERTERS['mode'] = str
 _CONVERTERS['count'] = int
 
@@ -141,7 +141,7 @@ class CommandTest(object):
         description = lines
         options_line = lines[0]
 
-        opts = {}
+        opts = {}  # type: dict
         if options_line.startswith('//options: '):
             description = lines[1:]
             raw_opts = options_line[11:].split()

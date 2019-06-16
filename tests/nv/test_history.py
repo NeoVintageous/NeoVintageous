@@ -312,8 +312,8 @@ class TestHistory(unittest.TestCase):
         self.assertFalse(history_del('abc'))
         self.assertEqual('', history_get('abc'))
         with self.assertRaises(TypeError):
-            history_get([])
-        self.assertEqual('', history_get(10))
+            history_get([])  # type: ignore
+        self.assertEqual('', history_get(10))  # type: ignore
         self.assertEqual(-1, history_nr('abc'))
 
     @_patch_max_items(0)

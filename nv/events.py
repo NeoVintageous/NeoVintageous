@@ -94,8 +94,8 @@ _query_contexts = {
 
 class NeoVintageousEvents(EventListener):
 
-    _cached_completions = []
-    _cached_completion_prefixes = []
+    _cached_completions = []  # type: list
+    _cached_completion_prefixes = []  # type: list
 
     def on_query_context(self, view, key, operator, operand, match_all):
         # Called when determining to trigger a key binding with the given context key.

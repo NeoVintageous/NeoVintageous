@@ -91,7 +91,7 @@ LAYOUT_COLS_3 = {
 LAYOUT_EMPTY = {
     'cols': [],
     'rows': [],
-    'cells': []}
+    'cells': []}  # type: dict
 
 LAYOUT_GRID_4 = {
     'cols': [0.0, 0.5, 1.0],
@@ -358,7 +358,7 @@ class MockView():
 class MockWindow():
 
     def __init__(self):
-        self.index_data = {}
+        self.index_data = {}  # type: dict
         self._active_group_num = 0
 
     def set_layout(self, layout):
@@ -389,7 +389,7 @@ class MockWindow():
 LAYOUT_EMPTY_COLS_AND_ROWS = {
     'cols': [],
     'rows': []
-}
+}  # type: dict
 
 LAYOUT_FOOBAR_COLS_AND_ROWS = {
     'cols': [1.0],
@@ -582,7 +582,7 @@ class TestSublimeWindowApi(unittest.TestCase):
                     {'active_group': 6, 'left': None, 'right': None, 'below': None, 'above': 0, 'count': [2]},
                 ]
             }
-        ]
+        ]  # type: list
 
         actions = {
             'left': 'h',
