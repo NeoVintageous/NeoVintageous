@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_slash(unittest.FunctionalTestCase):
 
-    def test_n_slash(self):
+    def test_n(self):
         self.eq('|', 'n_/abc', '|')
         self.assertSearch('')
         self.assertSearchCurrent('')
@@ -38,7 +38,7 @@ class Test_slash(unittest.FunctionalTestCase):
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
         self.eq('foo\nabc\nbar\nabc\nmoo\nabc\n|end', 'n_/abc', 'foo\n|abc\nbar\nabc\nmoo\nabc\nend')
 
-    def test_n_slash_when_view_contains_only_one_match_issue_223(self):
+    def test_n_when_view_contains_only_one_match_issue_223(self):
         self.eq('a|bc', 'n_/abc', '|abc')
         self.assertSearch('|abc|')
         self.assertSearchCurrent('|abc|')
@@ -46,22 +46,17 @@ class Test_slash(unittest.FunctionalTestCase):
         self.assertSearch('x |abc| x')
         self.assertSearchCurrent('x |abc| x')
 
-    def test_N_slash(self):
-        self.eq('|xabcx', '/abc', 'N_|x|abcx')
-        self.assertSearch('x|abc|x')
-        self.eq('|foo\nabc\nbar\nabc\nmoo\nabc\nend', '/abc', 'N_|foo\n|abc\nbar\nabc\nmoo\nabc\nend')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eq('foo\nabc\nbar\nabc\nmoo\na|bc\nend', '/abc', 'r_N_foo\n|abc\nbar\nabc\nmoo\na|bc\nend')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eq('foo\nabc\nbar\nabc\nmoo\n|abc\nend', '/abc', 'r_N_foo\n|abc\nbar\nabc\nmoo\n|abc\nend')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eq('foo\nabc\nbar\nabc\nmoo\nabc\n|end', '/abc', 'r_N_foo\n|abc\nbar\nabc\nmoo\nabc\n|end')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-
-    def test_v_slash(self):
+    def test_v(self):
         self.eq('|x abc y', 'v_/abc', '|x a|bc y')
         self.eq('x abc |y abc z', 'v_/abc', 'x abc |y a|bc z')
 
     def test_V(self):
         self.eq('|x\n|abc\ny', 'V_/abc', '|x\nabc\n|y')
         self.eq('abc\n|x\n|abc\ny', 'V_/abc', 'abc\n|x\nabc\n|y')
+
+    def test_d(self):
+        self.eq('fi|zzabcx', 'd/abc', 'fi|abcx')
+        self.eq('|foo\nabc\nbar\nabc\nmoo\nabc\nend', 'd/abc', '|abc\nbar\nabc\nmoo\nabc\nend')
+        self.eq('foo\nabc\nbar\nabc\nmoo\na|bc\nend', 'd/abc', 'foo\n|bc\nend')
+        self.eq('foo\nabc\nbar\nabc\nmoo\n|abc\nend', 'd/abc', 'foo\n|abc\nend')
+        self.eq('foo\nabc\nbar\nabc\nmoo\nabc\n|end', 'd/abc', 'foo\n|end')

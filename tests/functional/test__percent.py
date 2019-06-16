@@ -38,12 +38,10 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('12{}3|4{}', 'n_%', '12{}34{|}', 'should jump forward')
         self.eq('|1\n2\n3\n4\n5\n6\n7\n8\n9\n0', 'n_30%', '1\n2\n|3\n4\n5\n6\n7\n8\n9\n0')
         self.eq('|1\n2\n3\n4\n5\n6', 'n_80%', '1\n2\n3\n4\n|5\n6')
-
-    def test_percent_mutiple_selection(self):
         self.eq('1|{ab}2|{cd}3|{ef}x', 'n_%', '1{ab|}2{cd|}3{ef|}x')
         self.eq('1|{ab}2{cd}3|{ef}x', 'n_%', '1{ab|}2{cd}3{ef|}x')
 
-    def test_v_percent(self):
+    def test_v(self):
         self.eq('|{ab}', 'v_%', '|{ab}|')
         self.eq('{ab|}', 'v_%', 'r_|{ab}|')
         self.eq('a |{\nb\n}\nc', 'v_%', 'a |{\nb\n}|\nc')
@@ -70,11 +68,11 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('1| \n|2', 'V_%', '1| \n|2', 'single space lines should be noop')
         self.eq('\n|\n\n|\n', 'V_%', '\n|\n\n|\n', 'empty lines should be noop')
 
-    def test_N_percent(self):
-        self.eq('abc (a|bc) abc', '%', 'r_N_abc |(ab|c) abc')
-        self.eq('abc (abc|) abc', '%', 'r_N_abc |(abc)| abc')
-        self.eq('abc |(abc) abc', '%', 'N_abc |(abc)| abc')
-        self.eq('|abc (abc) abc', '%', 'N_|abc (abc)| abc')
+    def test_d(self):
+        self.eq('abc (a|bc) abc', 'd%', 'abc |c) abc')
+        self.eq('abc (abc|) abc', 'd%', 'abc  |abc')
+        self.eq('abc |(abc) abc', 'd%', 'abc  |abc')
+        self.eq('|abc (abc) abc', 'd%', ' |abc')
 
 
 class Test_percent_in_php_syntax(unittest.FunctionalTestCase):

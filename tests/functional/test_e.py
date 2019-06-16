@@ -59,7 +59,7 @@ class Test_e(unittest.FunctionalTestCase):
         self.eq('one\n|\n\ntwo\nthree', 'de', 'one\n|three')
         self.eq('one\n|\n\n\ntwo\nthree', 'de', 'one\n|three')
         self.eq('one\n|\n\n\n    two\nthree', 'de', 'one\n|three')
-        self.eq('one |two three', '2de', 'N_one| ')
+        self.eq('one |two three', '2de', 'one| ')
         self.eq('one |two three', 'de', 'one | three')
         self.eq('f|izz buzz', 'de', 'f| buzz')
         self.eq('f|izz        buzz', 'de', 'f|        buzz')

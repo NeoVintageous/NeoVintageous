@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_question_mark(unittest.FunctionalTestCase):
 
-    def test_question_mark(self):
+    def test_n(self):
         self.eq('|', 'n_?abc', '|')
         self.assertSearch('')
         self.assertSearchCurrent('')
@@ -48,22 +48,17 @@ class Test_question_mark(unittest.FunctionalTestCase):
         self.assertSearch('x |abc| x')
         self.assertSearchCurrent('x |abc| x')
 
-    def test_v_question_mark(self):
+    def test_v(self):
         self.eq('x abc |xy', 'v_?abc', 'r_x |abc x|y')
         self.eq('x abc |xy abc', 'v_?abc', 'r_x |abc x|y abc')
-
-    def test_N_question_mark(self):
-        self.eq('|xabcx', '?abc', 'N_|x|abcx')
-        self.assertSearch('x|abc|x')
-        self.eq('|foo\nabc\nbar\nabc\nmoo\nabc\nend', '?abc', 'N_|foo\nabc\nbar\nabc\nmoo\n|abc\nend')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eq('foo\nabc\nbar\nabc\nmoo\nabc\ne|nd', '?abc', 'r_N_foo\nabc\nbar\nabc\nmoo\n|abc\ne|nd')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eq('foo\nabc\nbar\n|abc\nmoo\nabc\nend', '?abc', 'r_N_foo\n|abc\nbar\n|abc\nmoo\nabc\nend')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.eq('foo\nabc\nbar\nabc\nmoo\nabc\nend|', '?abc', 'r_N_foo\nabc\nbar\nabc\nmoo\n|abc\nend|')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
 
     def test_V(self):
         self.eq('x\nabc\n|y\n|x', 'V_?abc', 'r_x\n|abc\ny\n|x')
         self.eq('x\nabc\n|x\n|x\nabc\ny', 'V_?abc', 'r_x\n|abc\nx\n|x\nabc\ny')
+
+    def test_d(self):
+        self.eq('|xabcx', 'd?abc', '|abcx')
+        self.eq('|foo\nabc\nbar\nabc\nmoo\nabc\nend', 'd?abc', '|abc\nend')
+        self.eq('foo\nabc\nbar\nabc\nmoo\nabc\ne|nd', 'd?abc', 'foo\nabc\nbar\nabc\nmoo\n|nd')
+        self.eq('foo\nabc\nbar\n|abc\nmoo\nabc\nend', 'd?abc', 'foo\n|abc\nmoo\nabc\nend')
+        self.eq('foo\nabc\nbar\nabc\nmoo\nabc\nend|', 'd?abc', 'foo\nabc\nbar\nabc\nmoo\n|')
