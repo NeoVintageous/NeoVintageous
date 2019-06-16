@@ -55,6 +55,7 @@
     "vintageous_clear_auto_indent_on_esc": true,
 
     // Default mode to use when activating or switching views.
+    //
     // Valid values are: "insert"
     //
     // mode   | description
@@ -79,7 +80,7 @@
     "vintageous_hlsearch": true,
 
     // Ignore case in search patterns ('/', '?', '*', and '#').
-    // https://vimhelp.appspot.com/options.txt.html#'ignorecase'
+    // https://vimhelp.appspot.com/options.txt.html#%27ignorecase%27
     "vintageous_ignorecase": true,
 
     // Apply search patterns incrementally as they are typed.
@@ -93,12 +94,12 @@
     "vintageous_magic": true,
 
     // Enable modeline feature.
-    // https://vimhelp.appspot.com/options.txt.html#'modeline'
+    // https://vimhelp.appspot.com/options.txt.html#%27modeline%27
     "vintageous_modeline": false,
 
     // If 'vintageous_modeline' is on 'vintageous_modelines' gives the number of
     // lines that is checked for set commands.
-    // https://vimhelp.appspot.com/options.txt.html#'modelines'
+    // https://vimhelp.appspot.com/options.txt.html#%27modelines%27
     "vintageous_modelines": 5,
 
     // If set to false, then pressing the quit key (<Esc> or J) in Visual mode
@@ -113,13 +114,13 @@
 
     // {currently only works in a few situations}
     // Minimal number of screen lines to keep above and below the cursor.
-    // https://vimhelp.appspot.com/options.txt.html#'scrolloff'
+    // https://vimhelp.appspot.com/options.txt.html#%27scrolloff%27
     "vintageous_scrolloff": 5,
 
     // {currently only works in a few situations}
     // The minimal number of screen columns to keep to the left and to the right
     // of the cursor if nowrap' is set or if 'word_wrap' is disabled.
-    // https://vimhelp.appspot.com/options.txt.html#'sidescrolloff'
+    // https://vimhelp.appspot.com/options.txt.html#%27sidescrolloff%27
     "vintageous_sidescrolloff": 5,
 
     // Enable key bindings prefaced by the control-key.
