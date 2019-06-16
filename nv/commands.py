@@ -3248,15 +3248,15 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
         mode = state.mode
         count = state.count
-        search_string = s[1:]
+        pattern = s[1:]
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(search_string)
+        flags = self.calculate_flags(pattern)
         start = sel.b + 1
         end = self.view.size()
 
         match = find_wrapping(self.view,
-                              term=search_string,
+                              term=pattern,
                               start=start,
                               end=end,
                               flags=flags,
@@ -3265,7 +3265,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         self.view.erase_regions('vi_inc_search')
 
         if not match:
-            return
+            return status_message('E486: Pattern not found: %s', pattern)
 
         if mode == VISUAL:
             match = Region(sel.a, match.a + 1)
@@ -3296,25 +3296,27 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
 
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
-    def run(self, search_string='', mode=None, count=1):
+    def run(self, search_string, mode=None, count=1):
+        # TODO Rename "search_string" argument "pattern"
+        pattern = search_string
         # This happens when we attempt to repeat the search and there's no
         # search term stored yet.
-        if not search_string:
+        if not pattern:
             return
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(search_string)
+        flags = self.calculate_flags(pattern)
         start = sel.b if not sel.empty() else sel.b + 1
         end = self.view.size()
 
         match = find_wrapping(self.view,
-                              term=search_string,
+                              term=pattern,
                               start=start,
                               end=end,
                               flags=flags,
                               times=count)
         if not match:
-            return
+            return status_message('E486: Pattern not found: %s', pattern)
 
         def f(view, s):
             if mode == NORMAL:
@@ -3329,7 +3331,7 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
             return s
 
         regions_transformer(self.view, f)
-        self.hilite(search_string)
+        self.hilite(pattern)
 
 
 class _vi_l(ViMotionCommand):
@@ -4539,25 +4541,27 @@ class _vi_right_paren(ViMotionCommand):
 
 class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string, mode=None, count=1, extend=False):
+        # TODO Rename "search_string" argument "pattern"
+        pattern = search_string
         # This happens when we attempt to repeat the search and there's no
         # search term stored yet.
-        if search_string is None:
+        if not pattern:
             return
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(search_string)
+        flags = self.calculate_flags(pattern)
         start = 0
         end = sel.b
 
         match = reverse_find_wrapping(self.view,
-                                      term=search_string,
+                                      term=pattern,
                                       start=start,
                                       end=end,
                                       flags=flags,
                                       times=count)
 
         if not match:
-            return status_message('Pattern not found')
+            return status_message('E486: Pattern not found: %s', pattern)
 
         def f(view, s):
             if mode == NORMAL:
@@ -4572,7 +4576,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
             return s
 
         regions_transformer(self.view, f)
-        self.hilite(search_string)
+        self.hilite(pattern)
 
 
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
@@ -4615,15 +4619,15 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         mode = state.mode
         count = state.count
-        search_string = s[1:]
+        pattern = s[1:]
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(search_string)
+        flags = self.calculate_flags(pattern)
         start = 0
         end = sel.b
 
         match = reverse_find_wrapping(self.view,
-                                      term=search_string,
+                                      term=pattern,
                                       start=start,
                                       end=end,
                                       flags=flags,
@@ -4632,7 +4636,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         self.view.erase_regions('vi_inc_search')
 
         if not match:
-            return
+            return status_message('E486: Pattern not found: %s', pattern)
 
         if mode == VISUAL:
             match = Region(sel.a, match.a)
