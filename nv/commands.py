@@ -3229,58 +3229,62 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
         history_update(s)
         _nv_cmdline_feed_key.reset_last_history_index()
-        s = s[1:]
 
         state = self.state
-        state.sequence += s + '<CR>'
+
+        search_string = s[1:]
+        state.sequence += search_string + '<CR>'
         self.view.erase_regions('vi_inc_search')
         state.last_buffer_search_command = 'vi_slash'
-        state.motion = ViSearchForwardImpl(term=s)
-
-        # If s is empty, we must repeat the last search.
-        state.last_buffer_search = s or state.last_buffer_search
+        state.motion = ViSearchForwardImpl(term=search_string)
+        state.last_buffer_search = search_string or state.last_buffer_search
         state.eval()
 
     def on_change(self, s):
         if not self._is_valid_cmdline(s):
             return self.on_cancel(force=True)
 
-        s = s[1:]
-
         state = self.state
-        flags = self.calculate_flags(s)
-        self.view.erase_regions('vi_inc_search')
-        start = self.view.sel()[0].b + 1
+
+        mode = state.mode
+        count = state.count
+        sel = self.view.sel()[0]
+        search_string = s[1:]
+        flags = self.calculate_flags(search_string)
+        start = sel.b + 1
         end = self.view.size()
 
-        next_hit = find_wrapping(self.view,
-                                 term=s,
-                                 start=start,
-                                 end=end,
-                                 flags=flags,
-                                 times=state.count)
+        match = find_wrapping(self.view,
+                              term=search_string,
+                              start=start,
+                              end=end,
+                              flags=flags,
+                              times=count)
 
-        if next_hit:
-            if state.mode == VISUAL:
-                next_hit = Region(self.view.sel()[0].a, next_hit.a + 1)
+        self.view.erase_regions('vi_inc_search')
 
-            # The scopes are prefixed with common color scopes so that color
-            # schemes have sane default colors. Color schemes can progressively
-            # enhance support by using the nv_* scopes.
-            self.view.add_regions(
-                'vi_inc_search',
-                [next_hit],
-                scope='support.function neovintageous_search_inc',
-                flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
-            )
+        if not match:
+            return
 
-            if not self.view.visible_region().contains(next_hit.b):
-                self.view.show(next_hit.b)
+        if mode == VISUAL:
+            match = Region(sel.a, match.a + 1)
+
+        # The scopes are prefixed with common color scopes so that color schemes
+        # have sane default colors. Color schemes can progressively enhance
+        # support by using the nv_* scopes.
+        self.view.add_regions(
+            'vi_inc_search',
+            [match],
+            scope='support.function neovintageous_search_inc',
+            flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
+        )
+
+        if not self.view.visible_region().contains(match.b):
+            self.view.show(match.b)
 
     def on_cancel(self, force=False):
-        state = self.state
         self.view.erase_regions('vi_inc_search')
-        state.reset_command_data()
+        self.state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
@@ -3292,6 +3296,25 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string='', mode=None, count=1):
+        # This happens when we attempt to repeat the search and there's no
+        # search term stored yet.
+        if not search_string:
+            return
+
+        flags = self.calculate_flags(search_string)
+        sel = self.view.sel()[0]
+        start = sel.b if not sel.empty() else sel.b + 1
+        end = self.view.size()
+
+        match = find_wrapping(self.view,
+                              term=search_string,
+                              start=start,
+                              end=end,
+                              flags=flags,
+                              times=count)
+        if not match:
+            return
+
         def f(view, s):
             if mode == NORMAL:
                 s = Region(match.a, match.a)
@@ -3303,26 +3326,6 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
                 s = Region(s.a, match.a)
 
             return s
-
-        # This happens when we attempt to repeat the search and there's no
-        # search term stored yet.
-        if not search_string:
-            return
-
-        # We want to start searching right after the current selection.
-        current_sel = self.view.sel()[0]
-        start = current_sel.b if not current_sel.empty() else current_sel.b + 1
-        end = self.view.size()
-        flags = self.calculate_flags(search_string)
-
-        match = find_wrapping(self.view,
-                              term=search_string,
-                              start=start,
-                              end=end,
-                              flags=flags,
-                              times=count)
-        if not match:
-            return
 
         regions_transformer(self.view, f)
         self.hilite(search_string)
@@ -4535,34 +4538,37 @@ class _vi_right_paren(ViMotionCommand):
 
 class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string, mode=None, count=1, extend=False):
-        def f(view, s):
-            if mode == NORMAL:
-                s = Region(found.a, found.a)
-            elif mode == VISUAL:
-                s = Region(s.end(), found.a)
-            elif mode == VISUAL_LINE:
-                s = Region(s.end(), view.full_line(found.a).a)
-            elif mode == INTERNAL_NORMAL:
-                s = Region(s.end(), found.a)
-
-            return s
-
         # This happens when we attempt to repeat the search and there's no
         # search term stored yet.
         if search_string is None:
             return
 
         flags = self.calculate_flags(search_string)
+        sel = self.view.sel()[0]
+        end = sel.b
+
         # FIXME: What should we do here? Case-sensitive or case-insensitive search? Configurable?
-        found = reverse_find_wrapping(self.view,
+        match = reverse_find_wrapping(self.view,
                                       term=search_string,
                                       start=0,
-                                      end=self.view.sel()[0].b,
+                                      end=end,
                                       flags=flags,
                                       times=count)
 
-        if not found:
+        if not match:
             return status_message('Pattern not found')
+
+        def f(view, s):
+            if mode == NORMAL:
+                s = Region(match.a, match.a)
+            elif mode == VISUAL:
+                s = Region(s.end(), match.a)
+            elif mode == VISUAL_LINE:
+                s = Region(s.end(), view.full_line(match.a).a)
+            elif mode == INTERNAL_NORMAL:
+                s = Region(s.end(), match.a)
+
+            return s
 
         regions_transformer(self.view, f)
         self.hilite(search_string)
@@ -4589,54 +4595,62 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         history_update(s)
         _nv_cmdline_feed_key.reset_last_history_index()
-        s = s[1:]
 
         state = self.state
-        state.sequence += s + '<CR>'
+
+        search_string = s[1:]
+        state.sequence += search_string + '<CR>'
         self.view.erase_regions('vi_inc_search')
         state.last_buffer_search_command = 'vi_question_mark'
-        state.motion = ViSearchBackwardImpl(term=s)
-
-        # If s is empty, we must repeat the last search.
-        state.last_buffer_search = s or state.last_buffer_search
+        state.motion = ViSearchBackwardImpl(term=search_string)
+        state.last_buffer_search = search_string or state.last_buffer_search
         state.eval()
 
     def on_change(self, s):
         if not self._is_valid_cmdline(s):
             return self.on_cancel(force=True)
 
-        s = s[1:]
-
-        flags = self.calculate_flags(s)
-        self.view.erase_regions('vi_inc_search')
         state = self.state
-        occurrence = reverse_find_wrapping(self.view,
-                                           term=s,
-                                           start=0,
-                                           end=self.view.sel()[0].b,
-                                           flags=flags,
-                                           times=state.count)
-        if occurrence:
-            if state.mode == VISUAL:
-                occurrence = Region(self.view.sel()[0].a, occurrence.a)
 
-            # The scopes are prefixed with common color scopes so that color
-            # schemes have sane default colors. Color schemes can progressively
-            # enhance support by using the nv_* scopes.
-            self.view.add_regions(
-                'vi_inc_search',
-                [occurrence],
-                scope='support.function neovintageous_search_inc',
-                flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
-            )
+        mode = state.mode
+        count = state.count
+        sel = self.view.sel()[0]
+        search_string = s[1:]
+        flags = self.calculate_flags(search_string)
+        start = 0
+        end = sel.b
 
-            if not self.view.visible_region().contains(occurrence):
-                self.view.show(occurrence)
+        match = reverse_find_wrapping(self.view,
+                                      term=search_string,
+                                      start=start,
+                                      end=end,
+                                      flags=flags,
+                                      times=count)
+
+        self.view.erase_regions('vi_inc_search')
+
+        if not match:
+            return
+
+        if mode == VISUAL:
+            match = Region(sel.a, match.a)
+
+        # The scopes are prefixed with common color scopes so that color schemes
+        # have sane default colors. Color schemes can progressively enhance
+        # support by using the nv_* scopes.
+        self.view.add_regions(
+            'vi_inc_search',
+            [match],
+            scope='support.function neovintageous_search_inc',
+            flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
+        )
+
+        if not self.view.visible_region().contains(match):
+            self.view.show(match)
 
     def on_cancel(self, force=False):
         self.view.erase_regions('vi_inc_search')
-        state = self.state
-        state.reset_command_data()
+        self.state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
