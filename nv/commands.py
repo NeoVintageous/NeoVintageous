@@ -3753,7 +3753,7 @@ class _vi_zero(ViMotionCommand):
 class _vi_right_brace(ViMotionCommand):
     def run(self, mode=None, count=1):
         def f(view, s):
-            target = next_paragraph_start(view, get_insertion_point_at_b(s), count, skip_empty=count > 1)
+            target = next_paragraph_start(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
                 s = Region(target)

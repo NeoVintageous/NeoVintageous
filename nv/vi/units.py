@@ -238,7 +238,9 @@ def inner_lines(view, s, count=1):
     return Region(begin, view.line(end).b)
 
 
-def next_paragraph_start(view, pt, count=1, skip_empty=True):
+def next_paragraph_start(view, pt, count=1):
+    skip_empty = count > 1
+
     if row_at(view, pt) == last_row(view):
         if not view.line(view.size()).empty():
             return view.size() - 1
