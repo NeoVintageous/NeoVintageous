@@ -17,8 +17,11 @@
 
 import os
 import subprocess
+import sys
 import tempfile
 
+# https://mypy.readthedocs.io/en/latest/common_issues.html#python-version-and-system-platform-checks
+assert sys.platform.startswith('win')
 
 try:
     import ctypes

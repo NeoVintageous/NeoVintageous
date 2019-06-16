@@ -335,13 +335,15 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         # Vim only operates on the current line.
         line = view.line(s)
 
+        delim_open = delims[0]
+
         # FIXME: Escape sequences like \" are probably syntax-dependant.
-        prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delims[0], start=line.a, end=s.b)
-        next_quote = find_in_range(view, r'(?<!\\\\)' + delims[0], start=s.b, end=line.b)
+        prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delim_open, start=line.a, end=s.b)
+        next_quote = find_in_range(view, r'(?<!\\\\)' + delim_open, start=s.b, end=line.b)
 
         if next_quote and not prev_quote:
             prev_quote = next_quote
-            next_quote = find_in_range(view, r'(?<!\\\\)' + delims[0], start=prev_quote.b, end=line.b)
+            next_quote = find_in_range(view, r'(?<!\\\\)' + delim_open, start=prev_quote.b, end=line.b)
 
         if not (prev_quote and next_quote):
             return s
@@ -644,7 +646,11 @@ def find_indent_text_object(view, s, inclusive=True):
     if re.match("^\\s*$", start_line_content):
         return (s.a, s.b)
 
-    whitespace = re.match("\\s*", start_line_content).group(0)
+    whitespace_match = re.match("\\s*", start_line_content)
+    if not whitespace_match:
+        return (s.a, s.b)
+
+    whitespace = whitespace_match.group(0)
     whitespace_length = len(whitespace)
 
     # From http://vim.wikia.com/wiki/Indent_text_object:

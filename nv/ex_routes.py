@@ -368,8 +368,6 @@ def _ex_route_quit(state):
 def _ex_route_read(state):
     command = TokenCommand('read')
 
-    params = {}
-
     state.skip(' ')
     state.ignore()
 
@@ -380,16 +378,14 @@ def _ex_route_read(state):
 
     elif c == '!':
         m = state.match(r'(?P<cmd>.+)')
-        params.update(m.groupdict())
+        command.params.update(m.groupdict())
 
     else:
         state.backup()
         m = state.match(r'(?P<file_name>.+)$')
-        params.update(m.groupdict())
+        command.params.update(m.groupdict())
 
     state.expect_eof()
-
-    command.params = params
 
     return command
 

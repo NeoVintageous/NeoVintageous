@@ -254,8 +254,8 @@ class Registers:
         assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Can only append to A-Z registers."
 
         existing_values = _data.get(name.lower(), '')
-        new_values = itertools.zip_longest(existing_values, suffixes, fillvalue='')
-        new_values = [(prefix + suffix) for (prefix, suffix) in new_values]
+        new_valuesx = itertools.zip_longest(existing_values, suffixes, fillvalue='')
+        new_values = [(prefix + suffix) for (prefix, suffix) in new_valuesx]
 
         _data[name.lower()] = new_values
 

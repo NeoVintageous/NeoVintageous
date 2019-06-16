@@ -733,7 +733,7 @@ def ex_read(view, edit, line_range, cmd=None, **kwargs):
 
             view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
 
-        elif platform() == 'windows':
+        elif sys.platform.startswith('win') and platform() == 'windows':
             # TODO [refactor] shell commands to use common os nv.ex.shell commands
             from NeoVintageous.nv.shell_windows import get_oem_cp
             from NeoVintageous.nv.shell_windows import get_startup_info
