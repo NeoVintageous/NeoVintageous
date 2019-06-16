@@ -3248,8 +3248,9 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
         mode = state.mode
         count = state.count
-        sel = self.view.sel()[0]
         search_string = s[1:]
+
+        sel = self.view.sel()[0]
         flags = self.calculate_flags(search_string)
         start = sel.b + 1
         end = self.view.size()
@@ -3301,8 +3302,8 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         if not search_string:
             return
 
-        flags = self.calculate_flags(search_string)
         sel = self.view.sel()[0]
+        flags = self.calculate_flags(search_string)
         start = sel.b if not sel.empty() else sel.b + 1
         end = self.view.size()
 
@@ -4543,14 +4544,14 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
         if search_string is None:
             return
 
-        flags = self.calculate_flags(search_string)
         sel = self.view.sel()[0]
+        flags = self.calculate_flags(search_string)
+        start = 0
         end = sel.b
 
-        # FIXME: What should we do here? Case-sensitive or case-insensitive search? Configurable?
         match = reverse_find_wrapping(self.view,
                                       term=search_string,
-                                      start=0,
+                                      start=start,
                                       end=end,
                                       flags=flags,
                                       times=count)
@@ -4614,8 +4615,9 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         mode = state.mode
         count = state.count
-        sel = self.view.sel()[0]
         search_string = s[1:]
+
+        sel = self.view.sel()[0]
         flags = self.calculate_flags(search_string)
         start = 0
         end = sel.b
