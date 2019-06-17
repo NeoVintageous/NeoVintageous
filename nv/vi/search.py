@@ -247,8 +247,6 @@ def reverse_search_by_pt(view, term, start, end, flags=0):
 
 # TODO [refactor] Move to commands module
 class BufferSearchBase(sublime_plugin.TextCommand):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def calculate_flags(self, pattern=None):
         flags = 0
@@ -315,8 +313,6 @@ class BufferSearchBase(sublime_plugin.TextCommand):
 
 # TODO [refactor] Move to commands module
 class ExactWordBufferSearchBase(BufferSearchBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def calculate_flags(self, pattern=None):
         flags = 0

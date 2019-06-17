@@ -10,6 +10,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqq` format the current line with a count format that many lines
 * Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqgq` format the current line with a count format that many lines (alias of `gqq`)
 
+### Fixed
+
+* Fixed [#591](https://github.com/NeoVintageous/NeoVintageous/issues/591): `?` (search forward) in visual modes is inconsistent
+* Fixed [#590](https://github.com/NeoVintageous/NeoVintageous/issues/590): `/` (search backward) in visual modes is inconsistent
+* Fixed [#588](https://github.com/NeoVintageous/NeoVintageous/issues/588): Visual mode incremental search highlighting is inconsistent
+
 ## 1.16.3 - Unreleased
 
 * Fixed [#579](https://github.com/NeoVintageous/NeoVintageous/issues/579):  error `'A-j'` is not a known key
@@ -17,14 +23,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.16.2 - 2019-06-14
 
-### Fixed
-
 * Fixed [#583](https://github.com/NeoVintageous/NeoVintageous/issues/583): `:move` has inconsistent cursor behaviour
 * Fixed [#584](https://github.com/NeoVintageous/NeoVintageous/issues/584): `:copy` to EOF adds too many newlines
 
 ## 1.16.1 - 2019-06-13
-
-### Fixed
 
 * Fixed [#581](https://github.com/NeoVintageous/NeoVintageous/issues/581): Pasting complete line is invading new line
 * Fixed [#582](https://github.com/NeoVintageous/NeoVintageous/issues/582): `u` (undo) after `:sort u` command needs to be pressed twice to fully undo
