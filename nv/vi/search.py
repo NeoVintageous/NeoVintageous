@@ -40,7 +40,7 @@ def view_find(view, pattern, start_pt, flags=0):
 # A possible replacement for find_in_range(). One difference is this function
 # returns zero-length matches, see view_find() polyfill.
 def view_find_in_range(view, pattern, pos, endpos, flags=0):
-    match = view_find(pattern, pos, flags)
+    match = view_find(view, pattern, pos, flags)
     if match is not None and match.b <= endpos:
         return match
 
