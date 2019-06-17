@@ -78,6 +78,7 @@ from NeoVintageous.nv.utils import get_previous_selection
 from NeoVintageous.nv.utils import get_scroll_down_target_pt
 from NeoVintageous.nv.utils import get_scroll_up_target_pt
 from NeoVintageous.nv.utils import gluing_undo_groups
+from NeoVintageous.nv.utils import hide_panel
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import is_view
@@ -352,7 +353,7 @@ class _nv_cmdline_feed_key(TextCommand):
 
         elif key in ('<C-c>', '<C-[>'):
             # Quit command-line without executing.
-            self.view.window().run_command('hide_panel', {'cancel': True})
+            hide_panel(self.view.window())
 
         elif key in ('<C-e>', '<end>'):
             # Cursor to end of command-line.
@@ -880,7 +881,7 @@ class _nv_cmdline(WindowCommand):
         _nv_cmdline_feed_key.reset_last_history_index()
 
         if force:
-            self.window.run_command('hide_panel', {'cancel': True})
+            hide_panel(self.window)
 
 
 class Neovintageous(WindowCommand):
@@ -1210,7 +1211,7 @@ class _enter_normal_mode(ViTextCommandBase):
             if len(self.view.sel()) < 2:
                 # Don't hide panel if multiple cursors
                 if not from_init:
-                    self.view.window().run_command('hide_panel', {'cancel': True})
+                    hide_panel(self.view.window())
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
@@ -3291,7 +3292,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             self.view.show(self.view.sel()[0])
 
         if force:
-            self.view.window().run_command('hide_panel', {'cancel': True})
+            hide_panel(self.view.window())
 
 
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
@@ -4658,7 +4659,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             self.view.show(self.view.sel()[0])
 
         if force:
-            self.view.window().run_command('hide_panel', {'cancel': True})
+            hide_panel(self.view.window())
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):

@@ -201,6 +201,10 @@ def show_if_not_visible(view):
             view.show(pt)
 
 
+def hide_panel(window):
+    window.run_command('hide_panel', {'cancel': True})
+
+
 # Create a region that includes the char at a or b depending on orientation.
 def new_inclusive_region(a, b):
     # type: (int, int) -> Region
