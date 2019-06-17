@@ -46,11 +46,11 @@ from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
+from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import CmdlineOutput
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
-from NeoVintageous.nv.utils import clear_search_highlighting
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import has_dirty_buffers
 from NeoVintageous.nv.utils import has_newline_at_eof

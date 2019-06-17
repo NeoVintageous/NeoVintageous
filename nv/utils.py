@@ -1012,12 +1012,3 @@ def calculate_xpos(view, start, xpos):
     pt = min(eol, start + chars)
 
     return (pt, chars)
-
-
-def clear_search_highlighting(view):
-    view.erase_regions('vi_search')
-    view.erase_regions('vi_search_current')
-
-
-def get_search_regions(view):
-    return view.get_regions('vi_search')

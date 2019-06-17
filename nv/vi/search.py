@@ -22,8 +22,8 @@ from sublime import LITERAL
 from sublime import Region
 import sublime_plugin
 
+from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.ui import ui_region_flags
-from NeoVintageous.nv.utils import clear_search_highlighting
 
 
 # Polyfill to workaround Sublime view.find() return value issue:
