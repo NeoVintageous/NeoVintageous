@@ -3244,15 +3244,17 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         if not self._is_valid_cmdline(s):
             return self.on_cancel(force=True)
 
+        pattern = s[1:]
+        if not pattern:
+            return
+
         state = self.state
 
-        mode = state.mode
         count = state.count
-        pattern = s[1:]
 
         sel = self.view.sel()[0]
         flags = self.calculate_flags(pattern)
-        start = sel.b + 1
+        start = get_insertion_point_at_b(sel) + 1
         end = self.view.size()
 
         match = find_wrapping(self.view,
@@ -3266,9 +3268,6 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
-
-        if mode == VISUAL:
-            match = Region(sel.a, match.a + 1)
 
         # The scopes are prefixed with common color scopes so that color schemes
         # have sane default colors. Color schemes can progressively enhance
@@ -3299,14 +3298,12 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string, mode=None, count=1):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
-        # This happens when we attempt to repeat the search and there's no
-        # search term stored yet.
         if not pattern:
             return
 
         sel = self.view.sel()[0]
         flags = self.calculate_flags(pattern)
-        start = sel.b if not sel.empty() else sel.b + 1
+        start = get_insertion_point_at_b(sel) + 1
         end = self.view.size()
 
         match = find_wrapping(self.view,
@@ -3318,15 +3315,17 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
+        target = get_insertion_point_at_a(match)
+
         def f(view, s):
             if mode == NORMAL:
-                s = Region(match.a, match.a)
+                s = Region(target)
             elif mode == VISUAL:
-                s = Region(s.a, match.a + 1)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                s = Region(s.a, view.full_line(match.b - 1).b)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, match.a)
+                s = Region(s.a, target)
 
             return s
 
@@ -4543,15 +4542,13 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
     def run(self, search_string, mode=None, count=1):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
-        # This happens when we attempt to repeat the search and there's no
-        # search term stored yet.
         if not pattern:
             return
 
         sel = self.view.sel()[0]
         flags = self.calculate_flags(pattern)
         start = 0
-        end = sel.b
+        end = sel.b + 1 if not sel.empty() else sel.b
 
         match = reverse_find_wrapping(self.view,
                                       term=pattern,
@@ -4563,15 +4560,17 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
+        target = get_insertion_point_at_a(match)
+
         def f(view, s):
             if mode == NORMAL:
-                s = Region(match.a, match.a)
+                s = Region(target)
             elif mode == VISUAL:
-                s = Region(s.end(), match.a)
+                resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
-                s = Region(s.end(), view.full_line(match.a).a)
+                resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.end(), match.a)
+                s = Region(s.end(), target)
 
             return s
 
@@ -4617,14 +4616,13 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         state = self.state
 
-        mode = state.mode
         count = state.count
         pattern = s[1:]
 
         sel = self.view.sel()[0]
         flags = self.calculate_flags(pattern)
         start = 0
-        end = sel.b
+        end = sel.b + 1 if not sel.empty() else sel.b
 
         match = reverse_find_wrapping(self.view,
                                       term=pattern,
@@ -4637,9 +4635,6 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
-
-        if mode == VISUAL:
-            match = Region(sel.a, match.a)
 
         # The scopes are prefixed with common color scopes so that color schemes
         # have sane default colors. Color schemes can progressively enhance
