@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#593](https://github.com/NeoVintageous/NeoVintageous/issues/593): Highlight all occurrences on incremental searches
 * Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `'incsearch'` option to show where the pattern, as it was typed so far, matches
 * Added [#579](https://github.com/NeoVintageous/NeoVintageous/issues/579): `<A-...>` keys are now the same as `<M-...>`
 * Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqq` format the current line with a count format that many lines

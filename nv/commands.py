@@ -3247,7 +3247,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
                               flags=flags,
                               times=count)
 
-        self.view.erase_regions('vi_inc_search')
+        clear_search_highlighting(self.view)
 
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
@@ -3261,6 +3261,8 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
             scope='support.function neovintageous_search_inc',
             flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
         )
+
+        self.hilite(pattern)
 
         if not self.view.visible_region().contains(match.b):
             self.view.show(match.b)
@@ -4601,7 +4603,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
                                       flags=flags,
                                       times=count)
 
-        self.view.erase_regions('vi_inc_search')
+        clear_search_highlighting(self.view)
 
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
@@ -4615,6 +4617,8 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
             scope='support.function neovintageous_search_inc',
             flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
         )
+
+        self.hilite(pattern)
 
         if not self.view.visible_region().contains(match):
             self.view.show(match)

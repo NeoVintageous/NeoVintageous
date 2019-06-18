@@ -19,6 +19,7 @@
 def clear_search_highlighting(view):
     view.erase_regions('vi_search')
     view.erase_regions('vi_search_current')
+    view.erase_regions('vi_inc_search')
 
 
 def get_search_regions(view):
