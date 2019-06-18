@@ -39,6 +39,7 @@ from sublime import yes_no_cancel_dialog
 
 from NeoVintageous.nv import shell
 from NeoVintageous.nv import variables
+from NeoVintageous.nv.cmdline import CmdlineOutput
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
 from NeoVintageous.nv.ex.parser import resolve_address
@@ -48,7 +49,6 @@ from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.state import State
-from NeoVintageous.nv.ui import CmdlineOutput
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
 from NeoVintageous.nv.utils import get_insertion_point_at_b

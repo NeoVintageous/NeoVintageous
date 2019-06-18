@@ -62,7 +62,6 @@ from NeoVintageous.nv.search import get_search_regions
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.ui import ui_bell
-from NeoVintageous.nv.ui import ui_cmdline_prompt
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
 from NeoVintageous.nv.ui import ui_region_flags
@@ -163,6 +162,7 @@ from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
+from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_control
@@ -835,9 +835,6 @@ class _nv_ex_cmd_edit_wrap(TextCommand):
 
 class _nv_cmdline(WindowCommand):
 
-    def _is_valid_cmdline(self, cmdline):
-        return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == ':'
-
     def is_enabled(self):
         return bool(self.window.active_view())
 
@@ -845,44 +842,41 @@ class _nv_cmdline(WindowCommand):
         reset_cmdline_completion_state()
         state = State(self.window.active_view())
         state.reset_during_init = False
+        mode = state.mode
 
-        if initial_text is None:
-            if is_visual_mode(state.mode):
-                initial_text = ":'<,'>"
-            else:
-                initial_text = ':'
+        if initial_text is not None:
+            # DEPRECATED The initial_text should NOT contain the leading colon.
+            # Previously this was accepted and the colon was stripped  before
+            # passing dwn the chain, but calling code should be refactored.
+            if len(initial_text) > 0:
+                if initial_text[0] == Cmdline.EX:
+                    initial_text = initial_text[1:]
+                    message('DEPRECATED cmdline initial text contains leading colon')
+        elif is_visual_mode(mode):
+            initial_text = "'<,'>"
+        else:
+            initial_text = ""
 
-        if not self._is_valid_cmdline(initial_text):
-            raise ValueError('invalid cmdline initial text')
-
-        ui_cmdline_prompt(
+        self._cmdline = Cmdline(
             self.window,
-            initial_text=initial_text,
-            on_done=self.on_done,
-            on_change=self.on_change,
-            on_cancel=self.on_cancel
+            Cmdline.EX,
+            self.on_done,
+            self.on_change,
+            self.on_cancel
         )
 
-    def on_change(self, cmdline):
-        if not self._is_valid_cmdline(cmdline):
-            return self.on_cancel(force=True)
+        self._cmdline.prompt(initial_text)
 
+    def on_change(self, cmdline):
         on_change_cmdline_completion_prefix(self.window, cmdline)
 
     def on_done(self, cmdline):
-        if not self._is_valid_cmdline(cmdline):
-            return self.on_cancel(force=True)
-
         _nv_cmdline_feed_key.reset_last_history_index()
-
-        history_update(cmdline)
-        do_ex_cmdline(self.window, cmdline)
+        history_update(Cmdline.EX + cmdline)
+        do_ex_cmdline(self.window, Cmdline.EX + cmdline)
 
     def on_cancel(self, force=False):
         _nv_cmdline_feed_key.reset_last_history_index()
-
-        if force:
-            hide_panel(self.window)
 
 
 class Neovintageous(WindowCommand):
@@ -4567,27 +4561,23 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
-    def _is_valid_cmdline(self, cmdline):
-        return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == '?'
-
     def run(self, pattern=''):
         self.state.reset_during_init = False
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
-        ui_cmdline_prompt(
+
+        self._cmdline = Cmdline(
             self.view.window(),
-            initial_text='?' + pattern,
-            on_done=self.on_done,
-            on_change=self.on_change,
-            on_cancel=self.on_cancel)
+            Cmdline.SEARCH_BACKWARD,
+            self.on_done,
+            self.on_change,
+            self.on_cancel
+        )
 
-    def on_done(self, s):
-        if not self._is_valid_cmdline(s):
-            return self.on_cancel(force=True)
+        self._cmdline.prompt(pattern)
 
-        history_update(s)
+    def on_done(self, pattern):
+        history_update(Cmdline.SEARCH_BACKWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
-
-        pattern = s[1:]
 
         state = self.state
         state.sequence += pattern + '<CR>'
@@ -4597,14 +4587,9 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         state.last_buffer_search = pattern or state.last_buffer_search
         state.eval()
 
-    def on_change(self, s):
-        if not self._is_valid_cmdline(s):
-            return self.on_cancel(force=True)
-
+    def on_change(self, pattern):
         state = self.state
-
         count = state.count
-        pattern = s[1:]
 
         sel = self.view.sel()[0]
         flags = self.calculate_flags(pattern)
@@ -4643,9 +4628,6 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
-
-        if force:
-            hide_panel(self.view.window())
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):
