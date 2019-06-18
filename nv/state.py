@@ -659,10 +659,9 @@ class State(object):
         else:
             raise ValueError('unexpected command type')
 
-        if command.accept_input and command.input_parser:
-            if not self.non_interactive:
-                if command.input_parser.is_type_via_panel():
-                    command.input_parser.run_command()
+        if not self.non_interactive:
+            if command.accept_input and command.input_parser and command.input_parser.is_type_via_panel():
+                command.input_parser.run_command()
 
     def get_visual_repeat_data(self):
         # Return the data needed to restore visual selections.

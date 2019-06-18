@@ -3412,9 +3412,8 @@ class ViSearchForward(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = InputParser(
-            type=InputParser.VIA_PANEL,
+            InputParser.VIA_PANEL,
             command='_vi_slash',
-            interactive_command='_vi_slash',
             param='pattern'
         )
 
@@ -3470,9 +3469,8 @@ class ViSearchBackward(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = InputParser(
-            type=InputParser.VIA_PANEL,
+            InputParser.VIA_PANEL,
             command='_vi_question_mark',
-            interactive_command='_vi_question_mark',
             param='pattern'
         )
 

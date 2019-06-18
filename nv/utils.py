@@ -925,11 +925,15 @@ class InputParser():
     VIA_PANEL = 2
     AFTER_MOTION = 3
 
-    def __init__(self, type=None, command=None, interactive_command=None, param=None):
+    def __init__(self, type=None, command=None, param=None, interactive_command=None):
         self._type = type
         self._command = command
-        self._interactive_command = interactive_command
         self._param = param
+
+        if not interactive_command:
+            interactive_command = command
+
+        self._interactive_command = interactive_command
 
     def is_interactive(self):
         # type: () -> bool
@@ -944,14 +948,12 @@ class InputParser():
     def is_type_via_panel(self):
         return self._type == self.VIA_PANEL
 
-    def run_interactive_command(self, window, param_value):
+    def run_interactive_command(self, window, value):
         # type: (...) -> None
-        cmd = self._interactive_command
-        args = {self._param: param_value}
-
-        window.run_command(cmd, args)
+        window.run_command(self._interactive_command, {self._param: value})
 
     def run_command(self):
+        # type: () -> None
         run_window_command(self._command)
 
 
