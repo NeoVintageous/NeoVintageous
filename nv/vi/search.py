@@ -23,8 +23,6 @@ from sublime import Region
 import sublime_plugin
 
 from NeoVintageous.nv.options import get_option
-from NeoVintageous.nv.search import clear_search_highlighting
-from NeoVintageous.nv.ui import ui_region_flags
 
 
 # Polyfill to workaround Sublime view.find() return value issue:
@@ -252,13 +250,16 @@ class BufferSearchBase(sublime_plugin.TextCommand):
     def calculate_flags(self, pattern=None):
         flags = 0
 
+        if get_option(self.view, 'ignorecase'):
+            flags |= IGNORECASE
+
         if not get_option(self.view, 'magic'):
             flags |= LITERAL
-        elif pattern:
-            # Is the pattern as regular expression or a literal? For example, in
-            # "magic" mode, simple strings like "]" should be treated as a
-            # literal and "[0-9]" should be treated as a regular expression.
 
+        if pattern:
+            # Is the pattern as regular expression or a literal? For example, in
+            # "magic" mode, simple strings like "]" should be treated as a literal
+            # and "[0-9]" should be treated as a regular expression.
             if re.match('^[a-zA-Z0-9_\\[\\]]+$', pattern):
                 if '[' not in pattern or ']' not in pattern:
                     flags |= LITERAL
@@ -266,48 +267,16 @@ class BufferSearchBase(sublime_plugin.TextCommand):
                 if '(' not in pattern or ')' not in pattern:
                     flags |= LITERAL
 
-        if get_option(self.view, 'ignorecase'):
-            flags |= IGNORECASE
-
         return flags
 
     def build_pattern(self, query):
         return query
 
-    def hilite(self, query):
-        regions = self.view.find_all(
+    def get_occurrences(self, query):
+        return self.view.find_all(
             self.build_pattern(query),
             self.calculate_flags(query)
         )
-
-        if not regions:
-            clear_search_highlighting(self.view)
-            return
-
-        sels = self.view.sel()
-        regions_current = []
-        for region in regions:
-            for sel in sels:
-                if region.contains(sel):
-                    regions_current.append(region)
-
-        # The scopes are prefixed with common color scopes so that color schemes
-        # have sane default colors. Color schemes can progressively enhance
-        # support by using the nv_* scopes.
-        if get_option(self.view, 'hlsearch'):
-            self.view.add_regions(
-                'vi_search',
-                regions,
-                scope='string neovintageous_search_occ',
-                flags=ui_region_flags(self.view.settings().get('neovintageous_search_occ_style'))
-            )
-
-            self.view.add_regions(
-                'vi_search_current',
-                regions_current,
-                scope='support.function neovintageous_search_cur',
-                flags=ui_region_flags(self.view.settings().get('neovintageous_search_cur_style'))
-            )
 
 
 # TODO [refactor] Move to commands module

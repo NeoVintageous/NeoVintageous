@@ -57,6 +57,7 @@ from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
+from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import get_search_regions
 from NeoVintageous.nv.state import State
@@ -64,7 +65,6 @@ from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
-from NeoVintageous.nv.ui import ui_region_flags
 from NeoVintageous.nv.utils import VisualBlockSelection
 from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
@@ -875,7 +875,7 @@ class _nv_cmdline(WindowCommand):
         history_update(Cmdline.EX + cmdline)
         do_ex_cmdline(self.window, Cmdline.EX + cmdline)
 
-    def on_cancel(self, force=False):
+    def on_cancel(self):
         _nv_cmdline_feed_key.reset_last_history_index()
 
 
@@ -3225,7 +3225,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
         state = self.state
         state.sequence += pattern + '<CR>'
-        self.view.erase_regions('vi_inc_search')
+        clear_search_highlighting(self.view)
         state.last_buffer_search_command = 'vi_slash'
         state.motion = ViSearchForwardImpl(term=pattern)
         state.last_buffer_search = pattern or state.last_buffer_search
@@ -3252,21 +3252,11 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        # The scopes are prefixed with common color scopes so that color schemes
-        # have sane default colors. Color schemes can progressively enhance
-        # support by using the nv_* scopes.
-        self.view.add_regions(
-            'vi_inc_search',
-            [match],
-            scope='support.function neovintageous_search_inc',
-            flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
-        )
-
-        self.hilite(pattern)
+        add_search_highlighting(self.view, self.get_occurrences(pattern), [match])
         show_if_not_visible(self.view, match)
 
-    def on_cancel(self, force=False):
-        self.view.erase_regions('vi_inc_search')
+    def on_cancel(self):
+        clear_search_highlighting(self.view)
         self.state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
@@ -3293,8 +3283,6 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        target = get_insertion_point_at_a(match)
-
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -3307,8 +3295,9 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
 
             return s
 
+        target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        self.hilite(pattern)
+        add_search_highlighting(self.view, self.get_occurrences(pattern))
 
 
 class _vi_l(ViMotionCommand):
@@ -4128,7 +4117,7 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
         jumplist_update(self.view)
 
         if query:
-            self.hilite(query)
+            add_search_highlighting(self.view, self.get_occurrences(query))
             state.last_buffer_search = query
 
         if not search_string:
@@ -4172,7 +4161,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
         jumplist_update(self.view)
 
         if query:
-            self.hilite(query)
+            add_search_highlighting(self.view, self.get_occurrences(query))
             state.last_buffer_search = query
 
         if not search_string:
@@ -4538,8 +4527,6 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        target = get_insertion_point_at_a(match)
-
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -4552,8 +4539,9 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 
             return s
 
+        target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        self.hilite(pattern)
+        add_search_highlighting(self.view, self.get_occurrences(pattern))
 
 
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
@@ -4577,7 +4565,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
         state = self.state
         state.sequence += pattern + '<CR>'
-        self.view.erase_regions('vi_inc_search')
+        clear_search_highlighting(self.view)
         state.last_buffer_search_command = 'vi_question_mark'
         state.motion = ViSearchBackwardImpl(term=pattern)
         state.last_buffer_search = pattern or state.last_buffer_search
@@ -4604,24 +4592,13 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        # The scopes are prefixed with common color scopes so that color schemes
-        # have sane default colors. Color schemes can progressively enhance
-        # support by using the nv_* scopes.
-        self.view.add_regions(
-            'vi_inc_search',
-            [match],
-            scope='support.function neovintageous_search_inc',
-            flags=ui_region_flags(self.view.settings().get('neovintageous_search_inc_style'))
-        )
-
-        self.hilite(pattern)
+        add_search_highlighting(self.view, self.get_occurrences(pattern))
         show_if_not_visible(self.view, match)
 
-    def on_cancel(self, force=False):
-        self.view.erase_regions('vi_inc_search')
+    def on_cancel(self):
+        clear_search_highlighting(self.view)
         self.state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
-
         show_if_not_visible(self.view)
 
 
