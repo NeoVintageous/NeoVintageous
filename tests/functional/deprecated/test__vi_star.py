@@ -27,7 +27,7 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(0, 3), self.Region(4, 7)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(0, 3), self.Region(4, 7)])
 
     def test_select_match_middle(self):
         self.write('abc\nabc')
@@ -36,7 +36,7 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(0, 3), self.Region(4, 7)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(0, 3), self.Region(4, 7)])
 
     def test_select_match_end(self):
         self.write('abc\nabc')
@@ -45,7 +45,7 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(0, 3), self.Region(4, 7)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(0, 3), self.Region(4, 7)])
 
     def test_select_match_end2(self):
         self.write('abc\nabc')
@@ -54,7 +54,7 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(0, 3), self.Region(4, 7)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(0, 3), self.Region(4, 7)])
 
     def test_select_repeat_match(self):
         self.write('abc\nabc\nfoo\nabc\nbar')
@@ -64,7 +64,7 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(0, 3), self.Region(4, 7), self.Region(12, 15)])
 
     def test_select_wrap_match(self):
@@ -74,7 +74,7 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(4, 7), self.Region(12, 15)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(12, 15)])
 
     def test_select_no_partial_match(self):
         self.write('boo\nabc\nabcxabc\nabc\nbar')
@@ -83,7 +83,7 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(16)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(4, 7), self.Region(16, 19)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(16, 19)])
 
     def test_select_no_match(self):
         self.write('boo\nabc\nfoo\nabc\nbar')
@@ -92,4 +92,4 @@ class Test__vi_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
 
         self.assertSelection(8)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(8, 11)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(8, 11)])

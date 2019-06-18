@@ -28,7 +28,7 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(20)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -41,7 +41,7 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -53,7 +53,7 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -66,7 +66,7 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
 
         self.assertSelection(20)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -82,7 +82,7 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
             self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -94,7 +94,7 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(4, 7), self.Region(12, 15)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(12, 15)])
 
 
 class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
@@ -107,7 +107,7 @@ class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -119,7 +119,7 @@ class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -131,7 +131,7 @@ class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [self.Region(4, 7), self.Region(12, 15)])
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(12, 15)])
 
 
 class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
@@ -148,7 +148,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -164,7 +164,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
 
         self.assertSelection(20)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -180,7 +180,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -199,7 +199,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -215,7 +215,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
 
         self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
 
@@ -231,6 +231,6 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
 
         self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('vi_search'), [
+        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
             self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
         ])
