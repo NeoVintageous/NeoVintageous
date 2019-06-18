@@ -34,6 +34,7 @@ from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import rc
+from NeoVintageous.nv.cmdline import Cmdline
 from NeoVintageous.nv.ex.completions import insert_best_cmdline_completion
 from NeoVintageous.nv.ex.completions import on_change_cmdline_completion_prefix
 from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
@@ -3211,27 +3212,23 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 
 class _vi_slash(ViMotionCommand, BufferSearchBase):
 
-    def _is_valid_cmdline(self, cmdline):
-        return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == '/'
-
     def run(self, pattern=''):
         self.state.reset_during_init = False
         # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
-        ui_cmdline_prompt(
+
+        self._cmdline = Cmdline(
             self.view.window(),
-            initial_text='/' + pattern,
-            on_done=self.on_done,
-            on_change=self.on_change,
-            on_cancel=self.on_cancel)
+            Cmdline.SEARCH_FORWARD,
+            self.on_done,
+            self.on_change,
+            self.on_cancel
+        )
 
-    def on_done(self, s):
-        if not self._is_valid_cmdline(s):
-            return self.on_cancel(force=True)
+        self._cmdline.prompt(pattern)
 
-        history_update(s)
+    def on_done(self, pattern):
+        history_update(Cmdline.SEARCH_FORWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
-
-        pattern = s[1:]
 
         state = self.state
         state.sequence += pattern + '<CR>'
@@ -3241,16 +3238,8 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         state.last_buffer_search = pattern or state.last_buffer_search
         state.eval()
 
-    def on_change(self, s):
-        if not self._is_valid_cmdline(s):
-            return self.on_cancel(force=True)
-
-        pattern = s[1:]
-        if not pattern:
-            return
-
+    def on_change(self, pattern):
         state = self.state
-
         count = state.count
 
         sel = self.view.sel()[0]
@@ -3290,9 +3279,6 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
         if not self.view.visible_region().contains(self.view.sel()[0]):
             self.view.show(self.view.sel()[0])
-
-        if force:
-            hide_panel(self.view.window())
 
 
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
