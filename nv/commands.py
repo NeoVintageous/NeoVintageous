@@ -3208,7 +3208,6 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
 
     def run(self, pattern=''):
         self.state.reset_during_init = False
-        # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
 
         self._cmdline = Cmdline(
             self.view.window(),
@@ -4563,7 +4562,6 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
     def run(self, pattern=''):
         self.state.reset_during_init = False
-        # TODO Add incsearch option e.g. on_change = self.on_change if 'incsearch' else None
 
         self._cmdline = Cmdline(
             self.view.window(),

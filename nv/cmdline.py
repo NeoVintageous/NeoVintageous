@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.utils import hide_panel
 
 
@@ -54,6 +55,12 @@ class Cmdline():
             raise ValueError('invalid cmdline type')
 
         self._type = type
+
+        # TODO Maybe make the view a dependency instead of window?
+        view = window.active_view()
+
+        if type in (self.SEARCH_FORWARD, self.SEARCH_BACKWARD) and not get_option(view, 'incsearch'):
+            on_change = None
 
         self._callbacks = {
             'on_done': on_done,
