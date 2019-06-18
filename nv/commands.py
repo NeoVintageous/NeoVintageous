@@ -3263,17 +3263,13 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         )
 
         self.hilite(pattern)
-
-        if not self.view.visible_region().contains(match.b):
-            self.view.show(match.b)
+        show_if_not_visible(self.view, match)
 
     def on_cancel(self, force=False):
         self.view.erase_regions('vi_inc_search')
         self.state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
-
-        if not self.view.visible_region().contains(self.view.sel()[0]):
-            self.view.show(self.view.sel()[0])
+        show_if_not_visible(self.view)
 
 
 class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
@@ -4619,17 +4615,14 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         )
 
         self.hilite(pattern)
-
-        if not self.view.visible_region().contains(match):
-            self.view.show(match)
+        show_if_not_visible(self.view, match)
 
     def on_cancel(self, force=False):
         self.view.erase_regions('vi_inc_search')
         self.state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
 
-        if not self.view.visible_region().contains(self.view.sel()[0]):
-            self.view.show(self.view.sel()[0])
+        show_if_not_visible(self.view)
 
 
 class _vi_repeat_buffer_search(ViMotionCommand):

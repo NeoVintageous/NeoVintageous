@@ -193,12 +193,21 @@ def get_previous_selection(view):
     return (view.get_regions('visual_sel'), view.settings().get('_nv_visual_sel_mode'))
 
 
-def show_if_not_visible(view):
+def show_if_not_visible(view, pt=None):
     # type: (...) -> None
-    if view.sel():
-        pt = view.sel()[0].b
-        if not view.visible_region().contains(pt):
-            view.show(pt)
+    if isinstance(pt, Region):
+        pt = pt.b
+    elif pt is None and view.sel():
+        # Sublime has no way to show which region in the selection is the actual
+        # cursor position e.g. the selection could be a multiple cursor.
+        # TODO Is there a better hueristic to find the actual cursor position?
+        sel = view.sel()[0]
+
+        if sel:
+            pt = sel.b
+
+    if pt and not view.visible_region().contains(pt):
+        view.show(pt)
 
 
 def hide_panel(window):
