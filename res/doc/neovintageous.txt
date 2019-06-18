@@ -477,6 +477,10 @@ List of available options:
         item        meaning when present    ~
         all         All events.
 
+                                                     *'vintageous_winaltkeys'*
+'vintageous_winaltkeys'   boolean (default on)
+        See 'winaltkeys'.
+
 ------------------------------------------------------------------------------
 
 Mapping capslock to escape                                       *nv-capslock*

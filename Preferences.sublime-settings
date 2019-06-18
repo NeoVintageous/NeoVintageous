@@ -134,5 +134,20 @@
 
     // Propagate copy actions to the system clipboard.
     // {not in Vim}
-    "vintageous_use_sys_clipboard": false
+    "vintageous_use_sys_clipboard": false,
+
+    // There is a conflict between using the <Alt> key to select menu items, and
+    // using <Alt> key combinations for mappings. The 'vintageous_winaltkeys'
+    // setting tells NeoVintageous what it should do with the <Alt> key.
+    //    The default value "menu" is the smart choice: If the key combination is a
+    // menu shortcut it can't be mapped.  All other keys are available for mapping.
+    //    The value false doesn't use any <Alt> keys for the menus. Thus you must
+    // use the mouse for the menus, and all <Alt> keys can be mapped.
+    //    The value true means that Vim will use any <Alt> keys for the menus. Some
+    // <Alt> key combinations may also do other things than selecting a menu.
+    //
+    // Valid values are "menu" or a boolean.
+    //
+    // https://vimhelp.appspot.com/options.txt.html#%27winaltkeys%27
+    "vintageous_winaltkeys": true
 }

@@ -33,9 +33,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import is_ex_mode
 
-__all__ = [
-    'NeoVintageousEvents'
-]
+__all__ = ['NeoVintageousEvents']
 
 # TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline commands are being heavily reactored, and so these are hardcoded until a better way to auto generate the completions is figured out.  # noqa: E501
 _cmdline_completions = [
@@ -66,7 +64,7 @@ def _check_query_context_value(value, operator, operand, match_all):
     return False
 
 
-def _is_command_mode(view, operator, operand, match_all):
+def _is_command_mode(view, operator=OP_EQUAL, operand=True, match_all=False):
     return _check_query_context_value(
         (view.settings().get('command_mode') and is_view(view)),
         operator,
@@ -87,10 +85,19 @@ def _is_insert_mode(view, operator, operand, match_all):
     )
 
 
+def _is_alt_key_enabled(view, operator, operand, match_all):
+    winaltkeys = get_option(view, 'winaltkeys')
+    if winaltkeys == 'menu':
+        return (operand not in tuple('efghinpstv') or not view.window().is_menu_visible()) and _is_command_mode(view)
+
+    return False if winaltkeys else _is_command_mode(view)
+
+
 _query_contexts = {
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
-}
+    'nv.is_alt_key_enabled': _is_alt_key_enabled,
+}  # type: dict
 
 
 class NeoVintageousEvents(EventListener):
