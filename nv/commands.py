@@ -4592,7 +4592,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        add_search_highlighting(self.view, self.get_occurrences(pattern))
+        add_search_highlighting(self.view, self.get_occurrences(pattern), [match])
         show_if_not_visible(self.view, match)
 
     def on_cancel(self):
