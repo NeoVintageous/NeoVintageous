@@ -22,6 +22,7 @@ from sublime import LITERAL
 from sublime import Region
 import sublime_plugin
 
+from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.ui import ui_region_flags
 
@@ -251,9 +252,7 @@ class BufferSearchBase(sublime_plugin.TextCommand):
     def calculate_flags(self, pattern=None):
         flags = 0
 
-        settings = self.view.settings()
-
-        if settings.get('vintageous_magic') is False:
+        if not get_option(self.view, 'magic'):
             flags |= LITERAL
         elif pattern:
             # Is the pattern as regular expression or a literal? For example, in
@@ -267,7 +266,7 @@ class BufferSearchBase(sublime_plugin.TextCommand):
                 if '(' not in pattern or ')' not in pattern:
                     flags |= LITERAL
 
-        if settings.get('vintageous_ignorecase') is True:
+        if get_option(self.view, 'ignorecase'):
             flags |= IGNORECASE
 
         return flags
@@ -295,7 +294,7 @@ class BufferSearchBase(sublime_plugin.TextCommand):
         # The scopes are prefixed with common color scopes so that color schemes
         # have sane default colors. Color schemes can progressively enhance
         # support by using the nv_* scopes.
-        if self.view.settings().get('vintageous_hlsearch'):
+        if get_option(self.view, 'hlsearch'):
             self.view.add_regions(
                 'vi_search',
                 regions,
@@ -317,9 +316,7 @@ class ExactWordBufferSearchBase(BufferSearchBase):
     def calculate_flags(self, pattern=None):
         flags = 0
 
-        settings = self.view.settings()
-
-        if settings.get('vintageous_ignorecase') is True:
+        if get_option(self.view, 'ignorecase'):
             flags |= IGNORECASE
 
         return flags

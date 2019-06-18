@@ -19,6 +19,7 @@ import re
 
 from sublime import Region
 
+from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.vim import message
 
 
@@ -67,7 +68,7 @@ def _gen_raw_options(modelines):
 
 
 def _gen_modeline_options(view):
-    modelines = _gen_modelines(view, view.settings().get('vintageous_modelines'))
+    modelines = _gen_modelines(view, get_option(view, 'modelines'))
     for opt in _gen_raw_options(modelines):
         name, sep, value = opt.partition(' ')
         yield view.settings().set, name.rstrip(':'), value.rstrip(';')

@@ -15,15 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from sublime import active_window
 from sublime import DRAW_EMPTY_AS_OVERWRITE
 from sublime import DRAW_NO_FILL
 from sublime import DRAW_NO_OUTLINE
 from sublime import DRAW_SOLID_UNDERLINE
 from sublime import DRAW_SQUIGGLY_UNDERLINE
 from sublime import DRAW_STIPPLED_UNDERLINE
+from sublime import active_window
 from sublime import set_timeout
 
+from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.vim import status_message
 
 
@@ -40,7 +41,7 @@ def ui_bell(msg=None):
         return
 
     settings = view.settings()
-    if settings.get('vintageous_belloff') == 'all':
+    if get_option(view, 'belloff') == 'all':
         return
 
     color_scheme = settings.get('vintageous_bell_color_scheme', 'dark')

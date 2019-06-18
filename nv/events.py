@@ -20,17 +20,18 @@ from sublime import OP_NOT_EQUAL
 from sublime_plugin import EventListener
 
 from NeoVintageous.nv.modeline import do_modeline
-from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.vi import settings
-from NeoVintageous.nv.vim import enter_normal_mode
-from NeoVintageous.nv.vim import is_ex_mode
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import is_ex_mode
 
 __all__ = [
     'NeoVintageousEvents'
@@ -208,11 +209,11 @@ class NeoVintageousEvents(EventListener):
                         state.update_xpos(force=True)
 
     def on_load(self, view):
-        if view.settings().get('vintageous_modeline', False):
+        if get_option(view, 'modeline'):
             do_modeline(view)
 
     def on_post_save(self, view):
-        if view.settings().get('vintageous_modeline', False):
+        if get_option(view, 'modeline'):
             do_modeline(view)
 
         # Ensure the carets are within valid bounds. For instance, this is a
