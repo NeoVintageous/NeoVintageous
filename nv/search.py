@@ -21,19 +21,19 @@ from NeoVintageous.nv.ui import ui_region_flags
 
 
 def clear_search_highlighting(view):
-    view.erase_regions('vi_search')
-    view.erase_regions('vi_search_current')
-    view.erase_regions('vi_inc_search')
+    view.erase_regions('_nv_search_occ')
+    view.erase_regions('_nv_search_cur')
+    view.erase_regions('_nv_search_inc')
 
 
 def get_search_regions(view):
-    return view.get_regions('vi_search')
+    return view.get_regions('_nv_search_occ')
 
 
 def add_search_highlighting(view, occurrences, incremental=None):
     if get_option(view, 'incsearch') and incremental:
         view.add_regions(
-            'vi_inc_search',
+            '_nv_search_inc',
             incremental,
             scope='support.function neovintageous_search_inc',
             flags=ui_region_flags(get_setting(view, 'search_inc_style'))
@@ -50,14 +50,14 @@ def add_search_highlighting(view, occurrences, incremental=None):
                     current.append(region)
 
         view.add_regions(
-            'vi_search',
+            '_nv_search_occ',
             occurrences,
             scope='string neovintageous_search_occ',
             flags=ui_region_flags(get_setting(view, 'search_occ_style'))
         )
 
         view.add_regions(
-            'vi_search_current',
+            '_nv_search_cur',
             current,
             scope='support.function neovintageous_search_cur',
             flags=ui_region_flags(get_setting(view, 'search_cur_style'))
