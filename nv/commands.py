@@ -219,7 +219,6 @@ __all__ = [
     '_vi_ctrl_f',
     '_vi_ctrl_g',
     '_vi_ctrl_r',
-    '_vi_ctrl_r_equal',
     '_vi_ctrl_right_square_bracket',
     '_vi_ctrl_u',
     '_vi_ctrl_w',
@@ -2735,29 +2734,6 @@ class _vi_ctrl_y(ViTextCommandBase):
 
         extend = True if mode == VISUAL else False
         self.view.run_command('scroll_lines', {'amount': count, 'extend': extend})
-
-
-class _vi_ctrl_r_equal(ViTextCommandBase):
-
-    def run(self, edit, insert=False, next_mode=None):
-        def on_cancel():
-            state = State(self.view)
-            state.reset()
-
-        def on_done(s):
-            state = State(self.view)
-            try:
-                rv = [str(eval(s, None, None)), ]
-                if not insert:
-                    state.registers.set_expression(rv)
-                else:
-                    self.view.run_command('insert_snippet', {'contents': str(rv[0])})
-                    state.reset()
-            except Exception:
-                status_message('invalid expression')
-                on_cancel()
-
-        self.view.window().show_input_panel('', '', on_done, None, on_cancel)
 
 
 class _vi_q(IrreversibleTextCommand):
