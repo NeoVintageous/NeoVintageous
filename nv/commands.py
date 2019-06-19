@@ -1146,19 +1146,6 @@ def _is_linewise_operation(mode, motion):
 class _vi_c(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
-        def compact(view, s):
-            if view.substr(s).strip():
-                if s.b > s.a:
-                    pt = prev_non_ws(view, s.b - 1)
-
-                    return Region(s.a, pt + 1)
-
-                pt = prev_non_ws(view, s.a - 1)
-
-                return Region(pt + 1, s.b)
-
-            return s
-
         if mode is None:
             raise ValueError('mode required')
 
@@ -1172,7 +1159,20 @@ class _vi_c(ViTextCommandBase):
 
             if mode == INTERNAL_NORMAL:
                 if _should_motion_apply_op_transformer(motion):
-                    regions_transformer(self.view, compact)
+                    def f(view, s):
+                        if view.substr(s).strip():
+                            if s.b > s.a:
+                                pt = prev_non_ws(view, s.b - 1)
+
+                                return Region(s.a, pt + 1)
+
+                            pt = prev_non_ws(view, s.a - 1)
+
+                            return Region(pt + 1, s.b)
+
+                        return s
+
+                    regions_transformer(self.view, f)
 
             if not self.has_sel_changed():
                 enter_insert_mode(self.view, mode)
@@ -1188,17 +1188,6 @@ class _vi_c(ViTextCommandBase):
 
 
 class _enter_normal_mode(ViTextCommandBase):
-    """
-    The equivalent of pressing the Esc key in Vim.
-
-    @mode
-      The mode we're coming from, which should still be the current mode.
-
-    @from_init
-      Whether _enter_normal_mode has been called from init_state. This
-      is important to know in order to not hide output panels when the user
-      is only navigating files or clicking around, not pressing Esc.
-    """
 
     def run(self, edit, mode=None, from_init=False):
         _log.debug('_enter_normal_mode mode=%s, from_init=%s', mode, from_init)
@@ -1564,7 +1553,7 @@ class _vi_dot(ViWindowCommandBase):
 class _vi_dd(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register='"'):
-        def do_motion(view, s):
+        def f(view, s):
             if mode != INTERNAL_NORMAL:
                 return s
 
@@ -1583,7 +1572,7 @@ class _vi_dd(ViTextCommandBase):
                 new.append(pt)
             self.view.sel().add_all(new)
 
-        regions_transformer(self.view, do_motion)
+        regions_transformer(self.view, f)
         self.state.registers.op_delete(register=register, linewise=True)
         self.view.run_command('right_delete')
         fixup_sel_pos()
@@ -1592,7 +1581,7 @@ class _vi_dd(ViTextCommandBase):
 class _vi_cc(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register='"'):
-        def do_motion(view, s):
+        def f(view, s):
             if mode != INTERNAL_NORMAL:
                 return s
 
@@ -1601,7 +1590,7 @@ class _vi_cc(ViTextCommandBase):
 
             return inner_lines(view, s, count)
 
-        regions_transformer(self.view, do_motion)
+        regions_transformer(self.view, f)
         self.state.registers.op_change(register=register, linewise=True)
 
         if not all(s.empty() for s in self.view.sel()):
@@ -1944,7 +1933,7 @@ class _vi_big_c(ViTextCommandBase):
 class _vi_big_s(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
-        def sel_line(view, s):
+        def f(view, s):
             if mode == INTERNAL_NORMAL:
                 if count == 1:
                     if view.line(s.b).size() > 0:
@@ -1955,7 +1944,7 @@ class _vi_big_s(ViTextCommandBase):
                     return s
             return s
 
-        regions_transformer(self.view, sel_line)
+        regions_transformer(self.view, f)
         self.state.registers.op_change(register=register, linewise=True)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
@@ -1979,7 +1968,6 @@ class _vi_s(ViTextCommandBase):
                 if line.empty():
                     return Region(s.b)
 
-                # Should not delete past eol.
                 return Region(s.b, min(s.b + count, line.b))
 
             if mode == VISUAL_LINE:
@@ -2199,7 +2187,7 @@ class _vi_big_x(ViTextCommandBase):
         return self.view.line(pt).begin()
 
     def run(self, edit, mode=None, count=1, register=None):
-        def select(view, s):
+        def f(view, s):
             nonlocal abort
             if mode == INTERNAL_NORMAL:
                 if view.line(s.b).empty():
@@ -2217,7 +2205,7 @@ class _vi_big_x(ViTextCommandBase):
             return Region(s.begin(), s.end())
 
         abort = False
-        regions_transformer(self.view, select)
+        regions_transformer(self.view, f)
 
         self.state.registers.op_delete(register=register, linewise=True)
 
