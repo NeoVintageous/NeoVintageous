@@ -852,6 +852,7 @@ class _nv_cmdline(WindowCommand):
                 if initial_text[0] == Cmdline.EX:
                     initial_text = initial_text[1:]
                     message('DEPRECATED cmdline initial text contains leading colon')
+
         elif is_visual_mode(mode):
             initial_text = "'<,'>"
         else:
@@ -868,7 +869,7 @@ class _nv_cmdline(WindowCommand):
         self._cmdline.prompt(initial_text)
 
     def on_change(self, cmdline):
-        on_change_cmdline_completion_prefix(self.window, cmdline)
+        on_change_cmdline_completion_prefix(self.window, Cmdline.EX + cmdline)
 
     def on_done(self, cmdline):
         _nv_cmdline_feed_key.reset_last_history_index()

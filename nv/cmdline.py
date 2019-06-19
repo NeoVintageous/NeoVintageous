@@ -56,10 +56,8 @@ class Cmdline():
 
         self._type = type
 
-        # TODO Maybe make the view a dependency instead of window?
-        view = window.active_view()
-
-        if type in (self.SEARCH_FORWARD, self.SEARCH_BACKWARD) and not get_option(view, 'incsearch'):
+        # TODO Make view a contructor dependency? window.active_view() is a race-condition whereas view.window() isn't
+        if type in (self.SEARCH_FORWARD, self.SEARCH_BACKWARD) and not get_option(window.active_view(), 'incsearch'):
             on_change = None
 
         self._callbacks = {
