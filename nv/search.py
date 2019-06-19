@@ -26,7 +26,7 @@ def clear_search_highlighting(view):
     view.erase_regions('_nv_search_inc')
 
 
-def get_search_regions(view):
+def get_search_occurrences(view):
     return view.get_regions('_nv_search_occ')
 
 

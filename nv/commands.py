@@ -59,7 +59,7 @@ from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
-from NeoVintageous.nv.search import get_search_regions
+from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.ui import ui_bell
@@ -3041,9 +3041,9 @@ class _vi_g_big_h(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
         view = self.window.active_view()
-        search_regions = get_search_regions(view)
-        if search_regions:
-            view.sel().add_all(search_regions)
+        search_occurrences = get_search_occurrences(view)
+        if search_occurrences:
+            view.sel().add_all(search_occurrences)
 
             self.state.enter_select_mode()
             self.state.display_status()
