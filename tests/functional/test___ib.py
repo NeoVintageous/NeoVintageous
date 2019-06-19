@@ -33,31 +33,63 @@ class Test_ib(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_cib(self):
         for target in ('(', ')', 'b'):
             self.eq('x(fi|zz)y', 'ci' + target, 'i_x(|)y')
+            self.assertRegisters('"-', 'fizz', '01')
+            self.resetRegisters()
+
+            # XXX Should this be registered as a linewise register?
             self.eq('x(\nfi|zz\n)y', 'ci' + target, 'i_x(\n|\n)y')
+            self.assertRegisters('"-', 'fizz', '01')
+            self.resetRegisters()
+
+            # XXX Should this be registered as a linewise register?
             self.eq('x(\n|    fizz\n)y', 'ci' + target, 'i_x(\n|\n)y')
             self.eq('x(\n    |fizz\n)y', 'ci' + target, 'i_x(\n|\n)y')
             self.eq('x(\n    fi|zz\n)y', 'ci' + target, 'i_x(\n|\n)y')
             self.eq('x(\n    fiz|z\n)y', 'ci' + target, 'i_x(\n|\n)y')
+            self.assertRegisters('"-', '    fizz', '01')
+            self.resetRegisters()
+
             self.eq('x(\n|    fizz\n    buzz\n)y', 'ci' + target, 'i_x(\n|\n)y')
             self.eq('x(\n    |fizz\n    buzz\n)y', 'ci' + target, 'i_x(\n|\n)y')
             self.eq('x(\n    fi|zz\n    buzz\n)y', 'ci' + target, 'i_x(\n|\n)y')
             self.eq('x(\n    fiz|z\n    buzz\n)y', 'ci' + target, 'i_x(\n|\n)y')
+            self.assertLinewiseRegisters('"1', '    fizz\n    buzz', '-0')
+            self.resetRegisters()
 
     def test_dib(self):
         for target in ('(', ')', 'b'):
             self.eq('x(fi|zz)y', 'di' + target, 'x(|)y')
+            self.assertRegisters('"-', 'fizz', '01')
+            self.resetRegisters()
+
             self.eq('x(\nfi|zz\n)y', 'di' + target, 'x(\n|)y')
+            self.assertLinewiseRegisters('"1', 'fizz\n', '-0')
+            self.resetRegisters()
+
             self.eq('x(\n|    fizz\n)y', 'di' + target, 'x(\n|)y')
             self.eq('x(\n    |fizz\n)y', 'di' + target, 'x(\n|)y')
             self.eq('x(\n    fi|zz\n)y', 'di' + target, 'x(\n|)y')
             self.eq('x(\n    fiz|z\n)y', 'di' + target, 'x(\n|)y')
+            self.assertLinewiseRegisters('"1', '    fizz\n', '-0')
+            self.resetRegisters()
+
             self.eq('x(\n|    fizz\n    buzz\n)y', 'di' + target, 'x(\n|)y')
             self.eq('x(\n    |fizz\n    buzz\n)y', 'di' + target, 'x(\n|)y')
             self.eq('x(\n    fi|zz\n    buzz\n)y', 'di' + target, 'x(\n|)y')
             self.eq('x(\n    fiz|z\n    buzz\n)y', 'di' + target, 'x(\n|)y')
+            self.assertLinewiseRegisters('"1', '    fizz\n    buzz\n', '-0')
+            self.resetRegisters()
 
     def test_yib(self):
         for target in ('(', ')', 'b'):
             self.eq('x(fi|zz)y', 'yi' + target, 'x(|fizz)y')
+            self.assertRegisters('"0', 'fizz', '-1')
+            self.resetRegisters()
+
             self.eq('x(\nfi|zz\n)y', 'yi' + target, 'x(\n|fizz\n)y')
+            self.assertLinewiseRegisters('"0', 'fizz\n', '-1')
+            self.resetRegisters()
+
             self.eq('x(\nfi|zz\nbuzz\n)y', 'yi' + target, 'x(\n|fizz\nbuzz\n)y')
+            self.assertLinewiseRegisters('"0', 'fizz\nbuzz\n', '-1')
+            self.resetRegisters()

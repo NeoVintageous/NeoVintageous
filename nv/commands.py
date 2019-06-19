@@ -1129,6 +1129,20 @@ def _should_motion_apply_op_transformer(motion):
     return motion and 'motion' in motion and motion['motion'] not in blacklist
 
 
+# Some motions should be treated as linewise operations by registers, for
+# example, some text objects are linewise, but only if they contain a newline.
+def _is_linewise_operation(mode, motion):
+    if mode == VISUAL_LINE:
+        return True
+
+    if motion:
+        if 'motion_args' in motion and 'text_object' in motion['motion_args']:
+            if motion['motion_args']['text_object'] in '[]()b<>t{}B%`/?nN':
+                return 'maybe'
+
+    return False
+
+
 class _vi_c(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
@@ -1168,7 +1182,7 @@ class _vi_c(ViTextCommandBase):
                 enter_insert_mode(self.view, mode)
                 return
 
-        self.state.registers.op_change(register=register, linewise=(mode == VISUAL_LINE))
+        self.state.registers.op_change(register=register, linewise=_is_linewise_operation(mode, motion))
         self.view.run_command('right_delete')
         enter_insert_mode(self.view, mode)
 
@@ -1657,27 +1671,16 @@ class _vi_y(ViTextCommandBase):
         def f(view, s):
             return Region(next_non_blank(view, s.begin()))
 
-        linewise = (mode == VISUAL_LINE)
-
         if mode == INTERNAL_NORMAL:
             if motion is None:
                 raise ValueError('motion data required')
 
             run_motion(self.view, motion)
-
-            # Some text object motions should be treated as a linewise
-            # operation, but only if the motion contains a newline.
-            if 'text_object' in motion['motion_args']:
-                if motion['motion_args']['text_object'] in '%()`/?nN{}':
-                    if not linewise:
-                        linewise = 'maybe'
-
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
             return
 
         ui_highlight_yank(self.view)
-
-        self.state.registers.op_yank(register=register, linewise=linewise)
+        self.state.registers.op_yank(register=register, linewise=_is_linewise_operation(mode, motion))
         regions_transformer(self.view, f)
         enter_normal_mode(self.view, mode)
 
@@ -1704,7 +1707,7 @@ class _vi_d(ViTextCommandBase):
                 ui_bell()
                 return
 
-        self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
+        self.state.registers.op_delete(register=register, linewise=_is_linewise_operation(mode, motion))
         self.view.run_command('left_delete')
         fix_eol_cursor(self.view, mode)
         enter_normal_mode(self.view, mode)
@@ -1889,7 +1892,6 @@ class _vi_big_d(ViTextCommandBase):
 
         self.save_sel()
         regions_transformer(self.view, f)
-
         self.state.registers.op_delete(register=register, linewise=is_visual_mode(mode))
         self.view.run_command('left_delete')
 

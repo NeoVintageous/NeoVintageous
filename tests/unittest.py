@@ -259,7 +259,7 @@ class ViewTestCase(unittest.TestCase):
     def registerLinewise(self, name, value=None):
         self.register(name, value, linewise=True)
 
-    def resetRegisters(self):
+    def resetRegisters(self, values=None):
         registers._reset_data()
 
     def resetMacros(self):
@@ -403,7 +403,7 @@ class ViewTestCase(unittest.TestCase):
             self.assertIsInstance(actual, Region)
             self.assertEqual(actual, expected)
 
-    def _assertRegister(self, name, expected, linewise, msg):
+    def _assertRegister(self, name, expected, linewise=False, msg=None):
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
@@ -414,36 +414,55 @@ class ViewTestCase(unittest.TestCase):
                 self.assertEqual(registers._linewise[name], linewise, msg or 'linewise register = "' + name)
 
     def assertRegister(self, name, expected=None, linewise=False, msg=None):
-        # Test that the value of the named register and *expected* are equal.
-        #
-        # Args:
-        #   name (str): The name of the register.
-        #   expected (str|list): The expected registered content.
-        #
-        # Usage:
-        #
-        #   assertRegister('"text')
-        #   assertRegister('"', 'text')
-        #   assertRegister('"', ['text1', 'text2'])  # multiple cursor content
+        """Test that value for the register name and expected are equal.
+
+        Args:
+          name (str): The name of the register.
+          expected (str|list|None): The expected registered content.
+
+        Usage:
+
+          assertRegister('"', 'value')
+
+          # when only one arg is given the first char is the register name
+          assertRegister('"value')
+
+          # multiple cursor content
+          assertRegister('"', ['val1', 'val2'])
+        """
         if expected is None:
             expected = name[1:]
             name = name[0]
 
         self._assertRegister(name, expected, linewise, msg)
 
+    def assertRegisters(self, names, expected=None, empty_names='', linewise=False, msg=None):
+        for name in names:
+            self.assertRegister(name, expected, linewise, msg)
+
+        for name in empty_names:
+            self.assertRegisterEmpty(name, msg)
+
+    # DEPRECATED
+    def assertRegistersEqual(self, names, expected=None, linewise=False, msg=None):
+        self.assertRegisters(names, expected, linewise=linewise, msg=msg)
+
     def assertLinewiseRegister(self, name, expected=None, msg=None):
         self.assertRegister(name, expected, linewise=True, msg=msg)
 
-    def assertRegisterEmpty(self, name, linewise=False, msg=None):
-        self._assertRegister(name, None, linewise, msg)
-
-    def assertRegistersEqual(self, names, expected=None, linewise=False, msg=None):
+    def assertLinewiseRegisters(self, names, expected=None, empty_names='', msg=None):
         for name in names:
-            self._assertRegister(name, expected, linewise, msg)
+            self.assertLinewiseRegister(name, expected, msg)
 
-    def assertRegistersEmpty(self, names, linewise=False, msg=None):
+        for name in empty_names:
+            self.assertRegisterEmpty(name, msg)
+
+    def assertRegisterEmpty(self, name, msg=None):
+        self._assertRegister(name, None, msg=msg)
+
+    def assertRegistersEmpty(self, names, msg=None):
         for name in names:
-            self._assertRegister(name, None, linewise, msg)
+            self.assertRegisterEmpty(name, msg)
 
     def assertSelection(self, expected, msg=None):
         # Test that view selection and *expected* are equal.

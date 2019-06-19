@@ -90,7 +90,9 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
 
     def test_yaB(self):
         for target in ('{', '}', 'B'):
+            self.resetRegisters()
             self.eq('x{\nfi|zz\n}y', 'ya' + target, 'x|{\nfizz\n}y')
+            self.assertLinewiseRegisters('"0', '{\nfizz\n}', '-1')
 
     def test_v_a_angle_bracket(self):
         for target in ('<', '>'):

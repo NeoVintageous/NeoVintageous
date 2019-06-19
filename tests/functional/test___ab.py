@@ -37,31 +37,61 @@ class Test_ab(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_cab(self):
         for target in ('(', ')', 'b'):
             self.eq('x(fi|zz)y', 'ca' + target, 'i_x|y')
+            self.assertRegisters('"-', '(fizz)', '01')
+            self.resetRegisters()
+
             self.eq('x(\nfi|zz\n)y', 'ca' + target, 'i_x|y')
+            self.assertLinewiseRegisters('"1', '(\nfizz\n)', '-0')
+            self.resetRegisters()
+
             self.eq('x(\n|    fizz\n)y', 'ca' + target, 'i_x|y')
             self.eq('x(\n    |fizz\n)y', 'ca' + target, 'i_x|y')
             self.eq('x(\n    fi|zz\n)y', 'ca' + target, 'i_x|y')
             self.eq('x(\n    fiz|z\n)y', 'ca' + target, 'i_x|y')
+            self.assertLinewiseRegisters('"1', '(\n    fizz\n)', '-0')
+            self.resetRegisters()
+
             self.eq('x(\n|    fizz\n    buzz\n)y', 'ca' + target, 'i_x|y')
             self.eq('x(\n    |fizz\n    buzz\n)y', 'ca' + target, 'i_x|y')
             self.eq('x(\n    fi|zz\n    buzz\n)y', 'ca' + target, 'i_x|y')
             self.eq('x(\n    fiz|z\n    buzz\n)y', 'ca' + target, 'i_x|y')
+            self.assertLinewiseRegisters('"1', '(\n    fizz\n    buzz\n)', '-0')
+            self.resetRegisters()
 
     def test_dab(self):
         for target in ('(', ')', 'b'):
             self.eq('x(fi|zz)y', 'da' + target, 'x|y')
+            self.assertRegisters('"-', '(fizz)', '01')
+            self.resetRegisters()
+
             self.eq('x(\nfi|zz\n)y', 'da' + target, 'x|y')
+            self.assertLinewiseRegisters('"1', '(\nfizz\n)', '-0')
+            self.resetRegisters()
+
             self.eq('x(\n|    fizz\n)y', 'da' + target, 'x|y')
             self.eq('x(\n    |fizz\n)y', 'da' + target, 'x|y')
             self.eq('x(\n    fi|zz\n)y', 'da' + target, 'x|y')
             self.eq('x(\n    fiz|z\n)y', 'da' + target, 'x|y')
+            self.assertLinewiseRegisters('"1', '(\n    fizz\n)', '-0')
+            self.resetRegisters()
+
             self.eq('x(\n|    fizz\n    buzz\n)y', 'da' + target, 'x|y')
             self.eq('x(\n    |fizz\n    buzz\n)y', 'da' + target, 'x|y')
             self.eq('x(\n    fi|zz\n    buzz\n)y', 'da' + target, 'x|y')
             self.eq('x(\n    fiz|z\n    buzz\n)y', 'da' + target, 'x|y')
+            self.assertLinewiseRegisters('"1', '(\n    fizz\n    buzz\n)', '-0')
+            self.resetRegisters()
 
     def test_yab(self):
         for target in ('(', ')', 'b'):
             self.eq('x(fi|zz)y', 'ya' + target, 'x|(fizz)y')
+            self.assertRegisters('"0', '(fizz)', '-1')
+            self.resetRegisters()
+
             self.eq('x(\nfi|zz\n)y', 'ya' + target, 'x|(\nfizz\n)y')
+            self.assertLinewiseRegisters('"0', '(\nfizz\n)', '-1')
+            self.resetRegisters()
+
             self.eq('x(\nfi|zz\nbuzz\n)y', 'ya' + target, 'x|(\nfizz\nbuzz\n)y')
+            self.assertLinewiseRegisters('"0', '(\nfizz\nbuzz\n)', '-1')
+            self.resetRegisters()
