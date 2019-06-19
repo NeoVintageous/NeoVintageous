@@ -121,6 +121,7 @@ class ViInsertLineAfter(ViOperatorDef):
             }
 
 
+@assign(seqs.DEL, _ACTION_MODES + (SELECT,))
 @assign(seqs.X, _ACTION_MODES + (SELECT,))
 class ViRightDeleteChars(ViOperatorDef):
     def __init__(self, *args, **kwargs):

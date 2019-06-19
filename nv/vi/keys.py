@@ -76,6 +76,7 @@ class key_names:
     BACKSPACE = '<bs>'
     BAR = '<bar>'
     CR = '<cr>'
+    DEL = '<del>'
     DOWN = '<down>'
     END = '<end>'
     ENTER = '<enter>'
@@ -120,6 +121,7 @@ class key_names:
         BACKSPACE,
         BAR,
         CR,
+        DEL,
         DOWN,
         END,
         ENTER,

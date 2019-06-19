@@ -40,6 +40,7 @@
     {"keys": ["up"],        "command": "_nv_cmdline_feed_key", "args": {"key": "<up>"},     "context": [{"key": "setting._nv_ex_mode"}]},
 
     {"keys": ["backspace"], "command": "_nv_feed_key", "args": {"key": "<bs>"},         "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["delete"],    "command": "_nv_feed_key", "args": {"key": "<del>"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["down"],      "command": "_nv_feed_key", "args": {"key": "<down>"},       "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["end"],       "command": "_nv_feed_key", "args": {"key": "<end>"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["enter"],     "command": "_nv_feed_key", "args": {"key": "<cr>"},         "context": [{"key": "vi_command_mode_aware"}]},
@@ -163,6 +164,7 @@
     {"keys": ["ñ"],         "command": "_nv_feed_key", "args": {"key": "ñ"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ö"],         "command": "_nv_feed_key", "args": {"key": "ö"},        "context": [{"key": "vi_command_mode_aware"}]},
 
+    {"keys": ["alt+delete"], "command": "_nv_feed_key", "args": {"key": "<M-del>"}, "context": [{"key": "nv.is_alt_key_enabled", "operand": "backspace"}]},
     {"keys": ["alt+backspace"], "command": "_nv_feed_key", "args": {"key": "<M-bs>"}, "context": [{"key": "nv.is_alt_key_enabled", "operand": "backspace"}]},
     {"keys": ["alt+down"], "command": "_nv_feed_key", "args": {"key": "<M-down>"}, "context": [{"key": "nv.is_alt_key_enabled", "operand": "down"}]},
     {"keys": ["alt+end"], "command": "_nv_feed_key", "args": {"key": "<M-end>"}, "context": [{"key": "nv.is_alt_key_enabled", "operand": "end"}]},
@@ -257,6 +259,7 @@
     {"keys": ["ctrl+w"], "command": "delete_word",        "args": {"forward": false},      "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+x"], "command": "_nv_feed_key",       "args": {"key": "<C-x>"},        "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
+    {"keys": ["ctrl+del"], "command": "_nv_feed_key", "args": {"key": "<C-del>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+down"], "command": "_nv_feed_key", "args": {"key": "<C-down>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+enter"], "command": "_nv_feed_key", "args": {"key": "<C-cr>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+up"], "command": "_nv_feed_key", "args": {"key": "<C-up>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
@@ -341,6 +344,8 @@
     {"keys": ["shift+ctrl+z"], "command": "_nv_feed_key", "args": {"key": "<C-Z>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["shift+ctrl+ç"], "command": "_nv_feed_key", "args": {"key": "<C-Ç>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["shift+ctrl+ñ"], "command": "_nv_feed_key", "args": {"key": "<C-Ñ>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+
+    {"keys": ["super+delete"], "command": "_nv_feed_key", "args": {"key": "<D-del>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
 
     {"keys": ["super+["], "command": "_nv_feed_key", "args": {"key": "<D-[>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+]"], "command": "_nv_feed_key", "args": {"key": "<D-]>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
