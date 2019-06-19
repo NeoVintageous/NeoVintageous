@@ -88,23 +88,9 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('[\n    fi|zz\n]', 'v_i' + target, '[\n|    fizz\n|]')
             self.eq('[\n    fi|zz\n    buzz\n]', 'v_i' + target, '[\n|    fizz\n    buzz\n|]')
 
-    def test_v_a_paren(self):
-        for target in ('(', ')', 'b'):
-            self.eq('x(fi|zz)x', 'v_a' + target, 'x|(fizz)|x')
-            self.eq('x(\nfi|zz\n)x', 'v_a' + target, 'x|(\nfizz\n)|x')
-            self.eq('x(\n\n  \n    fi|zz\n\n\n)x', 'v_a' + target, 'x|(\n\n  \n    fizz\n\n\n)|x')
-            self.eq('(hello, (w|orl|d))', 'v_a' + target, '(hello, |(world)|)')
-            self.eq('(hello, |(world)|)', 'v_a' + target, '|(hello, (world))|')
-            self.eq('r_(hello, (w|orl|d))', 'v_a' + target, '(hello, |(world)|)')
-            self.eq('r_(hello, |(world)|)', 'v_a' + target, '|(hello, (world))|')
-            self.eq('fizz (hello, |(world)|) buzz', 'v_a' + target, 'fizz |(hello, (world))| buzz')
-            self.eq('(fizz (hello, |(world)|) buzz)', 'v_a' + target, '(fizz |(hello, (world))| buzz)')
-            self.eq('(fizz |(hello, (world))| buzz)', 'v_a' + target, '|(fizz (hello, (world)) buzz)|')
-            self.eq('r_(fizz |(hello, (world))| buzz)', 'v_a' + target, '|(fizz (hello, (world)) buzz)|')
-
-    def test_v_i_paren(self):
-        for target in ('(', ')', 'b'):
-            self.eq('(fi|zz)', 'v_i' + target, '(|fizz|)')
+    def test_yaB(self):
+        for target in ('{', '}', 'B'):
+            self.eq('x{\nfi|zz\n}y', 'ya' + target, 'x|{\nfizz\n}y')
 
     def test_v_a_angle_bracket(self):
         for target in ('<', '>'):

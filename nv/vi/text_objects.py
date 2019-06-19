@@ -321,9 +321,10 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
         if b > a:
             line = view.line(b)
+
             if next_non_blank(view, line.a) + 1 == line.b:
-                row_a, col_a = view.rowcol(a)
-                row_b, col_b = view.rowcol(b)
+                row_a, col_a = view.rowcol(a - 1)
+                row_b, col_b = view.rowcol(b + 1)
                 if (row_b - 1) > row_a:
                     line = view.full_line(view.text_point((row_b - 1), 0))
 

@@ -60,7 +60,7 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
 
-    def test_yi__inner_block(self):
+    def test_yib(self):
         self.eq('(wo|rd)', 'yi(', '(|word)')
         self.eq('(wo|rd)', 'yi)', '(|word)')
         self.eq('(wo|rd)', 'yib', '(|word)')
@@ -69,7 +69,6 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
 
-    def test_yi__inner_block_linewise(self):
         self.eq('(\nwo|rd\n)', 'yi(', '(\n|word\n)')
         self.eq('(\nwo|rd\n)', 'yi)', '(\n|word\n)')
         self.eq('(\nwo|rd\n)', 'yib', '(\n|word\n)')
