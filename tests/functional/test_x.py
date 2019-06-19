@@ -75,16 +75,16 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_V_x(self):
         self.eq('ab\n|xy\n|cd\n', 'V_x', 'n_ab\n|cd\n', 'should delete full line')
         self.eq('ab\n|x1\nx2\nx3\n|cd\n', 'V_x', 'n_ab\n|cd\n', 'should delete multiple full lines')
-        self.assertRegister('"x1\nx2\nx3\n', linewise=True)
-        self.assertRegister('1x1\nx2\nx3\n', linewise=True)
-        self.assertRegister('2xy\n', linewise=True)
+        self.assertLinewiseRegister('"x1\nx2\nx3\n')
+        self.assertLinewiseRegister('1x1\nx2\nx3\n')
+        self.assertLinewiseRegister('2xy\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
     def test_V_x_empty_lines(self):
         self.eq('\n|\n\n|\n', 'V_x', 'n_\n|\n')
-        self.assertRegister('"\n\n\n', linewise=True)
-        self.assertRegister('1\n\n\n', linewise=True)
+        self.assertLinewiseRegister('"\n\n\n')
+        self.assertLinewiseRegister('1\n\n\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
@@ -94,7 +94,7 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_x_visual_line_sets_linewise_register(self):
         self.eq('x\n|abc\n|y', 'V_x', 'n_x\n|y')
-        self.assertRegister('"abc\n', linewise=True)
-        self.assertRegister('1abc\n', linewise=True)
+        self.assertLinewiseRegister('"abc\n')
+        self.assertLinewiseRegister('1abc\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')

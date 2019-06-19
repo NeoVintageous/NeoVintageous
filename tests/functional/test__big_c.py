@@ -44,14 +44,14 @@ class Test_C(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_v_C(self):
         self.eq('one\n|two\n|three', 'v_C', 'i_one\n|three')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('1two\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('1two\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
     def test_V(self):
         self.eq('one\n|two\n|three', 'V_C', 'i_one\n|three')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('1two\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('1two\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')

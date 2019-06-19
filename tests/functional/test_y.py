@@ -27,17 +27,17 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
         self.eq('|fizz| |buzz|', 'v_y', 'n_|fizz |buzz')
-        self.assertRegistersEqual('"0', ['fizz', 'buzz'])
+        self.assertRegisters('"0', ['fizz', 'buzz'])
         self.eq('a\n|fizz\n|b\n|buzz\n|c', 'v_y', 'n_a\n|fizz\nb\n|buzz\nc')
-        self.assertRegistersEqual('"0', ['fizz\n', 'buzz\n'])
+        self.assertRegisters('"0', ['fizz\n', 'buzz\n'])
         self.assertRegistersEmpty('-1')
 
     def test_s(self):
         self.eq('x|ab|x', 's_y', 'n_x|abx')
-        self.assertRegistersEqual('"0', 'ab')
+        self.assertRegisters('"0', 'ab')
         self.assertRegistersEmpty('-1')
         self.eq('|fizz| |buzz|', 's_y', 'n_|fizz |buzz')
-        self.assertRegistersEqual('"0', ['fizz', 'buzz'])
+        self.assertRegisters('"0', ['fizz', 'buzz'])
 
     def test_v_y_should_not_capture_newline(self):
         self.eq('x|ab|\nx', 'v_y', 'n_x|ab\nx')
@@ -89,34 +89,34 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_yy(self):
         self.eq('one\nt|wo\nthree', 'yy', 'one\nt|wo\nthree')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('0two\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('0two\n')
         self.eq('o|ne', 'yy', 'o|ne')
-        self.assertRegister('"one\n', linewise=True)
-        self.assertRegister('0one\n', linewise=True)
+        self.assertLinewiseRegister('"one\n')
+        self.assertLinewiseRegister('0one\n')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
 
     def test_yy_with_count(self):
         self.eq('x\n|1\n2\n3\nx\n', '3yy', 'x\n|1\n2\n3\nx\n')
-        self.assertRegister('"1\n2\n3\n', linewise=True)
-        self.assertRegister('01\n2\n3\n', linewise=True)
+        self.assertLinewiseRegister('"1\n2\n3\n')
+        self.assertLinewiseRegister('01\n2\n3\n')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
 
     def test_yy_empty_line(self):
         self.eq('\n\n|\n\n', 'yy', '\n\n|\n\n')
-        self.assertRegister('"\n', linewise=True)
-        self.assertRegister('0\n', linewise=True)
+        self.assertLinewiseRegister('"\n')
+        self.assertLinewiseRegister('0\n')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
 
     def test_V(self):
         self.eq('x\n|abc\n|y', 'V_y', 'n_x\n|abc\ny')
-        self.assertRegister('"abc\n', linewise=True)
-        self.assertRegister('0abc\n', linewise=True)
+        self.assertLinewiseRegister('"abc\n')
+        self.assertLinewiseRegister('0abc\n')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
         self.eq('a\n|fizz\n|b\n|buzz\n|c', 'V_y', 'n_a\n|fizz\nb\n|buzz\nc')
-        self.assertRegistersEqual('"0', ['fizz\n', 'buzz\n'], linewise=True)
+        self.assertLinewiseRegisters('"0', ['fizz\n', 'buzz\n'])
         self.assertRegistersEmpty('-1')

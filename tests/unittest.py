@@ -436,19 +436,19 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise, msg)
 
-    def assertRegisters(self, names, expected=None, empty_names='', linewise=False, msg=None):
+    def assertRegisters(self, names, expected=None, empty_names='', msg=None):
         for name in names:
-            self.assertRegister(name, expected, linewise, msg)
+            self.assertRegister(name, expected, msg=msg)
 
         for name in empty_names:
             self.assertRegisterEmpty(name, msg)
 
-    # DEPRECATED
-    def assertRegistersEqual(self, names, expected=None, linewise=False, msg=None):
-        self.assertRegisters(names, expected, linewise=linewise, msg=msg)
-
     def assertLinewiseRegister(self, name, expected=None, msg=None):
-        self.assertRegister(name, expected, linewise=True, msg=msg)
+        if expected is None:
+            expected = name[1:]
+            name = name[0]
+
+        self._assertRegister(name, expected, linewise=True, msg=msg)
 
     def assertLinewiseRegisters(self, names, expected=None, empty_names='', msg=None):
         for name in names:

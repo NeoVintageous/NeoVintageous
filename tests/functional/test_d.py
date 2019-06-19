@@ -22,7 +22,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_dB(self):
         self.eq('fizz bu.,!;|zz', 'dB', 'fizz |zz')
-        self.assertRegistersEqual('"-', 'bu.,!;')
+        self.assertRegisters('"-', 'bu.,!;')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -33,7 +33,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_de(self):
         self.eq('one t|wo three', 'de', 'one t| three')
-        self.assertRegistersEqual('"-', 'wo')
+        self.assertRegisters('"-', 'wo')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -44,12 +44,12 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_dE(self):
         self.eq('one t|wo three', 'dE', 'one t| three')
-        self.assertRegistersEqual('"-', 'wo')
+        self.assertRegisters('"-', 'wo')
         self.assertRegistersEmpty('01')
 
     def test_df(self):
         self.eq('|a = 1', 'df=', '| 1')
-        self.assertRegistersEqual('"-', 'a =')
+        self.assertRegisters('"-', 'a =')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -60,7 +60,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_dF(self):
         self.eq('0x23|a5', 'dFx', '0|a5')
-        self.assertRegistersEqual('"-', 'x23')
+        self.assertRegisters('"-', 'x23')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -71,7 +71,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_dt(self):
         self.eq('0|a23x5', 'dtx', '0|x5')
-        self.assertRegistersEqual('"-', 'a23')
+        self.assertRegisters('"-', 'a23')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -82,7 +82,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_dT(self):
         self.eq('0x23|a5', 'dTx', '0x|a5')
-        self.assertRegistersEqual('"-', '23')
+        self.assertRegisters('"-', '23')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -93,7 +93,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_dw(self):
         self.eq('one t|wo three', 'dw', 'one t|three')
-        self.assertRegistersEqual('"-', 'wo ')
+        self.assertRegisters('"-', 'wo ')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -104,7 +104,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_d__dollar(self):
         self.eq('one t|wo three', 'd$', 'one |t')
-        self.assertRegistersEqual('"-', 'wo three')
+        self.assertRegisters('"-', 'wo three')
         self.assertRegistersEmpty('01')
 
     @unittest.mock_bell()
@@ -115,7 +115,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_d_underscore(self):
         self.eq('| 12\n 56', 'd_', ' |56')
-        self.assertRegistersEqual('"1', ' 12\n')
+        self.assertRegisters('"1', ' 12\n')
         self.assertRegistersEmpty('-0')
 
     @unittest.mock_bell()
@@ -128,10 +128,10 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('one |two three', 'dd', '|')
         self.eq('one\n|two\nthree', 'dd', 'one\n|three')
         self.eq('one\ntwo|\nthree', 'dd', 'one\n|three')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('1two\n', linewise=True)
-        self.assertRegister('2two\n', linewise=True)
-        self.assertRegister('3one two three\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('1two\n')
+        self.assertLinewiseRegister('2two\n')
+        self.assertLinewiseRegister('3one two three\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
@@ -152,14 +152,14 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_V_d_visual_line_sets_linewise_register(self):
         self.eq('x\n|abc\n|y', 'V_d', 'n_x\n|y')
-        self.assertRegister('"abc\n', linewise=True)
-        self.assertRegister('1abc\n', linewise=True)
+        self.assertLinewiseRegister('"abc\n')
+        self.assertLinewiseRegister('1abc\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
     def test_V_d_puts_cursors_on_first_non_blank(self):
         self.eq('    x\n|    a\n    b\n|    y\n', 'V_d', 'n_    x\n    |y\n')
-        self.assertRegister('"    a\n    b\n', linewise=True)
-        self.assertRegister('1    a\n    b\n', linewise=True)
+        self.assertLinewiseRegister('"    a\n    b\n')
+        self.assertLinewiseRegister('1    a\n    b\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')

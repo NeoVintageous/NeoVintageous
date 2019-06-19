@@ -26,7 +26,7 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_c0(self):
         self.eq('1\nfi|zz\n2', 'c0', 'i_1\n|zz\n2')
-        self.assertRegistersEqual('"-', 'fi')
+        self.assertRegisters('"-', 'fi')
         self.assertRegistersEmpty('01')
 
     def test_ce(self):
@@ -85,10 +85,10 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('|aaa\nbbb\nccc', 'cc', 'i_|\nbbb\nccc')
         self.eq('aaa\nbb|b\nccc', 'cc', 'i_aaa\n|\nccc')
         self.eq('aaa\nbbb\n|ccc', 'cc', 'i_aaa\nbbb\n|')
-        self.assertRegister('"ccc\n', linewise=True)
-        self.assertRegister('1ccc\n', linewise=True)
-        self.assertRegister('2bbb\n', linewise=True)
-        self.assertRegister('3aaa\n', linewise=True)
+        self.assertLinewiseRegister('"ccc\n')
+        self.assertLinewiseRegister('1ccc\n')
+        self.assertLinewiseRegister('2bbb\n')
+        self.assertLinewiseRegister('3aaa\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
@@ -131,8 +131,8 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_c_visual_line_sets_linewise_register(self):
         self.eq('x\n|abc\n|y', 'V_c', 'i_x\n|y')
-        self.assertRegister('"abc\n', linewise=True)
-        self.assertRegister('1abc\n', linewise=True)
+        self.assertLinewiseRegister('"abc\n')
+        self.assertLinewiseRegister('1abc\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 

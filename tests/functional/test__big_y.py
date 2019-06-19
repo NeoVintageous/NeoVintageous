@@ -22,20 +22,20 @@ class Test_Y(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_Y(self):
         self.eq('one\nt|wo\nthree', 'Y', 'one\nt|wo\nthree')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('0two\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('0two\n')
         self.eq('o|ne', 'Y', 'o|ne')
-        self.assertRegister('"', 'one\n', linewise=True)
-        self.assertRegister('0', 'one\n', linewise=True)
+        self.assertLinewiseRegister('"', 'one\n')
+        self.assertLinewiseRegister('0', 'one\n')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
 
     def test_issue_353_Y_should_yank_complete_lines_touched_by_visual_mode(self):
         self.eq('one\n|two\n|three', 'v_Y', 'n_one\ntw|o\nthree')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('0two\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('0two\n')
         self.eq('x\n22|22\n33\n4\n|x', 'v_Y', 'n_x\n2222\n33\n|4\nx')
-        self.assertRegister('"2222\n33\n4\n', linewise=True)
-        self.assertRegister('02222\n33\n4\n', linewise=True)
+        self.assertLinewiseRegister('"2222\n33\n4\n')
+        self.assertLinewiseRegister('02222\n33\n4\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('1')

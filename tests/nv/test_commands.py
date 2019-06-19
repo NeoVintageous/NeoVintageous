@@ -121,7 +121,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('d')
         self.assertNormal('fi|zz')
         self.assertStatusLineIsNormal()
-        self.assertRegistersEqual('"-', 'zz bu')
+        self.assertRegisters('"-', 'zz bu')
         self.assertRegistersEmpty('01')
 
     def test_count_operator_motion(self):
@@ -132,7 +132,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('w')
         self.assertNormal('fi|four')
         self.assertStatusLineIsNormal()
-        self.assertRegistersEqual('"-', 'zz buzz three ')
+        self.assertRegisters('"-', 'zz buzz three ')
         self.assertRegistersEmpty('01')
 
     def test_operator_operator_dd(self):
@@ -140,7 +140,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('d')
         self.feedkey('d')
         self.assertNormal('1\n|2\n3')
-        self.assertRegistersEqual('"1', 'fizz\n', linewise=True)
+        self.assertLinewiseRegisters('"1', 'fizz\n')
         self.assertRegistersEmpty('-02')
         self.assertStatusLineIsNormal()
 
@@ -149,7 +149,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('c')
         self.feedkey('c')
         self.assertInsert('1\n|\n2\n3')
-        self.assertRegistersEqual('"1', 'fizz\n', linewise=True)
+        self.assertLinewiseRegisters('"1', 'fizz\n')
         self.assertRegistersEmpty('-02')
         self.assertStatusLineIsInsert()
 
@@ -172,7 +172,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('w')
         self.assertNormal('o|seven')
         self.assertStatusLineIsNormal()
-        self.assertRegistersEqual('"-', 'ne two three four five six ')
+        self.assertRegisters('"-', 'ne two three four five six ')
         self.assertRegistersEmpty('01')
 
     def test_register(self):
@@ -184,7 +184,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('w')
         self.assertNormal('fi|buzz')
         self.assertStatusLineIsNormal()
-        self.assertRegistersEqual('"-c', 'zz ')
+        self.assertRegisters('"-c', 'zz ')
         self.assertRegistersEmpty('012abde')
 
     def test_undo_redo(self):

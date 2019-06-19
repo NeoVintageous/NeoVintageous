@@ -25,10 +25,10 @@ class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('|aaa\nbbb\nccc', 'S', 'i_|\nbbb\nccc')
         self.eq('aaa\nbb|b\nccc', 'S', 'i_aaa\n|\nccc')
         self.eq('aaa\nbbb\n|ccc', 'S', 'i_aaa\nbbb\n|')
-        self.assertRegister('"ccc\n', linewise=True)
-        self.assertRegister('1ccc\n', linewise=True)
-        self.assertRegister('2bbb\n', linewise=True)
-        self.assertRegister('3aaa\n', linewise=True)
+        self.assertLinewiseRegister('"ccc\n')
+        self.assertLinewiseRegister('1ccc\n')
+        self.assertLinewiseRegister('2bbb\n')
+        self.assertLinewiseRegister('3aaa\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
         self.eq('    |one', 'S', 'i_    |')
@@ -37,14 +37,14 @@ class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_v(self):
         self.eq('one\n|two\n|three', 'v_S', 'i_one\n|three')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('1two\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('1two\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 
     def test_l(self):
         self.eq('one\n|two\n|three', 'V_S', 'i_one\n|three')
-        self.assertRegister('"two\n', linewise=True)
-        self.assertRegister('1two\n', linewise=True)
+        self.assertLinewiseRegister('"two\n')
+        self.assertLinewiseRegister('1two\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
