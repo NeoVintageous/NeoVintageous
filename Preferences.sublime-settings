@@ -112,6 +112,10 @@
     // {not in Vim}
     "vintageous_reset_mode_when_switching_tabs": true,
 
+    // Show output panel from shell commands.
+    // {not in Vim}
+    "vintageous_shell_silent": false,
+
     // {currently only works in a few situations}
     // Minimal number of screen lines to keep above and below the cursor.
     // https://vimhelp.appspot.com/options.txt.html#%27scrolloff%27

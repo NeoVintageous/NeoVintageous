@@ -16,7 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.nv.options import get_option
-from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import get_setting_neo
 from NeoVintageous.nv.ui import ui_region_flags
 
 
@@ -36,7 +36,7 @@ def add_search_highlighting(view, occurrences, incremental=None):
             '_nv_search_inc',
             incremental,
             scope='support.function neovintageous_search_inc',
-            flags=ui_region_flags(get_setting(view, 'search_inc_style'))
+            flags=ui_region_flags(get_setting_neo(view, 'search_inc_style'))
         )
 
     if get_option(view, 'hlsearch'):
@@ -53,12 +53,12 @@ def add_search_highlighting(view, occurrences, incremental=None):
             '_nv_search_occ',
             occurrences,
             scope='string neovintageous_search_occ',
-            flags=ui_region_flags(get_setting(view, 'search_occ_style'))
+            flags=ui_region_flags(get_setting_neo(view, 'search_occ_style'))
         )
 
         view.add_regions(
             '_nv_search_cur',
             current,
             scope='support.function neovintageous_search_cur',
-            flags=ui_region_flags(get_setting(view, 'search_cur_style'))
+            flags=ui_region_flags(get_setting_neo(view, 'search_cur_style'))
         )

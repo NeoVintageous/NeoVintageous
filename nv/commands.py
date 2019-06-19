@@ -60,6 +60,7 @@ from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import get_search_occurrences
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.ui import ui_bell
@@ -1261,7 +1262,7 @@ class _enter_normal_mode(ViTextCommandBase):
         # When the commands o and O are immediately followed by <Esc>, then if
         # the current line is only whitespace it should be erased, and the xpos
         # offset by 1 to account for transition from INSERT to NORMAL mode.
-        if self.view.settings().get('vintageous_clear_auto_indent_on_esc'):
+        if get_setting(self.view, 'clear_auto_indent_on_esc'):
             if mode == INSERT and self.view.is_dirty():
                 if self.view.command_history(0)[0] in ('_vi_big_o', '_vi_o'):
                     for s in reversed(list(self.view.sel())):
@@ -2562,8 +2563,7 @@ class _vi_modify_numbers(ViTextCommandBase):
 class _vi_select_big_j(IrreversibleTextCommand):
 
     def run(self, mode=None, count=1):
-        exit_from_visual_mode = self.view.settings().get('vintageous_multi_cursor_exit_from_visual_mode')
-        if exit_from_visual_mode:
+        if get_setting(self.view, 'multi_cursor_exit_from_visual_mode'):
             s = self.view.sel()[0]
             self.view.sel().clear()
             self.view.sel().add(s)

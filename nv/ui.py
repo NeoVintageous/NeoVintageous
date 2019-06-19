@@ -25,6 +25,7 @@ from sublime import active_window
 from sublime import set_timeout
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vim import status_message
 
 
@@ -44,7 +45,7 @@ def ui_bell(msg=None):
     if get_option(view, 'belloff') == 'all':
         return
 
-    color_scheme = settings.get('vintageous_bell_color_scheme', 'dark')
+    color_scheme = get_setting(view, 'bell_color_scheme')
     if color_scheme in ('dark', 'light'):
         color_scheme = 'Packages/NeoVintageous/res/Bell-%s.hidden-color-scheme' % color_scheme
 
@@ -52,7 +53,7 @@ def ui_bell(msg=None):
     times = 4
     delay = 55
 
-    style = settings.get('vintageous_bell')
+    style = get_setting(view, 'bell')
 
     if style == 'view':
         settings.set('color_scheme', color_scheme)

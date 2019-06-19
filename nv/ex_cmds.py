@@ -48,6 +48,9 @@ from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.search import clear_search_highlighting
+from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import reset_setting
+from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
@@ -859,9 +862,9 @@ def ex_silent(window, view, command=None, **kwargs):
     if not command:
         return
 
-    view.settings().set('vintageous_shell_silent', True)
+    set_setting(view, 'shell_silent', True)
     do_ex_cmdline(window, ':' + command)
-    view.settings().erase('vintageous_shell_silent')
+    reset_setting(view, 'shell_silent')
 
 
 @_init_cwd
@@ -894,7 +897,7 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
             output_view.settings().set("scroll_past_end", False)
             output_view = view.window().create_output_panel('vi_out')
             output_view.run_command('append', {'characters': output, 'force': True, 'scroll_to_end': True})
-            if not view.settings().get('vintageous_shell_silent'):
+            if not get_setting(view, 'shell_silent'):
                 view.window().run_command("show_panel", {"panel": "output.vi_out"})
 
         # TODO: store only successful commands.
