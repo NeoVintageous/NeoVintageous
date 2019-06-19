@@ -24,15 +24,16 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
+from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
-from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import EOF
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
-from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import status_message
 
 
 def goto_help(window):
@@ -124,8 +125,7 @@ def _goto_modification(action, view, mode, count):
         if view.substr(a) == '\n':
             a += 1
 
-        view.sel().clear()
-        view.sel().add(a)
+        set_selection(view, a)
         enter_normal_mode(view, mode)
     else:
         # TODO Remove DEPRECATED code, deprecated since build 3189
@@ -134,8 +134,7 @@ def _goto_modification(action, view, mode, count):
         if line.size() > 0:
             pt = view.find('^\\s*', line.begin()).end()
             if pt != line.begin():
-                view.sel().clear()
-                view.sel().add(pt)
+                set_selection(view, pt)
 
 
 def goto_next_change(view, mode, count):

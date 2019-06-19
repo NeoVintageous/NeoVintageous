@@ -21,6 +21,7 @@ from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.utils import InputParser
+from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
@@ -309,8 +310,7 @@ def _blank_down(view, edit, count):
         )
 
     if new_sels:
-        view.sel().clear()
-        view.sel().add_all(new_sels)
+        set_selection(view, new_sels)
 
 
 def _blank_up(view, edit, count):
@@ -325,8 +325,7 @@ def _blank_up(view, edit, count):
         )
 
     if new_sels:
-        view.sel().clear()
-        view.sel().add_all(new_sels)
+        set_selection(view, new_sels)
 
 
 def _set_bool_option(view, key, flag=None):

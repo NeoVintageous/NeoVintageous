@@ -108,6 +108,7 @@ from NeoVintageous.nv.utils import row_to_pt
 from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
+from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
@@ -349,8 +350,7 @@ class _nv_cmdline_feed_key(TextCommand):
 
         elif key in ('<C-b>', '<home>'):
             # Cursor to beginning of command-line.
-            self.view.sel().clear()
-            self.view.sel().add(1)
+            set_selection(self.view, 1)
 
         elif key in ('<C-c>', '<C-[>'):
             # Quit command-line without executing.
@@ -358,8 +358,7 @@ class _nv_cmdline_feed_key(TextCommand):
 
         elif key in ('<C-e>', '<end>'):
             # Cursor to end of command-line.
-            self.view.sel().clear()
-            self.view.sel().add(self.view.size())
+            set_selection(self.view, self.view.size())
 
         elif key == '<C-h>':
             # Delete the character in front of the cursor.
@@ -1252,8 +1251,7 @@ class _enter_normal_mode(ViTextCommandBase):
                 'mode': mode,
                 'repeat_data': state.repeat_data,
             })
-            self.view.sel().clear()
-            self.view.sel().add_all(new_sels)
+            set_selection(self.view, new_sels)
 
         state.update_xpos(force=True)
         state.reset_status()
@@ -1326,15 +1324,12 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
         if (len(self.view.sel()) > 1) and (mode == NORMAL):
             sel = self.view.sel()[0]
-            self.view.sel().clear()
-            self.view.sel().add(sel)
+            set_selection(self.view, sel)
 
         regions_transformer(self.view, f)
 
         if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
-            target = VisualBlockSelection(self.view).b
-            self.view.sel().clear()
-            self.view.sel().add(Region(target))
+            set_selection(self.view, VisualBlockSelection(self.view).b)
 
         clear_search_highlighting(self.view)
         fix_eol_cursor(self.view, mode)
@@ -1449,8 +1444,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
             if self.view.size() > 0 and len(self.view.sel()) == 1:
                 s = self.view.sel()[0]
                 if self.view.substr(s.b) == '\x00':
-                    self.view.sel().clear()
-                    self.view.sel().add(s.b - 1)
+                    set_selection(self.view, s.b - 1)
 
             # Abort if we are at EOF -- no newline char to hold on to.
             if any(s.b == self.view.size() for s in self.view.sel()):
@@ -1539,9 +1533,9 @@ class _vi_dot(ViWindowCommandBase):
             # should receive this count.
             for i in range(count or 1):
                 self.window.run_command(*seq_or_cmd)
+
             # FIXME: What happens in visual mode?
-            self.window.active_view().sel().clear()
-            self.window.active_view().sel().add_all(sels)
+            set_selection(self.window.active_view(), sels)
         else:
             raise ValueError('bad repeat data')
 
@@ -1638,8 +1632,7 @@ class _vi_yy(ViTextCommandBase):
             return s
 
         def restore():
-            self.view.sel().clear()
-            self.view.sel().add_all(list(self.old_sel))
+            set_selection(self.view, list(self.old_sel))
 
         if mode not in (INTERNAL_NORMAL, VISUAL):
             enter_normal_mode(self.view, mode)
@@ -1897,8 +1890,7 @@ class _vi_big_d(ViTextCommandBase):
                         update = True
 
             if update and new_sels:
-                self.view.sel().clear()
-                self.view.sel().add_all(new_sels)
+                set_selection(self.view, new_sels)
 
         enter_normal_mode(self.view, mode)
 
@@ -2345,8 +2337,7 @@ class _vi_paste(ViTextCommandBase):
                     regions_transformer(self.view, f)
 
             if new_sels:
-                self.view.sel().clear()
-                self.view.sel().add_all(new_sels)
+                set_selection(self.view, new_sels)
 
 
 class _vi_ga(WindowCommand):
@@ -2453,8 +2444,7 @@ class _vi_zz(IrreversibleTextCommand):
             row = self.view.rowcol(first_sel.b)[0]
             first_non_blank_pt = next_non_blank(self.view, self.view.text_point(row, 0))
             if mode in (NORMAL, INTERNAL_NORMAL):
-                self.view.sel().clear()
-                self.view.sel().add(Region(first_non_blank_pt))
+                set_selection(self.view, first_non_blank_pt)
 
 
 class _vi_z(TextCommand):
@@ -2485,9 +2475,9 @@ class _vi_z(TextCommand):
         sels = []
         for sel in self.view.sel():
             sels.append(self.view.text_point(self.view.rowcol(sel.begin())[0], 0))
+
         if sels:
-            self.view.sel().clear()
-            self.view.sel().add_all(sels)
+            set_selection(self.view, sels)
 
 
 class _vi_modify_numbers(ViTextCommandBase):
@@ -2564,9 +2554,7 @@ class _vi_select_big_j(IrreversibleTextCommand):
 
     def run(self, mode=None, count=1):
         if get_setting(self.view, 'multi_cursor_exit_from_visual_mode'):
-            s = self.view.sel()[0]
-            self.view.sel().clear()
-            self.view.sel().add(s)
+            set_selection(self.view, self.view.sel()[0])
 
         enter_normal_mode(self.view, mode)
 
@@ -2698,8 +2686,7 @@ class _vi_gv(IrreversibleTextCommand):
             raise RuntimeError('unexpected visual sel mode')
 
         self.view.window().run_command(cmd, {'mode': mode, 'force': True})
-        self.view.sel().clear()
-        self.view.sel().add_all(visual_sel)
+        set_selection(self.view, visual_sel)
 
 
 class _vi_gx(IrreversibleTextCommand):
@@ -2839,8 +2826,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
             state.display_status()
         else:
             first = list(self.view.sel())[0]
-            self.view.sel().clear()
-            self.view.sel().add(first)
+            set_selection(self.view, first)
 
             state = State(self.view)
             state.enter_visual_block_mode()
@@ -2922,8 +2908,7 @@ class _vi_g_tilde(ViTextCommandBase):
         if motion:
             regions_transformer(self.view, f)
 
-        self.view.sel().clear()
-        self.view.sel().add_all(sels)
+        set_selection(self.view, sels)
         enter_normal_mode(self.view, mode)
 
 
@@ -3065,9 +3050,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
     def replace(self, s):
         self.view.run_command('_nv_replace_line', {'with_what': self._matches[s]})
         del self.__dict__['_matches']
-        pt = self.view.sel()[0].b
-        self.view.sel().clear()
-        self.view.sel().add(Region(pt))
+        set_selection(self.view, self.view.sel()[0].b)
 
 
 class _vi_find_in_line(ViMotionCommand):
@@ -4688,8 +4671,7 @@ class _vi_ctrl_f(ViMotionCommand):
                     new_sels.append(Region(sel.a, line.begin()))
 
             if new_sels:
-                self.view.sel().clear()
-                self.view.sel().add_all(new_sels)
+                set_selection(self.view, new_sels)
 
 
 class _vi_ctrl_b(ViMotionCommand):
@@ -4710,8 +4692,7 @@ class _vi_ctrl_b(ViMotionCommand):
                     new_sels.append(Region(sel.a, line.begin()))
 
             if new_sels:
-                self.view.sel().clear()
-                self.view.sel().add_all(new_sels)
+                set_selection(self.view, new_sels)
 
 
 class _vi_enter(ViMotionCommand):
@@ -4809,8 +4790,7 @@ class _vi_go_to_symbol(ViMotionCommand):
             return s
 
         current_sel = self.view.sel()[0]
-        self.view.sel().clear()
-        self.view.sel().add(current_sel)
+        set_selection(self.view, current_sel)
 
         location = self.find_symbol(current_sel, globally=globally)
         if not location:

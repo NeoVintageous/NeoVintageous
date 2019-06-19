@@ -61,6 +61,7 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import row_at
+from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vi.search import view_find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
@@ -222,8 +223,7 @@ def ex_copy(view, edit, line_range, address=None, **kwargs):
 
     new_sel = view.line(destination_pt + len(text) - 1).begin()
 
-    view.sel().clear()
-    view.sel().add(new_sel)
+    set_selection(view, new_sel)
     enter_normal_mode(view)
 
 
@@ -279,8 +279,7 @@ def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
 
     new_sel = view.sel()[-1].b
 
-    view.sel().clear()
-    view.sel().add(new_sel)
+    set_selection(view, new_sel)
     enter_normal_mode(view)
 
 
@@ -512,8 +511,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
     # punctuation star character.
     c_pt = tag_region.begin() + 1
 
-    view.sel().clear()
-    view.sel().add(c_pt)
+    set_selection(view, c_pt)
     view.show(c_pt, False)
 
     # Fixes #420 show() doesn't work properly when the Sublime Text
@@ -566,8 +564,7 @@ def ex_move(view, edit, line_range, address=None, **kwargs):
         view.insert(edit, destination.end(), text)
         view.erase(edit, source)
 
-    view.sel().clear()
-    view.sel().add(new_sel)
+    set_selection(view, new_sel)
     enter_normal_mode(view)
 
 
@@ -1026,8 +1023,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
 
     # Reposition cursor before replacing target region so that the cursor
     # will auto adjust in sync with the replacement.
-    view.sel().clear()
-    view.sel().add(line.begin())
+    set_selection(view, line.begin())
 
     view.replace(edit, target_region, new_region_text)
 
@@ -1035,9 +1031,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
     # Put cursor on first non-whitespace char of current line.
     line = view.line(view.sel()[0].b)
     if line.size() > 0:
-        pt = view.find('^\\s*', line.begin()).end()
-        view.sel().clear()
-        view.sel().add(pt)
+        set_selection(view, view.find('^\\s*', line.begin()).end())
 
     enter_normal_mode(view)
 

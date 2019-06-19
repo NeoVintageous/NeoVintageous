@@ -20,6 +20,8 @@ import sys
 from sublime import platform
 from sublime import Region
 
+from NeoVintageous.nv.utils import set_selection
+
 _PLATFORM = platform()
 
 if sys.platform.startswith('win') and _PLATFORM == 'windows':
@@ -60,5 +62,4 @@ def filter_thru_shell(view, edit, regions, cmd):
 
     # Switch to normal mode and move cursor(s) to beginning of replacement(s).
     view.run_command('_enter_normal_mode')
-    view.sel().clear()
-    view.sel().add_all(new_points)
+    set_selection(view, new_points)

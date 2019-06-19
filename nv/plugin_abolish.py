@@ -22,6 +22,7 @@ import re
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import NORMAL
@@ -137,5 +138,4 @@ class _nv_abolish_command(TextCommand):
             self.view.replace(edit, sel, coerce_func(self.view.substr(sel)))
 
         if new_sels:
-            self.view.sel().clear()
-            self.view.sel().add_all(new_sels)
+            set_selection(self.view, new_sels)

@@ -19,6 +19,7 @@ import os
 
 from sublime import Region
 
+from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vim import status_message
 
@@ -450,8 +451,7 @@ def _focus_group(window, direction, count=1):
     if view:
         visible_region = view.visible_region()
         if not view.visible_region().contains(view.sel()[0]):
-            view.sel().clear()
-            view.sel().add(visible_region.begin())
+            set_selection(view, visible_region.begin())
 
     window.focus_group(nth_group_number)
 

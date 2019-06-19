@@ -113,8 +113,7 @@ def _regions_transformer(sels, view, f, with_idx):
         else:
             raise TypeError('region or array of region required')
 
-    view.sel().clear()
-    view.sel().add_all(new)
+    set_selection(view, new)
 
 
 def regions_transformer(view, f):
@@ -191,6 +190,14 @@ def save_previous_selection(view, mode):
 def get_previous_selection(view):
     # type: (...) -> tuple
     return (view.get_regions('visual_sel'), view.settings().get('_nv_visual_sel_mode'))
+
+
+def set_selection(view, sel):
+    view.sel().clear()
+    if isinstance(sel, list):
+        view.sel().add_all(sel)
+    else:
+        view.sel().add(sel)
 
 
 def show_if_not_visible(view, pt=None):
@@ -906,13 +913,11 @@ class VisualBlockSelection():
         # type: (int) -> None
         visual_block = self.resolve_target(target)
         if visual_block:
-            self.view.sel().clear()
-            self.view.sel().add_all(visual_block)
+            set_selection(self.view, visual_block)
             self.view.show(target, False)
 
     def _transform(self, region):
-        self.view.sel().clear()
-        self.view.sel().add(region)
+        set_selection(self.view, region)
 
     def transform_to_visual(self):
         self._transform(self.to_visual())
