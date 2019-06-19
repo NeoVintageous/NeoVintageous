@@ -106,6 +106,11 @@ class key_names:
     F13 = '<f13>'
     F14 = '<f14>'
     F15 = '<f15>'
+    F16 = '<f16>'
+    F17 = '<f17>'
+    F18 = '<f18>'
+    F19 = '<f19>'
+    F20 = '<f20>'
 
     Leader = '<leader>'
 
@@ -145,6 +150,11 @@ class key_names:
         F13,
         F14,
         F15,
+        F16,
+        F17,
+        F18,
+        F19,
+        F20,
 
         Leader,
     ]

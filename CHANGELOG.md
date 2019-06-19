@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Functions 13 through 20 in mappings e.g. `<f13>`, `<C-f16>`, `<C-S-f20>`
 * Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `'winaltkeys'` option to enable `<A-...>` mappings
 * Added [#593](https://github.com/NeoVintageous/NeoVintageous/issues/593): Highlight all occurrences on incremental searches
 * Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `'incsearch'` option to show where the pattern, as it was typed so far, matches
