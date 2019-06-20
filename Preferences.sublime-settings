@@ -67,13 +67,20 @@
     // {not in Vim}
     "vintageous_default_mode": "",
 
-    // Port of https://github.com/tpope/vim-surround
-    // {not in Vim}
+    // A port of https://github.com/tpope/vim-abolish.
+    "vintageous_enable_abolish": true,
+
+    // A port of https://github.com/tpope/vim-commentary.
+    "vintageous_enable_commentary": true,
+
+    // A port of https://github.com/terryma/vim-multiple-cursors.
     "vintageous_enable_multiple_cursors": true,
 
-    // Port of https://github.com/tpope/vim-surround
-    // {not in Vim}
+    // A port of https://github.com/tpope/vim-surround.
     "vintageous_enable_surround": true,
+
+    // A port of https://github.com/tpope/vim-unimpaired.
+    "vintageous_enable_unimpaired": true,
 
     // Highlight searches in '/', '?', etc.
     // https://vimhelp.appspot.com/options.txt.html#%27hlsearch%27

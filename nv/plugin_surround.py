@@ -16,7 +16,6 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 # A port of https://github.com/tpope/vim-surround.
-# Initially based on https://github.com/guillermooo/Vintageous_Plugin_Surround.
 
 import re
 
@@ -29,13 +28,13 @@ from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.search import reverse_search
-from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
-from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import run_motion
 
 
 __all__ = [
@@ -43,13 +42,8 @@ __all__ = [
 ]
 
 
-class _IsDefinitionEnabledAware():
-    def is_enabled(self, settings):
-        return settings.get('vintageous_enable_surround')
-
-
 @register(seq='ys', modes=(NORMAL,))
-class _surround_ys(ViOperatorDef, _IsDefinitionEnabledAware):
+class _surround_ys(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -115,7 +109,7 @@ class _surround_S(_surround_ys):
 
 
 @register(seq='ds', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_ds(ViOperatorDef, _IsDefinitionEnabledAware):
+class _surround_ds(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -146,7 +140,7 @@ class _surround_ds(ViOperatorDef, _IsDefinitionEnabledAware):
 
 
 @register(seq='cs', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_cs(ViOperatorDef, _IsDefinitionEnabledAware):
+class _surround_cs(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True

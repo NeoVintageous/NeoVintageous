@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-# A port of https://github.com/terryma/vim-multiple-cursors
-# Note that some of the command definitions are in nv/cmd_defs.
+# A port of https://github.com/terryma/vim-multiple-cursors.
 
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
@@ -33,9 +32,6 @@ class _multiple_cursors_enter(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def is_enabled(self, settings):
-        return settings.get('vintageous_enable_multiple_cursors')
 
     def translate(self, state):
         return {

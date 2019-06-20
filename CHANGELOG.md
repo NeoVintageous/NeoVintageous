@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Plugins can now be fully disabled by the boolean setting `enable_{plugin_name}`
 * Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `'wrapscan'` option to disable wrapping on `*`, `#`, `n`, `N` (searches)
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `zug` undo `zg`, remove the word from the entry in spell checking dictionary
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `zg` add word under the cursor as a good word to spell checking dictionary

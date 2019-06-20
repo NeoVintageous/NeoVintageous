@@ -423,6 +423,31 @@ List of available options:
 'vintageous_modelines'  number (default 5)
         See 'modelines'.
 
+                                                 *'vintageous_enable_abolish'*
+'vintageous_enable_abolish'
+                        boolean (default on)
+    A port of https://github.com/tpope/vim-abolish.
+
+                                              *'vintageous_enable_commentary'*
+'vintageous_enable_commentary'
+                        boolean (default on)
+    A port of https://github.com/tpope/vim-commentary.
+
+                                        *'vintageous_enable_multiple_cursors'*
+'vintageous_enable_multiple_cursors'
+                        boolean (default on)
+    A port of https://github.com/terryma/vim-multiple-cursors.
+
+                                                *'vintageous_enable_surround'*
+'vintageous_enable_surround'
+                        boolean (default on)
+    A port of https://github.com/tpope/vim-surround.
+
+                                              *'vintageous_enable_unimpaired'*
+'vintageous_enable_unimpaired'
+                        boolean (default on)
+    A port of https://github.com/tpope/vim-unimpaired.
+
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
                         boolean (default on)

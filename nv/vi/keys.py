@@ -19,6 +19,7 @@ import re
 
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv import variables
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
@@ -43,8 +44,9 @@ def seq_to_command(view, seq, mode):
     if mode in plugin.mappings:
         plugin_command = plugin.mappings[mode].get(seq)
         if plugin_command:
-            is_enabled_attr = hasattr(plugin_command, 'is_enabled')
-            if not is_enabled_attr or (is_enabled_attr and plugin_command.is_enabled(view.settings())):
+            plugin_name = plugin_command.__class__.__module__[24:]
+            is_plugin_enabled = get_setting(view, 'enable_%s' % plugin_name)
+            if is_plugin_enabled:
                 return plugin_command
 
     if mode in mappings:
