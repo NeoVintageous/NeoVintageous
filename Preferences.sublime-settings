@@ -153,5 +153,10 @@
     // Valid values are "menu" or a boolean.
     //
     // https://vimhelp.appspot.com/options.txt.html#%27winaltkeys%27
-    "vintageous_winaltkeys": true
+    "vintageous_winaltkeys": true,
+
+    // Searches wrap around the end of the file. Also applies to ]s and [s,
+    // searching for spelling mistakes, and to ]c and [c for jumping to diffs.
+    // https://vimhelp.appspot.com/options.txt.html#%27wrapscan%27
+    "vintageous_wrapscan": true
 }

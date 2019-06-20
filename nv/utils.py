@@ -36,6 +36,7 @@ import re
 
 from sublime import Region
 
+from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.vi.settings import get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction
 from NeoVintageous.nv.vim import DIRECTION_DOWN
@@ -362,6 +363,27 @@ def adding_regions(view, name, regions, scope_name):
     yield
 
     view.erase_regions(name)
+
+
+# This is a polyfill to work around various wrapping issues with some of
+# Sublime's internal commands such as next_modification, next_misspelling, etc.
+# See: https://github.com/SublimeTextIssues/Core/issues/2623.
+@contextmanager
+def wrapscan(view, forward=True):
+    start = list(view.sel())
+
+    yield
+
+    if not get_option(view, 'wrapscan'):
+        for before, after in zip(start, list(view.sel())):
+            if forward:
+                if after.a < before.a:
+                    set_selection(view, start)
+                    break
+            else:
+                if after.a > before.a:
+                    set_selection(view, start)
+                    break
 
 
 def extract_file_name(view):

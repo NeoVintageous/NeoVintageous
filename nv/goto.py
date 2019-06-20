@@ -25,6 +25,7 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.utils import wrapscan
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
 from NeoVintageous.nv.vim import EOF
@@ -117,24 +118,25 @@ def goto_line(view, mode, line_number):
 
 
 def _goto_modification(action, view, mode, count):
-    if int(version()) >= 3189:
-        for i in range(count):
-            view.run_command(action + '_modification')
+    with wrapscan(view, forward=(action == 'next')):
+        if int(version()) >= 3189:
+            for i in range(count):
+                view.run_command(action + '_modification')
 
-        a = view.sel()[0].a
-        if view.substr(a) == '\n':
-            a += 1
+            a = view.sel()[0].a
+            if view.substr(a) == '\n':
+                a += 1
 
-        set_selection(view, a)
-        enter_normal_mode(view, mode)
-    else:
-        # TODO Remove DEPRECATED code, deprecated since build 3189
-        view.run_command('git_gutter_' + action + '_change', {'count': count, 'wrap': False})
-        line = view.line(view.sel()[0].b)
-        if line.size() > 0:
-            pt = view.find('^\\s*', line.begin()).end()
-            if pt != line.begin():
-                set_selection(view, pt)
+            set_selection(view, a)
+            enter_normal_mode(view, mode)
+        else:
+            # TODO Remove DEPRECATED code, deprecated since build 3189
+            view.run_command('git_gutter_' + action + '_change', {'count': count, 'wrap': False})
+            line = view.line(view.sel()[0].b)
+            if line.size() > 0:
+                pt = view.find('^\\s*', line.begin()).end()
+                if pt != line.begin():
+                    set_selection(view, pt)
 
 
 def goto_next_change(view, mode, count):
