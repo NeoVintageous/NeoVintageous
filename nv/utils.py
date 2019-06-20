@@ -1025,6 +1025,33 @@ def folded_rows(view, pt):
         return 0
 
 
+def _clear_visual_selection(view):
+    sels = []
+    for sel in view.sel():
+        sels.append(view.text_point(view.rowcol(sel.begin())[0], 0))
+
+    if sels:
+        set_selection(view, sels)
+
+
+def fold(view):
+    view.run_command('fold')
+    _clear_visual_selection(view)
+
+
+def unfold(view):
+    view.run_command('unfold')
+    _clear_visual_selection(view)
+
+
+def fold_all(view):
+    view.run_command('fold_all')
+
+
+def unfold_all(view):
+    view.run_command('unfold_all')
+
+
 # FIXME If we have two contiguous folds, this method will fail. Handle folded regions
 def previous_non_folded_pt(view, pt):
     # type: (...) -> int

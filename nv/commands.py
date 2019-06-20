@@ -73,6 +73,8 @@ from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import fix_eol_cursor
+from NeoVintageous.nv.utils import fold
+from NeoVintageous.nv.utils import fold_all
 from NeoVintageous.nv.utils import folded_rows
 from NeoVintageous.nv.utils import get_insertion_point_at_a
 from NeoVintageous.nv.utils import get_insertion_point_at_b
@@ -115,6 +117,8 @@ from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word
 from NeoVintageous.nv.utils import spell_file_remove_word
 from NeoVintageous.nv.utils import translate_char
+from NeoVintageous.nv.utils import unfold
+from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
@@ -2454,8 +2458,7 @@ class _vi_z(TextCommand):
 
     def run(self, edit, action, count, **kwargs):
         if action == 'c':
-            self.view.run_command('fold')
-            self._clear_visual_selection()
+            fold(self.view)
         elif action == 'g':
             spell_file_add_word(self.view, kwargs.get('mode'), count)
         elif action == 'ug':
@@ -2465,26 +2468,17 @@ class _vi_z(TextCommand):
         elif action in ('l', '<right>'):
             scroll_horizontally(self.view, edit, amount=count)
         elif action == 'o':
-            self.view.run_command('unfold')
-            self._clear_visual_selection()
+            unfold(self.view)
         elif action == 'H':
             scroll_horizontally(self.view, edit, amount=-count, half_screen=True)
         elif action == 'L':
             scroll_horizontally(self.view, edit, amount=count, half_screen=True)
         elif action == 'M':
-            self.view.run_command('fold_all')
+            fold_all(self.view)
         elif action == 'R':
-            self.view.run_command('unfold_all')
+            unfold_all(self.view)
         else:
             raise ValueError('unknown action')
-
-    def _clear_visual_selection(self):
-        sels = []
-        for sel in self.view.sel():
-            sels.append(self.view.text_point(self.view.rowcol(sel.begin())[0], 0))
-
-        if sels:
-            set_selection(self.view, sels)
 
 
 class _vi_modify_numbers(ViTextCommandBase):
