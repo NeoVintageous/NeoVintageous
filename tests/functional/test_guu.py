@@ -22,3 +22,4 @@ class Test_guu(unittest.FunctionalTestCase):
 
     def test_guu(self):
         self.eq('x\nFiZz|BuZZ\nx', 'guu', 'x\n|fizzbuzz\nx')
+        self.eq('|', 'guu', '|')
