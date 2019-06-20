@@ -18,7 +18,20 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gq(unittest.FunctionalTestCase):
+class Test_gq_wrapped_at_5(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.settings().set('WrapPlus.include_line_endings', None)
+        self.settings().set('wrap_width', 5)
+
+    def test_n(self):
+        self.eq('  a1 a2 a3\n  x1 |x2 x3\n  b1 b2 b3\n', 'gq$', '  a1 a2 a3\n  x1\n  x2\n  |x3\n  b1 b2 b3\n')
+
+        self.eq('  a1 a2 a3\n  x1 |x2 x3\n  b1 b2 b3\n', 'gq$', '  a1 a2 a3\n  x1\n  x2\n  |x3\n  b1 b2 b3\n')
+
+
+class Test_gq_wrapped_at_80(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
@@ -26,20 +39,20 @@ class Test_gq(unittest.FunctionalTestCase):
         self.settings().set('wrap_width', 80)
 
     def test_gqip(self):
-        self.eq('|aaa\nbbb\nccc\n', 'gqip', '|aaa bbb ccc\n')
-        self.eq('x\n\n    |aaa\nbbb\nccc\n', 'gqip', 'x\n\n    |aaa bbb ccc\n')
+        self.eq('|aaa\nbbb\nccc\n', 'gqip', 'aaa bbb ccc\n|')
+        self.eq('x\n\n    |aaa\nbbb\nccc\n', 'gqip', 'x\n\n    aaa bbb ccc\n|')
 
     def test_gqip_should_only_mutate_current_paragraph(self):
-        self.eq('x\n\na|a\nbb\ncc\n\nyyy', 'gqip', 'x\n\n|aa bb cc\n\nyyy')
-        self.eq('x\n\na|a\nbb\ncc\n\ny\n', 'gqip', 'x\n\n|aa bb cc\n\ny\n')
+        self.eq('x\n\na|a\nbb\ncc\n\nyyy', 'gqip', 'x\n\naa bb cc\n|\nyyy')
+        self.eq('x\n\na|a\nbb\ncc\n\ny\n', 'gqip', 'x\n\naa bb cc\n|\ny\n')
 
     def test_gq_brace(self):
         self.eq('|aaa\nbbb\nccc\n', 'gq}', 'aaa bbb ccc\n|'),
-        self.eq('|aaa\nbbb\nccc', 'gq}', 'aaa bbb cc|c'),
+        self.eq('|aaa\nbbb\nccc', 'gq}', '|aaa bbb ccc'),
 
     def test_gq_brace_should_only_mutate_current_paragraph(self):
-        self.eq('x\n\na|a\nbb\ncc\n\nyyy', 'gqip', 'x\n\n|aa bb cc\n\nyyy')
-        self.eq('x\n\na|a\nbb\ncc\n\ny\n', 'gqip', 'x\n\n|aa bb cc\n\ny\n')
+        self.eq('x\n\na|a\nbb\ncc\n\nyyy', 'gqip', 'x\n\naa bb cc\n|\nyyy')
+        self.eq('x\n\na|a\nbb\ncc\n\ny\n', 'gqip', 'x\n\naa bb cc\n|\ny\n')
 
     def test_v_gq(self):
         self.eq('x\n\n|aa\nbb\ncc|\n\nyyy\n', 'v_gq', 'n_x\n\n|aa bb cc\n\nyyy\n')
@@ -68,7 +81,7 @@ class Test_gq_python_syntax(unittest.FunctionalTestCase):
         super().feed(seq)
 
     def test_gqip(self):
-        self.eq('x = 1\n\n    |# aaa\n    # bbb\n    # ccc\n', 'gqip', 'x = 1\n\n    |# aaa bbb ccc\n')
+        self.eq('x = 1\n\n    |# aaa\n    # bbb\n    # ccc\n', 'gqip', 'x = 1\n\n    # aaa bbb ccc\n|')
 
     def test_v_gq(self):
         self.eq('    if x:\n|        # fizz\n        # bu|zz\n\n', 'v_gq', 'n_    if x:\n        |# fizz buzz\n\n')

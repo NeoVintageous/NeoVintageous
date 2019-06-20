@@ -978,11 +978,13 @@ class _vi_gu(ViTextCommandBase):
 class _vi_gq(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, linewise=False):
-        def get_wrap_lines_command(view):
+        def _wrap_lines(view):
             if view.settings().get('WrapPlus.include_line_endings') is not None:
-                return 'wrap_lines_plus'
+                cmd = 'wrap_lines_plus'
             else:
-                return 'wrap_lines'
+                cmd = 'wrap_lines'
+
+            view.run_command(cmd)
 
         def reverse(view, s):
             return Region(s.end(), s.begin())
@@ -999,7 +1001,7 @@ class _vi_gq(ViTextCommandBase):
             sel = tuple(self.view.sel())
             regions_transformer(self.view, shrink)
             regions_transformer(self.view, reverse)
-            self.view.run_command(get_wrap_lines_command(self.view))
+            _wrap_lines(self.view)
             self.view.sel().clear()
             for s in sel:
                 # Cursors should move to the first non-blank character of the line.
@@ -1019,17 +1021,14 @@ class _vi_gq(ViTextCommandBase):
                 regions_transform_extend_to_line_count(self.view, count)
 
             if self.has_sel_changed():
-                self.save_sel()
-                self.view.run_command(get_wrap_lines_command(self.view))
-                self.view.sel().clear()
+                _wrap_lines(self.view)
 
-                if motion and 'is_jump' in motion and motion['is_jump']:
-                    # Cursors should move to end position of motion (exclusive-linewise).
-                    self.view.sel().add_all(self.old_sel)
-                else:
-                    # Cursors should move to start position of motion.
-                    for s in self.old_sel:
-                        self.view.sel().add(next_non_blank(self.view, s.begin()))
+                def f(view, s):
+                    line = view.line(s.b)
+
+                    return Region(next_non_blank(view, line.a))
+
+                regions_transformer(self.view, f)
             else:
                 ui_bell()
 

@@ -26,8 +26,8 @@ class Test_gqq(unittest.FunctionalTestCase):
         self.settings().set('wrap_width', 5)
 
     def test_n(self):
-        self.eq('f i z z\n|1 2 3 4 5 6 7 8 9 0\nb u z z\n', 'gqq', 'f i z z\n|1 2 3\n4 5 6\n7 8 9\n0\nb u z z\n')
-        self.eq('f i z z\n1 2 3 4 |5 6 7 8 9 0\nb u z z\n', 'gqq', 'f i z z\n|1 2 3\n4 5 6\n7 8 9\n0\nb u z z\n')
-        self.eq('f i z z\n1 2 3 4 5 6 7 8 9 |0\nb u z z\n', 'gqq', 'f i z z\n|1 2 3\n4 5 6\n7 8 9\n0\nb u z z\n')
-        self.eq('|f i z z\n1 2 3 4 5 6 7 8 9 0\nb u z z\n', '2gqq', '|f i z\nz 1 2\n3 4 5\n6 7 8\n9 0\nb u z z\n')
-        self.eq('|f i z z\n1 2 3 4 5 6 7 8 9 0\na b c\nd e f', '3gqq', '|f i z\nz 1 2\n3 4 5\n6 7 8\n9 0 a\nb c\nd e f')
+        self.eq('f i z z\n|1 2 3 4 5 6 7 8 9 0\nb u z z\n', 'gqq', 'f i z z\n1 2 3\n4 5 6\n7 8 9\n|0\nb u z z\n')
+        self.eq('f i z z\n1 2 3 4 |5 6 7 8 9 0\nb u z z\n', 'gqq', 'f i z z\n1 2 3\n4 5 6\n7 8 9\n|0\nb u z z\n')
+        self.eq('f i z z\n1 2 3 4 5 6 7 8 9 |0\nb u z z\n', 'gqq', 'f i z z\n1 2 3\n4 5 6\n7 8 9\n|0\nb u z z\n')
+        self.eq('|f i z z\n1 2 3 4 5 6 7 8 9 0\nb u z z\n', '2gqq', 'f i z\nz 1 2\n3 4 5\n6 7 8\n|9 0\nb u z z\n')
+        self.eq('|f i z z\n1 2 3 4 5 6 7 8 9 0\na b c\nd e f', '3gqq', 'f i z\nz 1 2\n3 4 5\n6 7 8\n9 0 a\n|b c\nd e f')

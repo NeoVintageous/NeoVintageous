@@ -2230,7 +2230,6 @@ class ViGotoSymbolInProject(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'action': '_vi_go_to_symbol',
             'action_args': {
                 'mode': state.mode,
@@ -2281,7 +2280,6 @@ class ViGotoSymbolInFile(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_go_to_symbol',
             'motion_args': {
                 'mode': state.mode,
@@ -2559,7 +2557,6 @@ class ViGotoExactMarkXpos(RequiresOneCharMixinDef, ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_backtick',
             'motion_args': {
                 'mode': state.mode,
@@ -2579,7 +2576,6 @@ class ViMoveToEol(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_dollar',
             'motion_args': {
                 'mode': state.mode,
@@ -2598,7 +2594,6 @@ class ViMotionEnter(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_enter',
             'motion_args': {
                 'mode': state.mode,
@@ -2616,7 +2611,6 @@ class ViMoveBackOneLine(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_minus',
             'motion_args': {
                 'mode': state.mode,
@@ -2652,7 +2646,6 @@ class ViMoveByScreenLineDown(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_gj',
             'motion_args': {
                 'mode': state.mode,
@@ -2671,7 +2664,6 @@ class ViMoveByScreenLineUp(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_gk',
             'motion_args': {
                 'mode': state.mode,
@@ -2689,7 +2681,6 @@ class ViMoveByBlockUp(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_left_brace',
             'motion_args': {
                 'mode': state.mode,
@@ -2733,7 +2724,6 @@ class ViGotoMark(RequiresOneCharMixinDef, ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_quote',
             'motion_args': {
                 'mode': state.mode,
@@ -2752,7 +2742,6 @@ class ViMoveByBlockDown(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_right_brace',
             'motion_args': {
                 'mode': state.mode,
@@ -2770,7 +2759,6 @@ class ViMoveBySentenceUp(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_left_paren',
             'motion_args': {
                 'mode': state.mode,
@@ -2788,7 +2776,6 @@ class ViMoveBySentenceDown(ViMotionDef):
 
     def translate(self, state):
         return {
-            'is_jump': True,
             'motion': '_vi_right_paren',
             'motion_args': {
                 'mode': state.mode,
@@ -3453,7 +3440,6 @@ class ViSearchForwardImpl(ViMotionDef):
             self.inp = state.last_buffer_search
 
         return {
-            'is_jump': True,
             'motion': '_vi_slash_impl',
             'motion_args': {
                 'search_string': self.inp,
@@ -3510,7 +3496,6 @@ class ViSearchBackwardImpl(ViMotionDef):
             self.inp = state.last_buffer_search
 
         return {
-            'is_jump': True,
             'motion': '_vi_question_mark_impl',
             'motion_args': {
                 'search_string': self.inp,
