@@ -125,7 +125,8 @@ def _goto_modification(action, view, mode, count):
 
             a = view.sel()[0].a
             if view.substr(a) == '\n':
-                a += 1
+                if not view.line(a).empty():
+                    a += 1
 
             set_selection(view, a)
             enter_normal_mode(view, mode)
