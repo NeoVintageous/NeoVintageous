@@ -100,6 +100,9 @@ def find_wrapping(view, term, start, end, flags=0, times=1):
         match = find_in_range(view, term, start, end, flags)
         # make sure we wrap around the end of the buffer
         if not match:
+            if not get_option(view, 'wrapscan'):
+                return
+
             start = 0
             # Extend the end of search to the end of current word, because
             # otherwise the current word would be excluded and not found.
@@ -126,6 +129,9 @@ def reverse_find_wrapping(view, term, start, end, flags=0, times=1):
         match = reverse_search(view, term, start, end, flags)
         # Start searching in the lower half of the buffer if we aren't doing it yet.
         if not match and start <= current_sel.b:
+            if not get_option(view, 'wrapscan'):
+                return
+
             # Extend the start of search to start of current word, because
             # otherwise the current word would be excluded and not found.
             # See https://github.com/NeoVintageous/NeoVintageous/issues/223.

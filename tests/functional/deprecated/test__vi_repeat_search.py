@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_repeat_forward(self):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(4)
@@ -99,6 +103,10 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
 
 class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_repeat_forward(self):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(4)
@@ -135,6 +143,10 @@ class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
 
 
 class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
 
     def test_repeat_forward(self):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
@@ -186,6 +198,10 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
 
 
 class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
 
     def test_repeat_forward(self):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')

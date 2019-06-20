@@ -23,6 +23,7 @@ class Test_gN(unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.setLastSearch('fizz')
+        self.set_option('wrapscan', True)
 
     def test_n(self):
         self.eq('a fizz| fizz fizz b', 'n_gN', 'r_v_a |fizz| fizz fizz b')

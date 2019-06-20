@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_octothorp(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_octothorp_select_match(self):
         self.eq('abc\n|abc', 'n_#', '|abc\nabc')
         self.assertSearch('|abc|\n|abc|')

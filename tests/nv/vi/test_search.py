@@ -28,6 +28,10 @@ from NeoVintageous.nv.vi.search import reverse_search_by_pt
 
 class TestFindWrapping(unittest.ViewTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_can_wrap_around_buffer(self):
         self.write('xxx\naaa aaa xxx aaa')
         self.select(15)

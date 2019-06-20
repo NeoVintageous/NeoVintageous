@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_star(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_n(self):
         self.eq('a|bc\nx\nabc\nx\nabc\nx', 'n_*', 'abc\nx\n|abc\nx\nabc\nx')
         self.assertSearch('|abc|\nx\n|abc|\nx\n|abc|\nx')

@@ -4098,8 +4098,6 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
                     resolve_visual_target(s, match.begin())
                 elif mode == INTERNAL_NORMAL:
                     s = Region(s.b, match.begin())
-            elif mode == NORMAL:
-                s = Region(prev_blank(view, s.b) + 1)
 
             return s
 

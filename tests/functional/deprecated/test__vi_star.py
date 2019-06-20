@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test__vi_star_InNormalMode(unittest.ViewTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_select_match(self):
         self.write('abc\nabc')
         self.select(0)

@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_question_mark(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_n(self):
         self.eq('|', 'n_?abc', '|')
         self.assertSearch('')

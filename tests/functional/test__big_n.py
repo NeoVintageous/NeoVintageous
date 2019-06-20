@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_N(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_N_repeat_star_backward(self):
         self.normal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
         self.feed('n_*')

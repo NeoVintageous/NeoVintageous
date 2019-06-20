@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test__vi_slash_InNormalMode(unittest.ViewTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
+
     def test_search_begin(self):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.select(0)
@@ -54,6 +58,10 @@ class Test__vi_slash_InNormalMode(unittest.ViewTestCase):
 
 
 class Test__vi_question_mark_InNormalMode(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.set_option('wrapscan', True)
 
     def test_search_wrap_begin(self):
         self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
