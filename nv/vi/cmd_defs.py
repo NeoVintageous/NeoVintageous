@@ -2858,6 +2858,42 @@ class ViForwardToStartOfChange(ViMotionDef):
         }
 
 
+@assign(seqs.LEFT_SQUARE_BRACKET_S, _ACTION_MODES)
+class ViPrevMisppelledWord(ViMotionDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, state):
+        return {
+            'motion': '_vi_left_square_bracket',
+            'motion_args': {
+                'action': 's',
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
+@assign(seqs.RIGHT_SQUARE_BRACKET_S, _ACTION_MODES)
+class VINextMispelledWord(ViMotionDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, state):
+        return {
+            'motion': '_vi_right_square_bracket',
+            'motion_args': {
+                'action': 's',
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
 @assign(seqs.RIGHT_SQUARE_BRACKET_RIGHT_BRACE, _MOTION_MODES)
 class ViGotoClosingBrace(ViMotionDef):
     def __init__(self, *args, **kwargs):

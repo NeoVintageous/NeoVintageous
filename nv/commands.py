@@ -45,8 +45,10 @@ from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.goto import goto_help
 from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.goto import goto_next_change
+from NeoVintageous.nv.goto import goto_next_mispelled_word
 from NeoVintageous.nv.goto import goto_next_target
 from NeoVintageous.nv.goto import goto_prev_change
+from NeoVintageous.nv.goto import goto_prev_mispelled_word
 from NeoVintageous.nv.goto import goto_prev_target
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
@@ -4838,6 +4840,8 @@ class _vi_left_square_bracket(ViMotionCommand):
     def run(self, action, mode, count=1, **kwargs):
         if action == 'c':
             goto_prev_change(self.view, mode, count)
+        elif action == 's':
+            goto_prev_mispelled_word(self.view, mode, count)
         elif action == 'target':
             goto_prev_target(self.view, mode, count, **kwargs)
         else:
@@ -4848,6 +4852,8 @@ class _vi_right_square_bracket(ViMotionCommand):
     def run(self, action, mode, count=1, **kwargs):
         if action == 'c':
             goto_next_change(self.view, mode, count)
+        elif action == 's':
+            goto_next_mispelled_word(self.view, mode, count)
         elif action == 'target':
             goto_next_target(self.view, mode, count, **kwargs)
         else:

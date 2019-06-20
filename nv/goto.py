@@ -21,6 +21,7 @@ from sublime import version
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
+from NeoVintageous.nv.utils import regions_transform_to_normal_mode
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
@@ -144,6 +145,22 @@ def goto_next_change(view, mode, count):
 
 def goto_prev_change(view, mode, count):
     _goto_modification('prev', view, mode, count)
+
+
+def goto_next_mispelled_word(view, mode, count):
+    with wrapscan(view):
+        for i in range(count):
+            view.run_command('next_misspelling')
+
+    regions_transform_to_normal_mode(view)
+
+
+def goto_prev_mispelled_word(view, mode, count):
+    with wrapscan(view, forward=False):
+        for i in range(count):
+            view.run_command('prev_misspelling')
+
+    regions_transform_to_normal_mode(view)
 
 
 def goto_prev_target(view, mode, count, target):

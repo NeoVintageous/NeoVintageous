@@ -140,6 +140,14 @@ def regions_transform_to_first_non_blank(view):
     regions_transformer(view, _transform_first_non_blank)
 
 
+def regions_transform_to_normal_mode(view):
+    def f(view, s):
+        s.b = s.a
+        return s
+
+    regions_transformer(view, f)
+
+
 def regions_transform_extend_to_line_count(view, count):
     def f(view, s):
         if count > 0:

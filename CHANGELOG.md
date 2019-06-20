@@ -6,7 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `'wrapscan'` option to disable wrapping when jumping to diffs (`]c` and `[c`)
+* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `[s` like `]s` but search backwards
+* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `]s` move to next misspelled word after the cursor (`'wrapscan'` applies)
+* Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `'wrapscan'` option to disable wrapping on `]c` and `[c` (jump to diffs)
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<Del>` delete `[count]` characters under and after the cursor (alias of `x`)
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Functions 13 through 20 in mappings e.g. `<f13>`, `<C-f16>`, `<C-S-f20>`
 * Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `'winaltkeys'` option to enable `<A-...>` mappings
