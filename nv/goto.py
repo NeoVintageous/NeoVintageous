@@ -25,6 +25,7 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import wrapscan
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
@@ -111,10 +112,7 @@ def goto_line(view, mode, line_number):
     jumplist_update(view)
     regions_transformer(view, f)
     jumplist_update(view)
-
-    # FIXME: Bringing the selections into view will be undesirable in many cases. Maybe we
-    # should have an optional .scroll_selections_into_view() step during command execution.
-    view.show(view.sel()[0])
+    show_if_not_visible(view)
 
 
 def _goto_modification(action, view, mode, count):
