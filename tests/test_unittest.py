@@ -446,7 +446,7 @@ class TestViewTestCase(unittest.ViewTestCase):
             self.assertSize(12)
 
     def test_numbered_register(self):
-        self.settings().set('vintageous_use_sys_clipboard', False)
+        self.set_setting('use_sys_clipboard', False)
         self.register('"x')
         self.assertRegister('"x')
         self.register('0y')

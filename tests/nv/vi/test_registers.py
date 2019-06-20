@@ -90,8 +90,8 @@ class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         self.settings().erase('vintage')
-        self.settings().erase('vintageous_use_sys_clipboard')
-        self.settings().set('vintageous_use_sys_clipboard', False)
+        self.reset_setting('use_sys_clipboard')
+        self.set_setting('use_sys_clipboard', False)
         set_clipboard('')
         registers._reset_data()
         self.registers = Registers()
@@ -221,7 +221,7 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(self.registers[_UNNAMED], ['200'])
 
     def test_setting_register_sets_clipboard_if_needed(self):
-        self.settings().set('vintageous_use_sys_clipboard', True)
+        self.set_setting('use_sys_clipboard', True)
         self.registers['a'] = [100]
         self.assertEqual(get_clipboard(), '100')
 
@@ -251,14 +251,14 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(self.registers[_UNNAMED], ['foobar'])
 
     def test_append_sets_clipboard_if_needed(self):
-        self.settings().set('vintageous_use_sys_clipboard', True)
+        self.set_setting('use_sys_clipboard', True)
         self.registers['a'] = ['foo']
         self.registers['A'] = ['bar']
         self.assertEqual(get_clipboard(), 'foobar')
 
     def test_get_default_to_unnamed_register(self):
         self.registers['"'] = ['foo']
-        self.view.settings().set('vintageous_use_sys_clipboard', False)
+        self.set_setting('use_sys_clipboard', False)
         self.assertEqual(self.registers[_UNNAMED], ['foo'])
 
     def test_getting_black_hole_register_returns_none(self):
@@ -281,13 +281,13 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(self.registers[_CLIPBOARD_PLUS], ['bar'])
 
     def test_get_sys_clipboard_always_if_requested(self):
-        self.settings().set('vintageous_use_sys_clipboard', True)
+        self.set_setting('use_sys_clipboard', True)
         set_clipboard('foo')
         self.assertEqual(self.registers[_UNNAMED], ['foo'])
 
     def test_getting_expression_register_clears_expression_register(self):
         self.registers[_EXPRESSION] = ['100']
-        self.view.settings().set('vintageous_use_sys_clipboard', False)
+        self.set_setting('use_sys_clipboard', False)
         self.assertEqual(self.registers[_UNNAMED], ['100'])
         self.assertEqual(self.registers[_EXPRESSION], '')
 

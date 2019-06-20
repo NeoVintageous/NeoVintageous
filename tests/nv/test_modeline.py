@@ -139,7 +139,7 @@ class Test_do_modeline(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.settings().set('vintageous_modeline', True)
+        self.set_setting('modeline', True)
         self.settings().set('translate_tab_to_spaces', True)
         self.settings().set('gutter', False)
         self.settings().set('wrap_width', 100)
@@ -169,7 +169,7 @@ class Test_do_modeline(unittest.ViewTestCase):
         do_modeline(self.view)
 
         self.assertEqual([True, True, False, 100, [], 2], [
-            self.settings().get('vintageous_modeline'),
+            self.get_setting('modeline'),
             self.settings().get('translate_tab_to_spaces'),
             self.settings().get('gutter'),
             self.settings().get('wrap_width'),
@@ -183,7 +183,7 @@ class Test_do_modeline(unittest.ViewTestCase):
         do_modeline(self.view)
 
         self.assertEqual([True, True, False, 100, [], 2], [
-            self.settings().get('vintageous_modeline'),
+            self.get_setting('modeline'),
             self.settings().get('translate_tab_to_spaces'),
             self.settings().get('gutter'),
             self.settings().get('wrap_width'),

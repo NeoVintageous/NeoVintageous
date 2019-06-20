@@ -22,7 +22,7 @@ class Test_C(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.settings().set('vintageous_use_sys_clipboard', False)
+        self.set_setting('use_sys_clipboard', False)
 
     def test_C(self):
         self.eq('one\n|two\nthree', 'C', 'i_one\n|\nthree')

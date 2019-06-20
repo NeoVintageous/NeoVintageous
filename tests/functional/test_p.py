@@ -22,7 +22,7 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.settings().set('vintageous_use_sys_clipboard', False)
+        self.set_setting('use_sys_clipboard', False)
         self.settings().set('tab_size', 2)
 
     def test_n(self):

@@ -58,7 +58,7 @@ class Test__P(unittest.ViewTestCase):
             self.write(data.content)
             self.select([self._R(*region) for region in data.regions])
 
-            self.settings().set('vintageous_use_sys_clipboard', False)
+            self.set_setting('use_sys_clipboard', False)
             registers._data['"'] = data.in_register
             registers._linewise['"'] = False
 

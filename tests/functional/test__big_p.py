@@ -22,7 +22,7 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.settings().set('vintageous_use_sys_clipboard', False)
+        self.set_setting('use_sys_clipboard', False)
 
     def test_n(self):
         self.register('"abc')

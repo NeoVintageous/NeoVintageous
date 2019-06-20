@@ -143,8 +143,17 @@ class ViewTestCase(unittest.TestCase):
     def settings(self):
         return self.view.settings()
 
+    def set_setting(self, name, value):
+        return self.settings().set('vintageous_%s' % name, value)
+
+    def get_setting(self, name):
+        return self.settings().get('vintageous_%s' % name)
+
+    def reset_setting(self, name):
+        return self.settings().erase('vintageous_%s' % name)
+
     def set_option(self, name, value):
-        return self.view.settings().set('vintageous_%s' % name, value)
+        return self.settings().set('vintageous_%s' % name, value)
 
     def syntax(self, syntax_file):
         self.view.assign_syntax(syntax_file)
