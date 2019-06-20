@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `zug` undo `zg`, remove the word from the entry in spell checking dictionary
+* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `zg` add word under the cursor as a good word to spell checking dictionary
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `[s` like `]s` but search backwards
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `]s` move to next misspelled word after the cursor (`'wrapscan'` applies)
 * Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `'wrapscan'` option to disable wrapping on `]c` and `[c` (jump to diffs)

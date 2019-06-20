@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from sublime import load_settings
+from sublime import save_settings
+
 
 # *sigh* Sublime has no API to set the status for a Window:
 # https://github.com/SublimeTextIssues/Core/issues/627
@@ -27,3 +30,19 @@ def set_window_status(window, key, value):
 def erase_window_status(window, key):
     for view in window.views():
         view.erase_status(key)
+
+
+# There's no Sublime API to remove words from the added_words list.
+# See: https://github.com/SublimeTextIssues/Core/issues/2539.
+def spell_undo(word):
+    preferences = load_settings('Preferences.sublime-settings')
+    added_words = preferences.get('added_words', [])
+
+    try:
+        added_words.remove(word)
+    except ValueError:
+        return
+
+    added_words.sort()
+    preferences.set('added_words', added_words)
+    save_settings('Preferences.sublime-settings')

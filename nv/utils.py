@@ -37,12 +37,14 @@ import re
 from sublime import Region
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.vi.settings import get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import run_window_command
 
 
@@ -457,6 +459,15 @@ def extract_url(view):
     text = view.substr(line)
 
     return _extract_url_from_text(_URL_REGEX, text)
+
+
+def extract_word(view, mode, sel):
+    if is_visual_mode(mode):
+        word = view.substr(sel)
+    else:
+        word = view.substr(view.word(sel))
+
+    return word
 
 
 # Tries to workaround some of the Sublime Text issues where the cursor caret is
@@ -1062,3 +1073,13 @@ def calculate_xpos(view, start, xpos):
     pt = min(eol, start + chars)
 
     return (pt, chars)
+
+
+def spell_file_add_word(view, mode, count):
+    for s in view.sel():
+        view.run_command('add_word', {'word': extract_word(view, mode, s)})
+
+
+def spell_file_remove_word(view, mode, count):
+    for s in view.sel():
+        spell_undo(extract_word(view, mode, s))

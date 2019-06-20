@@ -112,6 +112,8 @@ from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import show_if_not_visible
+from NeoVintageous.nv.utils import spell_file_add_word
+from NeoVintageous.nv.utils import spell_file_remove_word
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
@@ -2454,6 +2456,10 @@ class _vi_z(TextCommand):
         if action == 'c':
             self.view.run_command('fold')
             self._clear_visual_selection()
+        elif action == 'g':
+            spell_file_add_word(self.view, kwargs.get('mode'), count)
+        elif action == 'ug':
+            spell_file_remove_word(self.view, kwargs.get('mode'), count)
         elif action in ('h', '<left>'):
             scroll_horizontally(self.view, edit, amount=-count)
         elif action in ('l', '<right>'):
