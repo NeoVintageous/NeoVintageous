@@ -182,25 +182,24 @@ class TestSeqToCommand(unittest.TestCase):
     })
     @mock.patch('NeoVintageous.nv.vi.keys.plugin')
     def test_seq_to_command(self, plugin):
-        class EnabledPlugin():
-            def is_enabled(self, settings):
-                return True
+        class Plugin():
+            pass
 
-        class DisabledPlugin():
-            def is_enabled(self, settings):
-                return False
-
-        ep = EnabledPlugin()
-        dp = DisabledPlugin()
+        ep = Plugin()
+        dp = Plugin()
 
         plugin.mappings = {
             'b': {'s': 'plugin_bsv', 'ep': ep, 'dp': dp, 'dp2': dp},
             'c': {'s': 'plugin_csv'}
         }
 
+        class Settings():
+            def get(self, name):
+                return True
+
         class View():
             def settings(self):
-                pass
+                return Settings()
 
         self.assertEqual(seq_to_command(seq='s', view=View(), mode='a'), 'asv')
         self.assertIsInstance(seq_to_command(seq='s', view=View(), mode=None), ViMissingCommandDef)
@@ -209,9 +208,6 @@ class TestSeqToCommand(unittest.TestCase):
         # Plugin mapping override.
         self.assertEqual(seq_to_command(seq='s', view=View(), mode='b'), 'plugin_bsv')
         self.assertEqual(seq_to_command(seq='ep', view=View(), mode='b'), ep)
-        self.assertIsInstance(seq_to_command(seq='dp', view=View(), mode='b'), ViMissingCommandDef)
-        self.assertEqual(seq_to_command(seq='dp2', view=View(), mode='b'), 'dp2')
-        # Plugin.
         self.assertEqual(seq_to_command(seq='s', view=View(), mode='c'), 'plugin_csv')
 
     def test_unkown_mode(self):
