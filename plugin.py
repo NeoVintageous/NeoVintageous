@@ -84,10 +84,10 @@ def _update_ignored_packages():
 
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
-    conflict_packages = [x for x in ['Six', 'Vintage', 'Vintageous'] if x not in ignored_packages]  # type: ignore
+    conflict_packages = [x for x in ['Six', 'Vintage', 'Vintageous'] if x not in ignored_packages]
     if conflict_packages:
         print('NeoVintageous: update ignored packages with conflicts {}'.format(conflict_packages))
-        ignored_packages = sorted(ignored_packages + conflict_packages)  # type: ignore
+        ignored_packages = sorted(ignored_packages + conflict_packages)
         settings.set('ignored_packages', ignored_packages)
         sublime.save_settings('Preferences.sublime-settings')
 
@@ -114,7 +114,7 @@ def _init_backwards_compat_fixes():
         # update, this patch sets the current value to whatever is currently used.
         # See Roadmap: https://github.com/NeoVintageous/NeoVintageous/issues/404.
         preferences = sublime.load_settings('Preferences.sublime-settings')
-        build_version = int(preferences.get('neovintageous_build_version', 0))  # type: ignore
+        build_version = int(preferences.get('neovintageous_build_version', 0))
 
         # TODO Remove backwards compatability fix in a future version
         if build_version < 11000:
