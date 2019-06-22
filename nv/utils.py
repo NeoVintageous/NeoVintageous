@@ -312,6 +312,16 @@ def prev_non_ws(view, pt):
     return pt
 
 
+def next_non_ws(view, pt):
+    # type: (...) -> int
+    limit = view.size()
+    substr = view.substr
+    while substr(pt) in ' \t\n' and pt <= limit:
+        pt += 1
+
+    return pt
+
+
 def is_at_eol(view, reg):
     # type: (...) -> bool
     return view.line(reg.b).b == reg.b

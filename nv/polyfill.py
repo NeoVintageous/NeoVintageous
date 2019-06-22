@@ -67,3 +67,26 @@ def view_find(view, pattern, start_pt, flags=0):
         return None
 
     return match
+
+
+# Polyfill to work around bug in internal APIs.
+# See: https://github.com/SublimeTextIssues/Core/issues/2879.
+def view_indentation_level(view, pt):
+    return view.indentation_level(pt)
+
+
+# Polyfill to allow specifying an inclusive flag to include or exclude leading
+# and trailing whitespace. By default excludes leading and trailing whitespace.
+def view_indented_region(view, pt, inclusive=False):
+    indented_region = view.indented_region(pt)
+
+    if not inclusive:
+        ws = view_find(view, '\\s*', indented_region.begin())
+        if ws is not None:
+            indented_region.a = view.line(ws.b).a
+    else:
+        ws = view_find(view, '\\s*', indented_region.end())
+        if ws is not None:
+            indented_region.b = view.line(ws.b).a
+
+    return indented_region

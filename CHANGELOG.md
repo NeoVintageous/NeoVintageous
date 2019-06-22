@@ -6,6 +6,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `ai` an indentation level and line above (indent object plugin)
+* Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `ii` inner indentation level (no line above) (indent object plugin)
+* Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `aI` an indentation level and lines above/below (indent object plugin)
+* Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `iI` inner indentation level (no lines above/below) (indent object plugin)
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Plugins can now be fully disabled by the boolean setting `enable_{plugin_name}`
 * Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `'wrapscan'` option to disable wrapping on `*`, `#`, `n`, `N` (searches)
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `z=` for the word under/after the cursor suggest correctly spelled words
@@ -25,6 +29,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#373](https://github.com/NeoVintageous/NeoVintageous/issues/373): `vii` does not select the whole indented line
 * Fixed [#606](https://github.com/NeoVintageous/NeoVintageous/issues/606): `]<Space>` and `[<Space>` cursor position on blank lines
 * Fixed [#605](https://github.com/NeoVintageous/NeoVintageous/issues/605): `]c` and `[c` are off-by-one for blank lines
 * Fixed [#598](https://github.com/NeoVintageous/NeoVintageous/issues/598): Text object registers should be linewise
