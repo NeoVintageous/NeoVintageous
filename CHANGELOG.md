@@ -25,6 +25,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#606](https://github.com/NeoVintageous/NeoVintageous/issues/606): `]<Space>` and `[<Space>` cursor position on blank lines
 * Fixed [#605](https://github.com/NeoVintageous/NeoVintageous/issues/605): `]c` and `[c` are off-by-one for blank lines
 * Fixed [#598](https://github.com/NeoVintageous/NeoVintageous/issues/598): Text object registers should be linewise
 * Fixed [#597](https://github.com/NeoVintageous/NeoVintageous/issues/597): `di(` and other text objects ignore indention

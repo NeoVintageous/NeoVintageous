@@ -27,12 +27,16 @@ class TestUnimpaired(unittest.FunctionalTestCase):
         self.eq('aaa\nbb|b\nccc', '5] ', 'aaa\n|bbb\n\n\n\n\n\nccc')
         self.eq('aaa\nbb|b\nccc', '5] ', 'aaa\n|bbb\n\n\n\n\n\nccc')
         self.eq('aaa\n    bb|b\nccc', '5] ', 'aaa\n    |bbb\n\n\n\n\n\nccc')
+        self.eq('\n\n|\n\n\n    fizz', '] ', '\n\n|\n\n\n\n    fizz')
+        self.eq('\n\n|\n\n\n    fizz', '3] ', '\n\n|\n\n\n\n\n\n    fizz')
 
     def test_blank_up(self):
         self.eq('aaa\nbb|b\nccc', '[ ', 'aaa\n\n|bbb\nccc')
         self.eq('aaa\n    bb|b\nccc', '[ ', 'aaa\n\n    |bbb\nccc')
         self.eq('aaa\nbb|b\nccc', '3[ ', 'aaa\n\n\n\n|bbb\nccc')
         self.eq('aaa\n    bb|b\nccc', '3[ ', 'aaa\n\n\n\n    |bbb\nccc')
+        self.eq('\n\n|\n\n\n    fizz', '[ ', '\n\n\n|\n\n\n    fizz')
+        self.eq('\n\n|\n\n\n    fizz', '3[ ', '\n\n\n\n\n|\n\n\n    fizz')
 
     def test_move_down(self):
         self.eq('111\n22|2\n333\n444', ']e', '111\n333\n22|2\n444')

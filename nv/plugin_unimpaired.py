@@ -302,7 +302,12 @@ def _blank_down(view, edit, count):
     new_sels = []
     for sel in view.sel():
         line = view.line(sel)
-        new_sels.append(view.find('[^\\s]', line.begin()).begin())
+
+        if line.empty():
+            new_sels.append(line.b)
+        else:
+            new_sels.append(view.find('[^\\s]', line.begin()).begin())
+
         view.insert(
             edit,
             line.end() + 1 if line.end() < end_point else end_point,
@@ -317,7 +322,11 @@ def _blank_up(view, edit, count):
     new_sels = []
     for sel in view.sel():
         line = view.line(sel)
-        new_sels.append(view.find('[^\\s]', line.begin()).begin() + count)
+        if line.empty():
+            new_sels.append(line.b + count)
+        else:
+            new_sels.append(view.find('[^\\s]', line.begin()).begin() + count)
+
         view.insert(
             edit,
             line.begin() - 1 if line.begin() > 0 else 0,
