@@ -23,17 +23,7 @@ from sublime import Region
 import sublime_plugin
 
 from NeoVintageous.nv.options import get_option
-
-
-# Polyfill to workaround Sublime view.find() return value issue:
-# https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866
-# https://github.com/SublimeTextIssues/Core/issues/534
-def view_find(view, pattern, start_pt, flags=0):
-    match = view.find(pattern, start_pt, flags)
-    if match is None or match.b == -1:
-        return None
-
-    return match
+from NeoVintageous.nv.polyfill import view_find
 
 
 # A possible replacement for find_in_range(). One difference is this function

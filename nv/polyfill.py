@@ -19,14 +19,15 @@ from sublime import load_settings
 from sublime import save_settings
 
 
-# *sigh* Sublime has no API to set the status for a Window:
+# There's no Sublime API to set a window status.
 # https://github.com/SublimeTextIssues/Core/issues/627
 def set_window_status(window, key, value):
     for view in window.views():
         view.set_status(key, value)
 
 
-# See set_window_status()
+# There's no Sublime API to erase a window status.
+# https://github.com/SublimeTextIssues/Core/issues/627
 def erase_window_status(window, key):
     for view in window.views():
         view.erase_status(key)
@@ -54,3 +55,15 @@ def spell_undo(word):
     added_words.sort()
     preferences.set('added_words', added_words)
     save_settings('Preferences.sublime-settings')
+
+
+# Polyfill to workaround Sublime's view.find() return value issues.
+# Returns None if nothing is found instead of returning Region(-1).
+# See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
+# See: https://github.com/SublimeTextIssues/Core/issues/534.
+def view_find(view, pattern, start_pt, flags=0):
+    match = view.find(pattern, start_pt, flags)
+    if match is None or match.b == -1:
+        return None
+
+    return match
