@@ -3586,6 +3586,7 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
 @assign(seqs.Z_BIG_L, _ACTION_MODES)
 @assign(seqs.Z_BIG_M, _ACTION_MODES)
 @assign(seqs.Z_BIG_R, _ACTION_MODES)
+@assign(seqs.Z_EQUAL, _ACTION_MODES)
 @assign(seqs.Z_LEFT, _ACTION_MODES)
 @assign(seqs.Z_RIGHT, _ACTION_MODES)
 class Viz(ViOperatorDef):

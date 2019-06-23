@@ -59,6 +59,7 @@ from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
+from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import get_search_occurrences
@@ -2477,6 +2478,8 @@ class _vi_z(TextCommand):
             fold_all(self.view)
         elif action == 'R':
             unfold_all(self.view)
+        elif action == '=':
+            spell_select(self.view)
         else:
             raise ValueError('unknown action')
 

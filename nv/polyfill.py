@@ -32,6 +32,14 @@ def erase_window_status(window, key):
         view.erase_status(key)
 
 
+# There's no Sublime API to show a corrections select list. The workaround is to
+# mimic the mouse right button click which opens a corrections context menu.
+# See: https://github.com/SublimeTextIssues/Core/issues/2539.
+def spell_select(view):
+    x, y = view.text_to_window(view.sel()[0].b)
+    view.run_command('context_menu', {'event': {'button': 2, 'x': x, 'y': y}})
+
+
 # There's no Sublime API to remove words from the added_words list.
 # See: https://github.com/SublimeTextIssues/Core/issues/2539.
 def spell_undo(word):
