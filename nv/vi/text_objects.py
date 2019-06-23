@@ -306,10 +306,10 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         else:
             return Region(begin_tag.b, end_tag.a)
 
-    if type_ == PARAGRAPH:
+    elif type_ == PARAGRAPH:
         return find_paragraph_text_object(view, s, inclusive=inclusive, count=count)
 
-    if type_ == BRACKET:
+    elif type_ == BRACKET:
         opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
         closing = find_next_lone_bracket(view, s.end(), delims)
 
@@ -338,7 +338,7 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
         return Region(a, b)
 
-    if type_ == QUOTE:
+    elif type_ == QUOTE:
         # Vim only operates on the current line.
         line = view.line(s)
 
@@ -360,21 +360,21 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
         return Region(prev_quote.a + 1, next_quote.b - 1)
 
-    if type_ == WORD:
+    elif type_ == WORD:
         w = a_word(view, s.b, inclusive=inclusive, count=count)
         if s.size() <= 1:
             return w
 
         return Region(s.a, w.b)
 
-    if type_ == BIG_WORD:
+    elif type_ == BIG_WORD:
         w = a_big_word(view, s.b, inclusive=inclusive, count=count)
         if s.size() <= 1:
             return w
 
         return Region(s.a, w.b)
 
-    if type_ == SENTENCE:
+    elif type_ == SENTENCE:
         # FIXME: This doesn't work well.
         # TODO: Improve this.
         sentence_start = view.find_by_class(s.b, forward=False, classes=CLASS_EMPTY_LINE)
@@ -395,10 +395,10 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
 
     # Support for a port of the Indent Object plugin:
     # A port of https://github.com/michaeljsmith/vim-indent-object.
-    if type_ in (INDENT, BIG_INDENT):
+    elif type_ in (INDENT, BIG_INDENT):
         resolve_indent_text_object(view, s, inclusive, big=(type_ == BIG_INDENT))
 
-    if type_ == LINE:
+    elif type_ == LINE:
         start, end = find_line_text_object(view, s)
 
         return Region(start, end)
