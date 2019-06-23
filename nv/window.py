@@ -202,7 +202,7 @@ def _close_all_other_views(window):
             window.run_command('close_pane', {'group': i})
 
 
-def _close_active_view(window, close_if_last=True):
+def _close_view(window, close_if_last=True):
     """Close current view.
 
     If {close_if_last} then this command fails when there is only one
@@ -247,8 +247,12 @@ def _close_active_view(window, close_if_last=True):
         window.run_command('destroy_pane', {'direction': 'self'})
 
 
+def _close_active_view(window):
+    _close_view(window, close_if_last=False)
+
+
 def _quit_active_view(window):
-    _close_active_view(window)
+    _close_view(window)
     if len(window.views()) == 0:
         window.run_command('close')
 
@@ -616,11 +620,6 @@ def window_tab_control(window, action, count=1, index=None):
 
 
 def window_control(window, action, count=1, **kwargs):
-    def merge(other, **defaults):
-        defaults.update(other)
-
-        return defaults
-
     if action == 'b':
         _focus_group_bottom_right(window)
     elif action == 'H':
@@ -632,7 +631,7 @@ def window_control(window, action, count=1, **kwargs):
     elif action == 'L':
         _move_active_view_to_far_right(window)
     elif action == 'c':
-        _close_active_view(window, **merge(kwargs, close_if_last=False))
+        _close_active_view(window)
     elif action == '=':
         _resize_groups_equally(window)
     elif action == '>':
