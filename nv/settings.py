@@ -21,12 +21,13 @@ def get_setting(view, name):
 
 
 def set_setting(view, name, value):
-    return view.settings().set('vintageous_%s' % name)
+    view.settings().set('vintageous_%s' % name)
 
 
 def reset_setting(view, name):
-    return view.settings().erase('vintageous_%s' % name)
+    view.settings().erase('vintageous_%s' % name)
 
 
+# DEPRECATED Refactor and use get_setting() instead
 def get_setting_neo(view, name):
     return view.settings().get('neovintageous_%s' % name)
