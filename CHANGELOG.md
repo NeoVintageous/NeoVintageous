@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.16.4 - Unreleased
+
+* Fixed [#610](https://github.com/NeoVintageous/NeoVintageous/issues/610): invalid malformed mapping
+
 ## 1.16.3 - 2019-06-18
 
 * Fixed [#579](https://github.com/NeoVintageous/NeoVintageous/issues/579):  error `'A-j'` is not a known key
