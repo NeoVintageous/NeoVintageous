@@ -575,33 +575,33 @@ class _nv_feed_key(ViWindowCommandBase):
                     #
                     # Examples:
                     #
-                    # * :sort<CR>
-                    # * vi]:sort u<CR>
-                    # * vi]:sort u<CR>vi]y<Esc>
+                    #   :
+                    #   :w
+                    #   :sort<CR>
+                    #   vi]:sort u<CR>
+                    #   vi]:sort u<CR>vi]y<Esc>
 
                     colon_pos = rhs.find(':')
                     leading = rhs[:colon_pos]
                     rhs = rhs[colon_pos:]
 
                     cr_pos = rhs.lower().find('<cr>')
-                    if cr_pos == -1:
-                        status_message('invalid malformed mapping')
-                        return
-
-                    command = rhs[:cr_pos + 4]
-                    trailing = rhs[cr_pos + 4:]
+                    if cr_pos >= 0:
+                        command = rhs[:cr_pos + 4]
+                        trailing = rhs[cr_pos + 4:]
+                    else:
+                        command = rhs
+                        trailing = None
 
                     _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
 
                     if leading:
-                        self.window.run_command('_nv_process_notation', {
-                            'keys': leading, 'check_user_mappings': False})
+                        self.window.run_command('_nv_process_notation', {'keys': leading, 'check_user_mappings': False})
 
                     do_ex_user_cmdline(self.window, command)
 
                     if trailing:
-                        self.window.run_command('_nv_process_notation', {
-                            'keys': trailing, 'check_user_mappings': False})
+                        self.window.run_command('_nv_process_notation', {'keys': trailing, 'check_user_mappings': False})
 
                 else:
                     self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
