@@ -588,12 +588,14 @@ class _nv_feed_key(ViWindowCommandBase):
                     _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
 
                     if leading:
-                        self.window.run_command('_nv_process_notation', {'keys': leading, 'check_user_mappings': False})
+                        self.window.run_command('_nv_process_notation',
+                                                {'keys': leading, 'check_user_mappings': False})
 
                     do_ex_user_cmdline(self.window, command)
 
                     if trailing:
-                        self.window.run_command('_nv_process_notation', {'keys': trailing, 'check_user_mappings': False})
+                        self.window.run_command('_nv_process_notation',
+                                                {'keys': trailing, 'check_user_mappings': False})
 
                 else:
                     self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
