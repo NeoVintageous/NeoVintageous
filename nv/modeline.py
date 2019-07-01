@@ -36,6 +36,7 @@ def _gen_modelines(view, modelines):
     #
     # Return:
     #   list
+    modelines = int(modelines)
     max_pts = modelines * _MODELINES_MAX_LINE_LEN
 
     to_pt = view.text_point(modelines, 0)

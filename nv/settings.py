@@ -16,8 +16,8 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-def get_setting(view, name):
-    return view.settings().get('vintageous_%s' % name)
+def get_setting(view, name, default=None):
+    return view.settings().get('vintageous_%s' % name, default)
 
 
 def set_setting(view, name, value):

@@ -194,7 +194,7 @@ class TestSeqToCommand(unittest.TestCase):
         }
 
         class Settings():
-            def get(self, name):
+            def get(self, name, default=None):
                 return True
 
         class View():

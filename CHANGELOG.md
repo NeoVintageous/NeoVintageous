@@ -6,27 +6,54 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `yoi`, `[oi`, and `]oi`, toggle, switch on, and switch off `'ignorecase'` (Unimpaired)
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `yoh`, `[oh`, and `]oh`, toggle, switch on, and switch off `'hlsearch'` (Unimpaired)
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set {option}` support in neovintageousrc file
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set belloff=`, `:set belloff=all`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set menu`, `:set nomenu`, `:set menu!`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set minimap`, `:set nominimap`, `:set minimap!`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set number`, `:set nonumber`, `:set number!`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set sidebar`, `:set nosidebar`, `:set sidebar!`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set spell`, `:set nospell`, `:set spell!`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set statusbar`, `:set nostatusbar`, `:set statusbar!`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set wrap`, `:set nowrap`, `:set wrap!`
+* Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set wrapscan`, `:set nowrapscan`, `:set wrapscan!`
+* Added [#596](https://github.com/NeoVintageous/NeoVintageous/issues/596): `:set {option}!` toggle option
+* Added [#611](https://github.com/NeoVintageous/NeoVintageous/issues/611): `:set no{option}` switch option off
+* Added [#611](https://github.com/NeoVintageous/NeoVintageous/issues/611): `:set {option}?` show option
 * Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `ai` an indentation level and line above (indent object plugin)
 * Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `ii` inner indentation level (no line above) (indent object plugin)
 * Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `aI` an indentation level and lines above/below (indent object plugin)
 * Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): `iI` inner indentation level (no lines above/below) (indent object plugin)
-* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Plugins can now be fully disabled by the boolean setting `enable_{plugin_name}`
-* Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `'wrapscan'` option to disable wrapping on `*`, `#`, `n`, `N` (searches)
+* Added [#607](https://github.com/NeoVintageous/NeoVintageous/issues/607): Plugins can now be fully disabled by the boolean setting `enable_{plugin_name}`
+* Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `:set wrapscan` to disable wrapping on `*`, `#`, `n`, `N` (searches)
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `z=` for the word under/after the cursor suggest correctly spelled words
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `zug` undo `zg`, remove the word from the entry in spell checking dictionary
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `zg` add word under the cursor as a good word to spell checking dictionary
-* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `yo{char}` unimpaired toggle commands
+* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `yo{char}` toggle commands (Unimpaired)
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `[s` like `]s` but search backwards
 * Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `]s` move to next misspelled word after the cursor (`'wrapscan'` applies)
-* Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `'wrapscan'` option to disable wrapping on `]c` and `[c` (jump to diffs)
+* Added [#604](https://github.com/NeoVintageous/NeoVintageous/issues/604): `:set wrapscan` to disable wrapping on `]c` and `[c` (jump to diffs)
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<Del>` delete `[count]` characters under and after the cursor (alias of `x`)
-* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Functions 13 through 20 in mappings e.g. `<f13>`, `<C-f16>`, `<C-S-f20>`
-* Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `'winaltkeys'` option to enable `<A-...>` mappings
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Functions keys 13 through 20 in mappings e.g. `<f13>`, `<C-f16>`, `<C-S-f20>`
+* Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `:set winaltkeys` to enable `<A-...>` mappings
 * Added [#593](https://github.com/NeoVintageous/NeoVintageous/issues/593): Highlight all occurrences on incremental searches
-* Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `'incsearch'` option to show where the pattern, as it was typed so far, matches
+* Added [#589](https://github.com/NeoVintageous/NeoVintageous/issues/589): `:set incsearch` to show where the pattern, as it was typed so far, matches
 * Added [#579](https://github.com/NeoVintageous/NeoVintageous/issues/579): `<A-...>` keys are now the same as `<M-...>`
 * Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqq` format the current line with a count format that many lines
 * Added [#580](https://github.com/NeoVintageous/NeoVintageous/issues/580): `gqgq` format the current line with a count format that many lines (alias of `gqq`)
+
+### Deprecated
+
+* Deprecated [#404](404): `vintageous_belloff` setting; use `set belloff=` in rcfile
+* Deprecated [#404](404): `vintageous_hlsearch` setting; use `set hlsearch` / `set nohlsearch` in rcfile
+* Deprecated [#404](404): `vintageous_ignorecase` setting; use `set ignorecase` / `set noignorecase` in rcfile
+* Deprecated [#404](404): `vintageous_incsearch` setting; use `set incsearch` / `set noincsearch` in rcfile
+* Deprecated [#404](404): `vintageous_magic` setting; use `set magic` / `set nomagic` in rcfile
+* Deprecated [#404](404): `vintageous_modeline` setting; use `set modeline` / `set nomodeline` in rcfile
+* Deprecated [#404](404): `vintageous_modelines` setting; use `set modelines=5` in rcfile
+* Deprecated [#404](404): `vintageous_winaltkeys` setting; use `set winaltkeys=menu` in rcfile
+* Deprecated [#404](404): `vintageous_wrapscan` setting; use `set wrapscan` / `set nowrapscan` in rcfile
 
 ### Fixed
 

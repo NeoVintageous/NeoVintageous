@@ -90,7 +90,7 @@ def _is_alt_key_enabled(view, operator, operand, match_all):
     if winaltkeys == 'menu':
         return (operand not in tuple('efghinpstv') or not view.window().is_menu_visible()) and _is_command_mode(view)
 
-    return False if winaltkeys else _is_command_mode(view)
+    return False if winaltkeys == 'yes' else _is_command_mode(view)
 
 
 _query_contexts = {

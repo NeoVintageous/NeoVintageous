@@ -19,6 +19,9 @@
 
 from sublime_plugin import TextCommand
 
+from NeoVintageous.nv.options import set_option
+from NeoVintageous.nv.options import toggle_option
+from NeoVintageous.nv.options import window_visible_option
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import set_selection
@@ -358,81 +361,39 @@ def _set_bool_option(view, key, flag=None):
             settings.set(key, False)
 
 
-def _set_value_option(view, key, on_value, off_value, flag=None):
-    settings = view.settings()
-    value = settings.get(key)
-
+def _do_toggle_option(view, key, flag=None):
     if flag is None:
-        settings.set(key, off_value if value == on_value else on_value)
-    elif flag:
-        if value != on_value:
-            settings.set(key, on_value)
+        toggle_option(view, key)
     else:
-        if value != off_value:
-            settings.set(key, off_value)
+        set_option(view, key, flag)
 
 
-def _list_option(view, flag=None):
-    # TODO [enhancement] Add option to set default for "off". i.e. instead of
-    # toggling between "all" (on) and "selection" (off), which is the current
-    # behaviour, toggle between "all" (on) and whatever the user default for
-    # "off" is. For example the user might have "off" set to "none" or
-    # "selection" (the default in sublime). "selection" means that whitespace
-    # characters are visible in selected text, "none" means whitespace
-    # characters are never visible.
-    _set_value_option(view, 'draw_white_space', 'all', 'selection', flag)
+def _list_option(view, flag):
+    _do_toggle_option(view, 'list', flag)
+
+
+def _hlsearch_option(view, flag):
+    _do_toggle_option(view, 'hlsearch', flag)
+
+
+def _ignorecase_option(view, flag):
+    _do_toggle_option(view, 'ignorecase', flag)
 
 
 def _menu_option(view, flag=None):
-    window = view.window()
-    is_visible = window.is_menu_visible()
-    if flag is None:
-        window.set_menu_visible(not is_visible)
-    elif flag:
-        if not is_visible:
-            window.set_menu_visible(True)
-    else:
-        if is_visible:
-            window.set_menu_visible(False)
+    window_visible_option(view, 'menu', flag)
 
 
 def _minimap_option(view, flag=None):
-    window = view.window()
-    is_visible = window.is_minimap_visible()
-    if flag is None:
-        window.set_minimap_visible(not is_visible)
-    elif flag:
-        if not is_visible:
-            window.set_minimap_visible(True)
-    else:
-        if is_visible:
-            window.set_minimap_visible(False)
+    window_visible_option(view, 'minimap', flag)
 
 
 def _sidebar_option(view, flag=None):
-    window = view.window()
-    is_visible = window.is_sidebar_visible()
-    if flag is None:
-        window.set_sidebar_visible(not is_visible)
-    elif flag:
-        if not is_visible:
-            window.set_sidebar_visible(True)
-    else:
-        if is_visible:
-            window.set_sidebar_visible(False)
+    window_visible_option(view, 'sidebar', flag)
 
 
 def _statusbar_option(view, flag=None):
-    window = view.window()
-    is_visible = window.is_status_bar_visible()
-    if flag is None:
-        window.set_status_bar_visible(not is_visible)
-    elif flag:
-        if not is_visible:
-            window.set_status_bar_visible(True)
-    else:
-        if is_visible:
-            window.set_status_bar_visible(False)
+    window_visible_option(view, 'status_bar', flag)
 
 
 # Used by the _toggle_option() function.
@@ -445,8 +406,8 @@ _OPTIONS = {
     'cursorcolumn': None,
     'cursorline': 'highlight_line',
     'diff': None,
-    'hlsearch': None,
-    'ignorecase': None,
+    'hlsearch': _hlsearch_option,
+    'ignorecase': _ignorecase_option,
     'list': _list_option,
     'menu': _menu_option,  # non standard i.e. not in the original Unimpaired plugin
     'minimap': _minimap_option,  # non standard i.e. not in the original Unimpaired plugin

@@ -1,53 +1,39 @@
 {
     // A port of https://github.com/machakann/vim-highlightedyank.
     // See http://vimcasts.org/episodes/neovim-eyecandy/#shownotes.
-    // {not in Vim}
     "highlightedyank": true,
 
     // Assign number of time in milliseconds.
-    // {not in Vim}
     "highlightedyank_duration": 1000,
 
     // Accepts any of the following:
     // Valid values are: fill, outline, underline, squiggly_underline,
     // stippled_underline.
-    // {not in Vim}
     "highlightedyank_style": "fill",
 
     // Current search style.
     // Valid values are: fill, outline, underline, squiggly_underline,
     // stippled_underline.
-    // {not in Vim}
     "neovintageous_search_cur_style": "fill",
 
     // Incremental search style.
     // Valid values are: fill, outline, underline, squiggly_underline,
     // stippled_underline.
-    // {not in Vim}
     "neovintageous_search_inc_style": "fill",
 
     // Search occurences style.
     // Valid values are: fill, outline, underline, squiggly_underline,
     // stippled_underline.
-    // {not in Vim}
     "neovintageous_search_occ_style": "fill",
 
     // Visual bell style type.
     // Valid values are: blink, view, or views.
-    // {not in Vim}
     "vintageous_bell": "blink",
 
     // Visual bell color scheme.
     // Valid values are: "dark", "light", or color scheme path. The color scheme
     // path should be in the format Packages/Name/name.hidden-color-scheme
-    // {not in Vim}
     "vintageous_bell_color_scheme": "dark",
-
-    // Specifies for which events the bell (visual blink) will not be rung. It
-    // is a comma separated list of items. For each item that is present, the
-    // bell will be silenced. Currently only the "all" event is supported.
-    // https://vimhelp.org/options.txt.html#%27belloff%27
-    "vintageous_belloff": "",
 
     // If you do not type anything on a new line e.g. pressing <Esc> after "o"
     // or "O", the indent is deleted again. To preserve the leading whitespace
@@ -55,7 +41,6 @@
     "vintageous_clear_auto_indent_on_esc": true,
 
     // Default mode to use when activating or switching views.
-    //
     // Valid values are: "insert"
     //
     // mode   | description
@@ -82,88 +67,24 @@
     // A port of https://github.com/tpope/vim-unimpaired.
     "vintageous_enable_unimpaired": true,
 
-    // Highlight searches in '/', '?', etc.
-    // https://vimhelp.appspot.com/options.txt.html#%27hlsearch%27
-    "vintageous_hlsearch": true,
-
-    // Ignore case in search patterns ('/', '?', '*', and '#').
-    // https://vimhelp.appspot.com/options.txt.html#%27ignorecase%27
-    "vintageous_ignorecase": true,
-
-    // Apply search patterns incrementally as they are typed.
-    // https://vimhelp.appspot.com/options.txt.html#%27incsearch%27
-    "vintageous_incsearch": true,
-
-    // Changes the special characters that can be used in search patterns. Use
-    // regular expressions in '/' and '?' otherwise uses smart case, interpret
-    // pattern literally, and ignore case.
-    // https://vimhelp.appspot.com/options.txt.html#%27magic%27
-    "vintageous_magic": true,
-
-    // Enable modeline feature.
-    // https://vimhelp.appspot.com/options.txt.html#%27modeline%27
-    "vintageous_modeline": false,
-
-    // If 'vintageous_modeline' is on 'vintageous_modelines' gives the number of
-    // lines that is checked for set commands.
-    // https://vimhelp.appspot.com/options.txt.html#%27modelines%27
-    "vintageous_modelines": 5,
-
     // If set to false, then pressing the quit key (<Esc> or J) in Visual mode
     // will not quit and delete all existing cursors. Useful if you want to go
     // back to Normal mode, and still be able to operate on all the cursors.
-    // {not in Vim}
     "vintageous_multi_cursor_exit_from_visual_mode": true,
 
     // Reset to normal mode when a tab is activated.
-    // {not in Vim}
     "vintageous_reset_mode_when_switching_tabs": true,
 
     // Show output panel from shell commands.
-    // {not in Vim}
     "vintageous_shell_silent": false,
 
-    // {currently only works in a few situations}
-    // Minimal number of screen lines to keep above and below the cursor.
-    // https://vimhelp.appspot.com/options.txt.html#%27scrolloff%27
-    "vintageous_scrolloff": 5,
-
-    // {currently only works in a few situations}
-    // The minimal number of screen columns to keep to the left and to the right
-    // of the cursor if nowrap' is set or if 'word_wrap' is disabled.
-    // https://vimhelp.appspot.com/options.txt.html#%27sidescrolloff%27
-    "vintageous_sidescrolloff": 5,
-
     // Enable key bindings prefaced by the control-key.
-    // {not in Vim}
     "vintageous_use_ctrl_keys": false,
 
     // Enable key bindings prefaced by the super-key, otherwise known as the
     // command-key in OSX, and as the windows-key in Windows.
-    // {not in Vim}
     "vintageous_use_super_keys": false,
 
     // Propagate copy actions to the system clipboard.
-    // {not in Vim}
-    "vintageous_use_sys_clipboard": false,
-
-    // There is a conflict between using the <Alt> key to select menu items, and
-    // using <Alt> key combinations for mappings. The 'vintageous_winaltkeys'
-    // setting tells NeoVintageous what it should do with the <Alt> key.
-    //    The default value "menu" is the smart choice: If the key combination is a
-    // menu shortcut it can't be mapped.  All other keys are available for mapping.
-    //    The value false doesn't use any <Alt> keys for the menus. Thus you must
-    // use the mouse for the menus, and all <Alt> keys can be mapped.
-    //    The value true means that Vim will use any <Alt> keys for the menus. Some
-    // <Alt> key combinations may also do other things than selecting a menu.
-    //
-    // Valid values are "menu" or a boolean.
-    //
-    // https://vimhelp.appspot.com/options.txt.html#%27winaltkeys%27
-    "vintageous_winaltkeys": true,
-
-    // Searches wrap around the end of the file. Also applies to ]s and [s,
-    // searching for spelling mistakes, and to ]c and [c for jumping to diffs.
-    // https://vimhelp.appspot.com/options.txt.html#%27wrapscan%27
-    "vintageous_wrapscan": true
+    "vintageous_use_sys_clipboard": false
 }

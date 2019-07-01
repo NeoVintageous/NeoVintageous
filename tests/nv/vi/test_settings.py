@@ -19,14 +19,11 @@ import os
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.vi.settings import _SCOPE_WINDOW
+from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vi.settings import _SublimeSettings
-from NeoVintageous.nv.vi.settings import _VI_OPTIONS
-from NeoVintageous.nv.vi.settings import _vi_user_setting
 from NeoVintageous.nv.vi.settings import _VintageSettings
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import set_cmdline_cwd
-from NeoVintageous.nv.vi.settings import SettingsManager
 
 
 class TestSublimeSettings(unittest.ViewTestCase):
@@ -90,37 +87,6 @@ class TestSettingsManager(unittest.ViewTestCase):
     def test_can_access_view_settings(self):
         self.manager.view['foo'] = 100
         self.assertEqual(self.manager.view['foo'], 100)
-
-
-class TestViEditorSettings(unittest.ViewTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.view.settings().erase('vintage')
-        self.view.settings().erase('vintageous_hlsearch')
-        self.view.settings().erase('vintageous_foo')
-        self.view.window().settings().erase('vintageous_foo')
-        self.settsman = _VintageSettings(view=self.view)
-
-    def test_can_retrieve_default_value(self):
-        self.assertEqual(self.settsman['hlsearch'], True)
-
-    def test_can_retrieve_default_value_if_set_value_is_invalid(self):
-        self.settsman.view.settings().set('vintageous_hlsearch', 100)
-        self.assertEqual(self.settsman['hlsearch'], True)
-
-    def test_can_retrieve_window_level_settings(self):
-        _VI_OPTIONS['foo'] = _vi_user_setting(
-            scope=_SCOPE_WINDOW,
-            values=(100,),
-            default='bar',
-            parser=None,
-            action=None,
-            negatable=False
-        )
-        self.settsman.view.window().settings().set('vintageous_foo', 100)
-        self.assertEqual(self.settsman['foo'], 100)
-        del _VI_OPTIONS['foo']
 
 
 class TestCmdlineCwd(unittest.ViewTestCase):

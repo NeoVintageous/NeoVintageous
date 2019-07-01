@@ -19,11 +19,16 @@ contexts:
     - match: ^:?\b(n|o|s|v)?map.*
       scope: invalid.neovintageourc
 
-    - match: (let) (map(?:local)?leader)(=).*
+    - match: ^:?(let) (map(?:local)?leader)(=).*
       captures:
         1: keyword.control.neovintageourc
         2: variable.language.neovintageourc
         3: keyword.operator.assignment.neovintageourc
+
+    - match: ^:?(set) ([a-z]+)(=)?(.+)?$
+      captures:
+        1: keyword.control.neovintageourc
+        2: entity.name.neovintageourc
 
     - match: \<[A-Za-z0-9-]+\>
       scope: storage.type.neovintageourc

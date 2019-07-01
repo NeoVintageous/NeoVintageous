@@ -29,6 +29,8 @@ from sublime import Region
 # Use aliases to indicate that they are not public testing APIs.
 from NeoVintageous.nv import macros as _macros
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
+from NeoVintageous.nv.options import get_option as _get_option
+from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.state import State as _State
 from NeoVintageous.nv.vi.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction as _set_visual_block_direction
@@ -149,11 +151,31 @@ class ViewTestCase(unittest.TestCase):
     def get_setting(self, name):
         return self.settings().get('vintageous_%s' % name)
 
+    def has_setting(self, name):
+        return self.settings().has('vintageous_%s' % name)
+
     def reset_setting(self, name):
         return self.settings().erase('vintageous_%s' % name)
 
+    def assertSetting(self, name, expected):
+        self.assertEqual(self.settings().get(name), expected)
+
+    def assertNotSetting(self, name):
+        self.assertFalse(self.settings().has(name))
+        # NOTE Some settings prefixes are deprecated.
+        self.assertFalse(self.settings().has('_neovintageous_%s' % name))
+        self.assertFalse(self.settings().has('_vi_%s' % name))
+        self.assertFalse(self.settings().has('_vintageous_%s' % name))
+        self.assertFalse(self.settings().has('neovintageous_%s' % name))
+        self.assertFalse(self.settings().has('vi_%s' % name))
+        self.assertFalse(self.settings().has('vintageous_%s' % name))
+
     def set_option(self, name, value):
+        _set_option(self.view, name, value)
         return self.settings().set('vintageous_%s' % name, value)
+
+    def assertOption(self, name, expected):
+        self.assertEqual(_get_option(self.view, name), expected)
 
     def syntax(self, syntax_file):
         self.view.assign_syntax(syntax_file)
@@ -1164,11 +1186,29 @@ _SEQ2CMD = {
     '[(':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '('}},  # noqa: E241,E501
     '[P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True, 'adjust_indent': True}},  # noqa: E241,E501
     '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
+    '[oa':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'a'}},  # noqa: E241
+    '[oe':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'e'}},  # noqa: E241
+    '[oh':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'h'}},  # noqa: E241
+    '[oi':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'i'}},  # noqa: E241
+    '[ol':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'l'}},  # noqa: E241
+    '[om':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'm'}},  # noqa: E241
+    '[on':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'n'}},  # noqa: E241
+    '[ot':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 't'}},  # noqa: E241
+    '[ow':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'w'}},  # noqa: E241
     '[{':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '{'}},  # noqa: E241,E501
     '] ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_down'}},  # noqa: E241
     '])':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': ')'}},  # noqa: E241,E501
     ']P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_indent': True}},  # noqa: E241,E501
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
+    ']oa':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'a'}},  # noqa: E241
+    ']oe':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'e'}},  # noqa: E241
+    ']oh':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'h'}},  # noqa: E241
+    ']oi':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'i'}},  # noqa: E241
+    ']ol':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'l'}},  # noqa: E241
+    ']om':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'm'}},  # noqa: E241
+    ']on':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'n'}},  # noqa: E241
+    ']ot':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 't'}},  # noqa: E241
+    ']ow':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'w'}},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': '}'}},  # noqa: E241,E501
     '^':            {'command': '_vi_hat'},  # noqa: E241
     '_':            {'command': '_vi_underscore'},  # noqa: E241
@@ -1574,6 +1614,15 @@ _SEQ2CMD = {
     'yiw':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'yi{':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '{'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'yi}':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '}'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'yoa':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'a'}},  # noqa: E241
+    'yoe':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'e'}},  # noqa: E241
+    'yoh':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'h'}},  # noqa: E241
+    'yoi':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'i'}},  # noqa: E241
+    'yol':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'l'}},  # noqa: E241
+    'yom':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'm'}},  # noqa: E241
+    'yon':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'n'}},  # noqa: E241
+    'yot':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 't'}},  # noqa: E241
+    'yow':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'w'}},  # noqa: E241
     'yse"':         {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501
     'yse(':         {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '(',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501
     'yse)':         {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': ')',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501

@@ -21,8 +21,8 @@ import re
 
 from sublime import Region
 
+from NeoVintageous.nv.options import get_option_completions
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
-from NeoVintageous.nv.vi.settings import iter_settings
 from NeoVintageous.nv.vim import is_ex_mode
 
 
@@ -140,18 +140,18 @@ class _SettingCompletion():
             _SettingCompletion.is_stale = True
         elif _SettingCompletion.prefix is None:
             _SettingCompletion.prefix = ''
-            _SettingCompletion.items = iter_settings('')
+            _SettingCompletion.items = get_option_completions()
             _SettingCompletion.is_stale = False
 
         if not _SettingCompletion.items or _SettingCompletion.is_stale:
-            _SettingCompletion.items = iter_settings(_SettingCompletion.prefix)
+            _SettingCompletion.items = get_option_completions(_SettingCompletion.prefix)
             _SettingCompletion.is_stale = False
 
         try:
             _write_to_ex_cmdline(self.view, edit, cmd, next(_SettingCompletion.items))
         except StopIteration:
             try:
-                _SettingCompletion.items = iter_settings(_SettingCompletion.prefix)
+                _SettingCompletion.items = get_option_completions(_SettingCompletion.prefix)
                 _write_to_ex_cmdline(self.view, edit, cmd, next(_SettingCompletion.items))
             except StopIteration:
                 pass

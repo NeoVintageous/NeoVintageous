@@ -10,8 +10,29 @@ let mapleader=,
 "   ^^^^^^^^^ variable.language
 "            ^ keyword.operator.assignment
 
+:let mapleader=,
+" ^ keyword.control
+"    ^^^^^^^^^ variable.language
+"             ^ keyword.operator.assignment
+
 let mapleader=, " x
 "               ^^^ -comment
+
+set hlsearch
+" ^ keyword.control
+"   ^^^^^^^^ entity.name
+
+:set hlsearch
+" ^^ keyword.control
+"    ^^^^^^^^ entity.name
+
+set highlightedyank=false
+" ^ keyword
+"   ^^^^^^^^^^^^^^^ entity
+
+:set highlightedyank=false
+" ^ keyword
+"    ^^^^^^^^^^^^^^^ entity
 
 nnoremap <space> :
 " ^^^^^^ keyword.control
@@ -132,9 +153,12 @@ let highlightedyank=false
 " ^^^^^^^^^^^^^^^^^^^^^^^ invalid
 highlightedyank=false
 " ^^^^^^^^^^^^^^^^^^^ invalid
-set highlightedyank=false
-" ^^^^^^^^^^^^^^^^^^^^^^^ invalid
-:set highlightedyank=false
-" ^^^^^^^^^^^^^^^^^^^^^^^^ invalid
+
 foobar
 " ^^^^ invalid
+
+    let mapleader=,
+" ^^^^^^^^^^^^^^^^^ invalid
+
+    :let mapleader=,
+" ^^^^^^^^^^^^^^^^^ invalid

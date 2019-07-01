@@ -396,30 +396,18 @@ def _ex_route_registers(state):
 
 def _ex_route_set(state):
     command = TokenCommand('set')
-    params = {'option': None, 'value': None}
-
-    state.skip(' ')
-    state.ignore()
-
-    m = state.expect_match(r'(?P<option>.+?)(?:[:=](?P<value>.+?))?$')
-    params.update(m.groupdict())
-
-    command.params = params
+    command.params.update(
+        state.expect_match(r'\s*(?P<option>.+?)\s*(?:=\s*(?P<value>.*))?$').groupdict()
+    )
 
     return command
 
 
 def _ex_route_setlocal(state):
     command = TokenCommand('setlocal')
-    params = {'option': None, 'value': None}
-
-    state.skip(' ')
-    state.ignore()
-
-    m = state.expect_match(r'(?P<option>.+?)(?:[:=](?P<value>.+?))?$')
-    params.update(m.groupdict())
-
-    command.params = params
+    command.params.update(
+        state.expect_match(r'\s*(?P<option>.+?)\s*(?:=\s*(?P<value>.*))?$').groupdict()
+    )
 
     return command
 
@@ -743,7 +731,7 @@ ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
 ex_routes[r'reg(?:isters)?'] = _ex_route_registers
 ex_routes[r'r(?!eg)(?:ead)?'] = _ex_route_read
 ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
-ex_routes[r'se(?:t)?(?=$|\s)'] = _ex_route_set
+ex_routes[r'se(?:t)?'] = _ex_route_set
 ex_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = _ex_route_substitute
 ex_routes[r'sh(?:ell)?'] = _ex_route_shell
 ex_routes[r'sil(ent)?'] = _ex_route_silent

@@ -47,6 +47,9 @@ from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
+from NeoVintageous.nv.options import toggle_option
+from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import reset_setting
@@ -75,8 +78,6 @@ from NeoVintageous.nv.vi.settings import set_ex_global_last_pattern
 from NeoVintageous.nv.vi.settings import set_ex_shell_last_command
 from NeoVintageous.nv.vi.settings import set_ex_substitute_last_pattern
 from NeoVintageous.nv.vi.settings import set_ex_substitute_last_replacement
-from NeoVintageous.nv.vi.settings import set_global
-from NeoVintageous.nv.vi.settings import set_local
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
@@ -793,23 +794,32 @@ def ex_registers(window, view, **kwargs):
 
 
 def ex_set(view, option, value, **kwargs):
-    if option.endswith('?'):
-        return status_message('not implemented')
-
     try:
-        set_global(view, option, value)
-    except (KeyError, ValueError):
+        if option.endswith('?'):
+            name = option[:-1]
+            value = get_option(view, name)
+
+            if value is True:
+                msg = name
+            elif value is False:
+                msg = 'no' + name
+            else:
+                msg = '%s=%s' % (name, value)
+
+            status_message('%s', msg)
+        elif option.endswith('!'):
+            toggle_option(view, option[:-1])
+        else:
+            set_option(view, option, value)
+
+    except KeyError:
         status_message('E518: Unknown option: ' + option)
+    except ValueError as e:
+        status_message(str(e))
 
 
 def ex_setlocal(view, option, value, **kwargs):
-    if option.endswith('?'):
-        return status_message('not implemented')
-
-    try:
-        set_local(view, option, value)
-    except (KeyError, ValueError):
-        status_message('E518: Unknown option: ' + option)
+    ex_set(view, option, value, **kwargs)
 
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands

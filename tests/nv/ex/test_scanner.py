@@ -480,9 +480,9 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['cd'], cmd('cd'))
         self.assertRoute(['close!', 'clo!'], cmd('close', forced=True))
         self.assertRoute(['close', 'clo'], cmd('close'))
-        self.assertRoute(['copy', 'co'], cmd('copy', addressable=True))
         self.assertRoute(['copy .', 'co .'], cmd('copy', params={'address': '.'}, addressable=True))
         self.assertRoute(['copy .+3', 'co .+3'], cmd('copy', params={'address': '.+3'}, addressable=True))
+        self.assertRoute(['copy', 'co'], cmd('copy', addressable=True))
         self.assertRoute(['cquit', 'cq'], cmd('cquit'))
         self.assertRoute(['delete x', 'd x'], cmd('delete', params={'count': None, 'register': 'x'}, addressable=True, cooperates_with_global=True))  # noqa: E501
         self.assertRoute(['delete', 'd'], cmd('delete', params={'count': None, 'register': '"'}, addressable=True, cooperates_with_global=True))  # noqa: E501
@@ -508,8 +508,8 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['history search', 'his search'], cmd('history', params={'name': 'search'}))
         self.assertRoute(['history', 'his'], cmd('history'))
         self.assertRoute(['let n=v'], cmd('let', params={'name': 'n', 'value': 'v'}))
-        self.assertRoute(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
         self.assertRoute(['move .', 'm .'], cmd('move', params={'address': '.'}, addressable=True))
+        self.assertRoute(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
         self.assertRoute(['move', 'm'], cmd('move', addressable=True))
         self.assertRoute(['new'], cmd('new'))
         self.assertRoute(['nnoremap abc xyz', 'nn abc xyz'], cmd('nnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
@@ -539,7 +539,23 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['read!print', 'r!print'], cmd('read', params={'cmd': 'print'}))
         self.assertRoute(['read!yank', 'r!yank'], cmd('read', params={'cmd': 'yank'}))
         self.assertRoute(['registers', 'reg'], cmd('registers'))
+        self.assertRoute(['set noopt', 'se noopt'], cmd('set', params={'option': 'noopt', 'value': None}))
+        self.assertRoute(['set opt   =   val', 'se opt    =   val'], cmd('set', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
+        self.assertRoute(['set opt   =val', 'se opt     =val'], cmd('set', params={'option': 'opt', 'value': 'val'}))
+        self.assertRoute(['set opt =val', 'se opt =val'], cmd('set', params={'option': 'opt', 'value': 'val'}))
+        self.assertRoute(['set opt!', 'se opt!'], cmd('set', params={'option': 'opt!', 'value': None}))
+        self.assertRoute(['set opt', 'se opt'], cmd('set', params={'option': 'opt', 'value': None}))
+        self.assertRoute(['set opt=', 'se opt='], cmd('set', params={'option': 'opt', 'value': ''}))
+        self.assertRoute(['set opt=3', 'se opt=3'], cmd('set', params={'option': 'opt', 'value': '3'}))
         self.assertRoute(['set opt=val', 'se opt=val'], cmd('set', params={'option': 'opt', 'value': 'val'}))
+        self.assertRoute(['set opt?', 'se opt?'], cmd('set', params={'option': 'opt?', 'value': None}))
+        self.assertRoute(['setlocal noopt', 'setl noopt'], cmd('setlocal', params={'option': 'noopt', 'value': None}))
+        self.assertRoute(['setlocal opt   =   val', 'setl opt    =   val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
+        self.assertRoute(['setlocal opt   =val', 'setl opt     =val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
+        self.assertRoute(['setlocal opt =val', 'setl opt =val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
+        self.assertRoute(['setlocal opt', 'setl opt'], cmd('setlocal', params={'option': 'opt', 'value': None}))
+        self.assertRoute(['setlocal opt=', 'setl opt='], cmd('setlocal', params={'option': 'opt', 'value': ''}))
+        self.assertRoute(['setlocal opt=3', 'setl opt=3'], cmd('setlocal', params={'option': 'opt', 'value': '3'}))
         self.assertRoute(['setlocal opt=val', 'setl opt=val'], cmd('setlocal', params={'option': 'opt', 'value': 'val'}))  # noqa: E501
         self.assertRoute(['shell', 'sh'], cmd('shell'))
         self.assertRoute(['silent ls', 'sil ls'], cmd('silent', params={'command': 'ls'}))  # noqa: E501
