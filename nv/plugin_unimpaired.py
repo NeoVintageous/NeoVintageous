@@ -234,6 +234,7 @@ class _BaseToggleDef(ViOperatorDef):
 
 
 @register(seq='co', modes=(NORMAL,))
+@register(seq='yo', modes=(NORMAL,))
 class _UnimpairedToggle(_BaseToggleDef):
     def translate(self, state):
         return {
@@ -269,6 +270,7 @@ class _UnimpairedToggleOff(_BaseToggleDef):
         }
 
 
+# Go to the previous [count] SCM conflict marker or diff/patch hunk.
 def _context_previous(view, count):
     window = view.window()
     if window:
@@ -278,6 +280,7 @@ def _context_previous(view, count):
         })
 
 
+# Go to the next [count] SCM conflict marker or diff/patch hunk.
 def _context_next(view, count):
     window = view.window()
     if window:
@@ -287,16 +290,19 @@ def _context_next(view, count):
         })
 
 
+# Exchange the current line with [count] lines below it.
 def _move_down(view, count):
     for i in range(count):
         view.run_command('swap_line_down')
 
 
+# Exchange the current line with [count] lines above it.
 def _move_up(view, count):
     for i in range(count):
         view.run_command('swap_line_up')
 
 
+# Add [count] blank lines below the cursor.
 def _blank_down(view, edit, count):
     end_point = view.size()
     new_sels = []
@@ -318,6 +324,7 @@ def _blank_down(view, edit, count):
         set_selection(view, new_sels)
 
 
+# Add [count] blank lines above the cursor.
 def _blank_up(view, edit, count):
     new_sels = []
     for sel in view.sel():
@@ -458,8 +465,8 @@ _OPTION_ALIASES = {
     'a': 'menu',  # non standard i.e. not in the original Unimpaired plugin
     'b': 'background',
     'c': 'cursorline',
-    'e': 'statusbar',  # non standard i.e. not in the original Unimpaired plugin
     'd': 'diff',
+    'e': 'statusbar',  # non standard i.e. not in the original Unimpaired plugin
     'h': 'hlsearch',
     'i': 'ignorecase',
     'l': 'list',
@@ -496,26 +503,20 @@ def _toggle_option(view, key, value=None):
 class _nv_unimpaired_command(TextCommand):
     def run(self, edit, action, mode=None, count=1, **kwargs):
         if action == 'move_down':
-            # Exchange the current line with [count] lines below it
             _move_down(self.view, count)
         elif action == 'move_up':
-            # Exchange the current line with [count] lines above it
             _move_up(self.view, count)
         elif action == 'blank_down':
-            # Add [count] blank lines below the cursor
             _blank_down(self.view, edit, count)
         elif action == 'blank_up':
-            # Add [count] blank lines above the cursor
             _blank_up(self.view, edit, count)
         elif action in ('bnext', 'bprevious', 'bfirst', 'blast'):
             window_buffer_control(self.view.window(), action[1:], count=count)
         elif action in ('tabnext', 'tabprevious', 'tabfirst', 'tablast'):
             window_tab_control(self.view.window(), action[3:], count=count)
         elif action == 'context_next':
-            # Go to the next [count] SCM conflict marker or diff/patch hunk
             _context_next(self.view, count)
         elif action == 'context_previous':
-            # Go to the previous [count] SCM conflict marker or diff/patch hunk
             _context_previous(self.view, count)
         elif action == 'toggle_option':
             _toggle_option(self.view, kwargs.get('value'))
