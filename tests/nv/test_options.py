@@ -127,7 +127,6 @@ class TestBooleanIsVisibleOption(unittest.ViewTestCase):
         self.view.window().set_status_bar_visible(self.is_status_bar_visible)
         super().tearDown()
 
-    # @unittest.skipIf(sys.platform.startswith('darwin'), 'toggling window state elements on OSX breaks CI')
     def test_set(self):
         toggles = [
             'minimap',
