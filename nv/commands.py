@@ -4575,7 +4575,7 @@ class _vi_repeat_buffer_search(ViMotionCommand):
         search_command = state.last_buffer_search_command
         command = self.commands[search_command][int(reverse)]
 
-        _log.debug('repeat buffer search %s reverse=%s -> %s (pattern=%s)', search_command, reverse, command, search_string)
+        _log.debug('repeat search %s reverse=%s -> %s (pattern=%s)', search_command, reverse, command, search_string)
 
         self.view.run_command(command, {
             'mode': mode,
