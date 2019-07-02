@@ -29,7 +29,6 @@ from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.vi import cmd_defs
-from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
@@ -307,7 +306,6 @@ class State(object):
         self.settings.vi['action_count'] = value
 
     @property
-    @settings.volatile
     def repeat_data(self):
         return self.settings.vi['repeat_data'] or None
 

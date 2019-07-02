@@ -91,19 +91,6 @@ def set_ex_global_last_pattern(pattern):
     return _set_session_value('ex_global_last_pattern', pattern)
 
 
-def volatile(f):
-    _VintageSettings._volatile_settings.append(f.__name__)
-
-    return f
-
-
-def destroy(view):
-    try:
-        del _VintageSettings._volatile[view.id()]
-    except KeyError:
-        pass
-
-
 def get_cmdline_cwd():
     if 'cmdline_cwd' in _storage:
         return _storage['cmdline_cwd']
@@ -168,8 +155,8 @@ class _SublimeSettings():
 
 class _VintageSettings():
 
-    _volatile_settings = []  # type: list
-
+    # XXX Temporary hardcoded list until settings are completeley refactored.
+    _volatile_settings = ['repeat_data']  # type: list
     _volatile = defaultdict(dict)  # type: dict
 
     def __init__(self, view):
@@ -221,6 +208,13 @@ class _VintageSettings():
             _VintageSettings._volatile[self.view.id()][key] = value
         except KeyError:
             raise KeyError('error while setting key "%s" to value "%s"' % (key, value))
+
+
+def destroy(view):
+    try:
+        del _VintageSettings._volatile[view.id()]
+    except KeyError:
+        pass
 
 
 class SettingsManager():
