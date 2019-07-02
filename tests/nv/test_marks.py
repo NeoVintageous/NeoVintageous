@@ -17,8 +17,9 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.state import State
-from NeoVintageous.nv.vi import marks
+from NeoVintageous.nv.marks import _marks
+from NeoVintageous.nv.marks import add_mark
+from NeoVintageous.nv.marks import get_mark_as_encoded_address
 
 
 class View():
@@ -42,62 +43,61 @@ class MarksTests(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        marks._MARKS = {}
+        _marks.clear()
         self.view.sel().clear()
         self.view.sel().add(self.Region(0, 0))
-        self.marks = State(self.view).marks
 
     def test_can_set_mark(self):
-        self.marks.add('a', self.view)
+        add_mark(self.view, 'a')
         expected_win, expected_view, expected_region = (self.view.window(), self.view, (0, 0))
-        actual_win, actual_view, actual_region = marks._MARKS['a']
+        actual_win, actual_view, actual_region = _marks['a']
         self.assertEqual((actual_win.id(), actual_view.view_id, actual_region),
                          (expected_win.id(), expected_view.view_id, expected_region))
 
     def test_can_retrieve_mark_in_the_current_buffer_as_tuple(self):
-        self.marks.add('a', self.view)
+        add_mark(self.view, 'a')
         # The caret's at the beginning of the buffer.
-        self.assertEqual(self.marks.get_as_encoded_address('a'), self.Region(0, 0))
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), self.Region(0, 0))
 
     def test_can_retrieve_mark_in_the_current_buffer_as_tuple2(self):
         self.write(''.join(('foo bar\n') * 10))
         self.view.sel().clear()
         self.view.sel().add(self.Region(30, 30))
-        self.marks.add('a', self.view)
-        self.assertEqual(self.marks.get_as_encoded_address('a'), self.Region(24, 24))
+        add_mark(self.view, 'a')
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), self.Region(24, 24))
 
     def test_can_retrieve_mark_in_a_different_buffer_as_encoded_mark(self):
         view = View(id_=self.view.view_id + 1, fname=r'C:\foo.txt')
 
-        marks._MARKS['a'] = (Window(), view, (0, 0))
+        _marks['a'] = (Window(), view, (0, 0))
         expected = "{0}:{1}".format(r'C:\foo.txt', "0:0")
-        self.assertEqual(self.marks.get_as_encoded_address('a'), expected)
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), expected)
 
     def test_can_retrieve_mark_in_an_untitled_buffer_as_encoded_mark(self):
         view = View(id_=self.view.view_id + 1, fname='', buffer_id=999)
 
-        marks._MARKS['a'] = (Window(), view, (0, 0))
+        _marks['a'] = (Window(), view, (0, 0))
         expected = "<untitled {0}>:{1}".format(999, "0:0")
-        self.assertEqual(self.marks.get_as_encoded_address('a'), expected)
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), expected)
 
-    @unittest.mock.patch('NeoVintageous.nv.vi.marks.jumplist_back')
+    @unittest.mock.patch('NeoVintageous.nv.marks.jumplist_back')
     def test_can_retrieve_quote_mark(self, mock_jumplist_back):
         # Single quote mark should call jumplist_back for its region ignoring
         # any mark set for "'".
-        marks._MARKS['\''] = (Window(), self.view, (0, 0))
+        _marks['\''] = (Window(), self.view, (0, 0))
         mock_jumplist_back.return_value = (self.view, [self.Region(30, 30)])
         self.write(''.join(('foo bar\n') * 10))
 
-        location = self.marks.get_as_encoded_address("'")
+        location = get_mark_as_encoded_address(self.view, "'")
         self.assertEqual(location, self.Region(24, 24))
 
-    @unittest.mock.patch('NeoVintageous.nv.vi.marks.jumplist_back')
+    @unittest.mock.patch('NeoVintageous.nv.marks.jumplist_back')
     def test_can_retrieve_backtick_mark(self, mock_jumplist_back):
         # Backtick mark should call jumplist_back for its region ignoring any
         # mark set for "`". Here we set exact to true, emulating ``.
-        marks._MARKS['`'] = (Window(), self.view, (0, 0))
+        _marks['`'] = (Window(), self.view, (0, 0))
         mock_jumplist_back.return_value = (self.view, [self.Region(30, 30)])
         self.write(''.join(('foo bar\n') * 10))
 
-        location = self.marks.get_as_encoded_address("`", exact=True)
+        location = get_mark_as_encoded_address(self.view, "`", exact=True)
         self.assertEqual(location, self.Region(30, 30))

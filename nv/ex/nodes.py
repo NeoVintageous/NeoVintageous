@@ -21,11 +21,12 @@ from NeoVintageous.nv.ex.tokens import TokenDigits
 from NeoVintageous.nv.ex.tokens import TokenDollar
 from NeoVintageous.nv.ex.tokens import TokenDot
 from NeoVintageous.nv.ex.tokens import TokenMark
-from NeoVintageous.nv.ex.tokens import TokenOffset
 from NeoVintageous.nv.ex.tokens import TokenOfSearch
+from NeoVintageous.nv.ex.tokens import TokenOffset
 from NeoVintageous.nv.ex.tokens import TokenPercent
 from NeoVintageous.nv.ex.tokens import TokenSearchBackward
 from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.marks import get_mark_as_encoded_address
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
 
@@ -87,13 +88,7 @@ def _resolve_line_number(view, token, current):
             else:
                 return row_at(view, sel.b)
         elif token.content in tuple('abcdefghijklmnopqrstuvwxyz'):
-            # The state class is intentionally imported here instead of at the
-            # begining of the file to avoid circular imports errors. The State
-            # needs to refactored and replaced with some less god-like
-            from NeoVintageous.nv.state import State
-            address = State(view).marks.get_as_encoded_address(token.content)
-
-            return view.rowcol(address.b)[0]
+            return view.rowcol(get_mark_as_encoded_address(view, token.content).b)[0]
 
     raise NotImplementedError()
 

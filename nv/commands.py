@@ -59,6 +59,8 @@ from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
+from NeoVintageous.nv.marks import add_mark
+from NeoVintageous.nv.marks import get_mark_as_encoded_address
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
@@ -1789,7 +1791,7 @@ class _vi_big_i(ViTextCommandBase):
 class _vi_m(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, character=None):
-        self.state.marks.add(character, self.view)
+        add_mark(self.view, character)
         enter_normal_mode(self.view, mode)
 
 
@@ -1817,7 +1819,7 @@ class _vi_quote(ViTextCommandBase):
 
             return s
 
-        address = self.state.marks.get_as_encoded_address(character)
+        address = get_mark_as_encoded_address(self.view, character)
         if address is None:
             return
 
@@ -1854,7 +1856,7 @@ class _vi_backtick(ViTextCommandBase):
 
             return s
 
-        address = self.state.marks.get_as_encoded_address(character, exact=True)
+        address = get_mark_as_encoded_address(self.view, character, exact=True)
         if address is None:
             return
 
