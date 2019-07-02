@@ -31,12 +31,15 @@ from NeoVintageous.nv import macros as _macros
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
+from NeoVintageous.nv.registers import _data as _registers_data
+from NeoVintageous.nv.registers import _linewise as _registers_linewise
+from NeoVintageous.nv.registers import _reset_data as _registers_reset_data
+from NeoVintageous.nv.registers import _set_numbered_register
+from NeoVintageous.nv.registers import registers_get as _registers_get
 from NeoVintageous.nv.state import State as _State
-from NeoVintageous.nv.vi.registers import registers_get as _registers_get
 from NeoVintageous.nv.vi.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction as _set_visual_block_direction
 
-from NeoVintageous.nv.vi import registers
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
@@ -286,16 +289,16 @@ class ViewTestCase(unittest.TestCase):
             value = [value]
 
         if name.isdigit() and name != '0':
-            registers._set_numbered_register(name, value)
+            _set_numbered_register(name, value)
         else:
-            registers._data[name] = value
-            registers._linewise[name] = linewise
+            _registers_data[name] = value
+            _registers_linewise[name] = linewise
 
     def registerLinewise(self, name, value=None):
         self.register(name, value, linewise=True)
 
     def resetRegisters(self, values=None):
-        registers._reset_data()
+        _registers_reset_data()
 
     def resetMacros(self):
         _macros._state.clear()
@@ -446,7 +449,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None:
             # FIXME digit registers linewise state is not implemented properly yet
             if not name.isdigit() or name == '0':
-                self.assertEqual(registers._linewise[name], linewise, msg or 'linewise register = "' + name)
+                self.assertEqual(_registers_linewise[name], linewise, msg or 'linewise register = "' + name)
 
     def assertRegister(self, name, expected=None, linewise=False, msg=None):
         """Test that value for the register name and expected are equal.

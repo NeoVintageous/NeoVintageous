@@ -23,36 +23,37 @@ from sublime import set_clipboard
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.vi import registers
-from NeoVintageous.nv.vi.registers import _ALL
-from NeoVintageous.nv.vi.registers import _ALTERNATE_FILE
-from NeoVintageous.nv.vi.registers import _BLACK_HOLE
-from NeoVintageous.nv.vi.registers import _CLIPBOARD
-from NeoVintageous.nv.vi.registers import _CLIPBOARD_PLUS
-from NeoVintageous.nv.vi.registers import _CLIPBOARD_STAR
-from NeoVintageous.nv.vi.registers import _CLIPBOARD_TILDA
-from NeoVintageous.nv.vi.registers import _CURRENT_FILE_NAME
-from NeoVintageous.nv.vi.registers import _EXPRESSION
-from NeoVintageous.nv.vi.registers import _LAST_EXECUTED_COMMAND
-from NeoVintageous.nv.vi.registers import _LAST_INSERTED_TEXT
-from NeoVintageous.nv.vi.registers import _LAST_SEARCH_PATTERN
-from NeoVintageous.nv.vi.registers import _NAMED
-from NeoVintageous.nv.vi.registers import _NUMBERED
-from NeoVintageous.nv.vi.registers import _READ_ONLY
-from NeoVintageous.nv.vi.registers import _SELECTION_AND_DROP
-from NeoVintageous.nv.vi.registers import _SMALL_DELETE
-from NeoVintageous.nv.vi.registers import _SPECIAL
-from NeoVintageous.nv.vi.registers import _UNNAMED
-from NeoVintageous.nv.vi.registers import _get_selected_text
-from NeoVintageous.nv.vi.registers import _is_register_linewise
-from NeoVintageous.nv.vi.registers import _set_unnamed
-from NeoVintageous.nv.vi.registers import registers_get
-from NeoVintageous.nv.vi.registers import registers_get_all
-from NeoVintageous.nv.vi.registers import registers_op_change
-from NeoVintageous.nv.vi.registers import registers_op_delete
-from NeoVintageous.nv.vi.registers import registers_op_yank
-from NeoVintageous.nv.vi.registers import registers_set
-from NeoVintageous.nv.vi.registers import set_expression
+from NeoVintageous.nv.registers import _ALL
+from NeoVintageous.nv.registers import _ALTERNATE_FILE
+from NeoVintageous.nv.registers import _BLACK_HOLE
+from NeoVintageous.nv.registers import _CLIPBOARD
+from NeoVintageous.nv.registers import _CLIPBOARD_PLUS
+from NeoVintageous.nv.registers import _CLIPBOARD_STAR
+from NeoVintageous.nv.registers import _CLIPBOARD_TILDA
+from NeoVintageous.nv.registers import _CURRENT_FILE_NAME
+from NeoVintageous.nv.registers import _EXPRESSION
+from NeoVintageous.nv.registers import _LAST_EXECUTED_COMMAND
+from NeoVintageous.nv.registers import _LAST_INSERTED_TEXT
+from NeoVintageous.nv.registers import _LAST_SEARCH_PATTERN
+from NeoVintageous.nv.registers import _NAMED
+from NeoVintageous.nv.registers import _NUMBERED
+from NeoVintageous.nv.registers import _READ_ONLY
+from NeoVintageous.nv.registers import _SELECTION_AND_DROP
+from NeoVintageous.nv.registers import _SMALL_DELETE
+from NeoVintageous.nv.registers import _SPECIAL
+from NeoVintageous.nv.registers import _UNNAMED
+from NeoVintageous.nv.registers import _get_selected_text
+from NeoVintageous.nv.registers import _is_register_linewise
+from NeoVintageous.nv.registers import _set_unnamed
+from NeoVintageous.nv.registers import registers_get
+from NeoVintageous.nv.registers import registers_get_all
+from NeoVintageous.nv.registers import registers_op_change
+from NeoVintageous.nv.registers import registers_op_delete
+from NeoVintageous.nv.registers import registers_op_yank
+from NeoVintageous.nv.registers import registers_set
+from NeoVintageous.nv.registers import set_expression
+from NeoVintageous.nv.registers import _reset_data
+from NeoVintageous.nv.registers import _data
 
 
 class TestConstants(unittest.TestCase):
@@ -100,14 +101,14 @@ class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
         self.reset_setting('use_sys_clipboard')
         self.set_setting('use_sys_clipboard', False)
         set_clipboard('')
-        registers._reset_data()
+        _reset_data()
 
     def tearDown(self):
         super().tearDown()
-        registers._reset_data()
+        _reset_data()
 
     def assertEmptyRegisters(self):
-        self.assertEqual(registers._data, {'0': None, '1-9': deque([None] * 9, maxlen=9)})
+        self.assertEqual(_data, {'0': None, '1-9': deque([None] * 9, maxlen=9)})
 
 
 class TestRegister(RegistersTestCase):
@@ -495,7 +496,7 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '7'), ['x\n7'])
         self.assertEqual(registers_get(self.view, '8'), ['x\n8'])
         self.assertEqual(registers_get(self.view, '9'), ['x\n9'])
-        self.assertEqual(len(registers._data['1-9']), 9)
+        self.assertEqual(len(_data['1-9']), 9)
 
 
 class Test_op_yank(RegistersTestCase):

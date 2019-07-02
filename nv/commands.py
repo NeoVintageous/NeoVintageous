@@ -62,6 +62,10 @@ from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.marks import add_mark
 from NeoVintageous.nv.marks import get_mark_as_encoded_address
 from NeoVintageous.nv.polyfill import spell_select
+from NeoVintageous.nv.registers import registers_get_for_paste
+from NeoVintageous.nv.registers import registers_op_change
+from NeoVintageous.nv.registers import registers_op_delete
+from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import get_search_occurrences
@@ -134,10 +138,6 @@ from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
-from NeoVintageous.nv.vi.registers import registers_get_for_paste
-from NeoVintageous.nv.vi.registers import registers_op_change
-from NeoVintageous.nv.vi.registers import registers_op_delete
-from NeoVintageous.nv.vi.registers import registers_op_yank
 from NeoVintageous.nv.vi.search import BufferSearchBase
 from NeoVintageous.nv.vi.search import ExactWordBufferSearchBase
 from NeoVintageous.nv.vi.search import find_in_range
