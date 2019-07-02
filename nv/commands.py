@@ -3225,6 +3225,10 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         if not pattern:
             return
 
+        state = self.state
+        state.last_buffer_search_command = 'vi_slash'
+        state.last_buffer_search = pattern
+
         sel = self.view.sel()[0]
         flags = self.calculate_flags(pattern)
         start = get_insertion_point_at_b(sel) + 1
@@ -4570,6 +4574,8 @@ class _vi_repeat_buffer_search(ViMotionCommand):
         search_string = state.last_buffer_search
         search_command = state.last_buffer_search_command
         command = self.commands[search_command][int(reverse)]
+
+        _log.debug('repeat buffer search %s reverse=%s -> %s (pattern=%s)', search_command, reverse, command, search_string)
 
         self.view.run_command(command, {
             'mode': mode,

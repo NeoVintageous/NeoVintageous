@@ -57,6 +57,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#612](https://github.com/NeoVintageous/NeoVintageous/issues/612): Mapped searches are not repeatable by `n` or `N`
 * Fixed [#373](https://github.com/NeoVintageous/NeoVintageous/issues/373): `vii` does not select the whole indented line
 * Fixed [#606](https://github.com/NeoVintageous/NeoVintageous/issues/606): `]<Space>` and `[<Space>` cursor position on blank lines
 * Fixed [#605](https://github.com/NeoVintageous/NeoVintageous/issues/605): `]c` and `[c` are off-by-one for blank lines
