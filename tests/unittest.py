@@ -174,8 +174,8 @@ class ViewTestCase(unittest.TestCase):
         _set_option(self.view, name, value)
         return self.settings().set('vintageous_%s' % name, value)
 
-    def assertOption(self, name, expected):
-        self.assertEqual(_get_option(self.view, name), expected)
+    def assertOption(self, name, expected, msg=None):
+        self.assertEqual(_get_option(self.view, name), expected, msg=msg)
 
     def syntax(self, syntax_file):
         self.view.assign_syntax(syntax_file)
