@@ -19,8 +19,6 @@ from collections import defaultdict
 import os
 
 from sublime import active_window
-from sublime import load_settings
-from sublime import save_settings
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 
@@ -116,30 +114,6 @@ def set_visual_block_direction(view, direction):
     current_direction = get_visual_block_direction(view)
     if direction != current_direction:
         view.settings().set('_nv_visual_block_direction', direction)
-
-
-def _toggle_preference(name):
-    preferences = load_settings('Preferences.sublime-settings')
-    value = preferences.get(name)
-    preferences.set(name, not value)
-    save_settings('Preferences.sublime-settings')
-
-
-def toggle_ctrl_keys():
-    _toggle_preference('vintageous_use_ctrl_keys')
-
-
-def toggle_super_keys():
-    _toggle_preference('vintageous_use_super_keys')
-
-
-def toggle_side_bar(window):
-    window.run_command('toggle_side_bar')
-
-    if window.is_sidebar_visible():
-        window.run_command('focus_side_bar')
-    else:
-        window.focus_group(window.active_group())
 
 
 class _SublimeSettings():

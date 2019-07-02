@@ -70,6 +70,9 @@ from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import toggle_ctrl_keys
+from NeoVintageous.nv.settings import toggle_side_bar
+from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.ui import ui_bell
@@ -145,9 +148,6 @@ from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
-from NeoVintageous.nv.vi.settings import toggle_ctrl_keys
-from NeoVintageous.nv.vi.settings import toggle_side_bar
-from NeoVintageous.nv.vi.settings import toggle_super_keys
 from NeoVintageous.nv.vi.text_objects import big_word_end_reverse
 from NeoVintageous.nv.vi.text_objects import big_word_reverse
 from NeoVintageous.nv.vi.text_objects import find_containing_tag
