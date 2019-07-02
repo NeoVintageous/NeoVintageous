@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `:spellundo {word}` add `{word}` as a good word to spell checking
+* Added [#599](https://github.com/NeoVintageous/NeoVintageous/issues/599): `:spellgood {word}` remove `{word}` as a good word from spell checking
 * Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `yoi`, `[oi`, and `]oi`, toggle, switch on, and switch off `'ignorecase'` (Unimpaired)
 * Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `yoh`, `[oh`, and `]oh`, toggle, switch on, and switch off `'hlsearch'` (Unimpaired)
 * Added [#585](https://github.com/NeoVintageous/NeoVintageous/issues/585): `:set {option}` support in neovintageousrc file

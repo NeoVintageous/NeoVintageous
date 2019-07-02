@@ -27,13 +27,13 @@ import sys
 from sublime import DIALOG_CANCEL
 from sublime import DIALOG_YES
 from sublime import ENCODED_POSITION
-from sublime import find_resources
 from sublime import FORCE_GROUP
 from sublime import LITERAL
-from sublime import load_resource
 from sublime import MONOSPACE_FONT
-from sublime import platform
 from sublime import Region
+from sublime import find_resources
+from sublime import load_resource
+from sublime import platform
 from sublime import set_timeout
 from sublime import yes_no_cancel_dialog
 
@@ -50,6 +50,8 @@ from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
+from NeoVintageous.nv.polyfill import spell_add
+from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import reset_setting
@@ -940,6 +942,14 @@ def ex_sort(view, options='', **kwargs):
 
 def ex_split(window, file=None, **kwargs):
     window_control(window, 's', file=file)
+
+
+def ex_spellgood(view, word, **kwargs):
+    spell_add(view, word)
+
+
+def ex_spellundo(word, **kwargs):
+    spell_undo(word)
 
 
 def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=None, count=1, **kwargs):

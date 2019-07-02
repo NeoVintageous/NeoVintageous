@@ -37,6 +37,7 @@ import re
 from sublime import Region
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.vi.settings import get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction
@@ -1114,7 +1115,7 @@ def calculate_xpos(view, start, xpos):
 
 def spell_file_add_word(view, mode, count):
     for s in view.sel():
-        view.run_command('add_word', {'word': extract_word(view, mode, s)})
+        spell_add(view, extract_word(view, mode, s))
 
 
 def spell_file_remove_word(view, mode, count):

@@ -20,11 +20,20 @@ from collections import OrderedDict
 from NeoVintageous.nv.ex.tokens import TokenCommand
 
 
-def _literal_route(state, name, forcable=False, **kwargs):
+def _create_route(state, name, forcable=False, **kwargs):
     command = TokenCommand(name, **kwargs)
 
     if forcable and state.match('!'):
         command.forced = True
+
+    return command
+
+
+def _create_word_route(state, name, word, forcable=False, **kwargs):
+    command = _create_route(state, name, forcable, **kwargs)
+    command.params.update(
+        state.expect_match('\\s*(?P<' + word + '>.+)\\s*$').groupdict()
+    )
 
     return command
 
@@ -39,13 +48,6 @@ def _create_map_route(state, name):
     return command
 
 
-def _create_unmap_route(state, name):
-    command = TokenCommand(name)
-    command.params.update(state.expect_match(r'\s*(?P<lhs>.+?)\s*$').groupdict())
-
-    return command
-
-
 def _resolve(state, command, pattern):
     m = state.match(pattern)
     if m:
@@ -55,31 +57,31 @@ def _resolve(state, command, pattern):
 
 
 def _ex_route_bfirst(state):
-    return _literal_route(state, 'bfirst')
+    return _create_route(state, 'bfirst')
 
 
 def _ex_route_blast(state):
-    return _literal_route(state, 'blast')
+    return _create_route(state, 'blast')
 
 
 def _ex_route_bnext(state):
-    return _literal_route(state, 'bnext')
+    return _create_route(state, 'bnext')
 
 
 def _ex_route_bprevious(state):
-    return _literal_route(state, 'bprevious')
+    return _create_route(state, 'bprevious')
 
 
 def _ex_route_browse(state):
-    return _literal_route(state, 'browse')
+    return _create_route(state, 'browse')
 
 
 def _ex_route_buffers(state):
-    return _literal_route(state, 'buffers')
+    return _create_route(state, 'buffers')
 
 
 def _ex_route_cd(state):
-    command = _literal_route(state, 'cd', forcable=True)
+    command = _create_route(state, 'cd', forcable=True)
 
     state.skip(' ')
     state.ignore()
@@ -95,11 +97,11 @@ def _ex_route_cd(state):
 
 
 def _ex_route_close(state):
-    return _literal_route(state, 'close', forcable=True)
+    return _create_route(state, 'close', forcable=True)
 
 
 def _ex_route_copy(state):
-    command = _literal_route(state, 'copy', addressable=True)
+    command = _create_route(state, 'copy', addressable=True)
 
     state.skip(' ')
     state.ignore()
@@ -112,7 +114,7 @@ def _ex_route_copy(state):
 
 
 def _ex_route_cquit(state):
-    return _literal_route(state, 'cquit')
+    return _create_route(state, 'cquit')
 
 
 def _ex_route_delete(state):
@@ -201,15 +203,15 @@ def _ex_route_edit(state):
 
 
 def _ex_route_exit(state):
-    return _literal_route(state, 'exit')
+    return _create_route(state, 'exit')
 
 
 def _ex_route_file(state):
-    return _literal_route(state, 'file')
+    return _create_route(state, 'file')
 
 
 def _ex_route_global(state):
-    command = _literal_route(state, 'global', forcable=True, addressable=True)
+    command = _create_route(state, 'global', forcable=True, addressable=True)
 
     sep = state.consume()
     if sep in tuple('\\"|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):
@@ -256,7 +258,7 @@ def _ex_route_help(state):
 
 
 def _ex_route_history(state):
-    command = _literal_route(state, 'history')
+    command = _create_route(state, 'history')
     _resolve(state, command, r'\s*(?P<name>.+)')
 
     return command
@@ -278,7 +280,7 @@ def _ex_route_let(state):
 
 
 def _ex_route_move(state):
-    command = _literal_route(state, 'move', addressable=True)
+    command = _create_route(state, 'move', addressable=True)
 
     state.skip(' ')
     state.ignore()
@@ -291,7 +293,7 @@ def _ex_route_move(state):
 
 
 def _ex_route_new(state):
-    return _literal_route(state, 'new')
+    return _create_route(state, 'new')
 
 
 def _ex_route_nnoremap(state):
@@ -299,7 +301,7 @@ def _ex_route_nnoremap(state):
 
 
 def _ex_route_nohlsearch(state):
-    return _literal_route(state, 'nohlsearch')
+    return _create_route(state, 'nohlsearch')
 
 
 def _ex_route_noremap(state):
@@ -307,11 +309,11 @@ def _ex_route_noremap(state):
 
 
 def _ex_route_nunmap(state):
-    return _create_unmap_route(state, 'nunmap')
+    return _create_word_route(state, 'nunmap', 'lhs')
 
 
 def _ex_route_only(state):
-    return _literal_route(state, 'only', forcable=True)
+    return _create_route(state, 'only', forcable=True)
 
 
 def _ex_route_onoremap(state):
@@ -319,7 +321,7 @@ def _ex_route_onoremap(state):
 
 
 def _ex_route_ounmap(state):
-    return _create_unmap_route(state, 'ounmap')
+    return _create_word_route(state, 'ounmap', 'lhs')
 
 
 def _ex_route_print(state):
@@ -354,15 +356,15 @@ def _ex_route_print(state):
 
 
 def _ex_route_pwd(state):
-    return _literal_route(state, 'pwd')
+    return _create_route(state, 'pwd')
 
 
 def _ex_route_qall(state):
-    return _literal_route(state, 'qall', forcable=True)
+    return _create_route(state, 'qall', forcable=True)
 
 
 def _ex_route_quit(state):
-    return _literal_route(state, 'quit', forcable=True)
+    return _create_route(state, 'quit', forcable=True)
 
 
 def _ex_route_read(state):
@@ -391,7 +393,7 @@ def _ex_route_read(state):
 
 
 def _ex_route_registers(state):
-    return _literal_route(state, 'registers')
+    return _create_route(state, 'registers')
 
 
 def _ex_route_set(state):
@@ -413,14 +415,11 @@ def _ex_route_setlocal(state):
 
 
 def _ex_route_shell(state):
-    return _literal_route(state, 'shell')
+    return _create_route(state, 'shell')
 
 
 def _ex_route_silent(state):
-    command = _literal_route(state, 'silent', forcable=True)
-    _resolve(state, command, r'\s*(?P<command>.+)')
-
-    return command
+    return _create_word_route(state, 'silent', 'command', forcable=True)
 
 
 def _ex_route_shell_out(state):
@@ -441,18 +440,30 @@ def _ex_route_snoremap(state):
 
 
 def _ex_route_sunmap(state):
-    return _create_unmap_route(state, 'sunmap')
+    return _create_word_route(state, 'sunmap', 'lhs')
 
 
 def _ex_route_sort(state):
-    command = _literal_route(state, 'sort', addressable=True)
+    command = _create_route(state, 'sort', addressable=True)
     _resolve(state, command, r'\s*(?P<options>[iu]+)')
 
     return command
 
 
+def _ex_route_spellgood(state):
+    return _create_word_route(state, 'spellgood', 'word')
+
+
+def _ex_route_spellwrong(state):
+    return _create_word_route(state, 'spellwrong', 'word')
+
+
+def _ex_route_spellundo(state):
+    return _create_word_route(state, 'spellundo', 'word')
+
+
 def _ex_route_split(state):
-    command = _literal_route(state, 'split')
+    command = _create_route(state, 'split')
     _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
@@ -527,35 +538,35 @@ def _ex_route_substitute(state):
 
 
 def _ex_route_tabclose(state):
-    return _literal_route(state, 'tabclose', forcable=True)
+    return _create_route(state, 'tabclose', forcable=True)
 
 
 def _ex_route_tabfirst(state):
-    return _literal_route(state, 'tabfirst', forcable=True)
+    return _create_route(state, 'tabfirst', forcable=True)
 
 
 def _ex_route_tablast(state):
-    return _literal_route(state, 'tablast', forcable=True)
+    return _create_route(state, 'tablast', forcable=True)
 
 
 def _ex_route_tabnext(state):
-    return _literal_route(state, 'tabnext', forcable=True)
+    return _create_route(state, 'tabnext', forcable=True)
 
 
 def _ex_route_tabonly(state):
-    return _literal_route(state, 'tabonly', forcable=True)
+    return _create_route(state, 'tabonly', forcable=True)
 
 
 def _ex_route_tabprevious(state):
-    return _literal_route(state, 'tabprevious', forcable=True)
+    return _create_route(state, 'tabprevious', forcable=True)
 
 
 def _ex_route_unmap(state):
-    return _create_unmap_route(state, 'unmap')
+    return _create_word_route(state, 'unmap', 'lhs')
 
 
 def _ex_route_unvsplit(state):
-    return _literal_route(state, 'unvsplit')
+    return _create_route(state, 'unvsplit')
 
 
 def _ex_route_vnoremap(state):
@@ -563,26 +574,26 @@ def _ex_route_vnoremap(state):
 
 
 def _ex_route_vsplit(state):
-    command = _literal_route(state, 'vsplit')
+    command = _create_route(state, 'vsplit')
     _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
 
 
 def _ex_route_vunmap(state):
-    return _create_unmap_route(state, 'vunmap')
+    return _create_word_route(state, 'vunmap', 'lhs')
 
 
 def _ex_route_wall(state):
-    return _literal_route(state, 'wall', forcable=True)
+    return _create_route(state, 'wall', forcable=True)
 
 
 def _ex_route_wq(state):
-    return _literal_route(state, 'wq', forcable=True)
+    return _create_route(state, 'wq', forcable=True)
 
 
 def _ex_route_wqall(state):
-    return _literal_route(state, 'wqall', addressable=True)
+    return _create_route(state, 'wqall', addressable=True)
 
 
 def _ex_route_write(state):
@@ -737,6 +748,8 @@ ex_routes[r'sh(?:ell)?'] = _ex_route_shell
 ex_routes[r'sil(ent)?'] = _ex_route_silent
 ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
 ex_routes[r'sor(?:t)?'] = _ex_route_sort
+ex_routes[r'spellu(ndo)?'] = _ex_route_spellundo
+ex_routes[r'spe(llgood)?'] = _ex_route_spellgood
 ex_routes[r'sp(?:lit)?'] = _ex_route_split
 ex_routes[r'sunm(?:ap)?'] = _ex_route_sunmap
 ex_routes[r'tabc(?:lose)?'] = _ex_route_tabclose

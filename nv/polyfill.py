@@ -41,6 +41,10 @@ def spell_select(view):
     view.run_command('context_menu', {'event': {'button': 2, 'x': x, 'y': y}})
 
 
+def spell_add(view, word):
+    view.run_command('add_word', {'word': word})
+
+
 # There's no Sublime API to remove words from the added_words list.
 # See: https://github.com/SublimeTextIssues/Core/issues/2539.
 def spell_undo(word):

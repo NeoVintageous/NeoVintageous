@@ -286,6 +286,8 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_silent', ['silent', 'sil'])
         self.assertRoute('_ex_route_snoremap', ['snoremap', 'snor'])
         self.assertRoute('_ex_route_sort', ['sort', 'sor'])
+        self.assertRoute('_ex_route_spellgood', ['spellgood', 'spe'])
+        self.assertRoute('_ex_route_spellundo', ['spellundo', 'spellu'])
         self.assertRoute('_ex_route_split', ['split', 'sp'])
         self.assertRoute('_ex_route_substitute', ['substitute', 's'])
         self.assertRoute('_ex_route_sunmap', ['sunmap', 'sunm'])

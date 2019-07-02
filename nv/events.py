@@ -37,15 +37,16 @@ __all__ = ['NeoVintageousEvents']
 
 # TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline commands are being heavily reactored, and so these are hardcoded until a better way to auto generate the completions is figured out.  # noqa: E501
 _cmdline_completions = [
-    'bfirst', 'blast', 'bNext', 'bnext', 'bprevious', 'brewind', 'browse',
+    'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
     'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit', 'exit',
     'file', 'files', 'global', 'help', 'history', 'let', 'ls', 'move', 'new',
     'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only', 'onoremap',
     'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set',
-    'setlocal', 'shell', 'snoremap', 'sort', 'split', 'substitute', 'sunmap',
-    'tabclose', 'tabfirst', 'tablast', 'tabNext', 'tabnext', 'tabonly',
-    'tabprevious', 'tabrewind', 'unmap', 'unvsplit', 'vnoremap', 'vsplit',
-    'vunmap', 'wall', 'wq', 'wqall', 'write', 'xall', 'xit', 'yank'
+    'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
+    'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
+    'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
+    'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
+    'write', 'xall', 'xit', 'yank',
 ]
 
 
