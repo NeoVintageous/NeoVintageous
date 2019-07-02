@@ -32,6 +32,7 @@ from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.state import State as _State
+from NeoVintageous.nv.vi.registers import registers_get as _registers_get
 from NeoVintageous.nv.vi.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction as _set_visual_block_direction
 
@@ -441,7 +442,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
-        self.assertEqual(self.state.registers[name], expected, msg or 'register = "' + name)
+        self.assertEqual(_registers_get(self.view, name), expected, msg or 'register = "' + name)
         if expected is not None:
             # FIXME digit registers linewise state is not implemented properly yet
             if not name.isdigit() or name == '0':

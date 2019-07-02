@@ -35,53 +35,34 @@ from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
 from NeoVintageous.nv.vi.marks import Marks
-from NeoVintageous.nv.vi.registers import Registers
 from NeoVintageous.nv.vi.settings import SettingsManager
-from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
-from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
-from NeoVintageous.nv.vim import run_action
-from NeoVintageous.nv.vim import run_motion
-from NeoVintageous.nv.vim import run_window_command
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.vim import enter_insert_mode
+from NeoVintageous.nv.vim import is_visual_mode
+from NeoVintageous.nv.vim import mode_to_name
+from NeoVintageous.nv.vim import run_action
+from NeoVintageous.nv.vim import run_motion
+from NeoVintageous.nv.vim import run_window_command
 
 
 _log = logging.getLogger(__name__)
 
 
 class State(object):
-    """
-    Manage global Vim state. Accumulates command data, etc.
 
-    Usage:
-      Always instantiate passing it the view that commands are going to
-      target.
-
-      Example:
-
-          state = State(view)
-
-    Note: `State` internally uses view.settings() and window.settings() to persist data.
-    """
-
-    registers = Registers()
     marks = Marks()
 
     def __init__(self, view):
         self.view = view
-        # We use several types of settings:
-        #   - vi-specific (settings.vi),
-        #   - regular ST view settings (settings.view) and
-        #   - window settings (settings.window).
         self.settings = SettingsManager(self.view)
 
     @property

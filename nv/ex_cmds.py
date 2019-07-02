@@ -47,9 +47,9 @@ from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
-from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
+from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.search import clear_search_highlighting
@@ -67,6 +67,8 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.vi.registers import registers_get_all
+from NeoVintageous.nv.vi.registers import registers_set
 from NeoVintageous.nv.vi.search import view_find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
@@ -259,8 +261,7 @@ def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
             if not text.endswith('\n'):
                 text = text + '\n'
 
-            state = State(view)
-            state.registers[register] = [text]
+            registers_set(view, register, [text])
 
     # Save stuff to be deleted in register
     if global_lines:
@@ -764,11 +765,8 @@ def ex_registers(window, view, **kwargs):
 
         return string
 
-    # TODO [review] State dependency
-    state = State(view)
-
     items = []
-    for k, v in state.registers.to_dict().items():
+    for k, v in registers_get_all(view).items():
         if v:
             multiple_values = []
 
@@ -789,7 +787,7 @@ def ex_registers(window, view, **kwargs):
         if idx == -1:
             return
 
-        state.registers['"'] = [list(state.registers.to_dict().values())[idx]]
+        registers_set(view, '"', [list(registers_get_all(view).values())[idx]])
 
     if items:
         window.show_quick_panel(sorted(items), on_done, flags=MONOSPACE_FONT)
@@ -1381,11 +1379,10 @@ def ex_yank(view, register, line_range, **kwargs):
 
     text = view.substr(line_range)
 
-    state = State(view)
-    state.registers[register] = [text]
+    registers_set(view, register, [text])
 
     if register == '"':
-        state.registers['0'] = [text]
+        registers_set(view, '0', [text])
 
 
 # Default ex command. See :h [range].

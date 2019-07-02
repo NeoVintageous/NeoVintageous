@@ -132,6 +132,10 @@ from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
+from NeoVintageous.nv.vi.registers import registers_get_for_paste
+from NeoVintageous.nv.vi.registers import registers_op_change
+from NeoVintageous.nv.vi.registers import registers_op_delete
+from NeoVintageous.nv.vi.registers import registers_op_yank
 from NeoVintageous.nv.vi.search import BufferSearchBase
 from NeoVintageous.nv.vi.search import ExactWordBufferSearchBase
 from NeoVintageous.nv.vi.search import find_in_range
@@ -1191,7 +1195,7 @@ class _vi_c(ViTextCommandBase):
                 enter_insert_mode(self.view, mode)
                 return
 
-        self.state.registers.op_change(register=register, linewise=_is_linewise_operation(mode, motion))
+        registers_op_change(self.view, register=register, linewise=_is_linewise_operation(mode, motion))
         self.view.run_command('right_delete')
         enter_insert_mode(self.view, mode)
 
@@ -1577,7 +1581,7 @@ class _vi_dd(ViTextCommandBase):
             self.view.sel().add_all(new)
 
         regions_transformer(self.view, f)
-        self.state.registers.op_delete(register=register, linewise=True)
+        registers_op_delete(self.view, register=register, linewise=True)
         self.view.run_command('right_delete')
         fixup_sel_pos()
 
@@ -1595,7 +1599,7 @@ class _vi_cc(ViTextCommandBase):
             return inner_lines(view, s, count)
 
         regions_transformer(self.view, f)
-        self.state.registers.op_change(register=register, linewise=True)
+        registers_op_change(self.view, register=register, linewise=True)
 
         if not all(s.empty() for s in self.view.sel()):
             self.view.run_command('right_delete')
@@ -1652,7 +1656,7 @@ class _vi_yy(ViTextCommandBase):
         self.save_sel()
         regions_transformer(self.view, f)
         ui_highlight_yank(self.view)
-        self.state.registers.op_yank(register=register, linewise=True)
+        registers_op_yank(self.view, register=register, linewise=True)
         restore()
         enter_normal_mode(self.view, mode)
 
@@ -1672,7 +1676,7 @@ class _vi_y(ViTextCommandBase):
             return
 
         ui_highlight_yank(self.view)
-        self.state.registers.op_yank(register=register, linewise=_is_linewise_operation(mode, motion))
+        registers_op_yank(self.view, register=register, linewise=_is_linewise_operation(mode, motion))
         regions_transformer(self.view, f)
         enter_normal_mode(self.view, mode)
 
@@ -1699,7 +1703,7 @@ class _vi_d(ViTextCommandBase):
                 ui_bell()
                 return
 
-        self.state.registers.op_delete(register=register, linewise=_is_linewise_operation(mode, motion))
+        registers_op_delete(self.view, register=register, linewise=_is_linewise_operation(mode, motion))
         self.view.run_command('left_delete')
         fix_eol_cursor(self.view, mode)
         enter_normal_mode(self.view, mode)
@@ -1884,7 +1888,7 @@ class _vi_big_d(ViTextCommandBase):
 
         self.save_sel()
         regions_transformer(self.view, f)
-        self.state.registers.op_delete(register=register, linewise=is_visual_mode(mode))
+        registers_op_delete(self.view, register=register, linewise=is_visual_mode(mode))
         self.view.run_command('left_delete')
 
         if mode == VISUAL:
@@ -1919,7 +1923,7 @@ class _vi_big_c(ViTextCommandBase):
 
         self.save_sel()
         regions_transformer(self.view, f)
-        self.state.registers.op_change(register=register, linewise=is_visual_mode(mode))
+        registers_op_change(self.view, register=register, linewise=is_visual_mode(mode))
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1947,7 +1951,7 @@ class _vi_big_s(ViTextCommandBase):
             return s
 
         regions_transformer(self.view, f)
-        self.state.registers.op_change(register=register, linewise=True)
+        registers_op_change(self.view, register=register, linewise=True)
 
         empty = [s for s in list(self.view.sel()) if s.empty()]
         self.view.add_regions('vi_empty_sels', empty)
@@ -1989,7 +1993,7 @@ class _vi_s(ViTextCommandBase):
             enter_insert_mode(self.view, mode)
             return
 
-        self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
+        registers_op_delete(self.view, register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
         enter_insert_mode(self.view, mode)
 
@@ -2012,7 +2016,7 @@ class _vi_x(ViTextCommandBase):
             return
 
         regions_transformer(self.view, select)
-        self.state.registers.op_delete(register=register, linewise=(mode == VISUAL_LINE))
+        registers_op_delete(self.view, register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
         enter_normal_mode(self.view, mode)
 
@@ -2209,7 +2213,7 @@ class _vi_big_x(ViTextCommandBase):
         abort = False
         regions_transformer(self.view, f)
 
-        self.state.registers.op_delete(register=register, linewise=True)
+        registers_op_delete(self.view, register=register, linewise=True)
 
         if not abort:
             self.view.run_command('left_delete')
@@ -2251,7 +2255,7 @@ def _indent_text(view, text, sel):
 class _vi_paste(ViTextCommandBase):
 
     def run(self, edit, before_cursor, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
-        contents, linewise = self.state.registers.get_for_paste(register, mode)
+        contents, linewise = registers_get_for_paste(self.view, register, mode)
         if not contents:
             return status_message('E353: Nothing in register ' + register)
 
