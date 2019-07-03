@@ -69,8 +69,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#590](https://github.com/NeoVintageous/NeoVintageous/issues/590): `/` (search backward) in visual modes is inconsistent
 * Fixed [#588](https://github.com/NeoVintageous/NeoVintageous/issues/588): Visual mode incremental search highlighting is inconsistent
 
-## 1.16.4 - Unreleased
+## 1.16.4 - 2019-07-03
 
+* Fixed [#609](https://github.com/NeoVintageous/NeoVintageous/issues/609): `<C-e>` and `<C-y>` are not working in visual line mode
 * Fixed [#610](https://github.com/NeoVintageous/NeoVintageous/issues/610): invalid malformed mapping
 
 ## 1.16.3 - 2019-06-18
