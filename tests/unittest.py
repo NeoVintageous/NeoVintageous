@@ -1110,11 +1110,13 @@ _SEQ2CMD = {
     '<<':           {'command': '_vi_less_than_less_than'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
     '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
+    '<C-e>':        {'command': '_vi_ctrl_e'},  # noqa: E241
     '<C-g>':        {'command': '_vi_ctrl_g'},  # noqa: E241
     '<C-r>':        {'command': '_vi_ctrl_r'},  # noqa: E241
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-v>':        {'command': '_enter_visual_block_mode'},  # noqa: E241
     '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
+    '<C-y>':        {'command': '_vi_ctrl_y'},  # noqa: E241
     '<CR>':         {'command': '_vi_enter'},  # noqa: E241
     '<esc>':        {'command': '_enter_normal_mode'},  # noqa: E241
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'is_jump': True}}},  # noqa: E241,E501

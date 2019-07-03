@@ -2726,11 +2726,7 @@ class _vi_gx(IrreversibleTextCommand):
 class _vi_ctrl_e(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
-        if mode == VISUAL_LINE:
-            return
-
-        extend = True if mode == VISUAL else False
-        self.view.run_command('scroll_lines', {'amount': -count, 'extend': extend})
+        self.view.run_command('scroll_lines', {'amount': -count})
 
 
 class _vi_ctrl_g(WindowCommand):
@@ -2742,11 +2738,7 @@ class _vi_ctrl_g(WindowCommand):
 class _vi_ctrl_y(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
-        if mode == VISUAL_LINE:
-            return
-
-        extend = True if mode == VISUAL else False
-        self.view.run_command('scroll_lines', {'amount': count, 'extend': extend})
+        self.view.run_command('scroll_lines', {'amount': count})
 
 
 class _vi_ctrl_r_equal(ViTextCommandBase):

@@ -2,8 +2,9 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.16.4 - Unreleased
+## 1.16.4 - 2019-07-03
 
+* Fixed [#609](https://github.com/NeoVintageous/NeoVintageous/issues/609): `<C-e>` and `<C-y>` are not working in visual line mode
 * Fixed [#610](https://github.com/NeoVintageous/NeoVintageous/issues/610): invalid malformed mapping
 
 ## 1.16.3 - 2019-06-18
