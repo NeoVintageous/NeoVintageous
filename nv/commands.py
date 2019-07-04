@@ -2232,25 +2232,6 @@ class _vi_big_z_big_z(WindowCommand):
         do_ex_command(self.window, 'exit')
 
 
-def _get_indent(view, level):
-    # type: (...) -> str
-    translate = view.settings().get('translate_tabs_to_spaces')
-    tab_size = int(view.settings().get('tab_size'))
-    tab_text = ' ' * tab_size if translate else '\t'
-
-    return tab_text * level
-
-
-def _indent_text(view, text, sel):
-    # type: (...) -> str
-    indentation_level = view.indentation_level(get_insertion_point_at_b(sel))
-
-    return textwrap.indent(
-        textwrap.dedent(text),
-        _get_indent(view, indentation_level)
-    )
-
-
 class _vi_paste(ViTextCommandBase):
 
     def run(self, edit, before_cursor, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
@@ -2273,6 +2254,23 @@ class _vi_paste(ViTextCommandBase):
             contents = [''.join(contents)]
 
         contents = zip(reversed(contents), reversed(sels))
+
+        def _get_indent(view, level):
+            # type: (...) -> str
+            translate = view.settings().get('translate_tabs_to_spaces')
+            tab_size = int(view.settings().get('tab_size'))
+            tab_text = ' ' * tab_size if translate else '\t'
+
+            return tab_text * level
+
+        def _indent_text(view, text, sel):
+            # type: (...) -> str
+            indentation_level = view.indentation_level(get_insertion_point_at_b(sel))
+
+            return textwrap.indent(
+                textwrap.dedent(text),
+                _get_indent(view, indentation_level)
+            )
 
         if mode == INTERNAL_NORMAL:
             self.view.sel().clear()
