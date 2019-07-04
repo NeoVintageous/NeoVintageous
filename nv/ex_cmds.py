@@ -52,6 +52,7 @@ from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_set
 from NeoVintageous.nv.search import clear_search_highlighting
@@ -69,7 +70,6 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
-from NeoVintageous.nv.vi.search import view_find_all_in_range
 from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import get_ex_global_last_pattern

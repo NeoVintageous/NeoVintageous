@@ -123,6 +123,10 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('x<p>a|bc</p>x', 'v_it', 'x<p>|abc|</p>x')
         self.eq('x<p>_<i>_</i>a|bc<i>_</i>d</p>x', 'v_it', 'x<p>|_<i>_</i>abc<i>_</i>d|</p>x')
         self.eq('fi|zz', 'v_it', 'fi|z|z')
+        self.eq('fi<div>zz|buzz', 'v_it', 'fi<div>zz|b|uzz')
+        self.eq('fi<d|iv>zzbuzz', 'v_it', 'fi<d|i|v>zzbuzz')
+        self.eq('fi|zzbu</div>zz', 'v_it', 'fi|z|zbu</div>zz')
+        self.eq('fizzbu</d|iv>zz', 'v_it', 'fizzbu</d|i|v>zz')
 
     def test_vi__brace__(self):
         for target in ('{', '}'):

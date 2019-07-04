@@ -20,12 +20,6 @@ from NeoVintageous.tests import unittest
 
 class Test_percent(unittest.FunctionalTestCase):
 
-    def onRunFeedCommand(self, command, args):
-        # TODO Refactor command to use "count" param name.
-        if 'count' in args:
-            args['percent'] = args['count']
-            del args['count']
-
     def test_n(self):
         self.eq('|', 'n_%', '|')
         self.eq('fi|zz', 'n_%', 'fi|zz')
@@ -36,10 +30,30 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('|12{}', 'n_%', '12{|}', 'should jump to the *match* of the next item in the line')
         self.eq('{}12|', 'n_%', '{}12|', 'should NOT jump backwards')
         self.eq('12{}3|4{}', 'n_%', '12{}34{|}', 'should jump forward')
-        self.eq('|1\n2\n3\n4\n5\n6\n7\n8\n9\n0', 'n_30%', '1\n2\n|3\n4\n5\n6\n7\n8\n9\n0')
-        self.eq('|1\n2\n3\n4\n5\n6', 'n_80%', '1\n2\n3\n4\n|5\n6')
         self.eq('1|{ab}2|{cd}3|{ef}x', 'n_%', '1{ab|}2{cd|}3{ef|}x')
         self.eq('1|{ab}2{cd}3|{ef}x', 'n_%', '1{ab|}2{cd}3{ef|}x')
+        self.eq('|1\n2\n3\n4\n5\n6\n7\n8\n9\n0', 'n_30%', '1\n2\n|3\n4\n5\n6\n7\n8\n9\n0')
+        self.eq('|1\n2\n3\n4\n5\n6', 'n_80%', '1\n2\n3\n4\n|5\n6')
+        self.eq('|fi(zzbu)zz', 'n_%', 'fi(zzbu|)zz')
+        self.eq('f|i(zzbu)zz', 'n_%', 'fi(zzbu|)zz')
+        self.eq('fi|(zzbu)zz', 'n_%', 'fi(zzbu|)zz')
+        self.eq('fi(|zzbu)zz', 'n_%', 'fi|(zzbu)zz')
+        self.eq('fi(z|zbu)zz', 'n_%', 'fi|(zzbu)zz')
+        self.eq('fi(zz|bu)zz', 'n_%', 'fi|(zzbu)zz')
+        self.eq('fi(zzb|u)zz', 'n_%', 'fi|(zzbu)zz')
+        self.eq('fi(zzbu|)zz', 'n_%', 'fi|(zzbu)zz')
+        self.eq('fi(zzbu)|zz', 'n_%', 'fi(zzbu)|zz')
+        self.eq('fi(zzbu)z|z', 'n_%', 'fi(zzbu)z|z')
+        self.eq('fi|(zzbuzz', 'n_%', 'fi|(zzbuzz')
+        self.eq('fi(zz|buzz', 'n_%', 'fi(zz|buzz')
+        self.eq('fizzbu|)zz', 'n_%', 'fizzbu|)zz')
+        self.eq('fizz|bu)zz', 'n_%', 'fizz|bu)zz')
+        self.eq('fi|(zz(buzz)fi)zz', 'n_%', 'fi(zz(buzz)fi|)zz')
+        self.eq('fi(zz|(buzz)fi)zz', 'n_%', 'fi(zz(buzz|)fi)zz')
+        self.eq('fi(zz(buzz)fi|)zz', 'n_%', 'fi|(zz(buzz)fi)zz')
+        self.eq('fi(zz(buzz|)fi)zz', 'n_%', 'fi(zz|(buzz)fi)zz')
+        self.eq('f|(i(zz(buzz)fi)z)z', 'n_%', 'f(i(zz(buzz)fi)z|)z')
+        self.eq('f(i(zz(buzz)fi)z|)z', 'n_%', 'f|(i(zz(buzz)fi)z)z')
 
     def test_v(self):
         self.eq('|{ab}', 'v_%', '|{ab}|')
@@ -65,8 +79,8 @@ class Test_percent(unittest.FunctionalTestCase):
     def test_V(self):
         self.eq('|\n|', 'V_%', '|\n|')
         self.eq('|ab\n|', 'V_%', '|ab\n|')
-        self.eq('1| \n|2', 'V_%', '1| \n|2', 'single space lines should be noop')
-        self.eq('\n|\n\n|\n', 'V_%', '\n|\n\n|\n', 'empty lines should be noop')
+        self.eq('1| \n|2', 'V_%', '1| \n|2')
+        self.eq('\n|\n\n|\n', 'V_%', '\n|\n\n|\n')
 
     def test_d(self):
         self.eq('abc (a|bc) abc', 'd%', 'abc |c) abc')
@@ -75,7 +89,7 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('|abc (abc) abc', 'd%', ' |abc')
 
 
-class Test_percent_in_php_syntax(unittest.FunctionalTestCase):
+class Test_percent_in_PHP_syntax(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
@@ -89,6 +103,56 @@ class Test_percent_in_php_syntax(unittest.FunctionalTestCase):
         self.normal(start)
         self.feed('n_%')
         self.assertNormal('<?php\nfunction x(|) {\n    //...\n}\n')
+
+
+class Test_percent_in_HTML_syntax(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.syntax('Packages/HTML/HTML.sublime-syntax')
+
+    def test_percent(self):
+        self.eq('|<div>fizz</div>', 'n_%', '<div|>fizz</div>')
+        self.eq('<div|>fizz</div>', 'n_%', '|<div>fizz</div>')
+        self.eq('<div>fizz|</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div>fizz</div|>', 'n_%', '<div>fizz|</div>')
+        self.eq('<div>f|izz</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div>fi|zz</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div>fiz|z</div>', 'n_%', '<div>fizz</div|>')
+        self.eq('<div><div>f|izz</div></div>', 'n_%', '<div><div>fizz</div|></div>')
+        self.eq('ab|<div>fizz</div>cd', 'n_%', 'ab<div|>fizz</div>cd')
+        self.eq('ab<div|>fizz</div>cd', 'n_%', 'ab|<div>fizz</div>cd')
+        self.eq('ab<div>fizz|</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div>fizz</div|>cd', 'n_%', 'ab<div>fizz|</div>cd')
+        self.eq('ab<div>f|izz</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div>fi|zz</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div>fiz|z</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
+        self.eq('ab<div><div>f|izz</div></div>cd', 'n_%', 'ab<div><div>fizz</div|></div>cd')
+        self.eq('fi|zz<div>buzz', 'n_%', 'fizz<div|>buzz')
+        self.eq('fi|zz</div>buzz', 'n_%', 'fizz</div|>buzz')
+        self.eq('fi<d|iv>zzbuzz', 'n_%', 'fi|<div>zzbuzz')
+        self.eq('fizzb</d|iv>uzz', 'n_%', 'fizzb|</div>uzz')
+        self.eq('fi<d|iv>zz <i>b</i>uzz', 'n_%', 'fi|<div>zz <i>b</i>uzz')
+        self.eq('f<i>i</i>zz b</d|iv>uzz', 'n_%', 'f<i>i</i>zz b|</div>uzz')
+        self.eq('|fi<div>zzbu</div>zz', 'n_%', 'fi<div|>zzbu</div>zz')
+        self.eq('f|i<div>zzbu</div>zz', 'n_%', 'fi<div|>zzbu</div>zz')
+        self.eq('fi|<div>zzbu</div>zz', 'n_%', 'fi<div|>zzbu</div>zz')
+        self.eq('fi<|div>zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
+        self.eq('fi<d|iv>zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
+        self.eq('fi<di|v>zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
+        self.eq('fi<div|>zzbu</div>zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>|zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
+        self.eq('fi<div>z|zbu</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
+        self.eq('fi<div>zz|bu</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
+        self.eq('fi<div>zzb|u</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
+        self.eq('fi<div>zzbu|</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
+        self.eq('fi<div>zzbu<|/div>zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</|div>zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</d|iv>zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</di|v>zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</div|>zz', 'n_%', 'fi<div>zzbu|</div>zz')
+        self.eq('fi<div>zzbu</div>|zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</div>z|z', 'n_%', 'fi<div>zzbu</div>z|z')
 
 
 class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
@@ -148,28 +212,3 @@ class Test_workaround_for_issue_243(unittest.FunctionalTestCase):
         self.assertVline('x\nf {\na\n|b\nc\n}\n|x\n')
         self.feed('V_%')
         self.assertRVline(start)
-
-
-class Test_percent_tags(unittest.FunctionalTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.syntax('Packages/HTML/HTML.sublime-syntax')
-
-    def test_percent(self):
-        self.eq('|<div>fizz</div>', 'n_%', '<div|>fizz</div>')
-        self.eq('<div|>fizz</div>', 'n_%', '|<div>fizz</div>')
-        self.eq('<div>fizz|</div>', 'n_%', '<div>fizz</div|>')
-        self.eq('<div>fizz</div|>', 'n_%', '<div>fizz|</div>')
-        self.eq('<div>f|izz</div>', 'n_%', '<div>fizz</div|>')
-        self.eq('<div>fi|zz</div>', 'n_%', '<div>fizz</div|>')
-        self.eq('<div>fiz|z</div>', 'n_%', '<div>fizz</div|>')
-        self.eq('<div><div>f|izz</div></div>', 'n_%', '<div><div>fizz</div|></div>')
-        self.eq('ab|<div>fizz</div>cd', 'n_%', 'ab<div|>fizz</div>cd')
-        self.eq('ab<div|>fizz</div>cd', 'n_%', 'ab|<div>fizz</div>cd')
-        self.eq('ab<div>fizz|</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
-        self.eq('ab<div>fizz</div|>cd', 'n_%', 'ab<div>fizz|</div>cd')
-        self.eq('ab<div>f|izz</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
-        self.eq('ab<div>fi|zz</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
-        self.eq('ab<div>fiz|z</div>cd', 'n_%', 'ab<div>fizz</div|>cd')
-        self.eq('ab<div><div>f|izz</div></div>cd', 'n_%', 'ab<div><div>fizz</div|></div>cd')

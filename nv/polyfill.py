@@ -73,6 +73,39 @@ def view_find(view, pattern, start_pt, flags=0):
     return match
 
 
+# There's no Sublime API to find a pattern within a start-end range.
+# Note that this returns zero-length matches. Also see view_find().
+# Returns None if nothing is found instead of returning Region(-1).
+# See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
+# See: https://github.com/SublimeTextIssues/Core/issues/534.
+def view_find_in_range(view, pattern, pos, endpos, flags=0):
+    match = view_find(view, pattern, pos, flags)
+    if match is not None and match.b <= endpos:
+        return match
+
+
+# There's no Sublime API to find all matching pattern within a range.
+# Note that this returns zero-length matches. Also see view_find().
+# Returns None if nothing is found instead of returning Region(-1).
+# See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
+# See: https://github.com/SublimeTextIssues/Core/issues/534.
+def view_find_all_in_range(view, pattern, pos, endpos, flags=0):
+    matches = []
+    while pos <= endpos:
+        match = view.find(pattern, pos, flags)
+        if match is None or match.b == -1:
+            break
+
+        pos = match.b
+        if match.size() == 0:
+            pos += 1
+
+        if match.b <= endpos:
+            matches.append(match)
+
+    return matches
+
+
 # Polyfill to work around bug in internal APIs.
 # See: https://github.com/SublimeTextIssues/Core/issues/2879.
 def view_indentation_level(view, pt):

@@ -2932,22 +2932,20 @@ class ViGotoClosingParen(ViMotionDef):
         }
 
 
-# TODO [review]
 @assign(seqs.PERCENT, _MOTION_MODES)
-class ViGotoLinesPercent(ViMotionDef):
+class ViPercent(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, state):
-        percent = None
-        if state.motion_count or state.action_count:
-            percent = state.count
-
         return {
             'motion': '_vi_percent',
-            'motion_args': {'mode': state.mode, 'percent': percent}
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count_default_zero
+            }
         }
 
 

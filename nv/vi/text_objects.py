@@ -826,7 +826,7 @@ def get_closest_tag(view, pt):
     #   tuple[int, Region]
     #   tuple[None, None]
     substr = view.substr
-    while pt > 0 and substr(pt) != '<':
+    while substr(pt) != '<' and pt > 0:
         pt -= 1
 
     if substr(pt) != '<':
@@ -852,8 +852,8 @@ def find_containing_tag(view, start):
     if not closest_tag:
         return None, None, None
 
-    start = closest_tag.a if ((closest_tag.contains(start)) and
-                              (view.substr(closest_tag)[1] == '/')) else start
+    if closest_tag.contains(start) and view.substr(closest_tag)[1] == '/':
+        start = closest_tag.a
 
     end_region, tag_name = next_unbalanced_tag(
         view,
@@ -876,7 +876,7 @@ def find_containing_tag(view, start):
         restart_at=get_region_begin
     )
 
-    if not end_region:
+    if not begin_region:
         return None, None, None
 
     return begin_region, end_region, tag_name

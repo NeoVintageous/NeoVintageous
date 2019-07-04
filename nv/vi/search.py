@@ -23,34 +23,6 @@ from sublime import Region
 import sublime_plugin
 
 from NeoVintageous.nv.options import get_option
-from NeoVintageous.nv.polyfill import view_find
-
-
-# A possible replacement for find_in_range(). One difference is this function
-# returns zero-length matches, see view_find() polyfill.
-def view_find_in_range(view, pattern, pos, endpos, flags=0):
-    match = view_find(view, pattern, pos, flags)
-    if match is not None and match.b <= endpos:
-        return match
-
-
-# A possible replacement for find_all_in_range(). One difference is this
-# function returns zero-length matches, see view_find() polyfill.
-def view_find_all_in_range(view, pattern, pos, endpos, flags=0):
-    matches = []
-    while pos <= endpos:
-        match = view.find(pattern, pos, flags)
-        if match is None or match.b == -1:
-            break
-
-        pos = match.b
-        if match.size() == 0:
-            pos += 1
-
-        if match.b <= endpos:
-            matches.append(match)
-
-    return matches
 
 
 # DEPRECATED Use view_find_in_range()

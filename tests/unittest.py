@@ -1117,7 +1117,7 @@ _SEQ2CMD = {
 
     '#':            {'command': '_vi_octothorp'},  # noqa: E241
     '$':            {'command': '_vi_dollar'},  # noqa: E241
-    '%':            {'command': '_vi_percent', 'args': {'percent': None}},  # noqa: E241
+    '%':            {'command': '_vi_percent', 'args': {'count': None}},  # noqa: E241
     '(':            {'command': '_vi_left_paren'},  # noqa: E241
     ')':            {'command': '_vi_right_paren'},  # noqa: E241
     '*':            {'command': '_vi_star'},  # noqa: E241
@@ -1368,7 +1368,7 @@ _SEQ2CMD = {
     'cw':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'c|':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_bar'}}},  # noqa: E241,E501
     'd$':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
-    'd%':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'percent': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_percent'}}},  # noqa: E241,E501
+    'd%':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_percent'}}},  # noqa: E241,E501
     'd':            {'command': '_vi_d'},  # noqa: E241
     'd(':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_left_paren'}}},  # noqa: E241,E501
     'd)':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_paren'}}},  # noqa: E241,E501
