@@ -82,6 +82,7 @@ from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import fix_eol_cursor
+from NeoVintageous.nv.utils import fixup_eof
 from NeoVintageous.nv.utils import fold
 from NeoVintageous.nv.utils import fold_all
 from NeoVintageous.nv.utils import folded_rows
@@ -95,6 +96,7 @@ from NeoVintageous.nv.utils import gluing_undo_groups
 from NeoVintageous.nv.utils import hide_panel
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
+from NeoVintageous.nv.utils import is_linewise_operation
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import new_inclusive_region
@@ -103,7 +105,6 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import next_non_folded_pt
 from NeoVintageous.nv.utils import prev_blank
 from NeoVintageous.nv.utils import prev_non_blank
-from NeoVintageous.nv.utils import prev_non_nl
 from NeoVintageous.nv.utils import prev_non_ws
 from NeoVintageous.nv.utils import previous_non_folded_pt
 from NeoVintageous.nv.utils import regions_transform_extend_to_line_count
@@ -122,6 +123,7 @@ from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.utils import should_motion_apply_op_transformer
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word
 from NeoVintageous.nv.utils import spell_file_remove_word
@@ -1124,37 +1126,6 @@ class _vi_a(ViTextCommandBase):
         })
 
 
-# A temporary hack because *most*, and maybe all, motions shouldn't move the
-# cursor after an operation, but changing it for all commands could cause some
-# regressions. TODO When enough commands are updated, this should be removed.
-def _should_motion_apply_op_transformer(motion):
-    blacklist = (
-        '_vi_bar',
-        '_vi_dollar',
-        '_vi_find_in_line',
-        '_vi_g__',
-        '_vi_h',
-        '_vi_hat',
-        '_vi_l',
-    )
-
-    return motion and 'motion' in motion and motion['motion'] not in blacklist
-
-
-# Some motions should be treated as linewise operations by registers, for
-# example, some text objects are linewise, but only if they contain a newline.
-def _is_linewise_operation(mode, motion):
-    if mode == VISUAL_LINE:
-        return True
-
-    if motion:
-        if 'motion_args' in motion and 'text_object' in motion['motion_args']:
-            if motion['motion_args']['text_object'] in '[]()b<>t{}B%`/?nN':
-                return 'maybe'
-
-    return False
-
-
 class _vi_c(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
@@ -1170,7 +1141,7 @@ class _vi_c(ViTextCommandBase):
             run_motion(self.view, motion)
 
             if mode == INTERNAL_NORMAL:
-                if _should_motion_apply_op_transformer(motion):
+                if should_motion_apply_op_transformer(motion):
                     def f(view, s):
                         if view.substr(s).strip():
                             if s.b > s.a:
@@ -1194,7 +1165,7 @@ class _vi_c(ViTextCommandBase):
                 enter_insert_mode(self.view, mode)
                 return
 
-        registers_op_change(self.view, register=register, linewise=_is_linewise_operation(mode, motion))
+        registers_op_change(self.view, register=register, linewise=is_linewise_operation(mode, motion))
         self.view.run_command('right_delete')
         enter_insert_mode(self.view, mode)
 
@@ -1675,7 +1646,7 @@ class _vi_y(ViTextCommandBase):
             return
 
         ui_highlight_yank(self.view)
-        registers_op_yank(self.view, register=register, linewise=_is_linewise_operation(mode, motion))
+        registers_op_yank(self.view, register=register, linewise=is_linewise_operation(mode, motion))
         regions_transformer(self.view, f)
         enter_normal_mode(self.view, mode)
 
@@ -1702,13 +1673,13 @@ class _vi_d(ViTextCommandBase):
                 ui_bell()
                 return
 
-        registers_op_delete(self.view, register=register, linewise=_is_linewise_operation(mode, motion))
+        registers_op_delete(self.view, register=register, linewise=is_linewise_operation(mode, motion))
         self.view.run_command('left_delete')
         fix_eol_cursor(self.view, mode)
         enter_normal_mode(self.view, mode)
 
         if mode == INTERNAL_NORMAL:
-            if _should_motion_apply_op_transformer(motion):
+            if should_motion_apply_op_transformer(motion):
                 def f(view, s):
                     if motion:
                         if 'motion' in motion:
@@ -3560,14 +3531,6 @@ class _vi_dollar(ViMotionCommand):
             return s
 
         regions_transformer(self.view, f)
-
-
-def fixup_eof(view, pt):
-    # type: (...) -> int
-    if ((pt == view.size()) and (not view.line(pt).empty())):
-        pt = prev_non_nl(view, pt - 1)
-
-    return pt
 
 
 class _vi_w(ViMotionCommand):

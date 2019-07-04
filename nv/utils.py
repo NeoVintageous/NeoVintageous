@@ -45,6 +45,7 @@ from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import run_window_command
 
@@ -1125,3 +1126,42 @@ def spell_file_add_word(view, mode, count):
 def spell_file_remove_word(view, mode, count):
     for s in view.sel():
         spell_undo(extract_word(view, mode, s))
+
+
+def fixup_eof(view, pt):
+    # type: (...) -> int
+    if ((pt == view.size()) and (not view.line(pt).empty())):
+        pt = prev_non_nl(view, pt - 1)
+
+    return pt
+
+
+# A temporary hack because *most*, and maybe all, motions shouldn't move the
+# cursor after an operation, but changing it for all commands could cause some
+# regressions. TODO When enough commands are updated, this should be removed.
+def should_motion_apply_op_transformer(motion):
+    blacklist = (
+        '_vi_bar',
+        '_vi_dollar',
+        '_vi_find_in_line',
+        '_vi_g__',
+        '_vi_h',
+        '_vi_hat',
+        '_vi_l',
+    )
+
+    return motion and 'motion' in motion and motion['motion'] not in blacklist
+
+
+# Some motions should be treated as linewise operations by registers, for
+# example, some text objects are linewise, but only if they contain a newline.
+def is_linewise_operation(mode, motion):
+    if mode == VISUAL_LINE:
+        return True
+
+    if motion:
+        if 'motion_args' in motion and 'text_object' in motion['motion_args']:
+            if motion['motion_args']['text_object'] in '[]()b<>t{}B%`/?nN':
+                return 'maybe'
+
+    return False
