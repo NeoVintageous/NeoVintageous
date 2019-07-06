@@ -76,16 +76,6 @@ def parse_command_line(source):
             return command_line
 
 
-def parse_command_line_address(address):
-    # type: (str) -> CommandLineNode
-
-    # TODO Refactor parsing address; currently just calls parse_command_line().
-
-    _log.debug('parsing address >>>%s<<<', address)
-
-    return parse_command_line(address)
-
-
 def _init_line_range(command_line):
     # type: (CommandLineNode) -> None
     if command_line.line_range:

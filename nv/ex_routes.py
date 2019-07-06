@@ -454,10 +454,6 @@ def _ex_route_spellgood(state):
     return _create_word_route(state, 'spellgood', 'word')
 
 
-def _ex_route_spellwrong(state):
-    return _create_word_route(state, 'spellwrong', 'word')
-
-
 def _ex_route_spellundo(state):
     return _create_word_route(state, 'spellundo', 'word')
 
