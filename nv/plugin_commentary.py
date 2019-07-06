@@ -150,7 +150,7 @@ def _do_cc(view, edit, mode, count=1):
             else:
                 pt = next_non_blank(view, view.line(s.a).a)
 
-            return Region(pt)
+            s.a = s.b = pt
 
         return s
 
@@ -166,7 +166,8 @@ def _do_cc(view, edit, mode, count=1):
                 if ((row_at_end == row_at_size) and (view.substr(begin - 1) == '\n')):
                     begin -= 1
 
-                return Region(begin, view.full_line(end).b)
+                s.a = begin
+                s.b = view.full_line(end).b
 
             return s
 
