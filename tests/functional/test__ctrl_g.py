@@ -32,3 +32,10 @@ class Test_ctrl_g(unittest.FunctionalTestCase):
     def test_n_with_lines(self):
         self.eq('1\n|2\n3', 'n_<C-g>', '1\n|2\n3')
         self.assertStatusMessage('"[No Name]" [Modified] 3 lines --66%--')
+
+    @unittest.mock_status_message()
+    def test_n_readonly(self):
+        self.normal('1\n|2\n3')
+        self.view.set_read_only(True)
+        self.feed('n_<C-g>')
+        self.assertStatusMessage('"[No Name]" [readonly] 3 lines --66%--')

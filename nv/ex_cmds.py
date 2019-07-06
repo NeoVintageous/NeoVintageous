@@ -343,17 +343,13 @@ def ex_exit(window, view, **kwargs):
 
 
 def ex_file(view, **kwargs):
-    if view.file_name():
-        fname = view.file_name()
-    else:
-        fname = '[No Name]'
+    fname = view.file_name() if view.file_name() else '[No Name]'
 
-    attrs = ''
+    attrib = ''
     if view.is_read_only():
-        attrs = 'readonly'
-
-    if view.is_dirty():
-        attrs = 'Modified'
+        attrib = 'readonly'
+    elif view.is_dirty():
+        attrib = 'Modified'
 
     lines = 'no lines in the buffer'
     if view.rowcol(view.size())[0]:
@@ -367,8 +363,8 @@ def ex_file(view, **kwargs):
         percent = float(mid) / lines * 100.0
 
     msg = '"' + fname + '"'
-    if attrs:
-        msg += " [%s]" % attrs
+    if attrib:
+        msg += " [%s]" % attrib
     if isinstance(lines, str):
         msg += " -- %s --" % lines
     else:
