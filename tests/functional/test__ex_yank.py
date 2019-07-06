@@ -18,15 +18,15 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_ex_yank(unittest.FunctionalTestCase):
+class Test_ex_yank(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_yank(self):
         self.eq('1x\n|2x\n3x\n4x\n5x', ':2,4yank', '1x\n|2x\n3x\n4x\n5x')
-        self.assertRegister('"2x\n3x\n4x\n')
-        self.assertRegister('02x\n3x\n4x\n')
+        self.assertRegisters('"0', '2x\n3x\n4x\n')
+        self.assertRegistersEmpty('-1ab')
+        self.resetRegisters()
 
     def test_yank_into_register(self):
         self.eq('1x\n|2x\n3x\n4x\n5x', ':2,4yank b', '1x\n|2x\n3x\n4x\n5x')
-        self.assertRegister('b2x\n3x\n4x\n')
-        self.assertRegister('"2x\n3x\n4x\n')
-        self.assertRegister('02x\n3x\n4x\n')
+        self.assertRegisters('"b', '2x\n3x\n4x\n')
+        self.assertRegistersEmpty('-01a')

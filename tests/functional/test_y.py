@@ -22,14 +22,20 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_v(self):
         self.eq('x|ab|x', 'v_y', 'n_x|abx')
-        self.assertRegister('"ab')
-        self.assertRegister('0ab')
-        self.assertRegisterEmpty('1')
-        self.assertRegisterEmpty('-')
+        self.assertRegisters('"0', 'ab')
+        self.assertRegistersEmpty('-1')
         self.eq('|fizz| |buzz|', 'v_y', 'n_|fizz |buzz')
         self.assertRegisters('"0', ['fizz', 'buzz'])
         self.eq('a\n|fizz\n|b\n|buzz\n|c', 'v_y', 'n_a\n|fizz\nb\n|buzz\nc')
         self.assertRegisters('"0', ['fizz\n', 'buzz\n'])
+        self.assertRegistersEmpty('-1a')
+        self.resetRegisters()
+        self.eq('x|ab|x', 'v_"ay', 'n_x|abx')
+        self.assertRegisters('"a', 'ab')
+        self.assertRegistersEmpty('-01')
+        self.resetRegisters()
+        self.eq('x\nfi|zz\nbu|zz\ny', 'v_y', 'n_x\nfi|zz\nbuzz\ny')
+        self.assertRegisters('"0', 'zz\nbu')
         self.assertRegistersEmpty('-1')
 
     def test_s(self):

@@ -1115,6 +1115,7 @@ def mock_run_commands(*methods):
 # impact the existing tests.
 _SEQ2CMD = {
 
+    '"ay':          {'command': '_vi_y', 'args': {'register': 'a'}},  # noqa: E241
     '#':            {'command': '_vi_octothorp'},  # noqa: E241
     '$':            {'command': '_vi_dollar'},  # noqa: E241
     '%':            {'command': '_vi_percent', 'args': {'count': None}},  # noqa: E241

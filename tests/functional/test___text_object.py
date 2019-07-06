@@ -41,6 +41,7 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('.    |.,-   f.";   (x)    yy', 'v_aW', '.    |.,-   |f.";   (x)    yy')
         self.eq('.    .|,-   f.";   (x)    yy', 'v_aW', '.    |.,-   |f.";   (x)    yy')
         self.eq('.   |.,-   f.";   (x)    yy', 'v_3aW', '.   |.,-   f.";   (x)    |yy')
+        self.eq('x   f|i|zz   y', 'v_aW', 'x   |fizz   |y')
 
     def test_viW(self):
         self.eq('x  |.,-;abc#"]  y', 'v_iW', 'x  |.,-;abc#"]|  y')
