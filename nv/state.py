@@ -765,7 +765,7 @@ def init_state(view):
     mode = state.mode
 
     # Non-standard user setting.
-    reset = state.settings.view['vintageous_reset_mode_when_switching_tabs']
+    reset = get_setting(view, 'reset_mode_when_switching_tabs')
     # XXX: If the view was already in normal mode, we still need to run the
     # init code. I believe this is due to Sublime Text (intentionally) not
     # serializing the inverted caret state and the command_mode setting when
@@ -779,8 +779,7 @@ def init_state(view):
     if len(view.sel()) == 0:
         view.sel().add(0)
 
-    default_mode = get_setting(view, 'default_mode')
-    if default_mode == 'insert':
+    if get_setting(view, 'default_mode') == 'insert':
         if mode in (NORMAL, UNKNOWN):
             enter_insert_mode(view, mode)
     elif mode in (VISUAL, VISUAL_LINE):
