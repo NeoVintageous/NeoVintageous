@@ -961,6 +961,8 @@ def find_next_item_match_pt(view, s):
     else:
         target_pair = (targets[target_index - 1], targets[target_index])
 
+    accepted_selector = 'punctuation|text.plain'
+
     if forward:
         counter = 0
         start = bracket.b
@@ -969,13 +971,14 @@ def find_next_item_match_pt(view, s):
             if not bracket:
                 return
 
-            if view.substr(bracket) == target:
-                counter += 1
-            else:
-                if counter == 0:
-                    return bracket.a
+            if view.match_selector(bracket.a, accepted_selector):
+                if view.substr(bracket) == target:
+                    counter += 1
+                else:
+                    if counter == 0:
+                        return bracket.a
 
-                counter -= 1
+                    counter -= 1
 
             start = bracket.b
     else:
@@ -985,12 +988,13 @@ def find_next_item_match_pt(view, s):
         counter = 0
         start = bracket.a
         for bracket in view_rfind_all(view, '|'.join(map(re_escape, target_pair)), start):
-            if view.substr(bracket) == target:
-                counter += 1
-            else:
-                if counter == 0:
-                    return bracket.a
+            if view.match_selector(bracket.a, accepted_selector):
+                if view.substr(bracket) == target:
+                    counter += 1
+                else:
+                    if counter == 0:
+                        return bracket.a
 
-                counter -= 1
+                    counter -= 1
 
             start = bracket.a
