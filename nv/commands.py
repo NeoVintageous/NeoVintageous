@@ -68,7 +68,12 @@ from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import get_search_occurrences
+from NeoVintageous.nv.settings import get_last_buffer_search
+from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import set_last_buffer_search
+from NeoVintageous.nv.settings import set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_side_bar
 from NeoVintageous.nv.settings import toggle_super_keys
@@ -856,7 +861,7 @@ class _nv_cmdline(WindowCommand):
     def run(self, initial_text=None):
         reset_cmdline_completion_state()
         state = State(self.window.active_view())
-        state.reset_during_init = False
+        set_reset_during_init(self.window, False)
         mode = state.mode
 
         if initial_text is not None:
@@ -3008,7 +3013,7 @@ class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
         if self._matches:
             self.show_matches(self._matches)
             state = State(self.view)
-            state.reset_during_init = False
+            set_reset_during_init(self.view.window(), False)
             state.reset_command_data()
             return
 
@@ -3127,7 +3132,7 @@ class _vi_reverse_find_in_line(ViMotionCommand):
 class _vi_slash(ViMotionCommand, BufferSearchBase):
 
     def run(self, pattern=''):
-        self.state.reset_during_init = False
+        set_reset_during_init(self.view.window(), False)
 
         self._cmdline = Cmdline(
             self.view.window(),
@@ -3146,9 +3151,9 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         state = self.state
         state.sequence += pattern + '<CR>'
         clear_search_highlighting(self.view)
-        state.last_buffer_search_command = 'vi_slash'
+        set_last_buffer_search_command(self.view.window(), 'vi_slash')
         state.motion = ViSearchForwardImpl(term=pattern)
-        state.last_buffer_search = pattern or state.last_buffer_search
+        set_last_buffer_search(self.view.window(), pattern or get_last_buffer_search(self.view.window()))
         state.eval()
 
     def on_change(self, pattern):
@@ -3189,9 +3194,8 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         if not pattern:
             return
 
-        state = self.state
-        state.last_buffer_search_command = 'vi_slash'
-        state.last_buffer_search = pattern
+        set_last_buffer_search_command(self.view.window(), 'vi_slash')
+        set_last_buffer_search(self.view.window(), pattern)
 
         sel = self.view.sel()[0]
         flags = self.calculate_flags(pattern)
@@ -3814,7 +3818,6 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
 
             return s
 
-        state = self.state
         query = search_string or self.get_query()
 
         jumplist_update(self.view)
@@ -3823,10 +3826,10 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
 
         if query:
             add_search_highlighting(self.view, self.get_occurrences(query))
-            state.last_buffer_search = query
+            set_last_buffer_search(self.view.window(), query)
 
         if not search_string:
-            state.last_buffer_search_command = 'vi_star'
+            set_last_buffer_search_command(self.view.window(), 'vi_star')
 
         show_if_not_visible(self.view)
 
@@ -3855,7 +3858,6 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 
             return s
 
-        state = self.state
         query = search_string or self.get_query()
 
         jumplist_update(self.view)
@@ -3865,10 +3867,10 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 
         if query:
             add_search_highlighting(self.view, self.get_occurrences(query))
-            state.last_buffer_search = query
+            set_last_buffer_search(self.view.window(), query)
 
         if not search_string:
-            state.last_buffer_search_command = 'vi_octothorp'
+            set_last_buffer_search_command(self.view.window(), 'vi_octothorp')
 
         show_if_not_visible(self.view)
 
@@ -4250,7 +4252,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 class _vi_question_mark(ViMotionCommand, BufferSearchBase):
 
     def run(self, pattern=''):
-        self.state.reset_during_init = False
+        set_reset_during_init(self.view.window(), False)
 
         self._cmdline = Cmdline(
             self.view.window(),
@@ -4269,9 +4271,9 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         state = self.state
         state.sequence += pattern + '<CR>'
         clear_search_highlighting(self.view)
-        state.last_buffer_search_command = 'vi_question_mark'
+        set_last_buffer_search_command(self.view.window(), 'vi_question_mark')
         state.motion = ViSearchBackwardImpl(term=pattern)
-        state.last_buffer_search = pattern or state.last_buffer_search
+        set_last_buffer_search(self.view.window(), pattern or get_last_buffer_search(self.view.window()))
         state.eval()
 
     def on_change(self, pattern):
@@ -4315,9 +4317,8 @@ class _vi_repeat_buffer_search(ViMotionCommand):
     }
 
     def run(self, mode=None, count=1, reverse=False):
-        state = self.state
-        search_string = state.last_buffer_search
-        search_command = state.last_buffer_search_command
+        search_string = get_last_buffer_search(self.view.window())
+        search_command = get_last_buffer_search_command(self.view.window())
         command = self.commands[search_command][int(reverse)]
 
         _log.debug('repeat search %s reverse=%s -> %s (pattern=%s)', search_command, reverse, command, search_string)
@@ -4334,7 +4335,7 @@ class _vi_repeat_buffer_search(ViMotionCommand):
 class _vi_search(ViMotionCommand):
 
     def run(self, mode=None, count=1, forward=True):
-        last_search = self.state.last_buffer_search
+        last_search = get_last_buffer_search(self.view.window())
 
         def f(view, s):
             b = get_insertion_point_at_b(s)

@@ -22,13 +22,6 @@ from sublime import active_window
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 
-_WINDOW_SETTINGS = [
-    'last_buffer_search'
-]
-
-_SCOPE_VI_VIEW = 3
-_SCOPE_VI_WINDOW = 4
-
 
 _cache = {}  # type: dict
 _session = {}  # type: dict
@@ -140,19 +133,12 @@ class _VintageSettings():
             if not isinstance(view.settings().get('vintage'), dict):
                 view.settings().set('vintage', dict())
 
-            window = view.window()
-            if window is not None and not isinstance(window.settings().get('vintage'), dict):
-                window.settings().set('vintage', dict())
-
     def __getitem__(self, key):
         try:
-            if key not in _WINDOW_SETTINGS:
-                try:
-                    return self._get_volatile(key)
-                except KeyError:
-                    value = self.view.settings().get('vintage').get(key)
-            else:
-                value = self.view.window().settings().get('vintage').get(key)
+            try:
+                return self._get_volatile(key)
+            except KeyError:
+                value = self.view.settings().get('vintage').get(key)
 
         except (KeyError, AttributeError):
             value = None
@@ -160,16 +146,13 @@ class _VintageSettings():
         return value
 
     def __setitem__(self, key, value):
-        if key not in _WINDOW_SETTINGS:
-            if key in _VintageSettings._volatile_settings:
-                self._set_volatile(key, value)
-                return
-            setts, target = self.view.settings().get('vintage'), self.view
-        else:
-            setts, target = self.view.window().settings().get('vintage'), self.view.window()
+        if key in _VintageSettings._volatile_settings:
+            self._set_volatile(key, value)
+            return
 
-        setts[key] = value
-        target.settings().set('vintage', setts)
+        settings = self.view.settings().get('vintage')
+        settings[key] = value
+        self.view.settings().set('vintage', settings)
 
     def _get_volatile(self, key):
         try:
@@ -194,6 +177,5 @@ def destroy(view):
 class SettingsManager():
 
     def __init__(self, view):
-        self.window = _SublimeSettings(view.window())
         self.view = _SublimeSettings(view)
         self.vi = _VintageSettings(view)

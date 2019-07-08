@@ -23,6 +23,8 @@ from sublime import Region
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_reset_during_init
+from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import col_at
 from NeoVintageous.nv.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.utils import is_view
@@ -112,50 +114,6 @@ class State(object):
         self.settings.vi['_vintageous_non_interactive'] = value
 
     @property
-    def last_character_search(self):
-        """Last character used as input for 'f' or 't'."""
-        return self.settings.window['_vintageous_last_character_search'] or ''
-
-    @last_character_search.setter
-    def last_character_search(self, value):
-        assert isinstance(value, str), 'bad call'
-        assert len(value) == 1, 'bad call'
-        self.settings.window['_vintageous_last_character_search'] = value
-
-    @property
-    def last_char_search_command(self):
-        # type: () -> str
-        # ',' and ';' change directions depending on which of 'f' or 't' was the previous command.
-        #
-        # Returns:
-        #   str: The name of the last character search command, namely: 'vi_f',
-        #       'vi_t', 'vi_big_f' or 'vi_big_t'.
-        name = self.settings.window['_vintageous_last_char_search_command']
-
-        return name or 'vi_f'
-
-    @last_char_search_command.setter
-    def last_char_search_command(self, value):
-        # type: (str) -> None
-        self.settings.window['_vintageous_last_char_search_command'] = value
-
-    @property
-    def last_buffer_search_command(self):
-        # type: () -> str
-        # 'n' and 'N' change directions depending on which of '/' or '?' was the previous command.
-        # Returns:
-        #   str: The name of the last character search command, namely:
-        #       'vi_slash', 'vi_question_mark', 'vi_star', 'vi_octothorp'.
-        name = self.settings.window['_vintageous_last_buffer_search_command']
-
-        return name or 'vi_slash'
-
-    @last_buffer_search_command.setter
-    def last_buffer_search_command(self, value):
-        # type: (str) -> None
-        self.settings.window['_vintageous_last_buffer_search_command'] = value
-
-    @property
     def must_capture_register_name(self):
         # type: () -> bool
         # Returns:
@@ -166,36 +124,6 @@ class State(object):
     def must_capture_register_name(self, value):
         # type: (bool) -> None
         self.settings.vi['must_capture_register_name'] = value
-
-    @property
-    def last_buffer_search(self):
-        # type: () -> str
-        # Returns:
-        #   The last string used by buffer search commands '/' or '?'.
-        return self.settings.window['_vintageous_last_buffer_search'] or ''
-
-    @last_buffer_search.setter
-    def last_buffer_search(self, value):
-        # type: (str) -> None
-        self.settings.window['_vintageous_last_buffer_search'] = value
-
-    @property
-    def reset_during_init(self):
-        # Some commands gather user input through input panels. An input panel
-        # is just a view, so when it's closed, the previous view gets activated
-        # and Vintageous init code runs. In this case, however, we most likely
-        # want the global state to remain unchanged. This variable helps to
-        # signal this. For an example, see the '_vi_slash' command.
-        value = self.settings.window['_vintageous_reset_during_init']
-        if not isinstance(value, bool):
-            return True
-
-        return value
-
-    @reset_during_init.setter
-    def reset_during_init(self, value):
-        assert isinstance(value, bool), 'expected a bool'
-        self.settings.window['_vintageous_reset_during_init'] = value
 
     # This property isn't reset automatically. _enter_normal_mode mode must
     # take care of that so it can repeat the commands issued while in
@@ -555,7 +483,7 @@ class State(object):
         self.view.run_command('unmark_undo_groups_for_gluing')
         self.processing_notation = False
         self.non_interactive = False
-        self.reset_during_init = True
+        set_reset_during_init(self.view.window(), True)
 
     def update_xpos(self, force=False):
         if force or self.must_update_xpos:
@@ -841,11 +769,11 @@ def init_state(view):
 
     state = State(view)
 
-    if not state.reset_during_init:
+    if not get_reset_during_init(view.window()):
         # Probably exiting from an input panel, like when using '/'. Don't
         # reset the global state, as it may contain data needed to complete
         # the command that's being built.
-        state.reset_during_init = True
+        set_reset_during_init(view.window(), True)
         return
 
     mode = state.mode

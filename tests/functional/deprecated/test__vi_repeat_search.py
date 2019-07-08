@@ -153,7 +153,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
         self.select(0)
 
         self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
-        self.state.last_buffer_search_command = 'vi_slash'
+        self.setLastSearchCommand('vi_slash')
 
         self.assertSelection(4)
 
@@ -169,7 +169,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
         self.select(0)
 
         self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
-        self.state.last_buffer_search_command = 'vi_slash'
+        self.setLastSearchCommand('vi_slash')
 
         self.assertSelection(4)
 
@@ -185,7 +185,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
         self.select(0)
 
         self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
-        self.state.last_buffer_search_command = 'vi_slash'
+        self.setLastSearchCommand('vi_slash')
 
         self.assertSelection(4)
 
@@ -208,7 +208,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
         self.select(0)
 
         self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
-        self.state.last_buffer_search_command = 'vi_question_mark'
+        self.setLastSearchCommand('vi_question_mark')
 
         self.assertSelection(20)
 
@@ -224,7 +224,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
         self.select(0)
 
         self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
-        self.state.last_buffer_search_command = 'vi_question_mark'
+        self.setLastSearchCommand('vi_question_mark')
 
         self.assertSelection(20)
 
@@ -240,7 +240,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
         self.select(0)
 
         self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
-        self.state.last_buffer_search_command = 'vi_question_mark'
+        self.setLastSearchCommand('vi_question_mark')
 
         self.assertSelection(20)
 

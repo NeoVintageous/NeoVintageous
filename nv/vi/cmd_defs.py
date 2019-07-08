@@ -15,6 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.settings import get_last_buffer_search
+from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_last_character_search
+from NeoVintageous.nv.settings import set_last_char_search_command
+from NeoVintageous.nv.settings import set_last_character_search
+from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
@@ -1964,7 +1970,7 @@ class StShowCommandPalette(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        state.reset_during_init = False
+        set_reset_during_init(state.view.window(), False)
 
         return {
             'action': 'show_overlay',
@@ -2696,8 +2702,10 @@ class ViRepeatCharSearchForward(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
+    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
-        last_search_cmd = state.last_char_search_command
+        window = state.view.window()
+        last_search_cmd = get_last_char_search_command(window)
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
@@ -2708,7 +2716,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
             'motion_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'char': state.last_character_search,
+                'char': get_last_character_search(window),
                 'inclusive': inclusive,
                 'skipping': skipping
             }
@@ -2956,8 +2964,10 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
+    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
-        last_search_cmd = state.last_char_search_command
+        window = state.view.window()
+        last_search_cmd = get_last_char_search_command(window)
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
@@ -2968,7 +2978,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
             'motion_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'char': state.last_character_search,
+                'char': get_last_character_search(window),
                 'inclusive': inclusive,
                 'skipping': skipping
             }
@@ -3342,13 +3352,11 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.inclusive = inclusive
 
+    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
-        if self.inclusive:
-            state.last_char_search_command = 'vi_f'
-        else:
-            state.last_char_search_command = 'vi_t'
-
-        state.last_character_search = self.inp
+        window = state.view.window()
+        set_last_char_search_command(window, 'vi_f' if self.inclusive else 'vi_t')
+        set_last_character_search(window, self.inp)
 
         return {
             'motion': '_vi_find_in_line',
@@ -3409,13 +3417,11 @@ class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.inclusive = inclusive
 
+    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
-        if self.inclusive:
-            state.last_char_search_command = 'vi_big_f'
-        else:
-            state.last_char_search_command = 'vi_big_t'
-
-        state.last_character_search = self.inp
+        window = state.view.window()
+        set_last_char_search_command(window, 'vi_big_f' if self.inclusive else 'vi_big_t')
+        set_last_character_search(window, self.inp)
 
         return {
             'motion': '_vi_reverse_find_in_line',
@@ -3470,9 +3476,10 @@ class ViSearchForwardImpl(ViMotionDef):
         self.inp = term
         self.updates_xpos = True
 
+    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
         if not self.inp:
-            self.inp = state.last_buffer_search
+            self.inp = get_last_buffer_search(state.view.window())
 
         return {
             'motion': '_vi_slash_impl',
@@ -3528,7 +3535,7 @@ class ViSearchBackwardImpl(ViMotionDef):
 
     def translate(self, state):
         if not self.inp:
-            self.inp = state.last_buffer_search
+            self.inp = get_last_buffer_search(state.view.window())
 
         return {
             'motion': '_vi_question_mark_impl',
