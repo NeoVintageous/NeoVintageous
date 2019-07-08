@@ -101,7 +101,7 @@ _REGION_FLAGS = {
 
 
 def ui_region_flags(name):
-    return _REGION_FLAGS.get(name)
+    return _REGION_FLAGS.get(name, 0)
 
 
 def ui_highlight_yank(view):
