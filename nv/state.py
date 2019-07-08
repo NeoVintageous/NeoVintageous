@@ -23,6 +23,7 @@ from sublime import Region
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import col_at
@@ -778,8 +779,7 @@ def init_state(view):
     if len(view.sel()) == 0:
         view.sel().add(0)
 
-    default_mode = view.settings().get('vintageous_default_mode')
-
+    default_mode = get_setting(view, 'default_mode')
     if default_mode == 'insert':
         if mode in (NORMAL, UNKNOWN):
             enter_insert_mode(view, mode)
