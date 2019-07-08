@@ -36,6 +36,8 @@ from NeoVintageous.nv.registers import _linewise as _registers_linewise
 from NeoVintageous.nv.registers import _reset_data as _registers_reset_data
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
+from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
+from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
 from NeoVintageous.nv.state import State as _State
 from NeoVintageous.nv.vi.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.vi.settings import set_visual_block_direction as _set_visual_block_direction
@@ -335,7 +337,10 @@ class ViewTestCase(unittest.TestCase):
         self._assertContentRegion('_nv_search_cur', expected, msg)
 
     def setLastSearch(self, term):
-        self.state.last_buffer_search = term
+        _set_last_buffer_search(self.view.window(), term)
+
+    def setLastSearchCommand(self, command):
+        _set_last_buffer_search_command(self.view.window(), command)
 
     def assertInsert(self, expected, msg=None):
         self._assertView(expected, INSERT, msg)

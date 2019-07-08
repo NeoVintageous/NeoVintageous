@@ -230,7 +230,7 @@ class NeoVintageousEvents(EventListener):
         fix_eol_cursor(view, State(view).mode)
 
     def on_close(self, view):
-        settings.destroy(view)
+        settings.on_close(view)
 
     def on_activated(self, view):
 

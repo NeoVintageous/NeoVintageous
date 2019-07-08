@@ -17,6 +17,11 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.settings import get_last_buffer_search
+from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_last_char_search
+from NeoVintageous.nv.settings import get_reset_during_init
+from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import cmd_defs
 
@@ -59,7 +64,7 @@ class TestState(unittest.ViewTestCase):
         # Make sure the actual usage of NeoVintageous doesn't change the
         # pristine state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')
-        self.view.window().settings().erase('_vintageous_last_character_search')
+        self.view.window().settings().erase('_vintageous_last_char_search')
         self.view.window().settings().erase('_vintageous_last_buffer_search')
 
         self.assertEqual(s.sequence, '')
@@ -70,12 +75,12 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(s.action_count, '')
         self.assertEqual(s.glue_until_normal_mode, False)
         self.assertEqual(s.processing_notation, False)
-        self.assertEqual(s.last_character_search, '')
-        self.assertEqual(s.last_char_search_command, 'vi_f')
+        self.assertEqual(get_last_char_search(self.view.window()), '')
+        self.assertEqual(get_last_char_search_command(self.view.window()), 'vi_f')
         self.assertEqual(s.non_interactive, False)
         self.assertEqual(s.must_capture_register_name, False)
-        self.assertEqual(s.last_buffer_search, '')
-        self.assertEqual(s.reset_during_init, True)
+        self.assertEqual(get_last_buffer_search(self.view.window()), '')
+        self.assertEqual(get_reset_during_init(self.view.window()), True)
 
     def test_must_scroll_into_view(self):
         self.assertFalse(self.state.must_scroll_into_view())
@@ -144,14 +149,14 @@ class TestStateResettingVolatileData(unittest.ViewTestCase):
         self.state.glue_until_normal_mode = True
         self.state.processing_notation = True
         self.state.non_interactive = True
-        self.state.reset_during_init = False
+        set_reset_during_init(self.view.window(), False)
 
         self.state.reset_volatile_data()
 
         self.assertFalse(self.state.glue_until_normal_mode)
         self.assertFalse(self.state.processing_notation)
         self.assertFalse(self.state.non_interactive)
-        self.assertTrue(self.state.reset_during_init)
+        self.assertTrue(get_reset_during_init(self.view.window()))
 
 
 class TestStateCounts(unittest.ViewTestCase):
