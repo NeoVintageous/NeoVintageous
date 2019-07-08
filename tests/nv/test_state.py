@@ -19,7 +19,7 @@ from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search_command
-from NeoVintageous.nv.settings import get_last_character_search
+from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.state import State
@@ -64,7 +64,7 @@ class TestState(unittest.ViewTestCase):
         # Make sure the actual usage of NeoVintageous doesn't change the
         # pristine state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')
-        self.view.window().settings().erase('_vintageous_last_character_search')
+        self.view.window().settings().erase('_vintageous_last_char_search')
         self.view.window().settings().erase('_vintageous_last_buffer_search')
 
         self.assertEqual(s.sequence, '')
@@ -75,7 +75,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(s.action_count, '')
         self.assertEqual(s.glue_until_normal_mode, False)
         self.assertEqual(s.processing_notation, False)
-        self.assertEqual(get_last_character_search(self.view.window()), '')
+        self.assertEqual(get_last_char_search(self.view.window()), '')
         self.assertEqual(get_last_char_search_command(self.view.window()), 'vi_f')
         self.assertEqual(s.non_interactive, False)
         self.assertEqual(s.must_capture_register_name, False)

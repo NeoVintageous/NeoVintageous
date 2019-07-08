@@ -16,10 +16,10 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.nv.settings import get_last_buffer_search
+from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
-from NeoVintageous.nv.settings import get_last_character_search
+from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
-from NeoVintageous.nv.settings import set_last_character_search
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
@@ -2716,7 +2716,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
             'motion_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'char': get_last_character_search(window),
+                'char': get_last_char_search(window),
                 'inclusive': inclusive,
                 'skipping': skipping
             }
@@ -2978,7 +2978,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
             'motion_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'char': get_last_character_search(window),
+                'char': get_last_char_search(window),
                 'inclusive': inclusive,
                 'skipping': skipping
             }
@@ -3356,7 +3356,7 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
     def translate(self, state):
         window = state.view.window()
         set_last_char_search_command(window, 'vi_f' if self.inclusive else 'vi_t')
-        set_last_character_search(window, self.inp)
+        set_last_char_search(window, self.inp)
 
         return {
             'motion': '_vi_find_in_line',
@@ -3421,7 +3421,7 @@ class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
     def translate(self, state):
         window = state.view.window()
         set_last_char_search_command(window, 'vi_big_f' if self.inclusive else 'vi_big_t')
-        set_last_character_search(window, self.inp)
+        set_last_char_search(window, self.inp)
 
         return {
             'motion': '_vi_reverse_find_in_line',
