@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import re
+
 from sublime import load_settings
 from sublime import save_settings
 
@@ -31,6 +33,14 @@ def set_window_status(window, key, value):
 def erase_window_status(window, key):
     for view in window.views():
         view.erase_status(key)
+
+
+# A future compatable regular expression special character escaper. In Python
+# 3.7 only characters that have special meaning in regex patterns are escaped.
+def re_escape(pattern):
+    return re.escape(pattern).replace(
+        '\\<', '<').replace(
+        '\\>', '>')
 
 
 # There's no Sublime API to show a corrections select list. The workaround is to
@@ -73,6 +83,17 @@ def view_find(view, pattern, start_pt, flags=0):
     return match
 
 
+# There's no Sublime API to find a pattern in reverse direction.
+# See: https://github.com/SublimeTextIssues/Core/issues/245.
+def view_rfind_all(view, pattern, start_pt, flags=0):
+    matches = view.find_all(pattern)
+    for region in matches:
+        if region.b > start_pt:
+            return reversed(matches[:matches.index(region)])
+
+    return reversed(matches)
+
+
 # There's no Sublime API to find a pattern within a start-end range.
 # Note that this returns zero-length matches. Also see view_find().
 # Returns None if nothing is found instead of returning Region(-1).
@@ -89,6 +110,7 @@ def view_find_in_range(view, pattern, pos, endpos, flags=0):
 # Returns None if nothing is found instead of returning Region(-1).
 # See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
 # See: https://github.com/SublimeTextIssues/Core/issues/534.
+# TODO Refactor to generator
 def view_find_all_in_range(view, pattern, pos, endpos, flags=0):
     matches = []
     while pos <= endpos:

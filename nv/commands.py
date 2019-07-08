@@ -157,7 +157,7 @@ from NeoVintageous.nv.vi.settings import get_repeat_data
 from NeoVintageous.nv.vi.settings import set_repeat_data
 from NeoVintageous.nv.vi.text_objects import big_word_end_reverse
 from NeoVintageous.nv.vi.text_objects import big_word_reverse
-from NeoVintageous.nv.vi.text_objects import find_bracket_location
+from NeoVintageous.nv.vi.text_objects import find_next_item_match_pt
 from NeoVintageous.nv.vi.text_objects import find_sentences_backward
 from NeoVintageous.nv.vi.text_objects import find_sentences_forward
 from NeoVintageous.nv.vi.text_objects import get_text_object_region
@@ -3708,24 +3708,23 @@ class _vi_percent(ViMotionCommand):
         else:
             def f(view, s):
                 if mode == NORMAL:
-                    target = find_bracket_location(view, s)
+                    target = find_next_item_match_pt(view, s)
                     if target is not None:
                         s = Region(target)
                 elif mode == VISUAL:
-                    target = find_bracket_location(view, s)
+                    target = find_next_item_match_pt(view, s)
                     if target is not None:
                         resolve_visual_target(s, target)
                 elif mode == VISUAL_LINE:
                     if s.a > s.b:
-                        target = find_bracket_location(view, Region(s.b, self.view.line(s.b).end()))
+                        target = find_next_item_match_pt(view, Region(s.b, self.view.line(s.b).end()))
                     else:
-                        target = find_bracket_location(view, Region(s.a, s.b - 1))
+                        target = find_next_item_match_pt(view, Region(s.a, s.b - 1))
 
                     if target is not None:
                         resolve_visual_line_target(view, s, target)
-
                 elif mode == INTERNAL_NORMAL:
-                    found = find_bracket_location(view, s)
+                    found = find_next_item_match_pt(view, s)
                     if found is not None:
                         if found < s.a:
                             s.a += 1

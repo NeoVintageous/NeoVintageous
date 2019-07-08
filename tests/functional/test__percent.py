@@ -97,6 +97,7 @@ class Test_percent_in_PHP_syntax(unittest.FunctionalTestCase):
 
     def test_percent(self):
         self.eq('<?php\nfunct|ion x() {\n//...\n}\n', 'n_%', '<?php\nfunction x(|) {\n//...\n}\n')
+        self.eq('<fi|zz>buzz</fizz>', 'n_%', '<fizz>buzz|</fizz>')
 
     def test_find_next_item_in_this_line_after_the_cursor(self):
         start = '<?php\nfunct|ion x() {\n    //...\n}\n'
@@ -153,6 +154,16 @@ class Test_percent_in_HTML_syntax(unittest.FunctionalTestCase):
         self.eq('fi<div>zzbu</div|>zz', 'n_%', 'fi<div>zzbu|</div>zz')
         self.eq('fi<div>zzbu</div>|zz', 'n_%', 'fi|<div>zzbu</div>zz')
         self.eq('fi<div>zzbu</div>z|z', 'n_%', 'fi<div>zzbu</div>z|z')
+
+
+class Test_percent_in_XML_syntax(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.syntax('Packages/XML/XML.sublime-syntax')
+
+    def test_percent(self):
+        self.eq('<fi|zz>buzz</fizz>', 'n_%', '<fizz>buzz|</fizz>')
 
 
 class Test_workaround_for_issue_243(unittest.FunctionalTestCase):

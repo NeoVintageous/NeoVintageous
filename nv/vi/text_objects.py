@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from itertools import chain
 import re
 
 from sublime import CLASS_EMPTY_LINE
@@ -26,12 +25,14 @@ from sublime import CLASS_PUNCTUATION_START
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 from sublime import IGNORECASE
-from sublime import LITERAL
 from sublime import Region
 
+from NeoVintageous.nv.polyfill import re_escape
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_indentation_level
 from NeoVintageous.nv.polyfill import view_indented_region
+from NeoVintageous.nv.polyfill import view_rfind_all
+from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import next_non_ws
 from NeoVintageous.nv.utils import prev_non_blank
@@ -825,20 +826,19 @@ def get_closest_tag(view, pt):
     #   pt (int)
     #
     # Returns:
-    #   tuple[int, Region]
-    #   tuple[None, None]
+    #   Region|None
     substr = view.substr
     while substr(pt) != '<' and pt > 0:
         pt -= 1
 
     if substr(pt) != '<':
-        return None, None
+        return None
 
     next_tag = view.find(RX_ANY_TAG, pt)
     if next_tag.a != pt:
-        return None, None
+        return None
 
-    return pt, next_tag
+    return next_tag
 
 
 def find_containing_tag(view, start):
@@ -849,7 +849,7 @@ def find_containing_tag(view, start):
     # Returns:
     #   tuple[Region, Region, str]
     #   tuple[None, None, None]
-    _, closest_tag = get_closest_tag(view, start)
+    closest_tag = get_closest_tag(view, start)
 
     if not closest_tag:
         return None, None, None
@@ -918,168 +918,80 @@ def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags
     return next_unbalanced_tag(view, search, search_args, restart_at, tags)
 
 
-def _find_tag(view, pairs, pt):
-    # Args:
-    #   pt (int)
-    #
-    # Returns:
-    #   Region|None
-    if (view.score_selector(0, 'text.html') == 0 and view.score_selector(0, 'text.xml') == 0):
-        return None
+def find_next_item_match_pt(view, s):
+    pt = get_insertion_point_at_b(s)
 
-    if any([view.substr(pt) in p for p in pairs]):
-        return None
+    # Note that some item targets are added later in relevant contexts, for
+    # example the item targets <> are added only when in a HTML/XML context.
+    # TODO Default targets should be configurable, see :h 'matchpairs'.
+    targets = '(){}[]'
 
-    _, closest_tag = get_closest_tag(view, pt)
-    if not closest_tag:
-        return None
+    # If in a HTML/XML context, check if the cursor position is within a valid
+    # tag e.g. <name>, and find the matching tag e.g. if inside an opening tag
+    # then find the closing tag, if in a closing tag find the opening one.
 
-    if closest_tag.contains(pt):
-        begin_tag, end_tag, _ = find_containing_tag(view, pt)
-        if begin_tag:
-            return begin_tag if end_tag.contains(pt) else end_tag
+    if view.match_selector(0, 'text.(html|xml)'):
+        # Add valid HTML/XML item targets.
+        targets += '<>'
 
-    return None
+        # Find matching HTML/XML items, but only if cursor is within a tag.
+        if view.substr(pt) not in targets:
+            closest_tag = get_closest_tag(view, pt)
+            if closest_tag:
+                if closest_tag.contains(pt):
+                    begin_tag, end_tag, _ = find_containing_tag(view, pt)
+                    if begin_tag:
+                        return begin_tag.a if end_tag.contains(pt) else end_tag.a
 
-
-def _find_a_bracket(view, pairs, pt):
-    # Locate the next bracket after the caret in the current line. If None
-    # is found, execution must be aborted.
-    #
-    # Returns:
-    #   tuple: (bracket, brackets, bracket_pt) e.g. ('(', ('(', ')'), 1337)
-    caret_row, caret_col = view.rowcol(pt)
-    line_text = view.substr(Region(pt, view.line(pt).b))
-    try:
-        found_brackets = min([(line_text.index(bracket), bracket)
-                             for bracket in chain(*pairs)
-                             if bracket in line_text])
-    except ValueError:
-        return None, None, None
-
-    bracket_a, bracket_b = [(a, b) for (a, b) in pairs if found_brackets[1] in (a, b)][0]
-    return (
-        found_brackets[1],
-        (bracket_a, bracket_b),
-        view.text_point(caret_row, caret_col + found_brackets[0])
-    )
-
-
-def _find_balanced_closing_bracket(view, start, brackets, unbalanced=0):
-    # Returns:
-    #   Region|None
-    new_start = start
-    for i in range(unbalanced or 1):
-        next_closing_bracket = find_in_range(
-            view,
-            brackets[1],
-            start=new_start,
-            end=view.size(),
-            flags=LITERAL
-        )
-
-        if next_closing_bracket is None:  # Unbalanced brackets; nothing we can do.
-            return
-
-        new_start = next_closing_bracket.end()
-
-    nested = 0
-    while True:
-        next_opening_bracket = find_in_range(
-            view,
-            brackets[0],
-            start=start,
-            end=next_closing_bracket.end(),
-            flags=LITERAL
-        )
-
-        if not next_opening_bracket:
-            break
-
-        nested += 1
-        start = next_opening_bracket.end()
-
-    if nested > 0:
-        return _find_balanced_closing_bracket(
-            view,
-            next_closing_bracket.end(),
-            brackets,
-            nested
-        )
-
-    return next_closing_bracket.begin()
-
-
-def _find_balanced_opening_bracket(view, start, brackets, unbalanced=0):
-    new_start = start
-    for i in range(unbalanced or 1):
-        prev_opening_bracket = reverse_search_by_pt(
-            view,
-            brackets[0],
-            start=0,
-            end=new_start,
-            flags=LITERAL
-        )
-
-        # Unbalanced brackets; nothing we can do.
-        if prev_opening_bracket is None:
-            return
-
-        new_start = prev_opening_bracket.begin()
-
-    nested = 0
-    while True:
-        next_closing_bracket = reverse_search_by_pt(
-            view,
-            brackets[1],
-            start=prev_opening_bracket.a,
-            end=start,
-            flags=LITERAL
-        )
-
-        if not next_closing_bracket:
-            break
-
-        nested += 1
-        start = next_closing_bracket.begin()
-
-    if nested > 0:
-        return _find_balanced_opening_bracket(
-            view,
-            prev_opening_bracket.begin(),
-            brackets,
-            nested
-        )
-
-    return prev_opening_bracket.begin()
-
-
-def find_bracket_location(view, region):
-    # Args:
-    #   region (Region)
-    #
-    # Returns:
-    #   int|None
-    pt = region.b
-    if (region.size() > 0) and (region.b > region.a):
-        pt = region.b - 1
-
-    pairs = (
-        ('(', ')'),
-        ('[', ']'),
-        ('{', '}'),
-        ('<', '>'),
-    )
-
-    tag = _find_tag(view, pairs, pt)
-    if tag:
-        return tag.a
-
-    bracket, brackets, bracket_pt = _find_a_bracket(view, pairs, pt)
+    # Find the next item after or under the cursor.
+    bracket = view_find(view, '|'.join(map(re_escape, targets)), pt)
     if not bracket:
         return
 
-    if bracket == brackets[0]:
-        return _find_balanced_closing_bracket(view, bracket_pt + 1, brackets)
+    # Only accept items found within the current cursor line.
+    if bracket.b > view.line(pt).b:
+        return
+
+    target = view.substr(bracket)
+    target_index = targets.index(target)
+    targets_open = targets[::2]
+    forward = True if target in targets_open else False
+
+    if target in targets_open:
+        target_pair = (targets[target_index], targets[target_index + 1])
     else:
-        return _find_balanced_opening_bracket(view, bracket_pt, brackets)
+        target_pair = (targets[target_index - 1], targets[target_index])
+
+    if forward:
+        counter = 0
+        start = bracket.b
+        while True:
+            bracket = view_find(view, '|'.join(map(re_escape, target_pair)), start)
+            if not bracket:
+                return
+
+            if view.substr(bracket) == target:
+                counter += 1
+            else:
+                if counter == 0:
+                    return bracket.a
+
+                counter -= 1
+
+            start = bracket.b
+    else:
+        # Note the use of view_rfind_all(), because Sublime doesn't have any
+        # APIs to do reverse searches and finding *all* matches before a point
+        # is easier and more effiecient, at least in a userland implemention.
+        counter = 0
+        start = bracket.a
+        for bracket in view_rfind_all(view, '|'.join(map(re_escape, target_pair)), start):
+            if view.substr(bracket) == target:
+                counter += 1
+            else:
+                if counter == 0:
+                    return bracket.a
+
+                counter -= 1
+
+            start = bracket.a

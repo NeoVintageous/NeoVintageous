@@ -64,21 +64,21 @@ class TestTextObjects(unittest.ViewTestCase):
 
     def test_get_closest_tag(self):
         self.normal('ab')
-        self.assertEqual((None, None), get_closest_tag(self.view, 0))
-        self.assertEqual((None, None), get_closest_tag(self.view, 1))
-        self.assertEqual((None, None), get_closest_tag(self.view, 2))
+        self.assertEqual(None, get_closest_tag(self.view, 0))
+        self.assertEqual(None, get_closest_tag(self.view, 1))
+        self.assertEqual(None, get_closest_tag(self.view, 2))
 
         self.normal('<p>x<i>ab</i></p>')
-        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 0))
-        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 1))
-        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 2))
-        self.assertEqual((0, self.Region(0, 3)), get_closest_tag(self.view, 3))
-        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 4))
-        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 5))
-        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 6))
-        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 7))
-        self.assertEqual((4, self.Region(4, 7)), get_closest_tag(self.view, 8))
-        self.assertEqual((9, self.Region(9, 13)), get_closest_tag(self.view, 9))
+        self.assertEqual(self.Region(0, 3), get_closest_tag(self.view, 0))
+        self.assertEqual(self.Region(0, 3), get_closest_tag(self.view, 1))
+        self.assertEqual(self.Region(0, 3), get_closest_tag(self.view, 2))
+        self.assertEqual(self.Region(0, 3), get_closest_tag(self.view, 3))
+        self.assertEqual(self.Region(4, 7), get_closest_tag(self.view, 4))
+        self.assertEqual(self.Region(4, 7), get_closest_tag(self.view, 5))
+        self.assertEqual(self.Region(4, 7), get_closest_tag(self.view, 6))
+        self.assertEqual(self.Region(4, 7), get_closest_tag(self.view, 7))
+        self.assertEqual(self.Region(4, 7), get_closest_tag(self.view, 8))
+        self.assertEqual(self.Region(9, 13), get_closest_tag(self.view, 9))
 
 
 class Test_next_unbalanced_end_tag(unittest.ViewTestCase):
