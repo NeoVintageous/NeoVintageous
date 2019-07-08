@@ -1498,15 +1498,14 @@ class _vi_dot(ViWindowCommandBase):
             state.mode = NORMAL
 
         if repeat_data is None:
-            ui_bell()
-            return
+            return ui_bell()
 
         # TODO: Find out if the user actually meant '1'.
         if count and count == 1:
             count = None
 
         type_, seq_or_cmd, old_mode, visual_data = repeat_data
-        _log.debug('type=%s, seq or cmd=%s, old mode=%s', type_, seq_or_cmd, old_mode)
+        _log.debug('type=%s, seqorcmd=%s, oldmode=%s', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
             state.restore_visual_data(visual_data)
@@ -1516,22 +1515,24 @@ class _vi_dot(ViWindowCommandBase):
         elif mode not in (VISUAL, VISUAL_LINE, NORMAL, INTERNAL_NORMAL, INSERT):
             return ui_bell()
 
+        view = self.window.active_view()
+
         if type_ == 'vi':
             self.window.run_command('_nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
         elif type_ == 'native':
-            sels = list(self.window.active_view().sel())
+            sels = list(view.sel())
             # FIXME: We're not repeating as we should. It's the motion that
             # should receive this count.
             for i in range(count or 1):
                 self.window.run_command(*seq_or_cmd)
 
             # FIXME: What happens in visual mode?
-            set_selection(self.window.active_view(), sels)
+            set_selection(view, sels)
         else:
             raise ValueError('bad repeat data')
 
         enter_normal_mode(self.window, mode)
-        set_repeat_data(state.view, repeat_data)
+        set_repeat_data(view, repeat_data)
         state.update_xpos()
 
 
