@@ -30,9 +30,7 @@ from NeoVintageous.nv.vim import status_message
 
 
 def ui_bell(msg=None):
-    if msg:
-        status_message(msg)
-
+    # type: (str) -> None
     window = active_window()
     if not window:
         return
@@ -41,9 +39,11 @@ def ui_bell(msg=None):
     if not view:
         return
 
-    settings = view.settings()
     if get_option(view, 'belloff') == 'all':
         return
+
+    if msg:
+        status_message(msg)
 
     color_scheme = get_setting(view, 'bell_color_scheme')
     if color_scheme in ('dark', 'light'):
@@ -54,6 +54,8 @@ def ui_bell(msg=None):
     delay = 55
 
     style = get_setting(view, 'bell')
+
+    settings = view.settings()
 
     if style == 'view':
         settings.set('color_scheme', color_scheme)
