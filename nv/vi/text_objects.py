@@ -929,7 +929,6 @@ def find_next_item_match_pt(view, s):
     # If in a HTML/XML context, check if the cursor position is within a valid
     # tag e.g. <name>, and find the matching tag e.g. if inside an opening tag
     # then find the closing tag, if in a closing tag find the opening one.
-
     if view.match_selector(0, 'text.(html|xml)'):
         # Add valid HTML/XML item targets.
         targets += '<>'

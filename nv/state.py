@@ -469,7 +469,7 @@ class State(object):
         self.view.run_command('unmark_undo_groups_for_gluing')
         self.processing_notation = False
         self.non_interactive = False
-        set_reset_during_init(self.view.window(), True)
+        set_reset_during_init(self.view, True)
 
     def update_xpos(self, force=False):
         if force or self.must_update_xpos:
@@ -755,11 +755,11 @@ def init_state(view):
 
     state = State(view)
 
-    if not get_reset_during_init(view.window()):
+    if not get_reset_during_init(view):
         # Probably exiting from an input panel, like when using '/'. Don't
         # reset the global state, as it may contain data needed to complete
         # the command that's being built.
-        set_reset_during_init(view.window(), True)
+        set_reset_during_init(view, True)
         return
 
     mode = state.mode

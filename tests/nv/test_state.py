@@ -75,12 +75,12 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(s.action_count, '')
         self.assertEqual(s.glue_until_normal_mode, False)
         self.assertEqual(s.processing_notation, False)
-        self.assertEqual(get_last_char_search(self.view.window()), '')
-        self.assertEqual(get_last_char_search_command(self.view.window()), 'vi_f')
+        self.assertEqual(get_last_char_search(self.view), '')
+        self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
         self.assertEqual(s.non_interactive, False)
         self.assertEqual(s.must_capture_register_name, False)
-        self.assertEqual(get_last_buffer_search(self.view.window()), '')
-        self.assertEqual(get_reset_during_init(self.view.window()), True)
+        self.assertEqual(get_last_buffer_search(self.view), '')
+        self.assertEqual(get_reset_during_init(self.view), True)
 
     def test_must_scroll_into_view(self):
         self.assertFalse(self.state.must_scroll_into_view())
@@ -149,14 +149,14 @@ class TestStateResettingVolatileData(unittest.ViewTestCase):
         self.state.glue_until_normal_mode = True
         self.state.processing_notation = True
         self.state.non_interactive = True
-        set_reset_during_init(self.view.window(), False)
+        set_reset_during_init(self.view, False)
 
         self.state.reset_volatile_data()
 
         self.assertFalse(self.state.glue_until_normal_mode)
         self.assertFalse(self.state.processing_notation)
         self.assertFalse(self.state.non_interactive)
-        self.assertTrue(get_reset_during_init(self.view.window()))
+        self.assertTrue(get_reset_during_init(self.view))
 
 
 class TestStateCounts(unittest.ViewTestCase):

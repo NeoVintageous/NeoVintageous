@@ -337,10 +337,10 @@ class ViewTestCase(unittest.TestCase):
         self._assertContentRegion('_nv_search_cur', expected, msg)
 
     def setLastSearch(self, term):
-        _set_last_buffer_search(self.view.window(), term)
+        _set_last_buffer_search(self.view, term)
 
     def setLastSearchCommand(self, command):
-        _set_last_buffer_search_command(self.view.window(), command)
+        _set_last_buffer_search_command(self.view, command)
 
     def assertInsert(self, expected, msg=None):
         self._assertView(expected, INSERT, msg)

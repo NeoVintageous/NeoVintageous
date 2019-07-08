@@ -44,53 +44,53 @@ def get_setting_neo(view, name):
     return view.settings().get('neovintageous_%s' % name)
 
 
-def get_last_char_search(window):
+def get_last_char_search(view):
     # The last characte used for searches such as "f" and "t".
-    return _get_private(window, 'last_char_search', '')
+    return _get_private(view.window(), 'last_char_search', '')
 
 
-def get_last_char_search_command(window):
+def get_last_char_search_command(view):
     # Supports repeating the last search commands. For example the command ";"
     # (semi-colon) repeats the latest f, t, F or T [count] times and "," (comma)
     # repeats the latest f, t, F or T in opposite direction [count] times.
-    return _get_private(window, 'last_char_search_command', 'vi_f')
+    return _get_private(view.window(), 'last_char_search_command', 'vi_f')
 
 
-def set_last_char_search(window, value):
-    _set_private(window, 'last_char_search', value)
+def set_last_char_search(view, value):
+    _set_private(view.window(), 'last_char_search', value)
 
 
-def set_last_char_search_command(window, value):
-    _set_private(window, 'last_char_search_command', value)
+def set_last_char_search_command(view, value):
+    _set_private(view.window(), 'last_char_search_command', value)
 
 
-def get_last_buffer_search(window):
+def get_last_buffer_search(view):
     # The last characte used for searches such as "/" and "?".
-    return _get_private(window, 'last_buffer_search', '')
+    return _get_private(view.window(), 'last_buffer_search', '')
 
 
-def get_last_buffer_search_command(window):
+def get_last_buffer_search_command(view):
     # Supports repeating the last search commands. For example the command "n".
-    return _get_private(window, 'last_buffer_search_command', 'vi_slash')
+    return _get_private(view.window(), 'last_buffer_search_command', 'vi_slash')
 
 
-def set_last_buffer_search(window, value):
-    _set_private(window, 'last_buffer_search', value)
+def set_last_buffer_search(view, value):
+    _set_private(view.window(), 'last_buffer_search', value)
 
 
-def set_last_buffer_search_command(window, value):
-    _set_private(window, 'last_buffer_search_command', value)
+def set_last_buffer_search_command(view, value):
+    _set_private(view.window(), 'last_buffer_search_command', value)
 
 
-def get_reset_during_init(window):
+def get_reset_during_init(view):
     # Some commands gather input through input panels. An input panel is a view,
     # but when it's closed, the previous view gets activated and init code runs.
     # This setting can be used to inhibit running the init code when activated.
-    return _get_private(window, 'reset_during_init', True)
+    return _get_private(view.window(), 'reset_during_init', True)
 
 
-def set_reset_during_init(window, value):
-    _set_private(window, 'reset_during_init', value)
+def set_reset_during_init(view, value):
+    _set_private(view.window(), 'reset_during_init', value)
 
 
 def _toggle_preference(name):
