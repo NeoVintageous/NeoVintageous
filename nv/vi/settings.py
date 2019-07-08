@@ -26,6 +26,7 @@ from NeoVintageous.nv.vim import DIRECTION_DOWN
 _cache = {}  # type: dict
 _session = {}  # type: dict
 _storage = {}  # type: dict
+_views = defaultdict(dict)  # type: dict
 
 
 def _get_session_value(name, default=None):
@@ -109,6 +110,32 @@ def set_visual_block_direction(view, direction):
         view.settings().set('_nv_visual_block_direction', direction)
 
 
+# TODO remove assertions
+def set_repeat_data(view, data):
+    # Store data structure for repeat commands like "." to use.
+    # Args:
+    #   tuple (type, cmd_name_or_key_seq, mode): Type may be "vi" or
+    #       "native" ("vi" commands are executed via _nv_process_notation,
+    #       "while "native" commands are executed via sublime.run_command().
+    assert isinstance(data, tuple) or isinstance(data, list), 'bad call'
+    assert len(data) == 4, 'bad call'
+    _views[view.id()]['repeat_data'] = data
+
+
+def get_repeat_data(view):
+    try:
+        return _views[view.id()]['repeat_data']
+    except KeyError:
+        pass
+
+
+def on_close(view):
+    try:
+        del _views[view.id()]
+    except KeyError:
+        pass
+
+
 class _SublimeSettings():
     def __init__(self, container=None):
         self.settings = container.settings()
@@ -122,56 +149,18 @@ class _SublimeSettings():
 
 class _VintageSettings():
 
-    # XXX Temporary hardcoded list until settings are completeley refactored.
-    _volatile_settings = ['repeat_data']  # type: list
-    _volatile = defaultdict(dict)  # type: dict
-
     def __init__(self, view):
         self.view = view
-
-        if view is not None:
-            if not isinstance(view.settings().get('vintage'), dict):
-                view.settings().set('vintage', dict())
+        if view is not None and not isinstance(view.settings().get('vintage'), dict):
+            view.settings().set('vintage', dict())
 
     def __getitem__(self, key):
-        try:
-            try:
-                return self._get_volatile(key)
-            except KeyError:
-                value = self.view.settings().get('vintage').get(key)
-
-        except (KeyError, AttributeError):
-            value = None
-
-        return value
+        return self.view.settings().get('vintage').get(key)
 
     def __setitem__(self, key, value):
-        if key in _VintageSettings._volatile_settings:
-            self._set_volatile(key, value)
-            return
-
         settings = self.view.settings().get('vintage')
         settings[key] = value
         self.view.settings().set('vintage', settings)
-
-    def _get_volatile(self, key):
-        try:
-            return _VintageSettings._volatile[self.view.id()][key]
-        except KeyError:
-            raise KeyError('error accessing volatile key: %s' % key)
-
-    def _set_volatile(self, key, value):
-        try:
-            _VintageSettings._volatile[self.view.id()][key] = value
-        except KeyError:
-            raise KeyError('error while setting key "%s" to value "%s"' % (key, value))
-
-
-def destroy(view):
-    try:
-        del _VintageSettings._volatile[view.id()]
-    except KeyError:
-        pass
 
 
 class SettingsManager():

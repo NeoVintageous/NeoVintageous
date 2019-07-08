@@ -35,6 +35,7 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
+from NeoVintageous.nv.vi.settings import set_repeat_data
 from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -229,22 +230,6 @@ class State(object):
     def action_count(self, value):
         assert value == '' or value.isdigit(), 'bad call'
         self.settings.vi['action_count'] = value
-
-    @property
-    def repeat_data(self):
-        return self.settings.vi['repeat_data'] or None
-
-    @repeat_data.setter
-    def repeat_data(self, value):
-        # Store data structure for repeat ('.') to use.
-        # Args:
-        #   tuple (type, cmd_name_or_key_seq, mode): Type may be "vi" or
-        #       "native" ("vi" commands are executed via _nv_process_notation,
-        #       "while "native" commands are executed via sublime.run_command().
-        assert isinstance(value, tuple) or isinstance(value, list), 'bad call'
-        assert len(value) == 4, 'bad call'
-        _log.debug('set repeat data: %s', value)
-        self.settings.vi['repeat_data'] = value
 
     @property
     def count(self):
@@ -680,7 +665,7 @@ class State(object):
             if not self.non_interactive:
                 if self.action.repeatable:
                     _log.debug('action is repeatable, setting repeat data...')
-                    self.repeat_data = ('vi', str(self.sequence), self.mode, None)
+                    set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
 
             self.reset_command_data()
 
@@ -735,7 +720,7 @@ class State(object):
             if not (self.processing_notation and self.glue_until_normal_mode):
                 if action.repeatable:
                     _log.debug('action is repeatable, setting repeat data...')
-                    self.repeat_data = ('vi', seq, self.mode, visual_repeat_data)
+                    set_repeat_data(self.view, ('vi', seq, self.mode, visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:
             _log.debug('is INTERNAL_NORMAL, changing to NORMAL...')

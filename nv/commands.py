@@ -153,6 +153,8 @@ from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
 from NeoVintageous.nv.vi.search import reverse_search
+from NeoVintageous.nv.vi.settings import get_repeat_data
+from NeoVintageous.nv.vi.settings import set_repeat_data
 from NeoVintageous.nv.vi.text_objects import big_word_end_reverse
 from NeoVintageous.nv.vi.text_objects import big_word_reverse
 from NeoVintageous.nv.vi.text_objects import find_bracket_location
@@ -787,7 +789,7 @@ class _nv_process_notation(ViWindowCommandBase):
                     # Ensure we set the full command for "." to use, but don't
                     # store "." alone.
                     if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
-                        state.repeat_data = ('vi', (leading_motions + keys), initial_mode, None)
+                        set_repeat_data(state.view, ('vi', (leading_motions + keys), initial_mode, None))
 
         # We'll reach this point if we have a command that requests input whose
         # input parser isn't satistied. For example, `/foo`. Note that
@@ -1216,7 +1218,7 @@ class _enter_normal_mode(ViTextCommandBase):
                 self.view.window().run_command('glue_marked_undo_groups')
                 # We're exiting from insert mode or replace mode. Capture
                 # the last native command as repeat data.
-                state.repeat_data = ('native', self.view.command_history(0)[:2], mode, None)
+                set_repeat_data(self.view, ('native', self.view.command_history(0)[:2], mode, None))
                 # Required here so that the macro gets recorded.
                 state.glue_until_normal_mode = False
                 macros.add_step(state, *self.view.command_history(0)[:2])
@@ -1238,7 +1240,7 @@ class _enter_normal_mode(ViTextCommandBase):
             self.view.window().run_command('_vi_dot', {
                 'count': times,
                 'mode': mode,
-                'repeat_data': state.repeat_data,
+                'repeat_data': get_repeat_data(self.view),
             })
             set_selection(self.view, new_sels)
 
@@ -1529,7 +1531,7 @@ class _vi_dot(ViWindowCommandBase):
             raise ValueError('bad repeat data')
 
         enter_normal_mode(self.window, mode)
-        state.repeat_data = repeat_data
+        set_repeat_data(state.view, repeat_data)
         state.update_xpos()
 
 

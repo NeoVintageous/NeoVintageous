@@ -27,6 +27,7 @@ from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.keys import assign
+from NeoVintageous.nv.vi.settings import get_repeat_data
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -1685,13 +1686,14 @@ class ViRepeat(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
+    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
         return {
             'action': '_vi_dot',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'repeat_data': state.repeat_data
+                'repeat_data': get_repeat_data(state.view)
             }
         }
 
