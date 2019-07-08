@@ -136,17 +136,6 @@ def on_close(view):
         pass
 
 
-class _SublimeSettings():
-    def __init__(self, container=None):
-        self.settings = container.settings()
-
-    def __getitem__(self, key):
-        return self.settings.get(key)
-
-    def __setitem__(self, key, value):
-        self.settings.set(key, value)
-
-
 class _VintageSettings():
 
     def __init__(self, view):
@@ -166,5 +155,4 @@ class _VintageSettings():
 class SettingsManager():
 
     def __init__(self, view):
-        self.view = _SublimeSettings(view)
         self.vi = _VintageSettings(view)

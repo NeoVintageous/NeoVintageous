@@ -20,32 +20,9 @@ import os
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.vi.settings import SettingsManager
-from NeoVintageous.nv.vi.settings import _SublimeSettings
 from NeoVintageous.nv.vi.settings import _VintageSettings
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import set_cmdline_cwd
-
-
-class TestSublimeSettings(unittest.ViewTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.view.settings().erase('foo')
-        self.setts = _SublimeSettings(self.view)
-
-    def test_can_set_setting(self):
-        self.assertEqual(self.view.settings().get('foo'), None)
-        self.assertEqual(self.setts['foo'], None)
-
-        self.setts['foo'] = 100
-        self.assertEqual(self.view.settings().get('foo'), 100)
-
-    def test_can_get_setting(self):
-        self.setts['foo'] = 100
-        self.assertEqual(self.setts['foo'], 100)
-
-    def test_can_get_nonexisting_key(self):
-        self.assertEqual(self.setts['foo'], None)
 
 
 class TestVintageSettings(unittest.ViewTestCase):
@@ -83,10 +60,6 @@ class TestSettingsManager(unittest.ViewTestCase):
     def test_can_access_vi_ssettings(self):
         self.manager.vi['foo'] = 100
         self.assertEqual(self.manager.vi['foo'], 100)
-
-    def test_can_access_view_settings(self):
-        self.manager.view['foo'] = 100
-        self.assertEqual(self.manager.view['foo'], 100)
 
 
 class TestCmdlineCwd(unittest.ViewTestCase):

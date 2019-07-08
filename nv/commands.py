@@ -1478,10 +1478,10 @@ class _enter_replace_mode(ViTextCommandBase):
         def f(view, s):
             return Region(s.b)
 
+        self.view.settings().set('command_mode', False)
+        self.view.settings().set('inverse_caret_state', False)
+        self.view.set_overwrite_status(True)
         state = self.state
-        state.settings.view['command_mode'] = False
-        state.settings.view['inverse_caret_state'] = False
-        state.view.set_overwrite_status(True)
         state.enter_replace_mode()
         regions_transformer(self.view, f)
         state.display_status()
