@@ -66,7 +66,12 @@ from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
 from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.search import add_search_highlighting
+from NeoVintageous.nv.search import calculate_buffer_search_flags
+from NeoVintageous.nv.search import calculate_word_search_flags
 from NeoVintageous.nv.search import clear_search_highlighting
+from NeoVintageous.nv.search import create_word_search_pattern
+from NeoVintageous.nv.search import find_all_buffer_search_occurrences
+from NeoVintageous.nv.search import find_all_word_search_occurrences
 from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
@@ -147,8 +152,6 @@ from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
-from NeoVintageous.nv.vi.search import BufferSearchBase
-from NeoVintageous.nv.vi.search import ExactWordBufferSearchBase
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
@@ -3132,7 +3135,7 @@ class _vi_reverse_find_in_line(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_slash(ViMotionCommand, BufferSearchBase):
+class _vi_slash(ViMotionCommand):
 
     def run(self, pattern=''):
         set_reset_during_init(self.view, False)
@@ -3164,7 +3167,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         count = state.count
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(pattern)
+        flags = calculate_buffer_search_flags(self.view, pattern)
         start = get_insertion_point_at_b(sel) + 1
         end = self.view.size()
 
@@ -3180,7 +3183,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        add_search_highlighting(self.view, self.get_occurrences(pattern), [match])
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern), [match])
         show_if_not_visible(self.view, match)
 
     def on_cancel(self):
@@ -3190,7 +3193,7 @@ class _vi_slash(ViMotionCommand, BufferSearchBase):
         show_if_not_visible(self.view)
 
 
-class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
+class _vi_slash_impl(ViMotionCommand):
     def run(self, search_string, mode=None, count=1):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
@@ -3201,7 +3204,7 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
         set_last_buffer_search(self.view, pattern)
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(pattern)
+        flags = calculate_buffer_search_flags(self.view, pattern)
         start = get_insertion_point_at_b(sel) + 1
         end = self.view.size()
 
@@ -3228,7 +3231,7 @@ class _vi_slash_impl(ViMotionCommand, BufferSearchBase):
 
         target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        add_search_highlighting(self.view, self.get_occurrences(pattern))
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern))
 
 
 class _vi_l(ViMotionCommand):
@@ -3794,11 +3797,11 @@ class _vi_big_m(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
+class _vi_star(ViMotionCommand):
     def run(self, mode=None, count=1, search_string=None):
         def f(view, s):
-            pattern = self.build_pattern(query)
-            flags = self.calculate_flags(query)
+            pattern = create_word_search_pattern(view, query)
+            flags = calculate_word_search_flags(view, query)
             match = find_wrapping(
                 view,
                 term=pattern,
@@ -3820,14 +3823,14 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
 
             return s
 
-        query = search_string or self.get_query()
+        query = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
 
         jumplist_update(self.view)
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
         if query:
-            add_search_highlighting(self.view, self.get_occurrences(query))
+            add_search_highlighting(self.view, find_all_word_search_occurrences(self.view, query))
             set_last_buffer_search(self.view, query)
 
         if not search_string:
@@ -3836,11 +3839,11 @@ class _vi_star(ViMotionCommand, ExactWordBufferSearchBase):
         show_if_not_visible(self.view)
 
 
-class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
+class _vi_octothorp(ViMotionCommand):
     def run(self, mode=None, count=1, search_string=None):
         def f(view, s):
-            pattern = self.build_pattern(query)
-            flags = self.calculate_flags(query)
+            pattern = create_word_search_pattern(view, query)
+            flags = calculate_word_search_flags(view, query)
             match = reverse_find_wrapping(
                 view,
                 term=pattern,
@@ -3860,7 +3863,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
 
             return s
 
-        query = search_string or self.get_query()
+        query = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
 
         jumplist_update(self.view)
         start_sel = self.view.sel()[0]
@@ -3868,7 +3871,7 @@ class _vi_octothorp(ViMotionCommand, ExactWordBufferSearchBase):
         jumplist_update(self.view)
 
         if query:
-            add_search_highlighting(self.view, self.get_occurrences(query))
+            add_search_highlighting(self.view, find_all_word_search_occurrences(self.view, query))
             set_last_buffer_search(self.view, query)
 
         if not search_string:
@@ -4212,7 +4215,7 @@ class _vi_right_paren(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
+class _vi_question_mark_impl(ViMotionCommand):
     def run(self, search_string, mode=None, count=1):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
@@ -4220,7 +4223,7 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
             return
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(pattern)
+        flags = calculate_buffer_search_flags(self.view, pattern)
         start = 0
         end = sel.b + 1 if not sel.empty() else sel.b
 
@@ -4248,10 +4251,10 @@ class _vi_question_mark_impl(ViMotionCommand, BufferSearchBase):
 
         target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        add_search_highlighting(self.view, self.get_occurrences(pattern))
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern))
 
 
-class _vi_question_mark(ViMotionCommand, BufferSearchBase):
+class _vi_question_mark(ViMotionCommand):
 
     def run(self, pattern=''):
         set_reset_during_init(self.view, False)
@@ -4283,7 +4286,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         count = state.count
 
         sel = self.view.sel()[0]
-        flags = self.calculate_flags(pattern)
+        flags = calculate_buffer_search_flags(self.view, pattern)
         start = 0
         end = sel.b + 1 if not sel.empty() else sel.b
 
@@ -4299,7 +4302,7 @@ class _vi_question_mark(ViMotionCommand, BufferSearchBase):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        add_search_highlighting(self.view, self.get_occurrences(pattern), [match])
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern), [match])
         show_if_not_visible(self.view, match)
 
     def on_cancel(self):

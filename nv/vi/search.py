@@ -15,12 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import re
-
-from sublime import IGNORECASE
-from sublime import LITERAL
 from sublime import Region
-import sublime_plugin
 
 from NeoVintageous.nv.options import get_option
 
@@ -210,57 +205,3 @@ def reverse_search_by_pt(view, term, start, end, flags=0):
         if lo_line == hi_line:
             # we found the line we were looking for, now extract the match.
             return find_last_in_range(view, term, max(hi_line.a, start), min(hi_line.b, end), flags)
-
-
-# TODO [refactor] Move to commands module
-class BufferSearchBase(sublime_plugin.TextCommand):
-
-    def calculate_flags(self, pattern=None):
-        flags = 0
-
-        if get_option(self.view, 'ignorecase'):
-            flags |= IGNORECASE
-
-        if not get_option(self.view, 'magic'):
-            flags |= LITERAL
-
-        if pattern:
-            # Is the pattern as regular expression or a literal? For example, in
-            # "magic" mode, simple strings like "]" should be treated as a literal
-            # and "[0-9]" should be treated as a regular expression.
-            if re.match('^[a-zA-Z0-9_\\[\\]]+$', pattern):
-                if '[' not in pattern or ']' not in pattern:
-                    flags |= LITERAL
-            elif re.match('^[a-zA-Z0-9_\\(\\)]+$', pattern):
-                if '(' not in pattern or ')' not in pattern:
-                    flags |= LITERAL
-
-        return flags
-
-    def build_pattern(self, query):
-        return query
-
-    def get_occurrences(self, query):
-        return self.view.find_all(
-            self.build_pattern(query),
-            self.calculate_flags(query)
-        )
-
-
-# TODO [refactor] Move to commands module
-class ExactWordBufferSearchBase(BufferSearchBase):
-
-    def calculate_flags(self, pattern=None):
-        flags = 0
-
-        if get_option(self.view, 'ignorecase'):
-            flags |= IGNORECASE
-
-        return flags
-
-    def get_query(self):
-        # TODO: make sure we swallow any leading white space.
-        return self.view.substr(self.view.word(self.view.sel()[0].end()))
-
-    def build_pattern(self, query):
-        return r'\b{0}\b'.format(re.escape(query))

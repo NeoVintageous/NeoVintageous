@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import re
+
+from sublime import IGNORECASE
+from sublime import LITERAL
+
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.settings import get_setting_neo
 from NeoVintageous.nv.ui import ui_region_flags
@@ -62,3 +67,57 @@ def add_search_highlighting(view, occurrences, incremental=None):
             scope='support.function neovintageous_search_cur',
             flags=ui_region_flags(get_setting_neo(view, 'search_cur_style'))
         )
+
+
+def calculate_buffer_search_flags(view, pattern):
+    flags = 0
+
+    if get_option(view, 'ignorecase'):
+        flags |= IGNORECASE
+
+    if not get_option(view, 'magic'):
+        flags |= LITERAL
+
+    if pattern:
+        # Is the pattern as regular expression or a literal? For example, in
+        # "magic" mode, simple strings like "]" should be treated as a literal
+        # and "[0-9]" should be treated as a regular expression.
+
+        # TODO Should this only be done in magic mode?
+        # TODO Needs improvment
+
+        if re.match('^[a-zA-Z0-9_\\[\\]]+$', pattern):
+            if '[' not in pattern or ']' not in pattern:
+                flags |= LITERAL
+        elif re.match('^[a-zA-Z0-9_\\(\\)]+$', pattern):
+            if '(' not in pattern or ')' not in pattern:
+                flags |= LITERAL
+
+    return flags
+
+
+def calculate_word_search_flags(view, pattern):
+    flags = 0
+
+    if get_option(view, 'ignorecase'):
+        flags |= IGNORECASE
+
+    return flags
+
+
+def create_word_search_pattern(view, pattern):
+    return r'\b{0}\b'.format(re.escape(pattern))
+
+
+def find_all_buffer_search_occurrences(view, pattern):
+    return view.find_all(
+        pattern,
+        calculate_buffer_search_flags(view, pattern)
+    )
+
+
+def find_all_word_search_occurrences(view, pattern):
+    return view.find_all(
+        create_word_search_pattern(view, pattern),
+        calculate_word_search_flags(view, pattern)
+    )
