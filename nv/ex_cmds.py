@@ -1239,26 +1239,17 @@ def ex_wqall(window, **kwargs):
 
 @_init_cwd
 def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
-    options = kwargs.get('++')
+    if kwargs.get('++') or cmd:
+        return status_message('argument not implemented')
+
     appends = kwargs.get('>>')
 
-    if options:
-        return status_message('++opt isn\'t implemented for :write')
-
-    if cmd:
-        return status_message('!cmd not implememted for :write')
-
-    if not view:
-        return
-
-    def _check_is_readonly(fname):
-        if not fname:
-            return False
-
-        try:
-            return (stat.S_IMODE(os.stat(fname).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
-        except FileNotFoundError:
-            return False
+    def _is_file_read_only(fname):
+        if fname:
+            try:
+                return (stat.S_IMODE(os.stat(fname).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+            except FileNotFoundError:
+                return False
 
         return False
 
@@ -1302,6 +1293,7 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
             location = get_insertion_point_at_b(view.sel()[0])
 
             view.run_command('append', {'characters': text})
+            view.run_command('save')
 
             replace_sel(view, Region(view.line(location).a))
 
@@ -1312,23 +1304,16 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
 
         return _do_append(view, file_name, forceit, line_range)
 
-    if cmd:
-        return status_message('!cmd isn\'t implemented for :write')
-
     if file_name:
         def _do_write(window, view, file_name, forceit, line_range):
             fname = file_name
 
             if not forceit:
                 if os.path.exists(fname):
-                    ui_bell()
+                    return ui_bell("E13: File exists (add ! to override)")
 
-                    return status_message("E13: File exists (add ! to override)")
-
-                if _check_is_readonly(fname):
-                    ui_bell()
-
-                    return status_message("E45: 'readonly' option is set (add ! to override)")
+                if _is_file_read_only(fname):
+                    return ui_bell("E45: 'readonly' option is set (add ! to override)")
 
             region = None
             if line_range.is_empty:
@@ -1357,12 +1342,9 @@ def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
     if not view.file_name():
         return status_message("E32: No file name")
 
-    read_only = (_check_is_readonly(view.file_name()) or view.is_read_only())
-
+    read_only = _is_file_read_only(view.file_name()) or view.is_read_only()
     if read_only and not forceit:
-        ui_bell()
-
-        return status_message("E45: 'readonly' option is set (add ! to override)")
+        return ui_bell("E45: 'readonly' option is set (add ! to override)")
 
     window.run_command('save')
 

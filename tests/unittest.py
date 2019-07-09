@@ -943,6 +943,28 @@ def mock_bell():
     return wrapper
 
 
+def mock_hide_panel():
+    """Mock the hide panel API.
+
+    Useful of you don't want the test to close the results panel during a test.
+
+    Usage:
+
+    @unitest.mock_hide_panel()
+    def test_hide_panel(self):
+        pass
+
+    """
+    def wrapper(f):
+        @mock.patch('NeoVintageous.nv.commands.hide_panel')
+        def wrapped(self, *args, **kwargs):
+            self.hide_panel = args[-1]
+
+            return f(self, *args[:-1], **kwargs)
+        return wrapped
+    return wrapper
+
+
 def mock_status_message():
     """Mock the status messenger.
 
@@ -958,10 +980,22 @@ def mock_status_message():
         def wrapped(self, *args, **kwargs):
             self.status_message = args[-1]
 
-            def _assertStatusMessage(msg):
-                self.status_message.assert_called_once_with(msg)
+            def _assertNoStatusMessage():
+                self.assertEqual(0, self.status_message.call_count)
 
+            def _assertStatusMessage(msg, count=1):
+                if count > 1:
+                    self.status_message.assert_called_with(msg)
+                    self.assertEqual(count, self.status_message.call_count)
+                else:
+                    self.status_message.assert_called_once_with(msg)
+
+            def _assertStatusMessageCount(expected):
+                self.assertEqual(expected, self.status_message.call_count)
+
+            self.assertNoStatusMessage = _assertNoStatusMessage
             self.assertStatusMessage = _assertStatusMessage
+            self.assertStatusMessageCount = _assertStatusMessageCount
 
             return f(self, *args[:-1], **kwargs)
         return wrapped
