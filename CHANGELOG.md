@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.16.6 - Unreleased
+
+* Fixed [#618](https://github.com/NeoVintageous/NeoVintageous/issues/618): Character `,` (comma) not supported as string in ex command
+
 ## 1.16.5 - 2019-07-09
 
 * Fixed [#616](https://github.com/NeoVintageous/NeoVintageous/issues/616): Can't use characters like : and # in ex commands
