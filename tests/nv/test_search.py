@@ -41,9 +41,13 @@ class Test_flags(unittest.ViewTestCase):
         self.set_option('ignorecase', False)
         self.set_option('magic', True)
         self.assertEqual(0, calculate_buffer_search_flags(self.view, '[0-9]'))
-        literals = ('[', ']', '(', ')')
+        literals = ('[', ']', '(', ')', '\'[', '"[')
         for literal in literals:
             self.assertEqual(1, calculate_buffer_search_flags(self.view, literal))
+
+        regex = ('[0-9]+', '.+', '^', '.*', 'x?', '(x|y)')
+        for literal in regex:
+            self.assertEqual(0, calculate_buffer_search_flags(self.view, literal))
 
     def test_calculate_word_search_flags(self):
         self.set_option('magic', True)

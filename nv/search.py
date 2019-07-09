@@ -77,19 +77,19 @@ def calculate_buffer_search_flags(view, pattern):
 
     if not get_option(view, 'magic'):
         flags |= LITERAL
+    elif pattern:
+        # In magic mode some characters in the pattern are taken literally. They
+        # match with the same character in the text e.g. ], '], "[ are taken
+        # literally and patterns like [0-9], .+, ^, are regular expressions.
 
-    if pattern:
-        # Is the pattern as regular expression or a literal? For example, in
-        # "magic" mode, simple strings like "]" should be treated as a literal
-        # and "[0-9]" should be treated as a regular expression.
+        # XXX Note that this is a very rough hacky implementation to support
+        # some obvious patterns that should be taken literally like [ and "[.
 
-        # TODO Should this only be done in magic mode?
-        # TODO Needs improvment
-
-        if re.match('^[a-zA-Z0-9_\\[\\]]+$', pattern):
+        if re.match('^[a-zA-Z0-9_\'"\\[\\]]+$', pattern):
             if '[' not in pattern or ']' not in pattern:
                 flags |= LITERAL
-        elif re.match('^[a-zA-Z0-9_\\(\\)]+$', pattern):
+
+        elif re.match('^[a-zA-Z0-9_\'"\\(\\)]+$', pattern):
             if '(' not in pattern or ')' not in pattern:
                 flags |= LITERAL
 

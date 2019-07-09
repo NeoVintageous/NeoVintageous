@@ -59,6 +59,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#617](https://github.com/NeoVintageous/NeoVintageous/issues/617): Some magic mode searches should be literal
 * Fixed [#613](https://github.com/NeoVintageous/NeoVintageous/issues/613): Goto matching bracket `%` inherits strange behaviour from vim
 * Fixed [#243](https://github.com/NeoVintageous/NeoVintageous/issues/243): Braces in strings mess up brace matching with `%`
 * Fixed [#612](https://github.com/NeoVintageous/NeoVintageous/issues/612): Mapped searches are not repeatable by `n` or `N`
