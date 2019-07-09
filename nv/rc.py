@@ -110,7 +110,7 @@ def _parse_line(line):
                     raise Exception('E488: Trailing characters: {}'.format(line.rstrip()))
 
                 return cmdline
-    except Exception:
-        message('error detected while processing {} at line "{}"'.format(_file_name(), line.rstrip()))
+    except Exception as e:
+        message('error detected while processing {} at line "{}":\n{}'.format(_file_name(), line.rstrip(), str(e)))
 
     return None
