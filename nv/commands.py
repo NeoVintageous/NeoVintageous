@@ -663,6 +663,9 @@ class _nv_feed_key(ViWindowCommandBase):
             if not command.motion_required:
                 state.mode = NORMAL
 
+        self._handle_command(state, command, do_eval)
+
+    def _handle_command(self, state, command, do_eval):
         state.set_command(command)
 
         if state.mode == OPERATOR_PENDING:
