@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.16.5 - Unreleased
+
+* Fixed [#616](https://github.com/NeoVintageous/NeoVintageous/issues/616): Can't use characters like : and # in ex commands
+
 ## 1.16.4 - 2019-07-03
 
 * Fixed [#609](https://github.com/NeoVintageous/NeoVintageous/issues/609): `<C-e>` and `<C-y>` are not working in visual line mode

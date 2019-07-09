@@ -567,6 +567,8 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
         assert_run_command(':N characters=\n<CR>', 'n', {'characters': '\n'})
         assert_run_command(':N characters=\t<CR>', 'n', {'characters': '\t'})
         assert_run_command(':ShowOverlay overlay=goto text=@<CR>', 'show_overlay', {'overlay': 'goto', 'text': '@'})
+        assert_run_command(':ShowOverlay overlay=goto text=:<CR>', 'show_overlay', {'overlay': 'goto', 'text': ':'})
+        assert_run_command(':ShowOverlay overlay=goto text=#<CR>', 'show_overlay', {'overlay': 'goto', 'text': '#'})
         # Booleans argument values.
         assert_run_command(':N x=true<CR>', 'n', {'x': True})
         assert_run_command(':N x=false<CR>', 'n', {'x': False})
