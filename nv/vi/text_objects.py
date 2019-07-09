@@ -291,6 +291,121 @@ def a_big_word(view, pt, inclusive=False, count=1):
     return Region(start, end)
 
 
+def _get_text_object_tag(view, s, inclusive, count):
+    # type: (...) -> Region
+    begin_tag, end_tag, _ = find_containing_tag(view, s.begin())
+    if not (begin_tag and end_tag):
+        return s
+
+    if inclusive:
+        return Region(begin_tag.a, end_tag.b)
+    else:
+        return Region(begin_tag.b, end_tag.a)
+
+
+def _get_text_object_paragraph(view, s, inclusive, count):
+    # type: (...) -> Region
+    return find_paragraph_text_object(view, s, inclusive, count)
+
+
+def _get_text_object_bracket(view, s, inclusive, count, delims):
+    # type: (...) -> Region
+    opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
+    closing = find_next_lone_bracket(view, s.end(), delims)
+
+    if not (opening and closing):
+        return s
+
+    if inclusive:
+        return Region(opening.a, closing.b)
+
+    a = opening.a + 1
+    if view.substr(a) == '\n':
+        a += 1
+
+    b = closing.b - 1
+
+    if b > a:
+        line = view.line(b)
+
+        if next_non_blank(view, line.a) + 1 == line.b:
+            row_a, col_a = view.rowcol(a - 1)
+            row_b, col_b = view.rowcol(b + 1)
+            if (row_b - 1) > row_a:
+                line = view.full_line(view.text_point((row_b - 1), 0))
+
+                return Region(a, line.b)
+
+    return Region(a, b)
+
+
+def _get_text_object_quote(view, s, inclusive, count, delims):
+    # type: (...) -> Region
+    line = view.line(s)
+
+    delim_open = delims[0]
+
+    # FIXME: Escape sequences like \" are probably syntax-dependant.
+    prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delim_open, start=line.a, end=s.b)
+    next_quote = find_in_range(view, r'(?<!\\\\)' + delim_open, start=s.b, end=line.b)
+
+    if next_quote and not prev_quote:
+        prev_quote = next_quote
+        next_quote = find_in_range(view, r'(?<!\\\\)' + delim_open, start=prev_quote.b, end=line.b)
+
+    if not (prev_quote and next_quote):
+        return s
+
+    if inclusive:
+        return Region(prev_quote.a, next_quote.b)
+
+    return Region(prev_quote.a + 1, next_quote.b - 1)
+
+
+def _get_text_object_word(view, s, inclusive, count):
+    # type: (...) -> Region
+    w = a_word(view, s.b, inclusive=inclusive, count=count)
+    if s.size() <= 1:
+        return w
+
+    return Region(s.a, w.b)
+
+
+def _get_text_object_big_word(view, s, inclusive, count):
+    # type: (...) -> Region
+    w = a_big_word(view, s.b, inclusive=inclusive, count=count)
+    if s.size() <= 1:
+        return w
+
+    return Region(s.a, w.b)
+
+
+def _get_text_object_sentence(view, s, inclusive, count):
+    # type: (...) -> Region
+    sentence_start = view.find_by_class(s.b, forward=False, classes=CLASS_EMPTY_LINE)
+    sentence_start_2 = reverse_search_by_pt(view, r'[.?!:]\s+|[.?!:]$', start=0, end=s.b)
+    if sentence_start_2:
+        sentence_start = (sentence_start + 1 if (sentence_start > sentence_start_2.b) else sentence_start_2.b)
+    else:
+        sentence_start = sentence_start + 1
+
+    sentence_end = find_in_range(view, r'([.?!:)](?=\s))|([.?!:)]$)', start=s.b, end=view.size())
+    if not sentence_end:
+        return s
+
+    if inclusive:
+        return Region(sentence_start, sentence_end.b)
+    else:
+        return Region(sentence_start, sentence_end.b)
+
+
+def _get_text_object_line(view, s, inclusive, count):
+    # type: (...) -> Region
+    start, end = find_line_text_object(view, s)
+
+    return Region(start, end)
+
+
 def get_text_object_region(view, s, text_object, inclusive=False, count=1):
     # type: (...) -> Region
     try:
@@ -299,112 +414,25 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
         return s
 
     if type_ == TAG:
-        begin_tag, end_tag, _ = find_containing_tag(view, s.begin())
-
-        if not (begin_tag and end_tag):
-            return s
-
-        if inclusive:
-            return Region(begin_tag.a, end_tag.b)
-        else:
-            return Region(begin_tag.b, end_tag.a)
-
+        return _get_text_object_tag(view, s, inclusive, count)
     elif type_ == PARAGRAPH:
-        return find_paragraph_text_object(view, s, inclusive=inclusive, count=count)
-
+        return _get_text_object_paragraph(view, s, inclusive, count)
     elif type_ == BRACKET:
-        opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
-        closing = find_next_lone_bracket(view, s.end(), delims)
-
-        if not (opening and closing):
-            return s
-
-        if inclusive:
-            return Region(opening.a, closing.b)
-
-        a = opening.a + 1
-        if view.substr(a) == '\n':
-            a += 1
-
-        b = closing.b - 1
-
-        if b > a:
-            line = view.line(b)
-
-            if next_non_blank(view, line.a) + 1 == line.b:
-                row_a, col_a = view.rowcol(a - 1)
-                row_b, col_b = view.rowcol(b + 1)
-                if (row_b - 1) > row_a:
-                    line = view.full_line(view.text_point((row_b - 1), 0))
-
-                    return Region(a, line.b)
-
-        return Region(a, b)
-
+        return _get_text_object_bracket(view, s, inclusive, count, delims)
     elif type_ == QUOTE:
-        # Vim only operates on the current line.
-        line = view.line(s)
-
-        delim_open = delims[0]
-
-        # FIXME: Escape sequences like \" are probably syntax-dependant.
-        prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delim_open, start=line.a, end=s.b)
-        next_quote = find_in_range(view, r'(?<!\\\\)' + delim_open, start=s.b, end=line.b)
-
-        if next_quote and not prev_quote:
-            prev_quote = next_quote
-            next_quote = find_in_range(view, r'(?<!\\\\)' + delim_open, start=prev_quote.b, end=line.b)
-
-        if not (prev_quote and next_quote):
-            return s
-
-        if inclusive:
-            return Region(prev_quote.a, next_quote.b)
-
-        return Region(prev_quote.a + 1, next_quote.b - 1)
-
+        return _get_text_object_quote(view, s, inclusive, count, delims)
     elif type_ == WORD:
-        w = a_word(view, s.b, inclusive=inclusive, count=count)
-        if s.size() <= 1:
-            return w
-
-        return Region(s.a, w.b)
-
+        return _get_text_object_word(view, s, inclusive, count)
     elif type_ == BIG_WORD:
-        w = a_big_word(view, s.b, inclusive=inclusive, count=count)
-        if s.size() <= 1:
-            return w
-
-        return Region(s.a, w.b)
-
+        return _get_text_object_big_word(view, s, inclusive, count)
     elif type_ == SENTENCE:
-        # FIXME: This doesn't work well.
-        # TODO: Improve this.
-        sentence_start = view.find_by_class(s.b, forward=False, classes=CLASS_EMPTY_LINE)
-        sentence_start_2 = reverse_search_by_pt(view, r'[.?!:]\s+|[.?!:]$', start=0, end=s.b)
-        if sentence_start_2:
-            sentence_start = (sentence_start + 1 if (sentence_start > sentence_start_2.b) else sentence_start_2.b)
-        else:
-            sentence_start = sentence_start + 1
-
-        sentence_end = find_in_range(view, r'([.?!:)](?=\s))|([.?!:)]$)', start=s.b, end=view.size())
-        if not sentence_end:
-            return s
-
-        if inclusive:
-            return Region(sentence_start, sentence_end.b)
-        else:
-            return Region(sentence_start, sentence_end.b)
-
-    # Support for a port of the Indent Object plugin:
-    # A port of https://github.com/michaeljsmith/vim-indent-object.
-    elif type_ in (INDENT, BIG_INDENT):
-        resolve_indent_text_object(view, s, inclusive, big=(type_ == BIG_INDENT))
-
+        return _get_text_object_sentence(view, s, inclusive, count)
     elif type_ == LINE:
-        start, end = find_line_text_object(view, s)
-
-        return Region(start, end)
+        return _get_text_object_line(view, s, inclusive, count)
+    elif type_ in (INDENT, BIG_INDENT):
+        # A port of https://github.com/michaeljsmith/vim-indent-object.
+        # {not in Vim}
+        resolve_indent_text_object(view, s, inclusive, big=(type_ == BIG_INDENT))
 
     return s
 
