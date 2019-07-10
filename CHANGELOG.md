@@ -72,6 +72,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#590](https://github.com/NeoVintageous/NeoVintageous/issues/590): `/` (search backward) in visual modes is inconsistent
 * Fixed [#588](https://github.com/NeoVintageous/NeoVintageous/issues/588): Visual mode incremental search highlighting is inconsistent
 
+## 1.16.6 - 2019-07-09
+
+* Fixed [#618](https://github.com/NeoVintageous/NeoVintageous/issues/618): Character `,` (comma) not supported as string in ex command
+
 ## 1.16.5 - 2019-07-09
 
 * Fixed [#616](https://github.com/NeoVintageous/NeoVintageous/issues/616): Can't use characters like : and # in ex commands
