@@ -178,6 +178,7 @@ class ViewTestCase(unittest.TestCase):
 
     def set_option(self, name, value):
         _set_option(self.view, name, value)
+        # Options via settings is DEPRECATED
         self.settings().set('vintageous_%s' % name, value)
 
     def assertOption(self, name, expected, msg=None):
@@ -223,12 +224,12 @@ class ViewTestCase(unittest.TestCase):
                 else:
                     self.view.sel().add_all(v_sels)
 
-            # This is required, because the cursor in VISUAL mode is a block
+            # This is required because the cursor in VISUAL mode is a block
             # cursor. Without this setting some tests will pass when the window
-            # running the tests has focus, and fail when it doesn't have focus.
-            # This happens because ST doesn't fire events for views (test views)
-            # when the window loses focus: the on_activated() event fixes VISUAL
-            # mode selections that don't have a correct caret state.
+            # running the tests has focus and fail when it doesn't have focus.
+            # This happens because Sublime doesn't fire events for views when
+            # the window loses focus (usually the on_activated() event fixes
+            # VISUAL mode selections that don't have a correct cursor state).
             self.view.settings().set('inverse_caret_state', True)
 
             if mode == VISUAL_BLOCK:
@@ -1102,7 +1103,9 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
 
 
 def mock_run_commands(*methods):
-    """Mock command runners.
+    """Mock commands.
+
+    Useful to mock builtin Sublime Text commands.
 
     Usage:
 

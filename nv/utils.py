@@ -169,15 +169,11 @@ def regions_transform_extend_to_line_count(view, count):
 
 def replace_sel(view, new_sel):
     # type: (...) -> None
-    if new_sel is None or new_sel == []:
-        raise ValueError('no new_sel')
-
     view.sel().clear()
     if isinstance(new_sel, list):
         view.sel().add_all(new_sel)
-        return
-
-    view.sel().add(new_sel)
+    else:
+        view.sel().add(new_sel)
 
 
 def get_insertion_point_at_b(region):

@@ -62,12 +62,10 @@ from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
-from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import has_dirty_buffers
 from NeoVintageous.nv.utils import has_newline_at_eof
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
-from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vi.settings import get_cache_value
@@ -1238,112 +1236,79 @@ def ex_wqall(window, **kwargs):
 
 
 @_init_cwd
-def ex_write(window, view, file_name, cmd, line_range, forceit=False, **kwargs):
-    if kwargs.get('++') or cmd:
-        return status_message('argument not implemented')
-
-    appends = kwargs.get('>>')
-
-    def _is_file_read_only(fname):
-        if fname:
+def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
+    def _is_read_only(file_name):
+        if file_name:
             try:
-                return (stat.S_IMODE(os.stat(fname).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+                return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
             except FileNotFoundError:
                 return False
 
         return False
 
-    if appends:
-        def _do_append_to_file(view, file_name, forceit, line_range):
-            r = None
-            if line_range.is_empty:
-                # If the user didn't provide any range data, Vim writes whe whole buffer.
-                r = Region(0, view.size())
-            else:
-                r = line_range.resolve(view)
+    def _get_buffer(view, line_range):
+        # type: (...) -> str
+        # If no range, write whe whole buffer.
+        if line_range.is_empty:
+            region = Region(0, view.size())
+        else:
+            region = line_range.resolve(view)
 
-            if not forceit and not os.path.exists(file_name):
-                return status_message("E212: Can't open file for writing: %s" % file_name)
+        return view.substr(region)
 
-            try:
-                with open(file_name, 'at') as f:
-                    text = view.substr(r)
-                    f.write(text)
+    def _append_to_file(view, file_name, forceit, line_range):
+        if not forceit and not os.path.exists(file_name):
+            return status_message("E212: Can't open file for writing: %s", file_name)
 
-                # TODO: make this `show_info` instead.
-                return status_message('Appended to ' + os.path.abspath(file_name))
+        try:
+            with open(file_name, 'at') as f:
+                f.write(_get_buffer(view, line_range))
 
-            except IOError as e:
-                return status_message('could not write file {}'.format(str(e)))
+            return status_message('Appended to %s' % os.path.abspath(file_name))
+        except IOError as e:
+            return status_message('could not write file %s', str(e))
 
-        def _do_append(view, file_name, forceit, line_range):
-            if file_name:
-                return _do_append_to_file(view, file_name, forceit, line_range)
+    def _append(view, line_range):
+        view.run_command('append', {'characters': _get_buffer(view, line_range)})
+        view.run_command('save')
 
-            r = None
-            if line_range.is_empty:
-                # If the user didn't provide any range data, Vim appends whe whole buffer.
-                r = Region(0, view.size())
-            else:
-                r = line_range.resolve(view)
+        # TODO [review] State dependency
+        enter_normal_mode(window, State(view).mode)
 
-            text = view.substr(r)
-            text = text if text.startswith('\n') else '\n' + text
+    def _write_to_file(window, view, file_name, forceit, line_range):
+        if not forceit:
+            if os.path.exists(file_name):
+                return ui_bell("E13: File exists (add ! to override)")
 
-            location = get_insertion_point_at_b(view.sel()[0])
+            if _is_read_only(file_name):
+                return ui_bell("E45: 'readonly' option is set (add ! to override)")
 
-            view.run_command('append', {'characters': text})
-            view.run_command('save')
+        try:
+            file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
+            with open(file_path, 'wt') as f:
+                f.write(_get_buffer(view, line_range))
 
-            replace_sel(view, Region(view.line(location).a))
+            view.retarget(file_path)
+            window.run_command('save')
+        except IOError:
+            return status_message("E212: Can't open file for writing: {}".format(file_name))
 
-            # TODO [review] State dependency
-            state = State(view)
-            enter_normal_mode(window, state.mode)
-            state.enter_normal_mode()
+    if kwargs.get('++') or kwargs.get('cmd'):
+        return status_message('argument not implemented')
 
-        return _do_append(view, file_name, forceit, line_range)
+    if kwargs.get('>>'):
+        if file_name:
+            return _append_to_file(view, file_name, forceit, line_range)
+
+        return _append(view, line_range)
 
     if file_name:
-        def _do_write(window, view, file_name, forceit, line_range):
-            fname = file_name
-
-            if not forceit:
-                if os.path.exists(fname):
-                    return ui_bell("E13: File exists (add ! to override)")
-
-                if _is_file_read_only(fname):
-                    return ui_bell("E45: 'readonly' option is set (add ! to override)")
-
-            region = None
-            if line_range.is_empty:
-                # If the user didn't provide any range data, Vim writes whe whole buffer.
-                region = Region(0, view.size())
-            else:
-                region = line_range.resolve(view)
-
-            assert region is not None, "range cannot be None"
-
-            try:
-                expanded_path = os.path.expandvars(os.path.expanduser(fname))
-                expanded_path = os.path.abspath(expanded_path)
-                with open(expanded_path, 'wt') as f:
-                    text = view.substr(region)
-                    f.write(text)
-
-                view.retarget(expanded_path)
-                window.run_command('save')
-
-            except IOError:
-                return status_message("E212: Can't open file for writing: {}".format(fname))
-
-        return _do_write(window, view, file_name, forceit, line_range)
+        return _write_to_file(window, view, file_name, forceit, line_range)
 
     if not view.file_name():
         return status_message("E32: No file name")
 
-    read_only = _is_file_read_only(view.file_name()) or view.is_read_only()
-    if read_only and not forceit:
+    if _is_read_only(view.file_name()) or view.is_read_only() and not forceit:
         return ui_bell("E45: 'readonly' option is set (add ! to override)")
 
     window.run_command('save')

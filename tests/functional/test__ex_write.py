@@ -55,26 +55,42 @@ class Test_ex_write(unittest.FunctionalTestCase):
             self.feed(':write >>')
             self.assertEqual(file_name, self.view.file_name())
             with open(file_name, 'r') as f:
-                self.assertEqual('buzz\n\nbuzz\n', f.read())
+                self.assertEqual('buzz\nbuzz\n', f.read())
 
             # Test can write to another file.
             self.feed(':write ' + file_name_alt)
             self.assertEqual(file_name_alt, self.view.file_name())
             with open(file_name_alt, 'r') as f:
-                self.assertEqual('buzz\n\nbuzz\n', f.read())
+                self.assertEqual('buzz\nbuzz\n', f.read())
 
             self.assertNoStatusMessage()
 
+            # Test can append to file.
             self.feed(':write >> ' + file_name)
             self.assertStatusMessage('Appended to %s' % file_name)
             self.assertEqual(file_name_alt, self.view.file_name())
             with open(file_name_alt, 'r') as f:
-                self.assertEqual('buzz\n\nbuzz\n', f.read())
+                self.assertEqual('buzz\nbuzz\n', f.read())
             with open(file_name, 'r') as f:
-                self.assertEqual('buzz\n\nbuzz\nbuzz\n\nbuzz\n', f.read())
+                self.assertEqual('buzz\nbuzz\nbuzz\nbuzz\n', f.read())
 
+            # Test trying to append to non-existing file.
             self.feed(':write >> ' + file_name_noop)
             self.assertStatusMessage('E212: Can\'t open file for writing: %s' % file_name_noop, count=2)
 
+            # Test force append to non-existing file.
             self.feed(':write! >> ' + file_name_noop)
             self.assertStatusMessage('Appended to %s' % file_name_noop, count=3)
+
+            # Test appending from a line range.
+            self.assertEqual(file_name_alt, self.view.file_name())
+            self.normal('1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n')
+            self.feed(':write')
+            self.feed(':3,6write >> ' + file_name_alt)
+            self.assertStatusMessage('Appended to %s' % file_name_alt, count=4)
+            with open(file_name_alt, 'r') as f:
+                self.assertEqual('1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n3\n4\n5\n6\n', f.read())
+
+            # # Test trying to write to a file that already exists.
+            # self.feed(':write ' + file_name)
+            # self.assertStatusMessage('E13: File exists (add ! to override)', count=5)
