@@ -19,11 +19,12 @@ NeoVintageous                                             *neovintageous* *nv*
     1.5 Unimpaired                      |nv-unimpaired|
     1.6 Indent Object                   |nv-indent-object|
  6. Options                         |nv-options|
- 7. Search highlighting             |nv-search-highlighting|
- 8. Jumping to diffs                |nv-jumpto-diffs|
- 9. Toggle Command                  |nv-toggle|
+ 7. Settings                        |nv-settings|
+ 8. Search highlighting             |nv-search-highlighting|
+ 9. Jumping to diffs                |nv-jumpto-diffs|
+10. Toggle Command                  |nv-toggle|
 
-Neovintageous is an emulation of Vim: feature-parity is ongoing effort. If you
+NeoVintageous is an emulation of Vim: feature-parity is ongoing effort. If you
 are new to Vim see |help.txt|.
 
 ==============================================================================
@@ -97,99 +98,84 @@ NEOVINTAGEOUSRC                                                        *nv-rc*
                                                                 *vintageousrc*
                                                              *neovintageousrc*
 
-In NeoVintageous, a file that contains initialization commands is called a
-neovintageousrc file. The file is located at "Packages/User/.neovintageousrc"
-and is read by during startup.
+A file that contains initialization commands is generically called a
+"neovintageousrc" or config file. In Vim this file is known as a "vimrc" file
+Each line in a neovintageousrc file is executed as an Ex command line.
 
-To open and reload the neovintageousrc file use the Command Palette command:
-
-    NeoVintageous: Open My RC File
-    NeoVintageous: Reload My RC File
+To open the neovintageousrc file use the Command Palette command:
+NeoVintageous: Open My RC File. To reload the neovintageousrc file use the
+Command Palette command: NeoVintageous: Reload My RC File.
 
 The |mapleader| variable is supported, for example: >
 
     let mapleader=,
 
-The non-recursive |:map-commands| are supported:
+The |set| command is supported (see the |nv-options| section for details of
+supported options). For example, if you want NeoVintageous to always start with
+the 'ignorecase' option on, add this line your neovintageousrc file: >
 
-:noremap    {lhs} {rhs}         |:noremap|
-:nnoremap   {lhs} {rhs}         |:nnoremap|
-:onoremap   {lhs} {rhs}         |:onoremap|
-:snoremap   {lhs} {rhs}         |:snoremap|
-:vnoremap   {lhs} {rhs}         |:vnoremap|
+    set ignorecase
 
-When mapping Ex commands use <CR> to indicate pressing enter: >
+The following |:map-commands| are supported:
 
-    nnoremap <C-s> :w<CR>
-    vnoremap <C-s> :w<CR>
+    :noremap    {lhs} {rhs}         |:noremap|
+    :nnoremap   {lhs} {rhs}         |:nnoremap|
+    :onoremap   {lhs} {rhs}         |:onoremap|
+    :snoremap   {lhs} {rhs}         |:snoremap|
+    :vnoremap   {lhs} {rhs}         |:vnoremap|
 
-You can map to Sublime Text commands. Commands that begin with an uppercase
-letter are parsed as Sublime Text commands, whereas Ex commands always begin
-with a lowercase letter. Sublime Text commands are converted to snake_case
-before  being run and they accept args in a key=value format: >
+Use <CR> to indicate pressing enter when mapping commands, for example: >
 
-    nnoremap <leader>p :ShowOverlay overlay=goto show_files=true<CR>
+    noremap <C-s> :w<CR>
+
+Basic leading and trailing sequences in mappings is supported, for example: >
+
+    nnoremap <leader>sp vip:sort u<CR>
+
+To map to Sublime Text commands format the command name as MixedCase. The
+command name is converted to snake_case before being executed by Sublime Text
+and basic arguments in form "key=value" are accepted, for example: >
+
+    nnoremap <leader>i :GotoSymbolInProject<CR>
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
 
-Super-keys, known as windows-keys or command-keys, are disabled by default,
-but can be mapped via the `<D-...>` special keys: >
+Super-keys can be mapped by the `<D-...>` special keys (super-keys are disabled
+by default, see the |nv-settings| section for details on enabling them): >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
-Note that you can prefix Ex command mappings with key sequences: >
-
-    nnoremap <leader>s) vi):sort iu<CR>
-
 Here is an example neovintageous file: >
 
-    " The character " (the double quote mark) starts a comment
-    " Type :h neovintageousrc for help.
     let mapleader=,
-    " Toggle the side bar.
+
     nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
-    " Saving.
-    nnoremap <C-s> :w<CR>
-    vnoremap <C-s> :w<CR>
+    nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
+
+    noremap <C-l> :nohlsearch<CR>
+    noremap <C-s> :w<CR>
+
     " Yank and paste using system clipboard.
     noremap <leader>y "+y
     noremap <leader>Y "+Y
     noremap <leader>p "+p
     noremap <leader>P "+P
-    " History.
-    noremap <leader>hp :PasteFromHistory<CR>
-    " Show me the registers.
-    nnoremap <leader>r :reg<CR>
-    " Show me the symbols.
-    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
+
     nnoremap <leader>i :GotoSymbolInProject<CR>
-    " Or if you're using super-keys (disabled by default):
-    nnoremap <D-i> :GotoSymbolInProject<CR>
-    " Edit rc file.
-    nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
-    " Sorted.
-    nnoremap <leader>s) vi):sort iu<CR>
-    nnoremap <leader>s] vi]:sort iu<CR>
-    nnoremap <leader>si vii:sort iu<CR>
-    nnoremap <leader>sp vip:sort iu<CR>
-    vnoremap <leader>s :sort iu<CR>
-    " Windowing aliases (especially useful if you don't use ctrl-keys).
+
+    nnoremap <leader>s) vi):sort u<CR>
+    nnoremap <leader>s] vi]:sort u<CR>
+    nnoremap <leader>si vii:sort u<CR>
+    nnoremap <leader>sp vip:sort u<CR>
+    nnoremap <leader>ss vip:sort u<CR>
+    vnoremap <leader>s :sort u<CR>
+
+    " Windowing aliases (good if you don't like using ctrl-keys).
     nnoremap <leader>_ <C-w>_
     nnoremap <leader><bar> <C-w><bar>
     nnoremap <leader>= <C-w>=
-    " Origami: https://packagecontrol.io/packages/Origami.
-    nnoremap <leader>. :ToggleZoomPane<CR>
-    nnoremap <leader>ws :CarryFileToPane direction=down<CR>
-    nnoremap <leader>wv :CarryFileToPane direction=right<CR>
-    nnoremap <leader>wd :DestroyPane direction=self<CR>
-    " Toggle Zoom. Requires the Origami plugin:
-    " https://packagecontrol.io/packages/Origami.
-    nnoremap <leader>. :ToggleZoomPane fraction=0.98<CR>
-    " Git
-    nnoremap <leader>hu :RevertModification<CR>
 
-Note that to enable the toggle the side bar when the side bar has focus you
-need to configure a special key binding. Goto  Menu > Preferences > Key
-Bindings and add the following: >
+To enable toggling the side bar when the side bar has focus add the following
+key binding, Goto  Menu > Preferences > Key Bindings: >
 
     [
         {
@@ -217,16 +203,18 @@ PLUGINS                                                           *nv-plugins*
 ABOLISH                                                           *nv-abolish*
                                                                      *abolish*
 
-Note that only the "case mutating algorithms" are supported. See |abolish.txt|
-for more details.
+All of the "case mutating algorithms" are supported.
+
+See |abolish.txt| for more details.
 
 ------------------------------------------------------------------------------
 
 COMMENTARY                                                     *nv-commentary*
                                                                   *commentary*
 
-Comment stuff out. Then uncomment it later. See |commentary.txt| for more
-details.
+Comment stuff out. Then uncomment it later.
+
+See |commentary.txt| for more details.
 
 ------------------------------------------------------------------------------
 
@@ -234,7 +222,7 @@ HIGHLIGHTEDYANK                                           *nv-highlightedyank*
                                                              *highlightedyank*
 
 A plugin to highlight yanked regions. That is a pretty trick to make your
-coding easier. HighlightedYank is enabled by default.
+coding easier.
 
 You can disable the plugin via the 'highlightedyank' setting. The highlighted
 duration can be configured by the 'highlightedyank_duration' setting. The
@@ -272,17 +260,20 @@ scope: >
 SURROUND                                                         *nv-surround*
                                                                     *surround*
 
-A plugin for deleting, changing, and adding "surroundings". See |surround.txt|
-for more details.
+A plugin for deleting, changing, and adding "surroundings".
+
+See |surround.txt| for more details.
 
 ------------------------------------------------------------------------------
 
 UNIMPAIRED                                                     *nv-unimpaired*
                                                                   *unimpaired*
 
-This plugin provides several pairs of bracket maps. See |unimpaired.txt| for
-more details. Note that not all of the commands have been implemented. Below
-is a list of what has been implemented so far.
+This plugin provides several pairs of bracket maps.
+
+See |unimpaired.txt| for more details.
+
+Below is an overview of what has been implemented so far.
 
 [b                     |:bprevious|
 ]b                     |:bnext|
@@ -297,8 +288,7 @@ is a list of what has been implemented so far.
 [e                      Exchange the current line with [count] lines above it.
 ]e                      Exchange the current line with [count] lines below it.
 
-Note that the following two jump to error commands require you to install the
-SublimeLinter package: https://packagecontrol.io/packages/SublimeLinter.
+The following jump to error commands require the SublimeLinter package:
 
 [l                      Jump to the [count] previous error.
 ]l                      Jump to the [count] next error.
@@ -306,36 +296,67 @@ SublimeLinter package: https://packagecontrol.io/packages/SublimeLinter.
 Option toggling.
 
  On      Off    Toggle  Option
-*[oa*   *]oa*   *coa*   'menu'          {NeoVintageous specific}
-*[oc*   *]oc*   *coc*   'cursorline'
-*[oe*   *]oe*   *coe*   'statusbar'     {NeoVintageous specific}
-*[ol*   *]ol*   *col*   'list'
-*[om*   *]om*   *com*   'minimap'       {NeoVintageous specific}
-*[on*   *]on*   *con*   'number'
-*[ot*   *]ot*   *cot*   'sidebar'       {NeoVintageous specific}
-*[os*   *]os*   *cos*   'spell'
-*[ow*   *]ow*   *cow*   'wrap'
+*[oa*   *]oa*   *yoa*   'menu'
+*[oc*   *]oc*   *yoc*   'cursorline'
+*[oe*   *]oe*   *yoe*   'statusbar'
+*[oh*   *]oh*   *yoh*   'hlsearch'
+*[oi*   *]oi*   *yoi*   'ignorecase'
+*[ol*   *]ol*   *yol*   'list'
+*[om*   *]om*   *yom*   'minimap'
+*[on*   *]on*   *yon*   'number'
+*[os*   *]os*   *yos*   'spell'
+*[ot*   *]ot*   *yot*   'sidebar'
+*[ow*   *]ow*   *yow*   'wrap'
 
 ------------------------------------------------------------------------------
 
 INDENT OBJECT                                               *nv-indent-object*
                                                                *indent-object*
 
-This plugin defines a new text object, based on indentation levels. See
-|indent-object.txt| for more details.
+This plugin defines a new text object, based on indentation levels.
+
+See |indent-object.txt| for more details.
 
 ==============================================================================
 
 OPTIONS                                                           *nv-options*
 
-Configure settings via `Menu > Preferences > Settings` or by the Command
+The following options are supported:
+
+    belloff
+    hlsearch
+    ignorecase
+    incsearch
+    magic
+    menu
+    modeline
+    modelines
+    scrolloff
+    sidescrolloff
+    statusbar
+    winaltkeys
+    wrapscan
+
+Some options can used in the neovintageousrc file, for example the |set|
+command can be used if you want NeoVintageous to always start with the
+'ignorecase' option on, add this line your neovintageousrc file: >
+
+    set ignorecase
+
+See `:h 'optionname'` for help on individual options.
+
+==============================================================================
+
+SETTINGS                                                         *nv-settings*
+
+You can edit settings via `Menu > Preferences > Settings` or by the Command
 Palette. To use the command palette:
 
 1. Press `Ctrl+Shift+P`
 2. Select the "Preferences: Settings" command
 3. Press `Enter`
 
-For example to enable the ctrl keys: >
+For example to enable the control keys: >
 
     {
         "vintageous_use_ctrl_keys": true
@@ -344,84 +365,47 @@ For example to enable the ctrl keys: >
 List of available options:
 
                                                            *'highlightedyank'*
-'highlightedyank' boolean (default on)
+'highlightedyank'       boolean (default on)
     Enable or disable the HighlightedYank plugin.
 
                                                   *'highlightedyank_duration'*
-'highlightedyank_duration' number (default 1000)
-        Assign number of time in milliseconds.
+'highlightedyank_duration'
+                        number (default 1000)
+    Assign number of time in milliseconds.
 
                                                      *'highlightedyank_style'*
 'highlightedyank_style' string (default fill)
-    Accepts any of the following:
-        fill
-        outline
-        underline
-        squiggly_underline
-        stippled_underline
+    Valid values: fill, outline, underline, squiggly_underline,
+    stippled_underline.
 
                                              *'neovintageous_search_cur_style'*
-'neovintageous_search_cur_style' string (default fill)
-    Current search style. Accepts any of the following:
-        fill
-        outline
-        underline
-        squiggly_underline
-        stippled_underline
+'neovintageous_search_cur_style'
+                        string (default fill)
+    The current search style. Valid values: fill, outline, underline,
+    squiggly_underline, stippled_underline.
 
                                              *'neovintageous_search_inc_style'*
-'neovintageous_search_inc_style' string (default fill)
-    Incremental search style. Accepts any of the following:
-        fill
-        outline
-        underline
-        squiggly_underline
-        stippled_underline
+'neovintageous_search_inc_style'
+                        string (default fill)
+    The incremental search style. Valid values: fill, outline, underline,
+    squiggly_underline, stippled_underline.
 
                                              *'neovintageous_search_occ_style'*
-'neovintageous_search_occ_style' string (default fill)
-    Search occurrences style. Accepts any of the following:
-        fill
-        outline
-        underline
-        squiggly_underline
-        stippled_underline
+'neovintageous_search_occ_style'
+                        string (default fill)
+    The search occurrences style. Valid values: fill, outline, underline,
+    squiggly_underline, stippled_underline.
 
                                                    *'vintageous_default_mode'*
 'vintageous_default_mode'
                         string (default "")
-    Default mode to use when activating or switching views.
-    Valid values are: "insert"
-
+    The default mode to use when activating or switching views. Valid values
+    are: "insert".
     mode   | description
     ------ | -----------
     insert | Enter insert mode when opening or switching views or when
              the window receives focus and is not in visual mode i.e. visual
              mode selections are retained when the window loses focus.
-
-                                                       *'vintageous_hlsearch'*
-'vintageous_hlsearch'   boolean (default on)
-        See 'hlsearch'.
-
-                                                     *'vintageous_ignorecase'*
-'vintageous_ignorecase' boolean (default on)
-        See 'ignorecase'.
-
-                                                      *'vintageous_incsearch'*
-'vintageous_incsearch'  boolean (default on)
-        See 'incsearch'.
-
-                                                          *'vintageous_magic'*
-'vintageous_magic'      boolean (default off)
-        See 'magic'.
-
-                                                       *'vintageous_modeline'*
-'vintageous_modeline'   boolean (default off)
-        See 'modeline'.
-
-                                                      *'vintageous_modelines'*
-'vintageous_modelines'  number (default 5)
-        See 'modelines'.
 
                                                  *'vintageous_enable_abolish'*
 'vintageous_enable_abolish'
@@ -492,19 +476,6 @@ List of available options:
         Visual bell color scheme. Valid values are: "dark", "light", or color
         scheme path. The color scheme path should be in the format:
         Packages/Name/name.hidden-color-scheme
-
-                                                        *'vintageous_belloff'*
-'vintageous_belloff'    string (default "")
-        Specifies for which events the bell (visual blink) will not be rung. It
-        is a comma separated list of items. For each item that is present, the
-        bell will be silenced.
-        Currently only the "all" event is supported.
-        item        meaning when present    ~
-        all         All events.
-
-                                                     *'vintageous_winaltkeys'*
-'vintageous_winaltkeys'   boolean (default on)
-        See 'winaltkeys'.
 
 ------------------------------------------------------------------------------
 

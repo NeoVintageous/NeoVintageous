@@ -15,7 +15,7 @@ contexts:
 
     - include: jumptags
 
-    - match: \bhttps://[a-zA-Z0-9\.\\/]+\b
+    - match: \bhttps://[a-zA-Z0-9\.\\/-]+\b
       scope: markup.underline.link.neovintageous
 
     - match: \<[^\>\s]+\>

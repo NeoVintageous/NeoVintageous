@@ -6,7 +6,6 @@
     // Assign number of time in milliseconds.
     "highlightedyank_duration": 1000,
 
-    // Accepts any of the following:
     // Valid values are: fill, outline, underline, squiggly_underline,
     // stippled_underline.
     "highlightedyank_style": "fill",
