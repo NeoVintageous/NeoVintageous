@@ -610,10 +610,10 @@ Expression syntax summary, from least to most significant:
 	expr2 ? expr1 : expr1	if-then-else
 
 |expr2|	expr3
-	expr3 || expr3 ..	logical OR
+	expr3 || expr3 ...	logical OR
 
 |expr3|	expr4
-	expr4 && expr4 ..	logical AND
+	expr4 && expr4 ...	logical AND
 
 |expr4|	expr5
 	expr5 == expr5		equal
@@ -634,14 +634,15 @@ Expression syntax summary, from least to most significant:
 	expr5 isnot expr5	different |List| instance
 
 |expr5|	expr6
-	expr6 +	 expr6 ..	number addition or list concatenation
-	expr6 -	 expr6 ..	number subtraction
-	expr6 .	 expr6 ..	string concatenation
+	expr6 +	 expr6 ...	number addition, list or blob concatenation
+	expr6 -	 expr6 ...	number subtraction
+	expr6 .	 expr6 ...	string concatenation
+	expr6 .. expr6 ...	string concatenation
 
 |expr6|	expr7
-	expr7 *	 expr7 ..	number multiplication
-	expr7 /	 expr7 ..	number division
-	expr7 %	 expr7 ..	number modulo
+	expr7 *	 expr7 ...	number multiplication
+	expr7 /	 expr7 ...	number division
+	expr7 %	 expr7 ...	number modulo
 
 |expr7|	expr8
 	! expr7			logical NOT
@@ -670,7 +671,7 @@ Expression syntax summary, from least to most significant:
 	{args -> expr1}		lambda expression
 
 
-".." indicates that the operations in this level can be concatenated.
+"..." indicates that the operations in this level can be concatenated.
 Example: >
 	&nu || &list && &shell == "csh"
 
@@ -707,7 +708,9 @@ use in a variable such as "a:1".
 expr2 and expr3						*expr2* *expr3*
 ---------------
 
-					*expr-barbar* *expr-&&*
+expr3 || expr3 ..	logical OR		*expr-barbar*
+expr4 && expr4 ..	logical AND		*expr-&&*
+
 The "||" and "&&" operators take one argument on each side.  The arguments
 are (converted to) Numbers.  The result is:
 
@@ -847,18 +850,22 @@ can be matched like an ordinary character.  Examples:
 
 expr5 and expr6						*expr5* *expr6*
 ---------------
-expr6 +	 expr6 ..	Number addition or |List| concatenation	*expr-+*
-expr6 -	 expr6 ..	Number subtraction			*expr--*
-expr6 .	 expr6 ..	String concatenation			*expr-.*
+expr6 + expr6   Number addition, |List| or |Blob| concatenation	*expr-+*
+expr6 - expr6   Number subtraction				*expr--*
+expr6 . expr6   String concatenation				*expr-.*
+expr6 .. expr6  String concatenation				*expr-..*
 
 For |Lists| only "+" is possible and then both expr6 must be a list.  The
 result is a new list with the two lists Concatenated.
 
-expr7 *	 expr7 ..	Number multiplication			*expr-star*
-expr7 /	 expr7 ..	Number division				*expr-/*
-expr7 %	 expr7 ..	Number modulo				*expr-%*
+For String concatenation ".." is preferred, since "." is ambiguous, it is also
+used for |Dict| member access and floating point numbers.
 
-For all, except ".", Strings are converted to Numbers.
+expr7 * expr7  Number multiplication				*expr-star*
+expr7 / expr7  Number division					*expr-/*
+expr7 % expr7  Number modulo					*expr-%*
+
+For all, except "." and "..", Strings are converted to Numbers.
 For bitwise operators see |and()|, |or()| and |xor()|.
 
 Note the difference between "+" and ".":
@@ -1049,11 +1056,6 @@ These are INVALID:
 	3.		empty {M}
 	1e40		missing .{M}
 
-							*float-pi* *float-e*
-A few useful values to copy&paste: >
-	:let pi = 3.14159265359
-	:let e  = 2.71828182846
-
 Rationale:
 Before floating point was introduced, the text "123.456" was interpreted as
 the two numbers "123" and "456", both converted to a string and concatenated,
@@ -1062,6 +1064,15 @@ could not find it intentionally being used in Vim scripts, this backwards
 incompatibility was accepted in favor of being able to use the normal notation
 for floating point numbers.
 
+							*float-pi* *float-e*
+A few useful values to copy&paste: >
+	:let pi = 3.14159265359
+	:let e  = 2.71828182846
+Or, if you don't want to write them in as floating-point literals, you can
+also use functions, like the following: >
+	:let pi = acos(-1.0)
+	:let e  = exp(1.0)
+<
 						*floating-point-precision*
 The precision and range of floating points numbers depends on what "double"
 means in the library Vim was compiled with.  There is no way to change this at
@@ -1101,8 +1112,10 @@ A string constant accepts these special characters:
 \\	backslash
 \"	double quote
 \<xxx>	Special key named "xxx".  e.g. "\<C-W>" for CTRL-W.  This is for use
-	in mappings, the 0x80 byte is escaped.  Don't use <Char-xxxx> to get a
-	utf-8 character, use \uxxxx as mentioned above.
+	in mappings, the 0x80 byte is escaped.
+	To use the double quote character it must be escaped: "<M-\">".
+	Don't use <Char-xxxx> to get a utf-8 character, use \uxxxx as
+	mentioned above.
 
 Note that "\xff" is stored as the byte 255, which may be invalid in some
 encodings.  Use "\u00ff" to store character 255 correctly as UTF-8.
@@ -1211,8 +1224,8 @@ The arguments are optional.  Example: >
 							*closure*
 Lambda expressions can access outer scope variables and arguments.  This is
 often called a closure.  Example where "i" and "a:arg" are used in a lambda
-while they exist in the function scope.  They remain valid even after the
-function returns: >
+while they already exist in the function scope.  They remain valid even after
+the function returns: >
 	:function Foo(arg)
 	:  let i = 3
 	:  return {x -> x + i - a:arg}
@@ -1220,8 +1233,11 @@ function returns: >
 	:let Bar = Foo(4)
 	:echo Bar(6)
 <	5
-See also |:func-closure|. Lambda and closure support can be checked with: >
-        if has('lambda')
+Note that the variables must exist in the outer scope before the lamba is
+defined for this to work.  See also |:func-closure|.
+
+Lambda and closure support can be checked with: >
+	if has('lambda')
 
 Examples for using a lambda expression with |sort()|, |map()| and |filter()|: >
 	:echo map([1, 2, 3], {idx, val -> val + 1})
@@ -2028,6 +2044,8 @@ cursor({lnum}, {col} [, {off}])
 cursor({list})			Number	move cursor to position in {list}
 deepcopy({expr} [, {noref}])	any	make a full copy of {expr}
 delete({fname} [, {flags}])	Number	delete the file or directory {fname}
+deletebufline({expr}, {first}[, {last}])
+				Number	delete lines from buffer {expr}
 dictwatcheradd({dict}, {pattern}, {callback})
 				Start watching a dictionary
 dictwatcherdel({dict}, {pattern}, {callback})
@@ -2081,6 +2099,7 @@ getbufline({expr}, {lnum} [, {end}])
 				List	lines {lnum} to {end} of buffer {expr}
 getbufvar({expr}, {varname} [, {def}])
 				any	variable {varname} in buffer {expr}
+getchangelist({expr})		List	list of change list items
 getchar([expr])		Number	get one character from the user
 getcharmod()			Number	modifiers for the last typed character
 getcharsearch()			Dict	last character search
@@ -2097,6 +2116,8 @@ getfperm({fname})		String	file permissions of file {fname}
 getfsize({fname})		Number	size in bytes of file {fname}
 getftime({fname})		Number	last modification time of file
 getftype({fname})		String	description of type of file {fname}
+getjumplist([{winnr} [, {tabnr}]])
+				List	list of jump list items
 getline({lnum})			String	line {lnum} of current buffer
 getline({lnum}, {end})		List	lines {lnum} to {end} of current buffer
 getloclist({nr} [, {what}])	List	list of location list items
@@ -2222,6 +2243,8 @@ range({expr} [, {max} [, {stride}]])
 				List	items from {expr} to {max}
 readfile({fname} [, {binary} [, {max}]])
 				List	get list of lines from file {fname}
+reg_executing()			Number	get the executing register name
+reg_recording()			String	get the recording register name
 reltime([{start} [, {end}]])	List	get time value
 reltimefloat({time})		Float	turn the time value into a Float
 reltimestr({time})		String	turn time value into a String
@@ -2263,6 +2286,9 @@ searchpos({pattern} [, {flags} [, {stopline} [, {timeout}]]])
 server2client({clientid}, {string})
 				Number	send reply string
 serverlist()			String	get a list of available servers
+setbufline( {expr}, {lnum}, {line})
+				Number	set line {lnum} to {line} in buffer
+					{expr}
 setbufvar({expr}, {varname}, {val})	set {varname} in buffer {expr} to {val}
 setcharsearch({dict})		Dict	set character search from {dict}
 setcmdpos({pos})		Number	set cursor position in command-line
@@ -2286,6 +2312,17 @@ shellescape({string} [, {special}])
 				String	escape {string} for use as shell
 					command argument
 shiftwidth()			Number	effective value of 'shiftwidth'
+sign_define({name} [, {dict}])	Number	define or update a sign
+sign_getdefined([{name}])	List	get a list of defined signs
+sign_getplaced([{expr} [, {dict}]])
+				List	get a list of placed signs
+sign_jump({id}, {group}, {expr})
+				Number	jump to a sign
+sign_place({id}, {group}, {name}, {expr} [, {dict}])
+				Number	place a sign
+sign_undefine([{name}])		Number	undefine a sign
+sign_unplace({group} [, {dict}])
+				Number	unplace a sign
 simplify({filename})		String	simplify filename as much as possible
 sin({expr})			Float	sine of {expr}
 sinh({expr})			Float	hyperbolic sine of {expr}
@@ -2374,6 +2411,7 @@ win_screenpos({nr})		List	get screen position of window {nr}
 winbufnr({nr})			Number	buffer number of window {nr}
 wincol()			Number	window column of the cursor
 winheight({nr})			Number	height of window {nr}
+winlayout([{tabnr}])		List	layout of windows in tab {tabnr}
 winline()			Number	window line of the cursor
 winnr([{expr}])			Number	number of current window
 winrestcmd()			String	returns command to restore window sizes
@@ -3194,6 +3232,17 @@ delete({fname} [, {flags}])					*delete()*
 		The result is a Number, which is 0 if the delete operation was
 		successful and -1 when the deletion failed or partly failed.
 
+deletebufline({expr}, {first}[, {last}])		*deletebufline()*
+		Delete lines {first} to {last} (inclusive) from buffer {expr}.
+		If {last} is omitted then delete line {first} only.
+		On success 0 is returned, on failure 1 is returned.
+
+		For the use of {expr}, see |bufname()| above.
+
+		{first} and {last} are used like with |setline()|. Note that
+		when using |line()| this refers to the current buffer. Use "$"
+		to refer to the last line in buffer {expr}.
+
 dictwatcheradd({dict}, {pattern}, {callback})		      *dictwatcheradd()*
 		Adds a watcher to a dictionary. A dictionary watcher is
 		identified by three components:
@@ -3568,20 +3617,24 @@ extend({expr1}, {expr2} [, {expr3}])			*extend()*
 feedkeys({string} [, {mode}])				*feedkeys()*
 		Characters in {string} are queued for processing as if they
 		come from a mapping or were typed by the user.
+
 		By default the string is added to the end of the typeahead
 		buffer, thus if a mapping is still being executed the
 		characters come after them.  Use the 'i' flag to insert before
 		other characters, they will be executed next, before any
 		characters from a mapping.
+
 		The function does not wait for processing of keys contained in
 		{string}.
+
 		To include special keys into {string}, use double-quotes
 		and "\..." notation |expr-quote|. For example,
 		feedkeys("\<CR>") simulates pressing of the <Enter> key. But
 		feedkeys('\<CR>') pushes 5 characters.
-		If {mode} is absent, keys are remapped.
+
 		{mode} is a String, which can contain these character flags:
-		'm'	Remap keys. This is default.
+		'm'	Remap keys. This is default.  If {mode} is absent,
+			keys are remapped.
 		'n'	Do not remap keys.
 		't'	Handle keys as if typed; otherwise they are handled as
 			if coming from a mapping.  This matters for undo,
@@ -3595,6 +3648,9 @@ feedkeys({string} [, {mode}])				*feedkeys()*
 			will behave as if <Esc> is typed, to avoid getting
 			stuck, waiting for a character to be typed before the
 			script continues.
+			Note that if you manage to call feedkeys() while
+			executing commands, thus calling it recursively, the
+			all typehead will be consumed by the last call.
 		'!'	When used with 'x' will not end Insert mode. Can be
 			used in a test when a timer is set to exit Insert mode
 			a little later.  Useful for testing CursorHoldI.
@@ -4011,6 +4067,22 @@ getbufvar({expr}, {varname} [, {def}])				*getbufvar()*
 			:let bufmodified = getbufvar(1, "&mod")
 			:echo "todo myvar = " . getbufvar("todo", "myvar")
 <
+getchangelist({expr})					*getchangelist()*
+		Returns the |changelist| for the buffer {expr}. For the use
+		of {expr}, see |bufname()| above. If buffer {expr} doesn't
+		exist, an empty list is returned.
+
+		The returned list contains two entries: a list with the change
+		locations and the current position in the list.  Each
+		entry in the change list is a dictionary with the following
+		entries:
+			col		column number
+			coladd		column offset for 'virtualedit'
+			lnum		line number
+		If buffer {expr} is the current buffer, then the current
+		position refers to the position in the list. For other
+		buffers, it is set to the length of the list.
+
 getchar([expr])						*getchar()*
 		Get a single character from the user or input stream.
 		If [expr] is omitted, wait until a character is available.
@@ -4298,6 +4370,26 @@ getftype({fname})					*getftype()*
 <		Note that a type such as "link" will only be returned on
 		systems that support it.  On some systems only "dir" and
 		"file" are returned.
+
+							*getjumplist()*
+getjumplist([{winnr} [, {tabnr}]])
+		Returns the |jumplist| for the specified window.
+
+		Without arguments use the current window.
+		With {winnr} only use this window in the current tab page.
+		{winnr} can also be a |window-ID|.
+		With {winnr} and {tabnr} use the window in the specified tab
+		page.
+
+		The returned list contains two entries: a list with the jump
+		locations and the last used jump position number in the list.
+		Each entry in the jump location list is a dictionary with
+		the following entries:
+			bufnr		buffer number
+			col		column number
+			coladd		column offset for 'virtualedit'
+			filename	filename if available
+			lnum		line number
 
 							*getline()*
 getline({lnum} [, {end}])
@@ -4618,6 +4710,7 @@ getwininfo([{winid}])					*getwininfo()*
 			height		window height (excluding winbar)
 			loclist		1 if showing a location list
 			quickfix	1 if quickfix or location list window
+			terminal	1 if a terminal window
 			tabnr		tab page number
 			topline		first displayed buffer line 
 			variables	a reference to the dictionary with
@@ -5199,9 +5292,9 @@ jobstart({cmd}[, {opts}])				*jobstart()*
 							*jobstart-options*
 		{opts} is a dictionary with these keys:
 		  |on_stdout|: stdout event handler (function name or |Funcref|)
-		  stdout_buffered : read stdout in |buffered| mode.
+		  stdout_buffered : read stdout in |channel-buffered| mode.
 		  |on_stderr|: stderr event handler (function name or |Funcref|)
-		  stderr_buffered : read stderr in |buffered| mode.
+		  stderr_buffered : read stderr in |channel-buffered| mode.
 		  |on_exit|  : exit event handler (function name or |Funcref|)
 		  cwd      : Working directory of the job; defaults to
 		             |current-directory|.
@@ -5240,9 +5333,10 @@ jobwait({ids}[, {timeout}])				*jobwait()*
 
 		{ids} is a list of |job-id|s to wait for.
 		{timeout} is the maximum number of milliseconds to wait.
-		{timeout} of zero can be used to check if a job-id is valid,
-		without waiting.
 
+		Use zero {timeout} to check the status of a job: >
+			let exited = jobwait([{job-id}], 0)[0] >= 0
+<
 		During jobwait() callbacks for jobs not in the {ids} list may
 		be invoked. The screen will not redraw unless |:redraw| is
 		invoked by a callback.
@@ -5443,7 +5537,7 @@ log10({expr})						*log10()*
 
 luaeval({expr}[, {expr}])
 		Evaluate Lua expression {expr} and return its result converted
-		to Vim data structures. See |lua-luaeval| for more details.
+		to Vim data structures. See |lua-eval| for more details.
 
 map({expr1}, {expr2})					*map()*
 		{expr1} must be a |List| or a |Dictionary|.
@@ -6039,7 +6133,7 @@ nr2char({expr} [, {utf8}])				*nr2char()*
 		characters.  nr2char(0) is a real NUL and terminates the
 		string, thus results in an empty string.
 
-nvim_...({...})						*nvim_...()* *eval-api*
+nvim_...({...})					*E5555* *nvim_...()* *eval-api*
 		Call nvim |api| functions. The type checking of arguments will
 		be stricter than for most other builtins. For instance,
 		if Integer is expected, a |Number| must be passed in, a
@@ -6362,6 +6456,15 @@ readfile({fname} [, {binary} [, {max}]])
 		When the file can't be opened an error message is given and
 		the result is an empty list.
 		Also see |writefile()|.
+
+reg_executing()						*reg_executing()*
+		Returns the single letter name of the register being executed.
+		Returns an empty string when no register is being executed.
+		See |@|.
+
+reg_recording()						*reg_recording()*
+		Returns the single letter name of the register being recorded.
+		Returns an empty string string when not recording.  See |q|.
 
 reltime([{start} [, {end}]])				*reltime()*
 		Return an item that represents a time value.  The format of
@@ -6898,6 +7001,19 @@ serverstop({address})					*serverstop()*
 		If |v:servername| is stopped it is set to the next available
 		address returned by |serverlist()|.
 
+setbufline({expr}, {lnum}, {text})			*setbufline()*
+		Set line {lnum} to {text} in buffer {expr}.  To insert
+		lines use |append()|.
+
+		For the use of {expr}, see |bufname()| above.
+
+		{lnum} is used like with |setline()|.
+		This works like |setline()| for the specified buffer.
+		On success 0 is returned, on failure 1 is returned.
+
+		If {expr} is not a valid buffer or {lnum} is not valid, an
+		error message is given.
+
 setbufvar({expr}, {varname}, {val})			*setbufvar()*
 		Set option or local variable {varname} in buffer {expr} to
 		{val}.
@@ -6965,13 +7081,19 @@ setfperm({fname}, {mode})				*setfperm()* *chmod*
 
 setline({lnum}, {text})					*setline()*
 		Set line {lnum} of the current buffer to {text}.  To insert
-		lines use |append()|.
+		lines use |append()|. To set lines in another buffer use
+		|setbufline()|.
+
 		{lnum} is used like with |getline()|.
 		When {lnum} is just below the last line the {text} will be
 		added as a new line.
+
 		If this succeeds, 0 is returned.  If this fails (most likely
-		because {lnum} is invalid) 1 is returned.  Example: >
+		because {lnum} is invalid) 1 is returned.
+
+		Example: >
 			:call setline(5, strftime("%c"))
+
 <		When {text} is a |List| then line {lnum} and following lines
 		will be set to the items in the list.  Example: >
 			:call setline(5, ['aaa', 'bbb', 'ccc'])
@@ -7309,7 +7431,246 @@ shiftwidth()						*shiftwidth()*
 			endif
 <		And then use s:sw() instead of &sw.
 
+sign_define({name} [, {dict}])				*sign_define()*
+		Define a new sign named {name} or modify the attributes of an
+		existing sign.  This is similar to the |:sign-define| command.
 
+		Prefix {name} with a unique text to avoid name collisions.
+		There is no {group} like with placing signs.
+
+		The {name} can be a String or a Number.  The optional {dict}
+		argument specifies the sign attributes.  The following values
+		are supported:
+		    icon	full path to the bitmap file for the sign.
+		    linehl	highlight group used for the whole line the
+				sign is placed in.
+		    text	text that is displayed when there is no icon
+				or the GUI is not being used.
+		    texthl	highlight group used for the text item
+		    numhl	highlight group used for 'number' column at the
+				associated line. Overrides |hl-LineNr|,
+				|hl-CursorLineNr|.
+
+		If the sign named {name} already exists, then the attributes
+		of the sign are updated.
+
+		Returns 0 on success and -1 on failure.
+
+		Examples: >
+			call sign_define("mySign", {"text" : "=>", "texthl" :
+					\ "Error", "linehl" : "Search"})
+<
+sign_getdefined([{name}])				*sign_getdefined()*
+		Get a list of defined signs and their attributes.
+		This is similar to the |:sign-list| command.
+
+		If the {name} is not supplied, then a list of all the defined
+		signs is returned. Otherwise the attribute of the specified
+		sign is returned.
+
+		Each list item in the returned value is a dictionary with the
+		following entries:
+			icon	full path to the bitmap file of the sign
+			linehl	highlight group used for the whole line the
+				sign is placed in.
+			name	name of the sign
+			text	text that is displayed when there is no icon
+				or the GUI is not being used.
+			texthl	highlight group used for the text item
+			numhl	highlight group used for 'number' column at the
+				associated line. Overrides |hl-LineNr|,
+				|hl-CursorLineNr|.
+
+		Returns an empty List if there are no signs and when {name} is
+		not found.
+
+		Examples: >
+			" Get a list of all the defined signs
+			echo sign_getdefined()
+
+			" Get the attribute of the sign named mySign
+			echo sign_getdefined("mySign")
+<
+sign_getplaced([{expr} [, {dict}]])			*sign_getplaced()*
+		Return a list of signs placed in a buffer or all the buffers.
+		This is similar to the |:sign-place-list| command.
+
+		If the optional buffer name {expr} is specified, then only the
+		list of signs placed in that buffer is returned.  For the use
+		of {expr}, see |bufname()|. The optional {dict} can contain
+		the following entries:
+			group	select only signs in this group
+			id	select sign with this identifier
+			lnum	select signs placed in this line. For the use
+				of {lnum}, see |line()|.
+		If {group} is '*', then signs in all the groups including the
+		global group are returned. If {group} is not supplied or is an
+		empty string, then only signs in the global group are
+		returned.  If no arguments are supplied, then signs in the
+		global group placed in all the buffers are returned.
+		See |sign-group|.
+
+		Each list item in the returned value is a dictionary with the
+		following entries:
+			bufnr	number of the buffer with the sign
+			signs	list of signs placed in {bufnr}. Each list
+				item is a dictionary with the below listed
+				entries
+
+		The dictionary for each sign contains the following entries:
+			group	sign group. Set to '' for the global group.
+			id	identifier of the sign
+			lnum	line number where the sign is placed
+			name	name of the defined sign
+			priority	sign priority
+
+		The returned signs in a buffer are ordered by their line
+		number.
+
+		Returns an empty list on failure or if there are no placed
+		signs.
+
+		Examples: >
+			" Get a List of signs placed in eval.c in the
+			" global group
+			echo sign_getplaced("eval.c")
+
+			" Get a List of signs in group 'g1' placed in eval.c
+			echo sign_getplaced("eval.c", {'group' : 'g1'})
+
+			" Get a List of signs placed at line 10 in eval.c
+			echo sign_getplaced("eval.c", {'lnum' : 10})
+
+			" Get sign with identifier 10 placed in a.py
+			echo sign_getplaced("a.py", {'id' : 10'})
+
+			" Get sign with id 20 in group 'g1' placed in a.py
+			echo sign_getplaced("a.py", {'group' : 'g1',
+							\  'id' : 20'})
+
+			" Get a List of all the placed signs
+			echo sign_getplaced()
+<
+							*sign_jump()*
+sign_jump({id}, {group}, {expr})
+		Open the buffer {expr} or jump to the window that contains
+		{expr} and position the cursor at sign {id} in group {group}.
+		This is similar to the |:sign-jump| command.
+
+		For the use of {expr}, see |bufname()|.
+
+		Returns the line number of the sign. Returns -1 if the
+		arguments are invalid.
+
+		Example: >
+			" Jump to sign 10 in the current buffer
+			call sign_jump(10, '', '')
+<
+							*sign_place()*
+sign_place({id}, {group}, {name}, {expr} [, {dict}])
+		Place the sign defined as {name} at line {lnum} in file {expr}
+		and assign {id} and {group} to sign.  This is similar to the
+		|:sign-place| command.
+
+		If the sign identifier {id} is zero, then a new identifier is
+		allocated.  Otherwise the specified number is used. {group} is
+		the sign group name. To use the global sign group, use an
+		empty string.  {group} functions as a namespace for {id}, thus
+		two groups can use the same IDs. Refer to |sign-identifier|
+		for more information.
+		
+		{name} refers to a defined sign.
+		{expr} refers to a buffer name or number. For the accepted
+		values, see |bufname()|.
+
+		The optional {dict} argument supports the following entries:
+			lnum		line number in the buffer {expr} where
+					the sign is to be placed. For the
+					accepted values, see |line()|.
+			priority	priority of the sign. See
+					|sign-priority| for more information.
+
+		If the optional {dict} is not specified, then it modifies the
+		placed sign {id} in group {group} to use the defined sign
+		{name}.
+
+		Returns the sign identifier on success and -1 on failure.
+
+		Examples: >
+			" Place a sign named sign1 with id 5 at line 20 in
+			" buffer json.c
+			call sign_place(5, '', 'sign1', 'json.c',
+							\ {'lnum' : 20})
+
+			" Updates sign 5 in buffer json.c to use sign2
+			call sign_place(5, '', 'sign2', 'json.c')
+
+			" Place a sign named sign3 at line 30 in
+			" buffer json.c with a new identifier
+			let id = sign_place(0, '', 'sign3', 'json.c',
+							\ {'lnum' : 30})
+
+			" Place a sign named sign4 with id 10 in group 'g3'
+			" at line 40 in buffer json.c with priority 90
+			call sign_place(10, 'g3', 'sign4', 'json.c',
+					\ {'lnum' : 40, 'priority' : 90})
+<
+sign_undefine([{name}])					*sign_undefine()*
+		Deletes a previously defined sign {name}. This is similar to
+		the |:sign-undefine| command. If {name} is not supplied, then
+		deletes all the defined signs.
+
+		Returns 0 on success and -1 on failure.
+
+		Examples: >
+			" Delete a sign named mySign
+			call sign_undefine("mySign")
+
+			" Delete all the signs
+			call sign_undefine()
+<
+sign_unplace({group} [, {dict}])			*sign_unplace()*
+		Remove a previously placed sign in one or more buffers.  This
+		is similar to the |:sign-unplace()| command.
+
+		{group} is the sign group name. To use the global sign group,
+		use an empty string.  If {group} is set to '*', then all the
+		groups including the global group are used.
+		The signs in {group} are selected based on the entries in
+		{dict}.  The following optional entries in {dict} are
+		supported:
+			buffer	buffer name or number. See |bufname()|.
+			id	sign identifier
+		If {dict} is not supplied, then all the signs in {group} are
+		removed.
+
+		Returns 0 on success and -1 on failure.
+
+		Examples: >
+			" Remove sign 10 from buffer a.vim
+			call sign_unplace('', {'buffer' : "a.vim", 'id' : 10})
+
+			" Remove sign 20 in group 'g1' from buffer 3
+			call sign_unplace('g1', {'buffer' : 3, 'id' : 20})
+
+			" Remove all the signs in group 'g2' from buffer 10
+			call sign_unplace('g2', {'buffer' : 10})
+
+			" Remove sign 30 in group 'g3' from all the buffers
+			call sign_unplace('g3', {'id' : 30})
+
+			" Remove all the signs placed in buffer 5
+			call sign_unplace('*', {'buffer' : 5})
+
+			" Remove the signs in group 'g4' from all the buffers
+			call sign_unplace('g4')
+
+			" Remove sign 40 from all the buffers
+			call sign_unplace('*', {'id' : 40})
+
+			" Remove all the placed signs from all the buffers
+			call sign_unplace('*')
+<
 simplify({filename})					*simplify()*
 		Simplify the file name as much as possible without changing
 		the meaning.  Shortcuts (on MS-Windows) or symbolic links (on
@@ -7360,7 +7721,7 @@ sockconnect({mode}, {address}, {opts})			 *sockconnect()*
 
 		{opts} is a dictionary with these keys:
 		  |on_data| : callback invoked when data was read from socket
-		  data_buffered : read data from socket in |buffered| mode.
+		  data_buffered : read socket data in |channel-buffered| mode.
 		  rpc     : If set, |msgpack-rpc| will be used to communicate
 			    over the socket.
 		Returns:
@@ -7529,7 +7890,7 @@ stdioopen({opts})			 *stdioopen()*
 
 		{opts} is a dictionary with these keys:
 		  |on_stdin| : callback invoked when stdin is written to.
-		  stdin_buffered : read stdin in |buffered| mode.
+		  stdin_buffered : read stdin in |channel-buffered| mode.
 		  rpc      : If set, |msgpack-rpc| will be used to communicate
 			     over stdio
 		Returns:
@@ -8312,7 +8673,7 @@ undofile({name})					*undofile()*
 		If {name} is empty undofile() returns an empty string, since a
 		buffer without a file name will not write an undo file.
 		Useful in combination with |:wundo| and |:rundo|.
-		When compiled without the +persistent_undo option this always
+		When compiled without the |+persistent_undo| option this always
 		returns an empty string.
 
 undotree()						*undotree()*
@@ -8499,6 +8860,35 @@ winheight({nr})						*winheight()*
 		Examples: >
   :echo "The current window has " . winheight(0) . " lines."
 <
+winlayout([{tabnr}])					*winlayout()*
+		The result is a nested List containing the layout of windows
+		in a tabpage.
+
+		Without {tabnr} use the current tabpage, otherwise the tabpage
+		with number {tabnr}. If the tabpage {tabnr} is not found,
+		returns an empty list.
+
+		For a leaf window, it returns:
+			['leaf', {winid}]
+		For horizontally split windows, which form a column, it
+		returns:
+			['col', [{nested list of windows}]]
+		For vertically split windows, which form a row, it returns:
+			['row', [{nested list of windows}]]
+
+		Example: >
+			" Only one window in the tab page
+			:echo winlayout()
+			['leaf', 1000]
+			" Two horizontally split windows
+			:echo winlayout()
+			['col', [['leaf', 1000], ['leaf', 1001]]]
+			" Three horizontally split windows, with two
+			" vertically split windows in the middle window
+			:echo winlayout(2)
+			['col', [['leaf', 1002], ['row', ['leaf', 1003],
+					     ['leaf', 1001]]], ['leaf', 1000]]
+<
 							*winline()*
 winline()	The result is a Number, which is the screen line of the cursor
 		in the window.	This is counting screen lines from the top of
@@ -8592,7 +8982,7 @@ winwidth({nr})						*winwidth()*
 		Examples: >
   :echo "The current window has " . winwidth(0) . " columns."
   :if winwidth(0) <= 50
-  :  exe "normal 50\<C-W>|"
+  :  50 wincmd |
   :endif
 <		For getting the terminal or screen size, see the 'columns'
 		option.
@@ -9109,9 +9499,13 @@ This does NOT work: >
 			When the selected range of items is partly past the
 			end of the list, items will be added.
 
-					*:let+=* *:let-=* *:let.=* *E734*
+                                            *:let+=* *:let-=* *:letstar=*
+                                            *:let/=* *:let%=* *:let.=* *E734*
 :let {var} += {expr1}	Like ":let {var} = {var} + {expr1}".
 :let {var} -= {expr1}	Like ":let {var} = {var} - {expr1}".
+:let {var} *= {expr1}	Like ":let {var} = {var} * {expr1}".
+:let {var} /= {expr1}	Like ":let {var} = {var} / {expr1}".
+:let {var} %= {expr1}	Like ":let {var} = {var} % {expr1}".
 :let {var} .= {expr1}	Like ":let {var} = {var} . {expr1}".
 			These fail if {var} was not set yet and when the type
 			of {var} and {expr1} don't fit the operator.
@@ -9258,7 +9652,29 @@ This does NOT work: >
 			No error message is given for a non-existing
 			variable, also without !.
 			If the system does not support deleting an environment
-			variable, it is made emtpy.
+			variable, it is made empty.
+
+						*:cons* *:const*
+:cons[t] {var-name} = {expr1}
+:cons[t] [{name1}, {name2}, ...] = {expr1}
+:cons[t] [{name}, ..., ; {lastname}] = {expr1}
+			Similar to |:let|, but additionally lock the variable
+			after setting the value.  This is the same as locking
+			the variable with |:lockvar| just after |:let|, thus: >
+				:const x = 1
+<			is equivalent to: >
+				:let x = 1
+				:lockvar 1 x
+<			This is useful if you want to make sure the variable
+			is not modified.
+							*E995*
+			|:const| does not allow to for changing a variable. >
+				:let x = 1
+				:const x = 2  " Error!
+<							*E996*
+			Note that environment variables, option values and
+			register values cannot be used here, since they cannot
+			be locked.
 
 :lockv[ar][!] [depth] {name} ...			*:lockvar* *:lockv*
 			Lock the internal variable {name}.  Locking means that
@@ -10750,44 +11166,7 @@ code can be used: >
     unlet scriptnames_output
 
 ==============================================================================
-10. No +eval feature				*no-eval-feature*
-
-When the |+eval| feature was disabled at compile time, none of the expression
-evaluation commands are available.  To prevent this from causing Vim scripts
-to generate all kinds of errors, the ":if" and ":endif" commands are still
-recognized, though the argument of the ":if" and everything between the ":if"
-and the matching ":endif" is ignored.  Nesting of ":if" blocks is allowed, but
-only if the commands are at the start of the line.  The ":else" command is not
-recognized.
-
-Example of how to avoid executing commands when the |+eval| feature is
-missing: >
-
-	:if 1
-	:  echo "Expression evaluation is compiled in"
-	:else
-	:  echo "You will _never_ see this message"
-	:endif
-
-To execute a command only when the |+eval| feature is disabled requires a trick,
-as this example shows: >
-
-	silent! while 0
-	  set history=111
-	silent! endwhile
-
-When the |+eval| feature is available the command is skipped because of the
-"while 0".  Without the |+eval| feature the "while 0" is an error, which is
-silently ignored, and the command is executed.
-
-The "<CR>" here is a real CR character, type CTRL-V Enter to get it.
-
-When the |+eval| feature is available the ":" is remapped to add a double
-quote, which has the effect of commenting-out the command.  Without the
-|+eval| feature the nnoremap command is skipped and the command is executed.
-
-==============================================================================
-11. The sandbox					*eval-sandbox* *sandbox* *E48*
+The sandbox					*eval-sandbox* *sandbox* *E48*
 
 The 'foldexpr', 'formatexpr', 'includeexpr', 'indentexpr', 'statusline' and
 'foldtext' options may be evaluated in a sandbox.  This means that you are
@@ -10826,7 +11205,7 @@ Note that when in the sandbox and saving an option value and restoring it, the
 option will still be marked as it was set in the sandbox.
 
 ==============================================================================
-12. Textlock							*textlock*
+Textlock							*textlock*
 
 In a few situations it is not allowed to change the text in the buffer, jump
 to another window and some other things that might confuse or break what Vim
@@ -10842,7 +11221,7 @@ This is not allowed when the textlock is active:
 	- etc.
 
 ==============================================================================
-13. Command-line expressions highlighting		*expr-highlight*
+Command-line expressions highlighting		*expr-highlight*
 
 Expressions entered by the user in |i_CTRL-R_=|, |c_CTRL-\_e|, |quote=| are
 highlighted by the built-in expressions parser.  It uses highlight groups

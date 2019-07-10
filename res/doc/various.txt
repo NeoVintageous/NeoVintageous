@@ -12,22 +12,24 @@ Various commands					*various*
 1. Various commands					*various-cmds*
 
 							*CTRL-L*
-CTRL-L			Clear and redraw the screen.  The redraw may happen
+CTRL-L			Clears and redraws the screen.  The redraw may happen
 			later, after processing typeahead.
 
+							*:mod* *:mode*
+:mod[e]			Clears and redraws the screen.
+
 							*:redr* *:redraw*
-:redr[aw][!]		Redraw the screen right now.  When ! is included it is
-			cleared first.
-			Useful to update the screen halfway through executing
-			a script or function (or a mapping if 'lazyredraw'
-			set).
+:redr[aw][!]		Redraws pending screen updates now, or the entire
+			screen if "!" is included.  To CLEAR the screen use
+			|:mode| or |CTRL-L|.
+			Useful to update the screen during a script or
+			function (or a mapping if 'lazyredraw' set).
 
 						*:redraws* *:redrawstatus*
-:redraws[tatus][!]	Redraw the status line of the current window.  When !
-			is included all status lines are redrawn.
-			Useful to update the status line(s) when 'statusline'
-			includes an item that doesn't cause automatic
-			updating.
+:redraws[tatus][!]	Redraws the status line of the current window, or all
+			status lines if "!" is included.
+			Useful if 'statusline' includes an item that doesn't
+			cause automatic updating.
 
 							*N<Del>*
 <Del>			When entering a number: Remove the last digit.
@@ -470,17 +472,18 @@ gO			Show a filetype-specific, navigable "outline" of the
 			Currently works in |help| and |:Man| buffers.
 
 [N]gs							*gs* *:sl* *:sleep*
-:[N]sl[eep] [N]	[m]	Do nothing for [N] seconds.  When [m] is included,
-			sleep for [N] milliseconds.  The count for "gs" always
-			uses seconds.  The default is one second. >
+:[N]sl[eep] [N]	[m]	Do nothing for [N] seconds, or [N] milliseconds if [m]
+			was given.  "gs" always uses seconds.
+			Default is one second. >
 			     :sleep	     "sleep for one second
 			     :5sleep	     "sleep for five seconds
 			     :sleep 100m     "sleep for a hundred milliseconds
 			     10gs	     "sleep for ten seconds
-<			Can be interrupted with CTRL-C (CTRL-Break on Windows).
+<			Can be interrupted with CTRL-C.
 			"gs" stands for "goto sleep".
 			While sleeping the cursor is positioned in the text,
 			if at a visible position.
+			Queued messages are processed during the sleep.
 
 ==============================================================================
 2. Using Vim like less or more					*less*
