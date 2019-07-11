@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.17.0 - Unreleased
+## 1.17.0 - 2019-07-11
 
 ### Added
 
@@ -47,15 +47,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Deprecated
 
-* Deprecated [#404](404): `vintageous_belloff` setting; use `set belloff=` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_hlsearch` setting; use `set hlsearch` / `set nohlsearch` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_ignorecase` setting; use `set ignorecase` / `set noignorecase` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_incsearch` setting; use `set incsearch` / `set noincsearch` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_magic` setting; use `set magic` / `set nomagic` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_modeline` setting; use `set modeline` / `set nomodeline` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_modelines` setting; use `set modelines=5` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_winaltkeys` setting; use `set winaltkeys=menu` in neovintageousrc file
-* Deprecated [#404](404): `vintageous_wrapscan` setting; use `set wrapscan` / `set nowrapscan` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_belloff` setting; use `set belloff` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_hlsearch` setting; use `set hlsearch` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_ignorecase` setting; use `set ignorecase` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_incsearch` setting; use `set incsearch` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_magic` setting; use `set magic` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_modeline` setting; use `set modeline` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_modelines` setting; use `set modelines` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_winaltkeys` setting; use `set winaltkeys` in neovintageousrc file
+* Deprecated [#404](404): `vintageous_wrapscan` setting; use `set wrapscan` in neovintageousrc file
 
 ### Fixed
 
