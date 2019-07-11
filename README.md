@@ -19,6 +19,12 @@ NeoVintageous is a project that seeks to continue the development of the discont
 
 The preferred method of installation is [Package Control](https://packagecontrol.io/packages/NeoVintageous).
 
+To keep up to date with the latest beta releases add "NeoVintageous" to your Package Control settings, see [Package Control settings documentation](https://packagecontrol.io/docs/settings) for more information, for example:
+
+```json
+"install_prereleases": ["NeoVintageous"]
+```
+
 ### Manual installation
 
 Close Sublime Text, then download or clone this repository to a directory named **NeoVintageous** in the Sublime Text Packages directory for your platform:
