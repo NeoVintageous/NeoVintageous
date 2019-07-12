@@ -99,12 +99,12 @@ NEOVINTAGEOUSRC                                                        *nv-rc*
                                                              *neovintageousrc*
 
 A file that contains initialization commands is generically called a
-"neovintageousrc" or config file. In Vim this file is known as a "vimrc" file
+"neovintageousrc" or config file. In Vim this file is known as a "vimrc" file.
 Each line in a neovintageousrc file is executed as an Ex command line.
 
 To open the neovintageousrc file use the Command Palette command:
-NeoVintageous: Open My RC File. To reload the neovintageousrc file use the
-Command Palette command: NeoVintageous: Reload My RC File.
+NeoVintageous: Open My RC File and to reload it use the Command Palette
+command: NeoVintageous: Reload My RC File.
 
 The |mapleader| variable is supported, for example: >
 
@@ -134,7 +134,7 @@ Basic leading and trailing sequences in mappings is supported, for example: >
 
 To map to Sublime Text commands format the command name as MixedCase. The
 command name is converted to snake_case before being executed by Sublime Text
-and basic arguments in form "key=value" are accepted, for example: >
+and basic arguments in the form "key=value" are accepted, for example: >
 
     nnoremap <leader>i :GotoSymbolInProject<CR>
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
@@ -191,13 +191,6 @@ key binding, Goto  Menu > Preferences > Key Bindings: >
 PLUGINS                                                           *nv-plugins*
                                                                      *plugins*
 
-1. Abolish
-2. Commentary
-3. HighlightedYank
-4. Surround
-5. Unimpaired
-6. Indent Object
-
 ------------------------------------------------------------------------------
 
 ABOLISH                                                           *nv-abolish*
@@ -224,25 +217,23 @@ HIGHLIGHTEDYANK                                           *nv-highlightedyank*
 A plugin to highlight yanked regions. That is a pretty trick to make your
 coding easier.
 
-You can disable the plugin via the 'highlightedyank' setting. The highlighted
-duration can be configured by the 'highlightedyank_duration' setting. The
-highlighted style can be configured by the 'highlightedyank_style' setting.
-
 When new text is yanked, the old highlighting is deleted. Or when former lines
-are edited, the highlighting is deleted to prevent shifting the position,
-also.
+are edited, the highlighting is deleted to prevent shifting the position, also.
+
+The highlighted duration can be configured by the 'highlightedyank_duration'
+setting and the style can be configured by the 'highlightedyank_style' setting.
 
 To customise the colors, create a color scheme override for your color scheme:
-for example if you have the default Monokai color scheme enabled, create a
-file named `Monokai.sublime-color-scheme` in the User directory (find the User
+for example if you have the default Monokai color scheme enabled, create a file
+named `Monokai.sublime-color-scheme` in the User directory (find the User
 directory location via the Menu: `Preferences > Browse Packages...`), then
 create the styles using the scopes: >
 
 To customise the colors, create a color scheme override: for example if you
-have the default Monokai color scheme enabled - create a file named `Monokai
-.sublime-color-scheme` in the Sublime Text User directory (`Menu > Preferences
-> Browse Packages...`), and create the styles using the "highlightedyank"
-scope: >
+have the default Monokai color scheme enabled - create a file named
+Monokai.sublime-color-scheme in the Sublime Text User directory
+(Menu > Preferences > BrowsePackages...), and create the styles using the
+"highlightedyank" scope: >
 
     {
         "rules":
@@ -270,8 +261,6 @@ UNIMPAIRED                                                     *nv-unimpaired*
                                                                   *unimpaired*
 
 This plugin provides several pairs of bracket maps.
-
-See |unimpaired.txt| for more details.
 
 Below is an overview of what has been implemented so far.
 
@@ -308,6 +297,8 @@ Option toggling.
 *[ot*   *]ot*   *yot*   'sidebar'
 *[ow*   *]ow*   *yow*   'wrap'
 
+See |unimpaired.txt| for more details.
+
 ------------------------------------------------------------------------------
 
 INDENT OBJECT                                               *nv-indent-object*
@@ -321,29 +312,29 @@ See |indent-object.txt| for more details.
 
 OPTIONS                                                           *nv-options*
 
-The following options are supported:
+List of supported options:
 
-    belloff
-    hlsearch
-    ignorecase
-    incsearch
-    magic
-    menu
-    modeline
-    modelines
-    scrolloff
-    sidescrolloff
-    statusbar
-    winaltkeys
-    wrapscan
+'belloff'
+'hlsearch'
+'ignorecase'
+'incsearch'
+'magic'
+'menu'
+'modeline'
+'modelines'
+'scrolloff'
+'sidescrolloff'
+'statusbar'
+'winaltkeys'
+'wrapscan'
 
-Some options can used in the neovintageousrc file, for example the |set|
-command can be used if you want NeoVintageous to always start with the
-'ignorecase' option on, add this line your neovintageousrc file: >
+Some options can used in the neovintageousrc file, for example if you want
+NeoVintageous to always start with the 'ignorecase' option on, add this line
+your neovintageousrc file: >
 
     set ignorecase
 
-See `:h 'optionname'` for help on individual options.
+See `:help '{optionname}'` for help on individual options.
 
 ==============================================================================
 
@@ -362,7 +353,7 @@ For example to enable the control keys: >
         "vintageous_use_ctrl_keys": true
     }
 
-List of available options:
+List of available settings:
 
                                                            *'highlightedyank'*
 'highlightedyank'       boolean (default on)
