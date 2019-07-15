@@ -150,7 +150,7 @@ _options = {
     'sidescrolloff': NumberOption('sidescrolloff', 5),
     'spell': BooleanViewOption('spell_check', False),
     'statusbar': BooleanIsVisibleOption('status_bar', True),  # {not in Vim}
-    'winaltkeys': StringOption('winaltkeys', True, select=('no', 'yes', 'menu')),
+    'winaltkeys': StringOption('winaltkeys', 'yes', select=('no', 'yes', 'menu')),
     'wrap': BooleanViewOption('word_wrap', False),
     'wrapscan': BooleanOption('wrapscan', True),
 }
