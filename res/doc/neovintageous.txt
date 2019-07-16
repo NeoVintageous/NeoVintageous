@@ -146,10 +146,17 @@ by default, see the |nv-settings| section for details on enabling them): >
 
 Here is an example neovintageous file: >
 
+    set noignorecase
+    set winaltkeys=menu
+
     let mapleader=,
 
     nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
     nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
+    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
+    nnoremap <leader>hu :RevertModification<CR>
+    nnoremap <leader>q gqip:w<CR>
+    nnoremap <leader>r :reg<CR>
 
     noremap <C-l> :nohlsearch<CR>
     noremap <C-s> :w<CR>
@@ -160,7 +167,7 @@ Here is an example neovintageous file: >
     noremap <leader>p "+p
     noremap <leader>P "+P
 
-    nnoremap <leader>i :GotoSymbolInProject<CR>
+    nnoremap <D-i> :GotoSymbolInProject<CR>
 
     nnoremap <leader>s) vi):sort u<CR>
     nnoremap <leader>s] vi]:sort u<CR>
@@ -169,10 +176,9 @@ Here is an example neovintageous file: >
     nnoremap <leader>ss vip:sort u<CR>
     vnoremap <leader>s :sort u<CR>
 
-    " Windowing aliases (good if you don't like using ctrl-keys).
-    nnoremap <leader>_ <C-w>_
     nnoremap <leader><bar> <C-w><bar>
     nnoremap <leader>= <C-w>=
+    nnoremap <leader>_ <C-w>_
 
 To enable toggling the side bar when the side bar has focus add the following
 key binding, Goto  Menu > Preferences > Key Bindings: >
