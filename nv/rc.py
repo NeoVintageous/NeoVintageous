@@ -40,7 +40,7 @@ def open(window):
     file = _file_path()
 
     if not os.path.exists(file):
-        with builtins.open(file, 'w') as f:
+        with builtins.open(file, 'w', encoding='utf-8') as f:
             f.write('" Type :h neovintageousrc for help.\n')
 
     window.open_file(file)
@@ -69,7 +69,7 @@ def _load():
     try:
         from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
-        with builtins.open(_file_path(), 'r') as f:
+        with builtins.open(_file_path(), 'r', encoding='utf=8', errors='replace') as f:
             for line in f:
                 ex_cmdline = _parse_line(line)
                 if ex_cmdline:
