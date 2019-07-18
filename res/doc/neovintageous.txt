@@ -132,9 +132,9 @@ Basic leading and trailing sequences in mappings is supported, for example: >
 
     nnoremap <leader>sp vip:sort u<CR>
 
-To map to Sublime Text commands format the command name as MixedCase. The
-command name is converted to snake_case before being executed by Sublime Text
-and basic arguments in the form "key=value" are accepted, for example: >
+To map Sublime Text commands you need to format the command name as MixedCase.
+The command name is converted to snake_case before being executed by Sublime
+Text and basic arguments in the form "key=value" are accepted, for example: >
 
     nnoremap <leader>i :GotoSymbolInProject<CR>
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
