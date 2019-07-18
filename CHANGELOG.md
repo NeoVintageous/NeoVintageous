@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.2 - 2019-07-18
+
+* Fixed [#621](https://github.com/NeoVintageous/NeoVintageous/issues/621): rc file loading encoding issue
+
 ## 1.17.1 - 2019-07-15
 
 * Fixed [#620](https://github.com/NeoVintageous/NeoVintageous/issues/620): `Alt+{hotkeys}` not working
