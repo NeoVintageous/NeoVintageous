@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.3 - 2019-08-08
+
+* Fixed [#623](https://github.com/NeoVintageous/NeoVintageous/issues/623): `:[count]` doesn't move screen to keep cursor in view
+
 ## 1.17.2 - 2019-07-18
 
 * Fixed [#621](https://github.com/NeoVintageous/NeoVintageous/issues/621): rc file loading encoding issue

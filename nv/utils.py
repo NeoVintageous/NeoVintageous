@@ -217,14 +217,11 @@ def show_if_not_visible(view, pt=None):
     # type: (...) -> None
     if isinstance(pt, Region):
         pt = pt.b
-    elif pt is None and view.sel():
+    elif pt is None and len(view.sel()) >= 1:
         # Sublime has no way to show which region in the selection is the actual
         # cursor position e.g. the selection could be a multiple cursor.
         # TODO Is there a better hueristic to find the actual cursor position?
-        sel = view.sel()[0]
-
-        if sel:
-            pt = sel.b
+        pt = view.sel()[0].b
 
     if pt and not view.visible_region().contains(pt):
         view.show(pt)
