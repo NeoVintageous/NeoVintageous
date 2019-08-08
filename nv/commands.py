@@ -1186,7 +1186,7 @@ class _vi_c(ViTextCommandBase):
 class _enter_normal_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('_enter_normal_mode mode=%s, from_init=%s', mode, from_init)
+        _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
 
         state = self.state
 
@@ -1272,7 +1272,7 @@ class _enter_normal_mode(ViTextCommandBase):
 class _enter_normal_mode_impl(ViTextCommandBase):
 
     def run(self, edit, mode=None):
-        _log.debug('_enter_normal_mode_impl mode=%s', mode)
+        _log.debug('enter NORMAL mode from=%s (wrapped)', mode)
 
         def f(view, s):
             if mode == INSERT:
@@ -1335,6 +1335,8 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 class _enter_select_mode(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
+        _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
+
         state = self.state
         state.enter_select_mode()
 
@@ -1350,6 +1352,8 @@ class _enter_select_mode(ViWindowCommandBase):
 class _enter_insert_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1):
+        _log.debug('enter INSERT mode from=%s, count=%s', mode, count)
+
         def f(view, s):
             s.a = s.b = get_insertion_point_at_b(s)
 
@@ -1367,6 +1371,8 @@ class _enter_insert_mode(ViTextCommandBase):
 class _enter_visual_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, force=False):
+        _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
+
         state = self.state
 
         # TODO If all selections are non-zero-length, we may be looking at a
@@ -1397,6 +1403,8 @@ class _enter_visual_mode(ViTextCommandBase):
 class _enter_visual_mode_impl(ViTextCommandBase):
 
     def run(self, edit, mode=None):
+        _log.debug('enter VISUAL mode from=%s (wrapped)', mode)
+
         def f(view, s):
             if mode == VISUAL_LINE:
                 return Region(s.a, s.b)
@@ -1428,6 +1436,8 @@ class _enter_visual_mode_impl(ViTextCommandBase):
 class _enter_visual_line_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, force=False):
+        _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
+
         state = self.state
 
         if state.mode == VISUAL_LINE and not force:
@@ -1455,6 +1465,8 @@ class _enter_visual_line_mode(ViTextCommandBase):
 class _enter_visual_line_mode_impl(ViTextCommandBase):
 
     def run(self, edit, mode=None):
+        _log.debug('enter VISUAL LINE mode from=%s (wrapped)', mode)
+
         def f(view, s):
             if mode == VISUAL:
                 if s.a < s.b:
@@ -1481,6 +1493,8 @@ class _enter_visual_line_mode_impl(ViTextCommandBase):
 class _enter_replace_mode(ViTextCommandBase):
 
     def run(self, edit, **kwargs):
+        _log.debug('enter REPLACE mode kwargs=%s', kwargs)
+
         def f(view, s):
             return Region(s.b)
 
@@ -2760,6 +2774,8 @@ class _vi_at(IrreversibleTextCommand):
 class _enter_visual_block_mode(ViTextCommandBase):
 
     def run(self, edit, mode=None, force=False):
+        _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
+
         if mode == VISUAL_LINE:
             pass
         elif mode == VISUAL_BLOCK and not force:
