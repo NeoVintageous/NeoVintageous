@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.4 - Unreleased
+
+* Fixed [#625](https://github.com/NeoVintageous/NeoVintageous/issues/625): visual block mode delete doesn't work
+
 ## 1.17.3 - 2019-08-08
 
 * Fixed [#623](https://github.com/NeoVintageous/NeoVintageous/issues/623): `:[count]` doesn't move screen to keep cursor in view

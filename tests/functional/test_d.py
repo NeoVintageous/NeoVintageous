@@ -163,3 +163,6 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertLinewiseRegister('1    a\n    b\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
+
+    def test_b(self):
+        self.eq('fixyzzz\nbu|xyz|zz\nfi|xyz|zz\nbu|xyz|zz\nfixyzzz\n', 'b_d', 'n_fixyzzz\nbuzz\nfizz\nbu|zz\nfixyzzz\n')
