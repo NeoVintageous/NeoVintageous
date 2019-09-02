@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.17.5 - Unreleased
+## 1.17.5 - 2019-09-02
 
 * Fixed [#629](https://github.com/NeoVintageous/NeoVintageous/issues/629): Surround quote marks should only operate within the line
 * Fixed [#628](https://github.com/NeoVintageous/NeoVintageous/issues/628): Surround commands should work with cursor on target
