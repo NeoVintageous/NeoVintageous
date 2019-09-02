@@ -306,11 +306,24 @@ def _do_cs(view, edit, mode, target, replacement):
                 else:
                     prev_ = None
             else:
-                next_ = view.find(close_, s.b, flags=LITERAL)
-                if next_:
-                    prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
+                if open_ == close_:
+                    line = view.line(s.b)
+                    prev_ = None
+                    next_ = view.find(close_, s.b, flags=LITERAL)
+                    if next_:
+                        if next_.a > line.b:
+                            next_ = None
+                        else:
+                            prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
+                            if not prev_ or (prev_ and prev_.a < line.a):
+                                prev_ = next_
+                                next_ = view.find(close_, s.b + 1, flags=LITERAL)
                 else:
-                    next_ = None
+                    next_ = view.find(close_, s.b, flags=LITERAL)
+                    if next_:
+                        prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
+                    else:
+                        next_ = None
 
             if not (next_ and prev_):
                 return s

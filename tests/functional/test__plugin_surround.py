@@ -28,7 +28,6 @@ class TestSurroundDocumentationExamples(unittest.FunctionalTestCase):
         self.assertNormal("|'Hello world!'")
 
         # Now press `cs'<q>` to change it to <q>Hello world!</q>.
-        self.select(1)  # TODO This should work without havng to use select() i.e. if cursor is at point on target.
         self.feed("cs'<q>")
         self.assertNormal('|<q>Hello world!</q>')
 

@@ -4,6 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.17.5 - Unreleased
 
+* Fixed [#629](https://github.com/NeoVintageous/NeoVintageous/issues/629): Surround quote marks should only operate within the line
+* Fixed [#628](https://github.com/NeoVintageous/NeoVintageous/issues/628): Surround commands should work with cursor on target
 * Fixed [#627](https://github.com/NeoVintageous/NeoVintageous/issues/627): Yank and paste line to/from register doesn't work as expected
 
 ## 1.17.4 - 2019-08-16

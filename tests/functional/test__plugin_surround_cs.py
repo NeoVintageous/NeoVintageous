@@ -37,6 +37,8 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x(a|bc)y', 'cs){', 'x|{ abc }y')
         self.eq('x(a|bc)y', 'cs(}', 'x|{abc}y')
         self.eq('x(a|bc)y', 'cs)}', 'x|{abc}y')
+        self.eq('x|"abc"y', 'cs"(', 'x|( abc )y')
+        self.eq('x|"abc"y', 'cs")', 'x|(abc)y')
         self.eq('x"|abc"y', 'cs"(', 'x|( abc )y')
         self.eq('x"|abc"y', 'cs")', 'x|(abc)y')
 
@@ -61,7 +63,8 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x<a|bc>y', 'csa"', 'x|"abc"y')
         self.eq('x<a|bc>y', 'cs>}', 'x|{abc}y')
         self.eq('x<a|bc>y', 'cs>{', 'x|{ abc }y')
-        # TODO Fix cs{target}<*> e.g. ('x"|abc"y', 'cs"<q>', 'x|<q>abc</q>y')
+        self.eq('x\'|abc\'y', 'cs\'<q>', 'x|<q>abc</q>y')
+        self.eq('x"|abc"y', 'cs"<x>', 'x|<x>abc</x>y')
 
     def test_marks_like_stop_comma_dash_underscore_etc(self):
         self.eq('x.a|bc.y', 'cs."', 'x|"abc"y')
@@ -70,11 +73,36 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x_a|bc_y', 'cs_-', 'x|-abc-y')
 
     def test_should_work_in_all_cursor_positions(self):
+        self.eq('|"abc"', 'cs"\'', "|'abc'")
         self.eq('"|abc"', 'cs"\'', "|'abc'")
         self.eq('"a|bc"', 'cs"\'', "|'abc'")
         self.eq('"ab|c"', 'cs"\'', "|'abc'")
         self.eq('"abc|"', 'cs"\'', "|'abc'")
-        # TODO Fix cs{target}{replacement} should work at cursor position zero e.g. ('|"abc"', 'cs"\'', "|'abc'")
+        # FIXME self.eq('x|(abc)y', 'cs("', 'x|"abc"y')
+        self.eq('x(|abc)y', 'cs("', 'x|"abc"y')
+        self.eq('x(a|bc)y', 'cs("', 'x|"abc"y')
+        self.eq('x(ab|c)y', 'cs("', 'x|"abc"y')
+        self.eq('x(abc|)y', 'cs("', 'x|"abc"y')
+        # FIXME self.eq('x|(abc)y', 'cs)"', 'x|"abc"y')
+        self.eq('x(a|bc)y', 'cs)"', 'x|"abc"y')
+        self.eq('x(ab|c)y', 'cs)"', 'x|"abc"y')
+        self.eq('x(abc|)y', 'cs)"', 'x|"abc"y')
+        # FIXME self.eq('x|(abc)y', 'csb"', 'x|"abc"y')
+        self.eq('x(|abc)y', 'csb"', 'x|"abc"y')
+        self.eq('x(a|bc)y', 'csb"', 'x|"abc"y')
+        self.eq('x(ab|c)y', 'csb"', 'x|"abc"y')
+        self.eq('x(abc|)y', 'csb"', 'x|"abc"y')
+        self.eq('x|"ab"x"cd"x"ef"', 'cs"\'', 'x|\'ab\'x"cd"x"ef"')
+        self.eq('x"ab|"x"cd"x"ef"', 'cs"\'', 'x|\'ab\'x"cd"x"ef"')
+        self.eq('x"ab"x|"cd"x"ef"', 'cs"\'', 'x"ab|\'x\'cd"x"ef"')
+        self.eq('x"ab"x"cd|"x"ef"', 'cs"\'', 'x"ab"x|\'cd\'x"ef"')
+        self.eq('x"ab"x"cd"x|"ef"', 'cs"\'', 'x"ab"x"cd|\'x\'ef"')
+
+    def test_should_work_within_line_for_quote_marks(self):
+        self.eq('x"abc|"\n"def"', 'cs"\'', 'x|\'abc\'\n"def"')
+        self.eq('_|\n_"ab"_\n_"cd"_\n_"ef"_', 'cs"\'', '_|\n_"ab"_\n_"cd"_\n_"ef"_')
+        self.eq('_\n_"ab"_\n_|"cd"_\n_"ef"_', 'cs"\'', '_\n_"ab"_\n_|\'cd\'_\n_"ef"_')
+        self.eq('_\n_"ab"_\n_"cd|"_\n_"ef"_', 'cs"\'', '_\n_"ab"_\n_|\'cd\'_\n_"ef"_')
 
     def test_multiple_cursors(self):
         self.eq('x"a|c"\n"d|c"y', 'cs"]', 'x|[ac]\n|[dc]y')
