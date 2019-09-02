@@ -143,3 +143,17 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertLinewiseRegister('"xxx\n')
         self.register('"', '  fizz\n')
         self.eq('one\n|xxx\n|three', 'V_P', 'n_one\n  |fizz\n\nthree')
+
+    def test_issue_627(self):
+        self.normal('one\nt|wo\nthree')
+        self.feed('"xyy')
+        self.feed('"xP')
+        self.assertNormal('one\n|two\ntwo\nthree')
+        self.normal('one\nt|wo\nthree')
+        self.feed('"2yy')
+        self.feed('"2P')
+        self.assertNormal('one\n|two\ntwo\nthree')
+        self.normal('one\nt|wo\nthree')
+        self.feed('"2Y')
+        self.feed('"2P')
+        self.assertNormal('one\n|two\ntwo\nthree')

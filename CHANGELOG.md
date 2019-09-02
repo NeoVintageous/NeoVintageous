@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.5 - Unreleased
+
+* Fixed [#627](https://github.com/NeoVintageous/NeoVintageous/issues/627): Yank and paste line to/from register doesn't work as expected
+
 ## 1.17.4 - 2019-08-16
 
 * Fixed [#625](https://github.com/NeoVintageous/NeoVintageous/issues/625): visual block mode delete doesn't work

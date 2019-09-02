@@ -117,25 +117,26 @@ _ALL = _SPECIAL + _NUMBERED + _NAMED
 
 
 _data = {'0': None, '1-9': deque([None] * 9, maxlen=9)}  # type: dict
-_linewise = {}  # type: dict
+_linewise = {'0': False, '1-9': deque([False] * 9, maxlen=9)}  # type: dict
 
 
-def _set_register_linewise(name, linewise):
-    _linewise[name] = linewise
-
-
-def _reset_data():
+def _reset():
     _data.clear()
     _data['0'] = None
     _data['1-9'] = deque([None] * 9, maxlen=9)
+    _linewise.clear()
+    _linewise['0'] = False
+    _linewise['1-9'] = deque([False] * 9, maxlen=9)
 
 
-def _shift_numbered_register(content):
+def _shift_numbered_register(content, linewise):
     _data['1-9'].appendleft(content)
+    _linewise['1-9'].appendleft(linewise)
 
 
-def _set_numbered_register(number, values):
+def _set_numbered_register(number, values, linewise):
     _data['1-9'][int(number) - 1] = values
+    _linewise['1-9'][int(number) - 1] = linewise
 
 
 def _get_numbered_register(number):
@@ -148,6 +149,9 @@ def set_expression(values):
 
 
 def _is_register_linewise(register):
+    if register in '123456789':
+        return _linewise['1-9'][int(register) - 1]
+
     return _linewise.get(register, False)
 
 
@@ -161,13 +165,10 @@ def _is_writable_register(register):
     if register in _CLIPBOARD:
         return True
 
-    if register.isdigit():
+    if register in _NUMBERED:
         return True
 
-    if register.isalpha():
-        return True
-
-    if register.isupper():
+    if register in _NAMED:
         return True
 
     if register == _EXPRESSION:
@@ -226,9 +227,6 @@ def registers_get_all(view):
 
 
 def registers_get_for_paste(view, register, mode):
-    if not register:
-        register = _UNNAMED
-
     values = _get(view, register)
     linewise = _is_register_linewise(register)
 
@@ -279,7 +277,7 @@ def _set(view, name, values, linewise=False):
     values = [str(v) for v in values]
 
     if name.isdigit() and name != '0':
-        _set_numbered_register(name, values)
+        _set_numbered_register(name, values, linewise)
     else:
         _data[name] = values
         _linewise[name] = linewise
@@ -289,18 +287,17 @@ def _set(view, name, values, linewise=False):
         _maybe_set_sys_clipboard(view, name, values)
 
 
-def _append(view, name, suffixes):
+def _append(view, name, suffixes, linewise):
     assert len(name) == 1, "Register names must be 1 char long."
     assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Can only append to A-Z registers."
 
-    existing_values = _data.get(name.lower(), '')
-    new_valuesx = itertools.zip_longest(existing_values, suffixes, fillvalue='')
-    new_values = [(prefix + suffix) for (prefix, suffix) in new_valuesx]
+    name = name.lower()
 
-    _data[name.lower()] = new_values
+    existing_values = _data.get(name, '')
+    values_tmp = itertools.zip_longest(existing_values, suffixes, fillvalue='')
+    values = [(prefix + suffix) for (prefix, suffix) in values_tmp]
 
-    _set_unnamed(new_values)
-    _maybe_set_sys_clipboard(view, name, new_values)
+    _set(view, name, values, linewise)
 
 
 def _set_unnamed(values, linewise=False):
@@ -309,15 +306,15 @@ def _set_unnamed(values, linewise=False):
     _linewise[_UNNAMED] = linewise
 
 
-def registers_set(view, key, value):
+def registers_set(view, key, value, linewise=False):
     try:
         if key.isupper():
-            _append(view, key, value)
+            _append(view, key, value, linewise)
         else:
-            _set(view, key, value)
+            _set(view, key, value, linewise)
     except AttributeError:
         # TODO [review] Looks like a bug: If set() above raises AttributeError so will this.
-        _set(view, key, value)
+        _set(view, key, value, linewise)
 
 
 def _maybe_set_sys_clipboard(view, name, value):
@@ -368,7 +365,7 @@ def _op(view, operation, register=None, linewise=False):
         linewise = True
 
     if register and register != _UNNAMED:
-        registers_set(view, register, selected_text)
+        registers_set(view, register, selected_text, linewise)
     else:
         _set(view, _UNNAMED, selected_text, linewise)
 
@@ -384,9 +381,7 @@ def _op(view, operation, register=None, linewise=False):
         # forth, losing the previous contents of register 9.
         elif operation in ('change', 'delete'):
             if linewise or multiline:
-                _shift_numbered_register(selected_text)
-        else:
-            raise ValueError('unsupported operation: ' + operation)
+                _shift_numbered_register(selected_text, linewise)
 
     # The small delete register.
     if operation in ('change', 'delete') and not multiline:

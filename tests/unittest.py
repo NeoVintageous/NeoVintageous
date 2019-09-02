@@ -32,8 +32,9 @@ from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.registers import _data as _registers_data
+from NeoVintageous.nv.registers import _is_register_linewise
 from NeoVintageous.nv.registers import _linewise as _registers_linewise
-from NeoVintageous.nv.registers import _reset_data as _registers_reset_data
+from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
 from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
@@ -292,7 +293,7 @@ class ViewTestCase(unittest.TestCase):
             value = [value]
 
         if name.isdigit() and name != '0':
-            _set_numbered_register(name, value)
+            _set_numbered_register(name, value, linewise)
         else:
             _registers_data[name] = value
             _registers_linewise[name] = linewise
@@ -301,7 +302,7 @@ class ViewTestCase(unittest.TestCase):
         self.register(name, value, linewise=True)
 
     def resetRegisters(self, values=None):
-        _registers_reset_data()
+        _registers_reset()
 
     def resetMacros(self):
         _macros._state.clear()
@@ -452,10 +453,9 @@ class ViewTestCase(unittest.TestCase):
             expected = [expected]
 
         self.assertEqual(_registers_get(self.view, name), expected, msg or 'register = "' + name)
+
         if expected is not None:
-            # FIXME digit registers linewise state is not implemented properly yet
-            if not name.isdigit() or name == '0':
-                self.assertEqual(_registers_linewise[name], linewise, msg or 'linewise register = "' + name)
+            self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)
 
     def assertRegister(self, name, expected=None, linewise=False, msg=None):
         """Test that value for the register name and expected are equal.
@@ -1157,7 +1157,28 @@ def mock_run_commands(*methods):
 # impact the existing tests.
 _SEQ2CMD = {
 
+    '"1P':          {'command': '_vi_paste', 'args': {'register': '1', 'before_cursor': True}},  # noqa: E241
+    '"1Y':          {'command': '_vi_yy', 'args': {'register': '1'}},  # noqa: E241
+    '"1p':          {'command': '_vi_paste', 'args': {'register': '1', 'before_cursor': False}},  # noqa: E241
+    '"1y':          {'command': '_vi_y', 'args': {'register': '1'}},  # noqa: E241
+    '"1yy':         {'command': '_vi_yy', 'args': {'register': '1'}},  # noqa: E241
+    '"2P':          {'command': '_vi_paste', 'args': {'register': '2', 'before_cursor': True}},  # noqa: E241
+    '"2Y':          {'command': '_vi_yy', 'args': {'register': '2'}},  # noqa: E241
+    '"2p':          {'command': '_vi_paste', 'args': {'register': '2', 'before_cursor': False}},  # noqa: E241
+    '"2y':          {'command': '_vi_y', 'args': {'register': '2'}},  # noqa: E241
+    '"2yy':         {'command': '_vi_yy', 'args': {'register': '2'}},  # noqa: E241
+    '"Byy':         {'command': '_vi_yy', 'args': {'register': 'B'}},  # noqa: E241
+    '"aY':          {'command': '_vi_yy', 'args': {'register': 'a'}},  # noqa: E241
     '"ay':          {'command': '_vi_y', 'args': {'register': 'a'}},  # noqa: E241
+    '"ayy':         {'command': '_vi_yy', 'args': {'register': 'a'}},  # noqa: E241
+    '"bY':          {'command': '_vi_yy', 'args': {'register': 'b'}},  # noqa: E241
+    '"by':          {'command': '_vi_y', 'args': {'register': 'b'}},  # noqa: E241
+    '"byy':         {'command': '_vi_yy', 'args': {'register': 'b'}},  # noqa: E241
+    '"xP':          {'command': '_vi_paste', 'args': {'register': 'x', 'before_cursor': True}},  # noqa: E241
+    '"xY':          {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
+    '"xp':          {'command': '_vi_paste', 'args': {'register': 'x', 'before_cursor': False}},  # noqa: E241
+    '"xy':          {'command': '_vi_y', 'args': {'register': 'x'}},  # noqa: E241
+    '"xyy':         {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
     '#':            {'command': '_vi_octothorp'},  # noqa: E241
     '$':            {'command': '_vi_dollar'},  # noqa: E241
     '%':            {'command': '_vi_percent', 'args': {'count': None}},  # noqa: E241

@@ -42,18 +42,66 @@ from NeoVintageous.nv.registers import _SELECTION_AND_DROP
 from NeoVintageous.nv.registers import _SMALL_DELETE
 from NeoVintageous.nv.registers import _SPECIAL
 from NeoVintageous.nv.registers import _UNNAMED
+from NeoVintageous.nv.registers import _data
 from NeoVintageous.nv.registers import _get_selected_text
 from NeoVintageous.nv.registers import _is_register_linewise
+from NeoVintageous.nv.registers import _reset
 from NeoVintageous.nv.registers import _set_unnamed
 from NeoVintageous.nv.registers import registers_get
 from NeoVintageous.nv.registers import registers_get_all
+from NeoVintageous.nv.registers import registers_get_for_paste
 from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
 from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.registers import registers_set
 from NeoVintageous.nv.registers import set_expression
-from NeoVintageous.nv.registers import _reset_data
-from NeoVintageous.nv.registers import _data
+
+
+class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.settings().erase('vintage')
+        self.reset_setting('use_sys_clipboard')
+        self.set_setting('use_sys_clipboard', False)
+        set_clipboard('')
+        _reset()
+
+    def tearDown(self):
+        super().tearDown()
+        _reset()
+
+    def assertEmptyRegisters(self):
+        self.assertEqual(_data, {'0': None, '1-9': deque([None] * 9, maxlen=9)})
+
+
+class Test_get_for_paste(RegistersTestCase):
+
+    def test_get_empty(self):
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), ([], False))
+        self.assertEqual(registers_get_for_paste(self.view, '-', unittest.INTERNAL_NORMAL), ([], False))
+        self.assertEqual(registers_get_for_paste(self.view, '0', unittest.INTERNAL_NORMAL), ([], False))
+        self.assertEqual(registers_get_for_paste(self.view, '1', unittest.INTERNAL_NORMAL), ([], False))
+
+    def test_get_for_paste_fills_existing_visual_selection(self):
+        self.visual('x|fizz|x')
+        registers_op_yank(self.view)
+        self.visual('x|buzz|x')
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL), (['fizz'], False))
+        self.assertEqual(registers_get(self.view, '"'), ['buzz'])
+        self.visual('x|fizz|x')
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL), (['buzz'], False))
+        self.assertEqual(registers_get(self.view, '"'), ['fizz'])
+
+    def test_get_for_paste_fills_existing_visual_selection_patched_linewise(self):
+        self.visual('x|fizz|x')
+        registers_op_yank(self.view)
+        self.vline('x\n|buzz\n|x')
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL_LINE), (['fizz\n'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL_LINE), (['buzz\n'], True))
+        self.vline('x\n|fizz|x')
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL), (['\nbuzz\n'], True))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL_LINE), (['fizz\n'], False))
 
 
 class TestConstants(unittest.TestCase):
@@ -91,24 +139,6 @@ class TestConstants(unittest.TestCase):
             _NUMBERED +
             _NAMED
         )))
-
-
-class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.settings().erase('vintage')
-        self.reset_setting('use_sys_clipboard')
-        self.set_setting('use_sys_clipboard', False)
-        set_clipboard('')
-        _reset_data()
-
-    def tearDown(self):
-        super().tearDown()
-        _reset_data()
-
-    def assertEmptyRegisters(self):
-        self.assertEqual(_data, {'0': None, '1-9': deque([None] * 9, maxlen=9)})
 
 
 class TestRegister(RegistersTestCase):
@@ -406,13 +436,17 @@ class Test_get_selected_text(RegistersTestCase):
 
 class Test_op_change(RegistersTestCase):
 
-    def test_op_yank(self):
+    def test_op_change(self):
         self.visual('fi|zz bu|zz')
         registers_op_change(self.view)
         self.assertEqual(registers_get(self.view, '"'), ['zz bu'])
         self.assertEqual(registers_get(self.view, '-'), ['zz bu'])
         self.assertEqual(registers_get(self.view, '0'), None)
         self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('-'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '-', unittest.INTERNAL_NORMAL), (['zz bu'], False))
 
 
 class Test_op_delete(RegistersTestCase):
@@ -432,6 +466,10 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '7'), None)
         self.assertEqual(registers_get(self.view, '8'), None)
         self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('-'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '-', unittest.INTERNAL_NORMAL), (['zz bu'], False))
 
     def test_op_delete_multiline(self):
         self.visual('fi|zz\nbu|zz')
@@ -448,6 +486,10 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '7'), None)
         self.assertEqual(registers_get(self.view, '8'), None)
         self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('1'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '1', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
 
     def test_op_delete_linewise(self):
         self.visual('f|iz|z')
@@ -456,6 +498,10 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '-'), None)
         self.assertEqual(registers_get(self.view, '0'), None)
         self.assertEqual(registers_get(self.view, '1'), ['iz\n'])
+        self.assertTrue(_is_register_linewise('"'))
+        self.assertTrue(_is_register_linewise('1'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['iz\n'], True))
+        self.assertEqual(registers_get_for_paste(self.view, '1', unittest.INTERNAL_NORMAL), (['iz\n'], True))
 
     def test_op_delete_into_alpha_register(self):
         self.visual('fi|zz\nbu|zz')
@@ -465,6 +511,10 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, 'd'), ['zz\nbu'])
         self.assertEqual(registers_get(self.view, '0'), None)
         self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('d'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, 'd', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
 
     def test_op_delete_into_numbered_register(self):
         self.visual('fi|zz\nbu|zz')
@@ -474,6 +524,10 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '8'), ['zz\nbu'])
         self.assertEqual(registers_get(self.view, '0'), None)
         self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('8'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '8', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
 
     def test_op_delete_shifts_numbered(self):
         # Run delete operations descending from 15.
@@ -497,6 +551,12 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '8'), ['x\n8'])
         self.assertEqual(registers_get(self.view, '9'), ['x\n9'])
         self.assertEqual(len(_data['1-9']), 9)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('8'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['x\n1'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '1', unittest.INTERNAL_NORMAL), (['x\n1'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '2', unittest.INTERNAL_NORMAL), (['x\n2'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '3', unittest.INTERNAL_NORMAL), (['x\n3'], False))
 
 
 class Test_op_yank(RegistersTestCase):
@@ -509,9 +569,9 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '0'), ['zz bu'])
         self.assertEqual(registers_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
-        self.assertFalse(_is_register_linewise('-'))
-        self.assertFalse(_is_register_linewise('0'))
         self.assertFalse(_is_register_linewise('1'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '0', unittest.INTERNAL_NORMAL), (['zz bu'], False))
 
     def test_op_yank_multiline(self):
         self.visual('fi|zz\nbu|zz')
@@ -521,9 +581,9 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '0'), ['zz\nbu'])
         self.assertEqual(registers_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
-        self.assertFalse(_is_register_linewise('-'))
         self.assertFalse(_is_register_linewise('0'))
-        self.assertFalse(_is_register_linewise('1'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '0', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
 
     def test_op_yank_linewise(self):
         self.visual('fi|zz bu|zz')
@@ -532,6 +592,8 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '-'), None)
         self.assertEqual(registers_get(self.view, '0'), ['zz bu\n'])
         self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertTrue(_is_register_linewise('"'))
+        self.assertTrue(_is_register_linewise('0'))
 
     def test_op_yank_linewise_maybe_when_no_newline(self):
         self.visual('fi|zz bu|zz')
@@ -541,9 +603,7 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '0'), ['zz bu'])
         self.assertEqual(registers_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
-        self.assertFalse(_is_register_linewise('-'))
         self.assertFalse(_is_register_linewise('0'))
-        self.assertFalse(_is_register_linewise('1'))
 
     def test_op_yank_linewise_maybe_when_newline(self):
         self.visual('fi|zz bu\n|zz')
@@ -563,6 +623,51 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(registers_get(self.view, 'x'), ['zzxbu'])
         self.assertEqual(registers_get(self.view, '0'), None)
         self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('x'))
+
+    def test_op_yank_into_alpha_register_linewise(self):
+        self.visual('fi\n|zz bu\n|zz')
+        registers_op_yank(self.view, register='x', linewise=True)
+        self.assertEqual(registers_get(self.view, '"'), ['zz bu\n'])
+        self.assertEqual(registers_get(self.view, '-'), None)
+        self.assertEqual(registers_get(self.view, 'x'), ['zz bu\n'])
+        self.assertEqual(registers_get(self.view, '0'), None)
+        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertTrue(_is_register_linewise('"'))
+        self.assertTrue(_is_register_linewise('x'))
+
+    def test_op_yank_into_alpha_register_uppercase_append(self):
+        self.visual('fizz\n|bu\n|zz')
+        registers_op_yank(self.view, register='X')
+        self.assertEqual(registers_get(self.view, '"'), ['bu\n'])
+        self.assertEqual(registers_get(self.view, '-'), None)
+        self.assertEqual(registers_get(self.view, 'x'), ['bu\n'])
+        self.assertEqual(registers_get(self.view, '0'), None)
+        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('x'))
+        self.visual('fi\n|zz\n|buzz')
+        registers_op_yank(self.view, register='X')
+        self.assertEqual(registers_get(self.view, 'x'), ['bu\nzz\n'])
+        self.assertFalse(_is_register_linewise('x'))
+
+    def test_op_yank_into_alpha_register_uppercase_linewise_append(self):
+        self.visual('fizz\n|bu\n|zz')
+        registers_op_yank(self.view, register='X', linewise=True)
+        self.assertEqual(registers_get(self.view, '"'), ['bu\n'])
+        self.assertEqual(registers_get(self.view, '-'), None)
+        self.assertEqual(registers_get(self.view, 'x'), ['bu\n'])
+        self.assertEqual(registers_get(self.view, '0'), None)
+        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertTrue(_is_register_linewise('"'))
+        self.assertTrue(_is_register_linewise('x'))
+        self.visual('fi\n|zz\n|buzz')
+        registers_op_yank(self.view, register='X', linewise=True)
+        self.assertEqual(registers_get(self.view, 'x'), ['bu\nzz\n'])
+        self.assertTrue(_is_register_linewise('x'))
+        self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['bu\nzz\n'], True))
+        self.assertEqual(registers_get_for_paste(self.view, 'x', unittest.INTERNAL_NORMAL), (['bu\nzz\n'], True))
 
     def test_op_yank_into_numbered_register(self):
         self.visual('fi|zz bu|zz')
@@ -579,3 +684,23 @@ class Test_op_yank(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '7'), None)
         self.assertEqual(registers_get(self.view, '8'), None)
         self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertFalse(_is_register_linewise('"'))
+        self.assertFalse(_is_register_linewise('4'))
+
+    def test_op_yank_into_linewise_numbered_register(self):
+        self.visual('fi\n|zz bu\n|zz')
+        registers_op_yank(self.view, register='3', linewise=True)
+        self.assertEqual(registers_get(self.view, '"'), ['zz bu\n'])
+        self.assertEqual(registers_get(self.view, '-'), None)
+        self.assertEqual(registers_get(self.view, '0'), None)
+        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(registers_get(self.view, '2'), None)
+        self.assertEqual(registers_get(self.view, '3'), ['zz bu\n'])
+        self.assertEqual(registers_get(self.view, '4'), None)
+        self.assertEqual(registers_get(self.view, '5'), None)
+        self.assertEqual(registers_get(self.view, '6'), None)
+        self.assertEqual(registers_get(self.view, '7'), None)
+        self.assertEqual(registers_get(self.view, '8'), None)
+        self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertTrue(_is_register_linewise('"'))
+        self.assertTrue(_is_register_linewise('3'))

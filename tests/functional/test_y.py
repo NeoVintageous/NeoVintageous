@@ -37,6 +37,14 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x\nfi|zz\nbu|zz\ny', 'v_y', 'n_x\nfi|zz\nbuzz\ny')
         self.assertRegisters('"0', 'zz\nbu')
         self.assertRegistersEmpty('-1')
+        self.resetRegisters()
+        self.eq('x|ab|x', 'v_"by', 'n_x|abx')
+        self.assertRegisters('"b', 'ab')
+        self.assertRegistersEmpty('-01')
+        self.resetRegisters()
+        self.eq('x|cd|x', 'v_"2y', 'n_x|cdx')
+        self.assertRegisters('"2', 'cd')
+        self.assertRegistersEmpty('-0')
 
     def test_s(self):
         self.eq('x|ab|x', 's_y', 'n_x|abx')
@@ -72,7 +80,6 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('(wo|rd)', 'yib', '(|word)')
         self.assertRegisters('"0', 'word')
         self.assertRegistersEmpty('-1')
-
         self.eq('(\nwo|rd\n)', 'yi(', '(\n|word\n)')
         self.eq('(\nwo|rd\n)', 'yi)', '(\n|word\n)')
         self.eq('(\nwo|rd\n)', 'yib', '(\n|word\n)')
@@ -102,6 +109,16 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertLinewiseRegister('0one\n')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
+        self.resetRegisters()
+        self.eq('one\nt|wo\nthree', '"byy', 'one\nt|wo\nthree')
+        self.assertLinewiseRegisters('"b', 'two\n')
+        self.assertRegistersEmpty('-01')
+        self.eq('two\nthr|ee\nfour', '"Byy', 'two\nthr|ee\nfour')
+        self.assertLinewiseRegisters('"b', 'two\nthree\n')
+        self.resetRegisters()
+        self.eq('one\nt|wo\nthree', '"2yy', 'one\nt|wo\nthree')
+        self.assertLinewiseRegisters('"2', 'two\n')
+        self.assertRegistersEmpty('-01')
 
     def test_yy_with_count(self):
         self.eq('x\n|1\n2\n3\nx\n', '3yy', 'x\n|1\n2\n3\nx\n')
