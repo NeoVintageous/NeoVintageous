@@ -166,7 +166,7 @@ class State(object):
     @partial_sequence.setter
     def partial_sequence(self, value):
         # type: (str) -> None
-        _log.debug('partial sequence >>>%s<<<', value)
+        _log.debug('partials >>>%s<<<', value)
         self.settings.vi['partial_sequence'] = value
 
     @property

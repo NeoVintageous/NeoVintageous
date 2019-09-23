@@ -108,12 +108,12 @@ def run_view_command(view, cmd, args=None):
 
 
 def run_motion(instance, motion):
-    _log.info('command (motion): %s', motion)
+    _log.info('motion: %s', motion)
     instance.run_command(motion['motion'], motion['motion_args'])
 
 
 def run_action(instance, action):
-    _log.info('command (action): %s', action)
+    _log.info('action: %s', action)
     instance.run_command(action['action'], action['action_args'])
 
 

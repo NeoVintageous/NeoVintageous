@@ -466,7 +466,7 @@ class _nv_feed_key(ViWindowCommandBase):
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         start_time = time.time()
 
-        _log.info('key evt: %s repeat_count=%s do_eval=%s check_user_mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
+        _log.info('key evt: %s count=%s eval=%s mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
 
         try:
             self._feed_key(key, repeat_count, do_eval, check_user_mappings)
@@ -482,7 +482,7 @@ class _nv_feed_key(ViWindowCommandBase):
                     settings.set('inverse_caret_state', False)
                     settings.erase('vintage')
 
-        _log.debug('key evt took %ss (key=%s repeat_count=%s do_eval=%s check_user_mappings=%s)', '{:.4f}'.format(time.time() - start_time), key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
+        _log.info('key evt: %s count=%s eval=%s mappings=%s, took %s', key, repeat_count, do_eval, check_user_mappings, '{:.4f}'.format(time.time() - start_time))  # noqa: E501
 
     def _feed_key(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         # Args:
