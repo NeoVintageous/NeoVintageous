@@ -355,7 +355,7 @@ def _do_ds(view, edit, mode, target):
             if target in noop:
                 return s
 
-            valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/'
+            valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|'
             if target not in valid_targets:
                 return s
 

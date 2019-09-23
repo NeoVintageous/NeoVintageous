@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.6 - Unreleased
+
+* Fixed [#633](https://github.com/NeoVintageous/NeoVintageous/issues/633): `ds|`doesn't work
+
 ## 1.17.5 - 2019-09-02
 
 * Fixed [#629](https://github.com/NeoVintageous/NeoVintageous/issues/629): Surround quote marks should only operate within the line
