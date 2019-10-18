@@ -782,7 +782,6 @@ def init_state(view):
     else:
         # This may be run when we're coming from cmdline mode.
         mode = VISUAL if view.has_non_empty_selection_region() else mode
-        state.enter_normal_mode()
         view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
 
     state.reset_command_data()
