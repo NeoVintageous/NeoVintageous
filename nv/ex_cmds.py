@@ -777,14 +777,8 @@ def ex_registers(window, view, **kwargs):
 
             items.append('"{}   {}'.format(k, _truncate('|'.join(multiple_values), 78)))
 
-    def on_done(idx):
-        if idx == -1:
-            return
-
-        registers_set(view, '"', [list(registers_get_all(view).values())[idx]])
-
     if items:
-        window.show_quick_panel(sorted(items), on_done, flags=MONOSPACE_FONT)
+        window.show_quick_panel(sorted(items), None, flags=MONOSPACE_FONT)
 
 
 def ex_set(view, option, value, **kwargs):
