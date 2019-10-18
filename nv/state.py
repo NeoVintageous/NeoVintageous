@@ -734,27 +734,20 @@ def init_state(view):
             return
 
     if not get_reset_during_init(view):
-        # Probably exiting from an input panel, like when using '/'. Don't
-        # reset the global state, as it may contain data needed to complete
-        # the command that's being built.
+        # Probably exiting from an input panel, like when using '/'. Don't reset
+        # the global state, as it may contain data needed to complete the
+        # command that's being built.
         set_reset_during_init(view, True)
         return
 
     state = State(view)
     mode = state.mode
 
-    # Non-standard user setting.
-    reset = get_setting(view, 'reset_mode_when_switching_tabs')
-    # XXX: If the view was already in normal mode, we still need to run the
-    # init code. I believe this is due to Sublime Text (intentionally) not
-    # serializing the inverted caret state and the command_mode setting when
-    # first loading a file.
-    # If the mode is unknown, it might be a new file. Let normal mode setup
-    # continue.
-    if not reset and (mode not in (NORMAL, UNKNOWN)):
+    # Does user want to reset mode (to normal mode) when initialising state?
+    if mode not in (NORMAL, UNKNOWN) and not get_setting(view, 'reset_mode_when_switching_tabs'):
         return
 
-    # If we have no selections, add one.
+    # Fix malformed selection: if we have no selections, add one.
     if len(view.sel()) == 0:
         view.sel().add(0)
 

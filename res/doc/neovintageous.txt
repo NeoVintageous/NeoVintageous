@@ -443,7 +443,7 @@ List of available settings:
                                  *'vintageous_reset_mode_when_switching_tabs'*
 'vintageous_reset_mode_when_switching_tabs'
                         boolean (default on)
-        Reset to normal mode when a tab is activated.
+        Reset to normal mode when a view is activated.
 
                                                    *'vintageous_shell_silent'*
 'vintageous_shell_silent'
