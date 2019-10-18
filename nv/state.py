@@ -768,7 +768,7 @@ def init_state(view):
         # TODO: Don't we need to pass a mode here?
         view.window().run_command('_enter_normal_mode', {'from_init': True})
 
-    elif view.has_non_empty_selection_region() and mode != VISUAL:
+    elif mode != VISUAL and view.has_non_empty_selection_region():
         # Runs, for example, when we've performed a search via ST3 search panel
         # and we've pressed 'Find All'. In this case, we want to ensure a
         # consistent state for multiple selections.
