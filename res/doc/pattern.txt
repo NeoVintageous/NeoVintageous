@@ -295,7 +295,7 @@ the "*" is under your right hand middle finger (search to the right and down).
 
 								*E956*
 In very rare cases a regular expression is used recursively.  This can happen
-when executing a pattern takes a long time and when checkig for messages on
+when executing a pattern takes a long time and when checking for messages on
 channels a callback is invoked that also uses a pattern or an autocommand is
 triggered.  In most cases this should be fine, but if a pattern is in use when
 it's used again it fails.  Usually this means there is something wrong with
@@ -398,11 +398,11 @@ Use of "\m" makes the pattern after it be interpreted as if 'magic' is set,
 ignoring the actual value of the 'magic' option.
 Use of "\M" makes the pattern after it be interpreted as if 'nomagic' is used.
 							*/\v* */\V*
-Use of "\v" means that in the pattern after it all ASCII characters except
-'0'-'9', 'a'-'z', 'A'-'Z' and '_' have a special meaning.  "very magic"
+Use of "\v" means that after it, all ASCII characters except '0'-'9', 'a'-'z',
+'A'-'Z' and '_' have special meaning: "very magic"
 
-Use of "\V" means that in the pattern after it only the backslash and the
-terminating character (/ or ?) has a special meaning.  "very nomagic"
+Use of "\V" means that after it, only a backslash and terminating character
+(usually / or ?) have special meaning: "very nomagic"
 
 Examples:
 after:	  \v	   \m	    \M	     \V		matches ~
@@ -1125,7 +1125,7 @@ x	A single character, with no special meaning, matches itself
 	  The "Func" column shows what library function is used.  The
 	  implementation depends on the system.  Otherwise:
 	  (1) Uses islower() for ASCII and Vim builtin rules for other
-	  characters when built with the |+multi_byte| feature.
+	  characters.
 	  (2) Uses Vim builtin rules
 	  (3) As with (1) but using isupper()
 							*/[[=* *[==]*
@@ -1189,7 +1189,6 @@ x	A single character, with no special meaning, matches itself
 	To include a "[" use "[[]" and for "]" use []]", e.g.,: >
 		/index\%[[[]0[]]]
 <	matches "index" "index[", "index[0" and "index[0]".
-	{not available when compiled without the |+syntax| feature}
 
 				*/\%d* */\%x* */\%o* */\%u* */\%U* *E678*
 
@@ -1201,7 +1200,7 @@ x	A single character, with no special meaning, matches itself
 \%u20AC	Matches the character specified with up to four hexadecimal
 	characters.
 \%U1234abcd	Matches the character specified with up to eight hexadecimal
-	characters.
+	characters, up to 0x7fffffff
 
 ==============================================================================
 7. Ignoring case in a pattern					*/ignorecase*

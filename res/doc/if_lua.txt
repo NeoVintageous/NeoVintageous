@@ -189,16 +189,16 @@ To see the LuaJIT version: >
     :lua print(jit.version)
 <
 
-:[range]lua << {endmarker}
+:[range]lua << [endmarker]
 {script}
 {endmarker}
-			Execute Lua script {script}.
+                        Execute Lua script {script}.  Useful for including Lua
+                        code in Vim scripts.
 
-{endmarker} must NOT be preceded by any white space.  If {endmarker} is
-omitted from after the "<<", a dot '.' must be used after {script}, like
-for the |:append| and |:insert| commands.
-This form of the |:lua| command is mainly useful for including Lua code
-in Vim scripts.
+The {endmarker} must NOT be preceded by any white space.
+
+If [endmarker] is omitted from after the "<<", a dot '.' must be used after
+{script}, like for the |:append| and |:insert| commands.
 
 Example:
 >
@@ -373,35 +373,30 @@ Example: to use the "nvim_get_current_line()" API function, call
 ------------------------------------------------------------------------------
 VIM.LOOP						*lua-loop*
 
-`vim.loop` exposes all features of the Nvim event-loop.  This is a lower-level
+`vim.loop` exposes all features of the Nvim event-loop.  This is a low-level
 API that provides functionality for networking, filesystem, and process
 management.  Try this command to see available functions: >
 
     :lua print(vim.inspect(vim.loop))
 
-See http://docs.libuv.org for complete documentation.
-See https://github.com/luvit/luv/tree/master/examples for examples.
+Reference: http://docs.libuv.org
+Examples:  https://github.com/luvit/luv/tree/master/examples
 
 						*E5560* *lua-loop-callbacks*
-Note: it is not allowed to directly invoke most of the Nvim API from `vim.loop`
-callbacks.  This will result in an error: >
+It is an error to directly invoke `vim.api` functions (except |api-fast|) in
+`vim.loop` callbacks.  For example, this is an error: >
 
     local timer = vim.loop.new_timer()
     timer:start(1000, 0, function()
       vim.api.nvim_command('echomsg "test"')
     end)
 
-The `vim.schedule_wrap` helper can be used to defer the callback until it
-is safe to execute API methods. >
+To avoid the error use |vim.schedule_wrap()| to defer the callback: >
 
     local timer = vim.loop.new_timer()
     timer:start(1000, 0, vim.schedule_wrap(function()
       vim.api.nvim_command('echomsg "test"')
     end))
-
-A subset of the API is available in direct luv callbacks ("fast" callbacks),
-most notably |nvim_get_mode()| and |nvim_input()|.
-
 
 Example: repeating timer
     1. Save this code to a file.
@@ -451,12 +446,143 @@ Example: TCP echo-server				*tcp-server*
     print('TCP echo-server listening on port: '..server:getsockname().port)
 
 ------------------------------------------------------------------------------
+VIM.TREESITTER						*lua-treesitter*
+
+Nvim integrates the tree-sitter library for incremental parsing of buffers.
+
+Currently Nvim does not provide the tree-sitter parsers, instead these must
+be built separately, for instance using the tree-sitter utility.
+The parser is loaded into nvim using >
+
+    vim.treesitter.add_language("/path/to/c_parser.so", "c")
+
+<Create a parser for a buffer and a given language (if another plugin uses the
+same buffer/language combination, it will be safely reused). Use >
+
+    parser = vim.treesitter.get_parser(bufnr, lang)
+
+<`bufnr=0` can be used for current buffer. `lang` will default to 'filetype'  (this
+doesn't work yet for some filetypes like "cpp") Currently, the parser will be
+retained for the lifetime of a buffer but this is subject to change. A plugin
+should keep a reference to the parser object as long as it wants incremental
+updates.
+
+Whenever you need to access the current syntax tree, parse the buffer: >
+
+    tstree = parser:parse()
+
+<This will return an immutable tree that represents the current state of the
+buffer. When the plugin wants to access the state after a (possible) edit
+it should call `parse()` again. If the buffer wasn't edited, the same tree will
+be returned again without extra work. If the buffer was parsed before,
+incremental parsing will be done of the changed parts.
+
+NB: to use the parser directly inside a |nvim_buf_attach| lua callback, you must
+call `get_parser()` before you register your callback. But preferably parsing
+shouldn't be done directly in the change callback anyway as they will be very
+frequent. Rather a plugin that does any kind of analysis on a tree should use
+a timer to throttle too frequent updates.
+
+Tree methods						*lua-treesitter-tree*
+
+tstree:root()						*tstree:root()*
+	Return the root node of this tree.
+
+
+Node methods						*lua-treesitter-node*
+
+tsnode:parent()						*tsnode:parent()*
+	Get the node's immediate parent.
+
+tsnode:child_count()					*tsnode:child_count()*
+	Get the node's number of children.
+
+tsnode:child(N)						*tsnode:child()*
+	Get the node's child at the given index, where zero represents the
+	first child.
+
+tsnode:named_child_count()			*tsnode:named_child_count()*
+	Get the node's number of named children.
+
+tsnode:named_child(N)					*tsnode:named_child()*
+	Get the node's named child at the given index, where zero represents
+	the first named child.
+
+tsnode:start()						*tsnode:start()*
+	Get the node's start position. Return three values: the row, column
+	and total byte count (all zero-based).
+
+tsnode:end_()						*tsnode:end_()*
+	Get the node's end position. Return three values: the row, column
+	and total byte count (all zero-based).
+
+tsnode:range()						*tsnode:range()*
+	Get the range of the node. Return four values: the row, column
+	of the start position, then the row, column of the end position.
+
+tsnode:type()						*tsnode:type()*
+	Get the node's type as a string.
+
+tsnode:symbol()						*tsnode:symbol()*
+	Get the node's type as a numerical id.
+
+tsnode:named()						*tsnode:named()*
+	Check if the node is named. Named nodes correspond to named rules in
+	the  grammar, whereas anonymous nodes correspond to string literals
+	in the grammar.
+
+tsnode:missing()					*tsnode:missing()*
+	Check if the node is missing. Missing nodes are inserted by the
+	parser in order to recover from certain kinds of syntax errors.
+
+tsnode:has_error()					*tsnode:has_error()*
+	Check if the node is a syntax error or contains any syntax errors.
+
+tsnode:sexpr()						*tsnode:sexpr()*
+	Get an S-expression representing the node as a string.
+
+tsnode:descendant_for_range(start_row, start_col, end_row, end_col)
+						*tsnode:descendant_for_range()*
+	Get the smallest node within this node that spans the given range of
+	(row, column) positions
+
+tsnode:named_descendant_for_range(start_row, start_col, end_row, end_col)
+					*tsnode:named_descendant_for_range()*
+	Get the smallest named node within this node that spans the given
+	range of (row, column) positions
+
+------------------------------------------------------------------------------
 VIM							*lua-util*
+
+vim.in_fast_event()					*vim.in_fast_event()*
+        Returns true if the code is executing as part of a "fast" event
+        handler, where most of the API is disabled. These are low-level events
+        (e.g. |lua-loop-callbacks|) which can be invoked whenever Nvim polls
+        for input.  When this is `false` most API functions are callable (but
+        may be subject to other restrictions such as |textlock|).
 
 vim.stricmp({a}, {b})					*vim.stricmp()*
         Compares strings case-insensitively.  Returns 0, 1 or -1 if strings
         are equal, {a} is greater than {b} or {a} is lesser than {b},
         respectively.
+
+vim.str_utfindex({str}[, {index}])			*vim.str_utfindex()*
+        Convert byte index to UTF-32 and UTF-16 indicies. If {index} is not
+        supplied, the length of the string is used. All indicies are zero-based.
+        Returns two values: the UTF-32 and UTF-16 indicies respectively.
+
+        Embedded NUL bytes are treated as terminating the string. Invalid
+        UTF-8 bytes, and embedded surrogates are counted as one code
+        point each. An {index} in the middle of a UTF-8 sequence is rounded
+        upwards to the end of that sequence.
+
+vim.str_byteindex({str}, {index}[, {use_utf16}])	*vim.str_byteindex()*
+        Convert UTF-32 or UTF-16 {index} to byte index. If {use_utf16} is not
+        supplied, it defaults to false (use UTF-32). Returns the byte index.
+
+        Invalid UTF-8 and NUL is treated like by |vim.str_byteindex()|. An {index}
+        in the middle of a UTF-16 sequence is rounded upwards to the end of that
+        sequence.
 
 vim.schedule({callback})				*vim.schedule()*
         Schedules {callback} to be invoked soon by the main event-loop. Useful
@@ -505,6 +631,34 @@ inspect({object}, {options})                                   *vim.inspect()*
 
                 See also: ~
                     https://github.com/kikito/inspect.lua
+                    https://github.com/mpeterv/vinspect
+
+paste({lines}, {phase})                                          *vim.paste()*
+                Paste handler, invoked by |nvim_paste()| when a conforming UI
+                (such as the |TUI|) pastes text into the editor.
+
+                Parameters: ~
+                    {lines}  |readfile()|-style list of lines to paste.
+                             |channel-lines|
+                    {phase}  -1: "non-streaming" paste: the call contains all
+                             lines. If paste is "streamed", `phase` indicates the stream state:
+                             • 1: starts the paste (exactly once)
+                             • 2: continues the paste (zero or more times)
+                             • 3: ends the paste (exactly once)
+
+                Return: ~
+                    false if client should cancel the paste.
+
+                See also: ~
+                    |paste|
+
+schedule_wrap({cb})                                      *vim.schedule_wrap()*
+                Defers callback `cb` until the Nvim API is safe to call.
+
+                See also: ~
+                    |lua-loop-callbacks|
+                    |vim.schedule()|
+                    |vim.in_fast_event()|
 
 
 
@@ -604,5 +758,17 @@ trim({s})                                                         *vim.trim()*
 
                 See also: ~
                     https://www.lua.org/pil/20.2.html
+
+pesc({s})                                                         *vim.pesc()*
+                Escapes magic chars in a Lua pattern string.
+
+                Parameters: ~
+                    {s}  String to escape
+
+                Return: ~
+                    %-escaped pattern string
+
+                See also: ~
+                    https://github.com/rxi/lume
 
  vim:tw=78:ts=8:ft=help:norl:

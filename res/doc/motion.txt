@@ -46,6 +46,7 @@ or change text.  The following operators are available:
 	|!|	!	filter through an external program
 	|=|	=	filter through 'equalprg' or C-indenting if empty
 	|gq|	gq	text formatting
+	|gw|	gw	text formatting with no cursor movement
 	|g?|	g?	ROT13 encoding
 	|>|	>	shift right
 	|<|	<	shift left
@@ -107,7 +108,7 @@ This cannot be repeated: >
 	endif<CR>
 Note that when using ":" any motion becomes characterwise exclusive.
 
-
+								*forced-motion*
 FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
 
 When a motion is not of the type you would like to use, you can force another
@@ -310,7 +311,7 @@ _  <underscore>		[count] - 1 lines downward, on the first non-blank
 G			Goto line [count], default last line, on the first
 			non-blank character |linewise|.  If 'startofline' not
 			set, keep the same column.
-			G is a one of |jump-motions|.
+			G is one of the |jump-motions|.
 
 							*<C-End>*
 <C-End>			Goto line [count], default last line, on the last
@@ -923,7 +924,7 @@ These commands are not marks themselves, but jump to a mark:
 [`			[count] times to lowercase mark before the cursor.
 
 
-:loc[kmarks] {command}					*:loc* *:lockmarks*
+:loc[kmarks] {command}				*:loc* *:lock* *:lockmarks*
 			Execute {command} without adjusting marks.  This is
 			useful when changing text in a way that the line count
 			will be the same when the change has completed.
@@ -949,7 +950,7 @@ These commands are not marks themselves, but jump to a mark:
 			- folds
 			- diffs
 
-:kee[pmarks] {command}					*:kee* *:keepmarks*
+:kee[pmarks] {command}				*:kee* *:keep* *:keepmarks*
 			Currently only has effect for the filter command
 			|:range!|:
 			- When the number of lines after filtering is equal to
@@ -989,11 +990,11 @@ These commands are not marks themselves, but jump to a mark:
 
 A "jump" is a command that normally moves the cursor several lines away.  If
 you make the cursor "jump" the position of the cursor before the jump is
-remembered.  You can return to that position with the "''" and "``" command,
+remembered.  You can return to that position with the "''" and "``" commands,
 unless the line containing that position was changed or deleted.  The
 following commands are "jump" commands: "'", "`", "G", "/", "?", "n", "N",
 "%", "(", ")", "[[", "]]", "{", "}", ":s", ":tag", "L", "M", "H" and the
-commands that start editing a new file. 
+commands that start editing a new file.
 
 							*CTRL-O*
 CTRL-O			Go to [count] Older cursor position in jump list

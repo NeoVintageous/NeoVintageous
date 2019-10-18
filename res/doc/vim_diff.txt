@@ -64,6 +64,10 @@ the differences.
 - 'wildmenu' is enabled
 - 'wildoptions' defaults to "pum,tagfile"
 
+- The |man.vim| plugin is enabled, to provide the |:Man| command.
+- The |matchit| plugin is enabled. To disable it in your config: >
+    :let loaded_matchit = 1
+
 ==============================================================================
 3. New Features						       *nvim-features*
 
@@ -150,6 +154,8 @@ Events:
   |TermClose|
   |TermOpen|
   |TextYankPost|
+  |UIEnter|
+  |UILeave|
   |VimResume|
   |VimSuspend|
 
@@ -165,6 +171,7 @@ Highlight groups:
   |expr-highlight| highlight groups (prefixed with "Nvim")
   |hl-NormalFloat| highlights floating window
   |hl-NormalNC| highlights non-current windows
+  |hl-MsgArea| highlights messages/cmdline area
   |hl-MsgSeparator| highlights separator for scrolled messages
   |hl-QuickFixLine|
   |hl-Substitute|
@@ -306,6 +313,9 @@ other arguments if used).
 
 |input()| and |inputdialog()| support user-defined cmdline highlighting.
 
+Commands:
+  |:doautocmd| does not warn about "No matching autocommands".
+
 Highlight groups:
   |hl-ColorColumn|, |hl-CursorColumn| are lower priority than most other
   groups
@@ -428,6 +438,17 @@ Compile-time features:
   EBCDIC
   Emacs tags support
   X11 integration (see |x11-selection|)
+
+Highlight groups:
+  *hl-StatusLineTerm* *hl-StatusLineTermNC* are unnecessary because Nvim
+    supports 'winhighlight' window-local highlights.
+    For example, to mimic Vim's StatusLineTerm:  >
+      hi StatusLineTerm ctermfg=black ctermbg=green
+      hi StatusLineTermNC ctermfg=green
+      autocmd TermOpen,WinEnter * if &buftype=='terminal'
+        \|setlocal winhighlight=StatusLine:StatusLineTerm,StatusLineNC:StatusLineTermNC
+        \|else|setlocal winhighlight=|endif
+<
 
 Options:
   'antialias'

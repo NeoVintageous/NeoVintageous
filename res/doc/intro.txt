@@ -43,9 +43,8 @@ There are many books on Vi and Vim.  We recommend these books:
 	"Modern Vim" by Drew Neil
 	https://vimcasts.org/publications/
 
-"Practical Vim" is a popular because of its focus on quickly learning common
-editing tasks with Vim.  "Modern Vim" explores new features introduced by Nvim
-and Vim 8.
+"Practical Vim" is acclaimed for its focus on quickly learning common editing
+tasks with Vim.  "Modern Vim" explores new features in Nvim and Vim 8.
 
 	"Vim - Vi Improved" by Steve Oualline
 
@@ -403,6 +402,9 @@ Mapping <kHome> will not work then.
 
 Note: If numlock is on, the |TUI| receives plain ASCII values, so
 mappings to <k0> - <k9> and <kPoint> will not work.
+
+Note: Nvim supports mapping multibyte chars with modifiers such as `<M-ä>`.
+Which combinations actually are usable depends on the terminal emulator or GUI.
 
 								*<>*
 Examples are often given in the <> notation.  Sometimes this is just to make

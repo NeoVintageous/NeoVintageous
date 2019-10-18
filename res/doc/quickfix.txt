@@ -87,7 +87,7 @@ processing a quickfix or location list command, it will be aborted.
 :ll[!] [nr]		Same as ":cc", except the location list for the
 			current window is used instead of the quickfix list.
 
-							*:cn* *:cnext* *E553*
+						*:cn* *:cne* *:cnext* *E553*
 :[count]cn[ext][!]	Display the [count] next error in the list that
 			includes a file name.  If there are no file names at
 			all, go to the [count] next error.  See |:cc| for
@@ -97,14 +97,14 @@ processing a quickfix or location list command, it will be aborted.
 :[count]lne[xt][!]	Same as ":cnext", except the location list for the
 			current window is used instead of the quickfix list.
 
-:[count]cN[ext][!]			*:cp* *:cprevious* *:cN* *:cNext*
+:[count]cN[ext][!]		*:cp* *:cprevious*  *:cprev* *:cN* *:cNext*
 :[count]cp[revious][!]	Display the [count] previous error in the list that
 			includes a file name.  If there are no file names at
 			all, go to the [count] previous error.  See |:cc| for
 			[!] and 'switchbuf'.
 
 
-:[count]lN[ext][!]			*:lp* *:lprevious* *:lN* *:lNext*
+:[count]lN[ext][!]		*:lp* *:lprevious* *:lprev* *:lN* *:lNext*
 :[count]lp[revious][!]	Same as ":cNext" and ":cprevious", except the location
 			list for the current window is used instead of the
 			quickfix list.
@@ -177,7 +177,7 @@ processing a quickfix or location list command, it will be aborted.
 			'encoding' option, you can use the 'makeencoding'
 			option to specify the encoding.
 
-							*:lf* *:lfile*
+							*:lf* *:lfi* *:lfile*
 :lf[ile][!] [errorfile]	Same as ":cfile", except the location list for the
 			current window is used instead of the quickfix list.
 			You can not use the -q command-line option to set
@@ -192,7 +192,7 @@ processing a quickfix or location list command, it will be aborted.
 			option to specify the encoding.
 
 
-:lg[etfile] [errorfile]					*:lg* *:lgetfile*
+:lg[etfile] [errorfile]					*:lg* *:lge* *:lgetfile*
 			Same as ":cgetfile", except the location list for the
 			current window is used instead of the quickfix list.
 
@@ -230,7 +230,7 @@ processing a quickfix or location list command, it will be aborted.
 			the current window is used instead of the quickfix
 			list.
 
-							*:cad* *:caddbuffer*
+						*:cad* *:cadd* *:caddbuffer*
 :cad[dbuffer] [bufnr]	Read the error list from the current buffer and add
 			the errors to the current quickfix list.  If a
 			quickfix list is not present, then a new list is
@@ -277,7 +277,7 @@ processing a quickfix or location list command, it will be aborted.
 			Example: >
     :g/mypattern/caddexpr expand("%") . ":" . line(".") .  ":" . getline(".")
 <
-							*:lad* *:laddexpr*
+						*:lad* *:addd* *:laddexpr*
 :lad[dexpr] {expr}	Same as ":caddexpr", except the location list for the
 			current window is used instead of the quickfix list.
 
@@ -354,6 +354,23 @@ modify the title of a quickfix and location list respectively. Examples: >
 	echo getqflist({'title' : 1})
 	call setloclist(3, [], 'a', {'title' : 'Cmd output'})
 	echo getloclist(3, {'title' : 1})
+<
+							*quickfix-index*
+When you jump to a quickfix/location list entry using any of the quickfix
+commands (e.g. |:cc|, |:cnext|, |:cprev|, etc.), that entry becomes the
+currently selected entry. The index of the currently selected entry in a
+quickfix/location list can be obtained using the getqflist()/getloclist()
+functions. Examples: >
+	echo getqflist({'idx' : 0}).idx
+	echo getqflist({'id' : qfid, 'idx' : 0}).idx
+	echo getloclist(2, {'idx' : 0}).idx
+<
+For a new quickfix list, the first entry is selected and the index is 1.  Any
+entry in any quickfix/location list can be set as the currently selected entry
+using the setqflist() function. Examples: >
+	call setqflist([], 'a', {'idx' : 12})
+	call setqflist([], 'a', {'id' : qfid, 'idx' : 7})
+	call setloclist(1, [], 'a', {'idx' : 7})
 <
 							*quickfix-size*
 You can get the number of entries (size) in a quickfix and a location list
@@ -540,9 +557,9 @@ You can use CTRL-W <Enter> to open a new window and jump to the error there.
 
 When the quickfix window has been filled, two autocommand events are
 triggered.  First the 'filetype' option is set to "qf", which triggers the
-FileType event.  Then the BufReadPost event is triggered, using "quickfix" for
-the buffer name.  This can be used to perform some action on the listed
-errors.  Example: >
+FileType event (also see |qf.vim|).  Then the BufReadPost event is triggered,
+using "quickfix" for the buffer name.  This can be used to perform some action
+on the listed errors.  Example: >
 	au BufReadPost quickfix  setlocal modifiable
 		\ | silent exe 'g/^/s//\=line(".")." "/'
 		\ | setlocal nomodifiable
@@ -889,7 +906,7 @@ commands can be combined to create a NewGrep command: >
 			'smartcase' is not used.
 			If {pattern} is empty (e.g. // is specified), the last
 			used search pattern is used. |last-pattern|
-
+:{count}vim[grep] ...
 			When a number is put before the command this is used
 			as the maximum number of matches to find.  Use
 			":1vimgrep pattern file" to find only the first.
@@ -1071,8 +1088,6 @@ need to write down a "todo" list.
 				If you use ":compiler foo" in "file.foo" and
 				then ":compiler! bar" in another buffer, Vim
 				will keep on using "foo" in "file.foo".
-				{not available when compiled without the
-				|+eval| feature}
 
 
 The Vim plugins in the "compiler" directory will set options to use the
@@ -1199,6 +1214,9 @@ replaced with SOH (0x01).
 
 Note: By default the difference between upper and lowercase is ignored.  If
 you want to match case, add "\C" to the pattern |/\C|.
+
+Vim will read lines of any length, but only the first 4095 bytes are used, the
+rest is ignored.  Items can only be 1023 bytes long.
 
 
 Basic items
@@ -1515,7 +1533,7 @@ The backslashes before the pipe character are required to avoid it to be
 recognized as a command separator.  The backslash before each space is
 required for the set command.
 
-					    *cfilter-plugin* *Cfilter* *Lfilter*
+					    *cfilter-plugin* *:Cfilter* *:Lfilter*
 If you have too many matching messages, you can use the cfilter plugin to
 reduce the number of entries.  Load the plugin with: >
    packadd cfilter

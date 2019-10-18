@@ -153,7 +153,20 @@ commands in CTRL-X submode				*i_CTRL-X_index*
 |i_CTRL-X_CTRL-V|	CTRL-X CTRL-V	complete like in : command line
 |i_CTRL-X_CTRL-]|	CTRL-X CTRL-]	complete tags
 |i_CTRL-X_s|		CTRL-X s	spelling suggestions
-{not available when compiled without the |+insert_expand| feature}
+
+commands in completion mode (see |popupmenu-keys|)
+
+|complete_CTRL-E| CTRL-E	stop completion and go back to original text
+|complete_CTRL-Y| CTRL-Y	accept selected match and stop completion
+		CTRL-L		insert one character from the current match
+		<CR>		insert currently selected match
+		<BS>		delete one character and redo search
+		CTRL-H		same as <BS>
+		<Up>		select the previous match
+		<Down>		select the next match
+		<PageUp>	select a match several entries back
+		<PageDown>	select a match several entries forward
+		other		stop completion and insert the typed character
 
 ==============================================================================
 2. Normal mode						*normal-index*
@@ -555,6 +568,8 @@ tag		command		   action in Normal mode	~
 |CTRL-W_gF|	CTRL-W g F	   edit file name under the cursor in a new
 				   tab page and jump to the line number
 				   following the file name.
+|CTRL-W_gt|	CTRL-W g t	   same as `gt`: go to next tab page
+|CTRL-W_gT|	CTRL-W g T	   same as `gT`: go to previous tab page
 |CTRL-W_h|	CTRL-W h	   go to Nth left window (stop at first window)
 |CTRL-W_i|	CTRL-W i	   split window and jump to declaration of
 				   identifier under the cursor
@@ -832,12 +847,27 @@ tag		char	      note action in Normal mode	~
 				   position the cursor at the start (left
 				   side) of the screen
 |zt|		zt		   redraw, cursor line at top of window
+|zuw|		zuw		   undo |zw|
+|zug|		zug		   undo |zg|
+|zuW|		zuW		   undo |zW|
+|zuG|		zuG		   undo |zG|
 |zv|		zv		   open enough folds to view the cursor line
 |zw|		zw		   mark word as wrong (bad) spelled word
 |zx|		zx		   re-apply 'foldlevel' and do "zv"
 |zz|		zz		   redraw, cursor line at center of window
 |z<Left>|	z<Left>		   same as "zh"
 |z<Right>|	z<Right>	   same as "zl"
+
+==============================================================================
+2.6 Operator-pending mode			*operator-pending-index*
+
+These can be used after an operator, but before a {motion} has been entered.
+
+tag		char		action in Operator-pending mode	~
+-----------------------------------------------------------------------
+|o_v|		v		force operator to work characterwise
+|o_V|		V		force operator to work linewise
+|o_CTRL-V|	CTRL-V		force operator to work blockwise
 
 ==============================================================================
 3. Visual mode						*visual-index*
@@ -961,7 +991,7 @@ Normal characters are inserted at the current cursor position.
 "Completion" below refers to context-sensitive completion.  It will complete
 file names, tags, commands etc. as appropriate.
 
-tag		command	      action in Command-line editing mode	~
+tag		command		action in Command-line editing mode	~
 ------------------------------------------------------------------------------
 		CTRL-@		not used
 |c_CTRL-A|	CTRL-A		do completion on the pattern in front of the
@@ -1001,10 +1031,11 @@ tag		command	      action in Command-line editing mode	~
 				command-line from history.
 |c_CTRL-Q|	CTRL-Q		same as CTRL-V, unless it's used for terminal
 				control flow
-|c_CTRL-R|	CTRL-R {0-9a-z"%#*:= CTRL-F CTRL-P CTRL-W CTRL-A}
+|c_CTRL-R|	CTRL-R {regname}
 				insert the contents of a register or object
 				under the cursor as if typed
-|c_CTRL-R_CTRL-R| CTRL-R CTRL-R {0-9a-z"%#*:= CTRL-F CTRL-P CTRL-W CTRL-A}
+|c_CTRL-R_CTRL-R| CTRL-R CTRL-R {regname}
+|c_CTRL-R_CTRL-O| CTRL-R CTRL-O {regname}
 				insert the contents of a register or object
 				under the cursor literally
 		CTRL-S		(used for terminal control flow)
@@ -1051,21 +1082,31 @@ tag		command	      action in Command-line editing mode	~
 |c_<Insert>|	<Insert>	toggle insert/overstrike mode
 |c_<LeftMouse>|	<LeftMouse>	cursor at mouse click
 
+==============================================================================
+5. Terminal mode				*terminal-mode-index*
+
+In a |terminal| buffer all keys except |CTRL-\_CTRL-N| are forwarded to the
+terminal job.  Use CTRL-\_CTRL-N to go to Normal mode.
+
+
 You found it, Arthur!				*holy-grail*
 
 ==============================================================================
-5. EX commands					*ex-cmd-index* *:index*
+6. EX commands					*ex-cmd-index* *:index*
 
 This is a brief but complete listing of all the ":" commands, without
 mentioning any arguments.  The optional part of the command name is inside [].
 The commands are sorted on the non-optional part of their name.
 
-tag	      command	      action ~
+tag		command		action ~
 ------------------------------------------------------------------------------
+|:|		:		nothing
+|:range|	:{range}	go to last line in {range}
 |:!|		:!		filter lines or execute an external command
 |:!!|		:!!		repeat last ":!" command
 |:#|		:#		same as ":number"
 |:&|		:&		repeat last ":substitute"
+|:star|		:*		execute contents of a register
 |:<|		:<		shift lines one 'shiftwidth' left
 |:=|		:=		print the cursor line number
 |:>|		:>		shift lines one 'shiftwidth' right
@@ -1133,7 +1174,7 @@ tag	      command	      action ~
 |:cclose|	:ccl[ose]	close quickfix window
 |:cd|		:cd		change directory
 |:cdo|		:cdo		execute command in each valid error list entry
-|:cfdo|		:cfdo		execute command in each file in error list
+|:cfdo|		:cfd[o]		execute command in each file in error list
 |:center|	:ce[nter]	format lines at the center
 |:cexpr|	:cex[pr]	read errors from expr and jump to first
 |:cfile|	:cf[ile]	read file with error messages and jump to first
@@ -1167,6 +1208,7 @@ tag	      command	      action ~
 |:compiler|	:comp[iler]	do settings for a specific compiler
 |:continue|	:con[tinue]	go back to :while
 |:confirm|	:conf[irm]	prompt user when confirmation required
+|:const|	:cons[t]	create a variable as a constant
 |:copen|	:cope[n]	open quickfix window
 |:cprevious|	:cp[revious]	go to previous error
 |:cpfile|	:cpf[ile]	go to last error in previous file
@@ -1333,9 +1375,9 @@ tag	      command	      action ~
 |:ltag|		:lt[ag]		jump to tag and add matching tags to the
 				location list
 |:lunmap|	:lu[nmap]	like ":unmap!" but includes Lang-Arg mode
-|:lua|		:lua		execute Lua command
+|:lua|		:lua		execute |Lua| command
 |:luado|	:luad[o]	execute Lua command for each line
-|:luafile|	:luaf[ile]	execute Lua script file
+|:luafile|	:luaf[ile]	execute |Lua| script file
 |:lvimgrep|	:lv[imgrep]	search for pattern in files
 |:lvimgrepadd|	:lvimgrepa[dd]	like :vimgrep, but append to current list
 |:lwindow|	:lw[indow]	open or close location window
@@ -1374,7 +1416,7 @@ tag	      command	      action ~
 |:number|	:nu[mber]	print lines with line number
 |:nunmap|	:nun[map]	like ":unmap" but for Normal mode
 |:nunmenu|	:nunme[nu]	remove menu for Normal mode
-|:oldfiles|	:o[ldfiles]	list files that have marks in the ShaDa file
+|:oldfiles|	:ol[dfiles]	list files that have marks in the |shada| file
 |:omap|		:om[ap]		like ":map" but for Operator-pending mode
 |:omapclear|	:omapc[lear]	remove all mappings for Operator-pending mode
 |:omenu|	:ome[nu]	add menu for Operator-pending mode
@@ -1429,8 +1471,9 @@ tag	      command	      action ~
 |:recover|	:rec[over]	recover a file from a swap file
 |:redo|		:red[o]		redo one undone change
 |:redir|	:redi[r]	redirect messages to a file or register
-|:redraw|	:redr[aw]	force a redraw of the display
-|:redrawstatus|	:redraws[tatus]	force a redraw of the status line(s)
+|:redraw|	:redr[aw]	  force a redraw of the display
+|:redrawstatus|	:redraws[tatus]	  force a redraw of the status line(s)
+|:redrawtabline|  :redrawt[abline]  force a redraw of the tabline
 |:registers|	:reg[isters]	display the contents of registers
 |:resize|	:res[ize]	change current window height
 |:retab|	:ret[ab]	change tab size
@@ -1438,7 +1481,10 @@ tag	      command	      action ~
 |:rewind|	:rew[ind]	go to the first file in the argument list
 |:right|	:ri[ght]	right align text
 |:rightbelow|	:rightb[elow]	make split window appear right or below
-|:rshada|	:rsh[ada]	read from ShaDa file
+|:rshada|	:rsh[ada]	read from |shada| file
+|:ruby|		:rub[y]		execute Ruby command
+|:rubydo|	:rubyd[o]	execute Ruby command for each line
+|:rubyfile|	:rubyf[ile]	execute Ruby script file
 |:rundo|	:rund[o]	read undo information from a file
 |:runtime|	:ru[ntime]	source vim scripts in 'runtimepath'
 |:substitute|	:s[ubstitute]	find and replace text
@@ -1467,7 +1513,8 @@ tag	      command	      action ~
 |:sbrewind|	:sbr[ewind]	split window and go to first file in the
 				buffer list
 |:scriptnames|	:scr[iptnames]	list names of all sourced Vim scripts
-|:scriptencoding| :scripte[ncoding]	encoding used in sourced Vim script
+|:scriptencoding| :scripte[ncoding]  encoding used in sourced Vim script
+|:scriptversion|  :scriptv[ersion]   version of Vim script used
 |:scscope|	:scs[cope]	split window and execute cscope command
 |:set|		:se[t]		show or set options
 |:setfiletype|	:setf[iletype]	set 'filetype', unless it was set already
@@ -1495,6 +1542,7 @@ tag	      command	      action ~
 |:spelldump|	:spelld[ump]	split window and fill with all correct words
 |:spellgood|	:spe[llgood]	add good word for spelling
 |:spellinfo|	:spelli[nfo]	show info about loaded spell files
+|:spellrare|	:spellra[re]	add rare word for spelling
 |:spellrepall|	:spellr[epall]	replace all bad words like last |z=|
 |:spellundo|	:spellu[ndo]	remove good or bad word
 |:spellwrong|	:spellw[rong]	add spelling mistake
@@ -1539,6 +1587,8 @@ tag	      command	      action ~
 |:tab|		:tab		create new tab when opening new window
 |:tag|		:ta[g]		jump to tag
 |:tags|		:tags		show the contents of the tag stack
+|:tcd|		:tcd		change directory for tab page
+|:tchdir|	:tch[dir]	change directory for tab page
 |:terminal|	:te[rminal]	open a terminal buffer
 |:tfirst|	:tf[irst]	jump to first matching tag
 |:throw|	:th[row]	throw an exception

@@ -88,7 +88,7 @@ Mouse input has the following behavior:
 Configuration					*terminal-configuration*
 
 Options:		'modified', 'scrollback'
-Events:			|TermOpen|, |TermClose|
+Events:			|TermOpen|, |TermEnter|, |TermLeave|, |TermClose|
 Highlight groups:	|hl-TermCursor|, |hl-TermCursorNC|
 
 Terminal sets local defaults for some options, which may differ from your
@@ -129,7 +129,7 @@ Example: >
   input to the terminal.
 
 Use |jobwait()| to check if the terminal job has finished: >
-    let exited = jobwait([&channel], 0)[0] >= 0
+    let running = jobwait([&channel], 0)[0] == -1
 
 ==============================================================================
 :Termdebug plugin				*terminal-debug*

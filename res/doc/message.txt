@@ -240,6 +240,9 @@ format of the file.  The file will not be marked unmodified.  If you care
 about the loss of information, set the 'fileencoding' option to another value
 that can handle the characters in the buffer and write again.  If you don't
 care, you can abandon the buffer or reset the 'modified' option.
+If there is a backup file, when 'writebackup' or 'backup' is set, it will not
+be deleted, so you can move it back into place if you want to discard the
+changes.
 
 							*E302*  >
   Could not rename swap file
@@ -534,14 +537,6 @@ This message is only given when Vim detects a problem when searching for a
 tag.  Sometimes this message is not given, even though the tags file is not
 properly sorted.
 
-							*E460*  >
-  The resource fork would be lost (add ! to override)
-
-On the Macintosh (classic), when writing a file, Vim attempts to preserve all
-info about a file, including its resource fork.  If this is not possible you
-get this error message.  Append "!" to the command name to write anyway (and
-lose the info).
-
 							*E424*  >
   Too many different highlighting attributes in use
 
@@ -678,11 +673,13 @@ being disabled.  Remove the 'C' flag from the 'cpoptions' option to enable it.
 This happens when an Ex command with mandatory argument(s) was executed, but
 no argument has been specified.
 
-							*E474* *E475*  >
+							*E474* *E475* *E983*  >
   Invalid argument
   Invalid argument: {arg}
+  Duplicate argument: {arg}
 
-An Ex command has been executed, but an invalid argument has been specified.
+An Ex command or function has been executed, but an invalid argument has been
+specified.
 
 							*E488*  >
   Trailing characters
@@ -783,6 +780,7 @@ To reduce the number of hit-enter prompts:
 - Set 'cmdheight' to 2 or higher.
 - Add flags to 'shortmess'.
 - Reset 'showcmd' and/or 'ruler'.
+- Make sure `:echo` text is within |v:echospace| screen cells.
 
 If your script causes the hit-enter prompt and you don't know why, you may
 find the |v:scrollstart| variable useful.

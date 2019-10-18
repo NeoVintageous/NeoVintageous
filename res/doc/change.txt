@@ -162,8 +162,6 @@ gR			Enter Virtual Replace mode: Each character you type
 			<Tab> may replace several characters at once.
 			Repeat the entered text [count]-1 times.  See
 			|Virtual-Replace-mode| for more details.
-			{not available when compiled without the |+vreplace|
-			feature}
 
 							*c*
 ["x]c{motion}		Delete {motion} text [into register x] and start
@@ -282,14 +280,11 @@ gr{char}		Replace the virtual characters under the cursor with
 			space.  See |gR| and |Virtual-Replace-mode| for more
 			details.  As with |r| a count may be given.
 			{char} can be entered like with |r|.
-			{not available when compiled without the |+vreplace|
-			feature}
 
 						*digraph-arg*
 The argument for Normal mode commands like |r| and |t| is a single character.
 When 'cpo' doesn't contain the 'D' flag, this character can also be entered
 like |digraphs|.  First type CTRL-K and then the two digraph characters.
-{not available when compiled without the |+digraphs| feature}
 
 						*case*
 The following commands change the case of letters.  The currently active
@@ -600,11 +595,11 @@ Directory for temporary files is created in the first suitable directory of:
 			For the {pattern} see |pattern|.
 			{string} can be a literal string, or something
 			special; see |sub-replace-special|.
-							*E939*
 			When [range] and [count] are omitted, replace in the
 			current line only.  When [count] is given, replace in
 			[count] lines, starting with the last line in [range].
 			When [range] is omitted start in the current line.
+							*E939*
 			[count] must be a positive number.  Also see
 			|cmdline-ranges|.
 
@@ -800,7 +795,7 @@ the |substitute()| function with the following exceptions:
   - magic is always set without regard to 'magic'.
   - A ~ inserts a tilde literally.
   - <CR> and \r inserts a carriage-return (CTRL-M).
-  - \<CR> does not have a special meaning. it's just one of \x.
+  - \<CR> does not have a special meaning. It's just one of \x.
 
 Examples: >
   :s/a\|b/xxx\0xxx/g		 modifies "a b"	     to "xxxaxxx xxxbxxx"
@@ -886,9 +881,9 @@ When the result is a |List| then the items are joined with separating line
 breaks.  Thus each item becomes a line, except that they can contain line
 breaks themselves.
 
-The whole matched text can be accessed with "submatch(0)".  The text matched
-with the first pair of () with "submatch(1)".  Likewise for further
-sub-matches in ().
+The |submatch()| function can be used to obtain matched text.  The whole
+matched text can be accessed with "submatch(0)".  The text matched with the
+first pair of () with "submatch(1)".  Likewise for further sub-matches in ().
 
 Be careful: The separation character must not appear in the expression!
 Consider using a character like "@" or ":".  There is no problem if the result
@@ -1137,9 +1132,9 @@ There are ten types of registers:			*registers* *E354*
 2. 10 numbered registers "0 to "9
 3. The small delete register "-
 4. 26 named registers "a to "z or "A to "Z
-5. three read-only registers ":, "., "%
-6. alternate buffer register "#
-7. the expression register "=
+5. Three read-only registers ":, "., "%
+6. Alternate buffer register "#
+7. The expression register "=
 8. The selection registers "* and "+
 9. The black hole register "_
 10. Last search pattern register "/
