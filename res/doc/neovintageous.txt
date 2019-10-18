@@ -9,7 +9,7 @@ NeoVintageous                                             *neovintageous* *nv*
 
  1. Command Palette                 |nv-command-palette|
  2. Multiple cursors                |nv-multiple-cursors|
- 3. Opening a view                  |nv-opening-views|
+ 3. Opening a view                  |nv-opening-view|
  4. neovintageousrc                 |nv-rc|
  5. Plugins                         |nv-plugins|
     1.1 Abolish                         |nv-abolish|
