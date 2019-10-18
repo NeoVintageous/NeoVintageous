@@ -36,7 +36,7 @@ def get_mark_as_encoded_address(view, name, exact=False):
     """
     win, _view, rowcol = None, None, None
 
-    if name == "'" or name == "`":
+    if name in ('\'', '`'):
         # NOTE We might get a selection outside the current view, which deviates
         # from vim behaviour.
         _view, selections = jumplist_back(view)
