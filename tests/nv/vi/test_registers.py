@@ -54,7 +54,7 @@ from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
 from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.registers import registers_set
-from NeoVintageous.nv.registers import set_expression
+from NeoVintageous.nv.registers import set_expression_register
 
 
 class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
@@ -201,7 +201,7 @@ class TestRegister(RegistersTestCase):
     def test_can_set_get_expression_register(self):
         registers_set(self.view, '=', ['x'])
         self.assertEqual(registers_get(self.view, '='), ['x'])
-        set_expression(['y'])
+        set_expression_register(['y'])
         self.assertEqual(registers_get(self.view, '='), ['y'])
 
     def test_can_set_unanmed_register(self):
@@ -321,7 +321,7 @@ class TestRegister(RegistersTestCase):
         registers_set(self.view, _EXPRESSION, ['100'])
         self.set_setting('use_sys_clipboard', False)
         self.assertEqual(registers_get(self.view, _UNNAMED), ['100'])
-        self.assertEqual(registers_get(self.view, _EXPRESSION), '')
+        self.assertEqual(registers_get(self.view, _EXPRESSION), None)
 
     def test_can_get_number_register(self):
         registers_set(self.view, 4, ['foo'])

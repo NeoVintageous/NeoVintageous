@@ -143,7 +143,7 @@ def _get_numbered_register(number):
     return _data['1-9'][int(number) - 1]
 
 
-def set_expression(values):
+def set_expression_register(values):
     # Coerce all values into strings.
     _data[_EXPRESSION] = [str(v) for v in values]
 
@@ -202,7 +202,7 @@ def _get(view, name=_UNNAMED):
     # register, return the expression register and clear it aftwerwards.
     if name == _UNNAMED and _data.get(_EXPRESSION, ''):
         value = _data[_EXPRESSION]
-        _data[_EXPRESSION] = ''
+        _data[_EXPRESSION] = None
 
         return value
 
