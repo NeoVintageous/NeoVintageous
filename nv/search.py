@@ -36,7 +36,7 @@ def get_search_occurrences(view):
 
 
 def add_search_highlighting(view, occurrences, incremental=None):
-    if get_option(view, 'incsearch') and incremental:
+    if incremental and get_option(view, 'incsearch'):
         view.add_regions(
             '_nv_search_inc',
             incremental,
