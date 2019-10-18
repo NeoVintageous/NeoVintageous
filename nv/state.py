@@ -754,16 +754,17 @@ def init_state(view):
     if get_setting(view, 'default_mode') == 'insert':
         if mode in (NORMAL, UNKNOWN):
             enter_insert_mode(view, mode)
-    elif mode in (VISUAL, VISUAL_LINE):
-        # This was commented out to fix the issue of visual selections being
-        # lost because some keys, like the super key, cause Sublime to lose
-        # focus, and when focus comes back it triggers the on_activated() event,
-        # which then initializes state, which then causes visual mode to enter
-        # normal mode. Note that there may be regressions as a side effect.
-        # See nv/events.py#NeoVintageousEvents::on_activated().
+    elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+        # Visual modes are not reset (to normal mode), because actions like
+        # pressing the super key or opening a command-palette/overlay will cause
+        # the active view to lose focus and when focus is received again it
+        # triggers the on_activated() event, this in turn initialises the view'
+        # state, which would reset the visual mode to normal mode, therefore,
+        # for example, any command run from the command palette that expects to
+        # operate on a visual selection wouldn't work because the visual
+        # selection is reset to normal mode before the command has time to run.
         # See https://github.com/NeoVintageous/NeoVintageous/issues/547
-        # view.window().run_command('_enter_normal_mode', {'from_init': True})
-        _log.debug('initializing %s state', mode)
+        pass
     elif mode in (INSERT, REPLACE):
         # TODO: Don't we need to pass a mode here?
         view.window().run_command('_enter_normal_mode', {'from_init': True})

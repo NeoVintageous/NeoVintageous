@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.17.6 - Unreleased
 
+* Fixed [#635](https://github.com/NeoVintageous/NeoVintageous/issues/635): Visual block mode resets to visual when switching view
 * Fixed [#633](https://github.com/NeoVintageous/NeoVintageous/issues/633): `ds|`doesn't work
 
 ## 1.17.5 - 2019-09-02
