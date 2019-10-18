@@ -184,9 +184,13 @@ def _get(view, name=_UNNAMED):
 
     if name == _CURRENT_FILE_NAME:
         try:
-            return [view.file_name()]
+            file_name = view.file_name()
+            if file_name:
+                return
+
+            return [file_name]
         except AttributeError:
-            return ''
+            return
 
     if name in _CLIPBOARD:
         return [get_clipboard()]

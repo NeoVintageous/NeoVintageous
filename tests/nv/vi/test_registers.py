@@ -301,7 +301,7 @@ class TestRegister(RegistersTestCase):
 
     def test_returns_empty_string_if_file_name_not_found_or_error(self):
         self.view.file_name = mock.Mock(side_effect=AttributeError('error'))
-        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), '')
+        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), None)
 
     def test_can_get_clipboard_registers(self):
         registers_set(self.view, _CLIPBOARD_STAR, ['foo'])
