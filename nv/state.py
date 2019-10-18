@@ -232,20 +232,15 @@ class State(object):
         assert value == '' or value.isdigit(), 'bad call'
         self.settings.vi['action_count'] = value
 
-    @property
-    def count(self):
-        # type: () -> int
-        # Calculate the count for the current command.
-        #
-        # Returns:
-        #   int: Default is 0.
-        c = 1
+    def _get_count(self, default):
+        # type: (int) -> int
+        c = default
 
         if self.action_count:
             c = int(self.action_count) or 1
 
         if self.motion_count:
-            c *= (int(self.motion_count) or 1)
+            c *= int(self.motion_count) or 1
 
         if c < 1:
             raise ValueError('count must be positive')
@@ -253,28 +248,13 @@ class State(object):
         return c
 
     @property
+    def count(self):
+        return self._get_count(default=1)
+
+    @property
     def count_default_zero(self):
-        # type: () -> int
-        # Calculate the count for the current command.
-        #
-        # Returns:
-        #   int: Default is 0.
-        #
-        # TODO [refactor] This method was required because count() defaults to
-        #   0. Both methods should be merged allowing to pass a default as a
-        #   parameter.
-        c = 0
-
-        if self.action_count:
-            c = int(self.action_count) or 0
-
-        if self.motion_count:
-            c *= (int(self.motion_count) or 0)
-
-        if c < 0:
-            raise ValueError('count must be zero or positive')
-
-        return c
+        # TODO Refactor: method was required because count() defaults to 1
+        return self._get_count(default=0)
 
     @property
     def xpos(self):
