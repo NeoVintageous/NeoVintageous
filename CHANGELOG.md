@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.7 - 2019-10-18
+
+* Fixed [#639](https://github.com/NeoVintageous/NeoVintageous/issues/639): `C-d` and `C-u` is broken
+
 ## 1.17.6 - 2019-10-18
 
 * Fixed [#636](https://github.com/NeoVintageous/NeoVintageous/issues/636): `cs"<div class="x">` should strip class from closing tag

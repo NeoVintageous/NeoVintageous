@@ -242,8 +242,8 @@ class State(object):
         if self.motion_count:
             c *= int(self.motion_count) or 1
 
-        if c < 1:
-            raise ValueError('count must be positive')
+        if c < 0:
+            raise ValueError('count must be greater than zero')
 
         return c
 
