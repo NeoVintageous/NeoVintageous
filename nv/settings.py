@@ -95,8 +95,7 @@ def set_reset_during_init(view, value):
 
 def _toggle_preference(name):
     preferences = load_settings('Preferences.sublime-settings')
-    value = preferences.get(name)
-    preferences.set(name, not value)
+    preferences.set(name, not preferences.get(name))
     save_settings('Preferences.sublime-settings')
 
 
@@ -111,6 +110,8 @@ def toggle_super_keys():
 def toggle_side_bar(window):
     window.run_command('toggle_side_bar')
 
+    # Ensure that the focus is put on the side bar if it's now visible,
+    # otherwise ensure that the focus returns to active group view.
     if window.is_sidebar_visible():
         window.run_command('focus_side_bar')
     else:
