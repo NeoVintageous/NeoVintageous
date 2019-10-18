@@ -772,13 +772,11 @@ def init_state(view):
         # which is expected, but not expected when initialising state. But not
         # passing the mode may also be causing some other hidden bugs too.
         view.window().run_command('_enter_normal_mode', {'from_init': True})
-
     elif mode != VISUAL and view.has_non_empty_selection_region():
-        # Runs, for example, when we've performed a search via ST3 search panel
-        # and we've pressed 'Find All'. In this case, we want to ensure a
-        # consistent state for multiple selections.
-        # TODO We could end up with multiple selections in other ways that bypass init_state.
-        state.mode = VISUAL
+        # Try to fixup a malformed visual state. For example, apparently this
+        # can happen when a search is performed via a search panel and "Find
+        # All" is pressed. In that case, multiple selections may need fixing.
+        view.window().run_command('_enter_visual_mode', {'mode': mode})
     else:
         # This may be run when we're coming from cmdline mode.
         mode = VISUAL if view.has_non_empty_selection_region() else mode
