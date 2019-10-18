@@ -733,8 +733,6 @@ def init_state(view):
         finally:
             return
 
-    state = State(view)
-
     if not get_reset_during_init(view):
         # Probably exiting from an input panel, like when using '/'. Don't
         # reset the global state, as it may contain data needed to complete
@@ -742,6 +740,7 @@ def init_state(view):
         set_reset_during_init(view, True)
         return
 
+    state = State(view)
     mode = state.mode
 
     # Non-standard user setting.
