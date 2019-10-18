@@ -1320,8 +1320,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
             return
 
         if (len(self.view.sel()) > 1) and (mode == NORMAL):
-            sel = self.view.sel()[0]
-            set_selection(self.view, sel)
+            set_selection(self.view, self.view.sel()[0])
 
         regions_transformer(self.view, f)
 
