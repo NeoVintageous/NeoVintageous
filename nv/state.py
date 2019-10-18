@@ -766,7 +766,11 @@ def init_state(view):
         # See https://github.com/NeoVintageous/NeoVintageous/issues/547
         pass
     elif mode in (INSERT, REPLACE):
-        # TODO: Don't we need to pass a mode here?
+        # NOTE that the mode is not passed as an argument because it causes the
+        # cursor to move back one point from it's current position, for example
+        # when pressing i<Esc>i<Esc>i<Esc> the cursor moves one point each time,
+        # which is expected, but not expected when initialising state. But not
+        # passing the mode may also be causing some other hidden bugs too.
         view.window().run_command('_enter_normal_mode', {'from_init': True})
 
     elif mode != VISUAL and view.has_non_empty_selection_region():
