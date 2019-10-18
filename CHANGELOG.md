@@ -4,6 +4,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.17.6 - Unreleased
 
+* Fixed [#636](https://github.com/NeoVintageous/NeoVintageous/issues/636): `cs"<div class="x">` should strip class from closing tag
+* Fixed [#636](https://github.com/NeoVintageous/NeoVintageous/issues/636): `ys{motion}<div class="x">` should strip class from closing tag
+* Fixed [#636](https://github.com/NeoVintageous/NeoVintageous/issues/636): `ys{motion}tdiv>` alias "t" (`<`) does not work
 * Fixed [#635](https://github.com/NeoVintageous/NeoVintageous/issues/635): Visual block mode resets to visual when switching view
 * Fixed [#633](https://github.com/NeoVintageous/NeoVintageous/issues/633): `ds|`doesn't work
 

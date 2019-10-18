@@ -58,3 +58,7 @@ class TestSurround_ys(unittest.FunctionalTestCase):
 
     def test_issue_305_multiple_selection_leaves_cursors_in_the_wrong_place(self):
         self.eq("eats fi|sh\neats fi|sh\neats fi|sh", "ysiw'", "eats |'fish'\neats |'fish'\neats |'fish'")
+
+    def test_tags(self):
+        self.eq('"fi|zz"', 'ysiw<i x="y">', '"|<i x="y">fizz</i>"')
+        self.eq('"fi|zz"', 'ysiwti x="y">', '"|<i x="y">fizz</i>"')

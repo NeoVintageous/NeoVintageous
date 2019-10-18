@@ -233,6 +233,11 @@ def _get_punctuation_marks(target):
 # which append an additional space to the inside. Like with the targets above,
 # b, B, r, and a are aliases for ), }, ], and >.
 def _get_punctuation_mark_replacements(target):
+    if target[0] in ('t', '<') and len(target) >= 3:
+        # Attributes are stripped in the closing tag. The first character if
+        # "t", which is an alias for "<", is replaced too.
+        return ('<' + target[1:], '</' + target[1:].strip()[:-1].strip().split(' ', 1)[0] + '>')
+
     target = _resolve_punctuation_aliases(target)
     append_addition_space = True if target in '({[' else False
     begin, end = _get_punctuation_marks(target)
@@ -287,16 +292,6 @@ def _do_cs(view, edit, mode, target, replacement):
             new = replacement
             open_, close_ = _get_punctuation_marks(old)
             new_open, new_close = _get_punctuation_mark_replacements(new)
-
-            # Replacements > 1 are always tags, and the first character could be
-            # "t", which is an alias for "<".
-            if len(replacement) > 1:
-                new_open = '<' + new_open[1:]
-
-            # Replacements > 1 are always tags, and the first character could be
-            # "t", which is an alias for "<".
-            if len(replacement) > 1:
-                new_close = '</' + new_close[1:]
 
             if open_ == 't':
                 open_, close_ = ('<[^>\\/]+>', '<\\/[^>]+>')
@@ -446,17 +441,14 @@ def _do_ds(view, edit, mode, target):
 
 def _do_ys(view, edit, mode=None, motion=None, replacement='"', count=1):
     def surround(view, edit, s, replacement):
-        open_, close_ = _get_punctuation_mark_replacements(replacement)
-        # Takes <q class="foo"> and produces: <q class="foo">text</q>
-        if open_.startswith('<'):
-            name = open_[1:].strip()[:-1].strip()
-            name = name.split(' ', 1)[0]
-            view.insert(edit, s.b, "</{0}>".format(name))
-            view.insert(edit, s.a, replacement)
+        replacement_open, replacement_close = _get_punctuation_mark_replacements(replacement)
+        if replacement_open.startswith('<'):
+            view.insert(edit, s.b, replacement_close)
+            view.insert(edit, s.a, replacement_open)
             return
 
-        view.insert(edit, s.end(), close_)
-        view.insert(edit, s.begin(), open_)
+        view.insert(edit, s.end(), replacement_close)
+        view.insert(edit, s.begin(), replacement_open)
 
     def f(view, s):
         if mode == INTERNAL_NORMAL:

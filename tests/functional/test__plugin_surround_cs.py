@@ -118,3 +118,5 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq("'a|b'", "cs'tq>", '|<q>ab</q>')
         self.eq("'a|b'", "cs'<div>", '|<div>ab</div>')
         self.eq("'a|b'", "cs'tdiv>", '|<div>ab</div>')
+        self.eq('"fi|zz"', 'cs"ti x="y">', '|<i x="y">fizz</i>')
+        self.eq('"fi|zz"', 'cs"<i x="y">', '|<i x="y">fizz</i>')
