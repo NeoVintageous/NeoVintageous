@@ -25,6 +25,7 @@ import unittest
 # Use aliases to indicate that they are not public testing APIs.
 from sublime import active_window as _active_window
 from sublime import Region
+from sublime import version as _version
 
 # Use aliases to indicate that they are not public testing APIs.
 from NeoVintageous.nv import macros as _macros
@@ -163,6 +164,17 @@ class ViewTestCase(unittest.TestCase):
 
     def reset_setting(self, name):
         return self.settings().erase('vintageous_%s' % name)
+
+    def set_wrap(self, width):
+        self.settings().set('word_wrap', True)
+        self.set_wrap_width(width)
+
+    def set_wrap_width(self, width):
+        # Wrap width is different (off-by-one) in Sublime Text 4.
+        if int(_version()) >= 4000:
+            width -= 1
+
+        self.settings().set('wrap_width', width)
 
     def assertSetting(self, name, expected):
         self.assertEqual(self.settings().get(name), expected)

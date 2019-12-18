@@ -22,7 +22,6 @@ class Test_gj(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.settings().set('word_wrap', True)
         # Note: A wrap width of 6 means a buffer like:
         #
         #   1234567...
@@ -33,7 +32,7 @@ class Test_gj(unittest.FunctionalTestCase):
         #   12345
         #   67...
         #
-        self.settings().set('wrap_width', 6)
+        self.set_wrap(6)
 
     def test_gj(self):
         self.eq('1|23\n4x6\n', 'n_gj', '123\n4|x6\n')
