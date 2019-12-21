@@ -6,7 +6,7 @@
     "output": null,
     "pattern": "test*.py",
     "show_reload_progress": false,
-    "failfast": true,
+    "failfast": false,
     "tests_dir": "tests",
     "verbosity": 2
 }
