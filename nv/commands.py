@@ -61,6 +61,7 @@ from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.marks import add_mark
 from NeoVintageous.nv.marks import get_mark_as_encoded_address
 from NeoVintageous.nv.polyfill import spell_select
+from NeoVintageous.nv.polyfill import split_by_newlines
 from NeoVintageous.nv.registers import registers_get_for_paste
 from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
@@ -2021,7 +2022,7 @@ class _vi_x(ViTextCommandBase):
 class _vi_r(ViTextCommandBase):
 
     def make_replacement_text(self, char, r):
-        frags = self.view.split_by_newlines(r)
+        frags = split_by_newlines(self.view, r)
         new_frags = []
         for fr in frags:
             new_frags.append(char * len(fr))
@@ -2789,7 +2790,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
             self.view.sel().clear()
             lhs_edge = self.view.rowcol(first.b)[1]  # FIXME # noqa: F841
-            regs = self.view.split_by_newlines(first)
+            regs = split_by_newlines(self.view, first)
 
             offset_a, offset_b = self.view.rowcol(first.a)[1], self.view.rowcol(first.b)[1]
             min_offset_x = min(offset_a, offset_b)

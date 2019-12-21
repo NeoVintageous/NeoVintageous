@@ -149,3 +149,15 @@ def view_indented_region(view, pt, inclusive=False):
             indented_region.b = view.line(ws.b).a
 
     return indented_region
+
+
+# Polyfill fix for Sublime Text 4. In Sublime Text 4 split_by_newlines includes
+# full lines, previously the lines were constrianed to given region start and
+# end points. See https://github.com/NeoVintageous/NeoVintageous/issues/647.
+def split_by_newlines(view, region):
+    regions = view.split_by_newlines(region)
+
+    if len(regions) > 0:
+        regions[0].a = min(region.a, region.b)
+
+    return regions

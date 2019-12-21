@@ -2,6 +2,11 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.17.8 - Unreleased
+
+* Fixed [#649](https://github.com/NeoVintageous/NeoVintageous/issues/649): Enter visual block from visual selection is broken (ST4)
+* Fixed [#647](https://github.com/NeoVintageous/NeoVintageous/issues/647): Replace character Bug (ST4)
+
 ## 1.17.7 - 2019-10-18
 
 * Fixed [#639](https://github.com/NeoVintageous/NeoVintageous/issues/639): `C-d` and `C-u` is broken
