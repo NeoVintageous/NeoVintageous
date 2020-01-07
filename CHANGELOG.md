@@ -4,8 +4,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.17.8 - Unreleased
 
+* Fixed [#650](https://github.com/NeoVintageous/NeoVintageous/issues/650): `C-d`, print the cursor position, is incorrect
 * Fixed [#649](https://github.com/NeoVintageous/NeoVintageous/issues/649): Enter visual block from visual selection is broken (ST4)
-* Fixed [#647](https://github.com/NeoVintageous/NeoVintageous/issues/647): Replace character Bug (ST4)
+* Fixed [#647](https://github.com/NeoVintageous/NeoVintageous/issues/647): Replace character bug (ST4)
 
 ## 1.17.7 - 2019-10-18
 

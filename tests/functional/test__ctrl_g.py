@@ -20,18 +20,20 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_g(unittest.FunctionalTestCase):
 
-    def onRunFeedCommand(self, command, args):
-        args.clear()
-
     @unittest.mock_status_message()
     def test_n(self):
+        self.eq('|', 'n_<C-g>', '|')
+        self.assertStatusMessage('"[No Name]" [Modified] --No lines in buffer--')
         self.eq('a|bc', 'n_<C-g>', 'a|bc')
-        self.assertStatusMessage('"[No Name]" [Modified] -- no lines in the buffer --')
-
-    @unittest.mock_status_message()
-    def test_n_with_lines(self):
+        self.assertStatusMessage('"[No Name]" [Modified] 1 line --100%--', count=2)
+        self.eq('|1\n2\n3', 'n_<C-g>', '|1\n2\n3')
+        self.assertStatusMessage('"[No Name]" [Modified] 3 lines --33%--', count=3)
         self.eq('1\n|2\n3', 'n_<C-g>', '1\n|2\n3')
-        self.assertStatusMessage('"[No Name]" [Modified] 3 lines --66%--')
+        self.assertStatusMessage('"[No Name]" [Modified] 3 lines --66%--', count=4)
+        self.eq('1\n2\n|3', 'n_<C-g>', '1\n2\n|3')
+        self.assertStatusMessage('"[No Name]" [Modified] 3 lines --100%--', count=5)
+        self.eq('1\n|2\n3\n4', 'n_<C-g>', '1\n|2\n3\n4')
+        self.assertStatusMessage('"[No Name]" [Modified] 4 lines --50%--', count=6)
 
     @unittest.mock_status_message()
     def test_n_readonly(self):

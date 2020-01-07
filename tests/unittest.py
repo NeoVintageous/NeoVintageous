@@ -1064,6 +1064,11 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
             self.visible_region = args[-4]
 
             def _viewport_extent():
+                # Fixes UI mocking issue in Sublime Text 4. It seems that
+                # layout_extent() needs to be invoked whenever this mock is used
+                # because it updates the layout extent to the correct value.
+                self.view.layout_extent()
+
                 if screen_rows is not None:
                     rows = screen_rows
                 else:

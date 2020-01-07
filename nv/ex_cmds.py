@@ -341,32 +341,25 @@ def ex_exit(window, view, **kwargs):
 
 
 def ex_file(view, **kwargs):
-    fname = view.file_name() if view.file_name() else '[No Name]'
+    msg = '"{}"'.format(view.file_name() if view.file_name() else '[No Name]')
 
-    attrib = ''
     if view.is_read_only():
-        attrib = 'readonly'
+        msg += " [readonly]"
     elif view.is_dirty():
-        attrib = 'Modified'
+        msg += " [Modified]"
 
-    lines = 'no lines in the buffer'
-    if view.rowcol(view.size())[0]:
-        lines = view.rowcol(view.size())[0] + 1
+    if view.size() > 0:
+        line_count = view.rowcol(view.size())[0] + 1
+        cursor_line_number = view.rowcol(view.sel()[0].b)[0] + 1
 
-    # fixme: doesn't calculate the buffer's % correctly
-    if not isinstance(lines, str):
-        vr = view.visible_region()
-        start_row, end_row = view.rowcol(vr.begin())[0], view.rowcol(vr.end())[0]
-        mid = (start_row + end_row + 2) / 2
-        percent = float(mid) / lines * 100.0
+        if cursor_line_number < line_count:
+            cursor_line_as_percent = int(round(round(100 / line_count, 2) * cursor_line_number, 2))
+        else:
+            cursor_line_as_percent = 100
 
-    msg = '"' + fname + '"'
-    if attrib:
-        msg += " [%s]" % attrib
-    if isinstance(lines, str):
-        msg += " -- %s --" % lines
+        msg += " %d line%s --%d%%--" % (line_count, ('s' if line_count > 1 else ''), cursor_line_as_percent)
     else:
-        msg += " %d line%s --%d%%--" % (lines, ('s' if lines > 1 else ''), int(percent))
+        msg += ' --No lines in buffer--'
 
     status_message('%s' % msg)
 

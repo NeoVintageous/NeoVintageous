@@ -2711,7 +2711,7 @@ class _vi_ctrl_e(ViTextCommandBase):
 
 class _vi_ctrl_g(WindowCommand):
 
-    def run(self):
+    def run(self, **kwargs):
         do_ex_command(self.window, 'file')
 
 
