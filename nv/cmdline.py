@@ -19,7 +19,7 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.utils import hide_panel
 
 
-def _apply_cmdline_panel_settings(panel):
+def _init_common_panel_setting(panel):
     _set = panel.settings().set
 
     _set('auto_complete', False)
@@ -28,8 +28,11 @@ def _apply_cmdline_panel_settings(panel):
     _set('draw_centered', False)
     _set('draw_indent_guides', False)
     _set('gutter', False)
+    _set('is_vintageous_widget', True)
+    _set('is_widget', True)
+    _set('line_numbers', False)
     _set('match_selection', False)
-    _set('rulers', [])
+    _set('rulers', [10, 50])
     _set('scroll_past_end', False)
     _set('smart_indent', False)
     _set('translate_tabs_to_spaces', False)
@@ -76,24 +79,9 @@ class Cmdline():
         )
 
         input_panel.set_name('Command-line mode')
+        input_panel.settings().set('_nv_ex_mode', True)
 
-        _set = input_panel.settings().set
-
-        _set('_nv_ex_mode', True)
-
-        # Mark the input panel as a widget.
-        #
-        # XXX This doesn't always work as expected, because the input panel is
-        # already created before we setapply the settings, so there is a race-
-        # condition.
-        #
-        # TODO [review] See if creating a Command-line mode.sublime-settings file
-        # with all the relevant settings, including the "is_widget" setting solves
-        # the race-condition issue described above.
-        _set('is_widget', True)
-        _set('is_vintageous_widget', True)
-
-        _apply_cmdline_panel_settings(input_panel)
+        _init_common_panel_setting(input_panel)
 
     def _callback(self, callback, *args):
         if self._callbacks and callback in self._callbacks:
@@ -130,14 +118,16 @@ class CmdlineOutput():
 
     def __init__(self, window):
         self._window = window
-
-        self._output = self._window.create_output_panel('command-line')
+        self._name = 'Command-line'
+        self._output = self._window.create_output_panel(self._name)
         self._output.assign_syntax('Packages/NeoVintageous/res/Command-line output.sublime-syntax')
 
-        _apply_cmdline_panel_settings(self._output)
+        _init_common_panel_setting(self._output)
 
     def show(self):
-        self._window.run_command('show_panel', {'panel': 'output.command-line'})
+        self._window.run_command('show_panel', {'panel': 'output.' + self._name})
 
     def write(self, text):
+        self._output.set_read_only(False)
         self._output.run_command('insert', {'characters': text})
+        self._output.set_read_only(True)

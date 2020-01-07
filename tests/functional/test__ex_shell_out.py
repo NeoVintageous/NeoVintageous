@@ -19,6 +19,8 @@ from sublime import platform
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.cmdline import CmdlineOutput
+
 
 class TestExShellOutNoInput(unittest.FunctionalTestCase):
 
@@ -29,7 +31,7 @@ class TestExShellOutNoInput(unittest.FunctionalTestCase):
         super().tearDown()
 
     def test_command_output(self):
-        output_panel = self.view.window().get_output_panel('vi_out')
+        cmdline = CmdlineOutput(self.view.window())
 
         self.feed(':!echo "Testing!"')
 
@@ -38,7 +40,7 @@ class TestExShellOutNoInput(unittest.FunctionalTestCase):
         else:
             expected = 'Testing!\n'
 
-        actual = output_panel.substr(self.Region(0, output_panel.size()))
+        actual = cmdline._output.substr(self.Region(0, cmdline._output.size()))
 
         self.assertEqual(expected, actual)
 

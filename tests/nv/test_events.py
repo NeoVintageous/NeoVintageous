@@ -21,6 +21,7 @@ from sublime import OP_REGEX_MATCH
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.cmdline import CmdlineOutput
 from NeoVintageous.nv.events import _is_command_mode
 from NeoVintageous.nv.events import _is_insert_mode
 
@@ -39,21 +40,22 @@ class TestContextCheckers(unittest.ViewTestCase):
         self.settings().set('command_mode', True)
         self.assertEqual(_is_command_mode(self.view, operator=OP_EQUAL, operand=False, match_all=True), False)
 
-    def test_is_command_mode_can_return_false_for_panels(self):
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+    def test_is_command_mode_can_return_false_for_cmdline_output_panels(self):
+        panel = CmdlineOutput(self.view.window())._output
+
         panel.settings().set('command_mode', True)
         self.assertEqual(_is_command_mode(panel, operator=OP_EQUAL, operand=True, match_all=True), False)
 
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', False)
         self.assertEqual(_is_command_mode(panel, operator=OP_EQUAL, operand=True, match_all=True), False)
 
-    def test_is_command_mode_can_return_true_for_panels(self):
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+    def test_is_command_mode_can_return_true_for_cmdline_output_panels(self):
+        panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', True)
         self.assertEqual(_is_command_mode(panel, operator=OP_EQUAL, operand=False, match_all=True), True)
 
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', False)
         self.assertEqual(_is_command_mode(panel, operator=OP_EQUAL, operand=False, match_all=True), True)
 
@@ -75,21 +77,21 @@ class TestContextCheckers(unittest.ViewTestCase):
         self.settings().set('command_mode', False)
         self.assertEqual(_is_insert_mode(self.view, operator=OP_EQUAL, operand=False, match_all=True), False)
 
-    def test_is_insert_mode_can_return_false_for_panels(self):
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+    def test_is_insert_mode_can_return_false_for_cmdline_output_panels(self):
+        panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', False)
         self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=True, match_all=True), False)
 
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', True)
         self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=True, match_all=True), False)
 
-    def test_is_insert_mode_can_return_true_for_panels(self):
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+    def test_is_insert_mode_can_return_true_for_cmdline_output_panels(self):
+        panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', False)
         self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=False, match_all=True), True)
 
-        panel = self.view.window().create_output_panel('test_context', unlisted=True)
+        panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', True)
         self.assertEqual(_is_insert_mode(panel, operator=OP_EQUAL, operand=False, match_all=True), True)
 

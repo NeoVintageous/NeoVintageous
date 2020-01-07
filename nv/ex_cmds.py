@@ -879,14 +879,11 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
             )
         else:
             output = shell.run_and_read(view, cmd)
-            output_view = view.window().create_output_panel('vi_out')
-            output_view.settings().set("line_numbers", False)
-            output_view.settings().set("gutter", False)
-            output_view.settings().set("scroll_past_end", False)
-            output_view = view.window().create_output_panel('vi_out')
-            output_view.run_command('append', {'characters': output, 'force': True, 'scroll_to_end': True})
+
+            output_view = CmdlineOutput(view.window())
+            output_view.write(output)
             if not get_setting(view, 'shell_silent'):
-                view.window().run_command("show_panel", {"panel": "output.vi_out"})
+                output_view.show()
 
         # TODO: store only successful commands.
         set_ex_shell_last_command(cmd)
