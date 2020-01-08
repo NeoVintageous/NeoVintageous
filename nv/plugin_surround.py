@@ -356,10 +356,10 @@ def _do_ds(view, edit, mode, target):
 
             # All marks, except punctuation marks, are only searched for on the
             # current line.
+            search_current_line_only = True if target not in 'b()B{}r[]a<>' else False
 
             # If opening punctuation mark is used, contained whitespace is also trimmed.
             trim_contained_whitespace = True if target in '({[<' else False
-            search_current_line_only = False if target in 'b()B{}r[]a<>' else True
 
             # Expand targets into begin and end variables because punctuation marks
             # and their aliases represent themselves and their counterparts e.g. (),
