@@ -321,29 +321,18 @@ See |indent-object.txt| for more details.
 
 OPTIONS                                                           *nv-options*
 
-List of supported options:
-
-'belloff'
-'hlsearch'
-'ignorecase'
-'incsearch'
-'magic'
-'menu'
-'modeline'
-'modelines'
-'scrolloff'
-'sidescrolloff'
-'statusbar'
-'winaltkeys'
-'wrapscan'
-
-Some options can used in the neovintageousrc file, for example if you want
-NeoVintageous to always start with the 'ignorecase' option on, add this line
-your neovintageousrc file: >
+A number of options are supported by your rc file. For example, to always start
+with the 'ignorecase' option on, add the following line your rc file: >
 
     set ignorecase
 
-See `:help '{optionname}'` for help on individual options.
+List of available options:
+
+    'autoindent', 'belloff', 'hlsearch', 'ignorecase', 'incsearch', 'list',
+    'magic', 'menu', 'minimap', 'modeline', 'modelines', 'number', 'sidebar',
+    'spell', 'statusbar', 'winaltkeys', 'wrap', 'wrapscan'
+
+See `:help 'option'` for help on individual options.
 
 ==============================================================================
 
@@ -399,8 +388,10 @@ List of available settings:
                                                    *'vintageous_default_mode'*
 'vintageous_default_mode'
                         string (default "")
-    The default mode to use when activating or switching views. Valid values
-    are: "insert".
+    The default mode to use when activating or switching views.
+
+    Valid values are: "insert" or "".
+
     mode   | description
     ------ | -----------
     insert | Enter insert mode when opening or switching views or when
