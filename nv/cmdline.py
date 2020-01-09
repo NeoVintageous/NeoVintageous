@@ -32,7 +32,7 @@ def _init_common_panel_setting(panel):
     _set('is_widget', True)
     _set('line_numbers', False)
     _set('match_selection', False)
-    _set('rulers', [10, 50])
+    _set('rulers', [])
     _set('scroll_past_end', False)
     _set('smart_indent', False)
     _set('translate_tabs_to_spaces', False)
