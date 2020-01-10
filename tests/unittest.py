@@ -1205,6 +1205,7 @@ _SEQ2CMD = {
     '-':            {'command': '_vi_minus'},  # noqa: E241
     '.':            {'command': '_vi_dot'},  # noqa: E241
     '/abc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
+    '/x':           {'command': '_vi_slash_impl', 'args': {'search_string': 'x'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
     '<<':           {'command': '_vi_less_than_less_than'},  # noqa: E241

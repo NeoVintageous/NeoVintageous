@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.18.0 - Unreleased
+
+### Fixed
+
+* Fixed [#653](https://github.com/NeoVintageous/NeoVintageous/issues/653): One char searches highlights two chars for current cursor
+
 ## 1.17.8 - Unreleased
 
 * Fixed [#652](https://github.com/NeoVintageous/NeoVintageous/issues/652): Command-line output should all use the same output panel

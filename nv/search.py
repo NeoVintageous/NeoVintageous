@@ -36,6 +36,8 @@ def get_search_occurrences(view):
 
 
 def add_search_highlighting(view, occurrences, incremental=None):
+    # Incremental search match string highlighting: while typing a search
+    # command, where the pattern, as it was typed so far, matches.
     if incremental and get_option(view, 'incsearch'):
         view.add_regions(
             '_nv_search_inc',
@@ -44,16 +46,9 @@ def add_search_highlighting(view, occurrences, incremental=None):
             flags=ui_region_flags(get_setting_neo(view, 'search_inc_style'))
         )
 
-    if get_option(view, 'hlsearch'):
-        sels = view.sel()
-
-        # TODO Optimise
-        current = []
-        for region in occurrences:
-            for sel in sels:
-                if region.contains(sel):
-                    current.append(region)
-
+    # Occurrences and current search match string highlighting: when there are
+    # search matches, highlight all the matches and the current active one too.
+    if occurrences and get_option(view, 'hlsearch'):
         view.add_regions(
             '_nv_search_occ',
             occurrences,
@@ -61,12 +56,25 @@ def add_search_highlighting(view, occurrences, incremental=None):
             flags=ui_region_flags(get_setting_neo(view, 'search_occ_style'))
         )
 
-        view.add_regions(
-            '_nv_search_cur',
-            current,
-            scope='support.function neovintageous_search_cur',
-            flags=ui_region_flags(get_setting_neo(view, 'search_cur_style'))
-        )
+        sels = []
+        for sel in view.sel():
+            if sel.empty():
+                sel.b += 1
+            sels.append(sel)
+
+        current = []
+        for region in occurrences:
+            for sel in sels:
+                if region.contains(sel):
+                    current.append(region)
+
+        if current:
+            view.add_regions(
+                '_nv_search_cur',
+                current,
+                scope='support.function neovintageous_search_cur',
+                flags=ui_region_flags(get_setting_neo(view, 'search_cur_style'))
+            )
 
 
 def calculate_buffer_search_flags(view, pattern):
