@@ -67,13 +67,13 @@ from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
 from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.search import add_search_highlighting
-from NeoVintageous.nv.search import calculate_buffer_search_flags
 from NeoVintageous.nv.search import calculate_word_search_flags
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import create_word_search_pattern
 from NeoVintageous.nv.search import find_all_buffer_search_occurrences
 from NeoVintageous.nv.search import find_all_word_search_occurrences
 from NeoVintageous.nv.search import get_search_occurrences
+from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_setting
@@ -3186,7 +3186,7 @@ class _vi_slash(ViMotionCommand):
         count = state.count
 
         sel = self.view.sel()[0]
-        flags = calculate_buffer_search_flags(self.view, pattern)
+        pattern, flags = process_search_pattern(self.view, pattern)
         start = get_insertion_point_at_b(sel) + 1
         end = self.view.size()
 
@@ -3202,7 +3202,7 @@ class _vi_slash(ViMotionCommand):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern), [match])
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags), [match])
         show_if_not_visible(self.view, match)
 
     def on_cancel(self):
@@ -3223,7 +3223,7 @@ class _vi_slash_impl(ViMotionCommand):
         set_last_buffer_search(self.view, pattern)
 
         sel = self.view.sel()[0]
-        flags = calculate_buffer_search_flags(self.view, pattern)
+        pattern, flags = process_search_pattern(self.view, pattern)
         start = get_insertion_point_at_b(sel) + 1
         end = self.view.size()
 
@@ -3250,7 +3250,7 @@ class _vi_slash_impl(ViMotionCommand):
 
         target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern))
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags))
 
 
 class _vi_l(ViMotionCommand):
@@ -4242,7 +4242,7 @@ class _vi_question_mark_impl(ViMotionCommand):
             return
 
         sel = self.view.sel()[0]
-        flags = calculate_buffer_search_flags(self.view, pattern)
+        pattern, flags = process_search_pattern(self.view, pattern)
         start = 0
         end = sel.b + 1 if not sel.empty() else sel.b
 
@@ -4270,7 +4270,7 @@ class _vi_question_mark_impl(ViMotionCommand):
 
         target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern))
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags))
 
 
 class _vi_question_mark(ViMotionCommand):
@@ -4305,7 +4305,7 @@ class _vi_question_mark(ViMotionCommand):
         count = state.count
 
         sel = self.view.sel()[0]
-        flags = calculate_buffer_search_flags(self.view, pattern)
+        pattern, flags = process_search_pattern(self.view, pattern)
         start = 0
         end = sel.b + 1 if not sel.empty() else sel.b
 
@@ -4321,7 +4321,7 @@ class _vi_question_mark(ViMotionCommand):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern), [match])
+        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags), [match])
         show_if_not_visible(self.view, match)
 
     def on_cancel(self):

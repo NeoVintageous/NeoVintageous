@@ -77,31 +77,65 @@ def add_search_highlighting(view, occurrences, incremental=None):
             )
 
 
-def calculate_buffer_search_flags(view, pattern):
+def process_search_pattern(view, pattern):
     flags = 0
 
     if get_option(view, 'ignorecase'):
         flags |= IGNORECASE
 
-    if not get_option(view, 'magic'):
+    # Changes the special characters that can be used in search patterns.
+    is_magic = get_option(view, 'magic')
+
+    # Some characters in the pattern are taken literally. They match with the
+    # same character in the text. When preceded with a backslash however, these
+    # characters get a special meaning. See :help magic for more details.
+    #
+    # Patterns can be prefixed by a "mode" that overrides the 'magic' option:
+    #
+    #   \m    'magic' on for the following chars in the pattern.
+    #   \M    'magic' off for the following chars in the pattern.
+    #   \v    the following chars in the pattern are "very magic".
+    #   \V    the following chars int the pattern are "very nomagic".
+    mode = None
+    match = re.match('^\\\\(m|M|v|V)(.*)$', pattern)
+    if match:
+        mode = match.group(1)
+        pattern = match.group(2)
+
+    def _process_magic(pattern, flags):
+        # When magic is on some characters in a pattern are interpreted
+        # literally depending on context. For example [0-9 is interpreted
+        # literally and [0-9] is interpreted as a regular expression.
+        # XXX The following is a quick and dirty implementation to support some
+        # very basic 'magic' literal interpretations.
+        if pattern:
+            if re.match('^[a-zA-Z0-9_\'"\\[\\]]+$', pattern):
+                if '[' not in pattern or ']' not in pattern:
+                    flags |= LITERAL
+
+            elif re.match('^[a-zA-Z0-9_\'"\\(\\)]+$', pattern):
+                if '(' not in pattern or ')' not in pattern:
+                    flags |= LITERAL
+
+        return pattern, flags
+
+    # magic
+    if mode == 'm' or (is_magic and not mode):
+        pattern, flags = _process_magic(pattern, flags)
+
+    # very magic
+    elif mode == 'v':
+        pattern, flags = _process_magic(pattern, flags)
+
+    # nomagic
+    elif mode == 'M' or (not is_magic and not mode):
         flags |= LITERAL
-    elif pattern:
-        # In magic mode some characters in the pattern are taken literally. They
-        # match with the same character in the text e.g. ], '], "[ are taken
-        # literally and patterns like [0-9], .+, ^, are regular expressions.
 
-        # XXX Note that this is a very rough hacky implementation to support
-        # some obvious patterns that should be taken literally like [ and "[.
+    # very nomagic
+    elif mode == 'V':
+        flags |= LITERAL
 
-        if re.match('^[a-zA-Z0-9_\'"\\[\\]]+$', pattern):
-            if '[' not in pattern or ']' not in pattern:
-                flags |= LITERAL
-
-        elif re.match('^[a-zA-Z0-9_\'"\\(\\)]+$', pattern):
-            if '(' not in pattern or ')' not in pattern:
-                flags |= LITERAL
-
-    return flags
+    return pattern, flags
 
 
 def calculate_word_search_flags(view, pattern):
@@ -117,11 +151,8 @@ def create_word_search_pattern(view, pattern):
     return r'\b{0}\b'.format(re.escape(pattern))
 
 
-def find_all_buffer_search_occurrences(view, pattern):
-    return view.find_all(
-        pattern,
-        calculate_buffer_search_flags(view, pattern)
-    )
+def find_all_buffer_search_occurrences(view, pattern, flags):
+    return view.find_all(pattern, flags)
 
 
 def find_all_word_search_occurrences(view, pattern):

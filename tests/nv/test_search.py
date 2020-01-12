@@ -17,37 +17,46 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.search import calculate_buffer_search_flags
+from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import calculate_word_search_flags
 
 
 class Test_flags(unittest.ViewTestCase):
 
-    def test_calculate_buffer_search_flags(self):
+    def test_process_search_pattern(self):
         self.set_option('ignorecase', False)
         self.set_option('magic', True)
-        self.assertEqual(0, calculate_buffer_search_flags(self.view, '[0-9]'))
+        self.assertEqual(('[0-9]', 0), process_search_pattern(self.view, '[0-9]'))
         self.set_option('ignorecase', False)
         self.set_option('magic', False)
-        self.assertEqual(1, calculate_buffer_search_flags(self.view, '[0-9]'))
+        self.assertEqual(('[0-9]', 1), process_search_pattern(self.view, '[0-9]'))
         self.set_option('ignorecase', True)
         self.set_option('magic', True)
-        self.assertEqual(2, calculate_buffer_search_flags(self.view, '[0-9]'))
+        self.assertEqual(('[0-9]', 2), process_search_pattern(self.view, '[0-9]'))
         self.set_option('ignorecase', True)
         self.set_option('magic', False)
-        self.assertEqual(3, calculate_buffer_search_flags(self.view, '[0-9]'))
+        self.assertEqual(('[0-9]', 3), process_search_pattern(self.view, '[0-9]'))
 
-    def test_calculate_buffer_search_flags_in_magic_mode(self):
+    def test_process_search_pattern_non_regex_in_magic_mode(self):
         self.set_option('ignorecase', False)
         self.set_option('magic', True)
-        self.assertEqual(0, calculate_buffer_search_flags(self.view, '[0-9]'))
+        self.assertEqual(('[0-9]', 0), process_search_pattern(self.view, '[0-9]'))
         literals = ('[', ']', '(', ')', '\'[', '"[')
         for literal in literals:
-            self.assertEqual(1, calculate_buffer_search_flags(self.view, literal))
+            self.assertEqual((literal, 1), process_search_pattern(self.view, literal))
 
         regex = ('[0-9]+', '.+', '^', '.*', 'x?', '(x|y)')
         for literal in regex:
-            self.assertEqual(0, calculate_buffer_search_flags(self.view, literal))
+            self.assertEqual((literal, 0), process_search_pattern(self.view, literal))
+
+    def test_process_search_pattern_with_modes(self):
+        self.set_option('ignorecase', False)
+        for boolean in (True, False):
+            self.set_option('magic', boolean)  # Inline modes should override magic option.
+            self.assertEqual(('[0-9]', 0), process_search_pattern(self.view, '\\v[0-9]'))
+            self.assertEqual(('[0-9]', 1), process_search_pattern(self.view, '\\V[0-9]'))
+            self.assertEqual(('[0-9]', 0), process_search_pattern(self.view, '\\m[0-9]'))
+            self.assertEqual(('[0-9]', 1), process_search_pattern(self.view, '\\M[0-9]'))
 
     def test_calculate_word_search_flags(self):
         self.set_option('magic', True)
