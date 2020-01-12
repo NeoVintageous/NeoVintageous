@@ -99,12 +99,16 @@ def _cleanup_views():
     # cursor getting stuck in a block shape or the mode getting stuck in normal
     # or visual mode.
 
-    for window in sublime.windows():
-        for view in window.views():
-            settings = view.settings()
-            settings.set('command_mode', False)
-            settings.set('inverse_caret_state', False)
-            settings.erase('vintage')
+    try:
+        for window in sublime.windows():
+            for view in window.views():
+                settings = view.settings()
+                settings.set('command_mode', False)
+                settings.set('inverse_caret_state', False)
+                settings.erase('vintage')
+    except Exception:
+        import traceback
+        traceback.print_exc()
 
 
 def _init_backwards_compat_patches():
@@ -153,8 +157,6 @@ def _init_backwards_compat_patches():
 
 
 def plugin_loaded():
-
-    # Enable sublime debug information if in DEBUG mode.
     if _DEBUG:
         sublime.log_input(True)
         sublime.log_commands(True)
@@ -195,11 +197,7 @@ def plugin_loaded():
 
     if _startup_exception or loading_exeption:
 
-        try:
-            _cleanup_views()
-        except Exception:
-            import traceback
-            traceback.print_exc()
+        _cleanup_views()
 
         if isinstance(_startup_exception, ImportError) or isinstance(loading_exeption, ImportError):
             if pc_event == 'post_upgrade':
@@ -221,9 +219,4 @@ def plugin_loaded():
 
 
 def plugin_unloaded():
-
-    try:
-        _cleanup_views()
-    except Exception:
-        import traceback
-        traceback.print_exc()
+    _cleanup_views()
