@@ -3,7 +3,7 @@
                 NEOVINTAGEOUS - main help file
 
 Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
-        Jump back:  Type CTRL-T or CTRL-O.  Repeat to go further back.
+        Jump back:  Type CTRL-I or CTRL-O.  Repeat to go further back.
 
 NeoVintageous                                             *neovintageous* *nv*
 
@@ -24,8 +24,9 @@ NeoVintageous                                             *neovintageous* *nv*
  9. Jumping to diffs                |nv-jumpto-diffs|
 10. Toggle Command                  |nv-toggle|
 
-NeoVintageous is an emulation of Vim: feature-parity is ongoing effort. If you
-are new to Vim see |help.txt|.
+NeoVintageous is an emulation of Vim, feature-parity is ongoing effort. 
+
+If you are new to Vim see |help.txt|.
 
 ==============================================================================
 
@@ -339,11 +340,8 @@ See `:help 'option'` for help on individual options.
 SETTINGS                                                         *nv-settings*
 
 You can edit settings via `Menu > Preferences > Settings` or by the Command
-Palette. To use the command palette:
-
-1. Press `Ctrl+Shift+P`
-2. Select the "Preferences: Settings" command
-3. Press `Enter`
+Palette. To use the command palette press `Ctrl+Shift+P` and select the
+"Preferences: Settings" command.
 
 For example to enable the control keys: >
 
@@ -515,32 +513,28 @@ jk -> Esc: >
 SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
 
 Search highlighting can be customized. The styles can be configured via
-the following settings:
+the following settings: >
 
-Configure settings via `Menu > Preferences > Settings` or by the Command
-Palette. To use the command palette:
+    // Current search style.
+    // Valid values are: fill, outline, underline, squiggly_underline,
+    // stippled_underline.
+    "neovintageous_search_cur_style": "fill",
 
-1. Press `Ctrl+Shift+P`
-2. Select the "Preferences: Settings" command
-3. Press `Enter`
+    // Incremental search style.
+    // Valid values are: fill, outline, underline, squiggly_underline,
+    // stippled_underline.
+    "neovintageous_search_inc_style": "fill",
 
-'neovintageous_search_cur_style' Current search match.
-'neovintageous_search_inc_style' Incremental search match.
-'neovintageous_search_occ_style' Search occurrence matches.
+    // Search occurences style.
+    // Valid values are: fill, outline, underline, squiggly_underline,
+    // stippled_underline.
+    "neovintageous_search_occ_style": "fill",
 
-Each option accepts any of the following styles:
+Configure settings via `Menu > Preferences > Settings`.
 
-    fill
-    outline
-    underline
-    squiggly_underline
-    stippled_underline
-
-To customise the colors, use a color scheme override: For example if you have
-the default Monokai color scheme enabled - create a file named
-`Monokai.sublime-color- scheme` in the Sublime Text User directory (`Menu >
-Preferences > Browse Packages...`), and create the styles using the
-neovintageous_search_* scopes: >
+To customise the colors of the styles create a color scheme override. For
+example if you are using the "Monokai" color scheme then create an override file
+named `Monokai.sublime-color-scheme` in the Sublime Text User directory with: >
 
     {
         "rules":
