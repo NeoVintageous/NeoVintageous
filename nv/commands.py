@@ -503,7 +503,7 @@ class _nv_feed_key(ViWindowCommandBase):
 
         # If the user has made selections with the mouse, we may be in an
         # inconsistent state. Try to remedy that.
-        if (state.view.has_non_empty_selection_region() and mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT)):
+        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and state.view.has_non_empty_selection_region():
             init_state(state.view)
 
         if key.lower() == '<esc>':
