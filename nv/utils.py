@@ -35,6 +35,7 @@ from contextlib import contextmanager
 import re
 
 from sublime import Region
+from sublime import View
 
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import spell_add
@@ -72,8 +73,7 @@ def is_ignored_but_command_mode(view):
 
 def is_view(view):
     # type: (...) -> bool
-    # Some "non-normal" views e.g. console?, don't appear to have a settings() method?
-    if getattr(view, 'settings') is None:
+    if not isinstance(view, View):
         return False
 
     settings = view.settings()
