@@ -24,7 +24,7 @@ NeoVintageous                                             *neovintageous* *nv*
  9. Jumping to diffs                |nv-jumpto-diffs|
 10. Toggle Command                  |nv-toggle|
 
-NeoVintageous is an emulation of Vim, feature-parity is ongoing effort. 
+NeoVintageous is an emulation of Vim, feature-parity is ongoing effort.
 
 If you are new to Vim see |help.txt|.
 
@@ -32,11 +32,11 @@ If you are new to Vim see |help.txt|.
 
 COMMAND PALETTE                                           *nv-command-palette*
 
-NeoVintageous: Changelog
-NeoVintageous: Open RC File
-NeoVintageous: Reload RC File
-NeoVintageous: Toggle CTRL keys
-NeoVintageous: Toggle SUPER keys
+NeoVintageous: Changelog            Open CHANGELOG.
+NeoVintageous: Open RC File         Open runtime configuration file.
+NeoVintageous: Reload RC File       Reload the runtime configuration file.
+NeoVintageous: Toggle CTRL keys     Turn CTRL key bindings on and off.
+NeoVintageous: Toggle SUPER keys    Turn SUPER key bindings on and off.
 
 ==============================================================================
 
