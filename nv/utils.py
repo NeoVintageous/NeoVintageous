@@ -99,10 +99,6 @@ def is_view(view):
     ))
 
 
-def is_at_comment(view, pt):
-    return view.match_selector(pt, 'comment')
-
-
 def _regions_transformer(sels, view, f, with_idx):
     # type: (...) -> None
     new = []
