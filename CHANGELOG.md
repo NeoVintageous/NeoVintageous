@@ -8,6 +8,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Fixed [#641](https://github.com/NeoVintageous/NeoVintageous/issues/641): Support search modifiers `\v`, `\V`, `\m`, and `\M`
 
+### Removed
+
+* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `__vi_external_disable_keys` setting; use `__vi_external_disable` instead
+* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `is_vintageous_widget` setting
+
 ### Fixed
 
 * Fixed [#653](https://github.com/NeoVintageous/NeoVintageous/issues/653): One char searches highlights two chars for current cursor

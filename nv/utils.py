@@ -35,6 +35,7 @@ from contextlib import contextmanager
 import re
 
 from sublime import Region
+from sublime import View
 
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import spell_add
@@ -63,40 +64,21 @@ def has_newline_at_eof(view):
     return view.substr(view.size() - 1) == '\n'
 
 
-# Useful for external plugins to disable NeoVintageous for specific views.
-def is_ignored(view):
-    # type: (...) -> bool
-    return view.settings().get('__vi_external_disable', False)
-
-
-# Useful for third party plugins to disable vim emulation for specific views.
-# Differs from is_ignored() in that only keys should be disabled.
-def is_ignored_but_command_mode(view):
-    # type: (...) -> bool
-    return view.settings().get('__vi_external_disable_keys', False)
-
-
-def is_widget(view):
-    # type: (...) -> bool
-    get = view.settings().get
-
-    return get('is_widget') or get('is_vintageous_widget')
-
-
-def is_console(view):
-    # type: (...) -> bool
-    # TODO [review] Is this reliable?
-    return (getattr(view, 'settings') is None)
-
-
 def is_view(view):
     # type: (...) -> bool
-    return not any((
-        is_widget(view),
-        is_console(view),
-        is_ignored(view),
-        is_ignored_but_command_mode(view)
-    ))
+    if not isinstance(view, View):
+        return False
+
+    settings = view.settings()
+
+    if settings.get('is_widget', False):
+        return False
+
+    # Useful for plugins to disable NeoVintageous for specific views.
+    if settings.get('__vi_external_disable', False):
+        return False
+
+    return True
 
 
 def _regions_transformer(sels, view, f, with_idx):
