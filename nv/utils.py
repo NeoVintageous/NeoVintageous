@@ -81,9 +81,6 @@ def is_view(view):
     if settings.get('is_widget', False):
         return False
 
-    if settings.get('is_vintageous_widget', False):
-        return False
-
     # Useful for plugins to disable NeoVintageous for specific views.
     if settings.get('__vi_external_disable', False):
         return False

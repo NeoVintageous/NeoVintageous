@@ -28,7 +28,6 @@ def _init_common_panel_setting(panel):
     _set('draw_centered', False)
     _set('draw_indent_guides', False)
     _set('gutter', False)
-    _set('is_vintageous_widget', True)
     _set('is_widget', True)
     _set('line_numbers', False)
     _set('match_selection', False)
