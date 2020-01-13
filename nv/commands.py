@@ -2192,7 +2192,7 @@ class _vi_big_x(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
-            nonlocal abort
+            nonlocal abort  # type: ignore
             if mode == INTERNAL_NORMAL:
                 if view.line(s.b).empty():
                     abort = True
@@ -2515,7 +2515,7 @@ class _vi_modify_numbers(ViTextCommandBase):
         lines = [self.view.substr(Region(r.b, self.view.line(r.b).b)) for r in regions]
         matches = [self.NUM_PAT.search(text) for text in lines]
         if all(matches):
-            return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]
+            return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]  # type: ignore
 
         return []
 

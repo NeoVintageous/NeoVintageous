@@ -27,5 +27,3 @@ tags
 /covhtml/
 /htmlcov/
 /tmp/
-
-mypy.ini

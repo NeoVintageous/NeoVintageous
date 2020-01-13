@@ -953,7 +953,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
     try:
         compiled_pattern = re.compile(pattern, flags=computed_flags)
     except Exception as e:
-        return status_message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
+        return status_message('[regex error]: {} ... in pattern {}'.format(str(e), pattern))
 
     target_region = line_range.resolve(view)
     if target_region.empty():

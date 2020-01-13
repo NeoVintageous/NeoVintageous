@@ -457,8 +457,10 @@ def _toggle_option(view, key, value=None):
 
     if isinstance(option, str):
         _set_bool_option(view, option, value)
-    else:
+    elif callable(option):
         option(view, value)
+    else:
+        raise ValueError('unknown option type')
 
 
 class _nv_unimpaired_command(TextCommand):

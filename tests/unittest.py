@@ -688,7 +688,11 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed(':help neovintageous')
 
         if seq == '<Esc>':
-            return self.view.window().run_command('_nv_feed_key', {'key': '<esc>'})
+            window = self.view.window()
+            if not window:
+                raise Exception('window not found')
+
+            return window.run_command('_nv_feed_key', {'key': '<esc>'})
 
         if seq[0] == ':':
             return _do_ex_cmdline(self.view.window(), seq)
@@ -741,7 +745,12 @@ class FunctionalTestCase(ViewTestCase):
             raise KeyError('test command definition not found for feed %s' % str(e)) from None
 
         self.onRunFeedCommand(command, args)
-        self.view.window().run_command(command, args)
+
+        window = self.view.window()
+        if not window:
+            raise Exception('window not found')
+
+        window.run_command(command, args)
 
     def onRunFeedCommand(self, command, args):
         pass
