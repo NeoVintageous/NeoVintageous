@@ -64,13 +64,6 @@ def has_newline_at_eof(view):
     return view.substr(view.size() - 1) == '\n'
 
 
-# Useful for third party plugins to disable vim emulation for specific views.
-# Differs from is_ignored() in that only keys should be disabled.
-def is_ignored_but_command_mode(view):
-    # type: (...) -> bool
-    return view.settings().get('__vi_external_disable_keys', False)
-
-
 def is_view(view):
     # type: (...) -> bool
     if not isinstance(view, View):
@@ -83,9 +76,6 @@ def is_view(view):
 
     # Useful for plugins to disable NeoVintageous for specific views.
     if settings.get('__vi_external_disable', False):
-        return False
-
-    if is_ignored_but_command_mode(view):
         return False
 
     return True

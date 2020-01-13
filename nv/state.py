@@ -27,7 +27,6 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import col_at
-from NeoVintageous.nv.utils import is_ignored_but_command_mode
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_previous_selection
@@ -722,10 +721,8 @@ def init_state(view):
         # Abort if we got a console, widget, panel...
         try:
             # XXX: All this seems to be necessary here.
-            if not is_ignored_but_command_mode(view):
-                view.settings().set('command_mode', False)
-                view.settings().set('inverse_caret_state', False)
-
+            view.settings().set('command_mode', False)
+            view.settings().set('inverse_caret_state', False)
             view.settings().erase('vintage')
         except Exception:
             # TODO [review] Exception handling
