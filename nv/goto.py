@@ -39,7 +39,7 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
 
 
-def goto_help(window):
+def goto_help(window) -> None:
     view = window.active_view()
     if not view:
         raise ValueError('view is required')
@@ -71,7 +71,7 @@ def goto_help(window):
     do_ex_command(window, 'help', {'subject': subject})
 
 
-def goto_line(view, mode, line_number):
+def goto_line(view, mode: str, line_number: int) -> None:
     line_number = line_number if line_number > 0 else 1
     dest = view.text_point(line_number - 1, 0)
 
@@ -116,7 +116,7 @@ def goto_line(view, mode, line_number):
     show_if_not_visible(view)
 
 
-def _goto_modification(action, view, mode, count):
+def _goto_modification(action: str, view, mode: str, count: int) -> None:
     with wrapscan(view, forward=(action == 'next')):
         if int(version()) >= 3189:
             for i in range(count):
@@ -139,15 +139,15 @@ def _goto_modification(action, view, mode, count):
                     set_selection(view, pt)
 
 
-def goto_next_change(view, mode, count):
+def goto_next_change(view, mode: str, count: int) -> None:
     _goto_modification('next', view, mode, count)
 
 
-def goto_prev_change(view, mode, count):
+def goto_prev_change(view, mode: str, count: int) -> None:
     _goto_modification('prev', view, mode, count)
 
 
-def goto_next_mispelled_word(view, mode, count):
+def goto_next_mispelled_word(view, mode: str, count: int) -> None:
     with wrapscan(view):
         for i in range(count):
             view.run_command('next_misspelling')
@@ -155,7 +155,7 @@ def goto_next_mispelled_word(view, mode, count):
     regions_transform_to_normal_mode(view)
 
 
-def goto_prev_mispelled_word(view, mode, count):
+def goto_prev_mispelled_word(view, mode: str, count: int) -> None:
     with wrapscan(view, forward=False):
         for i in range(count):
             view.run_command('prev_misspelling')
@@ -163,7 +163,7 @@ def goto_prev_mispelled_word(view, mode, count):
     regions_transform_to_normal_mode(view)
 
 
-def goto_prev_target(view, mode, count, target):
+def goto_prev_target(view, mode: str, count: int, target: str) -> None:
     targets = {
         '{': ('\\{', '\\}'),
         '(': ('\\(', '\\)'),
@@ -204,7 +204,7 @@ def goto_prev_target(view, mode, count, target):
     regions_transformer(view, f)
 
 
-def goto_next_target(view, mode, count, target):
+def goto_next_target(view, mode: str, count: int, target: str) -> None:
     targets = {
         '}': ('\\{', '\\}'),
         ')': ('\\(', '\\)'),

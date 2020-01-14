@@ -28,15 +28,15 @@ from NeoVintageous.nv.vim import message
 _log = logging.getLogger(__name__)
 
 
-def _file_name():
+def _file_name() -> str:
     return '.neovintageousrc'
 
 
-def _file_path():
+def _file_path() -> str:
     return os.path.join(sublime.packages_path(), 'User', _file_name())
 
 
-def open(window):
+def open(window) -> None:
     file = _file_path()
 
     if not os.path.exists(file):
@@ -46,18 +46,18 @@ def open(window):
     window.open_file(file)
 
 
-def load():
+def load() -> None:
     _log.debug('load %s', _file_path())
     _load()
 
 
-def reload():
+def reload() -> None:
     _log.debug('reload %s', _file_path())
     _unload()
     _load()
 
 
-def _unload():
+def _unload() -> None:
     from NeoVintageous.nv.mappings import mappings_clear
     from NeoVintageous.nv.variables import variables_clear
 
@@ -65,7 +65,7 @@ def _unload():
     mappings_clear()
 
 
-def _load():
+def _load() -> None:
     try:
         from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
@@ -87,7 +87,7 @@ _PARSE_LINE_PATTERN = re.compile(
     '^(?::)?(?P<cmdline>(?P<cmd>noremap|nnoremap|snoremap|vnoremap|onoremap|let|set) .*)$')
 
 
-def _parse_line(line):
+def _parse_line(line: str):
     try:
         line = line.rstrip()
         if line:

@@ -68,11 +68,10 @@ class ViewTestCase(unittest.TestCase):
             self.view.set_scratch(True)
             self.view.close()
 
-    def content(self):
-        # type: () -> str
+    def content(self) -> str:
         return self.view.substr(Region(0, self.view.size()))
 
-    def Region(self, a, b=None):
+    def Region(self, a, b=None) -> Region:
         # Return a Region with initial values a and b.
         #
         # This method can save having to import `sublime.Region` into test
@@ -87,7 +86,7 @@ class ViewTestCase(unittest.TestCase):
         #       reversed one.
         return Region(a, b)
 
-    def select(self, selections):
+    def select(self, selections) -> None:
         # Create selection in the view.
         #
         # Args:
@@ -138,7 +137,6 @@ class ViewTestCase(unittest.TestCase):
         # Select multiple points, and text selections:
         #
         # >>> select([3, 5, (7, 11), 17, (19, 23)])
-
         self.view.sel().clear()
 
         if not isinstance(selections, list):
@@ -203,8 +201,7 @@ class ViewTestCase(unittest.TestCase):
     def fixturePath(self, *args):
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
 
-    def write(self, text):
-        # type: (str) -> None
+    def write(self, text) -> None:
         self.view.run_command('_nv_test_write', {'text': text})
 
     def _setupView(self, text, mode, reverse=False, vblock_direction=None):
@@ -898,8 +895,7 @@ class ResetRegisters(FunctionalTestCase):
 
 
 # DEPRECATED Use newer APIs.
-def _make_region(view, a, b=None):
-    # type: (...) -> Region
+def _make_region(view, a: int, b: int = None) -> Region:
     try:
         pt_a = view.text_point(*a)
         pt_b = view.text_point(*b)

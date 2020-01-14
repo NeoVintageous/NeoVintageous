@@ -407,7 +407,7 @@ class _nv_cmdline_feed_key(TextCommand):
         else:
             raise NotImplementedError('unknown key')
 
-    def _next_history(self, edit, backwards):
+    def _next_history(self, edit, backwards: bool) -> None:
         if self.view.size() == 0:
             raise RuntimeError('expected a non-empty command-line')
 
@@ -447,7 +447,7 @@ class _nv_cmdline_feed_key(TextCommand):
             self.view.insert(edit, 1, item)
 
     @staticmethod
-    def reset_last_history_index():  # type: () -> None
+    def reset_last_history_index() -> None:
         _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
 
@@ -607,7 +607,7 @@ class _nv_feed_key(ViWindowCommandBase):
                         trailing = rhs[cr_pos + 4:]
                     else:
                         command = rhs
-                        trailing = None
+                        trailing = ''
 
                     _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
 
@@ -666,7 +666,7 @@ class _nv_feed_key(ViWindowCommandBase):
 
         self._handle_command(state, command, do_eval)
 
-    def _handle_command(self, state, command, do_eval):
+    def _handle_command(self, state, command, do_eval: bool):
         state.set_command(command)
 
         if state.mode == OPERATOR_PENDING:
@@ -675,7 +675,7 @@ class _nv_feed_key(ViWindowCommandBase):
         if do_eval:
             state.eval()
 
-    def _handle_count(self, state, key, repeat_count):
+    def _handle_count(self, state, key: str, repeat_count: int):
         """Return True if the processing of the current key needs to stop."""
         if not state.action and key.isdigit():
             if not repeat_count and (key != '0' or state.action_count):
@@ -819,7 +819,7 @@ class _nv_process_notation(ViWindowCommandBase):
 
         self.collect_input()
 
-    def collect_input(self):
+    def collect_input(self) -> None:
         try:
             motion = self.state.motion
             action = self.state.action
@@ -2254,16 +2254,14 @@ class _vi_paste(ViTextCommandBase):
 
         contents = zip(reversed(contents), reversed(sels))
 
-        def _get_indent(view, level):
-            # type: (...) -> str
+        def _get_indent(view, level) -> str:
             translate = view.settings().get('translate_tabs_to_spaces')
             tab_size = int(view.settings().get('tab_size'))
             tab_text = ' ' * tab_size if translate else '\t'
 
             return tab_text * level
 
-        def _indent_text(view, text, sel):
-            # type: (...) -> str
+        def _indent_text(view, text: str, sel: Region) -> str:
             indentation_level = view.indentation_level(get_insertion_point_at_b(sel))
 
             return textwrap.indent(
@@ -2353,7 +2351,7 @@ class _vi_paste(ViTextCommandBase):
 class _vi_ga(WindowCommand):
 
     def run(self, **kwargs):
-        def char_to_notation(char):
+        def char_to_notation(char: str) -> str:
             # Convert a char to a key notation. Uses vim key notation.
             # See https://vimhelp.appspot.com/intro.txt.html#key-notation
             char_notation_map = {
@@ -3009,7 +3007,7 @@ class _vi_g_big_h(ViWindowCommandBase):
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
     MAX_MATCHES = 20
 
-    def find_matches(self, prefix, end):
+    def find_matches(self, prefix: str, end: int) -> list:
         escaped = re.escape(prefix)
         matches = []  # type: list
         while end > 0:

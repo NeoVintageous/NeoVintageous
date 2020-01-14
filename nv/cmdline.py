@@ -19,7 +19,7 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.utils import hide_panel
 
 
-def _init_common_panel_setting(panel):
+def _init_common_panel_setting(panel) -> None:
     _set = panel.settings().set
 
     _set('auto_complete', False)
@@ -50,7 +50,7 @@ class Cmdline():
         SEARCH_FORWARD,
     )
 
-    def __init__(self, window, type, on_done=None, on_change=None, on_cancel=None):
+    def __init__(self, window, type: str, on_done=None, on_change=None, on_cancel=None):
         self._window = window
 
         if type not in self._TYPES:
@@ -68,7 +68,7 @@ class Cmdline():
             'on_cancel': on_cancel,
         }
 
-    def prompt(self, initial_text):
+    def prompt(self, initial_text: str) -> None:
         input_panel = self._window.show_input_panel(
             caption='',
             initial_text=self._type + initial_text,
@@ -82,23 +82,23 @@ class Cmdline():
 
         _init_common_panel_setting(input_panel)
 
-    def _callback(self, callback, *args):
+    def _callback(self, callback, *args) -> None:
         if self._callbacks and callback in self._callbacks:
             self._callbacks[callback](*args)
 
-    def _is_valid_input(self, cmdline):
+    def _is_valid_input(self, cmdline: str) -> bool:
         return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == self._type
 
-    def _filter_input(self, inp):
+    def _filter_input(self, inp: str) -> str:
         return inp[1:]
 
-    def _on_done(self, inp):
+    def _on_done(self, inp: str) -> None:
         if not self._is_valid_input(inp):
             return self._on_cancel(force=True)
 
         self._callback('on_done', self._filter_input(inp))
 
-    def _on_change(self, inp):
+    def _on_change(self, inp: str) -> None:
         if not self._is_valid_input(inp):
             return self._on_cancel(force=True)
 
@@ -106,7 +106,7 @@ class Cmdline():
         if filtered_input:
             self._callback('on_change', filtered_input)
 
-    def _on_cancel(self, force=False):
+    def _on_cancel(self, force: bool = False) -> None:
         if force:
             hide_panel(self._window)
 
@@ -123,10 +123,10 @@ class CmdlineOutput():
 
         _init_common_panel_setting(self._output)
 
-    def show(self):
+    def show(self) -> None:
         self._window.run_command('show_panel', {'panel': 'output.' + self._name})
 
-    def write(self, text):
+    def write(self, text: str) -> None:
         self._output.set_read_only(False)
         self._output.run_command('insert', {'characters': text})
         self._output.set_read_only(True)

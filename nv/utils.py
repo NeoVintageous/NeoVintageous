@@ -51,8 +51,7 @@ from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import run_window_command
 
 
-def has_dirty_buffers(window):
-    # type: (...) -> bool
+def has_dirty_buffers(window) -> bool:
     for v in window.views():
         if v.is_dirty():
             return True
@@ -60,12 +59,11 @@ def has_dirty_buffers(window):
     return False
 
 
-def has_newline_at_eof(view):
+def has_newline_at_eof(view) -> bool:
     return view.substr(view.size() - 1) == '\n'
 
 
-def is_view(view):
-    # type: (...) -> bool
+def is_view(view) -> bool:
     if not isinstance(view, View):
         return False
 
@@ -81,8 +79,7 @@ def is_view(view):
     return True
 
 
-def _regions_transformer(sels, view, f, with_idx):
-    # type: (...) -> None
+def _regions_transformer(sels, view, f, with_idx) -> None:
     new = []
     for idx, sel in enumerate(sels):
         if with_idx:
@@ -103,30 +100,27 @@ def _regions_transformer(sels, view, f, with_idx):
     set_selection(view, new)
 
 
-def regions_transformer(view, f):
-    # type: (...) -> None
+def regions_transformer(view, f) -> None:
     _regions_transformer(list(view.sel()), view, f, False)
 
 
-def regions_transformer_indexed(view, f):
-    # type: (...) -> None
+def regions_transformer_indexed(view, f) -> None:
     _regions_transformer(list(view.sel()), view, f, True)
 
 
-def regions_transformer_reversed(view, f):
-    # type: (...) -> None
+def regions_transformer_reversed(view, f) -> None:
     _regions_transformer(reversed(list(view.sel())), view, f, False)
 
 
-def _transform_first_non_blank(view, s):
+def _transform_first_non_blank(view, s) -> Region:
     return Region(next_non_blank(view, view.line(s.begin()).a))
 
 
-def regions_transform_to_first_non_blank(view):
+def regions_transform_to_first_non_blank(view) -> None:
     regions_transformer(view, _transform_first_non_blank)
 
 
-def regions_transform_to_normal_mode(view):
+def regions_transform_to_normal_mode(view) -> None:
     def f(view, s):
         s.b = s.a
         return s
@@ -134,7 +128,7 @@ def regions_transform_to_normal_mode(view):
     regions_transformer(view, f)
 
 
-def regions_transform_extend_to_line_count(view, count):
+def regions_transform_extend_to_line_count(view, count) -> None:
     def f(view, s):
         if count > 0:
             s.a = view.line(s.begin()).a
@@ -145,8 +139,7 @@ def regions_transform_extend_to_line_count(view, count):
     regions_transformer(view, f)
 
 
-def replace_sel(view, new_sel):
-    # type: (...) -> None
+def replace_sel(view, new_sel) -> None:
     view.sel().clear()
     if isinstance(new_sel, list):
         view.sel().add_all(new_sel)
@@ -154,16 +147,14 @@ def replace_sel(view, new_sel):
         view.sel().add(new_sel)
 
 
-def get_insertion_point_at_b(region):
-    # type: (Region) -> int
+def get_insertion_point_at_b(region: Region) -> int:
     if region.a < region.b:
         return region.b - 1
 
     return region.b
 
 
-def get_insertion_point_at_a(region):
-    # type: (Region) -> int
+def get_insertion_point_at_a(region: Region) -> int:
     if region.b < region.a:
         return region.a - 1
 
@@ -171,19 +162,17 @@ def get_insertion_point_at_a(region):
 
 
 # Save selection, but only if it's not empty.
-def save_previous_selection(view, mode):
-    # type: (...) -> None
+def save_previous_selection(view, mode: str) -> None:
     if view.has_non_empty_selection_region():
         view.add_regions('visual_sel', list(view.sel()))
         view.settings().set('_nv_visual_sel_mode', mode)
 
 
-def get_previous_selection(view):
-    # type: (...) -> tuple
+def get_previous_selection(view) -> tuple:
     return (view.get_regions('visual_sel'), view.settings().get('_nv_visual_sel_mode'))
 
 
-def set_selection(view, sel):
+def set_selection(view, sel) -> None:
     view.sel().clear()
     if isinstance(sel, list):
         view.sel().add_all(sel)
@@ -191,8 +180,7 @@ def set_selection(view, sel):
         view.sel().add(sel)
 
 
-def show_if_not_visible(view, pt=None):
-    # type: (...) -> None
+def show_if_not_visible(view, pt=None) -> None:
     if isinstance(pt, Region):
         pt = pt.b
     elif pt is None and len(view.sel()) >= 1:
@@ -205,36 +193,31 @@ def show_if_not_visible(view, pt=None):
         view.show(pt)
 
 
-def hide_panel(window):
+def hide_panel(window) -> None:
     window.run_command('hide_panel', {'cancel': True})
 
 
 # Create a region that includes the char at a or b depending on orientation.
-def new_inclusive_region(a, b):
-    # type: (int, int) -> Region
+def new_inclusive_region(a: int, b: int) -> Region:
     if a <= b:
         return Region(a, b + 1)
     else:
         return Region(a + 1, b)
 
 
-def row_at(view, pt):
-    # type: (...) -> int
+def row_at(view, pt: int) -> int:
     return view.rowcol(pt)[0]
 
 
-def col_at(view, pt):
-    # type: (...) -> int
+def col_at(view, pt: int) -> int:
     return view.rowcol(pt)[1]
 
 
-def row_to_pt(view, row, col=0):
-    # type: (...) -> int
+def row_to_pt(view, row: int, col: int = 0) -> int:
     return view.text_point(row, col)
 
 
-def next_non_blank(view, pt):
-    # type: (...) -> int
+def next_non_blank(view, pt: int) -> int:
     limit = view.size()
     substr = view.substr
     while substr(pt) in ' \t' and pt <= limit:
@@ -243,8 +226,7 @@ def next_non_blank(view, pt):
     return pt
 
 
-def prev_non_blank(view, pt):
-    # type: (...) -> int
+def prev_non_blank(view, pt: int) -> int:
     substr = view.substr
     while substr(pt) in ' \t' and pt > 0:
         pt -= 1
@@ -252,8 +234,7 @@ def prev_non_blank(view, pt):
     return pt
 
 
-def prev_blank(view, pt):
-    # type: (...) -> int
+def prev_blank(view, pt: int) -> int:
     substr = view.substr
     while pt >= 0 and substr(pt) not in '\t ':
         pt -= 1
@@ -261,8 +242,7 @@ def prev_blank(view, pt):
     return pt
 
 
-def next_blank(view, pt):
-    # type: (...) -> int
+def next_blank(view, pt: int) -> int:
     limit = view.size()
     substr = view.substr
     while substr(pt) not in ' \t' and pt <= limit:
@@ -271,8 +251,7 @@ def next_blank(view, pt):
     return pt
 
 
-def prev_non_nl(view, pt):
-    # type: (...) -> int
+def prev_non_nl(view, pt: int) -> int:
     substr = view.substr
     while substr(pt) in '\n' and pt > 0:
         pt -= 1
@@ -280,8 +259,7 @@ def prev_non_nl(view, pt):
     return pt
 
 
-def prev_non_ws(view, pt):
-    # type: (...) -> int
+def prev_non_ws(view, pt: int) -> int:
     substr = view.substr
     while substr(pt) in ' \t\n' and pt > 0:
         pt -= 1
@@ -289,8 +267,7 @@ def prev_non_ws(view, pt):
     return pt
 
 
-def next_non_ws(view, pt):
-    # type: (...) -> int
+def next_non_ws(view, pt: int) -> int:
     limit = view.size()
     substr = view.substr
     while substr(pt) in ' \t\n' and pt <= limit:
@@ -299,23 +276,19 @@ def next_non_ws(view, pt):
     return pt
 
 
-def is_at_eol(view, reg):
-    # type: (...) -> bool
+def is_at_eol(view, reg: Region) -> bool:
     return view.line(reg.b).b == reg.b
 
 
-def is_at_bol(view, reg):
-    # type: (...) -> bool
+def is_at_bol(view, reg: Region) -> bool:
     return view.line(reg.b).a == reg.b
 
 
-def first_row(view):
-    # type: (...) -> int
+def first_row(view) -> int:
     return view.rowcol(0)[0]
 
 
-def last_row(view):
-    # type: (...) -> int
+def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
 
@@ -332,8 +305,7 @@ _tranlsate_char_map = {
 }
 
 
-def translate_char(char):
-    # type: (str) -> str
+def translate_char(char: str) -> str:
     lchar = char.lower()
 
     if lchar in _tranlsate_char_map:
@@ -354,7 +326,7 @@ def gluing_undo_groups(view, state):
 
 
 @contextmanager
-def adding_regions(view, name, regions, scope_name):
+def adding_regions(view, name: str, regions: list, scope_name: str):
     view.add_regions(name, regions, scope_name)
 
     yield
@@ -366,7 +338,7 @@ def adding_regions(view, name, regions, scope_name):
 # Sublime's internal commands such as next_modification, next_misspelling, etc.
 # See: https://github.com/SublimeTextIssues/Core/issues/2623.
 @contextmanager
-def wrapscan(view, forward=True):
+def wrapscan(view, forward: bool = True):
     start = list(view.sel())
 
     yield
@@ -414,7 +386,7 @@ def extract_url(view):
         )
     """
 
-    def _extract_url_from_text(regex, text):
+    def _extract_url_from_text(regex: str, text: str):
         match = re.match(regex, text)
         if match:
             url = match.group('url')
@@ -448,7 +420,7 @@ def extract_url(view):
     return _extract_url_from_text(_URL_REGEX, text)
 
 
-def extract_word(view, mode, sel):
+def extract_word(view, mode: str, sel) -> str:
     if is_visual_mode(mode):
         word = view.substr(sel)
     else:
@@ -464,7 +436,7 @@ def extract_word(view, mode, sel):
 # position >>>eo|l|<<< e.g. a left mouse click after the end of a line. Some of
 # these issues can't be worked-around e.g. the mouse click issue described
 # above. See https://github.com/SublimeTextIssues/Core/issues/2121.
-def fix_eol_cursor(view, mode):
+def fix_eol_cursor(view, mode: str) -> None:
     if mode in (NORMAL, INTERNAL_NORMAL):
         def f(view, s):
             b = s.b
@@ -477,7 +449,7 @@ def fix_eol_cursor(view, mode):
         regions_transformer(view, f)
 
 
-def highlow_visible_rows(view):
+def highlow_visible_rows(view) -> tuple:
     visible_region = view.visible_region()
     highest_visible_row = view.rowcol(visible_region.a)[0]
     lowest_visible_row = view.rowcol(visible_region.b - 1)[0]
@@ -504,15 +476,15 @@ def highlow_visible_rows(view):
     return (highest_visible_row, lowest_visible_row)
 
 
-def highest_visible_pt(view):
+def highest_visible_pt(view) -> int:
     return view.text_point(highlow_visible_rows(view)[0], 0)
 
 
-def lowest_visible_pt(view):
+def lowest_visible_pt(view) -> int:
     return view.text_point(highlow_visible_rows(view)[1], 0)
 
 
-def scroll_horizontally(view, edit, amount, half_screen=False):
+def scroll_horizontally(view, edit, amount, half_screen: bool = False) -> None:
     if view.settings().get('word_wrap'):
         return
 
@@ -530,7 +502,7 @@ def scroll_horizontally(view, edit, amount, half_screen=False):
     view.set_viewport_position((pos_x, position[1]))
 
 
-def scroll_viewport_position(view, number_of_scroll_lines, forward=True):
+def scroll_viewport_position(view, number_of_scroll_lines: int, forward: bool = True) -> None:
     x, y = view.viewport_position()
 
     y_addend = ((number_of_scroll_lines) * view.line_height())
@@ -543,7 +515,7 @@ def scroll_viewport_position(view, number_of_scroll_lines, forward=True):
     view.set_viewport_position(viewport_position, animate=False)
 
 
-def get_option_scroll(view):
+def get_option_scroll(view) -> int:
     line_height = view.line_height()
     viewport_extent = view.viewport_extent()
     line_count = viewport_extent[1] / line_height
@@ -552,7 +524,7 @@ def get_option_scroll(view):
     return int(number_of_scroll_lines)
 
 
-def _get_scroll_target(view, number_of_scroll_lines, forward=True):
+def _get_scroll_target(view, number_of_scroll_lines: int, forward: bool = True):
     s = view.sel()[0]
 
     if forward:
@@ -592,16 +564,15 @@ def _get_scroll_target(view, number_of_scroll_lines, forward=True):
     return target_pt
 
 
-def get_scroll_up_target_pt(view, number_of_scroll_lines):
+def get_scroll_up_target_pt(view, number_of_scroll_lines: int):
     return _get_scroll_target(view, number_of_scroll_lines, forward=False)
 
 
-def get_scroll_down_target_pt(view, number_of_scroll_lines):
+def get_scroll_down_target_pt(view, number_of_scroll_lines: int):
     return _get_scroll_target(view, number_of_scroll_lines, forward=True)
 
 
-def resolve_visual_target(s, target):
-    # type: (Region, int) -> None
+def resolve_visual_target(s: Region, target: int) -> None:
     if s.a < s.b:               # A --> B
         if target < s.a:        # TARGET < A --> B
             s.a += 1
@@ -626,8 +597,7 @@ def resolve_visual_target(s, target):
             s.b = target
 
 
-def resolve_visual_line_target(view, s, target):
-    # type: (...) -> None
+def resolve_visual_line_target(view, s: Region, target: int) -> None:
     if s.a < s.b:                               # A --> B
         if target < s.a:                        # TARGET < A --> B
             s.a = view.full_line(s.a).b
@@ -663,9 +633,7 @@ def resolve_visual_line_target(view, s, target):
             s.b = view.full_line(target).b
 
 
-def resolve_internal_normal_target(view, s, target, linewise=None, inclusive=None):
-    # type: (...) -> None
-
+def resolve_internal_normal_target(view, s: Region, target: int, linewise: bool = None, inclusive: bool = None) -> None:
     # An Internal Normal resolver may have modifiers such as linewise,
     # inclusive, exclusive, etc. Modifiers determine how the selection, relative
     # to the target should be resolved.
@@ -753,23 +721,19 @@ class VisualBlockSelection():
         self.view = view
         self._set_direction(get_visual_block_direction(view, direction))
 
-    def _set_direction(self, direction):
-        # type: (int) -> None
+    def _set_direction(self, direction: int) -> None:
         set_visual_block_direction(self.view, direction)
         self._direction = direction
 
-    def _a(self):
-        # type: () -> Region
+    def _a(self) -> Region:
         index = 0 if self.is_direction_down() else -1
         return self.view.sel()[index]
 
-    def _b(self):
-        # type: () -> Region
+    def _b(self) -> Region:
         index = -1 if self.is_direction_down() else 0
         return self.view.sel()[index]
 
-    def begin(self):
-        # type: () -> int
+    def begin(self) -> int:
         a = self._a()
         b = self._b()
 
@@ -780,8 +744,7 @@ class VisualBlockSelection():
 
         return begin
 
-    def end(self):
-        # type: () -> int
+    def end(self) -> int:
         a = self._a()
         b = self._b()
 
@@ -793,30 +756,25 @@ class VisualBlockSelection():
         return end
 
     @property
-    def a(self):
-        # type: () -> int
+    def a(self) -> int:
         return self._a().a
 
     @property
-    def ab(self):
-        # type: () -> int
+    def ab(self) -> int:
         return self._a().b
 
     @property
-    def b(self):
-        # type: () -> int
+    def b(self) -> int:
         return self._b().b
 
     @property
-    def ba(self):
-        # type: () -> int
+    def ba(self) -> int:
         return self._b().a
 
-    def rowcolb(self):
-        # type: () -> tuple
+    def rowcolb(self) -> tuple:
         return self.view.rowcol(self.insertion_point_b())
 
-    def to_visual(self):
+    def to_visual(self) -> Region:
         if self.is_direction_down():
             a = self.begin()
             b = self.end()
@@ -826,41 +784,34 @@ class VisualBlockSelection():
 
         return Region(a, b)
 
-    def to_visual_line(self):
+    def to_visual_line(self) -> Region:
         a = self.view.full_line(self.begin()).a
         b = self.view.full_line(self.end()).b
 
         return Region(a, b)
 
-    def insertion_point_b(self):
-        # type: () -> int
+    def insertion_point_b(self) -> int:
         b = self.b
         ba = self.ba
 
         return b - 1 if b > ba else b
 
-    def insertion_point_a(self):
-        # type: () -> int
+    def insertion_point_a(self) -> int:
         a = self.a
         ab = self.ab
 
         return a - 1 if a > ab else a
 
-    def _is_direction(self, direction):
-        # type: (int) -> bool
+    def _is_direction(self, direction: int) -> bool:
         return self._direction == direction
 
-    def is_direction_down(self):
-        # type: () -> bool
+    def is_direction_down(self) -> bool:
         return self._is_direction(DIRECTION_DOWN)
 
-    def is_direction_up(self):
-        # type: () -> bool
+    def is_direction_up(self) -> bool:
         return self._is_direction(DIRECTION_UP)
 
-    def resolve_target(self, target):
-        # type: (int) -> list
-
+    def resolve_target(self, target: int) -> list:
         # When the TARGET is to the RIGHT of COL-A, then the Visual block will
         # have FORWARD selections. When the TARGET is to the LEFT of COL-A, then
         # the Visual block will have REVERSED selections.
@@ -937,24 +888,23 @@ class VisualBlockSelection():
 
         return block
 
-    def transform_target(self, target):
-        # type: (int) -> None
+    def transform_target(self, target: int) -> None:
         visual_block = self.resolve_target(target)
         if visual_block:
             set_selection(self.view, visual_block)
             self.view.show(target, False)
 
-    def _transform(self, region):
+    def _transform(self, region: Region) -> None:
         set_selection(self.view, region)
 
-    def transform_to_visual(self):
+    def transform_to_visual(self) -> None:
         self._transform(self.to_visual())
 
-    def transform_to_visual_line(self):
+    def transform_to_visual_line(self) -> None:
         self._transform(self.to_visual_line())
 
 
-def resolve_visual_block_target(view, target, count):
+def resolve_visual_block_target(view, target, count: int) -> None:
     visual_block = VisualBlockSelection(view)
     visual_block.transform_target(
         target(view, visual_block.insertion_point_b(), count)
@@ -967,7 +917,7 @@ class InputParser():
     VIA_PANEL = 2
     AFTER_MOTION = 3
 
-    def __init__(self, type=None, command=None, param=None, interactive_command=None):
+    def __init__(self, type: int = None, command=None, param=None, interactive_command: str = None):
         self._type = type
         self._command = command
         self._param = param
@@ -977,42 +927,38 @@ class InputParser():
 
         self._interactive_command = interactive_command
 
-    def is_interactive(self):
-        # type: () -> bool
+    def is_interactive(self) -> bool:
         return bool(self._interactive_command)
 
-    def is_type_after_motion(self):
+    def is_type_after_motion(self) -> bool:
         return self._type == self.AFTER_MOTION
 
-    def is_type_immediate(self):
+    def is_type_immediate(self) -> bool:
         return self._type == self.IMMEDIATE
 
-    def is_type_via_panel(self):
+    def is_type_via_panel(self) -> bool:
         return self._type == self.VIA_PANEL
 
-    def run_interactive_command(self, window, value):
-        # type: (...) -> None
+    def run_interactive_command(self, window, value) -> None:
         window.run_command(self._interactive_command, {self._param: value})
 
-    def run_command(self):
-        # type: () -> None
+    def run_command(self) -> None:
         run_window_command(self._command)
 
 
-def folded_rows(view, pt):
-    # type: (...) -> int
+def folded_rows(view, pt: int) -> int:
     folds = view.folded_regions()
     try:
         fold = [f for f in folds if f.contains(pt)][0]
         fold_row_a = view.rowcol(fold.a)[0]
         fold_row_b = view.rowcol(fold.b - 1)[0]
         # Return no. of hidden lines.
-        return (fold_row_b - fold_row_a)
+        return fold_row_b - fold_row_a
     except IndexError:
         return 0
 
 
-def _clear_visual_selection(view):
+def _clear_visual_selection(view) -> None:
     sels = []
     for sel in view.sel():
         sels.append(view.text_point(view.rowcol(sel.begin())[0], 0))
@@ -1021,27 +967,26 @@ def _clear_visual_selection(view):
         set_selection(view, sels)
 
 
-def fold(view):
+def fold(view) -> None:
     view.run_command('fold')
     _clear_visual_selection(view)
 
 
-def unfold(view):
+def unfold(view) -> None:
     view.run_command('unfold')
     _clear_visual_selection(view)
 
 
-def fold_all(view):
+def fold_all(view) -> None:
     view.run_command('fold_all')
 
 
-def unfold_all(view):
+def unfold_all(view) -> None:
     view.run_command('unfold_all')
 
 
 # FIXME If we have two contiguous folds, this method will fail. Handle folded regions
-def previous_non_folded_pt(view, pt):
-    # type: (...) -> int
+def previous_non_folded_pt(view, pt: int) -> int:
     folds = view.folded_regions()
     try:
         fold = [f for f in folds if f.contains(pt)][0]
@@ -1054,8 +999,7 @@ def previous_non_folded_pt(view, pt):
 
 
 # FIXME: If we have two contiguous folds, this method will fail. Handle folded regions
-def next_non_folded_pt(view, pt):
-    # type: (...) -> int
+def next_non_folded_pt(view, pt: int) -> int:
     folds = view.folded_regions()
     try:
         fold = [f for f in folds if f.contains(pt)][0]
@@ -1067,8 +1011,7 @@ def next_non_folded_pt(view, pt):
     return pt
 
 
-def calculate_xpos(view, start, xpos):
-    # type: (...) -> tuple
+def calculate_xpos(view, start: int, xpos: int) -> tuple:
     if view.line(start).empty():
         return start, 0
 
@@ -1089,18 +1032,17 @@ def calculate_xpos(view, start, xpos):
     return (pt, chars)
 
 
-def spell_file_add_word(view, mode, count):
+def spell_file_add_word(view, mode, count: int) -> None:
     for s in view.sel():
         spell_add(view, extract_word(view, mode, s))
 
 
-def spell_file_remove_word(view, mode, count):
+def spell_file_remove_word(view, mode, count: int) -> None:
     for s in view.sel():
         spell_undo(extract_word(view, mode, s))
 
 
-def fixup_eof(view, pt):
-    # type: (...) -> int
+def fixup_eof(view, pt: int) -> int:
     if ((pt == view.size()) and (not view.line(pt).empty())):
         pt = prev_non_nl(view, pt - 1)
 
@@ -1110,7 +1052,7 @@ def fixup_eof(view, pt):
 # A temporary hack because *most*, and maybe all, motions shouldn't move the
 # cursor after an operation, but changing it for all commands could cause some
 # regressions. TODO When enough commands are updated, this should be removed.
-def should_motion_apply_op_transformer(motion):
+def should_motion_apply_op_transformer(motion) -> bool:
     blacklist = (
         '_vi_bar',
         '_vi_dollar',
@@ -1126,7 +1068,7 @@ def should_motion_apply_op_transformer(motion):
 
 # Some motions should be treated as linewise operations by registers, for
 # example, some text objects are linewise, but only if they contain a newline.
-def is_linewise_operation(mode, motion):
+def is_linewise_operation(mode: str, motion):
     if mode == VISUAL_LINE:
         return True
 

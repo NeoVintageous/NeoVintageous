@@ -202,7 +202,7 @@ class TestSeqToCommand(unittest.TestCase):
                 return Settings()
 
         self.assertEqual(seq_to_command(seq='s', view=View(), mode='a'), 'asv')
-        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode=None), ViMissingCommandDef)
+        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode=''), ViMissingCommandDef)
         # Plugin mode exists, but not sequence.
         self.assertEqual(seq_to_command(seq='t', view=View(), mode='b'), 'tsv')
         # Plugin mapping override.

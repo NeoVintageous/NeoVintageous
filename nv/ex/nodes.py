@@ -35,8 +35,7 @@ class Node:
     pass
 
 
-def _resolve_line_number(view, token, current):
-    # type: (...) -> int
+def _resolve_line_number(view, token, current: int) -> int:
     # Args:
     #   view (View): The view where the calculation is made.
     #   token (Token):
@@ -93,8 +92,7 @@ def _resolve_line_number(view, token, current):
     raise NotImplementedError()
 
 
-def _resolve_line_reference(view, line_reference, current=0):
-    # type: (...) -> int
+def _resolve_line_reference(view, line_reference, current: int = 0) -> int:
     # Args:
     #   view (View): The view where the calculation is made.
     #   line_reference (list): The sequence of tokens defining the line range to be calculated.
@@ -120,7 +118,7 @@ class RangeNode(Node):
 
     # Represents a Vim line range.
 
-    def __init__(self, start=None, end=None, separator=None):
+    def __init__(self, start: list = None, end: list = None, separator=None):
         # Args:
         #   start (list[Token]):
         #   end (list[Token]):
@@ -129,14 +127,14 @@ class RangeNode(Node):
         self.end = end or []
         self.separator = separator
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{}{}{}'.format(
             ' '.join(str(x) for x in self.start),
             str(self.separator) if self.separator else '',
             ' '.join(str(x) for x in self.end),
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, RangeNode):
             return False
 
@@ -145,21 +143,14 @@ class RangeNode(Node):
                 self.separator == other.separator)
 
     @property
-    def is_empty(self):
-        # type: () -> bool
-
+    def is_empty(self) -> bool:
         # Indicate whether this range has ever been defined. For example, in
         # interactive mode, if `true`, it means that the user hasn't provided
         # any line range on the command line.
-
         return not any((self.start, self.end, self.separator))
 
-    def resolve(self, view):
-        # type: (...) -> Region
-
-        # Return a representing the Vim line range that the ex command should
-        # operate on.
-
+    def resolve(self, view) -> Region:
+        # Return a Vim line range that the ex command should operate on.
         start = _resolve_line_reference(view, self.start or [TokenDot()])
 
         if not self.separator:
@@ -186,11 +177,10 @@ class CommandLineNode(Node):
         self.line_range = line_range
         self.command = command
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{}{}'.format(str(self.line_range), str(self.command) if self.command else '')
 
-    def validate(self):
-        # type: () -> None
+    def validate(self) -> None:
         if not (self.command and self.line_range):
             return
 

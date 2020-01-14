@@ -73,24 +73,21 @@ _storage = {
 }  # type: dict
 
 
-def _char2type(char):
-    # type: (str) -> int
+def _char2type(char: str) -> int:
     try:
         return _CHAR2TYPE[char]
     except KeyError:
         return _HIST_INVALID
 
 
-def _name2type(name):
-    # type: (str) -> int
+def _name2type(name: str) -> int:
     try:
         return _NAME2TYPE[name]
     except KeyError:
         return _HIST_INVALID
 
 
-def history_get_type(history):
-    # type: (str) -> int
+def history_get_type(history: str) -> int:
     # Convert history name to its _HIST_ equivalent.
     #
     # Returns:
@@ -104,8 +101,7 @@ def history_get_type(history):
     return _HIST_INVALID
 
 
-def history_update(item):
-    # type: (str) -> None
+def history_update(item: str) -> None:
     firstc = item[0]
     histtype = _char2type(firstc)
     if histtype != _HIST_INVALID:
@@ -114,8 +110,7 @@ def history_update(item):
             history_add(firstc, item)
 
 
-def history_add(history, item):
-    # type: (str, str) -> int
+def history_add(history: str, item: str) -> int:
     # Add an string {item} to the history {history}, which can be one of:
     #
     #   "cmd"     or ":"         command line history
@@ -136,7 +131,6 @@ def history_add(history, item):
     #
     # Returns:
     #   int: 1 for a successful operation, otherwise 0
-
     if _MAX_ITEMS == 0:
         return 0
 
@@ -155,14 +149,12 @@ def history_add(history, item):
     return 1
 
 
-def history_clear():
-    # type: () -> None
+def history_clear() -> None:
     for key in _storage:
         _storage[key] = {'num': 0, 'items': {}}
 
 
-def history_del(history, item=None):
-    # type: (...) -> int
+def history_del(history: str, item=None) -> int:
     # Delete an item from a history.
     #
     # Clear history, i.e. delete all its entries. See |hist-names| for the
@@ -205,8 +197,7 @@ def history_del(history, item=None):
     return ret
 
 
-def history_get(history, index=-1):
-    # type: (str, int) -> str
+def history_get(history: str, index: int = -1) -> str:
     # Get the item history from a history.
     #
     # The result is a str, the entry with int index from history. See
@@ -239,13 +230,11 @@ def history_get(history, index=-1):
     return ret
 
 
-def history_len(history):
-    # type: (str) -> int
+def history_len(history: str) -> int:
     return len(_storage[history_get_type(history)]['items'])
 
 
-def history_nr(history):
-    # type: (str) -> int
+def history_nr(history: str) -> int:
     # Get highest index of a history.
     #
     # Args:
@@ -267,9 +256,7 @@ def history_nr(history):
     return num
 
 
-def history(name):
-    # type: (str) -> str
-    #
+def history(name: str) -> str:
     # Args:
     #   :name (str): See |hist-names| for the possible values of name.
     #

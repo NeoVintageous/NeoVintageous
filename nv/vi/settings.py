@@ -29,29 +29,29 @@ _storage = {}  # type: dict
 _views = defaultdict(dict)  # type: dict
 
 
-def _get_session_value(name, default=None):
+def _get_session_value(name: str, default=None):
     try:
         return _session[name]
     except KeyError:
         return default
 
 
-def _set_session_value(name, value):
+def _set_session_value(name: str, value) -> None:
     _session[name] = value
 
 
-def get_cache_value(name, default=None):
+def get_cache_value(name: str, default=None):
     try:
         return _cache[name]
     except KeyError:
         return default
 
 
-def set_cache_value(name, value):
+def set_cache_value(name: str, value) -> None:
     _cache[name] = value
 
 
-def set_ex_substitute_last_pattern(pattern):
+def set_ex_substitute_last_pattern(pattern: str):
     return _set_session_value('ex_substitute_last_pattern', pattern)
 
 
@@ -63,7 +63,7 @@ def get_ex_substitute_last_replacement():
     return _get_session_value('ex_substitute_last_replacement')
 
 
-def set_ex_substitute_last_replacement(replacement):
+def set_ex_substitute_last_replacement(replacement: str):
     return _set_session_value('ex_substitute_last_replacement', replacement)
 
 
@@ -71,7 +71,7 @@ def get_ex_shell_last_command():
     return _get_session_value('ex_shell_last_command')
 
 
-def set_ex_shell_last_command(cmd):
+def set_ex_shell_last_command(cmd: str):
     return _set_session_value('ex_shell_last_command', cmd)
 
 
@@ -79,11 +79,11 @@ def get_ex_global_last_pattern():
     return _get_session_value('ex_global_last_pattern')
 
 
-def set_ex_global_last_pattern(pattern):
+def set_ex_global_last_pattern(pattern: str):
     return _set_session_value('ex_global_last_pattern', pattern)
 
 
-def get_cmdline_cwd():
+def get_cmdline_cwd() -> str:
     if 'cmdline_cwd' in _storage:
         return _storage['cmdline_cwd']
 
@@ -91,27 +91,27 @@ def get_cmdline_cwd():
     if window:
         variables = window.extract_variables()
         if 'folder' in variables:
-            return variables['folder']
+            return str(variables['folder'])
 
     return os.getcwd()
 
 
-def set_cmdline_cwd(path):
+def set_cmdline_cwd(path: str) -> None:
     _storage['cmdline_cwd'] = path
 
 
-def get_visual_block_direction(view, default=DIRECTION_DOWN):
+def get_visual_block_direction(view, default: int = DIRECTION_DOWN) -> int:
     return view.settings().get('_nv_visual_block_direction', default)
 
 
-def set_visual_block_direction(view, direction):
+def set_visual_block_direction(view, direction: int) -> None:
     current_direction = get_visual_block_direction(view)
     if direction != current_direction:
         view.settings().set('_nv_visual_block_direction', direction)
 
 
 # TODO remove assertions
-def set_repeat_data(view, data):
+def set_repeat_data(view, data) -> None:
     # Store data structure for repeat commands like "." to use.
     # Args:
     #   tuple (type, cmd_name_or_key_seq, mode): Type may be "vi" or
@@ -129,7 +129,7 @@ def get_repeat_data(view):
         pass
 
 
-def on_close(view):
+def on_close(view) -> None:
     try:
         del _views[view.id()]
     except KeyError:
@@ -143,10 +143,10 @@ class _VintageSettings():
         if view is not None and not isinstance(view.settings().get('vintage'), dict):
             view.settings().set('vintage', dict())
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str):
         return self.view.settings().get('vintage').get(key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value) -> None:
         settings = self.view.settings().get('vintage')
         settings[key] = value
         self.view.settings().set('vintage', settings)

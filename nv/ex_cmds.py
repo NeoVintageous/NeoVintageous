@@ -201,7 +201,7 @@ def ex_cd(view, path=None, **kwargs):
 
 
 def ex_close(window, forceit=False, **kwargs):
-    window_control(window, 'c', close_if_last=forceit),
+    window_control(window, 'c', close_if_last=forceit)
 
 
 def ex_copy(view, edit, line_range, address=None, **kwargs):
@@ -1221,7 +1221,7 @@ def ex_wqall(window, **kwargs):
 
 @_init_cwd
 def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
-    def _is_read_only(file_name):
+    def _is_read_only(file_name: str) -> bool:
         if file_name:
             try:
                 return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
@@ -1230,8 +1230,7 @@ def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
 
         return False
 
-    def _get_buffer(view, line_range):
-        # type: (...) -> str
+    def _get_buffer(view, line_range) -> str:
         # If no range, write whe whole buffer.
         if line_range.is_empty:
             region = Region(0, view.size())
@@ -1240,7 +1239,7 @@ def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
 
         return view.substr(region)
 
-    def _append_to_file(view, file_name, forceit, line_range):
+    def _append_to_file(view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit and not os.path.exists(file_name):
             return status_message("E212: Can't open file for writing: %s", file_name)
 
@@ -1252,14 +1251,14 @@ def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
         except IOError as e:
             return status_message('could not write file %s', str(e))
 
-    def _append(view, line_range):
+    def _append(view, line_range) -> None:
         view.run_command('append', {'characters': _get_buffer(view, line_range)})
         view.run_command('save')
 
         # TODO [review] State dependency
         enter_normal_mode(window, State(view).mode)
 
-    def _write_to_file(window, view, file_name, forceit, line_range):
+    def _write_to_file(window, view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit:
             if os.path.exists(file_name):
                 return ui_bell("E13: File exists (add ! to override)")
@@ -1385,9 +1384,7 @@ def do_ex_cmd_edit_wrap(self, edit, _name=None, _line=None, **kwargs):
         raise RuntimeError('_name or _line is required')
 
 
-def do_ex_command(window, name, args=None):
-    # type: (...) -> None
-    #
+def do_ex_command(window, name: str, args=None) -> None:
     # Execute ex commands by name with arguments.
     #
     # Args:
@@ -1417,7 +1414,6 @@ def do_ex_command(window, name, args=None):
     # If you need to call an ex command as a string value rather than by name
     # and arguments (though you should prefer to use this api), see the
     # do_ex_cmdline() function.
-
     _log.debug('do ex command %s %s', name, args)
 
     if args is None:
@@ -1486,9 +1482,7 @@ def _parse_user_cmdline(line):
     return command
 
 
-def do_ex_cmdline(window, line):
-    # type: (...) -> None
-    #
+def do_ex_cmdline(window, line) -> None:
     # Execute ex command as a string (what a user would enter at the cmdline).
     #
     # Args:
@@ -1579,9 +1573,7 @@ def do_ex_cmdline(window, line):
 
 
 # TODO [refactor] Into do_ex_cmdline() with a param to indicate user cmdline? e.g do_ex_cmdline(window, line, interactive=True).  # noqa: E501
-def do_ex_user_cmdline(window, line):
-    # type: (...) -> None
-    #
+def do_ex_user_cmdline(window, line) -> None:
     # Execute an interactive ex command (what a user would use in a mapping).
     #
     # Args:

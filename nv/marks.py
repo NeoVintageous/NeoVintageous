@@ -22,12 +22,12 @@ from NeoVintageous.nv.jumplist import jumplist_back
 _marks = {}
 
 
-def add_mark(view, name):
+def add_mark(view, name: str) -> None:
     win, view, rowcol = view.window(), view, view.rowcol(view.sel()[0].b)
     _marks[name] = win, view, rowcol
 
 
-def get_mark_as_encoded_address(view, name, exact=False):
+def get_mark_as_encoded_address(view, name: str, exact: bool = False):
     """Return an address for the mark {name}.
 
     name: The name of the mark to be retrieved.

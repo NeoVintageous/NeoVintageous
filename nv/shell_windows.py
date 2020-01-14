@@ -41,18 +41,15 @@ def get_startup_info():
     return startupinfo
 
 
-def get_oem_cp():
-    # type: (...) -> str
+def get_oem_cp() -> str:
     return str(ctypes.windll.kernel32.GetOEMCP())
 
 
-def run_and_wait(view, cmd):
-    # type: (...) -> None
+def run_and_wait(view, cmd) -> None:
     subprocess.Popen(['cmd.exe', '/c', cmd + '&& pause']).wait()
 
 
-def run_and_read(view, cmd):
-    # type: (...) -> str
+def run_and_read(view, cmd) -> str:
     out, err = subprocess.Popen(['cmd.exe', '/c', cmd],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
@@ -65,8 +62,7 @@ def run_and_read(view, cmd):
         return ''
 
 
-def filter_region(view, txt, command):
-    # type: (...) -> str
+def filter_region(view, txt, command) -> str:
     try:
         contents = tempfile.NamedTemporaryFile(suffix='.txt', delete=False)
         contents.write(txt.encode('utf-8'))

@@ -40,14 +40,12 @@ class _ScannerState:
     #   :position (int): The current scan position. Default is 0.
     #   :start (int): The most recent scan start. Default is 0.
 
-    def __init__(self, source):
-        # type: (str) -> None
+    def __init__(self, source: str) -> None:
         self.source = source
         self.position = 0
         self.start = 0
 
-    def consume(self):
-        # type: () -> str
+    def consume(self) -> str:
         # Returns one character or self.EOF constant ("__EOF__") if no
         # characters left in source.
         if self.position >= len(self.source):
@@ -59,19 +57,16 @@ class _ScannerState:
 
         return c
 
-    def backup(self):
-        # type: () -> None
+    def backup(self) -> None:
         # Backs up scanner position by one character.
         self.position -= 1
 
-    def ignore(self):
-        # type: () -> None
+    def ignore(self) -> None:
         # Discards characters up to the current poistion such that calls to
         # emit() will ignore those characters.
         self.start = self.position
 
-    def emit(self):
-        # type: () -> str
+    def emit(self) -> str:
         # Returns source from start to current position, and advances start to
         # the current position.
         content = self.source[self.start:self.position]
@@ -80,8 +75,7 @@ class _ScannerState:
 
         return content
 
-    def skip(self, character):
-        # type: (str) -> None
+    def skip(self, character: str) -> None:
         # Consumes character while it matches.
         while True:
             c = self.consume()
@@ -91,8 +85,7 @@ class _ScannerState:
         if c != self.EOF:
             self.backup()
 
-    def skip_run(self, characters):
-        # type: (str) -> None
+    def skip_run(self, characters: str) -> None:
         # Skips characters while there's a match.
         while True:
             c = self.consume()
@@ -102,8 +95,7 @@ class _ScannerState:
         if c != self.EOF:
             self.backup()
 
-    def expect(self, item, on_error=None):
-        # type: (...) -> str
+    def expect(self, item, on_error=None) -> str:
         # Expects item to match at the current position.
         #
         # Args:
@@ -123,10 +115,10 @@ class _ScannerState:
 
         return c
 
-    def expect_eof(self, on_error=None):
+    def expect_eof(self, on_error=None) -> str:
         return self.expect(self.EOF, on_error)
 
-    def expect_match(self, pattern, on_error=None):
+    def expect_match(self, pattern: str, on_error=None):
         # Expects item to match at the current position.
         #
         # Args:
@@ -148,12 +140,11 @@ class _ScannerState:
 
         raise on_error()
 
-    def peek(self, item):
-        # type: (str) -> bool
+    def peek(self, item: str) -> bool:
         # Return True if item matches at the current position, False otherwise.
         return self.source[self.position:self.position + len(item)] == item
 
-    def match(self, pattern):
+    def match(self, pattern: str):
         # Return the match obtained by searching pattern. The current `position`
         # will advance as many characters as the match's length.
         #
@@ -173,8 +164,7 @@ class Scanner:
     # Attributes:
     #   :state (_ScannerState):
 
-    def __init__(self, source):
-        # type: (str) -> None
+    def __init__(self, source: str) -> None:
         self.state = _ScannerState(source)
 
     def scan(self):
@@ -193,16 +183,12 @@ class Scanner:
                 break
 
 
-def _scan_range(state):
+def _scan_range(state) -> tuple:
     # Produce tokens found in a command line range.
     # https://vimhelp.appspot.com/cmdline.txt.html#cmdline-ranges
     #
     # Args:
     #   :state (_ScannerState):
-    #
-    # Returns:
-    #   tuple
-
     c = state.consume()
 
     if c == state.EOF:
@@ -254,13 +240,13 @@ def _scan_range(state):
     return _scan_command, []
 
 
-def _scan_mark(state):
+def _scan_mark(state) -> tuple:
     c = state.expect_match(r'[a-zA-Z\[\]()<>]')
 
     return _scan_range, [TokenMark(c.group(0))]
 
 
-def _scan_digits(state):
+def _scan_digits(state) -> tuple:
     while True:
         c = state.consume()
         if not c.isdigit():
@@ -273,7 +259,7 @@ def _scan_digits(state):
     return _scan_range, [TokenDigits(state.emit())]
 
 
-def _scan_search(state):
+def _scan_search(state) -> tuple:
     delim = state.source[state.position - 1]
     while True:
         c = state.consume()
@@ -291,10 +277,10 @@ def _scan_search(state):
             raise ValueError('unclosed search pattern: {0}'.format(state.source))
 
 
-def _scan_offset(state):
+def _scan_offset(state) -> tuple:
     offsets = []
 
-    def to_int(x):
+    def to_int(x: str) -> int:
         return int(x, 10)
 
     sign = '-' if state.source[state.position - 1] == '-' else ''
@@ -323,7 +309,7 @@ def _scan_offset(state):
             return _scan_range, [TokenOffset(list(map(to_int, offsets)))]
 
 
-def _scan_command(state):
+def _scan_command(state) -> tuple:
     # Args:
     #   :state (_ScannerState):
     #

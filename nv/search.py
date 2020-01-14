@@ -25,17 +25,17 @@ from NeoVintageous.nv.settings import get_setting_neo
 from NeoVintageous.nv.ui import ui_region_flags
 
 
-def clear_search_highlighting(view):
+def clear_search_highlighting(view) -> None:
     view.erase_regions('_nv_search_occ')
     view.erase_regions('_nv_search_cur')
     view.erase_regions('_nv_search_inc')
 
 
-def get_search_occurrences(view):
+def get_search_occurrences(view) -> list:
     return view.get_regions('_nv_search_occ')
 
 
-def add_search_highlighting(view, occurrences, incremental=None):
+def add_search_highlighting(view, occurrences: list, incremental: list = None) -> None:
     # Incremental search match string highlighting: while typing a search
     # command, where the pattern, as it was typed so far, matches.
     if incremental and get_option(view, 'incsearch'):
@@ -77,7 +77,7 @@ def add_search_highlighting(view, occurrences, incremental=None):
             )
 
 
-def process_search_pattern(view, pattern):
+def process_search_pattern(view, pattern: str) -> tuple:
     flags = 0
 
     if get_option(view, 'ignorecase'):
@@ -138,7 +138,7 @@ def process_search_pattern(view, pattern):
     return pattern, flags
 
 
-def calculate_word_search_flags(view, pattern):
+def calculate_word_search_flags(view, pattern: str) -> int:
     flags = 0
 
     if get_option(view, 'ignorecase'):
@@ -147,15 +147,15 @@ def calculate_word_search_flags(view, pattern):
     return flags
 
 
-def create_word_search_pattern(view, pattern):
+def create_word_search_pattern(view, pattern: str) -> str:
     return r'\b{0}\b'.format(re.escape(pattern))
 
 
-def find_all_buffer_search_occurrences(view, pattern, flags):
+def find_all_buffer_search_occurrences(view, pattern: str, flags: int) -> list:
     return view.find_all(pattern, flags)
 
 
-def find_all_word_search_occurrences(view, pattern):
+def find_all_word_search_occurrences(view, pattern: str) -> list:
     return view.find_all(
         create_word_search_pattern(view, pattern),
         calculate_word_search_flags(view, pattern)

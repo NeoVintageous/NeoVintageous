@@ -349,4 +349,4 @@ class TestABigWord(unittest.ViewTestCase):
 class TestGetTextObjectRegion(unittest.ViewTestCase):
 
     def test_text_object_does_nothing_and_returns_selection(self):
-        self.assertEqual(get_text_object_region(self.view, '__expected__', 'foobar'), '__expected__')
+        self.assertEqual(get_text_object_region(self.view, '__expected__', 'foobar'), '__expected__')  # type: ignore

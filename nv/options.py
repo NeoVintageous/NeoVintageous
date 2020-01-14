@@ -89,7 +89,7 @@ class BooleanViewOption(BooleanOption):
         return value
 
 
-def window_visible_option(view, name, flag=None):
+def window_visible_option(view, name: str, flag: bool = None) -> None:
     window = view.window()
     is_visible = getattr(window, 'is_%s_visible' % name)()
     if flag is None:
@@ -171,7 +171,7 @@ _OPTION_ALIASES = {
 }
 
 
-def get_option_completions(prefix=''):
+def get_option_completions(prefix: str = ''):
     for name, option in sorted(_options.items()):
         if name.startswith(prefix):
             yield name
@@ -182,14 +182,14 @@ def get_option_completions(prefix=''):
                 yield name
 
 
-def _resolve_aliases(name):
+def _resolve_aliases(name: str) -> str:
     try:
         return _OPTION_ALIASES[name]
     except KeyError:
         return name
 
 
-def get_option(view, name):
+def get_option(view, name: str):
     name = _resolve_aliases(name)
     option = _options[name]
     value = option.get(view)
@@ -197,11 +197,11 @@ def get_option(view, name):
     return value
 
 
-def set_option_local(view, name, value=None):
+def set_option_local(view, name: str, value=None) -> None:
     set_option(view, name, value)
 
 
-def set_option(view, name, value=None):
+def set_option(view, name: str, value=None) -> None:
     name = _resolve_aliases(name)
 
     try:
@@ -223,7 +223,7 @@ def set_option(view, name, value=None):
         raise
 
 
-def toggle_option(view, name):
+def toggle_option(view, name: str) -> None:
     value = get_option(view, name)
     if not isinstance(value, bool):
         raise ValueError('option cannot be toggled')
