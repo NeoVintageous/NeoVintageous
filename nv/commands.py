@@ -142,9 +142,9 @@ from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import unfold
 from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
-from NeoVintageous.nv.vi.cmd_defs import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
 from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.core import IrreversibleTextCommand
