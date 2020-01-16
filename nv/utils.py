@@ -911,6 +911,13 @@ def resolve_visual_block_target(view, target, count: int) -> None:
     )
 
 
+def resolve_visual_block_begin(view) -> None:
+    visual_block = VisualBlockSelection(view)
+    begin = visual_block.begin()
+    view.sel().clear()
+    view.sel().add(begin)
+
+
 class InputParser():
 
     IMMEDIATE = 1

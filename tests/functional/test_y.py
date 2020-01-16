@@ -143,3 +143,24 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a\n|fizz\n|b\n|buzz\n|c', 'V_y', 'n_a\n|fizz\nb\n|buzz\nc')
         self.assertLinewiseRegisters('"0', ['fizz\n', 'buzz\n'])
         self.assertRegistersEmpty('-1')
+
+    def test_b_cursor_should_move_to_beggining_of_selection(self):
+        # Forward/down visual block.
+        self.eq('fi|zz bu|zz\nfizz buzz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('fi|zz bu|zz\nfi|zz bu|zz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('fi|zz bu|zz\nfi|zz bu|zz\nfi|zz bu|zz\n', 'b_y', 'n_fi|zz buzz\nfizz buzz\nfizz buzz\n')
+
+        # Reverse/down visual block.
+        self.eq('r_fi|zz bu|zz\nfizz buzz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('r_fi|zz bu|zz\nfi|zz bu|zz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('r_fi|zz bu|zz\nfi|zz bu|zz\nfi|zz bu|zz\n', 'b_y', 'n_fi|zz buzz\nfizz buzz\nfizz buzz\n')
+
+        # Foward/up visual block
+        self.eq('u_fi|zz bu|zz\nfizz buzz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('u_fi|zz bu|zz\nfi|zz bu|zz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('u_fi|zz bu|zz\nfi|zz bu|zz\nfi|zz bu|zz\n', 'b_y', 'n_fi|zz buzz\nfizz buzz\nfizz buzz\n')
+
+        # Reverse/up visual block
+        self.eq('r_u_fi|zz bu|zz\nfizz buzz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('r_u_fi|zz bu|zz\nfi|zz bu|zz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
+        self.eq('r_u_fi|zz bu|zz\nfi|zz bu|zz\nfi|zz bu|zz\n', 'b_y', 'n_fi|zz buzz\nfizz buzz\nfizz buzz\n')

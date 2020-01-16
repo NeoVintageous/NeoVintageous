@@ -124,6 +124,7 @@ from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import resolve_internal_normal_target
+from NeoVintageous.nv.utils import resolve_visual_block_begin
 from NeoVintageous.nv.utils import resolve_visual_block_target
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
@@ -1664,9 +1665,6 @@ class _vi_yy(ViTextCommandBase):
 class _vi_y(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
-        def f(view, s):
-            return Region(next_non_blank(view, s.begin()))
-
         if mode == INTERNAL_NORMAL:
             if motion is None:
                 raise ValueError('motion data required')
@@ -1677,7 +1675,18 @@ class _vi_y(ViTextCommandBase):
 
         ui_highlight_yank(self.view)
         registers_op_yank(self.view, register=register, linewise=is_linewise_operation(mode, motion))
-        regions_transformer(self.view, f)
+
+        if mode == VISUAL_BLOCK:
+            # After a yank the cursor should move to the beginning of a
+            # selection. A visual block is really multiple cursor so we need to
+            # reduce to the beginning selection entering normal mode.
+            resolve_visual_block_begin(self.view)
+        else:
+            def f(view, s):
+                return Region(next_non_blank(view, s.begin()))
+
+            regions_transformer(self.view, f)
+
         enter_normal_mode(self.view, mode)
 
 
