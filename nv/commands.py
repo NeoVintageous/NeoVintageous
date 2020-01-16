@@ -975,8 +975,6 @@ class _vi_g_big_u(ViTextCommandBase):
                 run_motion(self.view, motion)
                 if observer.has_sel_changed():
                     regions_transformer(self.view, f)
-                else:
-                    ui_bell()
         else:
             regions_transformer(self.view, f)
 
@@ -999,8 +997,6 @@ class _vi_gu(ViTextCommandBase):
                 run_motion(self.view, motion)
                 if observer.has_sel_changed():
                     regions_transformer(self.view, f)
-                else:
-                    ui_bell()
         else:
             regions_transformer(self.view, f)
 
