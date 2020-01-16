@@ -820,9 +820,10 @@ class _nv_process_notation(ViWindowCommandBase):
         self.collect_input()
 
     def collect_input(self) -> None:
+        state = self.state
         try:
-            motion = self.state.motion
-            action = self.state.action
+            motion = state.motion
+            action = state.action
 
             command = None
 
@@ -841,7 +842,7 @@ class _nv_process_notation(ViWindowCommandBase):
             _log.debug('could not find a command to collect more user input')
             ui_bell()
         finally:
-            self.state.non_interactive = False
+            state.non_interactive = False
 
 
 class _nv_replace_line(TextCommand):
@@ -1363,9 +1364,11 @@ class _enter_insert_mode(ViTextCommandBase):
 
         self.view.settings().set('inverse_caret_state', False)
         self.view.settings().set('command_mode', False)
-        self.state.enter_insert_mode()
-        self.state.normal_insert_count = str(count)
-        self.state.display_status()
+
+        state = self.state
+        state.enter_insert_mode()
+        state.normal_insert_count = str(count)
+        state.display_status()
 
 
 class _enter_visual_mode(ViTextCommandBase):
@@ -2990,18 +2993,19 @@ class _vi_guu(ViTextCommandBase):
 class _vi_g_big_h(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
+        state = self.state
         view = self.window.active_view()
         search_occurrences = get_search_occurrences(view)
         if search_occurrences:
             view.sel().add_all(search_occurrences)
 
-            self.state.enter_select_mode()
-            self.state.display_status()
+            state.enter_select_mode()
+            state.display_status()
             return
 
         ui_bell()
         status_message('no available search matches')
-        self.state.reset_command_data()
+        state.reset_command_data()
 
 
 class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
