@@ -17,15 +17,6 @@
 
 import sublime_plugin
 
-from NeoVintageous.nv.state import State
-
-
-class ViCommandMixin:
-
-    @property
-    def state(self):
-        return State(self.view)  # type: ignore
-
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
 
@@ -65,7 +56,7 @@ class IrreversibleTextCommand(sublime_plugin.TextCommand):
 
 # DEPRECATED
 # TODO Remove this command
-class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
+class ViTextCommandBase(sublime_plugin.TextCommand):
     pass
 
 
@@ -80,7 +71,7 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
 
 # DEPRECATED
 # TODO Remove this command
-class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
+class ViWindowCommandBase(sublime_plugin.WindowCommand):
 
     @property
     def view(self):

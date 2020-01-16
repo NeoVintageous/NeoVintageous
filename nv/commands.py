@@ -496,7 +496,7 @@ class _nv_feed_key(ViWindowCommandBase):
         #       state's evaluation. For example, this is what the _nv_feed_key
         #       command does.
         #   check_user_mappings (bool):
-        state = self.state
+        state = State(self.window.active_view())
 
         mode = state.mode
 
@@ -714,7 +714,7 @@ class _nv_process_notation(ViWindowCommandBase):
         #       '.' command.
         #   check_user_mappings (bool): Whether user mappings should be
         #       consulted to expand key sequences.
-        state = self.state
+        state = State(self.window.active_view())
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -758,7 +758,7 @@ class _nv_process_notation(ViWindowCommandBase):
         if state.must_collect_input:
             # State is requesting more input, so this is the last command  in
             # the sequence and it needs more input.
-            self.collect_input()
+            self.collect_input(state)
             return
 
         # Strip the already run commands
@@ -818,10 +818,9 @@ class _nv_process_notation(ViWindowCommandBase):
             run_motion(self.window, motion_data)
             return
 
-        self.collect_input()
+        self.collect_input(state)
 
-    def collect_input(self) -> None:
-        state = self.state
+    def collect_input(self, state: State) -> None:
         try:
             motion = state.motion
             action = state.action
@@ -873,7 +872,8 @@ class _nv_cmdline(WindowCommand):
         reset_cmdline_completion_state()
         view = self.window.active_view()
         set_reset_during_init(view, False)
-        mode = State(view).mode
+        state = State(view)
+        mode = state.mode
 
         if initial_text is not None:
             # DEPRECATED The initial_text should NOT contain the leading colon.
@@ -1185,7 +1185,7 @@ class _enter_normal_mode(ViTextCommandBase):
     def run(self, edit, mode=None, from_init=False):
         _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
 
-        state = self.state
+        state = State(self.view)
 
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
@@ -1333,7 +1333,7 @@ class _enter_select_mode(ViWindowCommandBase):
     def run(self, mode=None, count=1):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
 
-        state = self.state
+        state = State(self.window.active_view())
         state.enter_select_mode()
 
         if not self.view.has_non_empty_selection_region():
@@ -1360,7 +1360,7 @@ class _enter_insert_mode(ViTextCommandBase):
         self.view.settings().set('inverse_caret_state', False)
         self.view.settings().set('command_mode', False)
 
-        state = self.state
+        state = State(self.view)
         state.enter_insert_mode()
         state.normal_insert_count = str(count)
         state.display_status()
@@ -1371,7 +1371,7 @@ class _enter_visual_mode(ViTextCommandBase):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
 
-        state = self.state
+        state = State(self.view)
 
         # TODO If all selections are non-zero-length, we may be looking at a
         # pseudo-visual selection, like the ones that are created pressing
@@ -1436,7 +1436,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
 
-        state = self.state
+        state = State(self.view)
 
         if state.mode == VISUAL_LINE and not force:
             enter_normal_mode(self.view, mode)
@@ -1499,7 +1499,7 @@ class _enter_replace_mode(ViTextCommandBase):
         self.view.settings().set('command_mode', False)
         self.view.settings().set('inverse_caret_state', False)
         self.view.set_overwrite_status(True)
-        state = self.state
+        state = State(self.view)
         state.enter_replace_mode()
         regions_transformer(self.view, f)
         state.display_status()
@@ -1509,7 +1509,7 @@ class _enter_replace_mode(ViTextCommandBase):
 class _vi_dot(ViWindowCommandBase):
 
     def run(self, mode=None, count=None, repeat_data=None):
-        state = self.state
+        state = State(self.window.active_view())
         state.reset_command_data()
 
         if state.mode == INTERNAL_NORMAL:
@@ -1603,7 +1603,8 @@ class _vi_cc(ViTextCommandBase):
         enter_insert_mode(self.view, mode)
 
         try:
-            self.state.xpos = self.view.rowcol(self.view.sel()[0].b)[1]
+            state = State(self.view)
+            state.xpos = self.view.rowcol(self.view.sel()[0].b)[1]
         except Exception as e:
             raise ValueError('could not set xpos:' + str(e))
 
@@ -2763,13 +2764,13 @@ class _vi_at(IrreversibleTextCommand):
             for cmd, args in cmds:
                 if 'xpos' in args:
                     state.update_xpos(force=True)
-                    args['xpos'] = State(self.view).xpos
+                    args['xpos'] = state.xpos
                 elif args.get('motion'):
                     motion = args.get('motion')
                     if motion and 'motion_args' in motion and 'xpos' in motion['motion_args']:
                         state.update_xpos(force=True)
                         motion = args.get('motion')
-                        motion['motion_args']['xpos'] = State(self.view).xpos
+                        motion['motion_args']['xpos'] = state.xpos
                         args['motion'] = motion
 
                 self.view.window().run_command(cmd, args)
@@ -2996,8 +2997,8 @@ class _vi_guu(ViTextCommandBase):
 class _vi_g_big_h(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
-        state = self.state
         view = self.window.active_view()
+        state = State(view)
         search_occurrences = get_search_occurrences(view)
         if search_occurrences:
             view.sel().add_all(search_occurrences)
@@ -3178,7 +3179,7 @@ class _vi_slash(ViMotionCommand):
         history_update(Cmdline.SEARCH_FORWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
 
-        state = self.state
+        state = State(self.view)
         state.sequence += pattern + '<CR>'
         clear_search_highlighting(self.view)
         set_last_buffer_search_command(self.view, 'vi_slash')
@@ -3187,7 +3188,7 @@ class _vi_slash(ViMotionCommand):
         state.eval()
 
     def on_change(self, pattern):
-        state = self.state
+        state = State(self.view)
         count = state.count
 
         sel = self.view.sel()[0]
@@ -3212,7 +3213,8 @@ class _vi_slash(ViMotionCommand):
 
     def on_cancel(self):
         clear_search_highlighting(self.view)
-        self.state.reset_command_data()
+        state = State(self.view)
+        state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 
@@ -4303,7 +4305,7 @@ class _vi_question_mark(ViMotionCommand):
         history_update(Cmdline.SEARCH_BACKWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
 
-        state = self.state
+        state = State(self.view)
         state.sequence += pattern + '<CR>'
         clear_search_highlighting(self.view)
         set_last_buffer_search_command(self.view, 'vi_question_mark')
@@ -4312,7 +4314,7 @@ class _vi_question_mark(ViMotionCommand):
         state.eval()
 
     def on_change(self, pattern):
-        state = self.state
+        state = State(self.view)
         count = state.count
 
         sel = self.view.sel()[0]
@@ -4337,7 +4339,8 @@ class _vi_question_mark(ViMotionCommand):
 
     def on_cancel(self):
         clear_search_highlighting(self.view)
-        self.state.reset_command_data()
+        state = State(self.view)
+        state.reset_command_data()
         _nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 
