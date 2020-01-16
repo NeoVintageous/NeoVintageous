@@ -240,7 +240,7 @@ class KeySequenceTokenizer():
             else:
                 key_name += c
 
-    def tokenize_one(self) -> str:
+    def tokenize_one(self):
         c = self.consume()
 
         if c == '<':
