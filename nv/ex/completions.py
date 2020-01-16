@@ -262,7 +262,7 @@ _CMDLINE_COMPLETIONS = [
 _current_cmdline_completions = []  # type: list
 
 
-def insert_best_cmdline_completion(view, edit) -> None:
+def insert_best_cmdline_completion(view, edit, forward: bool = True) -> None:
     if is_ex_mode(view):
         if _is_setting_completion(view):
             _SettingCompletion(view).run(edit)
@@ -288,7 +288,12 @@ def insert_best_cmdline_completion(view, edit) -> None:
                 _current_cmdline_completions.clear()
                 return
 
-            idx = prefix_index + 1 if len(_current_cmdline_completions) > prefix_index + 1 else 0
+            next_index = prefix_index + 1 if forward else prefix_index - 1
+
+            if forward:
+                idx = next_index if len(_current_cmdline_completions) > next_index else 0
+            else:
+                idx = next_index if next_index >= 0 else len(_current_cmdline_completions) - 1
 
             completion = _current_cmdline_completions[idx]
 

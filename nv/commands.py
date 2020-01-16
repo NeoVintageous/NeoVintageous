@@ -361,7 +361,7 @@ class _nv_cmdline_feed_key(TextCommand):
             return
 
         if key in ('<tab>', '<S-tab>'):
-            insert_best_cmdline_completion(self.view, edit)
+            insert_best_cmdline_completion(self.view, edit, forward=(True if key == '<tab>' else False))
 
         elif key in ('<up>', '<C-p>'):
             # Recall older command-line from history, whose beginning matches
