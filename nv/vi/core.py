@@ -17,14 +17,9 @@
 
 import sublime_plugin
 
-from NeoVintageous.nv.state import State
-
 
 class ViCommandMixin:
-
-    @property
-    def state(self):
-        return State(self.view)  # type: ignore
+    pass
 
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
