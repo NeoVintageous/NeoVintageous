@@ -31,23 +31,8 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
-from NeoVintageous.nv.vim import is_ex_mode
 
 __all__ = ['NeoVintageousEvents']
-
-# TODO [refactor] Temporarily hardcoded cmdline completions. The cmdline commands are being heavily reactored, and so these are hardcoded until a better way to auto generate the completions is figured out.  # noqa: E501
-_cmdline_completions = [
-    'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
-    'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit', 'exit',
-    'file', 'files', 'global', 'help', 'history', 'let', 'ls', 'move', 'new',
-    'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only', 'onoremap',
-    'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set',
-    'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
-    'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
-    'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
-    'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
-    'write', 'xall', 'xit', 'yank',
-]
 
 
 def _check_query_context_value(value, operator, operand, match_all):
@@ -127,26 +112,6 @@ class NeoVintageousEvents(EventListener):
         #       If the context is unknown.
         if key in _query_contexts:
             return _query_contexts[key](view, operator, operand, match_all)
-
-    # TODO [refactor] command line completion queries: refactor into view
-    # listener that is attached to the cmdline view when it is opened. That will
-    # avoid the performance overhead of running this event for all views.
-    def on_query_completions(self, view, prefix, locations):
-        if not is_ex_mode(view):
-            return None
-
-        if len(prefix) + 1 != view.size():
-            return None
-
-        if prefix and prefix in self._cached_completion_prefixes:
-            return self._cached_completions
-
-        compls = [x for x in _cmdline_completions if x.startswith(prefix) and x != prefix]
-
-        self._cached_completion_prefixes = [prefix] + compls
-        self._cached_completions = list(zip([prefix] + compls, compls + [prefix]))
-
-        return self._cached_completions
 
     # TODO [refactor] [cleanup] and [optimise] on_text_command()
     def on_text_command(self, view, command, args):

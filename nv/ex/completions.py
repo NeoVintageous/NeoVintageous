@@ -245,6 +245,23 @@ def reset_cmdline_completion_state() -> None:
     _FsCompletion.reset()
 
 
+_CMDLINE_COMPLETIONS = [
+    'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
+    'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit', 'exit',
+    'file', 'files', 'global', 'help', 'history', 'let', 'ls', 'move', 'new',
+    'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only', 'onoremap',
+    'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set',
+    'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
+    'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
+    'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
+    'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
+    'write', 'xall', 'xit', 'yank',
+]
+
+# Keeps track of current completion completion.
+_current_cmdline_completions = []  # type: list
+
+
 def insert_best_cmdline_completion(view, edit) -> None:
     if is_ex_mode(view):
         if _is_setting_completion(view):
@@ -252,7 +269,30 @@ def insert_best_cmdline_completion(view, edit) -> None:
         elif _is_fs_completion(view):
             _FsCompletion(view).run(edit)
         else:
-            view.run_command(
-                'insert_best_completion',
-                {"default": "\t", "exact": False}
-            )
+            cmdline = view.substr(Region(0, view.size()))
+            if len(cmdline) < 1:
+                return
+
+            prefix = cmdline[1:]
+
+            if prefix not in _current_cmdline_completions:
+                prefix_completions = [x for x in _CMDLINE_COMPLETIONS if x.startswith(prefix) and x != prefix]
+                if prefix_completions:
+                    _current_cmdline_completions[:] = [prefix] + prefix_completions
+
+            try:
+                prefix_index = _current_cmdline_completions.index(prefix)
+            except ValueError:
+                view.window().settings().set('_nv_ignore_next_on_change', True)
+                view.insert(edit, view.size(), "\t")
+                _current_cmdline_completions.clear()
+                return
+
+            idx = prefix_index + 1 if len(_current_cmdline_completions) > prefix_index + 1 else 0
+
+            completion = _current_cmdline_completions[idx]
+
+            view.window().settings().set('_nv_ignore_next_on_change', True)
+            view.sel().clear()
+            view.replace(edit, Region(1, view.size()), completion)
+            view.sel().add(Region(view.size()))
