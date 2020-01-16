@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.search import process_search_pattern
-from NeoVintageous.nv.search import calculate_word_search_flags
+from NeoVintageous.nv.search import process_word_search_pattern
 
 
 class Test_flags(unittest.ViewTestCase):
@@ -61,13 +61,13 @@ class Test_flags(unittest.ViewTestCase):
     def test_calculate_word_search_flags(self):
         self.set_option('magic', True)
         self.set_option('ignorecase', False)
-        self.assertEqual(0, calculate_word_search_flags(self.view, 'fizz'))
+        self.assertEqual(('\\bfizz\\b', 0), process_word_search_pattern(self.view, 'fizz'))
         self.set_option('magic', False)
         self.set_option('ignorecase', False)
-        self.assertEqual(0, calculate_word_search_flags(self.view, 'fizz'))
+        self.assertEqual(('\\bfizz\\b', 0), process_word_search_pattern(self.view, 'fizz'))
         self.set_option('magic', True)
         self.set_option('ignorecase', True)
-        self.assertEqual(2, calculate_word_search_flags(self.view, 'fizz'))
+        self.assertEqual(('\\bfizz\\b', 2), process_word_search_pattern(self.view, 'fizz'))
         self.set_option('magic', False)
         self.set_option('ignorecase', True)
-        self.assertEqual(2, calculate_word_search_flags(self.view, 'fizz'))
+        self.assertEqual(('\\bfizz\\b', 2), process_word_search_pattern(self.view, 'fizz'))

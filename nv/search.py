@@ -138,25 +138,20 @@ def process_search_pattern(view, pattern: str) -> tuple:
     return pattern, flags
 
 
-def calculate_word_search_flags(view, pattern: str) -> int:
+def process_word_search_pattern(view, pattern: str) -> tuple:
     flags = 0
 
     if get_option(view, 'ignorecase'):
         flags |= IGNORECASE
 
-    return flags
+    pattern = r'\b{0}\b'.format(re.escape(pattern))
+
+    return pattern, flags
 
 
-def create_word_search_pattern(view, pattern: str) -> str:
-    return r'\b{0}\b'.format(re.escape(pattern))
-
-
-def find_all_buffer_search_occurrences(view, pattern: str, flags: int) -> list:
+def find_search_occurrences(view, pattern: str, flags: int) -> list:
     return view.find_all(pattern, flags)
 
 
-def find_all_word_search_occurrences(view, pattern: str) -> list:
-    return view.find_all(
-        create_word_search_pattern(view, pattern),
-        calculate_word_search_flags(view, pattern)
-    )
+def find_word_search_occurrences(view, pattern: str, flags: int) -> list:
+    return view.find_all(pattern, flags)

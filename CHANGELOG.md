@@ -6,7 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Fixed [#641](https://github.com/NeoVintageous/NeoVintageous/issues/641): Support search modifiers `\v`, `\V`, `\m`, and `\M`
+* Added [#641](https://github.com/NeoVintageous/NeoVintageous/issues/641): Support search modifiers `\v`, `\V`, `\m`, and `\M`
+* Added [#655](https://github.com/NeoVintageous/NeoVintageous/issues/655): `*` and `#` searches are noop unless all cursor words match
+* Added [#656](https://github.com/NeoVintageous/NeoVintageous/issues/656): `*` and `#` multiple cursor searches
 
 ### Removed
 

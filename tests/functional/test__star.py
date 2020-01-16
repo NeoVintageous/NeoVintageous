@@ -36,6 +36,21 @@ class Test_star(unittest.FunctionalTestCase):
         self.assertSearchCurrent('x |fizz| x')
         self.eq('|', 'n_*', '|')
 
+    def test_n_multiple_cursors(self):
+        self.eq('xy x|y xy xy x|y xy xy', 'n_*', 'xy xy |xy xy xy |xy xy')
+        self.assertSearch('|xy| |xy| |xy| |xy| |xy| |xy| |xy|')
+        self.assertSearchCurrent('xy xy |xy| xy xy |xy| xy')
+
+    def test_n_multiple_cursors_is_noop_if_all_cursors_are_not_on_the_same_word(self):
+        self.eq('xy x|y xy xy a|b ab ab', 'n_*', 'xy x|y xy xy a|b ab ab')
+        self.assertSearch('xy xy xy xy ab ab ab')
+        self.assertSearchCurrent('xy xy xy xy ab ab ab')
+
+    def test_n_no_partial_matches(self):
+        self.eq('boo\n|abc\nabcxabc\nabc\nbar', 'n_*', 'boo\nabc\nabcxabc\n|abc\nbar')
+        self.assertSearch('boo\n|abc|\nabcxabc\n|abc|\nbar')
+        self.assertSearchCurrent('boo\nabc\nabcxabc\n|abc|\nbar')
+
     def test_star_no_match(self):
         self.eq('x\nfi|zz\nx\nabc\n', 'n_*', 'x\n|fizz\nx\nabc\n')
         self.eq('    fi|zz\nx\nabc\n', 'n_*', '    |fizz\nx\nabc\n')

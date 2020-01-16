@@ -67,13 +67,12 @@ from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
 from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.search import add_search_highlighting
-from NeoVintageous.nv.search import calculate_word_search_flags
 from NeoVintageous.nv.search import clear_search_highlighting
-from NeoVintageous.nv.search import create_word_search_pattern
-from NeoVintageous.nv.search import find_all_buffer_search_occurrences
-from NeoVintageous.nv.search import find_all_word_search_occurrences
+from NeoVintageous.nv.search import find_search_occurrences
+from NeoVintageous.nv.search import find_word_search_occurrences
 from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
+from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_setting
@@ -3204,7 +3203,7 @@ class _vi_slash(ViMotionCommand):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags), [match])
+        add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags), [match])
         show_if_not_visible(self.view, match)
 
     def on_cancel(self):
@@ -3252,7 +3251,7 @@ class _vi_slash_impl(ViMotionCommand):
 
         target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags))
+        add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags))
 
 
 class _vi_l(ViMotionCommand):
@@ -3821,8 +3820,6 @@ class _vi_big_m(ViMotionCommand):
 class _vi_star(ViMotionCommand):
     def run(self, mode=None, count=1, search_string=None):
         def f(view, s):
-            pattern = create_word_search_pattern(view, query)
-            flags = calculate_word_search_flags(view, query)
             match = find_wrapping(
                 view,
                 term=pattern,
@@ -3834,25 +3831,29 @@ class _vi_star(ViMotionCommand):
 
             if match:
                 if mode == NORMAL:
-                    s = Region(match.begin())
+                    s.a = s.b = match.begin()
                 elif mode == VISUAL:
                     resolve_visual_target(s, match.begin())
                 elif mode == INTERNAL_NORMAL:
-                    s = Region(s.a, match.begin())
-            elif mode == NORMAL:
-                s = Region(view.word(s.end()).begin())
+                    s.b = match.begin()
 
             return s
 
-        query = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        word = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+
+        # All cursors must be on the same word.
+        if len(set([self.view.substr(self.view.word(sel.end())) for sel in self.view.sel()])) != 1:
+            return
+
+        pattern, flags = process_word_search_pattern(self.view, word)
 
         jumplist_update(self.view)
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
-        if query:
-            add_search_highlighting(self.view, find_all_word_search_occurrences(self.view, query))
-            set_last_buffer_search(self.view, query)
+        if word:
+            add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
+            set_last_buffer_search(self.view, word)
 
         if not search_string:
             set_last_buffer_search_command(self.view, 'vi_star')
@@ -3863,37 +3864,41 @@ class _vi_star(ViMotionCommand):
 class _vi_octothorp(ViMotionCommand):
     def run(self, mode=None, count=1, search_string=None):
         def f(view, s):
-            pattern = create_word_search_pattern(view, query)
-            flags = calculate_word_search_flags(view, query)
             match = reverse_find_wrapping(
                 view,
                 term=pattern,
                 start=0,
-                end=(start_sel.b if s.a > s.b else start_sel.a),
+                end=(s.b if s.a > s.b else s.a),
                 flags=flags,
                 times=1
             )
 
             if match:
                 if mode == NORMAL:
-                    s = Region(match.begin())
+                    s.a = s.b = match.begin()
                 elif mode == VISUAL:
                     resolve_visual_target(s, match.begin())
                 elif mode == INTERNAL_NORMAL:
-                    s = Region(s.b, match.begin())
+                    s.a = s.b
+                    s.b = match.begin()
 
             return s
 
-        query = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        word = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+
+        # All cursors must be on the same word.
+        if len(set([self.view.substr(self.view.word(sel.end())) for sel in self.view.sel()])) != 1:
+            return
+
+        pattern, flags = process_word_search_pattern(self.view, word)
 
         jumplist_update(self.view)
-        start_sel = self.view.sel()[0]
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
-        if query:
-            add_search_highlighting(self.view, find_all_word_search_occurrences(self.view, query))
-            set_last_buffer_search(self.view, query)
+        if word:
+            add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
+            set_last_buffer_search(self.view, word)
 
         if not search_string:
             set_last_buffer_search_command(self.view, 'vi_octothorp')
@@ -4272,7 +4277,7 @@ class _vi_question_mark_impl(ViMotionCommand):
 
         target = get_insertion_point_at_a(match)
         regions_transformer(self.view, f)
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags))
+        add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags))
 
 
 class _vi_question_mark(ViMotionCommand):
@@ -4323,7 +4328,7 @@ class _vi_question_mark(ViMotionCommand):
         if not match:
             return status_message('E486: Pattern not found: %s', pattern)
 
-        add_search_highlighting(self.view, find_all_buffer_search_occurrences(self.view, pattern, flags), [match])
+        add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags), [match])
         show_if_not_visible(self.view, match)
 
     def on_cancel(self):
