@@ -26,18 +26,6 @@ class ViCommandMixin:
     def state(self):
         return State(self.view)  # type: ignore
 
-    def save_sel(self):
-        self.old_sel = tuple(self.view.sel())  # type: ignore
-
-    def _is_equal_to_old_sel(self, new_sel):
-        try:
-            return (tuple((s.a, s.b) for s in self.old_sel) == tuple((s.a, s.b) for s in tuple(self.view.sel())))  # type: ignore  # noqa
-        except AttributeError:
-            raise AttributeError('have you forgotten to call .save_sel()?')
-
-    def has_sel_changed(self):
-        return not self._is_equal_to_old_sel(self.view.sel())  # type: ignore
-
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
 

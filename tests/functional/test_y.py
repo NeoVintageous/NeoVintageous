@@ -46,6 +46,11 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisters('"2', 'cd')
         self.assertRegistersEmpty('-0')
 
+    def test_v_Y(self):
+        self.eq('x\nfizz |buzz\nfizz| buzz\nx', 'v_Y', 'n_x\nfizz buzz\nfiz|z buzz\nx')
+        self.assertLinewiseRegisters('"0', 'fizz buzz\nfizz buzz\n')
+        self.assertRegistersEmpty('-1')
+
     def test_s(self):
         self.eq('x|ab|x', 's_y', 'n_x|abx')
         self.assertRegisters('"0', 'ab')

@@ -133,6 +133,7 @@ from NeoVintageous.nv.utils import row_to_pt
 from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
+from NeoVintageous.nv.utils import sel_observer
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import should_motion_apply_op_transformer
 from NeoVintageous.nv.utils import show_if_not_visible
@@ -970,12 +971,12 @@ class _vi_g_big_u(ViTextCommandBase):
             if motion is None:
                 raise ValueError('motion data required')
 
-            self.save_sel()
-            run_motion(self.view, motion)
-            if self.has_sel_changed():
-                regions_transformer(self.view, f)
-            else:
-                ui_bell()
+            with sel_observer(self.view) as observer:
+                run_motion(self.view, motion)
+                if observer.has_sel_changed():
+                    regions_transformer(self.view, f)
+                else:
+                    ui_bell()
         else:
             regions_transformer(self.view, f)
 
@@ -994,12 +995,12 @@ class _vi_gu(ViTextCommandBase):
             if motion is None:
                 raise ValueError('motion data required')
 
-            self.save_sel()
-            run_motion(self.view, motion)
-            if self.has_sel_changed():
-                regions_transformer(self.view, f)
-            else:
-                ui_bell()
+            with sel_observer(self.view) as observer:
+                run_motion(self.view, motion)
+                if observer.has_sel_changed():
+                    regions_transformer(self.view, f)
+                else:
+                    ui_bell()
         else:
             regions_transformer(self.view, f)
 
@@ -1044,24 +1045,23 @@ class _vi_gq(ViTextCommandBase):
             if motion is None and not linewise:
                 raise ValueError('motion is required or must be linewise')
 
-            self.save_sel()
+            with sel_observer(self.view) as observer:
+                if motion:
+                    run_motion(self.view, motion)
+                else:
+                    regions_transform_extend_to_line_count(self.view, count)
 
-            if motion:
-                run_motion(self.view, motion)
-            else:
-                regions_transform_extend_to_line_count(self.view, count)
+                if observer.has_sel_changed():
+                    _wrap_lines(self.view)
 
-            if self.has_sel_changed():
-                _wrap_lines(self.view)
+                    def f(view, s):
+                        line = view.line(s.b)
 
-                def f(view, s):
-                    line = view.line(s.b)
+                        return Region(next_non_blank(view, line.a))
 
-                    return Region(next_non_blank(view, line.a))
-
-                regions_transformer(self.view, f)
-            else:
-                ui_bell()
+                    regions_transformer(self.view, f)
+                else:
+                    ui_bell()
 
         enter_normal_mode(self.view, mode)
 
@@ -1150,31 +1150,30 @@ class _vi_c(ViTextCommandBase):
         if mode == INTERNAL_NORMAL and motion is None:
             raise ValueError('motion data required')
 
-        self.save_sel()
-
         if motion:
-            run_motion(self.view, motion)
+            with sel_observer(self.view) as observer:
+                run_motion(self.view, motion)
 
-            if mode == INTERNAL_NORMAL:
-                if should_motion_apply_op_transformer(motion):
-                    def f(view, s):
-                        if view.substr(s).strip():
-                            if s.b > s.a:
-                                pt = prev_non_ws(view, s.b - 1)
+                if mode == INTERNAL_NORMAL:
+                    if should_motion_apply_op_transformer(motion):
+                        def f(view, s):
+                            if view.substr(s).strip():
+                                if s.b > s.a:
+                                    pt = prev_non_ws(view, s.b - 1)
 
-                                return Region(s.a, pt + 1)
+                                    return Region(s.a, pt + 1)
 
-                            pt = prev_non_ws(view, s.a - 1)
+                                pt = prev_non_ws(view, s.a - 1)
 
-                            return Region(pt + 1, s.b)
+                                return Region(pt + 1, s.b)
 
-                        return s
+                            return s
 
-                    regions_transformer(self.view, f)
+                        regions_transformer(self.view, f)
 
-            if not self.has_sel_changed():
-                enter_insert_mode(self.view, mode)
-                return
+                if not observer.has_sel_changed():
+                    enter_insert_mode(self.view, mode)
+                    return
 
             if all(s.empty() for s in self.view.sel()):
                 enter_insert_mode(self.view, mode)
@@ -1634,32 +1633,32 @@ class _vi_yy(ViTextCommandBase):
                 if count > 1:
                     row, col = self.view.rowcol(s.b)
                     end = view.text_point(row + count - 1, 0)
-                    s = Region(view.line(s.a).a, view.full_line(end).b)
+                    s.a = view.line(s.a).a
+                    s.b = view.full_line(end).b
                 elif view.line(s.b).empty():
-                    s = Region(s.b, min(view.size(), s.b + 1))
+                    s.a = s.b
+                    s.b = min(view.size(), s.b + 1)
                 else:
                     s = view.full_line(s.b)
             elif mode == VISUAL:
                 startline = view.line(s.begin())
                 endline = view.line(s.end() - 1)
-                s = Region(startline.a, endline.b)
+                s.a = startline.a
+                s.b = endline.b
 
             return s
-
-        def restore():
-            set_selection(self.view, list(self.old_sel))
 
         if mode not in (INTERNAL_NORMAL, VISUAL):
             enter_normal_mode(self.view, mode)
             ui_bell()
             return
 
-        self.save_sel()
-        regions_transformer(self.view, f)
-        ui_highlight_yank(self.view)
-        registers_op_yank(self.view, register=register, linewise=True)
-        restore()
-        enter_normal_mode(self.view, mode)
+        with sel_observer(self.view) as observer:
+            regions_transformer(self.view, f)
+            ui_highlight_yank(self.view)
+            registers_op_yank(self.view, register=register, linewise=True)
+            observer.restore_sel()
+            enter_normal_mode(self.view, mode)
 
 
 class _vi_y(ViTextCommandBase):
@@ -1700,12 +1699,12 @@ class _vi_d(ViTextCommandBase):
             raise ValueError('motion data required')
 
         if motion:
-            self.save_sel()
-            run_motion(self.view, motion)
-            if not self.has_sel_changed():
-                enter_normal_mode(self.view, mode)
-                ui_bell()
-                return
+            with sel_observer(self.view) as observer:
+                run_motion(self.view, motion)
+                if not observer.has_sel_changed():
+                    enter_normal_mode(self.view, mode)
+                    ui_bell()
+                    return
 
             if all(s.empty() for s in self.view.sel()):
                 enter_normal_mode(self.view, mode)
@@ -1885,17 +1884,18 @@ class _vi_big_d(ViTextCommandBase):
             if mode == INTERNAL_NORMAL:
                 if count == 1:
                     if view.line(s.b).size() > 0:
-                        s = Region(s.b, view.line(s.b).b)
+                        b = view.line(s.b).b
+                        s.a = s.b
+                        s.b = b
 
             elif mode == VISUAL:
                 startline = view.line(s.begin())
                 endline = view.full_line(s.end())
-
-                s = Region(startline.a, endline.b)
+                s.a = startline.a
+                s.b = endline.b
 
             return s
 
-        self.save_sel()
         regions_transformer(self.view, f)
         registers_op_delete(self.view, register=register, linewise=is_visual_mode(mode))
         self.view.run_command('left_delete')
@@ -1926,11 +1926,11 @@ class _vi_big_c(ViTextCommandBase):
                 if count == 1:
                     if view.line(s.b).size() > 0:
                         eol = view.line(s.b).b
-                        return Region(s.b, eol)
+                        s.a = s.b
+                        s.b = eol
                     return s
             return s
 
-        self.save_sel()
         regions_transformer(self.view, f)
         registers_op_change(self.view, register=register, linewise=is_visual_mode(mode))
 
@@ -1995,12 +1995,11 @@ class _vi_s(ViTextCommandBase):
             ui_bell()
             return
 
-        self.save_sel()
-        regions_transformer(self.view, f)
-
-        if not self.has_sel_changed() and mode == INTERNAL_NORMAL:
-            enter_insert_mode(self.view, mode)
-            return
+        with sel_observer(self.view) as observer:
+            regions_transformer(self.view, f)
+            if not observer.has_sel_changed() and mode == INTERNAL_NORMAL:
+                enter_insert_mode(self.view, mode)
+                return
 
         registers_op_delete(self.view, register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
@@ -2905,12 +2904,12 @@ class _vi_g_tilde(ViTextCommandBase):
             sels.append(s.a)
 
         if motion:
-            self.save_sel()
-            run_motion(self.view, motion)
-            if not self.has_sel_changed():
-                ui_bell()
-                enter_normal_mode(self.view, mode)
-                return
+            with sel_observer(self.view) as observer:
+                run_motion(self.view, motion)
+                if not observer.has_sel_changed():
+                    ui_bell()
+                    enter_normal_mode(self.view, mode)
+                    return
 
         self.view.run_command('swap_case')
 

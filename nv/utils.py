@@ -334,6 +334,26 @@ def adding_regions(view, name: str, regions: list, scope_name: str):
     view.erase_regions(name)
 
 
+class SelectionObserver:
+
+    def __init__(self, view):
+        self._view = view
+        self._orig_sel = list(view.sel())
+
+    def has_sel_changed(self):
+        # TODO Refactor to use Region() comparison apis
+        return not (tuple((s.a, s.b) for s in self._orig_sel) == tuple((s.a, s.b) for s in tuple(self._view.sel())))
+
+    def restore_sel(self):
+        if self.has_sel_changed():
+            set_selection(self._view, self._orig_sel)
+
+
+@contextmanager
+def sel_observer(view):
+    yield SelectionObserver(view)
+
+
 # This is a polyfill to work around various wrapping issues with some of
 # Sublime's internal commands such as next_modification, next_misspelling, etc.
 # See: https://github.com/SublimeTextIssues/Core/issues/2623.
