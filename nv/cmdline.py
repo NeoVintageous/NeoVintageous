@@ -19,7 +19,7 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.utils import hide_panel
 
 
-def _init_common_panel_setting(panel) -> None:
+def _init_common_panel_settings(panel) -> None:
     _set = panel.settings().set
 
     _set('auto_complete', False)
@@ -80,7 +80,7 @@ class Cmdline():
         input_panel.set_name('Command-line mode')
         input_panel.settings().set('_nv_ex_mode', True)
 
-        _init_common_panel_setting(input_panel)
+        _init_common_panel_settings(input_panel)
 
     def _callback(self, callback, *args) -> None:
         if self._callbacks and callback in self._callbacks:
@@ -121,7 +121,7 @@ class CmdlineOutput():
         self._output = self._window.create_output_panel(self._name)
         self._output.assign_syntax('Packages/NeoVintageous/res/Command-line output.sublime-syntax')
 
-        _init_common_panel_setting(self._output)
+        _init_common_panel_settings(self._output)
 
     def show(self) -> None:
         self._window.run_command('show_panel', {'panel': 'output.' + self._name})
