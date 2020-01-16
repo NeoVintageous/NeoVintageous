@@ -18,10 +18,6 @@
 import sublime_plugin
 
 
-class ViCommandMixin:
-    pass
-
-
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
 
     # Base class. The undo stack will ignore commands derived from this class.
@@ -60,7 +56,7 @@ class IrreversibleTextCommand(sublime_plugin.TextCommand):
 
 # DEPRECATED
 # TODO Remove this command
-class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
+class ViTextCommandBase(sublime_plugin.TextCommand):
     pass
 
 
@@ -75,7 +71,7 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
 
 # DEPRECATED
 # TODO Remove this command
-class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
+class ViWindowCommandBase(sublime_plugin.WindowCommand):
 
     @property
     def view(self):
