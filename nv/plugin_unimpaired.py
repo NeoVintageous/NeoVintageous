@@ -25,6 +25,7 @@ from NeoVintageous.nv.options import window_visible_option
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
@@ -230,8 +231,8 @@ class _BaseToggleDef(ViOperatorDef):
     def accept_input(self):
         return self.inp == ''
 
-    def accept(self, key):
-        self.inp = key
+    def accept(self, key: str) -> bool:
+        self.inp += translate_char(key)
 
         return True
 
