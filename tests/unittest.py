@@ -1647,6 +1647,7 @@ _SEQ2CMD = {
     'qA':           {'command': '_vi_q', 'args': {'name': 'A'}},  # noqa: E241
     'qa':           {'command': '_vi_q', 'args': {'name': 'a'}},  # noqa: E241
     'qx':           {'command': '_vi_q', 'args': {'name': 'x'}},  # noqa: E241
+    'r<cr>':        {'command': '_vi_r', 'args': {'char': '\n'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
     's_2j':         {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
