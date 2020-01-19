@@ -375,9 +375,13 @@ class State(object):
     def scroll_into_view(self) -> None:
         view = active_window().active_view()
         if view:
+            sels = view.sel()
+            if len(sels) < 1:
+                return
+
             # Show the *last* cursor on screen. There is currently no way to
             # identify the "active" cursor of a multiple cursor selection.
-            sel = view.sel()[-1]
+            sel = sels[-1]
 
             target_pt = sel.b
 
