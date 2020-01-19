@@ -228,7 +228,7 @@ class _BaseToggleDef(ViOperatorDef):
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         return self.inp == ''
 
     def accept(self, key: str) -> bool:
