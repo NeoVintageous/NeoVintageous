@@ -3449,13 +3449,13 @@ class ViSearchForward(ViMotionDef):
         )
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         if not self.inp:
             return True
 
         return not self.inp.lower().endswith('<cr>')
 
-    def accept(self, key):
+    def accept(self, key: str) -> bool:
         self.inp += key
 
         return True
@@ -3506,13 +3506,13 @@ class ViSearchBackward(ViMotionDef):
         )
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         if not self.inp:
             return True
 
         return not self.inp.lower().endswith('<cr>')
 
-    def accept(self, key):
+    def accept(self, key: str) -> bool:
         self.inp += key
 
         return True

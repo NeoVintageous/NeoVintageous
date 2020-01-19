@@ -103,8 +103,6 @@ class RequiresOneCharMixinDef(ViCommandDefBase):
         return self.inp == ''
 
     def accept(self, key: str) -> bool:
-        key = translate_char(key)
-        assert len(key) == 1, 'only accepts a single char'
-        self.inp = key
+        self.inp += translate_char(key)
 
         return True

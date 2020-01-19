@@ -957,13 +957,13 @@ class InputParser():
     def is_interactive(self) -> bool:
         return bool(self._interactive_command)
 
-    def is_type_after_motion(self) -> bool:
+    def is_after_motion(self) -> bool:
         return self._type == self.AFTER_MOTION
 
-    def is_type_immediate(self) -> bool:
+    def is_immediate(self) -> bool:
         return self._type == self.IMMEDIATE
 
-    def is_type_via_panel(self) -> bool:
+    def is_via_panel(self) -> bool:
         return self._type == self.VIA_PANEL
 
     def run_interactive_command(self, window, value) -> None:
