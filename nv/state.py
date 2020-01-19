@@ -282,14 +282,14 @@ class State(object):
             if motion.accept_input:
                 return True
 
-            return (action.accept_input and action.input_parser and action.input_parser.is_type_after_motion())
+            return (action.accept_input and action.input_parser and action.input_parser.is_after_motion())
 
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
         if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(self.view.window())):
             return False
 
-        if (action and action.accept_input and action.input_parser and action.input_parser.is_type_immediate()):
+        if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):
             return True
 
         if motion:
@@ -507,7 +507,7 @@ class State(object):
             raise ValueError('unexpected command type')
 
         if not self.non_interactive:
-            if command.accept_input and command.input_parser and command.input_parser.is_type_via_panel():
+            if command.accept_input and command.input_parser and command.input_parser.is_via_panel():
                 command.input_parser.run_command()
 
     def get_visual_repeat_data(self):
