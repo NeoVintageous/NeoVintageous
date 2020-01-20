@@ -1278,10 +1278,10 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
                 return Region(s.b)
 
-            if mode == INTERNAL_NORMAL:
+            elif mode == INTERNAL_NORMAL:
                 return Region(s.b)
 
-            if mode == VISUAL:
+            elif mode == VISUAL:
                 save_previous_selection(self.view, mode)
 
                 if s.a < s.b:
@@ -1296,7 +1296,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
 
                 return Region(s.b)
 
-            if mode in (VISUAL_LINE, VISUAL_BLOCK):
+            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
                 save_previous_selection(self.view, mode)
 
                 if s.a < s.b:
@@ -1308,7 +1308,7 @@ class _enter_normal_mode_impl(ViTextCommandBase):
                 else:
                     return Region(s.b)
 
-            if mode == SELECT:
+            elif mode == SELECT:
                 return Region(s.begin())
 
             return Region(s.b)
