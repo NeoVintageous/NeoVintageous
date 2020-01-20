@@ -914,6 +914,20 @@ class VisualBlockSelection():
             set_selection(self.view, visual_block)
             self.view.show(target, False)
 
+    def transform_begin(self):
+        begin = self.begin()
+        self.view.sel().clear()
+        self.view.sel().add(begin)
+
+    def transform_reverse(self):
+        sels = list(self.view.sel())
+        self.view.sel().clear()
+        for sel in sels:
+            b = sel.a
+            sel.a = sel.b
+            sel.b = b
+            self.view.sel().add(sel)
+
     def _transform(self, region: Region) -> None:
         set_selection(self.view, region)
 
@@ -932,20 +946,11 @@ def resolve_visual_block_target(view, target, count: int) -> None:
 
 
 def resolve_visual_block_begin(view) -> None:
-    visual_block = VisualBlockSelection(view)
-    begin = visual_block.begin()
-    view.sel().clear()
-    view.sel().add(begin)
+    VisualBlockSelection(view).transform_begin()
 
 
 def resolve_visual_block_reverse(view) -> None:
-    sels = list(view.sel())
-    view.sel().clear()
-    for sel in sels:
-        b = sel.a
-        sel.a = sel.b
-        sel.b = b
-        view.sel().add(sel)
+    VisualBlockSelection(view).transform_reverse()
 
 
 class InputParser():
