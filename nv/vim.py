@@ -121,5 +121,13 @@ def enter_insert_mode(view_or_window, mode: str) -> None:
     view_or_window.run_command('_enter_insert_mode', {'mode': mode})
 
 
-def enter_visual_mode(view_or_window, mode: str) -> None:
+def enter_visual_mode(view_or_window, mode: str, force: bool = False) -> None:
     view_or_window.run_command('_enter_visual_mode', {'mode': mode})
+
+
+def enter_visual_line_mode(view_or_window, mode: str, force: bool = False) -> None:
+    view_or_window.run_command('_enter_visual_line_mode', {'mode': mode})
+
+
+def enter_visual_block_mode(view_or_window, mode: str, force: bool = False) -> None:
+    view_or_window.run_command('_enter_visual_block_mode', {'mode': mode})

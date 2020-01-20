@@ -189,6 +189,8 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import enter_visual_block_mode
+from NeoVintageous.nv.vim import enter_visual_line_mode
 from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import message
@@ -2692,11 +2694,14 @@ class _vi_gv(IrreversibleTextCommand):
         if not visual_sel or not visual_sel_mode:
             return
 
+        def _do_cmd(cmd):
+            cmd(self.view, mode=mode, force=True)
+            set_selection(self.view, visual_sel)
+
         if visual_sel_mode == VISUAL:
-            cmd = '_enter_visual_mode'
+            _do_cmd(enter_visual_mode)
         elif visual_sel_mode == VISUAL_LINE:
-            cmd = '_enter_visual_line_mode'
-            # Ensure VISUAL LINE selections span full lines.
+            # Update visual line selections to span full lines.
             for sel in visual_sel:
                 if sel.a < sel.b:
                     sel.a = self.view.line(sel.a).a
@@ -2705,13 +2710,9 @@ class _vi_gv(IrreversibleTextCommand):
                     sel.a = self.view.full_line(sel.a - 1).b
                     sel.b = self.view.line(sel.b).a
 
+            _do_cmd(enter_visual_line_mode)
         elif visual_sel_mode == VISUAL_BLOCK:
-            cmd = '_enter_visual_block_mode'
-        else:
-            raise RuntimeError('unexpected visual sel mode')
-
-        self.view.window().run_command(cmd, {'mode': mode, 'force': True})
-        set_selection(self.view, visual_sel)
+            _do_cmd(enter_visual_block_mode)
 
 
 class _vi_gx(IrreversibleTextCommand):
@@ -2797,69 +2798,14 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
         state = State(self.view)
 
-        if mode == VISUAL_LINE:
+        if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
             state.enter_visual_block_mode()
+            state.display_status()
 
         elif mode == VISUAL_BLOCK and not force:
             enter_normal_mode(self.view, mode)
-
-        elif mode == VISUAL:
-            first = self.view.sel()[0]
-
-            if self.view.line(first.end() - 1).empty():
-                enter_normal_mode(self.view, mode)
-                ui_bell()
-                return
-
-            self.view.sel().clear()
-            lhs_edge = self.view.rowcol(first.b)[1]  # FIXME # noqa: F841
-            regs = split_by_newlines(self.view, first)
-
-            offset_a, offset_b = self.view.rowcol(first.a)[1], self.view.rowcol(first.b)[1]
-            min_offset_x = min(offset_a, offset_b)
-            max_offset_x = max(offset_a, offset_b)
-
-            new_regs = []
-            for r in regs:
-                if r.empty():
-                    break
-                row, _ = self.view.rowcol(r.end() - 1)
-                a = self.view.text_point(row, min_offset_x)
-                eol = self.view.rowcol(self.view.line(r.end() - 1).b)[1]
-                b = self.view.text_point(row, min(max_offset_x, eol))
-
-                if first.a <= first.b:
-                    if offset_b < offset_a:
-                        new_r = Region(a - 1, b + 1, eol)
-                    else:
-                        new_r = Region(a, b, eol)
-                elif offset_b < offset_a:
-                    new_r = Region(a, b, eol)
-                else:
-                    new_r = Region(a - 1, b + 1, eol)
-
-                new_regs.append(new_r)
-
-            if not new_regs:
-                new_regs.append(first)
-
-            self.view.sel().add_all(new_regs)
-
-            state.enter_visual_block_mode()
-        else:
-            first = list(self.view.sel())[0]
-            set_selection(self.view, first)
-
-            state.enter_visual_block_mode()
-
-            def f(view, s):
-                return Region(s.b, s.b + 1)
-
-            if not self.view.has_non_empty_selection_region():
-                regions_transformer(self.view, f)
-
-        state.display_status()
+            state.display_status()
 
 
 # TODO Refactor into _vi_j

@@ -27,7 +27,11 @@ class Test_ctrl_v(unittest.FunctionalTestCase):
     def test_v(self):
         self.eq('f|iz|z', 'v_<C-v>', 'b_f|iz|z')
         self.eq('f|izz\nbuz|z', 'v_<C-v>', 'b_f|iz|z\nb|uz|z')
-        self.eq('r_f|izz\nbuz|z', 'v_<C-v>', 'b_f|iz|z\nb|uz|z')
+        self.eq('|fizz\nb|\n\n\n', 'v_<C-v>', 'b_|f|izz\n|b|\n\n\n')
+        self.eq('|fizz\n\n|\n\n', 'v_<C-v>', 'b_|f|izz\n|\n|\n\n')
+        self.eq('|fizz\n\n\n|\n', 'v_<C-v>', 'b_|f|izz\n|\n||\n|\n')
+        self.eq('f|izz\n\nbuz|z\n', 'v_<C-v>', 'b_f|iz|z\n\nb|uz|z\n')
+        self.eq('r_f|izz\nbuz|z', 'v_<C-v>', 'r_b_u_f|iz|z\nb|uz|z')
         self.assertStatusLineIsVisualBlock()
 
     def test_V(self):
