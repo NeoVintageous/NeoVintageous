@@ -937,6 +937,19 @@ class VisualBlockSelection():
     def transform_to_visual_line(self) -> None:
         self._transform(self.to_visual_line())
 
+    @staticmethod
+    def create(view):
+        sels = list(view.sel())
+        sel = sels[0]
+
+        target = get_insertion_point_at_b(sel)
+
+        direction = DIRECTION_DOWN if sel.b >= sel.a else DIRECTION_UP
+        vb = VisualBlockSelection(view, direction)
+        vb.transform_target(target)
+
+        return vb
+
 
 def resolve_visual_block_target(view, target, count: int) -> None:
     visual_block = VisualBlockSelection(view)

@@ -2795,10 +2795,15 @@ class _enter_visual_block_mode(ViTextCommandBase):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
 
+        state = State(self.view)
+
         if mode == VISUAL_LINE:
-            pass
+            VisualBlockSelection.create(self.view)
+            state.enter_visual_block_mode()
+
         elif mode == VISUAL_BLOCK and not force:
             enter_normal_mode(self.view, mode)
+
         elif mode == VISUAL:
             first = self.view.sel()[0]
 
@@ -2840,14 +2845,12 @@ class _enter_visual_block_mode(ViTextCommandBase):
                 new_regs.append(first)
 
             self.view.sel().add_all(new_regs)
-            state = State(self.view)
+
             state.enter_visual_block_mode()
-            state.display_status()
         else:
             first = list(self.view.sel())[0]
             set_selection(self.view, first)
 
-            state = State(self.view)
             state.enter_visual_block_mode()
 
             def f(view, s):
@@ -2856,7 +2859,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
             if not self.view.has_non_empty_selection_region():
                 regions_transformer(self.view, f)
 
-            state.display_status()
+        state.display_status()
 
 
 # TODO Refactor into _vi_j
