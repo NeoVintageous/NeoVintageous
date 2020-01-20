@@ -1320,10 +1320,11 @@ class _enter_normal_mode_impl(ViTextCommandBase):
         if (len(self.view.sel()) > 1) and (mode == NORMAL):
             set_selection(self.view, self.view.sel()[0])
 
-        regions_transformer(self.view, f)
-
         if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
-            set_selection(self.view, VisualBlockSelection(self.view).b)
+            save_previous_selection(self.view, mode)
+            set_selection(self.view, VisualBlockSelection(self.view).insertion_point_b())
+        else:
+            regions_transformer(self.view, f)
 
         clear_search_highlighting(self.view)
         fix_eol_cursor(self.view, mode)
@@ -2026,6 +2027,10 @@ class _vi_x(ViTextCommandBase):
         regions_transformer(self.view, select)
         registers_op_delete(self.view, register=register, linewise=(mode == VISUAL_LINE))
         self.view.run_command('right_delete')
+
+        if mode == VISUAL_BLOCK:
+            resolve_visual_block_begin(self.view)
+
         enter_normal_mode(self.view, mode)
 
 
@@ -2144,6 +2149,9 @@ class _vi_less_than(ViTextCommandBase):
         for i in range(count):
             self.view.run_command('unindent')
 
+        if mode == VISUAL_BLOCK:
+            resolve_visual_block_begin(self.view)
+
         regions_transform_to_first_non_blank(self.view)
         enter_normal_mode(self.view, mode)
 
@@ -2157,6 +2165,9 @@ class _vi_equal(ViTextCommandBase):
             return ui_bell()
 
         self.view.run_command('reindent', {'force_indent': False})
+
+        if mode == VISUAL_BLOCK:
+            resolve_visual_block_begin(self.view)
 
         regions_transform_to_first_non_blank(self.view)
         enter_normal_mode(self.view, mode)

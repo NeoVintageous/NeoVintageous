@@ -100,4 +100,4 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('0')
 
     def test_b(self):
-        self.eq('fixyzzz\nbu|xyz|zz\nfi|xyz|zz\nbu|xyz|zz\nfixyzzz\n', 'b_x', 'n_fixyzzz\nbuzz\nfizz\nbu|zz\nfixyzzz\n')
+        self.eq('fixyzzz\nbu|xyz|zz\nfi|xyz|zz\nbu|xyz|zz\nfixyzzz\n', 'b_x', 'n_fixyzzz\nbu|zz\nfizz\nbuzz\nfixyzzz\n')
