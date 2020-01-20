@@ -55,10 +55,8 @@ script:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
             flake8;
             if [ "$TRAVIS_PYTHON_VERSION" == "3.3" ]; then
-                # Allow failures for mypy on older version of python.
                 mypy ../NeoVintageous || true;
             else
-                # Temporarily allow failures for mypy.
                 mypy --show-error-codes ../NeoVintageous || true;
             fi
       fi
