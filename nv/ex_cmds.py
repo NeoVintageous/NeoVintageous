@@ -934,14 +934,14 @@ def ex_substitute(view, edit, line_range: RangeNode,
     if flags is None:
         flags = []
 
-    # Repeat last substitute with same search pattern and substitute string, but
-    # without the same flags.
+    # When no pattern is given then the the last search pattern and last
+    # replacement is used. Note that the last used flags are not used.
     if not pattern:
         pattern = get_ex_substitute_last_pattern()
-        if not pattern:
-            return status_message('E33: No previous substitute regular expression')
-
         replacement = get_ex_substitute_last_replacement()
+
+    if not pattern:
+        return status_message('E33: No previous substitute regular expression')
 
     if replacement is None:
         return status_message('No substitute replacement string')
@@ -949,8 +949,12 @@ def ex_substitute(view, edit, line_range: RangeNode,
     set_ex_substitute_last_pattern(pattern)
     set_ex_substitute_last_replacement(replacement)
 
-    computed_flags = re.MULTILINE
-    computed_flags |= re.IGNORECASE if ('i' in flags) else 0
+    computed_flags = 0
+
+    computed_flags |= re.MULTILINE
+
+    if (get_option(view, 'ignorecase') or 'i' in flags) and 'I' not in flags:
+        computed_flags |= re.IGNORECASE
 
     try:
         compiled_pattern = re.compile(pattern, flags=computed_flags)

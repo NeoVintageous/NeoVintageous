@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#663](https://github.com/NeoVintageous/NeoVintageous/issues/663): Add `I` flag to `:substitute` command
+* Added [#662](https://github.com/NeoVintageous/NeoVintageous/issues/662): Add `'ignorecase'` option support to `:substitute` command
 * Added [#660](https://github.com/NeoVintageous/NeoVintageous/issues/660): Ex mode `<S-tab>` now cycles through completions in reverse
 * Added [#657](https://github.com/NeoVintageous/NeoVintageous/issues/657): Auto complete in empty Command-line mode now triggers all completions
 * Added [#641](https://github.com/NeoVintageous/NeoVintageous/issues/641): Support search modifiers `\v`, `\V`, `\m`, and `\M`
