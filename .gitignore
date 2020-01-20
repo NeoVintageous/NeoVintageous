@@ -27,3 +27,4 @@ tags
 /covhtml/
 /htmlcov/
 /tmp/
+__init__.pyi
