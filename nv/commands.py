@@ -2048,7 +2048,7 @@ class _vi_r(ViTextCommandBase):
                 else:
                     return Region(s.b)
 
-            if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+            elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 ends_in_newline = (view.substr(s.end() - 1) == '\n')
                 text = self.make_replacement_text(char, s)
                 if ends_in_newline:
