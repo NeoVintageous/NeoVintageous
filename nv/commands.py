@@ -125,6 +125,7 @@ from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import resolve_internal_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
+from NeoVintageous.nv.utils import resolve_visual_block_reverse
 from NeoVintageous.nv.utils import resolve_visual_block_target
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
@@ -1336,11 +1337,13 @@ class _enter_select_mode(ViWindowCommandBase):
         state = State(self.window.active_view())
         state.enter_select_mode()
 
-        if not self.view.has_non_empty_selection_region():
+        if mode == INTERNAL_NORMAL:
             self.window.run_command('find_under_expand')
-
-        if mode == VISUAL:
+        elif mode in (VISUAL, VISUAL_LINE):
             self.window.run_command('_vi_select_j', {'mode': state.mode})
+        elif mode == VISUAL_BLOCK:
+            resolve_visual_block_reverse(self.view)
+            enter_normal_mode(self.window)
 
         state.display_status()
 

@@ -21,12 +21,14 @@ from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 __all__ = ()
 
 
-@register(seq='<C-n>', modes=(NORMAL, VISUAL))
+@register(seq='<C-n>', modes=(NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class _multiple_cursors_enter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

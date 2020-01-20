@@ -938,6 +938,16 @@ def resolve_visual_block_begin(view) -> None:
     view.sel().add(begin)
 
 
+def resolve_visual_block_reverse(view) -> None:
+    sels = list(view.sel())
+    view.sel().clear()
+    for sel in sels:
+        b = sel.a
+        sel.a = sel.b
+        sel.b = b
+        view.sel().add(sel)
+
+
 class InputParser():
 
     IMMEDIATE = 1

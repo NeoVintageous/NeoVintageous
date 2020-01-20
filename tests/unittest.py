@@ -1218,6 +1218,7 @@ _SEQ2CMD = {
     '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
     '<C-e>':        {'command': '_vi_ctrl_e'},  # noqa: E241
     '<C-g>':        {'command': '_vi_ctrl_g'},  # noqa: E241
+    '<C-n>':        {'command': '_enter_select_mode'},  # noqa: E241
     '<C-r>':        {'command': '_vi_ctrl_r'},  # noqa: E241
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-v>':        {'command': '_enter_visual_block_mode'},  # noqa: E241
@@ -1650,13 +1651,21 @@ _SEQ2CMD = {
     'r<cr>':        {'command': '_vi_r', 'args': {'char': '\n'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
-    's_2j':         {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
-    's_2k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
-    's_6k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
+    's_v':          {'command': '_enter_normal_mode'},  # TODO Refactor # noqa: E241
+    's_2<C-n>':     {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_2<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_2j':         {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_2k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_6<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_6k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_<C-n>':      {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_<C-p>':      {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_<C-x>':      {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
     's_<esc>':      {'command': '_vi_select_big_j'},  # noqa: E241
     's_J':          {'command': '_vi_select_big_j'},  # noqa: E241
-    's_j':          {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
-    's_k':          {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
+    's_j':          {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_k':          {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_l':          {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
     't2':           {'command': '_vi_find_in_line', 'args': {'char': '2', 'inclusive': False}},  # noqa: E241
     't6':           {'command': '_vi_find_in_line', 'args': {'char': '6', 'inclusive': False}},  # noqa: E241
     't8':           {'command': '_vi_find_in_line', 'args': {'char': '8', 'inclusive': False}},  # noqa: E241
