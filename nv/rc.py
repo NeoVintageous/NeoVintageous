@@ -98,10 +98,11 @@ def _parse_line(line: str):
                 if cmdline:
                     cmdline = ':' + cmdline
 
-                # The '|' character is used to chain commands. Users should
-                # escape it with a slash or use '<bar>'. See :h map-bar. It's
-                # translated to <bar> internally (implementation detail).
-                # See https://github.com/NeoVintageous/NeoVintageous/issues/615.
+                # Since the '|' character is used to separate a map command from
+                # the next command, you will have to do something special to
+                # include a '|' in {rhs}. You can use '<bar>' or escape with a
+                # slash '\|'. See :h map-bar. TODO Refactor logic for
+                # translating escaped bar to <bar> into mapping internals.
                 cmdline = cmdline.replace('\\|', '<bar>')
 
                 if '|' in cmdline:

@@ -26,11 +26,11 @@ set hlsearch
 " ^^ keyword.control
 "    ^^^^^^^^ entity.name
 
-set winaltkeys=menu
+set highlightedyank=false
 " ^ keyword
 "   ^^^^^^^^^^^^^^^ entity
 
-:set winaltkeys=no
+:set highlightedyank=false
 " ^ keyword
 "    ^^^^^^^^^^^^^^^ entity
 
