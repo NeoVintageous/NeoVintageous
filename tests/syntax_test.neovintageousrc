@@ -26,13 +26,13 @@ set hlsearch
 " ^^ keyword.control
 "    ^^^^^^^^ entity.name
 
-set highlightedyank=false
+set winaltkeys=menu
 " ^ keyword
-"   ^^^^^^^^^^^^^^^ entity
+"   ^^^^^^^^^^ entity
 
-:set highlightedyank=false
+:set winaltkeys=no
 " ^ keyword
-"    ^^^^^^^^^^^^^^^ entity
+"    ^^^^^^^^^^ entity
 
 nnoremap <space> :
 " ^^^^^^ keyword.control
