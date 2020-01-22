@@ -39,6 +39,7 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
         self.feed('s_<C-n>')
         self.feed('s_<C-n>')
         self.assertVselect('x |fizz| |fizz| |fizz| x')
+        self.assertStatusLineIsSelect()
         self.feed('s_v')
         self.assertNormal('x |fizz |fizz |fizz x')
         self.assertStatusLineIsNormal()
@@ -79,6 +80,7 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
             self.assertVselect('|fizz| |fizz| |fizz| fizz')
             self.feed('s_2' + seq)
             self.assertVselect('|fizz| |fizz| |fizz| |fizz|')
+            self.assertStatusLineIsSelect()
 
     def test_remove_match(self):
         for seq in ('<C-p>', 'k'):
@@ -139,3 +141,30 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
             else:
                 self.assertNormal('fizz |fizz |fizz |fizz fizz')
             self.assertStatusLineIsBlank()
+
+    def test_select_all(self):
+        for seq in ('A', '<M-n>'):
+            self.normal('fizz |fizz| buzz fizz fi zz fizz buzz')
+            self.feed('<C-n>')
+            self.feed('s_' + seq)
+            self.assertVselect('|fizz| |fizz| buzz |fizz| fi zz |fizz| buzz')
+            self.assertStatusLineIsSelect()
+
+    def test_select_all_search_occurrences(self):
+        self.normal('fizz fi|zz buzz fizz fi zz fizz buzz')
+        self.feed('n_*')
+        self.feed('gH')
+        self.assertVselect('|fizz| |fizz| buzz |fizz| fi zz |fizz| buzz')
+        self.assertStatusLineIsSelect()
+        self.normal('foo f|oo buzz foo fi zz foo buzz')
+        self.feed('n_#')
+        self.feed('gH')
+        self.assertVselect('|foo| |foo| buzz |foo| fi zz |foo| buzz')
+        self.assertStatusLineIsSelect()
+
+    @unittest.mock_bell()
+    @unittest.mock_status_message()
+    def test_no_search_occurrences(self):
+        self.eq('fi|zz', 'n_gH', 'fi|zz')
+        self.assertBell()
+        self.assertStatusMessage('no available search matches')

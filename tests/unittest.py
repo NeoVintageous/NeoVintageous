@@ -1331,7 +1331,7 @@ _SEQ2CMD = {
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'c':            {'command': '_vi_c'},  # noqa: E241
     'c0':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_zero'}}},  # noqa: E241,E501
-    'cM':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_m'}}},  # noqa: E241,E501
+    'cM':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_m'}}},  # noqa: E241,E501
     'c^':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_hat'}}},  # noqa: E241,E501
     'c_':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_underscore'}}},  # noqa: E241,E501
     'ca"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1651,7 +1651,6 @@ _SEQ2CMD = {
     'r<cr>':        {'command': '_vi_r', 'args': {'char': '\n'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
-    's_v':          {'command': '_enter_normal_mode'},  # TODO Refactor # noqa: E241
     's_2<C-n>':     {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
     's_2<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     's_2j':         {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
@@ -1661,11 +1660,13 @@ _SEQ2CMD = {
     's_<C-n>':      {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
     's_<C-p>':      {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     's_<C-x>':      {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
+    's_<M-n>':      {'command': '_vi_big_a'},  # noqa: E241
     's_<esc>':      {'command': '_vi_select_big_j'},  # noqa: E241
     's_J':          {'command': '_vi_select_big_j'},  # noqa: E241
     's_j':          {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
     's_k':          {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     's_l':          {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
+    's_v':          {'command': '_enter_normal_mode'},  # TODO Refactor # noqa: E241
     't2':           {'command': '_vi_find_in_line', 'args': {'char': '2', 'inclusive': False}},  # noqa: E241
     't6':           {'command': '_vi_find_in_line', 'args': {'char': '6', 'inclusive': False}},  # noqa: E241
     't8':           {'command': '_vi_find_in_line', 'args': {'char': '8', 'inclusive': False}},  # noqa: E241

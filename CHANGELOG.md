@@ -29,6 +29,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Various multiple cursor issues
 * Fixed [#658](https://github.com/NeoVintageous/NeoVintageous/issues/658): `gU` and `gu` should never emit visual bell
 * Fixed [#661](https://github.com/NeoVintageous/NeoVintageous/issues/661): Visual block yank should move cursor to beginning of selection
 * Fixed [#659](https://github.com/NeoVintageous/NeoVintageous/issues/659): Ex mode auto complete is broken (ST4)

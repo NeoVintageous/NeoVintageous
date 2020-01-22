@@ -2949,8 +2949,8 @@ class _vi_guu(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-# Non-standard command. After a search has been performed via '/' or '?',
-# selects all matches and enters select mode.
+# Non-standard command. Select all search occurrences and enter multiple cursor
+# mode (supports search results from commands such as /, ?, *, #).
 class _vi_g_big_h(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
@@ -2959,7 +2959,6 @@ class _vi_g_big_h(ViWindowCommandBase):
         search_occurrences = get_search_occurrences(view)
         if search_occurrences:
             view.sel().add_all(search_occurrences)
-
             state.enter_select_mode()
             state.display_status()
             return

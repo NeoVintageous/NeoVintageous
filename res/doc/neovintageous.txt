@@ -42,51 +42,44 @@ NeoVintageous: Toggle SUPER keys    Turn SUPER key bindings on and off.
 
 MULTIPLE CURSORS                                         *nv-multiple-cursors*
 
-Normal mode / Visual mode
+normal mode / visual mode
 
-- start:    <C-n> or gh Start multi cursor and add a virtual cursor +
-                        selection on the match.
-  + next:   <C-n> or j  Add a new virtual cursor + selection on the match.
-  + skip:   <C-x> or l  Skip the next match.
-  + prev:   <C-p> or k  Remove current virtual cursor + selection and go back
-                        on previous match.
+    start:      <C-n> or gh     Start multiple cursor.
+        next:   <C-n> or j      Add next match.
+        skip:   <C-x> or l      Skip next match.
+        prev:   <C-p> or k      Remove current match.
+        all:    <M-n> or A      Select all matches.
 
-You can now change the virtual cursors + selection with |Visual-mode| commands.
-For instance: c, s, I work without any issues.
-You could also go to |Normal-mode| by pressing `v` and use normal commands
-there, for example commands like ciw work without any issues.
+You can now use visual commands e.g. c, I, x, y work without any issues.
 
-At any time, you can press <Esc> or J to exit back to regular Vim.
-You can change the behaviour of exiting from Visual mode, for details see the
-option 'vintageous_multi_cursor_exit_from_visual_mode'.
+You could also go to normal mode by pressing v and use normal commands there,
+for example commands like ciw work without any issues.
+
+At any time you can press <Esc> or J to exit back to regular Vim. You can change
+the behaviour of exiting, see 'vintageous_multi_cursor_exit_from_visual_mode'.
 
 <C-n> or gh             Start multiple cursor.
 <C-n> or j              Add next match.
 <C-x> or l              Skip next match.
 <C-p> or k              Remove current match and go back on previous.
 <Esc> or J              Quit and enter normal mode.
+<M-n> or A              Select all matches.
 v                       Enter normal mode.
-A                       Select all.
-y                       Yank the selection.
-c                       Delete selection and enter insert mode.
-d                       Delete selection and enter normal mode.
-s                       Delete selection and enter insert mode.
-i                       Enter insert mode at end of selections.
-I                       Enter insert mode at start of selections.
-gH                      After a search with / or ? (select all matches).
+gH                      Select all search occurrences (/, ?, *, #).
 
 ==============================================================================
 
 OPENING A VIEW                                               *nv-opening-view*
 
-Note that some windowing commands require the Origami package e.g. windowing
-splitting commands: https://packagecontrol.io/packages/Origami.
+Some windowing commands require the Origami package.
+
+See: https://packagecontrol.io/packages/Origami.
 
 CTRL-W CTRL-S
 CTRL-W s
 CTRL-W S
 :sp[lit] [file]         Split current window in two. The result is two views
-                        on the same file. See |CTRL-W_s|.
+                        on the same file. See |CTRL-W_s| for more details.
 
 CTRL-W CTRL-V
 CTRL-W v

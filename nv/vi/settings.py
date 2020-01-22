@@ -111,7 +111,7 @@ def set_visual_block_direction(view, direction: int) -> None:
 
 
 # TODO remove assertions
-def set_repeat_data(view, data) -> None:
+def set_repeat_data(view, data: tuple) -> None:
     # Store data structure for repeat commands like "." to use.
     # Args:
     #   tuple (type, cmd_name_or_key_seq, mode): Type may be "vi" or
