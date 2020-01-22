@@ -23,8 +23,8 @@ from sublime import Region
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
-from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_reset_during_init
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import col_at
 from NeoVintageous.nv.utils import is_view
@@ -35,8 +35,8 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
-from NeoVintageous.nv.vi.settings import set_repeat_data
 from NeoVintageous.nv.vi.settings import SettingsManager
+from NeoVintageous.nv.vi.settings import set_repeat_data
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
