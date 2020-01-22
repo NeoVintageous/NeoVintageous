@@ -17,7 +17,7 @@
 
 import os
 
-# To enable debugg logging, set the env var to a non-blank value.
+# To enable debug logging, set the env var to a non-blank value.
 _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 
 # If debugging is enabled, initialise the debug logger. The debug logger needs
@@ -57,6 +57,8 @@ import sublime  # noqa: E402
 try:
     _startup_exception = None
 
+    from NeoVintageous.nv.vim import clean_views
+
     # Commands.
     from NeoVintageous.nv.commands import *  # noqa: F401,F403
 
@@ -90,25 +92,6 @@ def _update_ignored_packages():
         ignored_packages = sorted(ignored_packages + conflict_packages)
         settings.set('ignored_packages', ignored_packages)
         sublime.save_settings('Preferences.sublime-settings')
-
-
-def _cleanup_views():
-
-    # Resets cursor and mode. In the case of errors loading the plugin this can
-    # help prevent the normal functioning of editor becoming unusable e.g. the
-    # cursor getting stuck in a block shape or the mode getting stuck in normal
-    # or visual mode.
-
-    try:
-        for window in sublime.windows():
-            for view in window.views():
-                settings = view.settings()
-                settings.set('command_mode', False)
-                settings.set('inverse_caret_state', False)
-                settings.erase('vintage')
-    except Exception:
-        import traceback
-        traceback.print_exc()
 
 
 def _init_backwards_compat_patches():
@@ -197,7 +180,7 @@ def plugin_loaded():
 
     if _startup_exception or loading_exeption:
 
-        _cleanup_views()
+        clean_views()
 
         if isinstance(_startup_exception, ImportError) or isinstance(loading_exeption, ImportError):
             if pc_event == 'post_upgrade':
@@ -219,4 +202,4 @@ def plugin_loaded():
 
 
 def plugin_unloaded():
-    _cleanup_views()
+    clean_views()

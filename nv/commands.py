@@ -187,6 +187,7 @@ from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.vim import clean_views
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import enter_visual_block_mode
@@ -478,14 +479,7 @@ class _nv_feed_key(ViWindowCommandBase):
         except Exception as e:
             print('NeoVintageous: An error occurred during key press handle:')
             _log.exception(e)
-
-            import sublime
-            for window in sublime.windows():
-                for view in window.views():
-                    settings = view.settings()
-                    settings.set('command_mode', False)
-                    settings.set('inverse_caret_state', False)
-                    settings.erase('vintage')
+            clean_views()
 
         _log.info('key evt: %s count=%s eval=%s mappings=%s, took %s', key, repeat_count, do_eval, check_user_mappings, '{:.4f}'.format(time.time() - start_time))  # noqa: E501
 

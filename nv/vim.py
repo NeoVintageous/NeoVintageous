@@ -19,6 +19,7 @@ import logging
 
 from sublime import active_window as _active_window
 from sublime import status_message as _status_message
+from sublime import windows as _windows
 
 _log = logging.getLogger(__name__)
 
@@ -131,3 +132,26 @@ def enter_visual_line_mode(view_or_window, mode: str, force: bool = False) -> No
 
 def enter_visual_block_mode(view_or_window, mode: str, force: bool = False) -> None:
     view_or_window.run_command('_enter_visual_block_mode', {'mode': mode})
+
+
+def clean_views():
+    for window in _windows():
+        for view in window.views():
+            clean_view(view)
+
+
+def clean_view(view):
+
+    # Resets cursor and mode. In the case of errors loading the plugin this can
+    # help prevent the normal functioning of editor becoming unusable e.g. the
+    # cursor getting stuck in a block shape or the mode getting stuck in normal
+    # or visual mode.
+
+    try:
+        settings = view.settings()
+        settings.erase('command_mode')
+        settings.erase('inverse_caret_state')
+        settings.erase('vintage')
+    except Exception:
+        import traceback
+        traceback.print_exc()

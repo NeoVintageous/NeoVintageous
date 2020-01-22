@@ -47,6 +47,7 @@ from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
+from NeoVintageous.nv.vim import clean_view
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
@@ -692,16 +693,16 @@ def init_state(view) -> None:
     #
     # Args:
     #   :view (sublime.View):
+
+    # Don't initialise if we get a console, widget, panel, or any other view
+    # where Vim modes are not relevant. Some related initialised settings that
+    # may cause unexpected behaviours if they exist are erased "cleaned" too.
     if not is_view(view):
-        # Abort if we got a console, widget, panel...
         try:
-            # XXX: All this seems to be necessary here.
-            view.settings().set('command_mode', False)
-            view.settings().set('inverse_caret_state', False)
-            view.settings().erase('vintage')
+            # TODO "cleaning" views that are not initialised shouldn't be necessary?
+            clean_view(view)
         except Exception:
-            # TODO [review] Exception handling
-            _log.debug('error initialising irregular view i.e. console, widget, panel, etc.')
+            _log.debug('could not clean an object: console, widget, panel, etc.')
         finally:
             return
 
