@@ -60,9 +60,9 @@ script:
             find . -type f -name __init__.py -print;
             find . -type f -name __init__.pyi -print;
             if [ "$TRAVIS_PYTHON_VERSION" == "3.3" ]; then
-                mypy ../NeoVintageous || true;
+                mypy "../$PACKAGE" || true;
             else
-                mypy --show-error-codes ../NeoVintageous || true;
+                mypy --show-error-codes "../$PACKAGE" || true;
             fi
       fi
 
