@@ -26,7 +26,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-__all__ = []  # type: list
+__all__ = ()
 
 
 @register('<C-n>', (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
