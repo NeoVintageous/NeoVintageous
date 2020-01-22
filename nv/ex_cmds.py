@@ -143,8 +143,15 @@ def ex_browse(window, view, **kwargs):
     window.run_command('prompt_open_file', {'initial_directory': get_cmdline_cwd()})
 
 
+def ex_buffer(window, index=None, **kwargs):
+    if index is None:
+        return
+
+    window_tab_control(window, action='goto', index=int(index))
+
+
 def ex_buffers(window, **kwargs):
-    def _get_view_info(view) -> list:
+    def _get_item_info(i, view) -> list:
         path = view.file_name()
         if path:
             parent, leaf = os.path.split(path)
@@ -165,10 +172,16 @@ def ex_buffers(window, **kwargs):
         if status:
             leaf += ' (%s)' % ', '.join(status)
 
-        return [leaf, path]
+        indicator = '%' if view.id() == window.active_view().id() else ' '
+        byline = '%d  %s    "%s"' % (i, indicator, path)
 
-    file_names = [_get_view_info(view) for view in window.views()]
-    view_ids = [view.id() for view in window.views()]
+        return [leaf, byline]
+
+    items = []
+    view_ids = []
+    for i, view in enumerate(window.views()):
+        items.append(_get_item_info(i, view))
+        view_ids.append(view.id())
 
     def on_done(index) -> None:
         if index == -1:
@@ -180,7 +193,7 @@ def ex_buffers(window, **kwargs):
             if view.id() == sought_id:
                 window.focus_view(view)
 
-    window.show_quick_panel(file_names, on_done)
+    window.show_quick_panel(items, on_done)
 
 
 def ex_cd(view, path=None, **kwargs):

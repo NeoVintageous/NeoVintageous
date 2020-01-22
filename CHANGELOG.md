@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#75](https://github.com/NeoVintageous/NeoVintageous/issues/75): Add `:buffer [N]` command
 * Added [#664](https://github.com/NeoVintageous/NeoVintageous/issues/664): Add visual line `CTRL-v` enter visual block
 * Added [#666](https://github.com/NeoVintageous/NeoVintageous/issues/666): Add visual line `CTRL-n` add next multiple cursor match
 * Added [#665](https://github.com/NeoVintageous/NeoVintageous/issues/665): Add visual block `CTRL-n` enter multiple cursor

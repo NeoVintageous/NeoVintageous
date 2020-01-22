@@ -252,6 +252,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_bnext', ['bnext', 'bn'])
         self.assertRoute('_ex_route_bprevious', ['bNext', 'bN', 'bprevious', 'bp'])
         self.assertRoute('_ex_route_browse', ['browse', 'bro'])
+        self.assertRoute('_ex_route_buffer', ['buffer', 'b'])
         self.assertRoute('_ex_route_buffers', ['files', 'buffers', 'ls'])
         self.assertRoute('_ex_route_cd', ['cd'])
         self.assertRoute('_ex_route_close', ['close', 'clo'])
