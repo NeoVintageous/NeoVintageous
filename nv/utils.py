@@ -972,18 +972,10 @@ class InputParser():
     PANEL = 2
     AFTER_MOTION = 3
 
-    def __init__(self, type: int = None, command=None, param=None, interactive_command: str = None):
+    def __init__(self, type: int = None, command=None, param=None):
         self._type = type
         self._command = command
         self._param = param
-
-        if not interactive_command:
-            interactive_command = command
-
-        self._interactive_command = interactive_command
-
-    def is_interactive(self) -> bool:
-        return bool(self._interactive_command)
 
     def is_after_motion(self) -> bool:
         return self._type == self.AFTER_MOTION
@@ -994,11 +986,14 @@ class InputParser():
     def is_panel(self) -> bool:
         return self._type == self.PANEL
 
-    def run_interactive_command(self, window, value) -> None:
-        window.run_command(self._interactive_command, {self._param: value})
+    def is_interactive(self) -> bool:
+        return self.is_panel() and bool(self._command)
 
     def run_command(self) -> None:
         run_window_command(self._command)
+
+    def run_interactive_command(self, window, value) -> None:
+        window.run_command(self._command, {self._param: value})
 
 
 def folded_rows(view, pt: int) -> int:
