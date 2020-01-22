@@ -969,7 +969,7 @@ def resolve_visual_block_reverse(view) -> None:
 class InputParser():
 
     IMMEDIATE = 1
-    VIA_PANEL = 2
+    PANEL = 2
     AFTER_MOTION = 3
 
     def __init__(self, type: int = None, command=None, param=None, interactive_command: str = None):
@@ -991,8 +991,8 @@ class InputParser():
     def is_immediate(self) -> bool:
         return self._type == self.IMMEDIATE
 
-    def is_via_panel(self) -> bool:
-        return self._type == self.VIA_PANEL
+    def is_panel(self) -> bool:
+        return self._type == self.PANEL
 
     def run_interactive_command(self, window, value) -> None:
         window.run_command(self._interactive_command, {self._param: value})

@@ -507,7 +507,7 @@ class State(object):
             raise ValueError('unexpected command type')
 
         if not self.non_interactive:
-            if command.accept_input and command.input_parser and command.input_parser.is_via_panel():
+            if command.accept_input and command.input_parser and command.input_parser.is_panel():
                 command.input_parser.run_command()
 
     def get_visual_repeat_data(self):
