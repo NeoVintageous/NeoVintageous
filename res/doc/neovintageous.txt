@@ -423,7 +423,7 @@ List of available settings:
 
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
-                        boolean (default on)
+                        boolean (default off)
         If set to false, then pressing the quit key (<Esc> or J) in Visual
         mode will not quit and delete all existing cursors. Useful if you want
         to go back to Normal mode, and still be able to operate on all the

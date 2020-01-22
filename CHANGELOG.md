@@ -18,6 +18,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#655](https://github.com/NeoVintageous/NeoVintageous/issues/655): `*` and `#` searches are noop unless all cursor words match
 * Added [#656](https://github.com/NeoVintageous/NeoVintageous/issues/656): `*` and `#` multiple cursor searches
 
+### Changed
+
+* Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Disable `intageous_multi_cursor_exit_from_visual_mode` by default
+
 ### Removed
 
 * Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `__vi_external_disable_keys` setting; use `__vi_external_disable` instead
