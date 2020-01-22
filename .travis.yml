@@ -33,7 +33,7 @@ install:
                 pip install flake8==3.5;
                 pip install flake8-docstrings;
                 pip install pydocstyle==3.0.0;
-                pip install python-coveralls;
+                pip install python-coveralls==2.8.0;
                 pip install mypy==0.540;
                 flake8 --version;
                 mypy --version;
@@ -55,6 +55,10 @@ script:
     - sh travis.sh run_syntax_tests
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
             flake8;
+            cd "$HOME/.config/sublime-text-3/Packages/$PACKAGE/";
+            find . -type d ! -path "*/\.*" ! -path "./tmp*" ! -path "./htmlcov*" ! -path "./bin*" ! -path "./res*" ! -path "./tests/fixtures*" ! -exec test -f "{}/__init__.pyi" ";" ! -exec test -f "{}/__init__.py" ";" -exec touch "{}/__init__.pyi" ";" -print;
+            find . -type f -name __init__.py -print;
+            find . -type f -name __init__.pyi -print;
             if [ "$TRAVIS_PYTHON_VERSION" == "3.3" ]; then
                 mypy ../NeoVintageous || true;
             else
