@@ -33,7 +33,9 @@ install:
                 pip install flake8==3.5;
                 pip install flake8-docstrings;
                 pip install pydocstyle==3.0.0;
-                pip install coverage==4.5.4 python-coveralls;
+                pip install coverage==4.5.4;
+                pip install codecov==2.0.15;
+                pip install python-coveralls;
                 pip install mypy==0.540;
                 flake8 --version;
                 mypy --version;
@@ -41,6 +43,9 @@ install:
                 pip install flake8;
                 pip install flake8-docstrings;
                 pip install pydocstyle;
+                pip install coverage==4.5.4;
+                pip install codecov==2.0.15;
+                pip install python-coveralls;
                 pip install mypy;
                 flake8 --version;
                 mypy --version;
@@ -62,11 +67,13 @@ script:
                 mypy "../$PACKAGE" || true;
             else
                 mypy --show-error-codes "../$PACKAGE" || true;
-            fi
+            fi;
+            cd "$TRAVIS_BUILD_DIR";
       fi
 
 after_success:
     - coveralls
+    - codecov
 
 notifications:
     email: false
