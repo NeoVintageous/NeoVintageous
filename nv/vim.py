@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import traceback
 
 from sublime import active_window as _active_window
 from sublime import status_message as _status_message
@@ -153,5 +154,4 @@ def clean_view(view):
         settings.erase('inverse_caret_state')
         settings.erase('vintage')
     except Exception:
-        import traceback
         traceback.print_exc()

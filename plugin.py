@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
+import traceback
 
 # To enable debug logging, set the env var to a non-blank value.
 _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
@@ -74,7 +75,6 @@ try:
     from NeoVintageous.nv.events import *  # noqa: F401,F403
 
 except Exception as e:
-    import traceback
     traceback.print_exc()
     _startup_exception = e
 
@@ -136,7 +136,6 @@ def _init_backwards_compat_patches():
             sublime.save_settings('Preferences.sublime-settings')
 
     except Exception:
-        import traceback
         traceback.print_exc()
 
 
@@ -160,14 +159,12 @@ def plugin_loaded():
     except ImportError:
         pass  # Package Control isn't available (PC is not required)
     except Exception as e:
-        import traceback
         traceback.print_exc()
         loading_exeption = e
 
     try:
         _update_ignored_packages()
     except Exception as e:
-        import traceback
         traceback.print_exc()
         loading_exeption = e
 
@@ -176,7 +173,6 @@ def plugin_loaded():
         from NeoVintageous.nv import rc
         rc.load()
     except Exception as e:
-        import traceback
         traceback.print_exc()
         loading_exeption = e
 

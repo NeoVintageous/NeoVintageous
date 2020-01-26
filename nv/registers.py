@@ -17,6 +17,7 @@
 
 from collections import deque
 import itertools
+import traceback
 
 from sublime import get_clipboard
 from sublime import set_clipboard
@@ -29,8 +30,6 @@ try:
 
 except Exception:
     print('NeoVintageous: could not import default package clipboard history updater')
-
-    import traceback
     traceback.print_exc()
 
     def update_clipboard_history(text: str) -> None:
