@@ -18,6 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
+@unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
 class Test_ex_global(unittest.FunctionalTestCase):
 
     def test_global_delete(self):

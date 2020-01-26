@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.session import set_session_value
 
 # TODO Implement 'history' option so that the number of history entries
 # remembered can be configured.
@@ -145,6 +146,9 @@ def history_add(history: str, item: str) -> int:
 
     if len(_storage[history_type]['items']) > _MAX_ITEMS:
         del _storage[history_type]['items'][min(_storage[history_type]['items'].keys())]
+
+    # TODO Refactor history _storage to use session store directly i.e. remove the need for the _storage variable.
+    set_session_value('history', _storage, persist=True)
 
     return 1
 

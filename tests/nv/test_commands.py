@@ -18,6 +18,8 @@
 from NeoVintageous.tests import unittest
 
 
+@unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
+@unittest.mock.patch('NeoVintageous.nv.session.save_session', unittest.mock.Mock())
 class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def feedkey(self, key):

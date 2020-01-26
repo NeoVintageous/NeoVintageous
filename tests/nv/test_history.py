@@ -48,6 +48,8 @@ _patch_storage = unittest.mock.patch('NeoVintageous.nv.history._storage',
 _patch_max_items = lambda n: unittest.mock.patch('NeoVintageous.nv.history._MAX_ITEMS', n)  # noqa: E731
 
 
+@unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
+@unittest.mock.patch('NeoVintageous.nv.session.save_session', unittest.mock.Mock())
 class TestHistory(unittest.TestCase):
     histories = ('cmd', ':', 'search', '/', '?', 'expr', '=', 'input', '@', 'debug', '>')
 

@@ -20,24 +20,14 @@ import os
 
 from sublime import active_window
 
+from NeoVintageous.nv.session import get_session_value
+from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 
 
 _cache = {}  # type: dict
-_session = {}  # type: dict
 _storage = {}  # type: dict
 _views = defaultdict(dict)  # type: dict
-
-
-def _get_session_value(name: str, default=None):
-    try:
-        return _session[name]
-    except KeyError:
-        return default
-
-
-def _set_session_value(name: str, value) -> None:
-    _session[name] = value
 
 
 def get_cache_value(name: str, default=None):
@@ -52,35 +42,35 @@ def set_cache_value(name: str, value) -> None:
 
 
 def set_ex_substitute_last_pattern(pattern: str):
-    return _set_session_value('ex_substitute_last_pattern', pattern)
+    return set_session_value('ex_substitute_last_pattern', pattern, persist=True)
 
 
 def get_ex_substitute_last_pattern():
-    return _get_session_value('ex_substitute_last_pattern')
+    return get_session_value('ex_substitute_last_pattern')
 
 
 def get_ex_substitute_last_replacement():
-    return _get_session_value('ex_substitute_last_replacement')
+    return get_session_value('ex_substitute_last_replacement')
 
 
 def set_ex_substitute_last_replacement(replacement: str):
-    return _set_session_value('ex_substitute_last_replacement', replacement)
+    return set_session_value('ex_substitute_last_replacement', replacement, persist=True)
 
 
 def get_ex_shell_last_command():
-    return _get_session_value('ex_shell_last_command')
+    return get_session_value('ex_shell_last_command')
 
 
 def set_ex_shell_last_command(cmd: str):
-    return _set_session_value('ex_shell_last_command', cmd)
+    return set_session_value('ex_shell_last_command', cmd)
 
 
 def get_ex_global_last_pattern():
-    return _get_session_value('ex_global_last_pattern')
+    return get_session_value('ex_global_last_pattern')
 
 
 def set_ex_global_last_pattern(pattern: str):
-    return _set_session_value('ex_global_last_pattern', pattern)
+    return set_session_value('ex_global_last_pattern', pattern)
 
 
 def get_cmdline_cwd() -> str:
