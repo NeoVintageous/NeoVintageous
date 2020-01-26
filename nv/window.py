@@ -177,9 +177,7 @@ def _close_all_other_views(window) -> None:
     Modified views are merged into current group. Modified views
     are not removed, so changes cannot get lost.
     """
-    current_group_num = window.active_group()
     current_view = window.active_view()
-
     if not current_view:
         return
 
@@ -187,18 +185,19 @@ def _close_all_other_views(window) -> None:
     if len(views) == 1:
         return
 
-    # Note: the views are closed and then the groups. Looping over the groups
-    # and closing the views in that group and then closing the group won't work.
+    # NOTE The non-active *unmodified* views are closed first and then the
+    # groups. This effectivly collapses unmodified views into the same group as
+    # the active view. Looping over the groups and closing views won't work.
 
-    # close other unmodified views
+    # Close all other unmodified views.
     for view in views:
         if view != current_view and not view.is_dirty():
             view.close()
 
-    # close other groups
+    # Close all other groups.
+    current_group_num = window.active_group()
     for i in range(window.num_groups()):
         if i != current_group_num:
-            # TODO is this the best way to close a group
             window.run_command('close_pane', {'group': i})
 
 
