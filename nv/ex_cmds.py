@@ -1333,7 +1333,6 @@ def _default_ex_cmd(window, view, line_range: RangeNode, **kwargs):
     # TODO [review] State dependency
     state = State(view)
     enter_normal_mode(window, state.mode)
-    state.enter_normal_mode()
     goto_line(view, state.mode, line)
 
 
