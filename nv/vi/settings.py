@@ -25,20 +25,8 @@ from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 
 
-_cache = {}  # type: dict
 _storage = {}  # type: dict
 _views = defaultdict(dict)  # type: dict
-
-
-def get_cache_value(name: str, default=None):
-    try:
-        return _cache[name]
-    except KeyError:
-        return default
-
-
-def set_cache_value(name: str, value) -> None:
-    _cache[name] = value
 
 
 def set_ex_substitute_last_pattern(pattern: str):

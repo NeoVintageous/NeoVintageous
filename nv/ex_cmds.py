@@ -68,13 +68,11 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
-from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import get_ex_global_last_pattern
 from NeoVintageous.nv.vi.settings import get_ex_shell_last_command
 from NeoVintageous.nv.vi.settings import get_ex_substitute_last_pattern
 from NeoVintageous.nv.vi.settings import get_ex_substitute_last_replacement
-from NeoVintageous.nv.vi.settings import set_cache_value
 from NeoVintageous.nv.vi.settings import set_cmdline_cwd
 from NeoVintageous.nv.vi.settings import set_ex_global_last_pattern
 from NeoVintageous.nv.vi.settings import set_ex_shell_last_command
@@ -408,6 +406,9 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     set_ex_global_last_pattern(pattern)
 
 
+_help_tags_cache = {}  # type: dict
+
+
 def ex_help(window, subject: str = None, forceit: bool = False, **kwargs):
     if not subject:
         subject = 'help.txt'
@@ -415,10 +416,8 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs):
         if forceit:
             return status_message("E478: Don't panic!")
 
-    help_tags = get_cache_value('help_tags')
-    if not help_tags:
+    if not _help_tags_cache:
         _log.debug('initializing help tags...')
-        help_tags = {}
 
         tags_resources = [r for r in find_resources('tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
         if not tags_resources:
@@ -430,11 +429,9 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs):
             if line:
                 match = tags_matcher.match(line)
                 if match:
-                    help_tags[match.group(1)] = (match.group(2), match.group(3))
+                    _help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
 
-        set_cache_value('help_tags', help_tags)
-
-    if subject not in help_tags:
+    if subject not in _help_tags_cache:
 
         # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
         # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
@@ -453,7 +450,7 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs):
         for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
             for s in subject_candidates:
                 _subject = p + s
-                if _subject in help_tags:
+                if _subject in _help_tags_cache:
                     subject = _subject
                     found = True
 
@@ -463,7 +460,7 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs):
         if not found:
             return status_message('E149: Sorry, no help for %s' % subject)
 
-    tag = help_tags[subject]
+    tag = _help_tags_cache[subject]
 
     doc_resources = [r for r in find_resources(
         tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
