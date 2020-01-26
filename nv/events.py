@@ -88,9 +88,6 @@ _query_contexts = {
 
 class NeoVintageousEvents(EventListener):
 
-    _cached_completions = []  # type: list
-    _cached_completion_prefixes = []  # type: list
-
     def on_query_context(self, view, key, operator, operand, match_all):
         # Called when determining to trigger a key binding with the given context key.
         #
@@ -106,10 +103,8 @@ class NeoVintageousEvents(EventListener):
         #   match_all (bool):
         #
         # Returns:
-        #   bool:
-        #       If the context is known.
-        #   None:
-        #       If the context is unknown.
+        #   bool: If the context is known.
+        #   None: If the context is unknown.
         if key in _query_contexts:
             return _query_contexts[key](view, operator, operand, match_all)
 
@@ -126,10 +121,8 @@ class NeoVintageousEvents(EventListener):
         #   args (dict)
         #
         # Returns:
-        #   Tuple (str, dict):
-        #       If the command is to be rewritten
-        #   None:
-        #       If the command is unmodified
+        #   Tuple (str, dict): If the command is to be rewritten
+        #   None: If the command is unmodified
         if command == 'drag_select':
 
             # Updates the mode based on mouse events. For example, a double
