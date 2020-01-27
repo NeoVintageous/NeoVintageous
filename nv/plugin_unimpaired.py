@@ -23,7 +23,10 @@ from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.options import window_visible_option
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.polyfill import view_find
+from NeoVintageous.nv.polyfill import view_rfind
 from NeoVintageous.nv.utils import InputParser
+from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
@@ -60,6 +63,42 @@ class _UnimpairedContextNext(ViOperatorDef):
                 'mode': state.mode,
                 'count': state.count,
                 'action': 'context_next'
+            }
+        }
+
+
+@register(seq='[n', modes=(NORMAL,))
+class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'goto_prev_conflict_marker'
+            }
+        }
+
+
+@register(seq=']n', modes=(NORMAL,))
+class UnimpairedGotoNextConflictMarker(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_nv_unimpaired',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count,
+                'action': 'goto_next_conflict_marker'
             }
         }
 
@@ -274,7 +313,38 @@ class _UnimpairedToggleOff(_BaseToggleDef):
         }
 
 
-# Go to the previous [count] SCM conflict marker or diff/patch hunk.
+_CONFLICT_MARKER_REGEX = '(<<<<<<<|=======|>>>>>>>)'
+
+
+def _goto_prev_conflict_marker(view, count):
+    def f(view, s):
+        for i in range(0, count):
+            match = view_rfind(view, _CONFLICT_MARKER_REGEX, s.b)
+            if not match:
+                break
+
+            s.a = s.b = match.begin()
+
+        return s
+
+    regions_transformer(view, f)
+
+
+def _goto_next_conflict_marker(view, count):
+    def f(view, s):
+        for i in range(0, count):
+            match = view_find(view, _CONFLICT_MARKER_REGEX, s.b + 1)
+            if not match:
+                break
+
+            s.a = s.b = match.begin()
+
+        return s
+
+    regions_transformer(view, f)
+
+
+# Go to the previous [count] lint error.
 def _context_previous(view, count):
     window = view.window()
     if window:
@@ -284,7 +354,7 @@ def _context_previous(view, count):
         })
 
 
-# Go to the next [count] SCM conflict marker or diff/patch hunk.
+# Go to the next [count] lint error.
 def _context_next(view, count):
     window = view.window()
     if window:
@@ -478,6 +548,10 @@ class _nv_unimpaired_command(TextCommand):
             window_buffer_control(self.view.window(), action[1:], count=count)
         elif action in ('tabnext', 'tabprevious', 'tabfirst', 'tablast'):
             window_tab_control(self.view.window(), action[3:], count=count)
+        elif action == 'goto_next_conflict_marker':
+            _goto_next_conflict_marker(self.view, count)
+        elif action == 'goto_prev_conflict_marker':
+            _goto_prev_conflict_marker(self.view, count)
         elif action == 'context_next':
             _context_next(self.view, count)
         elif action == 'context_previous':

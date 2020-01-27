@@ -83,7 +83,7 @@ def view_find(view, pattern: str, start_pt: int, flags: int = 0):
     return match
 
 
-# There's no Sublime API to find a pattern in reverse direction.
+# There's no Sublime API to find patterns in reverse direction.
 # See: https://github.com/SublimeTextIssues/Core/issues/245.
 def view_rfind_all(view, pattern: str, start_pt: int, flags: int = 0):
     matches = view.find_all(pattern)
@@ -92,6 +92,17 @@ def view_rfind_all(view, pattern: str, start_pt: int, flags: int = 0):
             return reversed(matches[:matches.index(region)])
 
     return reversed(matches)
+
+
+# There's no Sublime API to find a pattern in reverse direction.
+# See: https://github.com/SublimeTextIssues/Core/issues/245.
+def view_rfind(view, pattern: str, start_pt: int, flags: int = 0):
+    matches = view_rfind_all(view, pattern, start_pt, flags)
+    if matches:
+        try:
+            return next(matches)
+        except StopIteration:
+            pass
 
 
 # There's no Sublime API to find a pattern within a start-end range.

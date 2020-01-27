@@ -15,16 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from unittest import TestCase  # noqa: F401
 from unittest import mock  # noqa: F401
 from unittest import skipIf  # noqa: F401
-from unittest import TestCase  # noqa: F401
 import copy
 import os
+import textwrap
 import unittest
 
 # Use aliases to indicate that they are not public testing APIs.
-from sublime import active_window as _active_window
 from sublime import Region
+from sublime import active_window as _active_window
 from sublime import version as _version
 
 # Use aliases to indicate that they are not public testing APIs.
@@ -173,6 +174,9 @@ class ViewTestCase(unittest.TestCase):
             width -= 1
 
         self.settings().set('wrap_width', width)
+
+    def dedent(self, text: str) -> str:
+        return textwrap.dedent(text)
 
     def assertSetting(self, name, expected):
         self.assertEqual(self.settings().get(name), expected)
@@ -1280,6 +1284,7 @@ _SEQ2CMD = {
     '[(':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '('}},  # noqa: E241,E501
     '[P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True, 'adjust_indent': True}},  # noqa: E241,E501
     '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
+    '[n':           {'command': '_nv_unimpaired', 'args': {'action': 'goto_prev_conflict_marker'}},  # noqa: E241
     '[oa':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'a'}},  # noqa: E241
     '[oe':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'e'}},  # noqa: E241
     '[oh':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'h'}},  # noqa: E241
@@ -1294,6 +1299,7 @@ _SEQ2CMD = {
     '])':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': ')'}},  # noqa: E241,E501
     ']P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_indent': True}},  # noqa: E241,E501
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
+    ']n':           {'command': '_nv_unimpaired', 'args': {'action': 'goto_next_conflict_marker'}},  # noqa: E241
     ']oa':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'a'}},  # noqa: E241
     ']oe':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'e'}},  # noqa: E241
     ']oh':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'h'}},  # noqa: E241
