@@ -763,7 +763,8 @@ def ex_registers(window, view, **kwargs):
         return string
 
     items = []
-    for k, v in registers_get_all(view).items():
+    registers = registers_get_all(view).items()
+    for k, v in registers:
         if v:
             multiple_values = []
 
@@ -778,7 +779,7 @@ def ex_registers(window, view, **kwargs):
 
                 multiple_values.append(part_value)
 
-            items.append('"{}   {}'.format(k, _truncate('|'.join(multiple_values), 78)))
+            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 78)))
 
     if items:
         window.show_quick_panel(sorted(items), None, flags=MONOSPACE_FONT)
