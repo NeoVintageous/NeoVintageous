@@ -20,7 +20,6 @@ def _json_object_hook_dict_str_key_to_int(x):
 
 def load_session() -> None:
     try:
-
         with open(_session_file(), 'r', encoding='utf=8', errors='replace') as f:
             content = f.read()
             if content.strip():
