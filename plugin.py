@@ -28,7 +28,7 @@ _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 # configuration (a StreamHandler that writes to sys.stderr with a level of
 # WARNING. The end result is that it prints the message to sys.stderr, and in
 # Sublime Text that means it will print the message to console).
-if _DEBUG:
+if _DEBUG:  # pragma: no cover
     import logging
 
     logger = logging.getLogger('NeoVintageous')
@@ -74,7 +74,7 @@ try:
     # Events.
     from NeoVintageous.nv.events import *  # noqa: F401,F403
 
-except Exception as e:
+except Exception as e:  # pragma: no cover
     traceback.print_exc()
     _startup_exception = e
 
@@ -88,7 +88,7 @@ def _update_ignored_packages():
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
     conflict_packages = [x for x in ['Six', 'Vintage', 'Vintageous'] if x not in ignored_packages]
-    if conflict_packages:
+    if conflict_packages:  # pragma: no cover
         print('NeoVintageous: update ignored packages with conflicts {}'.format(conflict_packages))
         ignored_packages = sorted(ignored_packages + conflict_packages)
         settings.set('ignored_packages', ignored_packages)
@@ -109,7 +109,7 @@ def _init_backwards_compat_patches():
         build_version = int(preferences.get('neovintageous_build_version', 0))
 
         # TODO Remove backwards compatability patch in version 2.0
-        if build_version < 11000:
+        if build_version < 11000:  # pragma: no cover
             # Set user deprecated default settings. Both ctrl keys and super
             # keys will be  enabled by default in version 2.0. This sets the
             # user default not to avoid disruption for existing users later.
@@ -119,7 +119,7 @@ def _init_backwards_compat_patches():
             preferences.set('neovintageous_build_version', 11000)
 
         # TODO Remove backwards compatability patch in version 2.0
-        if build_version < 11100:
+        if build_version < 11100:  # pragma: no cover
             # Migrate the ".vintageousrc" (runtime configuation) file. The new
             # file name is ".neovintageousrc" and is automatically renamed to
             # the new name to avoid disruption to users.
@@ -135,7 +135,7 @@ def _init_backwards_compat_patches():
 
             sublime.save_settings('Preferences.sublime-settings')
 
-    except Exception:
+    except Exception:  # pragma: no cover
         traceback.print_exc()
 
 
@@ -152,19 +152,19 @@ def plugin_loaded():
 
     try:
         from package_control import events
-        if events.install('NeoVintageous'):
+        if events.install('NeoVintageous'):  # pragma: no cover
             pc_event = 'install'
-        if events.post_upgrade('NeoVintageous'):
+        if events.post_upgrade('NeoVintageous'):  # pragma: no cover
             pc_event = 'post_upgrade'
-    except ImportError:
+    except ImportError:  # pragma: no cover
         pass  # Package Control isn't available (PC is not required)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         traceback.print_exc()
         loading_exeption = e
 
     try:
         _update_ignored_packages()
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         traceback.print_exc()
         loading_exeption = e
 
@@ -172,11 +172,11 @@ def plugin_loaded():
         load_session()
         from NeoVintageous.nv import rc
         rc.load()
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         traceback.print_exc()
         loading_exeption = e
 
-    if _startup_exception or loading_exeption:
+    if _startup_exception or loading_exeption:  # pragma: no cover
 
         clean_views()
 
