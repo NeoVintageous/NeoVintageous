@@ -28,12 +28,12 @@ try:
     def update_clipboard_history(text: str) -> None:
         _clipboard_history.push_text(text)
 
-except Exception:
+except Exception:  # pragma: no cover
     print('NeoVintageous: could not import default package clipboard history updater')
     traceback.print_exc()
 
     def update_clipboard_history(text: str) -> None:
-        print('NeoVintageous: could not update clipboard history: import error')
+        print('NeoVintageous: update_clipboard_history() noop; could not import default pakage history updater')
 
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vim import VISUAL
