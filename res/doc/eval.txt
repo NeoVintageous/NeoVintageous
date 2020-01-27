@@ -1217,7 +1217,7 @@ lambda expression				*expr-lambda* *lambda*
 {args -> expr1}		lambda expression
 
 A lambda expression creates a new unnamed function which returns the result of
-evaluating |expr1|.  Lambda expressions differ from |user-functions| in
+evaluating |expr1|.  Lambda expressions differ from |user-function|s in
 the following ways:
 
 1. The body of the lambda expression is an |expr1| and not a sequence of |Ex|
@@ -1737,6 +1737,10 @@ v:lnum		Line number for the 'foldexpr' |fold-expr|, 'formatexpr' and
 		expressions is being evaluated.  Read-only when in the
 		|sandbox|.
 
+						*v:lua* *lua-variable*
+v:lua		Prefix for calling Lua functions from expressions.
+		See |v:lua-call| for more information.
+
 					*v:mouse_win* *mouse_win-variable*
 v:mouse_win	Window number for a mouse click obtained with |getchar()|.
 		First window has number 1, like with |winnr()|.  The value is
@@ -1986,9 +1990,12 @@ v:windowid	Application-specific window "handle" which may be set by any
 		|window-ID|.
 
 ==============================================================================
-4. Builtin Functions					*functions*
+4. Builtin Functions				*vim-function* *functions*
 
-See |function-list| for a list grouped by what the function is used for.
+The Vimscript subsystem (referred to as "eval" internally) provides the
+following builtin functions.  Scripts can also define |user-function|s.
+
+See |function-list| to browse functions by topic.
 
 (Use CTRL-] on the function name to jump to the full explanation.)
 
@@ -2273,6 +2280,7 @@ pathshorten({expr})		String	shorten directory names in a path
 pow({x}, {y})			Float	{x} to the power of {y}
 prevnonblank({lnum})		Number	line nr of non-blank line <= {lnum}
 printf({fmt}, {expr1}...)	String	format text
+pum_getpos()			Dict	position and size of pum if visible
 pumvisible()			Number	whether popup menu is visible
 pyeval({expr})			any	evaluate |Python| expression
 py3eval({expr})			any	evaluate |python3| expression
@@ -2511,6 +2519,9 @@ and({expr}, {expr})					*and()*
 
 api_info()						*api_info()*
 		Returns Dictionary of |api-metadata|.
+
+		View it in a nice human-readable format: >
+		       :lua print(vim.inspect(vim.fn.api_info()))
 
 append({lnum}, {text})					*append()*
 		When {text} is a |List|: Append each item of the |List| as a
@@ -3113,6 +3124,10 @@ complete_info([{what}])
 		the items listed in {what} are returned.  Unsupported items in
 		{what} are silently ignored.
 
+		To get the position and size of the popup menu, see
+		|pum_getpos()|. It's also available in |v:event| during the
+		|CompleteChanged| event.
+
 		Examples: >
 			" Get all items
 			call complete_info()
@@ -3543,7 +3558,7 @@ exists({expr})	The result is a Number, which is |TRUE| if {expr} is
 					string)
 			*funcname	built-in function (see |functions|)
 					or user defined function (see
-					|user-functions|). Also works for a
+					|user-function|). Also works for a
 					variable that is a Funcref.
 			varname		internal variable (see
 					|internal-variables|).  Also works
@@ -3759,6 +3774,8 @@ feedkeys({string} [, {mode}])				*feedkeys()*
 		and "\..." notation |expr-quote|. For example,
 		feedkeys("\<CR>") simulates pressing of the <Enter> key. But
 		feedkeys('\<CR>') pushes 5 characters.
+		The |<Ignore>| keycode may be used to exit the
+		wait-for-character without doing anything.
 
 		{mode} is a String, which can contain these character flags:
 		'm'	Remap keys. This is default.  If {mode} is absent,
@@ -4127,6 +4144,8 @@ getbufinfo([{dict}])
 			hidden		TRUE if the buffer is hidden.
 			listed		TRUE if the buffer is listed.
 			lnum		current line number in buffer.
+			linecount	number of lines in the buffer (only
+					valid when loaded)
 			loaded		TRUE if the buffer is loaded.
 			name		full path to the file in the buffer.
 			signs		list of signs placed in the buffer.
@@ -4553,6 +4572,10 @@ getloclist({nr},[, {what}])				*getloclist()*
 		If the optional {what} dictionary argument is supplied, then
 		returns the items listed in {what} as a dictionary. Refer to
 		|getqflist()| for the supported items in {what}.
+		If {what} contains 'filewinid', then returns the id of the
+		window used to display files from the location list. This
+		field is applicable only when called from a location list
+		window.
 
 getmatches()						*getmatches()*
 		Returns a |List| with all matches previously defined for the
@@ -4716,7 +4739,7 @@ getreg([{regname} [, 1 [, {list}]]])			*getreg()*
 getregtype([{regname}])					*getregtype()*
 		The result is a String, which is type of register {regname}.
 		The value will be one of:
-		    "v"			for |characterwise| text
+		    "v"			for |charwise| text
 		    "V"			for |linewise| text
 		    "<CTRL-V>{width}"	for |blockwise-visual| text
 		    ""			for an empty or unknown register
@@ -4958,9 +4981,11 @@ has({feature})	Returns 1 if {feature} is supported, 0 otherwise.  The
 <							*feature-list*
 		    List of supported pseudo-feature names:
 		        acl		|ACL| support
+			bsd		BSD system (not macOS, use "mac" for that).
 		        iconv		Can use |iconv()| for conversion.
 		        +shellslash	Can use backslashes in filenames (Windows)
 			clipboard	|clipboard| provider is available.
+			mac		MacOS system.
 			nvim		This is Nvim.
 			python2		Legacy Vim |python2| interface. |has-python|
 			python3		Legacy Vim |python3| interface. |has-python|
@@ -4970,6 +4995,7 @@ has({feature})	Returns 1 if {feature} is supported, 0 otherwise.  The
 			unix		Unix system.
 			*vim_starting*	True during |startup|. 
 			win32		Windows system (32 or 64 bit).
+			win64		Windows system (64 bit).
 			wsl		WSL (Windows Subsystem for Linux) system
 
 							*has-patch*
@@ -5430,32 +5456,41 @@ jobstart({cmd}[, {opts}])				*jobstart()*
 
 							*jobstart-options*
 		{opts} is a dictionary with these keys:
-		  |on_stdout|: stdout event handler (function name or |Funcref|)
-		  stdout_buffered : read stdout in |channel-buffered| mode.
-		  |on_stderr|: stderr event handler (function name or |Funcref|)
-		  stderr_buffered : read stderr in |channel-buffered| mode.
-		  |on_exit|  : exit event handler (function name or |Funcref|)
-		  cwd      : Working directory of the job; defaults to
-		             |current-directory|.
-		  rpc      : If set, |msgpack-rpc| will be used to communicate
-			     with the job over stdin and stdout. "on_stdout" is
-			     then ignored, but "on_stderr" can still be used.
-		  pty      : If set, the job will be connected to a new pseudo
-			     terminal and the job streams are connected to the
-			     master file descriptor. "on_stderr" is ignored,
-			     "on_stdout" receives all output.
-
-		  width    : (pty only) Width of the terminal screen
-		  height   : (pty only) Height of the terminal screen
-		  TERM     : (pty only) $TERM environment variable
-		  detach   : (non-pty only) Detach the job process: it will
-			     not be killed when Nvim exits. If the process
-			     exits before Nvim, "on_exit" will be invoked.
+		  clear_env:  (boolean) `env` defines the job environment
+			      exactly, instead of merging current environment.
+		  cwd:	      (string, default=|current-directory|) Working
+			      directory of the job.
+		  detach:     (boolean) Detach the job process: it will not be
+			      killed when Nvim exits. If the process exits
+			      before Nvim, `on_exit` will be invoked.
+		  env:	      (dict) Map of environment variable name:value
+			      pairs extending (or replacing if |clear_env|)
+			      the current environment.
+		  height:     (number) Height of the `pty` terminal.
+		  |on_exit|:    (function) Callback invoked when the job exits.
+		  |on_stdout|:  (function) Callback invoked when the job emits
+			      stdout data.
+		  |on_stderr|:  (function) Callback invoked when the job emits
+			      stderr data.
+		  pty:	      (boolean) Connect the job to a new pseudo
+			      terminal, and its streams to the master file
+			      descriptor. Then  `on_stderr` is ignored,
+			      `on_stdout` receives all output.
+		  rpc:	      (boolean) Use |msgpack-rpc| to communicate with
+			      the job over stdio. Then `on_stdout` is ignored,
+			      but `on_stderr` can still be used.
+		  stderr_buffered: (boolean) Collect data until EOF (stream closed)
+			      before invoking `on_stderr`. |channel-buffered|
+		  stdout_buffered: (boolean) Collect data until EOF (stream
+			      closed) before invoking `on_stdout`. |channel-buffered|
+		  TERM:	      (string) Sets the `pty` $TERM environment variable.
+		  width:      (number) Width of the `pty` terminal.
 
 		{opts} is passed as |self| dictionary to the callback; the
 		caller may set other keys to pass application-specific data.
+
 		Returns:
-		  - The channel ID on success
+		  - |channel-id| on success
 		  - 0 on invalid arguments
 		  - -1 if {cmd}[0] is not executable.
 		See also |job-control|, |channel|, |msgpack-rpc|.
@@ -5466,6 +5501,9 @@ jobstop({id})						*jobstop()*
 		will be sent. When the job terminates its |on_exit| handler
 		(if any) will be invoked.
 		See |job-control|.
+
+		Returns 1 for valid job id, 0 for invalid id, including jobs have
+		exited or stopped.
 
 jobwait({jobs}[, {timeout}])				*jobwait()*
 		Waits for jobs and their |on_exit| handlers to complete.
@@ -6120,7 +6158,7 @@ mode([expr])	Return a string that indicates the current mode.
 
 		   n	    Normal
 		   no	    Operator-pending
-		   nov	    Operator-pending (forced characterwise |o_v|)
+		   nov	    Operator-pending (forced charwise |o_v|)
 		   noV	    Operator-pending (forced linewise |o_V|)
 		   noCTRL-V Operator-pending (forced blockwise |o_CTRL-V|)
 		   niI	    Normal using |i_CTRL-O| in |Insert-mode|
@@ -6503,6 +6541,19 @@ printf({fmt}, {expr1} ...)				*printf()*
 		of "%" items.  If there are not sufficient or too many
 		arguments an error is given.  Up to 18 arguments can be used.
 
+
+pum_getpos()						*pum_getpos()*
+ 		If the popup menu (see |ins-completion-menu|) is not visible,
+ 		returns an empty |Dictionary|, otherwise, returns a
+ 		|Dictionary| with the following keys:
+ 			height		nr of items visible
+ 			width		screen cells
+ 			row		top screen row (0 first row)
+ 			col		leftmost screen column (0 first col)
+ 			size		total nr of items
+ 			scrollbar	|TRUE| if visible
+
+  		The values are the same as in |v:event| during |CompleteChanged|.
 
 pumvisible()						*pumvisible()*
 		Returns non-zero when the popup menu is visible, zero
@@ -7430,7 +7481,7 @@ setreg({regname}, {value} [, {options}])
 		If {options} contains "a" or {regname} is upper case,
 		then the value is appended.
 		{options} can also contain a register type specification:
-		    "c" or "v"	      |characterwise| mode
+		    "c" or "v"	      |charwise| mode
 		    "l" or "V"	      |linewise| mode
 		    "b" or "<CTRL-V>" |blockwise-visual| mode
 		If a number immediately follows "b" or "<CTRL-V>" then this is
@@ -8552,8 +8603,12 @@ tabpagebuflist([{arg}])					*tabpagebuflist()*
 tabpagenr([{arg}])					*tabpagenr()*
 		The result is a Number, which is the number of the current
 		tab page.  The first tab page has number 1.
-		When the optional argument is "$", the number of the last tab
-		page is returned (the tab page count).
+		The optional argument {arg} supports the following values:
+			$	the number of the last tab page (the tab page
+				count).
+			#	the number of the last accessed tab page (where
+				|g<Tab>| goes to).  If there is no previous
+				tab page, 0 is returned.
 		The number can be used with the |:tab| command.
 
 
@@ -9239,7 +9294,7 @@ Don't forget that "^" will only match at the first character of the String and
 "\n".
 
 ==============================================================================
-5. Defining functions					*user-functions*
+5. Defining functions					*user-function*
 
 New functions can be defined.  These can be called just like builtin
 functions.  The function executes a sequence of Ex commands.  Normal mode
@@ -9697,7 +9752,7 @@ This does NOT work: >
 			register, "@/" for the search pattern.
 			If the result of {expr1} ends in a <CR> or <NL>, the
 			register will be linewise, otherwise it will be set to
-			characterwise.
+			charwise.
 			This can be used to clear the last search pattern: >
 				:let @/ = ""
 <			This is different from searching for an empty string,
@@ -9779,27 +9834,37 @@ This does NOT work: >
 			Like above, but append/add/subtract the value for each
 			|List| item.
 
-					*:let=<<* *:let-heredoc* *E990* *E991*
+						*:let=<<* *:let-heredoc*
+						*E990* *E991* *E172* *E221*
 :let {var-name} =<< [trim] {marker}
 text...
 text...
 {marker}
 			Set internal variable {var-name} to a List containing
 			the lines of text bounded by the string {marker}.
-			{marker} must not contain white space.
+			{marker} cannot start with a lower case character.
 			The last line should end only with the {marker} string
 			without any other character.  Watch out for white
 			space after {marker}!
-			If {marker} is not supplied, then "." is used as the
-			default marker.
 
-			Any white space characters in the lines of text are
-			preserved.  If "trim" is specified before {marker},
-			then all the leading indentation exactly matching the
-			leading indentation before `let` is stripped from the
-			input lines and the line containing {marker}.  Note
-			that the difference between space and tab matters
-			here.
+			Without "trim" any white space characters in the lines
+			of text are preserved.  If "trim" is specified before
+			{marker}, then indentation is stripped so you can do: >
+				let text =<< trim END
+				   if ok
+				     echo 'done'
+				   endif
+				END
+<			Results in: ["if ok", "  echo 'done'", "endif"]
+			The marker must line up with "let" and the indentation
+			of the first line is removed from all the text lines.
+			Specifically: all the leading indentation exactly
+			matching the leading indentation of the first
+			non-empty text line is stripped from the input lines.
+			All leading indentation exactly matching the leading
+			indentation before `let` is stripped from the line
+			containing {marker}.  Note that the difference between
+			space and tab matters here.
 
 			If {var-name} didn't exist yet, it is created.
 			Cannot be followed by another command, but can be
