@@ -53,10 +53,14 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x\na|bc\ny', '2p', 'x\nabc\n|fizz\nfizz\ny')
         self.eq('x\na|bc\ny', '3p', 'x\nabc\n|fizz\nfizz\nfizz\ny')
         self.eq('|', 'p', '|fizz\n')
+        self.eq('1\n2\n|buzz', 'p', '1\n2\nbuzz\n|fizz\n')
+        self.eq('1\n2\n|buzz', '2p', '1\n2\nbuzz\n|fizz\nfizz\n')
         self.registerLinewise('"', 'fizz\nbuzz\n')
         self.eq('|', 'p', '|fizz\nbuzz\n')
         self.eq('x\na|bc\ny', 'p', 'x\nabc\n|fizz\nbuzz\ny')
         self.eq('x\na|bc\ny', '2p', 'x\nabc\n|fizz\nbuzz\nfizz\nbuzz\ny')
+        self.eq('1\n2\n|zing', 'p', '1\n2\nzing\n|fizz\nbuzz\n')
+        self.eq('1\n2\n|zing', '2p', '1\n2\nzing\n|fizz\nbuzz\nfizz\nbuzz\n')
         self.register('"', 'buzz')
         self.eq('fizz\n|\na\nb', 'p', 'fizz\nbuz|z\na\nb')
 
@@ -73,6 +77,7 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a|bc\nd|ef\nx', 'p', 'ab|fizz\nbuzzc\nde|buzz\nfizzf\nx')
         self.registerLinewise('"', ['fizz\n', 'buzz\n'])
         self.eq('a|bc\n2\nd|ef\n4', 'p', 'abc\n|fizz\n2\ndef\n|buzz\n4')
+        self.eq('11|1\n222\n33|3', 'p', '111\n|fizz\n222\n333\n|buzz\n')
 
     def test_n_multi_cursor_content_and_one_selection(self):
         self.register('"', ['fizz', 'buzz'])

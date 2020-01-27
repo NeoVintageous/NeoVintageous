@@ -2310,11 +2310,22 @@ class _vi_paste(ViTextCommandBase):
                     else:
                         pt = self.view.text_point(row + 1, 0)
 
+                    # When the insertion point is at the EOF in linewise and the
+                    # EOF is not a newline then the text needs to be prefixed
+                    # with one, the selection point needs to be adjusted too.
+                    insertion_pt_at_eof = not before_cursor and line.size() > 0 and line.end() >= self.view.size()
+                    if insertion_pt_at_eof:
+                        text = '\n' + text
+
                     self.view.insert(edit, pt, text)
 
                     if adjust_cursor:
                         pt += len(text) + 1
                     else:
+                        # The insertion point is at EOF; see above for details.
+                        if insertion_pt_at_eof:
+                            pt += 1
+
                         pt = next_non_blank(self.view, pt)
 
                     self.view.sel().add(pt)

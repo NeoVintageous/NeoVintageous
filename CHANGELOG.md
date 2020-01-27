@@ -31,6 +31,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#667](https://github.com/NeoVintageous/NeoVintageous/issues/667): Pasting line breaks newline at the end of file
 * Fixed [#654](https://github.com/NeoVintageous/NeoVintageous/issues/654): `cit` deletes inside the wrong tag
 * Fixed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Various multiple cursor mode issues
 * Fixed [#658](https://github.com/NeoVintageous/NeoVintageous/issues/658): `gU` and `gu` should never emit visual bell
