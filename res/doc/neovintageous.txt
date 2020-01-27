@@ -188,35 +188,40 @@ key binding, Goto  Menu > Preferences > Key Bindings: >
 
 ==============================================================================
 
-PLUGINS                                                           *nv-plugins*
-                                                                     *plugins*
+PLUGINS                                                 *nv-plugins* *plugins*
 
 ------------------------------------------------------------------------------
 
-ABOLISH                                                           *nv-abolish*
-                                                                     *abolish*
+ABOLISH                                                 *nv-abolish* *abolish*
 
-Abolish is a port of https://github.com/tpope/vim-abolish. Tim Pope describes it
-as "three superficially unrelated plugins in one that share a common theme:
-working with variants of a word."
+Abolish is a port of vim-abolish.
 
-The port supports "case mutating algorithms". See |abolish.txt| for more details.
+Tim Pope describes it as "three superficially unrelated plugins in one that
+share a common theme: working with variants of a word."
 
-------------------------------------------------------------------------------
+The port currently supports the "case mutating algorithms".
 
-COMMENTARY                                                     *nv-commentary*
-                                                                  *commentary*
+See |abolish.txt|
 
-Commentary is a port of https://github.com/tpope/vim-commentary. It adds several
-commands that make it easier to comment, uncomment, and toggle comments. See
-|commentary.txt| for more details.
+Credit: https://github.com/tpope/vim-abolish
 
 ------------------------------------------------------------------------------
 
-HIGHLIGHTEDYANK                                           *nv-highlightedyank*
-                                                             *highlightedyank*
+COMMENTARY                                        *nv-commentary* *commentary*
 
-Highlighted Yank is a port of https://github.com/machakann/vim-highlightedyank.
+Commentary is a port of vim-commentary.
+
+It adds commands that make it easier to comment, uncomment, and toggle comments.
+
+See |commentary.txt|
+
+Credit: https://github.com/tpope/vim-commentary.
+
+------------------------------------------------------------------------------
+
+HIGHLIGHTEDYANK                         *nv-highlightedyank* *highlightedyank*
+
+Highlighted Yank is a port of vim-highlightedyank.
 
 This plugin highlights a yanked region immediately after being yanked. The
 duration and style is configurable.
@@ -250,21 +255,25 @@ Monokai.sublime-color-scheme in the Sublime Text User directory
         ]
     }
 
-------------------------------------------------------------------------------
-
-SURROUND                                                         *nv-surround*
-                                                                    *surround*
-
-Surround is a port of https://github.com/tpope/vim-surround.See |surround.txt|
-for more details.
+Credit: https://github.com/machakann/vim-highlightedyank
 
 ------------------------------------------------------------------------------
 
-UNIMPAIRED                                                     *nv-unimpaired*
-                                                                  *unimpaired*
+SURROUND                                              *nv-surround* *surround*
 
-Unimpaired is a port of https://github.com/tpope/vim-unimpaired. See
-|unimpaired.txt| for more details.
+Surround is a port of vim-surround.
+
+See |surround.txt|
+
+Credit: https://github.com/tpope/vim-surround
+
+------------------------------------------------------------------------------
+
+UNIMPAIRED                                        *nv-unimpaired* *unimpaired*
+
+Unimpaired is a port of vim-unimpaired.
+
+See |unimpaired.txt|
 
 NEXT AND PREVIOUS
 
@@ -303,13 +312,17 @@ OPTION TOGGLING
 *[ot*   *]ot*   *yot*   'sidebar'
 *[ow*   *]ow*   *yow*   'wrap'
 
+Credit: https://github.com/tpope/vim-unimpaired
+
 ------------------------------------------------------------------------------
 
-INDENT OBJECT                                               *nv-indent-object*
-                                                               *indent-object*
+INDENT OBJECT                               *nv-indent-object* *indent-object*
 
-Indent Object is a port of https://github.com/michaeljsmith/vim-indent-object.
-See |indent-object.txt| for more details.
+Indent Object is a port of vim-indent-object.
+
+See |indent-object.txt|
+
+Credit: https://github.com/michaeljsmith/vim-indent-object.
 
 ==============================================================================
 
