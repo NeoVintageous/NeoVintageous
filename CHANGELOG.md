@@ -22,17 +22,17 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
-* Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Disable `intageous_multi_cursor_exit_from_visual_mode` by default
+* Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_multi_cursor_exit_from_visual_mode` is now disabled by default
 
 ### Removed
 
-* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `__vi_external_disable_keys` setting; use `__vi_external_disable` instead
-* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `is_vintageous_widget` setting
+* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `__vi_external_disable_keys` setting was removed (use `__vi_external_disable`)
+* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `is_vintageous_widget` setting was removed (unused internal setting)
 
 ### Fixed
 
 * Fixed [#654](https://github.com/NeoVintageous/NeoVintageous/issues/654): `cit` deletes inside the wrong tag
-* Fixed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Various multiple cursor issues
+* Fixed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Various multiple cursor mode issues
 * Fixed [#658](https://github.com/NeoVintageous/NeoVintageous/issues/658): `gU` and `gu` should never emit visual bell
 * Fixed [#661](https://github.com/NeoVintageous/NeoVintageous/issues/661): Visual block yank should move cursor to beginning of selection
 * Fixed [#659](https://github.com/NeoVintageous/NeoVintageous/issues/659): Ex mode auto complete is broken (ST4)
