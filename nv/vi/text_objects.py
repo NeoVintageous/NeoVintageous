@@ -282,6 +282,13 @@ def _get_text_object_tag(view, s: Region, inclusive: bool, count: int) -> Region
     if not (begin_tag and end_tag):
         return s
 
+    # The normal method is to select a <tag> until the matching </tag>. For "at"
+    # the tags are included, for "it" they are excluded. But when "it" is
+    # repeated the tags will be included (otherwise nothing would change).
+    if not inclusive:
+        if s == Region(begin_tag.end(), end_tag.begin()):
+            inclusive = True
+
     if inclusive:
         return Region(begin_tag.a, end_tag.b)
     else:
