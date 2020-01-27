@@ -184,7 +184,7 @@ def _get(view, name: str = _UNNAMED):
     if name == _CURRENT_FILE_NAME:
         try:
             file_name = view.file_name()
-            if file_name:
+            if not file_name:
                 return
 
             return [file_name]

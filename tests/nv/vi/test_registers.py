@@ -297,7 +297,14 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(registers_get(self.view, _BLACK_HOLE), None)
 
     def test_can_get_file_name_register(self):
-        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), [self.view.file_name()])
+        def fn(): return 'fizz'  # noqa: E704
+        self.view.file_name = fn
+        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), ['fizz'])
+
+    def test_can_get_file_name_register_none(self):
+        def fn(): return None  # noqa: E704
+        self.view.file_name = fn
+        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), None)
 
     def test_returns_empty_string_if_file_name_not_found_or_error(self):
         self.view.file_name = mock.Mock(side_effect=AttributeError('error'))
