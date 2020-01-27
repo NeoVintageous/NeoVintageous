@@ -29,6 +29,7 @@ from sublime import Region
 
 from NeoVintageous.nv.polyfill import re_escape
 from NeoVintageous.nv.polyfill import view_find
+from NeoVintageous.nv.polyfill import view_find_in_range
 from NeoVintageous.nv.polyfill import view_indentation_level
 from NeoVintageous.nv.polyfill import view_indented_region
 from NeoVintageous.nv.polyfill import view_rfind_all
@@ -278,6 +279,18 @@ def a_big_word(view, pt: int, inclusive: bool = False, count: int = 1) -> Region
 
 
 def _get_text_object_tag(view, s: Region, inclusive: bool, count: int) -> Region:
+    # When the active cursor position is on leading whitespace before a tag on
+    # the same line then the start point of the text object is the tag.
+    line = view.line(get_insertion_point_at_b(s))
+    tag_in_line = view_find_in_range(view, '^\\s*<[^>]+>', line.begin(), line.end())
+    if tag_in_line:
+        if s.b >= s.a and s.b < tag_in_line.end():
+            if s.empty():
+                s.a = s.b = tag_in_line.end()
+            else:
+                s.a = tag_in_line.end()
+                s.b = tag_in_line.end() + 1
+
     begin_tag, end_tag, _ = find_containing_tag(view, s.begin())
     if not (begin_tag and end_tag):
         return s
