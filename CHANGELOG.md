@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#4](https://github.com/NeoVintageous/NeoVintageous/issues/4): Remember last search and ex command history on restarts (sessions)
 * Added [#570](https://github.com/NeoVintageous/NeoVintageous/issues/570): Repeated text objects e.g. `vitit` to visually select inner tags
 * Added [#75](https://github.com/NeoVintageous/NeoVintageous/issues/75): Add `:buffer [N]` command
 * Added [#664](https://github.com/NeoVintageous/NeoVintageous/issues/664): Add visual line `CTRL-v` enter visual block
