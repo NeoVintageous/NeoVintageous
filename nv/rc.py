@@ -36,7 +36,7 @@ def _file_path() -> str:
     return os.path.join(sublime.packages_path(), 'User', _file_name())
 
 
-def open(window) -> None:
+def open_rc(window) -> None:
     file = _file_path()
 
     if not os.path.exists(file):
@@ -46,12 +46,12 @@ def open(window) -> None:
     window.open_file(file)
 
 
-def load() -> None:
+def load_rc() -> None:
     _log.debug('load %s', _file_path())
     _load()
 
 
-def reload() -> None:
+def reload_rc() -> None:
     _log.debug('reload %s', _file_path())
     _unload()
     _load()

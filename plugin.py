@@ -58,6 +58,7 @@ import sublime  # noqa: E402
 try:
     _startup_exception = None
 
+    from NeoVintageous.nv.rc import load_rc
     from NeoVintageous.nv.session import load_session
     from NeoVintageous.nv.vim import clean_views
 
@@ -170,8 +171,7 @@ def plugin_loaded():
 
     try:
         load_session()
-        from NeoVintageous.nv import rc
-        rc.load()
+        load_rc()
     except Exception as e:  # pragma: no cover
         traceback.print_exc()
         loading_exeption = e

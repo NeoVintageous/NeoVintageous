@@ -32,7 +32,6 @@ from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import macros
-from NeoVintageous.nv import rc
 from NeoVintageous.nv.cmdline import Cmdline
 from NeoVintageous.nv.ex.completions import insert_best_cmdline_completion
 from NeoVintageous.nv.ex.completions import on_change_cmdline_completion_prefix
@@ -62,6 +61,8 @@ from NeoVintageous.nv.marks import add_mark
 from NeoVintageous.nv.marks import get_mark_as_encoded_address
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
+from NeoVintageous.nv.rc import open_rc
+from NeoVintageous.nv.rc import reload_rc
 from NeoVintageous.nv.registers import registers_get_for_paste
 from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
@@ -912,9 +913,9 @@ class Neovintageous(WindowCommand):
 
     def run(self, action, **kwargs):
         if action == 'open_rc_file':
-            rc.open(self.window)
+            open_rc(self.window)
         elif action == 'reload_rc_file':
-            rc.reload()
+            reload_rc()
         elif action == 'toggle_ctrl_keys':
             toggle_ctrl_keys()
         elif action == 'toggle_side_bar':
