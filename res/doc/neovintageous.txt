@@ -88,9 +88,7 @@ CTRL-W V
 
 ==============================================================================
 
-NEOVINTAGEOUSRC                                                        *nv-rc*
-                                                                *vintageousrc*
-                                                             *neovintageousrc*
+NEOVINTAGEOUSRC                       *nv-rc* *vintageousrc* *neovintageousrc*
 
 A file that contains initialization commands is generically called a
 "neovintageousrc" or config file. In Vim this file is known as a "vimrc" file.
@@ -189,6 +187,8 @@ key binding, Goto  Menu > Preferences > Key Bindings: >
 ==============================================================================
 
 PLUGINS                                                 *nv-plugins* *plugins*
+
+All of the following plugins are available out-of-the-box.
 
 ------------------------------------------------------------------------------
 
@@ -296,6 +296,8 @@ LINE OPERATIONS
 ]<Space>                Add [count] blank lines below the cursor.
 [e                      Exchange the current line with [count] lines above it.
 ]e                      Exchange the current line with [count] lines below it.
+[n                      Go to the previous SCM conflict marker.
+]n                      Go to the next SCM conflict marker.
 
 OPTION TOGGLING
 
