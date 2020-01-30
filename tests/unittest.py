@@ -20,6 +20,7 @@ from unittest import mock  # noqa: F401
 from unittest import skipIf  # noqa: F401
 import copy
 import os
+import sys
 import textwrap
 import unittest
 
@@ -617,6 +618,14 @@ class ViewTestCase(unittest.TestCase):
 
     def setXpos(self, xpos):
         self.state.xpos = xpos
+
+    def assertMockNotCalled(self, mock):
+        # https://docs.python.org/3/library/unittest.mock.html
+        # Polyfill for a new mock method added in version 3.5.
+        if sys.version_info >= (3, 5):
+            mock.assert_not_called()
+        else:
+            self.assertEqual(mock.call_count, 0)
 
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
