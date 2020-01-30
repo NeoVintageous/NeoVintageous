@@ -24,7 +24,7 @@ NeoVintageous                                             *neovintageous* *nv*
  9. Jumping to diffs                |nv-jumpto-diffs|
 10. Toggle Command                  |nv-toggle|
 
-NeoVintageous is an emulation of Vim, feature-parity is ongoing effort. 
+NeoVintageous is an emulation of Vim, feature-parity is ongoing effort.
 
 If you are new to Vim see |help.txt|.
 
@@ -32,61 +32,54 @@ If you are new to Vim see |help.txt|.
 
 COMMAND PALETTE                                           *nv-command-palette*
 
-NeoVintageous: Changelog
-NeoVintageous: Open RC File
-NeoVintageous: Reload RC File
-NeoVintageous: Toggle CTRL keys
-NeoVintageous: Toggle SUPER keys
+NeoVintageous: Changelog            Open CHANGELOG.
+NeoVintageous: Open RC File         Open runtime configuration file.
+NeoVintageous: Reload RC File       Reload the runtime configuration file.
+NeoVintageous: Toggle CTRL keys     Turn CTRL key bindings on and off.
+NeoVintageous: Toggle SUPER keys    Turn SUPER key bindings on and off.
 
 ==============================================================================
 
 MULTIPLE CURSORS                                         *nv-multiple-cursors*
 
-Normal mode / Visual mode
+normal mode / visual mode
 
-- start:    <C-n> or gh Start multi cursor and add a virtual cursor +
-                        selection on the match.
-  + next:   <C-n> or j  Add a new virtual cursor + selection on the match.
-  + skip:   <C-x> or l  Skip the next match.
-  + prev:   <C-p> or k  Remove current virtual cursor + selection and go back
-                        on previous match.
+    start:      <C-n> or gh     Start multiple cursor.
+        next:   <C-n> or j      Add next match.
+        skip:   <C-x> or l      Skip next match.
+        prev:   <C-p> or k      Remove current match.
+        all:    <M-n> or A      Select all matches.
 
-You can now change the virtual cursors + selection with |Visual-mode| commands.
-For instance: c, s, I work without any issues.
-You could also go to |Normal-mode| by pressing `v` and use normal commands
-there, for example commands like ciw work without any issues.
+You can now use visual commands e.g. c, I, x, y work without any issues.
 
-At any time, you can press <Esc> or J to exit back to regular Vim.
-You can change the behaviour of exiting from Visual mode, for details see the
-option 'vintageous_multi_cursor_exit_from_visual_mode'.
+You could also go to normal mode by pressing v and use normal commands there,
+for example commands like ciw work without any issues.
+
+At any time you can press <Esc> or J to exit back to regular Vim. You can change
+the behaviour of exiting, see 'vintageous_multi_cursor_exit_from_visual_mode'.
 
 <C-n> or gh             Start multiple cursor.
 <C-n> or j              Add next match.
 <C-x> or l              Skip next match.
 <C-p> or k              Remove current match and go back on previous.
 <Esc> or J              Quit and enter normal mode.
+<M-n> or A              Select all matches.
 v                       Enter normal mode.
-A                       Select all.
-y                       Yank the selection.
-c                       Delete selection and enter insert mode.
-d                       Delete selection and enter normal mode.
-s                       Delete selection and enter insert mode.
-i                       Enter insert mode at end of selections.
-I                       Enter insert mode at start of selections.
-gH                      After a search with / or ? (select all matches).
+gH                      Select all search occurrences (/, ?, *, #).
 
 ==============================================================================
 
 OPENING A VIEW                                               *nv-opening-view*
 
-Note that some windowing commands require the Origami package e.g. windowing
-splitting commands: https://packagecontrol.io/packages/Origami.
+Some windowing commands require the Origami package.
+
+See: https://packagecontrol.io/packages/Origami.
 
 CTRL-W CTRL-S
 CTRL-W s
 CTRL-W S
 :sp[lit] [file]         Split current window in two. The result is two views
-                        on the same file. See |CTRL-W_s|.
+                        on the same file. See |CTRL-W_s| for more details.
 
 CTRL-W CTRL-V
 CTRL-W v
@@ -95,9 +88,7 @@ CTRL-W V
 
 ==============================================================================
 
-NEOVINTAGEOUSRC                                                        *nv-rc*
-                                                                *vintageousrc*
-                                                             *neovintageousrc*
+NEOVINTAGEOUSRC                       *nv-rc* *vintageousrc* *neovintageousrc*
 
 A file that contains initialization commands is generically called a
 "neovintageousrc" or config file. In Vim this file is known as a "vimrc" file.
@@ -195,35 +186,42 @@ key binding, Goto  Menu > Preferences > Key Bindings: >
 
 ==============================================================================
 
-PLUGINS                                                           *nv-plugins*
-                                                                     *plugins*
+PLUGINS                                                 *nv-plugins* *plugins*
+
+All of the following plugins are available out-of-the-box.
 
 ------------------------------------------------------------------------------
 
-ABOLISH                                                           *nv-abolish*
-                                                                     *abolish*
+ABOLISH                                                 *nv-abolish* *abolish*
 
-Abolish is a port of https://github.com/tpope/vim-abolish. Tim Pope describes it
-as "three superficially unrelated plugins in one that share a common theme:
-working with variants of a word."
+Abolish is a port of vim-abolish.
 
-The port supports "case mutating algorithms". See |abolish.txt| for more details.
+Tim Pope describes it as "three superficially unrelated plugins in one that
+share a common theme: working with variants of a word."
 
-------------------------------------------------------------------------------
+The port currently supports the "case mutating algorithms".
 
-COMMENTARY                                                     *nv-commentary*
-                                                                  *commentary*
+See |abolish.txt|
 
-Commentary is a port of https://github.com/tpope/vim-commentary. It adds several
-commands that make it easier to comment, uncomment, and toggle comments. See
-|commentary.txt| for more details.
+Credit: https://github.com/tpope/vim-abolish
 
 ------------------------------------------------------------------------------
 
-HIGHLIGHTEDYANK                                           *nv-highlightedyank*
-                                                             *highlightedyank*
+COMMENTARY                                        *nv-commentary* *commentary*
 
-Highlighted Yank is a port of https://github.com/machakann/vim-highlightedyank.
+Commentary is a port of vim-commentary.
+
+It adds commands that make it easier to comment, uncomment, and toggle comments.
+
+See |commentary.txt|
+
+Credit: https://github.com/tpope/vim-commentary.
+
+------------------------------------------------------------------------------
+
+HIGHLIGHTEDYANK                         *nv-highlightedyank* *highlightedyank*
+
+Highlighted Yank is a port of vim-highlightedyank.
 
 This plugin highlights a yanked region immediately after being yanked. The
 duration and style is configurable.
@@ -257,21 +255,25 @@ Monokai.sublime-color-scheme in the Sublime Text User directory
         ]
     }
 
-------------------------------------------------------------------------------
-
-SURROUND                                                         *nv-surround*
-                                                                    *surround*
-
-Surround is a port of https://github.com/tpope/vim-surround.See |surround.txt|
-for more details.
+Credit: https://github.com/machakann/vim-highlightedyank
 
 ------------------------------------------------------------------------------
 
-UNIMPAIRED                                                     *nv-unimpaired*
-                                                                  *unimpaired*
+SURROUND                                              *nv-surround* *surround*
 
-Unimpaired is a port of https://github.com/tpope/vim-unimpaired. See
-|unimpaired.txt| for more details.
+Surround is a port of vim-surround.
+
+See |surround.txt|
+
+Credit: https://github.com/tpope/vim-surround
+
+------------------------------------------------------------------------------
+
+UNIMPAIRED                                        *nv-unimpaired* *unimpaired*
+
+Unimpaired is a port of vim-unimpaired.
+
+See |unimpaired.txt|
 
 NEXT AND PREVIOUS
 
@@ -294,6 +296,8 @@ LINE OPERATIONS
 ]<Space>                Add [count] blank lines below the cursor.
 [e                      Exchange the current line with [count] lines above it.
 ]e                      Exchange the current line with [count] lines below it.
+[n                      Go to the previous SCM conflict marker.
+]n                      Go to the next SCM conflict marker.
 
 OPTION TOGGLING
 
@@ -310,13 +314,17 @@ OPTION TOGGLING
 *[ot*   *]ot*   *yot*   'sidebar'
 *[ow*   *]ow*   *yow*   'wrap'
 
+Credit: https://github.com/tpope/vim-unimpaired
+
 ------------------------------------------------------------------------------
 
-INDENT OBJECT                                               *nv-indent-object*
-                                                               *indent-object*
+INDENT OBJECT                               *nv-indent-object* *indent-object*
 
-Indent Object is a port of https://github.com/michaeljsmith/vim-indent-object.
-See |indent-object.txt| for more details.
+Indent Object is a port of vim-indent-object.
+
+See |indent-object.txt|
+
+Credit: https://github.com/michaeljsmith/vim-indent-object.
 
 ==============================================================================
 
@@ -423,7 +431,7 @@ List of available settings:
 
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
-                        boolean (default on)
+                        boolean (default off)
         If set to false, then pressing the quit key (<Esc> or J) in Visual
         mode will not quit and delete all existing cursors. Useful if you want
         to go back to Normal mode, and still be able to operate on all the

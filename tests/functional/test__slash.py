@@ -45,14 +45,6 @@ class Test_slash(unittest.FunctionalTestCase):
         self.eq('x |abc fizz abc x', 'n_/abc', 'x abc fizz |abc x')
         self.eq('x a|bc fizz abc x', 'n_/abc', 'x abc fizz |abc x')
 
-    def test_n_when_view_contains_only_one_match_issue_223(self):
-        self.eq('a|bc', 'n_/abc', '|abc')
-        self.assertSearch('|abc|')
-        self.assertSearchCurrent('|abc|')
-        self.eq('x a|bc x', 'n_/abc', 'x |abc x')
-        self.assertSearch('x |abc| x')
-        self.assertSearchCurrent('x |abc| x')
-
     def test_v(self):
         self.eq('|x abc y', 'v_/abc', '|x a|bc y')
         self.eq('x abc |y abc z', 'v_/abc', 'x abc |y a|bc z')
@@ -86,3 +78,16 @@ class Test_slash(unittest.FunctionalTestCase):
         self.eq('foo\nabc\nbar\nabc\nmoo\na|bc\nend', 'd/abc', 'foo\n|bc\nend')
         self.eq('foo\nabc\nbar\nabc\nmoo\n|abc\nend', 'd/abc', 'foo\n|abc\nend')
         self.eq('foo\nabc\nbar\nabc\nmoo\nabc\n|end', 'd/abc', 'foo\n|end')
+
+    def test_issue_223_when_view_contains_only_one_match(self):
+        self.eq('a|bc', 'n_/abc', '|abc')
+        self.assertSearch('|abc|')
+        self.assertSearchCurrent('|abc|')
+        self.eq('x a|bc x', 'n_/abc', 'x |abc x')
+        self.assertSearch('x |abc| x')
+        self.assertSearchCurrent('x |abc| x')
+
+    def test_issue_653_current_match_off_by_one_searching_for_single_chars(self):
+        self.eq('__xx|xxx__', 'n_/x', '__xxx|xx__')
+        self.assertSearch('__|x||x||x||x||x|__')
+        self.assertSearchCurrent('__xxx|x|x__')

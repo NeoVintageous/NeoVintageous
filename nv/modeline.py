@@ -115,7 +115,7 @@ def _to_json_type(v):
         raise ValueError('could not convert to JSON type')
 
 
-def do_modeline(view):
+def do_modeline(view) -> None:
     # A feature similar to vim modeline.
     #
     # A number of lines at the beginning and end of the file are checked for

@@ -19,8 +19,7 @@ import os
 import subprocess
 
 
-def run_and_wait(view, cmd, terminal_setting_name):
-    # type: (...) -> None
+def run_and_wait(view, cmd, terminal_setting_name) -> None:
     term = view.settings().get(terminal_setting_name)
     term = term or os.path.expandvars("$COLORTERM") or os.path.expandvars("$TERM")
     subprocess.Popen([
@@ -30,8 +29,7 @@ def run_and_wait(view, cmd, terminal_setting_name):
     ]).wait()
 
 
-def run_and_read(view, cmd):
-    # type: (...) -> str
+def run_and_read(view, cmd) -> str:
     out, err = subprocess.Popen([cmd],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
@@ -43,8 +41,7 @@ def run_and_read(view, cmd):
         return ''
 
 
-def filter_region(view, text, command, shell_setting_name):
-    # type: (...) -> str
+def filter_region(view, text, command, shell_setting_name) -> str:
     shell = view.settings().get(shell_setting_name)
     shell = shell or os.path.expandvars("$SHELL")
 

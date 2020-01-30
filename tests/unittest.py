@@ -15,21 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from unittest import TestCase  # noqa: F401
 from unittest import mock  # noqa: F401
 from unittest import skipIf  # noqa: F401
-from unittest import TestCase  # noqa: F401
 import copy
 import os
+import sys
+import textwrap
 import unittest
 
 # Use aliases to indicate that they are not public testing APIs.
-from sublime import active_window as _active_window
 from sublime import Region
+from sublime import active_window as _active_window
 from sublime import version as _version
 
 # Use aliases to indicate that they are not public testing APIs.
 from NeoVintageous.nv import macros as _macros
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
+from NeoVintageous.nv.mappings import _mappings
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.registers import _data as _registers_data
@@ -58,6 +61,16 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK  # noqa: F401
 from NeoVintageous.nv.vim import VISUAL_LINE  # noqa: F401
 
 
+_MODES = (
+    NORMAL,
+    OPERATOR_PENDING,
+    SELECT,
+    VISUAL,
+    VISUAL_BLOCK,
+    VISUAL_LINE
+)
+
+
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -68,11 +81,10 @@ class ViewTestCase(unittest.TestCase):
             self.view.set_scratch(True)
             self.view.close()
 
-    def content(self):
-        # type: () -> str
+    def content(self) -> str:
         return self.view.substr(Region(0, self.view.size()))
 
-    def Region(self, a, b=None):
+    def Region(self, a, b=None) -> Region:
         # Return a Region with initial values a and b.
         #
         # This method can save having to import `sublime.Region` into test
@@ -87,7 +99,7 @@ class ViewTestCase(unittest.TestCase):
         #       reversed one.
         return Region(a, b)
 
-    def select(self, selections):
+    def select(self, selections) -> None:
         # Create selection in the view.
         #
         # Args:
@@ -138,7 +150,6 @@ class ViewTestCase(unittest.TestCase):
         # Select multiple points, and text selections:
         #
         # >>> select([3, 5, (7, 11), 17, (19, 23)])
-
         self.view.sel().clear()
 
         if not isinstance(selections, list):
@@ -176,6 +187,9 @@ class ViewTestCase(unittest.TestCase):
 
         self.settings().set('wrap_width', width)
 
+    def dedent(self, text: str) -> str:
+        return textwrap.dedent(text)
+
     def assertSetting(self, name, expected):
         self.assertEqual(self.settings().get(name), expected)
 
@@ -203,8 +217,7 @@ class ViewTestCase(unittest.TestCase):
     def fixturePath(self, *args):
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
 
-    def write(self, text):
-        # type: (str) -> None
+    def write(self, text) -> None:
         self.view.run_command('_nv_test_write', {'text': text})
 
     def _setupView(self, text, mode, reverse=False, vblock_direction=None):
@@ -318,6 +331,17 @@ class ViewTestCase(unittest.TestCase):
 
     def resetMacros(self):
         _macros._state.clear()
+
+    def assertMapping(self, mode: int, lhs: str, rhs: str):
+        self.assertIn(lhs, _mappings[mode])
+        self.assertEqual(_mappings[mode][lhs], rhs)
+
+    def assertNotMapping(self, lhs: str, mode: int = None):
+        if mode is None:
+            for mode in _MODES:
+                self.assertNotIn(lhs, _mappings[mode])
+        else:
+            self.assertNotIn(lhs, _mappings[mode])
 
     def assertContent(self, expected, msg=None):
         self.assertEqual(self.content(), expected, msg)
@@ -617,6 +641,14 @@ class ViewTestCase(unittest.TestCase):
     def setXpos(self, xpos):
         self.state.xpos = xpos
 
+    def assertMockNotCalled(self, mock):
+        # https://docs.python.org/3/library/unittest.mock.html
+        # Polyfill for a new mock method added in version 3.5.
+        if sys.version_info >= (3, 5):  # pragma: no cover
+            mock.assert_not_called()
+        else:
+            self.assertEqual(mock.call_count, 0)
+
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
     def state(self):
@@ -688,7 +720,11 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed(':help neovintageous')
 
         if seq == '<Esc>':
-            return self.view.window().run_command('_nv_feed_key', {'key': '<esc>'})
+            window = self.view.window()
+            if not window:
+                raise Exception('window not found')
+
+            return window.run_command('_nv_feed_key', {'key': '<esc>'})
 
         if seq[0] == ':':
             return _do_ex_cmdline(self.view.window(), seq)
@@ -741,7 +777,12 @@ class FunctionalTestCase(ViewTestCase):
             raise KeyError('test command definition not found for feed %s' % str(e)) from None
 
         self.onRunFeedCommand(command, args)
-        self.view.window().run_command(command, args)
+
+        window = self.view.window()
+        if not window:
+            raise Exception('window not found')
+
+        window.run_command(command, args)
 
     def onRunFeedCommand(self, command, args):
         pass
@@ -889,8 +930,7 @@ class ResetRegisters(FunctionalTestCase):
 
 
 # DEPRECATED Use newer APIs.
-def _make_region(view, a, b=None):
-    # type: (...) -> Region
+def _make_region(view, a: int, b: int = None) -> Region:
     try:
         pt_a = view.text_point(*a)
         pt_b = view.text_point(*b)
@@ -1033,7 +1073,7 @@ def mock_mappings(*mappings):
         from NeoVintageous.nv.mappings import _mappings
         from NeoVintageous.nv.mappings import mappings_add
 
-        @unittest.mock.patch('NeoVintageous.nv.mappings._mappings', new_callable=lambda: {k: {} for k in _mappings})
+        @unittest.mock.patch.dict('NeoVintageous.nv.mappings._mappings', {k: {} for k in _mappings}, clear=True)
         def wrapped(self, *args, **kwargs):
             for mapping in mappings:
                 mappings_add(*mapping)
@@ -1205,6 +1245,7 @@ _SEQ2CMD = {
     '-':            {'command': '_vi_minus'},  # noqa: E241
     '.':            {'command': '_vi_dot'},  # noqa: E241
     '/abc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
+    '/x':           {'command': '_vi_slash_impl', 'args': {'search_string': 'x'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
     '<':            {'command': '_vi_less_than'},  # noqa: E241
     '<<':           {'command': '_vi_less_than_less_than'},  # noqa: E241
@@ -1212,6 +1253,7 @@ _SEQ2CMD = {
     '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
     '<C-e>':        {'command': '_vi_ctrl_e'},  # noqa: E241
     '<C-g>':        {'command': '_vi_ctrl_g'},  # noqa: E241
+    '<C-n>':        {'command': '_enter_select_mode'},  # noqa: E241
     '<C-r>':        {'command': '_vi_ctrl_r'},  # noqa: E241
     '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
     '<C-v>':        {'command': '_enter_visual_block_mode'},  # noqa: E241
@@ -1273,6 +1315,7 @@ _SEQ2CMD = {
     '[(':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '('}},  # noqa: E241,E501
     '[P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True, 'adjust_indent': True}},  # noqa: E241,E501
     '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
+    '[n':           {'command': '_nv_unimpaired', 'args': {'action': 'goto_prev_conflict_marker'}},  # noqa: E241
     '[oa':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'a'}},  # noqa: E241
     '[oe':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'e'}},  # noqa: E241
     '[oh':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'h'}},  # noqa: E241
@@ -1287,6 +1330,7 @@ _SEQ2CMD = {
     '])':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': ')'}},  # noqa: E241,E501
     ']P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_indent': True}},  # noqa: E241,E501
     ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
+    ']n':           {'command': '_nv_unimpaired', 'args': {'action': 'goto_next_conflict_marker'}},  # noqa: E241
     ']oa':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'a'}},  # noqa: E241
     ']oe':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'e'}},  # noqa: E241
     ']oh':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'h'}},  # noqa: E241
@@ -1324,7 +1368,7 @@ _SEQ2CMD = {
     'c$':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'c':            {'command': '_vi_c'},  # noqa: E241
     'c0':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_zero'}}},  # noqa: E241,E501
-    'cM':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_m'}}},  # noqa: E241,E501
+    'cM':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_m'}}},  # noqa: E241,E501
     'c^':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_hat'}}},  # noqa: E241,E501
     'c_':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_underscore'}}},  # noqa: E241,E501
     'ca"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1641,15 +1685,25 @@ _SEQ2CMD = {
     'qA':           {'command': '_vi_q', 'args': {'name': 'A'}},  # noqa: E241
     'qa':           {'command': '_vi_q', 'args': {'name': 'a'}},  # noqa: E241
     'qx':           {'command': '_vi_q', 'args': {'name': 'x'}},  # noqa: E241
+    'r<cr>':        {'command': '_vi_r', 'args': {'char': '\n'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
     's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
-    's_2j':         {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
-    's_2k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
-    's_6k':         {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
+    's_2<C-n>':     {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_2<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_2j':         {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_2k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_6<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_6k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_<C-n>':      {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_<C-p>':      {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_<C-x>':      {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
+    's_<M-n>':      {'command': '_vi_big_a'},  # noqa: E241
     's_<esc>':      {'command': '_vi_select_big_j'},  # noqa: E241
     's_J':          {'command': '_vi_select_big_j'},  # noqa: E241
-    's_j':          {'command': '_vi_select_j'},  # TODO Refactor _vi_select_j into _vi_j command # noqa: E241
-    's_k':          {'command': '_vi_select_k'},  # TODO Refactor command into _vi_k command # noqa: E241
+    's_j':          {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
+    's_k':          {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
+    's_l':          {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
+    's_v':          {'command': '_enter_normal_mode'},  # TODO Refactor # noqa: E241
     't2':           {'command': '_vi_find_in_line', 'args': {'char': '2', 'inclusive': False}},  # noqa: E241
     't6':           {'command': '_vi_find_in_line', 'args': {'char': '6', 'inclusive': False}},  # noqa: E241
     't8':           {'command': '_vi_find_in_line', 'args': {'char': '8', 'inclusive': False}},  # noqa: E241

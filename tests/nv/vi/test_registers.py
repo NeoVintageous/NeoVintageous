@@ -210,11 +210,11 @@ class TestRegister(RegistersTestCase):
 
     def test_setting_long_register_name_throws_assertion_error(self):
         with self.assertRaisesRegex(AssertionError, 'names must be 1 char long'):
-            registers_set(self.view, 'aa', 'foo')
+            registers_set(self.view, 'name', 'foo')  # type: ignore
 
     def test_setting_non_list_value_throws_assertion_error(self):
         with self.assertRaisesRegex(AssertionError, 'values must be inside a list'):
-            registers_set(self.view, 'a', 'foo')
+            registers_set(self.view, 'a', 'foo')  # type: ignore
 
     def test_register_data_is_always_stored_as_string(self):
         registers_set(self.view, '"', [100])
@@ -224,7 +224,7 @@ class TestRegister(RegistersTestCase):
         registers_set(self.view, _UNNAMED, ["bar"])
         # In this case it doesn't matter whether we're setting a list or not,
         # because we are discarding the value anyway.
-        registers_set(self.view, _BLACK_HOLE, "foo")
+        registers_set(self.view, _BLACK_HOLE, "foo")  # type: ignore
         self.assertEqual(registers_get(self.view, _BLACK_HOLE), None)
         self.assertEqual(registers_get(self.view, _UNNAMED), ["bar"])
 
@@ -297,7 +297,14 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(registers_get(self.view, _BLACK_HOLE), None)
 
     def test_can_get_file_name_register(self):
-        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), [self.view.file_name()])
+        def fn(): return 'fizz'  # noqa: E704
+        self.view.file_name = fn
+        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), ['fizz'])
+
+    def test_can_get_file_name_register_none(self):
+        def fn(): return None  # noqa: E704
+        self.view.file_name = fn
+        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), None)
 
     def test_returns_empty_string_if_file_name_not_found_or_error(self):
         self.view.file_name = mock.Mock(side_effect=AttributeError('error'))
@@ -324,7 +331,7 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(registers_get(self.view, _EXPRESSION), None)
 
     def test_can_get_number_register(self):
-        registers_set(self.view, 4, ['foo'])
+        registers_set(self.view, '4', ['foo'])
         self.assertEqual(registers_get(self.view, '4'), ['foo'])
 
     def test_can_get_register_even_if_requesting_it_through_a_capital_letter(self):

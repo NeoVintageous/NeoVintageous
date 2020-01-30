@@ -17,6 +17,7 @@
 
 from collections import deque
 import itertools
+import traceback
 
 from sublime import get_clipboard
 from sublime import set_clipboard
@@ -24,17 +25,15 @@ from sublime import set_clipboard
 try:
     from Default.paste_from_history import g_clipboard_history as _clipboard_history
 
-    def update_clipboard_history(text):
+    def update_clipboard_history(text: str) -> None:
         _clipboard_history.push_text(text)
 
-except Exception:
+except Exception:  # pragma: no cover
     print('NeoVintageous: could not import default package clipboard history updater')
-
-    import traceback
     traceback.print_exc()
 
-    def update_clipboard_history(text):
-        print('NeoVintageous: could not update clipboard history: import error')
+    def update_clipboard_history(text: str) -> None:
+        print('NeoVintageous: update_clipboard_history() noop; could not import default pakage history updater')
 
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vim import VISUAL
@@ -120,7 +119,7 @@ _data = {'0': None, '1-9': deque([None] * 9, maxlen=9)}  # type: dict
 _linewise = {'0': False, '1-9': deque([False] * 9, maxlen=9)}  # type: dict
 
 
-def _reset():
+def _reset() -> None:
     _data.clear()
     _data['0'] = None
     _data['1-9'] = deque([None] * 9, maxlen=9)
@@ -129,33 +128,33 @@ def _reset():
     _linewise['1-9'] = deque([False] * 9, maxlen=9)
 
 
-def _shift_numbered_register(content, linewise):
+def _shift_numbered_register(content: list, linewise: bool) -> None:
     _data['1-9'].appendleft(content)
     _linewise['1-9'].appendleft(linewise)
 
 
-def _set_numbered_register(number, values, linewise):
+def _set_numbered_register(number: str, values: list, linewise: bool) -> None:
     _data['1-9'][int(number) - 1] = values
     _linewise['1-9'][int(number) - 1] = linewise
 
 
-def _get_numbered_register(number):
+def _get_numbered_register(number: str) -> list:
     return _data['1-9'][int(number) - 1]
 
 
-def set_expression_register(values):
+def set_expression_register(values: list) -> None:
     # Coerce all values into strings.
     _data[_EXPRESSION] = [str(v) for v in values]
 
 
-def _is_register_linewise(register):
+def _is_register_linewise(register: str) -> list:
     if register in '123456789':
         return _linewise['1-9'][int(register) - 1]
 
     return _linewise.get(register, False)
 
 
-def _is_writable_register(register):
+def _is_writable_register(register: str) -> bool:
     if register == _UNNAMED:
         return True
 
@@ -177,7 +176,7 @@ def _is_writable_register(register):
     return False
 
 
-def _get(view, name=_UNNAMED):
+def _get(view, name: str = _UNNAMED):
     name = str(name)
 
     assert len(name) == 1, "Register names must be 1 char long."
@@ -185,7 +184,7 @@ def _get(view, name=_UNNAMED):
     if name == _CURRENT_FILE_NAME:
         try:
             file_name = view.file_name()
-            if file_name:
+            if not file_name:
                 return
 
             return [file_name]
@@ -222,15 +221,15 @@ def _get(view, name=_UNNAMED):
         pass
 
 
-def registers_get(view, key):
+def registers_get(view, key: str):
     return _get(view, key)
 
 
-def registers_get_all(view):
+def registers_get_all(view) -> dict:
     return {name: _get(view, name) for name in _ALL}
 
 
-def registers_get_for_paste(view, register, mode):
+def registers_get_for_paste(view, register: str, mode: str) -> tuple:
     values = _get(view, register)
     linewise = _is_register_linewise(register)
 
@@ -265,7 +264,7 @@ def registers_get_for_paste(view, register, mode):
 # to store register data as lists, one per selection. The paste command will
 # then make the final decision about what to insert into the buffer when faced
 # with unbalanced selection number / available register data.
-def _set(view, name, values, linewise=False):
+def _set(view, name: str, values: list, linewise: bool = False) -> None:
     name = str(name)
 
     assert len(name) == 1, "Register names must be 1 char long: " + name
@@ -291,7 +290,7 @@ def _set(view, name, values, linewise=False):
         _maybe_set_sys_clipboard(view, name, values)
 
 
-def _append(view, name, suffixes, linewise):
+def _append(view, name: str, suffixes, linewise: bool) -> None:
     assert len(name) == 1, "Register names must be 1 char long."
     assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Can only append to A-Z registers."
 
@@ -304,13 +303,13 @@ def _append(view, name, suffixes, linewise):
     _set(view, name, values, linewise)
 
 
-def _set_unnamed(values, linewise=False):
+def _set_unnamed(values: list, linewise: bool = False) -> None:
     assert isinstance(values, list)
     _data[_UNNAMED] = [str(v) for v in values]
     _linewise[_UNNAMED] = linewise
 
 
-def registers_set(view, key, value, linewise=False):
+def registers_set(view, key: str, value: list, linewise: bool = False) -> None:
     try:
         if key.isupper():
             _append(view, key, value, linewise)
@@ -321,14 +320,14 @@ def registers_set(view, key, value, linewise=False):
         _set(view, key, value, linewise)
 
 
-def _maybe_set_sys_clipboard(view, name, value):
+def _maybe_set_sys_clipboard(view, name: str, values: list) -> None:
     if (name in _CLIPBOARD or get_setting(view, 'use_sys_clipboard') is True):
-        value = '\n'.join(value)
+        value = '\n'.join(values)
         set_clipboard(value)
         update_clipboard_history(value)
 
 
-def _get_selected_text(view, new_line_at_eof=False, linewise=False):
+def _get_selected_text(view, new_line_at_eof: bool = False, linewise: bool = False) -> list:
     fragments = [view.substr(r) for r in list(view.sel())]
 
     # Add new line at EOF, but don't add too many new lines.
@@ -347,7 +346,7 @@ def _get_selected_text(view, new_line_at_eof=False, linewise=False):
     return fragments
 
 
-def _op(view, operation, register=None, linewise=False):
+def _op(view, operation: str, register: str = None, linewise=False) -> None:
     if register == _BLACK_HOLE:
         return
 
@@ -395,13 +394,13 @@ def _op(view, operation, register=None, linewise=False):
             _set(view, _SMALL_DELETE, selected_text, linewise)
 
 
-def registers_op_change(view, register=None, linewise=False):
+def registers_op_change(view, register: str = None, linewise=False) -> None:
     _op(view, 'change', register=register, linewise=linewise)
 
 
-def registers_op_delete(view, register=None, linewise=False):
+def registers_op_delete(view, register: str = None, linewise=False) -> None:
     _op(view, 'delete', register=register, linewise=linewise)
 
 
-def registers_op_yank(view, register=None, linewise=False):
+def registers_op_yank(view, register: str = None, linewise=False) -> None:
     _op(view, 'yank', register=register, linewise=linewise)

@@ -18,6 +18,8 @@
 from NeoVintageous.tests import unittest
 
 
+@unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
+@unittest.mock.patch('NeoVintageous.nv.session.save_session', unittest.mock.Mock())
 class Test_ex_substitute(unittest.FunctionalTestCase):
 
     def test_substitute(self):
@@ -44,6 +46,20 @@ class Test_ex_substitute(unittest.FunctionalTestCase):
         self.eq('axxa\n|bXXb\ncxxc\n', ':substitute/x/y/i', 'axxa\n|byXb\ncxxc\n')
         self.eq('axxa\n|bxXb\ncxxc\n', ':substitute/x/y/gi', 'axxa\n|byyb\ncxxc\n')
         self.eq('axxa\n|bXxb\ncxxc\n', ':substitute/x/y/gi', 'axxa\n|byyb\ncxxc\n')
+
+    def test_i_flag_ignore_case(self):
+        self.set_option('ignorecase', True)
+        self.eq('|aA', ':s/a/x/g', '|xx')
+        self.eq('|aA', ':s/a/x/gi', '|xx')
+        self.set_option('ignorecase', False)
+        self.eq('|aA', ':s/a/x/g', '|xA')
+        self.eq('|aA', ':s/a/x/gi', '|xx')
+
+    def test_I_flag_dont_ignore_case(self):
+        self.set_option('ignorecase', True)
+        self.eq('|aA', ':s/a/x/gI', '|xA')
+        self.set_option('ignorecase', False)
+        self.eq('|aA', ':s/a/x/gI', '|xA')
 
     def test_ranges(self):
         self.eq('axxa\n|bxxb\ncxxc\n', ':1,$substitute/x/y/', 'ayxa\nbyxb\n|cyxc\n')
@@ -74,7 +90,7 @@ class Test_ex_substitute(unittest.FunctionalTestCase):
         self.eq('a\n|b\n\nc\n\nd\n\n', ':%substitute/$/,/', 'a,\nb,\n,\nc,\n,\nd,\n|,\n')
         self.eq('a\n|b\n\nc\n\nd\n\n', ':%substitute/$/,/g', 'a,\nb,\n,\nc,\n,\nd,\n|,\n')
 
-    @unittest.mock.patch('NeoVintageous.nv.vi.settings._session', {})
+    @unittest.mock.patch('NeoVintageous.nv.session._session', {})
     @unittest.mock_status_message()
     def test_repeat_no_previous(self):
         self.eq('a|bc', ':substitute', 'a|bc')

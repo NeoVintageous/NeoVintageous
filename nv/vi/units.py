@@ -40,11 +40,11 @@ _CLASS_VI_WORD_END = CLASS_WORD_END | CLASS_PUNCTUATION_END
 _CLASS_VI_INTERNAL_WORD_END = CLASS_WORD_END | CLASS_PUNCTUATION_END
 
 
-def at_eol(view, pt):
+def at_eol(view, pt: int) -> bool:
     return (view.classify(pt) & CLASS_LINE_END) == CLASS_LINE_END
 
 
-def at_punctuation(view, pt):
+def at_punctuation(view, pt: int) -> bool:
     is_at_eol = at_eol(view, pt)
     is_at_word = at_word(view, pt)
     is_white_space = view.substr(pt).isspace()
@@ -53,23 +53,23 @@ def at_punctuation(view, pt):
     return not any((is_at_eol, is_at_word, is_white_space, is_at_eof))
 
 
-def at_word_start(view, pt):
+def at_word_start(view, pt: int) -> bool:
     return (view.classify(pt) & CLASS_WORD_START) == CLASS_WORD_START
 
 
-def at_word_end(view, pt):
+def at_word_end(view, pt: int) -> bool:
     return (view.classify(pt) & CLASS_WORD_END) == CLASS_WORD_END
 
 
-def at_punctuation_end(view, pt):
+def at_punctuation_end(view, pt: int) -> bool:
     return (view.classify(pt) & CLASS_PUNCTUATION_END) == CLASS_PUNCTUATION_END
 
 
-def at_word(view, pt):
+def at_word(view, pt: int):
     return at_word_start(view, pt) or _WORD_PATTERN.match(view.substr(pt))
 
 
-def skip_word(view, pt):
+def skip_word(view, pt: int) -> int:
     while True:
         if at_punctuation(view, pt):
             pt = view.find_by_class(pt, forward=True, classes=CLASS_PUNCTUATION_END)
@@ -81,7 +81,7 @@ def skip_word(view, pt):
     return pt
 
 
-def next_word_start(view, start, internal=False):
+def next_word_start(view, start: int, internal: bool = False) -> int:
     classes = _CLASS_VI_WORD_START if not internal else _CLASS_VI_INTERNAL_WORD_START
     pt = view.find_by_class(start, forward=True, classes=classes)
     if internal and at_eol(view, pt):
@@ -91,7 +91,7 @@ def next_word_start(view, start, internal=False):
     return pt
 
 
-def next_big_word_start(view, start, internal=False):
+def next_big_word_start(view, start: int, internal: bool = False) -> int:
     classes = _CLASS_VI_WORD_START if not internal else _CLASS_VI_INTERNAL_WORD_START
     pt = skip_word(view, start)
     seps = ''
@@ -103,7 +103,7 @@ def next_big_word_start(view, start, internal=False):
     return pt
 
 
-def next_word_end(view, start, internal=False):
+def next_word_end(view, start: int, internal: bool = False) -> int:
     classes = _CLASS_VI_WORD_END if not internal else _CLASS_VI_INTERNAL_WORD_END
     pt = view.find_by_class(start, forward=True, classes=classes)
     if internal and at_eol(view, pt):
@@ -113,7 +113,7 @@ def next_word_end(view, start, internal=False):
     return pt
 
 
-def word_starts(view, start, count=1, internal=False):
+def word_starts(view, start: int, count: int = 1, internal: bool = False) -> int:
     assert start >= 0
     assert count > 0
 
@@ -139,8 +139,7 @@ def word_starts(view, start, count=1, internal=False):
     return pt
 
 
-def big_word_starts(view, start, count=1, internal=False):
-    # type: (...) -> int
+def big_word_starts(view, start: int, count: int = 1, internal: bool = False) -> int:
     assert start >= 0
     assert count > 0
 
@@ -166,8 +165,7 @@ def big_word_starts(view, start, count=1, internal=False):
     return pt
 
 
-def word_ends(view, start, count=1, big=False):
-    # type: (...) -> int
+def word_ends(view, start: int, count: int = 1, big: bool = False) -> int:
     assert start >= 0 and count > 0, 'bad call'
 
     pt = start
@@ -188,12 +186,11 @@ def word_ends(view, start, count=1, big=False):
     return pt
 
 
-def big_word_ends(view, start, count=1):
-    # type: (...) -> int
+def big_word_ends(view, start: int, count: int = 1) -> int:
     return word_ends(view, start, count, big=True)
 
 
-def lines(view, s, count=1):
+def lines(view, s: Region, count: int = 1) -> Region:
     """
     Return a region spanning @count full lines.
 
@@ -216,7 +213,7 @@ def lines(view, s, count=1):
     return Region(a, view.full_line(b).b)
 
 
-def inner_lines(view, s, count=1):
+def inner_lines(view, s: Region, count: int = 1) -> Region:
     """
     Return a region spanning @count inner lines.
 
@@ -238,7 +235,7 @@ def inner_lines(view, s, count=1):
     return Region(begin, view.line(end).b)
 
 
-def next_paragraph_start(view, pt, count=1):
+def next_paragraph_start(view, pt: int, count: int = 1) -> int:
     skip_empty = count > 1
 
     if row_at(view, pt) == last_row(view):
@@ -271,7 +268,7 @@ def next_paragraph_start(view, pt, count=1):
     return pt
 
 
-def _next_empty_row(view, pt):
+def _next_empty_row(view, pt: int) -> tuple:
     r = row_at(view, pt)
     while True:
         r += 1
@@ -283,7 +280,7 @@ def _next_empty_row(view, pt):
             return pt, False
 
 
-def _next_non_empty_row(view, pt):
+def _next_non_empty_row(view, pt: int) -> tuple:
     r = row_at(view, pt)
     while True:
         r += 1
@@ -295,7 +292,7 @@ def _next_non_empty_row(view, pt):
             return reg.a, False
 
 
-def prev_paragraph_start(view, pt, count=1, skip_empty=True):
+def prev_paragraph_start(view, pt: int, count: int = 1, skip_empty: bool = True) -> int:
     # first row?
     if row_at(view, pt) == 0:
         return 0
@@ -319,7 +316,7 @@ def prev_paragraph_start(view, pt, count=1, skip_empty=True):
     return view.text_point(row_at(view, pt), 0)
 
 
-def _prev_empty_row(view, pt):
+def _prev_empty_row(view, pt: int) -> tuple:
     r = row_at(view, pt)
     while True:
         r -= 1
@@ -331,7 +328,7 @@ def _prev_empty_row(view, pt):
             return pt, False
 
 
-def _prev_non_empty_row(view, pt):
+def _prev_non_empty_row(view, pt: int) -> tuple:
     r = row_at(view, pt)
     while True:
         r -= 1

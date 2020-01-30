@@ -24,8 +24,7 @@ tags
 
 # Project
 !/res/doc/tags
+*.pyi
 /covhtml/
 /htmlcov/
 /tmp/
-
-mypy.ini

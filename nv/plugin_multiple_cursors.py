@@ -20,14 +20,18 @@
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 __all__ = ()
 
 
-@register(seq='<C-n>', modes=(NORMAL, VISUAL))
-class _multiple_cursors_enter(ViOperatorDef):
+@register('<C-n>', (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+@register('gh', (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+class MultipleCursorsStart(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
@@ -39,4 +43,87 @@ class _multiple_cursors_enter(ViOperatorDef):
             'action_args': {
                 'mode': state.mode
             }
+        }
+
+
+@register('<Esc>', (SELECT,))
+@register('J', (SELECT,))
+class MultipleCursorsExit(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.repeatable = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_select_big_j',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
+@register('<C-n>', (SELECT,))
+@register('j', (SELECT,))
+class MultipleCursorsAdd(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_select_j',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
+@register('<C-p>', (SELECT,))
+@register('k', (SELECT,))
+class MultipleCursorsRemove(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_select_k',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
+        }
+
+
+@register('<C-x>', (SELECT,))
+@register('l', (SELECT,))
+class MultipleCursorsSkip(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': 'find_under_expand_skip',
+            'action_args': {}
+        }
+
+
+@register('gH', (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+class MultipleCursorsAll(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.updates_xpos = True
+        self.scroll_into_view = True
+
+    def translate(self, state):
+        return {
+            'action': '_vi_g_big_h',
+            'action_args': {}
         }

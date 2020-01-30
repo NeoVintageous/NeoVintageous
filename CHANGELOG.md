@@ -2,6 +2,45 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.18.0 - Unreleased
+
+### Added
+
+* Added [#630](https://github.com/NeoVintageous/NeoVintageous/issues/630): Visual block pasting
+* Added [#668](https://github.com/NeoVintageous/NeoVintageous/issues/668): `[n` and `]n` to navigate between conflicts (Unimpaired)
+* Added [#4](https://github.com/NeoVintageous/NeoVintageous/issues/4): Remember last search and ex command history on restarts (sessions)
+* Added [#570](https://github.com/NeoVintageous/NeoVintageous/issues/570): Repeated text objects e.g. `vitit` to visually select inner tags
+* Added [#75](https://github.com/NeoVintageous/NeoVintageous/issues/75): Add `:buffer [N]` command
+* Added [#664](https://github.com/NeoVintageous/NeoVintageous/issues/664): Add visual line `CTRL-v` enter visual block
+* Added [#666](https://github.com/NeoVintageous/NeoVintageous/issues/666): Add visual line `CTRL-n` add next multiple cursor match
+* Added [#665](https://github.com/NeoVintageous/NeoVintageous/issues/665): Add visual block `CTRL-n` enter multiple cursor
+* Added [#663](https://github.com/NeoVintageous/NeoVintageous/issues/663): Add `I` flag to `:substitute` command
+* Added [#662](https://github.com/NeoVintageous/NeoVintageous/issues/662): Add `'ignorecase'` option support to `:substitute` command
+* Added [#660](https://github.com/NeoVintageous/NeoVintageous/issues/660): Ex mode `<S-tab>` now cycles through completions in reverse
+* Added [#657](https://github.com/NeoVintageous/NeoVintageous/issues/657): Auto complete in empty Command-line mode now triggers all completions
+* Added [#641](https://github.com/NeoVintageous/NeoVintageous/issues/641): Support search modifiers `\v`, `\V`, `\m`, and `\M`
+* Added [#655](https://github.com/NeoVintageous/NeoVintageous/issues/655): `*` and `#` searches are noop unless all cursor words match
+* Added [#656](https://github.com/NeoVintageous/NeoVintageous/issues/656): `*` and `#` multiple cursor searches
+
+### Changed
+
+* Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_multi_cursor_exit_from_visual_mode` is now disabled by default
+
+### Removed
+
+* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `__vi_external_disable_keys` setting was removed (use `__vi_external_disable`)
+* Removed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `is_vintageous_widget` setting was removed (unused internal setting)
+
+### Fixed
+
+* Fixed [#667](https://github.com/NeoVintageous/NeoVintageous/issues/667): Pasting line breaks newline at the end of file
+* Fixed [#654](https://github.com/NeoVintageous/NeoVintageous/issues/654): `cit` deletes inside the wrong tag
+* Fixed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): Various multiple cursor mode issues
+* Fixed [#658](https://github.com/NeoVintageous/NeoVintageous/issues/658): `gU` and `gu` should never emit visual bell
+* Fixed [#661](https://github.com/NeoVintageous/NeoVintageous/issues/661): Visual block yank should move cursor to beginning of selection
+* Fixed [#659](https://github.com/NeoVintageous/NeoVintageous/issues/659): Ex mode auto complete is broken (ST4)
+* Fixed [#653](https://github.com/NeoVintageous/NeoVintageous/issues/653): One char searches highlights two chars for current cursor
+
 ## 1.17.8 - 2020-01-12
 
 * Fixed [#652](https://github.com/NeoVintageous/NeoVintageous/issues/652): Command-line output should all use the same output panel

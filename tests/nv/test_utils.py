@@ -19,12 +19,13 @@ from sublime import Region
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.utils import VisualBlockSelection
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
+from NeoVintageous.nv.utils import sel_observer
 from NeoVintageous.nv.utils import translate_char
-from NeoVintageous.nv.utils import VisualBlockSelection
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 
@@ -481,3 +482,52 @@ class TestVisualBlockSelection(unittest.ViewTestCase):
         self.assertTransform(f, 9, 'r_|fizzbuz|z\n|x\n|fizz\n', DIRECTION_DOWN)
         self.assertTransform(f, 12, 'r_f|izzbuz|z\nx|\n|f|izz\n|', DIRECTION_DOWN)
         self.assertTransform(f, 14, 'r_fiz|zbuz|z\nx\nfiz|z\n|', DIRECTION_DOWN)
+
+
+class TestSelectionObserver(unittest.ViewTestCase):
+
+    def test_has_sel_changed(self):
+        self.normal('fi|zz buzz')
+        with sel_observer(self.view) as observer:
+            self.assertFalse(observer.has_sel_changed())
+            self.select(3)
+            self.assertTrue(observer.has_sel_changed())
+            self.select(1)
+            self.assertTrue(observer.has_sel_changed())
+            self.select(2)
+            self.assertFalse(observer.has_sel_changed())
+            self.select([2, 3])
+            self.assertTrue(observer.has_sel_changed())
+
+        self.visual('fi|zz b|uzz')
+        with sel_observer(self.view) as observer:
+            self.assertFalse(observer.has_sel_changed())
+            self.select((3, 6))
+            self.assertTrue(observer.has_sel_changed())
+            self.select((2, 5))
+            self.assertTrue(observer.has_sel_changed())
+            self.select((2, 6))
+            self.assertFalse(observer.has_sel_changed())
+            self.select(2)
+            self.assertTrue(observer.has_sel_changed())
+            self.select(5)
+            self.assertTrue(observer.has_sel_changed())
+
+    def test_restore_sel(self):
+        self.normal('fi|zz buzz')
+        with sel_observer(self.view) as observer:
+            self.select(0)
+            observer.restore_sel()
+            self.assertNormal('fi|zz buzz')
+            self.select(4)
+            observer.restore_sel()
+            self.assertNormal('fi|zz buzz')
+            self.select((2, 3))
+            observer.restore_sel()
+            self.assertNormal('fi|zz buzz')
+
+        self.visual('fi|zz bu|zz')
+        with sel_observer(self.view) as observer:
+            self.select((0, 4))
+            observer.restore_sel()
+            self.assertVisual('fi|zz bu|zz')

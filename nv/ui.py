@@ -29,8 +29,7 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vim import status_message
 
 
-def ui_bell(msg=None):
-    # type: (str) -> None
+def ui_bell(msg: str = None) -> None:
     window = active_window()
     if not window:
         return
@@ -100,11 +99,11 @@ _REGION_FLAGS = {
 }
 
 
-def ui_region_flags(name):
+def ui_region_flags(name: str) -> int:
     return _REGION_FLAGS.get(name, 0)
 
 
-def ui_highlight_yank(view):
+def ui_highlight_yank(view) -> None:
     _get = view.settings().get
 
     if not _get('highlightedyank'):
@@ -123,5 +122,5 @@ def ui_highlight_yank(view):
     )
 
 
-def ui_highlight_yank_clear(view):
+def ui_highlight_yank_clear(view) -> None:
     view.erase_regions('highlightedyank')

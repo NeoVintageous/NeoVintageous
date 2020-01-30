@@ -35,18 +35,15 @@ else:
 
 
 # TODO [review] Function looks unused.
-def run_and_wait(view, cmd):
-    # type: (...) -> None
+def run_and_wait(view, cmd) -> None:
     _shell.run_and_wait(view, cmd)
 
 
-def run_and_read(view, cmd):
-    # type: (...) -> str
+def run_and_read(view, cmd) -> str:
     return _shell.run_and_read(view, cmd)
 
 
-def filter_thru_shell(view, edit, regions, cmd):
-    # type: (...) -> None
+def filter_thru_shell(view, edit, regions, cmd) -> None:
     filter_func = _shell.filter_region
 
     # Maintain text size delta as we replace each selection going forward. We

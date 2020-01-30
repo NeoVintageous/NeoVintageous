@@ -53,10 +53,14 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x\na|bc\ny', '2p', 'x\nabc\n|fizz\nfizz\ny')
         self.eq('x\na|bc\ny', '3p', 'x\nabc\n|fizz\nfizz\nfizz\ny')
         self.eq('|', 'p', '|fizz\n')
+        self.eq('1\n2\n|buzz', 'p', '1\n2\nbuzz\n|fizz\n')
+        self.eq('1\n2\n|buzz', '2p', '1\n2\nbuzz\n|fizz\nfizz\n')
         self.registerLinewise('"', 'fizz\nbuzz\n')
         self.eq('|', 'p', '|fizz\nbuzz\n')
         self.eq('x\na|bc\ny', 'p', 'x\nabc\n|fizz\nbuzz\ny')
         self.eq('x\na|bc\ny', '2p', 'x\nabc\n|fizz\nbuzz\nfizz\nbuzz\ny')
+        self.eq('1\n2\n|zing', 'p', '1\n2\nzing\n|fizz\nbuzz\n')
+        self.eq('1\n2\n|zing', '2p', '1\n2\nzing\n|fizz\nbuzz\nfizz\nbuzz\n')
         self.register('"', 'buzz')
         self.eq('fizz\n|\na\nb', 'p', 'fizz\nbuz|z\na\nb')
 
@@ -73,14 +77,7 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a|bc\nd|ef\nx', 'p', 'ab|fizz\nbuzzc\nde|buzz\nfizzf\nx')
         self.registerLinewise('"', ['fizz\n', 'buzz\n'])
         self.eq('a|bc\n2\nd|ef\n4', 'p', 'abc\n|fizz\n2\ndef\n|buzz\n4')
-
-    def test_n_multi_cursor_content_and_one_selection(self):
-        self.register('"', ['fizz', 'buzz'])
-        self.eq('|', 'p', 'fizzbuz|z')
-        self.eq('a|bc', 'p', 'abfizzbuz|zc')
-        self.registerLinewise('"', ['fizz\n', 'buzz\n'])
-        self.eq('|', 'p', '|fizz\nbuzz\n')
-        self.eq('x\na|bc\ny', 'p', 'x\nabc\n|fizz\nbuzz\ny')
+        self.eq('11|1\n222\n33|3', 'p', '111\n|fizz\n222\n333\n|buzz\n')
 
     @unittest.mock_status_message()
     def test_n_nothing_in_register(self):
@@ -93,9 +90,43 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x|xx x|xx x|xx', 'p', 'x|xx x|xx x|xx')
         self.assertBell()
 
-    def test_issue_93(self):
-        self.register('"', ['THIS ', 'THIS ', 'THIS '])
-        self.eq('|THIS IS\n|THIS IS\n|THIS IS', 'p', 'TTHIS| HIS IS\nTTHIS| HIS IS\nTTHIS| HIS IS')
+    def test_n_multi_cursor_content_and_one_selection(self):
+        self.register('"', ['fizz', 'buzz'])
+        self.eq('a|bc', 'p', 'ab|fizzc\n  buzz')
+        self.eq('|', 'p', '|fizz\nbuzz')
+        self.eq('x\na|bc\ny', 'p', 'x\nab|fizzc\ny buzz')
+        self.eq('|___\n___\nx', 'p', '_|fizz__\n_buzz__\nx')
+        self.eq('_|__\n___\nx', 'p', '__|fizz_\n__buzz_\nx')
+        self.eq('__|_\n___\nx', 'p', '___|fizz\n___buzz\nx')
+        self.eq('|___\n\nx', 'p', '_|fizz__\n buzz\nx')
+        self.eq('_|__\n\nx', 'p', '__|fizz_\n  buzz\nx')
+        self.eq('__|_\n\nx', 'p', '___|fizz\n   buzz\nx')
+        self.eq('|\n\nx', 'p', '|fizz\nbuzz\nx')
+        self.eq('|\n_\nx', 'p', '|fizz\nbuzz_\nx')
+        self.eq('__|______\nfizz\nx', 'p', '___|fizz_____\nfizbuzzz\nx')
+        self.eq('___|_____\nfizz\nx', 'p', '____|fizz____\nfizzbuzz\nx')
+        self.eq('____|____\nfizz\nx', 'p', '_____|fizz___\nfizz buzz\nx')
+        self.eq('_____|___\nfizz\nx', 'p', '______|fizz__\nfizz  buzz\nx')
+        self.eq('______|__\nfizz\nx', 'p', '_______|fizz_\nfizz   buzz\nx')
+        self.eq('_______|_\nfizz\nx', 'p', '________|fizz\nfizz    buzz\nx')
+        self.eq('|\n\nx', 'p', '|fizz\nbuzz\nx')
+        self.eq('\n|\n\nx', 'p', '\n|fizz\nbuzz\nx')
+
+        self.register('"', ['fiz', 'buz', 'foo', 'bar'])
+        self.eq('__|__\n\n\n\nx', 'p', '___|fiz_\n   buz\n   foo\n   bar\nx')
+        self.eq('xxxx|x\n\nxx\n\nx', 'p', 'xxxxx|fiz\n     buz\nxx   foo\n     bar\nx')
+        self.eq('|', 'p', '|fiz\nbuz\nfoo\nbar')
+        self.eq('xx|xxx', 'p', 'xxx|fizxx\n   buz\n   foo\n   bar')
+        self.eq('xx|xxx\n', 'p', 'xxx|fizxx\n   buz\n   foo\n   bar')
+        self.eq('xx|xxx\n\n', 'p', 'xxx|fizxx\n   buz\n   foo\n   bar')
+        self.eq('xx|x', 'p', 'xxx|fiz\n   buz\n   foo\n   bar')
+        self.eq('xx|x\n', 'p', 'xxx|fiz\n   buz\n   foo\n   bar')
+        self.eq('xx|x\n\n', 'p', 'xxx|fiz\n   buz\n   foo\n   bar')
+        self.eq('11|11\n2222\n3333', 'p', '111|fiz1\n222buz2\n333foo3\n   bar')
+        self.eq('11|11\n2222\n3333\n', 'p', '111|fiz1\n222buz2\n333foo3\n   bar')
+        self.eq('1111\n22|22\n3333', 'p', '1111\n222|fiz2\n333buz3\n   foo\n   bar')
+        self.eq('xx|xx\nx\n\nxxxx', 'p', 'xxx|fizx\nx  buz\n   foo\nxxxbarx')
+        self.eq('xx|xx\n\nxxx\nxxxx', 'p', 'xxx|fizx\n   buz\nxxxfoo\nxxxbarx')
 
     def test_v(self):
         self.register('"', 'fizz')
@@ -118,3 +149,7 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a\n|xyz\n|b\n', 'V_p', 'n_a\n|fizz\nb\n')
         self.registerLinewise('"', 'fizz\nbuzz\nab\n')
         self.eq('a\n|xyz\n|b\n', 'V_p', 'n_a\n|fizz\nbuzz\nab\nb\n')
+
+    def test_issue_93(self):
+        self.register('"', ['THIS ', 'THIS ', 'THIS '])
+        self.eq('|THIS IS\n|THIS IS\n|THIS IS', 'p', 'TTHIS| HIS IS\nTTHIS| HIS IS\nTTHIS| HIS IS')

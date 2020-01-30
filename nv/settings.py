@@ -19,95 +19,95 @@ from sublime import load_settings
 from sublime import save_settings
 
 
-def get_setting(view, name, default=None):
+def get_setting(view, name: str, default=None):
     return view.settings().get('vintageous_%s' % name, default)
 
 
-def set_setting(view, name, value):
+def set_setting(view, name: str, value) -> None:
     view.settings().set('vintageous_%s' % name)
 
 
-def reset_setting(view, name):
+def reset_setting(view, name: str) -> None:
     view.settings().erase('vintageous_%s' % name)
 
 
-def _get_private(obj, name, default=None):
+def _get_private(obj, name: str, default=None):
     return obj.settings().get('_vintageous_%s' % name, default)
 
 
-def _set_private(obj, name, value):
+def _set_private(obj, name: str, value) -> None:
     obj.settings().set('_vintageous_%s' % name, value)
 
 
 # DEPRECATED Refactor to use get_setting() instead
-def get_setting_neo(view, name):
+def get_setting_neo(view, name: str):
     return view.settings().get('neovintageous_%s' % name)
 
 
-def get_last_char_search(view):
+def get_last_char_search(view) -> str:
     # The last characte used for searches such as "f" and "t".
     return _get_private(view.window(), 'last_char_search', '')
 
 
-def get_last_char_search_command(view):
+def get_last_char_search_command(view) -> str:
     # Supports repeating the last search commands. For example the command ";"
     # (semi-colon) repeats the latest f, t, F or T [count] times and "," (comma)
     # repeats the latest f, t, F or T in opposite direction [count] times.
     return _get_private(view.window(), 'last_char_search_command', 'vi_f')
 
 
-def set_last_char_search(view, value):
+def set_last_char_search(view, value: str) -> None:
     _set_private(view.window(), 'last_char_search', value)
 
 
-def set_last_char_search_command(view, value):
+def set_last_char_search_command(view, value: str) -> None:
     _set_private(view.window(), 'last_char_search_command', value)
 
 
-def get_last_buffer_search(view):
+def get_last_buffer_search(view) -> str:
     # The last characte used for searches such as "/" and "?".
     return _get_private(view.window(), 'last_buffer_search', '')
 
 
-def get_last_buffer_search_command(view):
+def get_last_buffer_search_command(view) -> str:
     # Supports repeating the last search commands. For example the command "n".
     return _get_private(view.window(), 'last_buffer_search_command', 'vi_slash')
 
 
-def set_last_buffer_search(view, value):
+def set_last_buffer_search(view, value: str) -> None:
     _set_private(view.window(), 'last_buffer_search', value)
 
 
-def set_last_buffer_search_command(view, value):
+def set_last_buffer_search_command(view, value: str) -> None:
     _set_private(view.window(), 'last_buffer_search_command', value)
 
 
-def get_reset_during_init(view):
+def get_reset_during_init(view) -> bool:
     # Some commands gather input through input panels. An input panel is a view,
     # but when it's closed, the previous view gets activated and init code runs.
     # This setting can be used to inhibit running the init code when activated.
     return _get_private(view.window(), 'reset_during_init', True)
 
 
-def set_reset_during_init(view, value):
+def set_reset_during_init(view, value: bool) -> None:
     _set_private(view.window(), 'reset_during_init', value)
 
 
-def _toggle_preference(name):
+def _toggle_preference(name: str) -> None:
     preferences = load_settings('Preferences.sublime-settings')
     preferences.set(name, not preferences.get(name))
     save_settings('Preferences.sublime-settings')
 
 
-def toggle_ctrl_keys():
+def toggle_ctrl_keys() -> None:
     _toggle_preference('vintageous_use_ctrl_keys')
 
 
-def toggle_super_keys():
+def toggle_super_keys() -> None:
     _toggle_preference('vintageous_use_super_keys')
 
 
-def toggle_side_bar(window):
+def toggle_side_bar(window) -> None:
     window.run_command('toggle_side_bar')
 
     # Ensure that the focus is put on the side bar if it's now visible,

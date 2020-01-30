@@ -16,9 +16,11 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import traceback
 
 from sublime import active_window as _active_window
 from sublime import status_message as _status_message
+from sublime import windows as _windows
 
 _log = logging.getLogger(__name__)
 
@@ -61,69 +63,95 @@ _MODES = {
 }
 
 
-def mode_to_name(mode):
-    # type: (str) -> str
+def mode_to_name(mode: str) -> str:
     try:
         return _MODES[mode]
     except KeyError:
         return 'REALLY UNKNOWN'
 
 
-def is_visual_mode(mode):
+def is_visual_mode(mode: str) -> bool:
     return mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
-def is_ex_mode(view):
+def is_ex_mode(view) -> bool:
     return view.settings().get('_nv_ex_mode')
 
 
-def _format_message(msg, *args):
-    # type: (str, *str) -> str
+def _format_message(msg: str, *args) -> str:
     if args:
         msg = msg % args
 
     return msg
 
 
-def status_message(msg, *args):
-    # type: (str, *str) -> None
+def status_message(msg: str, *args: str) -> None:
     _status_message(_format_message(msg, *args))
 
 
-def message(msg, *args):
-    # type: (str, *str) -> None
+def message(msg: str, *args: str) -> None:
     print('NeoVintageous:', _format_message(msg, *args))
 
 
-def run_window_command(cmd, args=None, window=None):
+def run_window_command(cmd: str, args=None, window=None) -> None:
     if not window:
         window = _active_window()
     _log.info('command: %s %s', cmd, args)
     window.run_command(cmd, args)
 
 
-def run_view_command(view, cmd, args=None):
+def run_view_command(view, cmd: str, args=None) -> None:
     _log.info('command: %s %s', cmd, args)
     view.run_command(cmd, args)
 
 
-def run_motion(instance, motion):
+def run_motion(instance, motion) -> None:
     _log.info('motion: %s', motion)
     instance.run_command(motion['motion'], motion['motion_args'])
 
 
-def run_action(instance, action):
+def run_action(instance, action) -> None:
     _log.info('action: %s', action)
     instance.run_command(action['action'], action['action_args'])
 
 
-def enter_normal_mode(view_or_window, mode=None):
+def enter_normal_mode(view_or_window, mode: str = None) -> None:
     view_or_window.run_command('_enter_normal_mode', {'mode': mode})
 
 
-def enter_insert_mode(view_or_window, mode):
+def enter_insert_mode(view_or_window, mode: str) -> None:
     view_or_window.run_command('_enter_insert_mode', {'mode': mode})
 
 
-def enter_visual_mode(view_or_window, mode):
+def enter_visual_mode(view_or_window, mode: str, force: bool = False) -> None:
     view_or_window.run_command('_enter_visual_mode', {'mode': mode})
+
+
+def enter_visual_line_mode(view_or_window, mode: str, force: bool = False) -> None:
+    view_or_window.run_command('_enter_visual_line_mode', {'mode': mode})
+
+
+def enter_visual_block_mode(view_or_window, mode: str, force: bool = False) -> None:
+    view_or_window.run_command('_enter_visual_block_mode', {'mode': mode})
+
+
+def clean_views():
+    for window in _windows():
+        for view in window.views():
+            clean_view(view)
+
+
+def clean_view(view):
+
+    # Resets cursor and mode. In the case of errors loading the plugin this can
+    # help prevent the normal functioning of editor becoming unusable e.g. the
+    # cursor getting stuck in a block shape or the mode getting stuck in normal
+    # or visual mode.
+
+    try:
+        settings = view.settings()
+        settings.erase('command_mode')
+        settings.erase('inverse_caret_state')
+        settings.erase('vintage')
+    except Exception:
+        traceback.print_exc()

@@ -24,12 +24,10 @@ class Test_octothorp(unittest.FunctionalTestCase):
         super().setUp()
         self.set_option('wrapscan', True)
 
-    def test_octothorp_select_match(self):
+    def test_n(self):
         self.eq('abc\n|abc', 'n_#', '|abc\nabc')
         self.assertSearch('|abc|\n|abc|')
         self.assertSearchCurrent('|abc|\nabc')
-
-    def test_n_octothorp(self):
         self.eq('fi|zz', 'n_#', '|fizz')
         self.assertSearch('|fizz|')
         self.assertSearchCurrent('|fizz|')
@@ -41,6 +39,16 @@ class Test_octothorp(unittest.FunctionalTestCase):
         self.eq('|', 'n_#', '|')
         self.assertSearch('')
         self.assertSearchCurrent('')
+
+    def test_n_multiple_cursors(self):
+        self.eq('xy xy x|y xy xy x|y xy', 'n_#', 'xy |xy xy xy |xy xy xy')
+        self.assertSearch('|xy| |xy| |xy| |xy| |xy| |xy| |xy|')
+        self.assertSearchCurrent('xy |xy| xy xy |xy| xy xy')
+
+    def test_n_multiple_cursors_is_noop_if_all_cursors_are_not_on_the_same_word(self):
+        self.eq('xy x|y xy xy ab a|b ab', 'n_#', 'xy x|y xy xy ab a|b ab')
+        self.assertSearch('xy xy xy xy ab ab ab')
+        self.assertSearchCurrent('xy xy xy xy ab ab ab')
 
     def test_N_octohorp(self):
         self.eq('abc\nx\nabc\nx\na|bc\nx', '#', 'r_N_abc\nx\n|abc\nx\na|bc\nx')

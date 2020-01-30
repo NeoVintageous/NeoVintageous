@@ -71,11 +71,6 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x\ny|z', 'P', 'x\n    |fizz\n    buzz\nyz')
         self.assertLinewiseRegister('"    fizz\n    buzz\n')
 
-    def test_n_issue_224(self):
-        self.register('"bc\n')
-        self.eq('abc\nd|ef', 'P', 'abc\nd|bc\nef')
-        self.assertRegister('"bc\n')
-
     def test_n_multi_cursor(self):
         self.register('"', ['zz bu'])
         self.eq('fi|zz', 'P', 'fizz b|uzz')
@@ -83,10 +78,6 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('fi| x |zz', 'P', 'fiz|z x b|uzz')
         self.register('"', ['on', 'tw', 'thre'])
         self.eq('x 1|e 2|o 3|e x', 'P', 'x 1o|ne 2t|wo 3thr|ee x')
-
-    def test_n_multi_cursor_content_and_one_selection(self):
-        self.register('"', ['izz', 'buz'])
-        self.eq('f|z', 'P', 'fizzbu|zz')
 
     @unittest.mock_status_message()
     def test_n_nothing_in_register(self):
@@ -99,9 +90,40 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x|xx x|xx x|xx', 'P', 'x|xx x|xx x|xx')
         self.assertBell()
 
-    def test_issue_93(self):
-        self.register('"', ['THIS ', 'THIS ', 'THIS '])
-        self.eq('|THIS IS\n|THIS IS\n|THIS IS', 'P', 'THIS| THIS IS\nTHIS| THIS IS\nTHIS| THIS IS')
+    def test_n_multi_cursor_content_and_one_selection(self):
+        self.register('"', ['fizz', 'buzz'])
+        self.eq('|___\n___\nx', 'P', '|fizz___\nbuzz___\nx')
+        self.eq('_|__\n___\nx', 'P', '_|fizz__\n_buzz__\nx')
+        self.eq('__|_\n___\nx', 'P', '__|fizz_\n__buzz_\nx')
+        self.eq('|___\n\nx', 'P', '|fizz___\nbuzz\nx')
+        self.eq('_|__\n\nx', 'P', '_|fizz__\n buzz\nx')
+        self.eq('__|_\n\nx', 'P', '__|fizz_\n  buzz\nx')
+        self.eq('|\n\nx', 'P', '|fizz\nbuzz\nx')
+        self.eq('|\n_\nx', 'P', '|fizz\nbuzz_\nx')
+        self.eq('__|______\nfizz\nx', 'P', '__|fizz______\nfibuzzzz\nx')
+        self.eq('___|_____\nfizz\nx', 'P', '___|fizz_____\nfizbuzzz\nx')
+        self.eq('____|____\nfizz\nx', 'P', '____|fizz____\nfizzbuzz\nx')
+        self.eq('_____|___\nfizz\nx', 'P', '_____|fizz___\nfizz buzz\nx')
+        self.eq('______|__\nfizz\nx', 'P', '______|fizz__\nfizz  buzz\nx')
+        self.eq('_______|_\nfizz\nx', 'P', '_______|fizz_\nfizz   buzz\nx')
+
+        self.register('"', ['fiz', 'buz', 'foo', 'bar'])
+        self.eq('|\n\n\n\nx', 'P', '|fiz\nbuz\nfoo\nbar\nx')
+        self.eq('\n|\n\n\n\nx', 'P', '\n|fiz\nbuz\nfoo\nbar\nx')
+        self.eq('|\n\n\n\nx', 'P', '|fiz\nbuz\nfoo\nbar\nx')
+        self.eq('|\n_\n_\n_\nx', 'P', '|fiz\nbuz_\nfoo_\nbar_\nx')
+        self.eq('|', 'P', '|fiz\nbuz\nfoo\nbar')
+        self.eq('xx|xxx', 'P', 'xx|fizxxx\n  buz\n  foo\n  bar')
+        self.eq('xx|xxx\n', 'P', 'xx|fizxxx\n  buz\n  foo\n  bar')
+        self.eq('xx|xxx\n\n', 'P', 'xx|fizxxx\n  buz\n  foo\n  bar')
+        self.eq('xx|x', 'P', 'xx|fizx\n  buz\n  foo\n  bar')
+        self.eq('xx|x\n', 'P', 'xx|fizx\n  buz\n  foo\n  bar')
+        self.eq('xx|x\n\n', 'P', 'xx|fizx\n  buz\n  foo\n  bar')
+        self.eq('11|11\n2222\n3333', 'P', '11|fiz11\n22buz22\n33foo33\n  bar')
+        self.eq('11|11\n2222\n3333\n', 'P', '11|fiz11\n22buz22\n33foo33\n  bar')
+        self.eq('1111\n22|22\n3333', 'P', '1111\n22|fiz22\n33buz33\n  foo\n  bar')
+        self.eq('xx|xx\nx\n\nxxxx', 'P', 'xx|fizxx\nx buz\n  foo\nxxbarxx')
+        self.eq('xx|xx\n\nxxx\nxxxx', 'P', 'xx|fizxx\n  buz\nxxfoox\nxxbarxx')
 
     def test_v(self):
         self.register('"abc')
@@ -143,6 +165,15 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertLinewiseRegister('"xxx\n')
         self.register('"', '  fizz\n')
         self.eq('one\n|xxx\n|three', 'V_P', 'n_one\n  |fizz\n\nthree')
+
+    def test_issue_93(self):
+        self.register('"', ['THIS ', 'THIS ', 'THIS '])
+        self.eq('|THIS IS\n|THIS IS\n|THIS IS', 'P', 'THIS| THIS IS\nTHIS| THIS IS\nTHIS| THIS IS')
+
+    def test_n_issue_224(self):
+        self.register('"bc\n')
+        self.eq('abc\nd|ef', 'P', 'abc\nd|bc\nef')
+        self.assertRegister('"bc\n')
 
     def test_issue_627(self):
         self.normal('one\nt|wo\nthree')

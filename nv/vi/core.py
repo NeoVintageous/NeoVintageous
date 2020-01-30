@@ -17,27 +17,6 @@
 
 import sublime_plugin
 
-from NeoVintageous.nv.state import State
-
-
-class ViCommandMixin:
-
-    @property
-    def state(self):
-        return State(self.view)
-
-    def save_sel(self):
-        self.old_sel = tuple(self.view.sel())
-
-    def _is_equal_to_old_sel(self, new_sel):
-        try:
-            return (tuple((s.a, s.b) for s in self.old_sel) == tuple((s.a, s.b) for s in tuple(self.view.sel())))
-        except AttributeError:
-            raise AttributeError('have you forgotten to call .save_sel()?')
-
-    def has_sel_changed(self):
-        return not self._is_equal_to_old_sel(self.view.sel())
-
 
 class IrreversibleTextCommand(sublime_plugin.TextCommand):
 
@@ -77,7 +56,7 @@ class IrreversibleTextCommand(sublime_plugin.TextCommand):
 
 # DEPRECATED
 # TODO Remove this command
-class ViTextCommandBase(sublime_plugin.TextCommand, ViCommandMixin):
+class ViTextCommandBase(sublime_plugin.TextCommand):
     pass
 
 
@@ -92,7 +71,7 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
 
 # DEPRECATED
 # TODO Remove this command
-class ViWindowCommandBase(sublime_plugin.WindowCommand, ViCommandMixin):
+class ViWindowCommandBase(sublime_plugin.WindowCommand):
 
     @property
     def view(self):

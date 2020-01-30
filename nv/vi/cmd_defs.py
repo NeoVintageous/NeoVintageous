@@ -679,7 +679,7 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
         }
 
 
-@assign(seqs.BIG_J, _ACTION_MODES + (SELECT,))
+@assign(seqs.BIG_J, _ACTION_MODES)
 class ViJoinLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -688,22 +688,13 @@ class ViJoinLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        if state.mode == SELECT:
-            return {
-                'action': '_vi_select_big_j',
-                'action_args': {
-                    'mode': state.mode,
-                    'count': state.count
-                }
+        return {
+            'action': '_vi_big_j',
+            'action_args': {
+                'mode': state.mode,
+                'count': state.count
             }
-        else:
-            return {
-                'action': '_vi_big_j',
-                'action_args': {
-                    'mode': state.mode,
-                    'count': state.count
-                }
-            }
+        }
 
 
 @assign(seqs.CTRL_X, _ACTION_MODES)
@@ -1831,20 +1822,6 @@ class StFindNextResult(ViOperatorDef):
         }
 
 
-@assign(seqs.G_BIG_H, _ACTION_MODES)
-class ViEnterSelectModeForSearch(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_g_big_h',
-            'action_args': {}
-        }
-
-
 @assign(seqs.SHIFT_F4, _ACTION_MODES)
 class StPrevResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1856,22 +1833,6 @@ class StPrevResult(ViOperatorDef):
         return {
             'action': 'prev_result',
             'action_args': {}
-        }
-
-
-@assign(seqs.GH, _ACTION_MODES)
-class ViEnterSelectMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': '_enter_select_mode',
-            'action_args': {
-                'mode': state.mode
-            }
         }
 
 
@@ -1925,24 +1886,6 @@ class Vi_gf(ViOperatorDef):
             'action': '_vi_g',
             'action_args': {
                 'action': 'f'
-            }
-        }
-
-
-@assign(seqs.CTRL_N, (SELECT,))
-@assign(seqs.J, (SELECT,))
-class ViAddSelection(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_select_j',
-            'action_args': {
-                'mode': state.mode,
-                'count': state.count
             }
         }
 
@@ -2091,7 +2034,10 @@ class ViInsertAfterChar(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {
+        state.glue_until_normal_mode = True
+        state.normal_insert_count = state.count
+
+        return {
             'action': '_vi_a',
             'action_args': {
                 'mode': state.mode,
@@ -2099,13 +2045,8 @@ class ViInsertAfterChar(ViOperatorDef):
             }
         }
 
-        if state.mode != SELECT:
-            state.glue_until_normal_mode = True
-            state.normal_insert_count = state.count
 
-        return cmd
-
-
+@assign(seqs.ALT_N, (SELECT,))
 @assign(seqs.BIG_A, _ACTION_MODES + (SELECT,))
 class ViInsertAtEol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -2113,18 +2054,16 @@ class ViInsertAtEol(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {
+        if state.mode != SELECT:
+            state.glue_until_normal_mode = True
+
+        return {
             'action': '_vi_big_a',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count
             }
         }
-
-        if state.mode != SELECT:
-            state.glue_until_normal_mode = True
-
-        return cmd
 
 
 @assign(seqs.BIG_I, _ACTION_MODES + (SELECT,))
@@ -2134,18 +2073,16 @@ class ViInsertAtBol(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        cmd = {
+        if state.mode != SELECT:
+            state.glue_until_normal_mode = True
+
+        return {
             'action': '_vi_big_i',
             'action_args': {
                 'mode': state.mode,
                 'count': state.count
             }
         }
-
-        if state.mode != SELECT:
-            state.glue_until_normal_mode = True
-
-        return cmd
 
 
 @assign(seqs.COLON, _ACTION_MODES)
@@ -2244,38 +2181,6 @@ class ViGotoSymbolInProject(ViOperatorDef):
                 'count': state.count,
                 'globally': True
             }
-        }
-
-
-@assign(seqs.CTRL_P, (SELECT,))
-@assign(seqs.K, (SELECT,))
-class ViDeselectInstance(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.updates_xpos = True
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': '_vi_select_k',
-            'action_args': {
-                'mode': state.mode,
-                'count': state.count
-            }
-        }
-
-
-@assign(seqs.CTRL_X, (SELECT,))
-@assign(seqs.L, (SELECT,))
-class ViSkipInstance(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.scroll_into_view = True
-
-    def translate(self, state):
-        return {
-            'action': 'find_under_expand_skip',
-            'action_args': {}
         }
 
 
@@ -3032,19 +2937,13 @@ class ViMoveLeftByChars(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        if state.mode == SELECT:
-            return {
-                'motion': 'find_under_expand_skip',
-                'motion_args': {}
+        return {
+            'motion': '_vi_h',
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
             }
-        else:
-            return {
-                'motion': '_vi_h',
-                'motion_args': {
-                    'mode': state.mode,
-                    'count': state.count
-                }
-            }
+        }
 
 
 @assign(seqs.W, _MOTION_MODES)
@@ -3443,19 +3342,19 @@ class ViSearchForward(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = InputParser(
-            InputParser.VIA_PANEL,
+            InputParser.PANEL,
             command='_vi_slash',
             param='pattern'
         )
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         if not self.inp:
             return True
 
         return not self.inp.lower().endswith('<cr>')
 
-    def accept(self, key):
+    def accept(self, key: str) -> bool:
         self.inp += key
 
         return True
@@ -3500,19 +3399,19 @@ class ViSearchBackward(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = InputParser(
-            InputParser.VIA_PANEL,
+            InputParser.PANEL,
             command='_vi_question_mark',
             param='pattern'
         )
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         if not self.inp:
             return True
 
         return not self.inp.lower().endswith('<cr>')
 
-    def accept(self, key):
+    def accept(self, key: str) -> bool:
         self.inp += key
 
         return True

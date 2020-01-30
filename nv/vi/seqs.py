@@ -17,6 +17,7 @@
 
 A = 'a'
 ALT_CTRL_P = '<C-M-p>'
+ALT_N = '<M-n>'
 AMPERSAND = '&'
 AT = '@'
 AW = 'aw'

@@ -27,40 +27,40 @@ class ViCommandDefBase:
         self.input_parser = None
         self.inp = ''
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '<{}>'.format(self.__class__.__qualname__)
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         return False
 
-    def accept(self, key):
+    def accept(self, key: str) -> bool:
         raise NotImplementedError('{} must implement accept()'.format(self.__class__.__name__))
 
     @property
-    def inp(self):
+    def inp(self) -> str:
         return self._inp
 
     @inp.setter
-    def inp(self, value):
+    def inp(self, value: str) -> None:
         self._inp = value
 
-    def reset(self):
+    def reset(self) -> None:
         self.inp = ''
 
-    def translate(self, state):
+    def translate(self, state) -> dict:
         """Return the command as a JSON object."""
         raise NotImplementedError('{} must implement translate()'.format(self.__class__.__name__))
 
     @classmethod
-    def from_json(cls, data):
+    def from_json(cls, data: dict) -> object:
         """Instantiate the command from a JSON object."""
         instance = cls()
         instance.__dict__.update(data)
 
         return instance
 
-    def serialize(self):
+    def serialize(self) -> dict:
         """Serialize the command as JSON object."""
         return {
             'name': self.__class__.__name__,
@@ -99,12 +99,10 @@ class RequiresOneCharMixinDef(ViCommandDefBase):
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         return self.inp == ''
 
-    def accept(self, key):
-        key = translate_char(key)
-        assert len(key) == 1, 'only accepts a single char'
-        self.inp = key
+    def accept(self, key: str) -> bool:
+        self.inp += translate_char(key)
 
         return True

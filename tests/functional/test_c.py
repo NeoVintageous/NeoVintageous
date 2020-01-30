@@ -139,3 +139,20 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_c_(self):
         self.eq('1\nfi|zz\n2\n3', 'c_', 'i_1\n|\n2\n3')
         self.eq('1\n    fi|zz\n2\n3', 'c_', 'i_1\n|\n2\n3')
+
+    def test_cit(self):
+        self.eq('<div><h1>fi|zz</h1></div>', 'cit', 'i_<div><h1>|</h1></div>')
+        self.eq('<div><h|1>fizz</h1></div>', 'cit', 'i_<div><h1>|</h1></div>')
+        self.eq('<div>  |  <h1>fizz</h1></div>', 'cit', 'i_<div>|</div>')
+        self.eq('<div>\n  |  <h1>fizz</h1>\n</div>', 'cit', 'i_<div>\n    <h1>|</h1>\n</div>')
+        self.eq('<div>\n  |  <h1>fizz</h1>\n</div>', 'cit', 'i_<div>\n    <h1>|</h1>\n</div>')
+        self.eq('<div>\n|\n  <h1>fizz</h1>\n</div>', 'cit', 'i_<div>|\n</div>')
+
+    def test_cat(self):
+        self.eq('<div><h1>fi|zz</h1></div>', 'cat', 'i_<div>|</div>')
+        self.eq('<div><h|1>fizz</h1></div>', 'cat', 'i_<div>|</div>')
+        self.eq('<div>  |  <h1>fizz</h1></div>', 'cat', 'i_|')
+        self.eq('<div>\n  |  <h1>fizz</h1>\n</div>', 'cat', 'i_<div>\n    |\n</div>')
+
+    def test_issue_654(self):
+        self.eq('<header>\n |   <h1>fizz</h1>\n<header>', 'cit', 'i_<header>\n    <h1>|</h1>\n<header>')

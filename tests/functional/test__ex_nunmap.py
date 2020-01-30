@@ -18,11 +18,17 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_gH(unittest.FunctionalTestCase):
+class Test_ex_nunmap(unittest.FunctionalTestCase):
 
-    @unittest.mock_bell()
+    @unittest.mock_mappings()
     @unittest.mock_status_message()
-    def test_n_noop(self):
-        self.eq('fi|zz', 'n_gH', 'fi|zz')
-        self.assertBell()
-        self.assertStatusMessage('no available search matches')
+    def test_no_such_mapping(self):
+        self.feed(':nunmap x')
+        self.assertStatusMessage('E31: No such mapping')
+
+    @unittest.mock_mappings((unittest.NORMAL, 'x', 'y'))
+    @unittest.mock_status_message()
+    def test_nunmap(self):
+        self.feed(':nunmap x')
+        self.assertNotMapping('x')
+        self.assertNoStatusMessage()

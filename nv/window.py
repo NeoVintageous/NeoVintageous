@@ -55,7 +55,7 @@ _LAYOUT_THREE_ROW = {
 }
 
 
-def _layout_group_height(layout, group, height=None):
+def _layout_group_height(layout, group: int, height: int = None) -> dict:
     """Set current group highest (default: highest possible)."""
     row_count = len(layout['rows'])
     if row_count < 3:
@@ -93,7 +93,7 @@ def _layout_group_height(layout, group, height=None):
     return layout
 
 
-def _layout_group_width(layout, group, width=None):
+def _layout_group_width(layout, group: int, width: int = None) -> dict:
     """Set current group width (default: widest possible)."""
     col_count = len(layout['cols'])
 
@@ -169,7 +169,7 @@ def _layout_groups_equal(layout):
     return layout
 
 
-def _close_all_other_views(window):
+def _close_all_other_views(window) -> None:
     """Make the current view the only one on the screen.
 
     All other views are closed.
@@ -177,9 +177,7 @@ def _close_all_other_views(window):
     Modified views are merged into current group. Modified views
     are not removed, so changes cannot get lost.
     """
-    current_group_num = window.active_group()
     current_view = window.active_view()
-
     if not current_view:
         return
 
@@ -187,22 +185,23 @@ def _close_all_other_views(window):
     if len(views) == 1:
         return
 
-    # Note: the views are closed and then the groups. Looping over the groups
-    # and closing the views in that group and then closing the group won't work.
+    # NOTE The non-active *unmodified* views are closed first and then the
+    # groups. This effectivly collapses unmodified views into the same group as
+    # the active view. Looping over the groups and closing views won't work.
 
-    # close other unmodified views
+    # Close all other unmodified views.
     for view in views:
         if view != current_view and not view.is_dirty():
             view.close()
 
-    # close other groups
+    # Close all other groups.
+    current_group_num = window.active_group()
     for i in range(window.num_groups()):
         if i != current_group_num:
-            # TODO is this the best way to close a group
             window.run_command('close_pane', {'group': i})
 
 
-def _close_view(window, close_if_last=True):
+def _close_view(window, close_if_last: bool = True) -> None:
     """Close current view.
 
     If {close_if_last} then this command fails when there is only one
@@ -247,17 +246,17 @@ def _close_view(window, close_if_last=True):
         window.run_command('destroy_pane', {'direction': 'self'})
 
 
-def _close_active_view(window):
+def _close_active_view(window) -> None:
     _close_view(window, close_if_last=False)
 
 
-def _quit_active_view(window):
+def _quit_active_view(window) -> None:
     _close_view(window)
     if len(window.views()) == 0:
         window.run_command('close')
 
 
-def _exchange_views(window, view_a, view_b):
+def _exchange_views(window, view_a, view_b) -> None:
     if not view_a or not view_b:
         return
 
@@ -268,11 +267,11 @@ def _exchange_views(window, view_a, view_b):
     window.set_view_index(view_b, view_a_index[0], view_a_index[1])
 
 
-def _exchange_view(window, other_view):
+def _exchange_view(window, other_view) -> None:
     _exchange_views(window, window.active_view(), other_view)
 
 
-def _exchange_view_by_count(window, count=1):
+def _exchange_view_by_count(window, count: int = 1) -> None:
     """Exchange view with previous one.
 
     Without {count}: Exchange current view with the view in the
@@ -298,7 +297,7 @@ def _exchange_view_by_count(window, count=1):
     _exchange_view(window, other_view)
 
 
-def _move_active_view_to_far_left(window):
+def _move_active_view_to_far_left(window) -> None:
     """Move the current view to be at the far left, using the full height of the view.
 
     Example of moving window (a=active). Currently only supports 2 row or 2 column layouts.
@@ -321,7 +320,7 @@ def _move_active_view_to_far_left(window):
     _resize_groups_equally(window)
 
 
-def _move_active_view_to_far_right(window):
+def _move_active_view_to_far_right(window) -> None:
     """Move the current view to be at the far right, using the full height of the view."""
     if window.num_groups() != 2:
         return
@@ -334,7 +333,7 @@ def _move_active_view_to_far_right(window):
     _resize_groups_equally(window)
 
 
-def _move_active_view_to_very_bottom(window):
+def _move_active_view_to_very_bottom(window) -> None:
     """Move the current view to be at the very bottom, using the full width of the view."""
     if window.num_groups() != 2:
         return
@@ -347,7 +346,7 @@ def _move_active_view_to_very_bottom(window):
     _resize_groups_equally(window)
 
 
-def _move_active_view_to_very_top(window):
+def _move_active_view_to_very_top(window) -> None:
     """Move the current view to be at the very top, using the full width of the view."""
     if window.num_groups() != 2:
         return
@@ -360,7 +359,7 @@ def _move_active_view_to_very_top(window):
     _resize_groups_equally(window)
 
 
-def _get_group(window, direction, count):
+def _get_group(window, direction: str, count: int):
     """Retrieve group number in given direction.
 
     :param direction:
@@ -436,7 +435,7 @@ def _get_group(window, direction, count):
     return group_num
 
 
-def _focus_group(window, direction, count=1):
+def _focus_group(window, direction: str, count: int = 1) -> None:
     nth_group_number = _get_group(window, direction, count)
     if nth_group_number is None:
         return
@@ -460,72 +459,72 @@ def _focus_group(window, direction, count=1):
     window.focus_group(nth_group_number)
 
 
-def _focus_group_above(window, count=1):
+def _focus_group_above(window, count: int = 1) -> None:
     """Move cursor to Nth group above current one."""
     _focus_group(window, 'above', count)
 
 
-def _focus_group_below(window, count=1):
+def _focus_group_below(window, count: int = 1) -> None:
     """Move cursor to Nth group below current one."""
     _focus_group(window, 'below', count)
 
 
-def _focus_group_left(window, count=1):
+def _focus_group_left(window, count: int = 1) -> None:
     """Move cursor to Nth group left of current one."""
     _focus_group(window, 'left', count)
 
 
-def _focus_group_right(window, count=1):
+def _focus_group_right(window, count: int = 1) -> None:
     """Move cursor to Nth group right of current one."""
     _focus_group(window, 'right', count)
 
 
-def _focus_group_top_left(window):
+def _focus_group_top_left(window) -> None:
     window.focus_group(0)
 
 
-def _focus_group_bottom_right(window):
+def _focus_group_bottom_right(window) -> None:
     window.focus_group(window.num_groups() - 1)
 
 
-def _set_group_height(window, height=None):
+def _set_group_height(window, height: int = None) -> None:
     """Set current group height (default: highest possible)."""
     return window.set_layout(
         _layout_group_height(window.layout(), window.active_group(), height)
     )
 
 
-def _set_group_width(window, width=None):
+def _set_group_width(window, width: int = None) -> None:
     """Set current group width (default: widest possible)."""
     return window.set_layout(
         _layout_group_width(window.layout(), window.active_group(), width)
     )
 
 
-def _decrease_group_height(window, count=1):
+def _decrease_group_height(window, count: int = 1) -> None:
     pass
 
 
-def _decrease_group_width(window, count=1):
+def _decrease_group_width(window, count: int = 1) -> None:
     pass
 
 
-def _increase_group_height(window, count=1):
+def _increase_group_height(window, count: int = 1) -> None:
     pass
 
 
-def _increase_group_width(window, count=1):
+def _increase_group_width(window, count: int = 1) -> None:
     pass
 
 
-def _resize_groups_equally(window):
+def _resize_groups_equally(window) -> None:
     """Make all groups (almost) equally high and wide."""
     return window.set_layout(
         _layout_groups_equal(window.layout())
     )
 
 
-def _split(window, file=None):
+def _split(window, file: str = None) -> None:
     """Split current view in two. The result is two viewports on the same file."""
     if file:
         window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
@@ -535,12 +534,12 @@ def _split(window, file=None):
         window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
-def _split_vertically(window, count=None):
+def _split_vertically(window, count: int = None) -> None:
     window.run_command('create_pane', {'direction': 'right'})
     window.run_command('clone_file_to_pane', {'direction': 'right'})
 
 
-def _split_with_new_file(window, n=None):
+def _split_with_new_file(window, n: int = None) -> None:
     """Create a new group and start editing an empty file in it.
 
     Make new group N high (default is to use half the existing height).
@@ -550,7 +549,7 @@ def _split_with_new_file(window, n=None):
     window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
 
 
-def window_buffer_control(window, action, count=1):
+def window_buffer_control(window, action: str, count: int = 1) -> None:
     if action == 'next':
         for i in range(count):
             window.run_command('next_view')
@@ -571,7 +570,7 @@ def window_buffer_control(window, action, count=1):
         raise ValueError('unknown buffer control action: %s' % action)
 
 
-def window_tab_control(window, action, count=1, index=None):
+def window_tab_control(window, action: str, count: int = 1, index: int = None) -> None:
     view = window.active_view()
     if not view:
         return status_message('view not found')
@@ -592,7 +591,8 @@ def window_tab_control(window, action, count=1, index=None):
         window.run_command('select_by_index', {'index': 0})
 
     elif action == 'goto':
-        window.run_command('select_by_index', {'index': index - 1})
+        if index:
+            window.run_command('select_by_index', {'index': index - 1})
 
     elif action == 'only':
         group_views = window.views_in_group(group_index)
@@ -619,7 +619,7 @@ def window_tab_control(window, action, count=1, index=None):
         raise ValueError('unknown tab control action: %s' % action)
 
 
-def window_control(window, action, count=1, **kwargs):
+def window_control(window, action: str, count: int = 1, **kwargs) -> None:
     if action == 'b':
         _focus_group_bottom_right(window)
     elif action == 'H':
@@ -672,7 +672,7 @@ def window_control(window, action, count=1, **kwargs):
         raise ValueError('unknown action')
 
 
-def window_open_file(window, file):
+def window_open_file(window, file) -> None:
     if not file:
         return
 

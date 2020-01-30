@@ -21,10 +21,10 @@ class Token:
     def __init__(self, content):
         self.content = content
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{}({})'.format(self.__class__.__name__, self.content)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, self.__class__):
             return self.__dict__ == other.__dict__
 
@@ -33,9 +33,7 @@ class Token:
 
 class TokenCommand(Token):
 
-    def __init__(self, name, target=None, params=None, forced=False, addressable=False, cooperates_with_global=False):  # noqa: E501
-        # type: (str, str, dict, bool, bool, bool) -> None
-        #
+    def __init__(self, name: str, target: str = None, params: dict = None, forced: bool = False, addressable: bool = False, cooperates_with_global: bool = False) -> None:  # noqa: E501
         # Args:
         #   :name (str): The name of the command.
         #   :target (str): The name of the ex command to execute. Defaults to
@@ -62,7 +60,6 @@ class TokenCommand(Token):
         #       writing, the only command that supports the global_lines
         #       argument is the "print" command e.g. print all lines matching
         #       \d+ into new buffer: ":%global/\d+/print".
-
         super().__init__(content=name)
 
         self.name = name
@@ -73,7 +70,7 @@ class TokenCommand(Token):
         self.addressable = addressable
         self.cooperates_with_global = cooperates_with_global
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{} {}'.format(self.content, self.__dict__)
 
 

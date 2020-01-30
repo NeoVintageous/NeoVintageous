@@ -1,28 +1,37 @@
-<!--
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
 
-Do you want to ask a question? Are you looking for support? The Sublime Text message board is the best place for getting support: https://forum.sublimetext.com.
+---
 
--->
+**Describe the bug**  
+A clear and concise description of what the bug is.
 
-### Description
+**To Reproduce**  
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-### Steps to Reproduce
+**Expected behavior**  
+A clear and concise description of what you expected to happen.
 
-### Expected behaviour
+**Actual behavior**  
+A clear and concise description of what actually happened.
 
-### Actual behaviour
-
-### Versions
-
-Show the Sublime Text console log: `Menu > View > Show Console`.
-
+**Versions**  
+Show the Sublime Text console log: `Menu > View > Show Console`. 
 Example: `startup, version: 3200 linux x64 channel: stable`
 
-### Additional Information
+**Additional Information**  
 
 Any additional information, configuration, or data that might be necessary to reproduce the issue.
 
-Show the Sublime Text console log: `Menu > View > Show Console`.
+To show the Sublime Text console log: `Menu > View > Show Console`.
 
 Command and input logging are enabled by running the following commands in input box at the bottom of the console: `sublime.log_commands(True)` and `sublime.log_input(True)`.
 

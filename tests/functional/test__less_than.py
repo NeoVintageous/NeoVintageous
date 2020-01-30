@@ -32,7 +32,7 @@ class Test_less_than(unittest.FunctionalTestCase):
         self.eq('  x\n    fi|zz\n  bu|zz\n  x', 'v_<', 'n_  x\n  |fizz\nbuzz\n  x')
 
     def test_b(self):
-        self.eq('    f|iz|z\n    b|uz|z\n', 'b_<', 'n_  fizz\n  |buzz\n')
+        self.eq('    f|iz|z\n    b|uz|z\n', 'b_<', 'n_  |fizz\n  buzz\n')
 
     def test_V(self):
         self.eq('  x\n      |fizz\n  buzz\n|  x', 'V_<', 'n_  x\n    |fizz\nbuzz\n  x')

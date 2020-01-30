@@ -29,6 +29,7 @@ from sublime import Region
 
 from NeoVintageous.nv.polyfill import re_escape
 from NeoVintageous.nv.polyfill import view_find
+from NeoVintageous.nv.polyfill import view_find_in_range
 from NeoVintageous.nv.polyfill import view_indentation_level
 from NeoVintageous.nv.polyfill import view_indented_region
 from NeoVintageous.nv.polyfill import view_rfind_all
@@ -96,48 +97,40 @@ PAIRS = {
 }  # type: dict
 
 
-def is_at_punctuation(view, pt):
-    # type: (...) -> bool
+def is_at_punctuation(view, pt: int) -> bool:
     next_char = view.substr(pt)
-
     # FIXME Wrong if pt is at '\t'
     return (not (is_at_word(view, pt) or next_char.isspace() or next_char == '\n') and next_char.isprintable())
 
 
-def is_at_word(view, pt):
-    # type: (...) -> bool
+def is_at_word(view, pt: int) -> bool:
     next_char = view.substr(pt)
 
     return (next_char.isalnum() or next_char == '_')
 
 
-def is_at_space(view, pt):
-    # type: (...) -> bool
+def is_at_space(view, pt: int) -> bool:
     return view.substr(pt).isspace()
 
 
-def get_punctuation_region(view, pt):
-    # type: (...) -> Region
+def get_punctuation_region(view, pt: int) -> Region:
     start = view.find_by_class(pt + 1, forward=False, classes=CLASS_PUNCTUATION_START)
     end = view.find_by_class(pt, forward=True, classes=CLASS_PUNCTUATION_END)
 
     return Region(start, end)
 
 
-def get_space_region(view, pt):
-    # type: (...) -> Region
+def get_space_region(view, pt: int) -> Region:
     end = view.find_by_class(pt, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
 
     return Region(previous_word_end(view, pt + 1), end)
 
 
-def previous_word_end(view, pt):
-    # type: (...) -> int
+def previous_word_end(view, pt: int) -> int:
     return view.find_by_class(pt, forward=False, classes=ANCHOR_PREVIOUS_WORD_BOUNDARY)
 
 
-def next_word_start(view, pt):
-    # type: (...) -> int
+def next_word_start(view, pt: int) -> int:
     if is_at_punctuation(view, pt):
         # Skip all punctuation surrounding the caret and any trailing spaces.
         end = get_punctuation_region(view, pt).b
@@ -162,8 +155,7 @@ def next_word_start(view, pt):
     return view.find_by_class(pt, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
 
 
-def current_word_start(view, pt):
-    # type: (...) -> int
+def current_word_start(view, pt: int) -> int:
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).a
 
@@ -173,8 +165,7 @@ def current_word_start(view, pt):
     return view.word(pt).a
 
 
-def current_word_end(view, pt):
-    # type: (...) -> int
+def current_word_end(view, pt: int) -> int:
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).b
 
@@ -186,8 +177,7 @@ def current_word_end(view, pt):
 
 # https://vimhelp.appspot.com/motion.txt.html#word
 # Used for motions in operations like daw and caw
-def a_word(view, pt, inclusive=True, count=1):
-    # type: (...) -> Region
+def a_word(view, pt: int, inclusive: bool = True, count: int = 1) -> Region:
     assert count > 0
     start = current_word_start(view, pt)
     end = pt
@@ -212,8 +202,7 @@ def a_word(view, pt, inclusive=True, count=1):
     return Region(start, end)
 
 
-def big_word_end(view, pt):
-    # type: (...) -> int
+def big_word_end(view, pt: int) -> int:
     prev = pt
     while True:
         if is_at_punctuation(view, pt):
@@ -232,8 +221,7 @@ def big_word_end(view, pt):
     return pt
 
 
-def big_word_start(view, pt):
-    # type: (...) -> int
+def big_word_start(view, pt: int) -> int:
     prev = pt
     while True:
         if is_at_punctuation(view, pt):
@@ -254,8 +242,7 @@ def big_word_start(view, pt):
 
 # https://vimhelp.appspot.com/motion.txt.html#WORD
 # Used for motions in operations like daW and caW
-def a_big_word(view, pt, inclusive=False, count=1):
-    # type: (...) -> Region
+def a_big_word(view, pt: int, inclusive: bool = False, count: int = 1) -> Region:
     start, end = None, pt
     for x in range(count):
         if is_at_space(view, end):
@@ -291,11 +278,29 @@ def a_big_word(view, pt, inclusive=False, count=1):
     return Region(start, end)
 
 
-def _get_text_object_tag(view, s, inclusive, count):
-    # type: (...) -> Region
+def _get_text_object_tag(view, s: Region, inclusive: bool, count: int) -> Region:
+    # When the active cursor position is on leading whitespace before a tag on
+    # the same line then the start point of the text object is the tag.
+    line = view.line(get_insertion_point_at_b(s))
+    tag_in_line = view_find_in_range(view, '^\\s*<[^>]+>', line.begin(), line.end())
+    if tag_in_line:
+        if s.b >= s.a and s.b < tag_in_line.end():
+            if s.empty():
+                s.a = s.b = tag_in_line.end()
+            else:
+                s.a = tag_in_line.end()
+                s.b = tag_in_line.end() + 1
+
     begin_tag, end_tag, _ = find_containing_tag(view, s.begin())
     if not (begin_tag and end_tag):
         return s
+
+    # The normal method is to select a <tag> until the matching </tag>. For "at"
+    # the tags are included, for "it" they are excluded. But when "it" is
+    # repeated the tags will be included (otherwise nothing would change).
+    if not inclusive:
+        if s == Region(begin_tag.end(), end_tag.begin()):
+            inclusive = True
 
     if inclusive:
         return Region(begin_tag.a, end_tag.b)
@@ -303,13 +308,11 @@ def _get_text_object_tag(view, s, inclusive, count):
         return Region(begin_tag.b, end_tag.a)
 
 
-def _get_text_object_paragraph(view, s, inclusive, count):
-    # type: (...) -> Region
+def _get_text_object_paragraph(view, s: Region, inclusive: bool, count: int) -> Region:
     return find_paragraph_text_object(view, s, inclusive, count)
 
 
-def _get_text_object_bracket(view, s, inclusive, count, delims):
-    # type: (...) -> Region
+def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delims: dict) -> Region:
     opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
     closing = find_next_lone_bracket(view, s.end(), delims)
 
@@ -339,8 +342,7 @@ def _get_text_object_bracket(view, s, inclusive, count, delims):
     return Region(a, b)
 
 
-def _get_text_object_quote(view, s, inclusive, count, delims):
-    # type: (...) -> Region
+def _get_text_object_quote(view, s: Region, inclusive: bool, count: int, delims) -> Region:
     line = view.line(s)
 
     delim_open = delims[0]
@@ -362,8 +364,7 @@ def _get_text_object_quote(view, s, inclusive, count, delims):
     return Region(prev_quote.a + 1, next_quote.b - 1)
 
 
-def _get_text_object_word(view, s, inclusive, count):
-    # type: (...) -> Region
+def _get_text_object_word(view, s: Region, inclusive: bool, count: int) -> Region:
     w = a_word(view, s.b, inclusive=inclusive, count=count)
     if s.size() <= 1:
         return w
@@ -371,8 +372,7 @@ def _get_text_object_word(view, s, inclusive, count):
     return Region(s.a, w.b)
 
 
-def _get_text_object_big_word(view, s, inclusive, count):
-    # type: (...) -> Region
+def _get_text_object_big_word(view, s: Region, inclusive: bool, count: int) -> Region:
     w = a_big_word(view, s.b, inclusive=inclusive, count=count)
     if s.size() <= 1:
         return w
@@ -380,8 +380,7 @@ def _get_text_object_big_word(view, s, inclusive, count):
     return Region(s.a, w.b)
 
 
-def _get_text_object_sentence(view, s, inclusive, count):
-    # type: (...) -> Region
+def _get_text_object_sentence(view, s: Region, inclusive: bool, count: int) -> Region:
     sentence_start = view.find_by_class(s.b, forward=False, classes=CLASS_EMPTY_LINE)
     sentence_start_2 = reverse_search_by_pt(view, r'[.?!:]\s+|[.?!:]$', start=0, end=s.b)
     if sentence_start_2:
@@ -399,15 +398,13 @@ def _get_text_object_sentence(view, s, inclusive, count):
         return Region(sentence_start, sentence_end.b)
 
 
-def _get_text_object_line(view, s, inclusive, count):
-    # type: (...) -> Region
+def _get_text_object_line(view, s: Region, inclusive: bool, count: int) -> Region:
     start, end = find_line_text_object(view, s)
 
     return Region(start, end)
 
 
-def get_text_object_region(view, s, text_object, inclusive=False, count=1):
-    # type: (...) -> Region
+def get_text_object_region(view, s: Region, text_object: str, inclusive: bool = False, count: int = 1) -> Region:
     try:
         delims, type_ = PAIRS[text_object]
     except KeyError:
@@ -437,7 +434,7 @@ def get_text_object_region(view, s, text_object, inclusive=False, count=1):
     return s
 
 
-def find_next_lone_bracket(view, start, items, unbalanced=0):
+def find_next_lone_bracket(view, start: int, items, unbalanced: int = 0):
     # TODO: Extract common functionality from here and the % motion instead of
     # duplicating code.
     new_start = start
@@ -487,7 +484,7 @@ def find_next_lone_bracket(view, start, items, unbalanced=0):
         return next_closing_bracket
 
 
-def find_prev_lone_bracket(view, start, tags, unbalanced=0):
+def find_prev_lone_bracket(view, start: int, tags, unbalanced: int = 0):
     # TODO: Extract common functionality from here and the % motion instead of
     # duplicating code.
 
@@ -543,8 +540,7 @@ def find_prev_lone_bracket(view, start, tags, unbalanced=0):
         return prev_opening_bracket
 
 
-def find_paragraph_text_object(view, s, inclusive=True, count=1):
-    # type: (...) -> Region
+def find_paragraph_text_object(view, s: Region, inclusive: bool = True, count: int = 1) -> Region:
     # In Vim, `vip` will select an inner paragraph -- all the lines having the
     # same whitespace status of the current location. And a `vap` will select
     # both the current inner paragraph (either whitespace or not) and the next
@@ -563,8 +559,8 @@ def find_paragraph_text_object(view, s, inclusive=True, count=1):
     return Region(begin, end)
 
 
-def find_sentences_forward(view, start, count=1):
-    def _find_sentence_forward(view, start):
+def find_sentences_forward(view, start, count: int = 1):
+    def _find_sentence_forward(view, start: int):
         char = view.substr(start)
         if char == '\n':
             next_sentence = view.find('\\s+', start)
@@ -588,7 +584,7 @@ def find_sentences_forward(view, start, count=1):
         return Region(new_start)
 
 
-def find_sentences_backward(view, start_pt, count=1):
+def find_sentences_backward(view, start_pt: int, count: int = 1) -> Region:
     if isinstance(start_pt, Region):
         start_pt = start_pt.a
 
@@ -670,8 +666,7 @@ def find_inner_paragraph(view, initial_loc):
     return (begin, end)
 
 
-def resolve_indent_text_object(view, s, inclusive=True, big=False):
-
+def resolve_indent_text_object(view, s: Region, inclusive: bool = True, big: bool = False):
     # Look for the minimum indentation in the current visual region.
     idnt = 1000
     idnt_pt = None
@@ -737,7 +732,7 @@ def resolve_indent_text_object(view, s, inclusive=True, big=False):
     return s
 
 
-def find_line_text_object(view, s):
+def find_line_text_object(view, s: Region) -> tuple:
     line = view.line(s)
     line_content = view.substr(line)
 
@@ -752,8 +747,7 @@ def find_line_text_object(view, s):
 
 
 # TODO: Move this to units.py.
-def word_reverse(view, pt, count=1, big=False):
-    # type: (...) -> int
+def word_reverse(view, pt: int, count: int = 1, big: bool = False) -> int:
     t = pt
     for _ in range(count):
         t = view.find_by_class(t, forward=False, classes=WORD_REVERSE_STOPS)
@@ -769,14 +763,12 @@ def word_reverse(view, pt, count=1, big=False):
 
 
 # TODO: Move this to units.py.
-def big_word_reverse(view, pt, count=1):
-    # type: (...) -> int
+def big_word_reverse(view, pt: int, count: int = 1) -> int:
     return word_reverse(view, pt, count, big=True)
 
 
 # TODO: Move this to units.py.
-def word_end_reverse(view, pt, count=1, big=False):
-    # type: (...) -> int
+def word_end_reverse(view, pt: int, count: int = 1, big: bool = False) -> int:
     t = pt
     for i in range(count):
         if big:
@@ -801,12 +793,11 @@ def word_end_reverse(view, pt, count=1, big=False):
 
 
 # TODO: Move this to units.py.
-def big_word_end_reverse(view, pt, count=1):
-    # type: (...) -> int
+def big_word_end_reverse(view, pt: int, count: int = 1) -> int:
     return word_end_reverse(view, pt, count, big=True)
 
 
-def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
+def next_end_tag(view, pattern: str = RX_ANY_TAG, start: int = 0, end: int = -1) -> tuple:
     # Args:
     #   view (sublime.View)
     #   pattern (str)
@@ -827,7 +818,7 @@ def next_end_tag(view, pattern=RX_ANY_TAG, start=0, end=-1):
     return None, None, None
 
 
-def previous_begin_tag(view, pattern, start=0, end=0):
+def previous_begin_tag(view, pattern: str, start: int = 0, end: int = 0) -> tuple:
     assert pattern, 'bad call'
     region = reverse_search_by_pt(view, pattern, start, end, IGNORECASE)
     if not region:
@@ -840,18 +831,17 @@ def previous_begin_tag(view, pattern, start=0, end=0):
     return None, None, None
 
 
-def get_region_end(r):
+def get_region_end(r: Region) -> dict:
     return {'start': r.end()}
 
 
-def get_region_begin(r):
+def get_region_begin(r: Region) -> dict:
     return {'start': 0, 'end': r.begin()}
 
 
-def get_closest_tag(view, pt):
+def get_closest_tag(view, pt: int):
     # Args:
     #   view (sublime.View)
-    #   pt (int)
     #
     # Returns:
     #   Region|None
@@ -869,10 +859,9 @@ def get_closest_tag(view, pt):
     return next_tag
 
 
-def find_containing_tag(view, start):
+def find_containing_tag(view, start: int) -> tuple:
     # Args:
     #   view (sublime.View)
-    #   start (int)
     #
     # Returns:
     #   tuple[Region, Region, str]
@@ -912,7 +901,7 @@ def find_containing_tag(view, start):
     return begin_region, end_region, tag_name
 
 
-def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags=[]):
+def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags: list = []) -> tuple:
     # Args:
     #   view (sublime.View)
     #   search (callable)
@@ -946,7 +935,7 @@ def next_unbalanced_tag(view, search=None, search_args={}, restart_at=None, tags
     return next_unbalanced_tag(view, search, search_args, restart_at, tags)
 
 
-def find_next_item_match_pt(view, s):
+def find_next_item_match_pt(view, s: Region):
     pt = get_insertion_point_at_b(s)
 
     # Note that some item targets are added later in relevant contexts, for

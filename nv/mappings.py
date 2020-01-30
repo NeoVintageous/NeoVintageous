@@ -44,53 +44,47 @@ _mappings = {
 
 class Mapping:
 
-    def __init__(self, lhs, rhs):
+    def __init__(self, lhs: str, rhs: str):
         self.lhs = lhs
         self.rhs = rhs
 
 
-def _find_partial_matches(mode, lhs):
-    # type: (str, str) -> list
+def _find_partial_matches(mode: str, lhs: str) -> list:
     return [x for x in _mappings[mode] if x.startswith(lhs)]
 
 
-def _find_full_match(mode, lhs):
+def _find_full_match(mode: str, lhs: str):
     if lhs in _mappings[mode]:
         return _mappings[mode][lhs]
 
 
-def _normalise_lhs(lhs):
-    # type: (str) -> str
+def _normalise_lhs(lhs: str) -> str:
     try:
         return ''.join(KeySequenceTokenizer(expand_keys(lhs)).iter_tokenize())
     except ValueError:
         return lhs
 
 
-def mappings_add(mode, lhs, rhs):
-    # type: (str, str, str) -> None
+def mappings_add(mode: str, lhs: str, rhs: str) -> None:
     _mappings[mode][_normalise_lhs(lhs)] = rhs
 
 
-def mappings_remove(mode, lhs):
-    # type: (str, str) -> None
+def mappings_remove(mode: str, lhs: str) -> None:
     del _mappings[mode][_normalise_lhs(lhs)]
 
 
-def mappings_clear():
-    # type: () -> None
+def mappings_clear() -> None:
     for mode in _mappings:
         _mappings[mode] = {}
 
 
-def _seq_to_mapping(mode, seq):
+def _seq_to_mapping(mode: str, seq: str):
     full_match = _find_full_match(mode, seq)
     if full_match:
         return Mapping(seq, full_match)
 
 
-def mappings_is_incomplete(mode, seq):
-    # type: (str, str) -> bool
+def mappings_is_incomplete(mode: str, seq: str) -> bool:
     full_match = _find_full_match(mode, seq)
     if full_match:
         return False
@@ -102,7 +96,7 @@ def mappings_is_incomplete(mode, seq):
     return False
 
 
-def mappings_can_resolve(mode, sequence):
+def mappings_can_resolve(mode: str, sequence: str) -> bool:
     full_match = _find_full_match(mode, sequence)
     if full_match:
         return True
@@ -114,7 +108,7 @@ def mappings_can_resolve(mode, sequence):
     return False
 
 
-def mappings_resolve(state, sequence=None, mode=None, check_user_mappings=True):
+def mappings_resolve(state, sequence=None, mode=None, check_user_mappings: bool = True):
     # Look at the current global state and return the command mapped to the available sequence.
     #
     # Args:

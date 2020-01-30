@@ -68,13 +68,11 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
-from NeoVintageous.nv.vi.settings import get_cache_value
 from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vi.settings import get_ex_global_last_pattern
 from NeoVintageous.nv.vi.settings import get_ex_shell_last_command
 from NeoVintageous.nv.vi.settings import get_ex_substitute_last_pattern
 from NeoVintageous.nv.vi.settings import get_ex_substitute_last_replacement
-from NeoVintageous.nv.vi.settings import set_cache_value
 from NeoVintageous.nv.vi.settings import set_cmdline_cwd
 from NeoVintageous.nv.vi.settings import set_ex_global_last_pattern
 from NeoVintageous.nv.vi.settings import set_ex_shell_last_command
@@ -98,7 +96,7 @@ _log = logging.getLogger(__name__)
 
 def _init_cwd(f, *args, **kwargs):
     @wraps(f)
-    def inner(*args, **kwargs):
+    def inner(*args, **kwargs) -> None:
         view = kwargs.get('view')
         if not view:
             raise RuntimeError('view is required')
@@ -143,8 +141,15 @@ def ex_browse(window, view, **kwargs):
     window.run_command('prompt_open_file', {'initial_directory': get_cmdline_cwd()})
 
 
+def ex_buffer(window, index=None, **kwargs):
+    if index is None:
+        return
+
+    window_tab_control(window, action='goto', index=int(index))
+
+
 def ex_buffers(window, **kwargs):
-    def _get_view_info(view):
+    def _get_item_info(i, view) -> list:
         path = view.file_name()
         if path:
             parent, leaf = os.path.split(path)
@@ -165,12 +170,18 @@ def ex_buffers(window, **kwargs):
         if status:
             leaf += ' (%s)' % ', '.join(status)
 
-        return [leaf, path]
+        indicator = '%' if view.id() == window.active_view().id() else ' '
+        byline = '%d  %s    "%s"' % (i, indicator, path)
 
-    file_names = [_get_view_info(view) for view in window.views()]
-    view_ids = [view.id() for view in window.views()]
+        return [leaf, byline]
 
-    def on_done(index):
+    items = []
+    view_ids = []
+    for i, view in enumerate(window.views()):
+        items.append(_get_item_info(i, view))
+        view_ids.append(view.id())
+
+    def on_done(index) -> None:
         if index == -1:
             return
 
@@ -180,7 +191,7 @@ def ex_buffers(window, **kwargs):
             if view.id() == sought_id:
                 window.focus_view(view)
 
-    window.show_quick_panel(file_names, on_done)
+    window.show_quick_panel(items, on_done)
 
 
 def ex_cd(view, path=None, **kwargs):
@@ -200,11 +211,11 @@ def ex_cd(view, path=None, **kwargs):
     status_message(path)
 
 
-def ex_close(window, forceit=False, **kwargs):
-    window_control(window, 'c', close_if_last=forceit),
+def ex_close(window, forceit: bool = False, **kwargs):
+    window_control(window, 'c', close_if_last=forceit)
 
 
-def ex_copy(view, edit, line_range, address=None, **kwargs):
+def ex_copy(view, edit, line_range: RangeNode, address=None, **kwargs):
     if address is None:
         return status_message("E14: Invalid address")
 
@@ -235,7 +246,7 @@ def ex_cquit(window, **kwargs):
     window.run_command('exit')
 
 
-def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
+def ex_delete(view, edit, register: str, line_range: RangeNode, global_lines=None, **kwargs):
     r = line_range.resolve(view)
     if r == Region(-1, -1):
         r = view.full_line(0)
@@ -246,7 +257,7 @@ def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
     if global_lines:
         rs = [Region(a, b) for (a, b) in global_lines]
 
-    def _select(view, regions, register):
+    def _select(view, regions: list, register: str) -> None:
         view.sel().clear()
         to_store = []
         for r in regions:
@@ -285,12 +296,12 @@ def ex_delete(view, edit, register, line_range, global_lines=None, **kwargs):
     enter_normal_mode(view)
 
 
-def ex_double_ampersand(view, edit, flags, count, line_range, **kwargs):
+def ex_double_ampersand(view, edit, flags, count: int, line_range: RangeNode, **kwargs):
     ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, **kwargs)
 
 
 @_init_cwd
-def ex_edit(window, view, file_name=None, forceit=False, **kwargs):
+def ex_edit(window, view, file_name: str = None, forceit: bool = False, **kwargs):
     if file_name:
         file_name = os.path.expanduser(os.path.expandvars(file_name))
 
@@ -364,7 +375,7 @@ def ex_file(view, **kwargs):
     status_message('%s' % msg)
 
 
-def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
+def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **kwargs):
     if not pattern:
         pattern = get_ex_global_last_pattern()
         if not pattern:
@@ -395,17 +406,18 @@ def ex_global(window, view, pattern, line_range, cmd='print', **kwargs):
     set_ex_global_last_pattern(pattern)
 
 
-def ex_help(window, subject=None, forceit=False, **kwargs):
+_help_tags_cache = {}  # type: dict
+
+
+def ex_help(window, subject: str = None, forceit: bool = False, **kwargs):
     if not subject:
         subject = 'help.txt'
 
         if forceit:
             return status_message("E478: Don't panic!")
 
-    help_tags = get_cache_value('help_tags')
-    if not help_tags:
+    if not _help_tags_cache:
         _log.debug('initializing help tags...')
-        help_tags = {}
 
         tags_resources = [r for r in find_resources('tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
         if not tags_resources:
@@ -417,11 +429,9 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
             if line:
                 match = tags_matcher.match(line)
                 if match:
-                    help_tags[match.group(1)] = (match.group(2), match.group(3))
+                    _help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
 
-        set_cache_value('help_tags', help_tags)
-
-    if subject not in help_tags:
+    if subject not in _help_tags_cache:
 
         # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
         # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
@@ -440,7 +450,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
             for s in subject_candidates:
                 _subject = p + s
-                if _subject in help_tags:
+                if _subject in _help_tags_cache:
                     subject = _subject
                     found = True
 
@@ -450,7 +460,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
         if not found:
             return status_message('E149: Sorry, no help for %s' % subject)
 
-    tag = help_tags[subject]
+    tag = _help_tags_cache[subject]
 
     doc_resources = [r for r in find_resources(
         tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
@@ -458,7 +468,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
     if not doc_resources:
         return status_message('Sorry, help file "%s" not found' % tag[0])
 
-    def window_find_open_view(window, name):
+    def window_find_open_view(window, name: str):
         for view in window.views():
             if view.name() == name:
                 return view
@@ -511,7 +521,7 @@ def ex_help(window, subject=None, forceit=False, **kwargs):
     view.set_viewport_position(xy)
 
 
-def ex_history(window, name='all', **kwargs):
+def ex_history(window, name: str = 'all', **kwargs):
     output = CmdlineOutput(window)
     output.write(history(name))
     output.show()
@@ -521,7 +531,7 @@ def ex_let(name, value, **kwargs):
     variables.set(name, re.sub('^(?:"|\')(.*)(?:"|\')$', '\\1', value))
 
 
-def ex_move(view, edit, line_range, address=None, **kwargs):
+def ex_move(view, edit, line_range: RangeNode, address: str = None, **kwargs):
     if address is None:
         return status_message("E14: Invalid address")
 
@@ -565,7 +575,7 @@ def ex_new(window, **kwargs):
     window.run_command('new_file')
 
 
-def ex_nnoremap(lhs=None, rhs=None, **kwargs):
+def ex_nnoremap(lhs: str = None, rhs: str = None, **kwargs):
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
@@ -576,7 +586,7 @@ def ex_nohlsearch(view, **kwargs):
     clear_search_highlighting(view)
 
 
-def ex_noremap(lhs=None, rhs=None, **kwargs):
+def ex_noremap(lhs: str = None, rhs: str = None, **kwargs):
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
@@ -587,7 +597,7 @@ def ex_noremap(lhs=None, rhs=None, **kwargs):
     mappings_add(VISUAL_LINE, lhs, rhs)
 
 
-def ex_nunmap(lhs, **kwargs):
+def ex_nunmap(lhs: str, **kwargs):
     try:
         mappings_remove(NORMAL, lhs)
     except KeyError:
@@ -595,7 +605,7 @@ def ex_nunmap(lhs, **kwargs):
 
 
 # TODO Unify with CTRL-W CTRL-O
-def ex_only(window, view, forceit=False, **kwargs):
+def ex_only(window, view, forceit: bool = False, **kwargs):
     if not forceit and has_dirty_buffers(window):
         return status_message("E445: Other window contains changes")
 
@@ -610,21 +620,21 @@ def ex_only(window, view, forceit=False, **kwargs):
         view.close()
 
 
-def ex_onoremap(lhs=None, rhs=None, **kwargs):
+def ex_onoremap(lhs: str = None, rhs: str = None, **kwargs):
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(OPERATOR_PENDING, lhs, rhs)
 
 
-def ex_ounmap(lhs, **kwargs):
+def ex_ounmap(lhs: str, **kwargs):
     try:
         mappings_remove(OPERATOR_PENDING, lhs)
     except KeyError:
         status_message('E31: No such mapping')
 
 
-def ex_print(window, view, line_range, flags=None, global_lines=None, **kwargs):
+def ex_print(window, view, line_range: RangeNode, flags: list = None, global_lines=None, **kwargs):
     if view.size() == 0:
         return status_message("E749: empty buffer")
 
@@ -671,7 +681,7 @@ def ex_pwd(**kwargs):
 
 
 # TODO [refactor] into window module
-def ex_qall(window, forceit=False, **kwargs):
+def ex_qall(window, forceit: bool = False, **kwargs):
     if forceit:
         for view in window.views():
             if view.is_dirty():
@@ -684,7 +694,7 @@ def ex_qall(window, forceit=False, **kwargs):
 
 
 # TODO [refactor] into window module
-def ex_quit(window, view, forceit=False, **kwargs):
+def ex_quit(window, view, forceit: bool = False, **kwargs):
     if forceit:
         view.set_scratch(True)
 
@@ -705,7 +715,7 @@ def ex_quit(window, view, forceit=False, **kwargs):
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands
 @_init_cwd
-def ex_read(view, edit, line_range, cmd=None, **kwargs):
+def ex_read(view, edit, line_range: RangeNode, cmd=None, **kwargs):
     r = line_range.resolve(view)
     target_point = min(r.end(), view.size())
 
@@ -746,14 +756,15 @@ def ex_read(view, edit, line_range, cmd=None, **kwargs):
 
 
 def ex_registers(window, view, **kwargs):
-    def _truncate(string, truncate_at):
+    def _truncate(string: str, truncate_at: int) -> str:
         if len(string) > truncate_at:
             return string[0:truncate_at] + ' ...'
 
         return string
 
     items = []
-    for k, v in registers_get_all(view).items():
+    registers = registers_get_all(view).items()
+    for k, v in registers:
         if v:
             multiple_values = []
 
@@ -768,13 +779,13 @@ def ex_registers(window, view, **kwargs):
 
                 multiple_values.append(part_value)
 
-            items.append('"{}   {}'.format(k, _truncate('|'.join(multiple_values), 78)))
+            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 78)))
 
     if items:
         window.show_quick_panel(sorted(items), None, flags=MONOSPACE_FONT)
 
 
-def ex_set(view, option, value, **kwargs):
+def ex_set(view, option: str, value, **kwargs):
     try:
         if option.endswith('?'):
             name = option[:-1]
@@ -799,7 +810,7 @@ def ex_set(view, option, value, **kwargs):
         status_message(str(e))
 
 
-def ex_setlocal(view, option, value, **kwargs):
+def ex_setlocal(view, option: str, value, **kwargs):
     ex_set(view, option, value, **kwargs)
 
 
@@ -815,7 +826,7 @@ def ex_setlocal(view, option, value, **kwargs):
 @_init_cwd
 def ex_shell(view, **kwargs):
 
-    def _open_shell(command):
+    def _open_shell(command: list):
         return subprocess.Popen(command, cwd=os.getcwd())
 
     if platform() == 'linux':
@@ -846,7 +857,7 @@ def ex_shell(view, **kwargs):
         status_message('not implemented')
 
 
-def ex_silent(window, view, command=None, **kwargs):
+def ex_silent(window, view, command: str = None, **kwargs):
     if not command:
         return
 
@@ -856,7 +867,7 @@ def ex_silent(window, view, command=None, **kwargs):
 
 
 @_init_cwd
-def ex_shell_out(view, edit, cmd, line_range, **kwargs):
+def ex_shell_out(view, edit, cmd: str, line_range: RangeNode, **kwargs):
     if cmd == '!':
         cmd = get_ex_shell_last_command()
         if not cmd:
@@ -891,14 +902,14 @@ def ex_shell_out(view, edit, cmd, line_range, **kwargs):
         status_message('not implemented')
 
 
-def ex_snoremap(lhs=None, rhs=None, **kwargs):
+def ex_snoremap(lhs: str = None, rhs: str = None, **kwargs):
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
     mappings_add(SELECT, lhs, rhs)
 
 
-def ex_sort(view, options='', **kwargs):
+def ex_sort(view, options: str = '', **kwargs):
     case_sensitive = True if 'i' not in options else False
 
     view.run_command('mark_undo_groups_for_gluing')
@@ -907,7 +918,7 @@ def ex_sort(view, options='', **kwargs):
     if 'u' in options:
         view.run_command('permute_lines', {'operation': 'unique'})
 
-    def f(view, s):
+    def f(view, s: Region) -> Region:
         return Region(next_non_blank(view, s.begin()))
 
     regions_transformer(view, f)
@@ -916,30 +927,32 @@ def ex_sort(view, options='', **kwargs):
     view.run_command('glue_marked_undo_groups')
 
 
-def ex_split(window, file=None, **kwargs):
+def ex_split(window, file: str = None, **kwargs):
     window_control(window, 's', file=file)
 
 
-def ex_spellgood(view, word, **kwargs):
+def ex_spellgood(view, word: str, **kwargs):
     spell_add(view, word)
 
 
-def ex_spellundo(word, **kwargs):
+def ex_spellundo(word: str, **kwargs):
     spell_undo(word)
 
 
-def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=None, count=1, **kwargs):
+def ex_substitute(view, edit, line_range: RangeNode,
+                  pattern: str = None, replacement: str = '', flags: list = None,
+                  count: int = 1, **kwargs):
     if flags is None:
         flags = []
 
-    # Repeat last substitute with same search pattern and substitute string, but
-    # without the same flags.
+    # When no pattern is given then the the last search pattern and last
+    # replacement is used. Note that the last used flags are not used.
     if not pattern:
         pattern = get_ex_substitute_last_pattern()
-        if not pattern:
-            return status_message('E33: No previous substitute regular expression')
-
         replacement = get_ex_substitute_last_replacement()
+
+    if not pattern:
+        return status_message('E33: No previous substitute regular expression')
 
     if replacement is None:
         return status_message('No substitute replacement string')
@@ -947,13 +960,17 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
     set_ex_substitute_last_pattern(pattern)
     set_ex_substitute_last_replacement(replacement)
 
-    computed_flags = re.MULTILINE
-    computed_flags |= re.IGNORECASE if ('i' in flags) else 0
+    computed_flags = 0
+
+    computed_flags |= re.MULTILINE
+
+    if (get_option(view, 'ignorecase') or 'i' in flags) and 'I' not in flags:
+        computed_flags |= re.IGNORECASE
 
     try:
         compiled_pattern = re.compile(pattern, flags=computed_flags)
     except Exception as e:
-        return status_message('[regex error]: {} ... in pattern {}'.format((str(e), pattern)))
+        return status_message('[regex error]: {} ... in pattern {}'.format(str(e), pattern))
 
     target_region = line_range.resolve(view)
     if target_region.empty():
@@ -963,8 +980,8 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
 
     if 'c' in flags:
 
-        def _replace_confirming(view, edit, pattern, compiled_pattern,
-                                replacement, replace_count, target_region):
+        def _replace_confirming(view, edit, pattern: str, compiled_pattern,
+                                replacement: str, replace_count: int, target_region: Region) -> None:
 
             last_row = row_at(view, target_region.b - 1)
             start = target_region.begin()
@@ -1032,7 +1049,7 @@ def ex_substitute(view, edit, line_range, pattern=None, replacement='', flags=No
     enter_normal_mode(view)
 
 
-def ex_sunmap(lhs, **kwargs):
+def ex_sunmap(lhs: str, **kwargs):
     try:
         mappings_remove(SELECT, lhs)
     except KeyError:
@@ -1063,14 +1080,16 @@ def ex_tabprevious(window, **kwargs):
     window_tab_control(window, action='previous')
 
 
-def ex_unmap(lhs, **kwargs):
-    try:
-        mappings_remove(NORMAL, lhs)
-        mappings_remove(OPERATOR_PENDING, lhs)
-        mappings_remove(VISUAL, lhs)
-        mappings_remove(VISUAL_BLOCK, lhs)
-        mappings_remove(VISUAL_LINE, lhs)
-    except KeyError:
+def ex_unmap(lhs: str, **kwargs):
+    no_such_mapping = True
+    for mode in (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+        try:
+            mappings_remove(mode, lhs)
+            no_such_mapping = False
+        except KeyError:
+            pass
+
+    if no_such_mapping:
         status_message('E31: No such mapping')
 
 
@@ -1103,7 +1122,7 @@ def ex_unvsplit(window, **kwargs):
     window.run_command('set_layout', layout_data[groups - 1])
 
 
-def ex_vnoremap(lhs=None, rhs=None, **kwargs):
+def ex_vnoremap(lhs: str = None, rhs: str = None, **kwargs):
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
@@ -1114,7 +1133,7 @@ def ex_vnoremap(lhs=None, rhs=None, **kwargs):
 
 # TODO [refactor] into window module
 # TODO Refactor like ExSplit
-def ex_vsplit(window, view, file=None, **kwargs):
+def ex_vsplit(window, view, file: str = None, **kwargs):
     max_splits = 4
 
     layout_data = {
@@ -1145,7 +1164,7 @@ def ex_vsplit(window, view, file=None, **kwargs):
 
     window.run_command('set_layout', layout_data[groups + 1])
 
-    def open_file(window, file):
+    def open_file(window, file: str) -> None:
         window.open_file(file, group=(window.num_groups() - 1), flags=(FORCE_GROUP | ENCODED_POSITION))
 
     if file:
@@ -1162,17 +1181,21 @@ def ex_vsplit(window, view, file=None, **kwargs):
         window.new_file()
 
 
-def ex_vunmap(lhs, **kwargs):
-    try:
-        mappings_remove(VISUAL, lhs)
-        mappings_remove(VISUAL_BLOCK, lhs)
-        mappings_remove(VISUAL_LINE, lhs)
-    except KeyError:
+def ex_vunmap(lhs: str, **kwargs):
+    no_such_mapping = True
+    for mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+        try:
+            mappings_remove(mode, lhs)
+            no_such_mapping = False
+        except KeyError:
+            pass
+
+    if no_such_mapping:
         status_message('E31: No such mapping')
 
 
 @_init_cwd
-def ex_wall(window, forceit=False, **kwargs):
+def ex_wall(window, forceit: bool = False, **kwargs):
     # TODO read-only views don't get properly saved.
     for v in (v for v in window.views() if v.file_name()):
         if v.is_read_only() and not forceit:
@@ -1183,7 +1206,7 @@ def ex_wall(window, forceit=False, **kwargs):
 
 
 # TODO [refactor] into window module
-def ex_wq(window, view, forceit=False, **kwargs):
+def ex_wq(window, view, forceit: bool = False, **kwargs):
     if forceit:
         # TODO raise not implemented exception and make the command runner handle it.
         return status_message('not implemented')
@@ -1220,8 +1243,8 @@ def ex_wqall(window, **kwargs):
 
 
 @_init_cwd
-def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
-    def _is_read_only(file_name):
+def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool = False, **kwargs):
+    def _is_read_only(file_name: str) -> bool:
         if file_name:
             try:
                 return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
@@ -1230,8 +1253,7 @@ def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
 
         return False
 
-    def _get_buffer(view, line_range):
-        # type: (...) -> str
+    def _get_buffer(view, line_range: RangeNode) -> str:
         # If no range, write whe whole buffer.
         if line_range.is_empty:
             region = Region(0, view.size())
@@ -1240,7 +1262,7 @@ def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
 
         return view.substr(region)
 
-    def _append_to_file(view, file_name, forceit, line_range):
+    def _append_to_file(view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit and not os.path.exists(file_name):
             return status_message("E212: Can't open file for writing: %s", file_name)
 
@@ -1252,14 +1274,14 @@ def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
         except IOError as e:
             return status_message('could not write file %s', str(e))
 
-    def _append(view, line_range):
+    def _append(view, line_range: RangeNode) -> None:
         view.run_command('append', {'characters': _get_buffer(view, line_range)})
         view.run_command('save')
 
         # TODO [review] State dependency
         enter_normal_mode(window, State(view).mode)
 
-    def _write_to_file(window, view, file_name, forceit, line_range):
+    def _write_to_file(window, view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit:
             if os.path.exists(file_name):
                 return ui_bell("E13: File exists (add ! to override)")
@@ -1298,14 +1320,11 @@ def ex_write(window, view, file_name, line_range, forceit=False, **kwargs):
     window.run_command('save')
 
 
-def ex_yank(view, register, line_range, **kwargs):
-    line_range = line_range.resolve(view)
-
+def ex_yank(view, register: str, line_range: RangeNode, **kwargs):
     if not register:
         register = '"'
 
-    text = view.substr(line_range)
-
+    text = view.substr(line_range.resolve(view))
     registers_set(view, register, [text])
 
     if register == '"':
@@ -1313,7 +1332,7 @@ def ex_yank(view, register, line_range, **kwargs):
 
 
 # Default ex command. See :h [range].
-def _default_ex_cmd(window, view, line_range, **kwargs):
+def _default_ex_cmd(window, view, line_range: RangeNode, **kwargs):
     _log.debug('default ex cmd %s %s', line_range, kwargs)
 
     line = row_at(view, line_range.resolve(view).a) + 1
@@ -1321,11 +1340,10 @@ def _default_ex_cmd(window, view, line_range, **kwargs):
     # TODO [review] State dependency
     state = State(view)
     enter_normal_mode(window, state.mode)
-    state.enter_normal_mode()
     goto_line(view, state.mode, line)
 
 
-def _get_ex_cmd(name):
+def _get_ex_cmd(name: str):
     ex_cmd = getattr(sys.modules[__name__], 'ex_' + name, None)
 
     if not ex_cmd:
@@ -1346,7 +1364,7 @@ def _get_ex_cmd(name):
 #
 # Arguments belonging to this function are underscored to avoid collisions with
 # the ex command args in kwargs.
-def do_ex_cmd_edit_wrap(self, edit, _name=None, _line=None, **kwargs):
+def do_ex_cmd_edit_wrap(self, edit, _name: str = None, _line: str = None, **kwargs):
     _log.debug('do ex cmd edit wrap _name=%s _line=%s kwargs=%s', _name, _line, kwargs)
 
     if _name:
@@ -1385,9 +1403,7 @@ def do_ex_cmd_edit_wrap(self, edit, _name=None, _line=None, **kwargs):
         raise RuntimeError('_name or _line is required')
 
 
-def do_ex_command(window, name, args=None):
-    # type: (...) -> None
-    #
+def do_ex_command(window, name: str, args=None) -> None:
     # Execute ex commands by name with arguments.
     #
     # Args:
@@ -1417,7 +1433,6 @@ def do_ex_command(window, name, args=None):
     # If you need to call an ex command as a string value rather than by name
     # and arguments (though you should prefer to use this api), see the
     # do_ex_cmdline() function.
-
     _log.debug('do ex command %s %s', name, args)
 
     if args is None:
@@ -1486,14 +1501,8 @@ def _parse_user_cmdline(line):
     return command
 
 
-def do_ex_cmdline(window, line):
-    # type: (...) -> None
-    #
+def do_ex_cmdline(window, line: str) -> None:
     # Execute ex command as a string (what a user would enter at the cmdline).
-    #
-    # Args:
-    #   window (sublime.Window):
-    #   line (str):
     #
     # The line MUST begin with a colon:
     #
@@ -1579,14 +1588,8 @@ def do_ex_cmdline(window, line):
 
 
 # TODO [refactor] Into do_ex_cmdline() with a param to indicate user cmdline? e.g do_ex_cmdline(window, line, interactive=True).  # noqa: E501
-def do_ex_user_cmdline(window, line):
-    # type: (...) -> None
-    #
+def do_ex_user_cmdline(window, line: str) -> None:
     # Execute an interactive ex command (what a user would use in a mapping).
-    #
-    # Args:
-    #   window (Window):
-    #   line (str):
     #
     # This is almost equivalent to do_ex_cmdline(), except:
     #

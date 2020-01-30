@@ -76,6 +76,14 @@ def _ex_route_browse(state):
     return _create_route(state, 'browse')
 
 
+def _ex_route_buffer(state):
+    command = _create_route(state, 'buffer', forcable=True)
+
+    _resolve(state, command, '\\s*(?P<index>[0-9]+)\\s*$')
+
+    return command
+
+
 def _ex_route_buffers(state):
     return _create_route(state, 'buffers')
 
@@ -710,6 +718,7 @@ ex_routes[r'bN(?:ext)?'] = _ex_route_bprevious
 ex_routes[r'bp(?:revious)?'] = _ex_route_bprevious
 ex_routes[r'bro(?:wse)?'] = _ex_route_browse
 ex_routes[r'br(?:ewind)?'] = _ex_route_bfirst
+ex_routes[r'b(?:uffer)?'] = _ex_route_buffer
 ex_routes[r'cd'] = _ex_route_cd
 ex_routes[r'clo(?:se)?'] = _ex_route_close
 ex_routes[r'co(?:py)?'] = _ex_route_copy

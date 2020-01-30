@@ -52,6 +52,7 @@ class Test_ex_set(unittest.FunctionalTestCase):
 
     @unittest.mock_status_message()
     def test_set_list(self):
+        self.feed(':set nolist')
         self.assertOption('list', False)
         self.feed(':set list')
         self.assertOption('list', True)

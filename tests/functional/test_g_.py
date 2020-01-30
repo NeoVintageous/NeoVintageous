@@ -26,6 +26,9 @@ class Test_g_(unittest.FunctionalTestCase):
         self.eq('|fizz\nbuzz  \nx', 'n_2g_', 'fizz\nbuz|z  \nx')
         self.eq('|', 'n_g_', '|')
         self.eq('| ', 'n_g_', '| ')
+        self.eq('1\n|2\nfizz', 'n_5g_', '1\n2\nfiz|z')
+        self.eq('1\n|2\n\n', 'n_5g_', '1\n2\n|\n')
+        self.eq('1\n|2\n\n\n', 'n_5g_', '1\n2\n\n|\n')
 
     def test_v(self):
         self.eq('1\n|fizz\nbuzz', 'v_g_', '1\n|fizz|\nbuzz')

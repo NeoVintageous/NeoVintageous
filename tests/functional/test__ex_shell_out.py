@@ -22,6 +22,7 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.cmdline import CmdlineOutput
 
 
+@unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
 class TestExShellOutNoInput(unittest.FunctionalTestCase):
 
     def tearDown(self):

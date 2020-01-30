@@ -21,7 +21,7 @@ from NeoVintageous.nv.polyfill import set_window_status
 _state = {}  # type: dict
 
 
-def _get(window, key=None, default=None):
+def _get(window, key: str = None, default=None):
     try:
         state = _state[window.id()]
     except KeyError:
@@ -36,19 +36,19 @@ def _get(window, key=None, default=None):
         return default
 
 
-def is_valid_writable_register(name):
+def is_valid_writable_register(name: str) -> bool:
     return name in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"')
 
 
-def is_valid_readable_register(name):
+def is_valid_readable_register(name: str) -> bool:
     return name in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".=*+@')
 
 
-def is_recording(window):
+def is_recording(window) -> bool:
     return _get(window, 'recording', False)
 
 
-def start_recording(window, register_name):
+def start_recording(window, register_name: str) -> None:
     state = _get(window)
     state['recording'] = True
     state['recording_steps'] = []
@@ -57,7 +57,7 @@ def start_recording(window, register_name):
     set_window_status(window, 'vim-recorder', 'recording @%s' % register_name)
 
 
-def stop_recording(window):
+def stop_recording(window) -> None:
     state = _get(window)
 
     name = _get(window, 'recording_register_name')
@@ -74,7 +74,7 @@ def stop_recording(window):
     erase_window_status(window, 'vim-recorder')
 
 
-def get_recorded(window, name):
+def get_recorded(window, name: str):
     state = _get(window)
 
     try:
@@ -83,17 +83,17 @@ def get_recorded(window, name):
         return None
 
 
-def get_last_used_register_name(window):
+def get_last_used_register_name(window) -> str:
     return _get(window, 'last_used_register_name')
 
 
-def set_last_used_register_name(window, name):
+def set_last_used_register_name(window, name: str) -> None:
     state = _get(window)
     state['last_used_register_name'] = name
 
 
 # TODO Refactor to remove State dependency
-def add_step(state, cmd, args):
+def add_step(state, cmd: str, args: dict) -> None:
     window = state.view.window()
 
     if is_recording(window):
@@ -110,5 +110,5 @@ def add_step(state, cmd, args):
             state['recording_steps'].append((cmd, args))
 
 
-def _get_steps(window):
+def _get_steps(window) -> list:
     return list(_get(window, 'recording_steps', []))

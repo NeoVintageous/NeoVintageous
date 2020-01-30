@@ -53,13 +53,15 @@ class _surround_ys(ViOperatorDef):
         self.input_parser = InputParser(InputParser.AFTER_MOTION)
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         single = len(self.inp) == 1 and self.inp != '<'
         tag = re.match('<.*?>', self.inp)
-        return not(single or tag)
 
-    def accept(self, key):
+        return not (single or tag)
+
+    def accept(self, key: str) -> bool:
         self.inp += translate_char(key)
+
         return True
 
     def translate(self, state):
@@ -119,13 +121,15 @@ class _surround_ds(ViOperatorDef):
 
     # TODO Fix ds should not accept input
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         single = len(self.inp) == 1
         tag = re.match('<.*?>', self.inp)
-        return not(single or tag)
 
-    def accept(self, key):
+        return not (single or tag)
+
+    def accept(self, key: str) -> bool:
         self.inp += translate_char(key)
+
         return True
 
     def translate(self, state):
@@ -149,7 +153,7 @@ class _surround_cs(ViOperatorDef):
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     @property
-    def accept_input(self):
+    def accept_input(self) -> bool:
         # Requires at least two characters (target and replacement).
 
         # A tag replacement is indicated by "<" ("t" is an alias for "<"). Tag
@@ -166,8 +170,9 @@ class _surround_cs(ViOperatorDef):
 
         return len(self.inp) < 2
 
-    def accept(self, key):
+    def accept(self, key: str) -> bool:
         self.inp += translate_char(key)
+
         return True
 
     def translate(self, state):

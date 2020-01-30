@@ -30,7 +30,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-def seq_to_command(view, seq, mode):
+def seq_to_command(view, seq: str, mode: str):
     # Return the command definition mapped for seq and mode.
     #
     # Args:
@@ -166,10 +166,10 @@ class key_names:
     max_len = len('<leader>')
 
 
-class KeySequenceTokenizer(object):
+class KeySequenceTokenizer():
     """Takes in a sequence of key names and tokenizes it."""
 
-    def __init__(self, source):
+    def __init__(self, source: str):
         """Sequence of key names in Vim notation."""
         self.idx = -1
         self.source = source
@@ -186,10 +186,10 @@ class KeySequenceTokenizer(object):
             return EOF
         return self.source[self.idx + 1]
 
-    def is_named_key(self, key):
+    def is_named_key(self, key: str) -> bool:
         return key.lower() in key_names.as_list
 
-    def sort_modifiers(self, modifiers):
+    def sort_modifiers(self, modifiers: str) -> str:
         """Ensure consistency in the order of modifier letters according to c > m > s."""
         if len(modifiers) == 6:
             modifiers = 'c-m-s-'
@@ -202,7 +202,7 @@ class KeySequenceTokenizer(object):
                 modifiers = 'c-m-'
         return modifiers
 
-    def long_key_name(self):
+    def long_key_name(self) -> str:
         key_name = ''
         modifiers = ''
 
@@ -255,12 +255,11 @@ class KeySequenceTokenizer(object):
                 break
             yield token
 
-    def _expand_vars(self, c):
+    def _expand_vars(self, c: str) -> str:
         return variables.get(c) if variables.is_key_name(c) else c
 
 
-def to_bare_command_name(seq):
-    # type: (str) -> str
+def to_bare_command_name(seq: str) -> str:
     #
     # Args:
     #   seq (str): The command sequence.
@@ -280,7 +279,7 @@ def to_bare_command_name(seq):
     return ''.join(k for k in new_seq if not k.isdigit())
 
 
-def assign(seq, modes, *args, **kwargs):
+def assign(seq: str, modes, *args, **kwargs):
     """
     Register a 'key sequence' to 'command' mapping with NeoVintageous.
 

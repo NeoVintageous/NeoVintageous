@@ -119,6 +119,9 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('<tag>\n  |<sub>hello world</sub>|\n</tag>', 'v_at', '|<tag>\n  <sub>hello world</sub>\n</tag>|')
         self.eq('r_<tag>\n  |<sub>hello world</sub>|\n</tag>', 'v_at', '|<tag>\n  <sub>hello world</sub>\n</tag>|')
         self.eq('xx<tag>\n  |<sub>hello</sub>|\n</tag>xx', 'v_at', 'xx|<tag>\n  <sub>hello</sub>\n</tag>|xx')
+        self.eq('<a>\n  |  <a>fizz</a>\n</a>', 'v_at', '<a>\n    |<a>fizz</a>|\n</a>')
+        self.eq('<div>\n  |<h1>fizz</h1>\n</div>', 'v_at', '<div>\n  |<h1>fizz</h1>|\n</div>')
+        self.eq('<div>\n|\n<h1>fizz</h1>\n</div>', 'v_at', '|<div>\n\n<h1>fizz</h1>\n</div>|')
 
     def test_vit(self):
         self.eq('x<p>a|bc</p>x', 'v_it', 'x<p>|abc|</p>x')
@@ -128,6 +131,17 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('fi<d|iv>zzbuzz', 'v_it', 'fi<d|i|v>zzbuzz')
         self.eq('fi|zzbu</div>zz', 'v_it', 'fi|z|zbu</div>zz')
         self.eq('fizzbu</d|iv>zz', 'v_it', 'fizzbu</d|i|v>zz')
+        self.eq('<a>\n\n<b><c>|fizz|</c></b>\n\n</a>', 'v_it', '<a>\n\n<b>|<c>fizz</c>|</b>\n\n</a>')
+        self.eq('<a>\n\n<b>|<c>fizz</c>|</b>\n\n</a>', 'v_it', '<a>\n\n|<b><c>fizz</c></b>|\n\n</a>')
+        self.eq('<a>\n\n\n|<b><c>fizz</c></b>|\n\n</a>', 'v_it', '<a>|\n\n\n<b><c>fizz</c></b>\n\n|</a>')
+        self.eq('xx<a>|\n\n\n<b><c>fizz</c></b>\n|</a>xx', 'v_it', 'xx|<a>\n\n\n<b><c>fizz</c></b>\n</a>|xx')
+        self.eq('<a>\n  |  <a>fizz</a>\n</a>', 'v_it', '<a>\n    <a>|fizz|</a>\n</a>')
+        self.eq('<div>\n  |<h1>fizz</h1>\n</div>', 'v_it', '<div>\n  <h1>|fizz|</h1>\n</div>')
+        self.eq('<div>\n  <h|1>fizz</h1>\n</div>', 'v_it', '<div>\n  <h1>|fizz|</h1>\n</div>')
+        self.eq('<div>\n|\n<h1>fizz</h1>\n</div>', 'v_it', '<div>|\n\n<h1>fizz</h1>\n|</div>')
+        self.eq('<div>|\n<h1>fizz</h1>\n</div>', 'v_it', '<div>|\n<h1>fizz</h1>\n|</div>')
+        self.eq('<div>|\n  <h1>fizz</h1>\n</div>', 'v_it', '<div>|\n  <h1>fizz</h1>\n|</div>')
+        self.eq('<div>  |  <h1>fizz</h1>  </div>', 'v_it', '<div>|    <h1>fizz</h1>  |</div>')
 
     def test_vi__brace__(self):
         for target in ('{', '}'):
@@ -148,6 +162,23 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('f|iz{0}z'.format(mark), 'v_i' + mark, 'f|i|z{0}z'.format(mark))
             self.eq('x{0}fi|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz|{0}x'.format(mark))
             self.eq('x{0}fi|zz bu|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz buzz|{0}x'.format(mark))
+
+    def test_issue_570(self):
+        self.visual('<div>\n\n<tag><subtag>hello| |world</subtag></tag>\n\n</div>')
+        self.feed('it')
+        self.assertVisual('<div>\n\n<tag><subtag>|hello world|</subtag></tag>\n\n</div>')
+        self.feed('it')
+        self.assertVisual('<div>\n\n<tag>|<subtag>hello world</subtag>|</tag>\n\n</div>')
+        self.feed('it')
+        self.assertVisual('<div>\n\n|<tag><subtag>hello world</subtag></tag>|\n\n</div>')
+        self.feed('it')
+        self.assertVisual('<div>|\n\n<tag><subtag>hello world</subtag></tag>\n\n|</div>')
+        self.feed('it')
+        self.assertVisual('|<div>\n\n<tag><subtag>hello world</subtag></tag>\n\n</div>|')
+
+    def test_issue_654(self):
+        self.eq('<div>\n|    <h1>fizz</h1>\n</div>', 'v_it', '<div>\n    <h1>|fizz|</h1>\n</div>')
+        self.eq('<div>\n  |  <h1>fizz</h1>\n</div>', 'v_it', '<div>\n    <h1>|fizz|</h1>\n</div>')
 
     def test_issue_161(self):
         self.eq(

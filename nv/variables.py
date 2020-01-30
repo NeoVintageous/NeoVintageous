@@ -31,8 +31,7 @@ _defaults = {
 _variables = {}  # type: dict
 
 
-def expand_keys(seq):
-    # type: (str) -> str
+def expand_keys(seq: str) -> str:
     seq_lower = seq.lower()
     for key, key_value, in _special_strings.items():
         while key in seq_lower:
@@ -53,24 +52,20 @@ def expand_keys(seq):
     return seq
 
 
-def is_key_name(name):
-    # type: (str) -> bool
+def is_key_name(name: str) -> bool:
     return name.lower() in _special_strings
 
 
-def get(name):
-    # type: (str) -> str
+def get(name: str) -> str:
     name = name.lower()
     name = _special_strings.get(name, name)
 
     return _variables.get(name, _defaults.get(name))
 
 
-def set(name, value):
-    # type: (...) -> None
+def set(name: str, value: str) -> None:
     _variables[name] = value
 
 
-def variables_clear():
-    # type: () -> None
+def variables_clear() -> None:
     _variables.clear()

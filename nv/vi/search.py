@@ -21,14 +21,14 @@ from NeoVintageous.nv.options import get_option
 
 
 # DEPRECATED Use view_find_in_range()
-def find_in_range(view, term, start, end, flags=0):
+def find_in_range(view, term: str, start: int, end: int, flags: int = 0):
     found = view.find(term, start, flags)
     if found and found.b <= end:
         return found
 
 
 # DEPRECATED Use view_find_all()
-def find_all_in_range(view, term, start, end, flags=0):
+def find_all_in_range(view, term: str, start: int, end: int, flags: int = 0) -> list:
     matches = []  # type: list
 
     while True:
@@ -47,7 +47,7 @@ def find_all_in_range(view, term, start, end, flags=0):
         start = m.end()
 
 
-def find_wrapping(view, term, start, end, flags=0, times=1):
+def find_wrapping(view, term: str, start: int, end: int, flags: int = 0, times: int = 1):
     try:
         current_sel = view.sel()[0]
     except IndexError:
@@ -75,7 +75,7 @@ def find_wrapping(view, term, start, end, flags=0, times=1):
     return match
 
 
-def reverse_find_wrapping(view, term, start, end, flags=0, times=1):
+def reverse_find_wrapping(view, term: str, start: int, end: int, flags: int = 0, times: int = 1):
     try:
         current_sel = view.sel()[0]
     except IndexError:
@@ -106,7 +106,7 @@ def reverse_find_wrapping(view, term, start, end, flags=0, times=1):
     return match
 
 
-def find_last_in_range(view, term, start, end, flags=0):
+def find_last_in_range(view, term: str, start: int, end: int, flags: int = 0):
     found = find_in_range(view, term, start, end, flags)
     last_found = found
     while found:
@@ -139,7 +139,7 @@ def find_last_in_range(view, term, start, end, flags=0):
 # should be where it ends oppose to the current behaviour.
 #
 # TODO should word the same as view.find() and return Region(-1, -1), rather than None, when not found
-def reverse_search(view, term, start, end, flags=0):
+def reverse_search(view, term: str, start: int, end: int, flags: int = 0):
     assert isinstance(start, int) or start is None
     assert isinstance(end, int) or end is None
 
@@ -173,7 +173,7 @@ def reverse_search(view, term, start, end, flags=0):
             return find_last_in_range(view, term, hi_line.a, min(hi_line.b, end), flags)
 
 
-def reverse_search_by_pt(view, term, start, end, flags=0):
+def reverse_search_by_pt(view, term: str, start: int, end: int, flags: int = 0):
     assert isinstance(start, int) or start is None
     assert isinstance(end, int) or end is None
 

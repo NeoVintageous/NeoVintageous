@@ -48,6 +48,124 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
         self.eq('111\n222\n33|3\n444', '[e', '111\n33|3\n222\n444')
         self.eq('111\n222\n333\n444\n555\n666\n77|7\n888', '3[e', '111\n222\n333\n77|7\n444\n555\n666\n888')
 
+    def test_goto_next_conflict_marker(self):
+        self.normal(self.dedent("""
+            1|11
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
+        self.feed(']n')
+
+        self.assertNormal(self.dedent("""
+            111
+            |<<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
+        self.feed(']n')
+
+        self.assertNormal(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            |=======
+            333
+            >>>>>>> name
+            444
+        """))
+
+        self.feed(']n')
+
+        self.assertNormal(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            |>>>>>>> name
+            444
+        """))
+
+        self.feed(']n')
+
+        self.assertNormal(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            |>>>>>>> name
+            444
+        """))
+
+    def test_goto_prev_conflict_marker(self):
+        self.normal(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            4|44
+        """))
+
+        self.feed('[n')
+
+        self.assertNormal(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            |>>>>>>> name
+            444
+        """))
+
+        self.feed('[n')
+
+        self.assertNormal(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            |=======
+            333
+            >>>>>>> name
+            444
+        """))
+
+        self.feed('[n')
+
+        self.assertNormal(self.dedent("""
+            111
+            |<<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
+        self.feed('[n')
+
+        self.assertNormal(self.dedent("""
+            111
+            |<<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
 
 class TestUnimpairedToggles(unittest.FunctionalTestCase):
 
