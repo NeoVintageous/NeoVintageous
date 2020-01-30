@@ -20,11 +20,13 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.cmdline import Cmdline
 
 
-class TestCmdline(unittest.TestCase):
+class TestCmdline(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
         self.window = unittest.mock.Mock()
+        self.window.active_view.return_value = self.view
+        self.window.show_input_panel.return_value = self.view
         self.on_done = unittest.mock.Mock()
         self.on_change = unittest.mock.Mock()
         self.on_cancel = unittest.mock.Mock()
@@ -75,3 +77,41 @@ class TestCmdline(unittest.TestCase):
     def test_on_change_receives_input_with_leading_type_stripped(self):
         self.createCmdline(Cmdline.SEARCH_BACKWARD)._on_change('?pattern')
         self.on_change.assert_called_once_with('pattern')
+
+    def test_search_forward_incsearch_enabled(self):
+        self.set_option('incsearch', True)
+        self.createCmdline(Cmdline.SEARCH_FORWARD)._on_change('/change')
+        self.on_change.assert_called_once_with('change')
+        self.assertMockNotCalled(self.on_cancel)
+        self.assertMockNotCalled(self.on_done)
+
+    def test_search_backward_incsearch_enabled(self):
+        self.set_option('incsearch', True)
+        self.createCmdline(Cmdline.SEARCH_BACKWARD)._on_change('?change')
+        self.on_change.assert_called_once_with('change')
+        self.assertMockNotCalled(self.on_cancel)
+        self.assertMockNotCalled(self.on_done)
+
+    def test_search_backward_incsearch_disabled(self):
+        self.set_option('incsearch', False)
+        cmdline = self.createCmdline(Cmdline.SEARCH_BACKWARD)
+        self.assertEqual(cmdline._callbacks['on_change'], None)
+
+    def test_search_forward_incsearch_disabled(self):
+        self.set_option('incsearch', False)
+        cmdline = self.createCmdline(Cmdline.SEARCH_FORWARD)
+        self.assertEqual(cmdline._callbacks['on_change'], None)
+
+    def test_prompt(self):
+        cmdline = self.createCmdline(Cmdline.SEARCH_FORWARD)
+        cmdline.prompt('test')
+        self.window.show_input_panel.assert_called_once_with(
+            initial_text='/test',
+            on_change=cmdline._on_change,
+            caption='',
+            on_done=cmdline._on_done,
+            on_cancel=cmdline._on_cancel
+        )
+        self.assertEqual(self.view.name(), 'Command-line mode')
+        self.assertTrue(self.view.settings().get('_nv_ex_mode'))
+        self.assertTrue(self.view.settings().get('is_widget'))
