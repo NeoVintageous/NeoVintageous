@@ -1051,7 +1051,7 @@ def mock_mappings(*mappings):
         from NeoVintageous.nv.mappings import _mappings
         from NeoVintageous.nv.mappings import mappings_add
 
-        @unittest.mock.patch('NeoVintageous.nv.mappings._mappings', new_callable=lambda: {k: {} for k in _mappings})
+        @unittest.mock.patch.dict('NeoVintageous.nv.mappings._mappings', {k: {} for k in _mappings}, clear=True)
         def wrapped(self, *args, **kwargs):
             for mapping in mappings:
                 mappings_add(*mapping)
