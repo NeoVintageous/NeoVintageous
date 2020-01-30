@@ -55,30 +55,23 @@ class TestCmdline(unittest.TestCase):
         self.on_cancel.assert_called_once_with()
 
     def test_on_change_should_not_be_called_on_initial_empty_input(self):
-        cmdline = self.createCmdline(Cmdline.SEARCH_FORWARD)
-        cmdline._on_change('/')
+        self.createCmdline(Cmdline.SEARCH_FORWARD)._on_change('/')
         self.assertEqual(self.on_change.call_count, 0)
 
     def test_invalid_on_done_input_forces_cancel(self):
-        cmdline = self.createCmdline()
-        cmdline._on_done('invalid done input')
-
+        self.createCmdline()._on_done('invalid done input')
         self.on_cancel.assert_called_once_with()
         self.window.run_command.assert_called_once_with('hide_panel', {'cancel': True})
 
     def test_invalid_on_change_input_forces_cancel(self):
-        cmdline = self.createCmdline()
-        cmdline._on_change('invalid change input')
-
+        self.createCmdline()._on_change('invalid change input')
         self.on_cancel.assert_called_once_with()
         self.window.run_command.assert_called_once_with('hide_panel', {'cancel': True})
 
     def test_on_done_receives_input_with_leading_type_stripped(self):
-        cmdline = self.createCmdline(Cmdline.SEARCH_FORWARD)
-        cmdline._on_done('/pattern')
+        self.createCmdline(Cmdline.SEARCH_FORWARD)._on_done('/pattern')
         self.on_done.assert_called_once_with('pattern')
 
     def test_on_change_receives_input_with_leading_type_stripped(self):
-        cmdline = self.createCmdline(Cmdline.SEARCH_BACKWARD)
-        cmdline._on_change('?pattern')
+        self.createCmdline(Cmdline.SEARCH_BACKWARD)._on_change('?pattern')
         self.on_change.assert_called_once_with('pattern')
