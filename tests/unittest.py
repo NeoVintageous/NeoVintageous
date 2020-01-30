@@ -32,6 +32,7 @@ from sublime import version as _version
 # Use aliases to indicate that they are not public testing APIs.
 from NeoVintageous.nv import macros as _macros
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
+from NeoVintageous.nv.mappings import _mappings
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.registers import _data as _registers_data
@@ -58,6 +59,16 @@ from NeoVintageous.nv.vim import UNKNOWN  # noqa: F401
 from NeoVintageous.nv.vim import VISUAL  # noqa: F401
 from NeoVintageous.nv.vim import VISUAL_BLOCK  # noqa: F401
 from NeoVintageous.nv.vim import VISUAL_LINE  # noqa: F401
+
+
+_MODES = (
+    NORMAL,
+    OPERATOR_PENDING,
+    SELECT,
+    VISUAL,
+    VISUAL_BLOCK,
+    VISUAL_LINE
+)
 
 
 class ViewTestCase(unittest.TestCase):
@@ -320,6 +331,17 @@ class ViewTestCase(unittest.TestCase):
 
     def resetMacros(self):
         _macros._state.clear()
+
+    def assertMapping(self, mode: int, lhs: str, rhs: str):
+        self.assertIn(lhs, _mappings[mode])
+        self.assertEqual(_mappings[mode][lhs], rhs)
+
+    def assertNotMapping(self, lhs: str, mode: int = None):
+        if mode is None:
+            for mode in _MODES:
+                self.assertNotIn(lhs, _mappings[mode])
+        else:
+            self.assertNotIn(lhs, _mappings[mode])
 
     def assertContent(self, expected, msg=None):
         self.assertEqual(self.content(), expected, msg)
@@ -622,7 +644,7 @@ class ViewTestCase(unittest.TestCase):
     def assertMockNotCalled(self, mock):
         # https://docs.python.org/3/library/unittest.mock.html
         # Polyfill for a new mock method added in version 3.5.
-        if sys.version_info >= (3, 5):
+        if sys.version_info >= (3, 5):  # pragma: no cover
             mock.assert_not_called()
         else:
             self.assertEqual(mock.call_count, 0)

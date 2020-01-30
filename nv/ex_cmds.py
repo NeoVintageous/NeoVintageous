@@ -1081,13 +1081,15 @@ def ex_tabprevious(window, **kwargs):
 
 
 def ex_unmap(lhs: str, **kwargs):
-    try:
-        mappings_remove(NORMAL, lhs)
-        mappings_remove(OPERATOR_PENDING, lhs)
-        mappings_remove(VISUAL, lhs)
-        mappings_remove(VISUAL_BLOCK, lhs)
-        mappings_remove(VISUAL_LINE, lhs)
-    except KeyError:
+    no_such_mapping = True
+    for mode in (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+        try:
+            mappings_remove(mode, lhs)
+            no_such_mapping = False
+        except KeyError:
+            pass
+
+    if no_such_mapping:
         status_message('E31: No such mapping')
 
 
@@ -1180,11 +1182,15 @@ def ex_vsplit(window, view, file: str = None, **kwargs):
 
 
 def ex_vunmap(lhs: str, **kwargs):
-    try:
-        mappings_remove(VISUAL, lhs)
-        mappings_remove(VISUAL_BLOCK, lhs)
-        mappings_remove(VISUAL_LINE, lhs)
-    except KeyError:
+    no_such_mapping = True
+    for mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+        try:
+            mappings_remove(mode, lhs)
+            no_such_mapping = False
+        except KeyError:
+            pass
+
+    if no_such_mapping:
         status_message('E31: No such mapping')
 
 
