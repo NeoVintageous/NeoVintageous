@@ -141,7 +141,7 @@ def _init_backwards_compat_patches():
 
 
 def plugin_loaded():
-    if _DEBUG:
+    if _DEBUG:  # pragma: no cover
         sublime.log_input(True)
         sublime.log_commands(True)
 
