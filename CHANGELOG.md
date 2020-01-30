@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#630](https://github.com/NeoVintageous/NeoVintageous/issues/630): Visual block pasting
 * Added [#668](https://github.com/NeoVintageous/NeoVintageous/issues/668): `[n` and `]n` to navigate between conflicts (Unimpaired)
 * Added [#4](https://github.com/NeoVintageous/NeoVintageous/issues/4): Remember last search and ex command history on restarts (sessions)
 * Added [#570](https://github.com/NeoVintageous/NeoVintageous/issues/570): Repeated text objects e.g. `vitit` to visually select inner tags

@@ -2260,15 +2260,21 @@ class _vi_paste(ViTextCommandBase):
 
         sels = list(self.view.sel())
 
-        # The register contents are concatenated into one string when the
-        # current selection count is 1; otherwise if the register content count
-        # is not equal to the current selection count a bell is rung.
-
+        # When the number of selections is more than one but not equal to the
+        # number of contents then the operation is a NOOP and a bell is rung.
         if len(sels) > 1 and len(contents) != len(sels):
             return ui_bell()
 
+        # Some paste operations need to reposition the cursor to a specific
+        # point after the paste operation has been completed successfully.
+        sel_to_specific_pt = -1
+
+        # When there is one selection and many register contents the contents
+        # are pasted as a visual block. Selections are added to match the number
+        # of contents and adjusted with left-padded whitespace where neccessary.
         if len(sels) == 1 and len(contents) > 1:
-            contents = [''.join(contents)]
+            sels, contents, before_cursor, sel_to_specific_pt = self._pad_visual_block_contents(
+                self.view, sels, contents, before_cursor)
 
         contents = zip(reversed(contents), reversed(sels))
 
@@ -2375,6 +2381,60 @@ class _vi_paste(ViTextCommandBase):
 
             if new_sels:
                 set_selection(self.view, new_sels)
+
+        if sel_to_specific_pt >= 0:
+            self.view.sel().clear()
+            self.view.sel().add(sel_to_specific_pt)
+
+    def _pad_visual_block_contents(self, view, sels: list, contents: list, before_cursor: bool) -> tuple:
+        sel = sels[0]
+        row, col = view.rowcol(sel.a)
+        view_size = view.size()
+
+        # When the selection line is empty the insertion point is always as
+        # if before_cursor was true i.e. column zero of the empty line.
+        before_cursor = True if view.line(sel.a).empty() else before_cursor
+
+        for index in range(1, len(contents)):
+            content = contents[index]
+            sel_row = row + index
+            line = view.line(view.text_point(sel_row, 0))
+            pad_size = col - line.size()
+
+            # When the paste column is greater than the line size then the
+            # selection content needs to be left-padded with whitespace.
+            if pad_size >= 0:
+                pt = line.begin() + line.size()
+                if pad_size > 0:
+                    content = (' ' * pad_size) + content
+
+                if not before_cursor:
+                    content = ' ' + content
+                    if line.size() > 0:
+                        pt -= 1
+
+                contents[index] = content
+            else:
+                pt = view.text_point(sel_row, col)
+
+            if view.rowcol(pt)[0] < sel_row:
+                lead = '\n'
+                if pt >= view_size and pad_size < 0:
+                    lead += (' ' * col)
+                    if not before_cursor:
+                        lead += ' '
+                        pt -= 1
+
+                contents[index] = lead + contents[index]
+
+            sels.append(Region(pt))
+
+        # Cursor needs to reset to start of pasted text.
+        resolve_to_specific_pt = sels[0].begin()
+        if not before_cursor:
+            resolve_to_specific_pt += 1
+
+        return sels, contents, before_cursor, resolve_to_specific_pt
 
 
 class _vi_ga(WindowCommand):
