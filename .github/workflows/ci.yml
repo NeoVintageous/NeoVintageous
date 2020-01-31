@@ -1,0 +1,49 @@
+name: Continuous Integration
+
+on: [push, pull_request]
+
+env:
+  SUBLIME_TEXT_VERSION: 3
+  PACKAGE: NeoVintageous
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    container: sublimetext/unittesting
+    steps:
+      - uses: actions/checkout@v1
+      - run: export DISPLAY=":99.0"
+      - run: sh -e /etc/init.d/xvfb start
+      - run: curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.sh
+      - name: Test
+        run: |
+          PATH="$HOME/.local/bin:$PATH"
+          sh github.sh bootstrap
+          sh github.sh run_tests --coverage
+          sh github.sh run_syntax_compatibility
+          sh github.sh run_syntax_tests
+
+  macos:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.sh
+      - name: Test
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          sh github.sh bootstrap
+          sh github.sh run_tests --coverage
+          sh github.sh run_syntax_compatibility
+          sh github.sh run_syntax_tests
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: (new-object net.webclient).DownloadFile("https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.ps1","github.ps1")
+      - name: Test
+        run: |
+          ./github.ps1 "bootstrap" -verbose
+          ./github.ps1 "run_tests" -coverage -verbose
+          ./github.ps1 "run_syntax_compatibility"
+          ./github.ps1 "run_syntax_tests"
