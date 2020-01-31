@@ -43,7 +43,10 @@ def run_and_read(view, cmd) -> str:
 
 def filter_region(view, text, command, shell_setting_name) -> str:
     shell = view.settings().get(shell_setting_name)
-    shell = shell or os.path.expandvars("$SHELL")
+    if not shell:
+        shell = os.path.expandvars("$SHELL")
+        if shell == '$SHELL':
+            shell = 'sh'
 
     # Redirect STDERR to STDOUT to capture both.
     # This seems to be the behavior of vim as well.
