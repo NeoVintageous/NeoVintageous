@@ -59,14 +59,17 @@ script:
     - sh travis.sh run_syntax_tests
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
             flake8;
+      fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+            wget -v https://github.com/gerardroche/sublime-mypy-stubs/archive/master.zip && unzip master.zip;
+            export MYPYPATH="$PWD/sublime-mypy-stubs-master";
             cd "$HOME/.config/sublime-text-3/Packages/$PACKAGE/";
             find . -type d ! -path "*/\.*" ! -path "./tmp*" ! -path "./htmlcov*" ! -path "./bin*" ! -path "./res*" ! -path "./tests/fixtures*" ! -exec test -f "{}/__init__.pyi" ";" ! -exec test -f "{}/__init__.py" ";" -exec touch "{}/__init__.pyi" ";" -print;
-            find . -type f -name __init__.py -print;
-            find . -type f -name __init__.pyi -print;
+            find . -type f -name __init__.py -print && find . -type f -name __init__.pyi -print;
             if [ "$TRAVIS_PYTHON_VERSION" == "3.3" ]; then
-                mypy "../$PACKAGE" || true;
+                mypy "../$PACKAGE";
             else
-                mypy --show-error-codes "../$PACKAGE" || true;
+                mypy --show-error-codes "../$PACKAGE";
             fi;
             cd "$TRAVIS_BUILD_DIR";
       fi
