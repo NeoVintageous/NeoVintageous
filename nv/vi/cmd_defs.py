@@ -3179,6 +3179,7 @@ class ViOpenRegister(ViMotionDef):
         return {}
 
 
+@assign(seqs.CTRL_HOME, _MOTION_MODES)
 @assign(seqs.GG, _MOTION_MODES)
 class ViGotoBof(ViMotionDef):
     def __init__(self, *args, **kwargs):
