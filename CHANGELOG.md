@@ -25,7 +25,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* Added [#672](https://github.com/NeoVintageous/NeoVintageous/issues/672): Status messages not displayed when `:set belloff=all`
+* Fixed [#672](https://github.com/NeoVintageous/NeoVintageous/issues/672): Status messages not displayed when `:set belloff=all`
 
 ## 1.18.0 - 2020-02-01
 
