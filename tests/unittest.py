@@ -958,18 +958,31 @@ def mock_bell():
     @unittest.mock_bell()
     def test_name(self):
         self.assertBell()
-        self.assertBell('message')
+        self.assertBell('status message')
+        self.assertBellCount(2)
         self.assertNoBell()
 
     """
     def wrapper(f):
         @mock.patch('NeoVintageous.nv.commands.ui_bell')
+        @mock.patch('NeoVintageous.nv.ex_cmds.ui_bell')
         def wrapped(self, *args, **kwargs):
-            self.bells = [
-                args[-1]
-            ]
+            # The mocks are received as arguments e.g:
+            #
+            #     @mock.patch('NeoVintageous.nv.commands.ui_bell')
+            #     @mock.patch('NeoVintageous.nv.ex_cmds.ui_bell')
+            #
+            # The above defined mocks args will contain two mocks: [ex_cmds,
+            # commands) such that args[-1] will be the commands mock. The mock
+            # to use for the current test is determined by the module name.
+            if self.__class__.__module__ == 'tests.nv.test_ex_cmds':
+                mock = args[-2]
+            else:
+                mock = args[-1]
 
-            def _bell_call_count():
+            self.bells = [mock]
+
+            def _bell_call_count() -> int:
                 bell_count = 0
                 for bell in self.bells:
                     bell_count += bell.call_count

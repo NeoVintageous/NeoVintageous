@@ -275,6 +275,11 @@ class Test_do_ex_cmdline(unittest.ViewTestCase):
         do_ex_cmdline(self.view.window(), ':foo')
         self.assertStatusMessage('E492: Not an editor command: foo')
 
+    @unittest.mock_bell()
+    def test_rings_bell_on_unknown_ex_cmd(self):
+        do_ex_cmdline(self.view.window(), ':foo')
+        self.assertBell()
+
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.ex_pwd', 'ex_pwd')
     def test_raises_exception_on_unknown_ex_cmd_type(self):
         with self.assertRaisesRegex(RuntimeError, "unknown ex cmd type 'pwd'"):

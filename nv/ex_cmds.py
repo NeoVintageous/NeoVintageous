@@ -746,13 +746,15 @@ def ex_read(view, edit, line_range: RangeNode, cmd=None, **kwargs):
             view.insert(edit, target_point, rv.strip() + '\n')
 
         else:
-            return status_message('not implemented')
+            ui_bell('not implemented')
+            return
     else:
         # Read a file into the current view.
         # According to Vim's help, :r should read the current file's content
         # if no file name is given, but Vim doesn't do that.
         # TODO: implement reading a file into the buffer.
-        return status_message('not implemented')
+        ui_bell('not implemented')
+        return
 
 
 def ex_registers(window, view, **kwargs):
@@ -1224,14 +1226,12 @@ def ex_wq(window, view, forceit: bool = False, **kwargs):
 
 def ex_wqall(window, **kwargs):
     if not all(view.file_name() for view in window.views()):
-        ui_bell()
-
-        return status_message("E32: No file name")
+        ui_bell("E32: No file name")
+        return
 
     if any(view.is_read_only() for view in window.views()):
-        ui_bell()
-
-        return status_message("E45: 'readonly' option is set (add ! to override)")
+        ui_bell("E45: 'readonly' option is set (add ! to override)")
+        return
 
     window.run_command('save_all')
 
@@ -1284,10 +1284,12 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
     def _write_to_file(window, view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit:
             if os.path.exists(file_name):
-                return ui_bell("E13: File exists (add ! to override)")
+                ui_bell("E13: File exists (add ! to override)")
+                return
 
             if _is_read_only(file_name):
-                return ui_bell("E45: 'readonly' option is set (add ! to override)")
+                ui_bell("E45: 'readonly' option is set (add ! to override)")
+                return
 
         try:
             file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
@@ -1315,7 +1317,8 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
         return status_message("E32: No file name")
 
     if _is_read_only(view.file_name()) or view.is_read_only() and not forceit:
-        return ui_bell("E45: 'readonly' option is set (add ! to override)")
+        ui_bell("E45: 'readonly' option is set (add ! to override)")
+        return
 
     window.run_command('save')
 
@@ -1556,7 +1559,8 @@ def do_ex_cmdline(window, line: str) -> None:
     try:
         cmdline = parse_command_line(line[1:])
     except Exception as e:
-        return status_message(str(e))
+        ui_bell(str(e))
+        return
 
     if not cmdline.command:
         # Do default ex command. The default ex command is not associated with

@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.19.0 - Unreleased
+
+### Added
+
+* Added [#671](https://github.com/NeoVintageous/NeoVintageous/issues/671): Emit visual bell when ex command not found or invalid
+
 ## 1.18.0 - 2020-02-01
 
 ### Added
