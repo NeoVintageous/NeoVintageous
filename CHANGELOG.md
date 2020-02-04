@@ -8,6 +8,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Added [#671](https://github.com/NeoVintageous/NeoVintageous/issues/671): Emit visual bell when ex command not found or invalid
 
+### Fixed
+
+* Added [#672](https://github.com/NeoVintageous/NeoVintageous/issues/672): Status messages not displayed when `:set belloff=all`
+
 ## 1.18.0 - 2020-02-01
 
 ### Added

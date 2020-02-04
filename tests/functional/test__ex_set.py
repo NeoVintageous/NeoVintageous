@@ -22,6 +22,7 @@ class Test_ex_set(unittest.FunctionalTestCase):
 
     @unittest.mock_status_message()
     def test_set_belloff(self):
+        self.feed(':set belloff=')
         self.assertOption('belloff', '')
         self.feed(':set belloff=all')
         self.assertOption('belloff', 'all')
