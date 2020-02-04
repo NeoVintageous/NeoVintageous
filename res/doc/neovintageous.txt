@@ -330,10 +330,14 @@ Credit: https://github.com/michaeljsmith/vim-indent-object.
 
 OPTIONS                                                           *nv-options*
 
-A number of options are supported by your rc file. For example, to always start
+Some vim options are supported in your rc file. For example, to always start
 with the 'ignorecase' option on, add the following line your rc file: >
 
     set ignorecase
+
+To always start with it off: >
+
+    set noignorecase
 
 List of available options:
 
@@ -341,15 +345,28 @@ List of available options:
     'magic', 'menu', 'minimap', 'modeline', 'modelines', 'number', 'sidebar',
     'spell', 'statusbar', 'winaltkeys', 'wrap', 'wrapscan'
 
-See `:help 'option'` for help on individual options.
+Examples: >
+
+    set noignorecase
+    set nomenu
+    set nominimap
+    set nomodeline
+    set sidebar
+    set statusbar
+    set winaltkeys=menu
+
+Try `:help 'option name'` for help on individual options.
 
 ==============================================================================
 
 SETTINGS                                                         *nv-settings*
 
-You can edit settings via `Menu > Preferences > Settings` or by the Command
-Palette. To use the command palette press `Ctrl+Shift+P` and select the
-"Preferences: Settings" command.
+Settings are different than vim options. Vim options are set in your rc file and
+settings are set as regular Sublime Text settings, see |nv-options| for a list
+of all supported Vim options, how to use them, and how to set them.
+
+To edit settings go to `Menu > Preferences > Settings` or use the Command
+Palette: press `Ctrl+Shift+P` and select the "Preferences: Settings" command.
 
 For example to enable the control keys: >
 
