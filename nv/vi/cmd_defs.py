@@ -2239,6 +2239,7 @@ class ViShiftEnterMotion(ViMotionDef):
 
 
 @assign(seqs.B, _MOTION_MODES)
+@assign(seqs.SHIFT_LEFT, _MOTION_MODES)
 class ViMoveByWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2256,6 +2257,7 @@ class ViMoveByWordsBackward(ViMotionDef):
 
 
 @assign(seqs.BIG_B, _MOTION_MODES)
+@assign(seqs.CTRL_LEFT, _MOTION_MODES)
 class ViMoveByBigWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2273,6 +2275,7 @@ class ViMoveByBigWordsBackward(ViMotionDef):
 
 
 @assign(seqs.BIG_W, _MOTION_MODES)
+@assign(seqs.CTRL_RIGHT, _MOTION_MODES)
 class ViMoveByBigWords(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2427,6 +2430,7 @@ class ViMoveHalfScreenUp(ViMotionDef):
 
 @assign(seqs.CTRL_F, _MOTION_MODES)
 @assign(seqs.PAGE_DOWN, _MOTION_MODES)
+@assign(seqs.SHIFT_DOWN, _MOTION_MODES)
 class ViMoveScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2445,6 +2449,7 @@ class ViMoveScreenDown(ViMotionDef):
 
 @assign(seqs.CTRL_B, _MOTION_MODES)
 @assign(seqs.PAGE_UP, _MOTION_MODES)
+@assign(seqs.SHIFT_UP, _MOTION_MODES)
 class ViMoveScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2946,6 +2951,7 @@ class ViMoveLeftByChars(ViMotionDef):
         }
 
 
+@assign(seqs.SHIFT_RIGHT, _MOTION_MODES)
 @assign(seqs.W, _MOTION_MODES)
 class ViMoveByWords(ViMotionDef):
     def __init__(self, *args, **kwargs):

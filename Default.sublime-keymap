@@ -262,6 +262,8 @@
     {"keys": ["ctrl+delete"], "command": "_nv_feed_key", "args": {"key": "<C-del>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+down"], "command": "_nv_feed_key", "args": {"key": "<C-down>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+enter"], "command": "_nv_feed_key", "args": {"key": "<C-cr>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+left"], "command": "_nv_feed_key", "args": {"key": "<C-left>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+right"], "command": "_nv_feed_key", "args": {"key": "<C-right>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+up"], "command": "_nv_feed_key", "args": {"key": "<C-up>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
     {"keys": ["ctrl+."], "command": "_nv_feed_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
@@ -308,8 +310,12 @@
 
     {"keys": ["ctrl+alt+p"], "command": "_nv_feed_key", "args": {"key": "<C-M-p>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
+    {"keys": ["shift+down"], "command": "_nv_feed_key", "args": {"key": "<S-down>"},     "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+enter"], "command": "_nv_feed_key", "args": {"key": "<S-cr>"},     "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["shift+left"], "command": "_nv_feed_key", "args": {"key": "<S-left>"}, "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["shift+right"], "command": "_nv_feed_key", "args": {"key": "<S-right>"}, "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["shift+space"], "command": "_nv_feed_key", "args": {"key": "<S-space>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["shift+up"], "command": "_nv_feed_key", "args": {"key": "<S-up>"},     "context": [{"key": "vi_command_mode_aware"}]},
 
     {"keys": ["shift+ctrl+p"], "command": "_nv_feed_key", "args": {"key": "<C-P>"}, "context": [{"key": "vi_insert_mode_aware"}]},
 

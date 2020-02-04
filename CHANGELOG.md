@@ -6,6 +6,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-down>` alias to `CTRL-f`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-up>` alias to `CTRL-b`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-left>` alias to `B`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-left>` alias to `b`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-right>` alias to `W`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-right>` alias to `w`
 * Added [#671](https://github.com/NeoVintageous/NeoVintageous/issues/671): Emit visual bell when ex command not found or invalid
 
 ### Fixed
