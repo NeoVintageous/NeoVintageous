@@ -27,8 +27,8 @@ from NeoVintageous.nv.options import StringOption
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import get_option_completions
 from NeoVintageous.nv.options import set_option
+from NeoVintageous.nv.options import set_window_ui_element_visible
 from NeoVintageous.nv.options import toggle_option
-from NeoVintageous.nv.options import window_visible_option
 
 
 class TestOption(unittest.ViewTestCase):
@@ -173,12 +173,12 @@ class TestBooleanIsVisibleOption(unittest.ViewTestCase):
             self.assertOption(name.replace('_', ''), True)
 
             # Test toggle (used by for example Unimpaired).
-            window_visible_option(self.view, name)
+            set_window_ui_element_visible(name, window=self.view.window())
             self.assertEqual(option.get(self.view), False)
             self.assertOption(name.replace('_', ''), False)
 
             # Test toggle (used by for example Unimpaired).
-            window_visible_option(self.view, name)
+            set_window_ui_element_visible(name, window=self.view.window())
             self.assertEqual(option.get(self.view), True)
             self.assertOption(name.replace('_', ''), True)
 

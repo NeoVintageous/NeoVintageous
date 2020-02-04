@@ -787,7 +787,9 @@ def ex_registers(window, view, **kwargs):
         window.show_quick_panel(sorted(items), None, flags=MONOSPACE_FONT)
 
 
-def ex_set(view, option: str, value, **kwargs):
+def ex_set(option: str, value, **kwargs):
+    view = kwargs.get('view', None)
+
     try:
         if option.endswith('?'):
             name = option[:-1]
@@ -812,8 +814,8 @@ def ex_set(view, option: str, value, **kwargs):
         status_message(str(e))
 
 
-def ex_setlocal(view, option: str, value, **kwargs):
-    ex_set(view, option, value, **kwargs)
+def ex_setlocal(**kwargs):
+    ex_set(**kwargs)
 
 
 # TODO [refactor] shell commands to use common os nv.ex.shell commands

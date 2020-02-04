@@ -21,7 +21,7 @@ from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
-from NeoVintageous.nv.options import window_visible_option
+from NeoVintageous.nv.options import set_window_ui_element_visible
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_rfind
@@ -452,19 +452,19 @@ def _ignorecase_option(view, flag):
 
 
 def _menu_option(view, flag=None):
-    window_visible_option(view, 'menu', flag)
+    set_window_ui_element_visible('menu', flag, view.window())
 
 
 def _minimap_option(view, flag=None):
-    window_visible_option(view, 'minimap', flag)
+    set_window_ui_element_visible('minimap', flag, view.window())
 
 
 def _sidebar_option(view, flag=None):
-    window_visible_option(view, 'sidebar', flag)
+    set_window_ui_element_visible('sidebar', flag, view.window())
 
 
 def _statusbar_option(view, flag=None):
-    window_visible_option(view, 'status_bar', flag)
+    set_window_ui_element_visible('status_bar', flag, view.window())
 
 
 # Used by the _toggle_option() function.

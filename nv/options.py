@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from sublime import active_window
+
 from NeoVintageous.nv.settings import get_setting
 
 
@@ -23,7 +25,7 @@ _session = {}  # type: dict
 
 class Option():
 
-    def __init__(self, name, default):
+    def __init__(self, name: str, default):
         self._name = name
         self._default = default
 
@@ -59,7 +61,7 @@ class BooleanOption(Option):
 
 class BooleanViewOption(BooleanOption):
 
-    def __init__(self, name, default, on=True, off=False):
+    def __init__(self, name: str, default, on=True, off=False):
         super().__init__(name, default)
         self._on = on
         self._off = off
@@ -89,8 +91,13 @@ class BooleanViewOption(BooleanOption):
         return value
 
 
-def window_visible_option(view, name: str, flag: bool = None) -> None:
-    window = view.window()
+def get_window_ui_element_visible(name: str, window=None) -> None:
+    return getattr(active_window() if window is None else window, 'is_%s_visible' % name)()
+
+
+def set_window_ui_element_visible(name: str, flag: bool = None, window=None) -> None:
+    # The option is toggled when flag is None.
+    window = active_window() if window is None else window
     is_visible = getattr(window, 'is_%s_visible' % name)()
     if flag is None:
         getattr(window, 'set_%s_visible' % name)(not is_visible)
@@ -105,10 +112,10 @@ def window_visible_option(view, name: str, flag: bool = None) -> None:
 class BooleanIsVisibleOption(BooleanOption):
 
     def _set(self, view, value):
-        window_visible_option(view, self._name, value)
+        set_window_ui_element_visible(self._name, value, view.window() if view else None)
 
     def _get(self, view):
-        return getattr(view.window(), 'is_%s_visible' % self._name)()
+        return get_window_ui_element_visible(self._name, view.window() if view else None)
 
 
 class NumberOption(Option):
@@ -119,7 +126,7 @@ class NumberOption(Option):
 
 class StringOption(Option):
 
-    def __init__(self, name, default, select=()):
+    def __init__(self, name: str, default, select=()):
         super().__init__(name, default)
         self._select = select
 
