@@ -964,21 +964,16 @@ def mock_bell():
 
     """
     def wrapper(f):
-        @mock.patch('NeoVintageous.nv.commands.ui_bell')
-        @mock.patch('NeoVintageous.nv.ex_cmds.ui_bell')
+
+        # Hack to make sure the right imported ui_bell function is mocked.
+        if f.__module__.endswith('nv.test_ex_cmds'):
+            patch = 'NeoVintageous.nv.ex_cmds.ui_bell'
+        else:
+            patch = 'NeoVintageous.nv.commands.ui_bell'
+
+        @mock.patch(patch)
         def wrapped(self, *args, **kwargs):
-            # The mocks are received as arguments e.g:
-            #
-            #     @mock.patch('NeoVintageous.nv.commands.ui_bell')
-            #     @mock.patch('NeoVintageous.nv.ex_cmds.ui_bell')
-            #
-            # The above defined mocks args will contain two mocks: [ex_cmds,
-            # commands) such that args[-1] will be the commands mock. The mock
-            # to use for the current test is determined by the module name.
-            if self.__class__.__module__ == 'tests.nv.test_ex_cmds':
-                mock = args[-2]
-            else:
-                mock = args[-1]
+            mock = args[-1]
 
             self.bells = [mock]
 
