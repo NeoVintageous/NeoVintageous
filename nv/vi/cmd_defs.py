@@ -2936,6 +2936,7 @@ class ViMoveByBigWordEnds(ViMotionDef):
 
 @assign(seqs.ALT_LEFT, _MOTION_MODES)
 @assign(seqs.BACKSPACE, _MOTION_MODES)
+@assign(seqs.CTRL_BACKSPACE, _MOTION_MODES)
 @assign(seqs.CTRL_H, _MOTION_MODES)
 @assign(seqs.H, _MOTION_MODES)
 @assign(seqs.LEFT, _MOTION_MODES)
