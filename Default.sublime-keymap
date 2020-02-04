@@ -267,6 +267,7 @@
     {"keys": ["ctrl+left"], "command": "_nv_feed_key", "args": {"key": "<C-left>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+pagedown"], "command": "_nv_feed_key", "args": {"key": "<C-pagedown>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+right"], "command": "_nv_feed_key", "args": {"key": "<C-right>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+space"], "command": "_nv_feed_key", "args": {"key": "<C-space>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+up"], "command": "_nv_feed_key", "args": {"key": "<C-up>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
     {"keys": ["ctrl+."], "command": "_nv_feed_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
