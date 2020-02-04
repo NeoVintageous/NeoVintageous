@@ -61,6 +61,7 @@ from NeoVintageous.nv.marks import add_mark
 from NeoVintageous.nv.marks import get_mark_as_encoded_address
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
+from NeoVintageous.nv.polyfill import toggle_side_bar
 from NeoVintageous.nv.rc import open_rc
 from NeoVintageous.nv.rc import reload_rc
 from NeoVintageous.nv.registers import registers_get_for_paste
@@ -81,7 +82,6 @@ from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import toggle_ctrl_keys
-from NeoVintageous.nv.settings import toggle_side_bar
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
