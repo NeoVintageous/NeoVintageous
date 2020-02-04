@@ -73,9 +73,18 @@ def _is_insert_mode(view, operator, operand, match_all):
 
 def _is_alt_key_enabled(view, operator, operand, match_all):
     winaltkeys = get_option(view, 'winaltkeys')
+    # When the winaltkeys setting is "menu" an alt key (operand) is enabled if:
+    #
+    # a) in command mode and the window menu is not visible
+    # b) in command mode and the menu is is visible but the key is not one of
+    #    the menu keys e.g. alt-f should still open the File menu.
+    #
+    # The point of the "menu" option is to allow binding alt keys to vim modes
+    # without overriding the window menu alt keys.
     if winaltkeys == 'menu':
         return (operand not in tuple('efghinpstv') or not view.window().is_menu_visible()) and _is_command_mode(view)
 
+    # When "yes" the alt are disabled i.e. only use the window alt keys.
     return False if winaltkeys == 'yes' else _is_command_mode(view)
 
 

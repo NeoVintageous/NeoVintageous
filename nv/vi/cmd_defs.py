@@ -2204,6 +2204,7 @@ class ViGotoSymbolInFile(ViMotionDef):
         }
 
 
+@assign(seqs.ALT_RIGHT, _MOTION_MODES)
 @assign(seqs.L, _MOTION_MODES)
 @assign(seqs.RIGHT, _MOTION_MODES)
 @assign(seqs.SPACE, _MOTION_MODES)
@@ -2933,6 +2934,7 @@ class ViMoveByBigWordEnds(ViMotionDef):
         }
 
 
+@assign(seqs.ALT_LEFT, _MOTION_MODES)
 @assign(seqs.BACKSPACE, _MOTION_MODES)
 @assign(seqs.CTRL_H, _MOTION_MODES)
 @assign(seqs.H, _MOTION_MODES)

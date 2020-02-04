@@ -17,7 +17,9 @@
 
 A = 'a'
 ALT_CTRL_P = '<C-M-p>'
+ALT_LEFT = '<M-left>'
 ALT_N = '<M-n>'
+ALT_RIGHT = '<M-right>'
 AMPERSAND = '&'
 AT = '@'
 AW = 'aw'
