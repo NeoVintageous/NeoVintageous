@@ -76,6 +76,7 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize_one('>'), '>')
         self.assertEqual(tokenize_one('P'), 'P', 'upper case letter key')
         self.assertEqual(tokenize_one('p'), 'p', 'lower letter key')
+        self.assertEqual(tokenize_one('<insert>'), '<insert>')
 
     def test_expected_closing_bracket(self):
         invalid_tokens = (
@@ -155,6 +156,7 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(iter_tokenize('<lt><lt>'), ['<lt>', '<lt>'])
         self.assertEqual(iter_tokenize('<m-a><a-b>'), ['<M-a>', '<M-b>'])
         self.assertEqual(iter_tokenize('pp'), ['p', 'p'])
+        self.assertEqual(iter_tokenize('3<insert>'), ['3', '<insert>'])
 
 
 class TestFunctions(unittest.TestCase):

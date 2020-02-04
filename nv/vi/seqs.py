@@ -227,6 +227,7 @@ H = 'h'
 HAT = '^'
 HOME = '<home>'
 I = 'i'  # noqa: E741
+INSERT = '<insert>'
 J = 'j'
 K = 'k'
 L = 'l'

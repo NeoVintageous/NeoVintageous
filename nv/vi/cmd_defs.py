@@ -1980,6 +1980,7 @@ class StFocusSideBar(ViOperatorDef):
 
 
 @assign(seqs.I, (NORMAL, SELECT))
+@assign(seqs.INSERT, (NORMAL, SELECT))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

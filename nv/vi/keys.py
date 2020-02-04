@@ -84,6 +84,7 @@ class key_names:
     ENTER = '<enter>'
     ESC = '<esc>'
     HOME = '<home>'
+    INSERT = '<insert>'
     LEFT = '<left>'
     LESS_THAN = '<lt>'
     PAGE_DOWN = '<pagedown>'
@@ -129,6 +130,7 @@ class key_names:
         ENTER,
         ESC,
         HOME,
+        INSERT,
         LEFT,
         LESS_THAN,
         PAGE_DOWN,

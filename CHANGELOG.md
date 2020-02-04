@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<insert>` alias to `i`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-down>` alias to `CTRL-f`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-up>` alias to `CTRL-b`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-left>` alias to `B`
