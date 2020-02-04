@@ -37,8 +37,16 @@ contexts:
         1: keyword.control.neovintageourc
         2: entity.name.neovintageourc
 
-    # Keys e.g. <C-d>, <Space>, <leader>.
-    - match: \<[A-Za-z0-9-]+\>
+    # Keys e.g. <Space>, <leader>.
+    - match: \<[A-Za-z]+\>
+      scope: storage.type.neovintageourc
+
+    # Keys e.g. <C-x>, <D-x>, <M-x>, <S-x>
+    - match: \<(C|D|M|S)\-[^>]+\>
+      scope: storage.type.neovintageourc
+
+    # Keys e.g. <C-S-x>, <D-S-x>, <M-S-x>
+    - match: \<(C|D|M)\-S-[^>]+\>
       scope: storage.type.neovintageourc
 
     # The '|' character is used to chain commands. Users should

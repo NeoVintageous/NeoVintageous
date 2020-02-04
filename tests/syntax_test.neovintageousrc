@@ -72,6 +72,51 @@ nnoremap <C-y> 3<C-y>
 nnoremap <C-y> 3<C-y> " x
 "                     ^^^ -comment
 
+nnoremap <C-x> :
+"        ^^^^^ storage.type
+nnoremap <C-1> :
+"        ^^^^^ storage.type
+nnoremap <C-.> :
+"        ^^^^^ storage.type
+nnoremap <C-f1> :
+"        ^^^^^^ storage.type
+
+nnoremap <D-x> :
+"        ^^^^^ storage.type
+nnoremap <D-3> :
+"        ^^^^^ storage.type
+nnoremap <D-.> :
+"        ^^^^^ storage.type
+nnoremap <D-f1> :
+"        ^^^^^^ storage.type
+
+nnoremap <M-x> :
+"        ^^^^^ storage.type
+nnoremap <M-5> :
+"        ^^^^^ storage.type
+nnoremap <M-.> :
+"        ^^^^^ storage.type
+nnoremap <M-f1> :
+"        ^^^^^^ storage.type
+
+nnoremap <S-x> :
+"        ^^^^^ storage.type
+nnoremap <S-5> :
+"        ^^^^^ storage.type
+nnoremap <S-.> :
+"        ^^^^^ storage.type
+nnoremap <S-f1> :
+"        ^^^^^^ storage.type
+
+nnoremap <C-S-x> :
+"        ^^^^^^^ storage.type
+nnoremap <C-S-7> :
+"        ^^^^^^^ storage.type
+nnoremap <C-S-.> :
+"        ^^^^^^^ storage.type
+nnoremap <C-S-f1> :
+"        ^^^^^^^^ storage.type
+
 map x y
 " ^^^^^ invalid
 :map x y
