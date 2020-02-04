@@ -1022,6 +1022,7 @@ class ViLeftDeleteChar(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_PAGEDOWN, _ACTION_MODES)
 @assign(seqs.GT, _ACTION_MODES)
 class ViActivateNextTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):
