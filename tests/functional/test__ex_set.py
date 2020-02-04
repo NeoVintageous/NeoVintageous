@@ -32,6 +32,9 @@ class Test_ex_set(unittest.FunctionalTestCase):
         self.assertOption('belloff', 'all')
         self.feed(':set belloff?')
         self.assertStatusMessage('belloff=all')
+        self.feed(':set belloff=')
+        self.feed(':set belloff?')
+        self.assertStatusMessage('belloff=', count=2)
 
     @unittest.mock_status_message()
     def test_set_hlsearch(self):
