@@ -357,7 +357,16 @@
     {"keys": ["shift+ctrl+ç"], "command": "_nv_feed_key", "args": {"key": "<C-Ç>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["shift+ctrl+ñ"], "command": "_nv_feed_key", "args": {"key": "<C-Ñ>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
+    {"keys": ["super+backspace"], "command": "_nv_feed_key", "args": {"key": "<D-bs>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+delete"], "command": "_nv_feed_key", "args": {"key": "<D-del>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+down"], "command": "_nv_feed_key", "args": {"key": "<D-down>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+enter"], "command": "_nv_feed_key", "args": {"key": "<D-cr>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+home"], "command": "_nv_feed_key", "args": {"key": "<D-home>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+left"], "command": "_nv_feed_key", "args": {"key": "<D-left>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+pagedown"], "command": "_nv_feed_key", "args": {"key": "<D-pagedown>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+right"], "command": "_nv_feed_key", "args": {"key": "<D-right>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+space"], "command": "_nv_feed_key", "args": {"key": "<D-space>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
+    {"keys": ["super+up"], "command": "_nv_feed_key", "args": {"key": "<D-up>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
 
     {"keys": ["super+["], "command": "_nv_feed_key", "args": {"key": "<D-[>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+]"], "command": "_nv_feed_key", "args": {"key": "<D-]>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
