@@ -369,6 +369,7 @@
     {"keys": ["super+space"], "command": "_nv_feed_key", "args": {"key": "<D-space>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+up"], "command": "_nv_feed_key", "args": {"key": "<D-up>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
 
+    {"keys": ["super+."], "command": "_nv_feed_key", "args": {"key": "<D-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+["], "command": "_nv_feed_key", "args": {"key": "<D-[>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+]"], "command": "_nv_feed_key", "args": {"key": "<D-]>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+a"], "command": "_nv_feed_key", "args": {"key": "<D-a>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
@@ -398,6 +399,7 @@
     {"keys": ["super+y"], "command": "_nv_feed_key", "args": {"key": "<D-y>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["super+z"], "command": "_nv_feed_key", "args": {"key": "<D-z>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
 
+    {"keys": ["shift+super+."], "command": "_nv_feed_key", "args": {"key": "<D-S-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["shift+super+a"], "command": "_nv_feed_key", "args": {"key": "<D-A>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["shift+super+b"], "command": "_nv_feed_key", "args": {"key": "<D-B>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
     {"keys": ["shift+super+c"], "command": "_nv_feed_key", "args": {"key": "<D-C>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_super_keys"}]},
