@@ -1039,6 +1039,7 @@ class ViActivateNextTab(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_PAGEUP, _ACTION_MODES)
 @assign(seqs.G_BIG_T, _ACTION_MODES)
 class ViActivatePreviousTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):

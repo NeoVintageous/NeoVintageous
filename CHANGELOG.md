@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<M-right>` alias to `l`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-space>`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-bs>` alias to `h`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-pageup>` alias to `gT`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-pagedown>` alias to `gt`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-home>` alias to `gg`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<insert>` alias to `i`
