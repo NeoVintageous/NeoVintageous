@@ -6,7 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<D-bs>`, `<D-cr>`, `<D-del>`, `<D-down>`, `<D-home>`, `<D-left>`, `<D-pagedown>`, `<D-right>`, `<D-space>`, `<D-up>`, `<D-.>`, `<D-S-.>`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<D-bs>`, `<D-cr>`, `<D-del>`, `<D-down>`, `<D-home>`, `<D-left>`, `<D-pagedown>`, `<D-pageup>`, `<D-right>`, `<D-space>`, `<D-up>`, `<D-.>`, `<D-S-.>`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<M-left>` alias to `h`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<M-right>` alias to `l`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-space>`
