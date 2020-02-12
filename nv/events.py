@@ -188,7 +188,7 @@ class NeoVintageousEvents(EventListener):
                         state.update_xpos(force=True)
 
     def on_load(self, view):
-        if get_option(view, 'modeline'):
+        if is_view(view) and get_option(view, 'modeline'):
             do_modeline(view)
 
     def on_post_save(self, view):
