@@ -173,6 +173,7 @@ _options = {
     'sidescrolloff': NumberOption('sidescrolloff', 5),
     'spell': BooleanViewOption('spell_check'),
     'statusbar': BooleanIsVisibleOption('status_bar', True),  # {not in Vim}
+    'tabstop': NumberViewOption('tab_size'),
     'winaltkeys': StringOption('winaltkeys', 'yes', select=('no', 'yes', 'menu')),
     'wrap': BooleanViewOption('word_wrap'),
     'wrapscan': BooleanOption('wrapscan', True),
@@ -190,6 +191,7 @@ _OPTION_ALIASES = {
     'nu': 'number',
     'siso': 'sidescrolloff',
     'so': 'scrolloff',
+    'ts': 'tabstop',
     'wak': 'winaltkeys',
     'ws': 'wrapscan',
 }
