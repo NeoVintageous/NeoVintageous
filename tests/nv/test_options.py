@@ -86,7 +86,7 @@ class TestBooleanViewOption(unittest.ViewTestCase):
 
     def test_set(self):
         self.settings().set('spell_check', False)
-        option = BooleanViewOption('spell_check', False)
+        option = BooleanViewOption('spell_check')
         self.assertEqual(option.get(self.view), False)
         self.assertSetting('spell_check', False)
         option.set(self.view, True)
@@ -99,7 +99,7 @@ class TestBooleanViewOption(unittest.ViewTestCase):
 
     def test_set_false_only_mutates_setting_if_dirty(self):
         self.settings().set('spell_check', False)
-        option = BooleanViewOption('spell_check', False)
+        option = BooleanViewOption('spell_check')
         self.view.settings().set = unittest.mock.Mock()
 
         option.set(self.view, False)
@@ -110,7 +110,7 @@ class TestBooleanViewOption(unittest.ViewTestCase):
 
     def test_set_true_only_mutates_setting_if_dirty(self):
         self.settings().set('spell_check', True)
-        option = BooleanViewOption('spell_check', False)
+        option = BooleanViewOption('spell_check')
         self.view.settings().set = unittest.mock.Mock()
 
         option.set(self.view, True)
@@ -121,7 +121,7 @@ class TestBooleanViewOption(unittest.ViewTestCase):
 
     def test_on_off_values(self):
         self.settings().set('draw_white_space', 'none')
-        option = BooleanViewOption('draw_white_space', False, 'all', 'selection')
+        option = BooleanViewOption('draw_white_space', 'all', 'selection')
         option.set(self.view, True)
         self.assertEqual(option.get(self.view), True)
         self.assertSetting('draw_white_space', 'all')

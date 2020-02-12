@@ -59,20 +59,40 @@ class BooleanOption(Option):
         return bool(value)
 
 
+class NumberOption(Option):
+
+    def _filter_validate(self, value):
+        return int(value)
+
+
+class StringOption(Option):
+
+    def __init__(self, name: str, default, select=()):
+        super().__init__(name, default)
+        self._select = select
+
+    def _filter_validate(self, value):
+        value = str(value)
+        if self._select and value not in self._select:
+            raise ValueError('invalid argument')
+
+        return value
+
+
 class BooleanViewOption(BooleanOption):
 
-    def __init__(self, name: str, default, on=True, off=False):
-        super().__init__(name, default)
+    def __init__(self, name: str, on=True, off=False):
+        super().__init__(name, None)
         self._on = on
         self._off = off
 
     def _set(self, view, value):
-        # Note that the intent here is to avoid Sublime triggering a "setting
-        # changed" event. Sublime triggers the event any time the settings set()
-        # method is called, even if the actual value itself has not changed.
         settings = view.settings()
         current_value = settings.get(self._name)
 
+        # Note that the intent here is to avoid Sublime triggering a "setting
+        # changed" event. Sublime triggers the event any time the settings set()
+        # method is called, even if the actual value itself has not changed.
         if value:
             if current_value != self._on:
                 settings.set(self._name, self._on)
@@ -89,6 +109,21 @@ class BooleanViewOption(BooleanOption):
             value = False
 
         return value
+
+
+class NumberViewOption(NumberOption):
+
+    def __init__(self, name: str):
+        super().__init__(name, None)
+
+    def _set(self, view, value):
+        settings = view.settings()
+        current_value = settings.get(self._name)
+        if value != current_value:
+            settings.set(self._name, value)
+
+    def _get(self, view):
+        return view.settings().get(self._name)
 
 
 def get_window_ui_element_visible(name: str, window=None) -> None:
@@ -118,47 +153,27 @@ class BooleanIsVisibleOption(BooleanOption):
         return get_window_ui_element_visible(self._name, view.window() if view else None)
 
 
-class NumberOption(Option):
-
-    def _filter_validate(self, value):
-        return int(value)
-
-
-class StringOption(Option):
-
-    def __init__(self, name: str, default, select=()):
-        super().__init__(name, default)
-        self._select = select
-
-    def _filter_validate(self, value):
-        value = str(value)
-        if self._select and value not in self._select:
-            raise ValueError('invalid argument')
-
-        return value
-
-
 # The second parameter to the option classes is fhe default for the setting.
 _options = {
-    'autoindent': BooleanViewOption('auto_indent', True),
+    'autoindent': BooleanViewOption('auto_indent'),
     'belloff': StringOption('belloff', '', select=('', 'all')),
     'hlsearch': BooleanOption('hlsearch', True),
     'ignorecase': BooleanOption('ignorecase', True),
     'incsearch': BooleanOption('incsearch', True),
-    'list': BooleanViewOption('draw_white_space', False, on='all', off='selection'),
+    'list': BooleanViewOption('draw_white_space', on='all', off='selection'),
     'magic': BooleanOption('magic', True),
     'menu': BooleanIsVisibleOption('menu', True),  # {not in Vim}
     'minimap': BooleanIsVisibleOption('minimap', True),  # {not in Vim}
     'modeline': BooleanOption('modeline', True),
     'modelines': NumberOption('modelines', 5),
-    'number': BooleanViewOption('line_numbers', True),
+    'number': BooleanViewOption('line_numbers'),
     'scrolloff': NumberOption('scrolloff', 5),
     'sidebar': BooleanIsVisibleOption('sidebar', True),  # {not in Vim}
     'sidescrolloff': NumberOption('sidescrolloff', 5),
-    'spell': BooleanViewOption('spell_check', False),
+    'spell': BooleanViewOption('spell_check'),
     'statusbar': BooleanIsVisibleOption('status_bar', True),  # {not in Vim}
     'winaltkeys': StringOption('winaltkeys', 'yes', select=('no', 'yes', 'menu')),
-    'wrap': BooleanViewOption('word_wrap', False),
+    'wrap': BooleanViewOption('word_wrap'),
     'wrapscan': BooleanOption('wrapscan', True),
 }
 
