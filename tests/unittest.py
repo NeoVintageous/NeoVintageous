@@ -203,10 +203,11 @@ class ViewTestCase(unittest.TestCase):
         self.assertFalse(self.settings().has('vi_%s' % name))
         self.assertFalse(self.settings().has('vintageous_%s' % name))
 
-    def set_option(self, name, value):
+    def set_option(self, name, value, setting=True):
         _set_option(self.view, name, value)
-        # Options via settings is DEPRECATED
-        self.settings().set('vintageous_%s' % name, value)
+        if setting:
+            # Options via settings is DEPRECATED
+            self.settings().set('vintageous_%s' % name, value)
 
     def assertOption(self, name, expected, msg=None):
         self.assertEqual(_get_option(self.view, name), expected, msg=msg)
