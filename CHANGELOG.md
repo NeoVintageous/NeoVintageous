@@ -23,6 +23,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-right>` alias to `w`
 * Added [#671](https://github.com/NeoVintageous/NeoVintageous/issues/671): Emit visual bell when ex command not found or invalid
 
+### Changed
+
+* Fixed [#675](https://github.com/NeoVintageous/NeoVintageous/issues/675): Modelines are no longer applied on save
+
 ### Fixed
 
 * Fixed [#676](https://github.com/NeoVintageous/NeoVintageous/issues/676): Uppercase alt keys don't work when `winaltkeys=menu`

@@ -192,9 +192,6 @@ class NeoVintageousEvents(EventListener):
             do_modeline(view)
 
     def on_post_save(self, view):
-        if get_option(view, 'modeline'):
-            do_modeline(view)
-
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.
         # TODO Kill State dependency
