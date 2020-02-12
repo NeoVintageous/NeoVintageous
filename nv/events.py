@@ -72,26 +72,30 @@ def _is_insert_mode(view, operator, operand, match_all):
 
 
 def _is_alt_key_enabled(view, operator, operand, match_all):
+    # Some GUI versions allow the access to menu entries by using the ALT
+    # key in combination with a character that appears underlined in the
+    # menu.  This conflicts with the use of the ALT key for mappings and
+    # entering special characters.  This option tells what to do:
+    #   no    Don't use ALT keys for menus.  ALT key combinations can be
+    #         mapped, but there is no automatic handling.
+    #   yes   ALT key handling is done by the windowing system.  ALT key
+    #         combinations cannot be mapped.
+    #   menu  Using ALT in combination with a character that is a menu
+    #         shortcut key, will be handled by the windowing system.  Other
+    #         keys can be mapped.
+    # If the menu is disabled by excluding 'm' from 'guioptions', the ALT
+    # key is never used for the menu.
     winaltkeys = get_option(view, 'winaltkeys')
-    # When the winaltkeys setting is "menu" an alt key (operand) is enabled if:
-    #
-    # a) in command mode and the window menu is not visible
-    # b) in command mode and the menu is is visible but the key is not one of
-    #    the menu keys e.g. alt-f should still open the File menu.
-    #
-    # The point of the "menu" option is to allow binding alt keys to vim modes
-    # without overriding the window menu alt keys.
     if winaltkeys == 'menu':
         return (operand not in tuple('efghinpstv') or not view.window().is_menu_visible()) and _is_command_mode(view)
 
-    # When "yes" the alt are disabled i.e. only use the window alt keys.
     return False if winaltkeys == 'yes' else _is_command_mode(view)
 
 
 _query_contexts = {
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
-    'nv.is_alt_key_enabled': _is_alt_key_enabled,
+    'nv.alt_key_enabled': _is_alt_key_enabled,
 }  # type: dict
 
 
