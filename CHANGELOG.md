@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#678](https://github.com/NeoVintageous/NeoVintageous/issues/678): `'textwidth'` option e.g. `:set textwidth`, `:set notextwidth`
 * Added [#677](https://github.com/NeoVintageous/NeoVintageous/issues/677): `'tabstop'` option e.g. `:set tabstop`, `:set notabstop`
 * Added [#679](https://github.com/NeoVintageous/NeoVintageous/issues/679): `'expandtabs'` option e.g. `:set expandtabs`, `:set noexpandtabs`
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<D-bs>`, `<D-cr>`, `<D-del>`, `<D-down>`, `<D-home>`, `<D-left>`, `<D-pagedown>`, `<D-pageup>`, `<D-right>`, `<D-space>`, `<D-up>`, `<D-.>`, `<D-S-.>`
