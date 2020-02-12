@@ -25,6 +25,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#676](https://github.com/NeoVintageous/NeoVintageous/issues/676): Uppercase alt keys don't work when `winaltkeys=menu`
 * Fixed [#672](https://github.com/NeoVintageous/NeoVintageous/issues/672): Status messages not displayed when `:set belloff=all`
 
 ## 1.18.0 - 2020-02-01
