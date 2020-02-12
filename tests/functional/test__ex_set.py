@@ -74,10 +74,10 @@ class Test_ex_set(unittest.FunctionalTestCase):
         self.assertOption('modelines', 5)
         self.feed(':set modelines=8')
         self.assertOption('modelines', 8)
-        self.feed(':set modelines=4')
-        self.assertOption('modelines', 4)
+        self.feed(':set modelines=5')
+        self.assertOption('modelines', 5)
         self.feed(':set modelines?')
-        self.assertStatusMessage('modelines=4')
+        self.assertStatusMessage('modelines=5')
 
     @unittest.mock_status_message()
     def test_set_spell(self):
