@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): Implement Vim modelines
 * Added [#678](https://github.com/NeoVintageous/NeoVintageous/issues/678): `'textwidth'` option e.g. `:set textwidth`, `:set notextwidth`
 * Added [#677](https://github.com/NeoVintageous/NeoVintageous/issues/677): `'tabstop'` option e.g. `:set tabstop`, `:set notabstop`
 * Added [#679](https://github.com/NeoVintageous/NeoVintageous/issues/679): `'expandtabs'` option e.g. `:set expandtabs`, `:set noexpandtabs`
@@ -28,6 +29,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* Fixed [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): Removed sublime settings modelines (use new vim modelines instead)
 * Fixed [#675](https://github.com/NeoVintageous/NeoVintageous/issues/675): Modelines are no longer applied on save
 
 ### Fixed

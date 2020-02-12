@@ -17,42 +17,77 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.modeline import _gen_modelines
+from NeoVintageous.nv.modeline import _parse_line
 from NeoVintageous.nv.modeline import do_modeline
 
 
-class Test_gen_modelines(unittest.ViewTestCase):
+class TestParseLine(unittest.ViewTestCase):
 
-    def test_basic(self):
-        self.write('# sublime: translate_tab_to_spaces false\n'
-                   '# sublime: gutter true\n'
-                   '# sublime: wrap_width 55\n'
-                   '# sublime: tab_size 4\n'
-                   '# sublime: rulers [80,120]\n')
+    def test_vim(self):
+        self.assertEqual(['list'], _parse_line('vi: list'))
+        self.assertEqual(['list'], _parse_line('vim: list'))
+        self.assertEqual(['list'], _parse_line(' vi: list'))
+        self.assertEqual(['list'], _parse_line(' vim: list'))
+        self.assertEqual(['list'], _parse_line(' Vim: list'))
+        self.assertEqual(['list'], _parse_line(' ex: list'))
 
-        expected = [
-            '# sublime: translate_tab_to_spaces false',
-            '# sublime: gutter true',
-            '# sublime: wrap_width 55',
-            '# sublime: tab_size 4',
-            '# sublime: rulers [80,120]'
-        ]
+        self.assertEqual(['list'], _parse_line('vi:list'))
+        self.assertEqual(['list'], _parse_line('xxx vi: list'))
+        self.assertEqual(['list'], _parse_line('xxx vi:list'))
 
-        self.assertEqual(expected, list(_gen_modelines(self.view, 5)))
+        self.assertEqual(['noai', 'ic'], _parse_line('vi: noai:ic'))
+        self.assertEqual(['noai', 'ic'], _parse_line('vi: noai ic'))
+        self.assertEqual(['noai', 'ic', 'hls', 'list'], _parse_line('vi: noai:ic hls:list'))
 
-    def test_empty(self):
-        self.write('')
-        self.assertEqual([], list(_gen_modelines(self.view, 5)))
+        self.assertEqual(['noai', 'ic', 'hls'], _parse_line('vi: set noai ic hls:'))
+        self.assertEqual(['noai', 'ic', 'hls'], _parse_line('/* vi: set noai ic hls: */'))
+        self.assertEqual(['noai', 'ic', 'hls'], _parse_line('xxx vi: set noai ic hls:'))
+
+        self.assertEqual(['sw=4', 'sts=4', 'et', 'tw=80'], _parse_line(' vim: set sw=4 sts=4 et tw=80 :'))
+        self.assertEqual(['tw=78', 'sw=4'], _parse_line('vi:tw=78:sw=4:'))
 
     def test_invalid(self):
-        self.write('# foo: bar\n'
-                   'sublime: foo\n'
-                   'sublime: gutter true\n'
-                   '# : wrap_width 55\n'
-                   '# x: tab_size 4\n')
-        self.assertEqual([], list(_gen_modelines(self.view, 10)))
+        self.assertEqual(None, _parse_line(''))
+        self.assertEqual(None, _parse_line(' '))
+        self.assertEqual(None, _parse_line('foobar'))
+        self.assertEqual(None, _parse_line('Vim: list'))
+        self.assertEqual(None, _parse_line('ex: list'))
+        self.assertEqual(None, _parse_line('lex: list'))
+        self.assertEqual(None, _parse_line('xvi: list'))
+        self.assertEqual(None, _parse_line('xvim: list'))
+        self.assertEqual(None, _parse_line('xVim: list'))
+        self.assertEqual(None, _parse_line('xex: list'))
 
-    def test_bottom_of_file(self):
+
+class TestDoModeline(unittest.ViewTestCase):
+
+    def test_modeline(self):
+        self.set_option('wrap', True)
+        self.set_option('number', False)
+        self.write('# vim: nowrap nu\n')
+        do_modeline(self.view)
+        self.assertOption('wrap', False)
+        self.assertOption('number', True)
+
+    def test_multiline(self):
+        self.set_option('wrap', False)
+        self.set_option('number', True)
+        self.set_option('autoindent', True)
+        self.write('1\n'
+                   'vim: wrap\n'
+                   'vim: nonu\n'
+                   'vim: noai\n'
+                   'EOF\n')
+        do_modeline(self.view)
+        self.assertOption('wrap', True)
+        self.assertOption('number', False)
+        self.assertOption('autoindent', False)
+
+    def test_bottom_of_file_modelines(self):
+        self.set_option('wrap', False)
+        self.set_option('number', False)
+        self.set_option('textwidth', 80)
+        self.set_option('tabstop', 4)
         self.write('# 1\n'
                    '# 2\n'
                    '# 3\n'
@@ -60,133 +95,56 @@ class Test_gen_modelines(unittest.ViewTestCase):
                    '# 5\n'
                    '# 6\n'
                    '# 7\n'
-                   '# sublime: translate_tab_to_spaces false\n'
-                   '# sublime: gutter true\n'
-                   '# sublime: wrap_width 55\n'
-                   '# sublime: tab_size 4\n'
-                   '# sublime: rulers [80,120]\n')
+                   '# vim: wrap\n'
+                   '# vim: number\n'
+                   '# vim: tw=50\n'
+                   '# vim: ts=2\n')
+        do_modeline(self.view)
+        self.assertOption('wrap', True)
+        self.assertOption('number', True)
+        self.assertOption('textwidth', 50)
+        self.assertOption('tabstop', 2)
 
-        expected = [
-            '# sublime: translate_tab_to_spaces false',
-            '# sublime: gutter true',
-            '# sublime: wrap_width 55',
-            '# sublime: tab_size 4',
-            '# sublime: rulers [80,120]'
-        ]
-
-        self.assertEqual(expected, list(_gen_modelines(self.view, 5)))
-
-    def test_only_checks_number_of_modelines(self):
+    def test_only_checks_number_of_modelines_5(self):
+        self.set_option('modelines', 5)
+        self.set_option('wrap', False)
+        self.set_option('number', False)
+        self.set_option('textwidth', 80)
+        self.set_option('tabstop', 4)
         self.write('# 1\n'
                    '# 2\n'
                    '# 3\n'
                    '# 4\n'
                    '# 5\n'
-                   '# sublime: translate_tab_to_spaces false\n'
-                   '# sublime: gutter true\n'
-                   '# sublime: wrap_width 55\n'
-                   '# sublime: tab_size 4\n'
-                   '# sublime: rulers [80,120]\n'
+                   '# vim: wrap\n'
+                   '# vim: number\n'
+                   '# vim: tw=50\n'
+                   '# vim: ts=2\n'
                    '# 11\n'
                    '# 12\n'
                    '# 13\n'
                    '# 14\n'
                    '# 15\n')
+        self.assertOption('wrap', False)
+        self.assertOption('number', False)
+        self.assertOption('textwidth', 80)
+        self.assertOption('tabstop', 4)
 
-        self.assertEqual([], list(_gen_modelines(self.view, 5)))
-
-    def test_checks_max_size_area_bof(self):
-        self.write(
-            '# 1.......__________..........__________..........__________.........._________|'
-            '# 2.......__________..........__________..........__________.........._________|'
-            '# 3.......__________..........__________..........__________.........._________|'
-            '# 4.......__________..........__________..........__________.........._________|'
-            '# 5.......__________..........__________..........__________.........._________|\n'
-            '# sublime: translate_tab_to_spaces false\n'
-            '# sublime: gutter true\n'
-            '# sublime: wrap_width 55\n'
-            '# sublime: tab_size 4\n'
-            '# sublime: rulers [80,120]\n'
-            '# 11\n'
-            '# 12\n'
-            '# 13\n'
-            '# 14\n'
-            '# 15\n')
-        self.assertEqual([], list(_gen_modelines(self.view, 5)))
-
-    def test_checks_max_size_area_eof(self):
-        self.write(
-            '# 1\n'
-            '# 2\n'
-            '# 3\n'
-            '# 4\n'
-            '# 5\n'
-            '# sublime: translate_tab_to_spaces false\n'
-            '# sublime: gutter true\n'
-            '# sublime: wrap_width 55\n'
-            '# sublime: tab_size 4\n'
-            '# sublime: rulers [80,120]\n'
-            '# 11......__________..........__________..........__________.........._________|'
-            '# 12......__________..........__________..........__________.........._________|'
-            '# 13......__________..........__________..........__________.........._________|'
-            '# 14......__________..........__________..........__________.........._________|'
-            '# 15......__________..........__________..........__________.........._________|'
-        )
-        self.assertEqual([], list(_gen_modelines(self.view, 5)))
-
-
-class Test_do_modeline(unittest.ViewTestCase):
-
-    def setUp(self):
-        super().setUp()
-        self.set_setting('modeline', True)
-        self.settings().set('translate_tab_to_spaces', True)
-        self.settings().set('gutter', False)
-        self.settings().set('wrap_width', 100)
-        self.settings().set('rulers', [])
-        self.settings().set('tab_size', 2)
-
-    def test_basic(self):
-        self.write('# sublime: translate_tab_to_spaces false\n'
-                   '# sublime: gutter true\n'
-                   '# sublime: wrap_width 55\n'
-                   '# sublime: tab_size 4\n'
-                   '# sublime: rulers [80,120]\n')
-
-        do_modeline(self.view)
-
-        self.assertEqual([False, True, 55, [80, 120], 4], [
-            self.settings().get('translate_tab_to_spaces'),
-            self.settings().get('gutter'),
-            self.settings().get('wrap_width'),
-            self.settings().get('rulers'),
-            self.settings().get('tab_size')
-        ])
-
-    def test_none(self):
-        self.write('')
-
-        do_modeline(self.view)
-
-        self.assertEqual([True, True, False, 100, [], 2], [
-            self.get_setting('modeline'),
-            self.settings().get('translate_tab_to_spaces'),
-            self.settings().get('gutter'),
-            self.settings().get('wrap_width'),
-            self.settings().get('rulers'),
-            self.settings().get('tab_size')
-        ])
-
-    def test_invalid(self):
-        self.write('# foo: bar')
-
-        do_modeline(self.view)
-
-        self.assertEqual([True, True, False, 100, [], 2], [
-            self.get_setting('modeline'),
-            self.settings().get('translate_tab_to_spaces'),
-            self.settings().get('gutter'),
-            self.settings().get('wrap_width'),
-            self.settings().get('rulers'),
-            self.settings().get('tab_size')
-        ])
+    def test_only_checks_number_of_modelines_2(self):
+        self.set_option('modelines', 2)
+        self.set_option('wrap', False)
+        self.set_option('number', False)
+        self.set_option('textwidth', 80)
+        self.set_option('tabstop', 4)
+        self.write('# 1\n'
+                   '# 2\n'
+                   '# vim: wrap\n'
+                   '# vim: number\n'
+                   '# vim: tw=50\n'
+                   '# vim: ts=2\n'
+                   '# 14\n'
+                   '# 15\n')
+        self.assertOption('wrap', False)
+        self.assertOption('number', False)
+        self.assertOption('textwidth', 80)
+        self.assertOption('tabstop', 4)

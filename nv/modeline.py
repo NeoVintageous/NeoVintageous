@@ -17,125 +17,69 @@
 
 import re
 
-from sublime import Region
-
+from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.options import get_option
-from NeoVintageous.nv.vim import message
 
 
-_MODELINES_MAX_LINE_LEN = 80
-_PREFIX_TPL = '%s\\s*(st|sublime): '
-_DEFAULT_LINE_COMMENT = '#'
-_MULTIOPT_SEP = '; '
+_MODELINE_PATTERN = re.compile(
+    '(^|\\s+)'
+    '([vV]im?|ex):\\s*'
+    '(?:(set)\\s+([^:]+):|(.+))')
 
 
-def _gen_modelines(view, modelines):
-    # Args:
-    #   view (sublime.View):
-    #   modelines (int): Number of modelines to check.
-    #
-    # Return:
-    #   list
-    modelines = int(modelines)
-    max_pts = modelines * _MODELINES_MAX_LINE_LEN
+def _parse_line(line: str):
+    matches = _MODELINE_PATTERN.search(line)
+    if not matches:
+        return
 
-    to_pt = view.text_point(modelines, 0)
-    to_pt = min(to_pt, max_pts)
+    leading_ws = matches.group(1)
+    key = matches.group(2)
 
-    candidates = view.lines(Region(0, to_pt))
+    # The white space before {vi:|vim:|Vim:|ex:} is required.  This minimizes
+    # the chance that a normal word like "lex:" is caught.  There is one
+    # exception: "vi:" and "vim:" can also be at the start of the line (for
+    # compatibility with version 3.0).  Using "ex:" at the start of the line
+    # will be ignored (this could be short for "example:").
+    if not leading_ws and key not in ('vim', 'vi'):
+        return
 
-    view_size = view.size()
-    last_line_number = view.rowcol(view_size)[0]
-    if last_line_number >= modelines:
-        from_pt = view.text_point(max(last_line_number - modelines, modelines), 0)
-        from_pt = max(from_pt, (view_size - max_pts))
-        candidates += view.lines(Region(from_pt, view.size()))
+    # 1st form examples:
+    #    vi:noai:sw=3 ts=6
+    #    vim: tw=77
+    # 2nd form xamples:
+    #    /* vim: set ai tw=75: */
+    #    /* Vim: set ai tw=75: */
+    # See :help modeline
+    is_1st_form = not matches.group(3)
 
-    prefix = _build_modeline_prefix(view)
-    modelines = (view.substr(c) for c in candidates if re.match(prefix, view.substr(c)))
-
-    for modeline in modelines:
-        yield modeline
-
-
-def _gen_raw_options(modelines):
-    for m in modelines:
-        opt = m.partition(':')[2].strip()
-        if _MULTIOPT_SEP in opt:
-            for subopt in (s for s in opt.split(_MULTIOPT_SEP)):
-                yield subopt
-        else:
-            yield opt
-
-
-def _gen_modeline_options(view):
-    modelines = _gen_modelines(view, get_option(view, 'modelines'))
-    for opt in _gen_raw_options(modelines):
-        name, sep, value = opt.partition(' ')
-        yield view.settings().set, name.rstrip(':'), value.rstrip(';')
-
-
-def _get_line_comment_char(view):
-    commentChar = ""
-    commentChar2 = ""
-    try:
-        for pair in view.meta_info("shellVariables", 0):
-            if pair["name"] == "TM_COMMENT_START":
-                commentChar = pair["value"]
-            if pair["name"] == "TM_COMMENT_START_2":
-                commentChar2 = pair["value"]
-            if commentChar and commentChar2:
-                break
-    except TypeError:
-        pass
-
-    if not commentChar2:
-        return re.escape(commentChar.strip())
+    if is_1st_form:
+        return re.split('[: ]', matches.group(5).rstrip(':'))
     else:
-        return "(" + re.escape(commentChar.strip()) + "|" + re.escape(commentChar2.strip()) + ")"
-
-
-def _build_modeline_prefix(view):
-    lineComment = _get_line_comment_char(view).lstrip() or _DEFAULT_LINE_COMMENT
-
-    return (_PREFIX_TPL % lineComment)
-
-
-def _to_json_type(v):
-    # Convert string value to proper JSON type.
-    #
-    # Args:
-    #   v (sublime.View):
-    if v.lower() in ('true', 'false'):
-        v = v[0].upper() + v[1:].lower()
-
-    try:
-        return eval(v, {}, {})
-    except Exception:
-        raise ValueError('could not convert to JSON type')
+        return matches.group(4).strip().split(' ')
 
 
 def do_modeline(view) -> None:
-    # A feature similar to vim modeline.
+    # A feature similar to vim modeline. A number of lines at the beginning and
+    # end of the file are checked for modelines. The number of lines checked is
+    # controlled by the 'modelines' option, the default is 5.
     #
-    # A number of lines at the beginning and end of the file are checked for
-    # modelines.
-    #
-    # See :help auto-setting for more information.
-    #
-    # Args:
-    #   view (sublime.View)
-    #
-    # Example:
-    #     # sublime: gutter false
-    #     # sublime: translate_tab_to_spaces true
-    #     # sublime: rulers [80, 120]
-    #     # sublime: tab_size 4
-    for setter, name, value in _gen_modeline_options(view):
-        if name == 'x_syntax':
-            view.set_syntax_file(value)
-        else:
-            try:
-                setter(name, _to_json_type(value))
-            except ValueError:
-                message('Error detected while processing modelines: option = {}'.format(name))
+    # Examples:
+    #   vim: number
+    #   vim: nonumber
+    #   vim: tabstop=4
+    #   vim: ts=4 noet
+    window = view.window()
+    if window:
+        modelines = get_option(view, 'modelines')
+        line_count = view.rowcol(view.size())[0] + 1
+        head_lines = range(0, min(modelines, line_count))
+        tail_lines = range(max(0, line_count - modelines), line_count)
+        lines = list(set(list(head_lines) + list(tail_lines)))
+
+        for i in lines:
+            line = view.line(view.text_point(i, 0))
+            if line.size() > 0:
+                options = _parse_line(view.substr(line))
+                if options:
+                    for option in options:
+                        do_ex_cmdline(window, ':setlocal ' + option)
