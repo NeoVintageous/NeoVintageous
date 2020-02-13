@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import sys
+
 from NeoVintageous.tests import unittest
 
 
@@ -38,4 +40,7 @@ class TestExRead(unittest.FunctionalTestCase):
         if self.platform() == 'osx':
             self.assertNormal('fizz\n|ls: foo_test_read_cmd_error: No such file or directory\nxxx\n')
         else:
-            self.assertNormal('fizz\n|ls: cannot access \'foo_test_read_cmd_error\': No such file or directory\nxxx\n')
+            if sys.version_info > (3, 3):
+                self.assertNormal('fizz\n|ls: cannot access \'foo_test_read_cmd_error\': No such file or directory\nxxx\n')  # noqa: E501
+            else:
+                self.assertNormal('fizz\n|ls: cannot access foo_test_read_cmd_error: No such file or directory\nxxx\n')
