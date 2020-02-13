@@ -48,37 +48,37 @@ class MarksTests(unittest.ViewTestCase):
         self.view.sel().add(self.Region(0, 0))
 
     def test_can_set_mark(self):
-        add_mark(self.view, 'a')
+        add_mark(self.view, 'p')
         expected_win, expected_view, expected_region = (self.view.window(), self.view, (0, 0))
-        actual_win, actual_view, actual_region = _marks['a']
+        actual_win, actual_view, actual_region = _marks['p']
         self.assertEqual((actual_win.id(), actual_view.view_id, actual_region),
                          (expected_win.id(), expected_view.view_id, expected_region))
 
     def test_can_retrieve_mark_in_the_current_buffer_as_tuple(self):
-        add_mark(self.view, 'a')
+        add_mark(self.view, 'p')
         # The caret's at the beginning of the buffer.
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), self.Region(0, 0))
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'p'), self.Region(0, 0))
 
     def test_can_retrieve_mark_in_the_current_buffer_as_tuple2(self):
         self.write(''.join(('foo bar\n') * 10))
         self.view.sel().clear()
         self.view.sel().add(self.Region(30, 30))
-        add_mark(self.view, 'a')
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), self.Region(24, 24))
+        add_mark(self.view, 'p')
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'p'), self.Region(24, 24))
 
     def test_can_retrieve_mark_in_a_different_buffer_as_encoded_mark(self):
         view = View(id_=self.view.view_id + 1, fname=r'C:\foo.txt')
 
-        _marks['a'] = (Window(), view, (0, 0))
+        _marks['p'] = (Window(), view, (0, 0))
         expected = "{0}:{1}".format(r'C:\foo.txt', "0:0")
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), expected)
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'p'), expected)
 
     def test_can_retrieve_mark_in_an_untitled_buffer_as_encoded_mark(self):
         view = View(id_=self.view.view_id + 1, fname='', buffer_id=999)
 
-        _marks['a'] = (Window(), view, (0, 0))
+        _marks['p'] = (Window(), view, (0, 0))
         expected = "<untitled {0}>:{1}".format(999, "0:0")
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), expected)
+        self.assertEqual(get_mark_as_encoded_address(self.view, 'p'), expected)
 
     @unittest.mock.patch('NeoVintageous.nv.marks.jumplist_back')
     def test_can_retrieve_quote_mark(self, mock_jumplist_back):

@@ -37,9 +37,9 @@ def load_session() -> None:
                         else:
                             _session[k] = v
 
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
-    except Exception:
+    except Exception:  # pragma: no cover
         traceback.print_exc()
 
 

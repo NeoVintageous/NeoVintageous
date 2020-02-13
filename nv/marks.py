@@ -18,12 +18,14 @@
 from sublime import Region
 
 from NeoVintageous.nv.jumplist import jumplist_back
+from NeoVintageous.nv.utils import get_insertion_point_at_b
 
 _marks = {}
 
 
 def add_mark(view, name: str) -> None:
-    win, view, rowcol = view.window(), view, view.rowcol(view.sel()[0].b)
+    pt = get_insertion_point_at_b(view.sel()[0])
+    win, view, rowcol = view.window(), view, view.rowcol(pt)
     _marks[name] = win, view, rowcol
 
 

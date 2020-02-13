@@ -343,73 +343,77 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_marks(self):
         for key in ('\'', '`'):
             self.normal('1\n2\n|fizz\n4\n5\n6\n7')
-            self.feedkeys('ma')
+            self.feedkeys('mo')
             self.feedkeys('6G')  # go to and mark line 6
-            self.feedkeys('mb')
-            self.feedkeys(key + 'a')  # goto mark a
+            self.feedkeys('mt')
+            self.feedkeys(key + 'o')  # goto mark a
             self.assertNormal('1\n2\n|fizz\n4\n5\n6\n7')
-            self.feedkeys(key + 'b')  # goto mark b
+            self.feedkeys(key + 't')  # goto mark b
             self.assertNormal('1\n2\nfizz\n4\n5\n|6\n7')
             self.feedkey('k')  # go up a line
-            self.feedkeys(key + 'a')  # goto mark a
+            self.feedkeys(key + 'o')  # goto mark a
             self.assertNormal('1\n2\n|fizz\n4\n5\n6\n7')
             self.feedkey('v')  # enter Visual
-            self.feedkeys(key + 'b')    # goto mark b
+            self.feedkeys(key + 't')    # goto mark b
             self.assertVisual('1\n2\n|fizz\n4\n5\n6|\n7')
 
     def test_mark_move_to_first_non_blank(self):
-        for key in ('\'', '`'):
-            self.normal('1\n2\n|    fizz\n4\n')
-            self.feedkeys('ma')
-            self.feedkeys('1G')
-            self.feedkeys(key + 'a')
-            self.assertNormal('1\n2\n    |fizz\n4\n')
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('`o')
+        self.assertNormal('1\n2\n|    fizz\n4\n')
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('\'o')
+        self.assertNormal('1\n2\n    |fizz\n4\n')
 
     def test_visual_marks(self):
         for key in ('\'', '`'):
             self.normal('one\ntwo\nthree\n|four\nfive')
-            self.feedkeys('ma')
+            self.feedkeys('mo')
             self.feedkeys('2k')
-            self.feedkeys('mb')
+            self.feedkeys('mt')
             self.feedkey('v')
             self.assertVisual('one\n|t|wo\nthree\nfour\nfive')
-            self.feedkeys(key + 'a')
+            self.feedkeys(key + 'o')
             self.assertVisual('one\n|two\nthree\nf|our\nfive')
-            self.feedkeys(key + 'b')
+            self.feedkeys(key + 't')
             self.assertVisual('one\n|t|wo\nthree\nfour\nfive')
             self.feedkeys('gg')
             self.assertRVisual('|one\nt|wo\nthree\nfour\nfive')
-            self.feedkeys(key + 'a')
+            self.feedkeys(key + 'o')
             self.assertVisual('one\n|two\nthree\nf|our\nfive')
 
     def test_visual_mark_includes_first_non_blank(self):
         for key in ('\'', '`'):
             self.normal('1\n2\n|    fizz\n4\n')
-            self.feedkeys('ma')
+            self.feedkeys('mo')
             self.feedkeys('1G')
             self.feedkeys('v')
-            self.feedkeys(key + 'a')
+            self.feedkeys(key + 'o')
             self.assertVisual('|1\n2\n    f|izz\n4\n')
 
     def test_mark_operations(self):
         for key in ('\'', '`'):
             self.normal('1\n|2\n3\n4\n5\n6\n7')
             self.feedkey('m')
-            self.feedkey('a')
+            self.feedkey('o')
             self.feedkey('3')
             self.feedkey('j')
             self.feedkey('d')
             self.feedkey(key)
-            self.feedkey('a')
+            self.feedkey('o')
             self.assertNormal('1\n|6\n7')
             self.normal('1\n2\n3\n4\n|5\n6\n7')
             self.feedkey('m')
-            self.feedkey('a')
+            self.feedkey('o')
             self.feedkey('3')
             self.feedkey('k')
             self.feedkey('d')
             self.feedkey(key)
-            self.feedkey('a')
+            self.feedkey('o')
             self.assertNormal('1\n|\n6\n7')
 
     @unittest.mock_mappings()
@@ -417,12 +421,12 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         for key in ('\'', '`'):
             self.normal('1this\n2th|is\n3this\n4this\n5this\n6this\n7this')
             self.feedkey('m')
-            self.feedkey('a')
+            self.feedkey('o')
             self.feedkey('3')
             self.feedkey('j')
             self.feedkey('m')
-            self.feedkey('b')
-            self.feed(':\'a,\'bs/this/that/')
+            self.feedkey('t')
+            self.feed(':\'o,\'ts/this/that/')
             self.assertNormal('1this\n2that\n3that\n4that\n|5that\n6this\n7this')
 
     @unittest.mock_bell()

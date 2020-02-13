@@ -1796,7 +1796,6 @@ class _vi_m(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, character=None):
         add_mark(self.view, character)
-        enter_normal_mode(self.view, mode)
 
 
 class _vi_quote(ViTextCommandBase):
@@ -1805,16 +1804,10 @@ class _vi_quote(ViTextCommandBase):
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, address.b))
-            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
-                if s.a <= s.b:
-                    if address.b < s.b:
-                        s = Region(s.a + 1, address.b)
-                    else:
-                        s = Region(s.a, address.b)
-                else:
-                    s = Region(s.a + 1, address.b)
+            elif mode == VISUAL_LINE:
+                resolve_visual_line_target(view, s, address.b)
             elif mode == NORMAL:
-                s = Region(next_non_blank(view, address.b))
+                s.a = s.b = next_non_blank(view, address.b)
             elif mode == INTERNAL_NORMAL:
                 if s.a < address.a:
                     s = Region(view.full_line(s.b).a, view.line(address.b).b)
@@ -1850,8 +1843,10 @@ class _vi_backtick(ViTextCommandBase):
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, address.b))
+            elif mode == VISUAL_LINE:
+                resolve_visual_line_target(view, s, address.b)
             elif mode == NORMAL:
-                s = Region(next_non_blank(view, address.b))
+                s.a = s.b = address.b
             elif mode == INTERNAL_NORMAL:
                 if s.a < address.a:
                     s = Region(view.full_line(s.b).a, view.line(address.b).b)
