@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import sys
-
 from sublime import platform
 
 from NeoVintageous.tests import unittest
