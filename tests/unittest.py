@@ -214,6 +214,9 @@ class ViewTestCase(unittest.TestCase):
             # Options via settings is DEPRECATED
             self.settings().set('vintageous_%s' % name, value)
 
+    def get_option(self, name):
+        return _get_option(self.view, name)
+
     def assertOption(self, name, expected, msg=None):
         self.assertEqual(_get_option(self.view, name), expected, msg=msg)
 

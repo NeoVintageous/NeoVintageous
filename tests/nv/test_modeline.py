@@ -125,6 +125,7 @@ class TestDoModeline(unittest.ViewTestCase):
                    '# 13\n'
                    '# 14\n'
                    '# 15\n')
+        do_modeline(self.view)
         self.assertOption('wrap', False)
         self.assertOption('number', False)
         self.assertOption('textwidth', 80)
@@ -144,7 +145,18 @@ class TestDoModeline(unittest.ViewTestCase):
                    '# vim: ts=2\n'
                    '# 14\n'
                    '# 15\n')
+        do_modeline(self.view)
         self.assertOption('wrap', False)
         self.assertOption('number', False)
         self.assertOption('textwidth', 80)
         self.assertOption('tabstop', 4)
+
+    @unittest.mock.patch('NeoVintageous.nv.modeline.do_ex_cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.modeline.message')
+    def test_shell_dissallowed(self, message, ex_cmd):
+        option = self.get_option('shell')
+        self.write('1\nvim: shell=sh\n\n')
+        do_modeline(self.view)
+        self.assertOption('shell', option)
+        message.assert_called_with('E520: Not allowed in a modeline: %s', 'shell=sh')
+        self.assertMockNotCalled(ex_cmd)
