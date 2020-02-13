@@ -22,6 +22,7 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.options import BooleanIsVisibleOption
 from NeoVintageous.nv.options import BooleanViewOption
 from NeoVintageous.nv.options import NumberOption
+from NeoVintageous.nv.options import NumberViewOption
 from NeoVintageous.nv.options import Option
 from NeoVintageous.nv.options import StringOption
 from NeoVintageous.nv.options import get_option
@@ -80,6 +81,20 @@ class TestNumberOption(unittest.ViewTestCase):
         self.assertEqual(option.get(self.view), 3)
         option.set(self.view, '42')
         self.assertEqual(option.get(self.view), 42)
+
+
+class TestNumberViewOption(unittest.ViewTestCase):
+
+    def test_set(self):
+        option = NumberViewOption('buzz')
+        self.assertEqual(option.get(self.view), None)
+        self.assertEqual(self.view.settings().get('buzz'), None)
+        option.set(self.view, 3)
+        self.assertEqual(option.get(self.view), 3)
+        self.assertEqual(self.view.settings().get('buzz'), 3)
+        option.set(self.view, 5)
+        self.assertEqual(option.get(self.view), 5)
+        self.assertEqual(self.view.settings().get('buzz'), 5)
 
 
 class TestBooleanViewOption(unittest.ViewTestCase):

@@ -19,6 +19,7 @@ import re
 
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.vim import message
 
 
 _MODELINE_PATTERN = re.compile(
@@ -82,4 +83,9 @@ def do_modeline(view) -> None:
                 options = _parse_line(view.substr(line))
                 if options:
                     for option in options:
-                        do_ex_cmdline(window, ':setlocal ' + option)
+                        if option.strip().startswith('shell'):
+                            message('Error detected while processing modelines:')
+                            message('line %s:', str(i + 1))
+                            message('E520: Not allowed in a modeline: %s', option)
+                        else:
+                            do_ex_cmdline(window, ':setlocal ' + option)

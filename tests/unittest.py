@@ -351,6 +351,14 @@ class ViewTestCase(unittest.TestCase):
     def assertContent(self, expected, msg=None):
         self.assertEqual(self.content(), expected, msg)
 
+    def commandLineOutput(self) -> str:
+        cmdline = self.view.window().find_output_panel('Command-line')
+
+        return cmdline.substr(Region(0, cmdline.size()))
+
+    def assertCommandLineOutput(self, expected, msg=None):
+        self.assertEqual(self.commandLineOutput(), expected, msg)
+
     def assertContentRegex(self, expected_regex, msg=None):
         self.assertRegex(self.content(), expected_regex, msg=msg)
 

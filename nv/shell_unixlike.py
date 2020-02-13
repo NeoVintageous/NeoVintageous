@@ -18,39 +18,35 @@
 import os
 import subprocess
 
-
-def run_and_wait(view, cmd, terminal_setting_name) -> None:
-    term = view.settings().get(terminal_setting_name)
-    term = term or os.path.expandvars("$COLORTERM") or os.path.expandvars("$TERM")
-    subprocess.Popen([
-        term,
-        '-e',
-        "bash -c \"%s; read -p 'Press RETURN to exit.'\"" % (cmd)
-    ]).wait()
+from NeoVintageous.nv.options import get_option
 
 
-def run_and_read(view, cmd) -> str:
-    out, err = subprocess.Popen([cmd],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                shell=True).communicate()
-
-    try:
-        return (out or err).decode('utf-8')
-    except AttributeError:
-        return ''
+def open(view) -> None:
+    term = get_option(view, 'term')
+    if term:
+        subprocess.Popen([term, '-e', 'bash'], cwd=os.getcwd())
 
 
-def filter_region(view, text, command, shell_setting_name) -> str:
-    shell = view.settings().get(shell_setting_name)
-    if not shell:
-        shell = os.path.expandvars("$SHELL")
-        if shell == '$SHELL':
-            shell = 'sh'
+def read(view, cmd: str) -> str:
+    p = subprocess.Popen([get_option(view, 'shell'), '-c', cmd],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
 
+    out, err = p.communicate()
+
+    if out:
+        return out.decode('utf-8')
+
+    if err:
+        return err.decode('utf-8')
+
+    return ''
+
+
+def filter_region(view, text: str, cmd: str) -> str:
     # Redirect STDERR to STDOUT to capture both.
     # This seems to be the behavior of vim as well.
-    p = subprocess.Popen([shell, '-c', command],
+    p = subprocess.Popen([get_option(view, 'shell'), '-c', cmd],
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)

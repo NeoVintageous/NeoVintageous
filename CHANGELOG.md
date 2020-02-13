@@ -6,6 +6,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#684](https://github.com/NeoVintageous/NeoVintageous/issues/684): `:shell` start a shell
+* Added [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `'shell'` option e.g. `:set shell=/bin/bash`
+* Added [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `'term'` option e.g. `:set term=gnome-terminal`
+* Added [#687](https://github.com/NeoVintageous/NeoVintageous/issues/687): `[range]:read !{cmd}` execute `{cmd}` and insert below cursor
 * Added [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): Implement Vim modelines
 * Added [#678](https://github.com/NeoVintageous/NeoVintageous/issues/678): `'textwidth'` option e.g. `:set textwidth`, `:set notextwidth`
 * Added [#677](https://github.com/NeoVintageous/NeoVintageous/issues/677): `'tabstop'` option e.g. `:set tabstop`, `:set notabstop`
@@ -29,11 +33,20 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
-* Fixed [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): Removed sublime settings modelines (use new vim modelines instead)
+* Fixed [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): Removed sublime specific modelines; use new vim modelines instead
 * Fixed [#675](https://github.com/NeoVintageous/NeoVintageous/issues/675): Modelines are no longer applied on save
+
+### Removed
+
+* Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `VintageousEx_linux_shell` setting; use `:set shell={value}` instead
+* Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `VintageousEx_osx_shell` setting; use `:set shell={value}` instead
+* Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `linux_shell` setting; use `:set shell={value}` instead
+* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_linux_terminal` setting; use `:set term={value}` instead
+* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_osx_terminal` setting; use `:set term={value}` instead
 
 ### Fixed
 
+* Fixed [#687](https://github.com/NeoVintageous/NeoVintageous/issues/687): Various `:!{cmd}` inconsistencies
 * Fixed [#683](https://github.com/NeoVintageous/NeoVintageous/issues/683): `'{a-z]` in visual line mode is inconsistent
 * Fixed [#682](https://github.com/NeoVintageous/NeoVintageous/issues/682): Visual mode `m{a-z}` off-by-one
 * Fixed [#681](https://github.com/NeoVintageous/NeoVintageous/issues/681): `m{a-z}` should not change mode

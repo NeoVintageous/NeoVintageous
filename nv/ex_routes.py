@@ -376,7 +376,7 @@ def _ex_route_quit(state):
 
 
 def _ex_route_read(state):
-    command = TokenCommand('read')
+    command = TokenCommand('read', addressable=True)
 
     state.skip(' ')
     state.ignore()

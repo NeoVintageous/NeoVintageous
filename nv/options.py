@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
+import sys
+
 from sublime import active_window
 
 from NeoVintageous.nv.settings import get_setting
@@ -153,6 +156,24 @@ class BooleanIsVisibleOption(BooleanOption):
         return get_window_ui_element_visible(self._name, view.window() if view else None)
 
 
+def _get_default_shell() -> str:
+    if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+        return os.environ.get('SHELL', 'sh')
+    elif sys.platform.startswith('win'):
+        return 'cmd.exe'
+
+    return ''
+
+
+def _get_default_term() -> str:
+    if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+        return os.environ.get('TERM', '')
+    elif sys.platform.startswith('win'):
+        return 'cmd.exe'
+
+    return ''
+
+
 # The second parameter to the option classes is fhe default for the setting.
 _options = {
     'autoindent': BooleanViewOption('auto_indent'),
@@ -169,11 +190,13 @@ _options = {
     'modelines': NumberOption('modelines', 5),
     'number': BooleanViewOption('line_numbers'),
     'scrolloff': NumberOption('scrolloff', 5),
+    'shell': StringOption('shell', _get_default_shell()),
     'sidebar': BooleanIsVisibleOption('sidebar', True),  # {not in Vim}
     'sidescrolloff': NumberOption('sidescrolloff', 5),
     'spell': BooleanViewOption('spell_check'),
     'statusbar': BooleanIsVisibleOption('status_bar', True),  # {not in Vim}
     'tabstop': NumberViewOption('tab_size'),
+    'term': StringOption('term', _get_default_term()),
     'textwidth': NumberViewOption('wrap_width'),
     'winaltkeys': StringOption('winaltkeys', 'yes', select=('no', 'yes', 'menu')),
     'wrap': BooleanViewOption('word_wrap'),

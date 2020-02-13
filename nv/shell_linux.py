@@ -18,13 +18,13 @@
 from NeoVintageous.nv import shell_unixlike
 
 
-def run_and_wait(view, cmd) -> None:
-    shell_unixlike.run_and_wait(view, cmd, 'VintageousEx_linux_terminal')
+def open(view) -> None:
+    shell_unixlike.open(view)
 
 
-def run_and_read(view, cmd) -> str:
-    return shell_unixlike.run_and_read(view, cmd)
+def read(view, cmd: str) -> str:
+    return shell_unixlike.read(view, cmd)
 
 
-def filter_region(view, text, command) -> str:
-    return shell_unixlike.filter_region(view, text, command, 'VintageousEx_linux_shell')
+def filter_region(view, text: str, cmd: str) -> str:
+    return shell_unixlike.filter_region(view, text, cmd)

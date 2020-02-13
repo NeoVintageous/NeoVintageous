@@ -21,8 +21,8 @@ import logging
 import os
 import re
 import stat
-import subprocess
 import sys
+import traceback
 
 from sublime import DIALOG_CANCEL
 from sublime import DIALOG_YES
@@ -33,7 +33,6 @@ from sublime import MONOSPACE_FONT
 from sublime import Region
 from sublime import find_resources
 from sublime import load_resource
-from sublime import platform
 from sublime import set_timeout
 from sublime import yes_no_cancel_dialog
 
@@ -713,48 +712,19 @@ def ex_quit(window, view, forceit: bool = False, **kwargs):
         ex_unvsplit(window=window, view=view, forceit=forceit, **kwargs)
 
 
-# TODO [refactor] shell commands to use common os nv.ex.shell commands
 @_init_cwd
-def ex_read(view, edit, line_range: RangeNode, cmd=None, **kwargs):
-    r = line_range.resolve(view)
-    target_point = min(r.end(), view.size())
-
+def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str = None, **kwargs):
     if cmd:
-        if platform() == 'linux':
-            # TODO: make shell command configurable.
-            shell_cmd = view.settings().get('linux_shell')
-            shell_cmd = shell_cmd or os.path.expandvars("$SHELL")
-            if not shell_cmd:
-                return status_message('no shell found')
+        content = shell.read(view, cmd).strip()
+        if content:
+            insertion_pt = line_range.resolve(view).end()
+            view.insert(edit, insertion_pt, content + '\n')
+            set_selection(view, view.line(insertion_pt + len(content)).a)
 
-            try:
-                p = subprocess.Popen([shell_cmd, '-c', cmd], stdout=subprocess.PIPE)
-            except Exception as e:
-                return status_message('error executing command through shell {}'.format(e))
-
-            view.insert(edit, target_point, p.communicate()[0][:-1].decode('utf-8').strip() + '\n')
-
-        elif sys.platform.startswith('win') and platform() == 'windows':
-            # TODO [refactor] shell commands to use common os nv.ex.shell commands
-            from NeoVintageous.nv.shell_windows import get_oem_cp
-            from NeoVintageous.nv.shell_windows import get_startup_info
-            p = subprocess.Popen(['cmd.exe', '/C', cmd],
-                                 stdout=subprocess.PIPE,
-                                 startupinfo=get_startup_info())
-            cp = 'cp' + get_oem_cp()
-            rv = p.communicate()[0].decode(cp)[:-2].strip()
-            view.insert(edit, target_point, rv.strip() + '\n')
-
-        else:
-            ui_bell('not implemented')
-            return
-    else:
-        # Read a file into the current view.
-        # According to Vim's help, :r should read the current file's content
-        # if no file name is given, but Vim doesn't do that.
-        # TODO: implement reading a file into the buffer.
-        ui_bell('not implemented')
-        return
+    # TODO :read [name] According to Vim's help :read should read the current
+    # file's content *if no file is given* but Vim doesn't seem to do that.
+    elif file_name:
+        ui_bell(':read [file] is not yet implemeneted; please open an issue')
 
 
 def ex_registers(window, view, **kwargs):
@@ -818,47 +788,9 @@ def ex_setlocal(**kwargs):
     ex_set(**kwargs)
 
 
-# TODO [refactor] shell commands to use common os nv.ex.shell commands
-# This command starts a shell. When the shell exits (after the "exit" command)
-# you return to Sublime Text. The name for the shell command comes from:
-# * VintageousEx_linux_terminal setting on Linux
-# * VintageousEx_osx_terminal setting on OSX
-# The shell is opened at the active view directory. Sublime Text keeps a virtual
-# current directory that most of the time will be out of sync with the actual
-# current directory. The virtual current directory is always set to the current
-# view's directory, but it isn't accessible through the API.
 @_init_cwd
 def ex_shell(view, **kwargs):
-
-    def _open_shell(command: list):
-        return subprocess.Popen(command, cwd=os.getcwd())
-
-    if platform() == 'linux':
-        term = view.settings().get('VintageousEx_linux_terminal')
-        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
-        if not term:
-            return status_message('terminal not found')
-
-        try:
-            _open_shell([term, '-e', 'bash']).wait()
-        except Exception as e:
-            return status_message('error executing command through shell {}'.format(e))
-
-    elif platform() == 'osx':
-        term = view.settings().get('VintageousEx_osx_terminal')
-        term = term or os.environ.get('COLORTERM') or os.environ.get('TERM')
-        if not term:
-            return status_message('terminal not found')
-
-        try:
-            _open_shell([term, '-e', 'bash']).wait()
-        except Exception as e:
-            return status_message('error executing command through shell {}'.format(e))
-
-    elif platform() == 'windows':
-        _open_shell(['cmd.exe', '/k']).wait()
-    else:
-        status_message('not implemented')
+    shell.open(view)
 
 
 def ex_silent(window, view, command: str = None, **kwargs):
@@ -893,17 +825,15 @@ def ex_shell_out(view, edit, cmd: str, line_range: RangeNode, **kwargs):
                 cmd=cmd
             )
         else:
-            output = shell.run_and_read(view, cmd)
-
-            output_view = CmdlineOutput(view.window())
-            output_view.write(output)
+            cmdline_output = CmdlineOutput(view.window())
+            cmdline_output.write(shell.read(view, cmd))
             if not get_setting(view, 'shell_silent'):
-                output_view.show()
+                cmdline_output.show()
 
         # TODO: store only successful commands.
         set_ex_shell_last_command(cmd)
-    except NotImplementedError:
-        status_message('not implemented')
+    except Exception:  # pragma: no cover
+        traceback.print_exc()
 
 
 def ex_snoremap(lhs: str = None, rhs: str = None, **kwargs):
