@@ -180,7 +180,7 @@ _options = {
     'belloff': StringOption('belloff', '', select=('', 'all')),
     'expandtabs': BooleanViewOption('translate_tabs_to_spaces', on=False, off=True),
     'hlsearch': BooleanOption('hlsearch', True),
-    'ignorecase': BooleanOption('ignorecase', True),
+    'ignorecase': BooleanOption('ignorecase', False),
     'incsearch': BooleanOption('incsearch', True),
     'list': BooleanViewOption('draw_white_space', on='all', off='selection'),
     'magic': BooleanOption('magic', True),
