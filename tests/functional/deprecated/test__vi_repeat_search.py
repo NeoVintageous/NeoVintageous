@@ -25,80 +25,59 @@ class Test__vi_repeat_star_InNormalMode(unittest.ViewTestCase):
         self.set_option('wrapscan', True)
 
     def test_repeat_forward(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(20)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
 
     def test_repeat_forward_twice(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
     def test_repeat_reverse(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
     def test_repeat_reverse_twice(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
-
-        self.assertSelection(20)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
 
     def test_repeat_forward_reverse_twice_forward_thrice(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-        for i in range(0, 2):
-            self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
-        for i in range(0, 3):
-            self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
+        self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
+        self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
+        self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
+        self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
     def test_repeat_no_partial(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabcxend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabcxend')
         self.view.run_command('_vi_star', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(12, 15)])
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabcxend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabcxend')
 
 
 class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
@@ -108,38 +87,28 @@ class Test__vi_repeat_octothorp_InNormalMode(unittest.ViewTestCase):
         self.set_option('wrapscan', True)
 
     def test_repeat_forward(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabc\nend')
 
     def test_repeat_reverse(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
     def test_repeat_no_partial(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabcxend')
-        self.select(4)
-
+        self.normal('foo\n|abc\nbar\nabc\nmoo\nabcxend')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(12, 15)])
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabcxend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabcxend')
 
 
 class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
@@ -149,52 +118,38 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
         self.set_option('wrapscan', True)
 
     def test_repeat_forward(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(0)
-
+        self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
         self.setLastSearchCommand('vi_slash')
-
-        self.assertSelection(4)
-
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabc\nend')
 
     def test_repeat_reverse(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(0)
-
+        self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
         self.setLastSearchCommand('vi_slash')
-
-        self.assertSelection(4)
-
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
-
-        self.assertSelection(20)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
 
     def test_repeat_partial(self):
-        self.write('foo\nabc\nbar\nabcxmoo\nabc\nend')
-        self.select(0)
-
+        self.normal('|foo\nabc\nbar\nabcxmoo\nabc\nend')
         self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
         self.setLastSearchCommand('vi_slash')
-
-        self.assertSelection(4)
-
+        self.assertNormal('foo\n|abc\nbar\nabcxmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabcxmoo\nabc\nend')
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\n|abcxmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|xmoo\nabc\nend')
 
 
 class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
@@ -204,49 +159,37 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
         self.set_option('wrapscan', True)
 
     def test_repeat_forward(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(0)
-
+        self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
         self.setLastSearchCommand('vi_question_mark')
-
-        self.assertSelection(20)
-
+        self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabc\nend')
 
     def test_repeat_reverse(self):
-        self.write('foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.select(0)
-
+        self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
         self.setLastSearchCommand('vi_question_mark')
-
-        self.assertSelection(20)
-
+        self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': True})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
     def test_repeat_partial(self):
-        self.write('foo\nabc\nbar\nabcxmoo\nabc\nend')
-        self.select(0)
-
+        self.normal('|foo\nabc\nbar\nabcxmoo\nabc\nend')
         self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
         self.setLastSearchCommand('vi_question_mark')
-
-        self.assertSelection(20)
-
+        self.assertNormal('foo\nabc\nbar\nabcxmoo\n|abc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabcxmoo\n|abc|\nend')
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
-
-        self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(4, 7), self.Region(12, 15), self.Region(20, 23)
-        ])
+        self.assertNormal('foo\nabc\nbar\n|abcxmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|xmoo\nabc\nend')

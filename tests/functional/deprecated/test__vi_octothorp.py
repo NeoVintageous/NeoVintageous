@@ -25,66 +25,51 @@ class Test__vi_octothorp_InNormalMode(unittest.ViewTestCase):
         self.set_option('wrapscan', True)
 
     def test_select_match(self):
-        self.write('abc\nabc')
-        self.select(4)
-
+        self.normal('abc\n|abc')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
-
-        self.assertSelection(0)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(0, 3), self.Region(4, 7)])
+        self.assertNormal('|abc\nabc')
+        self.assertSearch('|abc|\n|abc|')
+        self.assertSearchCurrent('|abc|\nabc')
 
     def test_select_match_middle(self):
-        self.write('abc\nabc')
-        self.select(5)
-
+        self.normal('abc\na|bc')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
-
-        self.assertSelection(0)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(0, 3), self.Region(4, 7)])
+        self.assertNormal('|abc\nabc')
+        self.assertSearch('|abc|\n|abc|')
+        self.assertSearchCurrent('|abc|\nabc')
 
     def test_select_match_end(self):
-        self.write('abc\nabc')
-        self.select(6)
-
+        self.normal('abc\nab|c')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
-
-        self.assertSelection(0)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(0, 3), self.Region(4, 7)])
+        self.assertNormal('|abc\nabc')
+        self.assertSearch('|abc|\n|abc|')
+        self.assertSearchCurrent('|abc|\nabc')
 
     def test_select_repeat_match(self):
-        self.write('abc\nabc\nfoo\nabc\nbar')
-        self.select(12)
-
+        self.normal('abc\nabc\nfoo\n|abc\nbar')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
-
-        self.assertSelection(0)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [
-            self.Region(0, 3), self.Region(4, 7), self.Region(12, 15)])
+        self.assertNormal('|abc\nabc\nfoo\nabc\nbar')
+        self.assertSearch('|abc|\n|abc|\nfoo\n|abc|\nbar')
+        self.assertSearchCurrent('|abc|\nabc\nfoo\nabc\nbar')
 
     def test_select_wrap_match(self):
-        self.write('boo\nabc\nfoo\nabc\nbar')
-        self.select(4)
-
+        self.normal('boo\n|abc\nfoo\nabc\nbar')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
-
-        self.assertSelection(12)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(12, 15)])
+        self.assertNormal('boo\nabc\nfoo\n|abc\nbar')
+        self.assertSearch('boo\n|abc|\nfoo\n|abc|\nbar')
+        self.assertSearchCurrent('boo\nabc\nfoo\n|abc|\nbar')
 
     def test_select_no_partial_match(self):
-        self.write('boo\nabc\nabcxabc\nabc\nbar')
-        self.select(16)
-
+        self.normal('boo\nabc\nabcxabc\n|abc\nbar')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
-
-        self.assertSelection(4)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(4, 7), self.Region(16, 19)])
+        self.assertNormal('boo\n|abc\nabcxabc\nabc\nbar')
+        self.assertSearch('boo\n|abc|\nabcxabc\n|abc|\nbar')
+        self.assertSearchCurrent('boo\n|abc|\nabcxabc\nabc\nbar')
 
     def test_select_no_match(self):
-        self.write('boo\nabc\nfoo\nabc\nbar')
-        self.select(9)
-
+        self.normal('boo\nabc\nf|oo\nabc\nbar')
         self.view.run_command('_vi_octothorp', {'mode': unittest.NORMAL})
-
-        self.assertSelection(8)
-        self.assertEqual(self.view.get_regions('_nv_search_occ'), [self.Region(8, 11)])
+        self.assertNormal('boo\nabc\n|foo\nabc\nbar')
+        self.assertSearch('boo\nabc\n|foo|\nabc\nbar')
+        self.assertSearchCurrent('boo\nabc\n|foo|\nabc\nbar')
