@@ -56,6 +56,8 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('f(i(zz(buzz)fi)z|)z', 'n_%', 'f|(i(zz(buzz)fi)z)z')
         self.eq('()\nfi|zz\n()\n', 'n_%', '()\nfi|zz\n()\n')
         self.eq('{}\nfi|zz\n{}\n', 'n_%', '{}\nfi|zz\n{}\n')
+        self.eq('<fi|zz> <bu>zz', 'n_%', '|<fizz> <bu>zz')
+        self.eq('<fi|zz <bu>zz', 'n_%', '<fizz <bu|>zz')
 
     def test_v(self):
         self.eq('|{ab}', 'v_%', '|{ab}|')
