@@ -248,3 +248,55 @@ class OnLoadDoModeline(unittest.ViewTestCase):
         self.set_option('modeline', False)
         self.events.on_load(self.view)
         self.assertMockNotCalled(do_modeline)
+
+
+class TestOnTextCommand(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.events = NeoVintageousEvents()
+
+    def on_text_command(self, cmd, args):
+        out = self.events.on_text_command(self.view, cmd, args)
+        if out:
+            self.view.run_command(out[0], out[1])
+
+    def test_double_click_enters_visual(self):
+        self.normal('|fizz buzz')
+        self.select((2, 5))
+        self.on_text_command('drag_select', {'by': 'words'})
+        self.assertVisual('fi|zz |buzz')
+
+    def test_extends_enters_visual(self):
+        self.normal('|fizz buzz')
+        self.select((2, 5))
+        self.on_text_command('drag_select', {'by': 'words'})
+        self.assertVisual('fi|zz |buzz')
+
+    def test_triple_click_enters_visual_line(self):
+        self.visual('1\nf|iz|z\nbuzz\n')
+        self.on_text_command('drag_select', {'by': 'lines'})
+        self.assertVline('1\n|fizz\n|buzz\n')
+        self.visual('1\nf|izz\nbu|zz\n3\n')
+        self.on_text_command('drag_select', {'by': 'lines'})
+        self.assertVline('1\n|fizz\nbuzz\n|3\n')
+
+    def test_single_click_enters_normal(self):
+        self.visual('fi|zz b|uzz')
+        self.on_text_command('drag_select', {})
+        self.assertNormal('fizz |buzz')
+
+    def test_extend_visual_stays_in_visual(self):
+        self.visual('fi|zz b|uzz')
+        self.on_text_command('drag_select', {'extend': True})
+        self.assertVisual('fi|zz b|uzz')
+
+    def test_additive_visual_stays_in_visual(self):
+        self.visual('fi|zz b|uzz')
+        self.on_text_command('drag_select', {'additive': True})
+        self.assertVisual('fi|zz b|uzz')
+
+    def test_by_words_visual_stays_in_visual(self):
+        self.visual('fi|zz b|uzz')
+        self.on_text_command('drag_select', {'by': 'words'})
+        self.assertVisual('fi|zz b|uzz')
