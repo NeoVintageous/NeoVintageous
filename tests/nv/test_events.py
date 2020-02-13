@@ -325,3 +325,17 @@ class TestOnTextCommand(unittest.ViewTestCase):
         self.visual('fi|zz b|uzz')
         self.on_text_command('drag_select', {'by': 'words'})
         self.assertVisual('fi|zz b|uzz')
+
+
+class TestOnPostTextCommand(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.events = NeoVintageousEvents()
+
+    def test_updates_xpos(self):
+        self.normal('fizz| buzz')
+        self.assertXpos(0)
+        self.events.on_post_text_command(self.view, 'drag_select', {
+            'event': {'button': 1, 'x': 2, 'y': 4}})
+        self.assertXpos(4)
