@@ -250,6 +250,31 @@ class OnLoadDoModeline(unittest.ViewTestCase):
         self.assertMockNotCalled(do_modeline)
 
 
+class TestOnPostSave(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.events = NeoVintageousEvents()
+
+    def test_on_last_char(self):
+        self.normal('fiz|z')
+        self.events.on_post_save(self.view)
+        self.assertNormal('fiz|z')
+
+    def test_fix_eol_cursor(self):
+        self.normal('fizz|\n')
+        self.events.on_post_save(self.view)
+        self.assertNormal('fiz|z\n')
+        self.normal('fizz|\nbuzz\n')
+        self.events.on_post_save(self.view)
+        self.assertNormal('fiz|z\nbuzz\n')
+
+    def test_fix_eof_cursor(self):
+        self.normal('fizz|')
+        self.events.on_post_save(self.view)
+        self.assertNormal('fiz|z')
+
+
 class TestOnTextCommand(unittest.ViewTestCase):
 
     def setUp(self):
