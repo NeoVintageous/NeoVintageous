@@ -33,6 +33,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `'winaltkeys'` option is now "menu" by default
 * Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `'ignorecase'` option is now false by default
 * Changed [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): `sublime:` specific modelines have been superseded by vim modelines
 * Changed [#675](https://github.com/NeoVintageous/NeoVintageous/issues/675): Modelines are no longer applied on save, only once on load

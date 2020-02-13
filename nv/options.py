@@ -198,7 +198,7 @@ _options = {
     'tabstop': NumberViewOption('tab_size'),
     'term': StringOption('term', _get_default_term()),
     'textwidth': NumberViewOption('wrap_width'),
-    'winaltkeys': StringOption('winaltkeys', 'yes', select=('no', 'yes', 'menu')),
+    'winaltkeys': StringOption('winaltkeys', 'menu', select=('no', 'yes', 'menu')),
     'wrap': BooleanViewOption('word_wrap'),
     'wrapscan': BooleanOption('wrapscan', True),
 }
