@@ -40,7 +40,5 @@ class TestExRead(unittest.FunctionalTestCase):
         if self.platform() == 'osx':
             self.assertNormal('fizz\n|ls: foo_test_read_cmd_error: No such file or directory\nxxx\n')
         else:
-            if sys.version_info > (3, 3):
-                self.assertNormal('fizz\n|ls: cannot access \'foo_test_read_cmd_error\': No such file or directory\nxxx\n')  # noqa: E501
-            else:
-                self.assertNormal('fizz\n|ls: cannot access foo_test_read_cmd_error: No such file or directory\nxxx\n')
+            self.assertEqual(self.content().replace('\'', ''), 'fizz\nls: cannot access foo_test_read_cmd_error: No such file or directory\nxxx\n')  # noqa: E501
+            self.assertSelection(5)
