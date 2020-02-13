@@ -35,4 +35,7 @@ class TestExRead(unittest.FunctionalTestCase):
     def test_read_cmd_error(self):
         self.normal('f|izz\nxxx\n')
         self.feed(':read !ls foo_test_read_cmd_error')
-        self.assertNormal('fizz\n|ls: cannot access \'foo_test_read_cmd_error\': No such file or directory\nxxx\n')
+        if self.platform() == 'osx':
+            self.assertNormal('fizz\n|ls: foo_test_read_cmd_error: No such file or directory\nxxx\n')
+        else:
+            self.assertNormal('fizz\n|ls: cannot access \'foo_test_read_cmd_error\': No such file or directory\nxxx\n')

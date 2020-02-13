@@ -27,6 +27,7 @@ import unittest
 # Use aliases to indicate that they are not public testing APIs.
 from sublime import Region
 from sublime import active_window as _active_window
+from sublime import platform as _platform
 from sublime import version as _version
 
 # Use aliases to indicate that they are not public testing APIs.
@@ -81,6 +82,9 @@ class ViewTestCase(unittest.TestCase):
         if self.view:
             self.view.set_scratch(True)
             self.view.close()
+
+    def platform(self):
+        return _platform()
 
     def content(self) -> str:
         return self.view.substr(Region(0, self.view.size()))

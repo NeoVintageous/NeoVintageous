@@ -120,12 +120,18 @@ class TestExShellOut(unittest.FunctionalTestCase):
         self.normal('fi|zz\nbuzz\n')
         self.feed(':!ls foo_test_error')
         self.assertNormal('fi|zz\nbuzz\n')
-        self.assertCommandLineOutput('ls: cannot access \'foo_test_error\': No such file or directory\n')
+        if self.platform() == 'osx':
+            self.assertCommandLineOutput('ls: foo_test_error: No such file or directory\n')
+        else:
+            self.assertCommandLineOutput('ls: cannot access \'foo_test_error\': No such file or directory\n')
 
     def test_replacement_error(self):
         self.normal('fizz\nx|xx\nbuzz\n')
         self.feed(':.!ls foo_test_replacement_error')
-        self.assertNormal('fizz\n|ls: cannot access \'foo_test_replacement_error\': No such file or directory\nbuzz\n')
+        if self.platform() == 'osx':
+            self.assertNormal('fizz\n|ls: foo_test_replacement_error: No such file or directory\nbuzz\n')
+        else:
+            self.assertNormal('fizz\n|ls: cannot access \'foo_test_replacement_error\': No such file or directory\nbuzz\n')  # noqa: E501
 
     @unittest.mock_status_message()
     def test_empty_file_name_replacement_emits_status_message(self):

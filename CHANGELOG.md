@@ -47,7 +47,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * Fixed [#687](https://github.com/NeoVintageous/NeoVintageous/issues/687): Various `:!{cmd}` inconsistencies
-* Fixed [#683](https://github.com/NeoVintageous/NeoVintageous/issues/683): `'{a-z]` in visual line mode is inconsistent
+* Fixed [#683](https://github.com/NeoVintageous/NeoVintageous/issues/683): `'{a-z}` in visual line mode is inconsistent
 * Fixed [#682](https://github.com/NeoVintageous/NeoVintageous/issues/682): Visual mode `m{a-z}` off-by-one
 * Fixed [#681](https://github.com/NeoVintageous/NeoVintageous/issues/681): `m{a-z}` should not change mode
 * Fixed [#680](https://github.com/NeoVintageous/NeoVintageous/issues/680): `{backtick}{a-z}` should position cursor at the specified location
