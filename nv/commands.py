@@ -154,8 +154,8 @@ from NeoVintageous.nv.vi.core import IrreversibleTextCommand
 from NeoVintageous.nv.vi.core import ViMotionCommand
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
-from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
+from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
@@ -726,7 +726,7 @@ class _nv_process_notation(ViWindowCommandBase):
         # editing action started. For example, 'lldl' would skip 'll' in the
         # undo history, but store the full sequence for '.' to use.
         leading_motions = ''
-        for key in KeySequenceTokenizer(keys).iter_tokenize():
+        for key in tokenize_keys(keys):
             self.window.run_command('_nv_feed_key', {
                 'key': key,
                 'do_eval': False,
@@ -770,7 +770,7 @@ class _nv_process_notation(ViWindowCommandBase):
         if not (state.motion and not state.action):
             with gluing_undo_groups(self.window.active_view(), state):
                 try:
-                    for key in KeySequenceTokenizer(keys).iter_tokenize():
+                    for key in tokenize_keys(keys):
                         if key.lower() == '<esc>':
                             # XXX: We should pass a mode here?
                             enter_normal_mode(self.window)
