@@ -265,8 +265,10 @@ def tokenize_keys(keys: str) -> list:
     return KeySequenceTokenizer(keys)._iter_tokenize()
 
 
+_BARE_COMMAND_NAME_PATTERN = re.compile(r'^(?:".)?(?:[1-9]+)?')
+
+
 def to_bare_command_name(seq: str) -> str:
-    #
     # Args:
     #   seq (str): The command sequence.
     #
@@ -278,7 +280,7 @@ def to_bare_command_name(seq: str) -> str:
         return seq
 
     # Account for d2d and similar sequences.
-    new_seq = list(tokenize_keys(re.sub(r'^(?:".)?(?:[1-9]+)?', '', seq)))
+    new_seq = list(tokenize_keys(_BARE_COMMAND_NAME_PATTERN.sub('', seq)))
 
     return ''.join(k for k in new_seq if not k.isdigit())
 
