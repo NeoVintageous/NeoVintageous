@@ -22,6 +22,7 @@ from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import seq_to_command
 from NeoVintageous.nv.vi.keys import to_bare_command_name
+from NeoVintageous.nv.vi.keys import tokenize_keys
 
 
 class TestKeySequenceTokenizer(unittest.TestCase):
@@ -122,41 +123,41 @@ class TestKeySequenceTokenizer(unittest.TestCase):
                 KeySequenceTokenizer(token)._tokenize_one()
 
     @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
-    def test_iter_tokenize(self):
-        def iter_tokenize(source):
-            return list(KeySequenceTokenizer(source).iter_tokenize())
+    def test_tokenize_keys(self):
+        def tokenize(source):
+            return list(tokenize_keys(source))
 
-        self.assertEqual(iter_tokenize('0<down>'), ['0', '<down>'])
-        self.assertEqual(iter_tokenize('3w<A-f>'), ['3', 'w', '<M-f>'])
-        self.assertEqual(iter_tokenize('3w<M-f>'), ['3', 'w', '<M-f>'])
-        self.assertEqual(iter_tokenize('<A-a><A-b>'), ['<M-a>', '<M-b>'])
-        self.assertEqual(iter_tokenize('<C-P>x'), ['<C-P>', 'x'])
-        self.assertEqual(iter_tokenize('<C-S-.>'), ['<C-S-.>'])
-        self.assertEqual(iter_tokenize('<C-p>'), ['<C-p>'])
-        self.assertEqual(iter_tokenize('<C-w><Bar>'), ['<C-w>', '<bar>'])
-        self.assertEqual(iter_tokenize('<C-w><C-_>'), ['<C-w>', '<C-_>'])
-        self.assertEqual(iter_tokenize('<C-w><C-b>'), ['<C-w>', '<C-b>'])
-        self.assertEqual(iter_tokenize('<C-w><Space>'), ['<C-w>', '<space>'])
-        self.assertEqual(iter_tokenize('<C-w><bs>'), ['<C-w>', '<bs>'])
-        self.assertEqual(iter_tokenize('<C-w>='), ['<C-w>', '='])
-        self.assertEqual(iter_tokenize('<C-w>>'), ['<C-w>', '>'])
-        self.assertEqual(iter_tokenize('<C-w>b'), ['<C-w>', 'b'])
-        self.assertEqual(iter_tokenize('<DoWn>abc.'), ['<down>', 'a', 'b', 'c', '.'])
-        self.assertEqual(iter_tokenize('<Esc>ai'), ['<esc>', 'a', 'i'])
-        self.assertEqual(iter_tokenize('<Leader>d'), ['<bslash>', 'd'])
-        self.assertEqual(iter_tokenize('<M-a><A-b>'), ['<M-a>', '<M-b>'])
-        self.assertEqual(iter_tokenize('<a-a><a-b>'), ['<M-a>', '<M-b>'])
-        self.assertEqual(iter_tokenize('<c-m-.>'), ['<C-M-.>'])
-        self.assertEqual(iter_tokenize('<d-i><c-d>'), ['<D-i>', '<C-d>'])
-        self.assertEqual(iter_tokenize('<d-i><c-i>'), ['<D-i>', '<C-i>'])
-        self.assertEqual(iter_tokenize('<d-i>i.'), ['<D-i>', 'i', '.'])
-        self.assertEqual(iter_tokenize('<leader><leader>d'), ['<bslash>', '<bslash>', 'd'])
-        self.assertEqual(iter_tokenize('<leader>d'), ['<bslash>', 'd'])
-        self.assertEqual(iter_tokenize('<leader>ek'), ['<bslash>', 'e', 'k'])
-        self.assertEqual(iter_tokenize('<lt><lt>'), ['<lt>', '<lt>'])
-        self.assertEqual(iter_tokenize('<m-a><a-b>'), ['<M-a>', '<M-b>'])
-        self.assertEqual(iter_tokenize('pp'), ['p', 'p'])
-        self.assertEqual(iter_tokenize('3<insert>'), ['3', '<insert>'])
+        self.assertEqual(tokenize('0<down>'), ['0', '<down>'])
+        self.assertEqual(tokenize('3w<A-f>'), ['3', 'w', '<M-f>'])
+        self.assertEqual(tokenize('3w<M-f>'), ['3', 'w', '<M-f>'])
+        self.assertEqual(tokenize('<A-a><A-b>'), ['<M-a>', '<M-b>'])
+        self.assertEqual(tokenize('<C-P>x'), ['<C-P>', 'x'])
+        self.assertEqual(tokenize('<C-S-.>'), ['<C-S-.>'])
+        self.assertEqual(tokenize('<C-p>'), ['<C-p>'])
+        self.assertEqual(tokenize('<C-w><Bar>'), ['<C-w>', '<bar>'])
+        self.assertEqual(tokenize('<C-w><C-_>'), ['<C-w>', '<C-_>'])
+        self.assertEqual(tokenize('<C-w><C-b>'), ['<C-w>', '<C-b>'])
+        self.assertEqual(tokenize('<C-w><Space>'), ['<C-w>', '<space>'])
+        self.assertEqual(tokenize('<C-w><bs>'), ['<C-w>', '<bs>'])
+        self.assertEqual(tokenize('<C-w>='), ['<C-w>', '='])
+        self.assertEqual(tokenize('<C-w>>'), ['<C-w>', '>'])
+        self.assertEqual(tokenize('<C-w>b'), ['<C-w>', 'b'])
+        self.assertEqual(tokenize('<DoWn>abc.'), ['<down>', 'a', 'b', 'c', '.'])
+        self.assertEqual(tokenize('<Esc>ai'), ['<esc>', 'a', 'i'])
+        self.assertEqual(tokenize('<Leader>d'), ['<bslash>', 'd'])
+        self.assertEqual(tokenize('<M-a><A-b>'), ['<M-a>', '<M-b>'])
+        self.assertEqual(tokenize('<a-a><a-b>'), ['<M-a>', '<M-b>'])
+        self.assertEqual(tokenize('<c-m-.>'), ['<C-M-.>'])
+        self.assertEqual(tokenize('<d-i><c-d>'), ['<D-i>', '<C-d>'])
+        self.assertEqual(tokenize('<d-i><c-i>'), ['<D-i>', '<C-i>'])
+        self.assertEqual(tokenize('<d-i>i.'), ['<D-i>', 'i', '.'])
+        self.assertEqual(tokenize('<leader><leader>d'), ['<bslash>', '<bslash>', 'd'])
+        self.assertEqual(tokenize('<leader>d'), ['<bslash>', 'd'])
+        self.assertEqual(tokenize('<leader>ek'), ['<bslash>', 'e', 'k'])
+        self.assertEqual(tokenize('<lt><lt>'), ['<lt>', '<lt>'])
+        self.assertEqual(tokenize('<m-a><a-b>'), ['<M-a>', '<M-b>'])
+        self.assertEqual(tokenize('pp'), ['p', 'p'])
+        self.assertEqual(tokenize('3<insert>'), ['3', '<insert>'])
 
 
 class TestFunctions(unittest.TestCase):

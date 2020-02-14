@@ -250,7 +250,7 @@ class KeySequenceTokenizer():
         else:
             return c
 
-    def iter_tokenize(self):
+    def _iter_tokenize(self):
         while True:
             token = self._tokenize_one()
             if token == EOF:
@@ -259,6 +259,10 @@ class KeySequenceTokenizer():
 
     def _expand_vars(self, c: str) -> str:
         return variables.get(c) if variables.is_key_name(c) else c
+
+
+def tokenize_keys(keys: str) -> list:
+    return KeySequenceTokenizer(keys)._iter_tokenize()
 
 
 def to_bare_command_name(seq: str) -> str:
@@ -274,9 +278,7 @@ def to_bare_command_name(seq: str) -> str:
         return seq
 
     # Account for d2d and similar sequences.
-    new_seq = list(KeySequenceTokenizer(
-        re.sub(r'^(?:".)?(?:[1-9]+)?', '', seq)
-    ).iter_tokenize())
+    new_seq = list(tokenize_keys(re.sub(r'^(?:".)?(?:[1-9]+)?', '', seq)))
 
     return ''.join(k for k in new_seq if not k.isdigit())
 
