@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.tests import unittest
 
 
 class Test_ex_pwd(unittest.FunctionalTestCase):
 
     @unittest.mock_status_message()
-    def test_pwd(self):
-        pwd = get_cmdline_cwd()
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.os')
+    def test_pwd(self, os):
+        os.getcwd.return_value = 'fizzbuzz'
         self.feed(':pwd')
-        self.assertStatusMessage(pwd)
+        self.assertStatusMessage('fizzbuzz')
