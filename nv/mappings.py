@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import traceback
 
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.vi.keys import seq_to_command
@@ -62,6 +63,7 @@ def _normalise_lhs(lhs: str) -> str:
     try:
         return ''.join(tokenize_keys(expand_keys(lhs)))
     except ValueError:
+        traceback.print_exc()
         return lhs
 
 

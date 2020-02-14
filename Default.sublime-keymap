@@ -169,7 +169,7 @@
     {"keys": ["alt+delete"], "command": "_nv_feed_key", "args": {"key": "<M-del>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "backspace"}]},
     {"keys": ["alt+down"], "command": "_nv_feed_key", "args": {"key": "<M-down>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "down"}]},
     {"keys": ["alt+end"], "command": "_nv_feed_key", "args": {"key": "<M-end>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "end"}]},
-    {"keys": ["alt+enter"], "command": "_nv_feed_key", "args": {"key": "<M-enter>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "enter"}]},
+    {"keys": ["alt+enter"], "command": "_nv_feed_key", "args": {"key": "<M-cr>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "enter"}]},
     {"keys": ["alt+escape"], "command": "_nv_feed_key", "args": {"key": "<M-escape>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "escape"}]},
     {"keys": ["alt+home"], "command": "_nv_feed_key", "args": {"key": "<M-home>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "home"}]},
     {"keys": ["alt+left"], "command": "_nv_feed_key", "args": {"key": "<M-left>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "left"}]},

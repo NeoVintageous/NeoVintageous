@@ -47,10 +47,13 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(_tokenize_one('<D-a>'), '<D-a>')
         self.assertEqual(_tokenize_one('<D-i>'), '<D-i>')
         self.assertEqual(_tokenize_one('<DoWn>'), '<down>', 'less than key')
+        self.assertEqual(_tokenize_one('<Enter>'), '<cr>')
         self.assertEqual(_tokenize_one('<Esc>'), '<esc>', 'esc key title case')
         self.assertEqual(_tokenize_one('<HOME>'), '<home>', 'less than key')
         self.assertEqual(_tokenize_one('<Leader>'), '<bslash>', 'leader key')
         self.assertEqual(_tokenize_one('<M-i>'), '<M-i>')
+        self.assertEqual(_tokenize_one('<RETURN>'), '<cr>')
+        self.assertEqual(_tokenize_one('<Return>'), '<cr>')
         self.assertEqual(_tokenize_one('<RigHt>'), '<right>', 'less than key')
         self.assertEqual(_tokenize_one('<Space>'), '<space>', 'space key')
         self.assertEqual(_tokenize_one('<bs>'), '<bs>')
@@ -63,7 +66,9 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(_tokenize_one('<d-a>'), '<D-a>')
         self.assertEqual(_tokenize_one('<eSc>'), '<esc>', 'esc key mixed case')
         self.assertEqual(_tokenize_one('<enD>'), '<end>', 'less than key')
+        self.assertEqual(_tokenize_one('<enter>'), '<cr>')
         self.assertEqual(_tokenize_one('<esc>'), '<esc>', 'esc key lowercase')
+        self.assertEqual(_tokenize_one('<insert>'), '<insert>')
         self.assertEqual(_tokenize_one('<leader>'), '<bslash>', 'leader key')
         self.assertEqual(_tokenize_one('<left>'), '<left>', 'less than key')
         self.assertEqual(_tokenize_one('<lt>'), '<lt>', 'less than key')
@@ -77,7 +82,6 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(_tokenize_one('>'), '>')
         self.assertEqual(_tokenize_one('P'), 'P', 'upper case letter key')
         self.assertEqual(_tokenize_one('p'), 'p', 'lower letter key')
-        self.assertEqual(_tokenize_one('<insert>'), '<insert>')
 
     def test_expected_closing_bracket(self):
         invalid_tokens = (
@@ -113,9 +117,10 @@ class TestKeySequenceTokenizer(unittest.TestCase):
 
     def test_invalid_key_name(self):
         invalid_tokens = {
-            '<>': '\'\' is not a known key',
-            '<foobar>': '\'foobar\' is not a known key',
+            '<>': '\'<>\' is not a known key',
             '<a>': 'wrong sequence <a>',
+            '<foobar>': '\'<foobar>\' is not a known key',
+            '<sp>': '\'<sp>\' is not a known key',
         }
 
         for token, msg in invalid_tokens.items():
@@ -128,6 +133,8 @@ class TestKeySequenceTokenizer(unittest.TestCase):
             return list(tokenize_keys(source))
 
         self.assertEqual(tokenize('0<down>'), ['0', '<down>'])
+        self.assertEqual(tokenize('3<insert>'), ['3', '<insert>'])
+        self.assertEqual(tokenize('3<return>'), ['3', '<cr>'])
         self.assertEqual(tokenize('3w<A-f>'), ['3', 'w', '<M-f>'])
         self.assertEqual(tokenize('3w<M-f>'), ['3', 'w', '<M-f>'])
         self.assertEqual(tokenize('<A-a><A-b>'), ['<M-a>', '<M-b>'])
@@ -143,6 +150,7 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize('<C-w>>'), ['<C-w>', '>'])
         self.assertEqual(tokenize('<C-w>b'), ['<C-w>', 'b'])
         self.assertEqual(tokenize('<DoWn>abc.'), ['<down>', 'a', 'b', 'c', '.'])
+        self.assertEqual(tokenize('<Esc><ENTER>'), ['<esc>', '<cr>'])
         self.assertEqual(tokenize('<Esc>ai'), ['<esc>', 'a', 'i'])
         self.assertEqual(tokenize('<Leader>d'), ['<bslash>', 'd'])
         self.assertEqual(tokenize('<M-a><A-b>'), ['<M-a>', '<M-b>'])
@@ -157,7 +165,6 @@ class TestKeySequenceTokenizer(unittest.TestCase):
         self.assertEqual(tokenize('<lt><lt>'), ['<lt>', '<lt>'])
         self.assertEqual(tokenize('<m-a><a-b>'), ['<M-a>', '<M-b>'])
         self.assertEqual(tokenize('pp'), ['p', 'p'])
-        self.assertEqual(tokenize('3<insert>'), ['3', '<insert>'])
 
 
 class TestFunctions(unittest.TestCase):

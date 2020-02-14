@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#689](https://github.com/NeoVintageous/NeoVintageous/issues/689): `<Return>` key alias for `<CR>`
+* Added [#688](https://github.com/NeoVintageous/NeoVintageous/issues/688): `<Enter>` key alias for `<CR>`
 * Added [#684](https://github.com/NeoVintageous/NeoVintageous/issues/684): `:shell` start a shell
 * Added [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `'shell'` option e.g. `:set shell=/bin/bash`
 * Added [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `'term'` option e.g. `:set term=gnome-terminal`
@@ -48,6 +50,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#690](https://github.com/NeoVintageous/NeoVintageous/issues/690): RC file syntax should only scope known valid keys
 * Fixed [#687](https://github.com/NeoVintageous/NeoVintageous/issues/687): Various `:!{cmd}` inconsistencies
 * Fixed [#683](https://github.com/NeoVintageous/NeoVintageous/issues/683): `'{a-z}` in visual line mode is inconsistent
 * Fixed [#682](https://github.com/NeoVintageous/NeoVintageous/issues/682): Visual mode `m{a-z}` off-by-one

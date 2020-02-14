@@ -2506,7 +2506,7 @@ class ViMoveToEol(ViMotionDef):
         }
 
 
-@assign(seqs.ENTER, _MOTION_MODES)
+@assign(seqs.CR, _MOTION_MODES)
 @assign(seqs.PLUS, _MOTION_MODES)
 class ViMotionEnter(ViMotionDef):
     def __init__(self, *args, **kwargs):

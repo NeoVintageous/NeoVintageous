@@ -20,6 +20,7 @@ import re
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv import variables
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
@@ -68,108 +69,67 @@ mappings = {
 }  # type: dict
 
 
-EOF = -2
+_NAMED_KEYS = [
+    seqs.BACKSLASH,
+    seqs.BACKSPACE,
+    seqs.BAR,
+    seqs.CR,
+    seqs.DEL,
+    seqs.DOWN,
+    seqs.END,
+    seqs.ESC,
+    seqs.HOME,
+    seqs.INSERT,
+    seqs.LEADER,
+    seqs.LEFT,
+    seqs.LESS_THAN,
+    seqs.PAGE_DOWN,
+    seqs.PAGE_UP,
+    seqs.RIGHT,
+    seqs.SPACE,
+    seqs.TAB,
+    seqs.UP,
+
+    seqs.F1,
+    seqs.F2,
+    seqs.F3,
+    seqs.F4,
+    seqs.F5,
+    seqs.F6,
+    seqs.F7,
+    seqs.F8,
+    seqs.F9,
+    seqs.F10,
+    seqs.F11,
+    seqs.F12,
+    seqs.F13,
+    seqs.F14,
+    seqs.F15,
+    seqs.F16,
+    seqs.F17,
+    seqs.F18,
+    seqs.F19,
+    seqs.F20,
+]
 
 
-class key_names:
-    """Names of special keys."""
+_NAMED_KEY_ALIASES = {
+    'enter': 'cr',
+    'return': 'cr'
+}
 
-    BACKSLASH = '<bslash>'
-    BACKSPACE = '<bs>'
-    BAR = '<bar>'
-    CR = '<cr>'
-    DEL = '<del>'
-    DOWN = '<down>'
-    END = '<end>'
-    ENTER = '<enter>'
-    ESC = '<esc>'
-    HOME = '<home>'
-    INSERT = '<insert>'
-    LEFT = '<left>'
-    LESS_THAN = '<lt>'
-    PAGE_DOWN = '<pagedown>'
-    PAGE_UP = '<pageup>'
-    RIGHT = '<right>'
-    SPACE = '<sp>'
-    SPACE_LONG = '<space>'
-    TAB = '<tab>'
-    UP = '<up>'
 
-    F1 = '<f1>'
-    F2 = '<f2>'
-    F3 = '<f3>'
-    F4 = '<f4>'
-    F5 = '<f5>'
-    F6 = '<f6>'
-    F7 = '<f7>'
-    F8 = '<f8>'
-    F9 = '<f9>'
-    F10 = '<f10>'
-    F11 = '<f11>'
-    F12 = '<f12>'
-    F13 = '<f13>'
-    F14 = '<f14>'
-    F15 = '<f15>'
-    F16 = '<f16>'
-    F17 = '<f17>'
-    F18 = '<f18>'
-    F19 = '<f19>'
-    F20 = '<f20>'
+def _resolve_named_key_alias(key: str):
+    if key in _NAMED_KEY_ALIASES:
+        return _NAMED_KEY_ALIASES[key]
 
-    Leader = '<leader>'
-
-    as_list = [
-
-        BACKSLASH,
-        BACKSPACE,
-        BAR,
-        CR,
-        DEL,
-        DOWN,
-        END,
-        ENTER,
-        ESC,
-        HOME,
-        INSERT,
-        LEFT,
-        LESS_THAN,
-        PAGE_DOWN,
-        PAGE_UP,
-        RIGHT,
-        SPACE,
-        SPACE_LONG,
-        TAB,
-        UP,
-
-        F1,
-        F2,
-        F3,
-        F4,
-        F5,
-        F6,
-        F7,
-        F8,
-        F9,
-        F10,
-        F11,
-        F12,
-        F13,
-        F14,
-        F15,
-        F16,
-        F17,
-        F18,
-        F19,
-        F20,
-
-        Leader,
-    ]
-
-    max_len = len('<leader>')
+    return key
 
 
 class KeySequenceTokenizer():
     """Takes in a sequence of key names and tokenizes it."""
+
+    _EOF = -2
 
     def __init__(self, source: str):
         """Sequence of key names in Vim notation."""
@@ -180,16 +140,16 @@ class KeySequenceTokenizer():
         self.idx += 1
         if self.idx >= len(self.source):
             self.idx -= -1
-            return EOF
+            return self._EOF
         return self.source[self.idx]
 
     def _peek_one(self):
         if (self.idx + 1) >= len(self.source):
-            return EOF
+            return self._EOF
         return self.source[self.idx + 1]
 
     def _is_named_key(self, key: str) -> bool:
-        return key.lower() in key_names.as_list
+        return key.lower() in _NAMED_KEYS
 
     def _sort_modifiers(self, modifiers: str) -> str:
         """Ensure consistency in the order of modifier letters according to c > m > s."""
@@ -211,7 +171,7 @@ class KeySequenceTokenizer():
         while True:
             c = self._consume()
 
-            if c == EOF:
+            if c == self._EOF:
                 raise ValueError("expected '>' at index {0}".format(self.idx))
 
             elif (c.lower() in ('c', 's', 'm', 'd', 'a')) and (self._peek_one() == '-'):
@@ -233,11 +193,11 @@ class KeySequenceTokenizer():
 
                     return '<' + modifiers.upper() + key_name + '>'
 
-                elif self._is_named_key('<' + key_name + '>'):
-                    return '<' + modifiers.upper() + key_name.lower() + '>'
+                elif self._is_named_key('<' + _resolve_named_key_alias(key_name.lower()) + '>'):
+                    return '<' + modifiers.upper() + _resolve_named_key_alias(key_name.lower()) + '>'
 
                 else:
-                    raise ValueError("'{0}' is not a known key".format(key_name))
+                    raise ValueError("'<{0}>' is not a known key".format(key_name))
 
             else:
                 key_name += c
@@ -253,7 +213,7 @@ class KeySequenceTokenizer():
     def _iter_tokenize(self):
         while True:
             token = self._tokenize_one()
-            if token == EOF:
+            if token == self._EOF:
                 break
             yield token
 

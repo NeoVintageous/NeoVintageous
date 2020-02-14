@@ -44,6 +44,214 @@ nnoremap <Space> :
 nnoremap <space> : " x
 "                  ^^^ -comment
 
+" zero            CTRL-@    0 (stored as 10) *<Nul>*
+nnoremap <Nul> x
+"        ^^^^^ storage.type
+
+" backspace       CTRL-H    8 *backspace*
+nnoremap <BS> x
+"        ^^^^ storage.type
+
+" tab         CTRL-I    9 *tab* *Tab*
+" *linefeed*
+nnoremap <Tab> x
+"        ^^^^^ storage.type
+
+" linefeed        CTRL-J   10 (used for <Nul>)
+nnoremap <NL> x
+"        ^^^^ storage.type
+
+" formfeed        CTRL-L   12 *formfeed*
+nnoremap <FF> x
+"        ^^^^ storage.type
+
+" carriage return     CTRL-M   13 *carriage-return*
+nnoremap <CR> x
+"        ^^^^ storage.type
+
+" same as <CR>                *<Return>*
+nnoremap <Return> x
+"        ^^^^^^^^ storage.type
+
+" same as <CR>                *<Enter>*
+nnoremap <Enter> x
+"        ^^^^^^^ storage.type
+
+" escape          CTRL-[   27 *escape* *<Esc>*
+nnoremap <Esc> x
+"        ^^^^^ storage.type
+
+" space                32 *space*
+nnoremap <Space> x
+"        ^^^^^^^ storage.type
+
+" less-than       <    60 *<lt>*
+nnoremap <lt> x
+"        ^^^^ storage.type
+
+" backslash       \    92 *backslash* *<Bslash>*
+nnoremap <Bslash> x
+"        ^^^^^^^^ storage.type
+
+" vertical bar        |   124 *<Bar>*
+nnoremap <Bar> x
+"        ^^^^^ storage.type
+
+" delete              127
+nnoremap <Del> x
+"        ^^^^^ storage.type
+
+" command sequence intro  ALT-Esc 155 *<CSI>*
+nnoremap <CSI> x
+"        ^^^^^ storage.type
+
+" CSI when typed in the GUI       *<xCSI>*
+nnoremap <xCSI> x
+"        ^^^^^^ storage.type
+
+" end-of-line (can be <CR>, <LF> or <CR><LF>,
+" depends on system and 'fileformat') *<EOL>*
+nnoremap <EOL> x
+"        ^^^^^ storage.type
+
+" cursor-up           *cursor-up* *cursor_up*
+nnoremap <Up> x
+"        ^^^^ storage.type
+
+" cursor-down         *cursor-down* *cursor_down*
+nnoremap <Down> x
+"        ^^^^^^ storage.type
+
+" cursor-left         *cursor-left* *cursor_left*
+nnoremap <Left> x
+"        ^^^^^^ storage.type
+
+" cursor-right            *cursor-right* *cursor_right*
+nnoremap <Right> x
+"        ^^^^^^^ storage.type
+
+" shift-cursor-up
+nnoremap <S-Up> x
+"        ^^^^^^ storage.type
+
+" shift-cursor-down
+nnoremap <S-Down> x
+"        ^^^^^^^^ storage.type
+
+" shift-cursor-left
+nnoremap <S-Left> x
+"        ^^^^^^^^ storage.type
+
+" shift-cursor-right
+nnoremap <S-Right> x
+"        ^^^^^^^^^ storage.type
+
+" control-cursor-left
+nnoremap <C-Left> x
+"        ^^^^^^^^ storage.type
+
+" control-cursor-right
+nnoremap <C-Right> x
+"        ^^^^^^^^^ storage.type
+
+" function keys 1 to 12       *function_key* *function-key*
+nnoremap <F1> x
+"        ^^^^ storage.type
+nnoremap <F2> x
+"        ^^^^ storage.type
+nnoremap <F10> x
+"        ^^^^^ storage.type
+nnoremap <F12> x
+"        ^^^^^ storage.type
+
+" shift-function keys 1 to 12    *<S-F1>*
+nnoremap <S-F1> x
+"        ^^^^^^ storage.type
+nnoremap <S-F2> x
+"        ^^^^^^ storage.type
+nnoremap <S-F10> x
+"        ^^^^^^ storage.type
+nnoremap <S-F12> x
+"        ^^^^^^^ storage.type
+
+" help key
+nnoremap <Help> x
+"        ^^^^^^ storage.type
+
+" undo key
+nnoremap <Undo> x
+"        ^^^^^^ storage.type
+
+" insert key
+nnoremap <Insert> x
+"        ^^^^^^^^ storage.type
+
+" home                *home*
+nnoremap <Home> x
+"        ^^^^^^ storage.type
+
+" end             *end*
+nnoremap <End> x
+"        ^^^^^ storage.type
+
+" page-up             *page_up* *page-up*
+nnoremap <PageUp> x
+"        ^^^^^^^^ storage.type
+
+" page-down           *page_down* *page-down*
+nnoremap <PageDown> x
+"        ^^^^^^^^^^ storage.type
+
+" keypad home (upper left)    *keypad-home*
+nnoremap <kHome> x
+"        ^^^^^^^ storage.type
+
+" keypad end (lower left)     *keypad-end*
+nnoremap <kEnd> x
+"        ^^^^^^ storage.type
+
+" keypad page-up (upper right)    *keypad-page-up*
+nnoremap <kPageUp> x
+"        ^^^^^^^^^ storage.type
+
+" keypad page-down (lower right)  *keypad-page-down*
+nnoremap <kPageDown> x
+"        ^^^^^^^^^^^ storage.type
+
+" keypad +            *keypad-plus*
+nnoremap <kPlus> x
+"        ^^^^^^^ storage.type
+
+" keypad -            *keypad-minus*
+nnoremap <kMinus> x
+"        ^^^^^^^^ storage.type
+
+" keypad *            *keypad-multiply*
+nnoremap <kMultiply> x
+"        ^^^^^^^^^^^ storage.type
+
+" keypad /            *keypad-divide*
+nnoremap <kDivide> x
+"        ^^^^^^^^^ storage.type
+
+" keypad Enter            *keypad-enter*
+nnoremap <kEnter> x
+"        ^^^^^^^^ storage.type
+
+" keypad Decimal point        *keypad-point*
+nnoremap <kPoint> x
+"        ^^^^^^^^ storage.type
+
+" <k0> - <k9> keypad 0 to 9           *keypad-0* *keypad-9*
+nnoremap <k0> x
+"        ^^^^ storage.type
+nnoremap <k2> x
+"        ^^^^ storage.type
+nnoremap <k7> x
+"        ^^^^ storage.type
+nnoremap <k9> x
+"        ^^^^ storage.type
+
 nnoremap <leader>d :ToggleSideBar<CR>
 " ^^^^^^ keyword.control
 "        ^^^^^^^^ storage.type
@@ -64,14 +272,14 @@ nnoremap <leader>n :noremap x y<CR>
 "                ^^^^^^^^^^^^^^ -storage
 "                              ^^^^ storage.type
 
+" control-key         *control* *ctrl* *<C-*
+" nnoremap <C-...> x
 nnoremap <C-y> 3<C-y>
 " ^^^^^^ keyword.control
 "        ^^^^^ storage.type
 "               ^^^^^ storage.type
-
 nnoremap <C-y> 3<C-y> " x
 "                     ^^^ -comment
-
 nnoremap <C-x> :
 "        ^^^^^ storage.type
 nnoremap <C-1> :
@@ -80,7 +288,16 @@ nnoremap <C-.> :
 "        ^^^^^ storage.type
 nnoremap <C-f1> :
 "        ^^^^^^ storage.type
+nnoremap <C-S-x> :
+"        ^^^^^^^ storage.type
+nnoremap <C-S-7> :
+"        ^^^^^^^ storage.type
+nnoremap <C-S-.> :
+"        ^^^^^^^ storage.type
+nnoremap <C-S-f1> :
+"        ^^^^^^^^ storage.type
 
+" nnoremap <D-...>
 nnoremap <D-x> :
 "        ^^^^^ storage.type
 nnoremap <D-3> :
@@ -90,6 +307,8 @@ nnoremap <D-.> :
 nnoremap <D-f1> :
 "        ^^^^^^ storage.type
 
+" alt-key or meta-key     *meta* *alt* *<M-*
+" command-key (Macintosh only)    *<D-*
 nnoremap <M-x> :
 "        ^^^^^ storage.type
 nnoremap <M-5> :
@@ -99,6 +318,11 @@ nnoremap <M-.> :
 nnoremap <M-f1> :
 "        ^^^^^^ storage.type
 
+" nnoremap <A-...> same as <M-...>         *<A-*
+nnoremap <A-x> :
+
+" shift-key           *shift* *<S-*
+" nnoremap <S-...> x
 nnoremap <S-x> :
 "        ^^^^^ storage.type
 nnoremap <S-5> :
@@ -108,14 +332,11 @@ nnoremap <S-.> :
 nnoremap <S-f1> :
 "        ^^^^^^ storage.type
 
-nnoremap <C-S-x> :
-"        ^^^^^^^ storage.type
-nnoremap <C-S-7> :
-"        ^^^^^^^ storage.type
-nnoremap <C-S-.> :
-"        ^^^^^^^ storage.type
-nnoremap <C-S-f1> :
-"        ^^^^^^^^ storage.type
+nnoremap <sp> :
+"        ^^^^ -storage.type
+
+nnoremap <foobar> :
+"        ^^^^^^^^ -storage.type
 
 map x y
 " ^^^^^ invalid
