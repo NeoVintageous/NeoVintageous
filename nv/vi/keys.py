@@ -176,22 +176,22 @@ class KeySequenceTokenizer():
         self.idx = -1
         self.source = source
 
-    def consume(self):
+    def _consume(self):
         self.idx += 1
         if self.idx >= len(self.source):
             self.idx -= -1
             return EOF
         return self.source[self.idx]
 
-    def peek_one(self):
+    def _peek_one(self):
         if (self.idx + 1) >= len(self.source):
             return EOF
         return self.source[self.idx + 1]
 
-    def is_named_key(self, key: str) -> bool:
+    def _is_named_key(self, key: str) -> bool:
         return key.lower() in key_names.as_list
 
-    def sort_modifiers(self, modifiers: str) -> str:
+    def _sort_modifiers(self, modifiers: str) -> str:
         """Ensure consistency in the order of modifier letters according to c > m > s."""
         if len(modifiers) == 6:
             modifiers = 'c-m-s-'
@@ -204,17 +204,17 @@ class KeySequenceTokenizer():
                 modifiers = 'c-m-'
         return modifiers
 
-    def long_key_name(self) -> str:
+    def _long_key_name(self) -> str:
         key_name = ''
         modifiers = ''
 
         while True:
-            c = self.consume()
+            c = self._consume()
 
             if c == EOF:
                 raise ValueError("expected '>' at index {0}".format(self.idx))
 
-            elif (c.lower() in ('c', 's', 'm', 'd', 'a')) and (self.peek_one() == '-'):
+            elif (c.lower() in ('c', 's', 'm', 'd', 'a')) and (self._peek_one() == '-'):
                 # <A-...> is aliased to <M-...>
                 if c.lower() == 'a':
                     c = 'm'
@@ -222,10 +222,10 @@ class KeySequenceTokenizer():
                 if c.lower() in modifiers.lower():
                     raise ValueError('invalid modifier sequence: {0}'.format(self.source))
 
-                modifiers += c + self.consume()
+                modifiers += c + self._consume()
 
             elif c == '>':
-                modifiers = self.sort_modifiers(modifiers.lower())
+                modifiers = self._sort_modifiers(modifiers.lower())
 
                 if len(key_name) == 1:
                     if not modifiers:
@@ -233,7 +233,7 @@ class KeySequenceTokenizer():
 
                     return '<' + modifiers.upper() + key_name + '>'
 
-                elif self.is_named_key('<' + key_name + '>'):
+                elif self._is_named_key('<' + key_name + '>'):
                     return '<' + modifiers.upper() + key_name.lower() + '>'
 
                 else:
@@ -242,17 +242,17 @@ class KeySequenceTokenizer():
             else:
                 key_name += c
 
-    def tokenize_one(self):
-        c = self.consume()
+    def _tokenize_one(self):
+        c = self._consume()
 
         if c == '<':
-            return self._expand_vars(self.long_key_name())
+            return self._expand_vars(self._long_key_name())
         else:
             return c
 
     def iter_tokenize(self):
         while True:
-            token = self.tokenize_one()
+            token = self._tokenize_one()
             if token == EOF:
                 break
             yield token
