@@ -387,13 +387,20 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.assertVisual('one\n|two\nthree\nf|our\nfive')
 
     def test_visual_mark_includes_first_non_blank(self):
-        for key in ('\'', '`'):
-            self.normal('1\n2\n|    fizz\n4\n')
-            self.feedkeys('mo')
-            self.feedkeys('1G')
-            self.feedkeys('v')
-            self.feedkeys(key + 'o')
-            self.assertVisual('|1\n2\n    f|izz\n4\n')
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('v')
+        self.feedkeys('\'o')
+        self.assertVisual('|1\n2\n    f|izz\n4\n')
+
+    def test_visual_mark_includes_first_column(self):
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('v')
+        self.feedkeys('`o')
+        self.assertVisual('|1\n2\n |   fizz\n4\n')
 
     def test_mark_operations(self):
         for key in ('\'', '`'):

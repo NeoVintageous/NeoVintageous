@@ -57,8 +57,8 @@ from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
-from NeoVintageous.nv.marks import add_mark
-from NeoVintageous.nv.marks import get_mark_as_encoded_address
+from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
 from NeoVintageous.nv.polyfill import toggle_side_bar
@@ -1795,7 +1795,7 @@ class _vi_big_i(ViTextCommandBase):
 class _vi_m(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, character=None):
-        add_mark(self.view, character)
+        set_mark(self.view, character)
 
 
 class _vi_quote(ViTextCommandBase):
@@ -1803,38 +1803,34 @@ class _vi_quote(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
             if mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, address.b))
+                resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, address.b)
+                resolve_visual_line_target(view, s, next_non_blank(view, view.line(target.b).a))
             elif mode == NORMAL:
-                s.a = s.b = next_non_blank(view, address.b)
+                s.a = s.b = next_non_blank(view, view.line(target.b).a)
             elif mode == INTERNAL_NORMAL:
-                if s.a < address.a:
-                    s = Region(view.full_line(s.b).a, view.line(address.b).b)
+                if s.a < target.a:
+                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
                 else:
-                    s = Region(view.full_line(s.b).b, view.line(address.b).a)
+                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
 
             return s
 
-        address = get_mark_as_encoded_address(self.view, character)
-        if address is None:
+        target = get_mark(self.view, character)
+        if target is None:
+            ui_bell('E20: mark not set')
             return
 
-        if isinstance(address, str):
-            if not address.startswith('<command'):
-                self.view.window().open_file(address, ENCODED_POSITION)
-            else:
-                # We get a command in this form: <command _vi_double_quote>
-                self.view.run_command(address.split(' ')[1][:-1])
-
-            return
+        if isinstance(target, tuple):
+            view, target = target
+            self.view.window().focus_view(view)
 
         jumplist_update(self.view)
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
-        if not self.view.visible_region().intersects(address):
-            self.view.show_at_center(address)
+        if not self.view.visible_region().intersects(target):
+            self.view.show_at_center(target)
 
 
 class _vi_backtick(ViTextCommandBase):
@@ -1842,28 +1838,28 @@ class _vi_backtick(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
             if mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, address.b))
+                resolve_visual_target(s, target.b)
             elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, address.b)
+                resolve_visual_line_target(view, s, target.b)
             elif mode == NORMAL:
-                s.a = s.b = address.b
+                s.a = s.b = target.b
             elif mode == INTERNAL_NORMAL:
-                if s.a < address.a:
-                    s = Region(view.full_line(s.b).a, view.line(address.b).b)
+                if s.a < target.a:
+                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
                 else:
-                    s = Region(view.full_line(s.b).b, view.line(address.b).a)
+                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
 
             return s
 
-        address = get_mark_as_encoded_address(self.view, character, exact=True)
-        if address is None:
+        target = get_mark(self.view, character)
+
+        if target is None:
+            ui_bell('E20: mark not set')
             return
 
-        if isinstance(address, str):
-            if not address.startswith('<command'):
-                self.view.window().open_file(address, ENCODED_POSITION)
-
-            return
+        if isinstance(target, tuple):
+            view, target = target
+            self.view.window().focus_view(view)
 
         jumplist_update(self.view)
         regions_transformer(self.view, f)

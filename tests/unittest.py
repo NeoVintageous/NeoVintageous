@@ -34,7 +34,8 @@ from sublime import version as _version
 from NeoVintageous.nv import macros as _macros
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.mappings import _mappings
-from NeoVintageous.nv.marks import get_mark_as_encoded_address as _get_mark_as_encoded_address
+from NeoVintageous.nv.marks import get_mark as _get_mark
+from NeoVintageous.nv.marks import set_mark as _set_mark
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.registers import _data as _registers_data
@@ -341,8 +342,15 @@ class ViewTestCase(unittest.TestCase):
     def resetMacros(self):
         _macros._state.clear()
 
+    def setMark(self, name: str, pt: int):
+        sels = list(self.view.sel())
+        self.select(pt)
+        _set_mark(self.view, name)
+        self.view.sel().clear()
+        self.view.sel().add_all(sels)
+
     def assertMark(self, name: str, expected):
-        self._assertContentSelection([_get_mark_as_encoded_address(self.view, name, exact=True)], expected)
+        self._assertContentSelection([_get_mark(self.view, name)], expected)
 
     def assertMapping(self, mode: int, lhs: str, rhs: str):
         self.assertIn(lhs, _mappings[mode])
@@ -1355,6 +1363,7 @@ _SEQ2CMD = {
     '[ow':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'w'}},  # noqa: E241
     '[{':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '{'}},  # noqa: E241,E501
     '\'a':          {'command': '_vi_quote', 'args': {'character': 'a'}},  # noqa: E241
+    '\'p':          {'command': '_vi_quote', 'args': {'character': 'p'}},  # noqa: E241
     '\'x':          {'command': '_vi_quote', 'args': {'character': 'x'}},  # noqa: E241
     '] ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_down'}},  # noqa: E241
     '])':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': ')'}},  # noqa: E241,E501
@@ -1374,6 +1383,7 @@ _SEQ2CMD = {
     '^':            {'command': '_vi_hat'},  # noqa: E241
     '_':            {'command': '_vi_underscore'},  # noqa: E241
     '`a':           {'command': '_vi_backtick', 'args': {'character': 'a'}},  # noqa: E241
+    '`p':           {'command': '_vi_backtick', 'args': {'character': 'p'}},  # noqa: E241
     '`x':           {'command': '_vi_backtick', 'args': {'character': 'x'}},  # noqa: E241
     'a"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': True}},  # noqa: E241,E501
     'a':            {'command': '_vi_a'},  # noqa: E241

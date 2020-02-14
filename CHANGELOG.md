@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#670](https://github.com/NeoVintageous/NeoVintageous/issues/670): Marks locations are updated on view changes
 * Added [#689](https://github.com/NeoVintageous/NeoVintageous/issues/689): `<Return>` key alias for `<CR>`
 * Added [#688](https://github.com/NeoVintageous/NeoVintageous/issues/688): `<Enter>` key alias for `<CR>`
 * Added [#684](https://github.com/NeoVintageous/NeoVintageous/issues/684): `:shell` start a shell

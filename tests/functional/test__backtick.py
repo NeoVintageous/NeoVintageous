@@ -38,26 +38,39 @@ class Test_backtick(unittest.FunctionalTestCase):
         for pt in (0, 5, 7, 9, 15, 20):
             self.select(pt)
             self.feed('n_`x')
-            self.assertNormal('fizz\n    fizz b|uzz\nbuzz\n')
+            self.assertNormal('fizz\n    fizz b|uzz\nbuzz\n', 'at ' + str(pt))
 
     def test_v(self):
-        self.visual('fizz\nfi|zz bu|zz\nfizz\n')
+        self.visual('fizz\n    fi|zz bu|zz\nfizz\n')
         self.feed('mx')
         self.feed('<Esc>')
         self.select(0)
         self.feed('n_`x')
-        self.assertNormal('fizz\nfizz b|uzz\nfizz\n')
-        self.eq('|fizz|\nfizz buzz\nfizz\n', 'v_`x', '|fizz\nfizz bu|zz\nfizz\n')
-        self.eq('|fizz\nfizz bu|zz\nfizz\n', 'v_`x', '|fizz\nfizz bu|zz\nfizz\n')
-        self.eq('|fizz\nfizz buzz\nfi|zz\n', 'v_`x', '|fizz\nfizz bu|zz\nfizz\n')
-        self.eq('fizz\nfizz buzz\nf|iz|z\n', 'v_`x', 'r_fizz\nfizz b|uzz\nfi|zz\n')
-        self.eq('r_fi|zz\nfizz| buzz\nfizz\n', 'v_`x', 'fizz\nfiz|z bu|zz\nfizz\n')
-        self.eq('r_fi|zz\nfizz buzz\nfi|zz\n', 'v_`x', 'r_fizz\nfizz b|uzz\nfi|zz\n')
+        self.assertNormal('fizz\n    fizz b|uzz\nfizz\n')
+        self.visual('fizz\n    fi|zz bu|zz\nfizz\n')
+        self.feed('mx')
+        self.select(0)
+        self.feed('v_`x')
+        self.assertVisual('|fizz\n    fizz b|uzz\nfizz\n')
+        self.select((20, 22))
+        self.feed('v_`x')
+        self.assertRVisual('fizz\n    fizz b|uzz\nfi|zz\n')
+        self.select((13, 2))
+        self.feed('v_`x')
+        self.assertVisual('fizz\n    fiz|z bu|zz\nfizz\n')
+        self.select((21, 2))
+        self.feed('v_`x')
+        self.assertRVisual('fizz\n    fizz b|uzz\nfi|zz\n')
+        self.select((6, 8))
+        self.feed('v_`x')
+        self.assertVisual('fizz\n |   fizz bu|zz\nfizz\n')
 
     def test_V(self):
         self.normal('fizz\n    bu|zz\nfizz\nbuzz\n')
         self.feed('mx')
-        self.eq('|fizz\n|    buzz\nfizz\nbuzz\n', 'V_`x', '|fizz\n    buzz\n|fizz\nbuzz\n')
+        self.select((0, 5))
+        self.feed('V_`x')
+        self.assertSelection((0, 14))
 
     def test_d(self):
         self.normal('fizz\nfizz b|uzz\nbuzz\n')
@@ -70,3 +83,8 @@ class Test_backtick(unittest.FunctionalTestCase):
         self.select(17)
         self.feed('d\'x')
         self.normal('fizz\nfizz b|zz\n')
+
+    @unittest.mock_status_message()
+    def test_mark_not_set(self):
+        self.eq('fi|zz', 'n_`p', 'fi|zz')
+        self.assertStatusMessage('E20: mark not set')
