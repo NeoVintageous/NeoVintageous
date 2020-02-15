@@ -340,6 +340,73 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertVisual('one |t|hree four')
         self.assertBell()
 
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_dot_repeat_insertion(self, command_history):
+        command_history.return_value = ('insert', {'characters': 'buzz'}, 1)
+        self.normal('fizz  |x')
+        self.feedkey('i')
+        self.assertInsert('fizz  |x')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz | x')
+        self.feedkey('.')
+        self.assertNormal('fizz |buzz x')
+
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_dot_repeat_append_sequence(self, command_history):
+        command_history.return_value = ('sequence', {'commands': [
+            ['_vi_a', {'count': 1, 'mode': 'mode_internal_normal'}],
+            ['insert', {'characters': 'buzz'}]]}, 1)
+
+        self.normal('fizz | x')
+        self.feedkey('i')
+        self.assertInsert('fizz | x')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz|  x')
+        self.feedkey('.')
+        self.assertNormal('fizz| buzz x')
+
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_dot_repeat_insert_sequence(self, command_history):
+        command_history.return_value = ('sequence', {'commands': [
+            ['insert', {'characters': 'buzzz'}],
+            ['left_delete', None]]}, 1)
+        self.normal('fizz  |x')
+        self.feedkey('i')
+        self.assertInsert('fizz  |x')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz | x')
+        self.feedkey('.')
+        self.assertNormal('fizz |buzz x')
+
+    def test_dot_repeat_visual_operation(self):
+        self.visual('fizz |buzz|fizzbuzz')
+        self.feedkey('x')
+        self.assertNormal('fizz |fizzbuzz')
+        self.feedkey('.')
+        self.assertNormal('fizz |buzz')
+
+    @unittest.mock_bell()
+    def test_dot_repeat_rings_bell_in_visual_mode(self):
+        self.normal('fi|xzz')
+        self.feedkey('x')
+        self.assertNormal('fi|zz')
+        self.feedkey('v')
+        self.assertVisual('fi|z|z')
+        self.feedkey('.')
+        self.assertVisual('fi|z|z')
+        self.assertBell()
+
+    @unittest.mock_bell()
+    @unittest.mock.patch('sublime.View.is_dirty')
+    def test_dot_rings_bell_when_nothing_to_repeat(self, is_dirty=None):
+        is_dirty.return_value = False
+        self.normal('fizz  |x')
+        self.feedkey('i')
+        self.feedkey('<esc>')
+        self.feedkey('.')
+        self.assertNormal('fizz | x')
+        self.assertBell()
+
     def test_marks(self):
         for key in ('\'', '`'):
             self.normal('1\n2\n|fizz\n4\n5\n6\n7')
@@ -435,6 +502,15 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.feedkey('t')
             self.feed(':\'o,\'ts/this/that/')
             self.assertNormal('1this\n2that\n3that\n4that\n|5that\n6this\n7this')
+
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_insert_count(self, command_history):
+        command_history.return_value = ('insert', {'characters': 'buzz'}, 1)
+        self.normal('fizz buzz|x')
+        self.feedkey('3')
+        self.feedkey('i')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz buzz|buzzbuzzx')
 
     @unittest.mock_bell()
     @unittest.mock_mappings(
