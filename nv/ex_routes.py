@@ -20,7 +20,7 @@ from collections import OrderedDict
 from NeoVintageous.nv.ex.tokens import TokenCommand
 
 
-def _create_route(state, name, forcable=False, **kwargs):
+def _create_route(state, name: str, forcable: bool = False, **kwargs) -> TokenCommand:
     command = TokenCommand(name, **kwargs)
 
     if forcable and state.match('!'):
@@ -29,7 +29,7 @@ def _create_route(state, name, forcable=False, **kwargs):
     return command
 
 
-def _create_word_route(state, name, word, forcable=False, **kwargs):
+def _create_word_route(state, name: str, word: str, forcable: bool = False, **kwargs) -> TokenCommand:
     command = _create_route(state, name, forcable, **kwargs)
     command.params.update(
         state.expect_match('\\s*(?P<' + word + '>.+)\\s*$').groupdict()
@@ -38,7 +38,7 @@ def _create_word_route(state, name, word, forcable=False, **kwargs):
     return command
 
 
-def _create_map_route(state, name):
+def _create_map_route(state, name: str) -> TokenCommand:
     command = TokenCommand(name)
 
     m = state.match(r'\s*(?P<lhs>.+?)\s+(?P<rhs>.+?)\s*$')
@@ -48,7 +48,7 @@ def _create_map_route(state, name):
     return command
 
 
-def _resolve(state, command, pattern):
+def _resolve(state, command: TokenCommand, pattern: str) -> TokenCommand:
     m = state.match(pattern)
     if m:
         command.params.update(m.groupdict())
@@ -56,27 +56,27 @@ def _resolve(state, command, pattern):
     return command
 
 
-def _ex_route_bfirst(state):
+def _ex_route_bfirst(state) -> TokenCommand:
     return _create_route(state, 'bfirst')
 
 
-def _ex_route_blast(state):
+def _ex_route_blast(state) -> TokenCommand:
     return _create_route(state, 'blast')
 
 
-def _ex_route_bnext(state):
+def _ex_route_bnext(state) -> TokenCommand:
     return _create_route(state, 'bnext')
 
 
-def _ex_route_bprevious(state):
+def _ex_route_bprevious(state) -> TokenCommand:
     return _create_route(state, 'bprevious')
 
 
-def _ex_route_browse(state):
+def _ex_route_browse(state) -> TokenCommand:
     return _create_route(state, 'browse')
 
 
-def _ex_route_buffer(state):
+def _ex_route_buffer(state) -> TokenCommand:
     command = _create_route(state, 'buffer', forcable=True)
 
     _resolve(state, command, '\\s*(?P<index>[0-9]+)\\s*$')
@@ -84,11 +84,11 @@ def _ex_route_buffer(state):
     return command
 
 
-def _ex_route_buffers(state):
+def _ex_route_buffers(state) -> TokenCommand:
     return _create_route(state, 'buffers')
 
 
-def _ex_route_cd(state):
+def _ex_route_cd(state) -> TokenCommand:
     command = _create_route(state, 'cd', forcable=True)
 
     state.skip(' ')
@@ -104,11 +104,11 @@ def _ex_route_cd(state):
     return command
 
 
-def _ex_route_close(state):
+def _ex_route_close(state) -> TokenCommand:
     return _create_route(state, 'close', forcable=True)
 
 
-def _ex_route_copy(state):
+def _ex_route_copy(state) -> TokenCommand:
     command = _create_route(state, 'copy', addressable=True)
 
     state.skip(' ')
@@ -121,11 +121,11 @@ def _ex_route_copy(state):
     return command
 
 
-def _ex_route_cquit(state):
+def _ex_route_cquit(state) -> TokenCommand:
     return _create_route(state, 'cquit')
 
 
-def _ex_route_delete(state):
+def _ex_route_delete(state) -> TokenCommand:
     command = TokenCommand('delete')
     command.cooperates_with_global = True
     command.addressable = True
@@ -156,7 +156,7 @@ def _ex_route_delete(state):
     return command
 
 
-def _ex_route_double_ampersand(state):
+def _ex_route_double_ampersand(state) -> TokenCommand:
     command = TokenCommand('&&', target='double_ampersand')
     command.addressable = True
 
@@ -174,7 +174,7 @@ def _ex_route_double_ampersand(state):
     return command
 
 
-def _ex_route_edit(state):
+def _ex_route_edit(state) -> TokenCommand:
     command = TokenCommand('edit')
 
     params = {
@@ -210,15 +210,15 @@ def _ex_route_edit(state):
             state.ignore()
 
 
-def _ex_route_exit(state):
+def _ex_route_exit(state) -> TokenCommand:
     return _create_route(state, 'exit')
 
 
-def _ex_route_file(state):
+def _ex_route_file(state) -> TokenCommand:
     return _create_route(state, 'file')
 
 
-def _ex_route_global(state):
+def _ex_route_global(state) -> TokenCommand:
     command = _create_route(state, 'global', forcable=True, addressable=True)
 
     sep = state.consume()
@@ -253,7 +253,7 @@ def _ex_route_global(state):
     return command
 
 
-def _ex_route_help(state):
+def _ex_route_help(state) -> TokenCommand:
     command = TokenCommand('help')
     match = state.expect_match(r'(?P<bang>!)?\s*(?P<subject>.+)?$').groupdict()
     params = {'subject': match['subject']}
@@ -265,14 +265,14 @@ def _ex_route_help(state):
     return command
 
 
-def _ex_route_history(state):
+def _ex_route_history(state) -> TokenCommand:
     command = _create_route(state, 'history')
     _resolve(state, command, r'\s*(?P<name>.+)')
 
     return command
 
 
-def _ex_route_let(state):
+def _ex_route_let(state) -> TokenCommand:
     command = TokenCommand('let')
     params = {'name': None, 'value': None}
 
@@ -287,7 +287,7 @@ def _ex_route_let(state):
     return command
 
 
-def _ex_route_move(state):
+def _ex_route_move(state) -> TokenCommand:
     command = _create_route(state, 'move', addressable=True)
 
     state.skip(' ')
@@ -300,39 +300,39 @@ def _ex_route_move(state):
     return command
 
 
-def _ex_route_new(state):
+def _ex_route_new(state) -> TokenCommand:
     return _create_route(state, 'new')
 
 
-def _ex_route_nnoremap(state):
+def _ex_route_nnoremap(state) -> TokenCommand:
     return _create_map_route(state, 'nnoremap')
 
 
-def _ex_route_nohlsearch(state):
+def _ex_route_nohlsearch(state) -> TokenCommand:
     return _create_route(state, 'nohlsearch')
 
 
-def _ex_route_noremap(state):
+def _ex_route_noremap(state) -> TokenCommand:
     return _create_map_route(state, 'noremap')
 
 
-def _ex_route_nunmap(state):
+def _ex_route_nunmap(state) -> TokenCommand:
     return _create_word_route(state, 'nunmap', 'lhs')
 
 
-def _ex_route_only(state):
+def _ex_route_only(state) -> TokenCommand:
     return _create_route(state, 'only', forcable=True)
 
 
-def _ex_route_onoremap(state):
+def _ex_route_onoremap(state) -> TokenCommand:
     return _create_map_route(state, 'onoremap')
 
 
-def _ex_route_ounmap(state):
+def _ex_route_ounmap(state) -> TokenCommand:
     return _create_word_route(state, 'ounmap', 'lhs')
 
 
-def _ex_route_print(state):
+def _ex_route_print(state) -> TokenCommand:
     command = TokenCommand('print')
     command.addressable = True
     command.cooperates_with_global = True
@@ -363,19 +363,19 @@ def _ex_route_print(state):
     return command
 
 
-def _ex_route_pwd(state):
+def _ex_route_pwd(state) -> TokenCommand:
     return _create_route(state, 'pwd')
 
 
-def _ex_route_qall(state):
+def _ex_route_qall(state) -> TokenCommand:
     return _create_route(state, 'qall', forcable=True)
 
 
-def _ex_route_quit(state):
+def _ex_route_quit(state) -> TokenCommand:
     return _create_route(state, 'quit', forcable=True)
 
 
-def _ex_route_read(state):
+def _ex_route_read(state) -> TokenCommand:
     command = TokenCommand('read', addressable=True)
 
     state.skip(' ')
@@ -400,11 +400,11 @@ def _ex_route_read(state):
     return command
 
 
-def _ex_route_registers(state):
+def _ex_route_registers(state) -> TokenCommand:
     return _create_route(state, 'registers')
 
 
-def _ex_route_set(state):
+def _ex_route_set(state) -> TokenCommand:
     command = TokenCommand('set')
     command.params.update(
         state.expect_match(r'\s*(?P<option>.+?)\s*(?:=\s*(?P<value>.*))?$').groupdict()
@@ -413,7 +413,7 @@ def _ex_route_set(state):
     return command
 
 
-def _ex_route_setlocal(state):
+def _ex_route_setlocal(state) -> TokenCommand:
     command = TokenCommand('setlocal')
     command.params.update(
         state.expect_match(r'\s*(?P<option>.+?)\s*(?:=\s*(?P<value>.*))?$').groupdict()
@@ -422,15 +422,15 @@ def _ex_route_setlocal(state):
     return command
 
 
-def _ex_route_shell(state):
+def _ex_route_shell(state) -> TokenCommand:
     return _create_route(state, 'shell')
 
 
-def _ex_route_silent(state):
+def _ex_route_silent(state) -> TokenCommand:
     return _create_word_route(state, 'silent', 'command', forcable=True)
 
 
-def _ex_route_shell_out(state):
+def _ex_route_shell_out(state) -> TokenCommand:
     command = TokenCommand('!', target='shell_out')
     command.addressable = True
     params = {'cmd': None}
@@ -443,37 +443,37 @@ def _ex_route_shell_out(state):
     return command
 
 
-def _ex_route_snoremap(state):
+def _ex_route_snoremap(state) -> TokenCommand:
     return _create_map_route(state, 'snoremap')
 
 
-def _ex_route_sunmap(state):
+def _ex_route_sunmap(state) -> TokenCommand:
     return _create_word_route(state, 'sunmap', 'lhs')
 
 
-def _ex_route_sort(state):
+def _ex_route_sort(state) -> TokenCommand:
     command = _create_route(state, 'sort', addressable=True)
     _resolve(state, command, r'\s*(?P<options>[iu]+)')
 
     return command
 
 
-def _ex_route_spellgood(state):
+def _ex_route_spellgood(state) -> TokenCommand:
     return _create_word_route(state, 'spellgood', 'word')
 
 
-def _ex_route_spellundo(state):
+def _ex_route_spellundo(state) -> TokenCommand:
     return _create_word_route(state, 'spellundo', 'word')
 
 
-def _ex_route_split(state):
+def _ex_route_split(state) -> TokenCommand:
     command = _create_route(state, 'split')
     _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
 
 
-def _ex_route_substitute(state):
+def _ex_route_substitute(state) -> TokenCommand:
     command = TokenCommand('substitute')
     command.addressable = True
 
@@ -541,66 +541,66 @@ def _ex_route_substitute(state):
     return command
 
 
-def _ex_route_tabclose(state):
+def _ex_route_tabclose(state) -> TokenCommand:
     return _create_route(state, 'tabclose', forcable=True)
 
 
-def _ex_route_tabfirst(state):
+def _ex_route_tabfirst(state) -> TokenCommand:
     return _create_route(state, 'tabfirst', forcable=True)
 
 
-def _ex_route_tablast(state):
+def _ex_route_tablast(state) -> TokenCommand:
     return _create_route(state, 'tablast', forcable=True)
 
 
-def _ex_route_tabnext(state):
+def _ex_route_tabnext(state) -> TokenCommand:
     return _create_route(state, 'tabnext', forcable=True)
 
 
-def _ex_route_tabonly(state):
+def _ex_route_tabonly(state) -> TokenCommand:
     return _create_route(state, 'tabonly', forcable=True)
 
 
-def _ex_route_tabprevious(state):
+def _ex_route_tabprevious(state) -> TokenCommand:
     return _create_route(state, 'tabprevious', forcable=True)
 
 
-def _ex_route_unmap(state):
+def _ex_route_unmap(state) -> TokenCommand:
     return _create_word_route(state, 'unmap', 'lhs')
 
 
-def _ex_route_unvsplit(state):
+def _ex_route_unvsplit(state) -> TokenCommand:
     return _create_route(state, 'unvsplit')
 
 
-def _ex_route_vnoremap(state):
+def _ex_route_vnoremap(state) -> TokenCommand:
     return _create_map_route(state, 'vnoremap')
 
 
-def _ex_route_vsplit(state):
+def _ex_route_vsplit(state) -> TokenCommand:
     command = _create_route(state, 'vsplit')
     _resolve(state, command, r'\s+(?P<file>.+)')
 
     return command
 
 
-def _ex_route_vunmap(state):
+def _ex_route_vunmap(state) -> TokenCommand:
     return _create_word_route(state, 'vunmap', 'lhs')
 
 
-def _ex_route_wall(state):
+def _ex_route_wall(state) -> TokenCommand:
     return _create_route(state, 'wall', forcable=True)
 
 
-def _ex_route_wq(state):
+def _ex_route_wq(state) -> TokenCommand:
     return _create_route(state, 'wq', forcable=True)
 
 
-def _ex_route_wqall(state):
+def _ex_route_wqall(state) -> TokenCommand:
     return _create_route(state, 'wqall', addressable=True)
 
 
-def _ex_route_write(state):
+def _ex_route_write(state) -> TokenCommand:
     command = TokenCommand('write')
     command.addressable = True
 
@@ -676,7 +676,7 @@ def _ex_route_write(state):
     return command
 
 
-def _ex_route_yank(state):
+def _ex_route_yank(state) -> TokenCommand:
     command = TokenCommand('yank')
     command.addressable = True
 
