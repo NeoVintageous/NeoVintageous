@@ -67,7 +67,7 @@ def mode_to_name(mode: str) -> str:
     try:
         return _MODES[mode]
     except KeyError:
-        return 'REALLY UNKNOWN'
+        return '*UNKNOWN'
 
 
 def is_visual_mode(mode: str) -> bool:

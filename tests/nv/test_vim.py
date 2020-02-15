@@ -28,7 +28,7 @@ class TestVim(unittest.TestCase):
         self.assertEqual(mode_to_name(REPLACE), 'REPLACE')
         self.assertEqual(mode_to_name(SELECT), 'SELECT')
         self.assertEqual(mode_to_name(INSERT), 'INSERT')
-        self.assertEqual(mode_to_name('foobar'), 'REALLY UNKNOWN')
+        self.assertEqual(mode_to_name('foobar'), '*UNKNOWN')
 
     def test_is_visual_mode(self):
         self.assertFalse(is_visual_mode(INSERT))
