@@ -538,10 +538,10 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['qall', 'qa'], cmd('qall'))
         self.assertRoute(['quit!', 'q!'], cmd('quit', forced=True))
         self.assertRoute(['quit', 'q'], cmd('quit'))
-        self.assertRoute(['read file.txt', 'r file.txt'], cmd('read', params={'file_name': 'file.txt'}))
-        self.assertRoute(['read!p', 'r!p'], cmd('read', params={'cmd': 'p'}))
-        self.assertRoute(['read!print', 'r!print'], cmd('read', params={'cmd': 'print'}))
-        self.assertRoute(['read!yank', 'r!yank'], cmd('read', params={'cmd': 'yank'}))
+        self.assertRoute(['read file.txt', 'r file.txt'], cmd('read', addressable=True, params={'file_name': 'file.txt'}))  # noqa: E501
+        self.assertRoute(['read!p', 'r!p'], cmd('read', addressable=True, params={'cmd': 'p'}))
+        self.assertRoute(['read!print', 'r!print'], cmd('read', addressable=True, params={'cmd': 'print'}))
+        self.assertRoute(['read!yank', 'r!yank'], cmd('read', addressable=True, params={'cmd': 'yank'}))
         self.assertRoute(['registers', 'reg'], cmd('registers'))
         self.assertRoute(['set noopt', 'se noopt'], cmd('set', params={'option': 'noopt', 'value': None}))
         self.assertRoute(['set opt   =   val', 'se opt    =   val'], cmd('set', params={'option': 'opt', 'value': 'val'}))  # noqa: E501

@@ -15,16 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv import shell_unixlike
+from NeoVintageous.tests import unittest
 
 
-def open(view) -> None:
-    shell_unixlike.open(view)
+class Test_ex_pwd(unittest.FunctionalTestCase):
 
-
-def read(view, cmd: str) -> str:
-    return shell_unixlike.read(view, cmd)
-
-
-def filter_region(view, text: str, cmd: str) -> str:
-    return shell_unixlike.filter_region(view, text, cmd)
+    @unittest.mock_status_message()
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.os')
+    def test_pwd(self, os):
+        os.getcwd.return_value = 'fizzbuzz'
+        self.feed(':pwd')
+        self.assertStatusMessage('fizzbuzz')

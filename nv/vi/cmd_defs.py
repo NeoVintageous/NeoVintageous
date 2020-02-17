@@ -1022,6 +1022,7 @@ class ViLeftDeleteChar(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_PAGEDOWN, _ACTION_MODES)
 @assign(seqs.GT, _ACTION_MODES)
 class ViActivateNextTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1038,6 +1039,7 @@ class ViActivateNextTab(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_PAGEUP, _ACTION_MODES)
 @assign(seqs.G_BIG_T, _ACTION_MODES)
 class ViActivatePreviousTab(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -1980,6 +1982,7 @@ class StFocusSideBar(ViOperatorDef):
 
 
 @assign(seqs.I, (NORMAL, SELECT))
+@assign(seqs.INSERT, (NORMAL, SELECT))
 class ViEnterInserMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2202,6 +2205,7 @@ class ViGotoSymbolInFile(ViMotionDef):
         }
 
 
+@assign(seqs.ALT_RIGHT, _MOTION_MODES)
 @assign(seqs.L, _MOTION_MODES)
 @assign(seqs.RIGHT, _MOTION_MODES)
 @assign(seqs.SPACE, _MOTION_MODES)
@@ -2239,6 +2243,7 @@ class ViShiftEnterMotion(ViMotionDef):
 
 
 @assign(seqs.B, _MOTION_MODES)
+@assign(seqs.SHIFT_LEFT, _MOTION_MODES)
 class ViMoveByWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2256,6 +2261,7 @@ class ViMoveByWordsBackward(ViMotionDef):
 
 
 @assign(seqs.BIG_B, _MOTION_MODES)
+@assign(seqs.CTRL_LEFT, _MOTION_MODES)
 class ViMoveByBigWordsBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2273,6 +2279,7 @@ class ViMoveByBigWordsBackward(ViMotionDef):
 
 
 @assign(seqs.BIG_W, _MOTION_MODES)
+@assign(seqs.CTRL_RIGHT, _MOTION_MODES)
 class ViMoveByBigWords(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2427,6 +2434,7 @@ class ViMoveHalfScreenUp(ViMotionDef):
 
 @assign(seqs.CTRL_F, _MOTION_MODES)
 @assign(seqs.PAGE_DOWN, _MOTION_MODES)
+@assign(seqs.SHIFT_DOWN, _MOTION_MODES)
 class ViMoveScreenDown(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2445,6 +2453,7 @@ class ViMoveScreenDown(ViMotionDef):
 
 @assign(seqs.CTRL_B, _MOTION_MODES)
 @assign(seqs.PAGE_UP, _MOTION_MODES)
+@assign(seqs.SHIFT_UP, _MOTION_MODES)
 class ViMoveScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2497,7 +2506,7 @@ class ViMoveToEol(ViMotionDef):
         }
 
 
-@assign(seqs.ENTER, _MOTION_MODES)
+@assign(seqs.CR, _MOTION_MODES)
 @assign(seqs.PLUS, _MOTION_MODES)
 class ViMotionEnter(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -2926,7 +2935,9 @@ class ViMoveByBigWordEnds(ViMotionDef):
         }
 
 
+@assign(seqs.ALT_LEFT, _MOTION_MODES)
 @assign(seqs.BACKSPACE, _MOTION_MODES)
+@assign(seqs.CTRL_BACKSPACE, _MOTION_MODES)
 @assign(seqs.CTRL_H, _MOTION_MODES)
 @assign(seqs.H, _MOTION_MODES)
 @assign(seqs.LEFT, _MOTION_MODES)
@@ -2946,6 +2957,7 @@ class ViMoveLeftByChars(ViMotionDef):
         }
 
 
+@assign(seqs.SHIFT_RIGHT, _MOTION_MODES)
 @assign(seqs.W, _MOTION_MODES)
 class ViMoveByWords(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -2956,7 +2968,10 @@ class ViMoveByWords(ViMotionDef):
     def translate(self, state):
         return {
             'motion': '_vi_w',
-            'motion_args': {'mode': state.mode, 'count': state.count}
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
         }
 
 
@@ -3172,6 +3187,7 @@ class ViOpenRegister(ViMotionDef):
         return {}
 
 
+@assign(seqs.CTRL_HOME, _MOTION_MODES)
 @assign(seqs.GG, _MOTION_MODES)
 class ViGotoBof(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -3262,9 +3278,9 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
         return {
             'motion': '_vi_find_in_line',
             'motion_args': {
-                'char': self.inp,
                 'mode': state.mode,
                 'count': state.count,
+                'char': self.inp,
                 'inclusive': self.inclusive
             }
         }

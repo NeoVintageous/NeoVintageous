@@ -292,8 +292,8 @@ def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
 
-# Used, for example, by commands like f{char} and t{char}.
-_tranlsate_char_map = {
+# Used for example by commands like f{char} and t{char}.
+_TRANLSATE_CHAR_MAP = {
     '<bar>': '|',
     '<bslash>': '\\',
     '<cr>': '\n',
@@ -308,8 +308,8 @@ _tranlsate_char_map = {
 def translate_char(char: str) -> str:
     lchar = char.lower()
 
-    if lchar in _tranlsate_char_map:
-        return _tranlsate_char_map[lchar]
+    if lchar in _TRANLSATE_CHAR_MAP:
+        return _TRANLSATE_CHAR_MAP[lchar]
 
     return char
 
@@ -334,7 +334,7 @@ def adding_regions(view, name: str, regions: list, scope_name: str):
     view.erase_regions(name)
 
 
-class SelectionObserver:
+class SelectionObserver():
 
     def __init__(self, view):
         self._view = view

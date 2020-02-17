@@ -72,6 +72,19 @@ def _is_insert_mode(view, operator, operand, match_all):
 
 
 def _is_alt_key_enabled(view, operator, operand, match_all):
+    # Some GUI versions allow the access to menu entries by using the ALT
+    # key in combination with a character that appears underlined in the
+    # menu.  This conflicts with the use of the ALT key for mappings and
+    # entering special characters.  This option tells what to do:
+    #   no    Don't use ALT keys for menus.  ALT key combinations can be
+    #         mapped, but there is no automatic handling.
+    #   yes   ALT key handling is done by the windowing system.  ALT key
+    #         combinations cannot be mapped.
+    #   menu  Using ALT in combination with a character that is a menu
+    #         shortcut key, will be handled by the windowing system.  Other
+    #         keys can be mapped.
+    # If the menu is disabled by excluding 'm' from 'guioptions', the ALT
+    # key is never used for the menu.
     winaltkeys = get_option(view, 'winaltkeys')
     if winaltkeys == 'menu':
         return (operand not in tuple('efghinpstv') or not view.window().is_menu_visible()) and _is_command_mode(view)
@@ -82,7 +95,7 @@ def _is_alt_key_enabled(view, operator, operand, match_all):
 _query_contexts = {
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
-    'nv.is_alt_key_enabled': _is_alt_key_enabled,
+    'nv.alt_key_enabled': _is_alt_key_enabled,
 }  # type: dict
 
 
@@ -108,21 +121,12 @@ class NeoVintageousEvents(EventListener):
         if key in _query_contexts:
             return _query_contexts[key](view, operator, operand, match_all)
 
-    # TODO [refactor] [cleanup] and [optimise] on_text_command()
-    def on_text_command(self, view, command, args):
+    def on_text_command(self, view, command: str, args: dict):
         # Called when a text command is issued.
         #
         # The listener may return a (command, arguments) tuple to rewrite the
         # command, or None to run the command unmodified.
-        #
-        # Args:
-        #   view (View)
-        #   command (str)
-        #   args (dict)
-        #
-        # Returns:
-        #   Tuple (str, dict): If the command is to be rewritten
-        #   None: If the command is unmodified
+
         if command == 'drag_select':
 
             # Updates the mode based on mouse events. For example, a double
@@ -175,13 +179,10 @@ class NeoVintageousEvents(EventListener):
                         state.update_xpos(force=True)
 
     def on_load(self, view):
-        if get_option(view, 'modeline'):
+        if is_view(view) and get_option(view, 'modeline'):
             do_modeline(view)
 
     def on_post_save(self, view):
-        if get_option(view, 'modeline'):
-            do_modeline(view)
-
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.
         # TODO Kill State dependency

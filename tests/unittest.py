@@ -27,12 +27,15 @@ import unittest
 # Use aliases to indicate that they are not public testing APIs.
 from sublime import Region
 from sublime import active_window as _active_window
+from sublime import platform as _platform
 from sublime import version as _version
 
 # Use aliases to indicate that they are not public testing APIs.
 from NeoVintageous.nv import macros as _macros
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.mappings import _mappings
+from NeoVintageous.nv.marks import get_mark as _get_mark
+from NeoVintageous.nv.marks import set_mark as _set_mark
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.registers import _data as _registers_data
@@ -80,6 +83,9 @@ class ViewTestCase(unittest.TestCase):
         if self.view:
             self.view.set_scratch(True)
             self.view.close()
+
+    def platform(self):
+        return _platform()
 
     def content(self) -> str:
         return self.view.substr(Region(0, self.view.size()))
@@ -203,10 +209,14 @@ class ViewTestCase(unittest.TestCase):
         self.assertFalse(self.settings().has('vi_%s' % name))
         self.assertFalse(self.settings().has('vintageous_%s' % name))
 
-    def set_option(self, name, value):
+    def set_option(self, name, value, setting=True):
         _set_option(self.view, name, value)
-        # Options via settings is DEPRECATED
-        self.settings().set('vintageous_%s' % name, value)
+        if setting:
+            # Options via settings is DEPRECATED
+            self.settings().set('vintageous_%s' % name, value)
+
+    def get_option(self, name):
+        return _get_option(self.view, name)
 
     def assertOption(self, name, expected, msg=None):
         self.assertEqual(_get_option(self.view, name), expected, msg=msg)
@@ -332,6 +342,16 @@ class ViewTestCase(unittest.TestCase):
     def resetMacros(self):
         _macros._state.clear()
 
+    def setMark(self, name: str, pt: int):
+        sels = list(self.view.sel())
+        self.select(pt)
+        _set_mark(self.view, name)
+        self.view.sel().clear()
+        self.view.sel().add_all(sels)
+
+    def assertMark(self, name: str, expected):
+        self._assertContentSelection([_get_mark(self.view, name)], expected)
+
     def assertMapping(self, mode: int, lhs: str, rhs: str):
         self.assertIn(lhs, _mappings[mode])
         self.assertEqual(_mappings[mode][lhs], rhs)
@@ -346,10 +366,18 @@ class ViewTestCase(unittest.TestCase):
     def assertContent(self, expected, msg=None):
         self.assertEqual(self.content(), expected, msg)
 
+    def commandLineOutput(self) -> str:
+        cmdline = self.view.window().find_output_panel('Command-line')
+
+        return cmdline.substr(Region(0, cmdline.size()))
+
+    def assertCommandLineOutput(self, expected, msg=None):
+        self.assertEqual(self.commandLineOutput(), expected, msg)
+
     def assertContentRegex(self, expected_regex, msg=None):
         self.assertRegex(self.content(), expected_regex, msg=msg)
 
-    def _assertContentSelection(self, sels, expected, msg=None):
+    def _assertContentSelection(self, sels: list, expected: str, msg=None):
         content = list(self.view.substr(Region(0, self.view.size())))
         counter = 0
         for sel in sels:
@@ -958,18 +986,26 @@ def mock_bell():
     @unittest.mock_bell()
     def test_name(self):
         self.assertBell()
-        self.assertBell('message')
+        self.assertBell('status message')
+        self.assertBellCount(2)
         self.assertNoBell()
 
     """
     def wrapper(f):
-        @mock.patch('NeoVintageous.nv.commands.ui_bell')
-        def wrapped(self, *args, **kwargs):
-            self.bells = [
-                args[-1]
-            ]
 
-            def _bell_call_count():
+        # Hack to make sure the right imported ui_bell function is mocked.
+        if f.__module__.endswith('nv.test_ex_cmds'):
+            patch = 'NeoVintageous.nv.ex_cmds.ui_bell'
+        else:
+            patch = 'NeoVintageous.nv.commands.ui_bell'
+
+        @mock.patch(patch)
+        def wrapped(self, *args, **kwargs):
+            mock = args[-1]
+
+            self.bells = [mock]
+
+            def _bell_call_count() -> int:
                 bell_count = 0
                 for bell in self.bells:
                     bell_count += bell.call_count
@@ -1326,6 +1362,9 @@ _SEQ2CMD = {
     '[ot':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 't'}},  # noqa: E241
     '[ow':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'w'}},  # noqa: E241
     '[{':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '{'}},  # noqa: E241,E501
+    '\'a':          {'command': '_vi_quote', 'args': {'character': 'a'}},  # noqa: E241
+    '\'p':          {'command': '_vi_quote', 'args': {'character': 'p'}},  # noqa: E241
+    '\'x':          {'command': '_vi_quote', 'args': {'character': 'x'}},  # noqa: E241
     '] ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_down'}},  # noqa: E241
     '])':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': ')'}},  # noqa: E241,E501
     ']P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_indent': True}},  # noqa: E241,E501
@@ -1343,6 +1382,9 @@ _SEQ2CMD = {
     ']}':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': '}'}},  # noqa: E241,E501
     '^':            {'command': '_vi_hat'},  # noqa: E241
     '_':            {'command': '_vi_underscore'},  # noqa: E241
+    '`a':           {'command': '_vi_backtick', 'args': {'character': 'a'}},  # noqa: E241
+    '`p':           {'command': '_vi_backtick', 'args': {'character': 'p'}},  # noqa: E241
+    '`x':           {'command': '_vi_backtick', 'args': {'character': 'x'}},  # noqa: E241
     'a"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': True}},  # noqa: E241,E501
     'a':            {'command': '_vi_a'},  # noqa: E241
     'a(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': True}},  # noqa: E241,E501
@@ -1517,9 +1559,13 @@ _SEQ2CMD = {
     'dTx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'char': 'x'}, 'motion': '_vi_reverse_find_in_line'}}},  # noqa: E241,E501
     'dW':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_w'}}},  # noqa: E241,E501
     'd[{':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'action': 'target', 'target': '{'}, 'motion': '_vi_left_square_bracket'}, 'register': '"'}},  # noqa: E241,E501
+    'd\'a':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'a'}, 'motion': '_vi_quote'}}},  # noqa: E241,E501
+    'd\'x':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'x'}, 'motion': '_vi_quote'}}},  # noqa: E241,E501
     'd]}':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'action': 'target', 'target': '}'}, 'motion': '_vi_right_square_bracket'}, 'register': '"'}},  # noqa: E241,E501
     'd^':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_hat'}}},  # noqa: E241,E501
     'd_':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_underscore'}}},  # noqa: E241,E501
+    'd`a':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'a'}, 'motion': '_vi_backtick'}}},  # noqa: E241,E501
+    'd`x':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'x'}, 'motion': '_vi_backtick'}}},  # noqa: E241,E501
     'da"':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da(':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da)':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1676,6 +1722,8 @@ _SEQ2CMD = {
     'j':            {'command': '_vi_j'},  # noqa: E241
     'k':            {'command': '_vi_k'},  # noqa: E241
     'l':            {'command': '_vi_l'},  # noqa: E241
+    'ma':           {'command': '_vi_m', 'args': {'character': 'a'}},  # noqa: E241
+    'mx':           {'command': '_vi_m', 'args': {'character': 'x'}},  # noqa: E241
     'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
     'p':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False}},  # noqa: E241

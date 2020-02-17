@@ -149,7 +149,7 @@ class State(object):
 
     @sequence.setter
     def sequence(self, value: str) -> None:
-        _log.debug('sequence >>>%s<<<', value)
+        _log.debug('set sequence >>>%s<<<', value)
         self.settings.vi['sequence'] = value
 
     @property
@@ -160,7 +160,7 @@ class State(object):
 
     @partial_sequence.setter
     def partial_sequence(self, value: str) -> None:
-        _log.debug('partials >>>%s<<<', value)
+        _log.debug('set partial sequence >>>%s<<<', value)
         self.settings.vi['partial_sequence'] = value
 
     @property
@@ -587,16 +587,25 @@ class State(object):
         return False
 
     def eval(self) -> None:
+        _log.debug('evaluating...')
         if not self.runnable():
+            _log.debug('not runnable!')
             return
 
         if self.action and self.motion:
-            action_cmd = self.action.translate(self)
-            _log.debug('action_cmd = %s', action_cmd)
-            motion_cmd = self.motion.translate(self)
-            _log.debug('motion_cmd = %s', motion_cmd)
 
-            _log.debug('changing to INTERNAL_NORMAL...')
+            # Evaluate action with motion: runs the action with the motion as an
+            # argument. The motion's mode is set to INTERNAL_NORMAL and is run
+            # by the action internally to make the selection to operates on. For
+            # example the motion commands can be used after an operator command,
+            # to have the command operate on the text that was moved over.
+
+            action_cmd = self.action.translate(self)
+            motion_cmd = self.motion.translate(self)
+
+            _log.debug('action: %s', action_cmd)
+            _log.debug('motion: %s', motion_cmd)
+
             self.mode = INTERNAL_NORMAL
 
             if 'mode' in action_cmd['action_args']:
@@ -606,46 +615,51 @@ class State(object):
                 motion_cmd['motion_args']['mode'] = INTERNAL_NORMAL
 
             args = action_cmd['action_args']
+
             args['count'] = 1
+
             # Let the action run the motion within its edit object so that we
             # don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
 
             if self.glue_until_normal_mode and not self.processing_notation:
-                # Tell Sublime Text that it should group all the next edits
-                # until we enter normal mode again.
                 run_window_command('mark_undo_groups_for_gluing')
 
             macros.add_step(self, action_cmd['action'], args)
+
             run_window_command(action_cmd['action'], args)
 
-            if not self.non_interactive:
-                if self.action.repeatable:
-                    _log.debug('action is repeatable, setting repeat data...')
-                    set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
+            if not self.non_interactive and self.action.repeatable:
+                set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
 
             self.reset_command_data()
 
-            return
+            return  # Nothing more to do.
 
         if self.motion:
+
+            # Evaluate motion: Run it.
+
             motion_cmd = self.motion.translate(self)
+
+            _log.debug('motion: %s', motion_cmd)
 
             macros.add_step(self, motion_cmd['motion'], motion_cmd['motion_args'])
 
-            # All motions are subclasses of ViTextCommandBase, so it's safe to
-            # run the command via the current view.
             run_motion(self.view, motion_cmd)
 
         if self.action:
+
+            # Evaluate action. Run it.
+
             action_cmd = self.action.translate(self)
 
+            _log.debug('action: %s', action_cmd)
+
             if self.mode == NORMAL:
-                _log.debug('is NORMAL, changing to INTERNAL_NORMAL...')
                 self.mode = INTERNAL_NORMAL
 
                 if 'mode' in action_cmd['action_args']:
-                    _log.debug('action has a mode, changing to INTERNAL_NORMAL...')
                     action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
             elif is_visual_mode(self.mode):
@@ -653,7 +667,6 @@ class State(object):
                 # overwrite the previous selection needed e.g. gv in a VISUAL
                 # mode needs to expand or contract to previous selection.
                 if action_cmd['action'] != '_vi_gv':
-                    _log.debug('is VISUAL, saving selection...')
                     save_previous_selection(self.view, self.mode)
 
             # Some commands, like 'i' or 'a', open a series of edits that need
@@ -663,24 +676,20 @@ class State(object):
             # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
             # instead.
             if self.glue_until_normal_mode and not self.processing_notation:
-                # Tell Sublime Text that it should group all the next edits
-                # until we enter normal mode again.
                 run_window_command('mark_undo_groups_for_gluing')
 
-            seq = self.sequence
+            sequence = self.sequence
             visual_repeat_data = self.get_visual_repeat_data()
             action = self.action
 
             macros.add_step(self, action_cmd['action'], action_cmd['action_args'])
+
             run_action(active_window(), action_cmd)
 
-            if not (self.processing_notation and self.glue_until_normal_mode):
-                if action.repeatable:
-                    _log.debug('action is repeatable, setting repeat data...')
-                    set_repeat_data(self.view, ('vi', seq, self.mode, visual_repeat_data))
+            if not (self.processing_notation and self.glue_until_normal_mode) and action.repeatable:
+                set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:
-            _log.debug('is INTERNAL_NORMAL, changing to NORMAL...')
             self.enter_normal_mode()
 
         self.reset_command_data()
@@ -689,10 +698,7 @@ class State(object):
 def init_state(view) -> None:
     # Initialise view state.
     #
-    # Runs at startup and every time a view gets activated, loaded, etc.
-    #
-    # Args:
-    #   :view (sublime.View):
+    # Runs every time a view is activated, loaded, etc.
 
     # Don't initialise if we get a console, widget, panel, or any other view
     # where Vim modes are not relevant. Some related initialised settings that

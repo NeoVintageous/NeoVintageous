@@ -37,8 +37,36 @@ contexts:
         1: keyword.control.neovintageourc
         2: entity.name.neovintageourc
 
-    # Keys e.g. <C-d>, <Space>, <leader>.
-    - match: \<[A-Za-z0-9-]+\>
+    # Keys <{named}>
+    - match: (?i)\<(bs|bar|bslash|cr|csi|del|down|eol|end|enter|esc|ff|help|home|insert|leader|left|nl|nul|pagedown|pageup|return|right|space|tab|undo|up|lt|xcsi)>
+      scope: storage.type.neovintageourc
+
+    # Keys <C-{named}>
+    - match: \<C-(Left|Right)>
+      scope: storage.type.neovintageourc
+
+    # Keys <S-{named}>
+    - match: \<S-(Up|Down|Left|Right)>
+      scope: storage.type.neovintageourc
+
+    # Keys <C-x>, <D-x>, <M-x>, <S-x>, etc.
+    - match: \<(A|C|D|M|S)\-[^>]+\>
+      scope: storage.type.neovintageourc
+
+    # Keys <C-S-x>, <D-S-x>, <M-S-x>, etc.
+    - match: \<(C|D|M)\-S-[^>]+\>
+      scope: storage.type.neovintageourc
+
+    # Keys <k{named}>
+    - match: \<k(Home|End|Page(Up|Down)|Plus|Minus|Multiply|Divide|Enter|Point)\>
+      scope: storage.type.neovintageourc
+
+    # Keys <k0> - <k9>
+    - match: \<k[0-9]\>
+      scope: storage.type.neovintageourc
+
+    # Keys <F1> - <F12>
+    - match: \<F([1-9]|1[0-2])\>
       scope: storage.type.neovintageourc
 
     # The '|' character is used to chain commands. Users should

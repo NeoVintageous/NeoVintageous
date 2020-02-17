@@ -15,16 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv import shell_unixlike
+from NeoVintageous.tests import unittest
+
+from NeoVintageous.nv.ui import ui_bell
 
 
-def open(view) -> None:
-    shell_unixlike.open(view)
+class TestUIBell(unittest.ViewTestCase):
 
+    @unittest.mock_status_message()
+    def test_ui_bell_displays_message_when_belloff_disabled(self):
+        self.set_option('belloff', '')
+        ui_bell('fizz buzz')
+        self.assertStatusMessage('fizz buzz')
 
-def read(view, cmd: str) -> str:
-    return shell_unixlike.read(view, cmd)
-
-
-def filter_region(view, text: str, cmd: str) -> str:
-    return shell_unixlike.filter_region(view, text, cmd)
+    @unittest.mock_status_message()
+    def test_ui_bell_displays_message_when_belloff_enabled(self):
+        self.set_option('belloff', 'all')
+        ui_bell('fizz buzz')
+        self.assertStatusMessage('fizz buzz')
+        self.set_option('belloff', '')
+        ui_bell('fizz buzz')
+        self.assertStatusMessage('fizz buzz', count=2)

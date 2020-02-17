@@ -57,10 +57,11 @@ from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
-from NeoVintageous.nv.marks import add_mark
-from NeoVintageous.nv.marks import get_mark_as_encoded_address
+from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
+from NeoVintageous.nv.polyfill import toggle_side_bar
 from NeoVintageous.nv.rc import open_rc
 from NeoVintageous.nv.rc import reload_rc
 from NeoVintageous.nv.registers import registers_get_for_paste
@@ -81,7 +82,6 @@ from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import toggle_ctrl_keys
-from NeoVintageous.nv.settings import toggle_side_bar
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
@@ -154,8 +154,8 @@ from NeoVintageous.nv.vi.core import IrreversibleTextCommand
 from NeoVintageous.nv.vi.core import ViMotionCommand
 from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.core import ViWindowCommandBase
-from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
 from NeoVintageous.nv.vi.keys import to_bare_command_name
+from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
@@ -195,7 +195,6 @@ from NeoVintageous.nv.vim import enter_visual_block_mode
 from NeoVintageous.nv.vim import enter_visual_line_mode
 from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_control
@@ -472,7 +471,6 @@ class _nv_feed_key(ViWindowCommandBase):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         start_time = time.time()
-
         _log.info('key evt: %s count=%s eval=%s mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
 
         try:
@@ -482,7 +480,7 @@ class _nv_feed_key(ViWindowCommandBase):
             _log.exception(e)
             clean_views()
 
-        _log.info('key evt: %s count=%s eval=%s mappings=%s, took %s', key, repeat_count, do_eval, check_user_mappings, '{:.4f}'.format(time.time() - start_time))  # noqa: E501
+        _log.info('key processed in %s secs', '{:.4f}'.format(time.time() - start_time))
 
     def _feed_key(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         # Args:
@@ -557,6 +555,9 @@ class _nv_feed_key(ViWindowCommandBase):
 
         command = mappings_resolve(state, check_user_mappings=check_user_mappings)
 
+        if isinstance(command, ViOpenNameSpace):
+            return
+
         if isinstance(command, ViOpenRegister):
             state.must_capture_register_name = True
             return
@@ -605,6 +606,7 @@ class _nv_feed_key(ViWindowCommandBase):
                         command = rhs[:cr_pos + 4]
                         trailing = rhs[cr_pos + 4:]
                     else:
+                        # Example :reg
                         command = rhs
                         trailing = ''
 
@@ -623,9 +625,6 @@ class _nv_feed_key(ViWindowCommandBase):
                 else:
                     self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
 
-            return
-
-        if isinstance(command, ViOpenNameSpace):
             return
 
         if isinstance(command, ViMissingCommandDef):
@@ -726,7 +725,7 @@ class _nv_process_notation(ViWindowCommandBase):
         # editing action started. For example, 'lldl' would skip 'll' in the
         # undo history, but store the full sequence for '.' to use.
         leading_motions = ''
-        for key in KeySequenceTokenizer(keys).iter_tokenize():
+        for key in tokenize_keys(keys):
             self.window.run_command('_nv_feed_key', {
                 'key': key,
                 'do_eval': False,
@@ -770,7 +769,7 @@ class _nv_process_notation(ViWindowCommandBase):
         if not (state.motion and not state.action):
             with gluing_undo_groups(self.window.active_view(), state):
                 try:
-                    for key in KeySequenceTokenizer(keys).iter_tokenize():
+                    for key in tokenize_keys(keys):
                         if key.lower() == '<esc>':
                             # XXX: We should pass a mode here?
                             enter_normal_mode(self.window)
@@ -880,7 +879,7 @@ class _nv_cmdline(WindowCommand):
             if len(initial_text) > 0:
                 if initial_text[0] == Cmdline.EX:
                     initial_text = initial_text[1:]
-                    message('DEPRECATED cmdline initial text contains leading colon')
+                    _log.debug('DEPRECATED cmdline initial text contains leading colon')
 
         elif is_visual_mode(mode):
             initial_text = "'<,'>"
@@ -1795,8 +1794,7 @@ class _vi_big_i(ViTextCommandBase):
 class _vi_m(ViTextCommandBase):
 
     def run(self, edit, mode=None, count=1, character=None):
-        add_mark(self.view, character)
-        enter_normal_mode(self.view, mode)
+        set_mark(self.view, character)
 
 
 class _vi_quote(ViTextCommandBase):
@@ -1804,44 +1802,34 @@ class _vi_quote(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
             if mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, address.b))
-            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
-                if s.a <= s.b:
-                    if address.b < s.b:
-                        s = Region(s.a + 1, address.b)
-                    else:
-                        s = Region(s.a, address.b)
-                else:
-                    s = Region(s.a + 1, address.b)
+                resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
+            elif mode == VISUAL_LINE:
+                resolve_visual_line_target(view, s, next_non_blank(view, view.line(target.b).a))
             elif mode == NORMAL:
-                s = Region(next_non_blank(view, address.b))
+                s.a = s.b = next_non_blank(view, view.line(target.b).a)
             elif mode == INTERNAL_NORMAL:
-                if s.a < address.a:
-                    s = Region(view.full_line(s.b).a, view.line(address.b).b)
+                if s.a < target.a:
+                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
                 else:
-                    s = Region(view.full_line(s.b).b, view.line(address.b).a)
+                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
 
             return s
 
-        address = get_mark_as_encoded_address(self.view, character)
-        if address is None:
+        target = get_mark(self.view, character)
+        if target is None:
+            ui_bell('E20: mark not set')
             return
 
-        if isinstance(address, str):
-            if not address.startswith('<command'):
-                self.view.window().open_file(address, ENCODED_POSITION)
-            else:
-                # We get a command in this form: <command _vi_double_quote>
-                self.view.run_command(address.split(' ')[1][:-1])
-
-            return
+        if isinstance(target, tuple):
+            view, target = target
+            self.view.window().focus_view(view)
 
         jumplist_update(self.view)
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
-        if not self.view.visible_region().intersects(address):
-            self.view.show_at_center(address)
+        if not self.view.visible_region().intersects(target):
+            self.view.show_at_center(target)
 
 
 class _vi_backtick(ViTextCommandBase):
@@ -1849,26 +1837,28 @@ class _vi_backtick(ViTextCommandBase):
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
             if mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, address.b))
+                resolve_visual_target(s, target.b)
+            elif mode == VISUAL_LINE:
+                resolve_visual_line_target(view, s, target.b)
             elif mode == NORMAL:
-                s = Region(next_non_blank(view, address.b))
+                s.a = s.b = target.b
             elif mode == INTERNAL_NORMAL:
-                if s.a < address.a:
-                    s = Region(view.full_line(s.b).a, view.line(address.b).b)
+                if s.a < target.a:
+                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
                 else:
-                    s = Region(view.full_line(s.b).b, view.line(address.b).a)
+                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
 
             return s
 
-        address = get_mark_as_encoded_address(self.view, character, exact=True)
-        if address is None:
+        target = get_mark(self.view, character)
+
+        if target is None:
+            ui_bell('E20: mark not set')
             return
 
-        if isinstance(address, str):
-            if not address.startswith('<command'):
-                self.view.window().open_file(address, ENCODED_POSITION)
-
-            return
+        if isinstance(target, tuple):
+            view, target = target
+            self.view.window().focus_view(view)
 
         jumplist_update(self.view)
         regions_transformer(self.view, f)

@@ -39,6 +39,12 @@ class Test_ex_substitute(unittest.FunctionalTestCase):
         self.eq('xx\n|xx\nxx\n', ':substitute/x/y/', 'xx\n|yx\nxx\n')
         self.eq('axxa\n|bxxb\ncxxc\n', ':substitute/x/y/', 'axxa\n|byxb\ncxxc\n')
         self.eq('axxa\n   bx|xb\ncxxc\n', ':substitute/x/y/', 'axxa\n   |byxb\ncxxc\n')
+        self.eq('a\n|b\nc\n', ':%substitute/$/,/', 'a,\nb,\n|c,\n')
+        self.eq('a\n|b\nc\n', ':substitute/$/,/', 'a\n|b,\nc\n')
+        self.eq('a\n|b\nc\n', ':s/$/,/g', 'a\n|b,\nc\n')
+        self.eq('aa\nb|b\ncc\n', ':s/$/,/g', 'aa\n|bb,\ncc\n')
+        self.eq('|<app>jdk\n', ':substitute/$/<app>/', '|<app>jdk<app>\n')
+        # TODO Fix self.eq('|<app>jdk\n', ':substitute/$/<\\/app>/', '<app>jdk</app>')
 
     def test_flags(self):
         self.eq('axxa\n|bxxb\ncxxc\n', ':substitute/x/y/g', 'axxa\n|byyb\ncxxc\n')

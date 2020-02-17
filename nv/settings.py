@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from sublime import load_settings
-from sublime import save_settings
+from NeoVintageous.nv.polyfill import save_preferences
 
 
 def get_setting(view, name: str, default=None):
@@ -94,9 +93,8 @@ def set_reset_during_init(view, value: bool) -> None:
 
 
 def _toggle_preference(name: str) -> None:
-    preferences = load_settings('Preferences.sublime-settings')
-    preferences.set(name, not preferences.get(name))
-    save_settings('Preferences.sublime-settings')
+    with save_preferences() as preferences:
+        preferences.set(name, not preferences.get(name))
 
 
 def toggle_ctrl_keys() -> None:
@@ -105,14 +103,3 @@ def toggle_ctrl_keys() -> None:
 
 def toggle_super_keys() -> None:
     _toggle_preference('vintageous_use_super_keys')
-
-
-def toggle_side_bar(window) -> None:
-    window.run_command('toggle_side_bar')
-
-    # Ensure that the focus is put on the side bar if it's now visible,
-    # otherwise ensure that the focus returns to active group view.
-    if window.is_sidebar_visible():
-        window.run_command('focus_side_bar')
-    else:
-        window.focus_group(window.active_group())

@@ -49,6 +49,20 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.feedkey(key)
             self.assertNormal('fizz |buzz')
 
+    def test_esc_in_select_mode_exits_multiple_selection(self):
+        self.set_setting('multi_cursor_exit_from_visual_mode', True)
+        self.vselect('f|iz|z\nb|uz|z\n')
+        self.feedkey('<esc>')
+        self.assertNormal('f|izz\nbuzz\n')
+        self.set_setting('multi_cursor_exit_from_visual_mode', False)
+        self.vselect('f|iz|z\nb|uz|z\n')
+        self.feedkey('<esc>')
+        self.assertNormal('f|izz\nb|uzz\n')
+        self.set_setting('multi_cursor_exit_from_visual_mode', True)
+        self.vselect('f|iz|z\nb|uz|z\n')
+        self.feedkey('<esc>')
+        self.assertNormal('f|izz\nbuzz\n')
+
     def test_motion(self):
         self.normal('fi|zz buzz')
         self.feedkey('w')
@@ -340,76 +354,154 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertVisual('one |t|hree four')
         self.assertBell()
 
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_dot_repeat_insertion(self, command_history):
+        command_history.return_value = ('insert', {'characters': 'buzz'}, 1)
+        self.normal('fizz  |x')
+        self.feedkey('i')
+        self.assertInsert('fizz  |x')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz | x')
+        self.feedkey('.')
+        self.assertNormal('fizz |buzz x')
+
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_dot_repeat_append_sequence(self, command_history):
+        command_history.return_value = ('sequence', {'commands': [
+            ['_vi_a', {'count': 1, 'mode': 'mode_internal_normal'}],
+            ['insert', {'characters': 'buzz'}]]}, 1)
+
+        self.normal('fizz | x')
+        self.feedkey('i')
+        self.assertInsert('fizz | x')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz|  x')
+        self.feedkey('.')
+        self.assertNormal('fizz| buzz x')
+
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_dot_repeat_insert_sequence(self, command_history):
+        command_history.return_value = ('sequence', {'commands': [
+            ['insert', {'characters': 'buzzz'}],
+            ['left_delete', None]]}, 1)
+        self.normal('fizz  |x')
+        self.feedkey('i')
+        self.assertInsert('fizz  |x')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz | x')
+        self.feedkey('.')
+        self.assertNormal('fizz |buzz x')
+
+    def test_dot_repeat_visual_operation(self):
+        self.visual('fizz |buzz|fizzbuzz')
+        self.feedkey('x')
+        self.assertNormal('fizz |fizzbuzz')
+        self.feedkey('.')
+        self.assertNormal('fizz |buzz')
+
+    @unittest.mock_bell()
+    def test_dot_repeat_rings_bell_in_visual_mode(self):
+        self.normal('fi|xzz')
+        self.feedkey('x')
+        self.assertNormal('fi|zz')
+        self.feedkey('v')
+        self.assertVisual('fi|z|z')
+        self.feedkey('.')
+        self.assertVisual('fi|z|z')
+        self.assertBell()
+
+    @unittest.mock_bell()
+    @unittest.mock.patch('sublime.View.is_dirty')
+    def test_dot_rings_bell_when_nothing_to_repeat(self, is_dirty=None):
+        is_dirty.return_value = False
+        self.normal('fizz  |x')
+        self.feedkey('i')
+        self.feedkey('<esc>')
+        self.feedkey('.')
+        self.assertNormal('fizz | x')
+        self.assertBell()
+
     def test_marks(self):
         for key in ('\'', '`'):
             self.normal('1\n2\n|fizz\n4\n5\n6\n7')
-            self.feedkeys('ma')
+            self.feedkeys('mo')
             self.feedkeys('6G')  # go to and mark line 6
-            self.feedkeys('mb')
-            self.feedkeys(key + 'a')  # goto mark a
+            self.feedkeys('mt')
+            self.feedkeys(key + 'o')  # goto mark a
             self.assertNormal('1\n2\n|fizz\n4\n5\n6\n7')
-            self.feedkeys(key + 'b')  # goto mark b
+            self.feedkeys(key + 't')  # goto mark b
             self.assertNormal('1\n2\nfizz\n4\n5\n|6\n7')
             self.feedkey('k')  # go up a line
-            self.feedkeys(key + 'a')  # goto mark a
+            self.feedkeys(key + 'o')  # goto mark a
             self.assertNormal('1\n2\n|fizz\n4\n5\n6\n7')
             self.feedkey('v')  # enter Visual
-            self.feedkeys(key + 'b')    # goto mark b
+            self.feedkeys(key + 't')    # goto mark b
             self.assertVisual('1\n2\n|fizz\n4\n5\n6|\n7')
 
     def test_mark_move_to_first_non_blank(self):
-        for key in ('\'', '`'):
-            self.normal('1\n2\n|    fizz\n4\n')
-            self.feedkeys('ma')
-            self.feedkeys('1G')
-            self.feedkeys(key + 'a')
-            self.assertNormal('1\n2\n    |fizz\n4\n')
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('`o')
+        self.assertNormal('1\n2\n|    fizz\n4\n')
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('\'o')
+        self.assertNormal('1\n2\n    |fizz\n4\n')
 
     def test_visual_marks(self):
         for key in ('\'', '`'):
             self.normal('one\ntwo\nthree\n|four\nfive')
-            self.feedkeys('ma')
+            self.feedkeys('mo')
             self.feedkeys('2k')
-            self.feedkeys('mb')
+            self.feedkeys('mt')
             self.feedkey('v')
             self.assertVisual('one\n|t|wo\nthree\nfour\nfive')
-            self.feedkeys(key + 'a')
+            self.feedkeys(key + 'o')
             self.assertVisual('one\n|two\nthree\nf|our\nfive')
-            self.feedkeys(key + 'b')
+            self.feedkeys(key + 't')
             self.assertVisual('one\n|t|wo\nthree\nfour\nfive')
             self.feedkeys('gg')
             self.assertRVisual('|one\nt|wo\nthree\nfour\nfive')
-            self.feedkeys(key + 'a')
+            self.feedkeys(key + 'o')
             self.assertVisual('one\n|two\nthree\nf|our\nfive')
 
     def test_visual_mark_includes_first_non_blank(self):
-        for key in ('\'', '`'):
-            self.normal('1\n2\n|    fizz\n4\n')
-            self.feedkeys('ma')
-            self.feedkeys('1G')
-            self.feedkeys('v')
-            self.feedkeys(key + 'a')
-            self.assertVisual('|1\n2\n    f|izz\n4\n')
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('v')
+        self.feedkeys('\'o')
+        self.assertVisual('|1\n2\n    f|izz\n4\n')
+
+    def test_visual_mark_includes_first_column(self):
+        self.normal('1\n2\n|    fizz\n4\n')
+        self.feedkeys('mo')
+        self.feedkeys('1G')
+        self.feedkeys('v')
+        self.feedkeys('`o')
+        self.assertVisual('|1\n2\n |   fizz\n4\n')
 
     def test_mark_operations(self):
         for key in ('\'', '`'):
             self.normal('1\n|2\n3\n4\n5\n6\n7')
             self.feedkey('m')
-            self.feedkey('a')
+            self.feedkey('o')
             self.feedkey('3')
             self.feedkey('j')
             self.feedkey('d')
             self.feedkey(key)
-            self.feedkey('a')
+            self.feedkey('o')
             self.assertNormal('1\n|6\n7')
             self.normal('1\n2\n3\n4\n|5\n6\n7')
             self.feedkey('m')
-            self.feedkey('a')
+            self.feedkey('o')
             self.feedkey('3')
             self.feedkey('k')
             self.feedkey('d')
             self.feedkey(key)
-            self.feedkey('a')
+            self.feedkey('o')
             self.assertNormal('1\n|\n6\n7')
 
     @unittest.mock_mappings()
@@ -417,13 +509,22 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         for key in ('\'', '`'):
             self.normal('1this\n2th|is\n3this\n4this\n5this\n6this\n7this')
             self.feedkey('m')
-            self.feedkey('a')
+            self.feedkey('o')
             self.feedkey('3')
             self.feedkey('j')
             self.feedkey('m')
-            self.feedkey('b')
-            self.feed(':\'a,\'bs/this/that/')
+            self.feedkey('t')
+            self.feed(':\'o,\'ts/this/that/')
             self.assertNormal('1this\n2that\n3that\n4that\n|5that\n6this\n7this')
+
+    @unittest.mock.patch('sublime.View.command_history')
+    def test_insert_count(self, command_history):
+        command_history.return_value = ('insert', {'characters': 'buzz'}, 1)
+        self.normal('fizz buzz|x')
+        self.feedkey('3')
+        self.feedkey('i')
+        self.feedkey('<esc>')
+        self.assertNormal('fizz buzz|buzzbuzzx')
 
     @unittest.mock_bell()
     @unittest.mock_mappings(
@@ -495,3 +596,29 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkeys('""')
         self.assertNormal('fizz |buzz')
         self.assertNoBell()
+
+    @unittest.mock_bell()
+    @unittest.mock_mappings(
+        (unittest.NORMAL, ',m1', ':fizz'),
+        (unittest.NORMAL, ',m2', ':.yank<CR>2jp'),
+    )
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline.prompt')
+    def test_process_cmdline_prompt_mapping(self, cmdline_prompt):
+        self.normal('|fizz buzz')
+        self.feedkey(',m1')
+        cmdline_prompt.assert_called_once_with('fizz')
+        self.normal('1\nfi|zz\n3\n4\n5\n6')
+        self.feedkey(',m2')
+        self.assertNormal('1\nfizz\n3\n4|fizz\n\n5\n6')
+
+    @unittest.mock.patch('NeoVintageous.nv.utils.run_window_command')
+    def test_slash_search_opens_input_panel(self, run_command):
+        self.normal('|fizz')
+        self.feedkey('/')
+        run_command.assert_called_once_with('_vi_slash')
+
+    @unittest.mock.patch('NeoVintageous.nv.utils.run_window_command')
+    def test_question_search_opens_input_panel(self, run_command):
+        self.normal('|fizz')
+        self.feedkey('?')
+        run_command.assert_called_once_with('_vi_question_mark')

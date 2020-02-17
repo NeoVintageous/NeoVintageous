@@ -67,7 +67,7 @@ def mode_to_name(mode: str) -> str:
     try:
         return _MODES[mode]
     except KeyError:
-        return 'REALLY UNKNOWN'
+        return '*UNKNOWN'
 
 
 def is_visual_mode(mode: str) -> bool:
@@ -153,5 +153,5 @@ def clean_view(view):
         settings.erase('command_mode')
         settings.erase('inverse_caret_state')
         settings.erase('vintage')
-    except Exception:
+    except Exception:  # pragma: no cover
         traceback.print_exc()

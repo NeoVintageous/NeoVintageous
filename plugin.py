@@ -98,10 +98,14 @@ def _update_ignored_packages():
 
 def _init_backwards_compat_patches():
 
+    # Some setting defaults are changed from time to time. To reduce the impact
+    # on users, their current preferences are updated so that when the default
+    # is changed later, their preferences will be override the new default.
+    # See: https://github.com/NeoVintageous/NeoVintageous/issues/404.
+    # TODO Remove all backwards compatability settings updates in future version
+
     try:
-        # Some setting defaults are changing! To avoid impacting users later,
-        # this patch sets the current value to whatever is currently used.
-        # See roadmap: https://github.com/NeoVintageous/NeoVintageous/issues/404.
+
         preferences = sublime.load_settings('Preferences.sublime-settings')
 
         # The build number is in the format {MAJOR}{MINOR}{PATCH}, where the
@@ -109,18 +113,16 @@ def _init_backwards_compat_patches():
         # digits e.g. 1.11.0 -> 11100, 1.11.3 -> 11103, 1.17.1 -> 11701.
         build_version = int(preferences.get('neovintageous_build_version', 0))
 
-        # TODO Remove backwards compatability patch in version 2.0
         if build_version < 11000:  # pragma: no cover
+            preferences.set('neovintageous_build_version', 11000)
             # Set user deprecated default settings. Both ctrl keys and super
             # keys will be  enabled by default in version 2.0. This sets the
             # user default not to avoid disruption for existing users later.
             preferences.set('vintageous_use_ctrl_keys', preferences.get('vintageous_use_ctrl_keys'))
             preferences.set('vintageous_use_super_keys', preferences.get('vintageous_use_super_keys'))
 
-            preferences.set('neovintageous_build_version', 11000)
-
-        # TODO Remove backwards compatability patch in version 2.0
         if build_version < 11100:  # pragma: no cover
+            preferences.set('neovintageous_build_version', 11100)
             # Migrate the ".vintageousrc" (runtime configuation) file. The new
             # file name is ".neovintageousrc" and is automatically renamed to
             # the new name to avoid disruption to users.
@@ -131,8 +133,6 @@ def _init_backwards_compat_patches():
                     print('NeoVintageous: could not migrate "%s" to "%s": target already exists' % (old_file, new_file))  # noqa: E501
                 else:
                     os.rename(old_file, new_file)
-
-            preferences.set('neovintageous_build_version', 11100)
 
             sublime.save_settings('Preferences.sublime-settings')
 

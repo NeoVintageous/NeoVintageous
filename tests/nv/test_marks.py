@@ -17,87 +17,56 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.marks import _marks
-from NeoVintageous.nv.marks import add_mark
-from NeoVintageous.nv.marks import get_mark_as_encoded_address
+from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.marks import set_mark
 
 
-class View():
-    def __init__(self, id_, fname, buffer_id=0):
-        self.view_id = id_
-        self.fname = fname
-        self._buffer_id = buffer_id
-
-    def file_name(self):
-        return self.fname
-
-    def buffer_id(self):
-        return self._buffer_id
-
-
-class Window():
-    pass
-
-
-class MarksTests(unittest.ViewTestCase):
-
-    def setUp(self):
-        super().setUp()
-        _marks.clear()
-        self.view.sel().clear()
-        self.view.sel().add(self.Region(0, 0))
+class TestMarks(unittest.ViewTestCase):
 
     def test_can_set_mark(self):
-        add_mark(self.view, 'a')
-        expected_win, expected_view, expected_region = (self.view.window(), self.view, (0, 0))
-        actual_win, actual_view, actual_region = _marks['a']
-        self.assertEqual((actual_win.id(), actual_view.view_id, actual_region),
-                         (expected_win.id(), expected_view.view_id, expected_region))
+        self.normal('fi|zz')
+        set_mark(self.view, 'p')
+        self.assertRegion(get_mark(self.view, 'p'), 2)
 
-    def test_can_retrieve_mark_in_the_current_buffer_as_tuple(self):
-        add_mark(self.view, 'a')
-        # The caret's at the beginning of the buffer.
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), self.Region(0, 0))
+    def test_no_mark(self):
+        self.normal('fi|zz')
+        self.assertEqual(None, get_mark(self.view, 'u'))
+
+    def test_can_retrieve_mark_in_the_current_buffer(self):
+        self.normal('|fizz')
+        set_mark(self.view, 'p')
+        self.assertRegion(get_mark(self.view, 'p'), 0)
 
     def test_can_retrieve_mark_in_the_current_buffer_as_tuple2(self):
-        self.write(''.join(('foo bar\n') * 10))
-        self.view.sel().clear()
-        self.view.sel().add(self.Region(30, 30))
-        add_mark(self.view, 'a')
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), self.Region(24, 24))
+        self.normal('foo bar\nfoo bar\nfoo bar\n|foo bar\nfoo bar\n')
+        set_mark(self.view, 'p')
+        self.assertRegion(get_mark(self.view, 'p'), 24)
 
-    def test_can_retrieve_mark_in_a_different_buffer_as_encoded_mark(self):
-        view = View(id_=self.view.view_id + 1, fname=r'C:\foo.txt')
-
-        _marks['a'] = (Window(), view, (0, 0))
-        expected = "{0}:{1}".format(r'C:\foo.txt', "0:0")
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), expected)
-
-    def test_can_retrieve_mark_in_an_untitled_buffer_as_encoded_mark(self):
-        view = View(id_=self.view.view_id + 1, fname='', buffer_id=999)
-
-        _marks['a'] = (Window(), view, (0, 0))
-        expected = "<untitled {0}>:{1}".format(999, "0:0")
-        self.assertEqual(get_mark_as_encoded_address(self.view, 'a'), expected)
+    def do_can_retrieve_quote_or_backtick_mark_test(self, name, jumplist_back):
+        jumplist_back.return_value = (self.view, [self.Region(7)])
+        self.normal('|fizz\nbuzz\nfizz\nbuzz')
+        self.assertRegion(get_mark(self.view, name), 7)
+        jumplist_back.assert_called_once_with(self.view)
 
     @unittest.mock.patch('NeoVintageous.nv.marks.jumplist_back')
-    def test_can_retrieve_quote_mark(self, mock_jumplist_back):
-        # Single quote mark should call jumplist_back for its region ignoring
-        # any mark set for "'".
-        _marks['\''] = (Window(), self.view, (0, 0))
-        mock_jumplist_back.return_value = (self.view, [self.Region(30, 30)])
-        self.write(''.join(('foo bar\n') * 10))
-
-        location = get_mark_as_encoded_address(self.view, "'")
-        self.assertEqual(location, self.Region(24, 24))
+    def test_can_retrieve_quote_mark(self, jumplist_back):
+        self.do_can_retrieve_quote_or_backtick_mark_test('`', jumplist_back)
 
     @unittest.mock.patch('NeoVintageous.nv.marks.jumplist_back')
-    def test_can_retrieve_backtick_mark(self, mock_jumplist_back):
-        # Backtick mark should call jumplist_back for its region ignoring any
-        # mark set for "`". Here we set exact to true, emulating ``.
-        _marks['`'] = (Window(), self.view, (0, 0))
-        mock_jumplist_back.return_value = (self.view, [self.Region(30, 30)])
-        self.write(''.join(('foo bar\n') * 10))
+    def test_can_retrieve_backtick_mark(self, jumplist_back):
+        self.do_can_retrieve_quote_or_backtick_mark_test('\'', jumplist_back)
 
-        location = get_mark_as_encoded_address(self.view, "`", exact=True)
-        self.assertEqual(location, self.Region(30, 30))
+    def do_can_retrieve_quote_or_backtick_mark_from_other_view(self, name, jumplist_back):
+        panel = self.view.window().create_output_panel('test_mark', unlisted=True)
+        jumplist_back.return_value = (panel, [self.Region(7)])
+        self.normal('|fizz\nbuzz\nfizz\nbuzz')
+        self.assertEqual(get_mark(self.view, name), (panel, self.Region(7)))
+        jumplist_back.assert_called_once_with(self.view)
+
+    @unittest.mock.patch('NeoVintageous.nv.marks.jumplist_back')
+    def test_can_retrieve_quote_mark_from_other_view(self, jumplist_back):
+        self.do_can_retrieve_quote_or_backtick_mark_from_other_view('`', jumplist_back)
+
+    @unittest.mock.patch('NeoVintageous.nv.marks.jumplist_back')
+    def test_can_retrieve_backtick_mark_from_other_view(self, jumplist_back):
+        self.do_can_retrieve_quote_or_backtick_mark_from_other_view('\'', jumplist_back)

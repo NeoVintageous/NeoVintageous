@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from contextlib import contextmanager
 import re
 
 from sublime import load_settings
@@ -172,3 +173,20 @@ def split_by_newlines(view, region) -> list:
         regions[0].a = min(region.a, region.b)
 
     return regions
+
+
+def toggle_side_bar(window) -> None:
+    window.run_command('toggle_side_bar')
+
+    # Ensure that the focus is put on the side bar if it's now visible,
+    # otherwise ensure that the focus returns to active group view.
+    if window.is_sidebar_visible():
+        window.run_command('focus_side_bar')
+    else:
+        window.focus_group(window.active_group())
+
+
+@contextmanager
+def save_preferences():
+    yield load_settings('Preferences.sublime-settings')
+    save_settings('Preferences.sublime-settings')

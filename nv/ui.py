@@ -38,11 +38,11 @@ def ui_bell(msg: str = None) -> None:
     if not view:
         return
 
-    if get_option(view, 'belloff') == 'all':
-        return
-
     if msg:
         status_message(msg)
+
+    if get_option(view, 'belloff') == 'all':
+        return
 
     color_scheme = get_setting(view, 'bell_color_scheme')
     if color_scheme in ('dark', 'light'):

@@ -2,6 +2,63 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.19.0 - Unreleased
+
+### Added
+
+* Added [#670](https://github.com/NeoVintageous/NeoVintageous/issues/670): Marks locations are updated on view changes
+* Added [#689](https://github.com/NeoVintageous/NeoVintageous/issues/689): `<Return>` key alias for `<CR>`
+* Added [#688](https://github.com/NeoVintageous/NeoVintageous/issues/688): `<Enter>` key alias for `<CR>`
+* Added [#684](https://github.com/NeoVintageous/NeoVintageous/issues/684): `:shell` start a shell (use `vintageous_terminal` setting to set the terminal name)
+* Added [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `'shell'` option e.g. `:set shell=/bin/bash` (used for `:!{cmd}` commands)
+* Added [#687](https://github.com/NeoVintageous/NeoVintageous/issues/687): `[range]:read !{cmd}` execute `{cmd}` and insert below cursor
+* Added [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): Implement Vim modelines
+* Added [#678](https://github.com/NeoVintageous/NeoVintageous/issues/678): `'textwidth'` option e.g. `:set textwidth`, `:set notextwidth`
+* Added [#677](https://github.com/NeoVintageous/NeoVintageous/issues/677): `'tabstop'` option e.g. `:set tabstop`, `:set notabstop`
+* Added [#679](https://github.com/NeoVintageous/NeoVintageous/issues/679): `'expandtabs'` option e.g. `:set expandtabs`, `:set noexpandtabs`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<D-bs>`, `<D-cr>`, `<D-del>`, `<D-down>`, `<D-home>`, `<D-left>`, `<D-pagedown>`, `<D-pageup>`, `<D-right>`, `<D-space>`, `<D-up>`, `<D-.>`, `<D-S-.>`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<M-left>` alias to `h`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<M-right>` alias to `l`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-space>`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-bs>` alias to `h`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-pageup>` alias to `gT`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-pagedown>` alias to `gt`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-home>` alias to `gg`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<insert>` alias to `i`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-down>` alias to `CTRL-f`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-up>` alias to `CTRL-b`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-left>` alias to `B`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-left>` alias to `b`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<C-right>` alias to `W`
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `<S-right>` alias to `w`
+* Added [#671](https://github.com/NeoVintageous/NeoVintageous/issues/671): Emit visual bell when ex command not found or invalid
+
+### Changed
+
+* Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `'winaltkeys'` option is now "menu" by default
+* Changed [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `'ignorecase'` option is now false by default
+* Changed [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): `sublime:` specific modelines have been superseded by vim modelines
+* Changed [#675](https://github.com/NeoVintageous/NeoVintageous/issues/675): Modelines are no longer applied on save, only once on load
+
+### Removed
+
+* Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `VintageousEx_linux_shell` setting; use `:set shell={value}` instead
+* Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `VintageousEx_osx_shell` setting; use `:set shell={value}` instead
+* Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `linux_shell` setting; use `:set shell={value}` instead
+* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_linux_terminal` setting; use `vintageous_terminal` instead
+* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_osx_terminal` setting; use `vintageous_terminal` instead
+
+### Fixed
+
+* Fixed [#690](https://github.com/NeoVintageous/NeoVintageous/issues/690): RC file syntax should only scope known valid keys
+* Fixed [#687](https://github.com/NeoVintageous/NeoVintageous/issues/687): Various `:!{cmd}` inconsistencies
+* Fixed [#683](https://github.com/NeoVintageous/NeoVintageous/issues/683): `'{a-z}` in visual line mode is inconsistent
+* Fixed [#682](https://github.com/NeoVintageous/NeoVintageous/issues/682): Visual mode `m{a-z}` off-by-one
+* Fixed [#681](https://github.com/NeoVintageous/NeoVintageous/issues/681): `m{a-z}` should not change mode
+* Fixed [#680](https://github.com/NeoVintageous/NeoVintageous/issues/680): `{backtick}{a-z}` should position cursor at the specified location
+* Fixed [#676](https://github.com/NeoVintageous/NeoVintageous/issues/676): Uppercase alt keys don't work when `winaltkeys=menu`
+* Fixed [#672](https://github.com/NeoVintageous/NeoVintageous/issues/672): Status messages not displayed when `:set belloff=all`
+
 ## 1.18.0 - 2020-02-01
 
 ### Added

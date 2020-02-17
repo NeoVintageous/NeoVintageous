@@ -18,54 +18,31 @@
 from sublime import Region
 
 from NeoVintageous.nv.jumplist import jumplist_back
-
-_marks = {}
-
-
-def add_mark(view, name: str) -> None:
-    win, view, rowcol = view.window(), view, view.rowcol(view.sel()[0].b)
-    _marks[name] = win, view, rowcol
+from NeoVintageous.nv.utils import get_insertion_point_at_b
 
 
-def get_mark_as_encoded_address(view, name: str, exact: bool = False):
-    """Return an address for the mark {name}.
+def _get_key(name: str) -> str:
+    return '_nv_mark' + name
 
-    name: The name of the mark to be retrieved.
-    exact: If `true`, the exact position of the mark is returned. Otherwise,
-           the relevant row's 0 column is returned.
-    """
-    win, _view, rowcol = None, None, None
 
+def _get_regions(view, name: str) -> list:
+    return view.get_regions(_get_key(name))
+
+
+def set_mark(view, name: str) -> None:
+    pt = get_insertion_point_at_b(view.sel()[0])
+    view.add_regions(_get_key(name), [Region(pt)])
+
+
+def get_mark(view, name: str):
     if name in ('\'', '`'):
-        # NOTE We might get a selection outside the current view, which deviates
-        # from vim behaviour.
-        _view, selections = jumplist_back(view)
-        if len(selections) > 0:
-            win = _view.window()
-            # TODO support multiple selections
-            rowcol = _view.rowcol(selections[0].b)
+        marks_view, marks = jumplist_back(view)
+        if len(marks) > 0:
+            if marks_view != view:
+                return marks_view, marks[0]
+
+            return marks[0]
     else:
-        win, _view, rowcol = _marks.get(name, (None,) * 3)
-
-    if win:
-        if exact:
-            rowcol_encoded = ':'.join(str(i) for i in rowcol)  # type: ignore
-        else:
-            rowcol_encoded = ':'.join(str(i) for i in (rowcol[0], 0))  # type: ignore
-
-        fname = _view.file_name()
-
-        # Marks set in the same view as the current one are returned as regions.
-        # Marks in other views are returned as encoded addresses that Sublime
-        # Text understands.
-        if _view and _view.view_id == view.view_id:
-            if not exact:
-                rowcol = (rowcol[0], 0)  # type: ignore
-
-            return Region(_view.text_point(*rowcol))
-        else:
-            # FIXME Remove buffers when they are closed.
-            if fname:
-                return "{0}:{1}".format(fname, rowcol_encoded)
-            else:
-                return "<untitled {0}>:{1}".format(_view.buffer_id(), rowcol_encoded)
+        marks = _get_regions(view, name)
+        if marks:
+            return marks[0]
