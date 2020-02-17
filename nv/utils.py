@@ -40,8 +40,8 @@ from sublime import View
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
-from NeoVintageous.nv.vi.settings import get_visual_block_direction
-from NeoVintageous.nv.vi.settings import set_visual_block_direction
+from NeoVintageous.nv.settings import get_visual_block_direction
+from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -359,6 +359,9 @@ def sel_observer(view):
 # See: https://github.com/SublimeTextIssues/Core/issues/2623.
 @contextmanager
 def wrapscan(view, forward: bool = True):
+    # This works by comparing the postion of the cursor after the enclosed
+    # operation. If wrapscan is disabled and the cursor position has "wrapped
+    # around" then it's reset to the previous postion before it was wrapped.
     start = list(view.sel())
 
     yield

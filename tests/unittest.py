@@ -44,11 +44,11 @@ from NeoVintageous.nv.registers import _linewise as _registers_linewise
 from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
+from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
 from NeoVintageous.nv.state import State as _State
-from NeoVintageous.nv.vi.settings import get_visual_block_direction as _get_visual_block_direction
-from NeoVintageous.nv.vi.settings import set_visual_block_direction as _set_visual_block_direction
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP

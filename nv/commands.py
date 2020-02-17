@@ -77,9 +77,11 @@ from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
+from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
@@ -160,8 +162,6 @@ from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
 from NeoVintageous.nv.vi.search import reverse_search
-from NeoVintageous.nv.vi.settings import get_repeat_data
-from NeoVintageous.nv.vi.settings import set_repeat_data
 from NeoVintageous.nv.vi.text_objects import big_word_end_reverse
 from NeoVintageous.nv.vi.text_objects import big_word_reverse
 from NeoVintageous.nv.vi.text_objects import find_next_item_match_pt

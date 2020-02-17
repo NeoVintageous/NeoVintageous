@@ -55,10 +55,20 @@ from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_set
 from NeoVintageous.nv.search import clear_search_highlighting
+from NeoVintageous.nv.settings import get_cmdline_cwd
+from NeoVintageous.nv.settings import get_ex_global_last_pattern
+from NeoVintageous.nv.settings import get_ex_shell_last_command
+from NeoVintageous.nv.settings import get_ex_substitute_last_pattern
+from NeoVintageous.nv.settings import get_ex_substitute_last_replacement
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import reset_setting
+from NeoVintageous.nv.settings import set_cmdline_cwd
+from NeoVintageous.nv.settings import set_ex_global_last_pattern
+from NeoVintageous.nv.settings import set_ex_shell_last_command
+from NeoVintageous.nv.settings import set_ex_substitute_last_pattern
+from NeoVintageous.nv.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.settings import set_setting
-from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
 from NeoVintageous.nv.utils import has_dirty_buffers
@@ -67,16 +77,6 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
-from NeoVintageous.nv.vi.settings import get_ex_global_last_pattern
-from NeoVintageous.nv.vi.settings import get_ex_shell_last_command
-from NeoVintageous.nv.vi.settings import get_ex_substitute_last_pattern
-from NeoVintageous.nv.vi.settings import get_ex_substitute_last_replacement
-from NeoVintageous.nv.vi.settings import set_cmdline_cwd
-from NeoVintageous.nv.vi.settings import set_ex_global_last_pattern
-from NeoVintageous.nv.vi.settings import set_ex_shell_last_command
-from NeoVintageous.nv.vi.settings import set_ex_substitute_last_pattern
-from NeoVintageous.nv.vi.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
@@ -1210,8 +1210,7 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
         view.run_command('append', {'characters': _get_buffer(view, line_range)})
         view.run_command('save')
 
-        # TODO [review] State dependency
-        enter_normal_mode(window, State(view).mode)
+        enter_normal_mode(window, get_mode(view))
 
     def _write_to_file(window, view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit:
@@ -1269,13 +1268,9 @@ def ex_yank(view, register: str, line_range: RangeNode, **kwargs):
 # Default ex command. See :h [range].
 def _default_ex_cmd(window, view, line_range: RangeNode, **kwargs):
     _log.debug('default ex cmd %s %s', line_range, kwargs)
-
     line = row_at(view, line_range.resolve(view).a) + 1
-
-    # TODO [review] State dependency
-    state = State(view)
-    enter_normal_mode(window, state.mode)
-    goto_line(view, state.mode, line)
+    enter_normal_mode(window, get_mode(view))
+    goto_line(view, get_mode(view), line)
 
 
 def _get_ex_cmd(name: str):
