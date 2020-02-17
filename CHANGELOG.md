@@ -9,9 +9,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#670](https://github.com/NeoVintageous/NeoVintageous/issues/670): Marks locations are updated on view changes
 * Added [#689](https://github.com/NeoVintageous/NeoVintageous/issues/689): `<Return>` key alias for `<CR>`
 * Added [#688](https://github.com/NeoVintageous/NeoVintageous/issues/688): `<Enter>` key alias for `<CR>`
-* Added [#684](https://github.com/NeoVintageous/NeoVintageous/issues/684): `:shell` start a shell
-* Added [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `'shell'` option e.g. `:set shell=/bin/bash`
-* Added [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `'term'` option e.g. `:set term=gnome-terminal`
+* Added [#684](https://github.com/NeoVintageous/NeoVintageous/issues/684): `:shell` start a shell (use `vintageous_terminal` setting to set the terminal name)
+* Added [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `'shell'` option e.g. `:set shell=/bin/bash` (used for `:!{cmd}` commands)
 * Added [#687](https://github.com/NeoVintageous/NeoVintageous/issues/687): `[range]:read !{cmd}` execute `{cmd}` and insert below cursor
 * Added [#674](https://github.com/NeoVintageous/NeoVintageous/issues/674): Implement Vim modelines
 * Added [#678](https://github.com/NeoVintageous/NeoVintageous/issues/678): `'textwidth'` option e.g. `:set textwidth`, `:set notextwidth`
@@ -46,8 +45,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `VintageousEx_linux_shell` setting; use `:set shell={value}` instead
 * Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `VintageousEx_osx_shell` setting; use `:set shell={value}` instead
 * Removed [#685](https://github.com/NeoVintageous/NeoVintageous/issues/685): `linux_shell` setting; use `:set shell={value}` instead
-* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_linux_terminal` setting; use `:set term={value}` instead
-* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_osx_terminal` setting; use `:set term={value}` instead
+* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_linux_terminal` setting; use `vintageous_terminal` instead
+* Removed [#686](https://github.com/NeoVintageous/NeoVintageous/issues/686): `VintageousEx_osx_terminal` setting; use `vintageous_terminal` instead
 
 ### Fixed
 

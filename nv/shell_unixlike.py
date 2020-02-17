@@ -19,10 +19,11 @@ import os
 import subprocess
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.settings import get_setting
 
 
 def open(view) -> None:
-    term = get_option(view, 'term')
+    term = get_setting(view, 'terminal', os.environ.get('TERM'))
     if term:
         subprocess.Popen([term, '-e', 'bash'], cwd=os.getcwd())
 

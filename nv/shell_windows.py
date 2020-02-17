@@ -22,6 +22,7 @@ import tempfile
 import traceback
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.settings import get_setting
 
 # https://mypy.readthedocs.io/en/latest/common_issues.html#python-version-and-system-platform-checks
 assert sys.platform.startswith('win')
@@ -51,7 +52,7 @@ def _translate_newlines(text: str):
 
 
 def open(view) -> None:
-    term = get_option(view, 'term')
+    term = get_setting(view, 'terminal', 'cmd.exe')
     if term:
         subprocess.Popen([term, '/k'], cwd=os.getcwd())
 

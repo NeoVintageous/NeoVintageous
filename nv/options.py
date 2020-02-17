@@ -165,16 +165,6 @@ def _get_default_shell() -> str:
     return ''
 
 
-def _get_default_term() -> str:
-    if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
-        return os.environ.get('TERM', '')
-    elif sys.platform.startswith('win'):
-        return 'cmd.exe'
-
-    return ''
-
-
-# The second parameter to the option classes is fhe default for the setting.
 _options = {
     'autoindent': BooleanViewOption('auto_indent'),
     'belloff': StringOption('belloff', '', select=('', 'all')),
@@ -196,7 +186,6 @@ _options = {
     'spell': BooleanViewOption('spell_check'),
     'statusbar': BooleanIsVisibleOption('status_bar', True),  # {not in Vim}
     'tabstop': NumberViewOption('tab_size'),
-    'term': StringOption('term', _get_default_term()),
     'textwidth': NumberViewOption('wrap_width'),
     'winaltkeys': StringOption('winaltkeys', 'menu', select=('no', 'yes', 'menu')),
     'wrap': BooleanViewOption('word_wrap'),

@@ -77,6 +77,9 @@
     // Show output panel from shell commands.
     "vintageous_shell_silent": false,
 
+    // Name os terminal to use for commands like :shell to start a shell.
+    "vintageous_terminal": null,
+
     // Enable key bindings prefaced by the control-key.
     "vintageous_use_ctrl_keys": false,
 
