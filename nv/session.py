@@ -1,3 +1,4 @@
+from collections import defaultdict
 import json
 import os
 import traceback
@@ -5,6 +6,14 @@ import traceback
 from sublime import packages_path
 
 _session = {}
+_views = defaultdict(dict)  # type: dict
+
+
+def session_on_close(view) -> None:
+    try:
+        del _views[view.id()]
+    except KeyError:
+        pass
 
 
 def _session_file() -> str:
@@ -61,3 +70,14 @@ def set_session_value(name: str, value, persist: bool = False) -> None:
 
     if persist:
         save_session()
+
+
+def get_session_view_value(view, name: str, default=None):
+    try:
+        return _views[view.id()][name]
+    except KeyError:
+        return default
+
+
+def set_session_view_value(view, name: str, value) -> None:
+    _views[view.id()][name] = value

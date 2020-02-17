@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from collections import defaultdict
 import os
 
 from sublime import active_window
@@ -24,31 +23,10 @@ from sublime import save_settings
 
 from NeoVintageous.nv.polyfill import save_preferences
 from NeoVintageous.nv.session import get_session_value
+from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_value
+from NeoVintageous.nv.session import set_session_view_value
 from NeoVintageous.nv.vim import DIRECTION_DOWN
-
-# TODO Refactor into .session
-_views = defaultdict(dict)  # type: dict
-
-
-# TODO Refactor to .session
-def get_session_view_value(view, name: str):
-    try:
-        return _views[view.id()][name]
-    except KeyError:
-        pass
-
-
-# TODO Refactor to .session
-def set_session_view_value(view, name: str, value) -> None:
-    _views[view.id()][name] = value
-
-
-def on_close(view) -> None:
-    try:
-        del _views[view.id()]
-    except KeyError:
-        pass
 
 
 def get_setting(view, name: str, default=None):

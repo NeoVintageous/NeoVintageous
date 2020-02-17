@@ -19,9 +19,9 @@ from sublime import OP_EQUAL
 from sublime import OP_NOT_EQUAL
 from sublime_plugin import EventListener
 
-from NeoVintageous.nv import settings
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.session import session_on_close
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.utils import fix_eol_cursor
@@ -189,7 +189,7 @@ class NeoVintageousEvents(EventListener):
         fix_eol_cursor(view, State(view).mode)
 
     def on_close(self, view):
-        settings.on_close(view)
+        session_on_close(view)
 
     def on_activated(self, view):
 
