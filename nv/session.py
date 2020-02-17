@@ -81,3 +81,22 @@ def get_session_view_value(view, name: str, default=None):
 
 def set_session_view_value(view, name: str, value) -> None:
     _views[view.id()][name] = value
+
+
+# TODO Refactor to use get_session_view_value
+def tmp_bc_get_session_view_value(view, name: str, default):
+    vintage = view.settings().get('vintage')
+    if vintage:
+        return vintage.get(name, default)
+
+    return default
+
+
+# TODO Refactor to use set_session_view_value
+def tmp_bc_set_session_view_value(view, name: str, value) -> None:
+    vintage = view.settings().get('vintage')
+    if not vintage:
+        vintage = {}
+
+    vintage[name] = value
+    view.settings().set('vintage', vintage)

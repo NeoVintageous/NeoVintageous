@@ -69,7 +69,6 @@ from NeoVintageous.nv.settings import set_ex_shell_last_command
 from NeoVintageous.nv.settings import set_ex_substitute_last_pattern
 from NeoVintageous.nv.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.settings import set_setting
-from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
 from NeoVintageous.nv.utils import has_dirty_buffers
@@ -1269,13 +1268,9 @@ def ex_yank(view, register: str, line_range: RangeNode, **kwargs):
 # Default ex command. See :h [range].
 def _default_ex_cmd(window, view, line_range: RangeNode, **kwargs):
     _log.debug('default ex cmd %s %s', line_range, kwargs)
-
     line = row_at(view, line_range.resolve(view).a) + 1
-
-    # TODO [review] State dependency
-    state = State(view)
-    enter_normal_mode(window, state.mode)
-    goto_line(view, state.mode, line)
+    enter_normal_mode(window, get_mode(view))
+    goto_line(view, get_mode(view), line)
 
 
 def _get_ex_cmd(name: str):
