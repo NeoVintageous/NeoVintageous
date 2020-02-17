@@ -471,7 +471,6 @@ class _nv_feed_key(ViWindowCommandBase):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         start_time = time.time()
-
         _log.info('key evt: %s count=%s eval=%s mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
 
         try:
@@ -481,7 +480,7 @@ class _nv_feed_key(ViWindowCommandBase):
             _log.exception(e)
             clean_views()
 
-        _log.info('key evt: %s count=%s eval=%s mappings=%s, took %s', key, repeat_count, do_eval, check_user_mappings, '{:.4f}'.format(time.time() - start_time))  # noqa: E501
+        _log.info('key processed in %s secs', '{:.4f}'.format(time.time() - start_time))
 
     def _feed_key(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         # Args:
