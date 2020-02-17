@@ -205,14 +205,11 @@ from NeoVintageous.nv.window import window_tab_control
 __all__ = [
     '_enter_insert_mode',
     '_enter_normal_mode',
-    '_enter_normal_mode_impl',
     '_enter_replace_mode',
     '_enter_select_mode',
     '_enter_visual_block_mode',
     '_enter_visual_line_mode',
-    '_enter_visual_line_mode_impl',
     '_enter_visual_mode',
-    '_enter_visual_mode_impl',
     '_nv_cmdline',
     '_nv_cmdline_feed_key',
     '_nv_ex_cmd_edit_wrap',
@@ -1210,8 +1207,60 @@ class _enter_normal_mode(ViTextCommandBase):
 
         state.enter_normal_mode()
 
-        # XXX: st bug? if we don't do this, selections won't be redrawn
-        self.view.run_command('_enter_normal_mode_impl', {'mode': mode})
+        def f(view, s):
+            if mode == INSERT:
+                if view.line(s.b).a != s.b:
+                    return Region(s.b - 1)
+
+                return Region(s.b)
+
+            elif mode == INTERNAL_NORMAL:
+                return Region(s.b)
+
+            elif mode == VISUAL:
+                save_previous_selection(view, mode)
+
+                if s.a < s.b:
+                    pt = s.b - 1
+                    if view.line(pt).empty():
+                        return Region(pt)
+
+                    if view.substr(pt) == '\n':
+                        pt -= 1
+
+                    return Region(pt)
+
+                return Region(s.b)
+
+            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
+                save_previous_selection(view, mode)
+
+                if s.a < s.b:
+                    pt = s.b - 1
+                    if (view.substr(pt) == '\n') and not view.line(pt).empty():
+                        pt -= 1
+
+                    return Region(pt)
+                else:
+                    return Region(s.b)
+
+            elif mode == SELECT:
+                return Region(s.begin())
+
+            return Region(s.b)
+
+        if mode != UNKNOWN:
+            if len(self.view.sel()) > 1 and mode == NORMAL:
+                set_selection(self.view, self.view.sel()[0])
+
+            if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
+                save_previous_selection(self.view, mode)
+                set_selection(self.view, VisualBlockSelection(self.view).insertion_point_b())
+            else:
+                regions_transformer(self.view, f)
+
+            clear_search_highlighting(self.view)
+            fix_eol_cursor(self.view, mode)
 
         if state.glue_until_normal_mode and not state.processing_notation:
             if self.view.is_dirty():
@@ -1263,84 +1312,21 @@ class _enter_normal_mode(ViTextCommandBase):
                             state.xpos = col + 1
 
 
-class _enter_normal_mode_impl(ViTextCommandBase):
+class _enter_select_mode(ViTextCommandBase):
 
-    def run(self, edit, mode=None):
-        _log.debug('enter NORMAL mode from=%s (wrapped)', mode)
-
-        def f(view, s):
-            if mode == INSERT:
-                if view.line(s.b).a != s.b:
-                    return Region(s.b - 1)
-
-                return Region(s.b)
-
-            elif mode == INTERNAL_NORMAL:
-                return Region(s.b)
-
-            elif mode == VISUAL:
-                save_previous_selection(self.view, mode)
-
-                if s.a < s.b:
-                    pt = s.b - 1
-                    if view.line(pt).empty():
-                        return Region(pt)
-
-                    if view.substr(pt) == '\n':
-                        pt -= 1
-
-                    return Region(pt)
-
-                return Region(s.b)
-
-            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
-                save_previous_selection(self.view, mode)
-
-                if s.a < s.b:
-                    pt = s.b - 1
-                    if (view.substr(pt) == '\n') and not view.line(pt).empty():
-                        pt -= 1
-
-                    return Region(pt)
-                else:
-                    return Region(s.b)
-
-            elif mode == SELECT:
-                return Region(s.begin())
-
-            return Region(s.b)
-
-        if mode == UNKNOWN:
-            return
-
-        if (len(self.view.sel()) > 1) and (mode == NORMAL):
-            set_selection(self.view, self.view.sel()[0])
-
-        if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
-            save_previous_selection(self.view, mode)
-            set_selection(self.view, VisualBlockSelection(self.view).insertion_point_b())
-        else:
-            regions_transformer(self.view, f)
-
-        clear_search_highlighting(self.view)
-        fix_eol_cursor(self.view, mode)
-
-
-class _enter_select_mode(ViWindowCommandBase):
-
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
 
-        state = State(self.window.active_view())
+        state = State(self.view)
         state.enter_select_mode()
 
         if mode == INTERNAL_NORMAL:
-            self.window.run_command('find_under_expand')
+            self.view.window().run_command('find_under_expand')
         elif mode in (VISUAL, VISUAL_LINE):
-            self.window.run_command('_vi_select_j', {'mode': state.mode})
+            self.view.window().run_command('_vi_select_j', {'mode': state.mode})
         elif mode == VISUAL_BLOCK:
             resolve_visual_block_reverse(self.view)
-            enter_normal_mode(self.window)
+            enter_normal_mode(self.view.window())
 
         state.display_status()
 
@@ -1373,19 +1359,34 @@ class _enter_visual_mode(ViTextCommandBase):
 
         state = State(self.view)
 
-        # TODO If all selections are non-zero-length, we may be looking at a
-        # pseudo-visual selection, like the ones that are created pressing
-        # Alt+Enter when using ST's built-in search dialog. What shall we really
-        # do in that case?
-
-        # XXX: In response to the above, we would probably already be in visual
-        # mode, but we should double-check that.
-
         if state.mode == VISUAL and not force:
             enter_normal_mode(self.view, mode)
             return
 
-        self.view.run_command('_enter_visual_mode_impl', {'mode': mode})
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_to_visual()
+        else:
+            def f(view, s):
+                if mode == VISUAL_LINE:
+                    return Region(s.a, s.b)
+                else:
+                    if s.empty() and s.b == view.size():
+                        ui_bell()
+                        return s
+
+                    # Extending from s.a to s.b because we may be looking at
+                    # selections with len>0. For example, if it's been created
+                    # using the mouse. Normally, though, the selection will be
+                    # empty when we reach here.
+                    end = s.b
+                    # Only extend .b by 1 if we're looking at empty sels.
+                    if not view.has_non_empty_selection_region():
+                        end += 1
+
+                    return Region(s.a, end)
+
+            regions_transformer(self.view, f)
 
         if any(s.empty() for s in self.view.sel()):
             return
@@ -1396,39 +1397,6 @@ class _enter_visual_mode(ViTextCommandBase):
         state.update_xpos(force=True)
         state.enter_visual_mode()
         state.display_status()
-
-
-class _enter_visual_mode_impl(ViTextCommandBase):
-
-    def run(self, edit, mode=None):
-        _log.debug('enter VISUAL mode from=%s (wrapped)', mode)
-
-        def f(view, s):
-            if mode == VISUAL_LINE:
-                return Region(s.a, s.b)
-            else:
-                if s.empty() and (s.b == self.view.size()):
-                    ui_bell()
-
-                    return s
-
-                # Extending from s.a to s.b because we may be looking at
-                # selections with len>0. For example, if it's been created
-                # using the mouse. Normally, though, the selection will be
-                # empty when we reach here.
-                end = s.b
-                # Only extend .b by 1 if we're looking at empty sels.
-                if not view.has_non_empty_selection_region():
-                    end += 1
-
-                return Region(s.a, end)
-
-        if mode == VISUAL_BLOCK:
-            visual_block = VisualBlockSelection(self.view)
-            visual_block.transform_to_visual()
-            return
-
-        regions_transformer(self.view, f)
 
 
 class _enter_visual_line_mode(ViTextCommandBase):
@@ -1453,39 +1421,32 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
             # Abort if we are at EOF -- no newline char to hold on to.
             if any(s.b == self.view.size() for s in self.view.sel()):
-                return ui_bell()
-
-        self.view.run_command('_enter_visual_line_mode_impl', {'mode': mode})
-        state.enter_visual_line_mode()
-        state.display_status()
-
-
-class _enter_visual_line_mode_impl(ViTextCommandBase):
-
-    def run(self, edit, mode=None):
-        _log.debug('enter VISUAL LINE mode from=%s (wrapped)', mode)
-
-        def f(view, s):
-            if mode == VISUAL:
-                if s.a < s.b:
-                    if view.substr(s.b - 1) != '\n':
-                        return Region(view.line(s.a).a, view.full_line(s.b - 1).b)
-                    else:
-                        return Region(view.line(s.a).a, s.b)
-                else:
-                    if view.substr(s.a - 1) != '\n':
-                        return Region(view.full_line(s.a - 1).b, view.line(s.b).a)
-                    else:
-                        return Region(s.a, view.line(s.b).a)
-            else:
-                return view.full_line(s.b)
+                ui_bell()
+                return
 
         if mode == VISUAL_BLOCK:
             visual_block = VisualBlockSelection(self.view)
             visual_block.transform_to_visual_line()
-            return
+        else:
+            def f(view, s):
+                if mode == VISUAL:
+                    if s.a < s.b:
+                        if view.substr(s.b - 1) != '\n':
+                            return Region(view.line(s.a).a, view.full_line(s.b - 1).b)
+                        else:
+                            return Region(view.line(s.a).a, s.b)
+                    else:
+                        if view.substr(s.a - 1) != '\n':
+                            return Region(view.full_line(s.a - 1).b, view.line(s.b).a)
+                        else:
+                            return Region(s.a, view.line(s.b).a)
+                else:
+                    return view.full_line(s.b)
 
-        regions_transformer(self.view, f)
+            regions_transformer(self.view, f)
+
+        state.enter_visual_line_mode()
+        state.display_status()
 
 
 class _enter_replace_mode(ViTextCommandBase):
@@ -1494,7 +1455,8 @@ class _enter_replace_mode(ViTextCommandBase):
         _log.debug('enter REPLACE mode kwargs=%s', kwargs)
 
         def f(view, s):
-            return Region(s.b)
+            s.a = s.b
+            return s
 
         self.view.settings().set('command_mode', False)
         self.view.settings().set('inverse_caret_state', False)
