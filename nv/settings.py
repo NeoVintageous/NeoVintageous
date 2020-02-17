@@ -31,6 +31,19 @@ from NeoVintageous.nv.vim import DIRECTION_DOWN
 _views = defaultdict(dict)  # type: dict
 
 
+# TODO Refactor to .session
+def get_session_view_value(view, name: str):
+    try:
+        return _views[view.id()][name]
+    except KeyError:
+        pass
+
+
+# TODO Refactor to .session
+def set_session_view_value(view, name: str, value) -> None:
+    _views[view.id()][name] = value
+
+
 def on_close(view) -> None:
     try:
         del _views[view.id()]
@@ -170,14 +183,11 @@ def set_repeat_data(view, data: tuple) -> None:
     # TODO remove assertions
     assert isinstance(data, tuple) or isinstance(data, list), 'bad call'
     assert len(data) == 4, 'bad call'
-    _views[view.id()]['repeat_data'] = data
+    set_session_view_value(view, 'repeat_data', data)
 
 
 def get_repeat_data(view):
-    try:
-        return _views[view.id()]['repeat_data']
-    except KeyError:
-        pass
+    return get_session_view_value(view, 'repeat_data')
 
 
 def get_reset_during_init(view) -> bool:
