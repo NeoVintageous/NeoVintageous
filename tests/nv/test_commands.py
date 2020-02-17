@@ -49,6 +49,20 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.feedkey(key)
             self.assertNormal('fizz |buzz')
 
+    def test_esc_in_select_mode_exits_multiple_selection(self):
+        self.set_setting('multi_cursor_exit_from_visual_mode', True)
+        self.vselect('f|iz|z\nb|uz|z\n')
+        self.feedkey('<esc>')
+        self.assertNormal('f|izz\nbuzz\n')
+        self.set_setting('multi_cursor_exit_from_visual_mode', False)
+        self.vselect('f|iz|z\nb|uz|z\n')
+        self.feedkey('<esc>')
+        self.assertNormal('f|izz\nb|uzz\n')
+        self.set_setting('multi_cursor_exit_from_visual_mode', True)
+        self.vselect('f|iz|z\nb|uz|z\n')
+        self.feedkey('<esc>')
+        self.assertNormal('f|izz\nbuzz\n')
+
     def test_motion(self):
         self.normal('fi|zz buzz')
         self.feedkey('w')
@@ -582,3 +596,17 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkeys('""')
         self.assertNormal('fizz |buzz')
         self.assertNoBell()
+
+    @unittest.mock_bell()
+    @unittest.mock_mappings(
+        (unittest.NORMAL, ',m1', ':fizz'),
+        (unittest.NORMAL, ',m2', ':.yank<CR>2jp'),
+    )
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline.prompt')
+    def test_process_cmdline_prompt_mapping(self, cmdline_prompt):
+        self.normal('|fizz buzz')
+        self.feedkey(',m1')
+        cmdline_prompt.assert_called_once_with('fizz')
+        self.normal('1\nfi|zz\n3\n4\n5\n6')
+        self.feedkey(',m2')
+        self.assertNormal('1\nfizz\n3\n4|fizz\n\n5\n6')

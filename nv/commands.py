@@ -607,6 +607,7 @@ class _nv_feed_key(ViWindowCommandBase):
                         command = rhs[:cr_pos + 4]
                         trailing = rhs[cr_pos + 4:]
                     else:
+                        # Example :reg
                         command = rhs
                         trailing = ''
 
