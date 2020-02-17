@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.20.0 - Unreleased
+
+### Fixed
+
+* Fixed [#10](https://github.com/NeoVintageous/NeoVintageous/issues/10): Repeating text changing doesn't work.
+
 ## 1.19.0 - Unreleased
 
 ### Added

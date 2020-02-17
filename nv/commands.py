@@ -1267,7 +1267,13 @@ class _enter_normal_mode(ViTextCommandBase):
                 self.view.window().run_command('glue_marked_undo_groups')
                 # We're exiting from insert mode or replace mode. Capture
                 # the last native command as repeat data.
-                set_repeat_data(self.view, ('native', self.view.command_history(0)[:2], mode, None))
+                repeat_data = get_repeat_data(self.view)
+                if repeat_data and len(repeat_data) == 4 and repeat_data[3]:
+                    visual_data = repeat_data[3]
+                else:
+                    visual_data = None
+
+                set_repeat_data(self.view, ('native', self.view.command_history(0)[:2], mode, visual_data))
                 # Required here so that the macro gets recorded.
                 state.glue_until_normal_mode = False
                 macros.add_step(state, *self.view.command_history(0)[:2])
@@ -1500,14 +1506,9 @@ class _vi_dot(ViWindowCommandBase):
         if type_ == 'vi':
             self.window.run_command('_nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
         elif type_ == 'native':
-            sels = list(view.sel())
-            # FIXME: We're not repeating as we should. It's the motion that
-            # should receive this count.
+            # FIXME: We're not repeating as we should. It's the motion that should receive this count.
             for i in range(count or 1):
                 self.window.run_command(*seq_or_cmd)
-
-            # FIXME: What happens in visual mode?
-            set_selection(view, sels)
         else:
             raise ValueError('bad repeat data')
 
