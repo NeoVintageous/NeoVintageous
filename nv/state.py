@@ -629,10 +629,8 @@ class State(object):
 
             run_window_command(action_cmd['action'], args)
 
-            if not self.non_interactive:
-                if self.action.repeatable:
-                    _log.debug('action is repeatable, setting repeat data...')
-                    set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
+            if not self.non_interactive and self.action.repeatable:
+                set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
 
             self.reset_command_data()
 
@@ -680,7 +678,7 @@ class State(object):
             if self.glue_until_normal_mode and not self.processing_notation:
                 run_window_command('mark_undo_groups_for_gluing')
 
-            seq = self.sequence
+            sequence = self.sequence
             visual_repeat_data = self.get_visual_repeat_data()
             action = self.action
 
@@ -688,10 +686,8 @@ class State(object):
 
             run_action(active_window(), action_cmd)
 
-            if not (self.processing_notation and self.glue_until_normal_mode):
-                if action.repeatable:
-                    _log.debug('action is repeatable, setting repeat data...')
-                    set_repeat_data(self.view, ('vi', seq, self.mode, visual_repeat_data))
+            if not (self.processing_notation and self.glue_until_normal_mode) and action.repeatable:
+                set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:
             self.enter_normal_mode()
