@@ -1312,21 +1312,21 @@ class _enter_normal_mode(ViTextCommandBase):
                             state.xpos = col + 1
 
 
-class _enter_select_mode(ViWindowCommandBase):
+class _enter_select_mode(ViTextCommandBase):
 
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
 
-        state = State(self.window.active_view())
+        state = State(self.view)
         state.enter_select_mode()
 
         if mode == INTERNAL_NORMAL:
-            self.window.run_command('find_under_expand')
+            self.view.window().run_command('find_under_expand')
         elif mode in (VISUAL, VISUAL_LINE):
-            self.window.run_command('_vi_select_j', {'mode': state.mode})
+            self.view.window().run_command('_vi_select_j', {'mode': state.mode})
         elif mode == VISUAL_BLOCK:
             resolve_visual_block_reverse(self.view)
-            enter_normal_mode(self.window)
+            enter_normal_mode(self.view.window())
 
         state.display_status()
 
