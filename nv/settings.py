@@ -18,8 +18,6 @@
 import os
 
 from sublime import active_window
-from sublime import load_settings
-from sublime import save_settings
 
 from NeoVintageous.nv.polyfill import save_preferences
 from NeoVintageous.nv.session import get_session_value
