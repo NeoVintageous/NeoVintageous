@@ -2968,7 +2968,10 @@ class ViMoveByWords(ViMotionDef):
     def translate(self, state):
         return {
             'motion': '_vi_w',
-            'motion_args': {'mode': state.mode, 'count': state.count}
+            'motion_args': {
+                'mode': state.mode,
+                'count': state.count
+            }
         }
 
 
@@ -3275,9 +3278,9 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
         return {
             'motion': '_vi_find_in_line',
             'motion_args': {
-                'char': self.inp,
                 'mode': state.mode,
                 'count': state.count,
+                'char': self.inp,
                 'inclusive': self.inclusive
             }
         }

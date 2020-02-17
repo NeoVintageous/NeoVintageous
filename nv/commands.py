@@ -557,6 +557,9 @@ class _nv_feed_key(ViWindowCommandBase):
 
         command = mappings_resolve(state, check_user_mappings=check_user_mappings)
 
+        if isinstance(command, ViOpenNameSpace):
+            return
+
         if isinstance(command, ViOpenRegister):
             state.must_capture_register_name = True
             return
@@ -623,9 +626,6 @@ class _nv_feed_key(ViWindowCommandBase):
                 else:
                     self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
 
-            return
-
-        if isinstance(command, ViOpenNameSpace):
             return
 
         if isinstance(command, ViMissingCommandDef):
