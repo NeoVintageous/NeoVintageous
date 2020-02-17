@@ -210,7 +210,6 @@ __all__ = [
     '_enter_select_mode',
     '_enter_visual_block_mode',
     '_enter_visual_line_mode',
-    '_enter_visual_line_mode_impl',
     '_enter_visual_mode',
     '_enter_visual_mode_impl',
     '_nv_cmdline',
@@ -1453,39 +1452,32 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
             # Abort if we are at EOF -- no newline char to hold on to.
             if any(s.b == self.view.size() for s in self.view.sel()):
-                return ui_bell()
-
-        self.view.run_command('_enter_visual_line_mode_impl', {'mode': mode})
-        state.enter_visual_line_mode()
-        state.display_status()
-
-
-class _enter_visual_line_mode_impl(ViTextCommandBase):
-
-    def run(self, edit, mode=None):
-        _log.debug('enter VISUAL LINE mode from=%s (wrapped)', mode)
-
-        def f(view, s):
-            if mode == VISUAL:
-                if s.a < s.b:
-                    if view.substr(s.b - 1) != '\n':
-                        return Region(view.line(s.a).a, view.full_line(s.b - 1).b)
-                    else:
-                        return Region(view.line(s.a).a, s.b)
-                else:
-                    if view.substr(s.a - 1) != '\n':
-                        return Region(view.full_line(s.a - 1).b, view.line(s.b).a)
-                    else:
-                        return Region(s.a, view.line(s.b).a)
-            else:
-                return view.full_line(s.b)
+                ui_bell()
+                return
 
         if mode == VISUAL_BLOCK:
             visual_block = VisualBlockSelection(self.view)
             visual_block.transform_to_visual_line()
-            return
+        else:
+            def f(view, s):
+                if mode == VISUAL:
+                    if s.a < s.b:
+                        if view.substr(s.b - 1) != '\n':
+                            return Region(view.line(s.a).a, view.full_line(s.b - 1).b)
+                        else:
+                            return Region(view.line(s.a).a, s.b)
+                    else:
+                        if view.substr(s.a - 1) != '\n':
+                            return Region(view.full_line(s.a - 1).b, view.line(s.b).a)
+                        else:
+                            return Region(s.a, view.line(s.b).a)
+                else:
+                    return view.full_line(s.b)
 
-        regions_transformer(self.view, f)
+            regions_transformer(self.view, f)
+
+        state.enter_visual_line_mode()
+        state.display_status()
 
 
 class _enter_replace_mode(ViTextCommandBase):
