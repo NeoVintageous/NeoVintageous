@@ -88,13 +88,25 @@ def set_visual_block_direction(view, direction: int) -> None:
         view.settings().set('_nv_visual_block_direction', direction)
 
 
-# TODO remove assertions
 def set_repeat_data(view, data: tuple) -> None:
     # Store data structure for repeat commands like "." to use.
-    # Args:
-    #   tuple (type, cmd_name_or_key_seq, mode): Type may be "vi" or
-    #       "native" ("vi" commands are executed via _nv_process_notation,
-    #       "while "native" commands are executed via sublime.run_command().
+    #
+    # The structure of {data}:
+    #
+    #   [{type}, {command}, {mode}, {visual}]
+    #
+    # Type can be "vi" or "native".
+    #
+    # Command can be a string key sequence or a ST command with args.
+    #
+    # Visual is a tuple (start_pt, end_pt, mode).
+    #
+    # Examples:
+    #
+    # ('native', ('insert', {'characters': 'fizz'}), 'mode_insert', None)
+    # ('native', ('sequence', {'commands': [['insert', {'characters': 'fizz'}], ['left_delete', None]]}), 'mode_insert', None])  # noqa: E501
+    # ('vi', 'x', 'mode_normal', (0, 4, 'mode_visual'))
+    # TODO remove assertions
     assert isinstance(data, tuple) or isinstance(data, list), 'bad call'
     assert len(data) == 4, 'bad call'
     _views[view.id()]['repeat_data'] = data
