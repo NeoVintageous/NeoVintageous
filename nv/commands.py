@@ -195,7 +195,6 @@ from NeoVintageous.nv.vim import enter_visual_block_mode
 from NeoVintageous.nv.vim import enter_visual_line_mode
 from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import message
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_control
@@ -880,7 +879,7 @@ class _nv_cmdline(WindowCommand):
             if len(initial_text) > 0:
                 if initial_text[0] == Cmdline.EX:
                     initial_text = initial_text[1:]
-                    message('DEPRECATED cmdline initial text contains leading colon')
+                    _log.debug('DEPRECATED cmdline initial text contains leading colon')
 
         elif is_visual_mode(mode):
             initial_text = "'<,'>"
