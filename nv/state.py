@@ -23,6 +23,7 @@ from sublime import Region
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_repeat_data
@@ -720,7 +721,8 @@ def init_state(view) -> None:
         return
 
     state = State(view)
-    mode = state.mode
+
+    mode = get_mode(view)
 
     # Does user want to reset mode (to normal mode) when initialising state?
     if mode not in (NORMAL, UNKNOWN) and not get_setting(view, 'reset_mode_when_switching_tabs'):

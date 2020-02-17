@@ -27,6 +27,7 @@ from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.session import set_session_view_value
 from NeoVintageous.nv.vim import DIRECTION_DOWN
+from NeoVintageous.nv.vim import UNKNOWN
 
 
 def get_setting(view, name: str, default=None):
@@ -140,6 +141,14 @@ def set_last_buffer_search(view, value: str) -> None:
 
 def set_last_buffer_search_command(view, value: str) -> None:
     _set_private(view.window(), 'last_buffer_search_command', value)
+
+
+def get_mode(view) -> str:
+    return get_session_view_value(view, 'mode', UNKNOWN)
+
+
+def set_mode(view, value: str) -> None:
+    set_session_view_value(view, 'mode', value)
 
 
 def set_repeat_data(view, data: tuple) -> None:

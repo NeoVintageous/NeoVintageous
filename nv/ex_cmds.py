@@ -60,6 +60,7 @@ from NeoVintageous.nv.settings import get_ex_global_last_pattern
 from NeoVintageous.nv.settings import get_ex_shell_last_command
 from NeoVintageous.nv.settings import get_ex_substitute_last_pattern
 from NeoVintageous.nv.settings import get_ex_substitute_last_replacement
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import reset_setting
 from NeoVintageous.nv.settings import set_cmdline_cwd
@@ -1210,8 +1211,7 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
         view.run_command('append', {'characters': _get_buffer(view, line_range)})
         view.run_command('save')
 
-        # TODO [review] State dependency
-        enter_normal_mode(window, State(view).mode)
+        enter_normal_mode(window, get_mode(view))
 
     def _write_to_file(window, view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit:
