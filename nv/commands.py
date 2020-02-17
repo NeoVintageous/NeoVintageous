@@ -205,7 +205,6 @@ from NeoVintageous.nv.window import window_tab_control
 __all__ = [
     '_enter_insert_mode',
     '_enter_normal_mode',
-    '_enter_normal_mode_impl',
     '_enter_replace_mode',
     '_enter_select_mode',
     '_enter_visual_block_mode',
@@ -1208,8 +1207,60 @@ class _enter_normal_mode(ViTextCommandBase):
 
         state.enter_normal_mode()
 
-        # XXX: st bug? if we don't do this, selections won't be redrawn
-        self.view.run_command('_enter_normal_mode_impl', {'mode': mode})
+        def f(view, s):
+            if mode == INSERT:
+                if view.line(s.b).a != s.b:
+                    return Region(s.b - 1)
+
+                return Region(s.b)
+
+            elif mode == INTERNAL_NORMAL:
+                return Region(s.b)
+
+            elif mode == VISUAL:
+                save_previous_selection(self.view, mode)
+
+                if s.a < s.b:
+                    pt = s.b - 1
+                    if view.line(pt).empty():
+                        return Region(pt)
+
+                    if view.substr(pt) == '\n':
+                        pt -= 1
+
+                    return Region(pt)
+
+                return Region(s.b)
+
+            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
+                save_previous_selection(self.view, mode)
+
+                if s.a < s.b:
+                    pt = s.b - 1
+                    if (view.substr(pt) == '\n') and not view.line(pt).empty():
+                        pt -= 1
+
+                    return Region(pt)
+                else:
+                    return Region(s.b)
+
+            elif mode == SELECT:
+                return Region(s.begin())
+
+            return Region(s.b)
+
+        if mode != UNKNOWN:
+            if (len(self.view.sel()) > 1) and (mode == NORMAL):
+                set_selection(self.view, self.view.sel()[0])
+
+            if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
+                save_previous_selection(self.view, mode)
+                set_selection(self.view, VisualBlockSelection(self.view).insertion_point_b())
+            else:
+                regions_transformer(self.view, f)
+
+            clear_search_highlighting(self.view)
+            fix_eol_cursor(self.view, mode)
 
         if state.glue_until_normal_mode and not state.processing_notation:
             if self.view.is_dirty():
@@ -1259,69 +1310,6 @@ class _enter_normal_mode(ViTextCommandBase):
                             self.view.erase(edit, line)
                             col = self.view.rowcol(line.b)[1]
                             state.xpos = col + 1
-
-
-class _enter_normal_mode_impl(ViTextCommandBase):
-
-    def run(self, edit, mode=None):
-        _log.debug('enter NORMAL mode from=%s (wrapped)', mode)
-
-        def f(view, s):
-            if mode == INSERT:
-                if view.line(s.b).a != s.b:
-                    return Region(s.b - 1)
-
-                return Region(s.b)
-
-            elif mode == INTERNAL_NORMAL:
-                return Region(s.b)
-
-            elif mode == VISUAL:
-                save_previous_selection(self.view, mode)
-
-                if s.a < s.b:
-                    pt = s.b - 1
-                    if view.line(pt).empty():
-                        return Region(pt)
-
-                    if view.substr(pt) == '\n':
-                        pt -= 1
-
-                    return Region(pt)
-
-                return Region(s.b)
-
-            elif mode in (VISUAL_LINE, VISUAL_BLOCK):
-                save_previous_selection(self.view, mode)
-
-                if s.a < s.b:
-                    pt = s.b - 1
-                    if (view.substr(pt) == '\n') and not view.line(pt).empty():
-                        pt -= 1
-
-                    return Region(pt)
-                else:
-                    return Region(s.b)
-
-            elif mode == SELECT:
-                return Region(s.begin())
-
-            return Region(s.b)
-
-        if mode == UNKNOWN:
-            return
-
-        if (len(self.view.sel()) > 1) and (mode == NORMAL):
-            set_selection(self.view, self.view.sel()[0])
-
-        if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
-            save_previous_selection(self.view, mode)
-            set_selection(self.view, VisualBlockSelection(self.view).insertion_point_b())
-        else:
-            regions_transformer(self.view, f)
-
-        clear_search_highlighting(self.view)
-        fix_eol_cursor(self.view, mode)
 
 
 class _enter_select_mode(ViWindowCommandBase):
