@@ -698,10 +698,7 @@ class State(object):
 def init_state(view) -> None:
     # Initialise view state.
     #
-    # Runs at startup and every time a view gets activated, loaded, etc.
-    #
-    # Args:
-    #   :view (sublime.View):
+    # Runs every time a view is activated, loaded, etc.
 
     # Don't initialise if we get a console, widget, panel, or any other view
     # where Vim modes are not relevant. Some related initialised settings that

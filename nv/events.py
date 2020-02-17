@@ -121,21 +121,12 @@ class NeoVintageousEvents(EventListener):
         if key in _query_contexts:
             return _query_contexts[key](view, operator, operand, match_all)
 
-    # TODO [refactor] [cleanup] and [optimise] on_text_command()
-    def on_text_command(self, view, command, args):
+    def on_text_command(self, view, command: str, args: dict):
         # Called when a text command is issued.
         #
         # The listener may return a (command, arguments) tuple to rewrite the
         # command, or None to run the command unmodified.
-        #
-        # Args:
-        #   view (View)
-        #   command (str)
-        #   args (dict)
-        #
-        # Returns:
-        #   Tuple (str, dict): If the command is to be rewritten
-        #   None: If the command is unmodified
+
         if command == 'drag_select':
 
             # Updates the mode based on mouse events. For example, a double
