@@ -211,7 +211,6 @@ __all__ = [
     '_enter_visual_block_mode',
     '_enter_visual_line_mode',
     '_enter_visual_mode',
-    '_enter_visual_mode_impl',
     '_nv_cmdline',
     '_nv_cmdline_feed_key',
     '_nv_ex_cmd_edit_wrap',
@@ -1372,19 +1371,34 @@ class _enter_visual_mode(ViTextCommandBase):
 
         state = State(self.view)
 
-        # TODO If all selections are non-zero-length, we may be looking at a
-        # pseudo-visual selection, like the ones that are created pressing
-        # Alt+Enter when using ST's built-in search dialog. What shall we really
-        # do in that case?
-
-        # XXX: In response to the above, we would probably already be in visual
-        # mode, but we should double-check that.
-
         if state.mode == VISUAL and not force:
             enter_normal_mode(self.view, mode)
             return
 
-        self.view.run_command('_enter_visual_mode_impl', {'mode': mode})
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_to_visual()
+        else:
+            def f(view, s):
+                if mode == VISUAL_LINE:
+                    return Region(s.a, s.b)
+                else:
+                    if s.empty() and (s.b == self.view.size()):
+                        ui_bell()
+                        return s
+
+                    # Extending from s.a to s.b because we may be looking at
+                    # selections with len>0. For example, if it's been created
+                    # using the mouse. Normally, though, the selection will be
+                    # empty when we reach here.
+                    end = s.b
+                    # Only extend .b by 1 if we're looking at empty sels.
+                    if not view.has_non_empty_selection_region():
+                        end += 1
+
+                    return Region(s.a, end)
+
+            regions_transformer(self.view, f)
 
         if any(s.empty() for s in self.view.sel()):
             return
@@ -1395,39 +1409,6 @@ class _enter_visual_mode(ViTextCommandBase):
         state.update_xpos(force=True)
         state.enter_visual_mode()
         state.display_status()
-
-
-class _enter_visual_mode_impl(ViTextCommandBase):
-
-    def run(self, edit, mode=None):
-        _log.debug('enter VISUAL mode from=%s (wrapped)', mode)
-
-        def f(view, s):
-            if mode == VISUAL_LINE:
-                return Region(s.a, s.b)
-            else:
-                if s.empty() and (s.b == self.view.size()):
-                    ui_bell()
-
-                    return s
-
-                # Extending from s.a to s.b because we may be looking at
-                # selections with len>0. For example, if it's been created
-                # using the mouse. Normally, though, the selection will be
-                # empty when we reach here.
-                end = s.b
-                # Only extend .b by 1 if we're looking at empty sels.
-                if not view.has_non_empty_selection_region():
-                    end += 1
-
-                return Region(s.a, end)
-
-        if mode == VISUAL_BLOCK:
-            visual_block = VisualBlockSelection(self.view)
-            visual_block.transform_to_visual()
-            return
-
-        regions_transformer(self.view, f)
 
 
 class _enter_visual_line_mode(ViTextCommandBase):
