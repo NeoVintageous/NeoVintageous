@@ -1218,7 +1218,7 @@ class _enter_normal_mode(ViTextCommandBase):
                 return Region(s.b)
 
             elif mode == VISUAL:
-                save_previous_selection(self.view, mode)
+                save_previous_selection(view, mode)
 
                 if s.a < s.b:
                     pt = s.b - 1
@@ -1233,7 +1233,7 @@ class _enter_normal_mode(ViTextCommandBase):
                 return Region(s.b)
 
             elif mode in (VISUAL_LINE, VISUAL_BLOCK):
-                save_previous_selection(self.view, mode)
+                save_previous_selection(view, mode)
 
                 if s.a < s.b:
                     pt = s.b - 1
@@ -1250,7 +1250,7 @@ class _enter_normal_mode(ViTextCommandBase):
             return Region(s.b)
 
         if mode != UNKNOWN:
-            if (len(self.view.sel()) > 1) and (mode == NORMAL):
+            if len(self.view.sel()) > 1 and mode == NORMAL:
                 set_selection(self.view, self.view.sel()[0])
 
             if mode == VISUAL_BLOCK and len(self.view.sel()) > 1:
@@ -1371,7 +1371,7 @@ class _enter_visual_mode(ViTextCommandBase):
                 if mode == VISUAL_LINE:
                     return Region(s.a, s.b)
                 else:
-                    if s.empty() and (s.b == self.view.size()):
+                    if s.empty() and s.b == view.size():
                         ui_bell()
                         return s
 
@@ -1455,7 +1455,8 @@ class _enter_replace_mode(ViTextCommandBase):
         _log.debug('enter REPLACE mode kwargs=%s', kwargs)
 
         def f(view, s):
-            return Region(s.b)
+            s.a = s.b
+            return s
 
         self.view.settings().set('command_mode', False)
         self.view.settings().set('inverse_caret_state', False)
