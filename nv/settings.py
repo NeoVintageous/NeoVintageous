@@ -15,7 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import defaultdict
+import os
+
+from sublime import active_window
+from sublime import load_settings
+from sublime import save_settings
+
 from NeoVintageous.nv.polyfill import save_preferences
+from NeoVintageous.nv.session import get_session_value
+from NeoVintageous.nv.session import set_session_value
+from NeoVintageous.nv.vim import DIRECTION_DOWN
+
+# TODO Refactor into .session
+_views = defaultdict(dict)  # type: dict
+
+
+def on_close(view) -> None:
+    try:
+        del _views[view.id()]
+    except KeyError:
+        pass
 
 
 def get_setting(view, name: str, default=None):
@@ -38,9 +58,59 @@ def _set_private(obj, name: str, value) -> None:
     obj.settings().set('_vintageous_%s' % name, value)
 
 
-# DEPRECATED Refactor to use get_setting() instead
+# DEPRECATED TODO Refactor to use get_setting() instead
 def get_setting_neo(view, name: str):
     return view.settings().get('neovintageous_%s' % name)
+
+
+def get_cmdline_cwd() -> str:
+    cwd = get_session_value('cmdline_cwd')
+    if cwd:
+        return cwd
+
+    window = active_window()
+    if window:
+        variables = window.extract_variables()
+        if 'folder' in variables:
+            return str(variables['folder'])
+
+    return os.getcwd()
+
+
+def set_cmdline_cwd(path: str) -> None:
+    set_session_value('cmdline_cwd', path)
+
+
+def get_ex_global_last_pattern() -> str:
+    return get_session_value('ex_global_last_pattern')
+
+
+def set_ex_global_last_pattern(pattern: str) -> None:
+    set_session_value('ex_global_last_pattern', pattern)
+
+
+def get_ex_shell_last_command() -> str:
+    return get_session_value('ex_shell_last_command')
+
+
+def set_ex_shell_last_command(cmd: str) -> None:
+    set_session_value('ex_shell_last_command', cmd)
+
+
+def get_ex_substitute_last_pattern() -> str:
+    return get_session_value('ex_substitute_last_pattern')
+
+
+def set_ex_substitute_last_pattern(pattern: str) -> None:
+    set_session_value('ex_substitute_last_pattern', pattern, persist=True)
+
+
+def get_ex_substitute_last_replacement() -> str:
+    return get_session_value('ex_substitute_last_replacement')
+
+
+def set_ex_substitute_last_replacement(replacement: str) -> None:
+    set_session_value('ex_substitute_last_replacement', replacement, persist=True)
 
 
 def get_last_char_search(view) -> str:
@@ -81,6 +151,35 @@ def set_last_buffer_search_command(view, value: str) -> None:
     _set_private(view.window(), 'last_buffer_search_command', value)
 
 
+def set_repeat_data(view, data: tuple) -> None:
+    # The structure of {data}:
+    #
+    #   [{type}, {command}, {mode}, {visual}]
+    #
+    # Type can be "vi" or "native".
+    #
+    # Command can be a string key sequence or a ST command with args.
+    #
+    # Visual is a tuple (start_pt, end_pt, mode).
+    #
+    # Examples:
+    #
+    # ('native', ('insert', {'characters': 'fizz'}), 'mode_insert', None)
+    # ('native', ('sequence', {'commands': [['insert', {'characters': 'fizz'}], ['left_delete', None]]}), 'mode_insert', None])  # noqa: E501
+    # ('vi', 'x', 'mode_normal', (0, 4, 'mode_visual'))
+    # TODO remove assertions
+    assert isinstance(data, tuple) or isinstance(data, list), 'bad call'
+    assert len(data) == 4, 'bad call'
+    _views[view.id()]['repeat_data'] = data
+
+
+def get_repeat_data(view):
+    try:
+        return _views[view.id()]['repeat_data']
+    except KeyError:
+        pass
+
+
 def get_reset_during_init(view) -> bool:
     # Some commands gather input through input panels. An input panel is a view,
     # but when it's closed, the previous view gets activated and init code runs.
@@ -90,6 +189,16 @@ def get_reset_during_init(view) -> bool:
 
 def set_reset_during_init(view, value: bool) -> None:
     _set_private(view.window(), 'reset_during_init', value)
+
+
+def get_visual_block_direction(view, default: int = DIRECTION_DOWN) -> int:
+    return view.settings().get('_nv_visual_block_direction', default)
+
+
+def set_visual_block_direction(view, direction: int) -> None:
+    current_direction = get_visual_block_direction(view)
+    if direction != current_direction:
+        view.settings().set('_nv_visual_block_direction', direction)
 
 
 def _toggle_preference(name: str) -> None:

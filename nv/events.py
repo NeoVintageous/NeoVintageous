@@ -19,13 +19,13 @@ from sublime import OP_EQUAL
 from sublime import OP_NOT_EQUAL
 from sublime_plugin import EventListener
 
+from NeoVintageous.nv import settings
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
-from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK

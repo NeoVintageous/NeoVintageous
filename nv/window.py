@@ -19,8 +19,8 @@ import os
 
 from sublime import Region
 
+from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.utils import set_selection
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vim import status_message
 
 

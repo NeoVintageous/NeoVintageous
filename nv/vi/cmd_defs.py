@@ -18,6 +18,7 @@
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_reset_during_init
@@ -27,7 +28,6 @@ from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.keys import assign
-from NeoVintageous.nv.vi.settings import get_repeat_data
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING

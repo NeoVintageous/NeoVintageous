@@ -22,7 +22,7 @@ import re
 from sublime import Region
 
 from NeoVintageous.nv.options import get_option_completions
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
+from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.vim import is_ex_mode
 
 
