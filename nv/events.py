@@ -185,7 +185,8 @@ class NeoVintageousEvents(EventListener):
     def on_post_save(self, view):
         # Ensure the carets are within valid bounds. For instance, this is a
         # concern when 'trim_trailing_white_space_on_save' is set to true.
-        fix_eol_cursor(view, get_mode(view))
+        if is_view(view):
+            fix_eol_cursor(view, get_mode(view))
 
     def on_close(self, view):
         session_on_close(view)
