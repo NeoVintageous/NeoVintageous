@@ -51,19 +51,19 @@
     // {not in Vim}
     "vintageous_default_mode": "",
 
-    // A port of https://github.com/tpope/vim-abolish.
+    // Plugin: A port of https://github.com/tpope/vim-abolish.
     "vintageous_enable_abolish": true,
 
-    // A port of https://github.com/tpope/vim-commentary.
+    // Plugin: A port of https://github.com/tpope/vim-commentary.
     "vintageous_enable_commentary": true,
 
-    // A port of https://github.com/terryma/vim-multiple-cursors.
+    // Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
     "vintageous_enable_multiple_cursors": true,
 
-    // A port of https://github.com/tpope/vim-surround.
+    // Plugin: A port of https://github.com/tpope/vim-surround.
     "vintageous_enable_surround": true,
 
-    // A port of https://github.com/tpope/vim-unimpaired.
+    // Plugin: A port of https://github.com/tpope/vim-unimpaired.
     "vintageous_enable_unimpaired": true,
 
     // If set to false then pressing the quit key (<Esc> or J) in multiple
