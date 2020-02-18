@@ -17,6 +17,8 @@
 
 import re
 
+from sublime import active_window
+
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.vim import message
@@ -70,6 +72,13 @@ def do_modeline(view) -> None:
     #   vim: tabstop=4
     #   vim: ts=4 noet
     window = view.window()
+
+    # If the view is "transient" (for example when opened in in preview via the
+    # CTRL-p overlay) then the view won't have a window object. Some ST events
+    # like on_load() may open transient views.
+    if not window:
+        window = active_window()
+
     if window:
         modelines = get_option(view, 'modelines')
         line_count = view.rowcol(view.size())[0] + 1
