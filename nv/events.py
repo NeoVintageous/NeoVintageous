@@ -198,7 +198,7 @@ class NeoVintageousEvents(EventListener):
         # view.on_deactivate() event, because that event is triggered when the
         # user right button clicks the view with the mouse, and we don't want
         # visual selections to be cleared on mouse right button clicks.
-        if not view.settings().get('is_widget'):
+        if is_view(view):
             window = view.window()
             if window:
                 active_group = window.active_group()
