@@ -500,7 +500,7 @@ class _nv_feed_key(WindowCommand):
 
         if key.lower() == '<esc>':
             if mode == SELECT:
-                self.window.run_command('_vi_select_big_j', {'mode': mode})
+                self.view.run_command('_vi_select_big_j', {'mode': mode})
             else:
                 enter_normal_mode(self.window, mode)
                 state.reset_command_data()
