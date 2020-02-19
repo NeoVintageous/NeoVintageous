@@ -34,7 +34,7 @@ __all__ = ()
 _ACTION_MODES = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
-@register(seqs.ALT_CTRL_P, _ACTION_MODES)
+@register(seqs.CTRL_ALT_P, _ACTION_MODES)
 class StQuickSwitchProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -374,7 +374,7 @@ class StClearBookmarks(ViOperatorDef):
         }
 
 
-@register(seqs.SHIFT_CTRL_F12, _ACTION_MODES)
+@register(seqs.CTRL_SHIFT_F12, _ACTION_MODES)
 class StGotoSymbolInProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
