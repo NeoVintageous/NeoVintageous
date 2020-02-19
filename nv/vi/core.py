@@ -55,14 +55,8 @@ class IrreversibleTextCommand(sublime_plugin.TextCommand):
 
 
 # DEPRECATED
-# TODO Remove this command
-class ViTextCommandBase(sublime_plugin.TextCommand):
-    pass
-
-
-# DEPRECATED
 # TODO Remove this command or refactor it just to allow commands to bypass the undo stack
-class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
+class ViMotionCommand(IrreversibleTextCommand, sublime_plugin.TextCommand):
     # Motion should bypass the undo stack.
     # Due to MRO in Python subclasses, IrreversibleTextCommand must come first so
     # that the modified .run_() method is found first.
