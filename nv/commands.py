@@ -152,8 +152,6 @@ from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
 from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
-from NeoVintageous.nv.vi.core import IrreversibleTextCommand
-from NeoVintageous.nv.vi.core import ViMotionCommand
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
@@ -2474,27 +2472,27 @@ class _vi_ctrl_w(WindowCommand):
         window_control(self.window, **kwargs)
 
 
-class _vi_z_enter(IrreversibleTextCommand):
+class _vi_z_enter(TextCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         pt = get_insertion_point_at_b(self.view.sel()[0])
         home_line = self.view.line(pt)
         taget_pt = self.view.text_to_layout(home_line.begin())
         self.view.set_viewport_position(taget_pt)
 
 
-class _vi_z_minus(IrreversibleTextCommand):
+class _vi_z_minus(TextCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         layout_coord = self.view.text_to_layout(self.view.sel()[0].b)
         viewport_extent = self.view.viewport_extent()
         new_pos = (0.0, layout_coord[1] - viewport_extent[1])
         self.view.set_viewport_position(new_pos)
 
 
-class _vi_zz(IrreversibleTextCommand):
+class _vi_zz(TextCommand):
 
-    def run(self, mode=None, count=1, first_non_blank=False):
+    def run(self, edit, mode=None, count=1, first_non_blank=False):
         first_sel = self.view.sel()[0]
         current_position = self.view.text_to_layout(first_sel.b)
         viewport_dim = self.view.viewport_extent()
@@ -2606,9 +2604,9 @@ class _vi_modify_numbers(TextCommand):
             self.view.sel().add(Region(self.view.text_point(row, col)))
 
 
-class _vi_select_big_j(IrreversibleTextCommand):
+class _vi_select_big_j(TextCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         if get_setting(self.view, 'multi_cursor_exit_from_visual_mode'):
             set_selection(self.view, self.view.sel()[0])
 
@@ -2716,9 +2714,9 @@ class _vi_big_j(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_gv(IrreversibleTextCommand):
+class _vi_gv(TextCommand):
 
-    def run(self, mode=None, count=None):
+    def run(self, edit, mode=None, count=None):
         visual_sel, visual_sel_mode = get_previous_selection(self.view)
         if not visual_sel or not visual_sel_mode:
             return
@@ -2744,9 +2742,9 @@ class _vi_gv(IrreversibleTextCommand):
             _do_cmd(enter_visual_block_mode)
 
 
-class _vi_gx(IrreversibleTextCommand):
+class _vi_gx(TextCommand):
 
-    def run(self, **kwargs):
+    def run(self, edit, **kwargs):
         url = extract_url(self.view)
         if url:
             webbrowser.open_new_tab(url)
@@ -2770,9 +2768,9 @@ class _vi_ctrl_y(TextCommand):
         self.view.run_command('scroll_lines', {'amount': count})
 
 
-class _vi_q(IrreversibleTextCommand):
+class _vi_q(TextCommand):
 
-    def run(self, mode=None, count=1, name=None):
+    def run(self, edit, mode=None, count=1, name=None):
         window = self.view.window()
 
         if macros.is_recording(window):
@@ -2784,9 +2782,9 @@ class _vi_q(IrreversibleTextCommand):
             macros.start_recording(window, name)
 
 
-class _vi_at(IrreversibleTextCommand):
+class _vi_at(TextCommand):
 
-    def run(self, name, mode=None, count=1):
+    def run(self, edit, name, mode=None, count=1):
         window = self.view.window()
 
         if name == '@':
@@ -3051,11 +3049,11 @@ class _vi_ctrl_x_ctrl_l(TextCommand):
         set_selection(self.view, self.view.sel()[0].b)
 
 
-class _vi_find_in_line(ViMotionCommand):
+class _vi_find_in_line(TextCommand):
 
     # Contrary to *f*, *t* does not look past the caret's position, so if
     # @character is under the caret, nothing happens.
-    def run(self, char=None, mode=None, count=1, inclusive=True, skipping=False):
+    def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False):
         def f(view, s):
             if mode == VISUAL_LINE:
                 raise ValueError('wrong mode')
@@ -3102,11 +3100,11 @@ class _vi_find_in_line(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_reverse_find_in_line(ViMotionCommand):
+class _vi_reverse_find_in_line(TextCommand):
 
     # Contrary to *F*, *T* does not look past the caret's position, so if
     # ``character`` is right before the caret, nothing happens.
-    def run(self, char=None, mode=None, count=1, inclusive=True, skipping=False):
+    def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False):
         def f(view, s):
             if mode == VISUAL_LINE:
                 raise ValueError('wrong mode')
@@ -3152,9 +3150,9 @@ class _vi_reverse_find_in_line(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_slash(ViMotionCommand):
+class _vi_slash(TextCommand):
 
-    def run(self, pattern=''):
+    def run(self, edit, pattern=''):
         set_reset_during_init(self.view, False)
 
         self._cmdline = Cmdline(
@@ -3211,8 +3209,8 @@ class _vi_slash(ViMotionCommand):
         show_if_not_visible(self.view)
 
 
-class _vi_slash_impl(ViMotionCommand):
-    def run(self, search_string, mode=None, count=1):
+class _vi_slash_impl(TextCommand):
+    def run(self, edit, search_string, mode=None, count=1):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
         if not pattern:
@@ -3252,8 +3250,8 @@ class _vi_slash_impl(ViMotionCommand):
         add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags))
 
 
-class _vi_l(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_l(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
                 if view.line(s.b).empty():
@@ -3288,8 +3286,8 @@ class _vi_l(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_h(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_h(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
                 x_limit = max(view.line(s.b).a, s.b - count)
@@ -3338,9 +3336,9 @@ class _vi_h(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_j(ViMotionCommand):
+class _vi_j(TextCommand):
 
-    def run(self, mode=None, count=1, xpos=0):
+    def run(self, edit, mode=None, count=1, xpos=0):
         def f(view, s):
             nonlocal xpos
 
@@ -3408,9 +3406,9 @@ class _vi_j(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_k(ViMotionCommand):
+class _vi_k(TextCommand):
 
-    def run(self, mode=None, count=1, xpos=0):
+    def run(self, edit, mode=None, count=1, xpos=0):
         def f(view, s):
             nonlocal xpos
 
@@ -3480,8 +3478,8 @@ class _vi_k(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_gg(ViMotionCommand):
-    def run(self, mode=None, count=None):
+class _vi_gg(TextCommand):
+    def run(self, edit, mode=None, count=None):
         if count:
             goto_line(self.view, mode, count)
             return
@@ -3503,8 +3501,8 @@ class _vi_gg(ViMotionCommand):
         jumplist_update(self.view)
 
 
-class _vi_big_g(ViMotionCommand):
-    def run(self, mode=None, count=None):
+class _vi_big_g(TextCommand):
+    def run(self, edit, mode=None, count=None):
         if count:
             goto_line(self.view, mode, count)
             return
@@ -3527,8 +3525,8 @@ class _vi_big_g(ViMotionCommand):
         jumplist_update(self.view)
 
 
-class _vi_dollar(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_dollar(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             if count > 1:
                 start = row_to_pt(view, row_at(view, start) + (count - 1))
@@ -3561,8 +3559,8 @@ class _vi_dollar(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_w(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_w(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, word_starts, count)
             return
@@ -3585,8 +3583,8 @@ class _vi_w(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_w(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_big_w(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, big_word_starts, count)
             return
@@ -3609,8 +3607,8 @@ class _vi_big_w(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_e(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_e(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             # TODO Is the word_ends() function off-by-one?
             return word_ends(view, start, count) - 1
@@ -3640,8 +3638,8 @@ class _vi_e(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_zero(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_zero(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             return view.line(start).a
 
@@ -3666,8 +3664,8 @@ class _vi_zero(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_right_brace(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_right_brace(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             target = next_paragraph_start(view, get_insertion_point_at_b(s), count)
 
@@ -3690,8 +3688,8 @@ class _vi_right_brace(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_left_brace(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_left_brace(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             target = prev_paragraph_start(view, get_insertion_point_at_b(s), count)
 
@@ -3712,9 +3710,9 @@ class _vi_left_brace(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_percent(ViMotionCommand):
+class _vi_percent(TextCommand):
 
-    def run(self, mode=None, count=None):
+    def run(self, edit, mode=None, count=None):
         if count:
             # {count}% Go to {count} percentage in the file, on the first non-blank
             # in the line linewise. To compute the new line number this formula is
@@ -3758,8 +3756,8 @@ class _vi_percent(ViMotionCommand):
             regions_transformer(self.view, f)
 
 
-class _vi_big_h(ViMotionCommand):
-    def run(self, mode=None, count=None):
+class _vi_big_h(TextCommand):
+    def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -3776,8 +3774,8 @@ class _vi_big_h(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_l(ViMotionCommand):
-    def run(self, mode=None, count=None):
+class _vi_big_l(TextCommand):
+    def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -3794,8 +3792,8 @@ class _vi_big_l(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_m(ViMotionCommand):
-    def run(self, mode=None, count=None):
+class _vi_big_m(TextCommand):
+    def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -3815,8 +3813,8 @@ class _vi_big_m(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_star(ViMotionCommand):
-    def run(self, mode=None, count=1, search_string=None):
+class _vi_star(TextCommand):
+    def run(self, edit, mode=None, count=1, search_string=None):
         def f(view, s):
             match = find_wrapping(
                 view,
@@ -3859,8 +3857,8 @@ class _vi_star(ViMotionCommand):
         show_if_not_visible(self.view)
 
 
-class _vi_octothorp(ViMotionCommand):
-    def run(self, mode=None, count=1, search_string=None):
+class _vi_octothorp(TextCommand):
+    def run(self, edit, mode=None, count=1, search_string=None):
         def f(view, s):
             match = reverse_find_wrapping(
                 view,
@@ -3904,8 +3902,8 @@ class _vi_octothorp(ViMotionCommand):
         show_if_not_visible(self.view)
 
 
-class _vi_b(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_b(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, word_reverse, count)
             return
@@ -3925,9 +3923,9 @@ class _vi_b(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_b(ViMotionCommand):
+class _vi_big_b(TextCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, big_word_reverse, count)
             return
@@ -3947,8 +3945,8 @@ class _vi_big_b(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_underscore(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_underscore(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             current_row = view.rowcol(start)[0]
             last_row = view.rowcol(view.size() - 1)[0]
@@ -3979,8 +3977,8 @@ class _vi_underscore(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_hat(ViMotionCommand):
-    def run(self, mode=None, count=None):
+class _vi_hat(TextCommand):
+    def run(self, edit, mode=None, count=None):
         def _get_target(view, start, count):
             return next_non_blank(view, view.line(start).a)
 
@@ -4003,8 +4001,8 @@ class _vi_hat(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_gj(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_gj(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': False})
@@ -4018,8 +4016,8 @@ class _vi_gj(ViMotionCommand):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': False})
 
 
-class _vi_gk(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_gk(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
@@ -4033,8 +4031,8 @@ class _vi_gk(ViMotionCommand):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
 
 
-class _vi_g__(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_g__(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             current_row = view.rowcol(start)[0]
             last_row = view.rowcol(view.size() - 1)[0]
@@ -4068,8 +4066,8 @@ class _vi_g__(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_ctrl_u(ViMotionCommand):
-    def run(self, mode=None, count=0):
+class _vi_ctrl_u(TextCommand):
+    def run(self, edit, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -4092,8 +4090,8 @@ class _vi_ctrl_u(ViMotionCommand):
             scroll_viewport_position(self.view, number_of_scroll_lines, forward=False)
 
 
-class _vi_ctrl_d(ViMotionCommand):
-    def run(self, mode=None, count=0):
+class _vi_ctrl_d(TextCommand):
+    def run(self, edit, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
@@ -4116,8 +4114,8 @@ class _vi_ctrl_d(ViMotionCommand):
             scroll_viewport_position(self.view, number_of_scroll_lines)
 
 
-class _vi_bar(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_bar(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def _get_target(view, start, col):
             line = view.line(start)
             if line.empty():
@@ -4148,8 +4146,8 @@ class _vi_bar(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_ge(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_ge(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, word_end_reverse, count)
             return
@@ -4169,8 +4167,8 @@ class _vi_ge(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_g_big_e(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_g_big_e(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, big_word_end_reverse, count)
             return
@@ -4190,9 +4188,9 @@ class _vi_g_big_e(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_left_paren(ViMotionCommand):
+class _vi_left_paren(TextCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             start = s.a if s.b >= s.a else s.b
             previous_sentence = find_sentences_backward(view, start, count)
@@ -4215,9 +4213,9 @@ class _vi_left_paren(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_right_paren(ViMotionCommand):
+class _vi_right_paren(TextCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             next_sentence = find_sentences_forward(view, s, count)
             if next_sentence is None:
@@ -4239,8 +4237,8 @@ class _vi_right_paren(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_question_mark_impl(ViMotionCommand):
-    def run(self, search_string, mode=None, count=1):
+class _vi_question_mark_impl(TextCommand):
+    def run(self, edit, search_string, mode=None, count=1):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
         if not pattern:
@@ -4278,9 +4276,9 @@ class _vi_question_mark_impl(ViMotionCommand):
         add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags))
 
 
-class _vi_question_mark(ViMotionCommand):
+class _vi_question_mark(TextCommand):
 
-    def run(self, pattern=''):
+    def run(self, edit, pattern=''):
         set_reset_during_init(self.view, False)
 
         self._cmdline = Cmdline(
@@ -4337,7 +4335,7 @@ class _vi_question_mark(ViMotionCommand):
         show_if_not_visible(self.view)
 
 
-class _vi_repeat_buffer_search(ViMotionCommand):
+class _vi_repeat_buffer_search(TextCommand):
 
     commands = {
         'vi_slash': ['_vi_slash_impl', '_vi_question_mark_impl'],
@@ -4346,7 +4344,7 @@ class _vi_repeat_buffer_search(ViMotionCommand):
         'vi_octothorp': ['_vi_octothorp', '_vi_star'],
     }
 
-    def run(self, mode=None, count=1, reverse=False):
+    def run(self, edit, mode=None, count=1, reverse=False):
         search_string = get_last_buffer_search(self.view)
         search_command = get_last_buffer_search_command(self.view)
         command = self.commands[search_command][int(reverse)]
@@ -4362,9 +4360,9 @@ class _vi_repeat_buffer_search(ViMotionCommand):
         self.view.show(self.view.sel(), show_surrounds=True)
 
 
-class _vi_search(ViMotionCommand):
+class _vi_search(TextCommand):
 
-    def run(self, mode=None, count=1, forward=True):
+    def run(self, edit, mode=None, count=1, forward=True):
         last_search = get_last_buffer_search(self.view)
 
         def f(view, s):
@@ -4402,20 +4400,20 @@ class _vi_search(ViMotionCommand):
                     break
 
 
-class _vi_n(ViMotionCommand):
+class _vi_n(TextCommand):
 
-    def run(self, mode=None, count=1, search_string=''):
+    def run(self, edit, mode=None, count=1, search_string=''):
         self.view.run_command('_vi_slash_impl', {'mode': mode, 'count': count, 'search_string': search_string})
 
 
-class _vi_big_n(ViMotionCommand):
+class _vi_big_n(TextCommand):
 
-    def run(self, mode=None, count=1, search_string=''):
+    def run(self, edit, mode=None, count=1, search_string=''):
         self.view.run_command('_vi_question_mark_impl', {'mode': mode, 'count': count, 'search_string': search_string})
 
 
-class _vi_big_e(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_big_e(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             # TODO Is the big_word_ends() function off-by-one?
             return big_word_ends(view, start, count) - 1
@@ -4439,8 +4437,8 @@ class _vi_big_e(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_ctrl_f(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_ctrl_f(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True})
         elif mode == VISUAL:
@@ -4460,8 +4458,8 @@ class _vi_ctrl_f(ViMotionCommand):
                 set_selection(self.view, new_sels)
 
 
-class _vi_ctrl_b(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_ctrl_b(TextCommand):
+    def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': False})
         elif mode == VISUAL:
@@ -4481,8 +4479,8 @@ class _vi_ctrl_b(ViMotionCommand):
                 set_selection(self.view, new_sels)
 
 
-class _vi_enter(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_enter(TextCommand):
+    def run(self, edit, mode=None, count=1):
         self.view.run_command('_vi_j', {'mode': mode, 'count': count})
 
         def f(view, s):
@@ -4500,8 +4498,8 @@ class _vi_enter(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_minus(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_minus(TextCommand):
+    def run(self, edit, mode=None, count=1):
         self.view.run_command('_vi_k', {'mode': mode, 'count': count})
 
         def f(view, s):
@@ -4519,13 +4517,13 @@ class _vi_minus(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_shift_enter(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_shift_enter(TextCommand):
+    def run(self, edit, mode=None, count=1):
         self.view.run_command('_vi_ctrl_f', {'mode': mode, 'count': count})
 
 
-class _vi_select_text_object(ViMotionCommand):
-    def run(self, text_object=None, mode=None, count=1, extend=False, inclusive=False):
+class _vi_select_text_object(TextCommand):
+    def run(self, edit, text_object=None, mode=None, count=1, extend=False, inclusive=False):
         def f(view, s):
             if mode in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 return get_text_object_region(view, s, text_object,
@@ -4537,7 +4535,7 @@ class _vi_select_text_object(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_go_to_symbol(ViMotionCommand):
+class _vi_go_to_symbol(TextCommand):
     """
     Go to local declaration.
 
@@ -4563,7 +4561,7 @@ class _vi_go_to_symbol(ViMotionCommand):
         except IndexError:
             return
 
-    def run(self, mode=None, count=1, globally=False):
+    def run(self, edit, mode=None, count=1, globally=False):
 
         def f(view, s):
             if mode == NORMAL:
@@ -4603,8 +4601,8 @@ class _vi_go_to_symbol(ViMotionCommand):
         jumplist_update(self.view)
 
 
-class _vi_gm(ViMotionCommand):
-    def run(self, mode=None, count=1):
+class _vi_gm(TextCommand):
+    def run(self, edit, mode=None, count=1):
         def f(view, s):
             line = view.line(s.b)
             if line.empty():
@@ -4621,8 +4619,8 @@ class _vi_gm(ViMotionCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_left_square_bracket(ViMotionCommand):
-    def run(self, action, mode, count=1, **kwargs):
+class _vi_left_square_bracket(TextCommand):
+    def run(self, edit, action, mode, count=1, **kwargs):
         if action == 'c':
             goto_prev_change(self.view, mode, count)
         elif action == 's':
@@ -4633,8 +4631,8 @@ class _vi_left_square_bracket(ViMotionCommand):
             raise ValueError('unknown action')
 
 
-class _vi_right_square_bracket(ViMotionCommand):
-    def run(self, action, mode, count=1, **kwargs):
+class _vi_right_square_bracket(TextCommand):
+    def run(self, edit, action, mode, count=1, **kwargs):
         if action == 'c':
             goto_next_change(self.view, mode, count)
         elif action == 's':
