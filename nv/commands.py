@@ -499,8 +499,8 @@ class _nv_feed_key(ViWindowCommandBase):
 
         # If the user has made selections with the mouse, we may be in an
         # inconsistent state. Try to remedy that.
-        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and state.view.has_non_empty_selection_region():
-            init_state(state.view)
+        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and self.view.has_non_empty_selection_region():
+            init_state(self.view)
 
         if key.lower() == '<esc>':
             if mode == SELECT:
@@ -775,7 +775,7 @@ class _nv_process_notation(ViWindowCommandBase):
             keys = keys[len(leading_motions):]
 
         if not (state.motion and not state.action):
-            with gluing_undo_groups(self.window.active_view(), state):
+            with gluing_undo_groups(self.view, state):
                 try:
                     for key in tokenize_keys(keys):
                         if key.lower() == '<esc>':
@@ -802,7 +802,7 @@ class _nv_process_notation(ViWindowCommandBase):
                     # Ensure we set the full command for "." to use, but don't
                     # store "." alone.
                     if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
-                        set_repeat_data(state.view, ('vi', (leading_motions + keys), initial_mode, None))
+                        set_repeat_data(self.view, ('vi', (leading_motions + keys), initial_mode, None))
 
         # We'll reach this point if we have a command that requests input whose
         # input parser isn't satistied. For example, `/foo`. Note that
@@ -1515,8 +1515,6 @@ class _vi_dot(ViWindowCommandBase):
         elif mode not in (VISUAL, VISUAL_LINE, NORMAL, INTERNAL_NORMAL, INSERT):
             return ui_bell()
 
-        view = self.window.active_view()
-
         if type_ == 'vi':
             self.window.run_command('_nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
         elif type_ == 'native':
@@ -1527,7 +1525,7 @@ class _vi_dot(ViWindowCommandBase):
             raise ValueError('bad repeat data')
 
         enter_normal_mode(self.window, mode)
-        set_repeat_data(view, repeat_data)
+        set_repeat_data(self.view, repeat_data)
         state.update_xpos()
 
 
