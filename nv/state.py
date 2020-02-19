@@ -52,6 +52,7 @@ from NeoVintageous.nv.vim import clean_view
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
+from NeoVintageous.nv.vim import reset_status
 from NeoVintageous.nv.vim import run_action
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import run_window_command
@@ -338,11 +339,6 @@ class State(object):
         self.register = '"'
         self.must_capture_register_name = False
 
-    def reset_status(self) -> None:
-        self.view.erase_status('vim-seq')
-        if self.mode == NORMAL:
-            self.view.erase_status('vim-mode')
-
     def display_status(self) -> None:
         mode_name = mode_to_name(self.mode)
         if mode_name:
@@ -410,7 +406,7 @@ class State(object):
         self.sequence = ''
         self.partial_sequence = ''
         self.reset_register_data()
-        self.reset_status()
+        reset_status(self.view, self.mode)
 
     def reset_volatile_data(self) -> None:
         # Reset window or application wide data to their default values.
