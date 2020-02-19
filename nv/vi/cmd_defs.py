@@ -2802,18 +2802,15 @@ class ViReverseFindWord(ViMotionDef):
         }
 
 
-@assign(seqs.LEFT_SQUARE_BRACKET, _MOTION_MODES)
-@assign(seqs.RIGHT_SQUARE_BRACKET, _MOTION_MODES)
 @assign(seqs.BIG_Z, _MOTION_MODES)
 @assign(seqs.CTRL_K, _MOTION_MODES)
 @assign(seqs.CTRL_W, _MOTION_MODES)
+@assign(seqs.CTRL_X, (INSERT,))
 @assign(seqs.G, _MOTION_MODES)
+@assign(seqs.LEFT_SQUARE_BRACKET, _MOTION_MODES)
+@assign(seqs.RIGHT_SQUARE_BRACKET, _MOTION_MODES)
 @assign(seqs.Z, _MOTION_MODES)
 @assign(seqs.ZU, _MOTION_MODES)
-# Non-standard modes:
-@assign(seqs.CTRL_DOT, _MOTION_MODES)
-@assign(seqs.CTRL_SHIFT_DOT, _MOTION_MODES)
-@assign(seqs.CTRL_X, (INSERT,))  # This is called a 'submode' in the vim docs.
 class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
