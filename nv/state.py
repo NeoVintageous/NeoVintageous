@@ -334,14 +334,6 @@ class State(object):
     def enter_visual_block_mode(self) -> None:
         self.mode = VISUAL_BLOCK
 
-    def reset_sequence(self) -> None:
-        # TODO When is_recording, we could store the .sequence
-        # and replay that, but we can't easily translate key presses in insert
-        # mode to a NeoVintageous-friendly notation. A hybrid approach may work:
-        # use a plain string for any command-mode-based mode, and native ST
-        # commands for insert mode. That should make editing macros easier.
-        self.sequence = ''
-
     def reset_register_data(self) -> None:
         self.register = '"'
         self.must_capture_register_name = False
@@ -415,7 +407,7 @@ class State(object):
         self.action_count = ''
         self.motion_count = ''
 
-        self.reset_sequence()
+        self.sequence = ''
         self.partial_sequence = ''
         self.reset_register_data()
         self.reset_status()
