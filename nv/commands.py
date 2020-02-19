@@ -195,6 +195,7 @@ from NeoVintageous.nv.vim import enter_visual_block_mode
 from NeoVintageous.nv.vim import enter_visual_line_mode
 from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
+from NeoVintageous.nv.vim import reset_status
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_control
@@ -519,14 +520,22 @@ class _nv_feed_key(ViWindowCommandBase):
             return
 
         if state.must_collect_input:
-            _log.debug('collecting input...')
-            state.process_input(key)
-            if state.runnable():
-                _log.debug('state is runnable')
-                if do_eval:
-                    _log.debug('evaluating state...')
-                    state.eval()
-                    state.reset_command_data()
+            _log.debug('collecting input!')
+
+            motion = state.motion
+            if motion and motion.accept_input:
+                motion.accept(key)
+                # Processed motion needs to reserialised and stored.
+                state.motion = motion
+            else:
+                action = state.action
+                action.accept(key)
+                # Processed action needs to reserialised and stored.
+                state.action = action
+
+            if state.runnable() and do_eval:
+                state.eval()
+                state.reset_command_data()
 
             return
 
@@ -665,7 +674,7 @@ class _nv_feed_key(ViWindowCommandBase):
         state.set_command(command)
 
         if state.mode == OPERATOR_PENDING:
-            state.reset_partial_sequence()
+            state.partial_sequence = ''
 
         if do_eval:
             state.eval()
@@ -1205,7 +1214,7 @@ class _enter_normal_mode(ViTextCommandBase):
         # Exit replace mode
         self.view.set_overwrite_status(False)
 
-        state.enter_normal_mode()
+        state.mode = NORMAL
 
         def f(view, s):
             if mode == INSERT:
@@ -1284,7 +1293,7 @@ class _enter_normal_mode(ViTextCommandBase):
                 state.glue_until_normal_mode = False
 
         if mode == INSERT and int(state.normal_insert_count) > 1:
-            state.enter_insert_mode()
+            state.mode = INSERT
             # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
@@ -1300,7 +1309,7 @@ class _enter_normal_mode(ViTextCommandBase):
             set_selection(self.view, new_sels)
 
         state.update_xpos(force=True)
-        state.reset_status()
+        reset_status(self.view, state.mode)
         fix_eol_cursor(self.view, state.mode)
 
         # When the commands o and O are immediately followed by <Esc>, then if
@@ -1324,7 +1333,7 @@ class _enter_select_mode(ViTextCommandBase):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
 
         state = State(self.view)
-        state.enter_select_mode()
+        state.mode = SELECT
 
         if mode == INTERNAL_NORMAL:
             self.view.window().run_command('find_under_expand')
@@ -1353,7 +1362,7 @@ class _enter_insert_mode(ViTextCommandBase):
         self.view.settings().set('command_mode', False)
 
         state = State(self.view)
-        state.enter_insert_mode()
+        state.mode = INSERT
         state.normal_insert_count = str(count)
         state.display_status()
 
@@ -1401,7 +1410,7 @@ class _enter_visual_mode(ViTextCommandBase):
         # its metadata. For example, when shift-clicking with the mouse to
         # create visual selections. Always update xpos to cover this case.
         state.update_xpos(force=True)
-        state.enter_visual_mode()
+        state.mode = VISUAL
         state.display_status()
 
 
@@ -1451,7 +1460,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
             regions_transformer(self.view, f)
 
-        state.enter_visual_line_mode()
+        state.mode = VISUAL_LINE
         state.display_status()
 
 
@@ -1468,7 +1477,7 @@ class _enter_replace_mode(ViTextCommandBase):
         self.view.settings().set('inverse_caret_state', False)
         self.view.set_overwrite_status(True)
         state = State(self.view)
-        state.enter_replace_mode()
+        state.mode = REPLACE
         regions_transformer(self.view, f)
         state.display_status()
         state.reset()
@@ -2819,7 +2828,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
-            state.enter_visual_block_mode()
+            state.mode = VISUAL_BLOCK
             state.display_status()
 
         elif mode == VISUAL_BLOCK and not force:
@@ -2984,7 +2993,7 @@ class _vi_g_big_h(ViWindowCommandBase):
         search_occurrences = get_search_occurrences(view)
         if search_occurrences:
             view.sel().add_all(search_occurrences)
-            state.enter_select_mode()
+            state.mode = SELECT
             state.display_status()
             return
 

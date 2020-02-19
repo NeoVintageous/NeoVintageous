@@ -43,7 +43,6 @@ from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
-from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
@@ -52,6 +51,7 @@ from NeoVintageous.nv.vim import clean_view
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
+from NeoVintageous.nv.vim import reset_status
 from NeoVintageous.nv.vim import run_action
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import run_window_command
@@ -313,46 +313,9 @@ class State(object):
 
         return False
 
-    def enter_normal_mode(self) -> None:
-        self.mode = NORMAL
-
-    def enter_visual_mode(self) -> None:
-        self.mode = VISUAL
-
-    def enter_visual_line_mode(self) -> None:
-        self.mode = VISUAL_LINE
-
-    def enter_insert_mode(self) -> None:
-        self.mode = INSERT
-
-    def enter_replace_mode(self) -> None:
-        self.mode = REPLACE
-
-    def enter_select_mode(self) -> None:
-        self.mode = SELECT
-
-    def enter_visual_block_mode(self) -> None:
-        self.mode = VISUAL_BLOCK
-
-    def reset_sequence(self) -> None:
-        # TODO When is_recording, we could store the .sequence
-        # and replay that, but we can't easily translate key presses in insert
-        # mode to a NeoVintageous-friendly notation. A hybrid approach may work:
-        # use a plain string for any command-mode-based mode, and native ST
-        # commands for insert mode. That should make editing macros easier.
-        self.sequence = ''
-
-    def reset_partial_sequence(self) -> None:
-        self.partial_sequence = ''
-
     def reset_register_data(self) -> None:
         self.register = '"'
         self.must_capture_register_name = False
-
-    def reset_status(self) -> None:
-        self.view.erase_status('vim-seq')
-        if self.mode == NORMAL:
-            self.view.erase_status('vim-mode')
 
     def display_status(self) -> None:
         mode_name = mode_to_name(self.mode)
@@ -418,10 +381,10 @@ class State(object):
         self.action_count = ''
         self.motion_count = ''
 
-        self.reset_sequence()
-        self.reset_partial_sequence()
+        self.sequence = ''
+        self.partial_sequence = ''
         self.reset_register_data()
-        self.reset_status()
+        reset_status(self.view, self.mode)
 
     def reset_volatile_data(self) -> None:
         # Reset window or application wide data to their default values.
@@ -449,29 +412,6 @@ class State(object):
                 # TODO [review] Exception handling
                 _log.debug('error updating xpos; default to 0')
                 self.xpos = 0
-
-    def process_input(self, key: str) -> bool:
-        _log.info('process input key %s', key)
-
-        motion = self.motion
-        if motion and motion.accept_input:
-            motion_accepted = motion.accept(key)
-
-            # Motion, with processed key, needs to reserialised and stored.
-            self.motion = motion
-
-            return motion_accepted
-
-        # We can just default to whatever the action' accept methods returns,
-        # because it will return False by default.
-
-        action = self.action
-        action_accepted = action.accept(key)
-
-        # Action, with processed key, needs to reserialised and stored.
-        self.action = action
-
-        return action_accepted
 
     def set_command(self, command: ViCommandDefBase) -> None:
         # Set the current command.
@@ -691,7 +631,7 @@ class State(object):
                 set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:
-            self.enter_normal_mode()
+            self.mode = NORMAL
 
         self.reset_command_data()
 
