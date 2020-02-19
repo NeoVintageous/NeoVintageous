@@ -154,7 +154,6 @@ from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
 from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.core import IrreversibleTextCommand
 from NeoVintageous.nv.vi.core import ViMotionCommand
-from NeoVintageous.nv.vi.core import ViTextCommandBase
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
@@ -963,7 +962,7 @@ class SequenceCommand(TextCommand):
             self.view.run_command(cmd, args)
 
 
-class _vi_g_big_u(ViTextCommandBase):
+class _vi_g_big_u(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -985,7 +984,7 @@ class _vi_g_big_u(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_gu(ViTextCommandBase):
+class _vi_gu(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -1007,7 +1006,7 @@ class _vi_gu(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_gq(ViTextCommandBase):
+class _vi_gq(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, linewise=False):
         def _wrap_lines(view):
@@ -1113,7 +1112,7 @@ class _vi_ctrl_r(WindowCommand):
         regions_transformer(self.view, fixup_eol)
 
 
-class _vi_a(ViTextCommandBase):
+class _vi_a(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1143,7 +1142,7 @@ class _vi_a(ViTextCommandBase):
         })
 
 
-class _vi_c(ViTextCommandBase):
+class _vi_c(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode is None:
@@ -1186,7 +1185,7 @@ class _vi_c(ViTextCommandBase):
         enter_insert_mode(self.view, mode)
 
 
-class _enter_normal_mode(ViTextCommandBase):
+class _enter_normal_mode(TextCommand):
 
     def run(self, edit, mode=None, from_init=False):
         _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
@@ -1330,7 +1329,7 @@ class _enter_normal_mode(ViTextCommandBase):
                             state.xpos = col + 1
 
 
-class _enter_select_mode(ViTextCommandBase):
+class _enter_select_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
@@ -1349,7 +1348,7 @@ class _enter_select_mode(ViTextCommandBase):
         state.display_status()
 
 
-class _enter_insert_mode(ViTextCommandBase):
+class _enter_insert_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         _log.debug('enter INSERT mode from=%s, count=%s', mode, count)
@@ -1370,7 +1369,7 @@ class _enter_insert_mode(ViTextCommandBase):
         state.display_status()
 
 
-class _enter_visual_mode(ViTextCommandBase):
+class _enter_visual_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
@@ -1417,7 +1416,7 @@ class _enter_visual_mode(ViTextCommandBase):
         state.display_status()
 
 
-class _enter_visual_line_mode(ViTextCommandBase):
+class _enter_visual_line_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
@@ -1467,7 +1466,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
         state.display_status()
 
 
-class _enter_replace_mode(ViTextCommandBase):
+class _enter_replace_mode(TextCommand):
 
     def run(self, edit, **kwargs):
         _log.debug('enter REPLACE mode kwargs=%s', kwargs)
@@ -1528,7 +1527,7 @@ class _vi_dot(WindowCommand):
         state.update_xpos()
 
 
-class _vi_dd(ViTextCommandBase):
+class _vi_dd(TextCommand):
 
     def run(self, edit, mode=None, count=1, register='"'):
         def f(view, s):
@@ -1556,7 +1555,7 @@ class _vi_dd(ViTextCommandBase):
         fixup_sel_pos()
 
 
-class _vi_cc(ViTextCommandBase):
+class _vi_cc(TextCommand):
 
     def run(self, edit, mode=None, count=1, register='"'):
         def f(view, s):
@@ -1583,7 +1582,7 @@ class _vi_cc(ViTextCommandBase):
             raise ValueError('could not set xpos:' + str(e))
 
 
-class _vi_visual_o(ViTextCommandBase):
+class _vi_visual_o(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1596,7 +1595,7 @@ class _vi_visual_o(ViTextCommandBase):
         self.view.show(self.view.sel()[0].b, False)
 
 
-class _vi_yy(ViTextCommandBase):
+class _vi_yy(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1632,7 +1631,7 @@ class _vi_yy(ViTextCommandBase):
             enter_normal_mode(self.view, mode)
 
 
-class _vi_y(ViTextCommandBase):
+class _vi_y(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode == INTERNAL_NORMAL:
@@ -1660,7 +1659,7 @@ class _vi_y(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_d(ViTextCommandBase):
+class _vi_d(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
@@ -1707,7 +1706,7 @@ class _vi_d(ViTextCommandBase):
         fix_eol_cursor(self.view, mode)
 
 
-class _vi_big_a(ViTextCommandBase):
+class _vi_big_a(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1748,7 +1747,7 @@ class _vi_big_a(ViTextCommandBase):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_big_i(ViTextCommandBase):
+class _vi_big_i(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1765,13 +1764,13 @@ class _vi_big_i(ViTextCommandBase):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_m(ViTextCommandBase):
+class _vi_m(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
         set_mark(self.view, character)
 
 
-class _vi_quote(ViTextCommandBase):
+class _vi_quote(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
@@ -1806,7 +1805,7 @@ class _vi_quote(ViTextCommandBase):
             self.view.show_at_center(target)
 
 
-class _vi_backtick(ViTextCommandBase):
+class _vi_backtick(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
@@ -1839,7 +1838,7 @@ class _vi_backtick(ViTextCommandBase):
         jumplist_update(self.view)
 
 
-class _vi_big_d(ViTextCommandBase):
+class _vi_big_d(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1880,7 +1879,7 @@ class _vi_big_d(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_big_c(ViTextCommandBase):
+class _vi_big_c(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1907,7 +1906,7 @@ class _vi_big_c(ViTextCommandBase):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_big_s(ViTextCommandBase):
+class _vi_big_s(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1936,7 +1935,7 @@ class _vi_big_s(ViTextCommandBase):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_s(ViTextCommandBase):
+class _vi_s(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1968,7 +1967,7 @@ class _vi_s(ViTextCommandBase):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_x(ViTextCommandBase):
+class _vi_x(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
@@ -1995,7 +1994,7 @@ class _vi_x(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_r(ViTextCommandBase):
+class _vi_r(TextCommand):
 
     def make_replacement_text(self, char, r):
         frags = split_by_newlines(self.view, r)
@@ -2038,7 +2037,7 @@ class _vi_r(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_less_than_less_than(ViTextCommandBase):
+class _vi_less_than_less_than(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         regions_transform_extend_to_line_count(self.view, count)
@@ -2047,7 +2046,7 @@ class _vi_less_than_less_than(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_equal_equal(ViTextCommandBase):
+class _vi_equal_equal(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         regions_transform_extend_to_line_count(self.view, count)
@@ -2056,7 +2055,7 @@ class _vi_equal_equal(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_greater_than_greater_than(ViTextCommandBase):
+class _vi_greater_than_greater_than(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         regions_transform_extend_to_line_count(self.view, count)
@@ -2065,7 +2064,7 @@ class _vi_greater_than_greater_than(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_greater_than(ViTextCommandBase):
+class _vi_greater_than(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def indent_from_begin(view, s, level=1):
@@ -2099,7 +2098,7 @@ class _vi_greater_than(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_less_than(ViTextCommandBase):
+class _vi_less_than(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         if motion:
@@ -2117,7 +2116,7 @@ class _vi_less_than(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_equal(ViTextCommandBase):
+class _vi_equal(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         if motion:
@@ -2134,7 +2133,7 @@ class _vi_equal(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_big_o(ViTextCommandBase):
+class _vi_big_o(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def create_selections(view, sel, index):
@@ -2151,7 +2150,7 @@ class _vi_big_o(ViTextCommandBase):
         self.view.run_command('reindent', {'force_indent': False})
 
 
-class _vi_o(ViTextCommandBase):
+class _vi_o(TextCommand):
     def run(self, edit, mode=None, count=1):
         def create_selections(view, sel, index):
             real_sel = sel if index == 0 else Region(sel.a + index * count, sel.b + index * count)
@@ -2167,7 +2166,7 @@ class _vi_o(ViTextCommandBase):
         self.view.run_command('reindent', {'force_indent': False})
 
 
-class _vi_big_x(ViTextCommandBase):
+class _vi_big_x(TextCommand):
 
     def line_start(self, pt):
         return self.view.line(pt).begin()
@@ -2213,7 +2212,7 @@ class _vi_big_z_big_z(WindowCommand):
         do_ex_command(self.window, 'exit')
 
 
-class _vi_paste(ViTextCommandBase):
+class _vi_paste(TextCommand):
 
     def run(self, edit, before_cursor, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
         contents, linewise = registers_get_for_paste(self.view, register, mode)
@@ -2537,7 +2536,7 @@ class _vi_z(TextCommand):
             raise ValueError('unknown action')
 
 
-class _vi_modify_numbers(ViTextCommandBase):
+class _vi_modify_numbers(TextCommand):
 
     DIGIT_PAT = re.compile('(\\D+?)?(-)?(\\d+)(\\D+)?')
     NUM_PAT = re.compile('\\d')
@@ -2616,7 +2615,7 @@ class _vi_select_big_j(IrreversibleTextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_big_j(ViTextCommandBase):
+class _vi_big_j(TextCommand):
     WHITE_SPACE = ' \t'
 
     def run(self, edit, mode=None, count=1, dont_insert_or_remove_spaces=False):
@@ -2753,7 +2752,7 @@ class _vi_gx(IrreversibleTextCommand):
             webbrowser.open_new_tab(url)
 
 
-class _vi_ctrl_e(ViTextCommandBase):
+class _vi_ctrl_e(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         self.view.run_command('scroll_lines', {'amount': -count})
@@ -2765,7 +2764,7 @@ class _vi_ctrl_g(WindowCommand):
         do_ex_command(self.window, 'file')
 
 
-class _vi_ctrl_y(ViTextCommandBase):
+class _vi_ctrl_y(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         self.view.run_command('scroll_lines', {'amount': count})
@@ -2821,7 +2820,7 @@ class _vi_at(IrreversibleTextCommand):
                 self.view.window().run_command(cmd, args)
 
 
-class _enter_visual_block_mode(ViTextCommandBase):
+class _enter_visual_block_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
@@ -2864,7 +2863,7 @@ class _vi_select_k(WindowCommand):
                 enter_normal_mode(self.view, mode)
 
 
-class _vi_tilde(ViTextCommandBase):
+class _vi_tilde(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def select(view, s):
@@ -2884,7 +2883,7 @@ class _vi_tilde(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_g_tilde(ViTextCommandBase):
+class _vi_g_tilde(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -2911,7 +2910,7 @@ class _vi_g_tilde(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_visual_u(ViTextCommandBase):
+class _vi_visual_u(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         for s in self.view.sel():
@@ -2924,7 +2923,7 @@ class _vi_visual_u(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_visual_big_u(ViTextCommandBase):
+class _vi_visual_big_u(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         for s in self.view.sel():
@@ -2937,7 +2936,7 @@ class _vi_visual_big_u(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_g_tilde_g_tilde(ViTextCommandBase):
+class _vi_g_tilde_g_tilde(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -2954,7 +2953,7 @@ class _vi_g_tilde_g_tilde(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_g_big_u_big_u(ViTextCommandBase):
+class _vi_g_big_u_big_u(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -2969,7 +2968,7 @@ class _vi_g_big_u_big_u(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_guu(ViTextCommandBase):
+class _vi_guu(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -3005,7 +3004,7 @@ class _vi_g_big_h(WindowCommand):
         state.reset_command_data()
 
 
-class _vi_ctrl_x_ctrl_l(ViTextCommandBase):
+class _vi_ctrl_x_ctrl_l(TextCommand):
     MAX_MATCHES = 20
 
     def find_matches(self, prefix: str, end: int) -> list:
