@@ -1067,8 +1067,14 @@ class _vi_u(WindowCommand):
 
     def run(self, mode=None, count=1, **kwargs):
         self.view = self.window.active_view()
+
+        change_count = self.view.change_count()
+
         for i in range(count):
             self.view.run_command('undo')
+
+        if self.view.change_count() == change_count:
+            return ui_bell('Already at oldest change')
 
         if self.view.has_non_empty_selection_region():
             def reverse(view, s):
@@ -1086,13 +1092,14 @@ class _vi_ctrl_r(WindowCommand):
 
     def run(self, mode=None, count=1, **kwargs):
         self.view = self.window.active_view()
-        change_count_before = self.view.change_count()
+
+        change_count = self.view.change_count()
 
         for i in range(count):
             self.view.run_command('redo')
 
-        if self.view.change_count() == change_count_before:
-            return ui_bell()
+        if self.view.change_count() == change_count:
+            return ui_bell('Already at newest change')
 
         # Fix EOL issue.
         # See https://github.com/SublimeTextIssues/Core/issues/2121.
