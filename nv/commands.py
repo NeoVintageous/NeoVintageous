@@ -532,10 +532,9 @@ class _nv_feed_key(ViWindowCommandBase):
                 # Processed action needs to reserialised and stored.
                 state.action = action
 
-            if state.runnable():
-                if do_eval:
-                    state.eval()
-                    state.reset_command_data()
+            if state.runnable() and do_eval:
+                state.eval()
+                state.reset_command_data()
 
             return
 
