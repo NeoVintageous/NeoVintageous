@@ -342,9 +342,6 @@ class State(object):
         # commands for insert mode. That should make editing macros easier.
         self.sequence = ''
 
-    def reset_partial_sequence(self) -> None:
-        self.partial_sequence = ''
-
     def reset_register_data(self) -> None:
         self.register = '"'
         self.must_capture_register_name = False
@@ -419,7 +416,7 @@ class State(object):
         self.motion_count = ''
 
         self.reset_sequence()
-        self.reset_partial_sequence()
+        self.partial_sequence = ''
         self.reset_register_data()
         self.reset_status()
 

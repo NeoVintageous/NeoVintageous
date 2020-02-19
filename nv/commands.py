@@ -665,7 +665,7 @@ class _nv_feed_key(ViWindowCommandBase):
         state.set_command(command)
 
         if state.mode == OPERATOR_PENDING:
-            state.reset_partial_sequence()
+            state.partial_sequence = ''
 
         if do_eval:
             state.eval()

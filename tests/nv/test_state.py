@@ -114,11 +114,6 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.state.reset_sequence()
         self.assertEqual(self.state.sequence, '')
 
-    def test_reset_partial_sequence(self):
-        self.state.partial_sequence = 'x'
-        self.state.reset_partial_sequence()
-        self.assertEqual(self.state.partial_sequence, '')
-
     def test_reset_command_data(self):
         self.state.sequence = 'abc'
         self.state.partial_sequence = 'x'
