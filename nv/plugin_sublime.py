@@ -174,7 +174,7 @@ class StCommandPalette(ViOperatorDef):
 
 
 @register(seqs.F2, _ACTION_MODES)
-class StPrevBookmark(ViOperatorDef):
+class StNextBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
@@ -182,7 +182,7 @@ class StPrevBookmark(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': 'prev_bookmark',
+            'action': 'next_bookmark',
             'action_args': {}
         }
 
@@ -319,7 +319,7 @@ class StGotoSymbol(ViOperatorDef):
 
 
 @register(seqs.SHIFT_F2, _ACTION_MODES)
-class StNextBookmark(ViOperatorDef):
+class StPrevBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
@@ -327,7 +327,7 @@ class StNextBookmark(ViOperatorDef):
 
     def translate(self, state):
         return {
-            'action': 'next_bookmark',
+            'action': 'prev_bookmark',
             'action_args': {}
         }
 
