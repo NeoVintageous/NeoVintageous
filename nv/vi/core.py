@@ -67,9 +67,3 @@ class ViMotionCommand(IrreversibleTextCommand, ViTextCommandBase):
     # Due to MRO in Python subclasses, IrreversibleTextCommand must come first so
     # that the modified .run_() method is found first.
     pass
-
-
-# DEPRECATED
-# TODO Remove this command
-class ViWindowCommandBase(sublime_plugin.WindowCommand):
-    pass

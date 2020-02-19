@@ -155,7 +155,6 @@ from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.core import IrreversibleTextCommand
 from NeoVintageous.nv.vi.core import ViMotionCommand
 from NeoVintageous.nv.vi.core import ViTextCommandBase
-from NeoVintageous.nv.vi.core import ViWindowCommandBase
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
@@ -465,7 +464,7 @@ class _nv_run_cmds(TextCommand):
             self.view.run_command(cmd, args)
 
 
-class _nv_feed_key(ViWindowCommandBase):
+class _nv_feed_key(WindowCommand):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         start_time = time.time()
@@ -709,7 +708,7 @@ class _nv_feed_key(ViWindowCommandBase):
         return False
 
 
-class _nv_process_notation(ViWindowCommandBase):
+class _nv_process_notation(WindowCommand):
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         # Args:
@@ -1067,7 +1066,7 @@ class _vi_gq(ViTextCommandBase):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_u(ViWindowCommandBase):
+class _vi_u(WindowCommand):
 
     def run(self, mode=None, count=1, **kwargs):
         self.view = self.window.active_view()
@@ -1086,7 +1085,7 @@ class _vi_u(ViWindowCommandBase):
         ui_highlight_yank_clear(self.view)
 
 
-class _vi_ctrl_r(ViWindowCommandBase):
+class _vi_ctrl_r(WindowCommand):
 
     def run(self, mode=None, count=1, **kwargs):
         self.view = self.window.active_view()
@@ -1487,7 +1486,7 @@ class _enter_replace_mode(ViTextCommandBase):
         state.reset()
 
 
-class _vi_dot(ViWindowCommandBase):
+class _vi_dot(WindowCommand):
 
     def run(self, mode=None, count=None, repeat_data=None):
         self.view = self.window.active_view()
@@ -2840,7 +2839,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
 
 # TODO Refactor into _vi_j
-class _vi_select_j(ViWindowCommandBase):
+class _vi_select_j(WindowCommand):
 
     def run(self, mode=None, count=1):
         if mode != SELECT:
@@ -2851,7 +2850,7 @@ class _vi_select_j(ViWindowCommandBase):
 
 
 # TODO Refactor into _vi_k
-class _vi_select_k(ViWindowCommandBase):
+class _vi_select_k(WindowCommand):
 
     def run(self, mode=None, count=1):
         self.view = self.window.active_view()
@@ -2989,7 +2988,7 @@ class _vi_guu(ViTextCommandBase):
 
 # Non-standard command. Select all search occurrences and enter multiple cursor
 # mode (supports search results from commands such as /, ?, *, #).
-class _vi_g_big_h(ViWindowCommandBase):
+class _vi_g_big_h(WindowCommand):
 
     def run(self, mode=None, count=1):
         view = self.window.active_view()
