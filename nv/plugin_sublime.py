@@ -154,10 +154,8 @@ class StFindInFiles(ViOperatorDef):
         }
 
 
-@register(seqs.COMMAND_BIG_P, (INSERT,))
-@register(seqs.COMMAND_BIG_P, _ACTION_MODES)
-@register(seqs.CTRL_BIG_P, (INSERT,))
-@register(seqs.CTRL_BIG_P, _ACTION_MODES)
+@register(seqs.COMMAND_BIG_P, _ACTION_MODES + (INSERT,))
+@register(seqs.CTRL_BIG_P, _ACTION_MODES + (INSERT,))
 class StCommandPalette(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
