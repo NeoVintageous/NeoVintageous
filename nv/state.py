@@ -447,29 +447,6 @@ class State(object):
                 _log.debug('error updating xpos; default to 0')
                 self.xpos = 0
 
-    def process_input(self, key: str) -> bool:
-        _log.info('process input key %s', key)
-
-        motion = self.motion
-        if motion and motion.accept_input:
-            motion_accepted = motion.accept(key)
-
-            # Motion, with processed key, needs to reserialised and stored.
-            self.motion = motion
-
-            return motion_accepted
-
-        # We can just default to whatever the action' accept methods returns,
-        # because it will return False by default.
-
-        action = self.action
-        action_accepted = action.accept(key)
-
-        # Action, with processed key, needs to reserialised and stored.
-        self.action = action
-
-        return action_accepted
-
     def set_command(self, command: ViCommandDefBase) -> None:
         # Set the current command.
         #

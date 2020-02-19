@@ -519,12 +519,21 @@ class _nv_feed_key(ViWindowCommandBase):
             return
 
         if state.must_collect_input:
-            _log.debug('collecting input...')
-            state.process_input(key)
+            _log.debug('collecting input!')
+
+            motion = state.motion
+            if motion and motion.accept_input:
+                motion.accept(key)
+                # Processed motion needs to reserialised and stored.
+                state.motion = motion
+            else:
+                action = state.action
+                action.accept(key)
+                # Processed action needs to reserialised and stored.
+                state.action = action
+
             if state.runnable():
-                _log.debug('state is runnable')
                 if do_eval:
-                    _log.debug('evaluating state...')
                     state.eval()
                     state.reset_command_data()
 
