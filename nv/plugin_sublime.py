@@ -121,7 +121,7 @@ class StGotoAnything(ViOperatorDef):
 
 
 @register(seqs.COMMAND_BIG_B, _ACTION_MODES)
-@register(seqs.CTRL_SHIFT_B, _ACTION_MODES)
+@register(seqs.CTRL_BIG_B, _ACTION_MODES)
 class StBuildWith(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
