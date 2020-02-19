@@ -45,7 +45,7 @@ _MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
 
 @register(seq='gc', modes=_MODES_ACTION)
-class CommentLinesMotion(ViOperatorDef):
+class CommentaryMotion(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
@@ -65,7 +65,7 @@ class CommentLinesMotion(ViOperatorDef):
 
 
 @register(seq='gcc', modes=(NORMAL,))
-class CommentLines(ViOperatorDef):
+class CommentaryLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
@@ -83,10 +83,10 @@ class CommentLines(ViOperatorDef):
         }
 
 
-# NOTE Not a standard Commentary command.
-# See also tComment plugin.
+# NOTE The command (gC) is not defined in the original Commentary plugin, it's
+# from a plugin called tComment: https://github.com/tomtom/tcomment_vim.
 @register(seq='gC', modes=_MODES_ACTION)
-class ToggleBlockComments(ViOperatorDef):
+class CommentaryBlock(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True

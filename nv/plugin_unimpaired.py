@@ -42,7 +42,7 @@ __all__ = [
 
 
 @register(seq='[l', modes=(NORMAL, VISUAL))
-class _UnimpairedContextPrevious(ViOperatorDef):
+class UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -55,7 +55,7 @@ class _UnimpairedContextPrevious(ViOperatorDef):
 
 
 @register(seq=']l', modes=(NORMAL, VISUAL))
-class _UnimpairedContextNext(ViOperatorDef):
+class UnimpairedContextNext(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -104,7 +104,7 @@ class UnimpairedGotoNextConflictMarker(ViOperatorDef):
 
 
 @register(seq='[<space>', modes=(NORMAL,))
-class _UnimpairedBlankUp(ViOperatorDef):
+class UnimpairedBlankUp(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -117,7 +117,7 @@ class _UnimpairedBlankUp(ViOperatorDef):
 
 
 @register(seq=']<space>', modes=(NORMAL,))
-class _UnimpairedBlankDown(ViOperatorDef):
+class UnimpairedBlankDown(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -130,7 +130,7 @@ class _UnimpairedBlankDown(ViOperatorDef):
 
 
 @register(seq='[b', modes=(NORMAL,))
-class _UnimpairedBprevious(ViOperatorDef):
+class UnimpairedBprevious(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -143,7 +143,7 @@ class _UnimpairedBprevious(ViOperatorDef):
 
 
 @register(seq=']b', modes=(NORMAL,))
-class _UnimpairedBnext(ViOperatorDef):
+class UnimpairedBnext(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -156,7 +156,7 @@ class _UnimpairedBnext(ViOperatorDef):
 
 
 @register(seq='[B', modes=(NORMAL,))
-class _UnimpairedBfirst(ViOperatorDef):
+class UnimpairedBfirst(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -169,7 +169,7 @@ class _UnimpairedBfirst(ViOperatorDef):
 
 
 @register(seq=']B', modes=(NORMAL,))
-class _UnimpairedBlast(ViOperatorDef):
+class UnimpairedBlast(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -182,7 +182,7 @@ class _UnimpairedBlast(ViOperatorDef):
 
 
 @register(seq='[e', modes=(NORMAL,))
-class _UnimpairedMoveUp(ViOperatorDef):
+class UnimpairedMoveUp(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -195,7 +195,7 @@ class _UnimpairedMoveUp(ViOperatorDef):
 
 
 @register(seq=']e', modes=(NORMAL,))
-class _UnimpairedMoveDown(ViOperatorDef):
+class UnimpairedMoveDown(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -208,7 +208,7 @@ class _UnimpairedMoveDown(ViOperatorDef):
 
 
 @register(seq='[t', modes=(NORMAL,))
-class _UnimpairedTabprevious(ViOperatorDef):
+class UnimpairedTabprevious(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -221,7 +221,7 @@ class _UnimpairedTabprevious(ViOperatorDef):
 
 
 @register(seq=']t', modes=(NORMAL,))
-class _UnimpairedTabnext(ViOperatorDef):
+class UnimpairedTabnext(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -234,7 +234,7 @@ class _UnimpairedTabnext(ViOperatorDef):
 
 
 @register(seq='[T', modes=(NORMAL,))
-class _UnimpairedTabfirst(ViOperatorDef):
+class UnimpairedTabfirst(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -247,7 +247,7 @@ class _UnimpairedTabfirst(ViOperatorDef):
 
 
 @register(seq=']T', modes=(NORMAL,))
-class _UnimpairedTablast(ViOperatorDef):
+class UnimpairedTablast(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -278,7 +278,7 @@ class _BaseToggleDef(ViOperatorDef):
 
 @register(seq='co', modes=(NORMAL,))
 @register(seq='yo', modes=(NORMAL,))
-class _UnimpairedToggle(_BaseToggleDef):
+class UnimpairedToggle(_BaseToggleDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -290,7 +290,7 @@ class _UnimpairedToggle(_BaseToggleDef):
 
 
 @register(seq='[o', modes=(NORMAL,))
-class _UnimpairedToggleOn(_BaseToggleDef):
+class UnimpairedToggleOn(_BaseToggleDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -302,7 +302,7 @@ class _UnimpairedToggleOn(_BaseToggleDef):
 
 
 @register(seq=']o', modes=(NORMAL,))
-class _UnimpairedToggleOff(_BaseToggleDef):
+class UnimpairedToggleOff(_BaseToggleDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',

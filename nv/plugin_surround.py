@@ -43,7 +43,7 @@ __all__ = [
 
 
 @register(seq='ys', modes=(NORMAL,))
-class _surround_ys(ViOperatorDef):
+class Surroundys(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -76,7 +76,7 @@ class _surround_ys(ViOperatorDef):
 
 
 @register(seq='yss', modes=(NORMAL,))
-class _surround_yss(_surround_ys):
+class Surroundyss(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
@@ -103,7 +103,7 @@ class _surround_yss(_surround_ys):
 
 
 @register(seq='S', modes=(VISUAL, VISUAL_BLOCK))
-class _surround_S(_surround_ys):
+class SurroundS(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
@@ -111,7 +111,7 @@ class _surround_S(_surround_ys):
 
 
 @register(seq='ds', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_ds(ViOperatorDef):
+class Surroundds(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -144,7 +144,7 @@ class _surround_ds(ViOperatorDef):
 
 
 @register(seq='cs', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_cs(ViOperatorDef):
+class Surroundcs(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True

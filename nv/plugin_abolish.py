@@ -102,7 +102,7 @@ _ALIASES = {
 
 
 @register(seq='cr', modes=(NORMAL,))
-class _AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
+class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
