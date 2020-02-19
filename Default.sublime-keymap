@@ -534,4 +534,21 @@
     {"keys": ["shift+ctrl+f19"], "command": "_nv_feed_key", "args": {"key": "<C-S-f19>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["shift+ctrl+f20"], "command": "_nv_feed_key", "args": {"key": "<C-S-f20>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
+    {"keys": ["keypad0"],  "command": "_nv_feed_key", "args": {"key": "<k0>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad1"],  "command": "_nv_feed_key", "args": {"key": "<k1>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad2"],  "command": "_nv_feed_key", "args": {"key": "<k2>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad3"],  "command": "_nv_feed_key", "args": {"key": "<k3>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad4"],  "command": "_nv_feed_key", "args": {"key": "<k4>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad5"],  "command": "_nv_feed_key", "args": {"key": "<k5>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad6"],  "command": "_nv_feed_key", "args": {"key": "<k6>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad7"],  "command": "_nv_feed_key", "args": {"key": "<k7>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad8"],  "command": "_nv_feed_key", "args": {"key": "<k8>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad9"],  "command": "_nv_feed_key", "args": {"key": "<k9>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad_divide"],  "command": "_nv_feed_key", "args": {"key": "<kdivide>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad_enter"],  "command": "_nv_feed_key", "args": {"key": "<kenter>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad_minus"],  "command": "_nv_feed_key", "args": {"key": "<kminus>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad_multiply"],  "command": "_nv_feed_key", "args": {"key": "<kmultiply>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad_period"],  "command": "_nv_feed_key", "args": {"key": "<kperiod>"},  "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["keypad_plus"],  "command": "_nv_feed_key", "args": {"key": "<kplus>"},  "context": [{"key": "vi_command_mode_aware"}]},
+
 ]

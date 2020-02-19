@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.20.0 - Unreleased
 
+### Added
+
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): keypad keys `<k0>`, `<k1>`, `<k2>`, `<k3>`, `<k4>`, `<k5>`, `<k6>`, `<k7>`, `<k8>`, `<k9>`, `<kdivide>`, `<kenter>`, `<kminus>`, `<kmultiply>`, `<kperiod>`, `<kplus>`
+
 ### Fixed
 
 * Fixed [#691](https://github.com/NeoVintageous/NeoVintageous/issues/691): Undo should ring bell when already at oldest change

@@ -70,6 +70,7 @@ mappings = {
 
 
 _NAMED_KEYS = [
+
     seqs.BACKSLASH,
     seqs.BACKSPACE,
     seqs.BAR,
@@ -80,6 +81,22 @@ _NAMED_KEYS = [
     seqs.ESC,
     seqs.HOME,
     seqs.INSERT,
+    seqs.KEYPAD_0,
+    seqs.KEYPAD_1,
+    seqs.KEYPAD_2,
+    seqs.KEYPAD_3,
+    seqs.KEYPAD_4,
+    seqs.KEYPAD_5,
+    seqs.KEYPAD_6,
+    seqs.KEYPAD_7,
+    seqs.KEYPAD_8,
+    seqs.KEYPAD_9,
+    seqs.KEYPAD_DIVIDE,
+    seqs.KEYPAD_ENTER,
+    seqs.KEYPAD_MINUS,
+    seqs.KEYPAD_MULTIPLY,
+    seqs.KEYPAD_PERIOD,
+    seqs.KEYPAD_PLUS,
     seqs.LEADER,
     seqs.LEFT,
     seqs.LESS_THAN,
@@ -110,6 +127,7 @@ _NAMED_KEYS = [
     seqs.F18,
     seqs.F19,
     seqs.F20,
+
 ]
 
 
