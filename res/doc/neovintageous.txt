@@ -190,6 +190,8 @@ PLUGINS                                                 *nv-plugins* *plugins*
 
 All of the following plugins are available out-of-the-box.
 
+Feature-parity is an ongoing effort.
+
 ------------------------------------------------------------------------------
 
 ABOLISH                                                 *nv-abolish* *abolish*
@@ -199,7 +201,7 @@ Abolish is a port of vim-abolish.
 Tim Pope describes it as "three superficially unrelated plugins in one that
 share a common theme: working with variants of a word."
 
-The port currently supports the "case mutating algorithms".
+Note that currently only the "case mutating algorithms" are supported.
 
 See |abolish.txt|
 
@@ -273,8 +275,6 @@ UNIMPAIRED                                        *nv-unimpaired* *unimpaired*
 
 Unimpaired is a port of vim-unimpaired.
 
-See |unimpaired.txt|
-
 NEXT AND PREVIOUS
 
 [b                     |:bprevious|
@@ -313,6 +313,8 @@ OPTION TOGGLING
 *[os*   *]os*   *yos*   'spell'
 *[ot*   *]ot*   *yot*   'sidebar'
 *[ow*   *]ow*   *yow*   'wrap'
+
+See |unimpaired.txt|
 
 Credit: https://github.com/tpope/vim-unimpaired
 
