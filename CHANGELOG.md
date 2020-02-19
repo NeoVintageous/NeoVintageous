@@ -8,7 +8,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Fixed [#10](https://github.com/NeoVintageous/NeoVintageous/issues/10): Repeating text changing doesn't work.
 
-## 1.19.0 - Unreleased
+## 1.19.0 - 2020-02-19
 
 ### Added
 
