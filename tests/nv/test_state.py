@@ -89,23 +89,6 @@ class TestState(unittest.ViewTestCase):
         self.state.motion = motion
         self.assertTrue(self.state.must_scroll_into_view())
 
-    def test_enter_normal_mode(self):
-        self._assertDefaultMode(self.state.mode)
-        self.state.mode = unittest.UNKNOWN
-        self.assertNotEqual(self.state.mode, unittest.NORMAL)
-        self.state.enter_normal_mode()
-        self.assertEqual(self.state.mode, unittest.NORMAL)
-
-    def test_enter_visual_mode(self):
-        self._assertDefaultMode(self.state.mode)
-        self.state.enter_visual_mode()
-        self.assertEqual(self.state.mode, unittest.VISUAL)
-
-    def test_enter_insert_mode(self):
-        self._assertDefaultMode(self.state.mode)
-        self.state.enter_insert_mode()
-        self.assertEqual(self.state.mode, unittest.INSERT)
-
 
 class TestStateResettingState(unittest.ViewTestCase):
 

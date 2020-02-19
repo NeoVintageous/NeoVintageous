@@ -1214,7 +1214,7 @@ class _enter_normal_mode(ViTextCommandBase):
         # Exit replace mode
         self.view.set_overwrite_status(False)
 
-        state.enter_normal_mode()
+        state.mode = NORMAL
 
         def f(view, s):
             if mode == INSERT:
@@ -1293,7 +1293,7 @@ class _enter_normal_mode(ViTextCommandBase):
                 state.glue_until_normal_mode = False
 
         if mode == INSERT and int(state.normal_insert_count) > 1:
-            state.enter_insert_mode()
+            state.mode = INSERT
             # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
@@ -1333,7 +1333,7 @@ class _enter_select_mode(ViTextCommandBase):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
 
         state = State(self.view)
-        state.enter_select_mode()
+        state.mode = SELECT
 
         if mode == INTERNAL_NORMAL:
             self.view.window().run_command('find_under_expand')
@@ -1362,7 +1362,7 @@ class _enter_insert_mode(ViTextCommandBase):
         self.view.settings().set('command_mode', False)
 
         state = State(self.view)
-        state.enter_insert_mode()
+        state.mode = INSERT
         state.normal_insert_count = str(count)
         state.display_status()
 
@@ -1410,7 +1410,7 @@ class _enter_visual_mode(ViTextCommandBase):
         # its metadata. For example, when shift-clicking with the mouse to
         # create visual selections. Always update xpos to cover this case.
         state.update_xpos(force=True)
-        state.enter_visual_mode()
+        state.mode = VISUAL
         state.display_status()
 
 
@@ -1460,7 +1460,7 @@ class _enter_visual_line_mode(ViTextCommandBase):
 
             regions_transformer(self.view, f)
 
-        state.enter_visual_line_mode()
+        state.mode = VISUAL_LINE
         state.display_status()
 
 
@@ -1477,7 +1477,7 @@ class _enter_replace_mode(ViTextCommandBase):
         self.view.settings().set('inverse_caret_state', False)
         self.view.set_overwrite_status(True)
         state = State(self.view)
-        state.enter_replace_mode()
+        state.mode = REPLACE
         regions_transformer(self.view, f)
         state.display_status()
         state.reset()
@@ -2828,7 +2828,7 @@ class _enter_visual_block_mode(ViTextCommandBase):
 
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
-            state.enter_visual_block_mode()
+            state.mode = VISUAL_BLOCK
             state.display_status()
 
         elif mode == VISUAL_BLOCK and not force:
@@ -2993,7 +2993,7 @@ class _vi_g_big_h(ViWindowCommandBase):
         search_occurrences = get_search_occurrences(view)
         if search_occurrences:
             view.sel().add_all(search_occurrences)
-            state.enter_select_mode()
+            state.mode = SELECT
             state.display_status()
             return
 

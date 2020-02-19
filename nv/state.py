@@ -43,7 +43,6 @@ from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
-from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
@@ -313,27 +312,6 @@ class State(object):
             return True
 
         return False
-
-    def enter_normal_mode(self) -> None:
-        self.mode = NORMAL
-
-    def enter_visual_mode(self) -> None:
-        self.mode = VISUAL
-
-    def enter_visual_line_mode(self) -> None:
-        self.mode = VISUAL_LINE
-
-    def enter_insert_mode(self) -> None:
-        self.mode = INSERT
-
-    def enter_replace_mode(self) -> None:
-        self.mode = REPLACE
-
-    def enter_select_mode(self) -> None:
-        self.mode = SELECT
-
-    def enter_visual_block_mode(self) -> None:
-        self.mode = VISUAL_BLOCK
 
     def reset_register_data(self) -> None:
         self.register = '"'
@@ -653,7 +631,7 @@ class State(object):
                 set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:
-            self.enter_normal_mode()
+            self.mode = NORMAL
 
         self.reset_command_data()
 
