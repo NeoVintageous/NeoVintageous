@@ -490,7 +490,8 @@ class _nv_feed_key(ViWindowCommandBase):
         #       state's evaluation. For example, this is what the _nv_feed_key
         #       command does.
         #   check_user_mappings (bool):
-        state = State(self.window.active_view())
+        self.view = self.window.active_view()
+        state = State(self.view)
 
         mode = state.mode
 
@@ -717,7 +718,8 @@ class _nv_process_notation(ViWindowCommandBase):
         #       '.' command.
         #   check_user_mappings (bool): Whether user mappings should be
         #       consulted to expand key sequences.
-        state = State(self.window.active_view())
+        self.view = self.window.active_view()
+        state = State(self.view)
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -1068,6 +1070,7 @@ class _vi_gq(ViTextCommandBase):
 class _vi_u(ViWindowCommandBase):
 
     def run(self, mode=None, count=1, **kwargs):
+        self.view = self.window.active_view()
         for i in range(count):
             self.view.run_command('undo')
 
@@ -1086,6 +1089,7 @@ class _vi_u(ViWindowCommandBase):
 class _vi_ctrl_r(ViWindowCommandBase):
 
     def run(self, mode=None, count=1, **kwargs):
+        self.view = self.window.active_view()
         change_count_before = self.view.change_count()
 
         for i in range(count):
@@ -1486,7 +1490,8 @@ class _enter_replace_mode(ViTextCommandBase):
 class _vi_dot(ViWindowCommandBase):
 
     def run(self, mode=None, count=None, repeat_data=None):
-        state = State(self.window.active_view())
+        self.view = self.window.active_view()
+        state = State(self.view)
         state.reset_command_data()
 
         if state.mode == INTERNAL_NORMAL:
@@ -2851,6 +2856,7 @@ class _vi_select_j(ViWindowCommandBase):
 class _vi_select_k(ViWindowCommandBase):
 
     def run(self, mode=None, count=1):
+        self.view = self.window.active_view()
         if mode != SELECT:
             raise ValueError('wrong mode')
 
