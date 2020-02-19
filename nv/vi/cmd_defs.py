@@ -2639,6 +2639,7 @@ class ViMoveDownByLines(ViMotionDef):
         }
 
 
+@assign(seqs.CTRL_P, _MOTION_MODES)
 @assign(seqs.CTRL_UP, _MOTION_MODES)
 @assign(seqs.K, _MOTION_MODES)
 @assign(seqs.UP, _MOTION_MODES)
