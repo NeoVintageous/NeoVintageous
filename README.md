@@ -49,13 +49,13 @@ The following plugins are available out-of-the-box (feature-parity is an ongoing
 
 Plugin | Documentation | Original Vim Plugin
 ------ | ------------- | -------------------
-Abolish | [`:help abolish`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/abolish.txt) | [vim-abolish](https://github.com/tpope/vim-abolish)
-Commentary | [`:help commentary`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/commentary.txt) | [vim-commentary](https://github.com/tpope/vim-commentary)
+Abolish | [`:help abolish`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-abolish](https://github.com/tpope/vim-abolish)
+Commentary | [`:help commentary`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-commentary](https://github.com/tpope/vim-commentary)
 Highlighted Yank | [`:help highlightedyank`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
-Indent Object | [`:help indent-object`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/indent-object.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
+Indent Object | [`:help indent-object`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
 Multiple Cursors | [`:help multiple-cursors`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
-Surround | [`:help surround`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/surround.txt) | [vim-surround](https://github.com/tpope/vim-surround)
-Unimpaired | [`:help unimpaired`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/unimpaired.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
+Surround | [`:help surround`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
+Unimpaired | [`:help unimpaired`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
 ## Contributing
 
