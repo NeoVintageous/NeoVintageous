@@ -280,6 +280,7 @@
     {"keys": ["ctrl+pageup"],    "command": "nv_feed_key", "args": {"key": "<C-pageup>"},   "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-pageup>"}]},
     {"keys": ["ctrl+right"],     "command": "nv_feed_key", "args": {"key": "<C-right>"},    "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-right>"}]},
     {"keys": ["ctrl+space"],     "command": "nv_feed_key", "args": {"key": "<C-space>"},    "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-space>"}]},
+    {"keys": ["ctrl+u"],         "command": "nv_feed_key", "args": {"key": "<C-u>"},        "context": [{"key": "vi_insert_mode_aware"},  {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-u>"}]},
     {"keys": ["ctrl+up"],        "command": "nv_feed_key", "args": {"key": "<C-up>"},       "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-up>"}]},
 
     {"keys": ["ctrl+."], "command": "nv_feed_key", "args": {"key": "<C-.>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-.>"}]},

@@ -34,6 +34,11 @@ class Test_ctrl_u(unittest.FunctionalTestCase):
         self.eq('\n\n1\n|2\n3\n4\n5\n6', 'n_<C-u>', '|\n\n1\n2\n3\n4\n5\n6')
         self.eq('\n\n\n1\n|2\n3\n4\n5\n6', 'n_<C-u>', '|\n\n\n1\n2\n3\n4\n5\n6')
 
+    def test_i_ctrl_u(self):
+        self.eq('fiz |buz', 'i_<C-u>', '|buz')
+        self.eq('fiz bu|zz', 'i_<C-u>', '|zz')
+        self.eq('fiz bu|zz\nx\nx', 'i_<C-u>', '|zz\nx\nx')
+
     @unittest.mock_ui()
     def test_ctrl_u_already_at_eof_invokes_bell_and_does_not_scroll(self):
         self.eq('fi|zz\n2\n3\n4', 'n_<C-u>', 'fi|zz\n2\n3\n4')

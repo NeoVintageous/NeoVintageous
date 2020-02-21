@@ -2089,7 +2089,7 @@ class ViMoveHalfScreenDown(ViMotionDef):
         }
 
 
-@assign(seqs.CTRL_U, MOTION_MODES)
+@assign(seqs.CTRL_U, MOTION_MODES + (INSERT,))
 class ViMoveHalfScreenUp(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

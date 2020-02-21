@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#109](https://github.com/NeoVintageous/NeoVintageous/issues/109): Implement `i_ctrl-u` delete all entered characters before the cursor in the current line
 * Added [#754](https://github.com/NeoVintageous/NeoVintageous/issues/754): Implement `ctrl-w_ctrl-]` split view and and jump to definition (ST4)
 * Added [#470](https://github.com/NeoVintageous/NeoVintageous/issues/470): New setting `vintageous_handle_keys` for granular control of enabled keys
 

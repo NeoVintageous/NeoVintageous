@@ -4129,6 +4129,15 @@ class nv_vi_g__(TextCommand):
 
 class nv_vi_ctrl_u(TextCommand):
     def run(self, edit, mode=None, count=0):
+        if mode == INSERT:
+            def t(view, s):
+                s.a = view.line(get_insertion_point_at_b(s)).a
+                return s
+
+            regions_transformer(self.view, t)
+            self.view.run_command('left_delete')
+            return
+
         def f(view, s):
             if mode == NORMAL:
                 s = Region(target)
