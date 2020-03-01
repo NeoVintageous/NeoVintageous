@@ -90,23 +90,28 @@ CTRL-W V
 
 NEOVINTAGEOUSRC                       *nv-rc* *vintageousrc* *neovintageousrc*
 
-A file that contains initialization commands is generically called a
-"neovintageousrc" or config file. In Vim this file is known as a "vimrc" file.
-Each line in a neovintageousrc file is executed as an Ex command line.
+A file that contains initialization commands is generically called a "vimrc"
+or config file. In NeoVintageous the file is called "neovintageousrc". Each
+line in a neovintageousrc file is executed as an Ex command line.
 
-To open the neovintageousrc file use the Command Palette command:
-NeoVintageous: Open My RC File and to reload it use the Command Palette
-command: NeoVintageous: Reload My RC File.
+To open or reload the neovintageousrc file use the Command Palette. You need
+to reload the file after making changes for the changes to take effect.
 
 The |mapleader| variable is supported, for example: >
 
     let mapleader=,
 
 The |set| command is supported (see the |nv-options| section for details of
-supported options). For example, if you want NeoVintageous to always start with
-the 'ignorecase' option on, add this line your neovintageousrc file: >
+supported options).
+
+For example, if you want NeoVintageous to start with the 'ignorecase' option
+on (ignore case in search patterns), add this to the neovintageousrc file: >
 
     set ignorecase
+
+If you want it off (don't ignore case in search patterns): >
+
+    set noignorecase
 
 The following |:map-commands| are supported:
 
@@ -138,7 +143,7 @@ by default, see the |nv-settings| section for details on enabling them): >
 
 Here is an example neovintageous file: >
 
-    set noignorecase
+    set ignorecase
     set winaltkeys=menu
 
     let mapleader=,
@@ -332,49 +337,31 @@ Credit: https://github.com/michaeljsmith/vim-indent-object.
 
 OPTIONS                                                           *nv-options*
 
-Some vim options are supported in your rc file. For example, to always start
-with the 'ignorecase' option on, add the following line your rc file: >
+Some vim options are supported. Here are the currently available options:
+
+    'autoindent', 'belloff', 'expandtabs', 'hlsearch', 'ignorecase',
+    'incsearch', 'list', 'magic', 'menu', 'minimap', 'modeline', 'modelines',
+    'number', 'shell', 'sidebar', 'spell', 'statusbar', 'tabstop',
+    'textwidth', 'winaltkeys', 'wrap', 'wrapscan'
+
+Options can be set in the neovintageousrc file which is loaded when Sublime
+Text starts. For example to enable the 'ignorecase' option (ignore case
+in search patterns), add the following: >
 
     set ignorecase
 
-To always start with it off: >
+To turn it off (don't ignore case in search patterns): >
 
     set noignorecase
 
-List of available options:
-
-    'autoindent', 'belloff', 'hlsearch', 'ignorecase', 'incsearch', 'list',
-    'magic', 'menu', 'minimap', 'modeline', 'modelines', 'number', 'sidebar',
-    'spell', 'statusbar', 'winaltkeys', 'wrap', 'wrapscan'
-
-Examples: >
-
-    set noignorecase
-    set nomenu
-    set nominimap
-    set nomodeline
-    set sidebar
-    set statusbar
-    set winaltkeys=menu
-
-Try `:help 'option name'` for help on individual options.
+See `:help '{option}'` for information on individual options.
 
 ==============================================================================
 
 SETTINGS                                                         *nv-settings*
 
-Settings are different than vim options. Vim options are set in your rc file and
-settings are set as regular Sublime Text settings, see |nv-options| for a list
-of all supported Vim options, how to use them, and how to set them.
-
 To edit settings go to `Menu > Preferences > Settings` or use the Command
 Palette: press `Ctrl+Shift+P` and select the "Preferences: Settings" command.
-
-For example to enable the control keys: >
-
-    {
-        "vintageous_use_ctrl_keys": true
-    }
 
 List of available settings:
 
