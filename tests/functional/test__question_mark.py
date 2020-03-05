@@ -85,3 +85,52 @@ class Test_question_mark(unittest.FunctionalTestCase):
         self.eq('foo\nabc\nbar\nabc\nmoo\nabc\ne|nd', 'd?abc', 'foo\nabc\nbar\nabc\nmoo\n|nd')
         self.eq('foo\nabc\nbar\n|abc\nmoo\nabc\nend', 'd?abc', 'foo\n|abc\nmoo\nabc\nend')
         self.eq('foo\nabc\nbar\nabc\nmoo\nabc\nend|', 'd?abc', 'foo\nabc\nbar\nabc\nmoo\n|')
+
+
+class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
+
+    @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    def test_on_done(self, cmdline, history_update):
+        self.normal('x fiz x f|iz x')
+        self.initCmdlineSearchMock(cmdline, '?', 'on_done', 'fiz')
+        self.feed('n_?')
+        self.assertNormal('x |fiz x fiz x')
+        self.assertSearch('x |fiz| x |fiz| x')
+        self.assertSearchCurrent('x |fiz| x fiz x')
+        self.assertSearchIncremental('x fiz x fiz x')
+
+    @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    def test_on_change(self, cmdline, history_update):
+        self.normal('x buz x b|uz x')
+        self.initCmdlineSearchMock(cmdline, '?', 'on_change', 'buz')
+        self.feed('n_?')
+        self.assertNormal('x buz x b|uz x')
+        self.assertSearch('x |buz| x |buz| x')
+        self.assertSearchCurrent('x buz x |buz| x')
+        self.assertSearchIncremental('x |buz| x buz x')
+
+    @unittest.mock_status_message()
+    @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    def test_on_change_pattern_not_found(self, cmdline, history_update):
+        self.normal('x b|uz x buz x')
+        self.initCmdlineSearchMock(cmdline, '?', 'on_change', 'fizz')
+        self.feed('n_?')
+        self.assertNormal('x b|uz x buz x')
+        self.assertSearch('x buz x buz x')
+        self.assertSearchCurrent('x buz x buz x')
+        self.assertSearchIncremental('x buz x buz x')
+        self.assertStatusMessage('E486: Pattern not found: fizz')
+
+    @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    def test_on_cancel(self, cmdline, history_update):
+        self.normal('x f|oo x foo x')
+        self.initCmdlineSearchMock(cmdline, '?', 'on_cancel')
+        self.feed('n_?')
+        self.assertNormal('x f|oo x foo x')
+        self.assertSearch('x foo x foo x')
+        self.assertSearchCurrent('x foo x foo x')
+        self.assertSearchIncremental('x foo x foo x')

@@ -32,6 +32,7 @@ from sublime import version as _version
 
 # Use aliases to indicate that they are not public testing APIs.
 from NeoVintageous.nv import macros as _macros
+from NeoVintageous.nv.cmdline import Cmdline as _Cmdline
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
 from NeoVintageous.nv.mappings import _mappings
 from NeoVintageous.nv.marks import get_mark as _get_mark
@@ -402,6 +403,9 @@ class ViewTestCase(unittest.TestCase):
     def assertSearchCurrent(self, expected: str, msg: str = None) -> None:
         self._assertContentRegion('_nv_search_cur', expected, msg)
 
+    def assertSearchIncremental(self, expected: str, msg: str = None) -> None:
+        self._assertContentRegion('_nv_search_inc', expected, msg)
+
     def setLastSearch(self, term: str) -> None:
         _set_last_buffer_search(self.view, term)
 
@@ -676,6 +680,27 @@ class ViewTestCase(unittest.TestCase):
             mock.assert_not_called()
         else:
             self.assertEqual(mock.call_count, 0)
+
+    def initCmdlineSearchMock(self, mock, type: str, event: str, pattern: str = None) -> None:
+        class MockCmdlineOnDone(_Cmdline):
+            _mock_pattern = None
+
+            def prompt(self, pattern: str) -> None:
+                args = []
+                if self._mock_pattern is not None:
+                    args.append(self._mock_pattern)
+
+                self._callbacks[self._mock_event](*args)
+
+        if type == '?':
+            mock.SEARCH_BACKWARD = '?'
+        elif type == '/':
+            mock.SEARCH_FORWARD = '/'
+
+        if pattern is not None:
+            MockCmdlineOnDone._mock_pattern = pattern
+        MockCmdlineOnDone._mock_event = event
+        mock.side_effect = MockCmdlineOnDone
 
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
@@ -1288,6 +1313,7 @@ _SEQ2CMD = {
     ',':            {'command': '_nv_feed_key'},  # noqa: E241
     '-':            {'command': '_vi_minus'},  # noqa: E241
     '.':            {'command': '_nv_feed_key'},  # noqa: E241
+    '/':            {'command': '_nv_feed_key'},  # noqa: E241
     '/abc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '/x':           {'command': '_vi_slash_impl', 'args': {'search_string': 'x'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
@@ -1314,6 +1340,7 @@ _SEQ2CMD = {
     '>>':           {'command': '_vi_greater_than_greater_than'},  # noqa: E241
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     '>ip':          {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    '?':            {'command': '_nv_feed_key'},  # noqa: E241
     '?abc':         {'command': '_vi_question_mark_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '@#':           {'command': '_vi_at', 'args': {'name': '#'}},  # noqa: E241
     '@%':           {'command': '_vi_at', 'args': {'name': '%'}},  # noqa: E241
