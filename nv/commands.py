@@ -3248,7 +3248,7 @@ class _vi_slash_impl(TextCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.a, target)
+                s.b = target
 
             return s
 
@@ -4274,7 +4274,7 @@ class _vi_question_mark_impl(TextCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
-                s = Region(s.end(), target)
+                s.a, s.b = s.end(), target
 
             return s
 
