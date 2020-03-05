@@ -1552,7 +1552,7 @@ _SEQ2CMD = {
     'd-':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_minus'}}},  # noqa: E241,E501
     'd/abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'search_string': 'abc'}, 'motion': '_vi_slash_impl'}}},  # noqa: E241,E501
     'd0':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_zero'}}},  # noqa: E241,E501
-    'd2ft':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 2, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'd2ft':         {'command': '_nv_feed_key'},  # noqa: E241
     'd<C-d>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_d'}}},  # noqa: E241,E501
     'd<C-u>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_u'}}},  # noqa: E241,E501
     'd?abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'search_string': 'abc'}, 'motion': '_vi_question_mark_impl'}}},  # noqa: E241,E501
@@ -1593,9 +1593,9 @@ _SEQ2CMD = {
     'da}':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '}'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'dd':           {'command': '_vi_dd'},  # noqa: E241,E501
     'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_e'}}},  # noqa: E241,E501
-    'df=':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': '='}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
-    'dft':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 't'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
-    'dfx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 'x'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'df=':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dft':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dfx':          {'command': '_nv_feed_key'},  # noqa: E241
     'dgE':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_g_big_e'}}},  # noqa: E241,E501
     'dg_':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_g__'}}},  # noqa: E241,E501
     'dge':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ge'}}},  # noqa: E241,E501
@@ -1651,21 +1651,21 @@ _SEQ2CMD = {
     'dsw':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': 'w'}},  # noqa: E241
     'ds{':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '{'}},  # noqa: E241
     'ds}':          {'command': '_nv_surround', 'args': {'action': 'ds', 'target': '}'}},  # noqa: E241
-    'dtx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'char': 'x'}, 'motion': '_vi_find_in_line'}}},  # noqa: E241,E501
+    'dtx':          {'command': '_nv_feed_key'},  # noqa: E241
     'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'd{':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_left_brace'}}},  # noqa: E241,E501
     'd|':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_bar'}}},  # noqa: E241,E501
     'd}':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
     'e':            {'command': '_vi_e'},  # noqa: E241
-    'f2':           {'command': '_vi_find_in_line', 'args': {'char': '2', 'inclusive': True}},  # noqa: E241
-    'f6':           {'command': '_vi_find_in_line', 'args': {'char': '6', 'inclusive': True}},  # noqa: E241
-    'f8':           {'command': '_vi_find_in_line', 'args': {'char': '8', 'inclusive': True}},  # noqa: E241
-    'f:':           {'command': '_vi_find_in_line', 'args': {'char': ':', 'inclusive': True}},  # noqa: E241
-    'f\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': True}},  # noqa: E241
-    'ff':           {'command': '_vi_find_in_line', 'args': {'char': 'f', 'inclusive': True}},  # noqa: E241
-    'fr':           {'command': '_vi_find_in_line', 'args': {'char': 'r', 'inclusive': True}},  # noqa: E241
-    'fx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': True}},  # noqa: E241
-    'f|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': True}},  # noqa: E241
+    'f2':           {'command': '_nv_feed_key'},  # noqa: E241
+    'f6':           {'command': '_nv_feed_key'},  # noqa: E241
+    'f8':           {'command': '_nv_feed_key'},  # noqa: E241
+    'f:':           {'command': '_nv_feed_key'},  # noqa: E241
+    'f\\':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ff':           {'command': '_nv_feed_key'},  # noqa: E241
+    'fr':           {'command': '_nv_feed_key'},  # noqa: E241
+    'fx':           {'command': '_nv_feed_key'},  # noqa: E241
+    'f|':           {'command': '_nv_feed_key'},  # noqa: E241
     'gC':           {'command': '_nv_commentary', 'args': {'action': 'C'}},  # noqa: E241A
     'gC}':          {'command': '_nv_commentary', 'args': {'action': 'C', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
     'gE':           {'command': '_vi_g_big_e'},  # noqa: E241
@@ -1759,15 +1759,15 @@ _SEQ2CMD = {
     's_k':          {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     's_l':          {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
     's_v':          {'command': '_enter_normal_mode'},  # TODO Refactor # noqa: E241
-    't2':           {'command': '_vi_find_in_line', 'args': {'char': '2', 'inclusive': False}},  # noqa: E241
-    't6':           {'command': '_vi_find_in_line', 'args': {'char': '6', 'inclusive': False}},  # noqa: E241
-    't8':           {'command': '_vi_find_in_line', 'args': {'char': '8', 'inclusive': False}},  # noqa: E241
-    't:':           {'command': '_vi_find_in_line', 'args': {'char': ':', 'inclusive': False}},  # noqa: E241
-    't\\':          {'command': '_vi_find_in_line', 'args': {'char': '<bslash>', 'inclusive': False}},  # noqa: E241
-    'tf':           {'command': '_vi_find_in_line', 'args': {'char': 'f', 'inclusive': False}},  # noqa: E241
-    'tr':           {'command': '_vi_find_in_line', 'args': {'char': 'r', 'inclusive': False}},  # noqa: E241
-    'tx':           {'command': '_vi_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
-    't|':           {'command': '_vi_find_in_line', 'args': {'char': '<bar>', 'inclusive': False}},  # noqa: E241
+    't2':           {'command': '_nv_feed_key'},  # noqa: E241
+    't6':           {'command': '_nv_feed_key'},  # noqa: E241
+    't8':           {'command': '_nv_feed_key'},  # noqa: E241
+    't:':           {'command': '_nv_feed_key'},  # noqa: E241
+    't\\':          {'command': '_nv_feed_key'},  # noqa: E241
+    'tf':           {'command': '_nv_feed_key'},  # noqa: E241
+    'tr':           {'command': '_nv_feed_key'},  # noqa: E241
+    'tx':           {'command': '_nv_feed_key'},  # noqa: E241
+    't|':           {'command': '_nv_feed_key'},  # noqa: E241
     'u':            {'command': '_vi_u'},  # noqa: E241,E501
     'v':            {'command': '_enter_visual_mode'},  # noqa: E241
     'v_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
