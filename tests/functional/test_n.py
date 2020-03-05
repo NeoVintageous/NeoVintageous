@@ -100,3 +100,12 @@ class Test_n(unittest.FunctionalTestCase):
         self.feed('n_n')
         self.assertSearch('foo\n|abc|\nbar\nabcxmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabcxmoo\nabc\nend')
+
+    def test_n_no_match(self):
+        self.feed('n_/abc')
+        self.eq('foo|bar', 'n_n', 'foo|bar')
+
+    def test_n_wrapscan_false(self):
+        self.set_option('wrapscan', False)
+        self.eq('a|bc\nx\nabc\nx', 'n_*', 'abc\nx\n|abc\nx')
+        self.eq('abc\nx\n|abc\nx', 'n_n', 'abc\nx\n|abc\nx')

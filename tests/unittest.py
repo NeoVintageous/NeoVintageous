@@ -1734,7 +1734,7 @@ _SEQ2CMD = {
     'l':            {'command': '_vi_l'},  # noqa: E241
     'ma':           {'command': '_vi_m', 'args': {'character': 'a'}},  # noqa: E241
     'mx':           {'command': '_vi_m', 'args': {'character': 'x'}},  # noqa: E241
-    'n':            {'command': '_vi_repeat_buffer_search'},  # noqa: E241
+    'n':            {'command': '_nv_feed_key'},  # noqa: E241
     'o':            {'command': '_vi_o'},  # noqa: E241
     'p':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False}},  # noqa: E241
     'q':            {'command': '_vi_q'},  # noqa: E241
