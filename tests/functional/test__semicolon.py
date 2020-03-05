@@ -21,8 +21,8 @@ from NeoVintageous.tests import unittest
 class Test_semicolon(unittest.FunctionalTestCase):
 
     def test_n(self):
+        self.normal('|_x__x__x__x__x__x__x_')
         self.feed('fx')
-        self.normal('_x_|_x__x__x__x__x__x_')
         self.feed(';')
         self.assertNormal('_x__|x__x__x__x__x__x_')
         self.feed(';')
