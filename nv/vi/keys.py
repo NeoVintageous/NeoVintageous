@@ -40,7 +40,7 @@ def seq_to_command(view, seq: str, mode: str):
     #   mode (str): Forces the use of this mode instead of the global state's.
     #
     # Returns:
-    #   Mapping:
+    #   ViCommandDefBase:
     #   ViMissingCommandDef: If not found.
     if mode in plugin.mappings:
         plugin_command = plugin.mappings[mode].get(seq)

@@ -537,7 +537,7 @@ class State(object):
 
             # Evaluate action with motion: runs the action with the motion as an
             # argument. The motion's mode is set to INTERNAL_NORMAL and is run
-            # by the action internally to make the selection to operates on. For
+            # by the action internally to make the selection it operates on. For
             # example the motion commands can be used after an operator command,
             # to have the command operate on the text that was moved over.
 

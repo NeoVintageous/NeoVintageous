@@ -60,7 +60,7 @@
     // Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
     "vintageous_enable_multiple_cursors": true,
 
-    // Plugin: A plugin that supports funtionality specific to Sublime Text.
+    // Plugin: Supports specific Sublime Text enhancements and tweaks.
     "vintageous_enable_sublime": true,
 
     // Plugin: A port of https://github.com/tpope/vim-surround.

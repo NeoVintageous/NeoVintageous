@@ -397,6 +397,17 @@ List of available settings:
     The search occurrences style. Valid values: fill, outline, underline,
     squiggly_underline, stippled_underline.
 
+                                                           *'vintageous_bell'*
+'vintageous_bell'       string (default "blink")
+        Visual bell style type. Valid values are: blink, view, or views.
+
+                                              *'vintageous_bell_color_scheme'*
+'vintageous_bell_color_scheme'
+                        string (default "dark")
+        Visual bell color scheme. Valid values are: "dark", "light", or color
+        scheme path. The color scheme path should be in the format:
+        Packages/Name/name.hidden-color-scheme
+
                                                    *'vintageous_default_mode'*
 'vintageous_default_mode'
                         string (default "")
@@ -413,27 +424,32 @@ List of available settings:
                                                  *'vintageous_enable_abolish'*
 'vintageous_enable_abolish'
                         boolean (default on)
-    A port of https://github.com/tpope/vim-abolish.
+    Plugin: A port of https://github.com/tpope/vim-abolish.
 
                                               *'vintageous_enable_commentary'*
 'vintageous_enable_commentary'
                         boolean (default on)
-    A port of https://github.com/tpope/vim-commentary.
+    Plugin: A port of https://github.com/tpope/vim-commentary.
 
                                         *'vintageous_enable_multiple_cursors'*
 'vintageous_enable_multiple_cursors'
                         boolean (default on)
-    A port of https://github.com/terryma/vim-multiple-cursors.
+    Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
+
+                                                *'vintageous_enable_sublime'*
+'vintageous_enable_sublime'
+                        boolean (default on)
+    Plugin: Supports specific Sublime Text enhancements and tweaks.
 
                                                 *'vintageous_enable_surround'*
 'vintageous_enable_surround'
                         boolean (default on)
-    A port of https://github.com/tpope/vim-surround.
+    Plugin: A port of https://github.com/tpope/vim-surround.
 
                                               *'vintageous_enable_unimpaired'*
 'vintageous_enable_unimpaired'
                         boolean (default on)
-    A port of https://github.com/tpope/vim-unimpaired.
+    Plugin: A port of https://github.com/tpope/vim-unimpaired.
 
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
@@ -468,17 +484,6 @@ List of available settings:
 'vintageous_use_sys_clipboard'
                         boolean (default off)
         Propagate copy actions to the system clipboard.
-
-                                                           *'vintageous_bell'*
-'vintageous_bell'       string (default "blink")
-        Visual bell style type. Valid values are: blink, view, or views.
-
-                                              *'vintageous_bell_color_scheme'*
-'vintageous_bell_color_scheme'
-                        string (default "dark")
-        Visual bell color scheme. Valid values are: "dark", "light", or color
-        scheme path. The color scheme path should be in the format:
-        Packages/Name/name.hidden-color-scheme
 
 ------------------------------------------------------------------------------
 
