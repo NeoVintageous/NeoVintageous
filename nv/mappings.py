@@ -157,6 +157,6 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings: bool 
     if not command:
         command = seq_to_command(state.view, to_bare_command_name(seq), mode or state.mode)
 
-    _log.debug('resolved %s mode=%s sequence=%s %s', command, mode, sequence, command.__class__.__mro__)
+    _log.info('resolved %s mode=%s sequence=%s %s', command, mode, sequence, command.__class__.__mro__)
 
     return command
