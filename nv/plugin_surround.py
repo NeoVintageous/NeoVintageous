@@ -26,6 +26,7 @@ from sublime_plugin import TextCommand
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -42,7 +43,7 @@ __all__ = [
 ]
 
 
-@register(seq='ys', modes=(NORMAL,))
+@register(seqs.YS, (NORMAL,))
 class Surroundys(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,7 +76,7 @@ class Surroundys(ViOperatorDef):
         }
 
 
-@register(seq='yss', modes=(NORMAL,))
+@register(seqs.YSS, (NORMAL,))
 class Surroundyss(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -102,7 +103,7 @@ class Surroundyss(Surroundys):
         }
 
 
-@register(seq='S', modes=(VISUAL, VISUAL_BLOCK))
+@register(seqs.BIG_S, (VISUAL, VISUAL_BLOCK))
 class SurroundS(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -110,7 +111,7 @@ class SurroundS(Surroundys):
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
 
-@register(seq='ds', modes=(NORMAL, OPERATOR_PENDING))
+@register(seqs.DS, (NORMAL, OPERATOR_PENDING))
 class Surroundds(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -143,7 +144,7 @@ class Surroundds(ViOperatorDef):
         }
 
 
-@register(seq='cs', modes=(NORMAL, OPERATOR_PENDING))
+@register(seqs.CS, (NORMAL, OPERATOR_PENDING))
 class Surroundcs(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
