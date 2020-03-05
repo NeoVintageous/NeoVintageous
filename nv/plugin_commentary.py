@@ -31,7 +31,7 @@ from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
-from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
@@ -41,10 +41,8 @@ __all__ = [
     '_nv_commentary_command'
 ]
 
-_MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
-
-@register(seq='gc', modes=_MODES_ACTION)
+@register(seq='gc', modes=ACTION_MODES)
 class CommentaryMotion(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,7 +83,7 @@ class CommentaryLines(ViOperatorDef):
 
 # NOTE The command (gC) is not defined in the original Commentary plugin, it's
 # from a plugin called tComment: https://github.com/tomtom/tcomment_vim.
-@register(seq='gC', modes=_MODES_ACTION)
+@register(seq='gC', modes=ACTION_MODES)
 class CommentaryBlock(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
