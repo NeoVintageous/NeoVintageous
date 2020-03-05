@@ -51,13 +51,13 @@ class Test_star(unittest.FunctionalTestCase):
         self.assertSearch('boo\n|abc|\nabcxabc\n|abc|\nbar')
         self.assertSearchCurrent('boo\nabc\nabcxabc\n|abc|\nbar')
 
-    def test_star_no_match(self):
+    def test_n_no_match(self):
         self.eq('x\nfi|zz\nx\nabc\n', 'n_*', 'x\n|fizz\nx\nabc\n')
         self.eq('    fi|zz\nx\nabc\n', 'n_*', '    |fizz\nx\nabc\n')
         self.assertSearch('    |fizz|\nx\nabc\n')
         self.assertSearchCurrent('    |fizz|\nx\nabc\n')
 
-    def test_star_repeat_match(self):
+    def test_n_repeat_match(self):
         self.eq('a|bc\nx\nabc\nx\nabc\nx\nabc\nx', 'n_*', 'abc\nx\n|abc\nx\nabc\nx\nabc\nx')
         self.assertSearchCurrent('abc\nx\n|abc|\nx\nabc\nx\nabc\nx')
         self.feed('n_*')
@@ -65,18 +65,24 @@ class Test_star(unittest.FunctionalTestCase):
         self.feed('n_*')
         self.assertSearchCurrent('abc\nx\nabc\nx\nabc\nx\n|abc|\nx')
 
-    def test_star_wraps(self):
+    def test_n_wraps(self):
         self.eq('x\nabc\nx\nabc\nx\nabc\nx\na|bc\nx', 'n_*', 'x\n|abc\nx\nabc\nx\nabc\nx\nabc\nx')
         self.assertSearch('x\n|abc|\nx\n|abc|\nx\n|abc|\nx\n|abc|\nx')
         self.assertSearchCurrent('x\n|abc|\nx\nabc\nx\nabc\nx\nabc\nx')
 
-    def test_star_no_partial_match(self):
+    def test_n_no_partial_match(self):
         self.eq('fo|o\nfizz\nfom\nfoo\nfou\n', 'n_*', 'foo\nfizz\nfom\n|foo\nfou\n')
         self.assertSearch('|foo|\nfizz\nfom\n|foo|\nfou\n')
         self.assertSearchCurrent('foo\nfizz\nfom\n|foo|\nfou\n')
 
-    def test_star_should_not_match_non_word_boundaries(self):
+    def test_n_should_not_match_non_word_boundaries(self):
         self.eq('fo|o\nfoox\nfoo\nxfoo\n', 'n_*', 'foo\nfoox\n|foo\nxfoo\n')
+
+    def test_n_wrapscan_false(self):
+        self.set_option('wrapscan', False)
+        self.eq('a|bc\nx\nabc\nx', 'n_*', 'abc\nx\n|abc\nx')
+        self.eq('abc\nx\n|abc\nx', 'n_*', 'abc\nx\n|abc\nx')
+        self.eq('a|bc\nx\nabc\nx', 'n_5*', 'abc\nx\n|abc\nx')
 
     def test_v(self):
         self.eq('ab|c\nx\nabc\nx', 'v_*', 'ab|c\nx\na|bc\nx')
