@@ -18,7 +18,6 @@
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
-from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
@@ -1525,14 +1524,12 @@ class ViRepeat(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
         return {
             'action': '_vi_dot',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
-                'repeat_data': get_repeat_data(state.view)
+                'count': state.count
             }
         }
 

@@ -1503,7 +1503,9 @@ class _vi_dot(WindowCommand):
             state.mode = NORMAL
 
         if repeat_data is None:
-            return ui_bell()
+            repeat_data = get_repeat_data(self.view)
+            if not repeat_data:
+                return ui_bell()
 
         # TODO: Find out if the user actually meant '1'.
         if count and count == 1:
