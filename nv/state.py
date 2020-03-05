@@ -364,10 +364,6 @@ class State(object):
 
             view.show(target_pt, False)
 
-    def reset(self) -> None:
-        # TODO Remove this when we've ported all commands. This is here for retrocompatibility.
-        self.reset_command_data()
-
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
         self.update_xpos()

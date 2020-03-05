@@ -1487,7 +1487,7 @@ class _enter_replace_mode(TextCommand):
         state.mode = REPLACE
         regions_transformer(self.view, f)
         state.display_status()
-        state.reset()
+        state.reset_command_data()
 
 
 class _vi_dot(WindowCommand):
