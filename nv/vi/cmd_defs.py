@@ -19,8 +19,6 @@ from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_repeat_data
-from NeoVintageous.nv.settings import set_last_char_search
-from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
@@ -2275,7 +2273,8 @@ class ViRepeatCharSearchForward(ViMotionDef):
                 'count': state.count,
                 'char': get_last_char_search(view),
                 'inclusive': inclusive,
-                'skipping': skipping
+                'skipping': skipping,
+                'save': False
             }
         }
 
@@ -2537,7 +2536,8 @@ class ViRepeatCharSearchBackward(ViMotionDef):
                 'count': state.count,
                 'char': get_last_char_search(view),
                 'inclusive': inclusive,
-                'skipping': skipping
+                'skipping': skipping,
+                'save': False
             }
         }
 
@@ -2908,12 +2908,7 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.inclusive = inclusive
 
-    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
-        view = state.view
-        set_last_char_search_command(view, 'vi_f' if self.inclusive else 'vi_t')
-        set_last_char_search(view, self.inp)
-
         return {
             'motion': '_vi_find_in_line',
             'motion_args': {
@@ -2973,12 +2968,7 @@ class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.inclusive = inclusive
 
-    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
-        view = state.view
-        set_last_char_search_command(view, 'vi_big_f' if self.inclusive else 'vi_big_t')
-        set_last_char_search(view, self.inp)
-
         return {
             'motion': '_vi_reverse_find_in_line',
             'motion_args': {

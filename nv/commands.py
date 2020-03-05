@@ -81,6 +81,8 @@ from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_last_char_search
+from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import toggle_ctrl_keys
@@ -3060,7 +3062,11 @@ class _vi_find_in_line(TextCommand):
 
     # Contrary to *f*, *t* does not look past the caret's position, so if
     # @character is under the caret, nothing happens.
-    def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False):
+    def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
+        if save:
+            set_last_char_search_command(self.view, 'vi_f' if inclusive else 'vi_t')
+            set_last_char_search(self.view, char)
+
         def f(view, s):
             if mode == VISUAL_LINE:
                 raise ValueError('wrong mode')
@@ -3111,7 +3117,11 @@ class _vi_reverse_find_in_line(TextCommand):
 
     # Contrary to *F*, *T* does not look past the caret's position, so if
     # ``character`` is right before the caret, nothing happens.
-    def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False):
+    def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
+        if save:
+            set_last_char_search_command(self.view, 'vi_big_f' if inclusive else 'vi_big_t')
+            set_last_char_search(self.view, char)
+
         def f(view, s):
             if mode == VISUAL_LINE:
                 raise ValueError('wrong mode')
