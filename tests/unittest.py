@@ -1338,7 +1338,7 @@ _SEQ2CMD = {
     'J':            {'command': '_vi_big_j'},  # noqa: E241
     'L':            {'command': '_vi_big_l'},  # noqa: E241
     'M':            {'command': '_vi_big_m'},  # noqa: E241
-    'N':            {'command': '_vi_repeat_buffer_search', 'args': {'reverse': True}},  # noqa: E241
+    'N':            {'command': '_nv_feed_key'},  # noqa: E241
     'O':            {'command': '_vi_big_o'},  # noqa: E241
     'P':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True}},  # noqa: E241
     'R':            {'command': '_enter_replace_mode'},  # noqa: E241
