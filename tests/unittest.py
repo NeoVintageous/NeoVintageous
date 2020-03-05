@@ -76,21 +76,21 @@ _MODES = (
 
 class ViewTestCase(unittest.TestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.view = _active_window().new_file()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         if self.view:
             self.view.set_scratch(True)
             self.view.close()
 
-    def platform(self):
+    def platform(self) -> str:
         return _platform()
 
     def content(self) -> str:
         return self.view.substr(Region(0, self.view.size()))
 
-    def Region(self, a, b=None) -> Region:
+    def Region(self, a: int, b: int = None) -> Region:
         # Return a Region with initial values a and b.
         #
         # This method can save having to import `sublime.Region` into test
@@ -170,23 +170,23 @@ class ViewTestCase(unittest.TestCase):
     def settings(self):
         return self.view.settings()
 
-    def set_setting(self, name, value):
-        return self.settings().set('vintageous_%s' % name, value)
+    def set_setting(self, name: str, value) -> None:
+        self.settings().set('vintageous_%s' % name, value)
 
-    def get_setting(self, name):
+    def get_setting(self, name: str):
         return self.settings().get('vintageous_%s' % name)
 
-    def has_setting(self, name):
+    def has_setting(self, name: str) -> bool:
         return self.settings().has('vintageous_%s' % name)
 
-    def reset_setting(self, name):
-        return self.settings().erase('vintageous_%s' % name)
+    def reset_setting(self, name: str) -> None:
+        self.settings().erase('vintageous_%s' % name)
 
-    def set_wrap(self, width):
+    def set_wrap(self, width: int) -> None:
         self.settings().set('word_wrap', True)
         self.set_wrap_width(width)
 
-    def set_wrap_width(self, width):
+    def set_wrap_width(self, width: int) -> None:
         # Wrap width is different (off-by-one) in Sublime Text 4.
         if int(_version()) >= 4000:
             width -= 1
@@ -196,10 +196,10 @@ class ViewTestCase(unittest.TestCase):
     def dedent(self, text: str) -> str:
         return textwrap.dedent(text)
 
-    def assertSetting(self, name, expected):
+    def assertSetting(self, name: str, expected) -> None:
         self.assertEqual(self.settings().get(name), expected)
 
-    def assertNotSetting(self, name):
+    def assertNotSetting(self, name: str) -> None:
         self.assertFalse(self.settings().has(name))
         # NOTE Some settings prefixes are deprecated.
         self.assertFalse(self.settings().has('_neovintageous_%s' % name))
@@ -209,28 +209,28 @@ class ViewTestCase(unittest.TestCase):
         self.assertFalse(self.settings().has('vi_%s' % name))
         self.assertFalse(self.settings().has('vintageous_%s' % name))
 
-    def set_option(self, name, value, setting=True):
+    def set_option(self, name: str, value, setting: bool = True) -> None:
         _set_option(self.view, name, value)
         if setting:
             # Options via settings is DEPRECATED
             self.settings().set('vintageous_%s' % name, value)
 
-    def get_option(self, name):
+    def get_option(self, name: str):
         return _get_option(self.view, name)
 
-    def assertOption(self, name, expected, msg=None):
+    def assertOption(self, name: str, expected, msg: str = None) -> None:
         self.assertEqual(_get_option(self.view, name), expected, msg=msg)
 
-    def syntax(self, syntax_file):
+    def syntax(self, syntax_file: str) -> None:
         self.view.assign_syntax(syntax_file)
 
-    def fixturePath(self, *args):
+    def fixturePath(self, *args) -> str:
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
 
-    def write(self, text) -> None:
+    def write(self, text: str) -> None:
         self.view.run_command('_nv_test_write', {'text': text})
 
-    def _setupView(self, text, mode, reverse=False, vblock_direction=None):
+    def _setupView(self, text: str, mode: str, reverse: bool = False, vblock_direction: int = None):
         if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL, SELECT):
             self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -283,43 +283,43 @@ class ViewTestCase(unittest.TestCase):
 
         self.state.mode = mode
 
-    def insert(self, text):
+    def insert(self, text: str) -> None:
         self._setupView(text, INSERT)
 
-    def internalNormal(self, text):
+    def internalNormal(self, text: str) -> None:
         self._setupView(text, INTERNAL_NORMAL)
 
-    def rinternalNormal(self, text):
+    def rinternalNormal(self, text: str) -> None:
         self._setupView(text, INTERNAL_NORMAL, reverse=True)
 
-    def normal(self, text):
+    def normal(self, text: str) -> None:
         self._setupView(text, NORMAL)
 
-    def visual(self, text):
+    def visual(self, text: str) -> None:
         self._setupView(text, VISUAL)
 
-    def rvisual(self, text):
+    def rvisual(self, text: str) -> None:
         self._setupView(text, VISUAL, reverse=True)
 
-    def vselect(self, text):
+    def vselect(self, text: str) -> None:
         self._setupView(text, SELECT)
 
-    def rvselect(self, text):
+    def rvselect(self, text: str) -> None:
         self._setupView(text, SELECT, reverse=True)
 
-    def vblock(self, text, direction=DIRECTION_DOWN):
+    def vblock(self, text: str, direction: int = DIRECTION_DOWN) -> None:
         self._setupView(text, VISUAL_BLOCK, vblock_direction=direction)
 
-    def rvblock(self, text, direction=DIRECTION_DOWN):
+    def rvblock(self, text: str, direction: int = DIRECTION_DOWN) -> None:
         self._setupView(text, VISUAL_BLOCK, reverse=True, vblock_direction=direction)
 
-    def vline(self, text):
+    def vline(self, text: str) -> None:
         self._setupView(text, VISUAL_LINE)
 
-    def rvline(self, text):
+    def rvline(self, text: str) -> None:
         self._setupView(text, VISUAL_LINE, reverse=True)
 
-    def register(self, name, value=None, linewise=False):
+    def register(self, name: str, value=None, linewise: bool = False) -> None:
         if value is None:
             value = name[1:]
             name = name[0]
@@ -333,37 +333,37 @@ class ViewTestCase(unittest.TestCase):
             _registers_data[name] = value
             _registers_linewise[name] = linewise
 
-    def registerLinewise(self, name, value=None):
+    def registerLinewise(self, name: str, value=None) -> None:
         self.register(name, value, linewise=True)
 
-    def resetRegisters(self, values=None):
+    def resetRegisters(self, values=None) -> None:
         _registers_reset()
 
-    def resetMacros(self):
+    def resetMacros(self) -> None:
         _macros._state.clear()
 
-    def setMark(self, name: str, pt: int):
+    def setMark(self, name: str, pt: int) -> None:
         sels = list(self.view.sel())
         self.select(pt)
         _set_mark(self.view, name)
         self.view.sel().clear()
         self.view.sel().add_all(sels)
 
-    def assertMark(self, name: str, expected):
+    def assertMark(self, name: str, expected) -> None:
         self._assertContentSelection([_get_mark(self.view, name)], expected)
 
-    def assertMapping(self, mode: int, lhs: str, rhs: str):
+    def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
         self.assertEqual(_mappings[mode][lhs], rhs)
 
-    def assertNotMapping(self, lhs: str, mode: int = None):
+    def assertNotMapping(self, lhs: str, mode: int = None) -> None:
         if mode is None:
             for mode in _MODES:
                 self.assertNotIn(lhs, _mappings[mode])
         else:
             self.assertNotIn(lhs, _mappings[mode])
 
-    def assertContent(self, expected, msg=None):
+    def assertContent(self, expected, msg: str = None) -> None:
         self.assertEqual(self.content(), expected, msg)
 
     def commandLineOutput(self) -> str:
@@ -371,13 +371,13 @@ class ViewTestCase(unittest.TestCase):
 
         return cmdline.substr(Region(0, cmdline.size()))
 
-    def assertCommandLineOutput(self, expected, msg=None):
+    def assertCommandLineOutput(self, expected, msg: str = None) -> None:
         self.assertEqual(self.commandLineOutput(), expected, msg)
 
-    def assertContentRegex(self, expected_regex, msg=None):
+    def assertContentRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self.content(), expected_regex, msg=msg)
 
-    def _assertContentSelection(self, sels: list, expected: str, msg=None):
+    def _assertContentSelection(self, sels: list, expected: str, msg: str = None) -> None:
         content = list(self.view.substr(Region(0, self.view.size())))
         counter = 0
         for sel in sels:
@@ -389,110 +389,110 @@ class ViewTestCase(unittest.TestCase):
 
         self.assertEquals(''.join(content), expected, msg)
 
-    def _assertContentRegion(self, key, expected, msg=None):
+    def _assertContentRegion(self, key: str, expected, msg: str = None) -> None:
         self._assertContentSelection(self.view.get_regions(key), expected, msg)
 
-    def _assertView(self, expected, mode, msg):
+    def _assertView(self, expected, mode: str, msg: str) -> None:
         self._assertContentSelection(self.view.sel(), expected, msg)
         self._assertMode(mode)
 
-    def assertSearch(self, expected: str, msg=None):
+    def assertSearch(self, expected: str, msg: str = None) -> None:
         self._assertContentRegion('_nv_search_occ', expected, msg)
 
-    def assertSearchCurrent(self, expected: str, msg=None):
+    def assertSearchCurrent(self, expected: str, msg: str = None) -> None:
         self._assertContentRegion('_nv_search_cur', expected, msg)
 
-    def setLastSearch(self, term):
+    def setLastSearch(self, term: str) -> None:
         _set_last_buffer_search(self.view, term)
 
-    def setLastSearchCommand(self, command):
+    def setLastSearchCommand(self, command: str) -> None:
         _set_last_buffer_search_command(self.view, command)
 
-    def assertInsert(self, expected, msg=None):
+    def assertInsert(self, expected, msg: str = None) -> None:
         self._assertView(expected, INSERT, msg)
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid INSERT mode selection')
 
-    def assertInternalNormal(self, expected, strict=False, msg=None):
+    def assertInternalNormal(self, expected, strict: bool = False, msg: str = None) -> None:
         self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)
         self.assertSelectionIsNotReversed()
 
-    def assertRInternalNormal(self, expected, strict=False, msg=None):
+    def assertRInternalNormal(self, expected, strict: bool = False, msg: str = None) -> None:
         self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)
         self.assertSelectionIsReversed()
 
-    def assertNormal(self, expected, msg=None):
+    def assertNormal(self, expected, msg: str = None) -> None:
         self._assertView(expected, NORMAL, msg)
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid NORMAL mode selection')
 
-    def assertReplace(self, expected, msg=None):
+    def assertReplace(self, expected, msg: str = None) -> None:
         self._assertView(expected, REPLACE, msg)
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid REPLACE mode selection')
 
-    def assertVisual(self, expected, msg=None):
+    def assertVisual(self, expected, msg: str = None) -> None:
         self._assertView(expected, VISUAL, msg)
         self.assertSelectionIsNotReversed()
 
-    def assertRVisual(self, expected, msg=None):
+    def assertRVisual(self, expected, msg: str = None) -> None:
         self._assertView(expected, VISUAL, msg)
         self.assertSelectionIsReversed()
 
-    def assertVselect(self, expected, msg=None):
+    def assertVselect(self, expected, msg: str = None) -> None:
         self._assertView(expected, SELECT, msg)
         self.assertSelectionIsNotReversed()
 
-    def assertRVselect(self, expected, msg=None):
+    def assertRVselect(self, expected, msg: str = None) -> None:
         self._assertView(expected, SELECT, msg)
         self.assertSelectionIsReversed()
 
-    def assertVblock(self, expected, direction=DIRECTION_DOWN, msg=None):
+    def assertVblock(self, expected, direction: int = DIRECTION_DOWN, msg: str = None) -> None:
         self._assertView(expected, VISUAL_BLOCK, msg)
         self.assertSelectionIsNotReversed()
         self.assertVblockDirection(direction)
 
-    def assertRVblock(self, expected, direction=DIRECTION_DOWN, msg=None):
+    def assertRVblock(self, expected, direction: int = DIRECTION_DOWN, msg: str = None) -> None:
         self._assertView(expected, VISUAL_BLOCK, msg)
         self.assertSelectionIsReversed()
         self.assertVblockDirection(direction, msg)
 
-    def assertVline(self, expected, msg=None):
+    def assertVline(self, expected, msg: str = None) -> None:
         self._assertView(expected, VISUAL_LINE, msg)
         self.assertSelectionIsNotReversed()
 
-    def assertRVline(self, expected, msg=None):
+    def assertRVline(self, expected, msg: str = None) -> None:
         self._assertView(expected, VISUAL_LINE, msg)
         self.assertSelectionIsReversed()
 
-    def _assertMode(self, mode):
+    def _assertMode(self, mode: str) -> None:
         self.assertEquals(self.state.mode, mode)
 
-    def assertInsertMode(self):
+    def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
 
-    def assertInternalNormalMode(self):
+    def assertInternalNormalMode(self) -> None:
         self._assertMode(INTERNAL_NORMAL)
 
-    def assertNormalMode(self):
+    def assertNormalMode(self) -> None:
         self._assertMode(NORMAL)
 
-    def assertReplaceMode(self):
+    def assertReplaceMode(self) -> None:
         self._assertMode(REPLACE)
 
-    def assertSelectMode(self):
+    def assertSelectMode(self) -> None:
         self._assertMode(SELECT)
 
-    def assertVisualMode(self):
+    def assertVisualMode(self) -> None:
         self._assertMode(VISUAL)
 
-    def assertVblockMode(self):
+    def assertVblockMode(self) -> None:
         self._assertMode(VISUAL_BLOCK)
 
-    def assertVlineMode(self):
+    def assertVlineMode(self) -> None:
         self._assertMode(VISUAL_LINE)
 
-    def assertRegion(self, actual, expected):
+    def assertRegion(self, actual, expected) -> None:
         # Test that *actual* and *expected* are equal.
         #
         # Args:
@@ -512,7 +512,7 @@ class ViewTestCase(unittest.TestCase):
             self.assertIsInstance(actual, Region)
             self.assertEqual(actual, expected)
 
-    def _assertRegister(self, name, expected, linewise=False, msg=None):
+    def _assertRegister(self, name: str, expected, linewise: bool = False, msg: str = None) -> None:
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
@@ -521,7 +521,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None:
             self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)
 
-    def assertRegister(self, name, expected=None, linewise=False, msg=None):
+    def assertRegister(self, name: str, expected=None, linewise: bool = False, msg: str = None) -> None:
         """Test that value for the register name and expected are equal.
 
         Args:
@@ -544,35 +544,35 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise, msg)
 
-    def assertRegisters(self, names, expected=None, empty_names='', msg=None):
+    def assertRegisters(self, names: list, expected=None, empty_names: str = '', msg: str = None) -> None:
         for name in names:
             self.assertRegister(name, expected, msg=msg)
 
         for name in empty_names:
             self.assertRegisterEmpty(name, msg)
 
-    def assertLinewiseRegister(self, name, expected=None, msg=None):
+    def assertLinewiseRegister(self, name: str, expected=None, msg: str = None) -> None:
         if expected is None:
             expected = name[1:]
             name = name[0]
 
         self._assertRegister(name, expected, linewise=True, msg=msg)
 
-    def assertLinewiseRegisters(self, names, expected=None, empty_names='', msg=None):
+    def assertLinewiseRegisters(self, names: list, expected=None, empty_names: str = '', msg: str = None) -> None:
         for name in names:
             self.assertLinewiseRegister(name, expected, msg)
 
         for name in empty_names:
             self.assertRegisterEmpty(name, msg)
 
-    def assertRegisterEmpty(self, name, msg=None):
+    def assertRegisterEmpty(self, name: str, msg: str = None) -> None:
         self._assertRegister(name, None, msg=msg)
 
-    def assertRegistersEmpty(self, names, msg=None):
+    def assertRegistersEmpty(self, names: list, msg: str = None) -> None:
         for name in names:
             self.assertRegisterEmpty(name, msg)
 
-    def assertSelection(self, expected, msg=None):
+    def assertSelection(self, expected, msg: str = None) -> None:
         # Test that view selection and *expected* are equal.
         #
         # Args:
@@ -607,69 +607,69 @@ class ViewTestCase(unittest.TestCase):
             # Defaults to expect a list of Regions.
             self.assertEqual(expected, list(self.view.sel()), msg)
 
-    def assertSelectionCount(self, expected):
+    def assertSelectionCount(self, expected) -> None:
         self.assertEqual(expected, len(self.view.sel()))
 
-    def assertSelectionIsNotReversed(self):
+    def assertSelectionIsNotReversed(self) -> None:
         for sel in self.view.sel():
             self.assertTrue(sel.b >= sel.a, 'failed asserting selection is not reversed')
 
-    def assertSelectionIsReversed(self):
+    def assertSelectionIsReversed(self) -> None:
         for sel in self.view.sel():
             self.assertGreater(sel.a, sel.b, 'failed asserting selection is reversed')
 
-    def assertSize(self, expected):
+    def assertSize(self, expected) -> None:
         self.assertEqual(expected, self.view.size())
 
-    def assertVblockDirection(self, expected, msg=None):
+    def assertVblockDirection(self, expected, msg: str = None) -> None:
         self.assertEqual(self.getVblockDirection(), expected, msg=msg)
 
     def getVblockDirection(self):
         return _get_visual_block_direction(self.view)
 
-    def _statusLine(self):
+    def _statusLine(self) -> str:
         return (
             self.view.get_status('vim-mode') + ' ' +
             self.view.get_status('vim-seq') + ' ' +
             self.view.get_status('vim-recorder')).strip()
 
-    def assertStatusLineEqual(self, expected, msg=None):
+    def assertStatusLineEqual(self, expected, msg: str = None) -> None:
         self.assertEqual(self._statusLine(), expected, msg=msg)
 
-    def assertStatusLineRegex(self, expected_regex, msg=None):
+    def assertStatusLineRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self._statusLine(), expected_regex, msg=msg)
 
-    def assertStatusLineIsBlank(self, msg=None):
+    def assertStatusLineIsBlank(self, msg: str = None) -> None:
         self.assertStatusLineEqual('', msg)
 
-    def assertStatusLineIsInsert(self, msg=None):
+    def assertStatusLineIsInsert(self, msg: str = None) -> None:
         self.assertStatusLineEqual('-- INSERT --', msg)
 
-    def assertStatusLineIsNormal(self, msg=None):
+    def assertStatusLineIsNormal(self, msg: str = None) -> None:
         self.assertStatusLineEqual('', msg)
 
-    def assertStatusLineIsReplace(self, msg=None):
+    def assertStatusLineIsReplace(self, msg: str = None) -> None:
         self.assertStatusLineEqual('-- REPLACE --', msg)
 
-    def assertStatusLineIsSelect(self, msg=None):
+    def assertStatusLineIsSelect(self, msg: str = None) -> None:
         self.assertStatusLineEqual('-- SELECT --', msg)
 
-    def assertStatusLineIsVisual(self, msg=None):
+    def assertStatusLineIsVisual(self, msg: str = None) -> None:
         self.assertStatusLineEqual('-- VISUAL --', msg)
 
-    def assertStatusLineIsVisualLine(self, msg=None):
+    def assertStatusLineIsVisualLine(self, msg: str = None) -> None:
         self.assertStatusLineEqual('-- VISUAL LINE --', msg)
 
-    def assertStatusLineIsVisualBlock(self, msg=None):
+    def assertStatusLineIsVisualBlock(self, msg: str = None) -> None:
         self.assertStatusLineEqual('-- VISUAL BLOCK --', msg)
 
-    def assertXpos(self, expected, msg=None):
+    def assertXpos(self, expected, msg: str = None) -> None:
         self.assertEqual(self.state.xpos, expected, msg)
 
-    def setXpos(self, xpos):
+    def setXpos(self, xpos: int) -> None:
         self.state.xpos = xpos
 
-    def assertMockNotCalled(self, mock):
+    def assertMockNotCalled(self, mock) -> None:
         # https://docs.python.org/3/library/unittest.mock.html
         # Polyfill for a new mock method added in version 3.5.
         if sys.version_info >= (3, 5):  # pragma: no cover
@@ -679,15 +679,15 @@ class ViewTestCase(unittest.TestCase):
 
     # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
     @property
-    def state(self):
+    def state(self) -> _State:
         return _State(self.view)
 
     # DEPRECATED Use newer APIs e.g. self.Region(), unittest.Region.
-    def _R(self, a, b=None):
+    def _R(self, a: int, b: int = None) -> Region:
         return _make_region(self.view, a, b)
 
     # DEPRECATED Use newer APIs e.g. assertRegion(), assertSelection(), and assertContent().
-    def _assertRegionsEqual(self, expected_region, actual_region, msg=None):
+    def _assertRegionsEqual(self, expected_region, actual_region, msg: str = None) -> None:
         # Test that regions covers the exact same region. Does not take region
         # orientation into account.
         if (expected_region.size() == 1) and (actual_region.size() == 1):
@@ -718,7 +718,7 @@ _CHAR2MODE = {
 
 class FunctionalTestCase(ViewTestCase):
 
-    def feed(self, seq):
+    def feed(self, seq: str) -> None:
         # Args:
         #   seq (str):
         #       A command sequence e.g. 3w, <C-a>, cs'", :pwd
@@ -812,10 +812,10 @@ class FunctionalTestCase(ViewTestCase):
 
         window.run_command(command, args)
 
-    def onRunFeedCommand(self, command, args):
+    def onRunFeedCommand(self, command: str, args) -> None:
         pass
 
-    def eq(self, text, feed, expected=None, msg=None):
+    def eq(self, text: str, feed: str, expected=None, msg: str = None) -> None:
         # The text, feed, and expected arguments can use the following special
         # prefixes to indicate a specific mode. The text and expected modes
         # default to the feed mode, otherwise the default is Internal Normal.
@@ -934,7 +934,7 @@ class FunctionalTestCase(ViewTestCase):
 # the test fixture and then pass it to the command as an argument.
 class PatchFeedCommandXpos(FunctionalTestCase):
 
-    def onRunFeedCommand(self, command, args):
+    def onRunFeedCommand(self, command: str, args) -> None:
         sel = self.view.sel()[-1]
         xpos_pt = sel.b - 1 if sel.b > sel.a else sel.b
         xpos = self.view.rowcol(xpos_pt)[1]
@@ -952,7 +952,7 @@ class PatchFeedCommandXpos(FunctionalTestCase):
 
 class ResetRegisters(FunctionalTestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         self.resetRegisters()
 
@@ -1012,15 +1012,15 @@ def mock_bell():
 
                 return bell_count
 
-            def _assertBellCount(count):
+            def _assertBellCount(count: int) -> None:
                 self.assertEquals(count, _bell_call_count(), 'expects %s bell' % count)
 
-            def _assertBell(msg=None):
+            def _assertBell(msg: str = None) -> None:
                 _assertBellCount(1)
                 if msg:
                     self.bells[0].assert_called_once_with(msg)
 
-            def _assertNoBell():
+            def _assertNoBell() -> None:
                 self.assertEquals(0, _bell_call_count(), 'expects no bell')
 
             self.assertBell = _assertBell
@@ -1069,17 +1069,17 @@ def mock_status_message():
         def wrapped(self, *args, **kwargs):
             self.status_message = args[-1]
 
-            def _assertNoStatusMessage():
+            def _assertNoStatusMessage() -> None:
                 self.assertEqual(0, self.status_message.call_count)
 
-            def _assertStatusMessage(msg, count=1):
+            def _assertStatusMessage(msg: str, count: int = 1) -> None:
                 if count > 1:
                     self.status_message.assert_called_with(msg)
                     self.assertEqual(count, self.status_message.call_count)
                 else:
                     self.status_message.assert_called_once_with(msg)
 
-            def _assertStatusMessageCount(expected):
+            def _assertStatusMessageCount(expected) -> None:
                 self.assertEqual(expected, self.status_message.call_count)
 
             self.assertNoStatusMessage = _assertNoStatusMessage
@@ -1177,7 +1177,7 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
             # The default visible region uses the size of the current view. For
             # example when a test fixture is setup, the visible region will be
             # the same size as content. This makes most tests easier to setup.
-            def _visible_region():
+            def _visible_region() -> Region:
                 if visible_region:
                     return self.Region(visible_region[0], visible_region[1])
 
@@ -1212,13 +1212,13 @@ def mock_run_commands(*methods):
     def wrapper(f):
         import sublime_api
 
-        def run_view_command(self, cmd, args=None):
+        def run_view_command(self, cmd: str, args: dict = None) -> None:
             if cmd not in methods:
                 sublime_api.view_run_command(self.id(), cmd, args)
             else:
                 f._run_command_calls.append((cmd, args))
 
-        def run_window_command(self, cmd, args=None):
+        def run_window_command(self, cmd: str, args: dict = None) -> None:
             if cmd not in methods:
                 sublime_api.window_run_command(self.id(), cmd, args)
             else:
@@ -1229,7 +1229,7 @@ def mock_run_commands(*methods):
         def wrapped(self, *args, **kwargs):
             f._run_command_calls = []
 
-            def assertRunCommand(cmd, args=None, count=1):
+            def assertRunCommand(cmd: str, args: dict = None, count: int = 1) -> None:
                 found = 0
                 for actual_cmd, actual_args in f._run_command_calls:
                     if (cmd == actual_cmd) and (args == actual_args):
