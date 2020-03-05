@@ -1324,12 +1324,12 @@ _SEQ2CMD = {
     'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
     'D':            {'command': '_vi_big_d'},  # noqa: E241
     'E':            {'command': '_vi_big_e'},  # noqa: E241
-    'F0':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '0', 'inclusive': True}},  # noqa: E241
-    'F4':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '4', 'inclusive': True}},  # noqa: E241
-    'F5':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '5', 'inclusive': True}},  # noqa: E241
-    'Ff':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'f', 'inclusive': True}},  # noqa: E241
-    'Fr':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'r', 'inclusive': True}},  # noqa: E241
-    'Fx':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'x', 'inclusive': True}},  # noqa: E241
+    'F0':           {'command': '_nv_feed_key'},  # noqa: E241
+    'F4':           {'command': '_nv_feed_key'},  # noqa: E241
+    'F5':           {'command': '_nv_feed_key'},  # noqa: E241
+    'Ff':           {'command': '_nv_feed_key'},  # noqa: E241
+    'Fr':           {'command': '_nv_feed_key'},  # noqa: E241
+    'Fx':           {'command': '_nv_feed_key'},  # noqa: E241
     'G':            {'command': '_vi_big_g'},  # noqa: E241
     'H':            {'command': '_vi_big_h'},  # noqa: E241
     'I':            {'command': '_vi_big_i'},  # noqa: E241
@@ -1342,12 +1342,12 @@ _SEQ2CMD = {
     'R':            {'command': '_enter_replace_mode'},  # noqa: E241
     'S"':           {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"'}},  # noqa: E241
     'S':            {'command': '_vi_big_s'},  # noqa: E241
-    'T0':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '0', 'inclusive': False}},  # noqa: E241
-    'T4':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '4', 'inclusive': False}},  # noqa: E241
-    'T5':           {'command': '_vi_reverse_find_in_line', 'args': {'char': '5', 'inclusive': False}},  # noqa: E241
-    'Tf':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'f', 'inclusive': False}},  # noqa: E241
-    'Tr':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'r', 'inclusive': False}},  # noqa: E241
-    'Tx':           {'command': '_vi_reverse_find_in_line', 'args': {'char': 'x', 'inclusive': False}},  # noqa: E241
+    'T0':           {'command': '_nv_feed_key'},  # noqa: E241
+    'T4':           {'command': '_nv_feed_key'},  # noqa: E241
+    'T5':           {'command': '_nv_feed_key'},  # noqa: E241
+    'Tf':           {'command': '_nv_feed_key'},  # noqa: E241
+    'Tr':           {'command': '_nv_feed_key'},  # noqa: E241
+    'Tx':           {'command': '_nv_feed_key'},  # noqa: E241
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241
     'V_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
@@ -1558,12 +1558,12 @@ _SEQ2CMD = {
     'd?abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'search_string': 'abc'}, 'motion': '_vi_question_mark_impl'}}},  # noqa: E241,E501
     'dB':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_b'}}},  # noqa: E241,E501
     'dE':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_e'}}},  # noqa: E241,E501
-    'dFx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'char': 'x'}, 'motion': '_vi_reverse_find_in_line'}}},  # noqa: E241,E501
+    'dFx':          {'command': '_nv_feed_key'},  # noqa: E241
     'dG':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     'dH':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_h'}}},  # noqa: E241,E501
     'dL':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_l'}}},  # noqa: E241,E501
     'dM':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_m'}}},  # noqa: E241,E501
-    'dTx':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'char': 'x'}, 'motion': '_vi_reverse_find_in_line'}}},  # noqa: E241,E501
+    'dTx':          {'command': '_nv_feed_key'},  # noqa: E241
     'dW':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_w'}}},  # noqa: E241,E501
     'd[{':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'action': 'target', 'target': '{'}, 'motion': '_vi_left_square_bracket'}, 'register': '"'}},  # noqa: E241,E501
     'd\'a':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'a'}, 'motion': '_vi_quote'}}},  # noqa: E241,E501
