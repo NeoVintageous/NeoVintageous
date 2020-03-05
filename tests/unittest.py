@@ -810,7 +810,14 @@ class FunctionalTestCase(ViewTestCase):
         if not window:
             raise Exception('window not found')
 
-        window.run_command(command, args)
+        if command == '_nv_feed_key':
+            for key in seq:
+                if 'count' in args and args['count'] > 1:
+                    window.run_command('_nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
+
+                window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
+        else:
+            window.run_command(command, args)
 
     def onRunFeedCommand(self, command: str, args) -> None:
         pass
