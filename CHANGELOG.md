@@ -10,6 +10,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#698](https://github.com/NeoVintageous/NeoVintageous/issues/698): `:help {subject}` doesn't work for subjects > 35 chars
 * Fixed [#691](https://github.com/NeoVintageous/NeoVintageous/issues/691): Undo should ring bell when already at oldest change
 * Fixed [#694](https://github.com/NeoVintageous/NeoVintageous/issues/694): `<F2>` and `<S-F2>` next and previous bookmark keys wrong way around
 * Fixed [#693](https://github.com/NeoVintageous/NeoVintageous/issues/693): `<C-S-b>` should show build with overlay

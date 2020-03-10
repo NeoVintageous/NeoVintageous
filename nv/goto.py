@@ -63,7 +63,7 @@ def goto_help(window) -> None:
     if not subject:
         return
 
-    if len(subject) > 35:
+    if len(subject) > 50:
         return status_message('E149: Sorry, no help found')
 
     # TODO Refactor ex cmd internets to this common utility
