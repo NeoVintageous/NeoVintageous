@@ -27,9 +27,11 @@ class TestExShellOut(unittest.FunctionalTestCase):
         # XXX: Ugly hack to make sure that the output panels created in these
         # tests don't hide the overall progress panel.
         self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})
+        self.view.window().focus_group(self.view.window().active_group())
         super().tearDown()
 
     def test_command_output(self):
+        self.normal("fi|zz")
         self.feed(':!echo "Testing!"')
         expected = '\\"Testing!\\"\n' if platform() == 'windows' else 'Testing!\n'
         self.assertCommandLineOutput(expected)
@@ -112,7 +114,10 @@ class TestExShellOut(unittest.FunctionalTestCase):
         self.assertNoStatusMessage()
 
     @unittest.mock_status_message()
-    def test_no_previous_cmd(self, getter=None):
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.get_ex_shell_last_command')
+    def test_no_previous_cmd(self, get_ex_shell_last_command):
+        get_ex_shell_last_command.return_value = None
+        self.normal('f|izz')
         self.feed(':!!')
         self.assertStatusMessage('E34: No previous command')
 
@@ -123,7 +128,7 @@ class TestExShellOut(unittest.FunctionalTestCase):
         if self.platform() == 'osx':
             self.assertCommandLineOutput('ls: foo_test_error: No such file or directory\n')
         else:
-            self.assertEqual(self.commandLineOutput().replace('\'', ''), 'ls: cannot access foo_test_error: No such file or directory\n')  # noqa: E501
+            self.assertEqual(self.commandLineOutput().replace('\'', ''), 'ls: cannot access foo_test_error: No such file or directory\n\nPress ENTER to continue')  # noqa: E501
             self.assertSelection(2)
 
     def test_replacement_error(self):

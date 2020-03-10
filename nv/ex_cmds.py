@@ -29,7 +29,6 @@ from sublime import DIALOG_YES
 from sublime import ENCODED_POSITION
 from sublime import FORCE_GROUP
 from sublime import LITERAL
-from sublime import MONOSPACE_FONT
 from sublime import Region
 from sublime import find_resources
 from sublime import load_resource
@@ -147,50 +146,40 @@ def ex_buffer(window, index=None, **kwargs):
     window_tab_control(window, action='goto', index=int(index))
 
 
+def _is_read_only(file_name: str) -> bool:
+    if file_name:
+        try:
+            return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+        except FileNotFoundError:
+            return False
+
+    return False
+
+
 def ex_buffers(window, **kwargs):
-    def _get_item_info(i, view) -> list:
+    def _format_buffer_line(view) -> str:
         path = view.file_name()
         if path:
             parent, leaf = os.path.split(path)
-            parent = os.path.basename(parent)
-            path = os.path.join(parent, leaf)
+            path = os.path.join(os.path.basename(parent), leaf)
         else:
-            path = view.name() or str(view.buffer_id())
-            leaf = view.name() or 'untitled'
+            path = view.name() or '[No Name]'
 
-        status = []
-        if not view.file_name():
-            status.append("t")
-        if view.is_dirty():
-            status.append("*")
-        if view.is_read_only():
-            status.append("r")
+        current_indicator = '%' if view.id() == window.active_view().id() else ' '
+        readonly_indicator = '=' if view.is_read_only() or _is_read_only(view.file_name()) else ' '
+        modified_indicator = '+' if view.is_dirty() else ' '
 
-        if status:
-            leaf += ' (%s)' % ', '.join(status)
+        return '%5d %sa%s%s "%s"' % (
+            view.id(),
+            current_indicator,
+            readonly_indicator,
+            modified_indicator,
+            path
+        )
 
-        indicator = '%' if view.id() == window.active_view().id() else ' '
-        byline = '%d  %s    "%s"' % (i, indicator, path)
-
-        return [leaf, byline]
-
-    items = []
-    view_ids = []
-    for i, view in enumerate(window.views()):
-        items.append(_get_item_info(i, view))
-        view_ids.append(view.id())
-
-    def on_done(index) -> None:
-        if index == -1:
-            return
-
-        sought_id = view_ids[index]
-        for view in window.views():
-            # TODO: Start looking in current group.
-            if view.id() == sought_id:
-                window.focus_view(view)
-
-    window.show_quick_panel(items, on_done)
+    output = CmdlineOutput(window)
+    output.write("\n".join([_format_buffer_line(view) for view in window.views()]))
+    output.show()
 
 
 def ex_cd(view, path=None, **kwargs):
@@ -751,10 +740,13 @@ def ex_registers(window, view, **kwargs):
 
                 multiple_values.append(part_value)
 
-            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 78)))
+            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 120)))
 
-    if items:
-        window.show_quick_panel(sorted(items), None, flags=MONOSPACE_FONT)
+    items.sort()
+    items.insert(0, '--- Registers ---')
+    output = CmdlineOutput(window)
+    output.write("\n".join(items))
+    output.show()
 
 
 def ex_set(option: str, value, **kwargs):
@@ -1176,15 +1168,6 @@ def ex_wqall(window, **kwargs):
 
 @_init_cwd
 def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool = False, **kwargs):
-    def _is_read_only(file_name: str) -> bool:
-        if file_name:
-            try:
-                return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
-            except FileNotFoundError:
-                return False
-
-        return False
-
     def _get_buffer(view, line_range: RangeNode) -> str:
         # If no range, write whe whole buffer.
         if line_range.is_empty:

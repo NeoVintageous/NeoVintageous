@@ -2,9 +2,19 @@
 ---
 # http://www.sublimetext.com/docs/3/syntax.html
 name: NeoVintageous Command-line output
-scope: text.excmdline-output
+scope: text.cmdline-output
 hidden: true
 contexts:
   main:
+
     - match: ' {5}\# {2}.*'
-      scope: entity.name.excmdline-output
+      scope: entity.name.cmdline-output
+
+    - match: '--- .+ ---'
+      scope: entity.name.cmdline-output
+
+    - match: '\^J'
+      scope: comment.cmdline-output
+
+    - match: 'Press ENTER .+'
+      scope: markup.raw.inline.cmdline-output

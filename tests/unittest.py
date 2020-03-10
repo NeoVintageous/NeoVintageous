@@ -373,7 +373,8 @@ class ViewTestCase(unittest.TestCase):
         return cmdline.substr(Region(0, cmdline.size()))
 
     def assertCommandLineOutput(self, expected, msg: str = None) -> None:
-        self.assertEqual(self.commandLineOutput(), expected, msg)
+        self.view.window().focus_group(self.view.window().active_group())
+        self.assertEqual(self.commandLineOutput(), expected + "\nPress ENTER to continue", msg)
 
     def assertContentRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self.content(), expected_regex, msg=msg)
