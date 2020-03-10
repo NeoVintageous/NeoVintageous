@@ -4213,9 +4213,6 @@ class _vi_left_paren(TextCommand):
         def f(view, s):
             start = s.a if s.b >= s.a else s.b
             previous_sentence = find_sentences_backward(view, start, count)
-            if previous_sentence is None:
-                return s
-
             target = previous_sentence.a
 
             if mode == NORMAL:
