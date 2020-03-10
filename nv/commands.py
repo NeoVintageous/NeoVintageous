@@ -3229,9 +3229,7 @@ class _vi_slash(TextCommand):
 
 
 class _vi_slash_impl(TextCommand):
-    def run(self, edit, search_string, mode=None, count=1, save=True):
-        # TODO Rename "search_string" argument "pattern"
-        pattern = search_string
+    def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
             pattern = get_last_buffer_search(self.view)
             if not pattern:
@@ -3837,7 +3835,7 @@ class _vi_big_m(TextCommand):
 
 
 class _vi_star(TextCommand):
-    def run(self, edit, mode=None, count=1, search_string=None, save=True):
+    def run(self, edit, mode=None, count=1, pattern=None, save=True):
         def f(view, s):
             match = find_wrapping(
                 view,
@@ -3858,7 +3856,7 @@ class _vi_star(TextCommand):
 
             return s
 
-        word = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        word = pattern or self.view.substr(self.view.word(self.view.sel()[0].end()))
         if not word.strip():
             ui_bell('E348: No string under cursor')
             return
@@ -3883,7 +3881,7 @@ class _vi_star(TextCommand):
 
 
 class _vi_octothorp(TextCommand):
-    def run(self, edit, mode=None, count=1, search_string=None, save=True):
+    def run(self, edit, mode=None, count=1, pattern=None, save=True):
         def f(view, s):
             match = reverse_find_wrapping(
                 view,
@@ -3905,7 +3903,7 @@ class _vi_octothorp(TextCommand):
 
             return s
 
-        word = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        word = pattern or self.view.substr(self.view.word(self.view.sel()[0].end()))
         if not word.strip():
             ui_bell('E348: No string under cursor')
             return
@@ -4262,9 +4260,7 @@ class _vi_right_paren(TextCommand):
 
 
 class _vi_question_mark_impl(TextCommand):
-    def run(self, edit, search_string, mode=None, count=1, save=True):
-        # TODO Rename "search_string" argument "pattern"
-        pattern = search_string
+    def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
             pattern = get_last_buffer_search(self.view)
             if not pattern:
@@ -4376,16 +4372,16 @@ class _vi_repeat_buffer_search(TextCommand):
     }
 
     def run(self, edit, mode=None, count=1, reverse=False):
-        search_string = get_last_buffer_search(self.view)
-        search_command = get_last_buffer_search_command(self.view)
-        command = self.commands[search_command][int(reverse)]
+        last_pattern = get_last_buffer_search(self.view)
+        last_command = get_last_buffer_search_command(self.view)
+        command = self.commands[last_command][int(reverse)]
 
-        _log.debug('repeat search %s reverse=%s -> %s (pattern=%s)', search_command, reverse, command, search_string)
+        _log.debug('repeat search %s reverse=%s -> %s (pattern=%s)', last_command, reverse, command, last_pattern)
 
         self.view.run_command(command, {
             'mode': mode,
             'count': count,
-            'search_string': search_string,
+            'pattern': last_pattern,
             'save': False
         })
 
@@ -4434,14 +4430,14 @@ class _vi_search(TextCommand):
 
 class _vi_n(TextCommand):
 
-    def run(self, edit, mode=None, count=1, search_string=''):
-        self.view.run_command('_vi_slash_impl', {'mode': mode, 'count': count, 'search_string': search_string})
+    def run(self, edit, mode=None, count=1, pattern=''):
+        self.view.run_command('_vi_slash_impl', {'mode': mode, 'count': count, 'pattern': pattern})
 
 
 class _vi_big_n(TextCommand):
 
-    def run(self, edit, mode=None, count=1, search_string=''):
-        self.view.run_command('_vi_question_mark_impl', {'mode': mode, 'count': count, 'search_string': search_string})
+    def run(self, edit, mode=None, count=1, pattern=''):
+        self.view.run_command('_vi_question_mark_impl', {'mode': mode, 'count': count, 'pattern': pattern})
 
 
 class _vi_big_e(TextCommand):

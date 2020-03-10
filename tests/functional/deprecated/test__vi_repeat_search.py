@@ -119,7 +119,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_forward(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
+        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
         self.setLastSearchCommand('vi_slash')
         self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
@@ -129,7 +129,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_reverse(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
+        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
         self.setLastSearchCommand('vi_slash')
         self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
@@ -141,7 +141,7 @@ class Test__vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_partial(self):
         self.normal('|foo\nabc\nbar\nabcxmoo\nabc\nend')
-        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
+        self.view.run_command('_vi_slash_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
         self.setLastSearchCommand('vi_slash')
         self.assertNormal('foo\n|abc\nbar\nabcxmoo\nabc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
@@ -160,7 +160,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_forward(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
+        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
         self.setLastSearchCommand('vi_question_mark')
         self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
@@ -172,7 +172,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_reverse(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
+        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
         self.setLastSearchCommand('vi_question_mark')
         self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
@@ -184,7 +184,7 @@ class Test__vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_partial(self):
         self.normal('|foo\nabc\nbar\nabcxmoo\nabc\nend')
-        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'search_string': 'abc'})
+        self.view.run_command('_vi_question_mark_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
         self.setLastSearchCommand('vi_question_mark')
         self.assertNormal('foo\nabc\nbar\nabcxmoo\n|abc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')

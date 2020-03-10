@@ -3022,7 +3022,7 @@ class ViSearchForwardImpl(ViMotionDef):
         return {
             'motion': '_vi_slash_impl',
             'motion_args': {
-                'search_string': self.inp,
+                'pattern': self.inp,
                 'mode': state.mode,
                 'count': state.count
             }
@@ -3075,7 +3075,7 @@ class ViSearchBackwardImpl(ViMotionDef):
         return {
             'motion': '_vi_question_mark_impl',
             'motion_args': {
-                'search_string': self.inp,
+                'pattern': self.inp,
                 'mode': state.mode,
                 'count': state.count
             }
