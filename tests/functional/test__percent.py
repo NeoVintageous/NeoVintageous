@@ -79,6 +79,7 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('r_(|)|', 'v_%', 'r_|()|')
         self.eq('(|)|', 'v_%', 'r_|()|')
         self.eq('r_|(|)', 'v_%', '|()|')
+        self.eq('f|iz|z', 'v_%', 'f|iz|z')
 
     def test_V(self):
         self.eq('|\n|', 'V_%', '|\n|')
@@ -91,6 +92,7 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('abc (abc|) abc', 'd%', 'abc  |abc')
         self.eq('abc |(abc) abc', 'd%', 'abc  |abc')
         self.eq('|abc (abc) abc', 'd%', ' |abc')
+        self.eq('f|izz', 'd%', 'f|izz')
 
 
 class Test_percent_in_PHP_syntax(unittest.FunctionalTestCase):
