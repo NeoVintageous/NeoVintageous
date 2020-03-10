@@ -145,7 +145,13 @@ def ex_buffer(window, index=None, **kwargs):
     if index is None:
         return
 
-    window_tab_control(window, action='goto', index=int(index))
+    view_id = int(index)
+    for view in window.views():
+        if view.id() == view_id:
+            window.focus_view(view)
+            return
+
+    ui_bell('E86: Buffer %s does not exist' % index)
 
 
 def _is_read_only(file_name: str) -> bool:
