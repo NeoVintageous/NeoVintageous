@@ -314,7 +314,7 @@ class UnimpairedToggleOff(_BaseToggleDef):
         }
 
 
-_CONFLICT_MARKER_REGEX = '(<<<<<<<|=======|>>>>>>>)'
+_CONFLICT_MARKER_REGEX = '^(<<<<<<< |=======$|>>>>>>> )'
 
 
 def _goto_prev_conflict_marker(view, count):

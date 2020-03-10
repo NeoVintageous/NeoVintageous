@@ -51,6 +51,9 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
     def test_goto_next_conflict_marker(self):
         self.normal(self.dedent("""
             1|11
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
             <<<<<<< HEAD
             222
             =======
@@ -63,6 +66,9 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
 
         self.assertNormal(self.dedent("""
             111
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
             |<<<<<<< HEAD
             222
             =======
@@ -75,6 +81,9 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
 
         self.assertNormal(self.dedent("""
             111
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
             <<<<<<< HEAD
             222
             |=======
@@ -87,6 +96,9 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
 
         self.assertNormal(self.dedent("""
             111
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
             <<<<<<< HEAD
             222
             =======
@@ -99,6 +111,9 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
 
         self.assertNormal(self.dedent("""
             111
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
             <<<<<<< HEAD
             222
             =======
