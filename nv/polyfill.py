@@ -18,6 +18,7 @@
 from contextlib import contextmanager
 import re
 
+from sublime import Region
 from sublime import load_settings
 from sublime import save_settings
 
@@ -161,6 +162,14 @@ def view_indented_region(view, pt: int, inclusive: bool = False):
             indented_region.b = view.line(ws.b).a
 
     return indented_region
+
+
+def view_to_region(view) -> Region:
+    return Region(0, view.size())
+
+
+def view_to_str(view) -> str:
+    return view.substr(view_to_region(view))
 
 
 # Polyfill fix for Sublime Text 4. In Sublime Text 4 split_by_newlines includes

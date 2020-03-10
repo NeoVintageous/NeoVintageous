@@ -51,6 +51,7 @@ from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.polyfill import view_find_all_in_range
+from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_set
 from NeoVintageous.nv.search import clear_search_highlighting
@@ -378,7 +379,7 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     # The default line specifier for most commands is the cursor position, but
     # the commands :write and :global have the whole file (1,$) as default.
     if line_range.is_empty:
-        region = Region(0, view.size())
+        region = view_to_region(view)
     else:
         region = line_range.resolve(view)
 
@@ -1173,7 +1174,7 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
     def _get_buffer(view, line_range: RangeNode) -> str:
         # If no range, write whe whole buffer.
         if line_range.is_empty:
-            region = Region(0, view.size())
+            region = view_to_region(view)
         else:
             region = line_range.resolve(view)
 

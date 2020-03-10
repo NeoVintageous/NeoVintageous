@@ -39,6 +39,8 @@ from NeoVintageous.nv.marks import get_mark as _get_mark
 from NeoVintageous.nv.marks import set_mark as _set_mark
 from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
+from NeoVintageous.nv.polyfill import view_to_region as _view_to_region
+from NeoVintageous.nv.polyfill import view_to_str as _view_to_str
 from NeoVintageous.nv.registers import _data as _registers_data
 from NeoVintageous.nv.registers import _is_register_linewise
 from NeoVintageous.nv.registers import _linewise as _registers_linewise
@@ -88,8 +90,11 @@ class ViewTestCase(unittest.TestCase):
     def platform(self) -> str:
         return _platform()
 
+    def view_to_region(self):
+        return _view_to_region(self.view)
+
     def content(self) -> str:
-        return self.view.substr(Region(0, self.view.size()))
+        return _view_to_str(self.view)
 
     def Region(self, a: int, b: int = None) -> Region:
         # Return a Region with initial values a and b.
@@ -368,9 +373,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.content(), expected, msg)
 
     def commandLineOutput(self) -> str:
-        cmdline = self.view.window().find_output_panel('Command-line')
-
-        return cmdline.substr(Region(0, cmdline.size()))
+        return _view_to_str(self.view.window().find_output_panel('Command-line'))
 
     def assertCommandLineOutput(self, expected, msg: str = None) -> None:
         self.view.window().focus_group(self.view.window().active_group())
