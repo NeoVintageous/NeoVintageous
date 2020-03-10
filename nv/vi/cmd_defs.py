@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.utils import InputParser
@@ -3019,11 +3018,7 @@ class ViSearchForwardImpl(ViMotionDef):
         self.inp = term
         self.updates_xpos = True
 
-    # TODO Refactor settings dependencies into the command being called
     def translate(self, state):
-        if not self.inp:
-            self.inp = get_last_buffer_search(state.view)
-
         return {
             'motion': '_vi_slash_impl',
             'motion_args': {
@@ -3077,9 +3072,6 @@ class ViSearchBackwardImpl(ViMotionDef):
         self.inp = term
 
     def translate(self, state):
-        if not self.inp:
-            self.inp = get_last_buffer_search(state.view)
-
         return {
             'motion': '_vi_question_mark_impl',
             'motion_args': {

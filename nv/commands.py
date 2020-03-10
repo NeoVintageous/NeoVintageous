@@ -3233,7 +3233,10 @@ class _vi_slash_impl(TextCommand):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
         if not pattern:
-            return
+            pattern = get_last_buffer_search(self.view)
+            if not pattern:
+                ui_bell('E35: no previous regular expression')
+                return
 
         if save:
             set_last_buffer_search_command(self.view, 'vi_slash')
@@ -4263,7 +4266,10 @@ class _vi_question_mark_impl(TextCommand):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
         if not pattern:
-            return
+            pattern = get_last_buffer_search(self.view)
+            if not pattern:
+                ui_bell('E35: no previous regular expression')
+                return
 
         if save:
             set_last_buffer_search_command(self.view, 'vi_question_mark')

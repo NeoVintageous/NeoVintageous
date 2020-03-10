@@ -126,6 +126,31 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
         self.assertSearchCurrent('x fiz x |fiz| x')
         self.assertSearchIncremental('x fiz x fiz x')
 
+    @unittest.mock_status_message()
+    @unittest.mock.patch('NeoVintageous.nv.commands.get_last_buffer_search')
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    def test_on_done_no_previous_pattern(self, cmdline, get_last_buffer_search):
+        get_last_buffer_search.return_value = None
+        self.normal('x f|iz x fiz x')
+        self.initCmdlineSearchMock(cmdline, '/', 'on_done', '')
+        self.feed('n_/')
+        self.assertNormal('x f|iz x fiz x')
+        self.assertSearch('x fiz x fiz x')
+        self.assertStatusMessage('E35: no previous regular expression')
+
+    @unittest.mock_status_message()
+    @unittest.mock.patch('NeoVintageous.nv.commands.get_last_buffer_search')
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    def test_on_done_with_previous_pattern(self, cmdline, get_last_buffer_search):
+        get_last_buffer_search.return_value = 'fi'
+        self.normal('x f|iz x fiz x')
+        self.initCmdlineSearchMock(cmdline, '/', 'on_done', '')
+        self.feed('n_/')
+        self.assertNormal('x fiz x |fiz x')
+        self.assertSearch('x |fi|z x |fi|z x')
+        self.assertSearchCurrent('x fiz x |fi|z x')
+        self.assertNoStatusMessage()
+
     @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
     @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
     def test_on_change(self, cmdline, history_update):
