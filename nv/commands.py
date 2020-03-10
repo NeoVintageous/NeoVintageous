@@ -232,7 +232,6 @@ __all__ = [
     '_vi_big_j',
     '_vi_big_l',
     '_vi_big_m',
-    '_vi_big_n',
     '_vi_big_o',
     '_vi_big_s',
     '_vi_big_w',
@@ -298,7 +297,6 @@ __all__ = [
     '_vi_m',
     '_vi_minus',
     '_vi_modify_numbers',
-    '_vi_n',
     '_vi_o',
     '_vi_octothorp',
     '_vi_paste',
@@ -4426,18 +4424,6 @@ class _vi_search(TextCommand):
                 if not sel.empty():
                     enter_visual_mode(self.view, mode)
                     break
-
-
-class _vi_n(TextCommand):
-
-    def run(self, edit, mode=None, count=1, pattern=''):
-        self.view.run_command('_vi_slash_impl', {'mode': mode, 'count': count, 'pattern': pattern})
-
-
-class _vi_big_n(TextCommand):
-
-    def run(self, edit, mode=None, count=1, pattern=''):
-        self.view.run_command('_vi_question_mark_impl', {'mode': mode, 'count': count, 'pattern': pattern})
 
 
 class _vi_big_e(TextCommand):

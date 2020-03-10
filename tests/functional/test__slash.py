@@ -153,6 +153,18 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
 
     @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
     @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    def test_on_done_empty_should_repeat_last_search(self, cmdline, history_update):
+        self.feed('n_/abc')
+        self.normal('x a|bc x abc x')
+        self.initCmdlineSearchMock(cmdline, '/', 'on_done', '')
+        self.feed('n_/')
+        self.assertNormal('x abc x |abc x')
+        self.assertSearch('x |abc| x |abc| x')
+        self.assertSearchCurrent('x abc x |abc| x')
+        self.assertSearchIncremental('x abc x abc x')
+
+    @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
+    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
     def test_on_change(self, cmdline, history_update):
         self.normal('x b|uz x buz x')
         self.initCmdlineSearchMock(cmdline, '/', 'on_change', 'buz')
