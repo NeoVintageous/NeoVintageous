@@ -86,6 +86,3 @@ class TestCommentaryPHP(unittest.FunctionalTestCase):
 
     def test_n_gC_right_brace(self):
         self.eq('<?php\n|fizz\nbuzz\n\nx\ny', 'gC}', 'n_<?php\n/*|fizz\nbuzz\n*/\nx\ny')
-
-    def test_n_gC_should_do_nothing(self):
-        self.eq('<?php\nf|izz', 'n_gC', 'n_<?php\nf|izz')

@@ -1699,8 +1699,8 @@ _SEQ2CMD = {
     'fr':           {'command': '_nv_feed_key'},  # noqa: E241
     'fx':           {'command': '_nv_feed_key'},  # noqa: E241
     'f|':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gC':           {'command': '_nv_commentary', 'args': {'action': 'C'}},  # noqa: E241A
-    'gC}':          {'command': '_nv_commentary', 'args': {'action': 'C', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
+    'gC':           {'command': '_nv_feed_key'},  # noqa: E241
+    'gC}':          {'command': '_nv_feed_key'},  # noqa: E241
     'gE':           {'command': '_vi_g_big_e'},  # noqa: E241
     'gH':           {'command': '_vi_g_big_h'},  # noqa: E241
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
@@ -1711,10 +1711,10 @@ _SEQ2CMD = {
     'gUip':         {'command': '_vi_g_big_u', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'g_':           {'command': '_vi_g__'},  # noqa: E241
     'ga':           {'command': '_vi_ga'},  # noqa: E241
-    'gc':           {'command': '_nv_commentary', 'args': {'action': 'c'}},  # noqa: E241
-    'gc7G':         {'command': '_nv_commentary', 'args': {'action': 'c', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 7}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
-    'gcG':          {'command': '_nv_commentary', 'args': {'action': 'c', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
-    'gcc':          {'command': '_nv_commentary', 'args': {'action': 'cc'}},  # noqa: E241
+    'gc':           {'command': '_nv_feed_key'},  # noqa: E241
+    'gc7G':         {'command': '_nv_feed_key'},  # noqa: E241
+    'gcG':          {'command': '_nv_feed_key'},  # noqa: E241
+    'gcc':          {'command': '_nv_feed_key'},  # noqa: E241
     'ge':           {'command': '_vi_ge'},  # noqa: E241
     'gf':           {'command': '_vi_g', 'args': {'action': 'f'}},  # noqa: E241
     'gg':           {'command': '_vi_gg'},  # noqa: E241
