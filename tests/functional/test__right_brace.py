@@ -29,6 +29,7 @@ class Test_right_brace(unittest.FunctionalTestCase):
         self.eq('fi|zz\n\n\n\n', 'n_}', 'fizz\n|\n\n\n')
         self.eq('fi|zz\n    \n\n\n', 'n_}', 'fizz\n    \n|\n\n')
         self.eq('fi|zz\n    \n  \n\n\n', 'n_}', 'fizz\n    \n  \n|\n\n')
+        self.eq('1\n2\n|\n\n\n\n', 'n_}', '1\n2\n\n\n\n\n|')
 
     def test_v(self):
         self.eq('fi|zz', 'v_}', 'fi|zz|')
