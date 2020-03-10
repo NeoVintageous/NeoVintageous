@@ -946,6 +946,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_enable_abolish'	neovintageous.txt	/*'vintageous_enable_abolish'*
 'vintageous_enable_commentary'	neovintageous.txt	/*'vintageous_enable_commentary'*
 'vintageous_enable_multiple_cursors'	neovintageous.txt	/*'vintageous_enable_multiple_cursors'*
+'vintageous_enable_sublime'	neovintageous.txt	/*'vintageous_enable_sublime'*
 'vintageous_enable_surround'	neovintageous.txt	/*'vintageous_enable_surround'*
 'vintageous_enable_unimpaired'	neovintageous.txt	/*'vintageous_enable_unimpaired'*
 'vintageous_multi_cursor_exit_from_visual_mode'	neovintageous.txt	/*'vintageous_multi_cursor_exit_from_visual_mode'*
@@ -4078,6 +4079,7 @@ E962	eval.txt	/*E962*
 E963	eval.txt	/*E963*
 E97	diff.txt	/*E97*
 E98	diff.txt	/*E98*
+E981	starting.txt	/*E981*
 E983	message.txt	/*E983*
 E986	tagsrch.txt	/*E986*
 E987	tagsrch.txt	/*E987*
@@ -4143,6 +4145,7 @@ Korean	mbyte.txt	/*Korean*
 L	motion.txt	/*L*
 List	eval.txt	/*List*
 Lists	eval.txt	/*Lists*
+LspDiagnosticsChanged	lsp.txt	/*LspDiagnosticsChanged*
 Lua	lua.txt	/*Lua*
 M	motion.txt	/*M*
 META	intro.txt	/*META*
@@ -5204,6 +5207,7 @@ debug-vs2005	debug.txt	/*debug-vs2005*
 debug-win32	debug.txt	/*debug-win32*
 debug-windbg	debug.txt	/*debug-windbg*
 debug.txt	debug.txt	/*debug.txt*
+debugbreak()	eval.txt	/*debugbreak()*
 decada_members	ft_ada.txt	/*decada_members*
 deepcopy()	eval.txt	/*deepcopy()*
 definition-search	tagsrch.txt	/*definition-search*
@@ -5377,6 +5381,7 @@ exp()	eval.txt	/*exp()*
 expand()	eval.txt	/*expand()*
 expand-env	options.txt	/*expand-env*
 expand-environment-var	options.txt	/*expand-environment-var*
+expandcmd()	eval.txt	/*expandcmd()*
 expr	eval.txt	/*expr*
 expr-!	eval.txt	/*expr-!*
 expr-!=	eval.txt	/*expr-!=*
@@ -5829,6 +5834,7 @@ g:man_hardwrap	filetype.txt	/*g:man_hardwrap*
 g:multi_cursor_exit_from_insert_mode	multiple_cursors.txt	/*g:multi_cursor_exit_from_insert_mode*
 g:multi_cursor_exit_from_visual_mode	multiple_cursors.txt	/*g:multi_cursor_exit_from_visual_mode*
 g:multi_cursor_normal_maps	multiple_cursors.txt	/*g:multi_cursor_normal_maps*
+g:multi_cursor_support_imap	multiple_cursors.txt	/*g:multi_cursor_support_imap*
 g:multi_cursor_visual_maps	multiple_cursors.txt	/*g:multi_cursor_visual_maps*
 g:netrw_altfile	pi_netrw.txt	/*g:netrw_altfile*
 g:netrw_alto	pi_netrw.txt	/*g:netrw_alto*
@@ -6232,6 +6238,13 @@ hl-Folded	syntax.txt	/*hl-Folded*
 hl-Ignore	syntax.txt	/*hl-Ignore*
 hl-IncSearch	syntax.txt	/*hl-IncSearch*
 hl-LineNr	syntax.txt	/*hl-LineNr*
+hl-LspDiagnosticsError	lsp.txt	/*hl-LspDiagnosticsError*
+hl-LspDiagnosticsHint	lsp.txt	/*hl-LspDiagnosticsHint*
+hl-LspDiagnosticsInformation	lsp.txt	/*hl-LspDiagnosticsInformation*
+hl-LspDiagnosticsWarning	lsp.txt	/*hl-LspDiagnosticsWarning*
+hl-LspReferenceRead	lsp.txt	/*hl-LspReferenceRead*
+hl-LspReferenceText	lsp.txt	/*hl-LspReferenceText*
+hl-LspReferenceWrite	lsp.txt	/*hl-LspReferenceWrite*
 hl-MatchParen	syntax.txt	/*hl-MatchParen*
 hl-Menu	syntax.txt	/*hl-Menu*
 hl-ModeMsg	syntax.txt	/*hl-ModeMsg*
@@ -6682,6 +6695,7 @@ list-identity	eval.txt	/*list-identity*
 list-index	eval.txt	/*list-index*
 list-modification	eval.txt	/*list-modification*
 list-repeat	windows.txt	/*list-repeat*
+list2str()	eval.txt	/*list2str()*
 lite.vim	syntax.txt	/*lite.vim*
 literal-string	eval.txt	/*literal-string*
 lnum-variable	eval.txt	/*lnum-variable*
@@ -6705,6 +6719,7 @@ lowercase	change.txt	/*lowercase*
 lpc.vim	syntax.txt	/*lpc.vim*
 lsp	lsp.txt	/*lsp*
 lsp-api	lsp.txt	/*lsp-api*
+lsp-autocommands	lsp.txt	/*lsp-autocommands*
 lsp-buf	lsp.txt	/*lsp-buf*
 lsp-callbacks	lsp.txt	/*lsp-callbacks*
 lsp-config	lsp.txt	/*lsp-config*
@@ -6726,6 +6741,7 @@ lua-intro	lua.txt	/*lua-intro*
 lua-loop	lua.txt	/*lua-loop*
 lua-loop-callbacks	lua.txt	/*lua-loop-callbacks*
 lua-package-path	lua.txt	/*lua-package-path*
+lua-regex	lua.txt	/*lua-regex*
 lua-require	lua.txt	/*lua-require*
 lua-require-example	lua.txt	/*lua-require-example*
 lua-special-tbl	lua.txt	/*lua-special-tbl*
@@ -7484,6 +7500,9 @@ profiling-variable	eval.txt	/*profiling-variable*
 progname-variable	eval.txt	/*progname-variable*
 progpath-variable	eval.txt	/*progpath-variable*
 progress.vim	syntax.txt	/*progress.vim*
+prompt_setcallback()	eval.txt	/*prompt_setcallback()*
+prompt_setinterrupt()	eval.txt	/*prompt_setinterrupt()*
+prompt_setprompt()	eval.txt	/*prompt_setprompt()*
 promptbuffer-functions	usr_41.txt	/*promptbuffer-functions*
 pronounce	intro.txt	/*pronounce*
 provider	provider.txt	/*provider*
@@ -7625,6 +7644,8 @@ reference	intro.txt	/*reference*
 reference_toc	help.txt	/*reference_toc*
 reg_executing()	eval.txt	/*reg_executing()*
 reg_recording()	eval.txt	/*reg_recording()*
+regex:match_line()	lua.txt	/*regex:match_line()*
+regex:match_str()	lua.txt	/*regex:match_str()*
 regexp	pattern.txt	/*regexp*
 register	intro.txt	/*register*
 register-variable	eval.txt	/*register-variable*
@@ -8052,6 +8073,7 @@ stderr-variable	eval.txt	/*stderr-variable*
 stdioopen()	eval.txt	/*stdioopen()*
 stdpath()	eval.txt	/*stdpath()*
 str2float()	eval.txt	/*str2float()*
+str2list()	eval.txt	/*str2list()*
 str2nr()	eval.txt	/*str2nr()*
 strcasestr()	eval.txt	/*strcasestr()*
 strcharpart()	eval.txt	/*strcharpart()*
@@ -8210,10 +8232,12 @@ termdebug-commands	nvim_terminal_emulator.txt	/*termdebug-commands*
 termdebug-communication	nvim_terminal_emulator.txt	/*termdebug-communication*
 termdebug-customizing	nvim_terminal_emulator.txt	/*termdebug-customizing*
 termdebug-example	nvim_terminal_emulator.txt	/*termdebug-example*
+termdebug-prompt	nvim_terminal_emulator.txt	/*termdebug-prompt*
 termdebug-starting	nvim_terminal_emulator.txt	/*termdebug-starting*
 termdebug-stepping	nvim_terminal_emulator.txt	/*termdebug-stepping*
 termdebug-variables	nvim_terminal_emulator.txt	/*termdebug-variables*
 termdebug_shortcuts	nvim_terminal_emulator.txt	/*termdebug_shortcuts*
+termdebug_use_prompt	nvim_terminal_emulator.txt	/*termdebug_use_prompt*
 termdebug_wide	nvim_terminal_emulator.txt	/*termdebug_wide*
 terminal	nvim_terminal_emulator.txt	/*terminal*
 terminal-configuration	nvim_terminal_emulator.txt	/*terminal-configuration*
@@ -8674,6 +8698,8 @@ vim.loop	lua.txt	/*vim.loop*
 vim.lsp.buf.completion()	lsp.txt	/*vim.lsp.buf.completion()*
 vim.lsp.buf.declaration()	lsp.txt	/*vim.lsp.buf.declaration()*
 vim.lsp.buf.definition()	lsp.txt	/*vim.lsp.buf.definition()*
+vim.lsp.buf.document_highlight()	lsp.txt	/*vim.lsp.buf.document_highlight()*
+vim.lsp.buf.document_symbol()	lsp.txt	/*vim.lsp.buf.document_symbol()*
 vim.lsp.buf.formatting()	lsp.txt	/*vim.lsp.buf.formatting()*
 vim.lsp.buf.hover()	lsp.txt	/*vim.lsp.buf.hover()*
 vim.lsp.buf.implementation()	lsp.txt	/*vim.lsp.buf.implementation()*
@@ -8684,6 +8710,7 @@ vim.lsp.buf.range_formatting()	lsp.txt	/*vim.lsp.buf.range_formatting()*
 vim.lsp.buf.references()	lsp.txt	/*vim.lsp.buf.references()*
 vim.lsp.buf.rename()	lsp.txt	/*vim.lsp.buf.rename()*
 vim.lsp.buf.request()	lsp.txt	/*vim.lsp.buf.request()*
+vim.lsp.buf.server_ready()	lsp.txt	/*vim.lsp.buf.server_ready()*
 vim.lsp.buf.signature_help()	lsp.txt	/*vim.lsp.buf.signature_help()*
 vim.lsp.buf.type_definition()	lsp.txt	/*vim.lsp.buf.type_definition()*
 vim.lsp.buf_attach_client()	lsp.txt	/*vim.lsp.buf_attach_client()*
@@ -8763,7 +8790,10 @@ vim.lsp.util.apply_text_document_edit()	lsp.txt	/*vim.lsp.util.apply_text_docume
 vim.lsp.util.apply_text_edits()	lsp.txt	/*vim.lsp.util.apply_text_edits()*
 vim.lsp.util.apply_workspace_edit()	lsp.txt	/*vim.lsp.util.apply_workspace_edit()*
 vim.lsp.util.buf_clear_diagnostics()	lsp.txt	/*vim.lsp.util.buf_clear_diagnostics()*
+vim.lsp.util.buf_clear_references()	lsp.txt	/*vim.lsp.util.buf_clear_references()*
+vim.lsp.util.buf_diagnostics_count()	lsp.txt	/*vim.lsp.util.buf_diagnostics_count()*
 vim.lsp.util.buf_diagnostics_save_positions()	lsp.txt	/*vim.lsp.util.buf_diagnostics_save_positions()*
+vim.lsp.util.buf_diagnostics_signs()	lsp.txt	/*vim.lsp.util.buf_diagnostics_signs()*
 vim.lsp.util.buf_diagnostics_underline()	lsp.txt	/*vim.lsp.util.buf_diagnostics_underline()*
 vim.lsp.util.buf_diagnostics_virtual_text()	lsp.txt	/*vim.lsp.util.buf_diagnostics_virtual_text()*
 vim.lsp.util.character_offset()	lsp.txt	/*vim.lsp.util.character_offset()*
@@ -8801,6 +8831,7 @@ vim.lsp.validate_command()	lsp.txt	/*vim.lsp.validate_command()*
 vim.lsp.validate_encoding()	lsp.txt	/*vim.lsp.validate_encoding()*
 vim.paste()	lua.txt	/*vim.paste()*
 vim.pesc()	lua.txt	/*vim.pesc()*
+vim.regex()	lua.txt	/*vim.regex()*
 vim.rpcnotify()	lua.txt	/*vim.rpcnotify()*
 vim.rpcrequest()	lua.txt	/*vim.rpcrequest()*
 vim.schedule()	lua.txt	/*vim.schedule()*

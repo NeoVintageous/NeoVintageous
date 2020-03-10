@@ -1564,7 +1564,7 @@ CHECKCOMPOUNDTRIPLE  (Hunspell)			*spell-CHECKCOMPOUNDTRIPLE*
 
 CHECKSHARPS  (Hunspell))			*spell-CHECKSHARPS*
 		SS letter pair in uppercased (German) words may be upper case
-		sharp s (ÃŸ). Not supported.
+		sharp s (ß). Not supported.
 
 COMPLEXPREFIXES  (Hunspell)				*spell-COMPLEXPREFIXES*
 		Enables using two prefixes.  Not supported.
