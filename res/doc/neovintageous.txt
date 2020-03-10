@@ -24,9 +24,12 @@ NeoVintageous                                             *neovintageous* *nv*
  9. Jumping to diffs                |nv-jumpto-diffs|
 10. Toggle Command                  |nv-toggle|
 
-NeoVintageous is an emulation of Vim, feature-parity is ongoing effort.
+Note that Vim feature-parity is an ongoing effort, not all features are
+implemented and differences are not fully documented. The Vim documentation is
+provided in full without modification alongside this help document.
 
-If you are new to Vim see |help.txt|.
+Please don't hesitate to open an issue about new features, enhancements, and
+usage. If you are new to Vim also see |help.txt|.
 
 ==============================================================================
 
@@ -55,8 +58,8 @@ You can now use visual commands e.g. c, I, x, y work without any issues.
 You could also go to normal mode by pressing v and use normal commands there,
 for example commands like ciw work without any issues.
 
-At any time you can press <Esc> or J to exit back to regular Vim. You can change
-the behaviour of exiting, see 'vintageous_multi_cursor_exit_from_visual_mode'.
+At any time you can press <Esc> or J to exit back to regular Vim. To change
+the behaviour of exiting see 'vintageous_multi_cursor_exit_from_visual_mode'.
 
 <C-n> or gh             Start multiple cursor.
 <C-n> or j              Add next match.
@@ -91,27 +94,24 @@ CTRL-W V
 NEOVINTAGEOUSRC                       *nv-rc* *vintageousrc* *neovintageousrc*
 
 A file that contains initialization commands is generically called a "vimrc"
-or config file. In NeoVintageous the file is called "neovintageousrc". Each
+or config file. In NeoVintageous it's called a "neovintageousrc" file. Each
 line in a neovintageousrc file is executed as an Ex command line.
 
-To open or reload the neovintageousrc file use the Command Palette. You need
-to reload the file after making changes for the changes to take effect.
+The neovintageousrc file can be opened and reloaded via the Command Palette.
 
 The |mapleader| variable is supported, for example: >
 
     let mapleader=,
 
-The |set| command is supported (see the |nv-options| section for details of
-supported options).
+The |set| command is partially supported. The following are currently
+implemented (see |nv-options| for a list of currently supported options):
 
-For example, if you want NeoVintageous to start with the 'ignorecase' option
-on (ignore case in search patterns), add this to the neovintageousrc file: >
-
-    set ignorecase
-
-If you want it off (don't ignore case in search patterns): >
-
-    set noignorecase
+    :se[t] {option}?    Show value of {option}.
+    :se[t] {option}     Toggle option: set, switch it on.
+                        Number option: show value.
+                        String option: show value.
+    :se[t] no{option}   Toggle option: Reset, switch it off.
+    :se[t] {option}!    Toggle option: Invert value.
 
 The following |:map-commands| are supported:
 
@@ -121,11 +121,11 @@ The following |:map-commands| are supported:
     :snoremap   {lhs} {rhs}         |:snoremap|
     :vnoremap   {lhs} {rhs}         |:vnoremap|
 
-Use <CR> to indicate pressing enter when mapping commands, for example: >
+Use <CR> to indicate pressing enter when mapping commands: >
 
     noremap <C-s> :w<CR>
 
-Basic leading and trailing sequences in mappings is supported, for example: >
+Basic leading and trailing sequences in mappings is supported: >
 
     nnoremap <leader>sp vip:sort u<CR>
 
@@ -136,8 +136,8 @@ Text and basic arguments in the form "key=value" are accepted, for example: >
     nnoremap <leader>i :GotoSymbolInProject<CR>
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
 
-Super-keys can be mapped by the `<D-...>` special keys (super-keys are disabled
-by default, see the |nv-settings| section for details on enabling them): >
+Super-keys can be mapped by the `<D-...>` special keys (super-keys are
+disabled by default, see |nv-settings| for details on enabling them): >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
@@ -148,23 +148,26 @@ Here is an example neovintageous file: >
 
     let mapleader=,
 
+    nnoremap <leader><bar> <C-w><bar>
+    nnoremap <leader>= <C-w>=
+    nnoremap <leader>_ <C-w>_
     nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
     nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
     nnoremap <leader>hu :RevertModification<CR>
+    nnoremap <leader>o :ls<CR>
     nnoremap <leader>q gqip:w<CR>
     nnoremap <leader>r :reg<CR>
 
+    nnoremap <D-i> :GotoSymbolInProject<CR>
     noremap <C-l> :nohlsearch<CR>
     noremap <C-s> :w<CR>
+    noremap <space> :
 
-    " Yank and paste using system clipboard.
     noremap <leader>y "+y
     noremap <leader>Y "+Y
     noremap <leader>p "+p
     noremap <leader>P "+P
-
-    nnoremap <D-i> :GotoSymbolInProject<CR>
 
     nnoremap <leader>s) vi):sort u<CR>
     nnoremap <leader>s] vi]:sort u<CR>
@@ -173,9 +176,6 @@ Here is an example neovintageous file: >
     nnoremap <leader>ss vip:sort u<CR>
     vnoremap <leader>s :sort u<CR>
 
-    nnoremap <leader><bar> <C-w><bar>
-    nnoremap <leader>= <C-w>=
-    nnoremap <leader>_ <C-w>_
 
 To enable toggling the side bar when the side bar has focus add the following
 key binding, Goto  Menu > Preferences > Key Bindings: >
@@ -193,9 +193,12 @@ key binding, Goto  Menu > Preferences > Key Bindings: >
 
 PLUGINS                                                 *nv-plugins* *plugins*
 
-All of the following plugins are available out-of-the-box.
+Note that plugin feature-parity is an ongoing effort, features of the original
+plugin may not be implemented fully and differences may not be documented. The
+original plugin documentation is provided in full without modification.
 
-Feature-parity is an ongoing effort.
+Please don't hesitate to open an issue about new features, enhancements, and
+usage. If you are new to Vim also see |help.txt|.
 
 ------------------------------------------------------------------------------
 
@@ -208,9 +211,7 @@ share a common theme: working with variants of a word."
 
 Note that currently only the "case mutating algorithms" are supported.
 
-See |abolish.txt|
-
-Credit: https://github.com/tpope/vim-abolish
+See |abolish.txt| and https://github.com/tpope/vim-abolish.
 
 ------------------------------------------------------------------------------
 
@@ -220,9 +221,7 @@ Commentary is a port of vim-commentary.
 
 It adds commands that make it easier to comment, uncomment, and toggle comments.
 
-See |commentary.txt|
-
-Credit: https://github.com/tpope/vim-commentary.
+See |commentary.txt| and https://github.com/tpope/vim-commentary.
 
 ------------------------------------------------------------------------------
 
@@ -262,7 +261,7 @@ Monokai.sublime-color-scheme in the Sublime Text User directory
         ]
     }
 
-Credit: https://github.com/machakann/vim-highlightedyank
+See: https://github.com/machakann/vim-highlightedyank
 
 ------------------------------------------------------------------------------
 
@@ -270,9 +269,7 @@ SURROUND                                              *nv-surround* *surround*
 
 Surround is a port of vim-surround.
 
-See |surround.txt|
-
-Credit: https://github.com/tpope/vim-surround
+See |surround.txt| and https://github.com/tpope/vim-surround.
 
 ------------------------------------------------------------------------------
 
@@ -319,9 +316,7 @@ OPTION TOGGLING
 *[ot*   *]ot*   *yot*   'sidebar'
 *[ow*   *]ow*   *yow*   'wrap'
 
-See |unimpaired.txt|
-
-Credit: https://github.com/tpope/vim-unimpaired
+See |unimpaired.txt| and https://github.com/tpope/vim-unimpaired.
 
 ------------------------------------------------------------------------------
 
@@ -329,32 +324,20 @@ INDENT OBJECT                               *nv-indent-object* *indent-object*
 
 Indent Object is a port of vim-indent-object.
 
-See |indent-object.txt|
-
-Credit: https://github.com/michaeljsmith/vim-indent-object.
+See |indent-object.txt| and https://github.com/michaeljsmith/vim-indent-object
 
 ==============================================================================
 
 OPTIONS                                                           *nv-options*
 
-Some vim options are supported. Here are the currently available options:
+List of currently supported options:
 
-    'autoindent', 'belloff', 'expandtabs', 'hlsearch', 'ignorecase',
-    'incsearch', 'list', 'magic', 'menu', 'minimap', 'modeline', 'modelines',
-    'number', 'shell', 'sidebar', 'spell', 'statusbar', 'tabstop',
-    'textwidth', 'winaltkeys', 'wrap', 'wrapscan'
+    'autoindent' 'belloff' 'expandtabs' 'hlsearch' 'ignorecase' 'incsearch'
+    'list' 'magic' 'menu' 'minimap' 'modeline' 'modelines' 'number' 'shell'
+    'sidebar' 'spell' 'statusbar' 'tabstop' 'textwidth' 'winaltkeys' 'wrap'
+    'wrapscan'
 
-Options can be set in the neovintageousrc file which is loaded when Sublime
-Text starts. For example to enable the 'ignorecase' option (ignore case
-in search patterns), add the following: >
-
-    set ignorecase
-
-To turn it off (don't ignore case in search patterns): >
-
-    set noignorecase
-
-See `:help '{option}'` for information on individual options.
+See `:help '{option}'` for help on individual options.
 
 ==============================================================================
 
@@ -552,8 +535,8 @@ the following settings: >
 Configure settings via `Menu > Preferences > Settings`.
 
 To customise the colors of the styles create a color scheme override. For
-example if you are using the "Monokai" color scheme then create an override file
-named `Monokai.sublime-color-scheme` in the Sublime Text User directory with: >
+example if you're using the "Monokai" color scheme, create an override file
+named `Monokai.sublime-color-scheme` in the Sublime Text User directory: >
 
     {
         "rules":
@@ -601,3 +584,5 @@ TOGGLE COMMAND                                                     *nv-toggle*
 
 If you want to be able to toggle NeoVintageous on and off, you need to install
 the toggle package: https://packagecontrol.io/packages/ToggleNeoVintageous.
+
+vim: tw=78 nu nowrap
