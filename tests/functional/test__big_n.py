@@ -82,6 +82,7 @@ class Test_N(unittest.FunctionalTestCase):
     def test_n_repeat_question_mark_reverse(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.feed('n_?abc')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
         self.feed('n_N')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabc\nend')

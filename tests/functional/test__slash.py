@@ -45,6 +45,26 @@ class Test_slash(unittest.FunctionalTestCase):
         self.eq('x |abc fizz abc x', 'n_/abc', 'x abc fizz |abc x')
         self.eq('x a|bc fizz abc x', 'n_/abc', 'x abc fizz |abc x')
 
+    def test_n_ignorecase_and_smartcase(self):
+        self.normal('abc\na|Bc\nABC\naBc\nabc\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        self.feed('n_/aBc')
+        self.assertSearchCurrent('abc\naBc\nABC\n|aBc|\nabc\n')
+        self.assertSearch('abc\n|aBc|\nABC\n|aBc|\nabc\n')
+        self.normal('abc\na|Bc\nABC\naBc\nabc\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', False)
+        self.feed('n_/aBc')
+        self.assertSearchCurrent('abc\naBc\n|ABC|\naBc\nabc\n')
+        self.assertSearch('|abc|\n|aBc|\n|ABC|\n|aBc|\n|abc|\n')
+        self.normal('abc\na|Bc\nABC\naBc\nabc\n')
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', False)
+        self.feed('n_/aBc')
+        self.assertSearchCurrent('abc\naBc\nABC\n|aBc|\nabc\n')
+        self.assertSearch('abc\n|aBc|\nABC\n|aBc|\nabc\n')
+
     def test_v(self):
         self.eq('|x abc y', 'v_/abc', '|x a|bc y')
         self.eq('x abc |y abc z', 'v_/abc', 'x abc |y a|bc z')

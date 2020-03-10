@@ -47,6 +47,17 @@ class Test_n(unittest.FunctionalTestCase):
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend')
         self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabcxend')
 
+    def test_n_repeat_star_forward_should_not_use_smartcase(self):
+        self.normal('x|Xx\nXXX\nxXx\nXxX\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        self.feed('n_*')
+        self.assertSearch('|xXx|\n|XXX|\n|xXx|\n|XxX|\n')
+        self.assertSearchCurrent('xXx\n|XXX|\nxXx\nXxX\n')
+        self.feed('n_n')
+        self.assertSearch('|xXx|\n|XXX|\n|xXx|\n|XxX|\n')
+        self.assertSearchCurrent('xXx\nXXX\n|xXx|\nXxX\n')
+
     def test_n_repeat_octothorp_forward(self):
         self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.feed('n_#')

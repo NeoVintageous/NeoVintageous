@@ -1318,6 +1318,7 @@ _SEQ2CMD = {
     '-':            {'command': '_vi_minus'},  # noqa: E241
     '.':            {'command': '_nv_feed_key'},  # noqa: E241
     '/':            {'command': '_nv_feed_key'},  # noqa: E241
+    '/aBc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'aBc'}},  # noqa: E241
     '/abc':         {'command': '_vi_slash_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '/x':           {'command': '_vi_slash_impl', 'args': {'search_string': 'x'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
@@ -1345,6 +1346,7 @@ _SEQ2CMD = {
     '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
     '>ip':          {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     '?':            {'command': '_nv_feed_key'},  # noqa: E241
+    '?aBc':         {'command': '_vi_question_mark_impl', 'args': {'search_string': 'aBc'}},  # noqa: E241
     '?abc':         {'command': '_vi_question_mark_impl', 'args': {'search_string': 'abc'}},  # noqa: E241
     '@#':           {'command': '_vi_at', 'args': {'name': '#'}},  # noqa: E241
     '@%':           {'command': '_vi_at', 'args': {'name': '%'}},  # noqa: E241

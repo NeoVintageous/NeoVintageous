@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#697](https://github.com/NeoVintageous/NeoVintageous/issues/697): `'smartcase'` option
 * Added [#700](https://github.com/NeoVintageous/NeoVintageous/issues/700): "=" readonly buffer indicator for `:(ls|buffers|files)`
 * Added [#701](https://github.com/NeoVintageous/NeoVintageous/issues/701): "+" modified buffer indicator for `(ls|buffers|files)`
 * Added [#702](https://github.com/NeoVintageous/NeoVintageous/issues/702): `:(ls|buffers|files)` now uses view id as the unique number (this number will not change)
@@ -16,7 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Command-line output syntax improvements
 * Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Improved syntax for `:(ls|buffers|files)` command-line output
 * Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Improved syntax for `:reg[isters]` command-line output
-* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Improved syntax for `:his(tory)` command-line output
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Improved syntax for `:his[tory]` command-line output
 * Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): keypad keys `<k0>`, `<k1>`, `<k2>`, `<k3>`, `<k4>`, `<k5>`, `<k6>`, `<k7>`, `<k8>`, `<k9>`, `<kdivide>`, `<kenter>`, `<kminus>`, `<kmultiply>`, `<kperiod>`, `<kplus>`
 
 ### Fixed

@@ -54,6 +54,26 @@ class Test_question_mark(unittest.FunctionalTestCase):
         self.assertSearch('x |abc| x')
         self.assertSearchCurrent('x |abc| x')
 
+    def test_n_ignorecase_and_smartcase(self):
+        self.normal('abc\naBc\nABC\na|Bc\nabc\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        self.feed('n_?aBc')
+        self.assertSearchCurrent('abc\n|aBc|\nABC\naBc\nabc\n')
+        self.assertSearch('abc\n|aBc|\nABC\n|aBc|\nabc\n')
+        self.normal('abc\naBc\nABC\na|Bc\nabc\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', False)
+        self.feed('n_?aBc')
+        self.assertSearchCurrent('abc\naBc\n|ABC|\naBc\nabc\n')
+        self.assertSearch('|abc|\n|aBc|\n|ABC|\n|aBc|\n|abc|\n')
+        self.normal('abc\naBc\nABC\na|Bc\nabc\n')
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', False)
+        self.feed('n_?aBc')
+        self.assertSearchCurrent('abc\n|aBc|\nABC\naBc\nabc\n')
+        self.assertSearch('abc\n|aBc|\nABC\n|aBc|\nabc\n')
+
     def test_v(self):
         self.eq('x abc |xy', 'v_?abc', 'r_x |abc x|y')
         self.eq('x abc |xy abc', 'v_?abc', 'r_x |abc x|y abc')

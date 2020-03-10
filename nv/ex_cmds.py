@@ -54,6 +54,7 @@ from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_set
 from NeoVintageous.nv.search import clear_search_highlighting
+from NeoVintageous.nv.search import is_smartcase_pattern
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_ex_global_last_pattern
 from NeoVintageous.nv.settings import get_ex_shell_last_command
@@ -891,7 +892,8 @@ def ex_substitute(view, edit, line_range: RangeNode,
     computed_flags |= re.MULTILINE
 
     if (get_option(view, 'ignorecase') or 'i' in flags) and 'I' not in flags:
-        computed_flags |= re.IGNORECASE
+        if not is_smartcase_pattern(view, pattern):
+            computed_flags |= re.IGNORECASE
 
     try:
         compiled_pattern = re.compile(pattern, flags=computed_flags)

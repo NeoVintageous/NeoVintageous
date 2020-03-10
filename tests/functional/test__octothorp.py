@@ -95,6 +95,42 @@ class Test_octothorp(unittest.FunctionalTestCase):
         self.eq('x\n|abc\nx\nabc\nx', 'n_#', 'x\n|abc\nx\nabc\nx')
         self.eq('x\nabc\nx\na|bc\nx', 'n_3#', 'x\n|abc\nx\nabc\nx')
 
+    def test_n_ignorecase(self):
+        self.normal('xxx\nXXX\nx|xx\nXxX\n')
+        self.set_option('ignorecase', True)
+        self.feed('n_#')
+        self.assertNormal('xxx\n|XXX\nxxx\nXxX\n')
+        self.assertSearch('|xxx|\n|XXX|\n|xxx|\n|XxX|\n')
+        self.assertSearchCurrent('xxx\n|XXX|\nxxx\nXxX\n')
+        self.normal('xxx\nXXX\nx|xx\nXxX\n')
+        self.set_option('ignorecase', False)
+        self.feed('n_#')
+        self.assertNormal('|xxx\nXXX\nxxx\nXxX\n')
+        self.assertSearch('|xxx|\nXXX\n|xxx|\nXxX\n')
+        self.assertSearchCurrent('|xxx|\nXXX\nxxx\nXxX\n')
+
+    def test_n_smartcase_should_not_be_used_for_word_search(self):
+        self.normal('xXx\nXXX\nx|Xx\nXxX\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        self.feed('n_#')
+        self.assertSearch('|xXx|\n|XXX|\n|xXx|\n|XxX|\n')
+        self.normal('xXx\nXXX\nx|Xx\nXxX\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', False)
+        self.feed('n_#')
+        self.assertSearch('|xXx|\n|XXX|\n|xXx|\n|XxX|\n')
+        self.normal('xXx\nXXX\nx|Xx\nXxX\n')
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', True)
+        self.feed('n_#')
+        self.assertSearch('|xXx|\nXXX\n|xXx|\nXxX\n')
+        self.normal('xXx\nXXX\nx|Xx\nXxX\n')
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', False)
+        self.feed('n_#')
+        self.assertSearch('|xXx|\nXXX\n|xXx|\nXxX\n')
+
     def test_v_octothorp(self):
         self.eq('x\nabc\nx\nab|c\nx', 'v_#', 'r_x\n|abc\nx\nabc|\nx')
 

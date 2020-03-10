@@ -77,10 +77,14 @@ def add_search_highlighting(view, occurrences: list, incremental: list = None) -
             )
 
 
+def is_smartcase_pattern(view, pattern: str) -> bool:
+    return get_option(view, 'smartcase') and any(p.isupper() for p in pattern)
+
+
 def process_search_pattern(view, pattern: str) -> tuple:
     flags = 0
 
-    if get_option(view, 'ignorecase'):
+    if get_option(view, 'ignorecase') and not is_smartcase_pattern(view, pattern):
         flags |= IGNORECASE
 
     # Changes the special characters that can be used in search patterns.
