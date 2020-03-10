@@ -1386,38 +1386,38 @@ _SEQ2CMD = {
     'W':            {'command': '_vi_big_w'},  # noqa: E241
     'X':            {'command': '_vi_big_x'},  # noqa: E241
     'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
-    '[ ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_up'}},  # noqa: E241
+    '[ ':           {'command': '_nv_feed_key'},  # noqa: E241
     '[(':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '('}},  # noqa: E241,E501
     '[P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True, 'adjust_indent': True}},  # noqa: E241,E501
-    '[e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_up'}},  # noqa: E241
-    '[n':           {'command': '_nv_unimpaired', 'args': {'action': 'goto_prev_conflict_marker'}},  # noqa: E241
-    '[oa':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'a'}},  # noqa: E241
-    '[oe':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'e'}},  # noqa: E241
-    '[oh':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'h'}},  # noqa: E241
-    '[oi':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'i'}},  # noqa: E241
-    '[ol':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'l'}},  # noqa: E241
-    '[om':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'm'}},  # noqa: E241
-    '[on':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'n'}},  # noqa: E241
-    '[ot':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 't'}},  # noqa: E241
-    '[ow':          {'command': '_nv_unimpaired', 'args': {'action': 'enable_option', 'value': 'w'}},  # noqa: E241
+    '[e':           {'command': '_nv_feed_key'},  # noqa: E241
+    '[n':           {'command': '_nv_feed_key'},  # noqa: E241
+    '[oa':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[oe':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[oh':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[oi':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[ol':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[om':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[on':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[ot':          {'command': '_nv_feed_key'},  # noqa: E241
+    '[ow':          {'command': '_nv_feed_key'},  # noqa: E241
     '[{':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '{'}},  # noqa: E241,E501
     '\'a':          {'command': '_vi_quote', 'args': {'character': 'a'}},  # noqa: E241
     '\'p':          {'command': '_vi_quote', 'args': {'character': 'p'}},  # noqa: E241
     '\'x':          {'command': '_vi_quote', 'args': {'character': 'x'}},  # noqa: E241
-    '] ':           {'command': '_nv_unimpaired', 'args': {'action': 'blank_down'}},  # noqa: E241
+    '] ':           {'command': '_nv_feed_key'},  # noqa: E241
     '])':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': ')'}},  # noqa: E241,E501
     ']P':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False, 'adjust_indent': True}},  # noqa: E241,E501
-    ']e':           {'command': '_nv_unimpaired', 'args': {'action': 'move_down'}},  # noqa: E241
-    ']n':           {'command': '_nv_unimpaired', 'args': {'action': 'goto_next_conflict_marker'}},  # noqa: E241
-    ']oa':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'a'}},  # noqa: E241
-    ']oe':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'e'}},  # noqa: E241
-    ']oh':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'h'}},  # noqa: E241
-    ']oi':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'i'}},  # noqa: E241
-    ']ol':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'l'}},  # noqa: E241
-    ']om':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'm'}},  # noqa: E241
-    ']on':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'n'}},  # noqa: E241
-    ']ot':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 't'}},  # noqa: E241
-    ']ow':          {'command': '_nv_unimpaired', 'args': {'action': 'disable_option', 'value': 'w'}},  # noqa: E241
+    ']e':           {'command': '_nv_feed_key'},  # noqa: E241
+    ']n':           {'command': '_nv_feed_key'},  # noqa: E241
+    ']oa':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']oe':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']oh':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']oi':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']ol':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']om':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']on':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']ot':          {'command': '_nv_feed_key'},  # noqa: E241
+    ']ow':          {'command': '_nv_feed_key'},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': '}'}},  # noqa: E241,E501
     '^':            {'command': '_vi_hat'},  # noqa: E241
     '_':            {'command': '_vi_underscore'},  # noqa: E241
@@ -1845,15 +1845,15 @@ _SEQ2CMD = {
     'yiw':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'yi{':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '{'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'yi}':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '}'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'yoa':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'a'}},  # noqa: E241
-    'yoe':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'e'}},  # noqa: E241
-    'yoh':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'h'}},  # noqa: E241
-    'yoi':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'i'}},  # noqa: E241
-    'yol':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'l'}},  # noqa: E241
-    'yom':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'm'}},  # noqa: E241
-    'yon':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'n'}},  # noqa: E241
-    'yot':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 't'}},  # noqa: E241
-    'yow':          {'command': '_nv_unimpaired', 'args': {'action': 'toggle_option', 'value': 'w'}},  # noqa: E241
+    'yoa':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yoe':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yoh':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yoi':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yol':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yom':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yon':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yot':          {'command': '_nv_feed_key'},  # noqa: E241
+    'yow':          {'command': '_nv_feed_key'},  # noqa: E241
     'yse"':         {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501
     'yse(':         {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '(',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501
     'yse)':         {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': ')',     'motion': {'motion': '_vi_e', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501

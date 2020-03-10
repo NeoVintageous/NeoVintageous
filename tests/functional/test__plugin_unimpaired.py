@@ -202,6 +202,7 @@ class TestUnimpairedToggles(unittest.FunctionalTestCase):
                 'a': 'menu',
             })
 
+        self.normal('f|izz')
         for key, name in toggles.items():
             self.feed(']o%s' % key)
             self.assertOption(name, False, msg=name)
