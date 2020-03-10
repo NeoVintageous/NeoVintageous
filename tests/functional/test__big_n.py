@@ -46,6 +46,9 @@ class Test_N(unittest.FunctionalTestCase):
         self.feed('n_N')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend')
         self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabcxend')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabcxend')
 
     def test_N_repeat_octothorp(self):
         self.normal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
@@ -95,12 +98,15 @@ class Test_N(unittest.FunctionalTestCase):
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
     def test_n_repeat_question_mark(self):
-        self.normal('foo\nabc\nbar\nabc\nmoo\nabc\ne|nd')
+        self.normal('foo\nabc\nb|ar\nabcmoo\nabc\nend')
         self.feed('n_?abc')
-        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabcmoo\nabc\nend')
         self.feed('n_N')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|moo\nabc\nend')
         self.feed('n_N')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabcmoo\n|abc|\nend')
+        self.feed('n_2N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|moo\nabc\nend')

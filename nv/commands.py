@@ -3229,14 +3229,15 @@ class _vi_slash(TextCommand):
 
 
 class _vi_slash_impl(TextCommand):
-    def run(self, edit, search_string, mode=None, count=1):
+    def run(self, edit, search_string, mode=None, count=1, save=True):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
         if not pattern:
             return
 
-        set_last_buffer_search_command(self.view, 'vi_slash')
-        set_last_buffer_search(self.view, pattern)
+        if save:
+            set_last_buffer_search_command(self.view, 'vi_slash')
+            set_last_buffer_search(self.view, pattern)
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -3833,7 +3834,7 @@ class _vi_big_m(TextCommand):
 
 
 class _vi_star(TextCommand):
-    def run(self, edit, mode=None, count=1, search_string=None):
+    def run(self, edit, mode=None, count=1, search_string=None, save=True):
         def f(view, s):
             match = find_wrapping(
                 view,
@@ -3855,6 +3856,9 @@ class _vi_star(TextCommand):
             return s
 
         word = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        if not word.strip():
+            ui_bell('E348: No string under cursor')
+            return
 
         # All cursors must be on the same word.
         if len(set([self.view.substr(self.view.word(sel.end())) for sel in self.view.sel()])) != 1:
@@ -3866,18 +3870,17 @@ class _vi_star(TextCommand):
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
-        if word:
-            add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
-            set_last_buffer_search(self.view, word)
+        add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
-        if not search_string:
+        if save:
+            set_last_buffer_search(self.view, word)
             set_last_buffer_search_command(self.view, 'vi_star')
 
         show_if_not_visible(self.view)
 
 
 class _vi_octothorp(TextCommand):
-    def run(self, edit, mode=None, count=1, search_string=None):
+    def run(self, edit, mode=None, count=1, search_string=None, save=True):
         def f(view, s):
             match = reverse_find_wrapping(
                 view,
@@ -3900,6 +3903,9 @@ class _vi_octothorp(TextCommand):
             return s
 
         word = search_string or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        if not word.strip():
+            ui_bell('E348: No string under cursor')
+            return
 
         # All cursors must be on the same word.
         if len(set([self.view.substr(self.view.word(sel.end())) for sel in self.view.sel()])) != 1:
@@ -3911,11 +3917,10 @@ class _vi_octothorp(TextCommand):
         regions_transformer(self.view, f)
         jumplist_update(self.view)
 
-        if word:
-            add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
-            set_last_buffer_search(self.view, word)
+        add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
-        if not search_string:
+        if save:
+            set_last_buffer_search(self.view, word)
             set_last_buffer_search_command(self.view, 'vi_octothorp')
 
         show_if_not_visible(self.view)
@@ -4254,11 +4259,15 @@ class _vi_right_paren(TextCommand):
 
 
 class _vi_question_mark_impl(TextCommand):
-    def run(self, edit, search_string, mode=None, count=1):
+    def run(self, edit, search_string, mode=None, count=1, save=True):
         # TODO Rename "search_string" argument "pattern"
         pattern = search_string
         if not pattern:
             return
+
+        if save:
+            set_last_buffer_search_command(self.view, 'vi_question_mark')
+            set_last_buffer_search(self.view, pattern)
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -4370,7 +4379,8 @@ class _vi_repeat_buffer_search(TextCommand):
         self.view.run_command(command, {
             'mode': mode,
             'count': count,
-            'search_string': search_string
+            'search_string': search_string,
+            'save': False
         })
 
         self.view.show(self.view.sel(), show_surrounds=True)

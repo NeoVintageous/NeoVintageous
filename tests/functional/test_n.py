@@ -85,6 +85,19 @@ class Test_n(unittest.FunctionalTestCase):
         self.feed('n_n')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
+        self.feed('n_2n')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
+
+    def test_n_repeat_slash_matches_all_occurences(self):
+        self.normal('|foo\nabc\nbar\nabcmoo\nabc\nend')
+        self.feed('n_/abc')
+        self.feed('n_n')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|moo\nabc\nend')
+        self.feed('n_2n')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabcmoo\nabc\nend')
 
     def test_n_repeat_slash_should_use_ignorecase_and_smartcase(self):
         self.normal('abc\na|Bc\nABC\naBc\nabc\naBc\nABC\naBc\n')
@@ -138,12 +151,24 @@ class Test_n(unittest.FunctionalTestCase):
         self.feed('n_n')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
+        self.feed('n_2n')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
-    def test_n_repeat_question_mark_should_only_match_whole_words(self):
-        self.normal('|foo\nabc\nbar\nabcxmoo\nabc\nend')
+    def test_n_repeat_question_mark_matches_all_occurences(self):
+        self.normal('foo\nabc\nbar\nabcxmoo\nabc\ne|nd')
         self.feed('n_?abc')
         self.feed('n_n')
-        self.assertSearch('foo\n|abc|\nbar\nabcxmoo\n|abc|\nend')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|xmoo\nabc\nend')
+        self.feed('n_n')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabcxmoo\nabc\nend')
+        self.feed('n_n')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabcxmoo\n|abc|\nend')
+        self.feed('n_2n')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabcxmoo\nabc\nend')
 
     def test_n_no_match(self):

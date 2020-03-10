@@ -120,6 +120,11 @@ class Test_star(unittest.FunctionalTestCase):
         self.feed('n_*')
         self.assertSearch('|xXx|\nXXX\n|xXx|\nXxX\n')
 
+    @unittest.mock_status_message()
+    def test_n_no_string_under_cursor(self):
+        self.eq('x | x', 'n_*', 'x | x')
+        self.assertStatusMessage('E348: No string under cursor')
+
     def test_v(self):
         self.eq('ab|c\nx\nabc\nx', 'v_*', 'ab|c\nx\na|bc\nx')
         self.eq('ab|c\nx\nx abc x\nx', 'v_*', 'ab|c\nx\nx a|bc x\nx')

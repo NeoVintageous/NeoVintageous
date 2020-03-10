@@ -22,6 +22,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#699](https://github.com/NeoVintageous/NeoVintageous/issues/699): `N` after `?` (reverse search) followed by `n` moves in wrong direction (regression)
+* Fixed [#612](https://github.com/NeoVintageous/NeoVintageous/issues/612): Searches bound to a keys in neovintageousrc are not repeatable by `n` or `N`
 * Fixed [#698](https://github.com/NeoVintageous/NeoVintageous/issues/698): `:help {subject}` doesn't work for subjects > 35 chars
 * Fixed [#691](https://github.com/NeoVintageous/NeoVintageous/issues/691): Undo should ring bell when already at oldest change
 * Fixed [#694](https://github.com/NeoVintageous/NeoVintageous/issues/694): `<F2>` and `<S-F2>` next and previous bookmark keys wrong way around

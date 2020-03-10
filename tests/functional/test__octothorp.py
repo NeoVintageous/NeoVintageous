@@ -131,6 +131,11 @@ class Test_octothorp(unittest.FunctionalTestCase):
         self.feed('n_#')
         self.assertSearch('|xXx|\nXXX\n|xXx|\nXxX\n')
 
+    @unittest.mock_status_message()
+    def test_n_no_string_under_cursor(self):
+        self.eq('x | x', 'n_#', 'x | x')
+        self.assertStatusMessage('E348: No string under cursor')
+
     def test_v_octothorp(self):
         self.eq('x\nabc\nx\nab|c\nx', 'v_#', 'r_x\n|abc\nx\nabc|\nx')
 
