@@ -836,9 +836,12 @@ class FunctionalTestCase(ViewTestCase):
             raise Exception('window not found')
 
         if command == '_nv_feed_key':
+            if 'count' in args and args['count'] > 1:
+                window.run_command('_nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
+
             for key in seq:
-                if 'count' in args and args['count'] > 1:
-                    window.run_command('_nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
+                if key == ' ':
+                    key = '<space>'
 
                 window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
         else:
