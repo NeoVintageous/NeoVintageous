@@ -28,6 +28,7 @@ class Test_W(unittest.FunctionalTestCase):
         self.eq('|one, t.- three', 'n_2W', 'one, t.- |three')
         self.eq('|on.e t.wo', 'n_2W', 'on.e t.w|o')
         self.eq('|one, t.- a&^$x four x', 'n_3W', 'one, t.- a&^$x |four x')
+        self.eq('f|izz', 'n_W', 'fiz|z')
 
     def test_v(self):
         self.eq('one |t=- three', 'v_W', 'one |t=- t|hree')

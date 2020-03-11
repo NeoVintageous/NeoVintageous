@@ -24,6 +24,7 @@ class Test_w(unittest.FunctionalTestCase):
         self.eq('one |two three', 'n_w', 'one two |three')
         self.eq('|one two three', 'n_2w', 'one two |three')
         self.eq('|one two', 'n_3w', 'one tw|o')
+        self.eq('f|izz', 'n_w', 'fiz|z')
 
     def test_v(self):
         self.eq('one |two three', 'v_w', 'one |two t|hree')
