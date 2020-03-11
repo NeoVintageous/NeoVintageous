@@ -33,6 +33,13 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
         self.eq('\n\n|\n\n\n    fizz', '3] ', '\n\n|\n\n\n\n\n\n    fizz')
         self.eq('|', '] ', '|\n')
 
+    def test_can_disable_plugin(self):
+        self.eq('|x\n', '] ', '|x\n\n')
+        self.set_setting('enable_unimpaired', False)
+        self.eq('|x\n', '] ', '|x\n')
+        self.set_setting('enable_unimpaired', True)
+        self.eq('|x\n', '] ', '|x\n\n')
+
     def test_blank_up(self):
         self.eq('aaa\nbb|b\nccc', '[ ', 'aaa\n\n|bbb\nccc')
         self.eq('aaa\n    bb|b\nccc', '[ ', 'aaa\n\n    |bbb\nccc')

@@ -33,6 +33,19 @@ class TestCommentary(unittest.FunctionalTestCase):
         self.eq('1\n|2\n3\n4\n5', '3gcc', '1\n|# 2\n# 3\n# 4\n5')
         self.eq('1\n2\n|', 'gcc', '1\n|# 2\n')
 
+    def test_can_disable_plugin(self):
+        self.eq('|x', 'gcc', '|# x')
+        self.set_setting('enable_commentary', False)
+        # Note that when commentary is disabled the command "gcc" will end up in
+        # operator-pending mode and there's no specific api test that yet.
+        self.normal('|x')
+        self.feed('gcc')
+        self.assertContent('x')
+        self.assertSelection(0)
+        self.feed('<Esc>')  # Otherwise might cause a false-positive below!
+        self.set_setting('enable_commentary', True)
+        self.eq('|x', 'gcc', '|# x')
+
     def test_gcc_uncomment(self):
         self.eq('|# abc', 'gcc', '|abc')
         self.eq('# abc|', 'gcc', '|abc')

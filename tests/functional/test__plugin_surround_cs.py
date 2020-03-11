@@ -120,3 +120,16 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq("'a|b'", "cs'tdiv>", '|<div>ab</div>')
         self.eq('"fi|zz"', 'cs"ti x="y">', '|<i x="y">fizz</i>')
         self.eq('"fi|zz"', 'cs"<i x="y">', '|<i x="y">fizz</i>')
+
+    def test_can_disable_plugin(self):
+        self.normal('"x|xx"')
+        self.feed('cs"\'')
+        self.assertNormal("|'xxx'")
+        self.set_setting('enable_surround', False)
+        self.normal('"x|xx"')
+        self.feed('cs"\'')
+        self.assertNormal('"x|xx"')
+        self.set_setting('enable_surround', True)
+        self.normal('"x|xx"')
+        self.feed('cs"\'')
+        self.assertNormal("|'xxx'")
