@@ -1378,8 +1378,8 @@ _SEQ2CMD = {
     'O':            {'command': '_vi_big_o'},  # noqa: E241
     'P':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True}},  # noqa: E241
     'R':            {'command': '_enter_replace_mode'},  # noqa: E241
-    'S"':           {'command': '_nv_surround', 'args': {'action': 'ys', 'replacement': '"'}},  # noqa: E241
-    'S':            {'command': '_vi_big_s'},  # noqa: E241
+    'S"':           {'command': '_nv_feed_key'},  # noqa: E241
+    'S':            {'command': '_nv_feed_key'},  # noqa: E241
     'T0':           {'command': '_nv_feed_key'},  # noqa: E241
     'T4':           {'command': '_nv_feed_key'},  # noqa: E241
     'T5':           {'command': '_nv_feed_key'},  # noqa: E241
