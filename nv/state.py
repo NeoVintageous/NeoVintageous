@@ -401,7 +401,7 @@ class State(object):
                     if sel.a < sel.b:
                         pos -= 1
 
-                counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))
+                counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))  # type: dict
                 tab_size = self.view.settings().get('tab_size')
                 self.xpos = (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t']))
             except Exception:
