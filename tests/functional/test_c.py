@@ -108,6 +108,24 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('0')
         self.assertRegisterEmpty('1')
 
+    def test_ci__slash__or__underscore(self):
+        for t in ('/', '_'):
+            self.eq('{0}|{0}'.format(t), 'ci' + t, 'i_{0}|{0}'.format(t))
+            self.eq('{0}1|23{0}'.format(t), 'ci' + t, 'i_{0}|{0}'.format(t))
+            self.assertRegister('"123')
+            self.assertRegister('-123')
+            self.assertRegisterEmpty('0')
+            self.assertRegisterEmpty('1')
+
+    def test_ca__quote__or__slash__or__underscore(self):
+        for t in ('\'', '"', '/', '_'):
+            self.eq('{0}|{0}'.format(t), 'ca' + t, 'i_|')
+            self.eq('x{0}fi|zz{0}x'.format(t), 'ca' + t, 'i_x|x')
+            self.assertRegister('"{0}fizz{0}'.format(t))
+            self.assertRegister('-{0}fizz{0}'.format(t))
+            self.assertRegisterEmpty('0')
+            self.assertRegisterEmpty('1')
+
     def test_ci__quote_multi_sel(self):
         self.eq('x"1|23"y\ni"ab|c"j\n', 'ci"', 'i_x"|"y\ni"|"j\n')
         self.assertRegister('"', ['123', 'abc'])

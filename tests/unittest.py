@@ -1434,6 +1434,7 @@ _SEQ2CMD = {
     'a':            {'command': '_vi_a'},  # noqa: E241
     'a(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': True}},  # noqa: E241,E501
     'a)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': True}},  # noqa: E241,E501
+    'a/':           {'command': '_vi_select_text_object', 'args': {'text_object': '/', 'inclusive': True}},  # noqa: E241,E501
     'a<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': True}},  # noqa: E241,E501
     'a>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': True}},  # noqa: E241,E501
     'aB':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': True}},  # noqa: E241,E501
@@ -1442,6 +1443,7 @@ _SEQ2CMD = {
     'a[':           {'command': '_vi_select_text_object', 'args': {'text_object': '[', 'inclusive': True}},  # noqa: E241,E501
     'a\'':          {'command': '_vi_select_text_object', 'args': {'text_object': '\'', 'inclusive': True}},  # noqa: E241,E501
     'a]':           {'command': '_vi_select_text_object', 'args': {'text_object': ']', 'inclusive': True}},  # noqa: E241,E501
+    'a_':           {'command': '_vi_select_text_object', 'args': {'text_object': '_', 'inclusive': True}},  # noqa: E241,E501
     'a`':           {'command': '_vi_select_text_object', 'args': {'text_object': '`', 'inclusive': True}},  # noqa: E241,E501
     'ab':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': True}},  # noqa: E241,E501
     'ai':           {'command': '_vi_select_text_object', 'args': {'text_object': 'i', 'inclusive': True}},  # noqa: E241,E501
@@ -1461,6 +1463,7 @@ _SEQ2CMD = {
     'ca"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ca(':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ca)':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'ca/':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '/'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ca<':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '<'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ca>':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '>'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'caB':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'B'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1468,6 +1471,7 @@ _SEQ2CMD = {
     'ca[':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '['}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ca\'':         {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '\''}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ca]':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': ']'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'ca_':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '_'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ca`':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '`'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'cab':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'b'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'cap':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1488,6 +1492,7 @@ _SEQ2CMD = {
     'ci"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ci(':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ci)':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'ci/':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '/'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ci<':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '<'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ci>':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '>'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ciB':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'B'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1495,6 +1500,7 @@ _SEQ2CMD = {
     'ci[':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '['}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ci\'':         {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '\''}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ci]':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ']'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'ci_':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '_'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'ci`':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '`'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'cib':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'b'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'cip':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1615,6 +1621,7 @@ _SEQ2CMD = {
     'da"':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da(':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da)':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'da/':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '/'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da<':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '<'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da>':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '>'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'daB':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'B'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1622,6 +1629,7 @@ _SEQ2CMD = {
     'da[':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '['}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da\'':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '\''}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da]':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': ']'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'da_':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '_'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'da`':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '`'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'dab':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'b'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'dap':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1643,6 +1651,7 @@ _SEQ2CMD = {
     'di"':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'di(':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'di)':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'di/':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '/'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'di<':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '<'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'di>':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '>'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'diB':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'B'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1650,6 +1659,7 @@ _SEQ2CMD = {
     'di[':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '['}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'di\'':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '\''}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'di]':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ']'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
+    'di_':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '_'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'di`':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '`'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'dib':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'b'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
     'dip':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1748,6 +1758,7 @@ _SEQ2CMD = {
     'i':            {'command': '_enter_insert_mode'},  # noqa: E241
     'i(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': False}},  # noqa: E241,E501
     'i)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': False}},  # noqa: E241,E501
+    'i/':           {'command': '_vi_select_text_object', 'args': {'text_object': '/', 'inclusive': False}},  # noqa: E241,E501
     'i<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': False}},  # noqa: E241,E501
     'i>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': False}},  # noqa: E241,E501
     'iB':           {'command': '_vi_select_text_object', 'args': {'text_object': 'B', 'inclusive': False}},  # noqa: E241,E501
@@ -1756,6 +1767,7 @@ _SEQ2CMD = {
     'i[':           {'command': '_vi_select_text_object', 'args': {'text_object': '[', 'inclusive': False}},  # noqa: E241,E501
     'i\'':          {'command': '_vi_select_text_object', 'args': {'text_object': '\'', 'inclusive': False}},  # noqa: E241,E501
     'i]':           {'command': '_vi_select_text_object', 'args': {'text_object': ']', 'inclusive': False}},  # noqa: E241,E501
+    'i_':           {'command': '_vi_select_text_object', 'args': {'text_object': '_', 'inclusive': False}},  # noqa: E241,E501
     'i`':           {'command': '_vi_select_text_object', 'args': {'text_object': '`', 'inclusive': False}},  # noqa: E241,E501
     'ib':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': False}},  # noqa: E241,E501
     'ii':           {'command': '_vi_select_text_object', 'args': {'text_object': 'i', 'inclusive': False}},  # noqa: E241,E501
