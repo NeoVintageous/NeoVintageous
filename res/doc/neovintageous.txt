@@ -334,8 +334,8 @@ List of currently supported options:
 
     'autoindent' 'belloff' 'expandtabs' 'hlsearch' 'ignorecase' 'incsearch'
     'list' 'magic' 'menu' 'minimap' 'modeline' 'modelines' 'number' 'shell'
-    'sidebar' 'spell' 'statusbar' 'tabstop' 'textwidth' 'winaltkeys' 'wrap'
-    'wrapscan'
+    'sidebar' 'smartcase' 'spell' 'statusbar' 'tabstop' 'textwidth'
+    'winaltkeys' 'wrap' 'wrapscan'
 
 See `:help '{option}'` for help on individual options.
 
