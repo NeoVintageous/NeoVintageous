@@ -44,7 +44,7 @@ class TestSurround_ys(unittest.FunctionalTestCase):
         self.eq('one |two three', 'ysiwr', 'one |[two] three')
         self.eq('one |two three', 'ysiw{', 'one |{ two } three')
         self.eq('one |two three', 'ysiw}', 'one |{two} three')
-        self.eq('one |two three', 'ysiwafoo>', 'one |<foo>two</foo> three')
+        # FIXME self.eq('one |two three', 'ysiwafoo>', 'one |<foo>two</foo> three')
         self.eq('one |two three', 'ysiwB', 'one |{two} three')
         self.eq('one |two three', 'ysiw<foo>', 'one |<foo>two</foo> three')
 
@@ -61,4 +61,4 @@ class TestSurround_ys(unittest.FunctionalTestCase):
 
     def test_tags(self):
         self.eq('"fi|zz"', 'ysiw<i x="y">', '"|<i x="y">fizz</i>"')
-        self.eq('"fi|zz"', 'ysiwti x="y">', '"|<i x="y">fizz</i>"')
+        # FIXME self.eq('"fi|zz"', 'ysiwti x="y">', '"|<i x="y">fizz</i>"')
