@@ -1531,70 +1531,69 @@ _SEQ2CMD = {
     'crs':          {'command': '_nv_feed_key'},  # noqa: E241
     'crt':          {'command': '_nv_feed_key'},  # noqa: E241
     'cru':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cs""':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '"'}},  # noqa: E241,E501
-    'cs"(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '('}},  # noqa: E241,E501
-    'cs")':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': ')'}},  # noqa: E241,E501
-    'cs"2':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '2'}},  # noqa: E241,E501
-    'cs"<':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '<'}},  # noqa: E241,E501
-    'cs"<i x="y">': {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "\"", 'replacement': 'ti x="y">'}},  # noqa: E241,E501
-    'cs"<x>':       {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '<x>'}},  # noqa: E241,E501
-    'cs">':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '>'}},  # noqa: E241,E501
-    'cs"[':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '['}},  # noqa: E241,E501
+    'cs""':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"(':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs")':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"2':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"<':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"<i x="y">': {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"<x>':       {'command': '_nv_feed_key'},  # noqa: E241
+    'cs">':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"[':         {'command': '_nv_feed_key'},  # noqa: E241
     'cs"\'':        {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"]':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': ']'}},  # noqa: E241,E501
-    'cs"`':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '`'}},  # noqa: E241,E501
-    'cs"ti x="y">': {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "\"", 'replacement': 'ti x="y">'}},  # noqa: E241,E501
-    'cs"{':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '{'}},  # noqa: E241,E501
-    'cs"}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '"', 'replacement': '}'}},  # noqa: E241,E501
-    'cs("':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '"'}},  # noqa: E241,E501
-    'cs((':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '('}},  # noqa: E241,E501
-    'cs()':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': ')'}},  # noqa: E241,E501
-    'cs(2':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '2'}},  # noqa: E241,E501
-    'cs([':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '['}},  # noqa: E241,E501
-    'cs(\'':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '\''}},  # noqa: E241,E501
-    'cs(]':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': ']'}},  # noqa: E241,E501
-    'cs({':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '{'}},  # noqa: E241,E501
-    'cs(}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '(', 'replacement': '}'}},  # noqa: E241,E501
-    'cs)"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '"'}},  # noqa: E241,E501
-    'cs)(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '('}},  # noqa: E241,E501
-    'cs))':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': ')'}},  # noqa: E241,E501
-    'cs)2':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '2'}},  # noqa: E241,E501
-    'cs)[':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '['}},  # noqa: E241,E501
-    'cs)\'':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '\''}},  # noqa: E241,E501
-    'cs)]':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': ']'}},  # noqa: E241,E501
-    'cs){':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '{'}},  # noqa: E241,E501
-    'cs)}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ')', 'replacement': '}'}},  # noqa: E241,E501
-    'cs,`':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ',', 'replacement': '`'}},  # noqa: E241,E501
-    'cs-_':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '-', 'replacement': '_'}},  # noqa: E241,E501
-    'cs."':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '.', 'replacement': '"'}},  # noqa: E241,E501
-    'cs>"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '>', 'replacement': '"'}},  # noqa: E241,E501
-    'cs>{':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '>', 'replacement': '{'}},  # noqa: E241,E501
-    'cs>}':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '>', 'replacement': '}'}},  # noqa: E241,E501
-    'csB"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 'B', 'replacement': '"'}},  # noqa: E241,E501
-    'cs["':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '[', 'replacement': '"'}},  # noqa: E241,E501
-    'cs\'"':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '"'}},  # noqa: E241,E501
-    'cs\'(':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '('}},  # noqa: E241,E501
-    'cs\'<div>':    {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '<div>'}},  # noqa: E241,E501
-    'cs\'<q>':      {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '<q>'}},  # noqa: E241,E501
-    'cs\'`':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': '`'}},  # noqa: E241,E501
-    'cs\'tdiv>':    {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': 'tdiv>'}},  # noqa: E241,E501
-    'cs\'tq>':      {'command': '_nv_surround', 'args': {'action': 'cs', 'target': "'", 'replacement': 'tq>'}},  # noqa: E241,E501
-    'cs]"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ']', 'replacement': '"'}},  # noqa: E241,E501
-    'cs]>':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ']', 'replacement': '>'}},  # noqa: E241,E501
-    'cs]{':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': ']', 'replacement': '{'}},  # noqa: E241,E501
-    'cs_-':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '_', 'replacement': '-'}},  # noqa: E241,E501
-    'cs`"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '`', 'replacement': '"'}},  # noqa: E241,E501
-    'cs`\'':        {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '`', 'replacement': "'"}},  # noqa: E241,E501
-    'csa"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 'a', 'replacement': '"'}},  # noqa: E241,E501
-    'csb"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 'b', 'replacement': '"'}},  # noqa: E241,E501
-    'csr"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 'r', 'replacement': '"'}},  # noqa: E241,E501
-    'cst"':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 't', 'replacement': '"'}},  # noqa: E241,E501
-    'cst<a>':       {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 't', 'replacement': '<a>'}},  # noqa: E241,E501
-    'cstta>':       {'command': '_nv_surround', 'args': {'action': 'cs', 'target': 't', 'replacement': 'ta>'}},  # noqa: E241,E501
-    'cs{(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '{', 'replacement': '('}},  # noqa: E241,E501
-    'cs{)':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '{', 'replacement': ')'}},  # noqa: E241,E501
-    'cs}(':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '}', 'replacement': '('}},  # noqa: E241,E501
-    'cs})':         {'command': '_nv_surround', 'args': {'action': 'cs', 'target': '}', 'replacement': ')'}},  # noqa: E241,E501
+    'cs"]':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"`':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"ti x="y">': {'command': '_nv_feed_key'},  # noqa: E241
+    'cs"{':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs("':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs((':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs()':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs(2':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs([':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs(\'':        {'command': '_nv_feed_key'},  # noqa: E241
+    'cs(]':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs({':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs(}':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs)"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs)(':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs))':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs)2':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs)[':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs)\'':        {'command': '_nv_feed_key'},  # noqa: E241
+    'cs)]':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs){':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs)}':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs,`':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs-_':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs."':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs>"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs>{':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs>}':         {'command': '_nv_feed_key'},  # noqa: E241
+    'csB"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs["':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs\'"':        {'command': '_nv_feed_key'},  # noqa: E241
+    'cs\'(':        {'command': '_nv_feed_key'},  # noqa: E241
+    'cs\'<div>':    {'command': '_nv_feed_key'},  # noqa: E241
+    'cs\'<q>':      {'command': '_nv_feed_key'},  # noqa: E241
+    'cs\'`':        {'command': '_nv_feed_key'},  # noqa: E241
+    'cs\'tdiv>':    {'command': '_nv_feed_key'},  # noqa: E241
+    'cs\'tq>':      {'command': '_nv_feed_key'},  # noqa: E241
+    'cs]"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs]>':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs]{':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs_-':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs`"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs`\'':        {'command': '_nv_feed_key'},  # noqa: E241
+    'csa"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'csb"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'csr"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cst"':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cst<a>':       {'command': '_nv_feed_key'},  # noqa: E241
+    'cstta>':       {'command': '_nv_feed_key'},  # noqa: E241
+    'cs{(':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs{)':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs}(':         {'command': '_nv_feed_key'},  # noqa: E241
+    'cs})':         {'command': '_nv_feed_key'},  # noqa: E241
     'cw':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_w'}}},  # noqa: E241,E501
     'c|':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_bar'}}},  # noqa: E241,E501
     'd#':           {'command': '_nv_feed_key'},  # noqa: E241
