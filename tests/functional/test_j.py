@@ -55,6 +55,7 @@ class Test_j(unittest.PatchFeedCommandXpos, unittest.FunctionalTestCase):
         self.eq('r_|\n|\nbar', 'V_j', '|\n\n|bar')
         self.eq('|foo\n|bar\nbaz', 'V_9j', '|foo\nbar\nbaz|')
         self.eq('r_1\n|2\n3\n4\n5\n|6\n7', 'V_j', 'r_1\n2\n|3\n4\n5\n|6\n7')
+        self.eq('r_x\n|two\nfizz\nthree\n|buzz\n', 'V_j', 'r_x\ntwo\n|fizz\nthree\n|buzz\n')
 
     def test_d(self):
         self.eq('a|bc\nabc\nabc', 'dj', '|abc')
