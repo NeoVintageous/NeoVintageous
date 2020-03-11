@@ -398,6 +398,23 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertNormal('fizz |fizzbuzz')
         self.feedkey('.')
         self.assertNormal('fizz |buzz')
+        self.visual('x\nf|izz\nbuz|z\nping\npong\nx')
+        self.feedkey('x')
+        self.assertNormal('x\nf|z\nping\npong\nx')
+        self.feedkey('.')
+        self.assertNormal('x\nf|g\npong\nx')
+
+    def test_dot_repeat_visual_line_operation(self):
+        self.vline('x\n|fizz\n|buzz\nx\n')
+        self.feedkey('x')
+        self.assertNormal('x\n|buzz\nx\n')
+        self.feedkey('.')
+        self.assertNormal('x\n|x\n')
+        self.vline('x\n|fizz\nbuzz\n|ping\npong\nx\n')
+        self.feedkey('x')
+        self.assertNormal('x\n|ping\npong\nx\n')
+        self.feedkey('.')
+        self.assertNormal('x\n|x\n')
 
     @unittest.mock_bell()
     def test_dot_repeat_rings_bell_in_visual_mode(self):
