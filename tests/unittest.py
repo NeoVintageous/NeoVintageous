@@ -1458,9 +1458,9 @@ _SEQ2CMD = {
     '[ow':          {'command': '_nv_feed_key'},  # noqa: E241
     '[t':           {'command': '_nv_feed_key'},  # noqa: E241
     '[{':           {'command': '_nv_feed_key'},  # noqa: E241
-    '\'a':          {'command': '_vi_quote', 'args': {'character': 'a'}},  # noqa: E241
-    '\'p':          {'command': '_vi_quote', 'args': {'character': 'p'}},  # noqa: E241
-    '\'x':          {'command': '_vi_quote', 'args': {'character': 'x'}},  # noqa: E241
+    '\'a':          {'command': '_nv_feed_key'},  # noqa: E241
+    '\'p':          {'command': '_nv_feed_key'},  # noqa: E241
+    '\'x':          {'command': '_nv_feed_key'},  # noqa: E241
     '] ':           {'command': '_nv_feed_key'},  # noqa: E241
     '])':           {'command': '_nv_feed_key'},  # noqa: E241
     ']B':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1483,9 +1483,9 @@ _SEQ2CMD = {
     ']}':           {'command': '_nv_feed_key'},  # noqa: E241
     '^':            {'command': '_nv_feed_key'},  # noqa: E241
     '_':            {'command': '_nv_feed_key'},  # noqa: E241
-    '`a':           {'command': '_vi_backtick', 'args': {'character': 'a'}},  # noqa: E241
-    '`p':           {'command': '_vi_backtick', 'args': {'character': 'p'}},  # noqa: E241
-    '`x':           {'command': '_vi_backtick', 'args': {'character': 'x'}},  # noqa: E241
+    '`a':           {'command': '_nv_feed_key'},  # noqa: E241
+    '`p':           {'command': '_nv_feed_key'},  # noqa: E241
+    '`x':           {'command': '_nv_feed_key'},  # noqa: E241
     'a"':           {'command': '_nv_feed_key'},  # noqa: E241
     'a':            {'command': '_nv_feed_key'},  # noqa: E241
     'a(':           {'command': '_nv_feed_key'},  # noqa: E241
