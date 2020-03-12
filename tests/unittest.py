@@ -1324,39 +1324,39 @@ def mock_run_commands(*methods):
 # impact the existing tests.
 _SEQ2CMD = {
 
-    '"#yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '#'}},  # noqa: E241,E501
-    '"%yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '%'}},  # noqa: E241,E501
+    '"#yiw':        {'command': '_nv_feed_key'},  # noqa: E241
+    '"%yiw':        {'command': '_nv_feed_key'},  # noqa: E241
     '"':            {'command': '_nv_feed_key'},  # noqa: E241
-    '"*y':          {'command': '_vi_y', 'args': {'register': '*'}},  # noqa: E241
-    '"+y':          {'command': '_vi_y', 'args': {'register': '+'}},  # noqa: E241
-    '".yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '.'}},  # noqa: E241,E501
+    '"*y':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"+y':          {'command': '_nv_feed_key'},  # noqa: E241
+    '".yiw':        {'command': '_nv_feed_key'},  # noqa: E241
     '"1P':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"1Y':          {'command': '_vi_yy', 'args': {'register': '1'}},  # noqa: E241
+    '"1Y':          {'command': '_nv_feed_key'},  # noqa: E241
     '"1p':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"1y':          {'command': '_vi_y', 'args': {'register': '1'}},  # noqa: E241
-    '"1yy':         {'command': '_vi_yy', 'args': {'register': '1'}},  # noqa: E241
+    '"1y':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"1yy':         {'command': '_nv_feed_key'},  # noqa: E241
     '"2P':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"2Y':          {'command': '_vi_yy', 'args': {'register': '2'}},  # noqa: E241
+    '"2Y':          {'command': '_nv_feed_key'},  # noqa: E241
     '"2p':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"2y':          {'command': '_vi_y', 'args': {'register': '2'}},  # noqa: E241
-    '"2yy':         {'command': '_vi_yy', 'args': {'register': '2'}},  # noqa: E241
-    '":yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': ':'}},  # noqa: E241,E501
-    '"Byy':         {'command': '_vi_yy', 'args': {'register': 'B'}},  # noqa: E241
-    '"_y':          {'command': '_vi_y', 'args': {'register': '_'}},  # noqa: E241
-    '"_yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '_'}},  # noqa: E241,E501
-    '"aY':          {'command': '_vi_yy', 'args': {'register': 'a'}},  # noqa: E241
-    '"ay':          {'command': '_vi_y', 'args': {'register': 'a'}},  # noqa: E241
-    '"ayy':         {'command': '_vi_yy', 'args': {'register': 'a'}},  # noqa: E241
-    '"bY':          {'command': '_vi_yy', 'args': {'register': 'b'}},  # noqa: E241
-    '"by':          {'command': '_vi_y', 'args': {'register': 'b'}},  # noqa: E241
-    '"byy':         {'command': '_vi_yy', 'args': {'register': 'b'}},  # noqa: E241
+    '"2y':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"2yy':         {'command': '_nv_feed_key'},  # noqa: E241
+    '":yiw':        {'command': '_nv_feed_key'},  # noqa: E241
+    '"Byy':         {'command': '_nv_feed_key'},  # noqa: E241
+    '"_y':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"_yiw':        {'command': '_nv_feed_key'},  # noqa: E241
+    '"aY':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"ay':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"ayy':         {'command': '_nv_feed_key'},  # noqa: E241
+    '"bY':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"by':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"byy':         {'command': '_nv_feed_key'},  # noqa: E241
     '"x':           {'command': '_nv_feed_key'},  # noqa: E241
     '"xP':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"xY':          {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
+    '"xY':          {'command': '_nv_feed_key'},  # noqa: E241
     '"xp':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"xy':          {'command': '_vi_y', 'args': {'register': 'x'}},  # noqa: E241
-    '"xyiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': 'x'}},  # noqa: E241,E501
-    '"xyy':         {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
+    '"xy':          {'command': '_nv_feed_key'},  # noqa: E241
+    '"xyiw':        {'command': '_nv_feed_key'},  # noqa: E241
+    '"xyy':         {'command': '_nv_feed_key'},  # noqa: E241
     '#':            {'command': '_nv_feed_key'},  # noqa: E241
     '$':            {'command': '_nv_feed_key'},  # noqa: E241
     '%':            {'command': '_nv_feed_key'},  # noqa: E241
