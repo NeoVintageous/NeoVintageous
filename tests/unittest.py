@@ -1753,9 +1753,10 @@ _SEQ2CMD = {
     'gJ':           {'command': '_vi_big_j', 'args': {'dont_insert_or_remove_spaces': True}},  # noqa: E241
     'gN':           {'command': '_vi_search', 'args': {'forward': False}},  # noqa: E241
     'gP':           {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True, 'adjust_cursor': True}},  # noqa: E241,E501
-    'gU':           {'command': '_vi_g_big_u'},  # noqa: E241
-    'gUU':          {'command': '_vi_g_big_u_big_u'},  # noqa: E241
-    'gUip':         {'command': '_vi_g_big_u', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    'gU':           {'command': '_nv_feed_key'},  # noqa: E241
+    'gUU':          {'command': '_nv_feed_key'},  # noqa: E241
+    'gUb':          {'command': '_nv_feed_key'},  # noqa: E241
+    'gUip':         {'command': '_nv_feed_key'},  # noqa: E241
     'g_':           {'command': '_vi_g__'},  # noqa: E241
     'ga':           {'command': '_vi_ga'},  # noqa: E241
     'gc':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1776,14 +1777,15 @@ _SEQ2CMD = {
     'gqip':         {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
     'gqq':          {'command': '_vi_gq', 'args': {'linewise': True}},  # noqa: E241
     'gq}':          {'command': '_vi_gq', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
-    'gu':           {'command': '_vi_gu'},  # noqa: E241
-    'guis':         {'command': '_vi_gu', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 's'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
-    'guu':          {'command': '_vi_guu'},  # noqa: E241
+    'gub':          {'command': '_nv_feed_key'},  # noqa: E241
+    'gu':           {'command': '_nv_feed_key'},  # noqa: E241
+    'guis':         {'command': '_nv_feed_key'},  # noqa: E241
+    'guu':          {'command': '_nv_feed_key'},  # noqa: E241
     'gv':           {'command': '_vi_gv'},  # noqa: E241
     'gx':           {'command': '_vi_gx'},  # noqa: E241
-    'g~$':          {'command': '_vi_g_tilde', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
-    'g~':           {'command': '_vi_g_tilde'},  # noqa: E241
-    'g~~':          {'command': '_vi_g_tilde_g_tilde'},  # noqa: E241
+    'g~$':          {'command': '_nv_feed_key'},  # noqa: E241
+    'g~':           {'command': '_nv_feed_key'},  # noqa: E241
+    'g~~':          {'command': '_nv_feed_key'},  # noqa: E241
     'h':            {'command': '_vi_h'},  # noqa: E241
     'i"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': False}},  # noqa: E241,E501
     'i':            {'command': '_enter_insert_mode'},  # noqa: E241

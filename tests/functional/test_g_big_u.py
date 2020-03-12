@@ -25,8 +25,11 @@ class Test_gU(unittest.FunctionalTestCase):
         self.eq('xyz\n\nab|c\ndef\n\nxyz', 'gUip', 'xyz\n\n|ABC\nDEF\n\nxyz')
         self.eq('ab|c def', 'gUip', '|ABC DEF')
 
+    def test_gUb(self):
+        self.eq('|ab', 'gUb', '|ab')
+
     def test_v_gU(self):
-        self.eq('f|izz b|uzz', 'v_gU', 'n_f|IZZ Buzz')
+        self.eq('f|IZZ B|uzz', 'v_gU', 'n_f|IZZ Buzz')
 
     def test_V_gU(self):
         self.eq('x\n|one\n|y', 'V_gU', 'n_x\n|ONE\ny')
