@@ -1351,13 +1351,13 @@ _SEQ2CMD = {
     '"xyiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': 'x'}},  # noqa: E241,E501
     '"xyy':         {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
     '#':            {'command': '_nv_feed_key'},  # noqa: E241
-    '$':            {'command': '_vi_dollar'},  # noqa: E241
+    '$':            {'command': '_nv_feed_key'},  # noqa: E241
     '%':            {'command': '_vi_percent', 'args': {'count': None}},  # noqa: E241
-    '(':            {'command': '_vi_left_paren'},  # noqa: E241
-    ')':            {'command': '_vi_right_paren'},  # noqa: E241
+    '(':            {'command': '_nv_feed_key'},  # noqa: E241
+    ')':            {'command': '_nv_feed_key'},  # noqa: E241
     '*':            {'command': '_nv_feed_key'},  # noqa: E241
     ',':            {'command': '_nv_feed_key'},  # noqa: E241
-    '-':            {'command': '_vi_minus'},  # noqa: E241
+    '-':            {'command': '_nv_feed_key'},  # noqa: E241
     '.':            {'command': '_nv_feed_key'},  # noqa: E241
     '/':            {'command': '_nv_feed_key'},  # noqa: E241
     '/aBc':         {'command': '_vi_slash_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
@@ -1407,12 +1407,12 @@ _SEQ2CMD = {
     'Ff':           {'command': '_nv_feed_key'},  # noqa: E241
     'Fr':           {'command': '_nv_feed_key'},  # noqa: E241
     'Fx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'G':            {'command': '_vi_big_g'},  # noqa: E241
-    'H':            {'command': '_vi_big_h'},  # noqa: E241
-    'I':            {'command': '_vi_big_i'},  # noqa: E241
+    'G':            {'command': '_nv_feed_key'},  # noqa: E241
+    'H':            {'command': '_nv_feed_key'},  # noqa: E241
+    'I':            {'command': '_nv_feed_key'},  # noqa: E241
     'J':            {'command': '_nv_feed_key'},  # noqa: E241
-    'L':            {'command': '_vi_big_l'},  # noqa: E241
-    'M':            {'command': '_vi_big_m'},  # noqa: E241
+    'L':            {'command': '_nv_feed_key'},  # noqa: E241
+    'M':            {'command': '_nv_feed_key'},  # noqa: E241
     'N':            {'command': '_nv_feed_key'},  # noqa: E241
     'O':            {'command': '_nv_feed_key'},  # noqa: E241
     'P':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True}},  # noqa: E241
@@ -1427,8 +1427,8 @@ _SEQ2CMD = {
     'Tx':           {'command': '_nv_feed_key'},  # noqa: E241
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241
-    'W':            {'command': '_vi_big_w'},  # noqa: E241
-    'X':            {'command': '_vi_big_x'},  # noqa: E241
+    'W':            {'command': '_nv_feed_key'},  # noqa: E241
+    'X':            {'command': '_nv_feed_key'},  # noqa: E241
     'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
     '[ ':           {'command': '_nv_feed_key'},  # noqa: E241
     '[(':           {'command': '_vi_left_square_bracket', 'args': {'action': 'target', 'target': '('}},  # noqa: E241,E501
@@ -1473,8 +1473,8 @@ _SEQ2CMD = {
     ']ow':          {'command': '_nv_feed_key'},  # noqa: E241
     ']t':           {'command': '_nv_feed_key'},  # noqa: E241
     ']}':           {'command': '_vi_right_square_bracket', 'args': {'action': 'target', 'target': '}'}},  # noqa: E241,E501
-    '^':            {'command': '_vi_hat'},  # noqa: E241
-    '_':            {'command': '_vi_underscore'},  # noqa: E241
+    '^':            {'command': '_nv_feed_key'},  # noqa: E241
+    '_':            {'command': '_nv_feed_key'},  # noqa: E241
     '`a':           {'command': '_vi_backtick', 'args': {'character': 'a'}},  # noqa: E241
     '`p':           {'command': '_vi_backtick', 'args': {'character': 'p'}},  # noqa: E241
     '`x':           {'command': '_vi_backtick', 'args': {'character': 'x'}},  # noqa: E241
