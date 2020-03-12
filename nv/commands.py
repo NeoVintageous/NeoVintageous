@@ -2470,7 +2470,7 @@ class _vi_g(TextCommand):
 
 class _vi_ctrl_right_square_bracket(WindowCommand):
 
-    def run(self):
+    def run(self, **kwargs):
         view = self.window.active_view()
         if view and view.score_selector(0, 'text.neovintageous.help') > 0:
             goto_help(self.window)
