@@ -530,21 +530,16 @@ class ViewTestCase(unittest.TestCase):
             self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)
 
     def assertRegister(self, name: str, expected=None, linewise: bool = False, msg: str = None) -> None:
-        """Test that value for the register name and expected are equal.
+        """Test that value for the register content for name and expected are equal.
 
         Args:
           name (str): The name of the register.
           expected (str|list|None): The expected registered content.
 
         Usage:
-
-          assertRegister('"', 'value')
-
-          # when only one arg is given the first char is the register name
-          assertRegister('"value')
-
-          # multiple cursor content
-          assertRegister('"', ['val1', 'val2'])
+          self.assertRegister('"text')
+          self.assertRegister('"', 'text')
+          self.assertRegister('"', ['x', 'y'])  # multiple cursors
         """
         if expected is None:
             expected = name[1:]
@@ -553,6 +548,12 @@ class ViewTestCase(unittest.TestCase):
         self._assertRegister(name, expected, linewise, msg)
 
     def assertRegisters(self, names: list, expected=None, empty_names: str = '', msg: str = None) -> None:
+        """Test that value for the register content for names and expected are equal.
+
+        Usage:
+          self.assertRegisters('ab', 'text')
+          self.assertRegisters('ab', ['x', 'y'])  # multiple cursors
+        """
         for name in names:
             self.assertRegister(name, expected, msg=msg)
 
