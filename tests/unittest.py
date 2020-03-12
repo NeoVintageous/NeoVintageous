@@ -1006,10 +1006,13 @@ class PatchFeedCommandXpos(FunctionalTestCase):
         # Commands like k receive a motion xpos argument on operations like
         # "dk". This updates the command with whatever the test fixture xpos
         # should to be. It's a bit hacky, but just a temporary solution.
-        if 'motion' in args and 'motion_args' in args['motion']:
-            args['motion']['motion_args']['xpos'] = xpos
+        if command == '_nv_feed_key':
+            self.setXpos(xpos)
         else:
-            args['xpos'] = xpos
+            if 'motion' in args and 'motion_args' in args['motion']:
+                args['motion']['motion_args']['xpos'] = xpos
+            else:
+                args['xpos'] = xpos
 
         super().onRunFeedCommand(command, args)
 
@@ -1799,8 +1802,8 @@ _SEQ2CMD = {
     'gf':           {'command': '_nv_feed_key'},  # noqa: E241
     'gg':           {'command': '_nv_feed_key'},  # noqa: E241
     'gh':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gj':           {'command': '_vi_gj'},  # noqa: E241
-    'gk':           {'command': '_vi_gk'},  # noqa: E241
+    'gj':           {'command': '_nv_feed_key'},  # noqa: E241
+    'gk':           {'command': '_nv_feed_key'},  # noqa: E241
     'gn':           {'command': '_nv_feed_key'},  # noqa: E241
     'gp':           {'command': '_nv_feed_key'},  # noqa: E241
     'gq$':          {'command': '_nv_feed_key'},  # noqa: E241
@@ -1843,8 +1846,8 @@ _SEQ2CMD = {
     'iw':           {'command': '_nv_feed_key'},  # noqa: E241
     'i{':           {'command': '_nv_feed_key'},  # noqa: E241
     'i}':           {'command': '_nv_feed_key'},  # noqa: E241
-    'j':            {'command': '_vi_j'},  # noqa: E241
-    'k':            {'command': '_vi_k'},  # noqa: E241
+    'j':            {'command': '_nv_feed_key'},  # noqa: E241
+    'k':            {'command': '_nv_feed_key'},  # noqa: E241
     'l':            {'command': '_nv_feed_key'},  # noqa: E241
     'ma':           {'command': '_nv_feed_key'},  # noqa: E241
     'mx':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1860,11 +1863,6 @@ _SEQ2CMD = {
     'r<cr>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
     'rx':           {'command': '_nv_feed_key'},  # noqa: E241
     's':            {'command': '_nv_feed_key'},  # noqa: E241
-    's_2j':         {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
-    's_2k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
-    's_6k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
-    's_j':          {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
-    's_k':          {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     't2':           {'command': '_nv_feed_key'},  # noqa: E241
     't6':           {'command': '_nv_feed_key'},  # noqa: E241
     't8':           {'command': '_nv_feed_key'},  # noqa: E241

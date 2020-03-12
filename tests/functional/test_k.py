@@ -97,16 +97,9 @@ class Test_k(unittest.PatchFeedCommandXpos, unittest.FunctionalTestCase):
         self.eq('d_fizz\n\nfi\nf|iz|z\nf|iz|z\n', 'b_3k', 'r_u_fizz\n|\n||fi|\n|fi|zz\nfizz\n')
         self.eq('d_fizz\nx\nfizz |buz|z\nfizz |buz|z\n', 'b_3k', 'r_u_fizz|\n|x\nfizz| b|uzz\nfizz buzz\n')
 
-        self.setXpos(5)
-        self.eq('r_|fizz buz|z\n|\n|\n', 'b_k', 'r_fizz |buz|z\n\n\n')
-        self.eq('|fi|zz buzz\n|f\n|\n', 'b_k', '|fizz b|uzz\nf\n\n')
         self.eq('u_fizz buzz\nf\nfizz |buzz|\n', 'b_2k', 'u_fizz |buzz|\nf\nfizz |buzz|\n')
         self.eq('u_fizz\nf\nfizz |buzz|\n', 'b_2k', 'r_u_fizz|\n|f\nfizz| b|uzz\n')
         self.eq('u_fizz \nf\nfizz |buzz|\n', 'b_2k', 'u_fizz |\n|f\nfizz |b|uzz\n')
         self.eq('fizz buzz\nf\nfizz |buz|z\n', 'b_2k', 'u_fizz |buz|z\nf\nfizz |buz|z\n')
         self.eq('r_u_fizz \nf\nfizz |buzz|\n', 'b_2k', 'r_u_fizz |\n|f\nfizz |buzz|\n')
         self.eq('r_d_fizz |buzz|\nf\nfizz |buzz|\nfizz |buzz|\n', 'b_k', 'r_d_fizz |buzz|\nf\nfizz |buzz|\nfizz buzz\n')  # noqa: E501
-        self.eq('r_d_f|izz b|uzz\nf|\n|fizz buzz\n', 'b_k', 'd_fizz |b|uzz\nf\nfizz buzz\n')
-
-        self.setXpos(7)
-        self.eq('r_u_fizz buzz\nf|\n|f|izz b|uzz\n', 'b_5k', 'u_fizz |buz|z\nf\nfizz |buz|z\n')
