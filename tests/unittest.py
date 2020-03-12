@@ -1263,30 +1263,46 @@ def mock_run_commands(*methods):
     def wrapper(f):
         import sublime_api
 
-        def run_view_command(self, cmd: str, args: dict = None) -> None:
+        def _view_run_command(self, cmd: str, args: dict = None) -> None:
+            """
+            Monkey patch for view.run_command().
+
+            This patch records information about calls to view.run_command() for
+            any mocked commands and runs all other commands normally.
+            """
             if cmd not in methods:
                 sublime_api.view_run_command(self.id(), cmd, args)
             else:
-                f._run_command_calls.append((cmd, args))
+                f._mock_run_command_calls.append((cmd, args))
 
-        def run_window_command(self, cmd: str, args: dict = None) -> None:
+        def _window_run_command(self, cmd: str, args: dict = None) -> None:
+            """
+            Monkey patch for window.run_command().
+
+            This patch records information about calls to window.run_command()
+            for any mocked commands and runs all other commands normally.
+            """
             if cmd not in methods:
                 sublime_api.window_run_command(self.id(), cmd, args)
             else:
-                f._run_command_calls.append((cmd, args))
+                f._mock_run_command_calls.append((cmd, args))
 
-        @mock.patch('sublime.View.run_command', new=run_view_command)
-        @mock.patch('sublime.Window.run_command', new=run_window_command)
+        @mock.patch('sublime.View.run_command', new=_view_run_command)
+        @mock.patch('sublime.Window.run_command', new=_window_run_command)
         def wrapped(self, *args, **kwargs):
-            f._run_command_calls = []
+            f._mock_run_command_calls = []
 
             def assertRunCommand(cmd: str, args: dict = None, count: int = 1) -> None:
-                found = 0
-                for actual_cmd, actual_args in f._run_command_calls:
+                actual_count = 0
+                for actual_cmd, actual_args in f._mock_run_command_calls:
                     if (cmd == actual_cmd) and (args == actual_args):
-                        found += 1
+                        actual_count += 1
 
-                self.assertEqual(found, count, 'failed assert run command called once: "{}" {}'.format(cmd, args))
+                self.assertEqual(
+                    actual_count,
+                    count,
+                    'failed assert ran command {} with args {} {} time(s), actual calls: {}'.format(
+                        cmd, args, count, f._mock_run_command_calls))
 
             self.assertRunCommand = assertRunCommand
 
