@@ -1396,7 +1396,7 @@ _SEQ2CMD = {
     'L':            {'command': '_vi_big_l'},  # noqa: E241
     'M':            {'command': '_vi_big_m'},  # noqa: E241
     'N':            {'command': '_nv_feed_key'},  # noqa: E241
-    'O':            {'command': '_vi_big_o'},  # noqa: E241
+    'O':            {'command': '_nv_feed_key'},  # noqa: E241
     'P':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': True}},  # noqa: E241
     'R':            {'command': '_enter_replace_mode'},  # noqa: E241
     'S"':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1409,7 +1409,6 @@ _SEQ2CMD = {
     'Tx':           {'command': '_nv_feed_key'},  # noqa: E241
     'U':            {'command': '_vi_visual_big_u'},  # noqa: E241,E501
     'V':            {'command': '_enter_visual_line_mode'},  # noqa: E241
-    'V_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
     'W':            {'command': '_vi_big_w'},  # noqa: E241
     'X':            {'command': '_vi_big_x'},  # noqa: E241
     'Y':            {'command': '_vi_yy', 'args': {'register': '"'}},  # noqa: E241
@@ -1813,7 +1812,7 @@ _SEQ2CMD = {
     'ma':           {'command': '_vi_m', 'args': {'character': 'a'}},  # noqa: E241
     'mx':           {'command': '_vi_m', 'args': {'character': 'x'}},  # noqa: E241
     'n':            {'command': '_nv_feed_key'},  # noqa: E241
-    'o':            {'command': '_vi_o'},  # noqa: E241
+    'o':            {'command': '_nv_feed_key'},  # noqa: E241
     'p':            {'command': '_vi_paste', 'args': {'register': '"', 'before_cursor': False}},  # noqa: E241
     'q':            {'command': '_vi_q'},  # noqa: E241
     'q-':           {'command': '_vi_q', 'args': {'name': '-'}},  # noqa: E241
@@ -1823,7 +1822,7 @@ _SEQ2CMD = {
     'qx':           {'command': '_vi_q', 'args': {'name': 'x'}},  # noqa: E241
     'r<cr>':        {'command': '_vi_r', 'args': {'char': '\n'}},  # noqa: E241
     'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
-    's':            {'command': '_vi_s', 'args': {'register': '"'}},  # noqa: E241
+    's':            {'command': '_nv_feed_key'},  # noqa: E241
     's_2<C-n>':     {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
     's_2<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     's_2j':         {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
@@ -1851,7 +1850,6 @@ _SEQ2CMD = {
     't|':           {'command': '_nv_feed_key'},  # noqa: E241
     'u':            {'command': '_vi_u'},  # noqa: E241,E501
     'v':            {'command': '_enter_visual_mode'},  # noqa: E241
-    'v_o':          {'command': '_vi_visual_o'},  # noqa: E241,E501
     'v_u':          {'command': '_vi_visual_u'},  # noqa: E241,E501
     'w':            {'command': '_vi_w'},  # noqa: E241
     'x':            {'command': '_vi_x'},  # noqa: E241

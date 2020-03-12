@@ -31,12 +31,12 @@ class Test_o(unittest.FunctionalTestCase):
     def test_v(self):
         self.eq('x|fizz|x', 'v_o', 'r_x|fizz|x')
         self.eq('r_x|fizz|x', 'v_o', 'x|fizz|x')
-        self.assertStatusLineIsNormal()
+        self.assertStatusLineIsVisual()
 
     def test_V(self):
         self.eq('x\n|fizz\n|x', 'V_o', 'r_x\n|fizz\n|x')
         self.eq('r_x\n|fizz\n|x', 'V_o', 'x\n|fizz\n|x')
-        self.assertStatusLineIsNormal()
+        self.assertStatusLineIsVisualLine()
 
 
 class Test_o_auto_indent(unittest.FunctionalTestCase):
