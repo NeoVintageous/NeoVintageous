@@ -276,18 +276,6 @@ def next_non_ws(view, pt: int) -> int:
     return pt
 
 
-def is_at_eol(view, reg: Region) -> bool:
-    return view.line(reg.b).b == reg.b
-
-
-def is_at_bol(view, reg: Region) -> bool:
-    return view.line(reg.b).a == reg.b
-
-
-def first_row(view) -> int:
-    return view.rowcol(0)[0]
-
-
 def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
