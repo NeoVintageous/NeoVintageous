@@ -1479,7 +1479,7 @@ _SEQ2CMD = {
     '`p':           {'command': '_vi_backtick', 'args': {'character': 'p'}},  # noqa: E241
     '`x':           {'command': '_vi_backtick', 'args': {'character': 'x'}},  # noqa: E241
     'a"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': True}},  # noqa: E241,E501
-    'a':            {'command': '_vi_a'},  # noqa: E241
+    'a':            {'command': '_nv_feed_key'},  # noqa: E241
     'a(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': True}},  # noqa: E241,E501
     'a)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': True}},  # noqa: E241,E501
     'a/':           {'command': '_vi_select_text_object', 'args': {'text_object': '/', 'inclusive': True}},  # noqa: E241,E501
@@ -1773,15 +1773,15 @@ _SEQ2CMD = {
     'gUU':          {'command': '_nv_feed_key'},  # noqa: E241
     'gUb':          {'command': '_nv_feed_key'},  # noqa: E241
     'gUip':         {'command': '_nv_feed_key'},  # noqa: E241
-    'g_':           {'command': '_vi_g__'},  # noqa: E241
-    'ga':           {'command': '_vi_ga'},  # noqa: E241
+    'g_':           {'command': '_nv_feed_key'},  # noqa: E241
+    'ga':           {'command': '_nv_feed_key'},  # noqa: E241
     'gc':           {'command': '_nv_feed_key'},  # noqa: E241
     'gc7G':         {'command': '_nv_feed_key'},  # noqa: E241
     'gcG':          {'command': '_nv_feed_key'},  # noqa: E241
     'gcc':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ge':           {'command': '_vi_ge'},  # noqa: E241
-    'gf':           {'command': '_vi_g', 'args': {'action': 'f'}},  # noqa: E241
-    'gg':           {'command': '_vi_gg'},  # noqa: E241
+    'ge':           {'command': '_nv_feed_key'},  # noqa: E241
+    'gf':           {'command': '_nv_feed_key'},  # noqa: E241
+    'gg':           {'command': '_nv_feed_key'},  # noqa: E241
     'gh':           {'command': '_enter_select_mode'},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241
     'gk':           {'command': '_vi_gk'},  # noqa: E241
@@ -1797,12 +1797,12 @@ _SEQ2CMD = {
     'gub':          {'command': '_nv_feed_key'},  # noqa: E241
     'guis':         {'command': '_nv_feed_key'},  # noqa: E241
     'guu':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gv':           {'command': '_vi_gv'},  # noqa: E241
-    'gx':           {'command': '_vi_gx'},  # noqa: E241
+    'gv':           {'command': '_nv_feed_key'},  # noqa: E241
+    'gx':           {'command': '_nv_feed_key'},  # noqa: E241
     'g~$':          {'command': '_nv_feed_key'},  # noqa: E241
     'g~':           {'command': '_nv_feed_key'},  # noqa: E241
     'g~~':          {'command': '_nv_feed_key'},  # noqa: E241
-    'h':            {'command': '_vi_h'},  # noqa: E241
+    'h':            {'command': '_nv_feed_key'},  # noqa: E241
     'i"':           {'command': '_vi_select_text_object', 'args': {'text_object': '"', 'inclusive': False}},  # noqa: E241,E501
     'i':            {'command': '_enter_insert_mode'},  # noqa: E241
     'i(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': False}},  # noqa: E241,E501
@@ -1828,7 +1828,7 @@ _SEQ2CMD = {
     'i}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': False}},  # noqa: E241,E501
     'j':            {'command': '_vi_j'},  # noqa: E241
     'k':            {'command': '_vi_k'},  # noqa: E241
-    'l':            {'command': '_vi_l'},  # noqa: E241
+    'l':            {'command': '_nv_feed_key'},  # noqa: E241
     'ma':           {'command': '_vi_m', 'args': {'character': 'a'}},  # noqa: E241
     'mx':           {'command': '_vi_m', 'args': {'character': 'x'}},  # noqa: E241
     'n':            {'command': '_nv_feed_key'},  # noqa: E241
@@ -1870,8 +1870,8 @@ _SEQ2CMD = {
     't|':           {'command': '_nv_feed_key'},  # noqa: E241
     'u':            {'command': '_nv_feed_key'},  # noqa: E241
     'v':            {'command': '_enter_visual_mode'},  # noqa: E241
-    'w':            {'command': '_vi_w'},  # noqa: E241
-    'x':            {'command': '_vi_x'},  # noqa: E241
+    'w':            {'command': '_nv_feed_key'},  # noqa: E241
+    'x':            {'command': '_nv_feed_key'},  # noqa: E241
     'y$':           {'command': '_vi_y', 'args': {'register': '"', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
     'y':            {'command': '_vi_y', 'args': {'register': '"'}},  # noqa: E241
     'ya"':          {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
@@ -1934,7 +1934,7 @@ _SEQ2CMD = {
     'ysiw)':        {'command': '_nv_feed_key'},  # noqa: E241
     'ysiw2':        {'command': '_nv_feed_key'},  # noqa: E241
     'ysiw<foo>':    {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw<i x="y">': {'command': '_nv_feed_key'},  # noqa: E241
+    'ysiw<i x="y">':{'command': '_nv_feed_key'},  # noqa: E231,E241
     'ysiwB':        {'command': '_nv_feed_key'},  # noqa: E241
     'ysiw[':        {'command': '_nv_feed_key'},  # noqa: E241
     'ysiw\'':       {'command': '_nv_feed_key'},  # noqa: E241
@@ -1942,7 +1942,7 @@ _SEQ2CMD = {
     'ysiwafoo>':    {'command': '_nv_feed_key'},  # noqa: E241
     'ysiwb':        {'command': '_nv_feed_key'},  # noqa: E241
     'ysiwr':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiwti x="y">': {'command': '_nv_feed_key'},  # noqa: E241
+    'ysiwti x="y">':{'command': '_nv_feed_key'},  # noqa: E231,E241
     'ysiw{':        {'command': '_nv_feed_key'},  # noqa: E241
     'ysiw}':        {'command': '_nv_feed_key'},  # noqa: E241
     'yss)':         {'command': '_nv_feed_key'},  # noqa: E241
@@ -1950,9 +1950,9 @@ _SEQ2CMD = {
     'z=':           {'command': '_nv_feed_key'},  # noqa: E241
     'zg':           {'command': '_nv_feed_key'},  # noqa: E241
     'zug':          {'command': '_nv_feed_key'},  # noqa: E241
-    '{':            {'command': '_vi_left_brace'},  # noqa: E241
+    '{':            {'command': '_nv_feed_key'},  # noqa: E241
     '|':            {'command': '_vi_bar'},  # noqa: E241
-    '}':            {'command': '_vi_right_brace'},  # noqa: E241
-    '~':            {'command': '_vi_tilde'},  # noqa: E241
+    '}':            {'command': '_nv_feed_key'},  # noqa: E241
+    '~':            {'command': '_nv_feed_key'},  # noqa: E241
 
 }  # type: dict
