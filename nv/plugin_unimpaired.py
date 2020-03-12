@@ -346,23 +346,19 @@ def _goto_next_conflict_marker(view, count):
 
 
 # Go to the previous [count] lint error.
-def _context_previous(view, count):
-    window = view.window()
-    if window:
-        window.run_command('sublime_linter_goto_error', {
-            'direction': 'previous',
-            'count': count
-        })
+def _context_previous(window, count):
+    window.run_command('sublime_linter_goto_error', {
+        'direction': 'previous',
+        'count': count
+    })
 
 
 # Go to the next [count] lint error.
-def _context_next(view, count):
-    window = view.window()
-    if window:
-        window.run_command('sublime_linter_goto_error', {
-            'direction': 'next',
-            'count': count
-        })
+def _context_next(window, count):
+    window.run_command('sublime_linter_goto_error', {
+        'direction': 'next',
+        'count': count
+    })
 
 
 # Exchange the current line with [count] lines below it.
@@ -554,9 +550,9 @@ class _nv_unimpaired_command(TextCommand):
         elif action == 'goto_prev_conflict_marker':
             _goto_prev_conflict_marker(self.view, count)
         elif action == 'context_next':
-            _context_next(self.view, count)
+            _context_next(self.view.window(), count)
         elif action == 'context_previous':
-            _context_previous(self.view, count)
+            _context_previous(self.view.window(), count)
         elif action == 'toggle_option':
             _toggle_option(self.view, kwargs.get('value'))
         elif action == 'enable_option':
