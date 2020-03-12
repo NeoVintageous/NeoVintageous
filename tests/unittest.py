@@ -1850,9 +1850,8 @@ _SEQ2CMD = {
     'tr':           {'command': '_nv_feed_key'},  # noqa: E241
     'tx':           {'command': '_nv_feed_key'},  # noqa: E241
     't|':           {'command': '_nv_feed_key'},  # noqa: E241
-    'u':            {'command': '_vi_u'},  # noqa: E241,E501
+    'u':            {'command': '_nv_feed_key'},  # noqa: E241
     'v':            {'command': '_enter_visual_mode'},  # noqa: E241
-    'v_u':          {'command': '_vi_visual_u'},  # noqa: E241,E501
     'w':            {'command': '_vi_w'},  # noqa: E241
     'x':            {'command': '_vi_x'},  # noqa: E241
     'y$':           {'command': '_vi_y', 'args': {'register': '"', 'motion': {'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
