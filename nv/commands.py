@@ -2440,9 +2440,9 @@ class _vi_gt(WindowCommand):
 
     def run(self, mode=None, count=0):
         if count > 0:
-            window_tab_control(self.window, action='goto', index=count)
+            window_tab_control(self.window, 'goto', index=count)
         else:
-            window_tab_control(self.window, action='next')
+            window_tab_control(self.window, 'next')
 
         enter_normal_mode(self.window, mode)
 
@@ -2450,7 +2450,7 @@ class _vi_gt(WindowCommand):
 class _vi_g_big_t(WindowCommand):
 
     def run(self, mode=None, count=1):
-        window_tab_control(self.window, action='previous')
+        window_tab_control(self.window, 'previous', count)
         enter_normal_mode(self.window, mode)
 
 
