@@ -2143,7 +2143,7 @@ class _vi_equal(TextCommand):
 class _vi_big_o(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        def create_selections(view, sel, index):
+        def f(view, sel, index):
             real_sel = Region(sel.a + index * count, sel.b + index * count)
             start_of_line = view.full_line(real_sel).begin()
             view.insert(edit, start_of_line, "\n" * count)
@@ -2152,14 +2152,14 @@ class _vi_big_o(TextCommand):
                 new.append(Region(start_of_line + i, start_of_line + i))
             return new
 
-        regions_transformer_indexed(self.view, create_selections)
+        regions_transformer_indexed(self.view, f)
         enter_insert_mode(self.view, mode)
         self.view.run_command('reindent', {'force_indent': False})
 
 
 class _vi_o(TextCommand):
     def run(self, edit, mode=None, count=1):
-        def create_selections(view, sel, index):
+        def f(view, sel, index):
             real_sel = sel if index == 0 else Region(sel.a + index * count, sel.b + index * count)
             end_of_line = view.line(real_sel).end()
             view.insert(edit, end_of_line, "\n" * count)
@@ -2168,15 +2168,12 @@ class _vi_o(TextCommand):
                 new.append(Region(end_of_line + i, end_of_line + i))
             return new
 
-        regions_transformer_indexed(self.view, create_selections)
+        regions_transformer_indexed(self.view, f)
         enter_insert_mode(self.view, mode)
         self.view.run_command('reindent', {'force_indent': False})
 
 
 class _vi_big_x(TextCommand):
-
-    def line_start(self, pt):
-        return self.view.line(pt).begin()
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -2184,7 +2181,7 @@ class _vi_big_x(TextCommand):
             if mode == INTERNAL_NORMAL:
                 if view.line(s.b).empty():
                     abort = True
-                return Region(s.b, max(s.b - count, self.line_start(s.b)))
+                return Region(s.b, max(s.b - count, self.view.line(s.b).begin()))
             elif mode == VISUAL:
                 if s.a < s.b:
                     if view.line(s.b - 1).empty() and s.size() == 1:
@@ -2926,10 +2923,10 @@ class _vi_visual_u(TextCommand):
         for s in self.view.sel():
             self.view.replace(edit, s, self.view.substr(s).lower())
 
-        def after(view, s):
+        def f(view, s):
             return Region(s.begin())
 
-        regions_transformer(self.view, after)
+        regions_transformer(self.view, f)
         enter_normal_mode(self.view, mode)
 
 
@@ -2939,10 +2936,10 @@ class _vi_visual_big_u(TextCommand):
         for s in self.view.sel():
             self.view.replace(edit, s, self.view.substr(s).upper())
 
-        def after(view, s):
+        def f(view, s):
             return Region(s.begin())
 
-        regions_transformer(self.view, after)
+        regions_transformer(self.view, f)
         enter_normal_mode(self.view, mode)
 
 
