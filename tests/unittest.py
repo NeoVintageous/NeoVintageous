@@ -1386,12 +1386,14 @@ _SEQ2CMD = {
     '<C-e>':        {'command': '_nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
     '<C-g>':        {'command': '_nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
     '<C-n>':        {'command': '_nv_feed_key', 'args': {'key': '<C-n>'}},  # noqa: E241
+    '<C-p>':        {'command': '_nv_feed_key', 'args': {'key': '<C-p>'}},  # noqa: E241
     '<C-r>':        {'command': '_nv_feed_key', 'args': {'key': '<C-r>'}},  # noqa: E241
     '<C-u>':        {'command': '_nv_feed_key', 'args': {'key': '<C-u>'}},  # noqa: E241
     '<C-v>':        {'command': '_nv_feed_key', 'args': {'key': '<C-v>'}},  # noqa: E241
     '<C-x>':        {'command': '_nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
     '<C-y>':        {'command': '_nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
     '<CR>':         {'command': '_nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
+    '<M-n>':        {'command': '_nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
     '<esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<{':           {'command': '_nv_feed_key'},  # noqa: E241
     '=':            {'command': '_nv_feed_key'},  # noqa: E241
@@ -1858,17 +1860,9 @@ _SEQ2CMD = {
     'r<cr>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
     'rx':           {'command': '_nv_feed_key'},  # noqa: E241
     's':            {'command': '_nv_feed_key'},  # noqa: E241
-    's_2<C-n>':     {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
-    's_2<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     's_2j':         {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
     's_2k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
-    's_6<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     's_6k':         {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
-    's_<C-n>':      {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
-    's_<C-p>':      {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
-    's_<C-x>':      {'command': 'find_under_expand_skip'},  # TODO Refactor # noqa: E241
-    's_<M-n>':      {'command': '_vi_big_a'},  # noqa: E241
-    's_<esc>':      {'command': '_vi_select_big_j'},  # noqa: E241
     's_j':          {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
     's_k':          {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
     't2':           {'command': '_nv_feed_key'},  # noqa: E241
