@@ -24,3 +24,12 @@ class Test_gf(unittest.FunctionalTestCase):
     def test_gf(self, open_file):
         self.eq('x path/to/READ|ME.md y', 'n_gf', 'x path/to/READ|ME.md y')
         self.assertEqual(open_file.call_args[0][1], 'path/to/README.md')
+
+    @unittest.mock_status_message()
+    @unittest.mock.patch('NeoVintageous.nv.commands.window_open_file')
+    def test_gf_no_file_name_under_cursor(self, open_file):
+        self.eq('|', 'n_gf', '|')
+        self.assertMockNotCalled(open_file)
+        self.eq(' | ', 'n_gf', ' | ')
+        self.assertMockNotCalled(open_file)
+        self.assertStatusMessage('E446: No file name under cursor', count=2)

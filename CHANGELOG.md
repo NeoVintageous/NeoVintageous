@@ -23,6 +23,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#706](https://github.com/NeoVintageous/NeoVintageous/issues/706): `gf` should emit visual bell when there is no file under cursor
 * Fixed [#704](https://github.com/NeoVintageous/NeoVintageous/issues/704): `[n` and `]n` should not jump to invalid conflict markers
 * Fixed [#699](https://github.com/NeoVintageous/NeoVintageous/issues/699): `N` after `?` (reverse search) followed by `n` moves in wrong direction (regression)
 * Fixed [#612](https://github.com/NeoVintageous/NeoVintageous/issues/612): Searches bound to a keys in neovintageousrc are not repeatable by `n` or `N`

@@ -21,6 +21,6 @@ from NeoVintageous.tests import unittest
 class Test_gx(unittest.FunctionalTestCase):
 
     @unittest.mock.patch('webbrowser.open_new_tab')
-    def test_gf(self, open_new_tab):
+    def test_gx(self, open_new_tab):
         self.eq('x https://exa|mple.com x', 'n_gx', 'x https://exa|mple.com x')
         open_new_tab.assert_called_once_with('https://example.com')

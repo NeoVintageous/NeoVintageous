@@ -2459,8 +2459,11 @@ class _vi_g(TextCommand):
     def run(self, edit, action, **kwargs):
         if action == 'f':
             file_name = extract_file_name(self.view)
-            if file_name:
-                window_open_file(self.view.window(), file_name)
+            if not file_name:
+                ui_bell('E446: No file name under cursor')
+                return
+
+            window_open_file(self.view.window(), file_name)
         else:
             raise ValueError('unknown action')
 
