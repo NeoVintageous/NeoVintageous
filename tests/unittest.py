@@ -27,7 +27,9 @@ import unittest
 # Use aliases to indicate that they are not public testing APIs.
 from sublime import Region
 from sublime import active_window as _active_window
+from sublime import get_clipboard as _get_clipboard
 from sublime import platform as _platform
+from sublime import set_clipboard as _set_clipboard
 from sublime import version as _version
 
 # Use aliases to indicate that they are not public testing APIs.
@@ -344,6 +346,7 @@ class ViewTestCase(unittest.TestCase):
 
     def resetRegisters(self, values=None) -> None:
         _registers_reset()
+        _set_clipboard('')
 
     def resetMacros(self) -> None:
         _macros._state.clear()
@@ -580,6 +583,12 @@ class ViewTestCase(unittest.TestCase):
     def assertRegistersEmpty(self, names: list, msg: str = None) -> None:
         for name in names:
             self.assertRegisterEmpty(name, msg)
+
+    def assertClipboard(self, expected: str, msg: str = None) -> None:
+        self.assertEqual(expected, _get_clipboard(), msg)
+
+    def assertClipboardEmpty(self, msg: str = None) -> None:
+        self.assertEqual('', _get_clipboard(), msg)
 
     def assertSelection(self, expected, msg: str = None) -> None:
         # Test that view selection and *expected* are equal.
@@ -1290,6 +1299,11 @@ def mock_run_commands(*methods):
 # impact the existing tests.
 _SEQ2CMD = {
 
+    '"#yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '#'}},  # noqa: E241,E501
+    '"%yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '%'}},  # noqa: E241,E501
+    '"*y':          {'command': '_vi_y', 'args': {'register': '*'}},  # noqa: E241
+    '"+y':          {'command': '_vi_y', 'args': {'register': '+'}},  # noqa: E241
+    '".yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '.'}},  # noqa: E241,E501
     '"1P':          {'command': '_vi_paste', 'args': {'register': '1', 'before_cursor': True}},  # noqa: E241
     '"1Y':          {'command': '_vi_yy', 'args': {'register': '1'}},  # noqa: E241
     '"1p':          {'command': '_vi_paste', 'args': {'register': '1', 'before_cursor': False}},  # noqa: E241
@@ -1300,7 +1314,10 @@ _SEQ2CMD = {
     '"2p':          {'command': '_vi_paste', 'args': {'register': '2', 'before_cursor': False}},  # noqa: E241
     '"2y':          {'command': '_vi_y', 'args': {'register': '2'}},  # noqa: E241
     '"2yy':         {'command': '_vi_yy', 'args': {'register': '2'}},  # noqa: E241
+    '":yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': ':'}},  # noqa: E241,E501
     '"Byy':         {'command': '_vi_yy', 'args': {'register': 'B'}},  # noqa: E241
+    '"_y':          {'command': '_vi_y', 'args': {'register': '_'}},  # noqa: E241
+    '"_yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '_'}},  # noqa: E241,E501
     '"aY':          {'command': '_vi_yy', 'args': {'register': 'a'}},  # noqa: E241
     '"ay':          {'command': '_vi_y', 'args': {'register': 'a'}},  # noqa: E241
     '"ayy':         {'command': '_vi_yy', 'args': {'register': 'a'}},  # noqa: E241
@@ -1311,6 +1328,7 @@ _SEQ2CMD = {
     '"xY':          {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
     '"xp':          {'command': '_vi_paste', 'args': {'register': 'x', 'before_cursor': False}},  # noqa: E241
     '"xy':          {'command': '_vi_y', 'args': {'register': 'x'}},  # noqa: E241
+    '"xyiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': 'x'}},  # noqa: E241,E501
     '"xyy':         {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
     '#':            {'command': '_nv_feed_key'},  # noqa: E241
     '$':            {'command': '_vi_dollar'},  # noqa: E241
