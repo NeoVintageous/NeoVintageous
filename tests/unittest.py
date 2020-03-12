@@ -755,6 +755,13 @@ _CHAR2MODE = {
 }
 
 
+_FEEDCHAR2KEY = {
+    ' ': '<space>',
+    '<': '<lt>',
+    '|': '<bar>'
+}
+
+
 class FunctionalTestCase(ViewTestCase):
 
     def feed(self, seq: str) -> None:
@@ -854,10 +861,10 @@ class FunctionalTestCase(ViewTestCase):
                 window.run_command('_nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
 
             for key in seq:
-                if key == ' ':
-                    key = '<space>'
-                elif key == '<':
-                    key = '<lt>'
+                try:
+                    key = _FEEDCHAR2KEY[key]
+                except Exception:
+                    pass
 
                 window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
         else:
@@ -1380,7 +1387,7 @@ _SEQ2CMD = {
     '<C-y>':        {'command': '_vi_ctrl_y'},  # noqa: E241
     '<CR>':         {'command': '_vi_enter'},  # noqa: E241
     '<esc>':        {'command': '_enter_normal_mode'},  # noqa: E241
-    '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501
+    '<{':           {'command': '_nv_feed_key'},  # noqa: E241
     '=':            {'command': '_nv_feed_key'},  # noqa: E241
     '==':           {'command': '_nv_feed_key'},  # noqa: E241
     '=}':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1481,27 +1488,27 @@ _SEQ2CMD = {
     '`x':           {'command': '_vi_backtick', 'args': {'character': 'x'}},  # noqa: E241
     'a"':           {'command': '_nv_feed_key'},  # noqa: E241
     'a':            {'command': '_nv_feed_key'},  # noqa: E241
-    'a(':           {'command': '_vi_select_text_object', 'args': {'text_object': '(', 'inclusive': True}},  # noqa: E241,E501
-    'a)':           {'command': '_vi_select_text_object', 'args': {'text_object': ')', 'inclusive': True}},  # noqa: E241,E501
-    'a/':           {'command': '_vi_select_text_object', 'args': {'text_object': '/', 'inclusive': True}},  # noqa: E241,E501
-    'a<':           {'command': '_vi_select_text_object', 'args': {'text_object': '<', 'inclusive': True}},  # noqa: E241,E501
-    'a>':           {'command': '_vi_select_text_object', 'args': {'text_object': '>', 'inclusive': True}},  # noqa: E241,E501
-    'aB':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': True}},  # noqa: E241,E501
-    'aI':           {'command': '_vi_select_text_object', 'args': {'text_object': 'I', 'inclusive': True}},  # noqa: E241,E501
-    'aW':           {'command': '_vi_select_text_object', 'args': {'text_object': 'W', 'inclusive': True}},  # noqa: E241,E501
-    'a[':           {'command': '_vi_select_text_object', 'args': {'text_object': '[', 'inclusive': True}},  # noqa: E241,E501
-    'a\'':          {'command': '_vi_select_text_object', 'args': {'text_object': '\'', 'inclusive': True}},  # noqa: E241,E501
-    'a]':           {'command': '_vi_select_text_object', 'args': {'text_object': ']', 'inclusive': True}},  # noqa: E241,E501
-    'a_':           {'command': '_vi_select_text_object', 'args': {'text_object': '_', 'inclusive': True}},  # noqa: E241,E501
-    'a`':           {'command': '_vi_select_text_object', 'args': {'text_object': '`', 'inclusive': True}},  # noqa: E241,E501
-    'ab':           {'command': '_vi_select_text_object', 'args': {'text_object': 'b', 'inclusive': True}},  # noqa: E241,E501
-    'ai':           {'command': '_vi_select_text_object', 'args': {'text_object': 'i', 'inclusive': True}},  # noqa: E241,E501
-    'ap':           {'command': '_vi_select_text_object', 'args': {'text_object': 'p', 'inclusive': True}},  # noqa: E241,E501
-    'as':           {'command': '_vi_select_text_object', 'args': {'text_object': 's', 'inclusive': True}},  # noqa: E241,E501
-    'at':           {'command': '_vi_select_text_object', 'args': {'text_object': 't', 'inclusive': True}},  # noqa: E241,E501
-    'aw':           {'command': '_vi_select_text_object', 'args': {'text_object': 'w', 'inclusive': True}},  # noqa: E241,E501
-    'a{':           {'command': '_vi_select_text_object', 'args': {'text_object': '{', 'inclusive': True}},  # noqa: E241,E501
-    'a}':           {'command': '_vi_select_text_object', 'args': {'text_object': '}', 'inclusive': True}},  # noqa: E241,E501
+    'a(':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a)':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a/':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a<':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a>':           {'command': '_nv_feed_key'},  # noqa: E241
+    'aB':           {'command': '_nv_feed_key'},  # noqa: E241
+    'aI':           {'command': '_nv_feed_key'},  # noqa: E241
+    'aW':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a[':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a\'':          {'command': '_nv_feed_key'},  # noqa: E241
+    'a]':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a_':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a`':           {'command': '_nv_feed_key'},  # noqa: E241
+    'ab':           {'command': '_nv_feed_key'},  # noqa: E241
+    'ai':           {'command': '_nv_feed_key'},  # noqa: E241
+    'ap':           {'command': '_nv_feed_key'},  # noqa: E241
+    'as':           {'command': '_nv_feed_key'},  # noqa: E241
+    'at':           {'command': '_nv_feed_key'},  # noqa: E241
+    'aw':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a{':           {'command': '_nv_feed_key'},  # noqa: E241
+    'a}':           {'command': '_nv_feed_key'},  # noqa: E241
     'b':            {'command': '_nv_feed_key'},  # noqa: E241
     'c$':           {'command': '_nv_feed_key'},  # noqa: E241
     'c':            {'command': '_nv_feed_key'},  # noqa: E241
@@ -1531,34 +1538,34 @@ _SEQ2CMD = {
     'ca}':          {'command': '_nv_feed_key'},  # noqa: E241
     'cb':           {'command': '_nv_feed_key'},  # noqa: E241
     'cc':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ce':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_e'}}},  # noqa: E241,E501
-    'cgE':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_g_big_e'}}},  # noqa: E241,E501
-    'cgN':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'forward': False}, 'motion': '_vi_search'}}},  # noqa: E241,E501
-    'cg_':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_g__'}}},  # noqa: E241,E501
-    'cge':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ge'}}},  # noqa: E241,E501
-    'cgn':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_search'}}},  # noqa: E241,E501
-    'ch':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_h'}}},  # noqa: E241,E501
-    'ci"':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci(':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci)':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci/':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '/'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci<':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '<'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci>':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '>'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ciB':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'B'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ciW':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'W'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci[':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '['}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci\'':         {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '\''}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci]':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ']'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci_':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '_'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci`':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '`'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'cib':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'b'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'cip':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'cis':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 's'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'cit':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 't'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ciw':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci{':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '{'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'ci}':          {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '}'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'cl':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_l'}}},  # noqa: E241,E501
+    'ce':           {'command': '_nv_feed_key'},  # noqa: E241
+    'cgE':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cgN':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cg_':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cge':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cgn':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ch':           {'command': '_nv_feed_key'},  # noqa: E241
+    'ci"':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci(':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci)':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci/':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci<':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci>':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ciB':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ciW':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci[':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci\'':         {'command': '_nv_feed_key'},  # noqa: E241
+    'ci]':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci_':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci`':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cib':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cip':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cis':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cit':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ciw':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci{':          {'command': '_nv_feed_key'},  # noqa: E241
+    'ci}':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cl':           {'command': '_nv_feed_key'},  # noqa: E241
     'cr ':          {'command': '_nv_feed_key'},  # noqa: E241
     'cr-':          {'command': '_nv_feed_key'},  # noqa: E241
     'cr.':          {'command': '_nv_feed_key'},  # noqa: E241
@@ -1633,92 +1640,91 @@ _SEQ2CMD = {
     'cs{)':         {'command': '_nv_feed_key'},  # noqa: E241
     'cs}(':         {'command': '_nv_feed_key'},  # noqa: E241
     'cs})':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cw':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_w'}}},  # noqa: E241,E501
-    'c|':           {'command': '_vi_c', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_bar'}}},  # noqa: E241,E501
+    'cw':           {'command': '_nv_feed_key'},  # noqa: E241
+    'c|':           {'command': '_nv_feed_key'},  # noqa: E241
     'd#':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd$':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_dollar'}}},  # noqa: E241,E501
-    'd%':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_percent'}}},  # noqa: E241,E501
-    'd':            {'command': '_vi_d'},  # noqa: E241
-    'd(':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_left_paren'}}},  # noqa: E241,E501
-    'd)':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_paren'}}},  # noqa: E241,E501
+    'd$':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd%':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd':            {'command': '_nv_feed_key'},  # noqa: E241
+    'd(':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd)':           {'command': '_nv_feed_key'},  # noqa: E241
     'd*':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd-':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_minus'}}},  # noqa: E241,E501
+    'd-':           {'command': '_nv_feed_key'},  # noqa: E241
     'd/abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': '_vi_slash_impl'}}},  # noqa: E241,E501
-    'd0':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_zero'}}},  # noqa: E241,E501
+    'd0':           {'command': '_nv_feed_key'},  # noqa: E241
     'd2ft':         {'command': '_nv_feed_key'},  # noqa: E241
     'd<C-d>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_d'}}},  # noqa: E241,E501
     'd<C-u>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_u'}}},  # noqa: E241,E501
     'd?abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': '_vi_question_mark_impl'}}},  # noqa: E241,E501
-    'dB':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_b'}}},  # noqa: E241,E501
-    'dE':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_e'}}},  # noqa: E241,E501
+    'dB':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dE':           {'command': '_nv_feed_key'},  # noqa: E241
     'dFx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dG':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
-    'dH':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_h'}}},  # noqa: E241,E501
-    'dL':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_l'}}},  # noqa: E241,E501
-    'dM':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_m'}}},  # noqa: E241,E501
+    'dG':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dH':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dL':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dM':           {'command': '_nv_feed_key'},  # noqa: E241
     'dTx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dW':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_w'}}},  # noqa: E241,E501
-    'd[{':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'action': 'target', 'target': '{'}, 'motion': '_vi_left_square_bracket'}, 'register': '"'}},  # noqa: E241,E501
-    'd\'a':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'a'}, 'motion': '_vi_quote'}}},  # noqa: E241,E501
-    'd\'x':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'x'}, 'motion': '_vi_quote'}}},  # noqa: E241,E501
-    'd]}':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'action': 'target', 'target': '}'}, 'motion': '_vi_right_square_bracket'}, 'register': '"'}},  # noqa: E241,E501
-    'd^':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_hat'}}},  # noqa: E241,E501
-    'd_':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_underscore'}}},  # noqa: E241,E501
-    'd`a':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'a'}, 'motion': '_vi_backtick'}}},  # noqa: E241,E501
-    'd`x':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'character': 'x'}, 'motion': '_vi_backtick'}}},  # noqa: E241,E501
-    'da"':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da(':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da)':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da/':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '/'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da<':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '<'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da>':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '>'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'daB':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'B'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'daW':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'W'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da[':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '['}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da\'':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '\''}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da]':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': ']'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da_':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '_'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da`':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '`'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dab':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'b'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dap':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'das':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 's'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dat':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 't'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'daw':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da{':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '{'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'da}':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': True, 'text_object': '}'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dd':           {'command': '_nv_feed_key'},  # noqa: E241,E501
-    'de':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_e'}}},  # noqa: E241,E501
+    'dW':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd[{':          {'command': '_nv_feed_key'},  # noqa: E241
+    'd\'a':         {'command': '_nv_feed_key'},  # noqa: E241
+    'd\'x':         {'command': '_nv_feed_key'},  # noqa: E241
+    'd]}':          {'command': '_nv_feed_key'},  # noqa: E241
+    'd^':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd_':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd`a':          {'command': '_nv_feed_key'},  # noqa: E241
+    'd`x':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da"':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da(':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da)':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da/':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da<':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da>':          {'command': '_nv_feed_key'},  # noqa: E241
+    'daB':          {'command': '_nv_feed_key'},  # noqa: E241
+    'daW':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da[':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da\'':         {'command': '_nv_feed_key'},  # noqa: E241
+    'da]':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da_':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da`':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dab':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dap':          {'command': '_nv_feed_key'},  # noqa: E241
+    'das':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dat':          {'command': '_nv_feed_key'},  # noqa: E241
+    'daw':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da{':          {'command': '_nv_feed_key'},  # noqa: E241
+    'da}':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dd':           {'command': '_nv_feed_key'},  # noqa: E241
+    'de':           {'command': '_nv_feed_key'},  # noqa: E241
     'df=':          {'command': '_nv_feed_key'},  # noqa: E241
     'dft':          {'command': '_nv_feed_key'},  # noqa: E241
     'dfx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dgE':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_g_big_e'}}},  # noqa: E241,E501
-    'dg_':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_g__'}}},  # noqa: E241,E501
-    'dge':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ge'}}},  # noqa: E241,E501
-    'dgg':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': None, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_gg'}}},  # noqa: E241,E501
-    'dh':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_h'}}},  # noqa: E241,E501
-    'di"':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '"'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di(':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '('}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di)':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ')'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di/':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '/'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di<':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '<'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di>':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '>'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'diB':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'B'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'diW':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'W'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di[':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '['}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di\'':         {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '\''}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di]':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': ']'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di_':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '_'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di`':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '`'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dib':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'b'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dip':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dis':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 's'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dit':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 't'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'diw':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di{':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '{'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'di}':          {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': '}'}, 'motion': '_vi_select_text_object'}, 'register': '"'}},  # noqa: E241,E501
-    'dj':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_j'}}},  # noqa: E241,E501
-    'dk':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_k'}}},  # noqa: E241,E501
-    'dl':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_l'}}},  # noqa: E241,E501
+    'dgE':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dg_':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dge':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dgg':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dh':           {'command': '_nv_feed_key'},  # noqa: E241
+    'di"':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di(':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di)':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di/':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di>':          {'command': '_nv_feed_key'},  # noqa: E241
+    'diB':          {'command': '_nv_feed_key'},  # noqa: E241
+    'diW':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di[':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di\'':         {'command': '_nv_feed_key'},  # noqa: E241
+    'di]':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di_':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di`':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dib':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dip':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dis':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dit':          {'command': '_nv_feed_key'},  # noqa: E241
+    'diw':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di{':          {'command': '_nv_feed_key'},  # noqa: E241
+    'di}':          {'command': '_nv_feed_key'},  # noqa: E241
+    'dj':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dk':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dl':           {'command': '_nv_feed_key'},  # noqa: E241
     'ds ':          {'command': '_nv_feed_key'},  # noqa: E241
     'ds"':          {'command': '_nv_feed_key'},  # noqa: E241
     'ds(':          {'command': '_nv_feed_key'},  # noqa: E241
@@ -1749,10 +1755,10 @@ _SEQ2CMD = {
     'ds{':          {'command': '_nv_feed_key'},  # noqa: E241
     'ds}':          {'command': '_nv_feed_key'},  # noqa: E241
     'dtx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dw':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_w'}}},  # noqa: E241,E501
-    'd{':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_left_brace'}}},  # noqa: E241,E501
-    'd|':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_bar'}}},  # noqa: E241,E501
-    'd}':           {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_right_brace'}}},  # noqa: E241,E501
+    'dw':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd{':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd|':           {'command': '_nv_feed_key'},  # noqa: E241
+    'd}':           {'command': '_nv_feed_key'},  # noqa: E241
     'e':            {'command': '_nv_feed_key'},  # noqa: E241
     'f2':           {'command': '_nv_feed_key'},  # noqa: E241
     'f6':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1768,7 +1774,7 @@ _SEQ2CMD = {
     'gE':           {'command': '_nv_feed_key'},  # noqa: E241
     'gH':           {'command': '_nv_feed_key'},  # noqa: E241
     'gJ':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gN':           {'command': '_vi_search', 'args': {'forward': False}},  # noqa: E241
+    'gN':           {'command': '_nv_feed_key'},  # noqa: E241
     'gP':           {'command': '_nv_feed_key'},  # noqa: E241
     'gT':           {'command': '_nv_feed_key'},  # noqa: E241
     'gU':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1787,7 +1793,7 @@ _SEQ2CMD = {
     'gh':           {'command': '_nv_feed_key'},  # noqa: E241
     'gj':           {'command': '_vi_gj'},  # noqa: E241
     'gk':           {'command': '_vi_gk'},  # noqa: E241
-    'gn':           {'command': '_vi_search'},  # noqa: E241
+    'gn':           {'command': '_nv_feed_key'},  # noqa: E241
     'gp':           {'command': '_nv_feed_key'},  # noqa: E241
     'gq$':          {'command': '_nv_feed_key'},  # noqa: E241
     'gq':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1837,14 +1843,14 @@ _SEQ2CMD = {
     'n':            {'command': '_nv_feed_key'},  # noqa: E241
     'o':            {'command': '_nv_feed_key'},  # noqa: E241
     'p':            {'command': '_nv_feed_key'},  # noqa: E241
-    'q':            {'command': '_vi_q'},  # noqa: E241
-    'q-':           {'command': '_vi_q', 'args': {'name': '-'}},  # noqa: E241
-    'q@':           {'command': '_vi_q', 'args': {'name': '@'}},  # noqa: E241
-    'qA':           {'command': '_vi_q', 'args': {'name': 'A'}},  # noqa: E241
-    'qa':           {'command': '_vi_q', 'args': {'name': 'a'}},  # noqa: E241
-    'qx':           {'command': '_vi_q', 'args': {'name': 'x'}},  # noqa: E241
+    'q':            {'command': '_nv_feed_key'},  # noqa: E241
+    'q-':           {'command': '_nv_feed_key'},  # noqa: E241
+    'q@':           {'command': '_nv_feed_key'},  # noqa: E241
+    'qA':           {'command': '_nv_feed_key'},  # noqa: E241
+    'qa':           {'command': '_nv_feed_key'},  # noqa: E241
+    'qx':           {'command': '_nv_feed_key'},  # noqa: E241
     'r<cr>':        {'command': '_vi_r', 'args': {'char': '\n'}},  # noqa: E241
-    'rx':           {'command': '_vi_r', 'args': {'char': 'x'}},  # noqa: E241
+    'rx':           {'command': '_nv_feed_key'},  # noqa: E241
     's':            {'command': '_nv_feed_key'},  # noqa: E241
     's_2<C-n>':     {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
     's_2<C-p>':     {'command': '_vi_select_k'},  # TODO Refactor # noqa: E241
@@ -1951,7 +1957,7 @@ _SEQ2CMD = {
     'zg':           {'command': '_nv_feed_key'},  # noqa: E241
     'zug':          {'command': '_nv_feed_key'},  # noqa: E241
     '{':            {'command': '_nv_feed_key'},  # noqa: E241
-    '|':            {'command': '_vi_bar'},  # noqa: E241
+    '|':            {'command': '_nv_feed_key'},  # noqa: E241
     '}':            {'command': '_nv_feed_key'},  # noqa: E241
     '~':            {'command': '_nv_feed_key'},  # noqa: E241
 
