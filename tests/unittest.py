@@ -856,6 +856,8 @@ class FunctionalTestCase(ViewTestCase):
             for key in seq:
                 if key == ' ':
                     key = '<space>'
+                elif key == '<':
+                    key = '<lt>'
 
                 window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
         else:
@@ -1347,8 +1349,8 @@ _SEQ2CMD = {
     '/x':           {'command': '_vi_slash_impl', 'args': {'pattern': 'x'}},  # noqa: E241
     '0':            {'command': '_vi_zero'},  # noqa: E241
     ';':            {'command': '_nv_feed_key'},  # noqa: E241
-    '<':            {'command': '_vi_less_than'},  # noqa: E241
-    '<<':           {'command': '_vi_less_than_less_than'},  # noqa: E241
+    '<':            {'command': '_nv_feed_key'},  # noqa: E241
+    '<<':           {'command': '_nv_feed_key'},  # noqa: E241
     '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
     '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
     '<C-e>':        {'command': '_vi_ctrl_e'},  # noqa: E241
@@ -1362,13 +1364,13 @@ _SEQ2CMD = {
     '<CR>':         {'command': '_vi_enter'},  # noqa: E241
     '<esc>':        {'command': '_enter_normal_mode'},  # noqa: E241
     '<{':           {'command': '_vi_less_than', 'args': {'motion': {'motion': '_vi_left_brace', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501
-    '=':            {'command': '_vi_equal'},  # noqa: E241
-    '==':           {'command': '_vi_equal_equal'},  # noqa: E241
-    '=}':           {'command': '_vi_equal', 'args': {'motion': {'motion': '_vi_right_brace', 'motion_args': {'mode': INTERNAL_NORMAL, 'count': 1}}}},  # noqa: E241,E501
-    '>':            {'command': '_vi_greater_than'},  # noqa: E241
-    '>>':           {'command': '_vi_greater_than_greater_than'},  # noqa: E241
-    '>G':           {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'mode': INTERNAL_NORMAL}, 'motion': '_vi_big_g'}}},  # noqa: E241,E501
-    '>ip':          {'command': '_vi_greater_than', 'args': {'motion': {'motion_args': {'inclusive': False, 'mode': INTERNAL_NORMAL, 'count': 1, 'text_object': 'p'}, 'motion': '_vi_select_text_object'}}},  # noqa: E241,E501
+    '=':            {'command': '_nv_feed_key'},  # noqa: E241
+    '==':           {'command': '_nv_feed_key'},  # noqa: E241
+    '=}':           {'command': '_nv_feed_key'},  # noqa: E241
+    '>':            {'command': '_nv_feed_key'},  # noqa: E241
+    '>>':           {'command': '_nv_feed_key'},  # noqa: E241
+    '>G':           {'command': '_nv_feed_key'},  # noqa: E241
+    '>ip':          {'command': '_nv_feed_key'},  # noqa: E241
     '?':            {'command': '_nv_feed_key'},  # noqa: E241
     '?aBc':         {'command': '_vi_question_mark_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
     '?abc':         {'command': '_vi_question_mark_impl', 'args': {'pattern': 'abc'}},  # noqa: E241
@@ -1380,8 +1382,8 @@ _SEQ2CMD = {
     '@a':           {'command': '_vi_at', 'args': {'name': 'a'}},  # noqa: E241
     'A':            {'command': '_vi_big_a'},  # noqa: E241
     'B':            {'command': '_vi_big_b'},  # noqa: E241
-    'C':            {'command': '_vi_big_c', 'args': {'register': '"'}},  # noqa: E241
-    'D':            {'command': '_vi_big_d'},  # noqa: E241
+    'C':            {'command': '_nv_feed_key'},  # noqa: E241
+    'D':            {'command': '_nv_feed_key'},  # noqa: E241
     'E':            {'command': '_vi_big_e'},  # noqa: E241
     'F0':           {'command': '_nv_feed_key'},  # noqa: E241
     'F4':           {'command': '_nv_feed_key'},  # noqa: E241
