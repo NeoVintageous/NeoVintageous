@@ -29,7 +29,6 @@ from sublime import DIALOG_YES
 from sublime import ENCODED_POSITION
 from sublime import FORCE_GROUP
 from sublime import LITERAL
-from sublime import MONOSPACE_FONT
 from sublime import Region
 from sublime import find_resources
 from sublime import load_resource
@@ -52,13 +51,25 @@ from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.polyfill import view_find_all_in_range
+from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_set
 from NeoVintageous.nv.search import clear_search_highlighting
+from NeoVintageous.nv.search import is_smartcase_pattern
+from NeoVintageous.nv.settings import get_cmdline_cwd
+from NeoVintageous.nv.settings import get_ex_global_last_pattern
+from NeoVintageous.nv.settings import get_ex_shell_last_command
+from NeoVintageous.nv.settings import get_ex_substitute_last_pattern
+from NeoVintageous.nv.settings import get_ex_substitute_last_replacement
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import reset_setting
+from NeoVintageous.nv.settings import set_cmdline_cwd
+from NeoVintageous.nv.settings import set_ex_global_last_pattern
+from NeoVintageous.nv.settings import set_ex_shell_last_command
+from NeoVintageous.nv.settings import set_ex_substitute_last_pattern
+from NeoVintageous.nv.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.settings import set_setting
-from NeoVintageous.nv.state import State
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
 from NeoVintageous.nv.utils import has_dirty_buffers
@@ -67,16 +78,6 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
-from NeoVintageous.nv.vi.settings import get_ex_global_last_pattern
-from NeoVintageous.nv.vi.settings import get_ex_shell_last_command
-from NeoVintageous.nv.vi.settings import get_ex_substitute_last_pattern
-from NeoVintageous.nv.vi.settings import get_ex_substitute_last_replacement
-from NeoVintageous.nv.vi.settings import set_cmdline_cwd
-from NeoVintageous.nv.vi.settings import set_ex_global_last_pattern
-from NeoVintageous.nv.vi.settings import set_ex_shell_last_command
-from NeoVintageous.nv.vi.settings import set_ex_substitute_last_pattern
-from NeoVintageous.nv.vi.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
@@ -144,53 +145,49 @@ def ex_buffer(window, index=None, **kwargs):
     if index is None:
         return
 
-    window_tab_control(window, action='goto', index=int(index))
+    view_id = int(index)
+    for view in window.views():
+        if view.id() == view_id:
+            window.focus_view(view)
+            return
+
+    ui_bell('E86: Buffer %s does not exist' % index)
+
+
+def _is_read_only(file_name: str) -> bool:
+    if file_name:
+        try:
+            return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+        except FileNotFoundError:
+            return False
+
+    return False
 
 
 def ex_buffers(window, **kwargs):
-    def _get_item_info(i, view) -> list:
+    def _format_buffer_line(view) -> str:
         path = view.file_name()
         if path:
             parent, leaf = os.path.split(path)
-            parent = os.path.basename(parent)
-            path = os.path.join(parent, leaf)
+            path = os.path.join(os.path.basename(parent), leaf)
         else:
-            path = view.name() or str(view.buffer_id())
-            leaf = view.name() or 'untitled'
+            path = view.name() or '[No Name]'
 
-        status = []
-        if not view.file_name():
-            status.append("t")
-        if view.is_dirty():
-            status.append("*")
-        if view.is_read_only():
-            status.append("r")
+        current_indicator = '%' if view.id() == window.active_view().id() else ' '
+        readonly_indicator = '=' if view.is_read_only() or _is_read_only(view.file_name()) else ' '
+        modified_indicator = '+' if view.is_dirty() else ' '
 
-        if status:
-            leaf += ' (%s)' % ', '.join(status)
+        return '%5d %sa%s%s "%s"' % (
+            view.id(),
+            current_indicator,
+            readonly_indicator,
+            modified_indicator,
+            path
+        )
 
-        indicator = '%' if view.id() == window.active_view().id() else ' '
-        byline = '%d  %s    "%s"' % (i, indicator, path)
-
-        return [leaf, byline]
-
-    items = []
-    view_ids = []
-    for i, view in enumerate(window.views()):
-        items.append(_get_item_info(i, view))
-        view_ids.append(view.id())
-
-    def on_done(index) -> None:
-        if index == -1:
-            return
-
-        sought_id = view_ids[index]
-        for view in window.views():
-            # TODO: Start looking in current group.
-            if view.id() == sought_id:
-                window.focus_view(view)
-
-    window.show_quick_panel(items, on_done)
+    output = CmdlineOutput(window)
+    output.write("\n".join([_format_buffer_line(view) for view in window.views()]))
+    output.show()
 
 
 def ex_cd(view, path=None, **kwargs):
@@ -388,7 +385,7 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     # The default line specifier for most commands is the cursor position, but
     # the commands :write and :global have the whole file (1,$) as default.
     if line_range.is_empty:
-        region = Region(0, view.size())
+        region = view_to_region(view)
     else:
         region = line_range.resolve(view)
 
@@ -751,10 +748,13 @@ def ex_registers(window, view, **kwargs):
 
                 multiple_values.append(part_value)
 
-            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 78)))
+            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 120)))
 
-    if items:
-        window.show_quick_panel(sorted(items), None, flags=MONOSPACE_FONT)
+    items.sort()
+    items.insert(0, '--- Registers ---')
+    output = CmdlineOutput(window)
+    output.write("\n".join(items))
+    output.show()
 
 
 def ex_set(option: str, value, **kwargs):
@@ -899,7 +899,8 @@ def ex_substitute(view, edit, line_range: RangeNode,
     computed_flags |= re.MULTILINE
 
     if (get_option(view, 'ignorecase') or 'i' in flags) and 'I' not in flags:
-        computed_flags |= re.IGNORECASE
+        if not is_smartcase_pattern(view, pattern):
+            computed_flags |= re.IGNORECASE
 
     try:
         compiled_pattern = re.compile(pattern, flags=computed_flags)
@@ -1176,19 +1177,10 @@ def ex_wqall(window, **kwargs):
 
 @_init_cwd
 def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool = False, **kwargs):
-    def _is_read_only(file_name: str) -> bool:
-        if file_name:
-            try:
-                return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
-            except FileNotFoundError:
-                return False
-
-        return False
-
     def _get_buffer(view, line_range: RangeNode) -> str:
         # If no range, write whe whole buffer.
         if line_range.is_empty:
-            region = Region(0, view.size())
+            region = view_to_region(view)
         else:
             region = line_range.resolve(view)
 
@@ -1210,8 +1202,7 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
         view.run_command('append', {'characters': _get_buffer(view, line_range)})
         view.run_command('save')
 
-        # TODO [review] State dependency
-        enter_normal_mode(window, State(view).mode)
+        enter_normal_mode(window, get_mode(view))
 
     def _write_to_file(window, view, file_name: str, forceit: bool, line_range) -> None:
         if not forceit:
@@ -1269,13 +1260,9 @@ def ex_yank(view, register: str, line_range: RangeNode, **kwargs):
 # Default ex command. See :h [range].
 def _default_ex_cmd(window, view, line_range: RangeNode, **kwargs):
     _log.debug('default ex cmd %s %s', line_range, kwargs)
-
     line = row_at(view, line_range.resolve(view).a) + 1
-
-    # TODO [review] State dependency
-    state = State(view)
-    enter_normal_mode(window, state.mode)
-    goto_line(view, state.mode, line)
+    enter_normal_mode(window, get_mode(view))
+    goto_line(view, get_mode(view), line)
 
 
 def _get_ex_cmd(name: str):

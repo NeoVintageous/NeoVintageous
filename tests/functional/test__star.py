@@ -51,13 +51,13 @@ class Test_star(unittest.FunctionalTestCase):
         self.assertSearch('boo\n|abc|\nabcxabc\n|abc|\nbar')
         self.assertSearchCurrent('boo\nabc\nabcxabc\n|abc|\nbar')
 
-    def test_star_no_match(self):
+    def test_n_no_match(self):
         self.eq('x\nfi|zz\nx\nabc\n', 'n_*', 'x\n|fizz\nx\nabc\n')
         self.eq('    fi|zz\nx\nabc\n', 'n_*', '    |fizz\nx\nabc\n')
         self.assertSearch('    |fizz|\nx\nabc\n')
         self.assertSearchCurrent('    |fizz|\nx\nabc\n')
 
-    def test_star_repeat_match(self):
+    def test_n_repeat_match(self):
         self.eq('a|bc\nx\nabc\nx\nabc\nx\nabc\nx', 'n_*', 'abc\nx\n|abc\nx\nabc\nx\nabc\nx')
         self.assertSearchCurrent('abc\nx\n|abc|\nx\nabc\nx\nabc\nx')
         self.feed('n_*')
@@ -65,18 +65,65 @@ class Test_star(unittest.FunctionalTestCase):
         self.feed('n_*')
         self.assertSearchCurrent('abc\nx\nabc\nx\nabc\nx\n|abc|\nx')
 
-    def test_star_wraps(self):
+    def test_n_wraps(self):
         self.eq('x\nabc\nx\nabc\nx\nabc\nx\na|bc\nx', 'n_*', 'x\n|abc\nx\nabc\nx\nabc\nx\nabc\nx')
         self.assertSearch('x\n|abc|\nx\n|abc|\nx\n|abc|\nx\n|abc|\nx')
         self.assertSearchCurrent('x\n|abc|\nx\nabc\nx\nabc\nx\nabc\nx')
 
-    def test_star_no_partial_match(self):
+    def test_n_no_partial_match(self):
         self.eq('fo|o\nfizz\nfom\nfoo\nfou\n', 'n_*', 'foo\nfizz\nfom\n|foo\nfou\n')
         self.assertSearch('|foo|\nfizz\nfom\n|foo|\nfou\n')
         self.assertSearchCurrent('foo\nfizz\nfom\n|foo|\nfou\n')
 
-    def test_star_should_not_match_non_word_boundaries(self):
+    def test_n_should_not_match_non_word_boundaries(self):
         self.eq('fo|o\nfoox\nfoo\nxfoo\n', 'n_*', 'foo\nfoox\n|foo\nxfoo\n')
+
+    def test_n_wrapscan_false(self):
+        self.set_option('wrapscan', False)
+        self.eq('a|bc\nx\nabc\nx', 'n_*', 'abc\nx\n|abc\nx')
+        self.eq('abc\nx\n|abc\nx', 'n_*', 'abc\nx\n|abc\nx')
+        self.eq('a|bc\nx\nabc\nx', 'n_5*', 'abc\nx\n|abc\nx')
+
+    def test_n_ignorecase(self):
+        self.normal('x|xx\nXXX\nxxx\nXxX\n')
+        self.set_option('ignorecase', True)
+        self.feed('n_*')
+        self.assertNormal('xxx\n|XXX\nxxx\nXxX\n')
+        self.assertSearch('|xxx|\n|XXX|\n|xxx|\n|XxX|\n')
+        self.assertSearchCurrent('xxx\n|XXX|\nxxx\nXxX\n')
+        self.normal('x|xx\nXXX\nxxx\nXxX\n')
+        self.set_option('ignorecase', False)
+        self.feed('n_*')
+        self.assertNormal('xxx\nXXX\n|xxx\nXxX\n')
+        self.assertSearch('|xxx|\nXXX\n|xxx|\nXxX\n')
+        self.assertSearchCurrent('xxx\nXXX\n|xxx|\nXxX\n')
+
+    def test_n_smartcase_should_not_be_used_for_word_search(self):
+        self.normal('x|Xx\nXXX\nxXx\nXxX\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        self.feed('n_*')
+        self.assertSearch('|xXx|\n|XXX|\n|xXx|\n|XxX|\n')
+        self.normal('x|Xx\nXXX\nxXx\nXxX\n')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', False)
+        self.feed('n_*')
+        self.assertSearch('|xXx|\n|XXX|\n|xXx|\n|XxX|\n')
+        self.normal('x|Xx\nXXX\nxXx\nXxX\n')
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', True)
+        self.feed('n_*')
+        self.assertSearch('|xXx|\nXXX\n|xXx|\nXxX\n')
+        self.normal('x|Xx\nXXX\nxXx\nXxX\n')
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', False)
+        self.feed('n_*')
+        self.assertSearch('|xXx|\nXXX\n|xXx|\nXxX\n')
+
+    @unittest.mock_status_message()
+    def test_n_no_string_under_cursor(self):
+        self.eq('x | x', 'n_*', 'x | x')
+        self.assertStatusMessage('E348: No string under cursor')
 
     def test_v(self):
         self.eq('ab|c\nx\nabc\nx', 'v_*', 'ab|c\nx\na|bc\nx')

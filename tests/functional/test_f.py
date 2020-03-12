@@ -34,7 +34,11 @@ class Test_f(unittest.FunctionalTestCase):
         self.eq('0|a2::5', 'n_f:', '0a2|::5')
         self.eq('0|:2:45', 'n_f:', '0:2|:45')
 
-    def test_n_special_bar_char(self):
+    def test_n_special_bar_character(self):
+        self.normal('12|34')
+        # Overwrite the content above with text containing a literal bar
+        # character (i.e. "|"). The normal() api method replaces bar characters
+        # with selections and this test is testing against a literal bar char.
         self.write('12|34')
         self.select(0)
         self.feed('n_f|')
@@ -67,7 +71,9 @@ class Test_f(unittest.FunctionalTestCase):
         self.eq('|f|x', 'v_fx', '|fx|')
         self.eq('r_|r|x', 'v_fx', '|rx|')
         self.eq('|f|', 'v_ff', '|f|')
+        self.eq('|ff|ff', 'v_ff', '|fff|f')
         self.eq('r_|r|', 'v_fr', 'r_|r|')
+        self.eq('|r|r', 'v_fr', '|rr|')
 
     @unittest.mock_bell()
     def test_d(self):

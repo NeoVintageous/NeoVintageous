@@ -28,6 +28,8 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq("x'a|bc'y", 'cs\'"', 'x|"abc"y')
         self.eq("x'a|bc'y", 'cs\'"', 'x|"abc"y')
         self.eq("x'a|bc'y", 'cs\'`', 'x|`abc`y')
+        self.eq('f|izz', 'cs"\'', 'f|izz')
+        self.eq('"f|izz', 'cs"\'', '"f|izz')
 
     def test_paren_punctuation_marks(self):
         self.eq('x(a|bc)y', 'cs("', 'x|"abc"y')
@@ -41,6 +43,8 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x|"abc"y', 'cs")', 'x|(abc)y')
         self.eq('x"|abc"y', 'cs"(', 'x|( abc )y')
         self.eq('x"|abc"y', 'cs")', 'x|(abc)y')
+        self.eq('x(a|bcy', 'cs("', 'x(a|bcy')
+        self.eq('xa|bc)y', 'cs("', 'xa|bc)y')
 
     def test_brace_punctuation_marks(self):
         self.eq('x{a|bc}y', 'cs{(', 'x|( abc )y')
@@ -120,3 +124,21 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq("'a|b'", "cs'tdiv>", '|<div>ab</div>')
         self.eq('"fi|zz"', 'cs"ti x="y">', '|<i x="y">fizz</i>')
         self.eq('"fi|zz"', 'cs"<i x="y">', '|<i x="y">fizz</i>')
+        self.eq('f|izz', 'cst"', 'f|izz')
+        self.eq('|<li>ab', 'cst"', '|<li>ab')
+        self.eq('<li>f|izz', 'cst"', '<li>f|izz')
+        self.eq('|ab</li>', 'cst"', '|ab</li>')
+        self.eq('f|izz</li>', 'cst"', 'f|izz</li>')
+
+    def test_can_disable_plugin(self):
+        self.normal('"x|xx"')
+        self.feed('cs"\'')
+        self.assertNormal("|'xxx'")
+        self.set_setting('enable_surround', False)
+        self.normal('"x|xx"')
+        self.feed('cs"\'')
+        self.assertNormal('"x|xx"')
+        self.set_setting('enable_surround', True)
+        self.normal('"x|xx"')
+        self.feed('cs"\'')
+        self.assertNormal("|'xxx'")

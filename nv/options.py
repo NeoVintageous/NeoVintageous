@@ -183,6 +183,7 @@ _options = {
     'shell': StringOption('shell', _get_default_shell()),
     'sidebar': BooleanIsVisibleOption('sidebar', True),  # {not in Vim}
     'sidescrolloff': NumberOption('sidescrolloff', 5),
+    'smartcase': BooleanOption('smartcase', False),
     'spell': BooleanViewOption('spell_check'),
     'statusbar': BooleanIsVisibleOption('status_bar', True),  # {not in Vim}
     'tabstop': NumberViewOption('tab_size'),
@@ -202,6 +203,7 @@ _OPTION_ALIASES = {
     'ml': 'modeline',
     'mls': 'modelines',
     'nu': 'number',
+    'scs': 'smartcase',
     'siso': 'sidescrolloff',
     'so': 'scrolloff',
     'ts': 'tabstop',

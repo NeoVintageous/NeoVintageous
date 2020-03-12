@@ -26,11 +26,13 @@ class Test_equal(unittest.FunctionalTestCase):
         self.settings().set('translate_tabs_to_spaces', True)
         self.settings().set('tab_size', 2)
 
+    def test_n(self):
+        self.eq('def x():\n|x=1\nx=2\nx=3\n\nx=4\n', 'n_=}', 'n_def x():\n  |x=1\n  x=2\n  x=3\n\nx=4\n')
+
     def test_v(self):
         self.eq('fi|zz', 'v_=', 'n_|fizz')
         self.eq('def x():\n|x =| 1\nx = 2\n', 'v_=', 'n_def x():\n  |x = 1\nx = 2\n')
         self.eq('def x():\n|x = 1\nx| = 2\nx = 3\n', 'v_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
-        self.eq('def x():\n|x=1\nx=2\nx=3\n\nx=4\n', 'v_=}', 'n_def x():\n  |x=1\n  x=2\n  x=3\n\nx=4\n')
 
     def test_V(self):
         self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'V_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')

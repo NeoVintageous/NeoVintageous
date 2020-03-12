@@ -67,6 +67,18 @@ class Test_ex_substitute(unittest.FunctionalTestCase):
         self.set_option('ignorecase', False)
         self.eq('|aA', ':s/a/x/gI', '|xA')
 
+    def test_smartcase(self):
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        self.eq('|fizz FIZZ fIzZ', ':s/FIZZ/x/g', '|fizz x fIzZ')
+        self.eq('|fizz FIZZ fIzZ', ':s/fizz/x/g', '|x x x')
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', False)
+        self.eq('|fizz FIZZ fIzZ', ':s/FIZZ/x/g', '|x x x')
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', False)
+        self.eq('|fizz FIZZ fIzZ', ':s/FIZZ/x/g', '|fizz x fIzZ')
+
     def test_ranges(self):
         self.eq('axxa\n|bxxb\ncxxc\n', ':1,$substitute/x/y/', 'ayxa\nbyxb\n|cyxc\n')
         self.eq('axxa\n|bxxb\ncxxc\n', ':1,$substitute/x/y/g', 'ayya\nbyyb\n|cyyc\n')

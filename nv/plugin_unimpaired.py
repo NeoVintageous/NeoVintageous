@@ -20,8 +20,8 @@
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.options import set_option
-from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.options import set_window_ui_element_visible
+from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_rfind
@@ -29,6 +29,7 @@ from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import translate_char
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
@@ -41,8 +42,8 @@ __all__ = [
 ]
 
 
-@register(seq='[l', modes=(NORMAL, VISUAL))
-class _UnimpairedContextPrevious(ViOperatorDef):
+@register(seqs.LEFT_SQUARE_BRACKET_L, (NORMAL, VISUAL))
+class UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -54,8 +55,8 @@ class _UnimpairedContextPrevious(ViOperatorDef):
         }
 
 
-@register(seq=']l', modes=(NORMAL, VISUAL))
-class _UnimpairedContextNext(ViOperatorDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_L, (NORMAL, VISUAL))
+class UnimpairedContextNext(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -67,7 +68,7 @@ class _UnimpairedContextNext(ViOperatorDef):
         }
 
 
-@register(seq='[n', modes=(NORMAL,))
+@register(seqs.LEFT_SQUARE_BRACKET_N, (NORMAL,))
 class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,7 +86,7 @@ class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
         }
 
 
-@register(seq=']n', modes=(NORMAL,))
+@register(seqs.RIGHT_SQUARE_BRACKET_N, (NORMAL,))
 class UnimpairedGotoNextConflictMarker(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -103,8 +104,8 @@ class UnimpairedGotoNextConflictMarker(ViOperatorDef):
         }
 
 
-@register(seq='[<space>', modes=(NORMAL,))
-class _UnimpairedBlankUp(ViOperatorDef):
+@register(seqs.LEFT_SQUARE_BRACKET_SPACE, (NORMAL,))
+class UnimpairedBlankUp(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -116,8 +117,8 @@ class _UnimpairedBlankUp(ViOperatorDef):
         }
 
 
-@register(seq=']<space>', modes=(NORMAL,))
-class _UnimpairedBlankDown(ViOperatorDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_SPACE, (NORMAL,))
+class UnimpairedBlankDown(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -129,8 +130,8 @@ class _UnimpairedBlankDown(ViOperatorDef):
         }
 
 
-@register(seq='[b', modes=(NORMAL,))
-class _UnimpairedBprevious(ViOperatorDef):
+@register(seqs.LEFT_SQUARE_BRACKET_B, (NORMAL,))
+class UnimpairedBprevious(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -142,8 +143,8 @@ class _UnimpairedBprevious(ViOperatorDef):
         }
 
 
-@register(seq=']b', modes=(NORMAL,))
-class _UnimpairedBnext(ViOperatorDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_B, (NORMAL,))
+class UnimpairedBnext(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -155,8 +156,8 @@ class _UnimpairedBnext(ViOperatorDef):
         }
 
 
-@register(seq='[B', modes=(NORMAL,))
-class _UnimpairedBfirst(ViOperatorDef):
+@register(seqs.LEFT_SQUARE_BRACKET_BIG_B, (NORMAL,))
+class UnimpairedBfirst(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -168,8 +169,8 @@ class _UnimpairedBfirst(ViOperatorDef):
         }
 
 
-@register(seq=']B', modes=(NORMAL,))
-class _UnimpairedBlast(ViOperatorDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_BIG_B, (NORMAL,))
+class UnimpairedBlast(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -181,8 +182,8 @@ class _UnimpairedBlast(ViOperatorDef):
         }
 
 
-@register(seq='[e', modes=(NORMAL,))
-class _UnimpairedMoveUp(ViOperatorDef):
+@register(seqs.LEFT_SQUARE_BRACKET_E, (NORMAL,))
+class UnimpairedMoveUp(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -194,8 +195,8 @@ class _UnimpairedMoveUp(ViOperatorDef):
         }
 
 
-@register(seq=']e', modes=(NORMAL,))
-class _UnimpairedMoveDown(ViOperatorDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_E, (NORMAL,))
+class UnimpairedMoveDown(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -207,8 +208,8 @@ class _UnimpairedMoveDown(ViOperatorDef):
         }
 
 
-@register(seq='[t', modes=(NORMAL,))
-class _UnimpairedTabprevious(ViOperatorDef):
+@register(seqs.LEFT_SQUARE_BRACKET_T, (NORMAL,))
+class UnimpairedTabprevious(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -220,8 +221,8 @@ class _UnimpairedTabprevious(ViOperatorDef):
         }
 
 
-@register(seq=']t', modes=(NORMAL,))
-class _UnimpairedTabnext(ViOperatorDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_T, (NORMAL,))
+class UnimpairedTabnext(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -233,8 +234,8 @@ class _UnimpairedTabnext(ViOperatorDef):
         }
 
 
-@register(seq='[T', modes=(NORMAL,))
-class _UnimpairedTabfirst(ViOperatorDef):
+@register(seqs.LEFT_SQUARE_BRACKET_BIG_T, (NORMAL,))
+class UnimpairedTabfirst(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -246,8 +247,8 @@ class _UnimpairedTabfirst(ViOperatorDef):
         }
 
 
-@register(seq=']T', modes=(NORMAL,))
-class _UnimpairedTablast(ViOperatorDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_BIG_T, (NORMAL,))
+class UnimpairedTablast(ViOperatorDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -276,9 +277,9 @@ class _BaseToggleDef(ViOperatorDef):
         return True
 
 
-@register(seq='co', modes=(NORMAL,))
-@register(seq='yo', modes=(NORMAL,))
-class _UnimpairedToggle(_BaseToggleDef):
+@register(seqs.CO, (NORMAL,))
+@register(seqs.YO, (NORMAL,))
+class UnimpairedToggle(_BaseToggleDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -289,8 +290,8 @@ class _UnimpairedToggle(_BaseToggleDef):
         }
 
 
-@register(seq='[o', modes=(NORMAL,))
-class _UnimpairedToggleOn(_BaseToggleDef):
+@register(seqs.LEFT_SQUARE_BRACKET_O, (NORMAL,))
+class UnimpairedToggleOn(_BaseToggleDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -301,8 +302,8 @@ class _UnimpairedToggleOn(_BaseToggleDef):
         }
 
 
-@register(seq=']o', modes=(NORMAL,))
-class _UnimpairedToggleOff(_BaseToggleDef):
+@register(seqs.RIGHT_SQUARE_BRACKET_O, (NORMAL,))
+class UnimpairedToggleOff(_BaseToggleDef):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
@@ -313,7 +314,7 @@ class _UnimpairedToggleOff(_BaseToggleDef):
         }
 
 
-_CONFLICT_MARKER_REGEX = '(<<<<<<<|=======|>>>>>>>)'
+_CONFLICT_MARKER_REGEX = '^(<<<<<<< |=======$|>>>>>>> )'
 
 
 def _goto_prev_conflict_marker(view, count):

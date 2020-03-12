@@ -363,7 +363,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('<esc>')
         self.assertNormal('fizz | x')
         self.feedkey('.')
-        self.assertNormal('fizz |buzz x')
+        self.assertNormal('fizz buzz| x')
 
     @unittest.mock.patch('sublime.View.command_history')
     def test_dot_repeat_append_sequence(self, command_history):
@@ -377,7 +377,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('<esc>')
         self.assertNormal('fizz|  x')
         self.feedkey('.')
-        self.assertNormal('fizz| buzz x')
+        self.assertNormal('fizz buzz| x')
 
     @unittest.mock.patch('sublime.View.command_history')
     def test_dot_repeat_insert_sequence(self, command_history):
@@ -390,7 +390,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('<esc>')
         self.assertNormal('fizz | x')
         self.feedkey('.')
-        self.assertNormal('fizz |buzz x')
+        self.assertNormal('fizz buzz| x')
 
     def test_dot_repeat_visual_operation(self):
         self.visual('fizz |buzz|fizzbuzz')
@@ -398,6 +398,23 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertNormal('fizz |fizzbuzz')
         self.feedkey('.')
         self.assertNormal('fizz |buzz')
+        self.visual('x\nf|izz\nbuz|z\nping\npong\nx')
+        self.feedkey('x')
+        self.assertNormal('x\nf|z\nping\npong\nx')
+        self.feedkey('.')
+        self.assertNormal('x\nf|g\npong\nx')
+
+    def test_dot_repeat_visual_line_operation(self):
+        self.vline('x\n|fizz\n|buzz\nx\n')
+        self.feedkey('x')
+        self.assertNormal('x\n|buzz\nx\n')
+        self.feedkey('.')
+        self.assertNormal('x\n|x\n')
+        self.vline('x\n|fizz\nbuzz\n|ping\npong\nx\n')
+        self.feedkey('x')
+        self.assertNormal('x\n|ping\npong\nx\n')
+        self.feedkey('.')
+        self.assertNormal('x\n|x\n')
 
     @unittest.mock_bell()
     def test_dot_repeat_rings_bell_in_visual_mode(self):
@@ -420,6 +437,25 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.feedkey('.')
         self.assertNormal('fizz | x')
         self.assertBell()
+
+    def test_issue_10_dot_repeat(self):
+        self.normal('|abcdefg\nabcdefg\n')
+        self.feedkeys('v2lc')
+        self.assertInsert('|defg\nabcdefg\n')
+        self.feedkey('<Esc>')
+        self.feedkey('j')
+        self.assertNormal('defg\n|abcdefg\n')
+        self.feedkey('.')
+        self.assertNormal('defg\n|defg\n')
+        self.normal('x|abcdefg\nabcdefghijkl\n')
+        self.feedkeys('v2lc')
+        self.view.run_command('insert', {'characters': 'fizz'})
+        self.assertInsert('xfizz|defg\nabcdefghijkl\n')
+        self.feedkey('<Esc>')
+        self.feedkey('j')
+        self.assertNormal('xfizzdefg\nabcd|efghijkl\n')
+        self.feedkey('.')
+        # self.assertNormal('xfizzdefg\nabcdfizz|hijkl\n')
 
     def test_marks(self):
         for key in ('\'', '`'):

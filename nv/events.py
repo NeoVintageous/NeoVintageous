@@ -21,11 +21,12 @@ from sublime_plugin import EventListener
 
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.session import session_on_close
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
-from NeoVintageous.nv.vi import settings
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
@@ -137,8 +138,7 @@ class NeoVintageousEvents(EventListener):
             # executes the original drag_select command followed by entering the
             # correct mode.
 
-            # TODO Kill State dependency
-            mode = State(view).mode
+            mode = get_mode(view)
 
             if mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 if (args.get('extend') or (args.get('by') == 'words') or args.get('additive')):
@@ -183,13 +183,13 @@ class NeoVintageousEvents(EventListener):
             do_modeline(view)
 
     def on_post_save(self, view):
-        # Ensure the carets are within valid bounds. For instance, this is a
-        # concern when 'trim_trailing_white_space_on_save' is set to true.
-        # TODO Kill State dependency
-        fix_eol_cursor(view, State(view).mode)
+        if is_view(view):
+            # Ensure the carets are within valid bounds. For instance, this is a
+            # concern when 'trim_trailing_white_space_on_save' is set to true.
+            fix_eol_cursor(view, get_mode(view))
 
     def on_close(self, view):
-        settings.on_close(view)
+        session_on_close(view)
 
     def on_activated(self, view):
 
@@ -198,7 +198,7 @@ class NeoVintageousEvents(EventListener):
         # view.on_deactivate() event, because that event is triggered when the
         # user right button clicks the view with the mouse, and we don't want
         # visual selections to be cleared on mouse right button clicks.
-        if not view.settings().get('is_widget'):
+        if is_view(view):
             window = view.window()
             if window:
                 active_group = window.active_group()
@@ -208,7 +208,7 @@ class NeoVintageousEvents(EventListener):
                         if other_view and other_view != view:
                             sel = other_view.sel()
                             if len(sel) > 0 and any([not s.empty() for s in sel]):
-                                enter_normal_mode(other_view, State(other_view).mode)
+                                enter_normal_mode(other_view, get_mode(other_view))
 
         # Initialise view state.
         init_state(view)

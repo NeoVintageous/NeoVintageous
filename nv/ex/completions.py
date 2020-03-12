@@ -22,7 +22,9 @@ import re
 from sublime import Region
 
 from NeoVintageous.nv.options import get_option_completions
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
+from NeoVintageous.nv.polyfill import view_to_region
+from NeoVintageous.nv.polyfill import view_to_str
+from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.vim import is_ex_mode
 
 
@@ -110,7 +112,7 @@ def _write_to_ex_cmdline(view, edit, cmd: str, completion: str) -> None:
     # trigger a prefix update. See: on_change_cmdline_completion_prefix().
     view.window().settings().set('_nv_ignore_next_on_change', True)
     view.sel().clear()
-    view.replace(edit, Region(0, view.size()), cmd + ' ' + completion)
+    view.replace(edit, view_to_region(view), cmd + ' ' + completion)
     view.sel().add(Region(view.size()))
 
 
@@ -269,7 +271,7 @@ def insert_best_cmdline_completion(view, edit, forward: bool = True) -> None:
         elif _is_fs_completion(view):
             _FsCompletion(view).run(edit)
         else:
-            cmdline = view.substr(Region(0, view.size()))
+            cmdline = view_to_str(view)
             if len(cmdline) < 1:
                 return
 

@@ -27,11 +27,12 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
-from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
@@ -41,11 +42,9 @@ __all__ = [
     '_nv_commentary_command'
 ]
 
-_MODES_ACTION = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
 
-
-@register(seq='gc', modes=_MODES_ACTION)
-class CommentLinesMotion(ViOperatorDef):
+@register(seqs.GC, ACTION_MODES)
+class CommentaryMotion(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
@@ -64,8 +63,8 @@ class CommentLinesMotion(ViOperatorDef):
         }
 
 
-@register(seq='gcc', modes=(NORMAL,))
-class CommentLines(ViOperatorDef):
+@register(seqs.GCC, (NORMAL,))
+class CommentaryLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True
@@ -83,10 +82,10 @@ class CommentLines(ViOperatorDef):
         }
 
 
-# NOTE Not a standard Commentary command.
-# See also tComment plugin.
-@register(seq='gC', modes=_MODES_ACTION)
-class ToggleBlockComments(ViOperatorDef):
+# NOTE The command (gC) is not defined in the original Commentary plugin, it's
+# from a plugin called tComment: https://github.com/tomtom/tcomment_vim.
+@register(seqs.G_BIG_C, ACTION_MODES)
+class CommentaryBlock(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.updates_xpos = True

@@ -47,5 +47,9 @@ class Test_ex_delete(unittest.FunctionalTestCase):
         self.eq('|abc\nxxx\nxxx\nabc\nabc', ':2,3delete', 'abc\n|abc\nabc')
         self.eq('|abc\nxxx\nxxx\nxxx\nabc\nabc', ':2,4delete', 'abc\n|abc\nabc')
 
+        self.eq('|1\n2\n3\n4\n5\n6\n7\n8', ':+3delete', '1\n2\n3\n|5\n6\n7\n8')
+        self.eq('|1\n2\n3\n4\n5\n6\n7\n8', ':+3+2delete', '1\n2\n3\n4\n5\n|7\n8')
+        self.eq('|1\n2\n3\n4\n5\n6\n7\n8', ':+3,6delete', '1\n2\n3\n|7\n8')
+
     def test_v(self):
         self.eq('1\n2|2\n33\n4|4\n5\n', ":'<,'>delete", 'n_1\n|5\n')

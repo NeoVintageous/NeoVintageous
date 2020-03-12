@@ -55,6 +55,7 @@ class Test_h(unittest.FunctionalTestCase):
         self.eq('|f|izz\n|b|uzz', 'b_h', '|f|izz\n|b|uzz')
         self.eq('fizz|e|r\nbuzz|e|r', 'b_3h', 'r_f|izze|r\nb|uzze|r')
         self.eq('x\nfi|z|z\nbu|z|z', 'b_9h', 'r_x\n|fiz|z\n|buz|z')
+        self.eq('r_fi|zze|r\nbu|zze|r\n', 'b_h', 'r_f|izze|r\nb|uzze|r\n')
 
     def test_b_jagged_selections(self):
         # For jagged selections (on the rhs), only those sticking out need to move leftwards.

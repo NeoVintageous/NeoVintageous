@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
-from NeoVintageous.nv.vi.settings import set_cmdline_cwd
+from NeoVintageous.nv.settings import set_cmdline_cwd
 
 
 class TestCmdlineEditing(unittest.FunctionalTestCase):
@@ -191,7 +191,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.settings().set('translate_tabs_to_spaces', False)
         self.eq(':foobar |', '<tab>', ':foobar \t|')
 
-    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
     @unittest.mock.patch('os.path.expanduser')
     def test_c_tab_edit_tilda(self, expanduser):
         set_cmdline_cwd(self.fixturePath('cwd'))
@@ -211,7 +211,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.feed('<tab>')
         self.assertNormal(':edit %s/b.txt|' % cwd)
 
-    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
     def test_c_tab_file_completions(self):
         set_cmdline_cwd(self.fixturePath('cwd'))
         for cmd in (':edit', ':e', ':tabedit', ':split', ':sp', ':vsplit', ':vs'):
@@ -228,7 +228,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
             self.feed('<tab>')
             self.assertNormal(cmd + ' b.txt|')
 
-    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
     def test_c_tab_cd_completions_only_include_directories(self):
         set_cmdline_cwd(self.fixturePath('cwd'))
         self.eq(':cd |', '<tab>', ':cd sub/|')
@@ -239,7 +239,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.feed('<tab>')
         self.assertNormal(':cd sub/|')
 
-    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
     def test_c_tab_edit_completion_backup(self):
         set_cmdline_cwd(self.fixturePath('cwd', 'sub'))
         for cmd in (':edit', ':e', ':tabedit', ':split', ':sp', ':vsplit', ':vs'):
@@ -258,12 +258,12 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
             self.feed('<tab>')
             self.assertNormal(cmd + ' ../b.txt|')
 
-    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
     def test_c_tab_edit_completion_backup_slash(self):
         set_cmdline_cwd(self.fixturePath('cwd', 'sub'))
         self.eq(':edit ../|', '<tab>', ':edit ../b.txt|')
 
-    @unittest.mock.patch.dict('NeoVintageous.nv.vi.settings._storage', {})
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
     def test_c_tab_edit_completion_prefix(self):
         set_cmdline_cwd(self.fixturePath('cwd'))
         self.eq(':edit sub/s|', '<tab>', ':edit sub/sb.txt|')

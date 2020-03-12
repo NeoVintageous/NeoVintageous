@@ -43,6 +43,9 @@ VISUAL = 'mode_visual'
 VISUAL_BLOCK = 'mode_visual_block'
 VISUAL_LINE = 'mode_visual_line'
 
+ACTION_MODES = (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+MOTION_MODES = (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK)
+
 DIRECTION_UP = 1
 DIRECTION_DOWN = 2
 
@@ -68,6 +71,12 @@ def mode_to_name(mode: str) -> str:
         return _MODES[mode]
     except KeyError:
         return '*UNKNOWN'
+
+
+def reset_status(view, mode: str) -> None:
+    view.erase_status('vim-seq')
+    if mode == NORMAL:
+        view.erase_status('vim-mode')
 
 
 def is_visual_mode(mode: str) -> bool:

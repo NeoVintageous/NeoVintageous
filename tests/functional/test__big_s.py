@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_setting('enable_surround', False)
+
     def test_n(self):
         self.eq('|', 'S', 'i_|')
         self.eq('|aaa\nbbb\nccc', 'S', 'i_|\nbbb\nccc')

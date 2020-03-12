@@ -17,10 +17,9 @@
 
 import os
 
-from sublime import Region
-
+from NeoVintageous.nv.polyfill import view_to_str
+from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.utils import set_selection
-from NeoVintageous.nv.vi.settings import get_cmdline_cwd
 from NeoVintageous.nv.vim import status_message
 
 
@@ -221,7 +220,7 @@ def _close_view(window, close_if_last: bool = True) -> None:
         return
 
     # If it's not a file on disk and contains only whitespace then close it
-    if not current_view.file_name() and current_view.substr(Region(0, current_view.size())).strip() == '':
+    if not current_view.file_name() and view_to_str(current_view).strip() == '':
         current_view.set_scratch(True)
         current_view.close()
         views_in_group = window.views_in_group(window.active_group())

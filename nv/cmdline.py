@@ -125,6 +125,9 @@ class CmdlineOutput():
 
     def show(self) -> None:
         self._window.run_command('show_panel', {'panel': 'output.' + self._name})
+        self._output.settings().set('nv_cmdline_output', True)
+        self.write('\nPress ENTER to continue')
+        self._window.focus_view(self._window.find_output_panel(self._name))
 
     def write(self, text: str) -> None:
         self._output.set_read_only(False)

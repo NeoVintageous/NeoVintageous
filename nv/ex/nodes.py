@@ -27,6 +27,7 @@ from NeoVintageous.nv.ex.tokens import TokenPercent
 from NeoVintageous.nv.ex.tokens import TokenSearchBackward
 from NeoVintageous.nv.ex.tokens import TokenSearchForward
 from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
@@ -164,7 +165,7 @@ class RangeNode(Node):
                 return Region(-1, -1)
 
             if len(self.start) == 1 and isinstance(self.start[0], TokenPercent):
-                return Region(0, view.size())
+                return view_to_region(view)
 
             return view.full_line(view.text_point(start, 0))
 

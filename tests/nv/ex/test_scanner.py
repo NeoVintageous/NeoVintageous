@@ -274,6 +274,26 @@ class TestScannerOffsets(unittest.TestCase):
         tokens = list(scanner.scan())
         self.assertEqual([TokenDot(), TokenOffset([-100]), TokenEof()], tokens)
 
+    def test_can_scan_offset_with_trailing_chars2(self):
+        scanner = Scanner("+3+2")
+        tokens = list(scanner.scan())
+        self.assertEqual([TokenOffset([3, 2]), TokenEof()], tokens)
+
+    def test_offset_number(self):
+        scanner = Scanner("+3,12")
+        tokens = list(scanner.scan())
+        self.assertEqual([TokenOffset([3]), TokenComma(), TokenDigits('12'), TokenEof()], tokens)
+
+    def test_offset_offset(self):
+        scanner = Scanner("+12,+15")
+        tokens = list(scanner.scan())
+        self.assertEqual([TokenOffset([12]), TokenComma(), TokenOffset([15]), TokenEof()], tokens)
+
+    def test_offset_number_command(self):
+        scanner = Scanner("+3,6delete")
+        tokens = list(scanner.scan())
+        self.assertEqual([TokenOffset([3]), TokenComma(), TokenDigits('6'), TokenCommand('delete', params={'register': '"', 'count': None}, cooperates_with_global=True, addressable=True), TokenEof()], tokens)  # noqa: E501
+
 
 class TestScannerDigits(unittest.TestCase):
 

@@ -143,6 +143,24 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('1\n2\n3\n|', 'dd', '1\n2\n|3')
         self.eq('1\n2\n|3\n', 'dd', '1\n2\n|')
 
+    def test_di__quote__or__slash__or__underscore(self):
+        for t in ('\'', '"', '/', '_'):
+            self.eq('{0}|{0}'.format(t), 'di' + t, '{0}|{0}'.format(t))
+            self.eq('x{0}fi|zz{0}x'.format(t), 'di' + t, 'x{0}|{0}x'.format(t))
+            self.assertRegister('"fizz')
+            self.assertRegister('-fizz')
+            self.assertRegisterEmpty('0')
+            self.assertRegisterEmpty('1')
+
+    def test_da__quote__or__slash__or__underscore(self):
+        for t in ('\'', '"', '/', '_'):
+            self.eq('{0}|{0}'.format(t), 'da' + t, '|')
+            self.eq('x{0}fi|zz{0}y'.format(t), 'da' + t, 'x|y')
+            self.assertRegister('"{0}fizz{0}'.format(t))
+            self.assertRegister('-{0}fizz{0}'.format(t))
+            self.assertRegisterEmpty('0')
+            self.assertRegisterEmpty('1')
+
     def test_v(self):
         self.eq('x\nfi|zz bu|zz\ny', 'v_d', 'n_x\nfi|zz\ny')
 

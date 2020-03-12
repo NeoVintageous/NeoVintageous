@@ -1,3 +1,4 @@
+from collections import defaultdict
 import json
 import os
 import traceback
@@ -5,6 +6,14 @@ import traceback
 from sublime import packages_path
 
 _session = {}
+_views = defaultdict(dict)  # type: dict
+
+
+def session_on_close(view) -> None:
+    try:
+        del _views[view.id()]
+    except KeyError:
+        pass
 
 
 def _session_file() -> str:
@@ -25,7 +34,11 @@ def load_session() -> None:
             if content.strip():
                 session = json.loads(content, object_hook=_json_object_hook_dict_str_key_to_int)
                 if session:
+                    accept_keys = ('history', 'ex_substitute_last_pattern', 'ex_substitute_last_replacement')
                     for k, v in session.items():
+                        if k not in accept_keys:
+                            continue
+
                         # TODO The history module needs to be refactored to
                         # store it's session data in a loadable session format
                         # i.e. use session module functions to store data.
@@ -61,3 +74,33 @@ def set_session_value(name: str, value, persist: bool = False) -> None:
 
     if persist:
         save_session()
+
+
+def get_session_view_value(view, name: str, default=None):
+    try:
+        return _views[view.id()][name]
+    except KeyError:
+        return default
+
+
+def set_session_view_value(view, name: str, value) -> None:
+    _views[view.id()][name] = value
+
+
+# TODO Refactor to use get_session_view_value
+def tmp_bc_get_session_view_value(view, name: str, default):
+    vintage = view.settings().get('vintage')
+    if vintage:
+        return vintage.get(name, default)
+
+    return default
+
+
+# TODO Refactor to use set_session_view_value
+def tmp_bc_set_session_view_value(view, name: str, value) -> None:
+    vintage = view.settings().get('vintage')
+    if not vintage:
+        vintage = {}
+
+    vintage[name] = value
+    view.settings().set('vintage', vintage)

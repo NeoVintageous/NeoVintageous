@@ -15,12 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from sublime import Region
 from sublime_plugin import TextCommand
+
+from NeoVintageous.nv.polyfill import view_to_region
 
 
 class _nv_test_write(TextCommand):
 
     def run(self, edit, text):
-        self.view.erase(edit, Region(0, self.view.size()))
+        self.view.erase(edit, view_to_region(self.view))
         self.view.insert(edit, 0, text)

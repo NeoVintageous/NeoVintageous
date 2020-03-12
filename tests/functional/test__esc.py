@@ -35,6 +35,7 @@ class Test_esc(unittest.FunctionalTestCase):
         self.eq('r_f|iz|z', 'v_<esc>', 'n_f|izz')
         self.eq('1\n|\n|3', 'v_<esc>', 'n_1\n|\n3')
         self.eq('1\n2|\n|3', 'v_<esc>', 'n_1\n|2\n3')
+        self.eq('fi|zzb|uzz', 'v_<esc>', 'n_fizz|buzz')
         self.assertStatusLineIsBlank()
 
     def test_V(self):
@@ -58,22 +59,28 @@ class Test_esc(unittest.FunctionalTestCase):
         self.eq('f|iz|z\nb|uz|z\n', 's_<esc>', 'n_f|izz\nbuzz\n')
         self.assertStatusLineIsBlank()
 
-    def test_N_esc(self):
-        self.eq('fi|zzb|uzz', '<esc>', 'N_fi|zzb|uzz')
-        self.assertStatusLineIsBlank()
-
-    def test_O_esc(self):
+    def test_esc_after_big_o_when_no_leading_whitespace(self):
         self.normal('1\n2|\n3')
         self.feed('n_O')
         self.feed('i_<esc>')
         self.assertNormal('1\n|\n2\n3')
         self.assertStatusLineIsBlank()
 
-    def test_O_esc_strip_leading_whitespace(self):
-        self.normal('    1\n    2|\n    3')
+    def test_esc_after_big_o_should_strip_leading_whitespace(self):
+        self.normal('    1\n    |2\n    3')
         self.feed('n_O')
         self.assertInsert('    1\n    |\n    2\n    3')
         self.feed('i_<esc>')
         self.assertNormal('    1\n|\n    2\n    3')
         self.assertXpos(4)
+        self.assertStatusLineIsBlank()
+
+    def test_esc_after_big_o_should_not_strip_leading_whitespace_when_setting_is_off(self):
+        self.set_setting('clear_auto_indent_on_esc', False)
+        self.normal('    1\n    2|\n    3')
+        self.feed('n_O')
+        self.assertInsert('    1\n    |\n    2\n    3')
+        self.feed('i_<esc>')
+        self.assertNormal('    1\n   | \n    2\n    3')
+        self.assertXpos(3)
         self.assertStatusLineIsBlank()

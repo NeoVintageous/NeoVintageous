@@ -45,6 +45,7 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('x|cd|x', 'v_"2y', 'n_x|cdx')
         self.assertRegisters('"2', 'cd')
         self.assertRegistersEmpty('-0')
+        self.assertClipboardEmpty()
 
     def test_v_Y(self):
         self.eq('x\nfizz |buzz\nfizz| buzz\nx', 'v_Y', 'n_x\nfizz buzz\nfiz|z buzz\nx')
@@ -78,6 +79,39 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('0word')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
+
+    def test_y_into_readonly_registers(self):
+        self.eq('x fi|zz x', '"xyiw', 'x |fizz x')
+        self.assertRegisters('"x', 'fizz', '01-')
+        self.eq('x bu|zz x', '"_yiw', 'x |buzz x')
+        self.assertRegisters('"x', 'fizz', '01-')
+        self.eq('x bu|zz x', '"%yiw', 'x |buzz x')
+        self.assertRegisters('"x', 'fizz', '01-')
+        self.eq('x bu|zz x', '"#yiw', 'x |buzz x')
+        self.assertRegisters('"x', 'fizz', '01-')
+        self.eq('x bu|zz x', '".yiw', 'x |buzz x')
+        self.assertRegisters('"x', 'fizz', '01-')
+        self.eq('x bu|zz x', '":yiw', 'x |buzz x')
+        self.assertRegisters('"x', 'fizz', '01-')
+        self.eq('b|uz|z', 'v_"_y', 'n_b|uzz')
+        self.assertRegisters('"x', 'fizz', '01-')
+        self.assertClipboardEmpty()
+
+    def test_y_into_clipboard(self):
+        self.eq('f|iz|z', 'v_"*y', 'n_f|izz')
+        self.assertRegisters('"', 'iz', '01-')
+        self.assertClipboard('iz')
+        self.eq('b|uz|z', 'v_"+y', 'n_b|uzz')
+        self.assertRegisters('"', 'uz', '01-')
+        self.assertClipboard('uz')
+        self.set_setting('use_sys_clipboard', True)
+        self.eq('f|iz|z', 'v_"xy', 'n_f|izz')
+        self.assertRegisters('"x', 'iz', '01-')
+        self.assertClipboard('iz')
+        self.set_setting('use_sys_clipboard', False)
+        self.eq('b|ab|z', 'v_"xy', 'n_b|abz')
+        self.assertRegisters('"x', 'ab', '01-')
+        self.assertClipboard('iz')
 
     def test_yib(self):
         self.eq('(wo|rd)', 'yi(', '(|word)')
@@ -124,6 +158,7 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('one\nt|wo\nthree', '"2yy', 'one\nt|wo\nthree')
         self.assertLinewiseRegisters('"2', 'two\n')
         self.assertRegistersEmpty('-01')
+        self.assertClipboardEmpty()
 
     def test_yy_with_count(self):
         self.eq('x\n|1\n2\n3\nx\n', '3yy', 'x\n|1\n2\n3\nx\n')

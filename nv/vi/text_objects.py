@@ -76,6 +76,8 @@ PAIRS = {
     '"': (('"', '"'), QUOTE),
     "'": (("'", "'"), QUOTE),
     '`': (('`', '`'), QUOTE),
+    '/': (('/', '/'), QUOTE),  # {not in Vim}
+    '_': (('_', '_'), QUOTE),  # {not in Vim}
     '(': (('\\(', '\\)'), BRACKET),
     ')': (('\\(', '\\)'), BRACKET),
     '[': (('\\[', '\\]'), BRACKET),
@@ -91,8 +93,8 @@ PAIRS = {
     't': (None, TAG),
     'W': (None, BIG_WORD),
     'w': (None, WORD),
-    'I': (None, BIG_INDENT),
-    'i': (None, INDENT),
+    'I': (None, BIG_INDENT),  # {not in Vim}
+    'i': (None, INDENT),  # {not in Vim}
     'l': (None, LINE),
 }  # type: dict
 

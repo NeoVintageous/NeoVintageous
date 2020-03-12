@@ -23,8 +23,10 @@ from sublime import Region
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import col_at
 from NeoVintageous.nv.utils import is_view
@@ -36,13 +38,11 @@ from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
 from NeoVintageous.nv.vi.settings import SettingsManager
-from NeoVintageous.nv.vi.settings import set_repeat_data
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
-from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
@@ -51,6 +51,7 @@ from NeoVintageous.nv.vim import clean_view
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
+from NeoVintageous.nv.vim import reset_status
 from NeoVintageous.nv.vim import run_action
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import run_window_command
@@ -312,46 +313,9 @@ class State(object):
 
         return False
 
-    def enter_normal_mode(self) -> None:
-        self.mode = NORMAL
-
-    def enter_visual_mode(self) -> None:
-        self.mode = VISUAL
-
-    def enter_visual_line_mode(self) -> None:
-        self.mode = VISUAL_LINE
-
-    def enter_insert_mode(self) -> None:
-        self.mode = INSERT
-
-    def enter_replace_mode(self) -> None:
-        self.mode = REPLACE
-
-    def enter_select_mode(self) -> None:
-        self.mode = SELECT
-
-    def enter_visual_block_mode(self) -> None:
-        self.mode = VISUAL_BLOCK
-
-    def reset_sequence(self) -> None:
-        # TODO When is_recording, we could store the .sequence
-        # and replay that, but we can't easily translate key presses in insert
-        # mode to a NeoVintageous-friendly notation. A hybrid approach may work:
-        # use a plain string for any command-mode-based mode, and native ST
-        # commands for insert mode. That should make editing macros easier.
-        self.sequence = ''
-
-    def reset_partial_sequence(self) -> None:
-        self.partial_sequence = ''
-
     def reset_register_data(self) -> None:
         self.register = '"'
         self.must_capture_register_name = False
-
-    def reset_status(self) -> None:
-        self.view.erase_status('vim-seq')
-        if self.mode == NORMAL:
-            self.view.erase_status('vim-mode')
 
     def display_status(self) -> None:
         mode_name = mode_to_name(self.mode)
@@ -400,10 +364,6 @@ class State(object):
 
             view.show(target_pt, False)
 
-    def reset(self) -> None:
-        # TODO Remove this when we've ported all commands. This is here for retrocompatibility.
-        self.reset_command_data()
-
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
         self.update_xpos()
@@ -417,10 +377,10 @@ class State(object):
         self.action_count = ''
         self.motion_count = ''
 
-        self.reset_sequence()
-        self.reset_partial_sequence()
+        self.sequence = ''
+        self.partial_sequence = ''
         self.reset_register_data()
-        self.reset_status()
+        reset_status(self.view, self.mode)
 
     def reset_volatile_data(self) -> None:
         # Reset window or application wide data to their default values.
@@ -441,36 +401,13 @@ class State(object):
                     if sel.a < sel.b:
                         pos -= 1
 
-                counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))
+                counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))  # type: dict
                 tab_size = self.view.settings().get('tab_size')
                 self.xpos = (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t']))
             except Exception:
                 # TODO [review] Exception handling
                 _log.debug('error updating xpos; default to 0')
                 self.xpos = 0
-
-    def process_input(self, key: str) -> bool:
-        _log.info('process input key %s', key)
-
-        motion = self.motion
-        if motion and motion.accept_input:
-            motion_accepted = motion.accept(key)
-
-            # Motion, with processed key, needs to reserialised and stored.
-            self.motion = motion
-
-            return motion_accepted
-
-        # We can just default to whatever the action' accept methods returns,
-        # because it will return False by default.
-
-        action = self.action
-        action_accepted = action.accept(key)
-
-        # Action, with processed key, needs to reserialised and stored.
-        self.action = action
-
-        return action_accepted
 
     def set_command(self, command: ViCommandDefBase) -> None:
         # Set the current command.
@@ -596,7 +533,7 @@ class State(object):
 
             # Evaluate action with motion: runs the action with the motion as an
             # argument. The motion's mode is set to INTERNAL_NORMAL and is run
-            # by the action internally to make the selection to operates on. For
+            # by the action internally to make the selection it operates on. For
             # example the motion commands can be used after an operator command,
             # to have the command operate on the text that was moved over.
 
@@ -690,7 +627,7 @@ class State(object):
                 set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:
-            self.enter_normal_mode()
+            self.mode = NORMAL
 
         self.reset_command_data()
 
@@ -720,7 +657,8 @@ def init_state(view) -> None:
         return
 
     state = State(view)
-    mode = state.mode
+
+    mode = get_mode(view)
 
     # Does user want to reset mode (to normal mode) when initialising state?
     if mode not in (NORMAL, UNKNOWN) and not get_setting(view, 'reset_mode_when_switching_tabs'):

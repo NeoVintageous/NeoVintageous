@@ -18,19 +18,17 @@
 # A port of https://github.com/terryma/vim-multiple-cursors.
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
-from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import SELECT
-from NeoVintageous.nv.vim import VISUAL
-from NeoVintageous.nv.vim import VISUAL_BLOCK
-from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 __all__ = ()
 
 
-@register('<C-n>', (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
-@register('gh', (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+@register(seqs.CTRL_N, ACTION_MODES)
+@register(seqs.GH, ACTION_MODES)
 class MultipleCursorsStart(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,8 +44,8 @@ class MultipleCursorsStart(ViOperatorDef):
         }
 
 
-@register('<Esc>', (SELECT,))
-@register('J', (SELECT,))
+@register(seqs.BIG_J, (SELECT,))
+@register(seqs.ESC, (SELECT,))
 class MultipleCursorsExit(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -65,8 +63,8 @@ class MultipleCursorsExit(ViOperatorDef):
         }
 
 
-@register('<C-n>', (SELECT,))
-@register('j', (SELECT,))
+@register(seqs.CTRL_N, (SELECT,))
+@register(seqs.J, (SELECT,))
 class MultipleCursorsAdd(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -83,8 +81,8 @@ class MultipleCursorsAdd(ViOperatorDef):
         }
 
 
-@register('<C-p>', (SELECT,))
-@register('k', (SELECT,))
+@register(seqs.CTRL_P, (SELECT,))
+@register(seqs.K, (SELECT,))
 class MultipleCursorsRemove(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -101,8 +99,8 @@ class MultipleCursorsRemove(ViOperatorDef):
         }
 
 
-@register('<C-x>', (SELECT,))
-@register('l', (SELECT,))
+@register(seqs.CTRL_X, (SELECT,))
+@register(seqs.L, (SELECT,))
 class MultipleCursorsSkip(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -115,7 +113,7 @@ class MultipleCursorsSkip(ViOperatorDef):
         }
 
 
-@register('gH', (NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+@register(seqs.G_BIG_H, ACTION_MODES)
 class MultipleCursorsAll(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

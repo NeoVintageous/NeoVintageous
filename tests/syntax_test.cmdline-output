@@ -1,0 +1,31 @@
+" SYNTAX TEST "Packages/NeoVintageous/res/Command-line output.sublime-syntax"
+
+--- Registers ---
+" ^^^^^^^^^^^^^^^ entity.name
+"+
+"*
+"-
+xx   a^Jb^Jc
+"     ^^ comment
+"        ^^ comment
+"%   /path/to/file.txt
+"1   xxx
+
+
+     #  cmd history
+"    ^^^^^^^^^^^^^^ entity.name
+    14  c1
+>   65  c2
+     #  search history
+"    ^^^^^^^^^^^^^^^^^ entity.name
+     1  s1
+>  113  s2
+     #  expr history
+"    ^^^^^^^^^^^^^^^ entity.name
+     #  input history
+"    ^^^^^^^^^^^^^^^^ entity.name
+     #  debug history
+"    ^^^^^^^^^^^^^^^^ entity.name
+
+Press ENTER to continue
+" ^^^^^^^^^^^^^^^^^^^^^ markup.raw.inline

@@ -36,6 +36,10 @@ class Test_t(unittest.FunctionalTestCase):
         self.eq('xx|xx', 'n_tx', 'xx|xx')
 
     def test_n_special_bar_char(self):
+        self.normal('12|34')
+        # Overwrite the content above with text containing a literal bar
+        # character (i.e. "|"). The normal() api method replaces bar characters
+        # with selections and this test is testing against a literal bar char.
         self.write('12|34')
         self.select(0)
         self.feed('n_t|')

@@ -149,15 +149,15 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('{\na\n|b\nc\n}\n', 'v_i' + target, '{\n|a\nb\nc\n|}\n')
             self.eq('{xx\na\n|b\nc\nxx}\n', 'v_i' + target, '{|xx\na\nb\nc\nxx|}\n')
 
-    def test_va__quote__(self):
-        for mark in ('\'', '"'):
+    def test_va__quote__or__slash__or__underscore(self):
+        for mark in ('\'', '"', '/', '_'):
             self.eq('f|iz|z', 'v_i' + mark, 'f|iz|z')
             self.eq('f|iz{0}z'.format(mark), 'v_a' + mark, 'f|i|z{0}z'.format(mark))
             self.eq('x{0}fi|zz{0}x'.format(mark), 'v_a' + mark, 'x|{0}fizz{0}|x'.format(mark))
             self.eq('x{0}fi|zz bu|zz{0}x'.format(mark), 'v_a' + mark, 'x|{0}fizz buzz{0}|x'.format(mark))
 
-    def test_vi__quote__(self):
-        for mark in ('\'', '"'):
+    def test_vi__quote__or__slash__or__underscore(self):
+        for mark in ('\'', '"', '/', '_'):
             self.eq('f|iz|z', 'v_i' + mark, 'f|iz|z')
             self.eq('f|iz{0}z'.format(mark), 'v_i' + mark, 'f|i|z{0}z'.format(mark))
             self.eq('x{0}fi|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz|{0}x'.format(mark))

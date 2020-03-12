@@ -2,6 +2,40 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.20.0 - Unreleased
+
+### Added
+
+* Added [#705](https://github.com/NeoVintageous/NeoVintageous/issues/705): `/{pattern}\c` (`\c` ignore case, do not use the `'ignorecase'` option)
+* Added [#705](https://github.com/NeoVintageous/NeoVintageous/issues/705): `/{pattern}\C` (`\C` match case, do not use the `'ignorecase'` option)
+* Added [#707](https://github.com/NeoVintageous/NeoVintageous/issues/707): `[count]gT` Go `{count}` tab pages back
+* Added [#631](https://github.com/NeoVintageous/NeoVintageous/issues/631): `i/`, `i_`, `a/`, and `a_` text objects e.g. `ci/`, `ca/`
+* Added [#697](https://github.com/NeoVintageous/NeoVintageous/issues/697): `'smartcase'` option
+* Added [#700](https://github.com/NeoVintageous/NeoVintageous/issues/700): "=" readonly buffer indicator for `:(ls|buffers|files)`
+* Added [#701](https://github.com/NeoVintageous/NeoVintageous/issues/701): "+" modified buffer indicator for `(ls|buffers|files)`
+* Added [#702](https://github.com/NeoVintageous/NeoVintageous/issues/702): `:(ls|buffers|files)` now uses view id as the unique number (this number will not change)
+* Added [#294](https://github.com/NeoVintageous/NeoVintageous/issues/294): `:(ls|buffers|files)`improvements
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Command-line output use the same panel and executed commands overwrite previous output
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Command-line output panels now gain focus when a command is executed
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Command-line output panels are now closable by pressing enter
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Command-line output syntax improvements
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Improved syntax for `:(ls|buffers|files)` command-line output
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Improved syntax for `:reg[isters]` command-line output
+* Added [#703](https://github.com/NeoVintageous/NeoVintageous/issues/703): Improved syntax for `:his[tory]` command-line output
+* Added [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): keypad keys `<k0>`, `<k1>`, `<k2>`, `<k3>`, `<k4>`, `<k5>`, `<k6>`, `<k7>`, `<k8>`, `<k9>`, `<kdivide>`, `<kenter>`, `<kminus>`, `<kmultiply>`, `<kperiod>`, `<kplus>`
+
+### Fixed
+
+* Fixed [#706](https://github.com/NeoVintageous/NeoVintageous/issues/706): `gf` should emit visual bell when there is no file under cursor
+* Fixed [#704](https://github.com/NeoVintageous/NeoVintageous/issues/704): `[n` and `]n` should not jump to invalid conflict markers
+* Fixed [#699](https://github.com/NeoVintageous/NeoVintageous/issues/699): `N` after `?` (reverse search) followed by `n` moves in wrong direction (regression)
+* Fixed [#612](https://github.com/NeoVintageous/NeoVintageous/issues/612): Searches bound to a keys in neovintageousrc are not repeatable by `n` or `N`
+* Fixed [#698](https://github.com/NeoVintageous/NeoVintageous/issues/698): `:help {subject}` doesn't work for subjects > 35 chars
+* Fixed [#691](https://github.com/NeoVintageous/NeoVintageous/issues/691): Undo should ring bell when already at oldest change
+* Fixed [#694](https://github.com/NeoVintageous/NeoVintageous/issues/694): `<F2>` and `<S-F2>` next and previous bookmark keys wrong way around
+* Fixed [#693](https://github.com/NeoVintageous/NeoVintageous/issues/693): `<C-S-b>` should show build with overlay
+* Fixed [#10](https://github.com/NeoVintageous/NeoVintageous/issues/10): Repeating text changing doesn't work.
+
 ## 1.19.0 - 2020-02-19
 
 ### Added

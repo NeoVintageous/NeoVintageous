@@ -68,9 +68,12 @@ class Test_backtick(unittest.FunctionalTestCase):
     def test_V(self):
         self.normal('fizz\n    bu|zz\nfizz\nbuzz\n')
         self.feed('mx')
-        self.select((0, 5))
+        self.feed('gg')
+        self.assertNormal('|fizz\n    buzz\nfizz\nbuzz\n')
+        self.feed('V')
+        self.assertVline('|fizz\n|    buzz\nfizz\nbuzz\n')
         self.feed('V_`x')
-        self.assertSelection((0, 14))
+        self.assertVline('|fizz\n    buzz\n|fizz\nbuzz\n')
 
     def test_d(self):
         self.normal('fizz\nfizz b|uzz\nbuzz\n')

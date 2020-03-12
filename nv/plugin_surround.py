@@ -26,6 +26,7 @@ from sublime_plugin import TextCommand
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
+from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -42,8 +43,8 @@ __all__ = [
 ]
 
 
-@register(seq='ys', modes=(NORMAL,))
-class _surround_ys(ViOperatorDef):
+@register(seqs.YS, (NORMAL,))
+class Surroundys(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -75,8 +76,8 @@ class _surround_ys(ViOperatorDef):
         }
 
 
-@register(seq='yss', modes=(NORMAL,))
-class _surround_yss(_surround_ys):
+@register(seqs.YSS, (NORMAL,))
+class Surroundyss(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
@@ -102,16 +103,16 @@ class _surround_yss(_surround_ys):
         }
 
 
-@register(seq='S', modes=(VISUAL, VISUAL_BLOCK))
-class _surround_S(_surround_ys):
+@register(seqs.BIG_S, (VISUAL, VISUAL_BLOCK))
+class SurroundS(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.motion_required = False
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
 
-@register(seq='ds', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_ds(ViOperatorDef):
+@register(seqs.DS, (NORMAL, OPERATOR_PENDING))
+class Surroundds(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -143,8 +144,8 @@ class _surround_ds(ViOperatorDef):
         }
 
 
-@register(seq='cs', modes=(NORMAL, OPERATOR_PENDING))
-class _surround_cs(ViOperatorDef):
+@register(seqs.CS, (NORMAL, OPERATOR_PENDING))
+class Surroundcs(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True

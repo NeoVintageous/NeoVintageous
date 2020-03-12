@@ -516,6 +516,8 @@ class TestSelectionObserver(unittest.ViewTestCase):
     def test_restore_sel(self):
         self.normal('fi|zz buzz')
         with sel_observer(self.view) as observer:
+            observer.restore_sel()
+            self.assertNormal('fi|zz buzz')
             self.select(0)
             observer.restore_sel()
             self.assertNormal('fi|zz buzz')

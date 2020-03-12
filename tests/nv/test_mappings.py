@@ -17,23 +17,23 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.mappings import _find_full_match
-from NeoVintageous.nv.mappings import _find_partial_matches
-from NeoVintageous.nv.mappings import _seq_to_mapping
 from NeoVintageous.nv.mappings import INSERT
 from NeoVintageous.nv.mappings import Mapping
-from NeoVintageous.nv.mappings import mappings_add
-from NeoVintageous.nv.mappings import mappings_clear
-from NeoVintageous.nv.mappings import mappings_is_incomplete
-from NeoVintageous.nv.mappings import mappings_remove
-from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.mappings import NORMAL
 from NeoVintageous.nv.mappings import OPERATOR_PENDING
 from NeoVintageous.nv.mappings import SELECT
 from NeoVintageous.nv.mappings import VISUAL
 from NeoVintageous.nv.mappings import VISUAL_BLOCK
 from NeoVintageous.nv.mappings import VISUAL_LINE
-from NeoVintageous.nv.plugin_commentary import CommentLines
+from NeoVintageous.nv.mappings import _find_full_match
+from NeoVintageous.nv.mappings import _find_partial_matches
+from NeoVintageous.nv.mappings import _seq_to_mapping
+from NeoVintageous.nv.mappings import mappings_add
+from NeoVintageous.nv.mappings import mappings_clear
+from NeoVintageous.nv.mappings import mappings_is_incomplete
+from NeoVintageous.nv.mappings import mappings_remove
+from NeoVintageous.nv.mappings import mappings_resolve
+from NeoVintageous.nv.plugin_commentary import CommentaryLines
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_defs import ViMoveByWords
 
@@ -356,7 +356,7 @@ class TestResolve(unittest.ViewTestCase):
 
         self.assertIsInstance(mappings_resolve(state, 'foobar', NORMAL), ViMissingCommandDef)
         self.assertIsInstance(mappings_resolve(state, 'w', NORMAL), ViMoveByWords, 'expected core command')
-        self.assertIsInstance(mappings_resolve(state, 'gcc', NORMAL), CommentLines, 'expected plugin comman')
+        self.assertIsInstance(mappings_resolve(state, 'gcc', NORMAL), CommentaryLines, 'expected plugin comman')
 
         actual = mappings_resolve(state, 'lhs', NORMAL)
         self.assertIsInstance(actual, Mapping)

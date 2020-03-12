@@ -37,7 +37,7 @@ class TestFindWrapping(unittest.ViewTestCase):
         self.select(15)
         self.assertEqual(self.Region(0, 3), find_wrapping(self.view, 'xxx', 15, self.view.size()))
 
-    def test_fails_if_search_string_not_present(self):
+    def test_fails_if_search_not_present(self):
         self.write('xxx\naaa aaa xxx aaa')
         self.select(15)
         self.assertEqual(None, find_wrapping(self.view, 'yyy', 15, self.view.size()))

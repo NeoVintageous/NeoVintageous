@@ -24,7 +24,7 @@ class Test_N(unittest.FunctionalTestCase):
         super().setUp()
         self.set_option('wrapscan', True)
 
-    def test_N_repeat_star_backward(self):
+    def test_N_repeat_star(self):
         self.normal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
         self.feed('n_*')
         self.feed('n_N')
@@ -37,7 +37,7 @@ class Test_N(unittest.FunctionalTestCase):
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
 
-    def test_N_repeat_star_backward_no_partial(self):
+    def test_N_repeat_star_only_matches_whole_words(self):
         self.normal('foo\n|abc\nbar\nabc\nmoo\nabcxend')
         self.feed('n_*')
         self.feed('n_N')
@@ -46,22 +46,37 @@ class Test_N(unittest.FunctionalTestCase):
         self.feed('n_N')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend')
         self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabcxend')
-
-    def test_N_repeat_octothorp_reverse(self):
-        self.normal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
-        self.feed('n_#')
-        self.feed('n_N')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
-
-    def test_N_repeat_octothorp_no_partial(self):
-        self.normal('foo\n|abc\nbar\nabc\nmoo\nabcxend')
-        self.feed('n_#')
         self.feed('n_N')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabcxend')
 
-    def test_N_repeat_slash_reverse(self):
+    def test_N_repeat_octothorp(self):
+        self.normal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
+        self.feed('n_#')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabc\nend')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
+
+    def test_N_repeat_octothorp_only_matches_whole_words(self):
+        self.normal('foo\nabc\nbar\n|abc\nmoo\nabcxend\nabc\n')
+        self.feed('n_#')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend\n|abc|\n')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabcxend\nabc\n')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend\n|abc|\n')
+        self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\nabcxend\n|abc|\n')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\nabcxend\n|abc|\n')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabcxend\nabc\n')
+
+    def test_N_repeat_slash(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
         self.feed('n_/abc')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
@@ -78,13 +93,20 @@ class Test_N(unittest.FunctionalTestCase):
         self.feed('n_N')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
-
-    def test_n_repeat_question_mark_reverse(self):
-        self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
-        self.feed('n_?abc')
-        self.feed('n_N')
-        self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
-        self.assertSearchCurrent('foo\nabc\nbar\n|abc|\nmoo\nabc\nend')
-        self.feed('n_N')
+        self.feed('n_2N')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
+
+    def test_n_repeat_question_mark(self):
+        self.normal('foo\nabc\nb|ar\nabcmoo\nabc\nend')
+        self.feed('n_?abc')
+        self.assertSearchCurrent('foo\n|abc|\nbar\nabcmoo\nabc\nend')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|moo\nabc\nend')
+        self.feed('n_N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\nabcmoo\n|abc|\nend')
+        self.feed('n_2N')
+        self.assertSearch('foo\n|abc|\nbar\n|abc|moo\n|abc|\nend')
+        self.assertSearchCurrent('foo\nabc\nbar\n|abc|moo\nabc\nend')

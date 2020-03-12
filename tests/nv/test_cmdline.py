@@ -97,6 +97,9 @@ class TestCmdline(unittest.ViewTestCase):
         cmdline = self.createCmdline(Cmdline.SEARCH_BACKWARD)
         self.assertEqual(cmdline._callbacks['on_change'], None)
 
+    def test_unknown_callback_does_not_raise_error(self):
+        self.createCmdline(Cmdline.EX)._callback('foobar')
+
     def test_search_forward_incsearch_disabled(self):
         self.set_option('incsearch', False)
         cmdline = self.createCmdline(Cmdline.SEARCH_FORWARD)

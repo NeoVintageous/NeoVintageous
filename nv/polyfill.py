@@ -18,6 +18,7 @@
 from contextlib import contextmanager
 import re
 
+from sublime import Region
 from sublime import load_settings
 from sublime import save_settings
 
@@ -123,7 +124,7 @@ def view_find_in_range(view, pattern: str, pos: int, endpos: int, flags: int = 0
 # See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
 # See: https://github.com/SublimeTextIssues/Core/issues/534.
 # TODO Refactor to generator
-def view_find_all_in_range(view, pattern: str, pos: int, endpos: int, flags: int = 0):
+def view_find_all_in_range(view, pattern: str, pos: int, endpos: int, flags: int = 0) -> list:
     matches = []
     while pos <= endpos:
         match = view.find(pattern, pos, flags)
@@ -163,10 +164,18 @@ def view_indented_region(view, pt: int, inclusive: bool = False):
     return indented_region
 
 
+def view_to_region(view) -> Region:
+    return Region(0, view.size())
+
+
+def view_to_str(view) -> str:
+    return view.substr(view_to_region(view))
+
+
 # Polyfill fix for Sublime Text 4. In Sublime Text 4 split_by_newlines includes
 # full lines, previously the lines were constrianed to given region start and
 # end points. See https://github.com/NeoVintageous/NeoVintageous/issues/647.
-def split_by_newlines(view, region) -> list:
+def split_by_newlines(view, region: Region) -> list:
     regions = view.split_by_newlines(region)
 
     if len(regions) > 0:
