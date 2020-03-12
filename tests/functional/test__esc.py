@@ -35,6 +35,7 @@ class Test_esc(unittest.FunctionalTestCase):
         self.eq('r_f|iz|z', 'v_<esc>', 'n_f|izz')
         self.eq('1\n|\n|3', 'v_<esc>', 'n_1\n|\n3')
         self.eq('1\n2|\n|3', 'v_<esc>', 'n_1\n|2\n3')
+        self.eq('fi|zzb|uzz', 'v_<esc>', 'n_fizz|buzz')
         self.assertStatusLineIsBlank()
 
     def test_V(self):
@@ -56,10 +57,6 @@ class Test_esc(unittest.FunctionalTestCase):
         self.eq('f|iz|z\nb|uz|z\n', 's_<esc>', 'n_f|izz\nb|uzz\n')
         self.set_setting('multi_cursor_exit_from_visual_mode', True)
         self.eq('f|iz|z\nb|uz|z\n', 's_<esc>', 'n_f|izz\nbuzz\n')
-        self.assertStatusLineIsBlank()
-
-    def test_N_esc(self):
-        self.eq('fi|zzb|uzz', '<esc>', 'N_fi|zzb|uzz')
         self.assertStatusLineIsBlank()
 
     def test_esc_after_big_o_when_no_leading_whitespace(self):

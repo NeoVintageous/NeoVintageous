@@ -860,13 +860,19 @@ class FunctionalTestCase(ViewTestCase):
             if 'count' in args and args['count'] >= 1:
                 window.run_command('_nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
 
-            for key in seq:
-                try:
-                    key = _FEEDCHAR2KEY[key]
-                except Exception:
-                    pass
+            if 'key' in args:
+                window.run_command('_nv_feed_key', {'key': args['key'], 'check_user_mappings': False})
+            elif 'keys' in args:
+                for key in args['keys']:
+                    window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
+            else:
+                for key in seq:
+                    try:
+                        key = _FEEDCHAR2KEY[key]
+                    except Exception:
+                        pass
 
-                window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
+                    window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
         else:
             window.run_command(command, args)
 
@@ -1374,19 +1380,19 @@ _SEQ2CMD = {
     ';':            {'command': '_nv_feed_key'},  # noqa: E241
     '<':            {'command': '_nv_feed_key'},  # noqa: E241
     '<<':           {'command': '_nv_feed_key'},  # noqa: E241
-    '<C-]>':        {'command': '_vi_ctrl_right_square_bracket'},  # noqa: E241
-    '<C-a>':        {'command': '_vi_modify_numbers'},  # noqa: E241
-    '<C-d>':        {'command': '_vi_ctrl_d'},  # noqa: E241
-    '<C-e>':        {'command': '_vi_ctrl_e'},  # noqa: E241
-    '<C-g>':        {'command': '_vi_ctrl_g'},  # noqa: E241
-    '<C-n>':        {'command': '_enter_select_mode'},  # noqa: E241
-    '<C-r>':        {'command': '_vi_ctrl_r'},  # noqa: E241
-    '<C-u>':        {'command': '_vi_ctrl_u'},  # noqa: E241
-    '<C-v>':        {'command': '_enter_visual_block_mode'},  # noqa: E241
-    '<C-x>':        {'command': '_vi_modify_numbers', 'args': {'subtract': True}},  # noqa: E241
-    '<C-y>':        {'command': '_vi_ctrl_y'},  # noqa: E241
-    '<CR>':         {'command': '_vi_enter'},  # noqa: E241
-    '<esc>':        {'command': '_enter_normal_mode'},  # noqa: E241
+    '<C-]>':        {'command': '_nv_feed_key', 'args': {'key': '<C-]>'}},  # noqa: E241
+    '<C-a>':        {'command': '_nv_feed_key', 'args': {'key': '<C-a>'}},  # noqa: E241
+    '<C-d>':        {'command': '_nv_feed_key', 'args': {'key': '<C-d>'}},  # noqa: E241
+    '<C-e>':        {'command': '_nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
+    '<C-g>':        {'command': '_nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
+    '<C-n>':        {'command': '_nv_feed_key', 'args': {'key': '<C-n>'}},  # noqa: E241
+    '<C-r>':        {'command': '_nv_feed_key', 'args': {'key': '<C-r>'}},  # noqa: E241
+    '<C-u>':        {'command': '_nv_feed_key', 'args': {'key': '<C-u>'}},  # noqa: E241
+    '<C-v>':        {'command': '_nv_feed_key', 'args': {'key': '<C-v>'}},  # noqa: E241
+    '<C-x>':        {'command': '_nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
+    '<C-y>':        {'command': '_nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
+    '<CR>':         {'command': '_nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
+    '<esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<{':           {'command': '_nv_feed_key'},  # noqa: E241
     '=':            {'command': '_nv_feed_key'},  # noqa: E241
     '==':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1653,8 +1659,8 @@ _SEQ2CMD = {
     'd/abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': '_vi_slash_impl'}}},  # noqa: E241,E501
     'd0':           {'command': '_nv_feed_key'},  # noqa: E241
     'd2ft':         {'command': '_nv_feed_key'},  # noqa: E241
-    'd<C-d>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_d'}}},  # noqa: E241,E501
-    'd<C-u>':       {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 0, 'mode': INTERNAL_NORMAL}, 'motion': '_vi_ctrl_u'}}},  # noqa: E241,E501
+    'd<C-d>':       {'command': '_nv_feed_key', 'args': {'keys': ['d', '<C-d>']}},  # noqa: E241
+    'd<C-u>':       {'command': '_nv_feed_key', 'args': {'keys': ['d', '<C-u>']}},  # noqa: E241
     'd?abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': '_vi_question_mark_impl'}}},  # noqa: E241,E501
     'dB':           {'command': '_nv_feed_key'},  # noqa: E241
     'dE':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1849,7 +1855,7 @@ _SEQ2CMD = {
     'qA':           {'command': '_nv_feed_key'},  # noqa: E241
     'qa':           {'command': '_nv_feed_key'},  # noqa: E241
     'qx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'r<cr>':        {'command': '_vi_r', 'args': {'char': '\n'}},  # noqa: E241
+    'r<cr>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
     'rx':           {'command': '_nv_feed_key'},  # noqa: E241
     's':            {'command': '_nv_feed_key'},  # noqa: E241
     's_2<C-n>':     {'command': '_vi_select_j'},  # TODO Refactor # noqa: E241
