@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#705](https://github.com/NeoVintageous/NeoVintageous/issues/705): `/{pattern}\c` (`\c` ignore case, do not use the `'ignorecase'` option)
+* Added [#705](https://github.com/NeoVintageous/NeoVintageous/issues/705): `/{pattern}\C` (`\C` match case, do not use the `'ignorecase'` option)
 * Added [#707](https://github.com/NeoVintageous/NeoVintageous/issues/707): `[count]gT` Go `{count}` tab pages back
 * Added [#631](https://github.com/NeoVintageous/NeoVintageous/issues/631): `i/`, `i_`, `a/`, and `a_` text objects e.g. `ci/`, `ca/`
 * Added [#697](https://github.com/NeoVintageous/NeoVintageous/issues/697): `'smartcase'` option

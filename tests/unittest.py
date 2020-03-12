@@ -1378,6 +1378,8 @@ _SEQ2CMD = {
     '/':            {'command': '_nv_feed_key'},  # noqa: E241
     '/aBc':         {'command': '_vi_slash_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
     '/abc':         {'command': '_vi_slash_impl', 'args': {'pattern': 'abc'}},  # noqa: E241
+    '/abc\\C':      {'command': '_vi_slash_impl', 'args': {'pattern': 'abc\\C'}},  # noqa: E241
+    '/abc\\c':      {'command': '_vi_slash_impl', 'args': {'pattern': 'abc\\c'}},  # noqa: E241
     '/x':           {'command': '_vi_slash_impl', 'args': {'pattern': 'x'}},  # noqa: E241
     '0':            {'command': '_nv_feed_key'},  # noqa: E241
     ';':            {'command': '_nv_feed_key'},  # noqa: E241

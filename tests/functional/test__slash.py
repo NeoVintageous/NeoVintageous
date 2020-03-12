@@ -65,6 +65,15 @@ class Test_slash(unittest.FunctionalTestCase):
         self.assertSearchCurrent('abc\naBc\nABC\n|aBc|\nabc\n')
         self.assertSearch('abc\n|aBc|\nABC\n|aBc|\nabc\n')
 
+    def test_n_atom_searches_should_not_use_ignorecase(self):
+        self.normal('a|bc\nABC\naBc\nabc\n')
+        for flag in (True, False):
+            self.set_option('ignorecase', flag)
+            self.feed('/abc\\c')
+            self.assertSearch('|abc|\n|ABC|\n|aBc|\n|abc|\n')
+            self.feed('/abc\\C')
+            self.assertSearch('|abc|\nABC\naBc\n|abc|\n')
+
     def test_v(self):
         self.eq('|x abc y', 'v_/abc', '|x a|bc y')
         self.eq('x abc |y abc z', 'v_/abc', 'x abc |y a|bc z')

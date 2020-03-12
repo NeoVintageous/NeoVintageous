@@ -90,6 +90,24 @@ def process_search_pattern(view, pattern: str) -> tuple:
     # Changes the special characters that can be used in search patterns.
     is_magic = get_option(view, 'magic')
 
+    # Pattern modes can be specified anywhere within the pattern itself and the
+    # effect of the mode applies to the entire pattern:
+    #
+    # \c  ignore case, do not use the 'ignorecase' option
+    # \C  match case, do not use the 'ignorecase' option
+    pattern_modes = set()
+
+    def _add_pattern_mode(match) -> str:
+        pattern_modes.add(match.group(1))
+        return ''
+
+    pattern = re.sub('\\\\([cC])', _add_pattern_mode, pattern)
+    for m in pattern_modes:
+        if m == 'c':
+            flags |= IGNORECASE
+        elif m == 'C':
+            flags &= ~IGNORECASE
+
     # Some characters in the pattern are taken literally. They match with the
     # same character in the text. When preceded with a backslash however, these
     # characters get a special meaning. See :help magic for more details.
