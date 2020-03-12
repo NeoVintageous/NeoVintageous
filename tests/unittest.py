@@ -1301,6 +1301,7 @@ _SEQ2CMD = {
 
     '"#yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '#'}},  # noqa: E241,E501
     '"%yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '%'}},  # noqa: E241,E501
+    '"':            {'command': '_nv_feed_key'},  # noqa: E241
     '"*y':          {'command': '_vi_y', 'args': {'register': '*'}},  # noqa: E241
     '"+y':          {'command': '_vi_y', 'args': {'register': '+'}},  # noqa: E241
     '".yiw':        {'command': '_vi_y', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'inclusive': False, 'text_object': 'w'}, 'motion': '_vi_select_text_object'}, 'register': '.'}},  # noqa: E241,E501
@@ -1324,6 +1325,7 @@ _SEQ2CMD = {
     '"bY':          {'command': '_vi_yy', 'args': {'register': 'b'}},  # noqa: E241
     '"by':          {'command': '_vi_y', 'args': {'register': 'b'}},  # noqa: E241
     '"byy':         {'command': '_vi_yy', 'args': {'register': 'b'}},  # noqa: E241
+    '"x':           {'command': '_nv_feed_key'},  # noqa: E241
     '"xP':          {'command': '_vi_paste', 'args': {'register': 'x', 'before_cursor': True}},  # noqa: E241
     '"xY':          {'command': '_vi_yy', 'args': {'register': 'x'}},  # noqa: E241
     '"xp':          {'command': '_vi_paste', 'args': {'register': 'x', 'before_cursor': False}},  # noqa: E241
