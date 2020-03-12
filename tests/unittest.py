@@ -1388,7 +1388,9 @@ _SEQ2CMD = {
     '<C-d>':        {'command': '_nv_feed_key', 'args': {'key': '<C-d>'}},  # noqa: E241
     '<C-e>':        {'command': '_nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
     '<C-g>':        {'command': '_nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
+    '<C-i>':        {'command': '_nv_feed_key', 'args': {'key': '<C-i>'}},  # noqa: E241
     '<C-n>':        {'command': '_nv_feed_key', 'args': {'key': '<C-n>'}},  # noqa: E241
+    '<C-o>':        {'command': '_nv_feed_key', 'args': {'key': '<C-o>'}},  # noqa: E241
     '<C-p>':        {'command': '_nv_feed_key', 'args': {'key': '<C-p>'}},  # noqa: E241
     '<C-r>':        {'command': '_nv_feed_key', 'args': {'key': '<C-r>'}},  # noqa: E241
     '<C-u>':        {'command': '_nv_feed_key', 'args': {'key': '<C-u>'}},  # noqa: E241
