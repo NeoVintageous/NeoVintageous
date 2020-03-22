@@ -31,6 +31,7 @@ from NeoVintageous.nv.utils import col_at
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_previous_selection
+from NeoVintageous.nv.utils import scroll_into_view
 from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
@@ -325,40 +326,13 @@ class State(object):
 
         return False
 
-    def scroll_into_view(self) -> None:
-        view = active_window().active_view()
-        if view:
-            sels = view.sel()
-            if len(sels) < 1:
-                return
-
-            # Show the *last* cursor on screen. There is currently no way to
-            # identify the "active" cursor of a multiple cursor selection.
-            sel = sels[-1]
-
-            target_pt = sel.b
-
-            # In VISUAL mode we need to make sure that any newline at the end of
-            # the selection is NOT included in the target, because otherwise an
-            # extra line after the target line will also be scrolled into view.
-            if is_visual_mode(self.mode):
-                if sel.b > sel.a:
-                    if view.substr(sel.b - 1) == '\n':
-                        target_pt = max(0, target_pt - 1)
-                        # Use the start point of the target line to avoid
-                        # horizontal scrolling. For example, this can happen in
-                        # VISUAL LINE mode when the EOL is off-screen.
-                        target_pt = max(0, view.line(target_pt).a)
-
-            view.show(target_pt, False)
-
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
         if self.must_update_xpos:
             update_xpos(self.view)
 
         if self.must_scroll_into_view():
-            self.scroll_into_view()
+            scroll_into_view(active_window().active_view(), self.mode)
 
         self.action and self.action.reset()
         self.action = None
