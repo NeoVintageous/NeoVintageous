@@ -17,11 +17,8 @@
 
 import re
 
-from NeoVintageous.nv import plugin
 from NeoVintageous.nv import variables
-from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vi import seqs
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -29,33 +26,6 @@ from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
-
-
-def seq_to_command(view, seq: str, mode: str):
-    # Return the command definition mapped for seq and mode.
-    #
-    # Args:
-    #   view (View):
-    #   seq (str): The command sequence.
-    #   mode (str): Forces the use of this mode instead of the global state's.
-    #
-    # Returns:
-    #   ViCommandDefBase:
-    #   ViMissingCommandDef: If not found.
-    if mode in plugin.mappings:
-        plugin_command = plugin.mappings[mode].get(seq)
-        if plugin_command:
-            plugin_name = plugin_command.__class__.__module__[24:]
-            is_plugin_enabled = get_setting(view, 'enable_%s' % plugin_name)
-            if is_plugin_enabled:
-                return plugin_command
-
-    if mode in mappings:
-        command = mappings[mode].get(seq)
-        if command:
-            return command
-
-    return ViMissingCommandDef()
 
 
 mappings = {

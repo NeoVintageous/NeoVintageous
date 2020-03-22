@@ -18,9 +18,9 @@
 from unittest import mock
 import unittest
 
+from NeoVintageous.nv.mappings import _seq_to_command
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.keys import KeySequenceTokenizer
-from NeoVintageous.nv.vi.keys import seq_to_command
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.keys import tokenize_keys
 
@@ -190,7 +190,7 @@ class TestSeqToCommand(unittest.TestCase):
         'a': {'s': 'asv'},
         'b': {'s': 'bsv', 't': 'tsv', 'ep': 'ep', 'dp2': 'dp2'}
     })
-    @mock.patch('NeoVintageous.nv.vi.keys.plugin')
+    @mock.patch('NeoVintageous.nv.mappings.plugin')
     def test_seq_to_command(self, plugin):
         class Plugin():
             pass
@@ -211,24 +211,24 @@ class TestSeqToCommand(unittest.TestCase):
             def settings(self):
                 return Settings()
 
-        self.assertEqual(seq_to_command(seq='s', view=View(), mode='a'), 'asv')
-        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode=''), ViMissingCommandDef)
+        self.assertEqual(_seq_to_command(seq='s', view=View(), mode='a'), 'asv')
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode=''), ViMissingCommandDef)
         # Plugin mode exists, but not sequence.
-        self.assertEqual(seq_to_command(seq='t', view=View(), mode='b'), 'tsv')
+        self.assertEqual(_seq_to_command(seq='t', view=View(), mode='b'), 'tsv')
         # Plugin mapping override.
-        self.assertEqual(seq_to_command(seq='s', view=View(), mode='b'), 'plugin_bsv')
-        self.assertEqual(seq_to_command(seq='ep', view=View(), mode='b'), ep)
-        self.assertEqual(seq_to_command(seq='s', view=View(), mode='c'), 'plugin_csv')
+        self.assertEqual(_seq_to_command(seq='s', view=View(), mode='b'), 'plugin_bsv')
+        self.assertEqual(_seq_to_command(seq='ep', view=View(), mode='b'), ep)
+        self.assertEqual(_seq_to_command(seq='s', view=View(), mode='c'), 'plugin_csv')
 
     def test_unkown_mode(self):
         class View():
             def settings(self):
                 pass
-        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode='unknown'), ViMissingCommandDef)
-        self.assertIsInstance(seq_to_command(seq='s', view=View(), mode='u'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='unknown'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='u'), ViMissingCommandDef)
 
     def test_unknown_sequence(self):
         class View():
             def settings(self):
                 pass
-        self.assertIsInstance(seq_to_command(seq='foobar', view=View(), mode='a'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='foobar', view=View(), mode='a'), ViMissingCommandDef)
