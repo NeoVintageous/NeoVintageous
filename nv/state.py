@@ -18,7 +18,6 @@
 import logging
 
 from sublime import active_window
-from sublime import Region
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
@@ -27,9 +26,8 @@ from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
-from NeoVintageous.nv.utils import col_at
+from NeoVintageous.nv.utils import get_visual_repeat_data
 from NeoVintageous.nv.utils import is_view
-from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_into_view
 from NeoVintageous.nv.utils import update_xpos
@@ -394,49 +392,6 @@ class State(object):
             if command.accept_input and command.input_parser and command.input_parser.is_panel():
                 command.input_parser.run_command()
 
-    def get_visual_repeat_data(self):
-        # Return the data needed to restore visual selections.
-        #
-        # Before repeating a visual mode command in normal mode.
-        #
-        # Returns:
-        #   3-tuple (lines, chars, mode)
-        if self.mode not in (VISUAL, VISUAL_LINE):
-            return
-
-        first = self.view.sel()[0]
-        lines = (row_at(self.view, first.end()) -
-                 row_at(self.view, first.begin()))
-
-        if lines > 0:
-            chars = col_at(self.view, first.end())
-        else:
-            chars = first.size()
-
-        return (lines, chars, self.mode)
-
-    def restore_visual_data(self, data):
-        rows, chars, old_mode = data
-        first = self.view.sel()[0]
-
-        if old_mode == VISUAL:
-            if rows > 0:
-                end = self.view.text_point(row_at(self.view, first.b) + rows, chars)
-            else:
-                end = first.b + chars
-
-            self.view.sel().add(Region(first.b, end))
-            self.mode = VISUAL
-
-        elif old_mode == VISUAL_LINE:
-            rows, _, old_mode = data
-            begin = self.view.line(first.b).a
-            end = self.view.text_point(row_at(self.view, begin) +
-                                       (rows - 1), 0)
-            end = self.view.full_line(end).b
-            self.view.sel().add(Region(begin, end))
-            self.mode = VISUAL_LINE
-
     def runnable(self) -> bool:
         # Returns:
         #   True if motion and/or action is in a runnable state, False otherwise.
@@ -562,7 +517,7 @@ class State(object):
                 run_window_command('mark_undo_groups_for_gluing')
 
             sequence = self.sequence
-            visual_repeat_data = self.get_visual_repeat_data()
+            visual_repeat_data = get_visual_repeat_data(self.view, self.mode)
             action = self.action
 
             macros.add_step(self, action_cmd['action'], action_cmd['action_args'])

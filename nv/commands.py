@@ -136,6 +136,7 @@ from NeoVintageous.nv.utils import resolve_visual_block_reverse
 from NeoVintageous.nv.utils import resolve_visual_block_target
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
+from NeoVintageous.nv.utils import restore_visual_repeat_data
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import row_to_pt
 from NeoVintageous.nv.utils import save_previous_selection
@@ -1516,7 +1517,7 @@ class _vi_dot(WindowCommand):
         _log.debug('type=%s, seqorcmd=%s, oldmode=%s', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
-            state.restore_visual_data(visual_data)
+            restore_visual_repeat_data(self.view, state.mode, visual_data)
         elif not visual_data and (mode == VISUAL):
             # Can't repeat normal mode commands in visual mode.
             return ui_bell()

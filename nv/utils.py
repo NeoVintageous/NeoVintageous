@@ -42,12 +42,14 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_visual_block_direction
+from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import run_window_command
@@ -1165,3 +1167,48 @@ def update_xpos(view):
         xpos = 0
 
     set_xpos(view, xpos)
+
+
+def get_visual_repeat_data(view, mode: str):
+    # Return the data needed to restore visual selections.
+    #
+    # Before repeating a visual mode command in normal mode.
+    #
+    # Returns:
+    #   None
+    #   3-tuple (lines, chars, mode)
+    if mode not in (VISUAL, VISUAL_LINE):
+        return
+
+    first = view.sel()[0]
+    lines = (row_at(view, first.end()) -
+             row_at(view, first.begin()))
+
+    if lines > 0:
+        chars = col_at(view, first.end())
+    else:
+        chars = first.size()
+
+    return (lines, chars, mode)
+
+
+def restore_visual_repeat_data(view, mode: str, data: tuple) -> None:
+    rows, chars, old_mode = data
+    first = view.sel()[0]
+
+    if old_mode == VISUAL:
+        if rows > 0:
+            end = view.text_point(row_at(view, first.b) + rows, chars)
+        else:
+            end = first.b + chars
+
+        view.sel().add(Region(first.b, end))
+        set_mode(view, VISUAL)
+
+    elif old_mode == VISUAL_LINE:
+        rows, _, old_mode = data
+        begin = view.line(first.b).a
+        end = view.text_point(row_at(view, begin) + (rows - 1), 0)
+        end = view.full_line(end).b
+        view.sel().add(Region(begin, end))
+        set_mode(view, VISUAL_LINE)
