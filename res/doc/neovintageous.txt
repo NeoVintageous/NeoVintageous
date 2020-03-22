@@ -370,25 +370,25 @@ List of available settings:
     Assign number of time in milliseconds.
 
                                                      *'highlightedyank_style'*
-'highlightedyank_style' string (default fill)
+'highlightedyank_style' string (default "fill")
     Valid values: fill, outline, underline, squiggly_underline,
     stippled_underline.
 
                                              *'neovintageous_search_cur_style'*
 'neovintageous_search_cur_style'
-                        string (default fill)
+                        string (default "fill")
     The current search style. Valid values: fill, outline, underline,
     squiggly_underline, stippled_underline.
 
                                              *'neovintageous_search_inc_style'*
 'neovintageous_search_inc_style'
-                        string (default fill)
+                        string (default "fill")
     The incremental search style. Valid values: fill, outline, underline,
     squiggly_underline, stippled_underline.
 
                                              *'neovintageous_search_occ_style'*
 'neovintageous_search_occ_style'
-                        string (default fill)
+                        string (default "outline")
     The search occurrences style. Valid values: fill, outline, underline,
     squiggly_underline, stippled_underline.
 
