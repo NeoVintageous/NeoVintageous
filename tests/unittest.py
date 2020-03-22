@@ -1129,6 +1129,9 @@ def mock_status_message():
     @unitest.mock_status_message()
     def test_status_message(self):
         self.assertStatusMessage('msg')
+        self.assertStatusMessage('msg', count=3)
+        self.assertStatusMessageCount(5)
+        self.assertNoStatusMessage()
 
     """
     def wrapper(f):
