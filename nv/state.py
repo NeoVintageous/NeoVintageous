@@ -354,7 +354,9 @@ class State(object):
 
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
-        self.update_xpos()
+        if self.must_update_xpos:
+            update_xpos(self.view)
+
         if self.must_scroll_into_view():
             self.scroll_into_view()
 
@@ -378,10 +380,6 @@ class State(object):
         self.processing_notation = False
         self.non_interactive = False
         set_reset_during_init(self.view, True)
-
-    def update_xpos(self, force: bool = False) -> None:
-        if force or self.must_update_xpos:
-            update_xpos(self.view)
 
     def set_command(self, command: ViCommandDefBase) -> None:
         # Set the current command.

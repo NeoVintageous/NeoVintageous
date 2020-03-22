@@ -1534,7 +1534,6 @@ class _vi_dot(WindowCommand):
 
         enter_normal_mode(self.window, mode)
         set_repeat_data(self.view, repeat_data)
-        state.update_xpos()
 
 
 class _vi_dd(TextCommand):
