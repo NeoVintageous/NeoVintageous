@@ -17,6 +17,7 @@
 
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
@@ -2628,7 +2629,7 @@ class ViMoveDownByLines(ViMotionDef):
             'motion_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'xpos': state.xpos
+                'xpos': get_xpos(state.view)
             }
         }
 
@@ -2648,7 +2649,7 @@ class ViMoveUpByLines(ViMotionDef):
             'motion_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'xpos': state.xpos
+                'xpos': get_xpos(state.view)
             }
         }
 

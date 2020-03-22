@@ -151,6 +151,15 @@ def set_mode(view, value: str) -> None:
     tmp_bc_set_session_view_value(view, 'mode', value)
 
 
+def get_xpos(view) -> int:
+    return get_session_view_value(view, 'xpos', 0)
+
+
+def set_xpos(view, value: int) -> None:
+    assert isinstance(value, int), '`value` must be an int'  # TODO Remove assertion
+    set_session_view_value(view, 'xpos', value)
+
+
 def set_repeat_data(view, data: tuple) -> None:
     # The structure of {data}:
     #

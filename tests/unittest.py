@@ -50,9 +50,11 @@ from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
 from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
+from NeoVintageous.nv.settings import get_xpos as _get_xpos
 from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
+from NeoVintageous.nv.settings import set_xpos as _set_xpos
 from NeoVintageous.nv.state import State as _State
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
@@ -682,10 +684,10 @@ class ViewTestCase(unittest.TestCase):
         self.assertStatusLineEqual('-- VISUAL BLOCK --', msg)
 
     def assertXpos(self, expected, msg: str = None) -> None:
-        self.assertEqual(self.state.xpos, expected, msg)
+        self.assertEqual(_get_xpos(self.view), expected, msg)
 
     def setXpos(self, xpos: int) -> None:
-        self.state.xpos = xpos
+        _set_xpos(self.view, xpos)
 
     def assertMockNotCalled(self, mock) -> None:
         # https://docs.python.org/3/library/unittest.mock.html

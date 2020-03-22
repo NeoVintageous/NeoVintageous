@@ -28,6 +28,7 @@ from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.utils import col_at
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import row_at
@@ -249,18 +250,6 @@ class State(object):
         return self._get_count(default=0)
 
     @property
-    def xpos(self) -> int:
-        # Accessor for the current xpos for carets.
-        # Returns:
-        #   int: Default is 0.
-        return self.settings.vi['xpos'] or 0
-
-    @xpos.setter
-    def xpos(self, value: int) -> None:
-        assert isinstance(value, int), '`value` must be an int'
-        self.settings.vi['xpos'] = value
-
-    @property
     def register(self) -> str:
         # Accessor for the current open register (as requested by the user).
         # Returns:
@@ -403,11 +392,11 @@ class State(object):
 
                 counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))  # type: dict
                 tab_size = self.view.settings().get('tab_size')
-                self.xpos = (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t']))
+                set_xpos(self.view, (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t'])))
             except Exception:
                 # TODO [review] Exception handling
                 _log.debug('error updating xpos; default to 0')
-                self.xpos = 0
+                set_xpos(self.view, 0)
 
     def set_command(self, command: ViCommandDefBase) -> None:
         # Set the current command.

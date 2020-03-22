@@ -79,12 +79,14 @@ from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
@@ -1331,7 +1333,7 @@ class _enter_normal_mode(TextCommand):
                         if re.match('^\\s+$', line_str):
                             self.view.erase(edit, line)
                             col = self.view.rowcol(line.b)[1]
-                            state.xpos = col + 1
+                            set_xpos(self.view, col + 1)
 
 
 class _enter_select_mode(TextCommand):
@@ -1582,9 +1584,9 @@ class _vi_cc(TextCommand):
 
         enter_insert_mode(self.view, mode)
 
+        # TODO Review exception handling
         try:
-            state = State(self.view)
-            state.xpos = self.view.rowcol(self.view.sel()[0].b)[1]
+            set_xpos(self.view, self.view.rowcol(self.view.sel()[0].b)[1])
         except Exception as e:
             raise ValueError('could not set xpos:' + str(e))
 
@@ -2815,13 +2817,13 @@ class _vi_at(TextCommand):
             for cmd, args in cmds:
                 if 'xpos' in args:
                     state.update_xpos(force=True)
-                    args['xpos'] = state.xpos
+                    args['xpos'] = get_xpos(self.view)
                 elif args.get('motion'):
                     motion = args.get('motion')
                     if motion and 'motion_args' in motion and 'xpos' in motion['motion_args']:
                         state.update_xpos(force=True)
                         motion = args.get('motion')
-                        motion['motion_args']['xpos'] = state.xpos
+                        motion['motion_args']['xpos'] = get_xpos(self.view)
                         args['motion'] = motion
 
                 self.view.window().run_command(cmd, args)
@@ -3410,14 +3412,12 @@ class _vi_j(TextCommand):
 
             return s
 
-        state = State(self.view)
-
         if mode == VISUAL_BLOCK:
             visual_block = VisualBlockSelection(self.view)
             row, col = visual_block.rowcolb()
             next_line = self.view.full_line(self.view.text_point(row + count, 0))
             next_line_row, next_line_max_col = self.view.rowcol(next_line.b - 1)
-            next_line_target_col = min(max(col, state.xpos), next_line_max_col)
+            next_line_target_col = min(max(col, get_xpos(self.view)), next_line_max_col)
             next_line_target_pt = self.view.text_point(next_line_row, next_line_target_col)
             visual_block.transform_target(next_line_target_pt)
             return
@@ -3482,14 +3482,12 @@ class _vi_k(TextCommand):
 
             return s
 
-        state = State(self.view)
-
         if mode == VISUAL_BLOCK:
             visual_block = VisualBlockSelection(self.view)
             row, col = visual_block.rowcolb()
             prev_line = self.view.full_line(self.view.text_point(row - count, 0))
             prev_line_row, prev_line_max_col = self.view.rowcol(prev_line.b - 1)
-            prev_line_target_col = min(max(col, state.xpos), prev_line_max_col)
+            prev_line_target_col = min(max(col, get_xpos(self.view)), prev_line_max_col)
             prev_line_target_pt = self.view.text_point(prev_line_row, prev_line_target_col)
             visual_block.transform_target(prev_line_target_pt)
             return

@@ -88,6 +88,7 @@ def set_session_view_value(view, name: str, value) -> None:
 
 
 # TODO Refactor to use get_session_view_value
+# Temporary function to refactor State.settings['vi'] properties
 def tmp_bc_get_session_view_value(view, name: str, default):
     vintage = view.settings().get('vintage')
     if vintage:
@@ -97,6 +98,7 @@ def tmp_bc_get_session_view_value(view, name: str, default):
 
 
 # TODO Refactor to use set_session_view_value
+# Temporary function to refactor State.settings['vi'] properties
 def tmp_bc_set_session_view_value(view, name: str, value) -> None:
     vintage = view.settings().get('vintage')
     if not vintage:
