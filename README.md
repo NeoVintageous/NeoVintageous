@@ -13,7 +13,7 @@ NeoVintageous is a project that seeks to continue the development of the discont
 * Strong defaults
 * Drop-in replacement for Vintageous
 * Integrates with [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3) and [Origami](https://github.com/SublimeText/Origami)
-* Plugins out-of-the-box: [Abolish](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/abolish.txt), [Commentary](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/commentary.txt), [Highlighted Yank](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Surround](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/surround.txt), [Unimpaired](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/unimpaired.txt) and [Indent Object](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/indent-object.txt).
+* Plugins out-of-the-box: [Abolish](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Commentary](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Highlighted Yank](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Surround](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Unimpaired](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) and [Indent Object](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt).
 
 ## Installation
 
@@ -39,23 +39,25 @@ Windows | `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA
 
 ## Documentation
 
-NeoVintageous is an emulation of Vim (feature-parity is an ongoing effort). See the [`:help neovintageous`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) command to learn about the differences.
+**NeoVintageous** is an emulation of Vim, feature-parity is an ongoing effort, some features are not implemented or implemented fully, and differences are not fully documented. See [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) to learn about some of the differences.
 
-Vim's documentation system is accessible via the `:help` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [appspot](https://vimhelp.appspot.com).
+Vim's full documentation system is accessible via the `:help {subject}` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [appspot](https://vimhelp.appspot.com).
 
 ## Plugins
 
-The following plugins are available out-of-the-box (feature-parity is an ongoing effort):
+A number of popular vim plugins have been ported and are available out-of-the-box.
+
+Vim plugin feature-parity is an ongoing effort, some features are not implemented or implemented fully, and differences may not be fully documented. Please open issues to request missing features.
 
 Plugin | Documentation | Original Vim Plugin
 ------ | ------------- | -------------------
-Abolish | [`:help abolish`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-abolish](https://github.com/tpope/vim-abolish)
-Commentary | [`:help commentary`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-commentary](https://github.com/tpope/vim-commentary)
-Highlighted Yank | [`:help highlightedyank`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
-Indent Object | [`:help indent-object`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
-Multiple Cursors | [`:help multiple-cursors`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
-Surround | [`:help surround`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
-Unimpaired | [`:help unimpaired`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
+Abolish | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-abolish](https://github.com/tpope/vim-abolish)
+Commentary | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-commentary](https://github.com/tpope/vim-commentary)
+Highlighted Yank | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
+Indent Object | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
+Multiple Cursors | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
+Surround | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
+Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
 ## Contributing
 

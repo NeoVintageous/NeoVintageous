@@ -1,35 +1,48 @@
-*neovintageous.txt*  Neovintageous
+*neovintageous.txt*                                        *nv* *neovintageous*
 
-                NEOVINTAGEOUS - main help file
+
+        _   __         _    ___       __
+       / | / /__  ____| |  / (_)___  / /_____ _____ ____  ____  __  _______
+      /  |/ / _ \/ __ \ | / / / __ \/ __/ __ `/ __ `/ _ \/ __ \/ / / / ___/
+     / /|  /  __/ /_/ / |/ / / / / / /_/ /_/ / /_/ /  __/ /_/ / /_/ (__  )
+    /_/ |_/\___/\____/|___/_/_/ /_/\__/\__,_/\__, /\___/\____/\__,_/____/
+                                            /____/
+                                                    Advanced Vim emulation!
+
 
 Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
         Jump back:  Type CTRL-I or CTRL-O.  Repeat to go further back.
 
-NeoVintageous                                             *neovintageous* *nv*
+Vim feature-parity is an ongoing effort, some features are not implemented or
+implemented fully, and differences are not fully documented.
 
- 1. Command Palette                 |nv-command-palette|
- 2. Multiple cursors                |nv-multiple-cursors|
- 3. Opening a view                  |nv-opening-view|
- 4. neovintageousrc                 |nv-rc|
- 5. Plugins                         |nv-plugins|
-    1.1 Abolish                         |nv-abolish|
-    1.2 Commentary                      |nv-commentary|
-    1.3 HighlightedYank                 |nv-highlightedyank|
-    1.4 Surround                        |nv-surround|
-    1.5 Unimpaired                      |nv-unimpaired|
-    1.6 Indent Object                   |nv-indent-object|
- 6. Options                         |nv-options|
- 7. Settings                        |nv-settings|
- 8. Search highlighting             |nv-search-highlighting|
- 9. Jumping to diffs                |nv-jumpto-diffs|
-10. Toggle Command                  |nv-toggle|
+The vim documentation is provided in full without modification and this page
+tries to document some feature differences and special features and usage.
 
-Note that Vim feature-parity is an ongoing effort, not all features are
-implemented and differences are not fully documented. The Vim documentation is
-provided in full without modification alongside this help document.
+Please open issues to request missing features.
 
-Please don't hesitate to open an issue about new features, enhancements, and
-usage. If you are new to Vim also see |help.txt|.
+If you are new to vim also see |help.txt|.
+
+
+CONTENTS                                                         *nv-contents*
+
+    Command Palette ................|nv-command-palette|
+    Multiple cursors ...............|nv-multiple-cursors|
+    Opening a view .................|nv-opening-view|
+    neovintageousrc ................|nv-rc|
+    Plugins ........................|nv-plugins|
+        Abolish ........................|nv-abolish|
+        Commentary .....................|nv-commentary|
+        HighlightedYank ................|nv-highlightedyank|
+        Surround .......................|nv-surround|
+        Unimpaired .....................|nv-unimpaired|
+        Indent Object ..................|nv-indent-object|
+    Options ........................|nv-options|
+    Settings .......................|nv-settings|
+    Search highlighting ............|nv-search-highlighting|
+    Jumping to diffs ...............|nv-jumpto-diffs|
+    Toggle Command .................|nv-toggle|
+
 
 ==============================================================================
 
@@ -193,12 +206,11 @@ key binding, Goto  Menu > Preferences > Key Bindings: >
 
 PLUGINS                                                 *nv-plugins* *plugins*
 
-Note that plugin feature-parity is an ongoing effort, features of the original
-plugin may not be implemented fully and differences may not be documented. The
+Plugin feature-parity is an ongoing effort, features from the original vim
+plugin may not be implemented fully or differences documented fully. The
 original plugin documentation is provided in full without modification.
 
-Please don't hesitate to open an issue about new features, enhancements, and
-usage. If you are new to Vim also see |help.txt|.
+Please open issues to request missing features.
 
 ------------------------------------------------------------------------------
 

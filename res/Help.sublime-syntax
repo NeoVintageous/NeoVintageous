@@ -110,6 +110,10 @@ contexts:
         9: entity.name.neovintageousa
         10: punctuation.definition.link.reference conceal
 
+    # HEADER ... figlet
+    - match: ^\s+[\\/_|()`, ]*$
+      scope: comment.neovintageous
+
   jumptags:
     - match: (\|)([^|\s]+)(\|)
       scope: markup.underline.link
