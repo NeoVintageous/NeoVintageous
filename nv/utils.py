@@ -32,6 +32,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from contextlib import contextmanager
+from collections import Counter
 import re
 
 from sublime import Region
@@ -42,6 +43,7 @@ from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_visual_block_direction
+from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -1119,3 +1121,21 @@ def is_linewise_operation(mode: str, motion):
                 return 'maybe'
 
     return False
+
+
+def update_xpos(view):
+    try:
+        sel = view.sel()[0]
+        pos = sel.b
+        if not sel.empty():
+            if sel.a < sel.b:
+                pos -= 1
+
+        counter = Counter(view.substr(Region(view.line(pos).a, pos)))  # type: dict
+        tab_size = view.settings().get('tab_size')
+        xpos = view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t'])
+    except Exception:
+        # TODO [review] exception handling
+        xpos = 0
+
+    set_xpos(view, xpos)

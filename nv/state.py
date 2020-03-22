@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from collections import Counter
 import logging
 
 from sublime import active_window
@@ -28,11 +27,11 @@ from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
-from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.utils import col_at
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_previous_selection
+from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
@@ -382,21 +381,7 @@ class State(object):
 
     def update_xpos(self, force: bool = False) -> None:
         if force or self.must_update_xpos:
-            try:
-                # TODO: we should check the current mode instead. ============
-                sel = self.view.sel()[0]
-                pos = sel.b
-                if not sel.empty():
-                    if sel.a < sel.b:
-                        pos -= 1
-
-                counter = Counter(self.view.substr(Region(self.view.line(pos).a, pos)))  # type: dict
-                tab_size = self.view.settings().get('tab_size')
-                set_xpos(self.view, (self.view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t'])))
-            except Exception:
-                # TODO [review] Exception handling
-                _log.debug('error updating xpos; default to 0')
-                set_xpos(self.view, 0)
+            update_xpos(self.view)
 
     def set_command(self, command: ViCommandDefBase) -> None:
         # Set the current command.

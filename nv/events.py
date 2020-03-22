@@ -23,10 +23,10 @@ from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.session import session_on_close
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
+from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
@@ -175,8 +175,7 @@ class NeoVintageousEvents(EventListener):
             if set(args) == {'event'}:
                 if set(args['event']) == {'x', 'y', 'button'}:
                     if args['event']['button'] == 1:
-                        state = State(view)
-                        state.update_xpos(force=True)
+                        update_xpos(view)
 
     def on_load(self, view):
         if is_view(view) and get_option(view, 'modeline'):

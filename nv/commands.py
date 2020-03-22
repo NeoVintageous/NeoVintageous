@@ -150,6 +150,7 @@ from NeoVintageous.nv.utils import spell_file_remove_word
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import unfold
 from NeoVintageous.nv.utils import unfold_all
+from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
@@ -1317,7 +1318,7 @@ class _enter_normal_mode(TextCommand):
             })
             set_selection(self.view, new_sels)
 
-        state.update_xpos(force=True)
+        update_xpos(self.view)
         reset_status(self.view, state.mode)
         fix_eol_cursor(self.view, state.mode)
 
@@ -1418,7 +1419,7 @@ class _enter_visual_mode(TextCommand):
         # Sometimes we'll call this command without the global state knowing
         # its metadata. For example, when shift-clicking with the mouse to
         # create visual selections. Always update xpos to cover this case.
-        state.update_xpos(force=True)
+        update_xpos(self.view)
         state.mode = VISUAL
         state.display_status()
 
@@ -2812,16 +2813,15 @@ class _vi_at(TextCommand):
 
         macros.set_last_used_register_name(window, name)
 
-        state = State(self.view)
         for i in range(count):
             for cmd, args in cmds:
                 if 'xpos' in args:
-                    state.update_xpos(force=True)
+                    update_xpos(self.view)
                     args['xpos'] = get_xpos(self.view)
                 elif args.get('motion'):
                     motion = args.get('motion')
                     if motion and 'motion_args' in motion and 'xpos' in motion['motion_args']:
-                        state.update_xpos(force=True)
+                        update_xpos(self.view)
                         motion = args.get('motion')
                         motion['motion_args']['xpos'] = get_xpos(self.view)
                         args['motion'] = motion
