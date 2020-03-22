@@ -24,6 +24,12 @@ from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import is_must_capture_register_name
+from NeoVintageous.nv.settings import is_non_interactive
+from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_must_capture_register_name
+from NeoVintageous.nv.settings import set_non_interactive
+from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import get_visual_repeat_data
@@ -82,48 +88,29 @@ class State(object):
     def glue_until_normal_mode(self, value: bool) -> None:
         self.settings.vi['_vintageous_glue_until_normal_mode'] = value
 
-    @property
+    @property  # DEPRECATED
     def processing_notation(self) -> bool:
-        # Indicate whether _nv_process_notation is running.
-        #
-        # Indicates whether _nv_process_notation is running a command and is
-        # grouping all edits in one single undo step. That is, we are running a
-        # non- interactive sequence of commands.
-        #
-        # This property is *VOLATILE*; it shouldn't be persisted between
-        # sessions.
-        return self.settings.vi['_vintageous_processing_notation'] or False
+        return is_processing_notation(self.view)
 
-    @processing_notation.setter
+    @processing_notation.setter  # DEPRECATED
     def processing_notation(self, value: bool) -> None:
-        self.settings.vi['_vintageous_processing_notation'] = value
+        set_processing_notation(self.view, value)
 
-    # FIXME: This property seems to do the same as processing_notation.
-    @property
+    @property  # DEPRECATED
     def non_interactive(self) -> bool:
-        # Indicate whether _nv_process_notation is running.
-        #
-        # Indicates whether _nv_process_notation is running a command and no
-        # interactive prompts should be used (for example, by the '/' motion.)
-        #
-        # This property is *VOLATILE*; it shouldn't be persisted between
-        # sessions.
-        return self.settings.vi['_vintageous_non_interactive'] or False
+        return is_non_interactive(self.view)
 
-    @non_interactive.setter
+    @non_interactive.setter  # DEPRECATED
     def non_interactive(self, value: bool) -> None:
-        assert isinstance(value, bool), 'bool expected'
-        self.settings.vi['_vintageous_non_interactive'] = value
+        set_non_interactive(self.view, value)
 
-    @property
+    @property  # DEPRECATED
     def must_capture_register_name(self) -> bool:
-        # Returns:
-        #   True if State is expecting a register name next, False otherwise.
-        return self.settings.vi['must_capture_register_name'] or False
+        return is_must_capture_register_name(self.view)
 
-    @must_capture_register_name.setter
+    @must_capture_register_name.setter  # DEPRECATED
     def must_capture_register_name(self, value: bool) -> None:
-        self.settings.vi['must_capture_register_name'] = value
+        set_must_capture_register_name(self.view, value)
 
     # This property isn't reset automatically. _enter_normal_mode mode must
     # take care of that so it can repeat the commands issued while in
