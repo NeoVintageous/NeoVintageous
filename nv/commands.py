@@ -110,6 +110,7 @@ from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.ui import ui_bell
@@ -534,7 +535,7 @@ class _nv_feed_key(WindowCommand):
             return
 
         set_sequence(self.view, get_sequence(self.view) + key)
-        state.display_status()
+        update_status_line(self.view)
 
         if is_must_capture_register_name(self.view):
             _log.debug('capturing register name...')
@@ -1406,7 +1407,7 @@ class _enter_select_mode(TextCommand):
             resolve_visual_block_reverse(self.view)
             enter_normal_mode(self.view.window())
 
-        state.display_status()
+        update_status_line(self.view)
 
 
 class _enter_insert_mode(TextCommand):
@@ -1427,7 +1428,7 @@ class _enter_insert_mode(TextCommand):
         state = State(self.view)
         state.mode = INSERT
         set_normal_insert_count(self.view, count)
-        state.display_status()
+        update_status_line(self.view)
 
 
 class _enter_visual_mode(TextCommand):
@@ -1474,7 +1475,7 @@ class _enter_visual_mode(TextCommand):
         # create visual selections. Always update xpos to cover this case.
         update_xpos(self.view)
         state.mode = VISUAL
-        state.display_status()
+        update_status_line(self.view)
 
 
 class _enter_visual_line_mode(TextCommand):
@@ -1524,7 +1525,7 @@ class _enter_visual_line_mode(TextCommand):
             regions_transformer(self.view, f)
 
         state.mode = VISUAL_LINE
-        state.display_status()
+        update_status_line(self.view)
 
 
 class _enter_replace_mode(TextCommand):
@@ -1542,7 +1543,7 @@ class _enter_replace_mode(TextCommand):
         state = State(self.view)
         state.mode = REPLACE
         regions_transformer(self.view, f)
-        state.display_status()
+        update_status_line(self.view)
         state.reset_command_data()
 
 
@@ -2891,11 +2892,11 @@ class _enter_visual_block_mode(TextCommand):
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
             state.mode = VISUAL_BLOCK
-            state.display_status()
+            update_status_line(self.view)
 
         elif mode == VISUAL_BLOCK and not force:
             enter_normal_mode(self.view, mode)
-            state.display_status()
+            update_status_line(self.view)
 
 
 # TODO Refactor into _vi_j
@@ -3051,13 +3052,13 @@ class _vi_guu(TextCommand):
 class _vi_g_big_h(WindowCommand):
 
     def run(self, mode=None, count=1):
-        view = self.window.active_view()
-        state = State(view)
-        search_occurrences = get_search_occurrences(view)
+        self.view = self.window.active_view()
+        state = State(self.view)
+        search_occurrences = get_search_occurrences(self.view)
         if search_occurrences:
-            view.sel().add_all(search_occurrences)
+            self.view.sel().add_all(search_occurrences)
             state.mode = SELECT
-            state.display_status()
+            update_status_line(self.view)
             return
 
         ui_bell()

@@ -73,6 +73,14 @@ from NeoVintageous.nv.vim import run_window_command
 _log = logging.getLogger(__name__)
 
 
+def update_status_line(view) -> None:
+    mode_name = mode_to_name(get_mode(view))
+    if mode_name:
+        view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
+
+    view.set_status('vim-seq', get_sequence(view))
+
+
 def must_collect_input(view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
     if motion and action:
         if motion.accept_input:
@@ -194,13 +202,6 @@ class State(object):
     def count_default_zero(self) -> int:
         # TODO Refactor: method was required because count() defaults to 1
         return get_count(self.view, default=0)
-
-    def display_status(self) -> None:
-        mode_name = mode_to_name(get_mode(self.view))
-        if mode_name:
-            self.view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
-
-        self.view.set_status('vim-seq', get_sequence(self.view))
 
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
