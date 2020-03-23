@@ -21,20 +21,18 @@ from sublime import active_window
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
-from NeoVintageous.nv.settings import get_action
+from NeoVintageous.nv.session import get_session_view_value
+from NeoVintageous.nv.session import set_session_view_value
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_motion
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
-from NeoVintageous.nv.settings import set_action
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_mode
-from NeoVintageous.nv.settings import set_motion
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
@@ -148,6 +146,38 @@ def _scroll_into_view(view, mode: str) -> None:
     view.show(target_pt, False)
 
 
+def get_action(view):
+    action = get_session_view_value(view, 'action')
+    if action:
+        cls = getattr(cmd_defs, action['name'], None)
+
+        if cls is None:
+            cls = plugin.classes.get(action['name'], None)
+
+        if cls is None:
+            ValueError('unknown action: %s' % action)
+
+        return cls.from_json(action['data'])
+
+
+def set_action(view, value) -> None:
+    serialized = value.serialize() if value else None
+    set_session_view_value(view, 'action', serialized)
+
+
+def get_motion(view):
+    motion = get_session_view_value(view, 'motion')
+    if motion:
+        cls = getattr(cmd_defs, motion['name'])
+
+        return cls.from_json(motion['data'])
+
+
+def set_motion(view, value) -> None:
+    serialized = value.serialize() if value else None
+    set_session_view_value(view, 'motion', serialized)
+
+
 class State(object):
 
     def __init__(self, view):
@@ -162,43 +192,27 @@ class State(object):
     def mode(self, value: str) -> None:
         set_mode(self.view, value)
 
-    @property
+    @property  # DEPRECATED
     def action(self):
-        action = get_action(self.view)
-        if action:
-            cls = getattr(cmd_defs, action['name'], None)
+        return get_action(self.view)
 
-            if cls is None:
-                cls = plugin.classes.get(action['name'], None)
-
-            if cls is None:
-                ValueError('unknown action: %s' % action)
-
-            return cls.from_json(action['data'])
-
-    @action.setter
+    @action.setter  # DEPRECATED
     def action(self, value) -> None:
-        serialized = value.serialize() if value else None
-        set_action(self.view, serialized)
+        set_action(self.view, value)
 
-    @property
+    @property  # DEPRECATED
     def motion(self):
-        motion = get_motion(self.view)
-        if motion:
-            cls = getattr(cmd_defs, motion['name'])
+        return get_motion(self.view)
 
-            return cls.from_json(motion['data'])
-
-    @motion.setter
+    @motion.setter  # DEPRECATED
     def motion(self, value) -> None:
-        serialized = value.serialize() if value else None
-        set_motion(self.view, serialized)
+        set_motion(self.view, value)
 
-    @property
+    @property  # DEPRECATED
     def count(self) -> int:
         return get_count(self.view, default=1)
 
-    @property
+    @property  # DEPRECATED
     def count_default_zero(self) -> int:
         # TODO Refactor: method was required because count() defaults to 1
         return get_count(self.view, default=0)
