@@ -553,15 +553,6 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.feed(':\'o,\'ts/this/that/')
             self.assertNormal('1this\n2that\n3that\n4that\n|5that\n6this\n7this')
 
-    @unittest.mock.patch('sublime.View.command_history')
-    def test_insert_count(self, command_history):
-        command_history.return_value = ('insert', {'characters': 'buzz'}, 1)
-        self.normal('fizz buzz|x')
-        self.feedkey('3')
-        self.feedkey('i')
-        self.feedkey('<esc>')
-        self.assertNormal('fizz buzz|buzzbuzzx')
-
     @unittest.mock_bell()
     @unittest.mock_mappings(
         (unittest.NORMAL, ',a', '3l'),
