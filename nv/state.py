@@ -219,8 +219,8 @@ class State(object):
 
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
-        motion = self.motion
-        action = self.action
+        motion = get_motion(self.view)
+        action = get_action(self.view)
 
         if _must_update_xpos(motion, action):
             update_xpos(self.view)
@@ -231,9 +231,9 @@ class State(object):
             _scroll_into_view(active_window().active_view(), self.mode)
 
         action and action.reset()
-        self.action = None
+        set_action(self.view, None)
         motion and motion.reset()
-        self.motion = None
+        set_motion(self.view, None)
         set_action_count(self.view, '')
         set_motion_count(self.view, '')
         set_sequence(self.view, '')
@@ -247,8 +247,8 @@ class State(object):
         #   True if motion and/or action is in a runnable state, False otherwise.
         # Raises:
         #   ValueError: Invlid mode.
-        action = self.action
-        motion = self.motion
+        action = get_action(self.view)
+        motion = get_motion(self.view)
 
         if must_collect_input(self.view, motion, action):
             return False
