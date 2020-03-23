@@ -247,12 +247,12 @@ class State(object):
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
-    def must_collect_input(self, view, motion, action) -> bool:
+    def must_collect_input(self, view, motion: ViCommandDefBase, action: ViCommandDefBase) -> bool:
         if motion and action:
             if motion.accept_input:
                 return True
 
-            return (action.accept_input and action.input_parser and action.input_parser.is_after_motion())
+            return (action.accept_input and action.input_parser is not None and action.input_parser.is_after_motion())
 
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
@@ -263,7 +263,7 @@ class State(object):
             return True
 
         if motion:
-            return (motion and motion.accept_input)
+            return motion.accept_input
 
         return False
 
