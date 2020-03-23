@@ -592,7 +592,7 @@ class _nv_feed_key(WindowCommand):
 
             return
 
-        command = mappings_resolve(state, check_user_mappings=check_user_mappings)
+        command = mappings_resolve(self.view, check_user_mappings=check_user_mappings)
 
         if isinstance(command, ViOpenNameSpace):
             return
@@ -678,10 +678,10 @@ class _nv_feed_key(WindowCommand):
             # been given a chance to evaluate).
 
             if state.mode == OPERATOR_PENDING:
-                command = mappings_resolve(state, sequence=to_bare_command_name(get_sequence(self.view)),
+                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)),
                                            mode=NORMAL, check_user_mappings=False)
             else:
-                command = mappings_resolve(state, sequence=to_bare_command_name(get_sequence(self.view)))
+                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)))
 
             if self._handle_missing_command(state, command):
                 return
@@ -694,7 +694,7 @@ class _nv_feed_key(WindowCommand):
             # example, dd, g~g~ or g~~ remove counts. It looks like it might
             # only be the '>>' command that needs this code.
 
-            command = mappings_resolve(state, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
+            command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
             if self._handle_missing_command(state, command):
                 return
 

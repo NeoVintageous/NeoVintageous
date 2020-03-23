@@ -350,15 +350,19 @@ class TestMappings(unittest.TestCase):
 class TestResolve(unittest.ViewTestCase):
 
     @_patch_mappings
-    def test_resolve(self, _mappings):
-        state = unittest.mock.Mock(partial_sequence=None, mode=NORMAL, view=self.view)
+    @unittest.mock.patch('NeoVintageous.nv.mappings.get_partial_sequence')
+    @unittest.mock.patch('NeoVintageous.nv.mappings.get_mode')
+    def test_resolve(self, get_mode, get_partial_sequence, _mappings):
+        get_mode.return_value = NORMAL
+        get_partial_sequence.return_value = None
+
         mappings_add(NORMAL, 'lhs', 'rhs')
 
-        self.assertIsInstance(mappings_resolve(state, 'foobar', NORMAL), ViMissingCommandDef)
-        self.assertIsInstance(mappings_resolve(state, 'w', NORMAL), ViMoveByWords, 'expected core command')
-        self.assertIsInstance(mappings_resolve(state, 'gcc', NORMAL), CommentaryLines, 'expected plugin comman')
+        self.assertIsInstance(mappings_resolve(self.view, 'foobar', NORMAL), ViMissingCommandDef)
+        self.assertIsInstance(mappings_resolve(self.view, 'w', NORMAL), ViMoveByWords, 'expected core command')
+        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommentaryLines, 'expected plugin comman')
 
-        actual = mappings_resolve(state, 'lhs', NORMAL)
+        actual = mappings_resolve(self.view, 'lhs', NORMAL)
         self.assertIsInstance(actual, Mapping)
         expected = Mapping('lhs', 'rhs')
         self.assertEqual(actual.rhs, expected.rhs)
