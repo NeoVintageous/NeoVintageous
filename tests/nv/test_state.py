@@ -21,6 +21,7 @@ from NeoVintageous.nv.commands import _nv_feed_key
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
@@ -116,7 +117,7 @@ class TestStateResettingState(unittest.ViewTestCase):
 
         self.assertEqual(self.state.sequence, '')
         self.assertEqual(self.state.partial_sequence, '')
-        self.assertEqual(self.state.register, '"')
+        self.assertEqual(get_register(self.view), '"')
         self.assertEqual(is_must_capture_register_name(self.view), False)
 
 

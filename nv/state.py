@@ -22,7 +22,6 @@ from sublime import active_window
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
