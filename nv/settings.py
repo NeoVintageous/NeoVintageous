@@ -156,13 +156,13 @@ def set_mode(view, value: str) -> None:
 
 # This setting isn't reset automatically. _enter_normal_mode mode must take care
 # of that so it can repeat the commands issued while in insert mode.
-def get_normal_insert_count(view) -> str:
+def get_normal_insert_count(view) -> int:
     # Count issued to 'i' or 'a', etc. These commands enter insert mode. If
     # passed a count, they must repeat the commands run while in insert mode.
-    return get_session_view_value(view, 'normal_insert_count', '1')
+    return int(get_session_view_value(view, 'normal_insert_count', 1))
 
 
-def set_normal_insert_count(view, value: str) -> None:
+def set_normal_insert_count(view, value: int) -> None:
     set_session_view_value(view, 'normal_insert_count', value)
 
 

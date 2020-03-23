@@ -1337,7 +1337,7 @@ class _enter_normal_mode(TextCommand):
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
                 state.glue_until_normal_mode = False
 
-        normal_insert_count = int(get_normal_insert_count(self.view))
+        normal_insert_count = get_normal_insert_count(self.view)
         if mode == INSERT and normal_insert_count > 1:
             state.mode = INSERT
             # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
@@ -1346,7 +1346,7 @@ class _enter_normal_mode(TextCommand):
             new_sels = [Region(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
             self.view.sel().add_all(new_sels)
             times = normal_insert_count - 1
-            set_normal_insert_count(self.view, '1')
+            set_normal_insert_count(self.view, 1)
             self.view.window().run_command('_vi_dot', {
                 'count': times,
                 'mode': mode,
@@ -1409,7 +1409,7 @@ class _enter_insert_mode(TextCommand):
 
         state = State(self.view)
         state.mode = INSERT
-        set_normal_insert_count(self.view, str(count))
+        set_normal_insert_count(self.view, count)
         state.display_status()
 
 
