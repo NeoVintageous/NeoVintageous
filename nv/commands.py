@@ -523,7 +523,7 @@ class _nv_feed_key(WindowCommand):
         motion = state.motion
         action = state.action
 
-        if state.must_collect_input(motion, action):
+        if state.must_collect_input(self.view, motion, action):
             _log.debug('collecting input!')
 
             if motion and motion.accept_input:
@@ -761,7 +761,7 @@ class _nv_process_notation(WindowCommand):
             else:
                 state.eval()
 
-        if state.must_collect_input(state.motion, state.action):
+        if state.must_collect_input(self.view, state.motion, state.action):
             # State is requesting more input, so this is the last command  in
             # the sequence and it needs more input.
             self.collect_input(state)
@@ -769,7 +769,7 @@ class _nv_process_notation(WindowCommand):
 
         # Strip the already run commands
         if leading_motions:
-            if ((len(leading_motions) == len(keys)) and (not state.must_collect_input(state.motion, state.action))):
+            if ((len(leading_motions) == len(keys)) and (not state.must_collect_input(self.view, state.motion, state.action))):  # noqa: E501
                 state.non_interactive = False
                 return
 
@@ -795,7 +795,7 @@ class _nv_process_notation(WindowCommand):
                                 'characters': translate_char(key)
                             })
 
-                    if not state.must_collect_input(state.motion, state.action):
+                    if not state.must_collect_input(self.view, state.motion, state.action):
                         return
 
                 finally:

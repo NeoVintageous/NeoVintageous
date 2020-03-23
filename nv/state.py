@@ -247,7 +247,7 @@ class State(object):
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
-    def must_collect_input(self, motion, action) -> bool:
+    def must_collect_input(self, view, motion, action) -> bool:
         if motion and action:
             if motion.accept_input:
                 return True
@@ -256,7 +256,7 @@ class State(object):
 
         # Special case: `q` should stop the macro recorder if it's running and
         # not request further input from the user.
-        if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(self.view.window())):
+        if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(view.window())):
             return False
 
         if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):
@@ -381,7 +381,7 @@ class State(object):
         action = self.action
         motion = self.motion
 
-        if self.must_collect_input(motion, action):
+        if self.must_collect_input(self.view, motion, action):
             return False
 
         mode = self.mode
