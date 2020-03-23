@@ -3184,7 +3184,7 @@ class _vi_slash(TextCommand):
 
         self._cmdline.prompt(pattern)
 
-    def on_done(self, pattern):
+    def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_FORWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
 
@@ -3196,7 +3196,7 @@ class _vi_slash(TextCommand):
         set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
         state.eval()
 
-    def on_change(self, pattern):
+    def on_change(self, pattern: str):
         state = State(self.view)
         count = state.count
 
@@ -4314,7 +4314,7 @@ class _vi_question_mark(TextCommand):
 
         self._cmdline.prompt(pattern)
 
-    def on_done(self, pattern):
+    def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_BACKWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
 
@@ -4326,7 +4326,7 @@ class _vi_question_mark(TextCommand):
         set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
         state.eval()
 
-    def on_change(self, pattern):
+    def on_change(self, pattern: str):
         state = State(self.view)
         count = state.count
 
