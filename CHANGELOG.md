@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.21.0 - Unreleased
 
+### Added
+
+* Added [#709](https://github.com/NeoVintageous/NeoVintageous/issues/709): General performance improvements
+
 ### Changed
 
 * Changed [#710](https://github.com/NeoVintageous/NeoVintageous/issues/710): The default search occurrence style is "outline" (previously "fill")
