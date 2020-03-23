@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_motion_count
@@ -1033,7 +1034,7 @@ class ViActivateNextTab(ViOperatorDef):
             'action': '_vi_gt',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count_default_zero
+                'count': get_count(state.view, default=0)
             }
         }
 
@@ -2051,7 +2052,7 @@ class ViMoveHalfScreenDown(ViMotionDef):
             'motion': '_vi_ctrl_d',
             'motion_args': {
                 'mode': state.mode,
-                'count': state.count_default_zero
+                'count': get_count(state.view, default=0)
             }
         }
 
@@ -2068,7 +2069,7 @@ class ViMoveHalfScreenUp(ViMotionDef):
             'motion': '_vi_ctrl_u',
             'motion_args': {
                 'mode': state.mode,
-                'count': state.count_default_zero
+                'count': get_count(state.view, default=0)
             }
         }
 
@@ -2510,7 +2511,7 @@ class ViPercent(ViMotionDef):
             'motion': '_vi_percent',
             'motion_args': {
                 'mode': state.mode,
-                'count': state.count_default_zero
+                'count': get_count(state.view, default=0)
             }
         }
 
