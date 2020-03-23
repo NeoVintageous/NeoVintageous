@@ -3191,9 +3191,7 @@ class _vi_slash(TextCommand):
 
         state = State(self.view)
         state.sequence += pattern + '<CR>'
-        set_last_buffer_search_command(self.view, 'vi_slash')
         state.motion = ViSearchForwardImpl(term=pattern)
-        set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
         state.eval()
 
     def on_change(self, pattern: str):
@@ -4321,9 +4319,7 @@ class _vi_question_mark(TextCommand):
 
         state = State(self.view)
         state.sequence += pattern + '<CR>'
-        set_last_buffer_search_command(self.view, 'vi_question_mark')
         state.motion = ViSearchBackwardImpl(term=pattern)
-        set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
         state.eval()
 
     def on_change(self, pattern: str):
