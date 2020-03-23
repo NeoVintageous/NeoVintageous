@@ -3061,8 +3061,7 @@ class _vi_g_big_h(WindowCommand):
             update_status_line(self.view)
             return
 
-        ui_bell()
-        status_message('no available search matches')
+        ui_bell('no available search matches')
         state.reset_command_data()
 
 

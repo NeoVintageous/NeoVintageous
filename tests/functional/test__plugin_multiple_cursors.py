@@ -166,5 +166,4 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
     @unittest.mock_status_message()
     def test_no_search_occurrences(self):
         self.eq('fi|zz', 'n_gH', 'fi|zz')
-        self.assertBell()
-        self.assertStatusMessage('no available search matches')
+        self.assertBell('no available search matches')
