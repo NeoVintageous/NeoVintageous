@@ -275,10 +275,6 @@ class State(object):
 
         return False
 
-    def reset_register_data(self) -> None:
-        self.register = '"'
-        self.must_capture_register_name = False
-
     def display_status(self) -> None:
         mode_name = mode_to_name(self.mode)
         if mode_name:
@@ -315,7 +311,8 @@ class State(object):
 
         self.sequence = ''
         self.partial_sequence = ''
-        self.reset_register_data()
+        self.register = '"'
+        self.must_capture_register_name = False
         reset_status(self.view, self.mode)
 
     def reset_volatile_data(self) -> None:
