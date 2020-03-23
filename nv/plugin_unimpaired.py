@@ -260,7 +260,7 @@ class UnimpairedTablast(ViOperatorDef):
         }
 
 
-class _BaseToggleDef(ViOperatorDef):
+class OptionMixin(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
@@ -279,37 +279,37 @@ class _BaseToggleDef(ViOperatorDef):
 
 @register(seqs.CO, (NORMAL,))
 @register(seqs.YO, (NORMAL,))
-class UnimpairedToggle(_BaseToggleDef):
+class UnimpairedToggle(OptionMixin):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
             'action_args': {
                 'action': 'toggle_option',
-                'value': self.inp
+                'name': self.inp
             }
         }
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_O, (NORMAL,))
-class UnimpairedToggleOn(_BaseToggleDef):
+class UnimpairedToggleOn(OptionMixin):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
             'action_args': {
                 'action': 'enable_option',
-                'value': self.inp
+                'name': self.inp
             }
         }
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_O, (NORMAL,))
-class UnimpairedToggleOff(_BaseToggleDef):
+class UnimpairedToggleOff(OptionMixin):
     def translate(self, state):
         return {
             'action': '_nv_unimpaired',
             'action_args': {
                 'action': 'disable_option',
-                'value': self.inp
+                'name': self.inp
             }
         }
 
@@ -317,7 +317,7 @@ class UnimpairedToggleOff(_BaseToggleDef):
 _CONFLICT_MARKER_REGEX = '^(<<<<<<< |=======$|>>>>>>> )'
 
 
-def _goto_prev_conflict_marker(view, count):
+def _goto_prev_conflict_marker(view, count: int) -> None:
     def f(view, s):
         for i in range(0, count):
             match = view_rfind(view, _CONFLICT_MARKER_REGEX, s.b)
@@ -331,7 +331,7 @@ def _goto_prev_conflict_marker(view, count):
     regions_transformer(view, f)
 
 
-def _goto_next_conflict_marker(view, count):
+def _goto_next_conflict_marker(view, count: int) -> None:
     def f(view, s):
         for i in range(0, count):
             match = view_find(view, _CONFLICT_MARKER_REGEX, s.b + 1)
@@ -346,7 +346,7 @@ def _goto_next_conflict_marker(view, count):
 
 
 # Go to the previous [count] lint error.
-def _context_previous(window, count):
+def _context_previous(window, count: int) -> None:
     window.run_command('sublime_linter_goto_error', {
         'direction': 'previous',
         'count': count
@@ -354,7 +354,7 @@ def _context_previous(window, count):
 
 
 # Go to the next [count] lint error.
-def _context_next(window, count):
+def _context_next(window, count: int) -> None:
     window.run_command('sublime_linter_goto_error', {
         'direction': 'next',
         'count': count
@@ -362,19 +362,19 @@ def _context_next(window, count):
 
 
 # Exchange the current line with [count] lines below it.
-def _move_down(view, count):
+def _move_down(view, count: int) -> None:
     for i in range(count):
         view.run_command('swap_line_down')
 
 
 # Exchange the current line with [count] lines above it.
-def _move_up(view, count):
+def _move_up(view, count: int) -> None:
     for i in range(count):
         view.run_command('swap_line_up')
 
 
 # Add [count] blank lines below the cursor.
-def _blank_down(view, edit, count):
+def _blank_down(view, edit, count: int) -> None:
     end_point = view.size()
     new_sels = []
     for sel in view.sel():
@@ -396,7 +396,7 @@ def _blank_down(view, edit, count):
 
 
 # Add [count] blank lines above the cursor.
-def _blank_up(view, edit, count):
+def _blank_up(view, edit, count: int) -> None:
     new_sels = []
     for sel in view.sel():
         line = view.line(sel)
@@ -415,7 +415,7 @@ def _blank_up(view, edit, count):
         set_selection(view, new_sels)
 
 
-def _set_bool_option(view, key, flag=None):
+def _set_bool_option(view, key: str, flag: bool = None) -> None:
     settings = view.settings()
     value = settings.get(key)
 
@@ -429,38 +429,38 @@ def _set_bool_option(view, key, flag=None):
             settings.set(key, False)
 
 
-def _do_toggle_option(view, key, flag=None):
+def _do_toggle_option(view, name: str, flag: bool = None) -> None:
     if flag is None:
-        toggle_option(view, key)
+        toggle_option(view, name)
     else:
-        set_option(view, key, flag)
+        set_option(view, name, flag)
 
 
-def _list_option(view, flag):
+def _list_option(view, flag: bool) -> None:
     _do_toggle_option(view, 'list', flag)
 
 
-def _hlsearch_option(view, flag):
+def _hlsearch_option(view, flag: bool) -> None:
     _do_toggle_option(view, 'hlsearch', flag)
 
 
-def _ignorecase_option(view, flag):
+def _ignorecase_option(view, flag: bool) -> None:
     _do_toggle_option(view, 'ignorecase', flag)
 
 
-def _menu_option(view, flag=None):
+def _menu_option(view, flag: bool = None) -> None:
     set_window_ui_element_visible('menu', flag, view.window())
 
 
-def _minimap_option(view, flag=None):
+def _minimap_option(view, flag: bool = None) -> None:
     set_window_ui_element_visible('minimap', flag, view.window())
 
 
-def _sidebar_option(view, flag=None):
+def _sidebar_option(view, flag: bool = None) -> None:
     set_window_ui_element_visible('sidebar', flag, view.window())
 
 
-def _statusbar_option(view, flag=None):
+def _statusbar_option(view, flag: bool = None) -> None:
     set_window_ui_element_visible('status_bar', flag, view.window())
 
 
@@ -511,7 +511,7 @@ _OPTION_ALIASES = {
 }
 
 
-def _toggle_option(view, key, value=None):
+def _toggle_option(view, key, value=None) -> None:
     if key in _OPTION_ALIASES:
         key = _OPTION_ALIASES[key]
 
@@ -519,7 +519,6 @@ def _toggle_option(view, key, value=None):
         raise ValueError('unknown toggle')
 
     option = _OPTIONS[key]
-
     if not option:
         raise ValueError('option is not implemented')
 
@@ -542,9 +541,9 @@ class _nv_unimpaired_command(TextCommand):
         elif action == 'blank_up':
             _blank_up(self.view, edit, count)
         elif action in ('bnext', 'bprevious', 'bfirst', 'blast'):
-            window_buffer_control(self.view.window(), action[1:], count=count)
+            window_buffer_control(self.view.window(), action[1:], count)
         elif action in ('tabnext', 'tabprevious', 'tabfirst', 'tablast'):
-            window_tab_control(self.view.window(), action[3:], count=count)
+            window_tab_control(self.view.window(), action[3:], count)
         elif action == 'goto_next_conflict_marker':
             _goto_next_conflict_marker(self.view, count)
         elif action == 'goto_prev_conflict_marker':
@@ -554,10 +553,10 @@ class _nv_unimpaired_command(TextCommand):
         elif action == 'context_previous':
             _context_previous(self.view.window(), count)
         elif action == 'toggle_option':
-            _toggle_option(self.view, kwargs.get('value'))
+            _toggle_option(self.view, kwargs.get('name'))
         elif action == 'enable_option':
-            _toggle_option(self.view, kwargs.get('value'), True)
+            _toggle_option(self.view, kwargs.get('name'), True)
         elif action == 'disable_option':
-            _toggle_option(self.view, kwargs.get('value'), False)
+            _toggle_option(self.view, kwargs.get('name'), False)
         else:
             raise ValueError('unknown action')
