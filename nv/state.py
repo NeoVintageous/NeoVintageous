@@ -355,14 +355,6 @@ class State():
     def __init__(self, view):
         self.view = view
 
-    @property  # DEPRECATED
-    def mode(self) -> str:
-        return get_mode(self.view)
-
-    @mode.setter  # DEPRECATED
-    def mode(self, value: str) -> None:
-        set_mode(self.view, value)
-
 
 def init_state(view) -> None:
     # Initialise view state.

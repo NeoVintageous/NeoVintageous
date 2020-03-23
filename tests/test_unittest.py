@@ -18,6 +18,7 @@
 from sublime import Region
 from sublime import Settings
 
+from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.tests import unittest
 
@@ -210,7 +211,7 @@ class TestViewTestCase(unittest.ViewTestCase):
 
     def test_assertNormal(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
 
         self.view.sel().clear()
         self.assertNormal('hello world')
@@ -245,15 +246,15 @@ class TestViewTestCase(unittest.ViewTestCase):
 
     def test_assertNormal_asserts_normal_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
         with self.assertRaises(AssertionError):
             self.assertNormal('hello world|')
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         self.assertNormal('hello world|')
 
     def test_assertInsert(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.INSERT
+        set_mode(self.view, unittest.INSERT)
 
         self.view.sel().clear()
         self.assertInsert('hello world')
@@ -266,15 +267,15 @@ class TestViewTestCase(unittest.ViewTestCase):
 
     def test_assertInsert_asserts_insert_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertInsert('hello world|')
-        self.state.mode = unittest.INSERT
+        set_mode(self.view, unittest.INSERT)
         self.assertInsert('hello world|')
 
     def test_assertVisual(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
 
         self.view.sel().clear()
         self.assertVisual('hello world')
@@ -294,10 +295,10 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.view.sel().clear()
         self.view.sel().add(3)
         self.view.sel().add(5)
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertVisual('hel|lo| world')
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
         self.assertVisual('hel|lo| world')
 
     def test_assertVline_asserts_vline_mode(self):
@@ -305,10 +306,10 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.view.sel().clear()
         self.view.sel().add(0)
         self.view.sel().add(11)
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertVline('|hello world|')
-        self.state.mode = unittest.VISUAL_LINE
+        set_mode(self.view, unittest.VISUAL_LINE)
         self.assertVline('|hello world|')
 
     def test_assertVBlock_asserts_vblock_mode(self):
@@ -316,10 +317,10 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.view.sel().clear()
         self.view.sel().add(0)
         self.view.sel().add(11)
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertVblock('|hello world|')
-        self.state.mode = unittest.VISUAL_BLOCK
+        set_mode(self.view, unittest.VISUAL_BLOCK)
         self.assertVblock('|hello world|')
 
     def test_assert_content(self):

@@ -19,6 +19,7 @@ from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
@@ -55,7 +56,7 @@ class ViDeleteByChars(ViOperatorDef):
         return {
             'action': '_vi_d',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -76,7 +77,7 @@ class DeleteMultipleCursor(ViOperatorDef):
         return {
             'action': '_vi_d',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -95,7 +96,7 @@ class ViInsertLineBefore(ViOperatorDef):
         return {
             'action': '_vi_big_o',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -109,11 +110,11 @@ class ViInsertLineAfter(ViOperatorDef):
         self.updates_xpos = False
 
     def translate(self, state):
-        if state.mode in (VISUAL, VISUAL_LINE):
+        if get_mode(state.view) in (VISUAL, VISUAL_LINE):
             return {
                 'action': '_vi_visual_o',
                 'action_args': {
-                    'mode': state.mode,
+                    'mode': get_mode(state.view),
                     'count': 1
                 }
             }
@@ -123,7 +124,7 @@ class ViInsertLineAfter(ViOperatorDef):
             return {
                 'action': '_vi_o',
                 'action_args': {
-                    'mode': state.mode,
+                    'mode': get_mode(state.view),
                     'count': get_count(state.view)
                 }
             }
@@ -142,7 +143,7 @@ class ViRightDeleteChars(ViOperatorDef):
         return {
             'action': '_vi_x',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -161,7 +162,7 @@ class ViSubstituteChar(ViOperatorDef):
         return {
             'action': '_vi_s',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -180,7 +181,7 @@ class ViYankByChars(ViOperatorDef):
         return {
             'action': '_vi_y',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -198,7 +199,7 @@ class ViYankSelectByChars(ViOperatorDef):
         return {
             'action': '_vi_y',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -218,7 +219,7 @@ class ViReindent(ViOperatorDef):
         return {
             'action': '_vi_equal',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -237,7 +238,7 @@ class ViIndent(ViOperatorDef):
         return {
             'action': '_vi_greater_than',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -256,7 +257,7 @@ class ViUnindent(ViOperatorDef):
         return {
             'action': '_vi_less_than',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -277,7 +278,7 @@ class ViChangeByChars(ViOperatorDef):
         return {
             'action': '_vi_c',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -298,7 +299,7 @@ class ChangeMultipleCursor(ViOperatorDef):
         return {
             'action': '_vi_c',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -316,7 +317,7 @@ class ViUndo(ViOperatorDef):
         return {
             'action': '_vi_u',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -335,7 +336,7 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
             'action': '_vi_visual_u',
             'action_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -352,7 +353,7 @@ class ViRedo(ViOperatorDef):
             'action': '_vi_ctrl_r',
             'action_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -369,7 +370,7 @@ class ViDeleteToEol(ViOperatorDef):
         return {
             'action': '_vi_big_d',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -390,7 +391,7 @@ class ViChangeToEol(ViOperatorDef):
         return {
             'action': '_vi_big_c',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -410,7 +411,7 @@ class ViChangeToUpperCaseByLines(ViOperatorDef):
         return {
             'action': '_vi_g_big_u_big_u',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -430,7 +431,7 @@ class ViChangeLine(ViOperatorDef):
         return {
             'action': '_vi_cc',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -449,7 +450,7 @@ class ViDeleteLine(ViOperatorDef):
         return {
             'action': '_vi_dd',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -485,7 +486,7 @@ class ViIndentLine(ViOperatorDef):
         return {
             'action': '_vi_greater_than_greater_than',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -504,7 +505,7 @@ class ViChangeToLowerCaseByLines(ViOperatorDef):
         return {
             'action': '_vi_guu',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -523,7 +524,7 @@ class ViChangeToLowerCaseByChars(ViOperatorDef):
         return {
             'action': '_vi_gu',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -541,7 +542,7 @@ class ViReindentLine(ViOperatorDef):
         return {
             'action': '_vi_equal_equal',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -559,7 +560,7 @@ class ViUnindentLine(ViOperatorDef):
         return {
             'action': '_vi_less_than_less_than',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -577,7 +578,7 @@ class ViYankLine(ViOperatorDef):
         return {
             'action': '_vi_yy',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -596,7 +597,7 @@ class ViInvertCaseByLines(ViOperatorDef):
         return {
             'action': '_vi_g_tilde_g_tilde',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -614,7 +615,7 @@ class ViForceInvertCaseByChars(ViOperatorDef):
         return {
             'action': '_vi_tilde',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -634,7 +635,7 @@ class ViSubstituteByLines(ViOperatorDef):
         return {
             'action': '_vi_big_s',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': 1,
                 'register': get_register(state.view)
             }
@@ -654,7 +655,7 @@ class ViInvertCaseByChars(ViOperatorDef):
         return {
             'action': '_vi_g_tilde',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -673,7 +674,7 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
         return {
             'action': '_vi_g_big_u',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -691,7 +692,7 @@ class ViJoinLines(ViOperatorDef):
         return {
             'action': '_vi_big_j',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -709,7 +710,7 @@ class ViDecrement(ViOperatorDef):
         return {
             'action': '_vi_modify_numbers',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'subtract': True
             }
@@ -728,7 +729,7 @@ class ViIncrement(ViOperatorDef):
         return {
             'action': '_vi_modify_numbers',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -746,7 +747,7 @@ class ViJoinLinesNoSeparator(ViOperatorDef):
         return {
             'action': '_vi_big_j',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'dont_insert_or_remove_spaces': True
             }
@@ -764,7 +765,7 @@ class ViEnterVisualMode(ViOperatorDef):
         return {
             'action': '_enter_visual_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -781,7 +782,7 @@ class ViScrollToScreenTop(ViOperatorDef):
         return {
             'action': '_vi_z_enter',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -799,7 +800,7 @@ class ViScrollToScreenBottom(ViOperatorDef):
         return {
             'action': '_vi_z_minus',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -816,7 +817,7 @@ class ViScrollToScreenCenter(ViOperatorDef):
         return {
             'action': '_vi_zz',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -833,7 +834,7 @@ class ViZDot(ViOperatorDef):
         return {
             'action': '_vi_zz',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'first_non_blank': True
             }
@@ -852,7 +853,7 @@ class ViReformat(ViOperatorDef):
         return {
             'action': '_vi_gq',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -870,7 +871,7 @@ class ViReformatLinewise(ViOperatorDef):
         return {
             'action': '_vi_gq',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'linewise': True
             }
@@ -889,7 +890,7 @@ class ViPasteAfter(ViOperatorDef):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view),
                 'before_cursor': False
@@ -909,7 +910,7 @@ class ViPasteBefore(ViOperatorDef):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view),
                 'before_cursor': True
@@ -930,7 +931,7 @@ class ViPasteAfterAndIndent(ViOperatorDef):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view),
                 'before_cursor': False,
@@ -952,7 +953,7 @@ class ViPasteBeforeAndIndent(ViOperatorDef):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view),
                 'before_cursor': True,
@@ -973,7 +974,7 @@ class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view),
                 'before_cursor': False,
@@ -994,7 +995,7 @@ class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view),
                 'before_cursor': True,
@@ -1015,7 +1016,7 @@ class ViLeftDeleteChar(ViOperatorDef):
         return {
             'action': '_vi_big_x',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view)
             }
@@ -1033,7 +1034,7 @@ class ViActivateNextTab(ViOperatorDef):
         return {
             'action': '_vi_gt',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view, default=0)
             }
         }
@@ -1050,7 +1051,7 @@ class ViActivatePreviousTab(ViOperatorDef):
         return {
             'action': '_vi_g_big_t',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1460,7 +1461,7 @@ class ViEnterVisualLineMode(ViOperatorDef):
         return {
             'action': '_enter_visual_line_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -1476,7 +1477,7 @@ class ViRestoreVisualSelections(ViOperatorDef):
         return {
             'action': '_vi_gv',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1488,7 +1489,7 @@ class NetrwGx(ViOperatorDef):
         return {
             'action': '_vi_gx',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1534,7 +1535,7 @@ class ViRepeat(ViOperatorDef):
         return {
             'action': '_vi_dot',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1547,7 +1548,7 @@ class ViScrollByLinesUp(ViOperatorDef):
         return {
             'action': '_vi_ctrl_y',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1566,7 +1567,7 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
             'action': '_vi_visual_big_u',
             'action_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -1578,7 +1579,7 @@ class ViScrollByLinesDown(ViOperatorDef):
         return {
             'action': '_vi_ctrl_e',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1628,7 +1629,7 @@ class ViEnterVisualBlockMode(ViOperatorDef):
         return {
             'action': '_enter_visual_block_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -1666,7 +1667,7 @@ class ViEnterInserMode(ViOperatorDef):
         return {
             'action': '_enter_insert_mode',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1685,7 +1686,7 @@ class ViEnterNormalMode(ViOperatorDef):
         return {
             'action': '_enter_normal_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -1715,7 +1716,7 @@ class ViInsertAfterChar(ViOperatorDef):
         return {
             'action': '_vi_a',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': 1
             }
         }
@@ -1729,13 +1730,13 @@ class ViInsertAtEol(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        if state.mode != SELECT:
+        if get_mode(state.view) != SELECT:
             set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_big_a',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1748,13 +1749,13 @@ class ViInsertAtBol(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        if state.mode != SELECT:
+        if get_mode(state.view) != SELECT:
             set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_big_i',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1822,7 +1823,7 @@ class ViGotoSymbolInProject(ViOperatorDef):
         return {
             'action': '_vi_go_to_symbol',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'globally': True
             }
@@ -1840,7 +1841,7 @@ class ViGotoSymbolInFile(ViMotionDef):
         return {
             'motion': '_vi_go_to_symbol',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'globally': False
             }
@@ -1861,7 +1862,7 @@ class ViMoveRightByChars(ViMotionDef):
         return {
             'motion': '_vi_l',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1878,7 +1879,7 @@ class ViShiftEnterMotion(ViMotionDef):
         return {
             'motion': '_vi_shift_enter',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1896,7 +1897,7 @@ class ViMoveByWordsBackward(ViMotionDef):
         return {
             'motion': '_vi_b',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1914,7 +1915,7 @@ class ViMoveByBigWordsBackward(ViMotionDef):
         return {
             'motion': '_vi_big_b',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1932,7 +1933,7 @@ class ViMoveByBigWords(ViMotionDef):
         return {
             'motion': '_vi_big_w',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1949,7 +1950,7 @@ class ViMoveByWordEnds(ViMotionDef):
         return {
             'motion': '_vi_e',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1966,7 +1967,7 @@ class ViGotoScreenTop(ViMotionDef):
         return {
             'motion': '_vi_big_h',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -1983,7 +1984,7 @@ class ViMoveByWordEndsBackward(ViMotionDef):
         return {
             'motion': '_vi_ge',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2000,7 +2001,7 @@ class ViMoveByBigWordEndsBackward(ViMotionDef):
         return {
             'motion': '_vi_g_big_e',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2017,7 +2018,7 @@ class ViGotoScreenBottom(ViMotionDef):
         return {
             'motion': '_vi_big_l',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2034,7 +2035,7 @@ class ViGotoScreenMiddle(ViMotionDef):
         return {
             'motion': '_vi_big_m',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2051,7 +2052,7 @@ class ViMoveHalfScreenDown(ViMotionDef):
         return {
             'motion': '_vi_ctrl_d',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view, default=0)
             }
         }
@@ -2068,7 +2069,7 @@ class ViMoveHalfScreenUp(ViMotionDef):
         return {
             'motion': '_vi_ctrl_u',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view, default=0)
             }
         }
@@ -2087,7 +2088,7 @@ class ViMoveScreenDown(ViMotionDef):
         return {
             'motion': '_vi_ctrl_f',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2106,7 +2107,7 @@ class ViMoveScreenUp(ViMotionDef):
         return {
             'motion': '_vi_ctrl_b',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2123,7 +2124,7 @@ class ViGotoExactMarkXpos(RequiresOneCharMixinDef, ViMotionDef):
         return {
             'motion': '_vi_backtick',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'character': self.inp
             }
@@ -2142,7 +2143,7 @@ class ViMoveToEol(ViMotionDef):
         return {
             'motion': '_vi_dollar',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2160,7 +2161,7 @@ class ViMotionEnter(ViMotionDef):
         return {
             'motion': '_vi_enter',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2177,7 +2178,7 @@ class ViMoveBackOneLine(ViMotionDef):
         return {
             'motion': '_vi_minus',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2194,7 +2195,7 @@ class ViMoveToSoftEol(ViMotionDef):
         return {
             'motion': '_vi_g__',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2212,7 +2213,7 @@ class ViMoveByScreenLineDown(ViMotionDef):
         return {
             'motion': '_vi_gj',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2230,7 +2231,7 @@ class ViMoveByScreenLineUp(ViMotionDef):
         return {
             'motion': '_vi_gk',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2247,7 +2248,7 @@ class ViMoveByBlockUp(ViMotionDef):
         return {
             'motion': '_vi_left_brace',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2272,7 +2273,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
         return {
             'motion': motion,
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'char': get_last_char_search(view),
                 'inclusive': inclusive,
@@ -2293,7 +2294,7 @@ class ViGotoMark(RequiresOneCharMixinDef, ViMotionDef):
         return {
             'motion': '_vi_quote',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'character': self.inp
             }
@@ -2311,7 +2312,7 @@ class ViMoveByBlockDown(ViMotionDef):
         return {
             'motion': '_vi_right_brace',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2328,7 +2329,7 @@ class ViMoveBySentenceUp(ViMotionDef):
         return {
             'motion': '_vi_left_paren',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2345,7 +2346,7 @@ class ViMoveBySentenceDown(ViMotionDef):
         return {
             'motion': '_vi_right_paren',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2363,7 +2364,7 @@ class ViGotoOpeningBrace(ViMotionDef):
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'target': '{'
             }
@@ -2382,7 +2383,7 @@ class ViGotoOpeningParen(ViMotionDef):
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'target': '('
             }
@@ -2401,7 +2402,7 @@ class ViBackwardToStartOfChange(ViMotionDef):
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 'c',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2419,7 +2420,7 @@ class ViForwardToStartOfChange(ViMotionDef):
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 'c',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2437,7 +2438,7 @@ class ViPrevMisppelledWord(ViMotionDef):
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 's',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2455,7 +2456,7 @@ class VINextMispelledWord(ViMotionDef):
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 's',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2473,7 +2474,7 @@ class ViGotoClosingBrace(ViMotionDef):
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'target': '}'
             }
@@ -2492,7 +2493,7 @@ class ViGotoClosingParen(ViMotionDef):
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'target': ')'
             }
@@ -2510,7 +2511,7 @@ class ViPercent(ViMotionDef):
         return {
             'motion': '_vi_percent',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view, default=0)
             }
         }
@@ -2535,7 +2536,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         return {
             'motion': motion,
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'char': get_last_char_search(view),
                 'inclusive': inclusive,
@@ -2556,7 +2557,7 @@ class ViMoveByLineCols(ViMotionDef):
         return {
             'motion': '_vi_bar',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2573,7 +2574,7 @@ class ViMoveByBigWordEnds(ViMotionDef):
         return {
             'motion': '_vi_big_e',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2595,7 +2596,7 @@ class ViMoveLeftByChars(ViMotionDef):
         return {
             'motion': '_vi_h',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2613,7 +2614,7 @@ class ViMoveByWords(ViMotionDef):
         return {
             'motion': '_vi_w',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -2633,7 +2634,7 @@ class ViMoveDownByLines(ViMotionDef):
         return {
             'motion': '_vi_j',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'xpos': get_xpos(state.view)
             }
@@ -2653,7 +2654,7 @@ class ViMoveUpByLines(ViMotionDef):
         return {
             'motion': '_vi_k',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'xpos': get_xpos(state.view)
             }
@@ -2673,7 +2674,7 @@ class ViMoveToBol(ViMotionDef):
             'motion': '_vi_hat',
             'motion_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -2690,7 +2691,7 @@ class ViMoveToSoftBol(ViMotionDef):
             'motion': '_vi_underscore',
             'motion_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -2707,7 +2708,7 @@ class ViMoveToHardBol(ViMotionDef):
             'motion': '_vi_zero',
             'motion_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -2726,7 +2727,7 @@ class ViSearchLastUsedPattern(ViMotionDef):
         return {
             'motion': '_vi_search',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'forward': self.forward
             }
@@ -2744,7 +2745,7 @@ class ViRepeatSearchForward(ViMotionDef):
         return {
             'motion': '_vi_repeat_buffer_search',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'reverse': False
             }
@@ -2762,7 +2763,7 @@ class ViRepeatSearchBackward(ViMotionDef):
         return {
             'motion': '_vi_repeat_buffer_search',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'reverse': True
             }
@@ -2781,7 +2782,7 @@ class ViFindWord(ViMotionDef):
             'motion': '_vi_star',
             'motion_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -2798,7 +2799,7 @@ class ViReverseFindWord(ViMotionDef):
             'motion': '_vi_octothorp',
             'motion_args': {
                 'count': get_count(state.view),
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -2841,7 +2842,7 @@ class ViGotoBof(ViMotionDef):
         return {
             'motion': '_vi_gg',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view) if (get_action_count(state.view) or get_motion_count(state.view)) else None  # noqa: E501
             }
         }
@@ -2858,7 +2859,7 @@ class ViGotoEof(ViMotionDef):
         return {
             'motion': '_vi_big_g',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view) if (get_action_count(state.view) or get_motion_count(state.view)) else None  # noqa: E501
             }
         }
@@ -2876,7 +2877,7 @@ class ViReplaceCharacters(RequiresOneCharMixinDef, ViOperatorDef):
         return {
             'action': '_vi_r',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'register': get_register(state.view),
                 'char': self.inp
@@ -2894,7 +2895,7 @@ class ViSetMark(RequiresOneCharMixinDef, ViOperatorDef):
         return {
             'action': '_vi_m',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'character': self.inp
             }
@@ -2915,7 +2916,7 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
         return {
             'motion': '_vi_find_in_line',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'char': self.inp,
                 'inclusive': self.inclusive
@@ -2934,7 +2935,7 @@ class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
         return {
             'motion': '_vi_select_text_object',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'text_object': self.inp,
                 'inclusive': True
@@ -2953,7 +2954,7 @@ class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
         return {
             'motion': '_vi_select_text_object',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'text_object': self.inp,
                 'inclusive': False
@@ -2976,7 +2977,7 @@ class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
             'motion': '_vi_reverse_find_in_line',
             'motion_args': {
                 'char': self.inp,
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view),
                 'inclusive': self.inclusive
             }
@@ -3030,7 +3031,7 @@ class ViSearchForwardImpl(ViMotionDef):
             'motion': '_vi_slash_impl',
             'motion_args': {
                 'pattern': self.inp,
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -3083,7 +3084,7 @@ class ViSearchBackwardImpl(ViMotionDef):
             'motion': '_vi_question_mark_impl',
             'motion_args': {
                 'pattern': self.inp,
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -3100,7 +3101,7 @@ class ViInsertLineWithCommonPrefix(ViOperatorDef):
         return {
             'action': '_vi_ctrl_x_ctrl_l',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'register': get_register(state.view)
             }
         }
@@ -3117,7 +3118,7 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         return {
             'motion': '_vi_gm',
             'motion_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -3147,7 +3148,7 @@ class Viz(ViOperatorDef):
             'action': '_vi_z',
             'action_args': {
                 'action': get_partial_sequence(state.view)[1:],
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }

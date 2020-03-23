@@ -24,6 +24,7 @@ from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
@@ -33,10 +34,10 @@ from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_sequence
-from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import _must_scroll_into_view
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
@@ -51,7 +52,6 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 class TestState(unittest.ViewTestCase):
 
     def test_can_initialize(self):
-        s = State(self.view)
         # Make sure the actual usage of NeoVintageous doesn't change the
         # pristine state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')
@@ -87,9 +87,9 @@ class TestState(unittest.ViewTestCase):
         # a NORMAL state.
 
         try:
-            self.assertEqual(s.mode, unittest.NORMAL)
+            self.assertEqual(get_mode(self.view), unittest.NORMAL)
         except AssertionError:
-            self.assertEqual(s.mode, unittest.UNKNOWN)
+            self.assertEqual(get_mode(self.view), unittest.UNKNOWN)
 
         self.assertEqual(get_action(self.view), None)
         self.assertEqual(get_motion(self.view), None)
@@ -175,58 +175,58 @@ class TestStateCounts(unittest.ViewTestCase):
 class TestStateRunnability(unittest.ViewTestCase):
 
     def test_runnable_if_action_and_motion_available(self):
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         set_action(self.view, cmd_defs.ViDeleteLine())
         set_motion(self.view, cmd_defs.ViMoveRightByChars())
         self.assertEqual(is_runnable(self.view), True)
 
     def test_runnable_raises_exception_if_action_and_motion_available_but_has_invalid_mode(self):
-        self.state.mode = 'foobar'
+        set_mode(self.view, 'foobar')
         set_action(self.view, cmd_defs.ViDeleteByChars())
         set_motion(self.view, cmd_defs.ViMoveRightByChars())
         with self.assertRaisesRegex(ValueError, 'invalid mode'):
             is_runnable(self.view)
 
     def test_runnable_if_action_available(self):
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         set_action(self.view, cmd_defs.ViDeleteLine())
         self.assertEqual(is_runnable(self.view), True)
         set_action(self.view, cmd_defs.ViDeleteByChars())
         self.assertEqual(is_runnable(self.view), False)
 
     def test_runnable_raises_exception_if_action_available_but_has_invalid_mode(self):
-        self.state.mode = unittest.OPERATOR_PENDING
+        set_mode(self.view, unittest.OPERATOR_PENDING)
         set_action(self.view, cmd_defs.ViDeleteLine())
         with self.assertRaisesRegex(ValueError, 'action has invalid mode'):
             is_runnable(self.view)
 
     def test_runnable_if_action_motion_not_required_in_visual_returns_true(self):
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
         set_action(self.view, cmd_defs.ViDeleteLine())
         self.assertEqual(is_runnable(self.view), True)
 
     def test_runnable_if_action_motion_not_required_not_visual_returns_true(self):
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         set_action(self.view, cmd_defs.ViDeleteLine())
         self.assertEqual(is_runnable(self.view), True)
 
     def test_runnable_if_action_motion_is_required_in_visual_returns_true(self):
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
         set_action(self.view, cmd_defs.ViDeleteByChars())
         self.assertEqual(is_runnable(self.view), True)
 
     def test_runnable_if_action_motion_is_required_not_in_visual_returns_false(self):
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         set_action(self.view, cmd_defs.ViDeleteByChars())
         self.assertEqual(is_runnable(self.view), False)
 
     def test_runnable_if_motion_available(self):
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         set_motion(self.view, cmd_defs.ViMoveRightByChars())
         self.assertEqual(is_runnable(self.view), True)
 
     def test_runnable_raises_exception_if_motion_available_but_has_invalid_mode(self):
-        self.state.mode = unittest.OPERATOR_PENDING
+        set_mode(self.view, unittest.OPERATOR_PENDING)
         set_motion(self.view, cmd_defs.ViMoveRightByChars())
         with self.assertRaisesRegex(ValueError, 'motion has invalid mode'):
             is_runnable(self.view)
@@ -256,23 +256,19 @@ class TestStateSetCommand(unittest.ViewTestCase):
     def test_raises_error_if_too_many_motions(self):
         state = self.state
         set_motion(self.view, cmd_defs.ViMoveRightByChars())
-
         with self.assertRaisesRegex(ValueError, 'too many motions'):
             self.command._handle_command(state, cmd_defs.ViMoveRightByChars(), True)
 
     def test_changes_mode_for_lone_motion(self):
         state = self.state
-        state.mode = unittest.OPERATOR_PENDING
-
+        set_mode(self.view, unittest.OPERATOR_PENDING)
         motion = cmd_defs.ViMoveRightByChars()
         self.command._handle_command(state, motion, True)
-
-        self.assertEqual(self.state.mode, unittest.NORMAL)
+        self.assertEqual(get_mode(self.view), unittest.NORMAL)
 
     def test_raises_error_if_too_many_actions(self):
         state = self.state
         set_motion(self.view, cmd_defs.ViDeleteLine())
-
         with self.assertRaisesRegex(ValueError, 'too many actions'):
             self.command._handle_command(state, cmd_defs.ViDeleteLine(), True)
 
@@ -280,4 +276,4 @@ class TestStateSetCommand(unittest.ViewTestCase):
         state = self.state
         operator = cmd_defs.ViDeleteByChars()
         self.command._handle_command(state, operator, True)
-        self.assertEqual(state.mode, unittest.OPERATOR_PENDING)
+        self.assertEqual(get_mode(self.view), unittest.OPERATOR_PENDING)

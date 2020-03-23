@@ -19,6 +19,7 @@
 
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.settings import get_count
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import ACTION_MODES
@@ -40,7 +41,7 @@ class MultipleCursorsStart(ViOperatorDef):
         return {
             'action': '_enter_select_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(state.view)
             }
         }
 
@@ -58,7 +59,7 @@ class MultipleCursorsExit(ViOperatorDef):
         return {
             'action': '_vi_select_big_j',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -76,7 +77,7 @@ class MultipleCursorsAdd(ViOperatorDef):
         return {
             'action': '_vi_select_j',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }
@@ -94,7 +95,7 @@ class MultipleCursorsRemove(ViOperatorDef):
         return {
             'action': '_vi_select_k',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'count': get_count(state.view)
             }
         }

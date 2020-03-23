@@ -24,6 +24,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
@@ -70,7 +71,7 @@ class Surroundys(ViOperatorDef):
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'replacement': self.inp
             }
         }
@@ -88,7 +89,7 @@ class Surroundyss(Surroundys):
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'motion': {
                     'motion': '_vi_select_text_object',
                     'motion_args': {
@@ -138,7 +139,7 @@ class Surroundds(ViOperatorDef):
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ds',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'target': self.inp
             }
         }
@@ -181,7 +182,7 @@ class Surroundcs(ViOperatorDef):
             'action': '_nv_surround',
             'action_args': {
                 'action': 'cs',
-                'mode': state.mode,
+                'mode': get_mode(state.view),
                 'target': self.inp[0],
                 'replacement': self.inp[1:]
             }
