@@ -306,6 +306,14 @@ def set_reset_during_init(view, value: bool) -> None:
     _set_private(view.window(), 'reset_during_init', value)
 
 
+def get_sequence(view) -> str:
+    return get_session_view_value(view, 'sequence', '')
+
+
+def set_sequence(view, value: str) -> None:
+    set_session_view_value(view, 'sequence', value)
+
+
 def get_visual_block_direction(view, default: int = DIRECTION_DOWN) -> int:
     return view.settings().get('_nv_visual_block_direction', default)
 

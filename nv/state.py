@@ -24,6 +24,7 @@ from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
+from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
@@ -35,6 +36,7 @@ from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.utils import get_visual_repeat_data
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import save_previous_selection
@@ -135,15 +137,13 @@ class State(object):
     def glue_until_normal_mode(self, value: bool) -> None:
         self.settings.vi['_vintageous_glue_until_normal_mode'] = value
 
-    @property
+    @property  # DEPRECATED
     def sequence(self) -> str:
-        # Sequence of keys provided by the user.
-        return self.settings.vi['sequence'] or ''
+        return get_sequence(self.view)
 
-    @sequence.setter
+    @sequence.setter  # DEPRECATED
     def sequence(self, value: str) -> None:
-        _log.debug('set sequence >>>%s<<<', value)
-        self.settings.vi['sequence'] = value
+        set_sequence(self.view, value)
 
     @property  # DEPRECATED
     def mode(self) -> str:
