@@ -302,7 +302,7 @@ class State(object):
             _log.debug('action: %s', action_cmd)
             _log.debug('motion: %s', motion_cmd)
 
-            self.mode = INTERNAL_NORMAL
+            set_mode(self.view, INTERNAL_NORMAL)
 
             if 'mode' in action_cmd['action_args']:
                 action_cmd['action_args']['mode'] = INTERNAL_NORMAL
@@ -326,7 +326,7 @@ class State(object):
             run_window_command(action_cmd['action'], args)
 
             if not is_non_interactive(self.view) and get_action(self.view).repeatable:
-                set_repeat_data(self.view, ('vi', str(get_sequence(self.view)), self.mode, None))
+                set_repeat_data(self.view, ('vi', str(get_sequence(self.view)), get_mode(self.view), None))
 
             reset_command_data(self.view)
 
@@ -352,18 +352,18 @@ class State(object):
 
             _log.debug('action: %s', action_cmd)
 
-            if self.mode == NORMAL:
-                self.mode = INTERNAL_NORMAL
+            if get_mode(self.view) == NORMAL:
+                set_mode(self.view, INTERNAL_NORMAL)
 
                 if 'mode' in action_cmd['action_args']:
                     action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
-            elif is_visual_mode(self.mode):
+            elif is_visual_mode(get_mode(self.view)):
                 # Special-case exclusion: saving the previous selection would
                 # overwrite the previous selection needed e.g. gv in a VISUAL
                 # mode needs to expand or contract to previous selection.
                 if action_cmd['action'] != '_vi_gv':
-                    save_previous_selection(self.view, self.mode)
+                    save_previous_selection(self.view, get_mode(self.view))
 
             # Some commands, like 'i' or 'a', open a series of edits that need
             # to be grouped together unless we are gluing a larger sequence
@@ -375,7 +375,7 @@ class State(object):
                 run_window_command('mark_undo_groups_for_gluing')
 
             sequence = get_sequence(self.view)
-            visual_repeat_data = get_visual_repeat_data(self.view, self.mode)
+            visual_repeat_data = get_visual_repeat_data(self.view, get_mode(self.view))
             action = get_action(self.view)
 
             add_macro_step(self.view, action_cmd['action'], action_cmd['action_args'])
@@ -383,10 +383,10 @@ class State(object):
             run_action(active_window(), action_cmd)
 
             if not (is_processing_notation(self.view) and get_glue_until_normal_mode(self.view)) and action.repeatable:
-                set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
+                set_repeat_data(self.view, ('vi', sequence, get_mode(self.view), visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:
-            self.mode = NORMAL
+            set_mode(self.view, NORMAL)
 
         reset_command_data(self.view)
 
