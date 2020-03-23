@@ -365,22 +365,6 @@ class State():
         set_mode(self.view, value)
 
     @property  # DEPRECATED
-    def action(self):
-        return get_action(self.view)
-
-    @action.setter  # DEPRECATED
-    def action(self, value) -> None:
-        set_action(self.view, value)
-
-    @property  # DEPRECATED
-    def motion(self):
-        return get_motion(self.view)
-
-    @motion.setter  # DEPRECATED
-    def motion(self, value) -> None:
-        set_motion(self.view, value)
-
-    @property  # DEPRECATED
     def count(self) -> int:
         return get_count(self.view, default=1)
 
