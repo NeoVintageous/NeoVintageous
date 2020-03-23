@@ -24,15 +24,15 @@ _state = {}  # type: dict
 
 def _get(window, key: str = None, default=None):
     try:
-        state = _state[window.id()]
+        macro = _state[window.id()]
     except KeyError:
-        state = _state[window.id()] = {}
+        macro = _state[window.id()] = {}
 
     if key is None:
-        return state
+        return macro
 
     try:
-        return state[key]
+        return macro[key]
     except KeyError:
         return default
 
@@ -50,36 +50,36 @@ def is_recording(window) -> bool:
 
 
 def start_recording(window, register_name: str) -> None:
-    state = _get(window)
-    state['recording'] = True
-    state['recording_steps'] = []
-    state['recording_register_name'] = register_name
+    macro = _get(window)
+    macro['recording'] = True
+    macro['recording_steps'] = []
+    macro['recording_register_name'] = register_name
 
     set_window_status(window, 'vim-recorder', 'recording @%s' % register_name)
 
 
 def stop_recording(window) -> None:
-    state = _get(window)
+    macro = _get(window)
 
     name = _get(window, 'recording_register_name')
     if name:
-        if 'recorded' not in state:
-            state['recorded'] = {}
+        if 'recorded' not in macro:
+            macro['recorded'] = {}
 
-        state['recorded'][name] = _get_steps(window)
+        macro['recorded'][name] = _get_steps(window)
 
-    state['recording'] = False
-    state['recording_steps'] = []
-    state['recording_register_name'] = None
+    macro['recording'] = False
+    macro['recording_steps'] = []
+    macro['recording_register_name'] = None
 
     erase_window_status(window, 'vim-recorder')
 
 
 def get_recorded(window, name: str):
-    state = _get(window)
+    macro = _get(window)
 
     try:
-        return state['recorded'][name]
+        return macro['recorded'][name]
     except KeyError:
         return None
 
@@ -89,8 +89,8 @@ def get_last_used_register_name(window) -> str:
 
 
 def set_last_used_register_name(window, name: str) -> None:
-    state = _get(window)
-    state['last_used_register_name'] = name
+    macro = _get(window)
+    macro['last_used_register_name'] = name
 
 
 # TODO Refactor to remove State dependency
@@ -103,12 +103,12 @@ def add_step(state, cmd: str, args: dict) -> None:
             return
 
         if not get_glue_until_normal_mode(state.view):
-            state = _get(window)
+            macro = _get(window)
 
-            if 'recording_steps' not in state:
-                state['recording_steps'] = []
+            if 'recording_steps' not in macro:
+                macro['recording_steps'] = []
 
-            state['recording_steps'].append((cmd, args))
+            macro['recording_steps'].append((cmd, args))
 
 
 def _get_steps(window) -> list:
