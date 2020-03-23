@@ -314,6 +314,18 @@ def set_sequence(view, value: str) -> None:
     set_session_view_value(view, 'sequence', value)
 
 
+def get_glue_until_normal_mode(view) -> bool:
+    # Indicate that editing commands should be grouped together. They should be
+    # grouped together in a single undo step after the user requested
+    # `_enter_normal_mode` next. This property is *VOLATILE*; it shouldn't be
+    # persisted between sessions.
+    return get_session_view_value(view, 'glue_until_normal_mode', False)
+
+
+def set_glue_until_normal_mode(view, value: bool) -> None:
+    set_session_view_value(view, 'glue_until_normal_mode', value)
+
+
 def get_visual_block_direction(view, default: int = DIRECTION_DOWN) -> int:
     return view.settings().get('_nv_visual_block_direction', default)
 

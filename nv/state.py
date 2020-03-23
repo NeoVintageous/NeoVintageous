@@ -22,6 +22,7 @@ from sublime import active_window
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_count
+from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_sequence
@@ -29,6 +30,7 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
@@ -122,28 +124,11 @@ class State(object):
 
     @property
     def glue_until_normal_mode(self) -> bool:
-        """
-        Indicate that editing commands should be grouped together.
-
-        They should be grouped together in a single undo step after the user
-        requested `_enter_normal_mode` next.
-
-        This property is *VOLATILE*; it shouldn't be persisted between
-        sessions.
-        """
-        return self.settings.vi['_vintageous_glue_until_normal_mode'] or False
+        return get_glue_until_normal_mode(self.view)
 
     @glue_until_normal_mode.setter
     def glue_until_normal_mode(self, value: bool) -> None:
-        self.settings.vi['_vintageous_glue_until_normal_mode'] = value
-
-    @property  # DEPRECATED
-    def sequence(self) -> str:
-        return get_sequence(self.view)
-
-    @sequence.setter  # DEPRECATED
-    def sequence(self, value: str) -> None:
-        set_sequence(self.view, value)
+        set_glue_until_normal_mode(self.view, value)
 
     @property  # DEPRECATED
     def mode(self) -> str:
