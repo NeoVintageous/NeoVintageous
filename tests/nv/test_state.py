@@ -17,13 +17,15 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.commands import _nv_feed_key
 from NeoVintageous.nv.settings import get_last_buffer_search
-from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_last_char_search
+from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import cmd_defs
+from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 
 
 class TestState(unittest.ViewTestCase):
@@ -226,31 +228,49 @@ class TestStateRunnability(unittest.ViewTestCase):
 
 class TestStateSetCommand(unittest.ViewTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.command = _nv_feed_key(self.view.window())
+
     def test_raise_error_if_unknown_command_type(self):
-        fake_command = {'type': 'foo'}
-        self.assertRaises(AssertionError, self.state.set_command, fake_command)
+        state = self.state
+        with self.assertRaisesRegex(ValueError, 'unexpected command type'):
+            self.command._handle_command(state, 'foobar', True)
+
+    def test_unexpected_type(self):
+        state = self.state
+
+        class Foobar(ViCommandDefBase):
+            pass
+
+        with self.assertRaisesRegex(ValueError, 'unexpected command type'):
+            self.command._handle_command(state, Foobar(), True)
 
     def test_raises_error_if_too_many_motions(self):
-        self.state.motion = cmd_defs.ViMoveRightByChars()
+        state = self.state
+        state.motion = cmd_defs.ViMoveRightByChars()
 
-        self.assertRaises(ValueError, self.state.set_command, cmd_defs.ViMoveRightByChars())
+        with self.assertRaisesRegex(ValueError, 'too many motions'):
+            self.command._handle_command(state, cmd_defs.ViMoveRightByChars(), True)
 
     def test_changes_mode_for_lone_motion(self):
-        self.state.mode = unittest.OPERATOR_PENDING
+        state = self.state
+        state.mode = unittest.OPERATOR_PENDING
 
         motion = cmd_defs.ViMoveRightByChars()
-        self.state.set_command(motion)
+        self.command._handle_command(state, motion, True)
 
         self.assertEqual(self.state.mode, unittest.NORMAL)
 
     def test_raises_error_if_too_many_actions(self):
-        self.state.motion = cmd_defs.ViDeleteLine()
+        state = self.state
+        state.motion = cmd_defs.ViDeleteLine()
 
-        self.assertRaises(ValueError, self.state.set_command, cmd_defs.ViDeleteLine())
+        with self.assertRaisesRegex(ValueError, 'too many actions'):
+            self.command._handle_command(state, cmd_defs.ViDeleteLine(), True)
 
     def test_changes_mode_for_lone_action(self):
+        state = self.state
         operator = cmd_defs.ViDeleteByChars()
-
-        self.state.set_command(operator)
-
-        self.assertEqual(self.state.mode, unittest.OPERATOR_PENDING)
+        self.command._handle_command(state, operator, True)
+        self.assertEqual(state.mode, unittest.OPERATOR_PENDING)

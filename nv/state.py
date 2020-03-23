@@ -39,8 +39,6 @@ from NeoVintageous.nv.utils import scroll_into_view
 from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
-from NeoVintageous.nv.vi.cmd_base import ViMotionDef
-from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
 from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vim import INSERT
@@ -333,45 +331,6 @@ class State(object):
         self.processing_notation = False
         self.non_interactive = False
         set_reset_during_init(self.view, True)
-
-    def set_command(self, command: ViCommandDefBase) -> None:
-        # Set the current command.
-        #
-        # Args:
-        #   command (ViCommandDefBase): A command definition.
-        #
-        # Raises:
-        #   ValueError: If too many motions.
-        #   ValueError: If too many actions.
-        #   ValueError: Unexpected command type.
-        assert isinstance(command, ViCommandDefBase), 'ViCommandDefBase expected, got {}'.format(type(command))
-
-        is_runnable = self.runnable()
-
-        if isinstance(command, ViMotionDef):
-            if is_runnable:
-                raise ValueError('too many motions')
-
-            self.motion = command
-
-            if self.mode == OPERATOR_PENDING:
-                self.mode = NORMAL
-
-        elif isinstance(command, ViOperatorDef):
-            if is_runnable:
-                raise ValueError('too many actions')
-
-            self.action = command
-
-            if command.motion_required and not is_visual_mode(self.mode):
-                self.mode = OPERATOR_PENDING
-
-        else:
-            raise ValueError('unexpected command type')
-
-        if not self.non_interactive:
-            if command.accept_input and command.input_parser and command.input_parser.is_panel():
-                command.input_parser.run_command()
 
     def runnable(self) -> bool:
         # Returns:

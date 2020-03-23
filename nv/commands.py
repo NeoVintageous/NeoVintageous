@@ -152,7 +152,9 @@ from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import unfold
 from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.utils import update_xpos
+from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
@@ -672,8 +674,37 @@ class _nv_feed_key(WindowCommand):
 
         self._handle_command(state, command, do_eval)
 
-    def _handle_command(self, state, command, do_eval: bool):
-        state.set_command(command)
+    def _handle_command(self, state: State, command: ViCommandDefBase, do_eval: bool) -> None:
+        # Raises:
+        #   ValueError: If too many motions.
+        #   ValueError: If too many actions.
+        #   ValueError: Unexpected command type.
+        is_runnable = state.runnable()
+
+        if isinstance(command, ViMotionDef):
+            if is_runnable:
+                raise ValueError('too many motions')
+
+            state.motion = command
+
+            if state.mode == OPERATOR_PENDING:
+                state.mode = NORMAL
+
+        elif isinstance(command, ViOperatorDef):
+            if is_runnable:
+                raise ValueError('too many actions')
+
+            state.action = command
+
+            if command.motion_required and not is_visual_mode(state.mode):
+                state.mode = OPERATOR_PENDING
+
+        else:
+            raise ValueError('unexpected command type')
+
+        if not state.non_interactive:
+            if command.accept_input and command.input_parser and command.input_parser.is_panel():
+                command.input_parser.run_command()
 
         if state.mode == OPERATOR_PENDING:
             state.partial_sequence = ''
