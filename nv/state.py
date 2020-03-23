@@ -196,7 +196,7 @@ class State(object):
         return get_count(self.view, default=0)
 
     def display_status(self) -> None:
-        mode_name = mode_to_name(self.mode)
+        mode_name = mode_to_name(get_mode(self.view))
         if mode_name:
             self.view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
 
