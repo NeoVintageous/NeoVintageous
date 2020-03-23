@@ -253,7 +253,7 @@ class State(object):
         if must_collect_input(self.view, motion, action):
             return False
 
-        mode = self.mode
+        mode = get_mode(self.view)
 
         if action and motion:
             if mode != NORMAL:
