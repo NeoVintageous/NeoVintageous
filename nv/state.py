@@ -228,7 +228,8 @@ class State(object):
         if _must_scroll_into_view(motion, action):
             # Intentionally using the active view because the previous command
             # may have switched views and self.view would be the previous one.
-            _scroll_into_view(active_window().active_view(), self.mode)
+            active_view = active_window().active_view()
+            _scroll_into_view(active_view, get_mode(active_view))
 
         action and action.reset()
         set_action(self.view, None)
@@ -240,7 +241,7 @@ class State(object):
         set_partial_sequence(self.view, '')
         set_register(self.view, '"')
         set_must_capture_register_name(self.view, False)
-        reset_status_line(self.view, self.mode)
+        reset_status_line(self.view, get_mode(self.view))
 
     def runnable(self) -> bool:
         # Returns:
