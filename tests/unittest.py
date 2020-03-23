@@ -776,7 +776,7 @@ class FunctionalTestCase(ViewTestCase):
         #   * n_ - Normal
         #   * i_ - Insert
         #   * v_ - Visual
-        #   * l_ - Visual line
+        #   * V_ - Visual line
         #   * b_ - Visual block
         #
         # The default mode is Internal Normal.
@@ -791,16 +791,15 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed('3w')
         # >>> feed('v_w')
         # >>> feed('v_3w')
+        # >>> feed('V_w')
+        # >>> feed('b_w')
         # >>> feed('<Esc>')
+        # >>> feed('i_<Esc>')
+        # >>> feed('<C-v>')
+        # >>> feed('<CR>')
         # >>> feed(':pwd')
-        # >>> feed(':help neovintageous')
-
-        if seq == '<Esc>':
-            window = self.view.window()
-            if not window:
-                raise Exception('window not found')
-
-            return window.run_command('_nv_feed_key', {'key': '<esc>'})
+        # >>> feed(':copy 2')
+        # >>> feed(':2,4yank')
 
         if seq[0] == ':':
             return _do_ex_cmdline(self.view.window(), seq)
@@ -1406,7 +1405,7 @@ _SEQ2CMD = {
     '<C-y>':        {'command': '_nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
     '<CR>':         {'command': '_nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
     '<M-n>':        {'command': '_nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
-    '<esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
+    '<Esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<{':           {'command': '_nv_feed_key'},  # noqa: E241
     '=':            {'command': '_nv_feed_key'},  # noqa: E241
     '==':           {'command': '_nv_feed_key'},  # noqa: E241

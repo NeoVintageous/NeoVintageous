@@ -129,7 +129,7 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
             self.assertStatusLineIsSelect()
 
     def test_multi_cursor_exit_from_visual_mode(self):
-        for seq in ((True, '<C-n>', '<C-n>', '<esc>'), (False, 'gh', 'j', 'J')):
+        for seq in ((True, '<C-n>', '<C-n>', '<Esc>'), (False, 'gh', 'j', 'J')):
             self.set_setting('multi_cursor_exit_from_visual_mode', seq[0])
             self.eq('fizz fi|zz fizz fizz fizz', seq[1], 's_fizz |fizz| fizz fizz fizz')
             self.feed('s_' + seq[2])

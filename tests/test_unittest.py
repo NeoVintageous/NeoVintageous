@@ -484,7 +484,7 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
 
     def test_feed_esc(self):
         self.instance.feed('<Esc>')
-        self.window.run_command.assert_called_once_with('_nv_feed_key', {'key': '<esc>'})
+        self.window.run_command.assert_called_once_with('_nv_feed_key', {'key': '<esc>', 'check_user_mappings': False})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
     def test_feed_cmdline(self, do_ex_cmdline):
