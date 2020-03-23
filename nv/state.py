@@ -21,16 +21,20 @@ from sublime import active_window
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_action
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_motion
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_action
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_motion
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
@@ -131,24 +135,26 @@ class State(object):
 
     @property
     def action(self):
-        action = self.settings.vi['action'] or None
+        action = get_action(self.view)
         if action:
             cls = getattr(cmd_defs, action['name'], None)
+
             if cls is None:
                 cls = plugin.classes.get(action['name'], None)
+
             if cls is None:
                 ValueError('unknown action: %s' % action)
+
             return cls.from_json(action['data'])
 
     @action.setter
     def action(self, value) -> None:
         serialized = value.serialize() if value else None
-        self.settings.vi['action'] = serialized
+        set_action(self.view, serialized)
 
     @property
     def motion(self):
-        motion = self.settings.vi['motion'] or None
-
+        motion = get_motion(self.view)
         if motion:
             cls = getattr(cmd_defs, motion['name'])
 
@@ -157,7 +163,7 @@ class State(object):
     @motion.setter
     def motion(self, value) -> None:
         serialized = value.serialize() if value else None
-        self.settings.vi['motion'] = serialized
+        set_motion(self.view, serialized)
 
     @property
     def count(self) -> int:

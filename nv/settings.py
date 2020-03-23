@@ -53,6 +53,14 @@ def get_setting_neo(view, name: str):
     return view.settings().get('neovintageous_%s' % name)
 
 
+def get_action(view):
+    return get_session_view_value(view, 'action')
+
+
+def set_action(view, value) -> None:
+    set_session_view_value(view, 'action', value)
+
+
 def get_action_count(view) -> str:
     return get_session_view_value(view, 'action_count', '')
 
@@ -176,6 +184,14 @@ def get_mode(view) -> str:
 
 def set_mode(view, value: str) -> None:
     set_session_view_value(view, 'mode', value)
+
+
+def get_motion(view):
+    return get_session_view_value(view, 'motion')
+
+
+def set_motion(view, value) -> None:
+    set_session_view_value(view, 'motion', value)
 
 
 def get_motion_count(view) -> str:
