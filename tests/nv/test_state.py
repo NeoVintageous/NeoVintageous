@@ -31,6 +31,7 @@ from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.state import _must_scroll_into_view
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 
@@ -92,11 +93,11 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_reset_during_init(self.view), True)
 
     def test_must_scroll_into_view(self):
-        self.assertFalse(self.state.must_scroll_into_view(self.state.motion, self.state.action))
+        self.assertFalse(_must_scroll_into_view(self.state.motion, self.state.action))
 
         motion = cmd_defs.ViGotoSymbolInFile()
         self.state.motion = motion
-        self.assertTrue(self.state.must_scroll_into_view(self.state.motion, self.state.action))
+        self.assertTrue(_must_scroll_into_view(self.state.motion, self.state.action))
 
 
 class TestStateResettingState(unittest.ViewTestCase):

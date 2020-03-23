@@ -67,6 +67,26 @@ from NeoVintageous.nv.vim import run_window_command
 _log = logging.getLogger(__name__)
 
 
+def _must_scroll_into_view(motion: ViMotionDef, action: ViOperatorDef) -> bool:
+    if motion and motion.scroll_into_view:
+        return True
+
+    if action and action.scroll_into_view:
+        return True
+
+    return False
+
+
+def _must_update_xpos(motion: ViMotionDef, action: ViOperatorDef) -> bool:
+    if motion and motion.updates_xpos:
+        return True
+
+    if action and action.updates_xpos:
+        return True
+
+    return False
+
+
 class State(object):
 
     def __init__(self, view):
@@ -194,15 +214,6 @@ class State(object):
 
         return False
 
-    def must_update_xpos(self, motion: ViMotionDef, action: ViOperatorDef) -> bool:
-        if motion and motion.updates_xpos:
-            return True
-
-        if action and action.updates_xpos:
-            return True
-
-        return False
-
     def display_status(self) -> None:
         mode_name = mode_to_name(self.mode)
         if mode_name:
@@ -210,24 +221,15 @@ class State(object):
 
         self.view.set_status('vim-seq', self.sequence)
 
-    def must_scroll_into_view(self, motion: ViMotionDef, action: ViOperatorDef) -> bool:
-        if motion and motion.scroll_into_view:
-            return True
-
-        if action and action.scroll_into_view:
-            return True
-
-        return False
-
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
         motion = self.motion
         action = self.action
 
-        if self.must_update_xpos(motion, action):
+        if _must_update_xpos(motion, action):
             update_xpos(self.view)
 
-        if self.must_scroll_into_view(motion, action):
+        if _must_scroll_into_view(motion, action):
             # Intentionally using the active view because the previous command
             # may have switched views and self.view would be the previous one.
             scroll_into_view(active_window().active_view(), self.mode)
