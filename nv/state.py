@@ -217,7 +217,7 @@ class State(object):
         if mode_name:
             self.view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
 
-        self.view.set_status('vim-seq', self.sequence)
+        self.view.set_status('vim-seq', get_sequence(self.view))
 
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
@@ -238,8 +238,7 @@ class State(object):
         self.motion = None
         set_action_count(self.view, '')
         set_motion_count(self.view, '')
-
-        self.sequence = ''
+        set_sequence(self.view, '')
         set_partial_sequence(self.view, '')
         set_register(self.view, '"')
         set_must_capture_register_name(self.view, False)
@@ -322,7 +321,7 @@ class State(object):
             run_window_command(action_cmd['action'], args)
 
             if not is_non_interactive(self.view) and self.action.repeatable:
-                set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
+                set_repeat_data(self.view, ('vi', str(get_sequence(self.view)), self.mode, None))
 
             self.reset_command_data()
 
@@ -370,7 +369,7 @@ class State(object):
             if self.glue_until_normal_mode and not is_processing_notation(self.view):
                 run_window_command('mark_undo_groups_for_gluing')
 
-            sequence = self.sequence
+            sequence = get_sequence(self.view)
             visual_repeat_data = get_visual_repeat_data(self.view, self.mode)
             action = self.action
 

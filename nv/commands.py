@@ -84,6 +84,7 @@ from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
+from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_must_capture_register_name
@@ -102,6 +103,7 @@ from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
@@ -528,7 +530,7 @@ class _nv_feed_key(WindowCommand):
                 state.reset_command_data()
             return
 
-        state.sequence += key
+        set_sequence(self.view, get_sequence(self.view) + key)
         state.display_status()
 
         if is_must_capture_register_name(self.view):
@@ -596,7 +598,7 @@ class _nv_feed_key(WindowCommand):
                 # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
                 rhs = command.rhs
                 if state.mode == OPERATOR_PENDING:
-                    rhs = state.sequence[:-len(get_partial_sequence(self.view))] + command.rhs
+                    rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
 
                 # TODO Review Why does state need to be reset before running user mapping?
                 reg = get_register(self.view)
@@ -665,10 +667,10 @@ class _nv_feed_key(WindowCommand):
             # been given a chance to evaluate).
 
             if state.mode == OPERATOR_PENDING:
-                command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence),
+                command = mappings_resolve(state, sequence=to_bare_command_name(get_sequence(self.view)),
                                            mode=NORMAL, check_user_mappings=False)
             else:
-                command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence))
+                command = mappings_resolve(state, sequence=to_bare_command_name(get_sequence(self.view)))
 
             if self._handle_missing_command(state, command):
                 return
@@ -681,7 +683,7 @@ class _nv_feed_key(WindowCommand):
             # example, dd, g~g~ or g~~ remove counts. It looks like it might
             # only be the '>>' command that needs this code.
 
-            command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence), mode=NORMAL)
+            command = mappings_resolve(state, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
             if self._handle_missing_command(state, command):
                 return
 
@@ -792,7 +794,6 @@ class _nv_process_notation(WindowCommand):
             if state.action:
                 # The last key press has caused an action to be primed. That
                 # means there are  no more leading motions. Break out of here.
-                _log.debug('first action found in %s', state.sequence)
                 state.reset_command_data()
                 if state.mode == OPERATOR_PENDING:
                     state.mode = NORMAL
@@ -801,7 +802,7 @@ class _nv_process_notation(WindowCommand):
 
             elif state.runnable():
                 # Run any primed motion.
-                leading_motions += state.sequence
+                leading_motions += get_sequence(self.view)
                 state.eval()
                 state.reset_command_data()
 
@@ -1251,12 +1252,12 @@ class _enter_normal_mode(TextCommand):
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
 
-        if ((not from_init and (mode == NORMAL) and not state.sequence) or not is_view(self.view)):
+        if ((not from_init and (mode == NORMAL) and not get_sequence(self.view)) or not is_view(self.view)):
             # When _enter_normal_mode is requested from init_state, we
             # should not hide output panels; hide them only if the user
             # pressed Esc and we're not cancelling partial state data, or if a
             # panel has the focus.
-            # XXX: We are assuming that state.sequence will always be empty
+            # XXX: We are assuming that the sequence will always be empty
             #      when we do the check above. Is that so?
             # XXX: The 'not is_view(self.view)' check above seems to be
             #      redundant, since those views should be ignored by
@@ -3238,7 +3239,7 @@ class _vi_slash(TextCommand):
         clear_search_highlighting(self.view)
 
         state = State(self.view)
-        state.sequence += pattern + '<CR>'
+        set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
         state.motion = ViSearchForwardImpl(term=pattern)
         state.eval()
 
@@ -4366,7 +4367,7 @@ class _vi_question_mark(TextCommand):
         clear_search_highlighting(self.view)
 
         state = State(self.view)
-        state.sequence += pattern + '<CR>'
+        set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
         state.motion = ViSearchBackwardImpl(term=pattern)
         state.eval()
 

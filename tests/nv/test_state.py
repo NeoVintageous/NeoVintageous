@@ -26,12 +26,14 @@ from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
+from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_partial_sequence
+from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import _must_scroll_into_view
 from NeoVintageous.nv.vi import cmd_defs
@@ -40,7 +42,17 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 
 class TestState(unittest.ViewTestCase):
 
-    def _assertDefaultMode(self, mode):
+    def test_can_initialize(self):
+        s = State(self.view)
+        # Make sure the actual usage of NeoVintageous doesn't change the
+        # pristine state. This isn't great, though.
+        self.view.window().settings().erase('_vintageous_last_char_search_command')
+        self.view.window().settings().erase('_vintageous_last_char_search')
+        self.view.window().settings().erase('_vintageous_last_buffer_search')
+
+        self.assertEqual(get_sequence(self.view), '')
+        self.assertEqual(get_partial_sequence(self.view), '')
+
         # The default mode assertion can sometimes fail.
         #
         # Apparently it can fail on the CI servers aswell as local development
@@ -67,21 +79,10 @@ class TestState(unittest.ViewTestCase):
         # a NORMAL state.
 
         try:
-            self.assertEqual(mode, unittest.NORMAL)
+            self.assertEqual(s.mode, unittest.NORMAL)
         except AssertionError:
-            self.assertEqual(mode, unittest.UNKNOWN)
+            self.assertEqual(s.mode, unittest.UNKNOWN)
 
-    def test_can_initialize(self):
-        s = State(self.view)
-        # Make sure the actual usage of NeoVintageous doesn't change the
-        # pristine state. This isn't great, though.
-        self.view.window().settings().erase('_vintageous_last_char_search_command')
-        self.view.window().settings().erase('_vintageous_last_char_search')
-        self.view.window().settings().erase('_vintageous_last_buffer_search')
-
-        self.assertEqual(s.sequence, '')
-        self.assertEqual(get_partial_sequence(self.view), '')
-        self._assertDefaultMode(s.mode)
         self.assertEqual(s.action, None)
         self.assertEqual(s.motion, None)
         self.assertEqual(get_action_count(self.view), '')
@@ -105,7 +106,7 @@ class TestState(unittest.ViewTestCase):
 class TestStateResettingState(unittest.ViewTestCase):
 
     def test_reset_command_data(self):
-        self.state.sequence = 'abc'
+        set_sequence(self.view, 'abc')
         set_partial_sequence(self.view, 'x')
         self.state.user_input = 'f'
         self.state.action = cmd_defs.ViReplaceCharacters()
@@ -122,7 +123,7 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.assertEqual(get_action_count(self.view), '')
         self.assertEqual(get_motion_count(self.view), '')
 
-        self.assertEqual(self.state.sequence, '')
+        self.assertEqual(get_sequence(self.view), '')
         self.assertEqual(get_partial_sequence(self.view), '')
         self.assertEqual(get_register(self.view), '"')
         self.assertEqual(is_must_capture_register_name(self.view), False)
