@@ -385,7 +385,7 @@ class State(object):
             if not (is_processing_notation(self.view) and get_glue_until_normal_mode(self.view)) and action.repeatable:
                 set_repeat_data(self.view, ('vi', sequence, get_mode(self.view), visual_repeat_data))
 
-        if self.mode == INTERNAL_NORMAL:
+        if get_mode(self.view) == INTERNAL_NORMAL:
             set_mode(self.view, NORMAL)
 
         reset_command_data(self.view)
