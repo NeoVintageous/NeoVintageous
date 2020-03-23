@@ -142,7 +142,7 @@ def _seq_to_command(view, seq: str, mode: str):
     return ViMissingCommandDef()
 
 
-def mappings_resolve(view, sequence=None, mode=None, check_user_mappings: bool = True):
+def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_mappings: bool = True):
     # Look at the current global state and return the command mapped to the available sequence.
     #
     # Args:
