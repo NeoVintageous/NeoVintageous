@@ -23,6 +23,7 @@ from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
@@ -31,6 +32,7 @@ from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
+from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
@@ -119,16 +121,13 @@ class State(object):
         _log.debug('set sequence >>>%s<<<', value)
         self.settings.vi['sequence'] = value
 
-    @property
+    @property  # DEPRECATED
     def partial_sequence(self) -> str:
-        # Sometimes we need to store a partial sequence to obtain the commands'
-        # full name. Such is the case of `gD`, for example.
-        return self.settings.vi['partial_sequence'] or ''
+        return get_partial_sequence(self.view)
 
-    @partial_sequence.setter
+    @partial_sequence.setter  # DEPRECATED
     def partial_sequence(self, value: str) -> None:
-        _log.debug('set partial sequence >>>%s<<<', value)
-        self.settings.vi['partial_sequence'] = value
+        set_partial_sequence(self.view, value)
 
     @property  # DEPRECATED
     def mode(self) -> str:

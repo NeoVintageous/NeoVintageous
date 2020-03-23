@@ -217,6 +217,16 @@ def set_non_interactive(view, value: bool) -> None:
     set_session_view_value(view, 'non_interactive', value)
 
 
+def get_partial_sequence(view) -> str:
+    # Sometimes we need to store a partial sequence to obtain the commands' full
+    # name. Such is the case of `gD`, for example.
+    return get_session_view_value(view, 'partial_sequence', '')
+
+
+def set_partial_sequence(view, value: str) -> None:
+    set_session_view_value(view, 'partial_sequence', value)
+
+
 def is_processing_notation(view) -> bool:
     # Indicate whether _nv_process_notation is running.
     #
