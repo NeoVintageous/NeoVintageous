@@ -49,7 +49,6 @@ from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
-from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -352,11 +351,10 @@ def evaluate_state(state, view) -> None:
     reset_command_data(view)
 
 
-class State(object):
+class State():
 
     def __init__(self, view):
         self.view = view
-        self.settings = SettingsManager(self.view)
 
     @property  # DEPRECATED
     def mode(self) -> str:
