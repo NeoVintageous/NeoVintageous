@@ -3187,10 +3187,10 @@ class _vi_slash(TextCommand):
     def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_FORWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
+        clear_search_highlighting(self.view)
 
         state = State(self.view)
         state.sequence += pattern + '<CR>'
-        clear_search_highlighting(self.view)
         set_last_buffer_search_command(self.view, 'vi_slash')
         state.motion = ViSearchForwardImpl(term=pattern)
         set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
@@ -4317,10 +4317,10 @@ class _vi_question_mark(TextCommand):
     def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_BACKWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
+        clear_search_highlighting(self.view)
 
         state = State(self.view)
         state.sequence += pattern + '<CR>'
-        clear_search_highlighting(self.view)
         set_last_buffer_search_command(self.view, 'vi_question_mark')
         state.motion = ViSearchBackwardImpl(term=pattern)
         set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
