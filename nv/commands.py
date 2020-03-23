@@ -111,6 +111,7 @@ from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
@@ -545,7 +546,7 @@ class _nv_feed_key(WindowCommand):
         motion = state.motion
         action = state.action
 
-        if state.must_collect_input(self.view, motion, action):
+        if must_collect_input(self.view, motion, action):
             _log.debug('collecting input!')
 
             if motion and motion.accept_input:
@@ -811,7 +812,7 @@ class _nv_process_notation(WindowCommand):
             else:
                 state.eval()
 
-        if state.must_collect_input(self.view, state.motion, state.action):
+        if must_collect_input(self.view, state.motion, state.action):
             # State is requesting more input, so this is the last command  in
             # the sequence and it needs more input.
             self.collect_input(state)
@@ -819,7 +820,7 @@ class _nv_process_notation(WindowCommand):
 
         # Strip the already run commands
         if leading_motions:
-            if ((len(leading_motions) == len(keys)) and (not state.must_collect_input(self.view, state.motion, state.action))):  # noqa: E501
+            if ((len(leading_motions) == len(keys)) and (not must_collect_input(self.view, state.motion, state.action))):  # noqa: E501
                 set_non_interactive(self.view, False)
                 return
 
@@ -845,7 +846,7 @@ class _nv_process_notation(WindowCommand):
                                 'characters': translate_char(key)
                             })
 
-                    if not state.must_collect_input(self.view, state.motion, state.action):
+                    if not must_collect_input(self.view, state.motion, state.action):
                         return
 
                 finally:

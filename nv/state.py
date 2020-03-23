@@ -73,6 +73,27 @@ from NeoVintageous.nv.vim import run_window_command
 _log = logging.getLogger(__name__)
 
 
+def must_collect_input(view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
+    if motion and action:
+        if motion.accept_input:
+            return True
+
+        return (action.accept_input and action.input_parser is not None and action.input_parser.is_after_motion())
+
+    # Special case: `q` should stop the macro recorder if it's running and
+    # not request further input from the user.
+    if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(view.window())):
+        return False
+
+    if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):
+        return True
+
+    if motion:
+        return motion.accept_input
+
+    return False
+
+
 def _must_scroll_into_view(motion: ViMotionDef, action: ViOperatorDef) -> bool:
     if motion and motion.scroll_into_view:
         return True
@@ -174,26 +195,6 @@ class State(object):
         # TODO Refactor: method was required because count() defaults to 1
         return get_count(self.view, default=0)
 
-    def must_collect_input(self, view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
-        if motion and action:
-            if motion.accept_input:
-                return True
-
-            return (action.accept_input and action.input_parser is not None and action.input_parser.is_after_motion())
-
-        # Special case: `q` should stop the macro recorder if it's running and
-        # not request further input from the user.
-        if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(view.window())):
-            return False
-
-        if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):
-            return True
-
-        if motion:
-            return motion.accept_input
-
-        return False
-
     def display_status(self) -> None:
         mode_name = mode_to_name(self.mode)
         if mode_name:
@@ -234,7 +235,7 @@ class State(object):
         action = self.action
         motion = self.motion
 
-        if self.must_collect_input(self.view, motion, action):
+        if must_collect_input(self.view, motion, action):
             return False
 
         mode = self.mode
