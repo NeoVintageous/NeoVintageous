@@ -21,12 +21,16 @@ from sublime import active_window
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
@@ -147,21 +151,19 @@ class State(object):
 
     @property
     def motion_count(self) -> str:
-        return self.settings.vi['motion_count'] or ''
+        return get_motion_count(self.view)
 
     @motion_count.setter
     def motion_count(self, value: str) -> None:
-        assert value == '' or value.isdigit(), 'bad call'
-        self.settings.vi['motion_count'] = value
+        set_motion_count(self.view, value)
 
     @property
     def action_count(self) -> str:
-        return self.settings.vi['action_count'] or ''
+        return get_action_count(self.view)
 
     @action_count.setter
     def action_count(self, value: str) -> None:
-        assert value == '' or value.isdigit(), 'bad call'
-        self.settings.vi['action_count'] = value
+        set_action_count(self.view, value)
 
     def _get_count(self, default: int) -> int:
         c = default

@@ -53,6 +53,15 @@ def get_setting_neo(view, name: str):
     return view.settings().get('neovintageous_%s' % name)
 
 
+def get_action_count(view) -> str:
+    return get_session_view_value(view, 'action_count', '')
+
+
+def set_action_count(view, value: str) -> None:
+    assert value == '' or value.isdigit(), 'bad call'  # TODO Remove assertion
+    set_session_view_value(view, 'action_count', value)
+
+
 def get_cmdline_cwd() -> str:
     cwd = get_session_value('cmdline_cwd')
     if cwd:
@@ -150,6 +159,15 @@ def get_mode(view) -> str:
 
 def set_mode(view, value: str) -> None:
     set_session_view_value(view, 'mode', value)
+
+
+def get_motion_count(view) -> str:
+    return get_session_view_value(view, 'motion_count', '')
+
+
+def set_motion_count(view, value: str) -> None:
+    assert value == '' or value.isdigit(), 'bad call'  # TODO Remove assertion
+    set_session_view_value(view, 'motion_count', value)
 
 
 # This setting isn't reset automatically. _enter_normal_mode mode must take care
