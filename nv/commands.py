@@ -98,6 +98,7 @@ from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
+from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
@@ -524,7 +525,7 @@ class _nv_feed_key(WindowCommand):
         self.view = self.window.active_view()
         state = State(self.view)
 
-        mode = state.mode
+        mode = get_mode(self.view)
 
         _log.debug('mode: %s', mode)
 
@@ -576,7 +577,7 @@ class _nv_feed_key(WindowCommand):
         # (count), or " (register character), we need to skip the count handler
         # and go straight to resolving the mapping, otherwise it won't resolve.
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(state.mode, get_partial_sequence(self.view) + key):
+        if not mappings_can_resolve(get_mode(self.view), get_partial_sequence(self.view) + key):
             if repeat_count:
                 set_action_count(self.view, str(repeat_count))
 
@@ -587,7 +588,7 @@ class _nv_feed_key(WindowCommand):
 
         set_partial_sequence(self.view, get_partial_sequence(self.view) + key)
 
-        if check_user_mappings and mappings_is_incomplete(state.mode, get_partial_sequence(self.view)):
+        if check_user_mappings and mappings_is_incomplete(get_mode(self.view), get_partial_sequence(self.view)):
             _log.debug('found incomplete mapping')
 
             return
@@ -604,11 +605,11 @@ class _nv_feed_key(WindowCommand):
         if isinstance(command, Mapping):
             # TODO Review What happens if Mapping + do_eval=False
             if do_eval:
-                _log.debug('evaluating user mapping (mode=%s)...', state.mode)
+                _log.debug('evaluating user mapping...')
 
                 # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
                 rhs = command.rhs
-                if state.mode == OPERATOR_PENDING:
+                if get_mode(self.view) == OPERATOR_PENDING:
                     rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
 
                 # TODO Review Why does state need to be reset before running user mapping?
@@ -677,7 +678,7 @@ class _nv_feed_key(WindowCommand):
             # try to fix that (user mappings are excluded, since they've already
             # been given a chance to evaluate).
 
-            if state.mode == OPERATOR_PENDING:
+            if get_mode(self.view) == OPERATOR_PENDING:
                 command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)),
                                            mode=NORMAL, check_user_mappings=False)
             else:
@@ -686,7 +687,7 @@ class _nv_feed_key(WindowCommand):
             if self._handle_missing_command(state, command):
                 return
 
-        if (state.mode == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
+        if (get_mode(self.view) == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
 
             # TODO This should be unreachable code. The mapping resolver should
             # handle anything that can still reach this point (the first time).
@@ -699,7 +700,7 @@ class _nv_feed_key(WindowCommand):
                 return
 
             if not command.motion_required:
-                state.mode = NORMAL
+                set_mode(self.view, NORMAL)
 
         self._handle_command(state, command, do_eval)
 
@@ -716,8 +717,8 @@ class _nv_feed_key(WindowCommand):
 
             set_motion(self.view, command)
 
-            if state.mode == OPERATOR_PENDING:
-                state.mode = NORMAL
+            if get_mode(self.view) == OPERATOR_PENDING:
+                set_mode(self.view, NORMAL)
 
         elif isinstance(command, ViOperatorDef):
             if _is_runnable:
@@ -725,8 +726,8 @@ class _nv_feed_key(WindowCommand):
 
             set_action(self.view, command)
 
-            if command.motion_required and not is_visual_mode(state.mode):
-                state.mode = OPERATOR_PENDING
+            if command.motion_required and not is_visual_mode(get_mode(self.view)):
+                set_mode(self.view, OPERATOR_PENDING)
 
         else:
             raise ValueError('unexpected command type')
@@ -735,7 +736,7 @@ class _nv_feed_key(WindowCommand):
             if command.accept_input and command.input_parser and command.input_parser.is_panel():
                 command.input_parser.run_command()
 
-        if state.mode == OPERATOR_PENDING:
+        if get_mode(self.view) == OPERATOR_PENDING:
             set_partial_sequence(self.view, '')
 
         if do_eval:
@@ -750,7 +751,7 @@ class _nv_feed_key(WindowCommand):
 
                 return True
 
-        if (get_action(self.view) and (state.mode == OPERATOR_PENDING) and key.isdigit()):
+        if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or get_motion_count(self.view)):
                 _log.debug('motion count digit %s', key)
                 set_motion_count(self.view, str(get_motion_count(self.view)) + key)
@@ -759,8 +760,8 @@ class _nv_feed_key(WindowCommand):
 
     def _handle_missing_command(self, state, command):
         if isinstance(command, ViMissingCommandDef):
-            if state.mode == OPERATOR_PENDING:
-                state.mode = NORMAL
+            if get_mode(self.view) == OPERATOR_PENDING:
+                set_mode(self.view, NORMAL)
 
             reset_command_data(self.view)
             ui_bell()
@@ -781,7 +782,7 @@ class _nv_process_notation(WindowCommand):
         #       consulted to expand key sequences.
         self.view = self.window.active_view()
         state = State(self.view)
-        initial_mode = state.mode
+        initial_mode = get_mode(self.view)
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
         set_non_interactive(self.view, True)
@@ -806,8 +807,8 @@ class _nv_process_notation(WindowCommand):
                 # The last key press has caused an action to be primed. That
                 # means there are  no more leading motions. Break out of here.
                 reset_command_data(self.view)
-                if state.mode == OPERATOR_PENDING:
-                    state.mode = NORMAL
+                if get_mode(self.view) == OPERATOR_PENDING:
+                    set_mode(self.view, NORMAL)
 
                 break
 
@@ -843,7 +844,7 @@ class _nv_process_notation(WindowCommand):
                             enter_normal_mode(self.window)
                             continue
 
-                        elif state.mode not in (INSERT, REPLACE):
+                        elif get_mode(self.view) not in (INSERT, REPLACE):
                             self.window.run_command('_nv_feed_key', {
                                 'key': key,
                                 'repeat_count': repeat_count,
@@ -940,8 +941,7 @@ class _nv_cmdline(WindowCommand):
         reset_cmdline_completion_state()
         view = self.window.active_view()
         set_reset_during_init(view, False)
-        state = State(view)
-        mode = state.mode
+        mode = get_mode(view)
 
         if initial_text is not None:
             # DEPRECATED The initial_text should NOT contain the leading colon.
@@ -1287,7 +1287,7 @@ class _enter_normal_mode(TextCommand):
         # Exit replace mode
         self.view.set_overwrite_status(False)
 
-        state.mode = NORMAL
+        set_mode(self.view, NORMAL)
 
         def f(view, s):
             if mode == INSERT:
@@ -1367,7 +1367,7 @@ class _enter_normal_mode(TextCommand):
 
         normal_insert_count = get_normal_insert_count(self.view)
         if mode == INSERT and normal_insert_count > 1:
-            state.mode = INSERT
+            set_mode(self.view, INSERT)
             # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
@@ -1383,8 +1383,8 @@ class _enter_normal_mode(TextCommand):
             set_selection(self.view, new_sels)
 
         update_xpos(self.view)
-        reset_status_line(self.view, state.mode)
-        fix_eol_cursor(self.view, state.mode)
+        reset_status_line(self.view, get_mode(self.view))
+        fix_eol_cursor(self.view, get_mode(self.view))
 
         # When the commands o and O are immediately followed by <Esc>, then if
         # the current line is only whitespace it should be erased, and the xpos
@@ -1406,13 +1406,12 @@ class _enter_select_mode(TextCommand):
     def run(self, edit, mode=None, count=1):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
 
-        state = State(self.view)
-        state.mode = SELECT
+        set_mode(self.view, SELECT)
 
         if mode == INTERNAL_NORMAL:
             self.view.window().run_command('find_under_expand')
         elif mode in (VISUAL, VISUAL_LINE):
-            self.view.window().run_command('_vi_select_j', {'mode': state.mode})
+            self.view.window().run_command('_vi_select_j', {'mode': get_mode(self.view)})
         elif mode == VISUAL_BLOCK:
             resolve_visual_block_reverse(self.view)
             enter_normal_mode(self.view.window())
@@ -1435,8 +1434,7 @@ class _enter_insert_mode(TextCommand):
         self.view.settings().set('inverse_caret_state', False)
         self.view.settings().set('command_mode', False)
 
-        state = State(self.view)
-        state.mode = INSERT
+        set_mode(self.view, INSERT)
         set_normal_insert_count(self.view, count)
         update_status_line(self.view)
 
@@ -1446,9 +1444,7 @@ class _enter_visual_mode(TextCommand):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
 
-        state = State(self.view)
-
-        if state.mode == VISUAL and not force:
+        if get_mode(self.view) == VISUAL and not force:
             enter_normal_mode(self.view, mode)
             return
 
@@ -1484,7 +1480,7 @@ class _enter_visual_mode(TextCommand):
         # its metadata. For example, when shift-clicking with the mouse to
         # create visual selections. Always update xpos to cover this case.
         update_xpos(self.view)
-        state.mode = VISUAL
+        set_mode(self.view, VISUAL)
         update_status_line(self.view)
 
 
@@ -1493,9 +1489,7 @@ class _enter_visual_line_mode(TextCommand):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
 
-        state = State(self.view)
-
-        if state.mode == VISUAL_LINE and not force:
+        if get_mode(self.view) == VISUAL_LINE and not force:
             enter_normal_mode(self.view, mode)
             return
 
@@ -1534,7 +1528,7 @@ class _enter_visual_line_mode(TextCommand):
 
             regions_transformer(self.view, f)
 
-        state.mode = VISUAL_LINE
+        set_mode(self.view, VISUAL_LINE)
         update_status_line(self.view)
 
 
@@ -1550,8 +1544,7 @@ class _enter_replace_mode(TextCommand):
         self.view.settings().set('command_mode', False)
         self.view.settings().set('inverse_caret_state', False)
         self.view.set_overwrite_status(True)
-        state = State(self.view)
-        state.mode = REPLACE
+        set_mode(self.view, REPLACE)
         regions_transformer(self.view, f)
         update_status_line(self.view)
         reset_command_data(self.view)
@@ -1561,11 +1554,10 @@ class _vi_dot(WindowCommand):
 
     def run(self, mode=None, count=None, repeat_data=None):
         self.view = self.window.active_view()
-        state = State(self.view)
         reset_command_data(self.view)
 
-        if state.mode == INTERNAL_NORMAL:
-            state.mode = NORMAL
+        if get_mode(self.view) == INTERNAL_NORMAL:
+            set_mode(self.view, NORMAL)
 
         if repeat_data is None:
             repeat_data = get_repeat_data(self.view)
@@ -1580,7 +1572,7 @@ class _vi_dot(WindowCommand):
         _log.debug('type=%s, seqorcmd=%s, oldmode=%s', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
-            restore_visual_repeat_data(self.view, state.mode, visual_data)
+            restore_visual_repeat_data(self.view, get_mode(self.view), visual_data)
         elif not visual_data and (mode == VISUAL):
             # Can't repeat normal mode commands in visual mode.
             return ui_bell()
@@ -2901,7 +2893,7 @@ class _enter_visual_block_mode(TextCommand):
 
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
-            state.mode = VISUAL_BLOCK
+            set_mode(self.view, VISUAL_BLOCK)
             update_status_line(self.view)
 
         elif mode == VISUAL_BLOCK and not force:
@@ -3067,7 +3059,7 @@ class _vi_g_big_h(WindowCommand):
         search_occurrences = get_search_occurrences(self.view)
         if search_occurrences:
             self.view.sel().add_all(search_occurrences)
-            state.mode = SELECT
+            set_mode(self.view, SELECT)
             update_status_line(self.view)
             return
 

@@ -49,10 +49,12 @@ from NeoVintageous.nv.registers import _linewise as _registers_linewise
 from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
+from NeoVintageous.nv.settings import get_mode as _get_mode
 from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.settings import get_xpos as _get_xpos
 from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_mode as _set_mode
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos as _set_xpos
 from NeoVintageous.nv.state import State as _State
@@ -291,7 +293,7 @@ class ViewTestCase(unittest.TestCase):
                 for i, x in enumerate(sels):
                     self.view.sel().add(x - i)
 
-        self.state.mode = mode
+        _set_mode(self.view, mode)
 
     def insert(self, text: str) -> None:
         self._setupView(text, INSERT)
@@ -479,7 +481,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
-        self.assertEquals(self.state.mode, mode)
+        self.assertEquals(_get_mode(self.view), mode)
 
     def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
