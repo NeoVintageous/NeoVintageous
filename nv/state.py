@@ -238,7 +238,7 @@ def is_runnable(view) -> bool:
     return False
 
 
-def evaluate_state(state, view) -> None:
+def evaluate_state(view) -> None:
     _log.debug('evaluating...')
     if not is_runnable(view):
         _log.debug('not runnable!')
@@ -255,8 +255,8 @@ def evaluate_state(state, view) -> None:
         # example the motion commands can be used after an operator command,
         # to have the command operate on the text that was moved over.
 
-        action_cmd = action.translate(state)
-        motion_cmd = motion.translate(state)
+        action_cmd = action.translate(view)
+        motion_cmd = motion.translate(view)
 
         _log.debug('action: %s', action_cmd)
         _log.debug('motion: %s', motion_cmd)
@@ -295,7 +295,7 @@ def evaluate_state(state, view) -> None:
 
         # Evaluate motion: Run it.
 
-        motion_cmd = motion.translate(state)
+        motion_cmd = motion.translate(view)
 
         _log.debug('motion: %s', motion_cmd)
 
@@ -307,7 +307,7 @@ def evaluate_state(state, view) -> None:
 
         # Evaluate action. Run it.
 
-        action_cmd = action.translate(state)
+        action_cmd = action.translate(view)
 
         _log.debug('action: %s', action_cmd)
 
@@ -348,12 +348,6 @@ def evaluate_state(state, view) -> None:
         set_mode(view, NORMAL)
 
     reset_command_data(view)
-
-
-class State():
-
-    def __init__(self, view):
-        self.view = view
 
 
 def init_state(view) -> None:

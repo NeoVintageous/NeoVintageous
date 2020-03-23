@@ -48,7 +48,7 @@ class ViCommandDefBase:
     def reset(self) -> None:
         self.inp = ''
 
-    def translate(self, state) -> dict:
+    def translate(self, view) -> dict:
         """Return the command as a JSON object."""
         raise NotImplementedError('{} must implement translate()'.format(self.__class__.__name__))
 

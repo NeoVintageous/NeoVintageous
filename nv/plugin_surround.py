@@ -66,12 +66,12 @@ class Surroundys(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': get_mode(state.view),
+                'mode': get_mode(view),
                 'replacement': self.inp
             }
         }
@@ -84,12 +84,12 @@ class Surroundyss(Surroundys):
         self.motion_required = False
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': get_mode(state.view),
+                'mode': get_mode(view),
                 'motion': {
                     'motion': '_vi_select_text_object',
                     'motion_args': {
@@ -134,12 +134,12 @@ class Surroundds(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ds',
-                'mode': get_mode(state.view),
+                'mode': get_mode(view),
                 'target': self.inp
             }
         }
@@ -177,12 +177,12 @@ class Surroundcs(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'cs',
-                'mode': get_mode(state.view),
+                'mode': get_mode(view),
                 'target': self.inp[0],
                 'replacement': self.inp[1:]
             }

@@ -112,7 +112,6 @@ from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
-from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import evaluate_state
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
@@ -525,7 +524,6 @@ class _nv_feed_key(WindowCommand):
         #       command does.
         #   check_user_mappings (bool):
         self.view = self.window.active_view()
-        state = State(self.view)
 
         mode = get_mode(self.view)
 
@@ -570,7 +568,7 @@ class _nv_feed_key(WindowCommand):
                 set_action(self.view, action)
 
             if is_runnable(self.view) and do_eval:
-                evaluate_state(state, self.view)
+                evaluate_state(self.view)
                 reset_command_data(self.view)
 
             return
@@ -704,9 +702,9 @@ class _nv_feed_key(WindowCommand):
             if not command.motion_required:
                 set_mode(self.view, NORMAL)
 
-        self._handle_command(state, command, do_eval)
+        self._handle_command(command, do_eval)
 
-    def _handle_command(self, state: State, command: ViCommandDefBase, do_eval: bool) -> None:
+    def _handle_command(self, command: ViCommandDefBase, do_eval: bool) -> None:
         # Raises:
         #   ValueError: If too many motions.
         #   ValueError: If too many actions.
@@ -742,7 +740,7 @@ class _nv_feed_key(WindowCommand):
             set_partial_sequence(self.view, '')
 
         if do_eval:
-            evaluate_state(state, self.view)
+            evaluate_state(self.view)
 
     def _handle_count(self, key: str, repeat_count: int):
         """Return True if the processing of the current key needs to stop."""
@@ -783,7 +781,6 @@ class _nv_process_notation(WindowCommand):
         #   check_user_mappings (bool): Whether user mappings should be
         #       consulted to expand key sequences.
         self.view = self.window.active_view()
-        state = State(self.view)
         initial_mode = get_mode(self.view)
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
@@ -817,11 +814,11 @@ class _nv_process_notation(WindowCommand):
             elif is_runnable(self.view):
                 # Run any primed motion.
                 leading_motions += get_sequence(self.view)
-                evaluate_state(state, self.view)
+                evaluate_state(self.view)
                 reset_command_data(self.view)
 
             else:
-                evaluate_state(state, self.view)
+                evaluate_state(self.view)
 
         if must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
             # State is requesting more input, so this is the last command  in
@@ -879,7 +876,7 @@ class _nv_process_notation(WindowCommand):
         if (action and motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
-            motion_data = motion.translate(state) or None
+            motion_data = motion.translate(self.view) or None
 
             if motion_data is None:
                 reset_command_data(self.view)
@@ -3238,11 +3235,9 @@ class _vi_slash(TextCommand):
         history_update(Cmdline.SEARCH_FORWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
         clear_search_highlighting(self.view)
-
-        state = State(self.view)
         set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
         set_motion(self.view, ViSearchForwardImpl(term=pattern))
-        evaluate_state(state, self.view)
+        evaluate_state(self.view)
 
     def on_change(self, pattern: str):
         count = get_count(self.view)
@@ -4363,11 +4358,9 @@ class _vi_question_mark(TextCommand):
         history_update(Cmdline.SEARCH_BACKWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
         clear_search_highlighting(self.view)
-
-        state = State(self.view)
         set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
         set_motion(self.view, ViSearchBackwardImpl(term=pattern))
-        evaluate_state(state, self.view)
+        evaluate_state(self.view)
 
     def on_change(self, pattern: str):
         count = get_count(self.view)

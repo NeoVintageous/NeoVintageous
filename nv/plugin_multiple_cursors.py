@@ -37,11 +37,11 @@ class MultipleCursorsStart(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_enter_select_mode',
             'action_args': {
-                'mode': get_mode(state.view)
+                'mode': get_mode(view)
             }
         }
 
@@ -55,12 +55,12 @@ class MultipleCursorsExit(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_select_big_j',
             'action_args': {
-                'mode': get_mode(state.view),
-                'count': get_count(state.view)
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -73,12 +73,12 @@ class MultipleCursorsAdd(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_select_j',
             'action_args': {
-                'mode': get_mode(state.view),
-                'count': get_count(state.view)
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -91,12 +91,12 @@ class MultipleCursorsRemove(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_select_k',
             'action_args': {
-                'mode': get_mode(state.view),
-                'count': get_count(state.view)
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -108,7 +108,7 @@ class MultipleCursorsSkip(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'find_under_expand_skip',
             'action_args': {}
@@ -122,7 +122,7 @@ class MultipleCursorsAll(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_g_big_h',
             'action_args': {}

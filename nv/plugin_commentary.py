@@ -54,13 +54,13 @@ class CommentaryMotion(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'c',
-                'mode': get_mode(state.view),
-                'count': get_count(state.view)
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -73,13 +73,13 @@ class CommentaryLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'cc',
-                'mode': get_mode(state.view),
-                'count': get_count(state.view)
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -95,13 +95,13 @@ class CommentaryBlock(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'C',
-                'mode': get_mode(state.view),
-                'count': get_count(state.view)
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 

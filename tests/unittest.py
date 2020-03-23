@@ -57,7 +57,6 @@ from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_las
 from NeoVintageous.nv.settings import set_mode as _set_mode
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos as _set_xpos
-from NeoVintageous.nv.state import State as _State
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
@@ -719,11 +718,6 @@ class ViewTestCase(unittest.TestCase):
             MockCmdlineOnDone._mock_pattern = pattern
         MockCmdlineOnDone._mock_event = event
         mock.side_effect = MockCmdlineOnDone
-
-    # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
-    @property
-    def state(self) -> _State:
-        return _State(self.view)
 
     # DEPRECATED Use newer APIs e.g. self.Region(), unittest.Region.
     def _R(self, a: int, b: int = None) -> Region:
