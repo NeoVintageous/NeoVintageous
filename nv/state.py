@@ -247,7 +247,6 @@ class State(object):
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
-    @property
     def must_collect_input(self) -> bool:
         # Returns:
         #   True if the current status should collect input, False otherwise.
@@ -384,7 +383,7 @@ class State(object):
         #   True if motion and/or action is in a runnable state, False otherwise.
         # Raises:
         #   ValueError: Invlid mode.
-        if self.must_collect_input:
+        if self.must_collect_input():
             return False
 
         action = self.action
