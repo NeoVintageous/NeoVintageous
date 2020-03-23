@@ -285,7 +285,10 @@ class State(object):
             _log.debug('not runnable!')
             return
 
-        if self.action and self.motion:
+        action = get_action(self.view)
+        motion = get_motion(self.view)
+
+        if action and motion:
 
             # Evaluate action with motion: runs the action with the motion as an
             # argument. The motion's mode is set to INTERNAL_NORMAL and is run
@@ -293,8 +296,8 @@ class State(object):
             # example the motion commands can be used after an operator command,
             # to have the command operate on the text that was moved over.
 
-            action_cmd = self.action.translate(self)
-            motion_cmd = self.motion.translate(self)
+            action_cmd = action.translate(self)
+            motion_cmd = motion.translate(self)
 
             _log.debug('action: %s', action_cmd)
             _log.debug('motion: %s', motion_cmd)
@@ -322,18 +325,18 @@ class State(object):
 
             run_window_command(action_cmd['action'], args)
 
-            if not is_non_interactive(self.view) and self.action.repeatable:
+            if not is_non_interactive(self.view) and get_action(self.view).repeatable:
                 set_repeat_data(self.view, ('vi', str(get_sequence(self.view)), self.mode, None))
 
             reset_command_data(self.view)
 
             return  # Nothing more to do.
 
-        if self.motion:
+        if motion:
 
             # Evaluate motion: Run it.
 
-            motion_cmd = self.motion.translate(self)
+            motion_cmd = motion.translate(self)
 
             _log.debug('motion: %s', motion_cmd)
 
@@ -341,11 +344,11 @@ class State(object):
 
             run_motion(self.view, motion_cmd)
 
-        if self.action:
+        if action:
 
             # Evaluate action. Run it.
 
-            action_cmd = self.action.translate(self)
+            action_cmd = action.translate(self)
 
             _log.debug('action: %s', action_cmd)
 
@@ -373,7 +376,7 @@ class State(object):
 
             sequence = get_sequence(self.view)
             visual_repeat_data = get_visual_repeat_data(self.view, self.mode)
-            action = self.action
+            action = get_action(self.view)
 
             add_macro_step(self.view, action_cmd['action'], action_cmd['action_args'])
 
