@@ -1151,7 +1151,7 @@ def is_linewise_operation(mode: str, motion):
     return False
 
 
-def update_xpos(view):
+def update_xpos(view) -> None:
     try:
         sel = view.sel()[0]
         pos = sel.b

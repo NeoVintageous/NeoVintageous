@@ -266,15 +266,10 @@ class State(object):
 
         return False
 
-    @property
-    def must_update_xpos(self) -> bool:
-        # Returns:
-        #   True if motion/action should update xpos, False otherwise.
-        motion = self.motion
+    def must_update_xpos(self, motion: ViMotionDef, action: ViOperatorDef) -> bool:
         if motion and motion.updates_xpos:
             return True
 
-        action = self.action
         if action and action.updates_xpos:
             return True
 
@@ -291,14 +286,10 @@ class State(object):
 
         self.view.set_status('vim-seq', self.sequence)
 
-    def must_scroll_into_view(self) -> bool:
-        # Returns:
-        #   True if motion/action should scroll into view, False otherwise.
-        motion = self.motion
+    def must_scroll_into_view(self, motion: ViMotionDef, action: ViOperatorDef) -> bool:
         if motion and motion.scroll_into_view:
             return True
 
-        action = self.action
         if action and action.scroll_into_view:
             return True
 
@@ -306,10 +297,13 @@ class State(object):
 
     def reset_command_data(self) -> None:
         # Resets all temp data needed to build a command or partial command.
-        if self.must_update_xpos:
+        motion = self.motion
+        action = self.action
+
+        if self.must_update_xpos(motion, action):
             update_xpos(self.view)
 
-        if self.must_scroll_into_view():
+        if self.must_scroll_into_view(motion, action):
             scroll_into_view(active_window().active_view(), self.mode)
 
         self.action and self.action.reset()

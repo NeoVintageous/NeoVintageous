@@ -85,11 +85,11 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_reset_during_init(self.view), True)
 
     def test_must_scroll_into_view(self):
-        self.assertFalse(self.state.must_scroll_into_view())
+        self.assertFalse(self.state.must_scroll_into_view(self.state.motion, self.state.action))
 
         motion = cmd_defs.ViGotoSymbolInFile()
         self.state.motion = motion
-        self.assertTrue(self.state.must_scroll_into_view())
+        self.assertTrue(self.state.must_scroll_into_view(self.state.motion, self.state.action))
 
 
 class TestStateResettingState(unittest.ViewTestCase):
