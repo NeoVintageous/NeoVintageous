@@ -144,6 +144,9 @@ def set_last_buffer_search_command(view, value: str) -> None:
 
 
 def get_mode(view) -> str:
+    # State of current mode. It isn't guaranteed that the underlying view's
+    # .sel() will be in a consistent state (for example, that it will at least
+    # have one non- empty region in visual mode.
     return tmp_bc_get_session_view_value(view, 'mode', UNKNOWN)
 
 

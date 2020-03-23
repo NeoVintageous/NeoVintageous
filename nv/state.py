@@ -27,6 +27,7 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
 from NeoVintageous.nv.settings import set_processing_notation
@@ -149,18 +150,13 @@ class State(object):
         _log.debug('set partial sequence >>>%s<<<', value)
         self.settings.vi['partial_sequence'] = value
 
-    @property
+    @property  # DEPRECATED
     def mode(self) -> str:
-        # State of current mode.
-        #
-        # It isn't guaranteed that the underlying view's .sel() will be in a
-        # consistent state (for example, that it will at least have one non-
-        # empty region in visual mode.
-        return self.settings.vi['mode'] or UNKNOWN
+        return get_mode(self.view)
 
-    @mode.setter
+    @mode.setter  # DEPRECATED
     def mode(self, value: str) -> None:
-        self.settings.vi['mode'] = value
+        set_mode(self.view, value)
 
     @property
     def action(self):
