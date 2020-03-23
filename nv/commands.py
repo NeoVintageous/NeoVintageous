@@ -77,6 +77,7 @@ from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
@@ -1168,7 +1169,7 @@ class _vi_a(TextCommand):
         # adding spaces between text fragments when used with a count, as in
         # 5aFOO. In that case, we only need to run 'a' the first time, not for
         # every iteration.
-        if state.mode == INSERT:
+        if get_mode(self.view) == INSERT:
             return
 
         if mode is None:
