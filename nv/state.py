@@ -29,7 +29,6 @@ from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_must_capture_register_name
-from NeoVintageous.nv.settings import set_non_interactive
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
@@ -87,14 +86,6 @@ class State(object):
     @glue_until_normal_mode.setter
     def glue_until_normal_mode(self, value: bool) -> None:
         self.settings.vi['_vintageous_glue_until_normal_mode'] = value
-
-    @property  # DEPRECATED
-    def non_interactive(self) -> bool:
-        return is_non_interactive(self.view)
-
-    @non_interactive.setter  # DEPRECATED
-    def non_interactive(self, value: bool) -> None:
-        set_non_interactive(self.view, value)
 
     @property
     def sequence(self) -> str:
@@ -351,7 +342,7 @@ class State(object):
 
             run_window_command(action_cmd['action'], args)
 
-            if not self.non_interactive and self.action.repeatable:
+            if not is_non_interactive(self.view) and self.action.repeatable:
                 set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
 
             self.reset_command_data()

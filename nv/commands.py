@@ -84,12 +84,14 @@ from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_must_capture_register_name
+from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_must_capture_register_name
+from NeoVintageous.nv.settings import set_non_interactive
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
@@ -710,7 +712,7 @@ class _nv_feed_key(WindowCommand):
         else:
             raise ValueError('unexpected command type')
 
-        if not state.non_interactive:
+        if not is_non_interactive(self.view):
             if command.accept_input and command.input_parser and command.input_parser.is_panel():
                 command.input_parser.run_command()
 
@@ -763,7 +765,7 @@ class _nv_process_notation(WindowCommand):
         initial_mode = state.mode
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
-        state.non_interactive = True
+        set_non_interactive(self.view, True)
 
         _log.debug('process notation keys %s for initial mode %s', keys, initial_mode)
 
@@ -809,7 +811,7 @@ class _nv_process_notation(WindowCommand):
         # Strip the already run commands
         if leading_motions:
             if ((len(leading_motions) == len(keys)) and (not state.must_collect_input(self.view, state.motion, state.action))):  # noqa: E501
-                state.non_interactive = False
+                set_non_interactive(self.view, False)
                 return
 
             keys = keys[len(leading_motions):]
@@ -838,7 +840,7 @@ class _nv_process_notation(WindowCommand):
                         return
 
                 finally:
-                    state.non_interactive = False
+                    set_non_interactive(self.view, False)
                     # Ensure we set the full command for "." to use, but don't
                     # store "." alone.
                     if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
@@ -887,7 +889,7 @@ class _nv_process_notation(WindowCommand):
             _log.debug('could not find a command to collect more user input')
             ui_bell()
         finally:
-            state.non_interactive = False
+            set_non_interactive(self.view, False)
 
 
 class _nv_replace_line(TextCommand):

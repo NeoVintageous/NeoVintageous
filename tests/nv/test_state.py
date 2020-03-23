@@ -23,6 +23,7 @@ from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import is_must_capture_register_name
+from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import cmd_defs
@@ -80,7 +81,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(is_processing_notation(self.view), False)
         self.assertEqual(get_last_char_search(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
-        self.assertEqual(s.non_interactive, False)
+        self.assertEqual(is_non_interactive(self.view), False)
         self.assertEqual(is_must_capture_register_name(self.view), False)
         self.assertEqual(get_last_buffer_search(self.view), '')
         self.assertEqual(get_reset_during_init(self.view), True)
@@ -216,6 +217,7 @@ class TestStateSetCommand(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         self.command = _nv_feed_key(self.view.window())
+        self.command.view = self.view
 
     def test_raise_error_if_unknown_command_type(self):
         state = self.state
