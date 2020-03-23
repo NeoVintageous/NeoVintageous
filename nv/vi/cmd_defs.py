@@ -18,6 +18,7 @@
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
@@ -1704,7 +1705,7 @@ class ViInsertAfterChar(ViOperatorDef):
 
     def translate(self, state):
         state.glue_until_normal_mode = True
-        state.normal_insert_count = state.count
+        set_normal_insert_count(state.view, state.count)
 
         return {
             'action': '_vi_a',

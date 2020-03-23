@@ -22,7 +22,6 @@ from sublime import active_window
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_must_capture_register_name
@@ -31,7 +30,6 @@ from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
-from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
@@ -113,14 +111,6 @@ class State(object):
     @must_capture_register_name.setter  # DEPRECATED
     def must_capture_register_name(self, value: bool) -> None:
         set_must_capture_register_name(self.view, value)
-
-    @property
-    def normal_insert_count(self) -> str:
-        return get_normal_insert_count(self.view)
-
-    @normal_insert_count.setter
-    def normal_insert_count(self, value: str) -> None:
-        set_normal_insert_count(self.view, value)
 
     @property
     def sequence(self) -> str:

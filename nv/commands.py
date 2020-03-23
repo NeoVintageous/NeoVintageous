@@ -78,6 +78,7 @@ from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
@@ -85,6 +86,7 @@ from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
+from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import set_xpos
@@ -1177,10 +1179,9 @@ class _vi_a(TextCommand):
 
         regions_transformer(self.view, f)
 
-        state = State(self.view)
         self.view.window().run_command('_enter_insert_mode', {
             'mode': mode,
-            'count': state.normal_insert_count
+            'count': get_normal_insert_count(self.view)
         })
 
 
@@ -1336,15 +1337,16 @@ class _enter_normal_mode(TextCommand):
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
                 state.glue_until_normal_mode = False
 
-        if mode == INSERT and int(state.normal_insert_count) > 1:
+        normal_insert_count = int(get_normal_insert_count(self.view))
+        if mode == INSERT and normal_insert_count > 1:
             state.mode = INSERT
             # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
             new_sels = [Region(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
             self.view.sel().add_all(new_sels)
-            times = int(state.normal_insert_count) - 1
-            state.normal_insert_count = '1'
+            times = normal_insert_count - 1
+            set_normal_insert_count(self.view, '1')
             self.view.window().run_command('_vi_dot', {
                 'count': times,
                 'mode': mode,
@@ -1407,7 +1409,7 @@ class _enter_insert_mode(TextCommand):
 
         state = State(self.view)
         state.mode = INSERT
-        state.normal_insert_count = str(count)
+        set_normal_insert_count(self.view, str(count))
         state.display_status()
 
 
