@@ -39,7 +39,6 @@ from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import get_visual_repeat_data
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import save_previous_selection
-from NeoVintageous.nv.utils import scroll_into_view
 from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
@@ -86,6 +85,32 @@ def _must_update_xpos(motion: ViMotionDef, action: ViOperatorDef) -> bool:
         return True
 
     return False
+
+
+def _scroll_into_view(view, mode: str) -> None:
+    sels = view.sel()
+    if len(sels) < 1:
+        return
+
+    # Show the *last* cursor on screen. There is currently no way to
+    # identify the "active" cursor of a multiple cursor selection.
+    sel = sels[-1]
+
+    target_pt = sel.b
+
+    # In VISUAL mode we need to make sure that any newline at the end of
+    # the selection is NOT included in the target, because otherwise an
+    # extra line after the target line will also be scrolled into view.
+    if is_visual_mode(mode):
+        if sel.b > sel.a:
+            if view.substr(sel.b - 1) == '\n':
+                target_pt = max(0, target_pt - 1)
+                # Use the start point of the target line to avoid
+                # horizontal scrolling. For example, this can happen in
+                # VISUAL LINE mode when the EOL is off-screen.
+                target_pt = max(0, view.line(target_pt).a)
+
+    view.show(target_pt, False)
 
 
 class State(object):
@@ -214,7 +239,7 @@ class State(object):
         if _must_scroll_into_view(motion, action):
             # Intentionally using the active view because the previous command
             # may have switched views and self.view would be the previous one.
-            scroll_into_view(active_window().active_view(), self.mode)
+            _scroll_into_view(active_window().active_view(), self.mode)
 
         action and action.reset()
         self.action = None
