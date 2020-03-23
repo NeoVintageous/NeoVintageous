@@ -315,15 +315,6 @@ class State(object):
         self.must_capture_register_name = False
         reset_status(self.view, self.mode)
 
-    def reset_volatile_data(self) -> None:
-        # Reset window or application wide data to their default values.
-        # Use when starting a new session.
-        self.glue_until_normal_mode = False
-        self.view.run_command('unmark_undo_groups_for_gluing')
-        self.processing_notation = False
-        self.non_interactive = False
-        set_reset_during_init(self.view, True)
-
     def runnable(self) -> bool:
         # Returns:
         #   True if motion and/or action is in a runnable state, False otherwise.

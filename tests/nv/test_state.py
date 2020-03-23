@@ -22,7 +22,6 @@ from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_reset_during_init
-from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
@@ -116,22 +115,6 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.assertEqual(self.state.partial_sequence, '')
         self.assertEqual(self.state.register, '"')
         self.assertEqual(self.state.must_capture_register_name, False)
-
-
-class TestStateResettingVolatileData(unittest.ViewTestCase):
-
-    def test_reset_volatile_data(self):
-        self.state.glue_until_normal_mode = True
-        self.state.processing_notation = True
-        self.state.non_interactive = True
-        set_reset_during_init(self.view, False)
-
-        self.state.reset_volatile_data()
-
-        self.assertFalse(self.state.glue_until_normal_mode)
-        self.assertFalse(self.state.processing_notation)
-        self.assertFalse(self.state.non_interactive)
-        self.assertTrue(get_reset_during_init(self.view))
 
 
 class TestStateCounts(unittest.ViewTestCase):
