@@ -304,9 +304,9 @@ class State(object):
             # may have switched views and self.view would be the previous one.
             scroll_into_view(active_window().active_view(), self.mode)
 
-        self.action and self.action.reset()
+        action and action.reset()
         self.action = None
-        self.motion and self.motion.reset()
+        motion and motion.reset()
         self.motion = None
         self.action_count = ''
         self.motion_count = ''
