@@ -55,7 +55,7 @@ from NeoVintageous.nv.vim import clean_view
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
-from NeoVintageous.nv.vim import reset_status
+from NeoVintageous.nv.vim import reset_status_line
 from NeoVintageous.nv.vim import run_action
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import run_window_command
@@ -300,6 +300,8 @@ class State(object):
             update_xpos(self.view)
 
         if self.must_scroll_into_view(motion, action):
+            # Intentionally using the active view because the previous command
+            # may have switched views and self.view would be the previous one.
             scroll_into_view(active_window().active_view(), self.mode)
 
         self.action and self.action.reset()
@@ -313,7 +315,7 @@ class State(object):
         self.partial_sequence = ''
         self.register = '"'
         self.must_capture_register_name = False
-        reset_status(self.view, self.mode)
+        reset_status_line(self.view, self.mode)
 
     def runnable(self) -> bool:
         # Returns:

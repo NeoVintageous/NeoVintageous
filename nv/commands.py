@@ -199,7 +199,7 @@ from NeoVintageous.nv.vim import enter_visual_block_mode
 from NeoVintageous.nv.vim import enter_visual_line_mode
 from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import reset_status
+from NeoVintageous.nv.vim import reset_status_line
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_control
@@ -1352,7 +1352,7 @@ class _enter_normal_mode(TextCommand):
             set_selection(self.view, new_sels)
 
         update_xpos(self.view)
-        reset_status(self.view, state.mode)
+        reset_status_line(self.view, state.mode)
         fix_eol_cursor(self.view, state.mode)
 
         # When the commands o and O are immediately followed by <Esc>, then if
