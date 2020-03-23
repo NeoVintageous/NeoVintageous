@@ -187,14 +187,6 @@ class State(object):
         # TODO Refactor: method was required because count() defaults to 1
         return self._get_count(default=0)
 
-    @property
-    def register(self) -> str:
-        return get_register(self.view)
-
-    @register.setter
-    def register(self, value: str) -> None:
-        set_register(self.view, value)
-
     def must_collect_input(self, view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
         if motion and action:
             if motion.accept_input:
