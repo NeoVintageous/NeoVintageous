@@ -25,7 +25,6 @@ from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
-from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_mode
@@ -105,14 +104,6 @@ class State(object):
     @non_interactive.setter  # DEPRECATED
     def non_interactive(self, value: bool) -> None:
         set_non_interactive(self.view, value)
-
-    @property  # DEPRECATED
-    def must_capture_register_name(self) -> bool:
-        return is_must_capture_register_name(self.view)
-
-    @must_capture_register_name.setter  # DEPRECATED
-    def must_capture_register_name(self, value: bool) -> None:
-        set_must_capture_register_name(self.view, value)
 
     @property
     def sequence(self) -> str:
@@ -290,7 +281,7 @@ class State(object):
         self.sequence = ''
         self.partial_sequence = ''
         set_register(self.view, '"')
-        self.must_capture_register_name = False
+        set_must_capture_register_name(self.view, False)
         reset_status_line(self.view, self.mode)
 
     def runnable(self) -> bool:

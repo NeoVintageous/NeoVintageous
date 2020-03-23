@@ -83,10 +83,12 @@ from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
+from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
@@ -520,7 +522,7 @@ class _nv_feed_key(WindowCommand):
         state.sequence += key
         state.display_status()
 
-        if state.must_capture_register_name:
+        if is_must_capture_register_name(self.view):
             _log.debug('capturing register name...')
             set_register(self.view, key)
             state.partial_sequence = ''
@@ -574,7 +576,7 @@ class _nv_feed_key(WindowCommand):
             return
 
         if isinstance(command, ViOpenRegister):
-            state.must_capture_register_name = True
+            set_must_capture_register_name(self.view, True)
             return
 
         if isinstance(command, Mapping):

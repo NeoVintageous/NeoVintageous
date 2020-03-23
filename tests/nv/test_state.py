@@ -22,6 +22,7 @@ from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_reset_during_init
+from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
@@ -79,7 +80,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_last_char_search(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
         self.assertEqual(s.non_interactive, False)
-        self.assertEqual(s.must_capture_register_name, False)
+        self.assertEqual(is_must_capture_register_name(self.view), False)
         self.assertEqual(get_last_buffer_search(self.view), '')
         self.assertEqual(get_reset_during_init(self.view), True)
 
@@ -114,7 +115,7 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.assertEqual(self.state.sequence, '')
         self.assertEqual(self.state.partial_sequence, '')
         self.assertEqual(self.state.register, '"')
-        self.assertEqual(self.state.must_capture_register_name, False)
+        self.assertEqual(is_must_capture_register_name(self.view), False)
 
 
 class TestStateCounts(unittest.ViewTestCase):
