@@ -583,7 +583,7 @@ class _nv_feed_key(WindowCommand):
             if repeat_count:
                 set_action_count(self.view, str(repeat_count))
 
-            if self._handle_count(state, key, repeat_count):
+            if self._handle_count(key, repeat_count):
                 _log.debug('handled count')
 
                 return
@@ -686,7 +686,7 @@ class _nv_feed_key(WindowCommand):
             else:
                 command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)))
 
-            if self._handle_missing_command(state, command):
+            if self._handle_missing_command(command):
                 return
 
         if (get_mode(self.view) == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
@@ -698,7 +698,7 @@ class _nv_feed_key(WindowCommand):
             # only be the '>>' command that needs this code.
 
             command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
-            if self._handle_missing_command(state, command):
+            if self._handle_missing_command(command):
                 return
 
             if not command.motion_required:
@@ -744,7 +744,7 @@ class _nv_feed_key(WindowCommand):
         if do_eval:
             evaluate_state(state, self.view)
 
-    def _handle_count(self, state, key: str, repeat_count: int):
+    def _handle_count(self, key: str, repeat_count: int):
         """Return True if the processing of the current key needs to stop."""
         if not get_action(self.view) and key.isdigit():
             if not repeat_count and (key != '0' or get_action_count(self.view)):
@@ -760,7 +760,7 @@ class _nv_feed_key(WindowCommand):
 
                 return True
 
-    def _handle_missing_command(self, state, command):
+    def _handle_missing_command(self, command):
         if isinstance(command, ViMissingCommandDef):
             if get_mode(self.view) == OPERATOR_PENDING:
                 set_mode(self.view, NORMAL)
@@ -838,7 +838,7 @@ class _nv_process_notation(WindowCommand):
             keys = keys[len(leading_motions):]
 
         if not (get_motion(self.view) and not get_action(self.view)):
-            with gluing_undo_groups(self.view, state):
+            with gluing_undo_groups(self.view):
                 try:
                     for key in tokenize_keys(keys):
                         if key.lower() == '<esc>':

@@ -37,7 +37,7 @@ class TestViEnterNormalModeSingleSelectionRightToLeft(unittest.ViewTestCase):
     def test_caret_ends_in_expected_region(self):
         self.write('foo bar\nfoo bar\nfoo bar\n')
         self.select((11, 8))
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
         enter_normal_mode(self.view, unittest.VISUAL)
 
         self.assertSelection(8)

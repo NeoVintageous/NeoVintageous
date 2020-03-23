@@ -308,7 +308,7 @@ def translate_char(char: str) -> str:
 
 
 @contextmanager
-def gluing_undo_groups(view, state):
+def gluing_undo_groups(view):
     set_processing_notation(view, True)
     view.run_command('mark_undo_groups_for_gluing')
 
