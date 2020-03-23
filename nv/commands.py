@@ -111,6 +111,7 @@ from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import is_runnable
 from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.state import reset_command_data
 from NeoVintageous.nv.state import update_status_line
@@ -560,7 +561,7 @@ class _nv_feed_key(WindowCommand):
                 # Processed action needs to reserialised and stored.
                 state.action = action
 
-            if state.runnable() and do_eval:
+            if is_runnable(self.view) and do_eval:
                 state.eval()
                 reset_command_data(self.view)
 
@@ -702,10 +703,10 @@ class _nv_feed_key(WindowCommand):
         #   ValueError: If too many motions.
         #   ValueError: If too many actions.
         #   ValueError: Unexpected command type.
-        is_runnable = state.runnable()
+        _is_runnable = is_runnable(self.view)
 
         if isinstance(command, ViMotionDef):
-            if is_runnable:
+            if _is_runnable:
                 raise ValueError('too many motions')
 
             state.motion = command
@@ -714,7 +715,7 @@ class _nv_feed_key(WindowCommand):
                 state.mode = NORMAL
 
         elif isinstance(command, ViOperatorDef):
-            if is_runnable:
+            if _is_runnable:
                 raise ValueError('too many actions')
 
             state.action = command
@@ -805,7 +806,7 @@ class _nv_process_notation(WindowCommand):
 
                 break
 
-            elif state.runnable():
+            elif is_runnable(self.view):
                 # Run any primed motion.
                 leading_motions += get_sequence(self.view)
                 state.eval()

@@ -205,6 +205,40 @@ def reset_command_data(view) -> None:
     reset_status_line(view, get_mode(view))
 
 
+def is_runnable(view) -> bool:
+    # Returns:
+    #   True if motion and/or action is in a runnable state, False otherwise.
+    # Raises:
+    #   ValueError: Invlid mode.
+    action = get_action(view)
+    motion = get_motion(view)
+
+    if must_collect_input(view, motion, action):
+        return False
+
+    mode = get_mode(view)
+
+    if action and motion:
+        if mode != NORMAL:
+            raise ValueError('invalid mode')
+
+        return True
+
+    if (action and (not action.motion_required or is_visual_mode(mode))):
+        if mode == OPERATOR_PENDING:
+            raise ValueError('action has invalid mode')
+
+        return True
+
+    if motion:
+        if mode == OPERATOR_PENDING:
+            raise ValueError('motion has invalid mode')
+
+        return True
+
+    return False
+
+
 class State(object):
 
     def __init__(self, view):
@@ -244,42 +278,9 @@ class State(object):
         # TODO Refactor: method was required because count() defaults to 1
         return get_count(self.view, default=0)
 
-    def runnable(self) -> bool:
-        # Returns:
-        #   True if motion and/or action is in a runnable state, False otherwise.
-        # Raises:
-        #   ValueError: Invlid mode.
-        action = get_action(self.view)
-        motion = get_motion(self.view)
-
-        if must_collect_input(self.view, motion, action):
-            return False
-
-        mode = get_mode(self.view)
-
-        if action and motion:
-            if mode != NORMAL:
-                raise ValueError('invalid mode')
-
-            return True
-
-        if (action and (not action.motion_required or is_visual_mode(mode))):
-            if mode == OPERATOR_PENDING:
-                raise ValueError('action has invalid mode')
-
-            return True
-
-        if motion:
-            if mode == OPERATOR_PENDING:
-                raise ValueError('motion has invalid mode')
-
-            return True
-
-        return False
-
     def eval(self) -> None:
         _log.debug('evaluating...')
-        if not self.runnable():
+        if not is_runnable(self.view):
             _log.debug('not runnable!')
             return
 

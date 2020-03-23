@@ -102,7 +102,7 @@ def add_step(state, cmd: str, args: dict) -> None:
         if cmd == '_vi_q':
             return
 
-        if state.runnable and not get_glue_until_normal_mode(state.view):
+        if not get_glue_until_normal_mode(state.view):
             state = _get(window)
 
             if 'recording_steps' not in state:
