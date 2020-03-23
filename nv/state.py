@@ -149,30 +149,16 @@ class State(object):
         serialized = value.serialize() if value else None
         self.settings.vi['motion'] = serialized
 
-    @property
-    def motion_count(self) -> str:
-        return get_motion_count(self.view)
-
-    @motion_count.setter
-    def motion_count(self, value: str) -> None:
-        set_motion_count(self.view, value)
-
-    @property
-    def action_count(self) -> str:
-        return get_action_count(self.view)
-
-    @action_count.setter
-    def action_count(self, value: str) -> None:
-        set_action_count(self.view, value)
-
     def _get_count(self, default: int) -> int:
         c = default
 
-        if self.action_count:
-            c = int(self.action_count) or 1
+        acount = get_action_count(self.view)
+        if acount:
+            c = int(acount) or 1
 
-        if self.motion_count:
-            c *= int(self.motion_count) or 1
+        mcount = get_motion_count(self.view)
+        if mcount:
+            c *= int(mcount) or 1
 
         if c < 0:
             raise ValueError('count must be greater than zero')
@@ -250,8 +236,8 @@ class State(object):
         self.action = None
         motion and motion.reset()
         self.motion = None
-        self.action_count = ''
-        self.motion_count = ''
+        set_action_count(self.view, '')
+        set_motion_count(self.view, '')
 
         self.sequence = ''
         self.partial_sequence = ''

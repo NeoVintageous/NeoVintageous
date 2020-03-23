@@ -18,14 +18,18 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.commands import _nv_feed_key
+from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
@@ -77,7 +81,7 @@ class TestState(unittest.ViewTestCase):
         self._assertDefaultMode(s.mode)
         self.assertEqual(s.action, None)
         self.assertEqual(s.motion, None)
-        self.assertEqual(s.action_count, '')
+        self.assertEqual(get_action_count(self.view), '')
         self.assertEqual(s.glue_until_normal_mode, False)
         self.assertEqual(is_processing_notation(self.view), False)
         self.assertEqual(get_last_char_search(self.view), '')
@@ -103,8 +107,8 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.state.user_input = 'f'
         self.state.action = cmd_defs.ViReplaceCharacters()
         self.state.motion = cmd_defs.ViGotoSymbolInFile()
-        self.state.action_count = '10'
-        self.state.motion_count = '100'
+        set_action_count(self.view, '10')
+        set_motion_count(self.view, '100')
         self.state.register = 'a'
         self.state.must_capture_register_name = True
 
@@ -112,8 +116,8 @@ class TestStateResettingState(unittest.ViewTestCase):
 
         self.assertEqual(self.state.action, None)
         self.assertEqual(self.state.motion, None)
-        self.assertEqual(self.state.action_count, '')
-        self.assertEqual(self.state.motion_count, '')
+        self.assertEqual(get_action_count(self.view), '')
+        self.assertEqual(get_motion_count(self.view), '')
 
         self.assertEqual(self.state.sequence, '')
         self.assertEqual(self.state.partial_sequence, '')
@@ -124,35 +128,35 @@ class TestStateResettingState(unittest.ViewTestCase):
 class TestStateCounts(unittest.ViewTestCase):
 
     def test_can_retrieve_good_action_count(self):
-        self.state.action_count = '10'
+        set_action_count(self.view, '10')
         self.assertEqual(self.state.count, 10)
 
     def test_fails_if_bad_action_count(self):
         def set_count():
-            self.state.action_count = 'x'
+            set_action_count(self.view, 'x')
         self.assertRaises(AssertionError, set_count)
 
     def test_fails_if_bad_motion_count(self):
         def set_count():
-            self.state.motion_count = 'x'
+            set_motion_count(self.view, 'x')
         self.assertRaises(AssertionError, set_count)
 
     def test_count_is_never_less_than1(self):
-        self.state.motion_count = '0'
+        set_motion_count(self.view, '0')
         self.assertEqual(self.state.count, 1)
 
         def set_count():
-            self.state.motion_count = '-1'
+            set_motion_count(self.view, '-1')
 
         self.assertRaises(AssertionError, set_count)
 
     def test_can_retrieve_good_motion_count(self):
-        self.state.motion_count = '10'
+        set_motion_count(self.view, '10')
         self.assertEqual(self.state.count, 10)
 
     def test_can_retrieve_good_combined_count(self):
-        self.state.motion_count = '10'
-        self.state.action_count = '10'
+        set_motion_count(self.view, '10')
+        set_action_count(self.view, '10')
         self.assertEqual(self.state.count, 100)
 
 

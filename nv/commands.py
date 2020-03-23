@@ -75,9 +75,11 @@ from NeoVintageous.nv.search import find_word_search_occurrences
 from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
+from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
@@ -86,10 +88,12 @@ from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
+from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
 from NeoVintageous.nv.settings import set_normal_insert_count
@@ -559,7 +563,7 @@ class _nv_feed_key(WindowCommand):
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
         if not mappings_can_resolve(state.mode, state.partial_sequence + key):
             if repeat_count:
-                state.action_count = str(repeat_count)
+                set_action_count(self.view, str(repeat_count))
 
             if self._handle_count(state, key, repeat_count):
                 _log.debug('handled count')
@@ -594,12 +598,12 @@ class _nv_feed_key(WindowCommand):
 
                 # TODO Review Why does state need to be reset before running user mapping?
                 reg = get_register(self.view)
-                acount = state.action_count
-                mcount = state.motion_count
+                acount = get_action_count(self.view)
+                mcount = get_motion_count(self.view)
                 state.reset_command_data()
                 set_register(self.view, reg)
-                state.motion_count = mcount
-                state.action_count = acount
+                set_motion_count(self.view, mcount)
+                set_action_count(self.view, acount)
 
                 _log.info('user mapping %s -> %s', command.lhs, rhs)
 
@@ -725,16 +729,16 @@ class _nv_feed_key(WindowCommand):
     def _handle_count(self, state, key: str, repeat_count: int):
         """Return True if the processing of the current key needs to stop."""
         if not state.action and key.isdigit():
-            if not repeat_count and (key != '0' or state.action_count):
+            if not repeat_count and (key != '0' or get_action_count(self.view)):
                 _log.debug('action count digit %s', key)
-                state.action_count += key
+                set_action_count(self.view, str(get_action_count(self.view)) + key)
 
                 return True
 
         if (state.action and (state.mode == OPERATOR_PENDING) and key.isdigit()):
-            if not repeat_count and (key != '0' or state.motion_count):
+            if not repeat_count and (key != '0' or get_motion_count(self.view)):
                 _log.debug('motion count digit %s', key)
-                state.motion_count += key
+                set_motion_count(self.view, str(get_motion_count(self.view)) + key)
 
                 return True
 

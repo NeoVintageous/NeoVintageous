@@ -15,8 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import set_normal_insert_count
@@ -2838,7 +2840,7 @@ class ViGotoBof(ViMotionDef):
             'motion': '_vi_gg',
             'motion_args': {
                 'mode': state.mode,
-                'count': state.count if (state.action_count or state.motion_count) else None
+                'count': state.count if (get_action_count(state.view) or get_motion_count(state.view)) else None
             }
         }
 
@@ -2855,7 +2857,7 @@ class ViGotoEof(ViMotionDef):
             'motion': '_vi_big_g',
             'motion_args': {
                 'mode': state.mode,
-                'count': state.count if (state.action_count or state.motion_count) else None
+                'count': state.count if (get_action_count(state.view) or get_motion_count(state.view)) else None
             }
         }
 
