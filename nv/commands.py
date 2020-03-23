@@ -81,6 +81,7 @@ from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_normal_insert_count
+from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
@@ -97,6 +98,7 @@ from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
 from NeoVintageous.nv.settings import set_normal_insert_count
+from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
@@ -532,7 +534,7 @@ class _nv_feed_key(WindowCommand):
         if is_must_capture_register_name(self.view):
             _log.debug('capturing register name...')
             set_register(self.view, key)
-            state.partial_sequence = ''
+            set_partial_sequence(self.view, '')
 
             return
 
@@ -561,7 +563,7 @@ class _nv_feed_key(WindowCommand):
         # (count), or " (register character), we need to skip the count handler
         # and go straight to resolving the mapping, otherwise it won't resolve.
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(state.mode, state.partial_sequence + key):
+        if not mappings_can_resolve(state.mode, get_partial_sequence(self.view) + key):
             if repeat_count:
                 set_action_count(self.view, str(repeat_count))
 
@@ -570,9 +572,9 @@ class _nv_feed_key(WindowCommand):
 
                 return
 
-        state.partial_sequence += key
+        set_partial_sequence(self.view, get_partial_sequence(self.view) + key)
 
-        if check_user_mappings and mappings_is_incomplete(state.mode, state.partial_sequence):
+        if check_user_mappings and mappings_is_incomplete(state.mode, get_partial_sequence(self.view)):
             _log.debug('found incomplete mapping')
 
             return
@@ -594,7 +596,7 @@ class _nv_feed_key(WindowCommand):
                 # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
                 rhs = command.rhs
                 if state.mode == OPERATOR_PENDING:
-                    rhs = state.sequence[:-len(state.partial_sequence)] + command.rhs
+                    rhs = state.sequence[:-len(get_partial_sequence(self.view))] + command.rhs
 
                 # TODO Review Why does state need to be reset before running user mapping?
                 reg = get_register(self.view)
@@ -721,7 +723,7 @@ class _nv_feed_key(WindowCommand):
                 command.input_parser.run_command()
 
         if state.mode == OPERATOR_PENDING:
-            state.partial_sequence = ''
+            set_partial_sequence(self.view, '')
 
         if do_eval:
             state.eval()

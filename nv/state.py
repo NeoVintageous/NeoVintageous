@@ -23,7 +23,6 @@ from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
@@ -147,14 +146,6 @@ class State(object):
         self.settings.vi['sequence'] = value
 
     @property  # DEPRECATED
-    def partial_sequence(self) -> str:
-        return get_partial_sequence(self.view)
-
-    @partial_sequence.setter  # DEPRECATED
-    def partial_sequence(self, value: str) -> None:
-        set_partial_sequence(self.view, value)
-
-    @property  # DEPRECATED
     def mode(self) -> str:
         return get_mode(self.view)
 
@@ -249,7 +240,7 @@ class State(object):
         set_motion_count(self.view, '')
 
         self.sequence = ''
-        self.partial_sequence = ''
+        set_partial_sequence(self.view, '')
         set_register(self.view, '"')
         set_must_capture_register_name(self.view, False)
         reset_status_line(self.view, self.mode)

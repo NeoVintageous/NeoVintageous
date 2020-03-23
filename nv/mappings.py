@@ -19,6 +19,7 @@ import logging
 import traceback
 
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.vi import keys
@@ -162,7 +163,7 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings: bool 
     # We usually need to look at the partial sequence, but some commands do
     # weird things, like ys, which isn't a namespace but behaves as such
     # sometimes.
-    seq = sequence or state.partial_sequence
+    seq = sequence or get_partial_sequence(state.view)
 
     command = None
 

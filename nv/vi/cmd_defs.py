@@ -19,6 +19,7 @@ from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_motion_count
+from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import set_normal_insert_count
@@ -3144,7 +3145,7 @@ class Viz(ViOperatorDef):
         return {
             'action': '_vi_z',
             'action_args': {
-                'action': state.partial_sequence[1:],
+                'action': get_partial_sequence(state.view)[1:],
                 'mode': state.mode,
                 'count': state.count
             }

@@ -23,6 +23,7 @@ from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_motion_count
+from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import is_must_capture_register_name
@@ -30,6 +31,7 @@ from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_motion_count
+from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import _must_scroll_into_view
 from NeoVintageous.nv.vi import cmd_defs
@@ -78,7 +80,7 @@ class TestState(unittest.ViewTestCase):
         self.view.window().settings().erase('_vintageous_last_buffer_search')
 
         self.assertEqual(s.sequence, '')
-        self.assertEqual(s.partial_sequence, '')
+        self.assertEqual(get_partial_sequence(self.view), '')
         self._assertDefaultMode(s.mode)
         self.assertEqual(s.action, None)
         self.assertEqual(s.motion, None)
@@ -104,7 +106,7 @@ class TestStateResettingState(unittest.ViewTestCase):
 
     def test_reset_command_data(self):
         self.state.sequence = 'abc'
-        self.state.partial_sequence = 'x'
+        set_partial_sequence(self.view, 'x')
         self.state.user_input = 'f'
         self.state.action = cmd_defs.ViReplaceCharacters()
         self.state.motion = cmd_defs.ViGotoSymbolInFile()
@@ -121,7 +123,7 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.assertEqual(get_motion_count(self.view), '')
 
         self.assertEqual(self.state.sequence, '')
-        self.assertEqual(self.state.partial_sequence, '')
+        self.assertEqual(get_partial_sequence(self.view), '')
         self.assertEqual(get_register(self.view), '"')
         self.assertEqual(is_must_capture_register_name(self.view), False)
 
