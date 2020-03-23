@@ -38,7 +38,8 @@ from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_into_view
 from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi import cmd_defs
-from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
+from NeoVintageous.nv.vi.cmd_base import ViMotionDef
+from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
 from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vim import INSERT
@@ -245,7 +246,7 @@ class State(object):
         self.settings.vi['register'] = value
         self.must_capture_register_name = False
 
-    def must_collect_input(self, view, motion: ViCommandDefBase, action: ViCommandDefBase) -> bool:
+    def must_collect_input(self, view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
         if motion and action:
             if motion.accept_input:
                 return True
