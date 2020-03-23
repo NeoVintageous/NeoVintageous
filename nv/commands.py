@@ -111,10 +111,14 @@ from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.state import get_action
+from NeoVintageous.nv.state import get_motion
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import is_runnable
 from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.state import reset_command_data
+from NeoVintageous.nv.state import set_action
+from NeoVintageous.nv.state import set_motion
 from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
@@ -547,8 +551,8 @@ class _nv_feed_key(WindowCommand):
 
             return
 
-        motion = state.motion
-        action = state.action
+        motion = get_motion(self.view)
+        action = get_action(self.view)
 
         if must_collect_input(self.view, motion, action):
             _log.debug('collecting input!')
@@ -556,11 +560,11 @@ class _nv_feed_key(WindowCommand):
             if motion and motion.accept_input:
                 motion.accept(key)
                 # Processed motion needs to reserialised and stored.
-                state.motion = motion
+                set_motion(self.view, motion)
             else:
                 action.accept(key)
                 # Processed action needs to reserialised and stored.
-                state.action = action
+                set_action(self.view, action)
 
             if is_runnable(self.view) and do_eval:
                 state.eval()
@@ -710,7 +714,7 @@ class _nv_feed_key(WindowCommand):
             if _is_runnable:
                 raise ValueError('too many motions')
 
-            state.motion = command
+            set_motion(self.view, command)
 
             if state.mode == OPERATOR_PENDING:
                 state.mode = NORMAL
@@ -719,7 +723,7 @@ class _nv_feed_key(WindowCommand):
             if _is_runnable:
                 raise ValueError('too many actions')
 
-            state.action = command
+            set_action(self.view, command)
 
             if command.motion_required and not is_visual_mode(state.mode):
                 state.mode = OPERATOR_PENDING
@@ -739,14 +743,14 @@ class _nv_feed_key(WindowCommand):
 
     def _handle_count(self, state, key: str, repeat_count: int):
         """Return True if the processing of the current key needs to stop."""
-        if not state.action and key.isdigit():
+        if not get_action(self.view) and key.isdigit():
             if not repeat_count and (key != '0' or get_action_count(self.view)):
                 _log.debug('action count digit %s', key)
                 set_action_count(self.view, str(get_action_count(self.view)) + key)
 
                 return True
 
-        if (state.action and (state.mode == OPERATOR_PENDING) and key.isdigit()):
+        if (get_action(self.view) and (state.mode == OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or get_motion_count(self.view)):
                 _log.debug('motion count digit %s', key)
                 set_motion_count(self.view, str(get_motion_count(self.view)) + key)
@@ -798,7 +802,7 @@ class _nv_process_notation(WindowCommand):
                 'check_user_mappings': check_user_mappings
             })
 
-            if state.action:
+            if get_action(self.view):
                 # The last key press has caused an action to be primed. That
                 # means there are  no more leading motions. Break out of here.
                 reset_command_data(self.view)
@@ -816,21 +820,21 @@ class _nv_process_notation(WindowCommand):
             else:
                 state.eval()
 
-        if must_collect_input(self.view, state.motion, state.action):
+        if must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
             # State is requesting more input, so this is the last command  in
             # the sequence and it needs more input.
-            self.collect_input(state)
+            self._collect_input()
             return
 
         # Strip the already run commands
         if leading_motions:
-            if ((len(leading_motions) == len(keys)) and (not must_collect_input(self.view, state.motion, state.action))):  # noqa: E501
+            if ((len(leading_motions) == len(keys)) and (not must_collect_input(self.view, get_motion(self.view), get_action(self.view)))):  # noqa: E501
                 set_non_interactive(self.view, False)
                 return
 
             keys = keys[len(leading_motions):]
 
-        if not (state.motion and not state.action):
+        if not (get_motion(self.view) and not get_action(self.view)):
             with gluing_undo_groups(self.view, state):
                 try:
                     for key in tokenize_keys(keys):
@@ -850,7 +854,7 @@ class _nv_process_notation(WindowCommand):
                                 'characters': translate_char(key)
                             })
 
-                    if not must_collect_input(self.view, state.motion, state.action):
+                    if not must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
                         return
 
                 finally:
@@ -864,12 +868,15 @@ class _nv_process_notation(WindowCommand):
         # input parser isn't satistied. For example, `/foo`. Note that
         # `/foo<CR>`, on the contrary, would have satisfied the parser.
 
-        _log.debug('unsatisfied parser action = %s, motion=%s', state.action, state.motion)
+        action = get_action(self.view)
+        motion = get_motion(self.view)
 
-        if (state.action and state.motion):
+        _log.debug('unsatisfied parser action = %s, motion=%s', action, motion)
+
+        if (action and motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
-            motion_data = state.motion.translate(state) or None
+            motion_data = motion.translate(state) or None
 
             if motion_data is None:
                 reset_command_data(self.view)
@@ -879,12 +886,12 @@ class _nv_process_notation(WindowCommand):
             run_motion(self.window, motion_data)
             return
 
-        self.collect_input(state)
+        self._collect_input()
 
-    def collect_input(self, state: State) -> None:
+    def _collect_input(self) -> None:
         try:
-            motion = state.motion
-            action = state.action
+            motion = get_motion(self.view)
+            action = get_action(self.view)
 
             command = None
 
@@ -3245,7 +3252,7 @@ class _vi_slash(TextCommand):
 
         state = State(self.view)
         set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
-        state.motion = ViSearchForwardImpl(term=pattern)
+        set_motion(self.view, ViSearchForwardImpl(term=pattern))
         state.eval()
 
     def on_change(self, pattern: str):
@@ -4372,7 +4379,7 @@ class _vi_question_mark(TextCommand):
 
         state = State(self.view)
         set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
-        state.motion = ViSearchBackwardImpl(term=pattern)
+        set_motion(self.view, ViSearchBackwardImpl(term=pattern))
         state.eval()
 
     def on_change(self, pattern: str):
