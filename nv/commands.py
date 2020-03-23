@@ -76,6 +76,7 @@ from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_mode
@@ -91,6 +92,7 @@ from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
@@ -1330,7 +1332,7 @@ class _enter_normal_mode(TextCommand):
             clear_search_highlighting(self.view)
             fix_eol_cursor(self.view, mode)
 
-        if state.glue_until_normal_mode and not is_processing_notation(self.view):
+        if get_glue_until_normal_mode(self.view) and not is_processing_notation(self.view):
             if self.view.is_dirty():
                 self.view.window().run_command('glue_marked_undo_groups')
                 # We're exiting from insert mode or replace mode. Capture
@@ -1343,13 +1345,13 @@ class _enter_normal_mode(TextCommand):
 
                 set_repeat_data(self.view, ('native', self.view.command_history(0)[:2], mode, visual_data))
                 # Required here so that the macro gets recorded.
-                state.glue_until_normal_mode = False
+                set_glue_until_normal_mode(self.view, False)
                 macros.add_step(state, *self.view.command_history(0)[:2])
                 macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
             else:
                 macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
-                state.glue_until_normal_mode = False
+                set_glue_until_normal_mode(self.view, False)
 
         normal_insert_count = get_normal_insert_count(self.view)
         if mode == INSERT and normal_insert_count > 1:

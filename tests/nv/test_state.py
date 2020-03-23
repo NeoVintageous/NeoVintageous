@@ -19,6 +19,7 @@ from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.commands import _nv_feed_key
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
@@ -86,7 +87,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(s.action, None)
         self.assertEqual(s.motion, None)
         self.assertEqual(get_action_count(self.view), '')
-        self.assertEqual(s.glue_until_normal_mode, False)
+        self.assertEqual(get_glue_until_normal_mode(self.view), False)
         self.assertEqual(is_processing_notation(self.view), False)
         self.assertEqual(get_last_char_search(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')

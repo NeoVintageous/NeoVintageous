@@ -22,6 +22,7 @@ from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
@@ -69,7 +70,7 @@ class DeleteMultipleCursor(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_d',
@@ -88,7 +89,7 @@ class ViInsertLineBefore(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_big_o',
@@ -116,7 +117,7 @@ class ViInsertLineAfter(ViOperatorDef):
                 }
             }
         else:
-            state.glue_until_normal_mode = True
+            set_glue_until_normal_mode(state.view, True)
 
             return {
                 'action': '_vi_o',
@@ -154,8 +155,7 @@ class ViSubstituteChar(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        # XXX: Handle differently from State?
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_s',
@@ -271,7 +271,7 @@ class ViChangeByChars(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_c',
@@ -292,7 +292,7 @@ class ChangeMultipleCursor(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_c',
@@ -384,7 +384,7 @@ class ViChangeToEol(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_big_c',
@@ -424,7 +424,7 @@ class ViChangeLine(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_cc',
@@ -464,7 +464,7 @@ class ViEnterReplaceMode(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_enter_replace_mode',
@@ -628,7 +628,7 @@ class ViSubstituteByLines(ViOperatorDef):
         self.repeatable = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_big_s',
@@ -1660,7 +1660,7 @@ class ViEnterInserMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_enter_insert_mode',
@@ -1708,7 +1708,7 @@ class ViInsertAfterChar(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, state):
-        state.glue_until_normal_mode = True
+        set_glue_until_normal_mode(state.view, True)
         set_normal_insert_count(state.view, state.count)
 
         return {
@@ -1729,7 +1729,7 @@ class ViInsertAtEol(ViOperatorDef):
 
     def translate(self, state):
         if state.mode != SELECT:
-            state.glue_until_normal_mode = True
+            set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_big_a',
@@ -1748,7 +1748,7 @@ class ViInsertAtBol(ViOperatorDef):
 
     def translate(self, state):
         if state.mode != SELECT:
-            state.glue_until_normal_mode = True
+            set_glue_until_normal_mode(state.view, True)
 
         return {
             'action': '_vi_big_i',
