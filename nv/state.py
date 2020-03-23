@@ -21,9 +21,8 @@ from sublime import active_window
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
-from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_non_interactive
@@ -169,30 +168,14 @@ class State(object):
         serialized = value.serialize() if value else None
         self.settings.vi['motion'] = serialized
 
-    def _get_count(self, default: int) -> int:
-        c = default
-
-        acount = get_action_count(self.view)
-        if acount:
-            c = int(acount) or 1
-
-        mcount = get_motion_count(self.view)
-        if mcount:
-            c *= int(mcount) or 1
-
-        if c < 0:
-            raise ValueError('count must be greater than zero')
-
-        return c
-
     @property
     def count(self) -> int:
-        return self._get_count(default=1)
+        return get_count(self.view, default=1)
 
     @property
     def count_default_zero(self) -> int:
         # TODO Refactor: method was required because count() defaults to 1
-        return self._get_count(default=0)
+        return get_count(self.view, default=0)
 
     def must_collect_input(self, view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
         if motion and action:

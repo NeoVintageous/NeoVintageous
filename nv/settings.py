@@ -80,6 +80,23 @@ def set_cmdline_cwd(path: str) -> None:
     set_session_value('cmdline_cwd', path)
 
 
+def get_count(view, default: int = 1) -> int:
+    c = default
+
+    acount = get_action_count(view)
+    if acount:
+        c = int(acount) or 1
+
+    mcount = get_motion_count(view)
+    if mcount:
+        c *= int(mcount) or 1
+
+    if c < 0:
+        raise ValueError('count must be greater than zero')
+
+    return c
+
+
 def get_ex_global_last_pattern() -> str:
     return get_session_value('ex_global_last_pattern')
 
