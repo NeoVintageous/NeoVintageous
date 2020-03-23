@@ -112,6 +112,7 @@ from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
+from NeoVintageous.nv.state import evaluate_state
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
 from NeoVintageous.nv.state import init_state
@@ -568,7 +569,7 @@ class _nv_feed_key(WindowCommand):
                 set_action(self.view, action)
 
             if is_runnable(self.view) and do_eval:
-                state.eval()
+                evaluate_state(state, self.view)
                 reset_command_data(self.view)
 
             return
@@ -740,7 +741,7 @@ class _nv_feed_key(WindowCommand):
             set_partial_sequence(self.view, '')
 
         if do_eval:
-            state.eval()
+            evaluate_state(state, self.view)
 
     def _handle_count(self, state, key: str, repeat_count: int):
         """Return True if the processing of the current key needs to stop."""
@@ -815,11 +816,11 @@ class _nv_process_notation(WindowCommand):
             elif is_runnable(self.view):
                 # Run any primed motion.
                 leading_motions += get_sequence(self.view)
-                state.eval()
+                evaluate_state(state, self.view)
                 reset_command_data(self.view)
 
             else:
-                state.eval()
+                evaluate_state(state, self.view)
 
         if must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
             # State is requesting more input, so this is the last command  in
@@ -1260,8 +1261,6 @@ class _enter_normal_mode(TextCommand):
 
     def run(self, edit, mode=None, from_init=False):
         _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
-
-        state = State(self.view)
 
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
@@ -2889,8 +2888,6 @@ class _enter_visual_block_mode(TextCommand):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
 
-        state = State(self.view)
-
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
             set_mode(self.view, VISUAL_BLOCK)
@@ -3055,7 +3052,6 @@ class _vi_g_big_h(WindowCommand):
 
     def run(self, mode=None, count=1):
         self.view = self.window.active_view()
-        state = State(self.view)
         search_occurrences = get_search_occurrences(self.view)
         if search_occurrences:
             self.view.sel().add_all(search_occurrences)
@@ -3245,7 +3241,7 @@ class _vi_slash(TextCommand):
         state = State(self.view)
         set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
         set_motion(self.view, ViSearchForwardImpl(term=pattern))
-        state.eval()
+        evaluate_state(state, self.view)
 
     def on_change(self, pattern: str):
         state = State(self.view)
@@ -4372,7 +4368,7 @@ class _vi_question_mark(TextCommand):
         state = State(self.view)
         set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
         set_motion(self.view, ViSearchBackwardImpl(term=pattern))
-        state.eval()
+        evaluate_state(state, self.view)
 
     def on_change(self, pattern: str):
         state = State(self.view)

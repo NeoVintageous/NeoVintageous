@@ -373,9 +373,6 @@ class State():
         # TODO Refactor: method was required because count() defaults to 1
         return get_count(self.view, default=0)
 
-    def eval(self) -> None:
-        evaluate_state(self, self.view)
-
 
 def init_state(view) -> None:
     # Initialise view state.
