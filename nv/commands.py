@@ -53,6 +53,7 @@ from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.macros import add_macro_step
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
@@ -1350,10 +1351,10 @@ class _enter_normal_mode(TextCommand):
                 set_repeat_data(self.view, ('native', self.view.command_history(0)[:2], mode, visual_data))
                 # Required here so that the macro gets recorded.
                 set_glue_until_normal_mode(self.view, False)
-                macros.add_step(state, *self.view.command_history(0)[:2])
-                macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                add_macro_step(self.view, *self.view.command_history(0)[:2])
+                add_macro_step(self.view, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
             else:
-                macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                add_macro_step(self.view, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
                 set_glue_until_normal_mode(self.view, False)
 

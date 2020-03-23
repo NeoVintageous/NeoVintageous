@@ -93,16 +93,15 @@ def set_last_used_register_name(window, name: str) -> None:
     macro['last_used_register_name'] = name
 
 
-# TODO Refactor to remove State dependency
-def add_step(state, cmd: str, args: dict) -> None:
-    window = state.view.window()
+def add_macro_step(view, cmd: str, args: dict) -> None:
+    window = view.window()
 
     if is_recording(window):
         # don't store the ending macro step
         if cmd == '_vi_q':
             return
 
-        if not get_glue_until_normal_mode(state.view):
+        if not get_glue_until_normal_mode(view):
             macro = _get(window)
 
             if 'recording_steps' not in macro:

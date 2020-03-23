@@ -21,6 +21,7 @@ from sublime import active_window
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.macros import add_macro_step
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_view_value
 from NeoVintageous.nv.settings import get_count
@@ -317,7 +318,7 @@ class State(object):
             if get_glue_until_normal_mode(self.view) and not is_processing_notation(self.view):
                 run_window_command('mark_undo_groups_for_gluing')
 
-            macros.add_step(self, action_cmd['action'], args)
+            add_macro_step(self.view, action_cmd['action'], args)
 
             run_window_command(action_cmd['action'], args)
 
@@ -336,7 +337,7 @@ class State(object):
 
             _log.debug('motion: %s', motion_cmd)
 
-            macros.add_step(self, motion_cmd['motion'], motion_cmd['motion_args'])
+            add_macro_step(self.view, motion_cmd['motion'], motion_cmd['motion_args'])
 
             run_motion(self.view, motion_cmd)
 
@@ -374,7 +375,7 @@ class State(object):
             visual_repeat_data = get_visual_repeat_data(self.view, self.mode)
             action = self.action
 
-            macros.add_step(self, action_cmd['action'], action_cmd['action_args'])
+            add_macro_step(self.view, action_cmd['action'], action_cmd['action_args'])
 
             run_action(active_window(), action_cmd)
 
