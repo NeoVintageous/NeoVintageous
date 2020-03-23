@@ -1157,14 +1157,6 @@ class _vi_ctrl_r(WindowCommand):
 class _vi_a(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        def f(view, s):
-            if view.substr(s.b) != '\n' and s.b < view.size():
-                return Region(s.b + 1)
-
-            return s
-
-        state = State(self.view)
-
         # Abort if the *actual* mode is insert mode. This prevents _vi_a from
         # adding spaces between text fragments when used with a count, as in
         # 5aFOO. In that case, we only need to run 'a' the first time, not for
@@ -1177,7 +1169,15 @@ class _vi_a(TextCommand):
         elif mode != INTERNAL_NORMAL:
             return
 
+        def f(view, s):
+            if view.substr(s.b) != '\n' and s.b < view.size():
+                return Region(s.b + 1)
+
+            return s
+
         regions_transformer(self.view, f)
+
+        state = State(self.view)
         self.view.window().run_command('_enter_insert_mode', {
             'mode': mode,
             'count': state.normal_insert_count
