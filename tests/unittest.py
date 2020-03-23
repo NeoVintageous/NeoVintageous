@@ -351,7 +351,7 @@ class ViewTestCase(unittest.TestCase):
         _set_clipboard('')
 
     def resetMacros(self) -> None:
-        _macros._state.clear()
+        _macros._data.clear()
 
     def setMark(self, name: str, pt: int) -> None:
         sels = list(self.view.sel())

@@ -19,14 +19,14 @@ from NeoVintageous.nv.polyfill import erase_window_status
 from NeoVintageous.nv.polyfill import set_window_status
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 
-_state = {}  # type: dict
+_data = {}  # type: dict
 
 
 def _get(window, key: str = None, default=None):
     try:
-        macro = _state[window.id()]
+        macro = _data[window.id()]
     except KeyError:
-        macro = _state[window.id()] = {}
+        macro = _data[window.id()] = {}
 
     if key is None:
         return macro
