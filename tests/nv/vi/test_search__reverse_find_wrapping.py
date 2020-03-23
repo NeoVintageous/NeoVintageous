@@ -15,24 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.tests import unittest
 
-class _VintageSettings():
-
-    def __init__(self, view):
-        self.view = view
-        if view is not None and not isinstance(view.settings().get('vintage'), dict):
-            view.settings().set('vintage', dict())
-
-    def __getitem__(self, key: str):
-        return self.view.settings().get('vintage').get(key)
-
-    def __setitem__(self, key: str, value) -> None:
-        settings = self.view.settings().get('vintage')
-        settings[key] = value
-        self.view.settings().set('vintage', settings)
+from NeoVintageous.nv.vi.search import reverse_find_wrapping
 
 
-class SettingsManager():
+class Test_reverse_find_wrapping(unittest.ViewTestCase):
 
-    def __init__(self, view):
-        self.vi = _VintageSettings(view)
+    def test_reverse_find_wrapping(self):
+        self.normal('fizz buzz | one two three')
+        self.assertIsNone(reverse_find_wrapping(self.view, 'foo', 3, self.view.size()))
+        self.assertIsNone(reverse_find_wrapping(self.view, 'foo', 15, self.view.size()))
+        self.assertEqual(reverse_find_wrapping(self.view, 'buzz', 10, self.view.size()), self.Region(5, 9))
+        self.assertEqual(reverse_find_wrapping(self.view, 'zz', 10, self.view.size()), self.Region(7, 9))

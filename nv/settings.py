@@ -24,8 +24,6 @@ from NeoVintageous.nv.session import get_session_value
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.session import set_session_view_value
-from NeoVintageous.nv.session import tmp_bc_get_session_view_value
-from NeoVintageous.nv.session import tmp_bc_set_session_view_value
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import UNKNOWN
 
@@ -55,6 +53,15 @@ def get_setting_neo(view, name: str):
     return view.settings().get('neovintageous_%s' % name)
 
 
+def get_action_count(view) -> str:
+    return get_session_view_value(view, 'action_count', '')
+
+
+def set_action_count(view, value: str) -> None:
+    assert value == '' or value.isdigit(), 'bad call'  # TODO Remove assertion
+    set_session_view_value(view, 'action_count', value)
+
+
 def get_cmdline_cwd() -> str:
     cwd = get_session_value('cmdline_cwd')
     if cwd:
@@ -71,6 +78,23 @@ def get_cmdline_cwd() -> str:
 
 def set_cmdline_cwd(path: str) -> None:
     set_session_value('cmdline_cwd', path)
+
+
+def get_count(view, default: int = 1) -> int:
+    c = default
+
+    acount = get_action_count(view)
+    if acount:
+        c = int(acount) or 1
+
+    mcount = get_motion_count(view)
+    if mcount:
+        c *= int(mcount) or 1
+
+    if c < 0:
+        raise ValueError('count must be greater than zero')
+
+    return c
 
 
 def get_ex_global_last_pattern() -> str:
@@ -144,7 +168,35 @@ def set_last_buffer_search_command(view, value: str) -> None:
 
 
 def get_mode(view) -> str:
-    return tmp_bc_get_session_view_value(view, 'mode', UNKNOWN)
+    # State of current mode. It isn't guaranteed that the underlying view's
+    # .sel() will be in a consistent state (for example, that it will at least
+    # have one non- empty region in visual mode.
+    return get_session_view_value(view, 'mode', UNKNOWN)
+
+
+def set_mode(view, value: str) -> None:
+    set_session_view_value(view, 'mode', value)
+
+
+def get_motion_count(view) -> str:
+    return get_session_view_value(view, 'motion_count', '')
+
+
+def set_motion_count(view, value: str) -> None:
+    assert value == '' or value.isdigit(), 'bad call'  # TODO Remove assertion
+    set_session_view_value(view, 'motion_count', value)
+
+
+# This setting isn't reset automatically. _enter_normal_mode mode must take care
+# of that so it can repeat the commands issued while in insert mode.
+def get_normal_insert_count(view) -> int:
+    # Count issued to 'i' or 'a', etc. These commands enter insert mode. If
+    # passed a count, they must repeat the commands run while in insert mode.
+    return int(get_session_view_value(view, 'normal_insert_count', 1))
+
+
+def set_normal_insert_count(view, value: int) -> None:
+    set_session_view_value(view, 'normal_insert_count', value)
 
 
 # TODO [review] This seems to do the same thing as processing_notation.
@@ -165,8 +217,14 @@ def set_non_interactive(view, value: bool) -> None:
     set_session_view_value(view, 'non_interactive', value)
 
 
-def set_mode(view, value: str) -> None:
-    tmp_bc_set_session_view_value(view, 'mode', value)
+def get_partial_sequence(view) -> str:
+    # Sometimes we need to store a partial sequence to obtain the commands' full
+    # name. Such is the case of `gD`, for example.
+    return get_session_view_value(view, 'partial_sequence', '')
+
+
+def set_partial_sequence(view, value: str) -> None:
+    set_session_view_value(view, 'partial_sequence', value)
 
 
 def is_processing_notation(view) -> bool:
@@ -182,6 +240,16 @@ def is_processing_notation(view) -> bool:
 
 def set_processing_notation(view, value: bool) -> None:
     return set_session_view_value(view, 'processing_notation', value)
+
+
+def get_register(view) -> str:
+    return get_session_view_value(view, 'register', '"')
+
+
+def set_register(view, value: str) -> None:
+    assert len(str(value)) == 1, '`value` must be a character'  # TODO Remove assertion
+    set_session_view_value(view, 'register', value)
+    set_must_capture_register_name(view, False)
 
 
 def get_xpos(view) -> int:
@@ -236,6 +304,26 @@ def get_reset_during_init(view) -> bool:
 
 def set_reset_during_init(view, value: bool) -> None:
     _set_private(view.window(), 'reset_during_init', value)
+
+
+def get_sequence(view) -> str:
+    return get_session_view_value(view, 'sequence', '')
+
+
+def set_sequence(view, value: str) -> None:
+    set_session_view_value(view, 'sequence', value)
+
+
+def get_glue_until_normal_mode(view) -> bool:
+    # Indicate that editing commands should be grouped together. They should be
+    # grouped together in a single undo step after the user requested
+    # `_enter_normal_mode` next. This property is *VOLATILE*; it shouldn't be
+    # persisted between sessions.
+    return get_session_view_value(view, 'glue_until_normal_mode', False)
+
+
+def set_glue_until_normal_mode(view, value: bool) -> None:
+    set_session_view_value(view, 'glue_until_normal_mode', value)
 
 
 def get_visual_block_direction(view, default: int = DIRECTION_DOWN) -> int:

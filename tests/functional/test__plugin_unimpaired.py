@@ -227,12 +227,12 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
     @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_tab_control')
     def test_n_tprevious(self, window_tab_control):
         self.eq('f|izz', 'n_[t', 'f|izz')
-        window_tab_control.assert_called_once_with(self.view.window(), 'previous', count=1)
+        window_tab_control.assert_called_once_with(self.view.window(), 'previous', 1)
 
     @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_tab_control')
     def test_n_tnext(self, window_tab_control):
         self.eq('f|izz', 'n_]t', 'f|izz')
-        window_tab_control.assert_called_once_with(self.view.window(), 'next', count=1)
+        window_tab_control.assert_called_once_with(self.view.window(), 'next', 1)
 
     @unittest.mock_run_commands('select_by_index')
     def test_n_tfirst(self):

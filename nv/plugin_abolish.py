@@ -109,7 +109,7 @@ class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_abolish',
             'action_args': {

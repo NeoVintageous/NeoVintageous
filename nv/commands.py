@@ -53,6 +53,7 @@ from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.macros import add_macro_step
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_is_incomplete
@@ -75,22 +76,52 @@ from NeoVintageous.nv.search import find_word_search_occurrences
 from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
+from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_count
+from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
+from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_motion_count
+from NeoVintageous.nv.settings import get_normal_insert_count
+from NeoVintageous.nv.settings import get_partial_sequence
+from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
+from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import is_must_capture_register_name
+from NeoVintageous.nv.settings import is_non_interactive
+from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
+from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_motion_count
+from NeoVintageous.nv.settings import set_must_capture_register_name
+from NeoVintageous.nv.settings import set_non_interactive
+from NeoVintageous.nv.settings import set_normal_insert_count
+from NeoVintageous.nv.settings import set_partial_sequence
+from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
-from NeoVintageous.nv.state import State
+from NeoVintageous.nv.state import evaluate_state
+from NeoVintageous.nv.state import get_action
+from NeoVintageous.nv.state import get_motion
 from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import is_runnable
+from NeoVintageous.nv.state import must_collect_input
+from NeoVintageous.nv.state import reset_command_data
+from NeoVintageous.nv.state import set_action
+from NeoVintageous.nv.state import set_motion
+from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
@@ -152,7 +183,9 @@ from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import unfold
 from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.utils import update_xpos
+from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
@@ -197,7 +230,7 @@ from NeoVintageous.nv.vim import enter_visual_block_mode
 from NeoVintageous.nv.vim import enter_visual_line_mode
 from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import reset_status
+from NeoVintageous.nv.vim import reset_status_line
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_control
@@ -491,9 +524,8 @@ class _nv_feed_key(WindowCommand):
         #       command does.
         #   check_user_mappings (bool):
         self.view = self.window.active_view()
-        state = State(self.view)
 
-        mode = state.mode
+        mode = get_mode(self.view)
 
         _log.debug('mode: %s', mode)
 
@@ -507,36 +539,37 @@ class _nv_feed_key(WindowCommand):
                 self.view.run_command('_vi_select_big_j', {'mode': mode})
             else:
                 enter_normal_mode(self.window, mode)
-                state.reset_command_data()
+                reset_command_data(self.view)
             return
 
-        state.sequence += key
-        state.display_status()
+        set_sequence(self.view, get_sequence(self.view) + key)
+        update_status_line(self.view)
 
-        if state.must_capture_register_name:
+        if is_must_capture_register_name(self.view):
             _log.debug('capturing register name...')
-            state.register = key
-            state.partial_sequence = ''
+            set_register(self.view, key)
+            set_partial_sequence(self.view, '')
 
             return
 
-        if state.must_collect_input:
+        motion = get_motion(self.view)
+        action = get_action(self.view)
+
+        if must_collect_input(self.view, motion, action):
             _log.debug('collecting input!')
 
-            motion = state.motion
             if motion and motion.accept_input:
                 motion.accept(key)
                 # Processed motion needs to reserialised and stored.
-                state.motion = motion
+                set_motion(self.view, motion)
             else:
-                action = state.action
                 action.accept(key)
                 # Processed action needs to reserialised and stored.
-                state.action = action
+                set_action(self.view, action)
 
-            if state.runnable() and do_eval:
-                state.eval()
-                state.reset_command_data()
+            if is_runnable(self.view) and do_eval:
+                evaluate_state(self.view)
+                reset_command_data(self.view)
 
             return
 
@@ -544,49 +577,49 @@ class _nv_feed_key(WindowCommand):
         # (count), or " (register character), we need to skip the count handler
         # and go straight to resolving the mapping, otherwise it won't resolve.
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(state.mode, state.partial_sequence + key):
+        if not mappings_can_resolve(get_mode(self.view), get_partial_sequence(self.view) + key):
             if repeat_count:
-                state.action_count = str(repeat_count)
+                set_action_count(self.view, str(repeat_count))
 
-            if self._handle_count(state, key, repeat_count):
+            if self._handle_count(key, repeat_count):
                 _log.debug('handled count')
 
                 return
 
-        state.partial_sequence += key
+        set_partial_sequence(self.view, get_partial_sequence(self.view) + key)
 
-        if check_user_mappings and mappings_is_incomplete(state.mode, state.partial_sequence):
+        if check_user_mappings and mappings_is_incomplete(get_mode(self.view), get_partial_sequence(self.view)):
             _log.debug('found incomplete mapping')
 
             return
 
-        command = mappings_resolve(state, check_user_mappings=check_user_mappings)
+        command = mappings_resolve(self.view, check_user_mappings=check_user_mappings)
 
         if isinstance(command, ViOpenNameSpace):
             return
 
         if isinstance(command, ViOpenRegister):
-            state.must_capture_register_name = True
+            set_must_capture_register_name(self.view, True)
             return
 
         if isinstance(command, Mapping):
             # TODO Review What happens if Mapping + do_eval=False
             if do_eval:
-                _log.debug('evaluating user mapping (mode=%s)...', state.mode)
+                _log.debug('evaluating user mapping...')
 
                 # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
                 rhs = command.rhs
-                if state.mode == OPERATOR_PENDING:
-                    rhs = state.sequence[:-len(state.partial_sequence)] + command.rhs
+                if get_mode(self.view) == OPERATOR_PENDING:
+                    rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
 
                 # TODO Review Why does state need to be reset before running user mapping?
-                reg = state.register
-                acount = state.action_count
-                mcount = state.motion_count
-                state.reset_command_data()
-                state.register = reg
-                state.motion_count = mcount
-                state.action_count = acount
+                reg = get_register(self.view)
+                acount = get_action_count(self.view)
+                mcount = get_motion_count(self.view)
+                reset_command_data(self.view)
+                set_register(self.view, reg)
+                set_motion_count(self.view, mcount)
+                set_action_count(self.view, acount)
 
                 _log.info('user mapping %s -> %s', command.lhs, rhs)
 
@@ -645,16 +678,16 @@ class _nv_feed_key(WindowCommand):
             # try to fix that (user mappings are excluded, since they've already
             # been given a chance to evaluate).
 
-            if state.mode == OPERATOR_PENDING:
-                command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence),
+            if get_mode(self.view) == OPERATOR_PENDING:
+                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)),
                                            mode=NORMAL, check_user_mappings=False)
             else:
-                command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence))
+                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)))
 
-            if self._handle_missing_command(state, command):
+            if self._handle_missing_command(command):
                 return
 
-        if (state.mode == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
+        if (get_mode(self.view) == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
 
             # TODO This should be unreachable code. The mapping resolver should
             # handle anything that can still reach this point (the first time).
@@ -662,46 +695,75 @@ class _nv_feed_key(WindowCommand):
             # example, dd, g~g~ or g~~ remove counts. It looks like it might
             # only be the '>>' command that needs this code.
 
-            command = mappings_resolve(state, sequence=to_bare_command_name(state.sequence), mode=NORMAL)
-            if self._handle_missing_command(state, command):
+            command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
+            if self._handle_missing_command(command):
                 return
 
             if not command.motion_required:
-                state.mode = NORMAL
+                set_mode(self.view, NORMAL)
 
-        self._handle_command(state, command, do_eval)
+        self._handle_command(command, do_eval)
 
-    def _handle_command(self, state, command, do_eval: bool):
-        state.set_command(command)
+    def _handle_command(self, command: ViCommandDefBase, do_eval: bool) -> None:
+        # Raises:
+        #   ValueError: If too many motions.
+        #   ValueError: If too many actions.
+        #   ValueError: Unexpected command type.
+        _is_runnable = is_runnable(self.view)
 
-        if state.mode == OPERATOR_PENDING:
-            state.partial_sequence = ''
+        if isinstance(command, ViMotionDef):
+            if _is_runnable:
+                raise ValueError('too many motions')
+
+            set_motion(self.view, command)
+
+            if get_mode(self.view) == OPERATOR_PENDING:
+                set_mode(self.view, NORMAL)
+
+        elif isinstance(command, ViOperatorDef):
+            if _is_runnable:
+                raise ValueError('too many actions')
+
+            set_action(self.view, command)
+
+            if command.motion_required and not is_visual_mode(get_mode(self.view)):
+                set_mode(self.view, OPERATOR_PENDING)
+
+        else:
+            raise ValueError('unexpected command type')
+
+        if not is_non_interactive(self.view):
+            if command.accept_input and command.input_parser and command.input_parser.is_panel():
+                command.input_parser.run_command()
+
+        if get_mode(self.view) == OPERATOR_PENDING:
+            set_partial_sequence(self.view, '')
 
         if do_eval:
-            state.eval()
+            evaluate_state(self.view)
 
-    def _handle_count(self, state, key: str, repeat_count: int):
+    def _handle_count(self, key: str, repeat_count: int):
         """Return True if the processing of the current key needs to stop."""
-        if not state.action and key.isdigit():
-            if not repeat_count and (key != '0' or state.action_count):
+        if not get_action(self.view) and key.isdigit():
+            if not repeat_count and (key != '0' or get_action_count(self.view)):
                 _log.debug('action count digit %s', key)
-                state.action_count += key
+                set_action_count(self.view, str(get_action_count(self.view)) + key)
 
                 return True
 
-        if (state.action and (state.mode == OPERATOR_PENDING) and key.isdigit()):
-            if not repeat_count and (key != '0' or state.motion_count):
+        if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and key.isdigit()):
+            if not repeat_count and (key != '0' or get_motion_count(self.view)):
                 _log.debug('motion count digit %s', key)
-                state.motion_count += key
+                set_motion_count(self.view, str(get_motion_count(self.view)) + key)
 
                 return True
 
-    def _handle_missing_command(self, state, command):
+    def _handle_missing_command(self, command):
         if isinstance(command, ViMissingCommandDef):
-            if state.mode == OPERATOR_PENDING:
-                state.mode = NORMAL
+            if get_mode(self.view) == OPERATOR_PENDING:
+                set_mode(self.view, NORMAL)
 
-            state.reset_command_data()
+            reset_command_data(self.view)
             ui_bell()
 
             return True
@@ -719,11 +781,10 @@ class _nv_process_notation(WindowCommand):
         #   check_user_mappings (bool): Whether user mappings should be
         #       consulted to expand key sequences.
         self.view = self.window.active_view()
-        state = State(self.view)
-        initial_mode = state.mode
+        initial_mode = get_mode(self.view)
         # Disable interactive prompts. For example, to supress interactive
         # input collection in /foo<CR>.
-        state.non_interactive = True
+        set_non_interactive(self.view, True)
 
         _log.debug('process notation keys %s for initial mode %s', keys, initial_mode)
 
@@ -741,41 +802,40 @@ class _nv_process_notation(WindowCommand):
                 'check_user_mappings': check_user_mappings
             })
 
-            if state.action:
+            if get_action(self.view):
                 # The last key press has caused an action to be primed. That
                 # means there are  no more leading motions. Break out of here.
-                _log.debug('first action found in %s', state.sequence)
-                state.reset_command_data()
-                if state.mode == OPERATOR_PENDING:
-                    state.mode = NORMAL
+                reset_command_data(self.view)
+                if get_mode(self.view) == OPERATOR_PENDING:
+                    set_mode(self.view, NORMAL)
 
                 break
 
-            elif state.runnable():
+            elif is_runnable(self.view):
                 # Run any primed motion.
-                leading_motions += state.sequence
-                state.eval()
-                state.reset_command_data()
+                leading_motions += get_sequence(self.view)
+                evaluate_state(self.view)
+                reset_command_data(self.view)
 
             else:
-                state.eval()
+                evaluate_state(self.view)
 
-        if state.must_collect_input:
+        if must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
             # State is requesting more input, so this is the last command  in
             # the sequence and it needs more input.
-            self.collect_input(state)
+            self._collect_input()
             return
 
         # Strip the already run commands
         if leading_motions:
-            if ((len(leading_motions) == len(keys)) and (not state.must_collect_input)):
-                state.non_interactive = False
+            if ((len(leading_motions) == len(keys)) and (not must_collect_input(self.view, get_motion(self.view), get_action(self.view)))):  # noqa: E501
+                set_non_interactive(self.view, False)
                 return
 
             keys = keys[len(leading_motions):]
 
-        if not (state.motion and not state.action):
-            with gluing_undo_groups(self.view, state):
+        if not (get_motion(self.view) and not get_action(self.view)):
+            with gluing_undo_groups(self.view):
                 try:
                     for key in tokenize_keys(keys):
                         if key.lower() == '<esc>':
@@ -783,7 +843,7 @@ class _nv_process_notation(WindowCommand):
                             enter_normal_mode(self.window)
                             continue
 
-                        elif state.mode not in (INSERT, REPLACE):
+                        elif get_mode(self.view) not in (INSERT, REPLACE):
                             self.window.run_command('_nv_feed_key', {
                                 'key': key,
                                 'repeat_count': repeat_count,
@@ -794,11 +854,11 @@ class _nv_process_notation(WindowCommand):
                                 'characters': translate_char(key)
                             })
 
-                    if not state.must_collect_input:
+                    if not must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
                         return
 
                 finally:
-                    state.non_interactive = False
+                    set_non_interactive(self.view, False)
                     # Ensure we set the full command for "." to use, but don't
                     # store "." alone.
                     if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
@@ -808,27 +868,30 @@ class _nv_process_notation(WindowCommand):
         # input parser isn't satistied. For example, `/foo`. Note that
         # `/foo<CR>`, on the contrary, would have satisfied the parser.
 
-        _log.debug('unsatisfied parser action = %s, motion=%s', state.action, state.motion)
+        action = get_action(self.view)
+        motion = get_motion(self.view)
 
-        if (state.action and state.motion):
+        _log.debug('unsatisfied parser action = %s, motion=%s', action, motion)
+
+        if (action and motion):
             # We have a parser an a motion that can collect data. Collect data
             # interactively.
-            motion_data = state.motion.translate(state) or None
+            motion_data = motion.translate(self.view) or None
 
             if motion_data is None:
-                state.reset_command_data()
+                reset_command_data(self.view)
                 ui_bell()
                 return
 
             run_motion(self.window, motion_data)
             return
 
-        self.collect_input(state)
+        self._collect_input()
 
-    def collect_input(self, state: State) -> None:
+    def _collect_input(self) -> None:
         try:
-            motion = state.motion
-            action = state.action
+            motion = get_motion(self.view)
+            action = get_action(self.view)
 
             command = None
 
@@ -847,7 +910,7 @@ class _nv_process_notation(WindowCommand):
             _log.debug('could not find a command to collect more user input')
             ui_bell()
         finally:
-            state.non_interactive = False
+            set_non_interactive(self.view, False)
 
 
 class _nv_replace_line(TextCommand):
@@ -877,8 +940,7 @@ class _nv_cmdline(WindowCommand):
         reset_cmdline_completion_state()
         view = self.window.active_view()
         set_reset_during_init(view, False)
-        state = State(view)
-        mode = state.mode
+        mode = get_mode(view)
 
         if initial_text is not None:
             # DEPRECATED The initial_text should NOT contain the leading colon.
@@ -1124,19 +1186,11 @@ class _vi_ctrl_r(WindowCommand):
 class _vi_a(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        def f(view, s):
-            if view.substr(s.b) != '\n' and s.b < view.size():
-                return Region(s.b + 1)
-
-            return s
-
-        state = State(self.view)
-
         # Abort if the *actual* mode is insert mode. This prevents _vi_a from
         # adding spaces between text fragments when used with a count, as in
         # 5aFOO. In that case, we only need to run 'a' the first time, not for
         # every iteration.
-        if state.mode == INSERT:
+        if get_mode(self.view) == INSERT:
             return
 
         if mode is None:
@@ -1144,10 +1198,17 @@ class _vi_a(TextCommand):
         elif mode != INTERNAL_NORMAL:
             return
 
+        def f(view, s):
+            if view.substr(s.b) != '\n' and s.b < view.size():
+                return Region(s.b + 1)
+
+            return s
+
         regions_transformer(self.view, f)
+
         self.view.window().run_command('_enter_insert_mode', {
             'mode': mode,
-            'count': state.normal_insert_count
+            'count': get_normal_insert_count(self.view)
         })
 
 
@@ -1199,17 +1260,15 @@ class _enter_normal_mode(TextCommand):
     def run(self, edit, mode=None, from_init=False):
         _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
 
-        state = State(self.view)
-
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
 
-        if ((not from_init and (mode == NORMAL) and not state.sequence) or not is_view(self.view)):
+        if ((not from_init and (mode == NORMAL) and not get_sequence(self.view)) or not is_view(self.view)):
             # When _enter_normal_mode is requested from init_state, we
             # should not hide output panels; hide them only if the user
             # pressed Esc and we're not cancelling partial state data, or if a
             # panel has the focus.
-            # XXX: We are assuming that state.sequence will always be empty
+            # XXX: We are assuming that the sequence will always be empty
             #      when we do the check above. Is that so?
             # XXX: The 'not is_view(self.view)' check above seems to be
             #      redundant, since those views should be ignored by
@@ -1225,7 +1284,7 @@ class _enter_normal_mode(TextCommand):
         # Exit replace mode
         self.view.set_overwrite_status(False)
 
-        state.mode = NORMAL
+        set_mode(self.view, NORMAL)
 
         def f(view, s):
             if mode == INSERT:
@@ -1282,7 +1341,7 @@ class _enter_normal_mode(TextCommand):
             clear_search_highlighting(self.view)
             fix_eol_cursor(self.view, mode)
 
-        if state.glue_until_normal_mode and not state.processing_notation:
+        if get_glue_until_normal_mode(self.view) and not is_processing_notation(self.view):
             if self.view.is_dirty():
                 self.view.window().run_command('glue_marked_undo_groups')
                 # We're exiting from insert mode or replace mode. Capture
@@ -1295,23 +1354,24 @@ class _enter_normal_mode(TextCommand):
 
                 set_repeat_data(self.view, ('native', self.view.command_history(0)[:2], mode, visual_data))
                 # Required here so that the macro gets recorded.
-                state.glue_until_normal_mode = False
-                macros.add_step(state, *self.view.command_history(0)[:2])
-                macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                set_glue_until_normal_mode(self.view, False)
+                add_macro_step(self.view, *self.view.command_history(0)[:2])
+                add_macro_step(self.view, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
             else:
-                macros.add_step(state, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                add_macro_step(self.view, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
-                state.glue_until_normal_mode = False
+                set_glue_until_normal_mode(self.view, False)
 
-        if mode == INSERT and int(state.normal_insert_count) > 1:
-            state.mode = INSERT
+        normal_insert_count = get_normal_insert_count(self.view)
+        if mode == INSERT and normal_insert_count > 1:
+            set_mode(self.view, INSERT)
             # TODO: Calculate size the view has grown by and place the caret after the newly inserted text.
             sels = list(self.view.sel())
             self.view.sel().clear()
             new_sels = [Region(s.b + 1) if self.view.substr(s.b) != '\n' else s for s in sels]
             self.view.sel().add_all(new_sels)
-            times = int(state.normal_insert_count) - 1
-            state.normal_insert_count = '1'
+            times = normal_insert_count - 1
+            set_normal_insert_count(self.view, 1)
             self.view.window().run_command('_vi_dot', {
                 'count': times,
                 'mode': mode,
@@ -1320,8 +1380,8 @@ class _enter_normal_mode(TextCommand):
             set_selection(self.view, new_sels)
 
         update_xpos(self.view)
-        reset_status(self.view, state.mode)
-        fix_eol_cursor(self.view, state.mode)
+        reset_status_line(self.view, get_mode(self.view))
+        fix_eol_cursor(self.view, get_mode(self.view))
 
         # When the commands o and O are immediately followed by <Esc>, then if
         # the current line is only whitespace it should be erased, and the xpos
@@ -1343,18 +1403,17 @@ class _enter_select_mode(TextCommand):
     def run(self, edit, mode=None, count=1):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
 
-        state = State(self.view)
-        state.mode = SELECT
+        set_mode(self.view, SELECT)
 
         if mode == INTERNAL_NORMAL:
             self.view.window().run_command('find_under_expand')
         elif mode in (VISUAL, VISUAL_LINE):
-            self.view.window().run_command('_vi_select_j', {'mode': state.mode})
+            self.view.window().run_command('_vi_select_j', {'mode': get_mode(self.view)})
         elif mode == VISUAL_BLOCK:
             resolve_visual_block_reverse(self.view)
             enter_normal_mode(self.view.window())
 
-        state.display_status()
+        update_status_line(self.view)
 
 
 class _enter_insert_mode(TextCommand):
@@ -1372,10 +1431,9 @@ class _enter_insert_mode(TextCommand):
         self.view.settings().set('inverse_caret_state', False)
         self.view.settings().set('command_mode', False)
 
-        state = State(self.view)
-        state.mode = INSERT
-        state.normal_insert_count = str(count)
-        state.display_status()
+        set_mode(self.view, INSERT)
+        set_normal_insert_count(self.view, count)
+        update_status_line(self.view)
 
 
 class _enter_visual_mode(TextCommand):
@@ -1383,9 +1441,7 @@ class _enter_visual_mode(TextCommand):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
 
-        state = State(self.view)
-
-        if state.mode == VISUAL and not force:
+        if get_mode(self.view) == VISUAL and not force:
             enter_normal_mode(self.view, mode)
             return
 
@@ -1421,8 +1477,8 @@ class _enter_visual_mode(TextCommand):
         # its metadata. For example, when shift-clicking with the mouse to
         # create visual selections. Always update xpos to cover this case.
         update_xpos(self.view)
-        state.mode = VISUAL
-        state.display_status()
+        set_mode(self.view, VISUAL)
+        update_status_line(self.view)
 
 
 class _enter_visual_line_mode(TextCommand):
@@ -1430,9 +1486,7 @@ class _enter_visual_line_mode(TextCommand):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
 
-        state = State(self.view)
-
-        if state.mode == VISUAL_LINE and not force:
+        if get_mode(self.view) == VISUAL_LINE and not force:
             enter_normal_mode(self.view, mode)
             return
 
@@ -1471,8 +1525,8 @@ class _enter_visual_line_mode(TextCommand):
 
             regions_transformer(self.view, f)
 
-        state.mode = VISUAL_LINE
-        state.display_status()
+        set_mode(self.view, VISUAL_LINE)
+        update_status_line(self.view)
 
 
 class _enter_replace_mode(TextCommand):
@@ -1487,22 +1541,20 @@ class _enter_replace_mode(TextCommand):
         self.view.settings().set('command_mode', False)
         self.view.settings().set('inverse_caret_state', False)
         self.view.set_overwrite_status(True)
-        state = State(self.view)
-        state.mode = REPLACE
+        set_mode(self.view, REPLACE)
         regions_transformer(self.view, f)
-        state.display_status()
-        state.reset_command_data()
+        update_status_line(self.view)
+        reset_command_data(self.view)
 
 
 class _vi_dot(WindowCommand):
 
     def run(self, mode=None, count=None, repeat_data=None):
         self.view = self.window.active_view()
-        state = State(self.view)
-        state.reset_command_data()
+        reset_command_data(self.view)
 
-        if state.mode == INTERNAL_NORMAL:
-            state.mode = NORMAL
+        if get_mode(self.view) == INTERNAL_NORMAL:
+            set_mode(self.view, NORMAL)
 
         if repeat_data is None:
             repeat_data = get_repeat_data(self.view)
@@ -1517,7 +1569,7 @@ class _vi_dot(WindowCommand):
         _log.debug('type=%s, seqorcmd=%s, oldmode=%s', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
-            restore_visual_repeat_data(self.view, state.mode, visual_data)
+            restore_visual_repeat_data(self.view, get_mode(self.view), visual_data)
         elif not visual_data and (mode == VISUAL):
             # Can't repeat normal mode commands in visual mode.
             return ui_bell()
@@ -2834,16 +2886,14 @@ class _enter_visual_block_mode(TextCommand):
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
 
-        state = State(self.view)
-
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
-            state.mode = VISUAL_BLOCK
-            state.display_status()
+            set_mode(self.view, VISUAL_BLOCK)
+            update_status_line(self.view)
 
         elif mode == VISUAL_BLOCK and not force:
             enter_normal_mode(self.view, mode)
-            state.display_status()
+            update_status_line(self.view)
 
 
 # TODO Refactor into _vi_j
@@ -2999,18 +3049,16 @@ class _vi_guu(TextCommand):
 class _vi_g_big_h(WindowCommand):
 
     def run(self, mode=None, count=1):
-        view = self.window.active_view()
-        state = State(view)
-        search_occurrences = get_search_occurrences(view)
+        self.view = self.window.active_view()
+        search_occurrences = get_search_occurrences(self.view)
         if search_occurrences:
-            view.sel().add_all(search_occurrences)
-            state.mode = SELECT
-            state.display_status()
+            self.view.sel().add_all(search_occurrences)
+            set_mode(self.view, SELECT)
+            update_status_line(self.view)
             return
 
-        ui_bell()
-        status_message('no available search matches')
-        state.reset_command_data()
+        ui_bell('no available search matches')
+        reset_command_data(self.view)
 
 
 class _vi_ctrl_x_ctrl_l(TextCommand):
@@ -3044,9 +3092,8 @@ class _vi_ctrl_x_ctrl_l(TextCommand):
         self._matches = self.find_matches(prefix, end=self.view.line(s.b).a)
         if self._matches:
             self.show_matches(self._matches)
-            state = State(self.view)
             set_reset_during_init(self.view, False)
-            state.reset_command_data()
+            reset_command_data(self.view)
             return
 
         ui_bell()
@@ -3184,22 +3231,16 @@ class _vi_slash(TextCommand):
 
         self._cmdline.prompt(pattern)
 
-    def on_done(self, pattern):
+    def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_FORWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
-
-        state = State(self.view)
-        state.sequence += pattern + '<CR>'
         clear_search_highlighting(self.view)
-        set_last_buffer_search_command(self.view, 'vi_slash')
-        state.motion = ViSearchForwardImpl(term=pattern)
-        set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
-        state.eval()
+        set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
+        set_motion(self.view, ViSearchForwardImpl(term=pattern))
+        evaluate_state(self.view)
 
-    def on_change(self, pattern):
-        state = State(self.view)
-        count = state.count
-
+    def on_change(self, pattern: str):
+        count = get_count(self.view)
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
         start = get_insertion_point_at_b(sel) + 1
@@ -3222,8 +3263,7 @@ class _vi_slash(TextCommand):
 
     def on_cancel(self):
         clear_search_highlighting(self.view)
-        state = State(self.view)
-        state.reset_command_data()
+        reset_command_data(self.view)
         _nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 
@@ -4314,22 +4354,16 @@ class _vi_question_mark(TextCommand):
 
         self._cmdline.prompt(pattern)
 
-    def on_done(self, pattern):
+    def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_BACKWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
-
-        state = State(self.view)
-        state.sequence += pattern + '<CR>'
         clear_search_highlighting(self.view)
-        set_last_buffer_search_command(self.view, 'vi_question_mark')
-        state.motion = ViSearchBackwardImpl(term=pattern)
-        set_last_buffer_search(self.view, pattern or get_last_buffer_search(self.view))
-        state.eval()
+        set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
+        set_motion(self.view, ViSearchBackwardImpl(term=pattern))
+        evaluate_state(self.view)
 
-    def on_change(self, pattern):
-        state = State(self.view)
-        count = state.count
-
+    def on_change(self, pattern: str):
+        count = get_count(self.view)
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
         start = 0
@@ -4352,8 +4386,7 @@ class _vi_question_mark(TextCommand):
 
     def on_cancel(self):
         clear_search_highlighting(self.view)
-        state = State(self.view)
-        state.reset_command_data()
+        reset_command_data(self.view)
         _nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 

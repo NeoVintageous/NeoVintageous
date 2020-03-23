@@ -49,13 +49,14 @@ from NeoVintageous.nv.registers import _linewise as _registers_linewise
 from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
+from NeoVintageous.nv.settings import get_mode as _get_mode
 from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.settings import get_xpos as _get_xpos
 from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_mode as _set_mode
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos as _set_xpos
-from NeoVintageous.nv.state import State as _State
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
@@ -291,7 +292,13 @@ class ViewTestCase(unittest.TestCase):
                 for i, x in enumerate(sels):
                     self.view.sel().add(x - i)
 
-        self.state.mode = mode
+        _set_mode(self.view, mode)
+
+    def setNormalMode(self):
+        _set_mode(self.view, NORMAL)
+
+    def setVisualMode(self):
+        _set_mode(self.view, VISUAL)
 
     def insert(self, text: str) -> None:
         self._setupView(text, INSERT)
@@ -351,7 +358,7 @@ class ViewTestCase(unittest.TestCase):
         _set_clipboard('')
 
     def resetMacros(self) -> None:
-        _macros._state.clear()
+        _macros._data.clear()
 
     def setMark(self, name: str, pt: int) -> None:
         sels = list(self.view.sel())
@@ -366,6 +373,20 @@ class ViewTestCase(unittest.TestCase):
     def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
         self.assertEqual(_mappings[mode][lhs], rhs)
+
+    def assertMappings(self, expected: dict) -> None:
+        self.assertEqual(_mappings, expected)
+
+    def assertMappingsEmpty(self) -> None:
+        self.assertEqual(_mappings, {
+            INSERT: {},
+            NORMAL: {},
+            OPERATOR_PENDING: {},
+            SELECT: {},
+            VISUAL_BLOCK: {},
+            VISUAL_LINE: {},
+            VISUAL: {},
+        })
 
     def assertNotMapping(self, lhs: str, mode: int = None) -> None:
         if mode is None:
@@ -479,7 +500,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
-        self.assertEquals(self.state.mode, mode)
+        self.assertEquals(_get_mode(self.view), mode)
 
     def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
@@ -718,11 +739,6 @@ class ViewTestCase(unittest.TestCase):
         MockCmdlineOnDone._mock_event = event
         mock.side_effect = MockCmdlineOnDone
 
-    # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
-    @property
-    def state(self) -> _State:
-        return _State(self.view)
-
     # DEPRECATED Use newer APIs e.g. self.Region(), unittest.Region.
     def _R(self, a: int, b: int = None) -> Region:
         return _make_region(self.view, a, b)
@@ -773,11 +789,15 @@ class FunctionalTestCase(ViewTestCase):
         #
         # The seq can be prefixed to specify a mode:
         #
-        #   * n_ - Normal
-        #   * i_ - Insert
-        #   * v_ - Visual
-        #   * l_ - Visual line
-        #   * b_ - Visual block
+        # * n_ - Normal
+        # * i_ - Insert
+        # * v_ - Visual
+        # * V_ - Visual line
+        # * b_ - Visual block
+        # * s_ - Select
+        # * R_ - Replace
+        # * :<','> - Visual Command-line
+        # * N_ - Internal Normal
         #
         # The default mode is Internal Normal.
         #
@@ -791,16 +811,15 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed('3w')
         # >>> feed('v_w')
         # >>> feed('v_3w')
+        # >>> feed('V_w')
+        # >>> feed('b_w')
         # >>> feed('<Esc>')
+        # >>> feed('i_<Esc>')
+        # >>> feed('<C-v>')
+        # >>> feed('<CR>')
         # >>> feed(':pwd')
-        # >>> feed(':help neovintageous')
-
-        if seq == '<Esc>':
-            window = self.view.window()
-            if not window:
-                raise Exception('window not found')
-
-            return window.run_command('_nv_feed_key', {'key': '<esc>'})
+        # >>> feed(':copy 2')
+        # >>> feed(':2,4yank')
 
         if seq[0] == ':':
             return _do_ex_cmdline(self.view.window(), seq)
@@ -1053,7 +1072,7 @@ def mock_bell():
     Usage:
 
     @unittest.mock_bell()
-    def test_name(self):
+    def test(self):
         self.assertBell()
         self.assertBell('status message')
         self.assertBellCount(2)
@@ -1109,7 +1128,7 @@ def mock_hide_panel():
     Usage:
 
     @unitest.mock_hide_panel()
-    def test_hide_panel(self):
+    def test(self):
         pass
 
     """
@@ -1129,7 +1148,7 @@ def mock_status_message():
     Usage:
 
     @unitest.mock_status_message()
-    def test_status_message(self):
+    def test(self):
         self.assertStatusMessage('msg')
         self.assertStatusMessage('msg', count=3)
         self.assertStatusMessageCount(5)
@@ -1168,11 +1187,8 @@ def mock_mappings(*mappings):
 
     Usage:
 
-    @unittest.mock_mappings(
-        (unittest.NORMAL, ',l', '3l'),
-        (unittest.VISUAL, ',l', '3l'),
-    )
-    def test_name(self):
+    @unittest.mock_mappings((unittest.NORMAL, ',l', '3l'), (unittest.VISUAL, ',l', '3l'))
+    def test(self):
         pass
 
     """
@@ -1199,15 +1215,15 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
     Usage:
 
     @unitest.mock_ui()
-    def test_name(self):
+    def test(self):
         pass
 
     @unitest.mock_ui(screen_rows=10)
-    def test_name(self):
+    def test(self):
         pass
 
     @unitest.mock_ui(visible_region=(2, 7))
-    def test_name(self):
+    def test(self):
         pass
 
     """
@@ -1275,7 +1291,7 @@ def mock_run_commands(*methods):
     Usage:
 
     @unitest.mock_run_commands('redo', 'hide_panel')
-    def test_name(self):
+    def test(self):
         self.assertRunCommand('redo')
         self.assertRunCommand('redo', count=3)
         self.assertRunCommand('hide_panel', {'cancel': True})
@@ -1406,7 +1422,7 @@ _SEQ2CMD = {
     '<C-y>':        {'command': '_nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
     '<CR>':         {'command': '_nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
     '<M-n>':        {'command': '_nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
-    '<esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
+    '<Esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<{':           {'command': '_nv_feed_key'},  # noqa: E241
     '=':            {'command': '_nv_feed_key'},  # noqa: E241
     '==':           {'command': '_nv_feed_key'},  # noqa: E241

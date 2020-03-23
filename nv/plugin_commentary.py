@@ -21,6 +21,8 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.settings import get_count
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
@@ -52,13 +54,13 @@ class CommentaryMotion(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'c',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -71,13 +73,13 @@ class CommentaryLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'cc',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -93,13 +95,13 @@ class CommentaryBlock(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'C',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 

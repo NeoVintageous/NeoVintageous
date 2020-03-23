@@ -17,21 +17,20 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.vi.text_objects import is_at_space
 
-class Test_i(unittest.FunctionalTestCase):
 
-    def test_i(self):
-        self.eq('fi|zz', 'n_i', 'i_fi|zz')
-        self.assertStatusLineIsInsert()
+class Test_is_at_space(unittest.ViewTestCase):
 
-    def test_i_count(self):
-        self.normal('fizz |x')
-        self.feed('3i')
-        self.view.run_command('insert', {'characters': 'buzz'})
-        self.feed('<Esc>')
-        self.assertNormal('fizz buzz|buzzbuzzx')
-
-    def test_s(self):
-        self.eq('fi|zz bu|zz', 's_i', 'i_fizz b|uzz')
-        self.eq('r_fi|zz bu|zz', 's_i', 'i_fi|zz buzz')
-        self.assertStatusLineIsInsert()
+    def test_basic(self):
+        self.write('a bc .,: d')
+        self.assertFalse(is_at_space(self.view, 0))
+        self.assertTrue(is_at_space(self.view, 1))
+        self.assertFalse(is_at_space(self.view, 2))
+        self.assertFalse(is_at_space(self.view, 3))
+        self.assertTrue(is_at_space(self.view, 4))
+        self.assertFalse(is_at_space(self.view, 5))
+        self.assertFalse(is_at_space(self.view, 6))
+        self.assertFalse(is_at_space(self.view, 7))
+        self.assertTrue(is_at_space(self.view, 8))
+        self.assertFalse(is_at_space(self.view, 9))

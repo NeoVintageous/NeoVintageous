@@ -21,28 +21,33 @@ from sublime import active_window
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.macros import add_macro_step
+from NeoVintageous.nv.session import get_session_view_value
+from NeoVintageous.nv.session import set_session_view_value
+from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
+from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
-from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
+from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
-from NeoVintageous.nv.settings import set_non_interactive
-from NeoVintageous.nv.settings import set_processing_notation
+from NeoVintageous.nv.settings import set_partial_sequence
+from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.utils import get_visual_repeat_data
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import save_previous_selection
-from NeoVintageous.nv.utils import scroll_into_view
 from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi import cmd_defs
-from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViToggleMacroRecorder
-from NeoVintageous.nv.vi.settings import SettingsManager
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -56,7 +61,7 @@ from NeoVintageous.nv.vim import clean_view
 from NeoVintageous.nv.vim import enter_insert_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
-from NeoVintageous.nv.vim import reset_status
+from NeoVintageous.nv.vim import reset_status_line
 from NeoVintageous.nv.vim import run_action
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import run_window_command
@@ -65,459 +70,284 @@ from NeoVintageous.nv.vim import run_window_command
 _log = logging.getLogger(__name__)
 
 
-class State(object):
+def update_status_line(view) -> None:
+    mode_name = mode_to_name(get_mode(view))
+    if mode_name:
+        view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
 
-    def __init__(self, view):
-        self.view = view
-        self.settings = SettingsManager(self.view)
+    view.set_status('vim-seq', get_sequence(view))
 
-    @property
-    def glue_until_normal_mode(self) -> bool:
-        """
-        Indicate that editing commands should be grouped together.
 
-        They should be grouped together in a single undo step after the user
-        requested `_enter_normal_mode` next.
-
-        This property is *VOLATILE*; it shouldn't be persisted between
-        sessions.
-        """
-        return self.settings.vi['_vintageous_glue_until_normal_mode'] or False
-
-    @glue_until_normal_mode.setter
-    def glue_until_normal_mode(self, value: bool) -> None:
-        self.settings.vi['_vintageous_glue_until_normal_mode'] = value
-
-    @property  # DEPRECATED
-    def processing_notation(self) -> bool:
-        return is_processing_notation(self.view)
-
-    @processing_notation.setter  # DEPRECATED
-    def processing_notation(self, value: bool) -> None:
-        set_processing_notation(self.view, value)
-
-    @property  # DEPRECATED
-    def non_interactive(self) -> bool:
-        return is_non_interactive(self.view)
-
-    @non_interactive.setter  # DEPRECATED
-    def non_interactive(self, value: bool) -> None:
-        set_non_interactive(self.view, value)
-
-    @property  # DEPRECATED
-    def must_capture_register_name(self) -> bool:
-        return is_must_capture_register_name(self.view)
-
-    @must_capture_register_name.setter  # DEPRECATED
-    def must_capture_register_name(self, value: bool) -> None:
-        set_must_capture_register_name(self.view, value)
-
-    # This property isn't reset automatically. _enter_normal_mode mode must
-    # take care of that so it can repeat the commands issued while in
-    # insert mode.
-    @property
-    def normal_insert_count(self) -> str:
-        """
-        Count issued to 'i' or 'a', etc.
-
-        These commands enter insert mode. If passed a count, they must repeat
-        the commands run while in insert mode.
-        """
-        return self.settings.vi['normal_insert_count'] or '1'
-
-    @normal_insert_count.setter
-    def normal_insert_count(self, value: str) -> None:
-        self.settings.vi['normal_insert_count'] = value
-
-    @property
-    def sequence(self) -> str:
-        # Sequence of keys provided by the user.
-        return self.settings.vi['sequence'] or ''
-
-    @sequence.setter
-    def sequence(self, value: str) -> None:
-        _log.debug('set sequence >>>%s<<<', value)
-        self.settings.vi['sequence'] = value
-
-    @property
-    def partial_sequence(self) -> str:
-        # Sometimes we need to store a partial sequence to obtain the commands'
-        # full name. Such is the case of `gD`, for example.
-        return self.settings.vi['partial_sequence'] or ''
-
-    @partial_sequence.setter
-    def partial_sequence(self, value: str) -> None:
-        _log.debug('set partial sequence >>>%s<<<', value)
-        self.settings.vi['partial_sequence'] = value
-
-    @property
-    def mode(self) -> str:
-        # State of current mode.
-        #
-        # It isn't guaranteed that the underlying view's .sel() will be in a
-        # consistent state (for example, that it will at least have one non-
-        # empty region in visual mode.
-        return self.settings.vi['mode'] or UNKNOWN
-
-    @mode.setter
-    def mode(self, value: str) -> None:
-        self.settings.vi['mode'] = value
-
-    @property
-    def action(self):
-        action = self.settings.vi['action'] or None
-        if action:
-            cls = getattr(cmd_defs, action['name'], None)
-            if cls is None:
-                cls = plugin.classes.get(action['name'], None)
-            if cls is None:
-                ValueError('unknown action: %s' % action)
-            return cls.from_json(action['data'])
-
-    @action.setter
-    def action(self, value) -> None:
-        serialized = value.serialize() if value else None
-        self.settings.vi['action'] = serialized
-
-    @property
-    def motion(self):
-        motion = self.settings.vi['motion'] or None
-
-        if motion:
-            cls = getattr(cmd_defs, motion['name'])
-
-            return cls.from_json(motion['data'])
-
-    @motion.setter
-    def motion(self, value) -> None:
-        serialized = value.serialize() if value else None
-        self.settings.vi['motion'] = serialized
-
-    @property
-    def motion_count(self) -> str:
-        return self.settings.vi['motion_count'] or ''
-
-    @motion_count.setter
-    def motion_count(self, value: str) -> None:
-        assert value == '' or value.isdigit(), 'bad call'
-        self.settings.vi['motion_count'] = value
-
-    @property
-    def action_count(self) -> str:
-        return self.settings.vi['action_count'] or ''
-
-    @action_count.setter
-    def action_count(self, value: str) -> None:
-        assert value == '' or value.isdigit(), 'bad call'
-        self.settings.vi['action_count'] = value
-
-    def _get_count(self, default: int) -> int:
-        c = default
-
-        if self.action_count:
-            c = int(self.action_count) or 1
-
-        if self.motion_count:
-            c *= int(self.motion_count) or 1
-
-        if c < 0:
-            raise ValueError('count must be greater than zero')
-
-        return c
-
-    @property
-    def count(self) -> int:
-        return self._get_count(default=1)
-
-    @property
-    def count_default_zero(self) -> int:
-        # TODO Refactor: method was required because count() defaults to 1
-        return self._get_count(default=0)
-
-    @property
-    def register(self) -> str:
-        # Accessor for the current open register (as requested by the user).
-        # Returns:
-        #   str: Default is '"'.
-        return self.settings.vi['register'] or '"'
-
-    @register.setter
-    def register(self, value: str) -> None:
-        assert len(str(value)) == 1, '`value` must be a character'
-        self.settings.vi['register'] = value
-        self.must_capture_register_name = False
-
-    @property
-    def must_collect_input(self) -> bool:
-        # Returns:
-        #   True if the current status should collect input, False otherwise.
-        motion = self.motion
-        action = self.action
-
-        if motion and action:
-            if motion.accept_input:
-                return True
-
-            return (action.accept_input and action.input_parser and action.input_parser.is_after_motion())
-
-        # Special case: `q` should stop the macro recorder if it's running and
-        # not request further input from the user.
-        if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(self.view.window())):
-            return False
-
-        if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):
+def must_collect_input(view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
+    if motion and action:
+        if motion.accept_input:
             return True
 
-        if motion:
-            return (motion and motion.accept_input)
+        return (action.accept_input and action.input_parser is not None and action.input_parser.is_after_motion())
 
+    # Special case: `q` should stop the macro recorder if it's running and
+    # not request further input from the user.
+    if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(view.window())):
         return False
 
-    @property
-    def must_update_xpos(self) -> bool:
-        # Returns:
-        #   True if motion/action should update xpos, False otherwise.
-        motion = self.motion
-        if motion and motion.updates_xpos:
-            return True
+    if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):
+        return True
 
-        action = self.action
-        if action and action.updates_xpos:
-            return True
+    if motion:
+        return motion.accept_input
 
+    return False
+
+
+def _must_scroll_into_view(motion: ViMotionDef, action: ViOperatorDef) -> bool:
+    if motion and motion.scroll_into_view:
+        return True
+
+    if action and action.scroll_into_view:
+        return True
+
+    return False
+
+
+def _must_update_xpos(motion: ViMotionDef, action: ViOperatorDef) -> bool:
+    if motion and motion.updates_xpos:
+        return True
+
+    if action and action.updates_xpos:
+        return True
+
+    return False
+
+
+def _scroll_into_view(view, mode: str) -> None:
+    sels = view.sel()
+    if len(sels) < 1:
+        return
+
+    # Show the *last* cursor on screen. There is currently no way to
+    # identify the "active" cursor of a multiple cursor selection.
+    sel = sels[-1]
+
+    target_pt = sel.b
+
+    # In VISUAL mode we need to make sure that any newline at the end of
+    # the selection is NOT included in the target, because otherwise an
+    # extra line after the target line will also be scrolled into view.
+    if is_visual_mode(mode):
+        if sel.b > sel.a:
+            if view.substr(sel.b - 1) == '\n':
+                target_pt = max(0, target_pt - 1)
+                # Use the start point of the target line to avoid
+                # horizontal scrolling. For example, this can happen in
+                # VISUAL LINE mode when the EOL is off-screen.
+                target_pt = max(0, view.line(target_pt).a)
+
+    view.show(target_pt, False)
+
+
+def get_action(view):
+    action = get_session_view_value(view, 'action')
+    if action:
+        cls = getattr(cmd_defs, action['name'], None)
+
+        if cls is None:
+            cls = plugin.classes.get(action['name'], None)
+
+        if cls is None:
+            ValueError('unknown action: %s' % action)
+
+        return cls.from_json(action['data'])
+
+
+def set_action(view, value) -> None:
+    serialized = value.serialize() if value else None
+    set_session_view_value(view, 'action', serialized)
+
+
+def get_motion(view):
+    motion = get_session_view_value(view, 'motion')
+    if motion:
+        cls = getattr(cmd_defs, motion['name'])
+
+        return cls.from_json(motion['data'])
+
+
+def set_motion(view, value) -> None:
+    serialized = value.serialize() if value else None
+    set_session_view_value(view, 'motion', serialized)
+
+
+def reset_command_data(view) -> None:
+    # Resets all temp data needed to build a command or partial command.
+    motion = get_motion(view)
+    action = get_action(view)
+
+    if _must_update_xpos(motion, action):
+        update_xpos(view)
+
+    if _must_scroll_into_view(motion, action):
+        # Intentionally using the active view because the previous command
+        # may have switched views and view would be the previous one.
+        active_view = active_window().active_view()
+        _scroll_into_view(active_view, get_mode(active_view))
+
+    action and action.reset()
+    set_action(view, None)
+    motion and motion.reset()
+    set_motion(view, None)
+    set_action_count(view, '')
+    set_motion_count(view, '')
+    set_sequence(view, '')
+    set_partial_sequence(view, '')
+    set_register(view, '"')
+    set_must_capture_register_name(view, False)
+    reset_status_line(view, get_mode(view))
+
+
+def is_runnable(view) -> bool:
+    # Returns:
+    #   True if motion and/or action is in a runnable state, False otherwise.
+    # Raises:
+    #   ValueError: Invlid mode.
+    action = get_action(view)
+    motion = get_motion(view)
+
+    if must_collect_input(view, motion, action):
         return False
 
-    def reset_register_data(self) -> None:
-        self.register = '"'
-        self.must_capture_register_name = False
+    mode = get_mode(view)
 
-    def display_status(self) -> None:
-        mode_name = mode_to_name(self.mode)
-        if mode_name:
-            self.view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
+    if action and motion:
+        if mode != NORMAL:
+            raise ValueError('invalid mode')
 
-        self.view.set_status('vim-seq', self.sequence)
+        return True
 
-    def must_scroll_into_view(self) -> bool:
-        # Returns:
-        #   True if motion/action should scroll into view, False otherwise.
-        motion = self.motion
-        if motion and motion.scroll_into_view:
-            return True
+    if (action and (not action.motion_required or is_visual_mode(mode))):
+        if mode == OPERATOR_PENDING:
+            raise ValueError('action has invalid mode')
 
-        action = self.action
-        if action and action.scroll_into_view:
-            return True
+        return True
 
-        return False
+    if motion:
+        if mode == OPERATOR_PENDING:
+            raise ValueError('motion has invalid mode')
 
-    def reset_command_data(self) -> None:
-        # Resets all temp data needed to build a command or partial command.
-        if self.must_update_xpos:
-            update_xpos(self.view)
+        return True
 
-        if self.must_scroll_into_view():
-            scroll_into_view(active_window().active_view(), self.mode)
+    return False
 
-        self.action and self.action.reset()
-        self.action = None
-        self.motion and self.motion.reset()
-        self.motion = None
-        self.action_count = ''
-        self.motion_count = ''
 
-        self.sequence = ''
-        self.partial_sequence = ''
-        self.reset_register_data()
-        reset_status(self.view, self.mode)
+def evaluate_state(view) -> None:
+    _log.debug('evaluating...')
+    if not is_runnable(view):
+        _log.debug('not runnable!')
+        return
 
-    def reset_volatile_data(self) -> None:
-        # Reset window or application wide data to their default values.
-        # Use when starting a new session.
-        self.glue_until_normal_mode = False
-        self.view.run_command('unmark_undo_groups_for_gluing')
-        self.processing_notation = False
-        self.non_interactive = False
-        set_reset_during_init(self.view, True)
+    action = get_action(view)
+    motion = get_motion(view)
 
-    def set_command(self, command: ViCommandDefBase) -> None:
-        # Set the current command.
-        #
-        # Args:
-        #   command (ViCommandDefBase): A command definition.
-        #
-        # Raises:
-        #   ValueError: If too many motions.
-        #   ValueError: If too many actions.
-        #   ValueError: Unexpected command type.
-        assert isinstance(command, ViCommandDefBase), 'ViCommandDefBase expected, got {}'.format(type(command))
+    if action and motion:
 
-        is_runnable = self.runnable()
+        # Evaluate action with motion: runs the action with the motion as an
+        # argument. The motion's mode is set to INTERNAL_NORMAL and is run
+        # by the action internally to make the selection it operates on. For
+        # example the motion commands can be used after an operator command,
+        # to have the command operate on the text that was moved over.
 
-        if isinstance(command, ViMotionDef):
-            if is_runnable:
-                raise ValueError('too many motions')
+        action_cmd = action.translate(view)
+        motion_cmd = motion.translate(view)
 
-            self.motion = command
+        _log.debug('action: %s', action_cmd)
+        _log.debug('motion: %s', motion_cmd)
 
-            if self.mode == OPERATOR_PENDING:
-                self.mode = NORMAL
+        set_mode(view, INTERNAL_NORMAL)
 
-        elif isinstance(command, ViOperatorDef):
-            if is_runnable:
-                raise ValueError('too many actions')
+        if 'mode' in action_cmd['action_args']:
+            action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
-            self.action = command
+        if 'mode' in motion_cmd['motion_args']:
+            motion_cmd['motion_args']['mode'] = INTERNAL_NORMAL
 
-            if command.motion_required and not is_visual_mode(self.mode):
-                self.mode = OPERATOR_PENDING
+        args = action_cmd['action_args']
 
-        else:
-            raise ValueError('unexpected command type')
+        args['count'] = 1
 
-        if not self.non_interactive:
-            if command.accept_input and command.input_parser and command.input_parser.is_panel():
-                command.input_parser.run_command()
+        # Let the action run the motion within its edit object so that we
+        # don't need to worry about grouping edits to the buffer.
+        args['motion'] = motion_cmd
 
-    def runnable(self) -> bool:
-        # Returns:
-        #   True if motion and/or action is in a runnable state, False otherwise.
-        # Raises:
-        #   ValueError: Invlid mode.
-        if self.must_collect_input:
-            return False
+        if get_glue_until_normal_mode(view) and not is_processing_notation(view):
+            run_window_command('mark_undo_groups_for_gluing')
 
-        action = self.action
-        motion = self.motion
-        mode = self.mode
+        add_macro_step(view, action_cmd['action'], args)
 
-        if action and motion:
-            if mode != NORMAL:
-                raise ValueError('invalid mode')
+        run_window_command(action_cmd['action'], args)
 
-            return True
+        if not is_non_interactive(view) and get_action(view).repeatable:
+            set_repeat_data(view, ('vi', str(get_sequence(view)), get_mode(view), None))
 
-        if (action and (not action.motion_required or is_visual_mode(mode))):
-            if mode == OPERATOR_PENDING:
-                raise ValueError('action has invalid mode')
+        reset_command_data(view)
 
-            return True
+        return  # Nothing more to do.
 
-        if motion:
-            if mode == OPERATOR_PENDING:
-                raise ValueError('motion has invalid mode')
+    if motion:
 
-            return True
+        # Evaluate motion: Run it.
 
-        return False
+        motion_cmd = motion.translate(view)
 
-    def eval(self) -> None:
-        _log.debug('evaluating...')
-        if not self.runnable():
-            _log.debug('not runnable!')
-            return
+        _log.debug('motion: %s', motion_cmd)
 
-        if self.action and self.motion:
+        add_macro_step(view, motion_cmd['motion'], motion_cmd['motion_args'])
 
-            # Evaluate action with motion: runs the action with the motion as an
-            # argument. The motion's mode is set to INTERNAL_NORMAL and is run
-            # by the action internally to make the selection it operates on. For
-            # example the motion commands can be used after an operator command,
-            # to have the command operate on the text that was moved over.
+        run_motion(view, motion_cmd)
 
-            action_cmd = self.action.translate(self)
-            motion_cmd = self.motion.translate(self)
+    if action:
 
-            _log.debug('action: %s', action_cmd)
-            _log.debug('motion: %s', motion_cmd)
+        # Evaluate action. Run it.
 
-            self.mode = INTERNAL_NORMAL
+        action_cmd = action.translate(view)
+
+        _log.debug('action: %s', action_cmd)
+
+        if get_mode(view) == NORMAL:
+            set_mode(view, INTERNAL_NORMAL)
 
             if 'mode' in action_cmd['action_args']:
                 action_cmd['action_args']['mode'] = INTERNAL_NORMAL
 
-            if 'mode' in motion_cmd['motion_args']:
-                motion_cmd['motion_args']['mode'] = INTERNAL_NORMAL
+        elif is_visual_mode(get_mode(view)):
+            # Special-case exclusion: saving the previous selection would
+            # overwrite the previous selection needed e.g. gv in a VISUAL
+            # mode needs to expand or contract to previous selection.
+            if action_cmd['action'] != '_vi_gv':
+                save_previous_selection(view, get_mode(view))
 
-            args = action_cmd['action_args']
+        # Some commands, like 'i' or 'a', open a series of edits that need
+        # to be grouped together unless we are gluing a larger sequence
+        # through _nv_process_notation. For example, aFOOBAR<Esc> should be
+        # grouped atomically, but not inside a sequence like
+        # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
+        # instead.
+        if get_glue_until_normal_mode(view) and not is_processing_notation(view):
+            run_window_command('mark_undo_groups_for_gluing')
 
-            args['count'] = 1
+        sequence = get_sequence(view)
+        visual_repeat_data = get_visual_repeat_data(view, get_mode(view))
+        action = get_action(view)
 
-            # Let the action run the motion within its edit object so that we
-            # don't need to worry about grouping edits to the buffer.
-            args['motion'] = motion_cmd
+        add_macro_step(view, action_cmd['action'], action_cmd['action_args'])
 
-            if self.glue_until_normal_mode and not self.processing_notation:
-                run_window_command('mark_undo_groups_for_gluing')
+        run_action(active_window(), action_cmd)
 
-            macros.add_step(self, action_cmd['action'], args)
+        if not (is_processing_notation(view) and get_glue_until_normal_mode(view)) and action.repeatable:
+            set_repeat_data(view, ('vi', sequence, get_mode(view), visual_repeat_data))
 
-            run_window_command(action_cmd['action'], args)
+    if get_mode(view) == INTERNAL_NORMAL:
+        set_mode(view, NORMAL)
 
-            if not self.non_interactive and self.action.repeatable:
-                set_repeat_data(self.view, ('vi', str(self.sequence), self.mode, None))
-
-            self.reset_command_data()
-
-            return  # Nothing more to do.
-
-        if self.motion:
-
-            # Evaluate motion: Run it.
-
-            motion_cmd = self.motion.translate(self)
-
-            _log.debug('motion: %s', motion_cmd)
-
-            macros.add_step(self, motion_cmd['motion'], motion_cmd['motion_args'])
-
-            run_motion(self.view, motion_cmd)
-
-        if self.action:
-
-            # Evaluate action. Run it.
-
-            action_cmd = self.action.translate(self)
-
-            _log.debug('action: %s', action_cmd)
-
-            if self.mode == NORMAL:
-                self.mode = INTERNAL_NORMAL
-
-                if 'mode' in action_cmd['action_args']:
-                    action_cmd['action_args']['mode'] = INTERNAL_NORMAL
-
-            elif is_visual_mode(self.mode):
-                # Special-case exclusion: saving the previous selection would
-                # overwrite the previous selection needed e.g. gv in a VISUAL
-                # mode needs to expand or contract to previous selection.
-                if action_cmd['action'] != '_vi_gv':
-                    save_previous_selection(self.view, self.mode)
-
-            # Some commands, like 'i' or 'a', open a series of edits that need
-            # to be grouped together unless we are gluing a larger sequence
-            # through _nv_process_notation. For example, aFOOBAR<Esc> should be
-            # grouped atomically, but not inside a sequence like
-            # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
-            # instead.
-            if self.glue_until_normal_mode and not self.processing_notation:
-                run_window_command('mark_undo_groups_for_gluing')
-
-            sequence = self.sequence
-            visual_repeat_data = get_visual_repeat_data(self.view, self.mode)
-            action = self.action
-
-            macros.add_step(self, action_cmd['action'], action_cmd['action_args'])
-
-            run_action(active_window(), action_cmd)
-
-            if not (self.processing_notation and self.glue_until_normal_mode) and action.repeatable:
-                set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
-
-        if self.mode == INTERNAL_NORMAL:
-            self.mode = NORMAL
-
-        self.reset_command_data()
+    reset_command_data(view)
 
 
 def init_state(view) -> None:
@@ -543,8 +373,6 @@ def init_state(view) -> None:
         # command that's being built.
         set_reset_during_init(view, True)
         return
-
-    state = State(view)
 
     mode = get_mode(view)
 
@@ -587,4 +415,4 @@ def init_state(view) -> None:
         mode = VISUAL if view.has_non_empty_selection_region() else mode
         view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
 
-    state.reset_command_data()
+    reset_command_data(view)

@@ -19,6 +19,8 @@ import logging
 import traceback
 
 from NeoVintageous.nv import plugin
+from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.vi import keys
@@ -140,7 +142,7 @@ def _seq_to_command(view, seq: str, mode: str):
     return ViMissingCommandDef()
 
 
-def mappings_resolve(state, sequence=None, mode=None, check_user_mappings: bool = True):
+def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_mappings: bool = True):
     # Look at the current global state and return the command mapped to the available sequence.
     #
     # Args:
@@ -162,7 +164,7 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings: bool 
     # We usually need to look at the partial sequence, but some commands do
     # weird things, like ys, which isn't a namespace but behaves as such
     # sometimes.
-    seq = sequence or state.partial_sequence
+    seq = sequence or get_partial_sequence(view)
 
     command = None
 
@@ -173,7 +175,7 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings: bool 
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
 
         # XXX The reason these does not pass the mode, and instead uses the
-        # state.mode, is because implementation of commands like dd are a bit
+        # get_mode(), is because implementation of commands like dd are a bit
         # hacky. For example, the dd definition does is not assigned to operator
         # pending mode, the second d is instead caught by the feed key command
         # and resolved by specifying NORMAL mode explicitly, which resolves the
@@ -182,10 +184,10 @@ def mappings_resolve(state, sequence=None, mode=None, check_user_mappings: bool 
         # let the definition handle any special-cases itself instead of passing
         # off the responsibility to the feed key command.
 
-        command = _seq_to_mapping(state.mode, seq)
+        command = _seq_to_mapping(get_mode(view), seq)
 
     if not command:
-        command = _seq_to_command(state.view, to_bare_command_name(seq), mode or state.mode)
+        command = _seq_to_command(view, to_bare_command_name(seq), mode or get_mode(view))
 
     _log.info('resolved %s mode=%s sequence=%s %s', command, mode, sequence, command.__class__.__mro__)
 

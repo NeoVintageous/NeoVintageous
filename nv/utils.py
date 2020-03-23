@@ -43,6 +43,7 @@ from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
@@ -197,32 +198,6 @@ def show_if_not_visible(view, pt=None) -> None:
         view.show(pt)
 
 
-def scroll_into_view(view, mode: str) -> None:
-    sels = view.sel()
-    if len(sels) < 1:
-        return
-
-    # Show the *last* cursor on screen. There is currently no way to
-    # identify the "active" cursor of a multiple cursor selection.
-    sel = sels[-1]
-
-    target_pt = sel.b
-
-    # In VISUAL mode we need to make sure that any newline at the end of
-    # the selection is NOT included in the target, because otherwise an
-    # extra line after the target line will also be scrolled into view.
-    if is_visual_mode(mode):
-        if sel.b > sel.a:
-            if view.substr(sel.b - 1) == '\n':
-                target_pt = max(0, target_pt - 1)
-                # Use the start point of the target line to avoid
-                # horizontal scrolling. For example, this can happen in
-                # VISUAL LINE mode when the EOL is off-screen.
-                target_pt = max(0, view.line(target_pt).a)
-
-    view.show(target_pt, False)
-
-
 def hide_panel(window) -> None:
     window.run_command('hide_panel', {'cancel': True})
 
@@ -333,14 +308,14 @@ def translate_char(char: str) -> str:
 
 
 @contextmanager
-def gluing_undo_groups(view, state):
-    state.processing_notation = True
+def gluing_undo_groups(view):
+    set_processing_notation(view, True)
     view.run_command('mark_undo_groups_for_gluing')
 
     yield
 
     view.run_command('glue_marked_undo_groups')
-    state.processing_notation = False
+    set_processing_notation(view, False)
 
 
 @contextmanager
@@ -1151,7 +1126,7 @@ def is_linewise_operation(mode: str, motion):
     return False
 
 
-def update_xpos(view):
+def update_xpos(view) -> None:
     try:
         sel = view.sel()[0]
         pos = sel.b

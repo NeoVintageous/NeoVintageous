@@ -209,5 +209,5 @@ class NeoVintageousEvents(EventListener):
                             if len(sel) > 0 and any([not s.empty() for s in sel]):
                                 enter_normal_mode(other_view, get_mode(other_view))
 
-        # Initialise view state.
+        # Initialise view.
         init_state(view)

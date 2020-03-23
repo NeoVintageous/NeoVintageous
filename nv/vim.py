@@ -73,7 +73,7 @@ def mode_to_name(mode: str) -> str:
         return '*UNKNOWN'
 
 
-def reset_status(view, mode: str) -> None:
+def reset_status_line(view, mode: str) -> None:
     view.erase_status('vim-seq')
     if mode == NORMAL:
         view.erase_status('vim-mode')

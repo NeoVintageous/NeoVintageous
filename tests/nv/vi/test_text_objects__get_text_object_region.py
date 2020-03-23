@@ -17,21 +17,10 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.vi.text_objects import get_text_object_region
 
-class Test_i(unittest.FunctionalTestCase):
 
-    def test_i(self):
-        self.eq('fi|zz', 'n_i', 'i_fi|zz')
-        self.assertStatusLineIsInsert()
+class Test_get_text_object_region(unittest.ViewTestCase):
 
-    def test_i_count(self):
-        self.normal('fizz |x')
-        self.feed('3i')
-        self.view.run_command('insert', {'characters': 'buzz'})
-        self.feed('<Esc>')
-        self.assertNormal('fizz buzz|buzzbuzzx')
-
-    def test_s(self):
-        self.eq('fi|zz bu|zz', 's_i', 'i_fizz b|uzz')
-        self.eq('r_fi|zz bu|zz', 's_i', 'i_fi|zz buzz')
-        self.assertStatusLineIsInsert()
+    def test_text_object_does_nothing_and_returns_selection(self):
+        self.assertEqual(get_text_object_region(self.view, '__expected__', 'foobar'), '__expected__')  # type: ignore

@@ -24,6 +24,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
@@ -65,12 +66,12 @@ class Surroundys(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'replacement': self.inp
             }
         }
@@ -83,12 +84,12 @@ class Surroundyss(Surroundys):
         self.motion_required = False
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'motion': {
                     'motion': '_vi_select_text_object',
                     'motion_args': {
@@ -133,12 +134,12 @@ class Surroundds(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ds',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'target': self.inp
             }
         }
@@ -176,12 +177,12 @@ class Surroundcs(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'cs',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'target': self.inp[0],
                 'replacement': self.inp[1:]
             }
