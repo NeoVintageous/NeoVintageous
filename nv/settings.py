@@ -154,6 +154,18 @@ def set_mode(view, value: str) -> None:
     tmp_bc_set_session_view_value(view, 'mode', value)
 
 
+# This setting isn't reset automatically. _enter_normal_mode mode must take care
+# of that so it can repeat the commands issued while in insert mode.
+def get_normal_insert_count(view) -> str:
+    # Count issued to 'i' or 'a', etc. These commands enter insert mode. If
+    # passed a count, they must repeat the commands run while in insert mode.
+    return get_session_view_value(view, 'normal_insert_count', '1')
+
+
+def set_normal_insert_count(view, value: str) -> None:
+    set_session_view_value(view, 'normal_insert_count', value)
+
+
 # TODO [review] This seems to do the same thing as processing_notation.
 # TODO invert function name from is_non_interactive() -> is_interactive()
 def is_non_interactive(view) -> bool:

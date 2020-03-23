@@ -22,6 +22,7 @@ from sublime import active_window
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_must_capture_register_name
@@ -30,6 +31,7 @@ from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
+from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
@@ -112,22 +114,13 @@ class State(object):
     def must_capture_register_name(self, value: bool) -> None:
         set_must_capture_register_name(self.view, value)
 
-    # This property isn't reset automatically. _enter_normal_mode mode must
-    # take care of that so it can repeat the commands issued while in
-    # insert mode.
     @property
     def normal_insert_count(self) -> str:
-        """
-        Count issued to 'i' or 'a', etc.
-
-        These commands enter insert mode. If passed a count, they must repeat
-        the commands run while in insert mode.
-        """
-        return self.settings.vi['normal_insert_count'] or '1'
+        return get_normal_insert_count(self.view)
 
     @normal_insert_count.setter
     def normal_insert_count(self, value: str) -> None:
-        self.settings.vi['normal_insert_count'] = value
+        set_normal_insert_count(self.view, value)
 
     @property
     def sequence(self) -> str:
