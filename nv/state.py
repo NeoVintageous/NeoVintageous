@@ -24,7 +24,6 @@ from NeoVintageous.nv import plugin
 from NeoVintageous.nv.macros import add_macro_step
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_view_value
-from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
@@ -363,10 +362,6 @@ class State():
     @mode.setter  # DEPRECATED
     def mode(self, value: str) -> None:
         set_mode(self.view, value)
-
-    @property  # DEPRECATED
-    def count(self) -> int:
-        return get_count(self.view, default=1)
 
 
 def init_state(view) -> None:

@@ -19,6 +19,7 @@ from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.commands import _nv_feed_key
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_char_search
@@ -140,7 +141,7 @@ class TestStateCounts(unittest.ViewTestCase):
 
     def test_can_retrieve_good_action_count(self):
         set_action_count(self.view, '10')
-        self.assertEqual(self.state.count, 10)
+        self.assertEqual(get_count(self.view), 10)
 
     def test_fails_if_bad_action_count(self):
         def set_count():
@@ -154,7 +155,7 @@ class TestStateCounts(unittest.ViewTestCase):
 
     def test_count_is_never_less_than1(self):
         set_motion_count(self.view, '0')
-        self.assertEqual(self.state.count, 1)
+        self.assertEqual(get_count(self.view), 1)
 
         def set_count():
             set_motion_count(self.view, '-1')
@@ -163,12 +164,12 @@ class TestStateCounts(unittest.ViewTestCase):
 
     def test_can_retrieve_good_motion_count(self):
         set_motion_count(self.view, '10')
-        self.assertEqual(self.state.count, 10)
+        self.assertEqual(get_count(self.view), 10)
 
     def test_can_retrieve_good_combined_count(self):
         set_motion_count(self.view, '10')
         set_action_count(self.view, '10')
-        self.assertEqual(self.state.count, 100)
+        self.assertEqual(get_count(self.view), 100)
 
 
 class TestStateRunnability(unittest.ViewTestCase):

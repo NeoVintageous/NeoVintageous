@@ -18,6 +18,7 @@
 # A port of https://github.com/terryma/vim-multiple-cursors.
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import ACTION_MODES
@@ -58,7 +59,7 @@ class MultipleCursorsExit(ViOperatorDef):
             'action': '_vi_select_big_j',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count
+                'count': get_count(state.view)
             }
         }
 
@@ -76,7 +77,7 @@ class MultipleCursorsAdd(ViOperatorDef):
             'action': '_vi_select_j',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count
+                'count': get_count(state.view)
             }
         }
 
@@ -94,7 +95,7 @@ class MultipleCursorsRemove(ViOperatorDef):
             'action': '_vi_select_k',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count
+                'count': get_count(state.view)
             }
         }
 

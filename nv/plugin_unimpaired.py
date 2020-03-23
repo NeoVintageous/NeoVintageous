@@ -25,6 +25,7 @@ from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_rfind
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import set_selection
@@ -49,7 +50,7 @@ class UnimpairedContextPrevious(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'context_previous'
             }
         }
@@ -62,7 +63,7 @@ class UnimpairedContextNext(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'context_next'
             }
         }
@@ -80,7 +81,7 @@ class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'goto_prev_conflict_marker'
             }
         }
@@ -98,7 +99,7 @@ class UnimpairedGotoNextConflictMarker(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'goto_next_conflict_marker'
             }
         }
@@ -111,7 +112,7 @@ class UnimpairedBlankUp(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'blank_up'
             }
         }
@@ -124,7 +125,7 @@ class UnimpairedBlankDown(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'blank_down'
             }
         }
@@ -137,7 +138,7 @@ class UnimpairedBprevious(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'bprevious'
             }
         }
@@ -150,7 +151,7 @@ class UnimpairedBnext(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'bnext'
             }
         }
@@ -163,7 +164,7 @@ class UnimpairedBfirst(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'bfirst'
             }
         }
@@ -176,7 +177,7 @@ class UnimpairedBlast(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'blast'
             }
         }
@@ -189,7 +190,7 @@ class UnimpairedMoveUp(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'move_up'
             }
         }
@@ -202,7 +203,7 @@ class UnimpairedMoveDown(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'move_down'
             }
         }
@@ -215,7 +216,7 @@ class UnimpairedTabprevious(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'tabprevious'
             }
         }
@@ -228,7 +229,7 @@ class UnimpairedTabnext(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'tabnext'
             }
         }
@@ -241,7 +242,7 @@ class UnimpairedTabfirst(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'tabfirst'
             }
         }
@@ -254,7 +255,7 @@ class UnimpairedTablast(ViOperatorDef):
             'action': '_nv_unimpaired',
             'action_args': {
                 'mode': state.mode,
-                'count': state.count,
+                'count': get_count(state.view),
                 'action': 'tablast'
             }
         }

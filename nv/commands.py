@@ -77,6 +77,7 @@ from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
@@ -3244,9 +3245,7 @@ class _vi_slash(TextCommand):
         evaluate_state(state, self.view)
 
     def on_change(self, pattern: str):
-        state = State(self.view)
-        count = state.count
-
+        count = get_count(self.view)
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
         start = get_insertion_point_at_b(sel) + 1
@@ -4371,9 +4370,7 @@ class _vi_question_mark(TextCommand):
         evaluate_state(state, self.view)
 
     def on_change(self, pattern: str):
-        state = State(self.view)
-        count = state.count
-
+        count = get_count(self.view)
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
         start = 0

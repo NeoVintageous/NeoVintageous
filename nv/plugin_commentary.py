@@ -21,6 +21,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
@@ -58,7 +59,7 @@ class CommentaryMotion(ViOperatorDef):
             'action_args': {
                 'action': 'c',
                 'mode': state.mode,
-                'count': state.count
+                'count': get_count(state.view)
             }
         }
 
@@ -77,7 +78,7 @@ class CommentaryLines(ViOperatorDef):
             'action_args': {
                 'action': 'cc',
                 'mode': state.mode,
-                'count': state.count
+                'count': get_count(state.view)
             }
         }
 
@@ -99,7 +100,7 @@ class CommentaryBlock(ViOperatorDef):
             'action_args': {
                 'action': 'C',
                 'mode': state.mode,
-                'count': state.count
+                'count': get_count(state.view)
             }
         }
 
