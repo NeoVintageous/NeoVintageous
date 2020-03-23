@@ -769,11 +769,15 @@ class FunctionalTestCase(ViewTestCase):
         #
         # The seq can be prefixed to specify a mode:
         #
-        #   * n_ - Normal
-        #   * i_ - Insert
-        #   * v_ - Visual
-        #   * V_ - Visual line
-        #   * b_ - Visual block
+        # * n_ - Normal
+        # * i_ - Insert
+        # * v_ - Visual
+        # * V_ - Visual line
+        # * b_ - Visual block
+        # * s_ - Select
+        # * R_ - Replace
+        # * :<','> - Visual Command-line
+        # * N_ - Internal Normal
         #
         # The default mode is Internal Normal.
         #
@@ -1048,7 +1052,7 @@ def mock_bell():
     Usage:
 
     @unittest.mock_bell()
-    def test_name(self):
+    def test(self):
         self.assertBell()
         self.assertBell('status message')
         self.assertBellCount(2)
@@ -1104,7 +1108,7 @@ def mock_hide_panel():
     Usage:
 
     @unitest.mock_hide_panel()
-    def test_hide_panel(self):
+    def test(self):
         pass
 
     """
@@ -1124,7 +1128,7 @@ def mock_status_message():
     Usage:
 
     @unitest.mock_status_message()
-    def test_status_message(self):
+    def test(self):
         self.assertStatusMessage('msg')
         self.assertStatusMessage('msg', count=3)
         self.assertStatusMessageCount(5)
@@ -1167,7 +1171,7 @@ def mock_mappings(*mappings):
         (unittest.NORMAL, ',l', '3l'),
         (unittest.VISUAL, ',l', '3l'),
     )
-    def test_name(self):
+    def test(self):
         pass
 
     """
@@ -1194,15 +1198,15 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
     Usage:
 
     @unitest.mock_ui()
-    def test_name(self):
+    def test(self):
         pass
 
     @unitest.mock_ui(screen_rows=10)
-    def test_name(self):
+    def test(self):
         pass
 
     @unitest.mock_ui(visible_region=(2, 7))
-    def test_name(self):
+    def test(self):
         pass
 
     """
@@ -1270,7 +1274,7 @@ def mock_run_commands(*methods):
     Usage:
 
     @unitest.mock_run_commands('redo', 'hide_panel')
-    def test_name(self):
+    def test(self):
         self.assertRunCommand('redo')
         self.assertRunCommand('redo', count=3)
         self.assertRunCommand('hide_panel', {'cancel': True})

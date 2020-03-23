@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.vi.text_objects import find_sentences_forward
 
 
-class TestFindSentencesForward(unittest.ViewTestCase):
+class Test_find_sentences_forward(unittest.ViewTestCase):
 
     def test_find_sentences_forward_empty(self):
         self.normal('|')

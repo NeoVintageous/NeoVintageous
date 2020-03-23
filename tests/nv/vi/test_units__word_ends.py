@@ -48,7 +48,7 @@ TESTS_BIG = (
 )
 
 
-class Test_WordEnds(unittest.ViewTestCase):
+class Test_word_ends(unittest.ViewTestCase):
 
     def test_word_ends(self):
         for (i, data) in enumerate(TESTS):
