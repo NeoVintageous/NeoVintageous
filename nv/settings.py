@@ -24,8 +24,6 @@ from NeoVintageous.nv.session import get_session_value
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.session import set_session_view_value
-from NeoVintageous.nv.session import tmp_bc_get_session_view_value
-from NeoVintageous.nv.session import tmp_bc_set_session_view_value
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import UNKNOWN
 
@@ -147,11 +145,11 @@ def get_mode(view) -> str:
     # State of current mode. It isn't guaranteed that the underlying view's
     # .sel() will be in a consistent state (for example, that it will at least
     # have one non- empty region in visual mode.
-    return tmp_bc_get_session_view_value(view, 'mode', UNKNOWN)
+    return get_session_view_value(view, 'mode', UNKNOWN)
 
 
 def set_mode(view, value: str) -> None:
-    tmp_bc_set_session_view_value(view, 'mode', value)
+    set_session_view_value(view, 'mode', value)
 
 
 # This setting isn't reset automatically. _enter_normal_mode mode must take care
