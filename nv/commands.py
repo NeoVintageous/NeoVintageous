@@ -110,9 +110,10 @@ from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import State
-from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import must_collect_input
+from NeoVintageous.nv.state import reset_command_data
+from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
@@ -531,7 +532,7 @@ class _nv_feed_key(WindowCommand):
                 self.view.run_command('_vi_select_big_j', {'mode': mode})
             else:
                 enter_normal_mode(self.window, mode)
-                state.reset_command_data()
+                reset_command_data(self.view)
             return
 
         set_sequence(self.view, get_sequence(self.view) + key)
@@ -561,7 +562,7 @@ class _nv_feed_key(WindowCommand):
 
             if state.runnable() and do_eval:
                 state.eval()
-                state.reset_command_data()
+                reset_command_data(self.view)
 
             return
 
@@ -608,7 +609,7 @@ class _nv_feed_key(WindowCommand):
                 reg = get_register(self.view)
                 acount = get_action_count(self.view)
                 mcount = get_motion_count(self.view)
-                state.reset_command_data()
+                reset_command_data(self.view)
                 set_register(self.view, reg)
                 set_motion_count(self.view, mcount)
                 set_action_count(self.view, acount)
@@ -755,7 +756,7 @@ class _nv_feed_key(WindowCommand):
             if state.mode == OPERATOR_PENDING:
                 state.mode = NORMAL
 
-            state.reset_command_data()
+            reset_command_data(self.view)
             ui_bell()
 
             return True
@@ -798,7 +799,7 @@ class _nv_process_notation(WindowCommand):
             if state.action:
                 # The last key press has caused an action to be primed. That
                 # means there are  no more leading motions. Break out of here.
-                state.reset_command_data()
+                reset_command_data(self.view)
                 if state.mode == OPERATOR_PENDING:
                     state.mode = NORMAL
 
@@ -808,7 +809,7 @@ class _nv_process_notation(WindowCommand):
                 # Run any primed motion.
                 leading_motions += get_sequence(self.view)
                 state.eval()
-                state.reset_command_data()
+                reset_command_data(self.view)
 
             else:
                 state.eval()
@@ -869,7 +870,7 @@ class _nv_process_notation(WindowCommand):
             motion_data = state.motion.translate(state) or None
 
             if motion_data is None:
-                state.reset_command_data()
+                reset_command_data(self.view)
                 ui_bell()
                 return
 
@@ -1544,7 +1545,7 @@ class _enter_replace_mode(TextCommand):
         state.mode = REPLACE
         regions_transformer(self.view, f)
         update_status_line(self.view)
-        state.reset_command_data()
+        reset_command_data(self.view)
 
 
 class _vi_dot(WindowCommand):
@@ -1552,7 +1553,7 @@ class _vi_dot(WindowCommand):
     def run(self, mode=None, count=None, repeat_data=None):
         self.view = self.window.active_view()
         state = State(self.view)
-        state.reset_command_data()
+        reset_command_data(self.view)
 
         if state.mode == INTERNAL_NORMAL:
             state.mode = NORMAL
@@ -3062,7 +3063,7 @@ class _vi_g_big_h(WindowCommand):
             return
 
         ui_bell('no available search matches')
-        state.reset_command_data()
+        reset_command_data(self.view)
 
 
 class _vi_ctrl_x_ctrl_l(TextCommand):
@@ -3096,9 +3097,8 @@ class _vi_ctrl_x_ctrl_l(TextCommand):
         self._matches = self.find_matches(prefix, end=self.view.line(s.b).a)
         if self._matches:
             self.show_matches(self._matches)
-            state = State(self.view)
             set_reset_during_init(self.view, False)
-            state.reset_command_data()
+            reset_command_data(self.view)
             return
 
         ui_bell()
@@ -3272,8 +3272,7 @@ class _vi_slash(TextCommand):
 
     def on_cancel(self):
         clear_search_highlighting(self.view)
-        state = State(self.view)
-        state.reset_command_data()
+        reset_command_data(self.view)
         _nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 
@@ -4400,8 +4399,7 @@ class _vi_question_mark(TextCommand):
 
     def on_cancel(self):
         clear_search_highlighting(self.view)
-        state = State(self.view)
-        state.reset_command_data()
+        reset_command_data(self.view)
         _nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 

@@ -37,6 +37,7 @@ from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.state import _must_scroll_into_view
+from NeoVintageous.nv.state import reset_command_data
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 
@@ -117,7 +118,7 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.state.register = 'a'
         self.state.must_capture_register_name = True
 
-        self.state.reset_command_data()
+        reset_command_data(self.view)
 
         self.assertEqual(self.state.action, None)
         self.assertEqual(self.state.motion, None)

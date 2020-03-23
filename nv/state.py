@@ -178,6 +178,33 @@ def set_motion(view, value) -> None:
     set_session_view_value(view, 'motion', serialized)
 
 
+def reset_command_data(view) -> None:
+    # Resets all temp data needed to build a command or partial command.
+    motion = get_motion(view)
+    action = get_action(view)
+
+    if _must_update_xpos(motion, action):
+        update_xpos(view)
+
+    if _must_scroll_into_view(motion, action):
+        # Intentionally using the active view because the previous command
+        # may have switched views and view would be the previous one.
+        active_view = active_window().active_view()
+        _scroll_into_view(active_view, get_mode(active_view))
+
+    action and action.reset()
+    set_action(view, None)
+    motion and motion.reset()
+    set_motion(view, None)
+    set_action_count(view, '')
+    set_motion_count(view, '')
+    set_sequence(view, '')
+    set_partial_sequence(view, '')
+    set_register(view, '"')
+    set_must_capture_register_name(view, False)
+    reset_status_line(view, get_mode(view))
+
+
 class State(object):
 
     def __init__(self, view):
@@ -216,32 +243,6 @@ class State(object):
     def count_default_zero(self) -> int:
         # TODO Refactor: method was required because count() defaults to 1
         return get_count(self.view, default=0)
-
-    def reset_command_data(self) -> None:
-        # Resets all temp data needed to build a command or partial command.
-        motion = get_motion(self.view)
-        action = get_action(self.view)
-
-        if _must_update_xpos(motion, action):
-            update_xpos(self.view)
-
-        if _must_scroll_into_view(motion, action):
-            # Intentionally using the active view because the previous command
-            # may have switched views and self.view would be the previous one.
-            active_view = active_window().active_view()
-            _scroll_into_view(active_view, get_mode(active_view))
-
-        action and action.reset()
-        set_action(self.view, None)
-        motion and motion.reset()
-        set_motion(self.view, None)
-        set_action_count(self.view, '')
-        set_motion_count(self.view, '')
-        set_sequence(self.view, '')
-        set_partial_sequence(self.view, '')
-        set_register(self.view, '"')
-        set_must_capture_register_name(self.view, False)
-        reset_status_line(self.view, get_mode(self.view))
 
     def runnable(self) -> bool:
         # Returns:
@@ -322,7 +323,7 @@ class State(object):
             if not is_non_interactive(self.view) and self.action.repeatable:
                 set_repeat_data(self.view, ('vi', str(get_sequence(self.view)), self.mode, None))
 
-            self.reset_command_data()
+            reset_command_data(self.view)
 
             return  # Nothing more to do.
 
@@ -382,7 +383,7 @@ class State(object):
         if self.mode == INTERNAL_NORMAL:
             self.mode = NORMAL
 
-        self.reset_command_data()
+        reset_command_data(self.view)
 
 
 def init_state(view) -> None:
@@ -408,8 +409,6 @@ def init_state(view) -> None:
         # command that's being built.
         set_reset_during_init(view, True)
         return
-
-    state = State(view)
 
     mode = get_mode(view)
 
@@ -452,4 +451,4 @@ def init_state(view) -> None:
         mode = VISUAL if view.has_non_empty_selection_region() else mode
         view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
 
-    state.reset_command_data()
+    reset_command_data(view)
