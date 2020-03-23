@@ -294,6 +294,12 @@ class ViewTestCase(unittest.TestCase):
 
         _set_mode(self.view, mode)
 
+    def setNormalMode(self):
+        _set_mode(self.view, NORMAL)
+
+    def setVisualMode(self):
+        _set_mode(self.view, VISUAL)
+
     def insert(self, text: str) -> None:
         self._setupView(text, INSERT)
 
@@ -367,6 +373,20 @@ class ViewTestCase(unittest.TestCase):
     def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
         self.assertEqual(_mappings[mode][lhs], rhs)
+
+    def assertMappings(self, expected: dict) -> None:
+        self.assertEqual(_mappings, expected)
+
+    def assertMappingsEmpty(self) -> None:
+        self.assertEqual(_mappings, {
+            INSERT: {},
+            NORMAL: {},
+            OPERATOR_PENDING: {},
+            SELECT: {},
+            VISUAL_BLOCK: {},
+            VISUAL_LINE: {},
+            VISUAL: {},
+        })
 
     def assertNotMapping(self, lhs: str, mode: int = None) -> None:
         if mode is None:
@@ -1167,10 +1187,7 @@ def mock_mappings(*mappings):
 
     Usage:
 
-    @unittest.mock_mappings(
-        (unittest.NORMAL, ',l', '3l'),
-        (unittest.VISUAL, ',l', '3l'),
-    )
+    @unittest.mock_mappings((unittest.NORMAL, ',l', '3l'), (unittest.VISUAL, ',l', '3l'))
     def test(self):
         pass
 

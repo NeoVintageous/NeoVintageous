@@ -7,9 +7,9 @@
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# neovintageous is distributed in the hope that it will be useful,
-# but without any warranty; without even the implied warranty of
-# merchantability or fitness for a particular purpose.  See the
+# NeoVintageous is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -454,6 +454,48 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.assertRegister('0y')
         self.register('1y')
         self.assertRegister('1y')
+
+    @unittest.mock_mappings()
+    def test_mock_mappings_default(self):
+        self.assertMappingsEmpty()
+
+    @unittest.mock_mappings(
+        (unittest.INSERT, 'A', 'B'),
+        (unittest.NORMAL, 'C', 'D'),
+        (unittest.NORMAL, 'C2', 'D2'),
+        (unittest.NORMAL, 'C3', 'D3'),
+        (unittest.NORMAL, 'A', 'B'),
+        (unittest.OPERATOR_PENDING, 'E', 'F'),
+        (unittest.SELECT, 'G', 'H'),
+        (unittest.VISUAL_BLOCK, 'I', 'J'),
+        (unittest.VISUAL_BLOCK, 'I2', 'J2'),
+        (unittest.VISUAL_BLOCK, 'K', 'L'),
+        (unittest.VISUAL_LINE, 'K', 'L'),
+        (unittest.VISUAL, 'M', 'N'),
+    )
+    def test_mock_mappings(self):
+        self.assertMappings({
+            unittest.INSERT: {'A': 'B'},
+            unittest.NORMAL: {
+                'C': 'D',
+                'C2': 'D2',
+                'C3': 'D3',
+                'A': 'B',
+            },
+            unittest.OPERATOR_PENDING: {'E': 'F'},
+            unittest.SELECT: {'G': 'H'},
+            unittest.VISUAL_BLOCK: {
+                'I': 'J',
+                'I2': 'J2',
+                'K': 'L',
+            },
+            unittest.VISUAL_LINE: {'K': 'L'},
+            unittest.VISUAL: {'M': 'N'},
+        })
+
+        self.assertMapping(unittest.NORMAL, 'C2', 'D2')
+        self.assertNotMapping('foo')
+        self.assertNotMapping('foo', unittest.NORMAL)
 
 
 class FunctionalTestCaseStub(unittest.FunctionalTestCase):

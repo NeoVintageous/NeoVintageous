@@ -27,6 +27,7 @@ from NeoVintageous.nv.mappings import VISUAL_BLOCK
 from NeoVintageous.nv.mappings import VISUAL_LINE
 from NeoVintageous.nv.mappings import _find_full_match
 from NeoVintageous.nv.mappings import _find_partial_matches
+from NeoVintageous.nv.mappings import _seq_to_command
 from NeoVintageous.nv.mappings import _seq_to_mapping
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_clear
@@ -34,18 +35,11 @@ from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.plugin_commentary import CommentaryLines
+from NeoVintageous.nv.plugin_surround import SurroundS
+from NeoVintageous.nv.plugin_unimpaired import UnimpairedBlankDown
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_defs import ViMoveByWords
-
-
-# We need to patch the mappings storage dictionary so that out tests don't mess
-# up our userland mappings, which would obviously be bad.
-from NeoVintageous.nv.mappings import _mappings as _mappings_struct_
-
-
-# Reusable mappings test patcher (also passes a clean mappings structure to tests).
-_patch_mappings = unittest.mock.patch('NeoVintageous.nv.mappings._mappings',
-                                      new_callable=lambda: {k: {} for k in _mappings_struct_})
+from NeoVintageous.nv.vi.cmd_defs import ViSubstituteByLines
 
 
 class TestMapping(unittest.TestCase):
@@ -61,68 +55,22 @@ class TestMapping(unittest.TestCase):
         self.assertEqual(mapping.rhs, '')
 
 
-class TestMappings(unittest.TestCase):
+class TestMappings(unittest.ViewTestCase):
 
-    @_patch_mappings
-    def test_defaults(self, _mappings):
-        self.assertEquals(_mappings, {
-            INSERT: {},
-            NORMAL: {},
-            OPERATOR_PENDING: {},
-            SELECT: {},
-            VISUAL_BLOCK: {},
-            VISUAL_LINE: {},
-            VISUAL: {},
-        })
+    @unittest.mock_mappings()
+    def test_add_raises_exception(self):
+        for mode in ('unknownmode', 0, '', True, False):
+            with self.assertRaises(KeyError):
+                mappings_add(mode, 'x', 'y')
+        self.assertMappingsEmpty()
 
-    @_patch_mappings
-    def test_can_add(self, _mappings):
-        mappings_add(unittest.INSERT, 'A', 'B')
-        mappings_add(unittest.NORMAL, 'C', 'D')
-        mappings_add(unittest.NORMAL, 'C2', 'D2')
-        mappings_add(unittest.NORMAL, 'C3', 'D3')
-        mappings_add(unittest.NORMAL, 'A', 'B')
-        mappings_add(unittest.OPERATOR_PENDING, 'E', 'F')
-        mappings_add(unittest.SELECT, 'G', 'H')
-        mappings_add(unittest.VISUAL_BLOCK, 'I', 'J')
-        mappings_add(unittest.VISUAL_BLOCK, 'I2', 'J2')
-        mappings_add(unittest.VISUAL_BLOCK, 'K', 'L')
-        mappings_add(unittest.VISUAL_LINE, 'K', 'L')
-        mappings_add(unittest.VISUAL, 'M', 'N')
+    @unittest.mock_mappings()
+    def test_add(self):
+        mappings_add(unittest.INSERT, 'a', 'b')
+        self.assertMapping(unittest.INSERT, 'a', 'b')
 
-        self.assertEquals(_mappings, {
-            INSERT: {'A': 'B'},
-            NORMAL: {
-                'C': 'D',
-                'C2': 'D2',
-                'C3': 'D3',
-                'A': 'B',
-            },
-            OPERATOR_PENDING: {'E': 'F'},
-            SELECT: {'G': 'H'},
-            VISUAL_BLOCK: {
-                'I': 'J',
-                'I2': 'J2',
-                'K': 'L',
-            },
-            VISUAL_LINE: {'K': 'L'},
-            VISUAL: {'M': 'N'},
-        })
-
-    @_patch_mappings
-    def test_add_raises_exception(self, _mappings):
-        expected = _mappings.copy()
-
-        with self.assertRaises(KeyError):
-            mappings_add('foobar', 'X', 'Y')
-
-        self.assertEqual(_mappings, expected)
-
-        # Should not raise exception (protect against false positive).
-        mappings_add(unittest.INSERT, 'A', 'B')
-
-    @_patch_mappings
-    def test_can_remove(self, _mappings):
+    @unittest.mock_mappings()
+    def test_remove(self):
         mappings_add(unittest.INSERT, 'A', 'B')
         mappings_add(unittest.INSERT, 'C', 'D')
         mappings_add(unittest.INSERT, 'E', 'F')
@@ -131,8 +79,7 @@ class TestMappings(unittest.TestCase):
         mappings_add(unittest.NORMAL, 'E', 'F')
         mappings_remove(unittest.INSERT, 'C')
         mappings_remove(unittest.NORMAL, 'E')
-
-        self.assertEquals(_mappings, {
+        self.assertMappings({
             INSERT: {
                 'A': 'B',
                 'E': 'F',
@@ -148,10 +95,8 @@ class TestMappings(unittest.TestCase):
             VISUAL: {},
         })
 
-    @_patch_mappings
-    def test_remove_raises_exception(self, _mappings):
-        expected = _mappings.copy()
-
+    @unittest.mock_mappings()
+    def test_remove_raises_exception(self):
         with self.assertRaises(KeyError, msg='mapping not found'):
             mappings_remove('foobar', 'foobar')
 
@@ -165,63 +110,54 @@ class TestMappings(unittest.TestCase):
 
         # Should not raise exception (protect against false positive).
         mappings_remove(unittest.INSERT, 'X')
+        self.assertMappingsEmpty()
 
-        self.assertEqual(_mappings, expected)
-
-    @_patch_mappings
+    @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': '\\'})
     @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
-    def test_add_expands_keys(self, _mappings):
+    def test_add_expands_keys(self):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousTestX<CR>')
+        self.assertMapping(unittest.NORMAL, '\\d', ':NeovintageousTestX<CR>')
 
-        self.assertEqual(_mappings[unittest.NORMAL], {
-            '\\d': ':NeovintageousTestX<CR>'
-        })
-
-    @_patch_mappings
+    @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': ','})
     @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
-    def test_add_normalises_mapping(self, _mappings):
+    def test_add_normalises_mapping(self):
         mappings_add(NORMAL, '<Space>', 'a')
         mappings_add(VISUAL, '<SPACE>', 'v')
         mappings_add(VISUAL_LINE, '<Leader><Space>', 'b')
         mappings_add(VISUAL_BLOCK, '<LeaDeR><SpAcE><c-w><C-w><c-s-b><c-s-B>', 'c')
-        self.assertEqual(_mappings[unittest.NORMAL], {'<space>': 'a'})
-        self.assertEqual(_mappings[unittest.VISUAL], {'<space>': 'v'})
-        self.assertEqual(_mappings[unittest.VISUAL_LINE], {',<space>': 'b'})
-        self.assertEqual(_mappings[unittest.VISUAL_BLOCK], {',<space><C-w><C-w><C-S-b><C-S-B>': 'c'})
+        self.assertMapping(unittest.NORMAL, '<space>', 'a')
+        self.assertMapping(unittest.VISUAL, '<space>', 'v')
+        self.assertMapping(unittest.VISUAL_LINE, ',<space>', 'b')
+        self.assertMapping(unittest.VISUAL_BLOCK, ',<space><C-w><C-w><C-S-b><C-S-B>', 'c')
 
-    @_patch_mappings
+    @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': '\\'})
     @unittest.mock.patch('NeoVintageous.nv.variables._variables', {})
-    def test_can_remove_expanded_keys(self, _mappings):
+    def test_can_remove_expanded_keys(self):
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousTestX<CR>')
         mappings_remove(unittest.NORMAL, '\\d')
-
-        self.assertEqual(_mappings[unittest.NORMAL], {})
-
+        self.assertMappingsEmpty()
         mappings_add(unittest.NORMAL, '<leader>d', ':NeovintageousTestX<CR>')
         mappings_remove(unittest.NORMAL, '<leader>d')
+        self.assertMappingsEmpty()
 
-        self.assertEqual(_mappings[unittest.NORMAL], {})
-
-    @_patch_mappings
+    @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.variables._defaults', {'mapleader': ','})
-    def test_can_remove_normalised_mapping(self, _mappings):
-
+    def test_can_remove_normalised_mapping(self):
         for seq in ('<Space>', '<SPACE>', '<Space>', '<SpAcE>'):
             mappings_add(NORMAL, '<Space>', 'a')
-            self.assertNotEqual(_mappings[unittest.NORMAL], {})
+            self.assertMapping(NORMAL, '<space>', 'a')
             mappings_remove(NORMAL, seq)
-            self.assertEqual(_mappings[unittest.NORMAL], {})
+            self.assertMappingsEmpty()
 
         mappings_add(NORMAL, '<Space><C-w><C-M-b><C-M-B>', 'a')
-        self.assertNotEqual(_mappings[unittest.NORMAL], {})
         mappings_remove(NORMAL, '<SpAcE><c-w><c-m-b><c-m-B>')
-        self.assertEqual(_mappings[unittest.NORMAL], {})
+        self.assertMappingsEmpty()
 
-    @_patch_mappings
-    def test_can_clear(self, _mappings):
+    @unittest.mock_mappings()
+    def test_can_clear(self):
         mappings_add(unittest.NORMAL, 'X', 'Y')
         mappings_add(unittest.INSERT, 'X', 'Y')
         mappings_add(unittest.NORMAL, 'X', 'Y')
@@ -231,19 +167,10 @@ class TestMappings(unittest.TestCase):
         mappings_add(unittest.VISUAL_LINE, 'X', 'Y')
         mappings_add(unittest.VISUAL, 'X', 'Y')
         mappings_clear()
+        self.assertMappingsEmpty()
 
-        self.assertEquals(_mappings, {
-            INSERT: {},
-            NORMAL: {},
-            OPERATOR_PENDING: {},
-            SELECT: {},
-            VISUAL_BLOCK: {},
-            VISUAL_LINE: {},
-            VISUAL: {},
-        })
-
-    @_patch_mappings
-    def test_seq_to_mapping(self, _mappings):
+    @unittest.mock_mappings()
+    def test_seq_to_mapping(self):
         mappings_add(unittest.NORMAL, 'G', 'G_')
         mapping = _seq_to_mapping(unittest.NORMAL, 'G')
 
@@ -258,14 +185,14 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(mapping.rhs, 'daw')
         self.assertEqual(mapping.lhs, '<C-m>')
 
-    @_patch_mappings
-    def test_seq_to_mapping_returns_none_when_not_found(self, _mappings):
+    @unittest.mock_mappings()
+    def test_seq_to_mapping_returns_none_when_not_found(self):
         self.assertIsNone(_seq_to_mapping(unittest.NORMAL, ''))
         self.assertIsNone(_seq_to_mapping(unittest.NORMAL, 'G'))
         self.assertIsNone(_seq_to_mapping(unittest.NORMAL, 'foobar'))
 
-    @_patch_mappings
-    def test_find_partial_match(self, _mappings):
+    @unittest.mock_mappings()
+    def test_find_partial_match(self):
         self.assertEqual(_find_partial_matches(unittest.NORMAL, ''), [])
         self.assertEqual(_find_partial_matches(unittest.NORMAL, 'foobar'), [])
 
@@ -293,8 +220,8 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'yd')), ['yd'])
         self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'x')), ['x'])
 
-    @_patch_mappings
-    def test_find_full_match(self, _mappings):
+    @unittest.mock_mappings()
+    def test_find_full_match(self):
         self.assertEqual(_find_full_match(unittest.NORMAL, ''), None)
         self.assertEqual(_find_full_match(unittest.NORMAL, 'foobar'), None)
 
@@ -326,33 +253,28 @@ class TestMappings(unittest.TestCase):
         self.assertEqual(_find_full_match(unittest.NORMAL, 'bb'), None)
         self.assertEqual(_find_full_match(unittest.NORMAL, 'bbb'), 'cde')
 
-    @_patch_mappings
-    def test_is_incomplete(self, _mappings):
+    @unittest.mock_mappings()
+    def test_is_incomplete(self):
         self.assertFalse(mappings_is_incomplete(NORMAL, 'f'))
-
         mappings_add(unittest.NORMAL, 'aa', 'y')
         self.assertEqual(mappings_is_incomplete(unittest.NORMAL, 'a'), True)
-
         mappings_add(unittest.NORMAL, 'b', 'y')
         self.assertFalse(mappings_is_incomplete(unittest.NORMAL, 'b'))
-
         mappings_add(unittest.NORMAL, 'c', 'y')
         mappings_add(unittest.NORMAL, 'cc', 'y')
         self.assertFalse(mappings_is_incomplete(unittest.NORMAL, 'c'))
-
         mappings_add(unittest.NORMAL, 'd', 'y')
         mappings_add(unittest.NORMAL, 'ddd', 'y')
         self.assertEquals(mappings_is_incomplete(unittest.NORMAL, 'dd'), True)
-
         self.assertFalse(mappings_is_incomplete(NORMAL, 'f'))
 
 
 class TestResolve(unittest.ViewTestCase):
 
-    @_patch_mappings
+    @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.mappings.get_partial_sequence')
     @unittest.mock.patch('NeoVintageous.nv.mappings.get_mode')
-    def test_resolve(self, get_mode, get_partial_sequence, _mappings):
+    def test_resolve(self, get_mode, get_partial_sequence):
         get_mode.return_value = NORMAL
         get_partial_sequence.return_value = None
 
@@ -367,3 +289,103 @@ class TestResolve(unittest.ViewTestCase):
         expected = Mapping('lhs', 'rhs')
         self.assertEqual(actual.rhs, expected.rhs)
         self.assertEqual(actual.lhs, expected.lhs)
+
+    @unittest.mock_mappings()
+    def test_can_resolve_core_mapping(self):
+        self.setNormalMode()
+        self.assertIsInstance(mappings_resolve(self.view, 'w', unittest.NORMAL, True), ViMoveByWords)
+        self.assertIsInstance(mappings_resolve(self.view, 'w', unittest.NORMAL, False), ViMoveByWords)
+
+    @unittest.mock_mappings()
+    def test_can_resolve_user_mapping(self):
+        self.setNormalMode()
+        mappings_add(NORMAL, 'w', 'b')
+        mapping = mappings_resolve(self.view, 'w', unittest.NORMAL, True)
+        self.assertIsInstance(mapping, Mapping)
+        self.assertEqual((mapping.lhs, mapping.rhs), ('w', 'b'))
+        self.assertIsInstance(mappings_resolve(self.view, 'w', unittest.NORMAL, False), ViMoveByWords)
+
+    @unittest.mock_mappings()
+    def test_resolve_missing_command(self):
+        self.setNormalMode()
+        for mode in (NORMAL, VISUAL, OPERATOR_PENDING, 'unknownmode'):
+            self.assertIsInstance(mappings_resolve(self.view, 'foobar', mode), ViMissingCommandDef)
+
+    @unittest.mock_mappings()
+    def test_resolve_plugin(self):
+        self.setNormalMode()
+        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommentaryLines)
+        self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), UnimpairedBlankDown)
+        self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
+        self.setVisualMode()
+        self.assertIsInstance(mappings_resolve(self.view, 'S', VISUAL), SurroundS)
+
+    @unittest.mock_mappings()
+    def test_resolve_plugin_disabled(self):
+        self.setNormalMode()
+        self.set_setting('enable_commentary', False)
+        self.set_setting('enable_unimpaired', False)
+        self.set_setting('enable_surround', False)
+        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), ViMissingCommandDef)
+        self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), ViMissingCommandDef)
+        self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
+        self.setVisualMode()
+        self.assertIsInstance(mappings_resolve(self.view, 'S', VISUAL), ViSubstituteByLines)
+        self.set_setting('enable_commentary', True)
+        self.set_setting('enable_unimpaired', True)
+        self.set_setting('enable_surround', True)
+        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommentaryLines)
+        self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), UnimpairedBlankDown)
+        self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
+        self.setVisualMode()
+        self.assertIsInstance(mappings_resolve(self.view, 'S', VISUAL), SurroundS)
+
+
+class TestSeqToCommand(unittest.TestCase):
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.vi.keys.mappings', {
+        'a': {'s': 'asv'},
+        'b': {'s': 'bsv', 't': 'tsv', 'ep': 'ep', 'dp2': 'dp2'}
+    })
+    @unittest.mock.patch('NeoVintageous.nv.mappings.plugin')
+    def test_seq_to_command(self, plugin):
+        class Plugin():
+            pass
+
+        ep = Plugin()
+        dp = Plugin()
+
+        plugin.mappings = {
+            'b': {'s': 'plugin_bsv', 'ep': ep, 'dp': dp, 'dp2': dp},
+            'c': {'s': 'plugin_csv'}
+        }
+
+        class Settings():
+            def get(self, name, default=None):
+                return True
+
+        class View():
+            def settings(self):
+                return Settings()
+
+        self.assertEqual(_seq_to_command(seq='s', view=View(), mode='a'), 'asv')
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode=''), ViMissingCommandDef)
+        # Plugin mode exists, but not sequence.
+        self.assertEqual(_seq_to_command(seq='t', view=View(), mode='b'), 'tsv')
+        # Plugin mapping override.
+        self.assertEqual(_seq_to_command(seq='s', view=View(), mode='b'), 'plugin_bsv')
+        self.assertEqual(_seq_to_command(seq='ep', view=View(), mode='b'), ep)
+        self.assertEqual(_seq_to_command(seq='s', view=View(), mode='c'), 'plugin_csv')
+
+    def test_unkown_mode(self):
+        class View():
+            def settings(self):
+                pass
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='unknown'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='u'), ViMissingCommandDef)
+
+    def test_unknown_sequence(self):
+        class View():
+            def settings(self):
+                pass
+        self.assertIsInstance(_seq_to_command(seq='foobar', view=View(), mode='a'), ViMissingCommandDef)
