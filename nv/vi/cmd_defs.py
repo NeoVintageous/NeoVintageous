@@ -17,6 +17,7 @@
 
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.utils import InputParser
@@ -51,7 +52,7 @@ class ViDeleteByChars(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -72,7 +73,7 @@ class DeleteMultipleCursor(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -138,7 +139,7 @@ class ViRightDeleteChars(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -158,7 +159,7 @@ class ViSubstituteChar(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -177,7 +178,7 @@ class ViYankByChars(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -195,7 +196,7 @@ class ViYankSelectByChars(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -274,7 +275,7 @@ class ViChangeByChars(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -295,7 +296,7 @@ class ChangeMultipleCursor(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -366,7 +367,7 @@ class ViDeleteToEol(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -387,7 +388,7 @@ class ViChangeToEol(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -427,7 +428,7 @@ class ViChangeLine(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -446,7 +447,7 @@ class ViDeleteLine(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -574,7 +575,7 @@ class ViYankLine(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -631,7 +632,7 @@ class ViSubstituteByLines(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': 1,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -886,7 +887,7 @@ class ViPasteAfter(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register,
+                'register': get_register(state.view),
                 'before_cursor': False
             }
         }
@@ -906,7 +907,7 @@ class ViPasteBefore(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register,
+                'register': get_register(state.view),
                 'before_cursor': True
             }
         }
@@ -927,7 +928,7 @@ class ViPasteAfterAndIndent(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register,
+                'register': get_register(state.view),
                 'before_cursor': False,
                 'adjust_indent': True
             }
@@ -949,7 +950,7 @@ class ViPasteBeforeAndIndent(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register,
+                'register': get_register(state.view),
                 'before_cursor': True,
                 'adjust_indent': True
             }
@@ -970,7 +971,7 @@ class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register,
+                'register': get_register(state.view),
                 'before_cursor': False,
                 'adjust_cursor': True
             }
@@ -991,7 +992,7 @@ class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register,
+                'register': get_register(state.view),
                 'before_cursor': True,
                 'adjust_cursor': True
             }
@@ -1012,7 +1013,7 @@ class ViLeftDeleteChar(ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 
@@ -2873,7 +2874,7 @@ class ViReplaceCharacters(RequiresOneCharMixinDef, ViOperatorDef):
             'action_args': {
                 'mode': state.mode,
                 'count': state.count,
-                'register': state.register,
+                'register': get_register(state.view),
                 'char': self.inp
             }
         }
@@ -3096,7 +3097,7 @@ class ViInsertLineWithCommonPrefix(ViOperatorDef):
             'action': '_vi_ctrl_x_ctrl_l',
             'action_args': {
                 'mode': state.mode,
-                'register': state.register
+                'register': get_register(state.view)
             }
         }
 

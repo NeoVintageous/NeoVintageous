@@ -22,6 +22,7 @@ from sublime import active_window
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_must_capture_register_name
@@ -31,6 +32,7 @@ from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
 from NeoVintageous.nv.settings import set_processing_notation
+from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.utils import get_visual_repeat_data
@@ -214,16 +216,11 @@ class State(object):
 
     @property
     def register(self) -> str:
-        # Accessor for the current open register (as requested by the user).
-        # Returns:
-        #   str: Default is '"'.
-        return self.settings.vi['register'] or '"'
+        return get_register(self.view)
 
     @register.setter
     def register(self, value: str) -> None:
-        assert len(str(value)) == 1, '`value` must be a character'
-        self.settings.vi['register'] = value
-        self.must_capture_register_name = False
+        set_register(self.view, value)
 
     def must_collect_input(self, view, motion: ViMotionDef, action: ViOperatorDef) -> bool:
         if motion and action:
@@ -292,7 +289,7 @@ class State(object):
 
         self.sequence = ''
         self.partial_sequence = ''
-        self.register = '"'
+        set_register(self.view, '"')
         self.must_capture_register_name = False
         reset_status_line(self.view, self.mode)
 

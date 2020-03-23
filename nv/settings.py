@@ -197,6 +197,16 @@ def set_processing_notation(view, value: bool) -> None:
     return set_session_view_value(view, 'processing_notation', value)
 
 
+def get_register(view) -> str:
+    return get_session_view_value(view, 'register', '"')
+
+
+def set_register(view, value: str) -> None:
+    assert len(str(value)) == 1, '`value` must be a character'  # TODO Remove assertion
+    set_session_view_value(view, 'register', value)
+    set_must_capture_register_name(view, False)
+
+
 def get_xpos(view) -> int:
     return get_session_view_value(view, 'xpos', 0)
 

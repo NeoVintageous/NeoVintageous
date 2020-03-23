@@ -79,6 +79,7 @@ from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_normal_insert_count
+from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
@@ -87,6 +88,7 @@ from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_normal_insert_count
+from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import set_xpos
@@ -520,7 +522,7 @@ class _nv_feed_key(WindowCommand):
 
         if state.must_capture_register_name:
             _log.debug('capturing register name...')
-            state.register = key
+            set_register(self.view, key)
             state.partial_sequence = ''
 
             return
@@ -586,11 +588,11 @@ class _nv_feed_key(WindowCommand):
                     rhs = state.sequence[:-len(state.partial_sequence)] + command.rhs
 
                 # TODO Review Why does state need to be reset before running user mapping?
-                reg = state.register
+                reg = get_register(self.view)
                 acount = state.action_count
                 mcount = state.motion_count
                 state.reset_command_data()
-                state.register = reg
+                set_register(self.view, reg)
                 state.motion_count = mcount
                 state.action_count = acount
 
