@@ -30,7 +30,6 @@ from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_non_interactive
-from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
@@ -88,14 +87,6 @@ class State(object):
     @glue_until_normal_mode.setter
     def glue_until_normal_mode(self, value: bool) -> None:
         self.settings.vi['_vintageous_glue_until_normal_mode'] = value
-
-    @property  # DEPRECATED
-    def processing_notation(self) -> bool:
-        return is_processing_notation(self.view)
-
-    @processing_notation.setter  # DEPRECATED
-    def processing_notation(self, value: bool) -> None:
-        set_processing_notation(self.view, value)
 
     @property  # DEPRECATED
     def non_interactive(self) -> bool:
@@ -353,7 +344,7 @@ class State(object):
             # don't need to worry about grouping edits to the buffer.
             args['motion'] = motion_cmd
 
-            if self.glue_until_normal_mode and not self.processing_notation:
+            if self.glue_until_normal_mode and not is_processing_notation(self.view):
                 run_window_command('mark_undo_groups_for_gluing')
 
             macros.add_step(self, action_cmd['action'], args)
@@ -406,7 +397,7 @@ class State(object):
             # grouped atomically, but not inside a sequence like
             # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
             # instead.
-            if self.glue_until_normal_mode and not self.processing_notation:
+            if self.glue_until_normal_mode and not is_processing_notation(self.view):
                 run_window_command('mark_undo_groups_for_gluing')
 
             sequence = self.sequence
@@ -417,7 +408,7 @@ class State(object):
 
             run_action(active_window(), action_cmd)
 
-            if not (self.processing_notation and self.glue_until_normal_mode) and action.repeatable:
+            if not (is_processing_notation(self.view) and self.glue_until_normal_mode) and action.repeatable:
                 set_repeat_data(self.view, ('vi', sequence, self.mode, visual_repeat_data))
 
         if self.mode == INTERNAL_NORMAL:

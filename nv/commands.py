@@ -84,6 +84,7 @@ from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_must_capture_register_name
+from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
@@ -1320,7 +1321,7 @@ class _enter_normal_mode(TextCommand):
             clear_search_highlighting(self.view)
             fix_eol_cursor(self.view, mode)
 
-        if state.glue_until_normal_mode and not state.processing_notation:
+        if state.glue_until_normal_mode and not is_processing_notation(self.view):
             if self.view.is_dirty():
                 self.view.window().run_command('glue_marked_undo_groups')
                 # We're exiting from insert mode or replace mode. Capture

@@ -43,6 +43,7 @@ from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
@@ -334,13 +335,13 @@ def translate_char(char: str) -> str:
 
 @contextmanager
 def gluing_undo_groups(view, state):
-    state.processing_notation = True
+    set_processing_notation(view, True)
     view.run_command('mark_undo_groups_for_gluing')
 
     yield
 
     view.run_command('glue_marked_undo_groups')
-    state.processing_notation = False
+    set_processing_notation(view, False)
 
 
 @contextmanager

@@ -23,6 +23,7 @@ from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import is_must_capture_register_name
+from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.state import State
 from NeoVintageous.nv.vi import cmd_defs
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
@@ -76,7 +77,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(s.motion, None)
         self.assertEqual(s.action_count, '')
         self.assertEqual(s.glue_until_normal_mode, False)
-        self.assertEqual(s.processing_notation, False)
+        self.assertEqual(is_processing_notation(self.view), False)
         self.assertEqual(get_last_char_search(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
         self.assertEqual(s.non_interactive, False)
