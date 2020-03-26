@@ -1099,8 +1099,6 @@ class _vi_gq(TextCommand):
                         return Region(next_non_blank(view, line.a))
 
                     regions_transformer(self.view, f)
-                else:
-                    ui_bell()
 
         enter_normal_mode(self.view, mode)
 
