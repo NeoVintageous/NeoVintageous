@@ -24,3 +24,8 @@ class Test_gx(unittest.FunctionalTestCase):
     def test_gx(self, open_new_tab):
         self.eq('x https://exa|mple.com x', 'n_gx', 'x https://exa|mple.com x')
         open_new_tab.assert_called_once_with('https://example.com')
+
+    @unittest.mock.patch('webbrowser.open_new_tab')
+    def test_gx_noop(self, open_new_tab):
+        self.eq('fi|zz', 'n_gx', 'fi|zz')
+        self.assertMockNotCalled(open_new_tab)
