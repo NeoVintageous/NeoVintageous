@@ -745,6 +745,7 @@ def ex_registers(window, view, **kwargs) -> None:
 
             for part in v:
                 lines = part.splitlines()
+                # ^J indicates a newline
                 part_value = '^J'.join(lines)
 
                 # The splitlines function will remove any trailing newlines. We
@@ -754,6 +755,7 @@ def ex_registers(window, view, **kwargs) -> None:
 
                 multiple_values.append(part_value)
 
+            # ^V indicates a visual block
             items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 120)))
 
     items.sort()
