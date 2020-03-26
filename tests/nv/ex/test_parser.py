@@ -17,8 +17,8 @@
 
 import unittest
 
-from NeoVintageous.nv.ex.parser import _ParserState
-from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.nodes import RangeNode
+from NeoVintageous.nv.ex.parser import CommandLineNode
 from NeoVintageous.nv.ex.parser import TokenComma
 from NeoVintageous.nv.ex.parser import TokenDigits
 from NeoVintageous.nv.ex.parser import TokenDollar
@@ -29,6 +29,38 @@ from NeoVintageous.nv.ex.parser import TokenPercent
 from NeoVintageous.nv.ex.parser import TokenSearchBackward
 from NeoVintageous.nv.ex.parser import TokenSearchForward
 from NeoVintageous.nv.ex.parser import TokenSemicolon
+from NeoVintageous.nv.ex.parser import _ParserState
+from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.tokens import TokenCommand
+
+
+class TestCommandLineNode(unittest.TestCase):
+
+    def test_can_instantiate(self):
+        range_node = RangeNode(["foo"], ["bar"], False)
+        command = TokenCommand('substitute')
+        command_line_node = CommandLineNode(range_node, command)
+
+        self.assertEqual(range_node, command_line_node.line_range)
+        self.assertEqual(command, command_line_node.command)
+
+    def test_to_str(self):
+        self.assertEqual(str(CommandLineNode(RangeNode(['1'], ['10'], ','), 'cmd')), '1,10cmd')
+        self.assertEqual(str(CommandLineNode(RangeNode(['1'], ['10'], ','), None)), '1,10')
+
+    def test_validate(self):
+        class NotAddressableCommand:
+            addressable = False
+
+        class AddressableCommand:
+            addressable = True
+
+        CommandLineNode(RangeNode(), AddressableCommand()).validate()
+        CommandLineNode(RangeNode(), NotAddressableCommand()).validate()
+        CommandLineNode(RangeNode(['1'], ['2'], ';'), AddressableCommand()).validate()
+
+        with self.assertRaisesRegex(Exception, 'E481: No range allowed'):
+            CommandLineNode(RangeNode(['1'], ['2'], ';'), NotAddressableCommand()).validate()
 
 
 class TestParserState(unittest.TestCase):

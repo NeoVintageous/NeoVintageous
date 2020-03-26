@@ -17,7 +17,6 @@
 
 import logging
 
-from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.scanner import Scanner
 from NeoVintageous.nv.ex.tokens import TokenComma
@@ -35,6 +34,26 @@ from NeoVintageous.nv.ex.tokens import TokenSemicolon
 
 
 _log = logging.getLogger(__name__)
+
+
+class CommandLineNode():
+
+    def __init__(self, line_range, command):
+        # Args:
+        #   :line_range (RangeNode):
+        #   :command (TokenCommand):
+        self.line_range = line_range
+        self.command = command
+
+    def __str__(self) -> str:
+        return '{}{}'.format(str(self.line_range), str(self.command) if self.command else '')
+
+    def validate(self) -> None:
+        if not (self.command and self.line_range):
+            return
+
+        if not self.command.addressable and not self.line_range.is_empty:
+            raise Exception("E481: No range allowed")
 
 
 class _ParserState:

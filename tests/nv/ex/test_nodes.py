@@ -17,8 +17,6 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.ex.nodes import _resolve_line_number
-from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.nodes import TokenDigits
 from NeoVintageous.nv.ex.nodes import TokenDollar
@@ -28,7 +26,7 @@ from NeoVintageous.nv.ex.nodes import TokenOffset
 from NeoVintageous.nv.ex.nodes import TokenPercent
 from NeoVintageous.nv.ex.nodes import TokenSearchBackward
 from NeoVintageous.nv.ex.nodes import TokenSearchForward
-from NeoVintageous.nv.ex.tokens import TokenCommand
+from NeoVintageous.nv.ex.nodes import _resolve_line_number
 
 
 class TestRangeNode(unittest.TestCase):
@@ -390,32 +388,3 @@ class TestRangeNodeResolve_Marks(unittest.ViewTestCase):
         self.write('xxx xxx\naaa aaa\nxxx xxx\nbbb bbb\nxxx xxx\nccc ccc\n')
         self.select((8, 10))
         self.assertRegion(RangeNode(start=[TokenMark("<"), TokenMark(">")]).resolve(self.view), (8, 16))
-
-
-class TestCommandLineNode(unittest.TestCase):
-
-    def test_can_instantiate(self):
-        range_node = RangeNode(["foo"], ["bar"], False)
-        command = TokenCommand('substitute')
-        command_line_node = CommandLineNode(range_node, command)
-
-        self.assertEqual(range_node, command_line_node.line_range)
-        self.assertEqual(command, command_line_node.command)
-
-    def test_to_str(self):
-        self.assertEqual(str(CommandLineNode(RangeNode(['1'], ['10'], ','), 'cmd')), '1,10cmd')
-        self.assertEqual(str(CommandLineNode(RangeNode(['1'], ['10'], ','), None)), '1,10')
-
-    def test_validate(self):
-        class NotAddressableCommand:
-            addressable = False
-
-        class AddressableCommand:
-            addressable = True
-
-        CommandLineNode(RangeNode(), AddressableCommand()).validate()
-        CommandLineNode(RangeNode(), NotAddressableCommand()).validate()
-        CommandLineNode(RangeNode(['1'], ['2'], ';'), AddressableCommand()).validate()
-
-        with self.assertRaisesRegex(Exception, 'E481: No range allowed'):
-            CommandLineNode(RangeNode(['1'], ['2'], ';'), NotAddressableCommand()).validate()

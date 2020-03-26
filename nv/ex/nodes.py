@@ -173,23 +173,3 @@ class RangeNode(Node):
         end = _resolve_line_reference(view, self.end or [TokenDot()], current=new_start)
 
         return view.full_line(Region(view.text_point(start, 0), view.text_point(end, 0)))
-
-
-class CommandLineNode(Node):
-
-    def __init__(self, line_range, command):
-        # Args:
-        #   :line_range (RangeNode):
-        #   :command (TokenCommand):
-        self.line_range = line_range
-        self.command = command
-
-    def __str__(self) -> str:
-        return '{}{}'.format(str(self.line_range), str(self.command) if self.command else '')
-
-    def validate(self) -> None:
-        if not (self.command and self.line_range):
-            return
-
-        if not self.command.addressable and not self.line_range.is_empty:
-            raise Exception("E481: No range allowed")
