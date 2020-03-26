@@ -35,6 +35,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('one t|wo three', 'de', 'one t| three')
         self.assertRegisters('"-', 'wo')
         self.assertRegistersEmpty('01')
+        self.eq('x\n|\nbuzz\nfizz', 'de', 'x\n|fizz')
 
     @unittest.mock_bell()
     def test_de_noop(self):
