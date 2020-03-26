@@ -239,6 +239,8 @@ from NeoVintageous.nv.window import window_tab_control
 
 
 __all__ = [
+    'Neovintageous',
+    'SequenceCommand',
     '_enter_insert_mode',
     '_enter_normal_mode',
     '_enter_replace_mode',
@@ -251,7 +253,6 @@ __all__ = [
     '_nv_ex_cmd_edit_wrap',
     '_nv_feed_key',
     '_nv_process_notation',
-    '_nv_replace_line',
     '_nv_run_cmds',
     '_nv_view',
     '_vi_a',
@@ -373,9 +374,7 @@ __all__ = [
     '_vi_z_enter',
     '_vi_z_minus',
     '_vi_zero',
-    '_vi_zz',
-    'Neovintageous',
-    'SequenceCommand'
+    '_vi_zz'
 ]
 
 
@@ -911,13 +910,6 @@ class _nv_process_notation(WindowCommand):
             set_non_interactive(self.view, False)
 
 
-class _nv_replace_line(TextCommand):
-
-    def run(self, edit, with_what):
-        pt = next_non_blank(self.view, self.view.line(self.view.sel()[0].b).a)
-        self.view.replace(edit, Region(pt, self.view.line(pt).b), with_what)
-
-
 class _nv_ex_cmd_edit_wrap(TextCommand):
 
     # This command is required to wrap ex commands that need a Sublime Text edit
@@ -985,6 +977,10 @@ class _nv_view(TextCommand):
 
     def _insert_action(self, edit, text: str):
         self.view.insert(edit, 0, text)
+
+    def _replace_line_action(self, edit, replacement: str):
+        pt = next_non_blank(self.view, self.view.line(self.view.sel()[0].b).a)
+        self.view.replace(edit, Region(pt, self.view.line(pt).b), replacement)
 
 
 class Neovintageous(WindowCommand):
@@ -3085,7 +3081,7 @@ class _vi_ctrl_x_ctrl_l(TextCommand):
         self.view.window().show_quick_panel(items, self.replace, MONOSPACE_FONT)
 
     def replace(self, s):
-        self.view.run_command('_nv_replace_line', {'with_what': self._matches[s]})
+        self.view.run_command('_nv_view', {'action': 'replace_line', 'replacement': self._matches[s]})
         del self.__dict__['_matches']
         set_selection(self.view, self.view.sel()[0].b)
 
