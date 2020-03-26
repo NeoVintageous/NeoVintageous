@@ -13,7 +13,7 @@ contexts:
     - match: '--- .+ ---'
       scope: entity.name.cmdline-output
 
-    - match: '\^J'
+    - match: '\^(J|V)'
       scope: comment.cmdline-output
 
     - match: 'Press ENTER .+'

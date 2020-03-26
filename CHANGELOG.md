@@ -6,7 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#709](https://github.com/NeoVintageous/NeoVintageous/issues/709): General performance improvements
+* Added [#709](https://github.com/NeoVintageous/NeoVintageous/issues/709): General performance improvements (performance)
 
 ### Changed
 
@@ -17,6 +17,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_open_my_rc_file` command; use `neovintageous {action=open_rc_file}` instead
 * Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_reload_my_rc_file` command; use `neovintageous {action=reload_rc_file}` instead
 * Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_toggle_side_bar` command; use `neovintageous {action=toggle_side_bar}` instead
+
+### Fixed
+
+* Removed [#714](https://github.com/NeoVintageous/NeoVintageous/issues/714): `^V` is not syntax highlighted like `^J` in command-line output bug (UI)
 
 ## 1.20.0 - 2020-03-22
 
