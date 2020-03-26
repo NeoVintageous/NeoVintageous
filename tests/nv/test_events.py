@@ -123,7 +123,7 @@ class TestInsertModeAware(unittest.ViewTestCase):
         self.assertEqual(True, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, False, True))
 
 
-class TestExternalDisable(unittest.ViewTestCase):
+class TestOnQueryContextDisabledOrIgnored(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
@@ -146,6 +146,12 @@ class TestExternalDisable(unittest.ViewTestCase):
         self.assertEqual(True, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, False, True))
         self.assertEqual(False, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_EQUAL, True, True))
         self.assertEqual(True, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_EQUAL, False, True))
+
+    def test_returns_none_for_unknown_key(self):
+        self.assertEqual(None, self.events.on_query_context(self.view, 'foo', OP_EQUAL, True, True))
+        self.assertEqual(None, self.events.on_query_context(self.view, 'foo', OP_NOT_EQUAL, True, True))
+        self.assertEqual(None, self.events.on_query_context(self.view, 'foo', OP_EQUAL, False, True))
+        self.assertEqual(None, self.events.on_query_context(self.view, 'foo', OP_NOT_EQUAL, False, True))
 
 
 class TestFalseForUnsupportedOperators(unittest.ViewTestCase):
@@ -274,6 +280,18 @@ class TestOnPostSave(unittest.ViewTestCase):
         self.events.on_post_save(self.view)
         self.assertNormal('fiz|z')
 
+    def test_disabled_views_are_ingored(self):
+        self.normal('x|\n')
+        self.view.settings().set('__vi_external_disable', True)
+        self.events.on_post_save(self.view)
+        self.assertNormal('x|\n')
+
+    def test_widgets_are_ignored(self):
+        self.normal('x|\n')
+        self.view.settings().set('is_widget', True)
+        self.events.on_post_save(self.view)
+        self.assertNormal('x|\n')
+
 
 class TestOnTextCommand(unittest.ViewTestCase):
 
@@ -339,3 +357,12 @@ class TestOnPostTextCommand(unittest.ViewTestCase):
         self.events.on_post_text_command(self.view, 'drag_select', {
             'event': {'button': 1, 'x': 2, 'y': 4}})
         self.assertXpos(4)
+
+    def test_updates_xposx(self):
+        self.normal('fizz| buzz')
+        self.assertXpos(0)
+        self.events.on_post_text_command(self.view, 'drag_select', {})
+        self.events.on_post_text_command(self.view, 'foobar', {})
+        self.events.on_post_text_command(self.view, 'drag_select', {'event': {'button': 1}})
+        self.events.on_post_text_command(self.view, 'drag_select', {'event': {'button': 2, 'x': 2, 'y': 4}})
+        self.assertXpos(0)
