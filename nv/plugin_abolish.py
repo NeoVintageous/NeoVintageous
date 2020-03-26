@@ -120,22 +120,20 @@ class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
 
 class _nv_abolish_command(TextCommand):
     def run(self, edit, to=None, mode=None):
-
-        if to in _ALIASES:
+        try:
             to = _ALIASES[to]
+        except KeyError:
+            pass
 
-        if to in _COERCIONS:
+        try:
             coerce_func = _COERCIONS[to]
-        else:
-            raise ValueError('unknown coercion')
+        except KeyError:
+            return
 
         new_sels = []
         for sel in self.view.sel():
-            if sel.empty():
-                sel = self.view.word(sel)
-
+            sel = self.view.word(sel)
             new_sels.append(sel.begin())
-
             self.view.replace(edit, sel, coerce_func(self.view.substr(sel)))
 
         if new_sels:

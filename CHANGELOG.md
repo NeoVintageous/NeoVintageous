@@ -20,6 +20,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Removed [#716](https://github.com/NeoVintageous/NeoVintageous/issues/716): `yol` toggle list sometimes doesn't work (Unimpaired)
 * Removed [#714](https://github.com/NeoVintageous/NeoVintageous/issues/714): `^V` is not syntax highlighted like `^J` in command-line output bug (UI)
 
 ## 1.20.0 - 2020-03-22
