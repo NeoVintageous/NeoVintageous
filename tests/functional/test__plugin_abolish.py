@@ -32,3 +32,10 @@ class TestAbolish(unittest.FunctionalTestCase):
         self.eq('a b snake_caseCamelCaseT|itleUPPER c', 'crU', 'a b |SNAKE_CASE_CAMEL_CASE_TITLE_UPPER c')
         self.eq('a b snake|_caseCamelCaseTitleUPPER c', 'cr-', 'a b |snake-case-camel-case-title-upper c')
         self.eq('a b snake|_caseCamelCaseTitleUPPER c', 'crk', 'a b |snake-case-camel-case-title-upper c')
+
+    def test_unknown_coercion_should_be_noop(self):
+        self.eq('a b snake_ca|seCamelCaseTitleUPPER c', 'cre', 'a b snake_ca|seCamelCaseTitleUPPER c')
+
+    def test_crc(self):
+        self.eq('|X', 'n_crc', '|x')
+        self.eq('|x', 'n_crc', '|x')

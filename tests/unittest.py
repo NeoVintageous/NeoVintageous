@@ -1421,8 +1421,8 @@ _SEQ2CMD = {
     '<C-x>':        {'command': '_nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
     '<C-y>':        {'command': '_nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
     '<CR>':         {'command': '_nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
-    '<M-n>':        {'command': '_nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
     '<Esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
+    '<M-n>':        {'command': '_nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
     '<{':           {'command': '_nv_feed_key'},  # noqa: E241
     '=':            {'command': '_nv_feed_key'},  # noqa: E241
     '==':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1608,6 +1608,7 @@ _SEQ2CMD = {
     'crU':          {'command': '_nv_feed_key'},  # noqa: E241
     'cr_':          {'command': '_nv_feed_key'},  # noqa: E241
     'crc':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cre':          {'command': '_nv_feed_key'},  # noqa: E241
     'crk':          {'command': '_nv_feed_key'},  # noqa: E241
     'crm':          {'command': '_nv_feed_key'},  # noqa: E241
     'crs':          {'command': '_nv_feed_key'},  # noqa: E241
