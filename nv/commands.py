@@ -2065,9 +2065,6 @@ class _vi_r(TextCommand):
                 else:
                     return Region(s.begin())
 
-        if char is None:
-            raise ValueError('bad parameters')
-
         char = translate_char(char)
         regions_transformer(self.view, f)
         enter_normal_mode(self.view, mode)
