@@ -260,10 +260,18 @@ class TestScanner(unittest.TestCase):
         self.assertEqual([TokenCommand('substitute', addressable=True), TokenEof()], tokens)
         self.assertEqual(1, scanner.state.position)
 
-    def test_can_scan_dot_offset_search_forward(self):
-        scanner = Scanner(".+10/foobar/")
+    def test_whitespace_is_ingored(self):
+        scanner = Scanner("10delete")
         tokens = list(scanner.scan())
-        self.assertEqual([TokenDot(), TokenOffset([10]), TokenSearchForward('foobar'), TokenEof()], tokens)
+        self.assertEqual([TokenDigits('10'), TokenCommand('delete', params={'register': '"', 'count': None}, cooperates_with_global=True, addressable=True), TokenEof()], tokens)  # noqa: E501
+        self.assertEqual(8, scanner.state.position)
+        scanner = Scanner("10 delete")
+        tokens = list(scanner.scan())
+        self.assertEqual([TokenDigits('10'), TokenCommand('delete', params={'register': '"', 'count': None}, cooperates_with_global=True, addressable=True), TokenEof()], tokens)  # noqa: E501
+        self.assertEqual(9, scanner.state.position)
+        scanner = Scanner("10    delete")
+        tokens = list(scanner.scan())
+        self.assertEqual([TokenDigits('10'), TokenCommand('delete', params={'register': '"', 'count': None}, cooperates_with_global=True, addressable=True), TokenEof()], tokens)  # noqa: E501
         self.assertEqual(12, scanner.state.position)
 
 
