@@ -232,6 +232,8 @@ def _scan_range(state) -> tuple:
         state.skip_run(' \t')
         state.ignore()
 
+        return _scan_range, []
+
     if c.isdigit():
         return _scan_digits(state)
 
