@@ -254,7 +254,6 @@ def _process_offset(token: TokenOffset, state: _ParserState, command_line: Comma
 
 
 def _process_dot(state: _ParserState, command_line: CommandLineNode) -> tuple:
-    _init_line_range(command_line)
     if not state.is_range_start_line_parsed:
         if command_line.line_range.start and isinstance(command_line.line_range.start[-1], TokenOffset):
             raise ValueError('bad range {0}'.format(state.scanner.state.source))
