@@ -33,10 +33,6 @@ from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
 
 
-class Node:
-    pass
-
-
 def _resolve_line_number(view, token, current: int) -> int:
     # Args:
     #   view (View): The view where the calculation is made.
@@ -121,7 +117,7 @@ def _resolve_line_reference(view, line_reference, current: int = 0) -> int:
     return current
 
 
-class RangeNode(Node):
+class RangeNode():
 
     # Represents a Vim line range.
 
