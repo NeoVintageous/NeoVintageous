@@ -410,7 +410,8 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs) -> Non
         subject = 'help.txt'
 
         if forceit:
-            return status_message("E478: Don't panic!")
+            status_message("E478: Don't panic!")
+            return
 
     if not _help_tags_cache:
         _log.debug('initializing help tags...')
@@ -603,7 +604,8 @@ def ex_nunmap(lhs: str, **kwargs) -> None:
 # TODO Unify with CTRL-W CTRL-O
 def ex_only(window, view, forceit: bool = False, **kwargs) -> None:
     if not forceit and has_dirty_buffers(window):
-        return status_message("E445: Other window contains changes")
+        status_message("E445: Other window contains changes")
+        return
 
     current_id = view.id()
     for view in window.views():
@@ -683,7 +685,8 @@ def ex_qall(window, forceit: bool = False, **kwargs) -> None:
             if view.is_dirty():
                 view.set_scratch(True)
     elif has_dirty_buffers(window):
-        return status_message('there are unsaved changes!')
+        status_message("E37: No write since last change")
+        return
 
     window.run_command('close_all')
     window.run_command('exit')
@@ -695,15 +698,18 @@ def ex_quit(window, view, forceit: bool = False, **kwargs) -> None:
         view.set_scratch(True)
 
     if view.is_dirty() and not forceit:
-        return status_message("E37: No write since last change")
+        status_message("E37: No write since last change")
+        return
 
     if not view.file_name() and not forceit:
-        return status_message("E32: No file name")
+        status_message("E32: No file name")
+        return
 
     window.run_command('close')
 
     if len(window.views()) == 0:
-        return window.run_command('close')
+        window.run_command('close')
+        return
 
     if not window.views_in_group(window.active_group()):
         ex_unvsplit(window=window, view=view, forceit=forceit, **kwargs)
@@ -1194,9 +1200,11 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
             with open(file_name, 'at') as f:
                 f.write(_get_buffer(view, line_range))
 
-            return status_message('Appended to %s' % os.path.abspath(file_name))
+            status_message('Appended to %s' % os.path.abspath(file_name))
+            return
         except IOError as e:
-            return status_message('could not write file %s', str(e))
+            status_message('could not write file %s', str(e))
+            return
 
     def _append(view, line_range: RangeNode) -> None:
         view.run_command('append', {'characters': _get_buffer(view, line_range)})
@@ -1222,7 +1230,8 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
             view.retarget(file_path)
             window.run_command('save')
         except IOError:
-            return status_message("E212: Can't open file for writing: {}".format(file_name))
+            status_message("E212: Can't open file for writing: {}".format(file_name))
+            return
 
     if kwargs.get('++') or kwargs.get('cmd'):
         return status_message('argument not implemented')
