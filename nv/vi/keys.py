@@ -108,10 +108,10 @@ _NAMED_KEY_ALIASES = {
 
 
 def _resolve_named_key_alias(key: str):
-    if key in _NAMED_KEY_ALIASES:
+    try:
         return _NAMED_KEY_ALIASES[key]
-
-    return key
+    except KeyError:
+        return key
 
 
 class KeySequenceTokenizer():

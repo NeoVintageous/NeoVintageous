@@ -299,12 +299,10 @@ _TRANLSATE_CHAR_MAP = {
 
 
 def translate_char(char: str) -> str:
-    lchar = char.lower()
-
-    if lchar in _TRANLSATE_CHAR_MAP:
-        return _TRANLSATE_CHAR_MAP[lchar]
-
-    return char
+    try:
+        return _TRANLSATE_CHAR_MAP[char.lower()]
+    except KeyError:
+        return char
 
 
 @contextmanager
