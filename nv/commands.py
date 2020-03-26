@@ -253,6 +253,7 @@ __all__ = [
     '_nv_process_notation',
     '_nv_replace_line',
     '_nv_run_cmds',
+    '_nv_view',
     '_vi_a',
     '_vi_at',
     '_vi_b',
@@ -973,6 +974,17 @@ class _nv_cmdline(WindowCommand):
 
     def on_cancel(self):
         _nv_cmdline_feed_key.reset_last_history_index()
+
+
+class _nv_view(TextCommand):
+
+    def run(self, edit, action, **kwargs):
+        action_method = getattr(self, '_%s_action' % action, None)
+        if action_method:
+            action_method(edit, **kwargs)
+
+    def _insert_action(self, edit, text: str):
+        self.view.insert(edit, 0, text)
 
 
 class Neovintageous(WindowCommand):

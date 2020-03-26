@@ -4,10 +4,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.21.0 - Unreleased
 
-### Added
-
-* Added [#709](https://github.com/NeoVintageous/NeoVintageous/issues/709): General performance improvements (performance)
-
 ### Changed
 
 * Changed [#710](https://github.com/NeoVintageous/NeoVintageous/issues/710): The default search occurrence style is "outline" (previously "fill")
@@ -20,8 +16,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* Removed [#716](https://github.com/NeoVintageous/NeoVintageous/issues/716): `yol` toggle list sometimes doesn't work (Unimpaired)
-* Removed [#714](https://github.com/NeoVintageous/NeoVintageous/issues/714): `^V` is not syntax highlighted like `^J` in command-line output bug (UI)
+* Fixed [#712](https://github.com/NeoVintageous/NeoVintageous/issues/712): `:help {subject}` is very slow (performance)
+* Fixed [#716](https://github.com/NeoVintageous/NeoVintageous/issues/716): `yol` toggle list sometimes doesn't work (Unimpaired)
+* Fixed [#714](https://github.com/NeoVintageous/NeoVintageous/issues/714): `^V` is not syntax highlighted like `^J` in command-line output bug (UI)
+* Fixed [#709](https://github.com/NeoVintageous/NeoVintageous/issues/709): General performance improvements (performance)
 
 ## 1.20.0 - 2020-03-22
 

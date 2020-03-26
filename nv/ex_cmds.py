@@ -50,6 +50,7 @@ from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.registers import registers_get_all
@@ -414,34 +415,56 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs) -> Non
             return
 
     if not _help_tags_cache:
-        _log.debug('initializing help tags...')
-
-        tags_resources = [r for r in find_resources('tags') if r.startswith('Packages/NeoVintageous/res/doc/tags')]
-        if not tags_resources:
-            return status_message('tags file not found')
-
         tags_matcher = re.compile('^([^\\s]+)\\s+([^\\s]+)\\s+(.+)$')
-        tags_resource = load_resource(tags_resources[0])
-        for line in tags_resource.split('\n'):
+        for line in load_resource('Packages/NeoVintageous/res/doc/tags').split('\n'):
             if line:
                 match = tags_matcher.match(line)
                 if match:
                     _help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
 
+    subject = subject.rstrip()
+
+    # Recognize a few exceptions e.g. some strings that contain '*' with "star",
+    # "|" with "bar" and '"' with "quote".
+    subject_replacements = {
+        "*": "star",
+        "g*": "gstar",
+        "[*": "[star",
+        "]*": "]star",
+        "/*": "/star",
+        "/\\*": "/\\star",
+        "\"*": "quotestar",
+        "**": "starstar",
+        "/|": "/bar",
+        "/\\|": "/\\bar",
+        '|': 'bar',
+        '"': 'quote'
+    }
+
+    try:
+        subject = subject_replacements[subject]
+    except KeyError:
+        pass
+
     if subject not in _help_tags_cache:
 
-        # Basic hueristic to find nearest relevant help e.g. `help ctrl-k`
-        # will look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another
-        # example is `:help copy` will look for "copy" then ":copy".
-        # Also checks lowercase variants e.g. ctrl-k", "c_ctrl-k, etc., and
-        # uppercase variants e.g. CTRL-K", "C_CTRL-K, etc.
+        # Basic hueristic to find nearest relevant help e.g. `help ctrl-k` will
+        # look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another example is
+        # `:help copy` will look for "copy" then ":copy". Also checks lowercase
+        # variants e.g. ctrl-k", "c_ctrl-k, etc., and uppercase variants e.g.
+        # CTRL-K", "C_CTRL-K, etc.
 
-        subject_candidates = (
-            subject,
-            re.sub('ctrl-([a-zA-Z])', lambda m: 'CTRL-' + m.group(1).upper(), subject),
-            subject.lower(),
-            subject.upper(),
-        )
+        subject_candidates = [subject]
+
+        if subject.lower() not in subject_candidates:
+            subject_candidates.append(subject.lower())
+
+        if subject.upper() not in subject_candidates:
+            subject_candidates.append(subject.upper())
+
+        ctrl_key = re.sub('ctrl-([a-zA-Z])', lambda m: 'CTRL-' + m.group(1).upper(), subject)
+        if ctrl_key not in subject_candidates:
+            subject_candidates.append(ctrl_key)
 
         found = False
         for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
@@ -450,35 +473,39 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs) -> Non
                 if _subject in _help_tags_cache:
                     subject = _subject
                     found = True
+                    break
 
             if found:
                 break
 
-        if not found:
-            return status_message('E149: Sorry, no help for %s' % subject)
+    try:
+        help_file, help_tag = _help_tags_cache[subject]
+    except KeyError:
+        status_message('E149: Sorry, no help for %s' % subject)
+        return
 
-    tag = _help_tags_cache[subject]
+    help_file_resource = 'Packages/NeoVintageous/res/doc/' + help_file
 
-    doc_resources = [r for r in find_resources(
-        tag[0]) if r.startswith('Packages/NeoVintageous/res/doc/')]
-
+    # TODO There must be a better way to test for the existence of a resource.
+    doc_resources = [r for r in find_resources(help_file) if r.startswith('Packages/NeoVintageous/res/doc/')]
     if not doc_resources:
-        return status_message('Sorry, help file "%s" not found' % tag[0])
+        # This should only happen if the help "tags" file is out of date.
+        status_message('Sorry, help file "%s" not found' % help_file)
+        return
 
-    def window_find_open_view(window, name: str):
+    def _window_find_open_view(window, name: str):
         for view in window.views():
             if view.name() == name:
                 return view
 
-    help_view_name = '%s [vim help]' % (tag[0])
-    view = window_find_open_view(window, help_view_name)
+    help_view_name = '%s [vim help]' % (help_file)
+    view = _window_find_open_view(window, help_view_name)
     if view:
         window.focus_view(view)
     else:
         view = window.new_file()
         view.set_scratch(True)
         view.set_name(help_view_name)
-
         settings = view.settings()
         settings.set('auto_complete', False)
         settings.set('auto_indent', False)
@@ -494,15 +521,17 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs) -> Non
         settings.set('translate_tabs_to_spaces', False)
         settings.set('trim_automatic_white_space', False)
         settings.set('word_wrap', False)
-
         view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
-        view.run_command('insert', {'characters': load_resource(doc_resources[0])})
+        view.run_command('_nv_view', {'action': 'insert', 'text': load_resource(help_file_resource)})
         view.set_read_only(True)
 
     # Format the tag so that we can
     # do a literal search rather
     # than regular expression.
-    tag_region = view.find(tag[1].lstrip('/'), 0, LITERAL)
+    tag_region = view_find(view, help_tag.lstrip('/').replace('\\/', '/').replace('\\\\', '\\'), 0, LITERAL)
+    if not tag_region:
+        # This should only happen if the help "tags" file is out of date.
+        tag_region = Region(0)
 
     # Add one point so that the cursor is
     # on the tag rather than the tag
