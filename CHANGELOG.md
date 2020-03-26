@@ -12,6 +12,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Changed [#710](https://github.com/NeoVintageous/NeoVintageous/issues/710): The default search occurrence style is "outline" (previously "fill")
 
+### Removed
+
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_open_my_rc_file` command; use `neovintageous {action=open_rc_file}` instead
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_reload_my_rc_file` command; use `neovintageous {action=reload_rc_file}` instead
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_toggle_side_bar` command; use `neovintageous {action=toggle_side_bar}` instead
+
 ## 1.20.0 - 2020-03-22
 
 ### Added

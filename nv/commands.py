@@ -374,9 +374,6 @@ __all__ = [
     '_vi_zero',
     '_vi_zz',
     'Neovintageous',
-    'NeovintageousOpenMyRcFileCommand',
-    'NeovintageousReloadMyRcFileCommand',
-    'NeovintageousToggleSideBarCommand',
     'SequenceCommand'
 ]
 
@@ -991,27 +988,6 @@ class Neovintageous(WindowCommand):
             toggle_side_bar(self.window)
         elif action == 'toggle_super_keys':
             toggle_super_keys()
-
-
-# DEPRECATED use 'neovintageous action=open_rc_file' instead
-class NeovintageousOpenMyRcFileCommand(Neovintageous):
-
-    def run(self):
-        super().run(action='open_rc_file')
-
-
-# DEPRECATED use 'neovintageous action=reload_rc_file' instead
-class NeovintageousReloadMyRcFileCommand(Neovintageous):
-
-    def run(self):
-        super().run(action='reload_rc_file')
-
-
-# DEPRECATED use 'neovintageous action=toggle_side_bar' instead
-class NeovintageousToggleSideBarCommand(Neovintageous):
-
-    def run(self):
-        super().run(action='toggle_side_bar')
 
 
 # DEPRECATED Use _nv_run_cmds instead
