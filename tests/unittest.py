@@ -1038,6 +1038,16 @@ class PatchFeedCommandXpos(FunctionalTestCase):
         super().onRunFeedCommand(command, args)
 
 
+class ResetCommandLineOutput(FunctionalTestCase):
+
+    def tearDown(self) -> None:
+        # XXX: Ugly hack to make sure that the output panels created in these
+        # tests don't hide the overall progress panel.
+        self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})
+        self.view.window().focus_group(self.view.window().active_group())
+        super().tearDown()
+
+
 class ResetRegisters(FunctionalTestCase):
 
     def setUp(self) -> None:
