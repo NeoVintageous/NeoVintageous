@@ -2034,7 +2034,7 @@ class _vi_x(TextCommand):
 
 class _vi_r(TextCommand):
 
-    def make_replacement_text(self, char, r):
+    def make_replacement_text(self, char: str, r: Region) -> str:
         frags = split_by_newlines(self.view, r)
         new_frags = []
         for fr in frags:
