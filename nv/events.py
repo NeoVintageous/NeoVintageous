@@ -119,8 +119,10 @@ class NeoVintageousEvents(EventListener):
         # Returns:
         #   bool: If the context is known.
         #   None: If the context is unknown.
-        if key in _query_contexts:
+        try:
             return _query_contexts[key](view, operator, operand, match_all)
+        except KeyError:
+            pass
 
     def on_text_command(self, view, command: str, args: dict):
         # Called when a text command is issued.
