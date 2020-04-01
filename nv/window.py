@@ -561,6 +561,12 @@ def window_buffer_control(window, action: str, count: int = 1) -> None:
         window.focus_group(0)
         window.run_command('select_by_index', {'index': 0})
 
+    elif action == 'goto':
+        view_id = int(count)
+        for view in window.views():
+            if view.id() == view_id:
+                window.focus_view(view)
+
     elif action == 'last':
         window.focus_group(window.num_groups() - 1)
         window.run_command('select_by_index', {'index': len(window.views_in_group(window.num_groups() - 1)) - 1})
