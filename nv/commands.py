@@ -739,21 +739,22 @@ class _nv_feed_key(WindowCommand):
         if do_eval:
             evaluate_state(self.view)
 
-    def _handle_count(self, key: str, repeat_count: int):
-        """Return True if the processing of the current key needs to stop."""
+    def _handle_count(self, key: str, repeat_count: int) -> bool:
+        # NOTE motion/action counts need to be cast to strings because they need
+        # to be "joined" to the previous key press, not added. For example when
+        # you press the digit 1 followed by 2, it's a count of 12, not 3.
+
         if not get_action(self.view) and key.isdigit():
             if not repeat_count and (key != '0' or get_action_count(self.view)):
-                _log.debug('action count digit %s', key)
                 set_action_count(self.view, str(get_action_count(self.view)) + key)
-
                 return True
 
         if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and key.isdigit()):
             if not repeat_count and (key != '0' or get_motion_count(self.view)):
-                _log.debug('motion count digit %s', key)
                 set_motion_count(self.view, str(get_motion_count(self.view)) + key)
-
                 return True
+
+        return False
 
     def _handle_missing_command(self, command):
         if isinstance(command, ViMissingCommandDef):
