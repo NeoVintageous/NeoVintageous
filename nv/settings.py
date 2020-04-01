@@ -199,22 +199,15 @@ def set_normal_insert_count(view, value: int) -> None:
     set_session_view_value(view, 'normal_insert_count', value)
 
 
-# TODO [review] This seems to do the same thing as processing_notation.
-# TODO invert function name from is_non_interactive() -> is_interactive()
-def is_non_interactive(view) -> bool:
-    # Indicate whether _nv_process_notation is running.
-    #
-    # Indicates whether _nv_process_notation is running a command and no
-    # interactive prompts should be used (for example, by the '/' motion.)
-    #
-    # This property is *VOLATILE*; it shouldn't be persisted between sessions.
-    return get_session_view_value(view, 'non_interactive', False)
+def is_interactive(view) -> bool:
+    # See set_interactive().
+    return get_session_view_value(view, 'interactive', True)
 
 
-# TODO invert function name from set_non_interactive() -> set_interactive(flag)
-def set_non_interactive(view, value: bool) -> None:
-    assert isinstance(value, bool), 'bool expected'  # TODO Remove assert statement
-    set_session_view_value(view, 'non_interactive', value)
+def set_interactive(view, value: bool) -> None:
+    # Indicate if prompts should be interactive or suppressed (non-interactive).
+    # For example, cmdline and search input collecting: :ls<CR> and /foo<CR>.
+    set_session_view_value(view, 'interactive', value)
 
 
 def get_partial_sequence(view) -> str:

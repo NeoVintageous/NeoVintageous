@@ -30,8 +30,8 @@ from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_sequence
+from NeoVintageous.nv.settings import is_interactive
 from NeoVintageous.nv.settings import is_must_capture_register_name
-from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_mode
@@ -100,7 +100,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(is_processing_notation(self.view), False)
         self.assertEqual(get_last_char_search(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
-        self.assertEqual(is_non_interactive(self.view), False)
+        self.assertEqual(is_interactive(self.view), True)
         self.assertEqual(is_must_capture_register_name(self.view), False)
         self.assertEqual(get_last_buffer_search(self.view), '')
         self.assertEqual(get_reset_during_init(self.view), True)

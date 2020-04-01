@@ -90,11 +90,12 @@ from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import is_interactive
 from NeoVintageous.nv.settings import is_must_capture_register_name
-from NeoVintageous.nv.settings import is_non_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
+from NeoVintageous.nv.settings import set_interactive
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
@@ -102,7 +103,6 @@ from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
-from NeoVintageous.nv.settings import set_non_interactive
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
@@ -729,7 +729,7 @@ class _nv_feed_key(WindowCommand):
         else:
             raise ValueError('unexpected command type')
 
-        if not is_non_interactive(self.view):
+        if is_interactive(self.view):
             if command.accept_input and command.input_parser and command.input_parser.is_panel():
                 command.input_parser.run_command()
 
@@ -780,9 +780,10 @@ class _nv_process_notation(WindowCommand):
         #       consulted to expand key sequences.
         self.view = self.window.active_view()
         initial_mode = get_mode(self.view)
-        # Disable interactive prompts. For example, to supress interactive
-        # input collection in /foo<CR>.
-        set_non_interactive(self.view, True)
+
+        # Disable interactive prompts. For example, supress interactive input
+        # collecting for the command-line and search: :ls<CR> and /foo<CR>.
+        set_interactive(self.view, False)
 
         _log.debug('process notation keys %s for initial mode %s', keys, initial_mode)
 
@@ -827,7 +828,7 @@ class _nv_process_notation(WindowCommand):
         # Strip the already run commands
         if leading_motions:
             if ((len(leading_motions) == len(keys)) and (not must_collect_input(self.view, get_motion(self.view), get_action(self.view)))):  # noqa: E501
-                set_non_interactive(self.view, False)
+                set_interactive(self.view, True)
                 return
 
             keys = keys[len(leading_motions):]
@@ -856,7 +857,7 @@ class _nv_process_notation(WindowCommand):
                         return
 
                 finally:
-                    set_non_interactive(self.view, False)
+                    set_interactive(self.view, True)
                     # Ensure we set the full command for "." to use, but don't
                     # store "." alone.
                     if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
@@ -908,7 +909,7 @@ class _nv_process_notation(WindowCommand):
             _log.debug('could not find a command to collect more user input')
             ui_bell()
         finally:
-            set_non_interactive(self.view, False)
+            set_interactive(self.view, True)
 
 
 class _nv_ex_cmd_edit_wrap(TextCommand):

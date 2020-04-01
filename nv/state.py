@@ -29,7 +29,7 @@ from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
-from NeoVintageous.nv.settings import is_non_interactive
+from NeoVintageous.nv.settings import is_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_mode
@@ -284,7 +284,7 @@ def evaluate_state(view) -> None:
 
         run_window_command(action_cmd['action'], args)
 
-        if not is_non_interactive(view) and get_action(view).repeatable:
+        if is_interactive(view) and get_action(view).repeatable:
             set_repeat_data(view, ('vi', str(get_sequence(view)), get_mode(view), None))
 
         reset_command_data(view)
