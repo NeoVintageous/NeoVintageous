@@ -18,6 +18,7 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.commands import _nv_feed_key
+from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
@@ -39,7 +40,6 @@ from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
-from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.state import _must_scroll_into_view
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
@@ -116,7 +116,7 @@ class TestState(unittest.ViewTestCase):
 class TestStateResettingState(unittest.ViewTestCase):
 
     def test_reset_command_data(self):
-        set_sequence(self.view, 'abc')
+        append_sequence(self.view, 'abc')
         set_partial_sequence(self.view, 'x')
         set_action(self.view, cmd_defs.ViReplaceCharacters())
         set_motion(self.view, cmd_defs.ViGotoSymbolInFile())

@@ -316,6 +316,10 @@ def set_sequence(view, value: str) -> None:
     set_session_view_value(view, 'sequence', value)
 
 
+def append_sequence(view, value: str) -> None:
+    set_sequence(view, get_sequence(view) + value)
+
+
 def get_glue_until_normal_mode(view) -> bool:
     # Indicate that editing commands should be grouped together. They should be
     # grouped together in a single undo step after the user requested

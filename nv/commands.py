@@ -76,6 +76,7 @@ from NeoVintageous.nv.search import find_word_search_occurrences
 from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
+from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
@@ -108,7 +109,6 @@ from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
-from NeoVintageous.nv.settings import set_sequence
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
@@ -539,7 +539,7 @@ class _nv_feed_key(WindowCommand):
                 reset_command_data(self.view)
             return
 
-        set_sequence(self.view, get_sequence(self.view) + key)
+        append_sequence(self.view, key)
         update_status_line(self.view)
 
         if is_must_capture_register_name(self.view):
@@ -3222,7 +3222,7 @@ class _vi_slash(TextCommand):
         history_update(Cmdline.SEARCH_FORWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
         clear_search_highlighting(self.view)
-        set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
+        append_sequence(self.view, pattern + '<CR>')
         set_motion(self.view, ViSearchForwardImpl(term=pattern))
         evaluate_state(self.view)
 
@@ -4345,7 +4345,7 @@ class _vi_question_mark(TextCommand):
         history_update(Cmdline.SEARCH_BACKWARD + pattern)
         _nv_cmdline_feed_key.reset_last_history_index()
         clear_search_highlighting(self.view)
-        set_sequence(self.view, get_sequence(self.view) + pattern + '<CR>')
+        append_sequence(self.view, pattern + '<CR>')
         set_motion(self.view, ViSearchBackwardImpl(term=pattern))
         evaluate_state(self.view)
 
