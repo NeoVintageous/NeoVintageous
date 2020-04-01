@@ -249,6 +249,7 @@ def reset_cmdline_completion_state() -> None:
 
 _CMDLINE_COMPLETIONS = [
     'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
+    'buffer',
     'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit', 'exit',
     'file', 'files', 'global', 'help', 'history', 'let', 'ls', 'move', 'new',
     'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only', 'onoremap',
