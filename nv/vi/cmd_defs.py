@@ -2263,7 +2263,6 @@ class ViRepeatCharSearchForward(ViMotionDef):
 
     # TODO Refactor settings dependencies into the command being called
     def translate(self, view):
-        view = view
         last_search_cmd = get_last_char_search_command(view)
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
@@ -2526,7 +2525,6 @@ class ViRepeatCharSearchBackward(ViMotionDef):
 
     # TODO Refactor settings dependencies into the command being called
     def translate(self, view):
-        view = view
         last_search_cmd = get_last_char_search_command(view)
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
