@@ -273,3 +273,82 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.assertNormal(':edit sub/s|')
         self.feed('<tab>')
         self.assertNormal(':edit sub/sb.txt|')
+
+    @unittest.mock_bell()
+    @unittest.mock.patch.dict('NeoVintageous.nv.history._storage', {
+        1: {'num': 0, 'items': {}},
+        2: {'num': 0, 'items': {}},
+        3: {'num': 0, 'items': {}},
+        4: {'num': 0, 'items': {}},
+        5: {'num': 0, 'items': {}}})
+    def test_c_history_empty(self):
+        self.insert(':|')
+        self.feed('<C-p>')
+        self.assertBell()
+        self.feed('<C-n>')
+        self.assertBell()
+        self.insert('/|')
+        self.feed('<up>')
+        self.assertBell()
+        self.feed('<down>')
+        self.assertBell()
+
+    @unittest.mock_bell()
+    @unittest.mock.patch.dict('NeoVintageous.nv.history._storage', {
+        1: {
+            'num': 72,
+            'items': {
+                1: 'third',
+                2: 'second',
+                3: 'first',
+            }},
+        2: {
+            'num': 8,
+            'items': {
+                2: 'pattern2',
+                4: 'pattern1',
+            }},
+        3: {'num': 0, 'items': {}},
+        4: {'num': 0, 'items': {}},
+        5: {'num': 0, 'items': {}}})
+    def test_c_history(self):
+        self.insert(':|')
+        self.feed('<up>')
+        self.assertInsert(':first|')
+        self.feed('<up>')
+        self.assertInsert(':second|')
+        self.feed('<up>')
+        self.assertInsert(':third|')
+        self.assertNoBell()
+        self.feed('<up>')
+        self.assertInsert(':third|')
+        self.assertBell()
+        self.feed('<down>')
+        self.assertInsert(':second|')
+        self.feed('<down>')
+        self.assertInsert(':first|')
+        self.feed('<down>')
+        self.assertInsert(':|')
+        self.feed('<down>')
+        self.assertBell()
+        self.insert('/|')
+        self.feed('<C-p>')
+        self.assertInsert('/pattern1|')
+        self.feed('<C-p>')
+        self.assertInsert('/pattern2|')
+        self.feed('<C-n>')
+        self.assertInsert('/pattern1|')
+        self.feed('<C-n>')
+        self.assertInsert('/|')
+
+    @unittest.mock_run_commands('hide_panel')
+    def test_c_ctrl_c(self):
+        self.normal(':abc|')
+        self.feed('<C-c>')
+        self.assertRunCommand('hide_panel', {'cancel': True})
+
+    @unittest.mock_run_commands('hide_panel')
+    def test_c_ctrl_bracket(self):
+        self.normal(':abc|')
+        self.feed('<C-[>')
+        self.assertRunCommand('hide_panel', {'cancel': True})
