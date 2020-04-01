@@ -812,6 +812,8 @@ def ex_set(option: str, value, **kwargs) -> None:
             status_message('%s', msg)
         elif option.endswith('!'):
             toggle_option(view, option[:-1])
+        elif option.startswith('inv'):
+            toggle_option(view, option[3:])
         else:
             set_option(view, option, value)
 

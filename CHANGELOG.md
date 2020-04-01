@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#722](https://github.com/NeoVintageous/NeoVintageous/issues/722): `:set inv{option}` alias for `:set{option}!`
 * Added [#726](https://github.com/NeoVintageous/NeoVintageous/issues/726): `f`, `F`, `t`, `T`, `;`, and `,` now emit a visual bell on noop's
 
 ### Changed
@@ -20,6 +21,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#723](https://github.com/NeoVintageous/NeoVintageous/issues/723): Command-line completions should ignore `no{option}` unless prefix "no"
 * Fixed [#717](https://github.com/NeoVintageous/NeoVintageous/issues/717): Ex command ranges should ignore whitespace
 * Fixed [#712](https://github.com/NeoVintageous/NeoVintageous/issues/712): `:help {subject}` is very slow (performance)
 * Fixed [#716](https://github.com/NeoVintageous/NeoVintageous/issues/716): `yol` toggle list sometimes doesn't work (Unimpaired)

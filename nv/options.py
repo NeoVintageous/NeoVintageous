@@ -225,9 +225,13 @@ def get_option_completions(prefix: str = ''):
             yield name
 
         if isinstance(option, BooleanOption):
-            name = 'no' + name
-            if name.startswith(prefix):
-                yield name
+            noname = 'no' + name
+            if prefix.startswith('no') and noname.startswith(prefix):
+                yield noname
+
+            invname = 'inv' + name
+            if prefix.startswith('inv') and invname.startswith(prefix):
+                yield invname
 
 
 def _resolve_aliases(name: str) -> str:

@@ -166,9 +166,14 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
     def test_c_tab_set_completions(self):
         self.eq(':set |', '<tab>', ':set autoindent|')
         self.feed('<tab>')
-        self.assertNormal(':set noautoindent|')
-        self.feed('<tab>')
         self.assertNormal(':set belloff|')
+        self.feed('<tab>')
+        self.assertNormal(':set expandtabs|')
+
+    def test_c_tab_set_completions_no(self):
+        self.eq(':set noi|', '<tab>', ':set noignorecase|')
+        self.feed('<tab>')
+        self.assertNormal(':set noincsearch|')
 
     def test_c_tab_set_prefix_single_completion(self):
         self.eq(':set li|', '<tab>', ':set list|')

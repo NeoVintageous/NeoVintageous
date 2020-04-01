@@ -121,7 +121,8 @@ The|set|command is partially supported, see|nv-options|for supported options.
                         Number option: show value.
                         String option: show value.
     :se[t] no{option}   Toggle option: Reset, switch it off.
-    :se[t] {option}!    Toggle option: Invert value.
+    :se[t] {option}!    or
+    :se[t] inv{option}  Toggle option: Invert value.
 
 The|:map-commands|are partially supported.
 
