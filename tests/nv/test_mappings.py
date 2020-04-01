@@ -35,6 +35,7 @@ from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.plugin_commentary import CommentaryLines
+from NeoVintageous.nv.plugin_sneak import SneakS
 from NeoVintageous.nv.plugin_surround import SurroundS
 from NeoVintageous.nv.plugin_unimpaired import UnimpairedBlankDown
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
@@ -316,7 +317,10 @@ class TestResolve(unittest.ViewTestCase):
         self.setNormalMode()
         self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommentaryLines)
         self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), UnimpairedBlankDown)
+        self.set_setting('enable_sneak', False)
         self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
+        self.set_setting('enable_sneak', True)
+        self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), SneakS)
         self.setVisualMode()
         self.assertIsInstance(mappings_resolve(self.view, 'S', VISUAL), SurroundS)
 
@@ -328,7 +332,10 @@ class TestResolve(unittest.ViewTestCase):
         self.set_setting('enable_surround', False)
         self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), ViMissingCommandDef)
         self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), ViMissingCommandDef)
+        self.set_setting('enable_sneak', False)
         self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
+        self.set_setting('enable_sneak', True)
+        self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), SneakS)
         self.setVisualMode()
         self.assertIsInstance(mappings_resolve(self.view, 'S', VISUAL), ViSubstituteByLines)
         self.set_setting('enable_commentary', True)
@@ -336,7 +343,10 @@ class TestResolve(unittest.ViewTestCase):
         self.set_setting('enable_surround', True)
         self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommentaryLines)
         self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), UnimpairedBlankDown)
+        self.set_setting('enable_sneak', False)
         self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
+        self.set_setting('enable_sneak', True)
+        self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), SneakS)
         self.setVisualMode()
         self.assertIsInstance(mappings_resolve(self.view, 'S', VISUAL), SurroundS)
 

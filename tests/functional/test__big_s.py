@@ -23,6 +23,7 @@ class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def setUp(self):
         super().setUp()
         self.set_setting('enable_surround', False)
+        self.set_setting('enable_sneak', False)
 
     def test_n(self):
         self.eq('|', 'S', 'i_|')

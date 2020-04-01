@@ -145,18 +145,22 @@ def _scroll_into_view(view, mode: str) -> None:
     view.show(target_pt, False)
 
 
+def _create_definition(view, name: str):
+    cmd = get_session_view_value(view, name)
+    if cmd:
+        cls = getattr(cmd_defs, cmd['name'], None)
+
+        if cls is None:
+            cls = plugin.classes.get(cmd['name'], None)
+
+        if cls is None:
+            ValueError('unknown %s: %s' % (name, cmd))
+
+        return cls.from_json(cmd['data'])
+
+
 def get_action(view):
-    action = get_session_view_value(view, 'action')
-    if action:
-        cls = getattr(cmd_defs, action['name'], None)
-
-        if cls is None:
-            cls = plugin.classes.get(action['name'], None)
-
-        if cls is None:
-            ValueError('unknown action: %s' % action)
-
-        return cls.from_json(action['data'])
+    return _create_definition(view, 'action')
 
 
 def set_action(view, value) -> None:
@@ -165,11 +169,7 @@ def set_action(view, value) -> None:
 
 
 def get_motion(view):
-    motion = get_session_view_value(view, 'motion')
-    if motion:
-        cls = getattr(cmd_defs, motion['name'])
-
-        return cls.from_json(motion['data'])
+    return _create_definition(view, 'motion')
 
 
 def set_motion(view, value) -> None:

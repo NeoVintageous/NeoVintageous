@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#457](https://github.com/NeoVintageous/NeoVintageous/issues/457): Initial port of vim-sneak (includes most commands except label-modes)
 * Added [#718](https://github.com/NeoVintageous/NeoVintageous/issues/718): Add settings to enable common  `jj` and `jk` map to escape from insert mode
 * Added [#727](https://github.com/NeoVintageous/NeoVintageous/issues/727): Display "h" indicator for hidden views in `:ls` output
 * Added [#720](https://github.com/NeoVintageous/NeoVintageous/issues/720): `<C-w>W [N]` go to {id} view

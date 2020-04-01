@@ -48,6 +48,14 @@ def _set_private(obj, name: str, value) -> None:
     obj.settings().set('_vintageous_%s' % name, value)
 
 
+def get_internal_setting(obj, name: str, default=None):
+    return _get_private(obj, name, default)
+
+
+def set_internal_setting(obj, name: str, value) -> None:
+    _set_private(obj, name, value)
+
+
 # DEPRECATED TODO Refactor to use get_setting() instead
 def get_setting_neo(view, name: str):
     return view.settings().get('neovintageous_%s' % name)

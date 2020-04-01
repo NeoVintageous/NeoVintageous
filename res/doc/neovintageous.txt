@@ -34,6 +34,7 @@ CONTENTS                                                         *nv-contents*
         Abolish ........................|nv-abolish|
         Commentary .....................|nv-commentary|
         HighlightedYank ................|nv-highlightedyank|
+        Sneak ..........................|nv-sneak|
         Surround .......................|nv-surround|
         Unimpaired .....................|nv-unimpaired|
         Indent Object ..................|nv-indent-object|
@@ -307,6 +308,102 @@ Monokai.sublime-color-scheme in the Sublime Text User directory
 
 Inspired by the popular vim-highlightedyank.
 https://github.com/machakann/vim-highlightedyank
+------------------------------------------------------------------------------
+
+SNEAK                                                       *nv-sneak* *sneak*
+
+Sneak provides a way to move quickly and precisely to locations that would be
+awkward to reach with built-in Vim motions.
+
+To use Sneak, type "s" followed by exactly two characters:
+
+    s{char}{char}
+
+Thus you can often reach a target with 3 keystrokes. Sneak always moves
+immediately to the first {char}{char} match. Additional matches are
+highlighted, you can reach them by pressing ; (just like|f|and|t|).
+
+Above all, the goal is to get out of your way. See|sneak-usage|for a
+quick-start, and|sneak-features|for full description.
+
+Usage                                                            *sneak-usage*
+
+Example (cursor position indicated with brackets []): >
+    [L]orem ipsum dolor sit amet, consectetur adipisicing elit
+
+Type ssi to go to the beginning of the word "sit": >
+    Lorem ipsum dolor [s]it amet, consectetur adipisicing elit
+
+Type ; (or s again, if|sneak-clever-s|is enabled) to go to the next match: >
+    Lorem ipsum dolor sit amet, consectetur adipi[s]icing elit
+
+Type Sdo to go backwards to the beginning of the word "dolor": >
+    Lorem ipsum [d]olor sit amet, consectetur adipisicing elit
+
+Type dzad to delete from the cursor to the first instance of "ad": >
+    Lorem ipsum [a]dipisicing elit
+
+Default Mappings                                              *sneak-mappings*
+
+NORMAL-MODE~
+    Key Sequence             | Description
+    -------------------------|----------------------------------------------
+    s{char}{char}            | Go to the next occurrence of {char}{char}
+    S{char}{char}            | Go to the previous occurrence of {char}{char}
+    s{char}<Enter>           | Go to the next occurrence of {char}
+    S{char}<Enter>           | Go to the previous occurrence of {char}
+    s<Enter>                 | Repeat the last Sneak.
+    S<Enter>                 | Repeat the last Sneak, in reverse direction.
+    ;                        | Go to the [count]th next match
+    , or \                   | Go to the [count]th previous match
+    {operator}z{char}{char}  | Perform {operator} from the cursor to the next
+                             | occurrence of {char}{char}
+    {operator}Z{char}{char}  | Perform {operator} from the cursor to the
+                             | previous occurrence of {char}{char}
+
+VISUAL-MODE~
+    Key Sequence             | Description
+    -------------------------|----------------------------------------------
+    s{char}{char}            | Go to the next occurrence of {char}{char}
+    Z{char}{char}            | Go to the previous occurrence of {char}{char}
+    s{char}<Enter>           | Go to the next occurrence of {char}
+    Z{char}<Enter>           | Go to the previous occurrence of {char}
+    s<Enter>                 | Repeat the last Sneak.
+    Z<Enter>                 | Repeat the last Sneak, in reverse direction.
+    ;                        | Go to the [count]th next match
+    , or \                   | Go to the [count]th previous match
+
+    NOTE: Z goes backwards in visual-mode, because S is taken by the
+   |surround|plugin).
+
+Features                                                      *sneak-features*
+
+NORMAL-MODE
+
+`s` (and `S`) waits for two characters, then immediately moves to the next
+(previous) match. Additional matches are highlighted. Works across multiple
+lines.
+
+`;` and `,` repeat the last `s` and `S`. They also work correctly with `f` and
+`t` (unless you or another plugin have mapped `f` or `t` to a custom mapping).
+[count]; and [count], skip to the [count]th match, similar to the behavior of
+[count]f and [count]t.
+
+    Note: If your mapleader is|,|then Sneak maps|\|instead of|,|.
+
+s<Enter> ("s" followed by Enter) always repeats the last search, even if|;|
+and|,|were reset by|f|or|t|.
+
+OPERATIONS
+
+Use `z` for operations. For example, `dzab` deletes from the cursor to the
+next instance of "ab". `dZab` deletes backwards to the previous instance.
+`czab` `cZab` `yzab` and `yZab` also work as expected.
+
+Repeat the operation with dot|.|.
+
+Sneak is a port of the popular vim-sneak.
+https://github.com/justinmk/vim-sneak.
 ------------------------------------------------------------------------------
 
 SURROUND                                              *nv-surround* *surround*

@@ -58,6 +58,9 @@
     // Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
     "vintageous_enable_multiple_cursors": true,
 
+    // Plugin: A port of https://github.com/justinmk/vim-sneak.
+    "vintageous_enable_sneak": true,
+
     // Plugin: Sublime Text tweaks.
     "vintageous_enable_sublime": true,
 

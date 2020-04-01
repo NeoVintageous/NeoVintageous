@@ -7098,6 +7098,7 @@ nv-plugins	neovintageous.txt	/*nv-plugins*
 nv-rc	neovintageous.txt	/*nv-rc*
 nv-search-highlighting	neovintageous.txt	/*nv-search-highlighting*
 nv-settings	neovintageous.txt	/*nv-settings*
+nv-sneak	neovintageous.txt	/*nv-sneak*
 nv-surround	neovintageous.txt	/*nv-surround*
 nv-toggle	neovintageous.txt	/*nv-toggle*
 nv-unimpaired	neovintageous.txt	/*nv-unimpaired*
@@ -7795,6 +7796,10 @@ slice	eval.txt	/*slice*
 slow-fast-terminal	term.txt	/*slow-fast-terminal*
 slow-start	starting.txt	/*slow-start*
 slow-terminal	term.txt	/*slow-terminal*
+sneak	neovintageous.txt	/*sneak*
+sneak-features	neovintageous.txt	/*sneak-features*
+sneak-mappings	neovintageous.txt	/*sneak-mappings*
+sneak-usage	neovintageous.txt	/*sneak-usage*
 sockconnect()	eval.txt	/*sockconnect()*
 sort()	eval.txt	/*sort()*
 sorting	change.txt	/*sorting*
