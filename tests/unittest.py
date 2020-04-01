@@ -799,7 +799,7 @@ class FunctionalTestCase(ViewTestCase):
         # * :<','> - Visual Command-line
         # * N_ - Internal Normal
         #
-        # The default mode is Internal Normal.
+        # The default mode is "N_".
         #
         # NOTE: This method currently uses a **hardcoded** map of sequences to
         # commands (except <Esc> and cmdline sequences). You may need to add the
@@ -915,7 +915,7 @@ class FunctionalTestCase(ViewTestCase):
         # * :<','> - Visual Command-line
         # * N_ - Internal Normal
         #
-        # The text and expected arguments also accept the following prefixes:
+        # The {text} and {expected} arguments also accept prefixes:
         #
         # * r_ - Reversed selection (must be first e.g. "r_d_*")
         # * d_ - Visual block direction down (only valid in visual block)

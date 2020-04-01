@@ -272,22 +272,31 @@ def set_must_capture_register_name(view, value: bool) -> None:
 def set_repeat_data(view, data: tuple) -> None:
     # The structure of {data}:
     #
-    #   [{type}, {command}, {mode}, {visual}]
+    #   (
+    #       {type},
+    #       {command_data},
+    #       {mode},
+    #       {visual_data}
+    #   )
     #
-    # Type can be "vi" or "native".
+    # arg            | type          | description
+    # ---------------|---------------|------------
+    # {type}         | str           | "vi" or "native".
+    # {command_data} | str or tuple  | e.g. "x" or ("insert", {"characters": "hello"})
+    # {mode}         | str           | e.g. "mode_insert"
+    # {visual_data}  | None or tuple | e.g. (0, 4, "mode_visual")
     #
-    # Command can be a string key sequence or a ST command with args.
-    #
-    # Visual is a tuple (start_pt, end_pt, mode).
+    # * {command_data} can be a string key sequence or a command with args.
+    # * {visual_data} can be a tuple ({start_pt}, {end_pt}, {mode}).
     #
     # Examples:
     #
-    # ('native', ('insert', {'characters': 'fizz'}), 'mode_insert', None)
-    # ('native', ('sequence', {'commands': [['insert', {'characters': 'fizz'}], ['left_delete', None]]}), 'mode_insert', None])  # noqa: E501
-    # ('vi', 'x', 'mode_normal', (0, 4, 'mode_visual'))
-    # TODO remove assertions
-    assert isinstance(data, tuple) or isinstance(data, list), 'bad call'
-    assert len(data) == 4, 'bad call'
+    #   ( "native", ("insert", {"characters": "fizz"}), "mode_insert", None )
+    #   ( "vi", "x", "mode_normal", (0, 4, "mode_visual") )
+    #   ( "native", ("sequence", {"commands": [["insert", {"characters": "fizz"}], ["left_delete", None]]}), "mode_insert", None )  # noqa: 501
+    #
+    assert isinstance(data, tuple) or isinstance(data, list), 'bad call'  # TODO remove assertion
+    assert len(data) == 4, 'bad call'  # TODO remove assertion
     set_session_view_value(view, 'repeat_data', data)
 
 
