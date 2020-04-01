@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.21.0 - Unreleased
 
+### Added
+
+* Added [#726](https://github.com/NeoVintageous/NeoVintageous/issues/726): `f`, `F`, `t`, `T`, `;`, and `,` now emit a visual bell on noop's
+
 ### Changed
 
 * Changed [#710](https://github.com/NeoVintageous/NeoVintageous/issues/710): The default search occurrence style is "outline" (previously "fill")

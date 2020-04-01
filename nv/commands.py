@@ -3096,10 +3096,11 @@ class _vi_find_in_line(TextCommand):
             set_last_char_search_command(self.view, 'vi_f' if inclusive else 'vi_t')
             set_last_char_search(self.view, char)
 
-        def f(view, s):
-            if mode == VISUAL_LINE:
-                raise ValueError('wrong mode')
+        if mode == VISUAL_LINE:
+            ui_bell()
+            return
 
+        def f(view, s):
             b = s.b
             # If we are in any visual mode, get the actual insertion point.
             if s.size() > 0:
@@ -3120,6 +3121,8 @@ class _vi_find_in_line(TextCommand):
 
                 # Count too high or simply no match; break.
                 if match is None:
+                    if mode != INTERNAL_NORMAL:
+                        ui_bell()
                     return s
 
             target_pos = match.a
@@ -3151,10 +3154,11 @@ class _vi_reverse_find_in_line(TextCommand):
             set_last_char_search_command(self.view, 'vi_big_f' if inclusive else 'vi_big_t')
             set_last_char_search(self.view, char)
 
-        def f(view, s):
-            if mode == VISUAL_LINE:
-                raise ValueError('wrong mode')
+        if mode == VISUAL_LINE:
+            ui_bell()
+            return
 
+        def f(view, s):
             b = s.b
             if s.size() > 0:
                 b = get_insertion_point_at_b(s)
@@ -3174,6 +3178,8 @@ class _vi_reverse_find_in_line(TextCommand):
                     found_at = line_text.rindex(char)
                     match = line_start + found_at
             except ValueError:
+                if mode != INTERNAL_NORMAL:
+                    ui_bell()
                 return s
 
             target_pos = match

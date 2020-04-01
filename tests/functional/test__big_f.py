@@ -56,6 +56,11 @@ class Test_F(unittest.FunctionalTestCase):
         self.eq('|f|', 'v_Ff', '|f|')
 
     @unittest.mock_bell()
+    def test_V(self):
+        self.eq('x\nx\n|x\n|x\n', 'V_Fx', 'x\nx\n|x\n|x\n')
+        self.assertBell()
+
+    @unittest.mock_bell()
     def test_d(self):
         self.eq('0x23|a5', 'dFx', '0|a5')
         self.eq('012x|a5', 'dFx', '012|a5')

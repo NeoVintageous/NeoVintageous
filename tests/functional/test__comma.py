@@ -43,3 +43,12 @@ class Test_comma(unittest.FunctionalTestCase):
         self.assertNormal('_x__x__x__x|__x__x__x_')
         self.feed(',')
         self.assertNormal('_x__x__x|__x__x__x__x_')
+
+    @unittest.mock_bell()
+    def test_V(self):
+        self.eq('x\nx\n|xx\nx\n', 'n_fx', 'x\nx\nx|x\nx\n')
+        self.feed('V')
+        self.assertVline('x\nx\n|xx\n|x\n')
+        self.feed(',')
+        self.assertVline('x\nx\n|xx\n|x\n')
+        self.assertBell()

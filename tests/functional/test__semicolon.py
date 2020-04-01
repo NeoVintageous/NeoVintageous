@@ -76,3 +76,12 @@ class Test_semicolon(unittest.FunctionalTestCase):
         self.assertRVisual('_x_|_x__x__|x__x__x__x_')
         self.feed('4;')
         self.assertVisual('_x__x__x_|_x__x__|x__x_')
+
+    @unittest.mock_bell()
+    def test_V(self):
+        self.eq('|xx\nx\nx\nx\n', 'n_fx', 'x|x\nx\nx\nx\n')
+        self.feed('V')
+        self.assertVline('|xx\n|x\nx\nx\n')
+        self.feed(';')
+        self.assertVline('|xx\n|x\nx\nx\n')
+        self.assertBell()
