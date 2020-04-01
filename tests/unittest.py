@@ -1077,14 +1077,14 @@ def _make_region(view, a: int, b: int = None) -> Region:
 
 
 def mock_bell():
-    """Mock the UI bell.
+    """Mock bells.
 
     Usage:
 
     @unittest.mock_bell()
     def test(self):
         self.assertBell()
-        self.assertBell('status message')
+        self.assertBell('message')
         self.assertBellCount(2)
         self.assertNoBell()
 
@@ -1099,27 +1099,26 @@ def mock_bell():
 
         @mock.patch(patch)
         def wrapped(self, *args, **kwargs):
-            mock = args[-1]
-
-            self.bells = [mock]
-
-            def _bell_call_count() -> int:
-                bell_count = 0
-                for bell in self.bells:
-                    bell_count += bell.call_count
-
-                return bell_count
-
-            def _assertBellCount(count: int) -> None:
-                self.assertEquals(count, _bell_call_count(), 'expects %s bell' % count)
+            self.bell = args[-1]
+            self.assert_bell_count = 0
 
             def _assertBell(msg: str = None) -> None:
-                _assertBellCount(1)
-                if msg:
-                    self.bells[0].assert_called_once_with(msg)
+                if msg is None:
+                    self.bell.assert_called_with()
+                else:
+                    self.bell.assert_called_with(msg)
+
+                self.assert_bell_count += 1
+                self.assertEqual(
+                    self.bell.call_count,
+                    self.assert_bell_count,
+                    'expects %s bell(s)' % self.assert_bell_count)
+
+            def _assertBellCount(count: int) -> None:
+                self.assertEquals(count, self.bell.call_count, 'expects %s bell' % count)
 
             def _assertNoBell() -> None:
-                self.assertEquals(0, _bell_call_count(), 'expects no bell')
+                self.assertEquals(0, self.bell.call_count, 'expected no bell')
 
             self.assertBell = _assertBell
             self.assertBellCount = _assertBellCount
@@ -1137,7 +1136,7 @@ def mock_hide_panel():
 
     Usage:
 
-    @unitest.mock_hide_panel()
+    @unittest.mock_hide_panel()
     def test(self):
         pass
 
@@ -1153,15 +1152,14 @@ def mock_hide_panel():
 
 
 def mock_status_message():
-    """Mock the status messenger.
+    """Mock status messages.
 
     Usage:
 
-    @unitest.mock_status_message()
+    @unittest.mock_status_message()
     def test(self):
-        self.assertStatusMessage('msg')
-        self.assertStatusMessage('msg', count=3)
-        self.assertStatusMessageCount(5)
+        self.assertStatusMessage('message')
+        self.assertStatusMessageCount(3)
         self.assertNoStatusMessage()
 
     """
@@ -1169,23 +1167,26 @@ def mock_status_message():
         @mock.patch('NeoVintageous.nv.vim._status_message')
         def wrapped(self, *args, **kwargs):
             self.status_message = args[-1]
+            self.assert_status_message_count = 0
 
-            def _assertNoStatusMessage() -> None:
-                self.assertEqual(0, self.status_message.call_count)
+            def _assertStatusMessage(msg: str) -> None:
+                self.status_message.assert_called_with(msg)
 
-            def _assertStatusMessage(msg: str, count: int = 1) -> None:
-                if count > 1:
-                    self.status_message.assert_called_with(msg)
-                    self.assertEqual(count, self.status_message.call_count)
-                else:
-                    self.status_message.assert_called_once_with(msg)
+                self.assert_status_message_count += 1
+                self.assertEqual(
+                    self.status_message.call_count,
+                    self.assert_status_message_count,
+                    'expects %s status message(s)' % self.assert_status_message_count)
 
             def _assertStatusMessageCount(expected) -> None:
                 self.assertEqual(expected, self.status_message.call_count)
 
-            self.assertNoStatusMessage = _assertNoStatusMessage
+            def _assertNoStatusMessage() -> None:
+                self.assertEqual(0, self.status_message.call_count)
+
             self.assertStatusMessage = _assertStatusMessage
             self.assertStatusMessageCount = _assertStatusMessageCount
+            self.assertNoStatusMessage = _assertNoStatusMessage
 
             return f(self, *args[:-1], **kwargs)
         return wrapped
@@ -1224,15 +1225,15 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
 
     Usage:
 
-    @unitest.mock_ui()
+    @unittest.mock_ui()
     def test(self):
         pass
 
-    @unitest.mock_ui(screen_rows=10)
+    @unittest.mock_ui(screen_rows=10)
     def test(self):
         pass
 
-    @unitest.mock_ui(visible_region=(2, 7))
+    @unittest.mock_ui(visible_region=(2, 7))
     def test(self):
         pass
 
@@ -1300,7 +1301,7 @@ def mock_run_commands(*methods):
 
     Usage:
 
-    @unitest.mock_run_commands('redo', 'hide_panel')
+    @unittest.mock_run_commands('redo', 'hide_panel')
     def test(self):
         self.assertRunCommand('redo')
         self.assertRunCommand('redo', count=3)

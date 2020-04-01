@@ -30,6 +30,4 @@ class Test_gf(unittest.FunctionalTestCase):
     def test_gf_no_file_name_under_cursor(self, open_file):
         self.eq('|', 'n_gf', '|')
         self.assertMockNotCalled(open_file)
-        self.eq(' | ', 'n_gf', ' | ')
-        self.assertMockNotCalled(open_file)
-        self.assertStatusMessage('E446: No file name under cursor', count=2)
+        self.assertStatusMessage('E446: No file name under cursor')
