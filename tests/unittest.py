@@ -436,6 +436,12 @@ class ViewTestCase(unittest.TestCase):
     def assertSearchIncremental(self, expected: str, msg: str = None) -> None:
         self._assertContentRegion('_nv_search_inc', expected, msg)
 
+    def assertNoSearch(self) -> None:
+        content = self.content()
+        self.assertSearch(content)
+        self.assertSearchCurrent(content)
+        self.assertSearchIncremental(content)
+
     def setLastSearch(self, term: str) -> None:
         _set_last_buffer_search(self.view, term)
 

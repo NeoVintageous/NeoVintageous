@@ -125,6 +125,17 @@ class Test_star(unittest.FunctionalTestCase):
         self.eq('x | x', 'n_*', 'x | x')
         self.assertStatusMessage('E348: No string under cursor')
 
+    def test_n_disable_hlsearch(self):
+        self.normal('a|bc\nabc\nabc\n')
+        self.set_option('hlsearch', False)
+        self.feed('n_*')
+        self.assertNormal('abc\n|abc\nabc\n')
+        self.assertNoSearch()
+        self.set_option('hlsearch', True)
+        self.feed('n_*')
+        self.assertNormal('abc\nabc\n|abc\n')
+        self.assertSearch('|abc|\n|abc|\n|abc|\n')
+
     def test_v(self):
         self.eq('ab|c\nx\nabc\nx', 'v_*', 'ab|c\nx\na|bc\nx')
         self.eq('ab|c\nx\nx abc x\nx', 'v_*', 'ab|c\nx\nx a|bc x\nx')
