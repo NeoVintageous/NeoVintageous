@@ -1090,14 +1090,7 @@ def mock_bell():
 
     """
     def wrapper(f):
-
-        # Hack to make sure the right imported ui_bell function is mocked.
-        if f.__module__.endswith('nv.test_ex_cmds'):
-            patch = 'NeoVintageous.nv.ex_cmds.ui_bell'
-        else:
-            patch = 'NeoVintageous.nv.commands.ui_bell'
-
-        @mock.patch(patch)
+        @mock.patch('NeoVintageous.nv.ui._ui_bell')
         def wrapped(self, *args, **kwargs):
             self.bell = args[-1]
             self.assert_bell_count = 0

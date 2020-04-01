@@ -29,7 +29,7 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vim import status_message
 
 
-def ui_bell(msg: str = None) -> None:
+def _ui_bell(*msg: str) -> None:
     window = active_window()
     if not window:
         return
@@ -39,7 +39,7 @@ def ui_bell(msg: str = None) -> None:
         return
 
     if msg:
-        status_message(msg)
+        status_message(*msg)
 
     if get_option(view, 'belloff') == 'all':
         return
@@ -88,6 +88,10 @@ def ui_bell(msg: str = None) -> None:
                 set_timeout(do_blink, delay)
 
         do_blink()
+
+
+def ui_bell(*args: str) -> None:
+    _ui_bell(*args)
 
 
 _REGION_FLAGS = {
