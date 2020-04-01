@@ -1787,7 +1787,7 @@ class ViShowFileStatus(ViOperatorDef):
         }
 
 
-@assign(seqs.BIG_Z_BIG_Q, ACTION_MODES)
+@assign(seqs.BIG_Z_BIG_Q, (NORMAL,))
 class ViExitEditor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1800,7 +1800,7 @@ class ViExitEditor(ViOperatorDef):
         }
 
 
-@assign(seqs.BIG_Z_BIG_Z, ACTION_MODES)
+@assign(seqs.BIG_Z_BIG_Z, (NORMAL,))
 class ViCloseFile(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
