@@ -245,6 +245,18 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.assertNormal(':cd sub/|')
 
     @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
+    def test_c_cd_existing_path(self):
+        set_cmdline_cwd(self.fixturePath('cwd'))
+        self.eq(':cd s|', '<tab>', ':cd sub/|')
+        self.feed('<tab>')
+        self.assertNormal(':cd sub2/|')
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
+    def test_c_cd_non_existing_path(self):
+        set_cmdline_cwd(self.fixturePath('cwd'))
+        self.eq(':cd x|', '<tab>', ':cd x|')
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
     def test_c_tab_edit_completion_backup(self):
         set_cmdline_cwd(self.fixturePath('cwd', 'sub'))
         for cmd in (':edit', ':e', ':tabedit', ':split', ':sp', ':vsplit', ':vs'):
