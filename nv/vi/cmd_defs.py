@@ -2516,6 +2516,7 @@ class ViPercent(ViMotionDef):
         }
 
 
+@assign(seqs.BACKSLASH, MOTION_MODES)
 @assign(seqs.COMMA, MOTION_MODES)
 class ViRepeatCharSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
