@@ -114,8 +114,6 @@ class _nv_commentary_command(TextCommand):
             _do_cc(self.view, edit, **kwargs)
         elif action == 'C':
             _do_C(self.view, edit, **kwargs)
-        else:
-            raise Exception('unknown action')
 
 
 def _do_c(view, edit, mode, count=1, motion=None):

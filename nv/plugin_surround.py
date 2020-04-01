@@ -197,8 +197,6 @@ class _nv_surround_command(TextCommand):
             _do_ds(self.view, edit, **kwargs)
         elif action == 'ys':
             _do_ys(self.view, edit, **kwargs)
-        else:
-            raise Exception('unknown action')
 
 
 _PUNCTUATION_MARKS = {
