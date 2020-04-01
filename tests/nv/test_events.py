@@ -256,6 +256,55 @@ class OnLoadDoModeline(unittest.ViewTestCase):
         self.assertMockNotCalled(do_modeline)
 
 
+class TestOnActivated(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.events = NeoVintageousEvents()
+
+    def test_default_mode_enters_normal_mode(self):
+        self.insert('fi|zz')
+        self.events.on_activated(self.view)
+        self.assertNormal('fi|zz')
+        self.normal('fi|zz')
+        self.events.on_activated(self.view)
+        self.assertNormal('fi|zz')
+
+    def test_can_set_default_mode_insert(self):
+        self.normal('fi|zz')
+        self.set_setting('default_mode', 'insert')
+        self.events.on_activated(self.view)
+        self.assertInsert('fi|zz')
+        self.set_setting('default_mode', '')
+        self.events.on_activated(self.view)
+        self.assertNormal('fi|zz')
+
+    def test_default_mode_does_not_change_mode_for_visual_modes(self):
+        for default_mode in ('insert', ''):
+            self.visual('f|iz|z')
+            self.set_setting('default_mode', default_mode)
+            self.events.on_activated(self.view)
+            self.assertVisual('f|iz|z')
+            self.vline('|1\n|2')
+            self.events.on_activated(self.view)
+            self.assertVline('|1\n|2')
+            self.vblock('|1|\n|2|\n')
+            self.events.on_activated(self.view)
+            self.assertVblock('|1|\n|2|\n')
+
+    def test_wwhen_reset_mode_when_switching_tabs_is_false_the_mode_is_not_reset(self):
+        self.normal('fi|zz')
+        self.set_setting('reset_mode_when_switching_tabs', False)
+        self.events.on_activated(self.view)
+        self.assertNormal('fi|zz')
+        self.insert('fi|zz')
+        self.events.on_activated(self.view)
+        self.assertInsert('fi|zz')
+        self.visual('f|iz|z')
+        self.events.on_activated(self.view)
+        self.assertVisual('f|iz|z')
+
+
 class TestOnPostSave(unittest.ViewTestCase):
 
     def setUp(self):
