@@ -99,6 +99,15 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 #                                         ^^^^^^^^^^^^^^^^^  entity.name
 #                                                             ^^^^  entity.name
 
+    boolean     can only be on or off       *boolean* *toggle*
+#   ^ -storage
+#                                            ^ entity.name
+#                                                      ^ entity.name
+
+gk      or                  *gk* *g<Up>*
+#<- -storage
+#       ^^ -storage
+
 <kMultiply> keypad *            *keypad-multiply*
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity.name
 #                                ^^^^^^^^^^^^^^^  entity.name
@@ -217,10 +226,14 @@ CHANGE LIST JUMPS           *changelist* *change-list-jumps* *E664*
 # ^^^^^^^^^^^^ markup.raw.inline
 . CTRL-.
 # ^^^^^^ markup.raw.inline
+. CTRL-W_CTRL-Z
+# ^^^^^^^^^^^^^ markup.raw.inline
 . META-.
 # ^^^^^^ markup.raw.inline
 . ALT-.
 # ^^^^^ markup.raw.inline
+. ALT-Esc
+# ^^^^^^^ markup.raw.inline
 
 . {Visual}
 # ^^^^^^^^ markup.raw.inline
@@ -270,6 +283,9 @@ https://example.com/X/Y
 https://example.com/1/2
 ^^^^^^^^^^^^^^^^^^^^^^^ markup.underline.link
 
+Vim FAQ:      https://vimhelp.appspot.com/vim_faq.txt.html
+                                        ^^^^^^^^^^^^^^^^^^ markup.underline.link
+
     *Todo ...
     ^^^^^^^^^ markup.ignored
     *Error ...
@@ -295,14 +311,16 @@ Inline `code with space` ...
     # ^ -markup.raw
 
 Text: >
-    # ^ markup.raw.block
+    # ^ punctuation.definition conceal
+    # ^ -markup.raw
     code...
     # ^^^^^ markup.raw.block
 Text at zero column terminates code block
 # ^ -markup.raw
 
 Text: >
-    # ^ markup.raw.block
+    # ^ punctuation.definition conceal
+    # ^ -markup.raw
     code...
     # ^ markup.raw.block
     <
@@ -311,8 +329,9 @@ Text: >
     # ^ -markup.raw
 
                             *E140*  >
-  #                         ^^^^^^^^ -markup.raw
-  #                                 ^ markup.raw.block
+  #                         ^^^^^^^ -markup.raw
+  #                                 ^ punctuation.definition conceal
+  #                                 ^ -markup.raw
   code...
   # ^ markup.raw.block
 
@@ -337,15 +356,83 @@ Messages
 # ^^ -markup.raw
 
 ...text: >
-    # ^^^ -markup.raw.block
-    #    ^ markup.raw.block
+    # ^^ -markup.raw.block
+    #    ^ punctuation.definition conceal
+    #    ^ -markup.raw.block
     code...
     # ^ markup.raw.block
 <   Text: >
-    # ^^^^ -markup.raw.block
-    #     ^ markup.raw.block
+    # ^^^ -markup.raw.block
+    #     ^ punctuation.definition conceal
+    #     ^ -markup.raw.block
     code...
     # ^ markup.raw.block
 
 Text
 # ^ -markup.raw.block
+
+            timestamp in the first line: >
+
+                :keepjumps exe "normal " . lnum . "G"
+<
+# <- conceal
+
+            - the Visual area '< and '>
+            - line numbers in placed signs
+#           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -markup
+            - line numbers in quickfix positions
+
+
+a`                          *v_a`* *a`*
+# <- -markup
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -markup
+#                            ^^^^ entity.name
+#                                   ^^ entity.name
+
+i`                          *v_i`* *i`*
+# <- -markup
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ -markup
+#                            ^^^^ entity.name
+#                                   ^^ entity.name
+
+                %
+             <----->
+#            ^^^^^^^ -markup
+        if (a == (b * c) / d) ~
+           <---------------->
+#          ^^ -markup
+                %
+
+    We use a computer that became the cummin winter. ~
+#   ^^ string
+#                                                    ^ punctuation.definition conceal
+              xxxx              xxxx
+<  shiftwidth=4 ~
+#  ^ string
+
+Tuning Vim ~
+#    ^^^ string
+
+Text: >
+
+    :set iskeyword
+<     iskeyword=@,48-57,_,192-255 ~
+#<- punctuation.definition conceal
+#^^^^^ -markup
+
+                                 *E662*
+#^^^^^ -storage
+
+                            *g;* *E662*
+#^^^^^ -storage
+
+            newest entry position.  The first column indicates the
+            count needed to take you to this position.  Example:
+
+                change line  col text ~
+                    3     9    8 bla bla bla
+                    2    11   57 foo is a bar
+                    1    14   54 the latest changed line
+                >
+
+            The `3g;` command takes you to line 9.  Then the
