@@ -1433,6 +1433,22 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_W_BIG_W, ACTION_MODES)
+class ViCtrlW_W(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, view):
+        return {
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'W',
+                'count': get_count(view)
+            }
+        }
+
+
 @assign(seqs.CTRL_W_X, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_X, ACTION_MODES)
 class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):

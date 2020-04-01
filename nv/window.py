@@ -635,6 +635,8 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
         _move_active_view_to_very_top(window)
     elif action == 'L':
         _move_active_view_to_far_right(window)
+    elif action == 'W':
+        window_buffer_control(window, 'goto', count)
     elif action == 'c':
         _close_active_view(window)
     elif action == '=':
