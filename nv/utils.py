@@ -530,6 +530,10 @@ def scroll_viewport_position(view, number_of_scroll_lines: int, forward: bool = 
 
 
 def get_option_scroll(view) -> int:
+    # Number of lines to scroll with CTRL-U and CTRL-D commands. Will be set to
+    # half the number of lines in the window when the window size changes. If
+    # you give a count to the CTRL-U or CTRL-D command it will be used as the
+    # new value for 'scroll'.
     line_height = view.line_height()
     viewport_extent = view.viewport_extent()
     line_count = viewport_extent[1] / line_height
