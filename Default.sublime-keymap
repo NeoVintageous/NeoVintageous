@@ -22,6 +22,10 @@
     {"keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
+    // Common "Two-key" "map-to-Esc" from insert mode combinations.
+    { "keys": ["j", "j"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jj"}]},
+    { "keys": ["j", "k"], "command": "_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jk"}]},
+
     // Command-line output
     {"keys": ["enter"], "command": "show_panel", "args": {"panel": "output.Command-line", "toggle": true}, "context": [{"key": "setting.nv_cmdline_output"}]},
 

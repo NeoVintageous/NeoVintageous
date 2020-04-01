@@ -949,6 +949,8 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_enable_sublime'	neovintageous.txt	/*'vintageous_enable_sublime'*
 'vintageous_enable_surround'	neovintageous.txt	/*'vintageous_enable_surround'*
 'vintageous_enable_unimpaired'	neovintageous.txt	/*'vintageous_enable_unimpaired'*
+'vintageous_i_escape_jj'	neovintageous.txt	/*'vintageous_i_escape_jj'*
+'vintageous_i_escape_jk'	neovintageous.txt	/*'vintageous_i_escape_jk'*
 'vintageous_multi_cursor_exit_from_visual_mode'	neovintageous.txt	/*'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_reset_mode_when_switching_tabs'	neovintageous.txt	/*'vintageous_reset_mode_when_switching_tabs'*
 'vintageous_shell_silent'	neovintageous.txt	/*'vintageous_shell_silent'*

@@ -664,6 +664,16 @@ List of available settings:
                         boolean (default on)
         Plugin: A port of https://github.com/tpope/vim-unimpaired.
 
+                                              *'vintageous_i_escape_jj'*
+'vintageous_i_escape_jj'
+                        boolean (default off)
+        If set to true, then pressing jj in insert mode maps to <Esc>.
+
+                                              *'vintageous_i_escape_jk'*
+'vintageous_i_escape_jk'
+                        boolean (default off)
+        If set to true, then pressing jk in insert mode maps to <Esc>.
+
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
                         boolean (default off)
@@ -719,25 +729,14 @@ command when holding it down, run this once at the terminal: >
 
 ------------------------------------------------------------------------------
 
-Mapping jj or jk to Esc                                            *nv-escape*
+Custom key bindings in insert mode                                 *nv-escape*
 
-`Menu > Preferences > Key Bindings`
-
-jj -> Esc: >
-
-    {
-        "keys": ["j", "j"],
-        "command": "_enter_normal_mode",
-        "args": {"mode": "mode_insert"},
-        "context": [{"key": "vi_insert_mode_aware"}]
-    }
-
-jk -> Esc: >
+If you need a custom insert mode key binding you can use the
+"vi_insert_mode_aware" context in your key binding: >
 
     {
-        "keys": ["j", "k"],
-        "command": "_enter_normal_mode",
-        "args": {"mode": "mode_insert"},
+        "keys": [...],
+        "command": "...",
         "context": [{"key": "vi_insert_mode_aware"}]
     }
 
