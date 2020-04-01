@@ -182,11 +182,11 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
     def test_search_backward(self):
         self.write('ab\ncd\nx\nabcd\ny\nz\n')
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchBackward('foobar'), 0)
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: foo'):
+            _resolve_line_number(self.view, TokenSearchBackward('foo'), 0)
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchBackward('foobar'), 100)
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: bar'):
+            _resolve_line_number(self.view, TokenSearchBackward('bar'), 100)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 100), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 5), 3)
@@ -194,35 +194,35 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 3), 0)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 2), 0)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 1), 0)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: a'):
             _resolve_line_number(self.view, TokenSearchBackward('a'), 0)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('bc'), 5), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('bc'), 4), 3)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: bc'):
             _resolve_line_number(self.view, TokenSearchBackward('bc'), 3)
 
     def test_search_forward(self):
         self.write('ab\ncd\nx\nabcd\ny\nz\n')
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchForward('foobar'), 0)
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: foo'):
+            _resolve_line_number(self.view, TokenSearchForward('foo'), 0)
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchForward('foobar'), 100)
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: bar'):
+            _resolve_line_number(self.view, TokenSearchForward('bar'), 100)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 0), 0)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 1), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 2), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 3), 3)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: a'):
             _resolve_line_number(self.view, TokenSearchForward('a'), 4)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 0), 1)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 1), 1)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 2), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 3), 3)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: cd'):
             _resolve_line_number(self.view, TokenSearchForward('cd'), 4)
 
 

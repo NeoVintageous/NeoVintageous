@@ -61,5 +61,18 @@ class Test_ex_delete(unittest.FunctionalTestCase):
         self.eq('|1\n2\n3\n4\n5\n6\n7\n8', ':+3+2delete', '1\n2\n3\n4\n5\n|7\n8')
         self.eq('|1\n2\n3\n4\n5\n6\n7\n8', ':+3,6delete', '1\n2\n3\n|7\n8')
 
+    @unittest.mock_bell()
+    def test_n_search_ranges(self):
+        self.eq('|1\n2\nx3x\n4\n', ':/3/delete', '1\n2\n|4\n')
+        self.eq('1\nx2x\n3\n|4\n', ':?2?delete', '1\n|3\n4\n')
+        self.assertNoBell()
+
+    @unittest.mock_bell()
+    def test_n_bells(self):
+        self.eq('f|izz', ':/down/delete', 'f|izz')
+        self.assertBell('E385: Search hit BOTTOM without match for: down')
+        self.eq('f|izz', ':?up?delete', 'f|izz')
+        self.assertBell('E384: Search hit TOP without match for: up')
+
     def test_v(self):
         self.eq('1\n2|2\n33\n4|4\n5\n', ":'<,'>delete", 'n_1\n|5\n')

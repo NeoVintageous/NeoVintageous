@@ -9,6 +9,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#721](https://github.com/NeoVintageous/NeoVintageous/issues/721): `<bslash>` alias to `,`
 * Added [#722](https://github.com/NeoVintageous/NeoVintageous/issues/722): `:set inv{option}` alias for `:set{option}!`
 * Added [#726](https://github.com/NeoVintageous/NeoVintageous/issues/726): `f`, `F`, `t`, `T`, `;`, and `,` now emit a visual bell on noop's
+* Added [#724](https://github.com/NeoVintageous/NeoVintageous/issues/724): Ex mode operation noop's now emit a visual bell
 
 ### Changed
 

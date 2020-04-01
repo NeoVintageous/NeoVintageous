@@ -30,3 +30,20 @@ class Test_ex_yank(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('1x\n|2x\n3x\n4x\n5x', ':2,4yank b', '1x\n|2x\n3x\n4x\n5x')
         self.assertRegisters('"b', '2x\n3x\n4x\n')
         self.assertRegistersEmpty('-01a')
+
+    def test_yank_marks(self):
+        self.normal('1\n|2\n3\n4\n5\n')
+        self.feed('ma')
+        self.feed('2j')
+        self.feed('mx')
+        self.feed('gg')
+        self.feed(":'a,'xyank")
+        self.assertRegisters('"0', '2\n3\n4\n')
+        self.assertRegistersEmpty('-1')
+
+    @unittest.mock_bell()
+    def test_yank_mark_not_set(self):
+        self.normal('1\n|2\n3\n4\n5\n')
+        self.feed(":'a,'xyank")
+        self.assertRegistersEmpty('"-01')
+        self.assertBell('E20: mark not set')

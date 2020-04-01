@@ -240,7 +240,12 @@ def ex_cquit(window, **kwargs) -> None:
 
 
 def ex_delete(view, edit, register: str, line_range: RangeNode, global_lines=None, **kwargs) -> None:
-    r = line_range.resolve(view)
+    try:
+        r = line_range.resolve(view)
+    except ValueError as e:
+        ui_bell(str(e))
+        return
+
     if r == Region(-1, -1):
         r = view.full_line(0)
 
@@ -1288,7 +1293,13 @@ def ex_yank(view, register: str, line_range: RangeNode, **kwargs) -> None:
     if not register:
         register = '"'
 
-    text = view.substr(line_range.resolve(view))
+    try:
+        resolved = line_range.resolve(view)
+    except ValueError as e:
+        ui_bell(str(e))
+        return
+
+    text = view.substr(resolved)
     registers_set(view, register, [text])
 
     if register == '"':
