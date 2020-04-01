@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#727](https://github.com/NeoVintageous/NeoVintageous/issues/727): Display "h" indicator for hidden views in `:ls` output
 * Added [#720](https://github.com/NeoVintageous/NeoVintageous/issues/720): `<C-w>W [N]` go to {id} view
 * Added [#721](https://github.com/NeoVintageous/NeoVintageous/issues/721): `<bslash>` alias to `,`
 * Added [#722](https://github.com/NeoVintageous/NeoVintageous/issues/722): `:set inv{option}` alias for `:set{option}!`

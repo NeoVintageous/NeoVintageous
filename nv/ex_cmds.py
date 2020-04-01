@@ -174,9 +174,13 @@ def ex_buffers(window, **kwargs) -> None:
         readonly_indicator = '=' if view.is_read_only() or _is_read_only(view.file_name()) else ' '
         modified_indicator = '+' if view.is_dirty() else ' '
 
-        return '%5d %sa%s%s "%s"' % (
+        active_group_view = window.active_view_in_group(window.get_view_index(view)[0])
+        visibility_indicator = 'a' if active_group_view and view.id() == active_group_view.id() else 'h'
+
+        return '%5d %s%s%s%s "%s"' % (
             view.id(),
             current_indicator,
+            visibility_indicator,
             readonly_indicator,
             modified_indicator,
             path
