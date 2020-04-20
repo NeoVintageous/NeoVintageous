@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from functools import partial
 import logging
 import re
 import textwrap
@@ -2110,17 +2109,17 @@ class _vi_greater_than_greater_than(TextCommand):
 class _vi_greater_than(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
-        def indent_from_begin(view, s, level=1):
-            block = '\t' if not translate else ' ' * size
-            self.view.insert(edit, s.begin(), block * level)
-            return Region(s.begin() + 1)
-
         if mode == VISUAL_BLOCK:
             translate = self.view.settings().get('translate_tabs_to_spaces')
             size = self.view.settings().get('tab_size')
-            indent = partial(indent_from_begin, level=count)
 
-            regions_transformer_reversed(self.view, indent)
+            def f(view, s):
+                block = '\t' if not translate else ' ' * size
+                self.view.insert(edit, s.begin(), block * count)
+
+                return Region(s.begin() + 1)
+
+            regions_transformer_reversed(self.view, f)
             regions_transform_to_first_non_blank(self.view)
 
             # Restore only the first sel.
