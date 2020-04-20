@@ -6,24 +6,24 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#457](https://github.com/NeoVintageous/NeoVintageous/issues/457): Initial port of vim-sneak (includes most commands except label-modes)
-* Added [#718](https://github.com/NeoVintageous/NeoVintageous/issues/718): Add settings to enable common  `jj` and `jk` map to escape from insert mode
+* Added [#457](https://github.com/NeoVintageous/NeoVintageous/issues/457): Port of vim-sneak; includes most features except label-modes
+* Added [#718](https://github.com/NeoVintageous/NeoVintageous/issues/718): Settings to more easily enable mapping `jj` and `jk` to escape from insert mode
 * Added [#727](https://github.com/NeoVintageous/NeoVintageous/issues/727): Display "h" indicator for hidden views in `:ls` output
-* Added [#720](https://github.com/NeoVintageous/NeoVintageous/issues/720): `<C-w>W [N]` go to {id} view
-* Added [#721](https://github.com/NeoVintageous/NeoVintageous/issues/721): `<bslash>` alias to `,`
-* Added [#722](https://github.com/NeoVintageous/NeoVintageous/issues/722): `:set inv{option}` alias for `:set{option}!`
-* Added [#726](https://github.com/NeoVintageous/NeoVintageous/issues/726): `f`, `F`, `t`, `T`, `;`, and `,` now emit a visual bell on noop's
-* Added [#724](https://github.com/NeoVintageous/NeoVintageous/issues/724): Ex mode operation noop's now emit a visual bell
+* Added [#720](https://github.com/NeoVintageous/NeoVintageous/issues/720): `<C-w>W [N]` go to view by id
+* Added [#721](https://github.com/NeoVintageous/NeoVintageous/issues/721): Alias `<bslash>` to `,`
+* Added [#722](https://github.com/NeoVintageous/NeoVintageous/issues/722): `:set inv{option}` alias of `:set{option}!`
 
 ### Changed
 
-* Changed [#725](https://github.com/NeoVintageous/NeoVintageous/issues/725): `ZZ` and `ZQ` are now only mapped for NORMAL mode
+* Changed [#726](https://github.com/NeoVintageous/NeoVintageous/issues/726): `f`, `F`, `t`, `T`, `;`, and `,` noop now emits a visual bell
+* Changed [#724](https://github.com/NeoVintageous/NeoVintageous/issues/724): Ex mode noop operations now emit a visual bell
+* Changed [#725](https://github.com/NeoVintageous/NeoVintageous/issues/725): `ZZ` and `ZQ` are now only mapped for normal mode
 
 ### Removed
 
-* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_open_my_rc_file` command; use `neovintageous {action=open_rc_file}` instead
-* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_reload_my_rc_file` command; use `neovintageous {action=reload_rc_file}` instead
-* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_toggle_side_bar` command; use `neovintageous {action=toggle_side_bar}` instead
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_open_my_rc_file` (cmd); use `neovintageous {action=open_rc_file}` instead
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_reload_my_rc_file` (cmd); use `neovintageous {action=reload_rc_file}` instead
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_toggle_side_bar` (cmd); use `neovintageous {action=toggle_side_bar}` instead
 
 ### Fixed
 
