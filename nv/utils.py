@@ -331,11 +331,11 @@ class SelectionObserver():
         self._view = view
         self._orig_sel = list(view.sel())
 
-    def has_sel_changed(self):
+    def has_sel_changed(self) -> bool:
         # TODO Refactor to use Region() comparison apis
         return not (tuple((s.a, s.b) for s in self._orig_sel) == tuple((s.a, s.b) for s in tuple(self._view.sel())))
 
-    def restore_sel(self):
+    def restore_sel(self) -> None:
         if self.has_sel_changed():
             set_selection(self._view, self._orig_sel)
 

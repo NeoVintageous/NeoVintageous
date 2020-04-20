@@ -34,18 +34,18 @@ __all__ = [
 ]
 
 
-def _coerce_to_mixedcase(string):
+def _coerce_to_mixedcase(string: str) -> str:
     return _coerce_to_spacecase(string).title().replace(' ', '')
 
 
-def _coerce_to_camelcase(string):
+def _coerce_to_camelcase(string: str) -> str:
     string = _coerce_to_spacecase(string).title().replace(' ', '')
     if len(string) > 1:
         return string[0].lower() + string[1:]
     return string.lower()
 
 
-def _coerce_to_snakecase(string):
+def _coerce_to_snakecase(string: str) -> str:
     # https://stackoverflow.com/a/1176023
     # https://github.com/jpvanhal/inflection
     string = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', string)
@@ -54,23 +54,23 @@ def _coerce_to_snakecase(string):
     return string.lower()
 
 
-def _coerce_to_uppercase(string):
+def _coerce_to_uppercase(string: str) -> str:
     return _coerce_to_snakecase(string).upper()
 
 
-def _coerce_to_dashcase(string):
+def _coerce_to_dashcase(string: str) -> str:
     return _coerce_to_snakecase(string).replace('_', '-')
 
 
-def _coerce_to_spacecase(string):
+def _coerce_to_spacecase(string: str) -> str:
     return _coerce_to_snakecase(string).replace('_', ' ')
 
 
-def _coerce_to_dotcase(string):
+def _coerce_to_dotcase(string: str) -> str:
     return _coerce_to_snakecase(string).replace('_', '.')
 
 
-def _coerce_to_titlecase(string):
+def _coerce_to_titlecase(string: str) -> str:
     return _coerce_to_spacecase(string).title()
 
 

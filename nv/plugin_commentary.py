@@ -140,7 +140,7 @@ def _do_c(view, edit, mode, count=1, motion=None):
     enter_normal_mode(view, mode)
 
 
-def _do_cc(view, edit, mode, count=1):
+def _do_cc(view, edit, mode: str, count: int = 1) -> None:
     def f(view, s):
         if mode == INTERNAL_NORMAL:
             view.run_command('toggle_comment')
@@ -153,7 +153,7 @@ def _do_cc(view, edit, mode, count=1):
 
         return s
 
-    def _motion(view, edit, mode, count):
+    def _motion(view, edit, mode: str, count: int) -> None:
         def f(view, s):
             if mode == INTERNAL_NORMAL:
                 end = view.text_point(row_at(view, s.b) + (count - 1), 0)
@@ -185,7 +185,7 @@ def _do_cc(view, edit, mode, count=1):
     set_selection(view, pt)
 
 
-def _do_C(view, edit, mode, count=1, motion=None):
+def _do_C(view, edit, mode: str, count: int = 1, motion=None) -> None:
     def f(view, s):
         return Region(s.begin())
 

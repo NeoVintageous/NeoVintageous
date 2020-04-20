@@ -59,7 +59,7 @@ def _ui_bell(*msg: str) -> None:
     if style == 'view':
         settings.set('color_scheme', color_scheme)
 
-        def remove_bell():
+        def remove_bell() -> None:
             settings.erase('color_scheme')
 
         set_timeout(remove_bell, duration)
@@ -71,7 +71,7 @@ def _ui_bell(*msg: str) -> None:
                 view.settings().set('color_scheme', color_scheme)
                 views.append(view)
 
-        def remove_bell():
+        def remove_bell() -> None:
             for view in views:
                 view.settings().erase('color_scheme')
 
@@ -80,7 +80,7 @@ def _ui_bell(*msg: str) -> None:
         # Ensure we leave the setting as we found it.
         times = times if (times % 2) == 0 else times + 1
 
-        def do_blink():
+        def do_blink() -> None:
             nonlocal times
             if times > 0:
                 settings.set('highlight_line', not settings.get('highlight_line'))
