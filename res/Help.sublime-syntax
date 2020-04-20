@@ -36,6 +36,12 @@ contexts:
     - match: '\b(CTRL|META|ALT)-(SHIFT-)?[^\s]+'
       scope: markup.raw.inline.neovintageous jumptag
 
+    - match: ':[a-zA-Z]+\[[a-zA-Z]+\]'
+      scope: command.neovintageous
+
+    - match: ':[a-zA-Z]+[a-zA-Z]+\b'
+      scope: jumptag
+
     - match: ^\s+\*Note\s+.*$
       scope: markup.inserted.neovintageous
 
@@ -54,9 +60,6 @@ contexts:
         - include: jumptags
         - match: .
           scope: markup.raw.inline.neovintageous
-
-    - match: ':[a-zA-Z]+\[[a-zA-Z]+\]'
-      scope: command.neovintageous
 
     - match: \=|-{78}
       scope: comment.neovintageous

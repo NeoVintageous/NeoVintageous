@@ -189,6 +189,9 @@ gk      or                  *gk* *g<Up>*
 #  ^^^^^^^ markup.raw.inline
 .. :foo[bar]
 #  ^^^^^^^^^ -markup.raw.inline
+.. ":foo"
+#  ^^^^^ -markup.raw.inline
+#   ^^^^ jumptag
 
 .. <C-G>
 #  ^^^^^ markup.raw.inline
