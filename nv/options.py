@@ -167,8 +167,8 @@ def _get_default_shell() -> str:
         return os.environ.get('SHELL', 'sh')
     elif sys.platform.startswith('win'):
         return 'cmd.exe'
-
-    return ''
+    else:
+        return ''
 
 
 _options = {
