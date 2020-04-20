@@ -83,7 +83,7 @@ class Sneaks(SneakInputMotion):
 
 
 @register(seqs.BIG_S, (NORMAL,))
-@register(seqs.BIG_Z, (VISUAL, VISUAL_LINE, OPERATOR_PENDING,))
+@register(seqs.BIG_Z, (VISUAL, VISUAL_LINE, OPERATOR_PENDING))
 class SneakS(SneakInputMotion):
     def translate(self, view):
         return {
