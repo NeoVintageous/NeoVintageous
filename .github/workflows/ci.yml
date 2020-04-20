@@ -24,7 +24,7 @@ jobs:
           sh github.sh run_syntax_tests
 
   macos:
-    runs-on: macOS-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
       - run: curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.sh
