@@ -18,7 +18,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Changed
 
 * Changed [#725](https://github.com/NeoVintageous/NeoVintageous/issues/725): `ZZ` and `ZQ` are now only mapped for NORMAL mode
-* Changed [#710](https://github.com/NeoVintageous/NeoVintageous/issues/710): The default search occurrence style is "outline" (previously "fill")
 
 ### Removed
 

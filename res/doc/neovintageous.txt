@@ -703,7 +703,7 @@ List of available settings:
 
                                              *'neovintageous_search_occ_style'*
 'neovintageous_search_occ_style'
-                        string (default "outline")
+                        string (default "fill")
         The search occurrences style. Valid values: fill, outline, underline,
         squiggly_underline, stippled_underline.
 

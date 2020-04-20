@@ -23,7 +23,7 @@
     // Search occurences style.
     // Valid values are: fill, outline, underline, squiggly_underline,
     // stippled_underline.
-    "neovintageous_search_occ_style": "outline",
+    "neovintageous_search_occ_style": "fill",
 
     // Visual bell style.
     // Valid values are: blink, view, or views.
