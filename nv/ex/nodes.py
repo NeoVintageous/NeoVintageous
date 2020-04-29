@@ -28,13 +28,8 @@ from NeoVintageous.nv.ex.tokens import TokenSearchBackward
 from NeoVintageous.nv.ex.tokens import TokenSearchForward
 from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.polyfill import view_to_region
-from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vi.search import reverse_search_by_pt
-
-
-class Node:
-    pass
 
 
 def _resolve_line_number(view, token, current: int) -> int:
@@ -60,14 +55,14 @@ def _resolve_line_number(view, token, current: int) -> int:
     if isinstance(token, TokenSearchForward):
         match = view.find(token.content, view.text_point(current, 0))
         if not match:
-            raise ValueError('pattern not found')
+            raise ValueError('E385: Search hit BOTTOM without match for: ' + token.content)
 
         return row_at(view, match.a)
 
     if isinstance(token, TokenSearchBackward):
         match = reverse_search_by_pt(view, token.content, 0, view.text_point(current, 0))
         if not match:
-            raise ValueError('pattern not found')
+            raise ValueError('E384: Search hit TOP without match for: ' + token.content)
 
         return row_at(view, match.a)
 
@@ -91,8 +86,7 @@ def _resolve_line_number(view, token, current: int) -> int:
         elif token.content in tuple('abcdefghijklmnopqrstuvwxyz'):
             mark = get_mark(view, token.content)
             if not isinstance(mark, Region):
-                ui_bell('E20: mark not set')
-                raise ValueError('mark not set')
+                raise ValueError('E20: mark not set')
 
             return view.rowcol(mark.b)[0]
 
@@ -121,7 +115,7 @@ def _resolve_line_reference(view, line_reference, current: int = 0) -> int:
     return current
 
 
-class RangeNode(Node):
+class RangeNode():
 
     # Represents a Vim line range.
 
@@ -173,23 +167,3 @@ class RangeNode(Node):
         end = _resolve_line_reference(view, self.end or [TokenDot()], current=new_start)
 
         return view.full_line(Region(view.text_point(start, 0), view.text_point(end, 0)))
-
-
-class CommandLineNode(Node):
-
-    def __init__(self, line_range, command):
-        # Args:
-        #   :line_range (RangeNode):
-        #   :command (TokenCommand):
-        self.line_range = line_range
-        self.command = command
-
-    def __str__(self) -> str:
-        return '{}{}'.format(str(self.line_range), str(self.command) if self.command else '')
-
-    def validate(self) -> None:
-        if not (self.command and self.line_range):
-            return
-
-        if not self.command.addressable and not self.line_range.is_empty:
-            raise Exception("E481: No range allowed")

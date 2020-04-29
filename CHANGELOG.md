@@ -2,6 +2,38 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.21.0 - Unreleased
+
+### Added
+
+* Added [#457](https://github.com/NeoVintageous/NeoVintageous/issues/457): Port of vim-sneak; includes most features except label-modes
+* Added [#718](https://github.com/NeoVintageous/NeoVintageous/issues/718): Settings to more easily enable mapping `jj` and `jk` to escape from insert mode
+* Added [#727](https://github.com/NeoVintageous/NeoVintageous/issues/727): Display "h" indicator for hidden views in `:ls` output
+* Added [#720](https://github.com/NeoVintageous/NeoVintageous/issues/720): `<C-w>W [N]` go to view by id
+* Added [#721](https://github.com/NeoVintageous/NeoVintageous/issues/721): Alias `<bslash>` to `,`
+* Added [#722](https://github.com/NeoVintageous/NeoVintageous/issues/722): `:set inv{option}` alias of `:set{option}!`
+
+### Changed
+
+* Changed [#726](https://github.com/NeoVintageous/NeoVintageous/issues/726): `f`, `F`, `t`, `T`, `;`, and `,` noop now emits a visual bell
+* Changed [#724](https://github.com/NeoVintageous/NeoVintageous/issues/724): Ex mode noop operations now emit a visual bell
+* Changed [#725](https://github.com/NeoVintageous/NeoVintageous/issues/725): `ZZ` and `ZQ` are now only mapped for normal mode
+
+### Removed
+
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_open_my_rc_file` (cmd); use `neovintageous {action=open_rc_file}` instead
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_reload_my_rc_file` (cmd); use `neovintageous {action=reload_rc_file}` instead
+* Removed [#715](https://github.com/NeoVintageous/NeoVintageous/issues/715): `neovintageous_toggle_side_bar` (cmd); use `neovintageous {action=toggle_side_bar}` instead
+
+### Fixed
+
+* Fixed [#723](https://github.com/NeoVintageous/NeoVintageous/issues/723): Command-line completions should ignore `no{option}` unless prefix "no"
+* Fixed [#717](https://github.com/NeoVintageous/NeoVintageous/issues/717): Ex command ranges should ignore whitespace
+* Fixed [#712](https://github.com/NeoVintageous/NeoVintageous/issues/712): `:help {subject}` is very slow (performance)
+* Fixed [#716](https://github.com/NeoVintageous/NeoVintageous/issues/716): `yol` toggle list sometimes doesn't work (Unimpaired)
+* Fixed [#714](https://github.com/NeoVintageous/NeoVintageous/issues/714): `^V` is not syntax highlighted like `^J` in command-line output bug (UI)
+* Fixed [#709](https://github.com/NeoVintageous/NeoVintageous/issues/709): General performance improvements (performance)
+
 ## 1.20.0 - 2020-03-22
 
 ### Added

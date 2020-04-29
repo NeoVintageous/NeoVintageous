@@ -24,6 +24,13 @@ class Test_i(unittest.FunctionalTestCase):
         self.eq('fi|zz', 'n_i', 'i_fi|zz')
         self.assertStatusLineIsInsert()
 
+    def test_i_count(self):
+        self.normal('fizz |x')
+        self.feed('3i')
+        self.view.run_command('insert', {'characters': 'buzz'})
+        self.feed('<Esc>')
+        self.assertNormal('fizz buzz|buzzbuzzx')
+
     def test_s(self):
         self.eq('fi|zz bu|zz', 's_i', 'i_fizz b|uzz')
         self.eq('r_fi|zz bu|zz', 's_i', 'i_fi|zz buzz')

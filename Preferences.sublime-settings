@@ -25,13 +25,13 @@
     // stippled_underline.
     "neovintageous_search_occ_style": "fill",
 
-    // Visual bell style type.
+    // Visual bell style.
     // Valid values are: blink, view, or views.
     "vintageous_bell": "blink",
 
-    // Visual bell color scheme.
-    // Valid values are: "dark", "light", or color scheme path. The color scheme
-    // path should be in the format Packages/Name/name.hidden-color-scheme
+    // Visual bell color-scheme.
+    // Valid values are: "dark", "light".
+    // Or a color scheme resource path: Packages/Name/name.hidden-color-scheme
     "vintageous_bell_color_scheme": "dark",
 
     // If you do not type anything on a new line e.g. pressing <Esc> after "o"
@@ -47,8 +47,6 @@
     // insert | Enter insert mode when opening or switching views or when
     //          the window receives focus and is not in visual mode i.e. visual
     //          mode selections are retained when the window loses focus.
-    //
-    // {not in Vim}
     "vintageous_default_mode": "",
 
     // Plugin: A port of https://github.com/tpope/vim-abolish.
@@ -60,7 +58,10 @@
     // Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
     "vintageous_enable_multiple_cursors": true,
 
-    // Plugin: Supports specific Sublime Text enhancements and tweaks.
+    // Plugin: A port of https://github.com/justinmk/vim-sneak.
+    "vintageous_enable_sneak": true,
+
+    // Plugin: Sublime Text tweaks.
     "vintageous_enable_sublime": true,
 
     // Plugin: A port of https://github.com/tpope/vim-surround.
@@ -80,7 +81,8 @@
     // Show output panel from shell commands.
     "vintageous_shell_silent": false,
 
-    // Name os terminal to use for commands like :shell to start a shell.
+    // Name of program to use when starting a ":shell".
+    // Example: gnome-terminal
     "vintageous_terminal": null,
 
     // Enable key bindings prefaced by the control-key.

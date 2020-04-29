@@ -73,7 +73,7 @@ def mode_to_name(mode: str) -> str:
         return '*UNKNOWN'
 
 
-def reset_status(view, mode: str) -> None:
+def reset_status_line(view, mode: str) -> None:
     view.erase_status('vim-seq')
     if mode == NORMAL:
         view.erase_status('vim-mode')
@@ -102,24 +102,24 @@ def message(msg: str, *args: str) -> None:
     print('NeoVintageous:', _format_message(msg, *args))
 
 
-def run_window_command(cmd: str, args=None, window=None) -> None:
+def run_window_command(cmd: str, args: dict = None, window=None) -> None:
     if not window:
         window = _active_window()
     _log.info('command: %s %s', cmd, args)
     window.run_command(cmd, args)
 
 
-def run_view_command(view, cmd: str, args=None) -> None:
+def run_view_command(view, cmd: str, args: dict = None) -> None:
     _log.info('command: %s %s', cmd, args)
     view.run_command(cmd, args)
 
 
-def run_motion(instance, motion) -> None:
+def run_motion(instance, motion: dict) -> None:
     _log.info('motion: %s', motion)
     instance.run_command(motion['motion'], motion['motion_args'])
 
 
-def run_action(instance, action) -> None:
+def run_action(instance, action: dict) -> None:
     _log.info('action: %s', action)
     instance.run_command(action['action'], action['action_args'])
 

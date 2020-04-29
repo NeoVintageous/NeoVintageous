@@ -17,7 +17,6 @@
 
 import logging
 
-from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.scanner import Scanner
 from NeoVintageous.nv.ex.tokens import TokenComma
@@ -37,6 +36,26 @@ from NeoVintageous.nv.ex.tokens import TokenSemicolon
 _log = logging.getLogger(__name__)
 
 
+class _ParsedCommandLine():
+
+    def __init__(self, line_range, command):
+        # Args:
+        #   :line_range (RangeNode):
+        #   :command (TokenCommand):
+        self.line_range = line_range
+        self.command = command
+
+    def __str__(self) -> str:
+        return '{}{}'.format(str(self.line_range), str(self.command) if self.command else '')
+
+    def validate(self) -> None:
+        if not (self.command and self.line_range):
+            return
+
+        if not self.command.addressable and not self.line_range.is_empty:
+            raise Exception("E481: No range allowed")
+
+
 class _ParserState:
 
     # Attributes:
@@ -53,7 +72,7 @@ class _ParserState:
         return next(self.tokens)
 
 
-def parse_command_line(source: str) -> CommandLineNode:
+def parse_command_line(source: str) -> _ParsedCommandLine:
     # The parser works its way through the command line by passing the current
     # state to the next parsing function. It stops when no parsing funcion is
     # returned from the previous one.
@@ -61,7 +80,7 @@ def parse_command_line(source: str) -> CommandLineNode:
 
     state = _ParserState(source)
     parse_func = _parse_line_ref
-    command_line = CommandLineNode(None, None)
+    command_line = _ParsedCommandLine(None, None)
     while True:
         parse_func, command_line = parse_func(state, command_line)
         if parse_func is None:
@@ -72,20 +91,19 @@ def parse_command_line(source: str) -> CommandLineNode:
             return command_line
 
 
-def _init_line_range(command_line: CommandLineNode) -> None:
+def resolve_address(view, address: str):
+    _log.debug('parsing address >>>%s<<<', address)
+    return parse_command_line(address).line_range.resolve(view)
+
+
+def _init_line_range(command_line: _ParsedCommandLine) -> None:
     if command_line.line_range:
         return
 
     command_line.line_range = RangeNode()
 
 
-def resolve_address(view, address: str):
-    _log.debug('parsing address >>>%s<<<', address)
-    # TODO [refactor] is parsing the address necessary, if yes, create a parse_address function
-    return parse_command_line(address).line_range.resolve(view)
-
-
-def _parse_line_ref(state, command_line: CommandLineNode) -> tuple:
+def _parse_line_ref(state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
     token = state.next_token()
 
     if isinstance(token, TokenEof):
@@ -156,7 +174,7 @@ def _parse_line_ref(state, command_line: CommandLineNode) -> tuple:
     return None, command_line
 
 
-def _process_mark(token, state, command_line: CommandLineNode) -> tuple:
+def _process_mark(token: TokenMark, state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
     if not state.is_range_start_line_parsed:
         command_line.line_range.start.append(token)
     else:
@@ -165,20 +183,7 @@ def _process_mark(token, state, command_line: CommandLineNode) -> tuple:
     return _parse_line_ref, command_line
 
 
-def _process_percent(token, state, command_line: CommandLineNode) -> tuple:
-    if not state.is_range_start_line_parsed:
-        if command_line.line_range.start:
-            raise ValueError('bad range: {0}'.format(state.scanner.state.source))
-        command_line.line_range.start.append(token)
-    else:
-        if command_line.line_range.end:
-            raise ValueError('bad range: {0}'.format(state.scanner.state.source))
-        command_line.line_range.end.append(token)
-
-    return _parse_line_ref, command_line
-
-
-def _process_dollar(token, state, command_line: CommandLineNode) -> tuple:
+def _process_percent(token: TokenPercent, state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
     if not state.is_range_start_line_parsed:
         if command_line.line_range.start:
             raise ValueError('bad range: {0}'.format(state.scanner.state.source))
@@ -191,7 +196,20 @@ def _process_dollar(token, state, command_line: CommandLineNode) -> tuple:
     return _parse_line_ref, command_line
 
 
-def _process_digits(token, state, command_line: CommandLineNode) -> tuple:
+def _process_dollar(token: TokenDollar, state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
+    if not state.is_range_start_line_parsed:
+        if command_line.line_range.start:
+            raise ValueError('bad range: {0}'.format(state.scanner.state.source))
+        command_line.line_range.start.append(token)
+    else:
+        if command_line.line_range.end:
+            raise ValueError('bad range: {0}'.format(state.scanner.state.source))
+        command_line.line_range.end.append(token)
+
+    return _parse_line_ref, command_line
+
+
+def _process_digits(token: TokenDigits, state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
     if not state.is_range_start_line_parsed:
         if (command_line.line_range.start and command_line.line_range.start[-1]) == TokenDot():
             raise ValueError('bad range: {0}'.format(state.scanner.state.source))
@@ -210,7 +228,7 @@ def _process_digits(token, state, command_line: CommandLineNode) -> tuple:
     return _parse_line_ref, command_line
 
 
-def _process_search_forward(token, state, command_line: CommandLineNode) -> tuple:
+def _process_search_forward(token: TokenSearchForward, state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
     if not state.is_range_start_line_parsed:
         if command_line.line_range.start:
             # TODO Review start_offset looks unused
@@ -225,7 +243,7 @@ def _process_search_forward(token, state, command_line: CommandLineNode) -> tupl
     return _parse_line_ref, command_line
 
 
-def _process_search_backward(token, state, command_line: CommandLineNode) -> tuple:
+def _process_search_backward(token: TokenSearchBackward, state: _ParserState, command_line: _ParsedCommandLine) -> tuple:  # noqa: E501
     if not state.is_range_start_line_parsed:
         if command_line.line_range.start:
             # TODO Review start_offset looks unused
@@ -240,7 +258,7 @@ def _process_search_backward(token, state, command_line: CommandLineNode) -> tup
     return _parse_line_ref, command_line
 
 
-def _process_offset(token, state, command_line: CommandLineNode) -> tuple:
+def _process_offset(token: TokenOffset, state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
     if not state.is_range_start_line_parsed:
         if (command_line.line_range.start and command_line.line_range.start[-1] == TokenDollar()):
             raise ValueError('bad command line {}'.format(state.scanner.state.source))
@@ -253,8 +271,7 @@ def _process_offset(token, state, command_line: CommandLineNode) -> tuple:
     return _parse_line_ref, command_line
 
 
-def _process_dot(state, command_line: CommandLineNode) -> tuple:
-    _init_line_range(command_line)
+def _process_dot(state: _ParserState, command_line: _ParsedCommandLine) -> tuple:
     if not state.is_range_start_line_parsed:
         if command_line.line_range.start and isinstance(command_line.line_range.start[-1], TokenOffset):
             raise ValueError('bad range {0}'.format(state.scanner.state.source))

@@ -8,6 +8,9 @@
 xx   a^Jb^Jc
 "     ^^ comment
 "        ^^ comment
+xx   a^Vb^Vc
+"     ^^ comment
+"        ^^ comment
 "%   /path/to/file.txt
 "1   xxx
 

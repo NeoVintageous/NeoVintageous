@@ -17,8 +17,8 @@
 
 import unittest
 
-from NeoVintageous.nv.ex.parser import _ParserState
-from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.nodes import RangeNode
+from NeoVintageous.nv.ex.parser import _ParsedCommandLine
 from NeoVintageous.nv.ex.parser import TokenComma
 from NeoVintageous.nv.ex.parser import TokenDigits
 from NeoVintageous.nv.ex.parser import TokenDollar
@@ -29,6 +29,38 @@ from NeoVintageous.nv.ex.parser import TokenPercent
 from NeoVintageous.nv.ex.parser import TokenSearchBackward
 from NeoVintageous.nv.ex.parser import TokenSearchForward
 from NeoVintageous.nv.ex.parser import TokenSemicolon
+from NeoVintageous.nv.ex.parser import _ParserState
+from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.tokens import TokenCommand
+
+
+class TestParsedCommandLine(unittest.TestCase):
+
+    def test_can_instantiate(self):
+        range_node = RangeNode(["foo"], ["bar"], False)
+        command = TokenCommand('substitute')
+        command_line_node = _ParsedCommandLine(range_node, command)
+
+        self.assertEqual(range_node, command_line_node.line_range)
+        self.assertEqual(command, command_line_node.command)
+
+    def test_to_str(self):
+        self.assertEqual(str(_ParsedCommandLine(RangeNode(['1'], ['10'], ','), 'cmd')), '1,10cmd')
+        self.assertEqual(str(_ParsedCommandLine(RangeNode(['1'], ['10'], ','), None)), '1,10')
+
+    def test_validate(self):
+        class NotAddressableCommand:
+            addressable = False
+
+        class AddressableCommand:
+            addressable = True
+
+        _ParsedCommandLine(RangeNode(), AddressableCommand()).validate()
+        _ParsedCommandLine(RangeNode(), NotAddressableCommand()).validate()
+        _ParsedCommandLine(RangeNode(['1'], ['2'], ';'), AddressableCommand()).validate()
+
+        with self.assertRaisesRegex(Exception, 'E481: No range allowed'):
+            _ParsedCommandLine(RangeNode(['1'], ['2'], ';'), NotAddressableCommand()).validate()
 
 
 class TestParserState(unittest.TestCase):

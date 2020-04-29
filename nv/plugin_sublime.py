@@ -35,7 +35,7 @@ class StQuickSwitchProject(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'prompt_select_workspace',
             'action_args': {}
@@ -49,7 +49,7 @@ class StFocusSideBar(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'focus_side_bar',
             'action_args': {}
@@ -73,7 +73,7 @@ class StFocusGroup(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'focus_group',
             'action_args': {
@@ -89,7 +89,7 @@ class StToggleSideBar(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'toggle_side_bar',
             'action_args': {}
@@ -104,7 +104,7 @@ class StGotoAnything(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'show_overlay',
             'action_args': {
@@ -122,7 +122,7 @@ class StBuildWith(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'build',
             'action_args': {
@@ -139,7 +139,7 @@ class StFindInFiles(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'show_panel',
             'action_args': {
@@ -156,8 +156,8 @@ class StCommandPalette(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
-        set_reset_during_init(state.view, False)
+    def translate(self, view):
+        set_reset_during_init(view, False)
 
         return {
             'action': 'show_overlay',
@@ -174,7 +174,7 @@ class StNextBookmark(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'next_bookmark',
             'action_args': {}
@@ -188,7 +188,7 @@ class StFindNext(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'find_next',
             'action_args': {}
@@ -202,7 +202,7 @@ class StNextResult(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'next_result',
             'action_args': {}
@@ -215,7 +215,7 @@ class StToggleSpellCheck(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'toggle_setting',
             'action_args': {
@@ -231,7 +231,7 @@ class StBuild(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'build',
             'action_args': {}
@@ -244,7 +244,7 @@ class StSortLines(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'sort_lines',
             'action_args': {
@@ -260,7 +260,7 @@ class StToggleFullScreen(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'toggle_full_screen',
             'action_args': {}
@@ -274,7 +274,7 @@ class StGotoDefinition(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'goto_definition',
             'action_args': {}
@@ -288,7 +288,7 @@ class StToggleBookmark(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'toggle_bookmark',
             'action_args': {}
@@ -302,7 +302,7 @@ class StGotoSymbol(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'show_overlay',
             'action_args': {
@@ -319,7 +319,7 @@ class StPrevBookmark(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'prev_bookmark',
             'action_args': {}
@@ -333,7 +333,7 @@ class StPrevResult(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'prev_result',
             'action_args': {}
@@ -347,7 +347,7 @@ class StToggleDistractionFree(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'toggle_distraction_free',
             'action_args': {}
@@ -361,7 +361,7 @@ class StClearBookmarks(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'clear_bookmarks',
             'action_args': {}
@@ -375,7 +375,7 @@ class StGotoSymbolInProject(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'goto_symbol_in_project',
             'action_args': {}

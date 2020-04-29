@@ -27,5 +27,12 @@ class Test_a(unittest.FunctionalTestCase):
         self.eq('ab|c', 'a', 'i_abc|')
         self.eq('abc|\n', 'a', 'i_abc|\n')
 
+    def test_a_count(self):
+        self.eq('a|bc', '3a', 'i_ab|c')
+        self.view.run_command('insert', {'characters': 'fizz'})
+        self.assertInsert('abfizz|c')
+        self.feed('<Esc>')
+        self.assertNormal('abfizz|fizzfizzc')
+
     def test_v_a_should_be_a_noop(self):
         self.eq('a|b|c', 'v_a', 'v_a|b|c')

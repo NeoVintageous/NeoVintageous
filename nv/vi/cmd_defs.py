@@ -15,8 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_motion_count
+from NeoVintageous.nv.settings import get_partial_sequence
+from NeoVintageous.nv.settings import get_register
+from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import set_glue_until_normal_mode
+from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
@@ -43,13 +52,13 @@ class ViDeleteByChars(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_d',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -62,15 +71,15 @@ class DeleteMultipleCursor(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_d',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -81,14 +90,14 @@ class ViInsertLineBefore(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_big_o',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -100,23 +109,23 @@ class ViInsertLineAfter(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = False
 
-    def translate(self, state):
-        if state.mode in (VISUAL, VISUAL_LINE):
+    def translate(self, view):
+        if get_mode(view) in (VISUAL, VISUAL_LINE):
             return {
                 'action': '_vi_visual_o',
                 'action_args': {
-                    'mode': state.mode,
+                    'mode': get_mode(view),
                     'count': 1
                 }
             }
         else:
-            state.glue_until_normal_mode = True
+            set_glue_until_normal_mode(view, True)
 
             return {
                 'action': '_vi_o',
                 'action_args': {
-                    'mode': state.mode,
-                    'count': state.count
+                    'mode': get_mode(view),
+                    'count': get_count(view)
                 }
             }
 
@@ -130,13 +139,13 @@ class ViRightDeleteChars(ViOperatorDef):
         self.updates_xpos = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_x',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -147,16 +156,15 @@ class ViSubstituteChar(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
-        # XXX: Handle differently from State?
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_s',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -169,13 +177,13 @@ class ViYankByChars(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_y',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -187,13 +195,13 @@ class ViYankSelectByChars(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_y',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -207,12 +215,12 @@ class ViReindent(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_equal',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -226,12 +234,12 @@ class ViIndent(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_greater_than',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -245,12 +253,12 @@ class ViUnindent(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_less_than',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -264,15 +272,15 @@ class ViChangeByChars(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_c',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -285,15 +293,15 @@ class ChangeMultipleCursor(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_c',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -305,12 +313,12 @@ class ViUndo(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_u',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -323,12 +331,12 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_visual_u',
             'action_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -340,12 +348,12 @@ class ViRedo(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_r',
             'action_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -358,13 +366,13 @@ class ViDeleteToEol(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_big_d',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -377,15 +385,15 @@ class ViChangeToEol(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_big_c',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -399,12 +407,12 @@ class ViChangeToUpperCaseByLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_g_big_u_big_u',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -417,15 +425,15 @@ class ViChangeLine(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_cc',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -438,13 +446,13 @@ class ViDeleteLine(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_dd',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -457,8 +465,8 @@ class ViEnterReplaceMode(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_enter_replace_mode',
@@ -474,12 +482,12 @@ class ViIndentLine(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_greater_than_greater_than',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -493,12 +501,12 @@ class ViChangeToLowerCaseByLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_guu',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -512,12 +520,12 @@ class ViChangeToLowerCaseByChars(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_gu',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -530,12 +538,12 @@ class ViReindentLine(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_equal_equal',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -548,12 +556,12 @@ class ViUnindentLine(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_less_than_less_than',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -566,13 +574,13 @@ class ViYankLine(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_yy',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -585,12 +593,12 @@ class ViInvertCaseByLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_g_tilde_g_tilde',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -603,12 +611,12 @@ class ViForceInvertCaseByChars(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_tilde',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -621,15 +629,15 @@ class ViSubstituteByLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_big_s',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'count': 1,
-                'register': state.register
+                'register': get_register(view)
             }
         }
 
@@ -643,12 +651,12 @@ class ViInvertCaseByChars(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_g_tilde',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -662,12 +670,12 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_g_big_u',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -680,12 +688,12 @@ class ViJoinLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_big_j',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -698,12 +706,12 @@ class ViDecrement(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_modify_numbers',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'subtract': True
             }
         }
@@ -717,12 +725,12 @@ class ViIncrement(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_modify_numbers',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -735,12 +743,12 @@ class ViJoinLinesNoSeparator(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_big_j',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'dont_insert_or_remove_spaces': True
             }
         }
@@ -753,11 +761,11 @@ class ViEnterVisualMode(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_enter_visual_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(view)
             }
         }
 
@@ -770,12 +778,12 @@ class ViScrollToScreenTop(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_z_enter',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -788,12 +796,12 @@ class ViScrollToScreenBottom(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_z_minus',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -805,12 +813,12 @@ class ViScrollToScreenCenter(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_zz',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -822,12 +830,12 @@ class ViZDot(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_zz',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'first_non_blank': True
             }
         }
@@ -841,12 +849,12 @@ class ViReformat(ViOperatorDef):
         self.motion_required = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_gq',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -859,12 +867,12 @@ class ViReformatLinewise(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_gq',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'linewise': True
             }
         }
@@ -878,13 +886,13 @@ class ViPasteAfter(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view),
                 'before_cursor': False
             }
         }
@@ -898,13 +906,13 @@ class ViPasteBefore(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view),
                 'before_cursor': True
             }
         }
@@ -919,13 +927,13 @@ class ViPasteAfterAndIndent(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view),
                 'before_cursor': False,
                 'adjust_indent': True
             }
@@ -941,13 +949,13 @@ class ViPasteBeforeAndIndent(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view),
                 'before_cursor': True,
                 'adjust_indent': True
             }
@@ -962,13 +970,13 @@ class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view),
                 'before_cursor': False,
                 'adjust_cursor': True
             }
@@ -983,13 +991,13 @@ class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_paste',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view),
                 'before_cursor': True,
                 'adjust_cursor': True
             }
@@ -1004,13 +1012,13 @@ class ViLeftDeleteChar(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_big_x',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view)
             }
         }
 
@@ -1022,12 +1030,12 @@ class ViActivateNextTab(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_gt',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count_default_zero
+                'mode': get_mode(view),
+                'count': get_count(view, default=0)
             }
         }
 
@@ -1039,12 +1047,12 @@ class ViActivatePreviousTab(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_g_big_t',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1056,7 +1064,7 @@ class ViMoveCursorToBottomRightWindow(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1071,7 +1079,7 @@ class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1086,7 +1094,7 @@ class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1101,7 +1109,7 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1116,7 +1124,7 @@ class ViMoveCurrentWindowToFarRight(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1131,7 +1139,7 @@ class ViCloseTheCurrentWindow(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1146,7 +1154,7 @@ class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1161,12 +1169,12 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': '>',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1180,12 +1188,12 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 'h',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1198,12 +1206,12 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 'j',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1216,12 +1224,12 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 'k',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1234,12 +1242,12 @@ class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 'l',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1250,12 +1258,12 @@ class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': '<',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1266,12 +1274,12 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': '-',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1283,12 +1291,12 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 'n',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1300,7 +1308,7 @@ class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1315,12 +1323,12 @@ class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': '|',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1331,12 +1339,12 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': '+',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1348,7 +1356,7 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1365,12 +1373,12 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 's',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1382,7 +1390,7 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
@@ -1398,12 +1406,12 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': '_',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1415,12 +1423,28 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 'v',
-                'count': state.count
+                'count': get_count(view)
+            }
+        }
+
+
+@assign(seqs.CTRL_W_BIG_W, ACTION_MODES)
+class ViCtrlW_W(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, view):
+        return {
+            'action': '_vi_ctrl_w',
+            'action_args': {
+                'action': 'W',
+                'count': get_count(view)
             }
         }
 
@@ -1432,12 +1456,12 @@ class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_w',
             'action_args': {
                 'action': 'x',
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1449,11 +1473,11 @@ class ViEnterVisualLineMode(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_enter_visual_line_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(view)
             }
         }
 
@@ -1465,24 +1489,24 @@ class ViRestoreVisualSelections(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_gv',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
 
 @assign(seqs.GX, ACTION_MODES)
 class NetrwGx(ViOperatorDef):
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_gx',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1494,7 +1518,7 @@ class ViJumpBack(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'jump_back',
             'action_args': {}
@@ -1509,7 +1533,7 @@ class ViJumpForward(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': 'jump_forward',
             'action_args': {}
@@ -1523,12 +1547,12 @@ class ViRepeat(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_dot',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1536,12 +1560,12 @@ class ViRepeat(ViOperatorDef):
 @assign(seqs.CTRL_Y, ACTION_MODES)
 class ViScrollByLinesUp(ViOperatorDef):
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_y',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1554,12 +1578,12 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_visual_big_u',
             'action_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -1567,12 +1591,12 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
 @assign(seqs.CTRL_E, ACTION_MODES)
 class ViScrollByLinesDown(ViOperatorDef):
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_e',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1584,12 +1608,12 @@ class ViOpenMacrosForRepeating(RequiresOneCharMixinDef, ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_at',
             'action_args': {
                 'name': self.inp,
-                'count': state.count
+                'count': get_count(view)
             }
         }
 
@@ -1601,7 +1625,7 @@ class ViToggleMacroRecorder(RequiresOneCharMixinDef, ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_q',
             'action_args': {
@@ -1617,18 +1641,18 @@ class ViEnterVisualBlockMode(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_enter_visual_block_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(view)
             }
         }
 
 
 @assign(seqs.GA, ACTION_MODES)
 class ViShowAsciiValueOfChar(ViOperatorDef):
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ga',
             'action_args': {}
@@ -1637,7 +1661,7 @@ class ViShowAsciiValueOfChar(ViOperatorDef):
 
 @assign(seqs.GF, (NORMAL,))
 class Vi_gf(ViOperatorDef):
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_g',
             'action_args': {
@@ -1653,14 +1677,14 @@ class ViEnterInserMode(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_enter_insert_mode',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1674,11 +1698,11 @@ class ViEnterNormalMode(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_enter_normal_mode',
             'action_args': {
-                'mode': state.mode
+                'mode': get_mode(view)
             }
         }
 
@@ -1688,7 +1712,7 @@ class ViJumpToDefinition(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_right_square_bracket',
             'action_args': {}
@@ -1701,14 +1725,14 @@ class ViInsertAfterChar(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
-        state.glue_until_normal_mode = True
-        state.normal_insert_count = state.count
+    def translate(self, view):
+        set_glue_until_normal_mode(view, True)
+        set_normal_insert_count(view, get_count(view))
 
         return {
             'action': '_vi_a',
             'action_args': {
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'count': 1
             }
         }
@@ -1721,15 +1745,15 @@ class ViInsertAtEol(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
-        if state.mode != SELECT:
-            state.glue_until_normal_mode = True
+    def translate(self, view):
+        if get_mode(view) != SELECT:
+            set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_big_a',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1740,15 +1764,15 @@ class ViInsertAtBol(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
-        if state.mode != SELECT:
-            state.glue_until_normal_mode = True
+    def translate(self, view):
+        if get_mode(view) != SELECT:
+            set_glue_until_normal_mode(view, True)
 
         return {
             'action': '_vi_big_i',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1759,7 +1783,7 @@ class ViEnterCommandLineMode(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_cmdline',
             'action_args': {}
@@ -1772,33 +1796,33 @@ class ViShowFileStatus(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_g',
             'action_args': {}
         }
 
 
-@assign(seqs.BIG_Z_BIG_Q, ACTION_MODES)
+@assign(seqs.BIG_Z_BIG_Q, (NORMAL,))
 class ViExitEditor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_big_z_big_q',
             'action_args': {}
         }
 
 
-@assign(seqs.BIG_Z_BIG_Z, ACTION_MODES)
+@assign(seqs.BIG_Z_BIG_Z, (NORMAL,))
 class ViCloseFile(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_big_z_big_z',
             'action_args': {}
@@ -1811,12 +1835,12 @@ class ViGotoSymbolInProject(ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_go_to_symbol',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'globally': True
             }
         }
@@ -1829,12 +1853,12 @@ class ViGotoSymbolInFile(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_go_to_symbol',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'globally': False
             }
         }
@@ -1850,12 +1874,12 @@ class ViMoveRightByChars(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_l',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1867,12 +1891,12 @@ class ViShiftEnterMotion(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_shift_enter',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1885,12 +1909,12 @@ class ViMoveByWordsBackward(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_b',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1903,12 +1927,12 @@ class ViMoveByBigWordsBackward(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_big_b',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1921,12 +1945,12 @@ class ViMoveByBigWords(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_big_w',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1938,12 +1962,12 @@ class ViMoveByWordEnds(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_e',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1955,12 +1979,12 @@ class ViGotoScreenTop(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_big_h',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1972,12 +1996,12 @@ class ViMoveByWordEndsBackward(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_ge',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -1989,12 +2013,12 @@ class ViMoveByBigWordEndsBackward(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_g_big_e',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2006,12 +2030,12 @@ class ViGotoScreenBottom(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_big_l',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2023,12 +2047,12 @@ class ViGotoScreenMiddle(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_big_m',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2040,12 +2064,12 @@ class ViMoveHalfScreenDown(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = False
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_ctrl_d',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count_default_zero
+                'mode': get_mode(view),
+                'count': get_count(view, default=0)
             }
         }
 
@@ -2057,12 +2081,12 @@ class ViMoveHalfScreenUp(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_ctrl_u',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count_default_zero
+                'mode': get_mode(view),
+                'count': get_count(view, default=0)
             }
         }
 
@@ -2076,12 +2100,12 @@ class ViMoveScreenDown(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_ctrl_f',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2095,12 +2119,12 @@ class ViMoveScreenUp(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_ctrl_b',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2112,12 +2136,12 @@ class ViGotoExactMarkXpos(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_backtick',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'character': self.inp
             }
         }
@@ -2131,12 +2155,12 @@ class ViMoveToEol(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_dollar',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2149,12 +2173,12 @@ class ViMotionEnter(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_enter',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2166,12 +2190,12 @@ class ViMoveBackOneLine(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_minus',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2183,12 +2207,12 @@ class ViMoveToSoftEol(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_g__',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2201,12 +2225,12 @@ class ViMoveByScreenLineDown(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_gj',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2219,12 +2243,12 @@ class ViMoveByScreenLineUp(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_gk',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2236,12 +2260,12 @@ class ViMoveByBlockUp(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_left_brace',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2254,9 +2278,19 @@ class ViRepeatCharSearchForward(ViMotionDef):
         self.scroll_into_view = True
 
     # TODO Refactor settings dependencies into the command being called
-    def translate(self, state):
-        view = state.view
+    def translate(self, view):
         last_search_cmd = get_last_char_search_command(view)
+        if 'sneak' in last_search_cmd:
+            return {
+                'motion': '_nv_sneak',
+                'motion_args': {
+                    'mode': get_mode(view),
+                    'count': get_count(view),
+                    'forward': last_search_cmd == 'sneak_s',
+                    'save': False
+                }
+            }
+
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
@@ -2265,8 +2299,8 @@ class ViRepeatCharSearchForward(ViMotionDef):
         return {
             'motion': motion,
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'char': get_last_char_search(view),
                 'inclusive': inclusive,
                 'skipping': skipping,
@@ -2282,12 +2316,12 @@ class ViGotoMark(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_quote',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'character': self.inp
             }
         }
@@ -2300,12 +2334,12 @@ class ViMoveByBlockDown(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_right_brace',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2317,12 +2351,12 @@ class ViMoveBySentenceUp(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_left_paren',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2334,12 +2368,12 @@ class ViMoveBySentenceDown(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_right_paren',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2351,13 +2385,13 @@ class ViGotoOpeningBrace(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'target': '{'
             }
         }
@@ -2370,13 +2404,13 @@ class ViGotoOpeningParen(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'target': '('
             }
         }
@@ -2389,13 +2423,13 @@ class ViBackwardToStartOfChange(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 'c',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2407,13 +2441,13 @@ class ViForwardToStartOfChange(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 'c',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2425,13 +2459,13 @@ class ViPrevMisppelledWord(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_left_square_bracket',
             'motion_args': {
                 'action': 's',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2443,13 +2477,13 @@ class VINextMispelledWord(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 's',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2461,13 +2495,13 @@ class ViGotoClosingBrace(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'target': '}'
             }
         }
@@ -2480,13 +2514,13 @@ class ViGotoClosingParen(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_right_square_bracket',
             'motion_args': {
                 'action': 'target',
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'target': ')'
             }
         }
@@ -2499,16 +2533,17 @@ class ViPercent(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_percent',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count_default_zero
+                'mode': get_mode(view),
+                'count': get_count(view, default=0)
             }
         }
 
 
+@assign(seqs.BACKSLASH, MOTION_MODES)
 @assign(seqs.COMMA, MOTION_MODES)
 class ViRepeatCharSearchBackward(ViMotionDef):
     def __init__(self, *args, **kwargs):
@@ -2517,9 +2552,19 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         self.scroll_into_view = True
 
     # TODO Refactor settings dependencies into the command being called
-    def translate(self, state):
-        view = state.view
+    def translate(self, view):
         last_search_cmd = get_last_char_search_command(view)
+        if 'sneak' in last_search_cmd:
+            return {
+                'motion': '_nv_sneak',
+                'motion_args': {
+                    'mode': get_mode(view),
+                    'count': get_count(view),
+                    'forward': last_search_cmd == 'sneak_big_s',
+                    'save': False
+                }
+            }
+
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
@@ -2528,8 +2573,8 @@ class ViRepeatCharSearchBackward(ViMotionDef):
         return {
             'motion': motion,
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'char': get_last_char_search(view),
                 'inclusive': inclusive,
                 'skipping': skipping,
@@ -2545,12 +2590,12 @@ class ViMoveByLineCols(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_bar',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2562,12 +2607,12 @@ class ViMoveByBigWordEnds(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_big_e',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2584,12 +2629,12 @@ class ViMoveLeftByChars(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_h',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2602,12 +2647,12 @@ class ViMoveByWords(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_w',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -2622,13 +2667,13 @@ class ViMoveDownByLines(ViMotionDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_j',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'xpos': state.xpos
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'xpos': get_xpos(view)
             }
         }
 
@@ -2642,13 +2687,13 @@ class ViMoveUpByLines(ViMotionDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_k',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'xpos': state.xpos
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'xpos': get_xpos(view)
             }
         }
 
@@ -2661,12 +2706,12 @@ class ViMoveToBol(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_hat',
             'motion_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -2678,12 +2723,12 @@ class ViMoveToSoftBol(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_underscore',
             'motion_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -2695,12 +2740,12 @@ class ViMoveToHardBol(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_zero',
             'motion_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -2715,12 +2760,12 @@ class ViSearchLastUsedPattern(ViMotionDef):
         self.updates_xpos = True
         self.forward = forward
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_search',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'forward': self.forward
             }
         }
@@ -2733,12 +2778,12 @@ class ViRepeatSearchForward(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_repeat_buffer_search',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'reverse': False
             }
         }
@@ -2751,12 +2796,12 @@ class ViRepeatSearchBackward(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_repeat_buffer_search',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'reverse': True
             }
         }
@@ -2769,12 +2814,12 @@ class ViFindWord(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_star',
             'motion_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -2786,12 +2831,12 @@ class ViReverseFindWord(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_octothorp',
             'motion_args': {
-                'count': state.count,
-                'mode': state.mode
+                'count': get_count(view),
+                'mode': get_mode(view)
             }
         }
 
@@ -2809,7 +2854,7 @@ class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def translate(self, state):
+    def translate(self, view):
         return {}
 
 
@@ -2818,7 +2863,7 @@ class ViOpenRegister(ViMotionDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def translate(self, state):
+    def translate(self, view):
         return {}
 
 
@@ -2830,12 +2875,12 @@ class ViGotoBof(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_gg',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count if (state.action_count or state.motion_count) else None
+                'mode': get_mode(view),
+                'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
             }
         }
 
@@ -2847,12 +2892,12 @@ class ViGotoEof(ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_big_g',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count if (state.action_count or state.motion_count) else None
+                'mode': get_mode(view),
+                'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
             }
         }
 
@@ -2865,13 +2910,13 @@ class ViReplaceCharacters(RequiresOneCharMixinDef, ViOperatorDef):
         self.updates_xpos = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_r',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
-                'register': state.register,
+                'mode': get_mode(view),
+                'count': get_count(view),
+                'register': get_register(view),
                 'char': self.inp
             }
         }
@@ -2883,12 +2928,12 @@ class ViSetMark(RequiresOneCharMixinDef, ViOperatorDef):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_m',
             'action_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'character': self.inp
             }
         }
@@ -2904,12 +2949,12 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.inclusive = inclusive
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_find_in_line',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'char': self.inp,
                 'inclusive': self.inclusive
             }
@@ -2923,12 +2968,12 @@ class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_select_text_object',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'text_object': self.inp,
                 'inclusive': True
             }
@@ -2942,12 +2987,12 @@ class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_select_text_object',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'text_object': self.inp,
                 'inclusive': False
             }
@@ -2964,13 +3009,13 @@ class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
         self.updates_xpos = True
         self.inclusive = inclusive
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_reverse_find_in_line',
             'motion_args': {
                 'char': self.inp,
-                'mode': state.mode,
-                'count': state.count,
+                'mode': get_mode(view),
+                'count': get_count(view),
                 'inclusive': self.inclusive
             }
         }
@@ -3000,7 +3045,7 @@ class ViSearchForward(ViMotionDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         if self.accept_input:
             return {
                 'motion': '_vi_slash',
@@ -3008,7 +3053,7 @@ class ViSearchForward(ViMotionDef):
             }
 
         # We'll end up here, for example, when repeating via '.'.
-        return ViSearchForwardImpl(term=self.inp[:-4]).translate(state)
+        return ViSearchForwardImpl(term=self.inp[:-4]).translate(view)
 
 
 class ViSearchForwardImpl(ViMotionDef):
@@ -3018,13 +3063,13 @@ class ViSearchForwardImpl(ViMotionDef):
         self.inp = term
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_slash_impl',
             'motion_args': {
                 'pattern': self.inp,
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -3053,7 +3098,7 @@ class ViSearchBackward(ViMotionDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         if self.accept_input:
             return {
                 'motion': '_vi_question_mark',
@@ -3061,7 +3106,7 @@ class ViSearchBackward(ViMotionDef):
             }
         else:
             # We'll end up here, for example, when repeating via '.'.
-            return ViSearchBackwardImpl(term=self.inp[:-4]).translate(state)
+            return ViSearchBackwardImpl(term=self.inp[:-4]).translate(view)
 
 
 class ViSearchBackwardImpl(ViMotionDef):
@@ -3071,13 +3116,13 @@ class ViSearchBackwardImpl(ViMotionDef):
         self.updates_xpos = True
         self.inp = term
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_question_mark_impl',
             'motion_args': {
                 'pattern': self.inp,
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -3089,12 +3134,12 @@ class ViInsertLineWithCommonPrefix(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_ctrl_x_ctrl_l',
             'action_args': {
-                'mode': state.mode,
-                'register': state.register
+                'mode': get_mode(view),
+                'register': get_register(view)
             }
         }
 
@@ -3106,12 +3151,12 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         self.updates_xpos = True
         self.scroll_into_view = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'motion': '_vi_gm',
             'motion_args': {
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -3135,12 +3180,12 @@ class Viz(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_vi_z',
             'action_args': {
-                'action': state.partial_sequence[1:],
-                'mode': state.mode,
-                'count': state.count
+                'action': get_partial_sequence(view)[1:],
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }

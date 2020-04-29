@@ -32,6 +32,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from contextlib import contextmanager
+from collections import Counter
 import re
 
 from sublime import Region
@@ -41,11 +42,15 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_visual_block_direction
+from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_visual_block_direction
+from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
+from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import run_window_command
@@ -276,18 +281,6 @@ def next_non_ws(view, pt: int) -> int:
     return pt
 
 
-def is_at_eol(view, reg: Region) -> bool:
-    return view.line(reg.b).b == reg.b
-
-
-def is_at_bol(view, reg: Region) -> bool:
-    return view.line(reg.b).a == reg.b
-
-
-def first_row(view) -> int:
-    return view.rowcol(0)[0]
-
-
 def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
@@ -306,23 +299,21 @@ _TRANLSATE_CHAR_MAP = {
 
 
 def translate_char(char: str) -> str:
-    lchar = char.lower()
-
-    if lchar in _TRANLSATE_CHAR_MAP:
-        return _TRANLSATE_CHAR_MAP[lchar]
-
-    return char
+    try:
+        return _TRANLSATE_CHAR_MAP[char.lower()]
+    except KeyError:
+        return char
 
 
 @contextmanager
-def gluing_undo_groups(view, state):
-    state.processing_notation = True
+def gluing_undo_groups(view):
+    set_processing_notation(view, True)
     view.run_command('mark_undo_groups_for_gluing')
 
     yield
 
     view.run_command('glue_marked_undo_groups')
-    state.processing_notation = False
+    set_processing_notation(view, False)
 
 
 @contextmanager
@@ -340,11 +331,11 @@ class SelectionObserver():
         self._view = view
         self._orig_sel = list(view.sel())
 
-    def has_sel_changed(self):
+    def has_sel_changed(self) -> bool:
         # TODO Refactor to use Region() comparison apis
         return not (tuple((s.a, s.b) for s in self._orig_sel) == tuple((s.a, s.b) for s in tuple(self._view.sel())))
 
-    def restore_sel(self):
+    def restore_sel(self) -> None:
         if self.has_sel_changed():
             set_selection(self._view, self._orig_sel)
 
@@ -539,6 +530,10 @@ def scroll_viewport_position(view, number_of_scroll_lines: int, forward: bool = 
 
 
 def get_option_scroll(view) -> int:
+    # Number of lines to scroll with CTRL-U and CTRL-D commands. Will be set to
+    # half the number of lines in the window when the window size changes. If
+    # you give a count to the CTRL-U or CTRL-D command it will be used as the
+    # new value for 'scroll'.
     line_height = view.line_height()
     viewport_extent = view.viewport_extent()
     line_count = viewport_extent[1] / line_height
@@ -1131,3 +1126,66 @@ def is_linewise_operation(mode: str, motion):
                 return 'maybe'
 
     return False
+
+
+def update_xpos(view) -> None:
+    try:
+        sel = view.sel()[0]
+        pos = sel.b
+        if not sel.empty():
+            if sel.a < sel.b:
+                pos -= 1
+
+        counter = Counter(view.substr(Region(view.line(pos).a, pos)))  # type: dict
+        tab_size = view.settings().get('tab_size')
+        xpos = view.rowcol(pos)[1] + ((counter['\t'] * tab_size) - counter['\t'])
+    except Exception:
+        # TODO [review] exception handling
+        xpos = 0
+
+    set_xpos(view, xpos)
+
+
+def get_visual_repeat_data(view, mode: str):
+    # Return the data needed to restore visual selections.
+    #
+    # Before repeating a visual mode command in normal mode.
+    #
+    # Returns:
+    #   None
+    #   3-tuple (lines, chars, mode)
+    if mode not in (VISUAL, VISUAL_LINE):
+        return
+
+    first = view.sel()[0]
+    lines = (row_at(view, first.end()) -
+             row_at(view, first.begin()))
+
+    if lines > 0:
+        chars = col_at(view, first.end())
+    else:
+        chars = first.size()
+
+    return (lines, chars, mode)
+
+
+def restore_visual_repeat_data(view, mode: str, data: tuple) -> None:
+    rows, chars, old_mode = data
+    first = view.sel()[0]
+
+    if old_mode == VISUAL:
+        if rows > 0:
+            end = view.text_point(row_at(view, first.b) + rows, chars)
+        else:
+            end = first.b + chars
+
+        view.sel().add(Region(first.b, end))
+        set_mode(view, VISUAL)
+
+    elif old_mode == VISUAL_LINE:
+        rows, _, old_mode = data
+        begin = view.line(first.b).a
+        end = view.text_point(row_at(view, begin) + (rows - 1), 0)
+        end = view.full_line(end).b
+        view.sel().add(Region(begin, end))
+        set_mode(view, VISUAL_LINE)

@@ -19,13 +19,7 @@ from NeoVintageous.tests import unittest
 
 
 @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {}, clear=True)
-class TestExRead(unittest.FunctionalTestCase):
-
-    def tearDown(self):
-        # XXX: Ugly hack to make sure that the output panels created in these
-        # tests don't hide the overall progress panel.
-        self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})
-        super().tearDown()
+class TestExRead(unittest.ResetCommandLineOutput, unittest.FunctionalTestCase):
 
     def test_read_cmd(self):
         self.normal('f|izz\nxxx\n')

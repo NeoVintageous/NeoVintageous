@@ -35,4 +35,4 @@ class TestUIBell(unittest.ViewTestCase):
         self.assertStatusMessage('fizz buzz')
         self.set_option('belloff', '')
         ui_bell('fizz buzz')
-        self.assertStatusMessage('fizz buzz', count=2)
+        self.assertStatusMessage('fizz buzz')

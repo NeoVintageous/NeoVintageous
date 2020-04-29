@@ -34,18 +34,18 @@ __all__ = [
 ]
 
 
-def _coerce_to_mixedcase(string):
+def _coerce_to_mixedcase(string: str) -> str:
     return _coerce_to_spacecase(string).title().replace(' ', '')
 
 
-def _coerce_to_camelcase(string):
+def _coerce_to_camelcase(string: str) -> str:
     string = _coerce_to_spacecase(string).title().replace(' ', '')
     if len(string) > 1:
         return string[0].lower() + string[1:]
     return string.lower()
 
 
-def _coerce_to_snakecase(string):
+def _coerce_to_snakecase(string: str) -> str:
     # https://stackoverflow.com/a/1176023
     # https://github.com/jpvanhal/inflection
     string = re.sub(r"([A-Z]+)([A-Z][a-z])", r'\1_\2', string)
@@ -54,23 +54,23 @@ def _coerce_to_snakecase(string):
     return string.lower()
 
 
-def _coerce_to_uppercase(string):
+def _coerce_to_uppercase(string: str) -> str:
     return _coerce_to_snakecase(string).upper()
 
 
-def _coerce_to_dashcase(string):
+def _coerce_to_dashcase(string: str) -> str:
     return _coerce_to_snakecase(string).replace('_', '-')
 
 
-def _coerce_to_spacecase(string):
+def _coerce_to_spacecase(string: str) -> str:
     return _coerce_to_snakecase(string).replace('_', ' ')
 
 
-def _coerce_to_dotcase(string):
+def _coerce_to_dotcase(string: str) -> str:
     return _coerce_to_snakecase(string).replace('_', '.')
 
 
-def _coerce_to_titlecase(string):
+def _coerce_to_titlecase(string: str) -> str:
     return _coerce_to_spacecase(string).title()
 
 
@@ -109,7 +109,7 @@ class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_abolish',
             'action_args': {
@@ -120,22 +120,20 @@ class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
 
 class _nv_abolish_command(TextCommand):
     def run(self, edit, to=None, mode=None):
-
-        if to in _ALIASES:
+        try:
             to = _ALIASES[to]
+        except KeyError:
+            pass
 
-        if to in _COERCIONS:
+        try:
             coerce_func = _COERCIONS[to]
-        else:
-            raise ValueError('unknown coercion')
+        except KeyError:
+            return
 
         new_sels = []
         for sel in self.view.sel():
-            if sel.empty():
-                sel = self.view.word(sel)
-
+            sel = self.view.word(sel)
             new_sels.append(sel.begin())
-
             self.view.replace(edit, sel, coerce_func(self.view.substr(sel)))
 
         if new_sels:

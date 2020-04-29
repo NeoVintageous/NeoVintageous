@@ -21,14 +21,7 @@ from NeoVintageous.tests import unittest
 
 
 @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {}, clear=True)
-class TestExShellOut(unittest.FunctionalTestCase):
-
-    def tearDown(self):
-        # XXX: Ugly hack to make sure that the output panels created in these
-        # tests don't hide the overall progress panel.
-        self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})
-        self.view.window().focus_group(self.view.window().active_group())
-        super().tearDown()
+class TestExShellOut(unittest.ResetCommandLineOutput, unittest.FunctionalTestCase):
 
     def test_command_output(self):
         self.normal("fi|zz")

@@ -31,7 +31,7 @@ TESTS_INDENT = (
 )
 
 
-class Test_line(unittest.ViewTestCase):
+class Test_find_line_text_object(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS_INDENT):

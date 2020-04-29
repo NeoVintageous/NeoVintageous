@@ -24,6 +24,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
@@ -65,12 +66,12 @@ class Surroundys(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'replacement': self.inp
             }
         }
@@ -83,12 +84,12 @@ class Surroundyss(Surroundys):
         self.motion_required = False
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ys',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'motion': {
                     'motion': '_vi_select_text_object',
                     'motion_args': {
@@ -133,12 +134,12 @@ class Surroundds(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'ds',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'target': self.inp
             }
         }
@@ -176,12 +177,12 @@ class Surroundcs(ViOperatorDef):
 
         return True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_surround',
             'action_args': {
                 'action': 'cs',
-                'mode': state.mode,
+                'mode': get_mode(view),
                 'target': self.inp[0],
                 'replacement': self.inp[1:]
             }
@@ -196,8 +197,6 @@ class _nv_surround_command(TextCommand):
             _do_ds(self.view, edit, **kwargs)
         elif action == 'ys':
             _do_ys(self.view, edit, **kwargs)
-        else:
-            raise Exception('unknown action')
 
 
 _PUNCTUATION_MARKS = {
@@ -220,7 +219,7 @@ _PUNCTUTION_MARK_ALIASES = {
 }
 
 
-def _resolve_punctuation_aliases(target):
+def _resolve_punctuation_aliases(target: str) -> str:
     return _PUNCTUTION_MARK_ALIASES.get(target, target)
 
 
@@ -228,7 +227,7 @@ def _resolve_punctuation_aliases(target):
 # their counterparts. The targets b, B, r, and a are aliases for ), }, ], and >
 # (the first two mirror Vim; the second two are completely arbitrary and subject
 # to change).
-def _get_punctuation_marks(target):
+def _get_punctuation_marks(target: str) -> tuple:
     target = _resolve_punctuation_aliases(target)
 
     return _PUNCTUATION_MARKS.get(target, (target, target))
@@ -238,7 +237,7 @@ def _get_punctuation_marks(target):
 # of characters. Similar behavior can be found with (, {, and [ (but not <),
 # which append an additional space to the inside. Like with the targets above,
 # b, B, r, and a are aliases for ), }, ], and >.
-def _get_punctuation_mark_replacements(target):
+def _get_punctuation_mark_replacements(target: str) -> tuple:
     if target[0] in ('t', '<') and len(target) >= 3:
         # Attributes are stripped in the closing tag. The first character if
         # "t", which is an alias for "<", is replaced too.
@@ -254,7 +253,7 @@ def _get_punctuation_mark_replacements(target):
     return (begin, end)
 
 
-def _rsynced_regions_transformer(view, f):
+def _rsynced_regions_transformer(view, f) -> None:
     sels = reversed(list(view.sel()))
     view_sel = view.sel()
     for sel in sels:
@@ -267,11 +266,11 @@ def _rsynced_regions_transformer(view, f):
         view_sel.add(new_sel)
 
 
-def _find(view, sub, start, flags=0):
+def _find(view, sub: str, start: int, flags: int = 0):
     return view.find(sub, start, flags)
 
 
-def _rfind(view, sub, start, end, flags=0):
+def _rfind(view, sub: str, start: int, end: int, flags: int = 0):
     res = reverse_search(view, sub, start, end, flags)
     if res is None:
         return Region(-1)
@@ -279,7 +278,7 @@ def _rfind(view, sub, start, end, flags=0):
     return res
 
 
-def _do_cs(view, edit, mode, target, replacement):
+def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
     # Targets are always one character.
     if len(target) != 1:
         return
@@ -340,7 +339,7 @@ def _do_cs(view, edit, mode, target, replacement):
         _rsynced_regions_transformer(view, _f)
 
 
-def _do_ds(view, edit, mode, target):
+def _do_ds(view, edit, mode: str, target: str) -> None:
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
             if len(target) != 1:
@@ -445,8 +444,8 @@ def _do_ds(view, edit, mode, target):
         _rsynced_regions_transformer(view, _f)
 
 
-def _do_ys(view, edit, mode=None, motion=None, replacement='"', count=1):
-    def surround(view, edit, s, replacement):
+def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', count: int = 1) -> None:
+    def _surround(view, edit, s, replacement: str) -> None:
         replacement_open, replacement_close = _get_punctuation_mark_replacements(replacement)
         if replacement_open.startswith('<'):
             view.insert(edit, s.b, replacement_close)
@@ -458,10 +457,10 @@ def _do_ys(view, edit, mode=None, motion=None, replacement='"', count=1):
 
     def f(view, s):
         if mode == INTERNAL_NORMAL:
-            surround(view, edit, s, replacement)
+            _surround(view, edit, s, replacement)
             return Region(s.begin())
         elif mode in (VISUAL, VISUAL_BLOCK):
-            surround(view, edit, s, replacement)
+            _surround(view, edit, s, replacement)
             return Region(s.begin())
         return s
 

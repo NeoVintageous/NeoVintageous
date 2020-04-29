@@ -7,9 +7,9 @@
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# neovintageous is distributed in the hope that it will be useful,
-# but without any warranty; without even the implied warranty of
-# merchantability or fitness for a particular purpose.  See the
+# NeoVintageous is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -18,6 +18,7 @@
 from sublime import Region
 from sublime import Settings
 
+from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.tests import unittest
 
@@ -210,7 +211,7 @@ class TestViewTestCase(unittest.ViewTestCase):
 
     def test_assertNormal(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
 
         self.view.sel().clear()
         self.assertNormal('hello world')
@@ -245,15 +246,15 @@ class TestViewTestCase(unittest.ViewTestCase):
 
     def test_assertNormal_asserts_normal_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
         with self.assertRaises(AssertionError):
             self.assertNormal('hello world|')
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         self.assertNormal('hello world|')
 
     def test_assertInsert(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.INSERT
+        set_mode(self.view, unittest.INSERT)
 
         self.view.sel().clear()
         self.assertInsert('hello world')
@@ -266,15 +267,15 @@ class TestViewTestCase(unittest.ViewTestCase):
 
     def test_assertInsert_asserts_insert_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertInsert('hello world|')
-        self.state.mode = unittest.INSERT
+        set_mode(self.view, unittest.INSERT)
         self.assertInsert('hello world|')
 
     def test_assertVisual(self):
         self.view.run_command('insert', {'characters': 'hello world'})
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
 
         self.view.sel().clear()
         self.assertVisual('hello world')
@@ -294,10 +295,10 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.view.sel().clear()
         self.view.sel().add(3)
         self.view.sel().add(5)
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertVisual('hel|lo| world')
-        self.state.mode = unittest.VISUAL
+        set_mode(self.view, unittest.VISUAL)
         self.assertVisual('hel|lo| world')
 
     def test_assertVline_asserts_vline_mode(self):
@@ -305,10 +306,10 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.view.sel().clear()
         self.view.sel().add(0)
         self.view.sel().add(11)
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertVline('|hello world|')
-        self.state.mode = unittest.VISUAL_LINE
+        set_mode(self.view, unittest.VISUAL_LINE)
         self.assertVline('|hello world|')
 
     def test_assertVBlock_asserts_vblock_mode(self):
@@ -316,10 +317,10 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.view.sel().clear()
         self.view.sel().add(0)
         self.view.sel().add(11)
-        self.state.mode = unittest.NORMAL
+        set_mode(self.view, unittest.NORMAL)
         with self.assertRaises(AssertionError):
             self.assertVblock('|hello world|')
-        self.state.mode = unittest.VISUAL_BLOCK
+        set_mode(self.view, unittest.VISUAL_BLOCK)
         self.assertVblock('|hello world|')
 
     def test_assert_content(self):
@@ -454,6 +455,48 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.register('1y')
         self.assertRegister('1y')
 
+    @unittest.mock_mappings()
+    def test_mock_mappings_default(self):
+        self.assertMappingsEmpty()
+
+    @unittest.mock_mappings(
+        (unittest.INSERT, 'A', 'B'),
+        (unittest.NORMAL, 'C', 'D'),
+        (unittest.NORMAL, 'C2', 'D2'),
+        (unittest.NORMAL, 'C3', 'D3'),
+        (unittest.NORMAL, 'A', 'B'),
+        (unittest.OPERATOR_PENDING, 'E', 'F'),
+        (unittest.SELECT, 'G', 'H'),
+        (unittest.VISUAL_BLOCK, 'I', 'J'),
+        (unittest.VISUAL_BLOCK, 'I2', 'J2'),
+        (unittest.VISUAL_BLOCK, 'K', 'L'),
+        (unittest.VISUAL_LINE, 'K', 'L'),
+        (unittest.VISUAL, 'M', 'N'),
+    )
+    def test_mock_mappings(self):
+        self.assertMappings({
+            unittest.INSERT: {'A': 'B'},
+            unittest.NORMAL: {
+                'C': 'D',
+                'C2': 'D2',
+                'C3': 'D3',
+                'A': 'B',
+            },
+            unittest.OPERATOR_PENDING: {'E': 'F'},
+            unittest.SELECT: {'G': 'H'},
+            unittest.VISUAL_BLOCK: {
+                'I': 'J',
+                'I2': 'J2',
+                'K': 'L',
+            },
+            unittest.VISUAL_LINE: {'K': 'L'},
+            unittest.VISUAL: {'M': 'N'},
+        })
+
+        self.assertMapping(unittest.NORMAL, 'C2', 'D2')
+        self.assertNotMapping('foo')
+        self.assertNotMapping('foo', unittest.NORMAL)
+
 
 class FunctionalTestCaseStub(unittest.FunctionalTestCase):
 
@@ -484,7 +527,7 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
 
     def test_feed_esc(self):
         self.instance.feed('<Esc>')
-        self.window.run_command.assert_called_once_with('_nv_feed_key', {'key': '<esc>'})
+        self.window.run_command.assert_called_once_with('_nv_feed_key', {'key': '<esc>', 'check_user_mappings': False})
 
     @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
     def test_feed_cmdline(self, do_ex_cmdline):

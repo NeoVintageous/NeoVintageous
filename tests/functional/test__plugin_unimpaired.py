@@ -227,12 +227,12 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
     @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_tab_control')
     def test_n_tprevious(self, window_tab_control):
         self.eq('f|izz', 'n_[t', 'f|izz')
-        window_tab_control.assert_called_once_with(self.view.window(), 'previous', count=1)
+        window_tab_control.assert_called_once_with(self.view.window(), 'previous', 1)
 
     @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_tab_control')
     def test_n_tnext(self, window_tab_control):
         self.eq('f|izz', 'n_]t', 'f|izz')
-        window_tab_control.assert_called_once_with(self.view.window(), 'next', count=1)
+        window_tab_control.assert_called_once_with(self.view.window(), 'next', 1)
 
     @unittest.mock_run_commands('select_by_index')
     def test_n_tfirst(self):
@@ -298,3 +298,26 @@ class TestUnimpairedToggles(unittest.FunctionalTestCase):
             self.assertOption(name, False, msg=name)
             self.feed('yo%s' % key)
             self.assertOption(name, True, msg=name)
+
+    def test_issue_716_toggle_list(self):
+        self.normal('f|izz')
+        self.view.settings().set('draw_white_space', 'none')
+        self.feed('yol')
+        self.assertEqual(self.view.settings().get('draw_white_space'), 'all')
+        self.assertOption('list', True)
+        self.feed('yol')
+        self.assertEqual(self.view.settings().get('draw_white_space'), 'selection')
+        self.assertOption('list', False)
+        self.feed('yol')
+        self.assertEqual(self.view.settings().get('draw_white_space'), 'all')
+        self.assertOption('list', True)
+        self.feed('[ol')
+        self.assertEqual(self.view.settings().get('draw_white_space'), 'all')
+        self.assertOption('list', True)
+        self.feed(']ol')
+        self.assertEqual(self.view.settings().get('draw_white_space'), 'selection')
+        self.assertOption('list', False)
+        self.view.settings().set('draw_white_space', 'selection')
+        self.feed('yol')
+        self.assertEqual(self.view.settings().get('draw_white_space'), 'all')
+        self.assertOption('list', True)

@@ -49,11 +49,14 @@ from NeoVintageous.nv.registers import _linewise as _registers_linewise
 from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
+from NeoVintageous.nv.settings import get_mode as _get_mode
 from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
+from NeoVintageous.nv.settings import get_xpos as _get_xpos
 from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_mode as _set_mode
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
-from NeoVintageous.nv.state import State as _State
+from NeoVintageous.nv.settings import set_xpos as _set_xpos
 
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
@@ -289,7 +292,13 @@ class ViewTestCase(unittest.TestCase):
                 for i, x in enumerate(sels):
                     self.view.sel().add(x - i)
 
-        self.state.mode = mode
+        _set_mode(self.view, mode)
+
+    def setNormalMode(self):
+        _set_mode(self.view, NORMAL)
+
+    def setVisualMode(self):
+        _set_mode(self.view, VISUAL)
 
     def insert(self, text: str) -> None:
         self._setupView(text, INSERT)
@@ -349,7 +358,7 @@ class ViewTestCase(unittest.TestCase):
         _set_clipboard('')
 
     def resetMacros(self) -> None:
-        _macros._state.clear()
+        _macros._data.clear()
 
     def setMark(self, name: str, pt: int) -> None:
         sels = list(self.view.sel())
@@ -364,6 +373,20 @@ class ViewTestCase(unittest.TestCase):
     def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
         self.assertEqual(_mappings[mode][lhs], rhs)
+
+    def assertMappings(self, expected: dict) -> None:
+        self.assertEqual(_mappings, expected)
+
+    def assertMappingsEmpty(self) -> None:
+        self.assertEqual(_mappings, {
+            INSERT: {},
+            NORMAL: {},
+            OPERATOR_PENDING: {},
+            SELECT: {},
+            VISUAL_BLOCK: {},
+            VISUAL_LINE: {},
+            VISUAL: {},
+        })
 
     def assertNotMapping(self, lhs: str, mode: int = None) -> None:
         if mode is None:
@@ -412,6 +435,12 @@ class ViewTestCase(unittest.TestCase):
 
     def assertSearchIncremental(self, expected: str, msg: str = None) -> None:
         self._assertContentRegion('_nv_search_inc', expected, msg)
+
+    def assertNoSearch(self) -> None:
+        content = self.content()
+        self.assertSearch(content)
+        self.assertSearchCurrent(content)
+        self.assertSearchIncremental(content)
 
     def setLastSearch(self, term: str) -> None:
         _set_last_buffer_search(self.view, term)
@@ -477,7 +506,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
-        self.assertEquals(self.state.mode, mode)
+        self.assertEquals(_get_mode(self.view), mode)
 
     def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
@@ -682,10 +711,10 @@ class ViewTestCase(unittest.TestCase):
         self.assertStatusLineEqual('-- VISUAL BLOCK --', msg)
 
     def assertXpos(self, expected, msg: str = None) -> None:
-        self.assertEqual(self.state.xpos, expected, msg)
+        self.assertEqual(_get_xpos(self.view), expected, msg)
 
     def setXpos(self, xpos: int) -> None:
-        self.state.xpos = xpos
+        _set_xpos(self.view, xpos)
 
     def assertMockNotCalled(self, mock) -> None:
         # https://docs.python.org/3/library/unittest.mock.html
@@ -715,11 +744,6 @@ class ViewTestCase(unittest.TestCase):
             MockCmdlineOnDone._mock_pattern = pattern
         MockCmdlineOnDone._mock_event = event
         mock.side_effect = MockCmdlineOnDone
-
-    # DEPRECATED Try to avoid using this, it will eventually be removed in favour of something better.
-    @property
-    def state(self) -> _State:
-        return _State(self.view)
 
     # DEPRECATED Use newer APIs e.g. self.Region(), unittest.Region.
     def _R(self, a: int, b: int = None) -> Region:
@@ -771,13 +795,17 @@ class FunctionalTestCase(ViewTestCase):
         #
         # The seq can be prefixed to specify a mode:
         #
-        #   * n_ - Normal
-        #   * i_ - Insert
-        #   * v_ - Visual
-        #   * l_ - Visual line
-        #   * b_ - Visual block
+        # * n_ - Normal
+        # * i_ - Insert
+        # * v_ - Visual
+        # * V_ - Visual line
+        # * b_ - Visual block
+        # * s_ - Select
+        # * R_ - Replace
+        # * :<','> - Visual Command-line
+        # * N_ - Internal Normal
         #
-        # The default mode is Internal Normal.
+        # The default mode is "N_".
         #
         # NOTE: This method currently uses a **hardcoded** map of sequences to
         # commands (except <Esc> and cmdline sequences). You may need to add the
@@ -789,16 +817,15 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed('3w')
         # >>> feed('v_w')
         # >>> feed('v_3w')
+        # >>> feed('V_w')
+        # >>> feed('b_w')
         # >>> feed('<Esc>')
+        # >>> feed('i_<Esc>')
+        # >>> feed('<C-v>')
+        # >>> feed('<CR>')
         # >>> feed(':pwd')
-        # >>> feed(':help neovintageous')
-
-        if seq == '<Esc>':
-            window = self.view.window()
-            if not window:
-                raise Exception('window not found')
-
-            return window.run_command('_nv_feed_key', {'key': '<esc>'})
+        # >>> feed(':copy 2')
+        # >>> feed(':2,4yank')
 
         if seq[0] == ':':
             return _do_ex_cmdline(self.view.window(), seq)
@@ -894,7 +921,7 @@ class FunctionalTestCase(ViewTestCase):
         # * :<','> - Visual Command-line
         # * N_ - Internal Normal
         #
-        # The text and expected arguments also accept the following prefixes:
+        # The {text} and {expected} arguments also accept prefixes:
         #
         # * r_ - Reversed selection (must be first e.g. "r_d_*")
         # * d_ - Visual block direction down (only valid in visual block)
@@ -1017,6 +1044,16 @@ class PatchFeedCommandXpos(FunctionalTestCase):
         super().onRunFeedCommand(command, args)
 
 
+class ResetCommandLineOutput(FunctionalTestCase):
+
+    def tearDown(self) -> None:
+        # XXX: Ugly hack to make sure that the output panels created in these
+        # tests don't hide the overall progress panel.
+        self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})
+        self.view.window().focus_group(self.view.window().active_group())
+        super().tearDown()
+
+
 class ResetRegisters(FunctionalTestCase):
 
     def setUp(self) -> None:
@@ -1046,49 +1083,41 @@ def _make_region(view, a: int, b: int = None) -> Region:
 
 
 def mock_bell():
-    """Mock the UI bell.
+    """Mock bells.
 
     Usage:
 
     @unittest.mock_bell()
-    def test_name(self):
+    def test(self):
         self.assertBell()
-        self.assertBell('status message')
+        self.assertBell('message')
         self.assertBellCount(2)
         self.assertNoBell()
 
     """
     def wrapper(f):
-
-        # Hack to make sure the right imported ui_bell function is mocked.
-        if f.__module__.endswith('nv.test_ex_cmds'):
-            patch = 'NeoVintageous.nv.ex_cmds.ui_bell'
-        else:
-            patch = 'NeoVintageous.nv.commands.ui_bell'
-
-        @mock.patch(patch)
+        @mock.patch('NeoVintageous.nv.ui._ui_bell')
         def wrapped(self, *args, **kwargs):
-            mock = args[-1]
-
-            self.bells = [mock]
-
-            def _bell_call_count() -> int:
-                bell_count = 0
-                for bell in self.bells:
-                    bell_count += bell.call_count
-
-                return bell_count
-
-            def _assertBellCount(count: int) -> None:
-                self.assertEquals(count, _bell_call_count(), 'expects %s bell' % count)
+            self.bell = args[-1]
+            self.assert_bell_count = 0
 
             def _assertBell(msg: str = None) -> None:
-                _assertBellCount(1)
-                if msg:
-                    self.bells[0].assert_called_once_with(msg)
+                if msg is None:
+                    self.bell.assert_called_with()
+                else:
+                    self.bell.assert_called_with(msg)
+
+                self.assert_bell_count += 1
+                self.assertEqual(
+                    self.bell.call_count,
+                    self.assert_bell_count,
+                    'expects %s bell(s)' % self.assert_bell_count)
+
+            def _assertBellCount(count: int) -> None:
+                self.assertEquals(count, self.bell.call_count, 'expects %s bell' % count)
 
             def _assertNoBell() -> None:
-                self.assertEquals(0, _bell_call_count(), 'expects no bell')
+                self.assertEquals(0, self.bell.call_count, 'expected no bell')
 
             self.assertBell = _assertBell
             self.assertBellCount = _assertBellCount
@@ -1106,8 +1135,8 @@ def mock_hide_panel():
 
     Usage:
 
-    @unitest.mock_hide_panel()
-    def test_hide_panel(self):
+    @unittest.mock_hide_panel()
+    def test(self):
         pass
 
     """
@@ -1122,36 +1151,41 @@ def mock_hide_panel():
 
 
 def mock_status_message():
-    """Mock the status messenger.
+    """Mock status messages.
 
     Usage:
 
-    @unitest.mock_status_message()
-    def test_status_message(self):
-        self.assertStatusMessage('msg')
+    @unittest.mock_status_message()
+    def test(self):
+        self.assertStatusMessage('message')
+        self.assertStatusMessageCount(3)
+        self.assertNoStatusMessage()
 
     """
     def wrapper(f):
         @mock.patch('NeoVintageous.nv.vim._status_message')
         def wrapped(self, *args, **kwargs):
             self.status_message = args[-1]
+            self.assert_status_message_count = 0
 
-            def _assertNoStatusMessage() -> None:
-                self.assertEqual(0, self.status_message.call_count)
+            def _assertStatusMessage(msg: str) -> None:
+                self.status_message.assert_called_with(msg)
 
-            def _assertStatusMessage(msg: str, count: int = 1) -> None:
-                if count > 1:
-                    self.status_message.assert_called_with(msg)
-                    self.assertEqual(count, self.status_message.call_count)
-                else:
-                    self.status_message.assert_called_once_with(msg)
+                self.assert_status_message_count += 1
+                self.assertEqual(
+                    self.status_message.call_count,
+                    self.assert_status_message_count,
+                    'expects %s status message(s)' % self.assert_status_message_count)
 
             def _assertStatusMessageCount(expected) -> None:
                 self.assertEqual(expected, self.status_message.call_count)
 
-            self.assertNoStatusMessage = _assertNoStatusMessage
+            def _assertNoStatusMessage() -> None:
+                self.assertEqual(0, self.status_message.call_count)
+
             self.assertStatusMessage = _assertStatusMessage
             self.assertStatusMessageCount = _assertStatusMessageCount
+            self.assertNoStatusMessage = _assertNoStatusMessage
 
             return f(self, *args[:-1], **kwargs)
         return wrapped
@@ -1163,11 +1197,8 @@ def mock_mappings(*mappings):
 
     Usage:
 
-    @unittest.mock_mappings(
-        (unittest.NORMAL, ',l', '3l'),
-        (unittest.VISUAL, ',l', '3l'),
-    )
-    def test_name(self):
+    @unittest.mock_mappings((unittest.NORMAL, ',l', '3l'), (unittest.VISUAL, ',l', '3l'))
+    def test(self):
         pass
 
     """
@@ -1193,16 +1224,16 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
 
     Usage:
 
-    @unitest.mock_ui()
-    def test_name(self):
+    @unittest.mock_ui()
+    def test(self):
         pass
 
-    @unitest.mock_ui(screen_rows=10)
-    def test_name(self):
+    @unittest.mock_ui(screen_rows=10)
+    def test(self):
         pass
 
-    @unitest.mock_ui(visible_region=(2, 7))
-    def test_name(self):
+    @unittest.mock_ui(visible_region=(2, 7))
+    def test(self):
         pass
 
     """
@@ -1269,8 +1300,8 @@ def mock_run_commands(*methods):
 
     Usage:
 
-    @unitest.mock_run_commands('redo', 'hide_panel')
-    def test_name(self):
+    @unittest.mock_run_commands('redo', 'hide_panel')
+    def test(self):
         self.assertRunCommand('redo')
         self.assertRunCommand('redo', count=3)
         self.assertRunCommand('hide_panel', {'cancel': True})
@@ -1385,8 +1416,10 @@ _SEQ2CMD = {
     ';':            {'command': '_nv_feed_key'},  # noqa: E241
     '<':            {'command': '_nv_feed_key'},  # noqa: E241
     '<<':           {'command': '_nv_feed_key'},  # noqa: E241
+    '<C-[>':        {'command': '_nv_feed_key', 'args': {'key': '<C-[>'}},  # noqa: E241
     '<C-]>':        {'command': '_nv_feed_key', 'args': {'key': '<C-]>'}},  # noqa: E241
     '<C-a>':        {'command': '_nv_feed_key', 'args': {'key': '<C-a>'}},  # noqa: E241
+    '<C-c>':        {'command': '_nv_feed_key', 'args': {'key': '<C-c>'}},  # noqa: E241
     '<C-d>':        {'command': '_nv_feed_key', 'args': {'key': '<C-d>'}},  # noqa: E241
     '<C-e>':        {'command': '_nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
     '<C-g>':        {'command': '_nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
@@ -1400,8 +1433,8 @@ _SEQ2CMD = {
     '<C-x>':        {'command': '_nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
     '<C-y>':        {'command': '_nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
     '<CR>':         {'command': '_nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
+    '<Esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<M-n>':        {'command': '_nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
-    '<esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<{':           {'command': '_nv_feed_key'},  # noqa: E241
     '=':            {'command': '_nv_feed_key'},  # noqa: E241
     '==':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1442,6 +1475,10 @@ _SEQ2CMD = {
     'R':            {'command': '_nv_feed_key'},  # noqa: E241
     'S"':           {'command': '_nv_feed_key'},  # noqa: E241
     'S':            {'command': '_nv_feed_key'},  # noqa: E241
+    'S<CR>':        {'command': '_nv_feed_key', 'args': {'keys': ['S', '<CR>']}},  # noqa: E241
+    'Sab':          {'command': '_nv_feed_key'},  # noqa: E241
+    'Siz':          {'command': '_nv_feed_key'},  # noqa: E241
+    'Sx<CR>':       {'command': '_nv_feed_key', 'args': {'keys': ['S', 'x', '<CR>']}},  # noqa: E241
     'T0':           {'command': '_nv_feed_key'},  # noqa: E241
     'T4':           {'command': '_nv_feed_key'},  # noqa: E241
     'T5':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1453,6 +1490,9 @@ _SEQ2CMD = {
     'W':            {'command': '_nv_feed_key'},  # noqa: E241
     'X':            {'command': '_nv_feed_key'},  # noqa: E241
     'Y':            {'command': '_nv_feed_key'},  # noqa: E241
+    'Z<CR>':        {'command': '_nv_feed_key', 'args': {'keys': ['Z', '<CR>']}},  # noqa: E241
+    'Ziz':          {'command': '_nv_feed_key'},  # noqa: E241
+    'Zx<CR>':       {'command': '_nv_feed_key', 'args': {'keys': ['Z', 'x', '<CR>']}},  # noqa: E241
     '[ ':           {'command': '_nv_feed_key'},  # noqa: E241
     '[(':           {'command': '_nv_feed_key'},  # noqa: E241
     '[B':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1529,6 +1569,7 @@ _SEQ2CMD = {
     'c':            {'command': '_nv_feed_key'},  # noqa: E241
     'c0':           {'command': '_nv_feed_key'},  # noqa: E241
     'cM':           {'command': '_nv_feed_key'},  # noqa: E241
+    'cZiz':         {'command': '_nv_feed_key'},  # noqa: E241
     'c^':           {'command': '_nv_feed_key'},  # noqa: E241
     'c_':           {'command': '_nv_feed_key'},  # noqa: E241
     'ca"':          {'command': '_nv_feed_key'},  # noqa: E241
@@ -1587,6 +1628,7 @@ _SEQ2CMD = {
     'crU':          {'command': '_nv_feed_key'},  # noqa: E241
     'cr_':          {'command': '_nv_feed_key'},  # noqa: E241
     'crc':          {'command': '_nv_feed_key'},  # noqa: E241
+    'cre':          {'command': '_nv_feed_key'},  # noqa: E241
     'crk':          {'command': '_nv_feed_key'},  # noqa: E241
     'crm':          {'command': '_nv_feed_key'},  # noqa: E241
     'crs':          {'command': '_nv_feed_key'},  # noqa: E241
@@ -1656,6 +1698,7 @@ _SEQ2CMD = {
     'cs}(':         {'command': '_nv_feed_key'},  # noqa: E241
     'cs})':         {'command': '_nv_feed_key'},  # noqa: E241
     'cw':           {'command': '_nv_feed_key'},  # noqa: E241
+    'cziz':         {'command': '_nv_feed_key'},  # noqa: E241
     'c|':           {'command': '_nv_feed_key'},  # noqa: E241
     'd#':           {'command': '_nv_feed_key'},  # noqa: E241
     'd$':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1680,6 +1723,7 @@ _SEQ2CMD = {
     'dM':           {'command': '_nv_feed_key'},  # noqa: E241
     'dTx':          {'command': '_nv_feed_key'},  # noqa: E241
     'dW':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dZiz':         {'command': '_nv_feed_key'},  # noqa: E241
     'd[{':          {'command': '_nv_feed_key'},  # noqa: E241
     'd\'a':         {'command': '_nv_feed_key'},  # noqa: E241
     'd\'x':         {'command': '_nv_feed_key'},  # noqa: E241
@@ -1771,6 +1815,7 @@ _SEQ2CMD = {
     'ds}':          {'command': '_nv_feed_key'},  # noqa: E241
     'dtx':          {'command': '_nv_feed_key'},  # noqa: E241
     'dw':           {'command': '_nv_feed_key'},  # noqa: E241
+    'dziz':         {'command': '_nv_feed_key'},  # noqa: E241
     'd{':           {'command': '_nv_feed_key'},  # noqa: E241
     'd|':           {'command': '_nv_feed_key'},  # noqa: E241
     'd}':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1867,6 +1912,11 @@ _SEQ2CMD = {
     'r<cr>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
     'rx':           {'command': '_nv_feed_key'},  # noqa: E241
     's':            {'command': '_nv_feed_key'},  # noqa: E241
+    's<CR>':        {'command': '_nv_feed_key', 'args': {'keys': ['s', '<CR>']}},  # noqa: E241
+    'sab':          {'command': '_nv_feed_key'},  # noqa: E241
+    'siz':          {'command': '_nv_feed_key'},  # noqa: E241
+    'sx<CR>':       {'command': '_nv_feed_key', 'args': {'keys': ['s', 'x', '<CR>']}},  # noqa: E241
+    'sxy':          {'command': '_nv_feed_key'},  # noqa: E241
     't2':           {'command': '_nv_feed_key'},  # noqa: E241
     't6':           {'command': '_nv_feed_key'},  # noqa: E241
     't8':           {'command': '_nv_feed_key'},  # noqa: E241

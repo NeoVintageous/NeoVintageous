@@ -18,10 +18,9 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.vi.units import next_paragraph_start
-from NeoVintageous.nv.vi.units import prev_paragraph_start
 
 
-class TestNextParagraphStart(unittest.ViewTestCase):
+class Test_next_paragraph_start(unittest.ViewTestCase):
 
     def test_next_paragraph_start_empty(self):
         self.normal('')
@@ -51,28 +50,3 @@ class TestNextParagraphStart(unittest.ViewTestCase):
         self.assertEqual(4, next_paragraph_start(self.view, 0))
         self.assertEqual(4, next_paragraph_start(self.view, 2))
         self.assertEqual(4, next_paragraph_start(self.view, 4))
-
-
-class TestPrevParagraphStart(unittest.ViewTestCase):
-
-    def test_prev_paragraph_start_empty(self):
-        self.normal('')
-        self.assertEqual(0, prev_paragraph_start(self.view, 0))
-
-    def test_prev_paragraph_start(self):
-        self.normal('12\n45\n\n89\n12\n\n5\n7|8\n01\n\n45')
-        self.assertEqual(13, prev_paragraph_start(self.view, 17))
-        self.assertEqual(6, prev_paragraph_start(self.view, 13))
-        self.assertEqual(0, prev_paragraph_start(self.view, 6))
-        self.assertEqual(0, prev_paragraph_start(self.view, 0))
-
-    def test_prev_paragraph_start_empty_lines(self):
-        self.normal('1\n\n\n\n6\n8\n0\n\n\n\n567\n')
-        self.assertEqual(13, prev_paragraph_start(self.view, 15))
-        self.assertEqual(4, prev_paragraph_start(self.view, 13))
-        self.assertEqual(0, prev_paragraph_start(self.view, 4))
-
-    def test_prev_paragraph_start_count(self):
-        self.normal('1\n\n4\n\n7\n\n0\n\n3\n')
-        self.assertEqual(5, prev_paragraph_start(self.view, 14, count=3))
-        self.assertEqual(0, prev_paragraph_start(self.view, 5, count=3))

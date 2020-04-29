@@ -91,6 +91,8 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertLinewiseRegister('3aaa\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
+        self.eq('x\n    fi|zz\ny', 'cc', 'i_x\n    |\ny')
+        self.assertXpos(4)
 
     def test_cc_should_not_strip_preceding_whitespace(self):
         self.eq('    |one', 'cc', 'i_    |')

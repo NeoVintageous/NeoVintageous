@@ -17,8 +17,6 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.ex.nodes import _resolve_line_number
-from NeoVintageous.nv.ex.nodes import CommandLineNode
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.nodes import TokenDigits
 from NeoVintageous.nv.ex.nodes import TokenDollar
@@ -28,7 +26,7 @@ from NeoVintageous.nv.ex.nodes import TokenOffset
 from NeoVintageous.nv.ex.nodes import TokenPercent
 from NeoVintageous.nv.ex.nodes import TokenSearchBackward
 from NeoVintageous.nv.ex.nodes import TokenSearchForward
-from NeoVintageous.nv.ex.tokens import TokenCommand
+from NeoVintageous.nv.ex.nodes import _resolve_line_number
 
 
 class TestRangeNode(unittest.TestCase):
@@ -184,11 +182,11 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
     def test_search_backward(self):
         self.write('ab\ncd\nx\nabcd\ny\nz\n')
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchBackward('foobar'), 0)
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: foo'):
+            _resolve_line_number(self.view, TokenSearchBackward('foo'), 0)
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchBackward('foobar'), 100)
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: bar'):
+            _resolve_line_number(self.view, TokenSearchBackward('bar'), 100)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 100), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 5), 3)
@@ -196,35 +194,35 @@ class TestRangeNode_resolve_line_number(unittest.ViewTestCase):
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 3), 0)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 2), 0)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('a'), 1), 0)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: a'):
             _resolve_line_number(self.view, TokenSearchBackward('a'), 0)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('bc'), 5), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchBackward('bc'), 4), 3)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E384: Search hit TOP without match for: bc'):
             _resolve_line_number(self.view, TokenSearchBackward('bc'), 3)
 
     def test_search_forward(self):
         self.write('ab\ncd\nx\nabcd\ny\nz\n')
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchForward('foobar'), 0)
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: foo'):
+            _resolve_line_number(self.view, TokenSearchForward('foo'), 0)
 
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
-            _resolve_line_number(self.view, TokenSearchForward('foobar'), 100)
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: bar'):
+            _resolve_line_number(self.view, TokenSearchForward('bar'), 100)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 0), 0)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 1), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 2), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('a'), 3), 3)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: a'):
             _resolve_line_number(self.view, TokenSearchForward('a'), 4)
 
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 0), 1)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 1), 1)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 2), 3)
         self.assertEqual(_resolve_line_number(self.view, TokenSearchForward('cd'), 3), 3)
-        with self.assertRaisesRegex(ValueError, 'pattern not found'):
+        with self.assertRaisesRegex(ValueError, 'E385: Search hit BOTTOM without match for: cd'):
             _resolve_line_number(self.view, TokenSearchForward('cd'), 4)
 
 
@@ -390,32 +388,3 @@ class TestRangeNodeResolve_Marks(unittest.ViewTestCase):
         self.write('xxx xxx\naaa aaa\nxxx xxx\nbbb bbb\nxxx xxx\nccc ccc\n')
         self.select((8, 10))
         self.assertRegion(RangeNode(start=[TokenMark("<"), TokenMark(">")]).resolve(self.view), (8, 16))
-
-
-class TestCommandLineNode(unittest.TestCase):
-
-    def test_can_instantiate(self):
-        range_node = RangeNode(["foo"], ["bar"], False)
-        command = TokenCommand('substitute')
-        command_line_node = CommandLineNode(range_node, command)
-
-        self.assertEqual(range_node, command_line_node.line_range)
-        self.assertEqual(command, command_line_node.command)
-
-    def test_to_str(self):
-        self.assertEqual(str(CommandLineNode(RangeNode(['1'], ['10'], ','), 'cmd')), '1,10cmd')
-        self.assertEqual(str(CommandLineNode(RangeNode(['1'], ['10'], ','), None)), '1,10')
-
-    def test_validate(self):
-        class NotAddressableCommand:
-            addressable = False
-
-        class AddressableCommand:
-            addressable = True
-
-        CommandLineNode(RangeNode(), AddressableCommand()).validate()
-        CommandLineNode(RangeNode(), NotAddressableCommand()).validate()
-        CommandLineNode(RangeNode(['1'], ['2'], ';'), AddressableCommand()).validate()
-
-        with self.assertRaisesRegex(Exception, 'E481: No range allowed'):
-            CommandLineNode(RangeNode(['1'], ['2'], ';'), NotAddressableCommand()).validate()

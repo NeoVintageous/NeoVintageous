@@ -1,35 +1,49 @@
-*neovintageous.txt*  Neovintageous
+*neovintageous.txt*                                        *nv* *neovintageous*
 
-                NEOVINTAGEOUS - main help file
 
-Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
+        _   __         _    ___       __
+       / | / /__  ____| |  / (_)___  / /_____ _____ ____  ____  __  _______
+      /  |/ / _ \/ __ \ | / / / __ \/ __/ __ `/ __ `/ _ \/ __ \/ / / / ___/
+     / /|  /  __/ /_/ / |/ / / / / / /_/ /_/ / /_/ /  __/ /_/ / /_/ (__  )
+    /_/ |_/\___/\____/|___/_/_/ /_/\__/\__,_/\__, /\___/\____/\__,_/____/
+                                            /____/
+                                                    Advanced Vim emulation!
+
+
+Jump to a subject:  Position the cursor on a tag (e.g.|bars|and hit CTRL-].
         Jump back:  Type CTRL-I or CTRL-O.  Repeat to go further back.
 
-NeoVintageous                                             *neovintageous* *nv*
+Vim feature-parity is an ongoing effort, some features are not implemented or
+implemented fully, and differences are not fully documented.
 
- 1. Command Palette                 |nv-command-palette|
- 2. Multiple cursors                |nv-multiple-cursors|
- 3. Opening a view                  |nv-opening-view|
- 4. neovintageousrc                 |nv-rc|
- 5. Plugins                         |nv-plugins|
-    1.1 Abolish                         |nv-abolish|
-    1.2 Commentary                      |nv-commentary|
-    1.3 HighlightedYank                 |nv-highlightedyank|
-    1.4 Surround                        |nv-surround|
-    1.5 Unimpaired                      |nv-unimpaired|
-    1.6 Indent Object                   |nv-indent-object|
- 6. Options                         |nv-options|
- 7. Settings                        |nv-settings|
- 8. Search highlighting             |nv-search-highlighting|
- 9. Jumping to diffs                |nv-jumpto-diffs|
-10. Toggle Command                  |nv-toggle|
+The vim documentation is provided in full without modification and this page
+tries to document some feature differences and special features and usage.
 
-Note that Vim feature-parity is an ongoing effort, not all features are
-implemented and differences are not fully documented. The Vim documentation is
-provided in full without modification alongside this help document.
+Please open issues to request missing features.
 
-Please don't hesitate to open an issue about new features, enhancements, and
-usage. If you are new to Vim also see |help.txt|.
+If you are new to vim also see|help.txt|.
+
+
+CONTENTS                                                         *nv-contents*
+
+    Command Palette ................|nv-command-palette|
+    Multiple cursors ...............|nv-multiple-cursors|
+    Opening a view .................|nv-opening-view|
+    neovintageousrc ................|neovintageousrc|
+    Plugins ........................|nv-plugins|
+        Abolish ........................|nv-abolish|
+        Commentary .....................|nv-commentary|
+        HighlightedYank ................|nv-highlightedyank|
+        Sneak ..........................|nv-sneak|
+        Surround .......................|nv-surround|
+        Unimpaired .....................|nv-unimpaired|
+        Indent Object ..................|nv-indent-object|
+    Options ........................|nv-options|
+    Settings .......................|nv-settings|
+    Search highlighting ............|nv-search-highlighting|
+    Jumping to diffs ...............|nv-jumpto-diffs|
+    Toggle Command .................|nv-toggle|
+
 
 ==============================================================================
 
@@ -82,38 +96,36 @@ CTRL-W CTRL-S
 CTRL-W s
 CTRL-W S
 :sp[lit] [file]         Split current window in two. The result is two views
-                        on the same file. See |CTRL-W_s| for more details.
+                        on the same file. See|CTRL-W_s|for more details.
 
 CTRL-W CTRL-V
 CTRL-W v
 CTRL-W V
-:vs[plit] [file]        Like |:split|, but split vertically. See |CTRL-W_v|.
+:vs[plit] [file]        Like|:split|but split vertically. See|CTRL-W_v|.
 
 ==============================================================================
 
-NEOVINTAGEOUSRC                       *nv-rc* *vintageousrc* *neovintageousrc*
+NEOVINTAGEOUSRC                        *nv-rc* *vintageousrc* *neovintageousrc*
 
 A file that contains initialization commands is generically called a "vimrc"
-or config file. In NeoVintageous it's called a "neovintageousrc" file. Each
-line in a neovintageousrc file is executed as an Ex command line.
+or config file, in NeoVintageous it's "neovintageousrc". Each line in a
+neovintageousrc file is executed as an Ex command line.
 
-The neovintageousrc file can be opened and reloaded via the Command Palette.
-
-The |mapleader| variable is supported, for example: >
+The|mapleader|variable is supported. >
 
     let mapleader=,
 
-The |set| command is partially supported. The following are currently
-implemented (see |nv-options| for a list of currently supported options):
+The|set|command is partially supported, see|nv-options|for supported options.
 
     :se[t] {option}?    Show value of {option}.
     :se[t] {option}     Toggle option: set, switch it on.
                         Number option: show value.
                         String option: show value.
     :se[t] no{option}   Toggle option: Reset, switch it off.
-    :se[t] {option}!    Toggle option: Invert value.
+    :se[t] {option}!    or
+    :se[t] inv{option}  Toggle option: Invert value.
 
-The following |:map-commands| are supported:
+The|:map-commands|are partially supported.
 
     :noremap    {lhs} {rhs}         |:noremap|
     :nnoremap   {lhs} {rhs}         |:nnoremap|
@@ -137,7 +149,7 @@ Text and basic arguments in the form "key=value" are accepted, for example: >
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
 
 Super-keys can be mapped by the `<D-...>` special keys (super-keys are
-disabled by default, see |nv-settings| for details on enabling them): >
+disabled by default, see|nv-settings|for details on enabling them): >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
@@ -193,44 +205,77 @@ key binding, Goto  Menu > Preferences > Key Bindings: >
 
 PLUGINS                                                 *nv-plugins* *plugins*
 
-Note that plugin feature-parity is an ongoing effort, features of the original
-plugin may not be implemented fully and differences may not be documented. The
+Plugin feature-parity is an ongoing effort, features from the original vim
+plugin may not be implemented fully or differences documented fully. The
 original plugin documentation is provided in full without modification.
 
-Please don't hesitate to open an issue about new features, enhancements, and
-usage. If you are new to Vim also see |help.txt|.
+Please open issues to request missing features.
 
 ------------------------------------------------------------------------------
 
 ABOLISH                                                 *nv-abolish* *abolish*
 
-Abolish is a port of vim-abolish.
+Coercion                                               *abolish-coercion* *cr*
 
-Tim Pope describes it as "three superficially unrelated plugins in one that
-share a common theme: working with variants of a word."
+Abolish's case mutating algorithms can be applied to the word under the cursor
+using the cr mapping (mnemonic: CoeRce) followed by one of the following
+characters:
 
-Note that currently only the "case mutating algorithms" are supported.
+  c:       camelCase
+  m:       MixedCase
+  _:       snake_case
+  s:       snake_case
+  u:       SNAKE_UPPERCASE
+  U:       SNAKE_UPPERCASE
+  -:       dash-case (not usually reversible; see|abolish-coercion-reversible|)
+  k:       kebab-case (not usually reversible; see|abolish-coercion-reversible|)
+  .:       dot.case (not usually reversible; see|abolish-coercion-reversible|)
+  <space>: space case (not usually reversible; see|abolish-coercion-reversible|)
+  t:       Title Case (not usually reversible; see|abolish-coercion-reversible|)
 
-See |abolish.txt| and https://github.com/tpope/vim-abolish.
+For example, cru on a lowercase word is a slightly easier to type equivalent
+to gUiw.
+
+Coercion Reversibility                           *abolish-coercion-reversible*
+
+Some separators, such as "-" and ".", are listed as "not usually reversible".
+The reason is that these are not "keyword characters", so NeoVintageous will
+treat them as breaking a word.
+
+For example: "key_word" is a single keyword.  The dash-case version,
+"key-word", is treated as two keywords, "key" and "word".
+
+Abolish is a port of the popular vim-abolish.
+https://github.com/tpope/vim-abolish.
 
 ------------------------------------------------------------------------------
 
 COMMENTARY                                        *nv-commentary* *commentary*
 
-Commentary is a port of vim-commentary.
+Comment stuff out. Then uncomment it later.
 
-It adds commands that make it easier to comment, uncomment, and toggle comments.
+                                                *gc*
+gc{motion}              Comment or uncomment lines that {motion} moves over.
 
-See |commentary.txt| and https://github.com/tpope/vim-commentary.
+                                                *gcc*
+gcc                     Comment or uncomment [count] lines.
+
+                                                *v_gc*
+{Visual}gc              Comment or uncomment the highlighted lines.
+
+                                                *o_gc*
+gc                      Text object for a comment (operator pending mode
+                        only.)
+
+Commentary is a port of the popular vim-commentary.
+https://github.com/tpope/vim-commentary.
 
 ------------------------------------------------------------------------------
 
 HIGHLIGHTEDYANK                         *nv-highlightedyank* *highlightedyank*
 
-Highlighted Yank is a port of vim-highlightedyank.
-
-This plugin highlights a yanked region immediately after being yanked. The
-duration and style is configurable.
+HighlightedYank is a plugin to highlight the yanked region. This is a pretty
+trick to make your coding more comfortable.
 
 When new text is yanked, the old highlighting is deleted. Or when former lines
 are edited, the highlighting is deleted to prevent shifting the position, also.
@@ -261,23 +306,233 @@ Monokai.sublime-color-scheme in the Sublime Text User directory
         ]
     }
 
-See: https://github.com/machakann/vim-highlightedyank
+Inspired by the popular vim-highlightedyank.
+https://github.com/machakann/vim-highlightedyank
+------------------------------------------------------------------------------
 
+SNEAK                                                       *nv-sneak* *sneak*
+
+Sneak provides a way to move quickly and precisely to locations that would be
+awkward to reach with built-in Vim motions.
+
+To use Sneak, type "s" followed by exactly two characters:
+
+    s{char}{char}
+
+Thus you can often reach a target with 3 keystrokes. Sneak always moves
+immediately to the first {char}{char} match. Additional matches are
+highlighted, you can reach them by pressing ; (just like|f|and|t|).
+
+Above all, the goal is to get out of your way. See|sneak-usage|for a
+quick-start, and|sneak-features|for full description.
+
+Usage                                                            *sneak-usage*
+
+Example (cursor position indicated with brackets []): >
+    [L]orem ipsum dolor sit amet, consectetur adipisicing elit
+
+Type ssi to go to the beginning of the word "sit": >
+    Lorem ipsum dolor [s]it amet, consectetur adipisicing elit
+
+Type ; (or s again, if|sneak-clever-s|is enabled) to go to the next match: >
+    Lorem ipsum dolor sit amet, consectetur adipi[s]icing elit
+
+Type Sdo to go backwards to the beginning of the word "dolor": >
+    Lorem ipsum [d]olor sit amet, consectetur adipisicing elit
+
+Type dzad to delete from the cursor to the first instance of "ad": >
+    Lorem ipsum [a]dipisicing elit
+
+Default Mappings                                              *sneak-mappings*
+
+NORMAL-MODE~
+    Key Sequence             | Description
+    -------------------------|----------------------------------------------
+    s{char}{char}            | Go to the next occurrence of {char}{char}
+    S{char}{char}            | Go to the previous occurrence of {char}{char}
+    s{char}<Enter>           | Go to the next occurrence of {char}
+    S{char}<Enter>           | Go to the previous occurrence of {char}
+    s<Enter>                 | Repeat the last Sneak.
+    S<Enter>                 | Repeat the last Sneak, in reverse direction.
+    ;                        | Go to the [count]th next match
+    , or \                   | Go to the [count]th previous match
+    {operator}z{char}{char}  | Perform {operator} from the cursor to the next
+                             | occurrence of {char}{char}
+    {operator}Z{char}{char}  | Perform {operator} from the cursor to the
+                             | previous occurrence of {char}{char}
+
+VISUAL-MODE~
+    Key Sequence             | Description
+    -------------------------|----------------------------------------------
+    s{char}{char}            | Go to the next occurrence of {char}{char}
+    Z{char}{char}            | Go to the previous occurrence of {char}{char}
+    s{char}<Enter>           | Go to the next occurrence of {char}
+    Z{char}<Enter>           | Go to the previous occurrence of {char}
+    s<Enter>                 | Repeat the last Sneak.
+    Z<Enter>                 | Repeat the last Sneak, in reverse direction.
+    ;                        | Go to the [count]th next match
+    , or \                   | Go to the [count]th previous match
+
+    NOTE: Z goes backwards in visual-mode, because S is taken by the
+   |surround|plugin).
+
+Features                                                      *sneak-features*
+
+NORMAL-MODE
+
+`s` (and `S`) waits for two characters, then immediately moves to the next
+(previous) match. Additional matches are highlighted. Works across multiple
+lines.
+
+`;` and `,` repeat the last `s` and `S`. They also work correctly with `f` and
+`t` (unless you or another plugin have mapped `f` or `t` to a custom mapping).
+[count]; and [count], skip to the [count]th match, similar to the behavior of
+[count]f and [count]t.
+
+    Note: If your mapleader is|,|then Sneak maps|\|instead of|,|.
+
+s<Enter> ("s" followed by Enter) always repeats the last search, even if|;|
+and|,|were reset by|f|or|t|.
+
+OPERATIONS
+
+Use `z` for operations. For example, `dzab` deletes from the cursor to the
+next instance of "ab". `dZab` deletes backwards to the previous instance.
+`czab` `cZab` `yzab` and `yZab` also work as expected.
+
+Repeat the operation with dot|.|.
+
+Sneak is a port of the popular vim-sneak.
+https://github.com/justinmk/vim-sneak.
 ------------------------------------------------------------------------------
 
 SURROUND                                              *nv-surround* *surround*
 
-Surround is a port of vim-surround.
+This plugin is a tool for dealing with pairs of "surroundings."  Examples
+of surroundings include parentheses, quotes, and HTML tags.  They are
+closely related to what Vim refers to as|text-objects|.  Provided
+are mappings to allow for removing, changing, and adding surroundings.
 
-See |surround.txt| and https://github.com/tpope/vim-surround.
+Details follow on the exact semantics, but first, consider the following
+examples.  An asterisk (*) is used to denote the cursor position.
 
+  Old text                  Command     New text ~
+  "Hello *world!"           ds"         Hello world!
+  [123+4*56]/2              cs])        (123+456)/2
+  "Look ma, I'm *HTML!"     cs"<q>      <q>Look ma, I'm HTML!</q>
+  if *x>3 {                 ysW(        if ( x>3 ) {
+  my $str = *whee!;         vllllS'     my $str = 'whee!';
+
+Mappings                                                   *surround-mappings*
+
+Delete surroundings is*ds*.  The next character given determines the target
+to delete.  The exact nature of the target is explained in|surround-targets|
+but essentially it is the last character of a|text-object|.  This mapping
+deletes the difference between the "i"nner object and "a"n object.  This is
+easiest to understand with some examples:
+
+  Old text                  Command     New text ~
+  "Hello *world!"           ds"         Hello world!
+  (123+4*56)/2              ds)         123+456/2
+  <div>Yo!*</div>           dst         Yo!
+
+Change surroundings is*cs*.  It takes two arguments, a target like with|ds|,
+and a replacement. *cS*changes surroundings, placing the surrounded text on
+its own line(s) like|yS|.  Details about the second argument can be found
+below in|surround-replacements|.  Once again, examples are in order.
+
+  Old text                  Command     New text ~
+  "Hello *world!"           cs"'        'Hello world!'
+  "Hello *world!"           cs"<q>      <q>Hello world!</q>
+  (123+4*56)/2              cs)]        [123+456]/2
+  (123+4*56)/2              cs)[        [ 123+456 ]/2
+  <div>Yo!*</div>           cst<p>      <p>Yo!</p>
+
+*ys* takes a valid Vim motion or text object as the first object, and wraps it
+using the second argument as with|cs|.  (It's a stretch, but a good mnemonic
+for "ys" is "you surround".)
+
+  Old text                  Command     New text ~
+  Hello w*orld!             ysiw)       Hello (world)!
+
+As a special case,*yss*operates on the current line, ignoring leading
+whitespace.
+
+  Old text                  Command     New text ~
+      Hello w*orld!         yssB            {Hello world!}
+
+Targets                                                     *surround-targets*
+
+The|ds|and|cs|commands both take a target as their first argument.  The
+possible targets are based closely on the|text-objects|provided by Vim.
+All targets are currently just one character.
+
+Eight punctuation marks, (, ), {, }, [, ], <, and >, represent themselves
+and their counterparts.  If the opening mark is used, contained whitespace is
+also trimmed.  The targets b, B, r, and a are aliases for ), }, ], and >
+(the first two mirror Vim; the second two are completely arbitrary and
+subject to change).
+
+Three quote marks, ', ", `, represent themselves, in pairs.  They are only
+searched for on the current line.
+
+A t is a pair of HTML or XML tags.  See|tag-blocks|for details.  Remember
+that you can specify a numerical argument if you want to get to a tag other
+than the innermost one.
+
+The letters w, W, and s correspond to a|word| a|WORD| and a|sentence|
+respectively.  These are special in that they have nothing to delete, and used
+with|ds|they are a no-op.  With|cs| one could consider them a slight shortcut
+for ysi (cswb == ysiwb, more or less).
+
+A p represents a|paragraph|  This behaves similarly to w, W, and s above;
+however, newlines are sometimes added and/or removed.
+
+Replacements                                           *surround-replacements*
+
+A replacement argument is a single character, and is required by|cs|and|ys|.
+Undefined replacement characters (with the exception of alphabetic characters)
+default to placing themselves at the beginning and end of the destination,
+which can be useful for characters like / and |.
+
+If either ), }, ], or > is used, the text is wrapped in the appropriate pair
+of characters.  Similar behavior can be found with (, {, and [ (but not <),
+which append an additional space to the inside.  Like with the targets above,
+b, B, r, and a are aliases for ), }, ], and >.  To fulfill the common need for
+code blocks in C-style languages, <C-}> (which is really <C-]>) adds braces on
+lines separate from the content.
+
+If t or < is used, Vim prompts for an HTML/XML tag to insert.  You may specify
+attributes here and they will be stripped from the closing tag. If replacing a
+tag, its attributes are kept in the new tag. End your input with > to discard
+the those attributes. If <C-T> is used, the tags will appear on lines by
+themselves.
+
+If f, F, or <C-F> is used, Vim prompts for a function name to insert.  The target
+text will be wrapped in a function call. If f is used, the text is wrapped with
+() parentheses; F adds additional spaces inside the parentheses. <C-F> inserts the
+function name inside the parentheses.
+
+  Old text                  Command           New text ~
+  "hello"                   ysWfprint<cr>     print("hello")
+  "hello"                   ysWFprint<cr>     print( "hello" )
+  "hello"                   ysW<C-f>print<cr> (print "hello")
+
+If s is used, a leading but not trailing space is added.  This is useful for
+removing parentheses from a function call with csbs.
+
+Surround is a port of the popular vim-surround.
+https://github.com/tpope/vim-surround.
 ------------------------------------------------------------------------------
 
 UNIMPAIRED                                        *nv-unimpaired* *unimpaired*
 
-Unimpaired is a port of vim-unimpaired.
+This plugin provides several pairs of bracket maps.
 
-NEXT AND PREVIOUS
+Next and Previous                                            *unimpaired-next*
+
+The following maps all correspond to normal mode commands.  If a count is
+given, it becomes an argument to the command.
 
 [b                     |:bprevious|
 ]b                     |:bnext|
@@ -287,23 +542,35 @@ NEXT AND PREVIOUS
 ]t                     |:tnext|
 [T                     |:tfirst|
 ]T                     |:tlast|
-[l                     Jump to the [count] previous error.
-]l                     Jump to the [count] next error.
+[l                      Jump to the [count] previous error.
+]l                      Jump to the [count] next error.
+                        https://packagecontrol.io/packages/SublimeLinter
 
-The jump to error commands require SublimeLinter.
+                                                *[n*
+[n                      Go to the previous SCM conflict marker or diff/patch
+                        hunk.  Try d[n inside a conflict.
 
-LINE OPERATIONS
+                                                *]n*
+]n                      Go to the next SCM conflict marker or diff/patch hunk.
+                        Try d]n inside a conflict.
 
+Line Operations                                             *unimpaired-lines*
+
+                                                *[<Space>*
 [<Space>                Add [count] blank lines above the cursor.
+
+                                                *]<Space>*
 ]<Space>                Add [count] blank lines below the cursor.
+
+                                                *[e* *v_[e*
 [e                      Exchange the current line with [count] lines above it.
+
+                                                *]e* *v_]e*
 ]e                      Exchange the current line with [count] lines below it.
-[n                      Go to the previous SCM conflict marker.
-]n                      Go to the next SCM conflict marker.
 
-OPTION TOGGLING
+Option Toggling                                          *unimpaired-toggling*
 
- On      Off    Toggle  Option
+ On      Off     Toggle Option
 *[oa*   *]oa*   *yoa*   'menu'
 *[oc*   *]oc*   *yoc*   'cursorline'
 *[oe*   *]oe*   *yoe*   'statusbar'
@@ -312,20 +579,80 @@ OPTION TOGGLING
 *[ol*   *]ol*   *yol*   'list'
 *[om*   *]om*   *yom*   'minimap'
 *[on*   *]on*   *yon*   'number'
-*[os*   *]os*   *yos*   'spell'
 *[ot*   *]ot*   *yot*   'sidebar'
+*[os*   *]os*   *yos*   'spell'
 *[ow*   *]ow*   *yow*   'wrap'
 
-See |unimpaired.txt| and https://github.com/tpope/vim-unimpaired.
+The mnemonic for y is that if you tilt it a bit it looks like a switch.
 
+Unimpaired is a port of the popular vim-unimpaired.
+https://github.com/tpope/vim-unimpaired.
 ------------------------------------------------------------------------------
 
 INDENT OBJECT                               *nv-indent-object* *indent-object*
 
-Indent Object is a port of vim-indent-object.
+Vim text objects provide a convenient way to select and operate on various
+types of objects. These objects include regions surrounded by various types of
+brackets and various parts of language (ie sentences, paragraphs, etc).
 
-See |indent-object.txt| and https://github.com/michaeljsmith/vim-indent-object
+This plugin defines a new text object, based on indentation levels. This is
+very useful in languages such as Python, in which the syntax defines scope in
+terms of indentation. Using the objects defined in this plugin, an entire if
+structure can be quickly selected, for example.
 
+Text Objects                          *ai* *ii* *aI* *iI*     *indtobj-objects*
+
+This plugin defines two new text objects. These are very similar - they differ
+only in whether they include the line below the block or not.
+
+        Key Mapping       Description
+>
+        <count>ai         (A)n (I)ndentation level and line above.
+        <count>ii         (I)nner (I)ndentation level (no line above).
+        <count>aI         (A)n (I)ndentation level and lines above/below.
+        <count>iI         (I)nner (I)ndentation level (no lines above/below).
+
+Note that the iI mapping is mostly included simply for completeness, it is
+effectively a synonym for ii.
+
+Just like regular text objects, these mappings can be used either with
+operators expecting a motion, such as 'd' or 'c', as well as in visual mode.
+In visual mode the mapping can be repeated, which has the effect of
+iteratively increasing the scope of indentation block selected. Specifying a
+count can be used to achieve the same effect.
+
+The difference between|ai|and|aI|is that|ai|includes the line immediately
+above the indentation block, whereas aI includes not only that, but also the
+line below. Which of these is most useful largely depends on the structure of
+the language being edited.
+
+For example, when editing the Python code,|ai|is generally more useful, as the
+line above the indentation block is usually related to it. For example, in the
+following code (* is used to indicate the cursor position): >
+
+      if foo > 3:
+         log("foo is big") *
+         foo = 3
+      do_something_else()
+
+the if clause is logically related to the code block, whereas the function
+call below is not. It is unlikely we would want to select the line below when
+we are interested in the if block.
+
+However, in other languages, such as Vim scripts, control structures are
+usually terminated with something like 'endif'. Therefore, in this example: >
+
+      if foo > 3
+         echo "foo is big" *
+         let foo = 3
+      endif
+      call do_something_else()
+
+we would more likely want to include the endif when we select the if
+structure.
+
+Indent Object is a port of the popular vim-indent-object.
+https://github.com/michaeljsmith/vim-indent-object
 ==============================================================================
 
 OPTIONS                                                           *nv-options*
@@ -350,35 +677,35 @@ List of available settings:
 
                                                            *'highlightedyank'*
 'highlightedyank'       boolean (default on)
-    Enable or disable the HighlightedYank plugin.
+        Enable or disable the HighlightedYank plugin.
 
                                                   *'highlightedyank_duration'*
 'highlightedyank_duration'
                         number (default 1000)
-    Assign number of time in milliseconds.
+        Assign number of time in milliseconds.
 
                                                      *'highlightedyank_style'*
-'highlightedyank_style' string (default fill)
-    Valid values: fill, outline, underline, squiggly_underline,
-    stippled_underline.
+'highlightedyank_style' string (default "fill")
+        Valid values: fill, outline, underline, squiggly_underline,
+        stippled_underline.
 
                                              *'neovintageous_search_cur_style'*
 'neovintageous_search_cur_style'
-                        string (default fill)
-    The current search style. Valid values: fill, outline, underline,
-    squiggly_underline, stippled_underline.
+                        string (default "fill")
+        The current search style. Valid values: fill, outline, underline,
+        squiggly_underline, stippled_underline.
 
                                              *'neovintageous_search_inc_style'*
 'neovintageous_search_inc_style'
-                        string (default fill)
-    The incremental search style. Valid values: fill, outline, underline,
-    squiggly_underline, stippled_underline.
+                        string (default "fill")
+        The incremental search style. Valid values: fill, outline, underline,
+        squiggly_underline, stippled_underline.
 
                                              *'neovintageous_search_occ_style'*
 'neovintageous_search_occ_style'
-                        string (default fill)
-    The search occurrences style. Valid values: fill, outline, underline,
-    squiggly_underline, stippled_underline.
+                        string (default "fill")
+        The search occurrences style. Valid values: fill, outline, underline,
+        squiggly_underline, stippled_underline.
 
                                                            *'vintageous_bell'*
 'vintageous_bell'       string (default "blink")
@@ -394,45 +721,55 @@ List of available settings:
                                                    *'vintageous_default_mode'*
 'vintageous_default_mode'
                         string (default "")
-    The default mode to use when activating or switching views.
+        The default mode to use when activating or switching views.
 
-    Valid values are: "insert" or "".
+        Valid values are: "insert" or "".
 
-    mode   | description
-    ------ | -----------
-    insert | Enter insert mode when opening or switching views or when
-             the window receives focus and is not in visual mode i.e. visual
-             mode selections are retained when the window loses focus.
+        mode   | description
+        ------ | -----------
+        insert | Enter insert mode when opening or switching views or when the
+                 window receives focus and is not in visual mode i.e. visual
+                 mode selections are retained when the window loses focus.
 
                                                  *'vintageous_enable_abolish'*
 'vintageous_enable_abolish'
                         boolean (default on)
-    Plugin: A port of https://github.com/tpope/vim-abolish.
+        Plugin: A port of https://github.com/tpope/vim-abolish.
 
                                               *'vintageous_enable_commentary'*
 'vintageous_enable_commentary'
                         boolean (default on)
-    Plugin: A port of https://github.com/tpope/vim-commentary.
+        Plugin: A port of https://github.com/tpope/vim-commentary.
 
                                         *'vintageous_enable_multiple_cursors'*
 'vintageous_enable_multiple_cursors'
                         boolean (default on)
-    Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
+        Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
 
                                                 *'vintageous_enable_sublime'*
 'vintageous_enable_sublime'
                         boolean (default on)
-    Plugin: Supports specific Sublime Text enhancements and tweaks.
+        Plugin: Supports specific Sublime Text enhancements and tweaks.
 
                                                 *'vintageous_enable_surround'*
 'vintageous_enable_surround'
                         boolean (default on)
-    Plugin: A port of https://github.com/tpope/vim-surround.
+        Plugin: A port of https://github.com/tpope/vim-surround.
 
                                               *'vintageous_enable_unimpaired'*
 'vintageous_enable_unimpaired'
                         boolean (default on)
-    Plugin: A port of https://github.com/tpope/vim-unimpaired.
+        Plugin: A port of https://github.com/tpope/vim-unimpaired.
+
+                                              *'vintageous_i_escape_jj'*
+'vintageous_i_escape_jj'
+                        boolean (default off)
+        If set to true, then pressing jj in insert mode maps to <Esc>.
+
+                                              *'vintageous_i_escape_jk'*
+'vintageous_i_escape_jk'
+                        boolean (default off)
+        If set to true, then pressing jk in insert mode maps to <Esc>.
 
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
@@ -473,7 +810,8 @@ List of available settings:
 Mapping capslock to escape                                       *nv-capslock*
 
 Neovintageous cannot remap the CapsLock, however it can be remapped at an OS
-level e.g. in Ubuntu you can remap the CapsLock to Escape at the terminal: >
+level. For example, on Ubuntu you can map CapsLock to Escape at the terminal
+using a tool called gsettings: >
 
     gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 
@@ -488,31 +826,20 @@ command when holding it down, run this once at the terminal: >
 
 ------------------------------------------------------------------------------
 
-Mapping jj or jk to Esc                                            *nv-escape*
+Custom key bindings in insert mode                                 *nv-escape*
 
-`Menu > Preferences > Key Bindings`
-
-jj -> Esc: >
+If you need a custom insert mode key binding you can use the
+"vi_insert_mode_aware" context in your key binding: >
 
     {
-        "keys": ["j", "j"],
-        "command": "_enter_normal_mode",
-        "args": {"mode": "mode_insert"},
+        "keys": [...],
+        "command": "...",
         "context": [{"key": "vi_insert_mode_aware"}]
     }
 
-jk -> Esc: >
+------------------------------------------------------------------------------
 
-    {
-        "keys": ["j", "k"],
-        "command": "_enter_normal_mode",
-        "args": {"mode": "mode_insert"},
-        "context": [{"key": "vi_insert_mode_aware"}]
-    }
-
-==============================================================================
-
-SEARCH HIGHLIGHTING                                   *nv-search-highlighting*
+Search highlighting                                   *nv-search-highlighting*
 
 Search highlighting can be customized. The styles can be configured via
 the following settings: >
@@ -527,7 +854,7 @@ the following settings: >
     // stippled_underline.
     "neovintageous_search_inc_style": "fill",
 
-    // Search occurences style.
+    // Search occurrences style.
     // Valid values are: fill, outline, underline, squiggly_underline,
     // stippled_underline.
     "neovintageous_search_occ_style": "fill",

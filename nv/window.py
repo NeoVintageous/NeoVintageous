@@ -529,13 +529,11 @@ def _split(window, file: str = None) -> None:
         window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
         window.open_file(file)
     else:
-        window.run_command('create_pane', {'direction': 'down'})
-        window.run_command('clone_file_to_pane', {'direction': 'down'})
+        window.run_command('create_pane_with_cloned_file', {'direction': 'down'})
 
 
 def _split_vertically(window, count: int = None) -> None:
-    window.run_command('create_pane', {'direction': 'right'})
-    window.run_command('clone_file_to_pane', {'direction': 'right'})
+    window.run_command('create_pane_with_cloned_file', {'direction': 'right'})
 
 
 def _split_with_new_file(window, n: int = None) -> None:
@@ -560,6 +558,12 @@ def window_buffer_control(window, action: str, count: int = 1) -> None:
     elif action == 'first':
         window.focus_group(0)
         window.run_command('select_by_index', {'index': 0})
+
+    elif action == 'goto':
+        view_id = int(count)
+        for view in window.views():
+            if view.id() == view_id:
+                window.focus_view(view)
 
     elif action == 'last':
         window.focus_group(window.num_groups() - 1)
@@ -629,6 +633,8 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
         _move_active_view_to_very_top(window)
     elif action == 'L':
         _move_active_view_to_far_right(window)
+    elif action == 'W':
+        window_buffer_control(window, 'goto', count)
     elif action == 'c':
         _close_active_view(window)
     elif action == '=':

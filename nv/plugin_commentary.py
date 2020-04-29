@@ -21,6 +21,8 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.settings import get_count
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
@@ -52,13 +54,13 @@ class CommentaryMotion(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'c',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -71,13 +73,13 @@ class CommentaryLines(ViOperatorDef):
         self.scroll_into_view = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'cc',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -93,13 +95,13 @@ class CommentaryBlock(ViOperatorDef):
         self.motion_required = True
         self.repeatable = True
 
-    def translate(self, state):
+    def translate(self, view):
         return {
             'action': '_nv_commentary',
             'action_args': {
                 'action': 'C',
-                'mode': state.mode,
-                'count': state.count
+                'mode': get_mode(view),
+                'count': get_count(view)
             }
         }
 
@@ -112,8 +114,6 @@ class _nv_commentary_command(TextCommand):
             _do_cc(self.view, edit, **kwargs)
         elif action == 'C':
             _do_C(self.view, edit, **kwargs)
-        else:
-            raise Exception('unknown action')
 
 
 def _do_c(view, edit, mode, count=1, motion=None):
@@ -140,7 +140,7 @@ def _do_c(view, edit, mode, count=1, motion=None):
     enter_normal_mode(view, mode)
 
 
-def _do_cc(view, edit, mode, count=1):
+def _do_cc(view, edit, mode: str, count: int = 1) -> None:
     def f(view, s):
         if mode == INTERNAL_NORMAL:
             view.run_command('toggle_comment')
@@ -153,7 +153,7 @@ def _do_cc(view, edit, mode, count=1):
 
         return s
 
-    def _motion(view, edit, mode, count):
+    def _motion(view, edit, mode: str, count: int) -> None:
         def f(view, s):
             if mode == INTERNAL_NORMAL:
                 end = view.text_point(row_at(view, s.b) + (count - 1), 0)
@@ -185,7 +185,7 @@ def _do_cc(view, edit, mode, count=1):
     set_selection(view, pt)
 
 
-def _do_C(view, edit, mode, count=1, motion=None):
+def _do_C(view, edit, mode: str, count: int = 1, motion=None) -> None:
     def f(view, s):
         return Region(s.begin())
 

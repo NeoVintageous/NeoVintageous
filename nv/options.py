@@ -86,6 +86,12 @@ class BooleanViewOption(BooleanOption):
 
     def __init__(self, name: str, on=True, off=False):
         super().__init__(name, None)
+        if not isinstance(on, tuple):
+            on = (on,)
+
+        if not isinstance(off, tuple):
+            off = (off,)
+
         self._on = on
         self._off = off
 
@@ -97,18 +103,18 @@ class BooleanViewOption(BooleanOption):
         # changed" event. Sublime triggers the event any time the settings set()
         # method is called, even if the actual value itself has not changed.
         if value:
-            if current_value != self._on:
-                settings.set(self._name, self._on)
+            if current_value not in self._on:
+                settings.set(self._name, self._on[0])
         else:
-            if current_value != self._off:
-                settings.set(self._name, self._off)
+            if current_value not in self._off:
+                settings.set(self._name, self._off[0])
 
     def _get(self, view):
         value = view.settings().get(self._name)
 
-        if value == self._on:
+        if value in self._on:
             value = True
-        elif value == self._off:
+        elif value in self._off:
             value = False
 
         return value
@@ -161,8 +167,8 @@ def _get_default_shell() -> str:
         return os.environ.get('SHELL', 'sh')
     elif sys.platform.startswith('win'):
         return 'cmd.exe'
-
-    return ''
+    else:
+        return ''
 
 
 _options = {
@@ -172,7 +178,7 @@ _options = {
     'hlsearch': BooleanOption('hlsearch', True),
     'ignorecase': BooleanOption('ignorecase', False),
     'incsearch': BooleanOption('incsearch', True),
-    'list': BooleanViewOption('draw_white_space', on='all', off='selection'),
+    'list': BooleanViewOption('draw_white_space', on=('all',), off=('selection', 'none')),
     'magic': BooleanOption('magic', True),
     'menu': BooleanIsVisibleOption('menu', True),  # {not in Vim}
     'minimap': BooleanIsVisibleOption('minimap', True),  # {not in Vim}
@@ -219,9 +225,13 @@ def get_option_completions(prefix: str = ''):
             yield name
 
         if isinstance(option, BooleanOption):
-            name = 'no' + name
-            if name.startswith(prefix):
-                yield name
+            noname = 'no' + name
+            if prefix.startswith('no') and noname.startswith(prefix):
+                yield noname
+
+            invname = 'inv' + name
+            if prefix.startswith('inv') and invname.startswith(prefix):
+                yield invname
 
 
 def _resolve_aliases(name: str) -> str:
@@ -266,8 +276,4 @@ def set_option(view, name: str, value=None) -> None:
 
 
 def toggle_option(view, name: str) -> None:
-    value = get_option(view, name)
-    if not isinstance(value, bool):
-        raise ValueError('option cannot be toggled')
-
-    set_option(view, name, not value)
+    set_option(view, name, not get_option(view, name))

@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_setting('enable_sneak', False)
+
     def test_n(self):
         self.eq('|', 's', 'i_|')
         self.eq('a|bc', 's', 'i_a|c')
