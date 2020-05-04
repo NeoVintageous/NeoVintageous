@@ -32,11 +32,15 @@ from NeoVintageous.nv.vim import DIRECTION_UP
 
 class TestTranslateChar(unittest.TestCase):
 
-    def test_enter(self):
+    def test_tranlsate_char(self):
         self.assertEqual(translate_char('<bar>'), '|')
         self.assertEqual(translate_char('<bslash>'), '\\')
         self.assertEqual(translate_char('<cr>'), '\n')
         self.assertEqual(translate_char('<enter>'), '\n')
+        self.assertEqual(translate_char('<k0>'), '0')
+        self.assertEqual(translate_char('<k3>'), '3')
+        self.assertEqual(translate_char('<kdivide>'), '/')
+        self.assertEqual(translate_char('<kenter>'), '\n')
         self.assertEqual(translate_char('<lt>'), '<')
         self.assertEqual(translate_char('<sp>'), ' ')
         self.assertEqual(translate_char('<space>'), ' ')

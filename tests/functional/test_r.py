@@ -25,6 +25,9 @@ class Test_r(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a|bc', 'rx', 'a|xc')
         self.eq('ab\n|cd', 'rx', 'ab\n|xd')
         self.eq('f|izz', 'r<cr>', 'f\n|zz')
+        self.eq('a|xb', 'r<k3>', 'a|3b')
+        self.eq('a|xb', 'r<kenter>', 'a\n|b')
+        self.eq('a|xb', 'r<kplus>', 'a|+b')
 
     def test_v(self):
         self.eq('ab|12345|cd', 'v_rx', 'n_ab|xxxxxcd')

@@ -1824,6 +1824,8 @@ _SEQ2CMD = {
     'f6':           {'command': '_nv_feed_key'},  # noqa: E241
     'f8':           {'command': '_nv_feed_key'},  # noqa: E241
     'f:':           {'command': '_nv_feed_key'},  # noqa: E241
+    'f<k4>':        {'command': '_nv_feed_key', 'args': {'keys': ['f', '<k4>']}},  # noqa: E241
+    'f<kminus>':    {'command': '_nv_feed_key', 'args': {'keys': ['f', '<kminus>']}},  # noqa: E241
     'f\\':          {'command': '_nv_feed_key'},  # noqa: E241
     'ff':           {'command': '_nv_feed_key'},  # noqa: E241
     'fr':           {'command': '_nv_feed_key'},  # noqa: E241
@@ -1910,6 +1912,22 @@ _SEQ2CMD = {
     'qa':           {'command': '_nv_feed_key'},  # noqa: E241
     'qx':           {'command': '_nv_feed_key'},  # noqa: E241
     'r<cr>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
+    'r<k0>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k0>']}},  # noqa: E241
+    'r<k1>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k1>']}},  # noqa: E241
+    'r<k2>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k2>']}},  # noqa: E241
+    'r<k3>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k3>']}},  # noqa: E241
+    'r<k4>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k4>']}},  # noqa: E241
+    'r<k5>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k5>']}},  # noqa: E241
+    'r<k6>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k6>']}},  # noqa: E241
+    'r<k7>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k7>']}},  # noqa: E241
+    'r<k8>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k8>']}},  # noqa: E241
+    'r<k9>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k9>']}},  # noqa: E241
+    'r<kdivide>':   {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kdivide>']}},  # noqa: E241
+    'r<kenter>':    {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kenter>']}},  # noqa: E241
+    'r<kminus>':    {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kminus>']}},  # noqa: E241
+    'r<kmultiply>': {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kmultiply>']}},  # noqa: E241
+    'r<kperiod>':   {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kperiod>']}},  # noqa: E241
+    'r<kplus>':     {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kplus>']}},  # noqa: E241
     'rx':           {'command': '_nv_feed_key'},  # noqa: E241
     's':            {'command': '_nv_feed_key'},  # noqa: E241
     's<CR>':        {'command': '_nv_feed_key', 'args': {'keys': ['s', '<CR>']}},  # noqa: E241
@@ -1921,6 +1939,7 @@ _SEQ2CMD = {
     't6':           {'command': '_nv_feed_key'},  # noqa: E241
     't8':           {'command': '_nv_feed_key'},  # noqa: E241
     't:':           {'command': '_nv_feed_key'},  # noqa: E241
+    't<kmultiply>': {'command': '_nv_feed_key', 'args': {'keys': ['t', '<kmultiply>']}},  # noqa: E241
     't\\':          {'command': '_nv_feed_key'},  # noqa: E241
     'tf':           {'command': '_nv_feed_key'},  # noqa: E241
     'tr':           {'command': '_nv_feed_key'},  # noqa: E241

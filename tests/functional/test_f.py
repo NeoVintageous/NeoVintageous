@@ -33,6 +33,8 @@ class Test_f(unittest.FunctionalTestCase):
         self.eq('0|:2345', 'n_f:', '0|:2345')
         self.eq('0|a2::5', 'n_f:', '0a2|::5')
         self.eq('0|:2:45', 'n_f:', '0:2|:45')
+        self.eq('1|2345', 'n_f<k4>', '123|45')
+        self.eq('1|23-5', 'n_f<kminus>', '123|-5')
 
     def test_n_special_bar_character(self):
         self.normal('12|34')

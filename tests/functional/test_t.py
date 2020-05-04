@@ -34,6 +34,7 @@ class Test_t(unittest.FunctionalTestCase):
         self.eq('0|a2::5', 'n_t:', '0a|2::5')
         self.eq('0|:2:45', 'n_t:', '0:|2:45')
         self.eq('xx|xx', 'n_tx', 'xx|xx')
+        self.eq('1|23*5', 'n_t<kmultiply>', '12|3*5')
 
     def test_n_special_bar_char(self):
         self.normal('12|34')
