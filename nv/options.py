@@ -185,6 +185,7 @@ _options = {
     'modeline': BooleanOption('modeline', True),
     'modelines': NumberOption('modelines', 5),
     'number': BooleanViewOption('line_numbers'),
+    'relativenumber': BooleanViewOption('relative_line_numbers'),
     'scrolloff': NumberOption('scrolloff', 5),
     'shell': StringOption('shell', _get_default_shell()),
     'sidebar': BooleanIsVisibleOption('sidebar', True),  # {not in Vim}
@@ -209,6 +210,7 @@ _OPTION_ALIASES = {
     'ml': 'modeline',
     'mls': 'modelines',
     'nu': 'number',
+    'rnu': 'relativenumber',
     'scs': 'smartcase',
     'siso': 'sidescrolloff',
     'so': 'scrolloff',

@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.22.0 - Unreleased
+
+### Added
+
+* Added [#733](https://github.com/NeoVintageous/NeoVintageous/issues/733): `[or`, `]or`, `yor`, enable, disable, and toggle `'relativenumber'` (Unimpaired) (ST4)
+* Added [#732](https://github.com/NeoVintageous/NeoVintageous/issues/732): new option `'relativenumber'` `'rnu'` `'norelativenumber'` `'nornu'` (ST4)
+
 ## 1.21.1 - Unreleased
 
 * Fixed [#730](https://github.com/NeoVintageous/NeoVintageous/issues/730): Single char replace with keypad keys

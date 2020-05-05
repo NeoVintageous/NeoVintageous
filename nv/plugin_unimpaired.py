@@ -482,7 +482,7 @@ _OPTIONS = {
     'menu': _menu_option,  # non standard i.e. not in the original Unimpaired plugin
     'minimap': _minimap_option,  # non standard i.e. not in the original Unimpaired plugin
     'number': 'line_numbers',
-    'relativenumber': None,
+    'relativenumber': 'relative_line_numbers',
     'sidebar': _sidebar_option,  # non standard i.e. not in the original Unimpaired plugin
     'spell': 'spell_check',
     'statusbar': _statusbar_option,  # non standard i.e. not in the original Unimpaired plugin
