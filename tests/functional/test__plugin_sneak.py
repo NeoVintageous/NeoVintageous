@@ -22,6 +22,10 @@ from NeoVintageous.nv.plugin_sneak import _set_last_sneak_search
 
 class Test_s(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_setting('enable_sneak', True)
+
     @unittest.mock_status_message()
     def test_n(self):
         self.eq('|fizz', 'n_siz', 'f|izz')
@@ -100,6 +104,10 @@ class Test_s(unittest.FunctionalTestCase):
 
 class Test_S(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_setting('enable_sneak', True)
+
     @unittest.mock_status_message()
     def test_n(self):
         self.eq('fizz fizz fiz|z', 'n_Siz', 'fizz fizz f|izz')
@@ -145,6 +153,10 @@ class Test_S(unittest.FunctionalTestCase):
 
 class Test_Z(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_setting('enable_sneak', True)
+
     def test_v(self):
         self.eq('x x iz iz iz x|xxx| iz', 'v_Ziz', 'r_x x iz iz |iz xx|xx iz')
         self.assertSearch('x x |iz| |iz| |iz| xxxx iz')
@@ -160,6 +172,10 @@ class Test_Z(unittest.FunctionalTestCase):
 
 
 class Test_z(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.set_setting('enable_sneak', True)
 
     @unittest.mock_bell()
     def test_dz(self):
@@ -178,6 +194,10 @@ class Test_z(unittest.FunctionalTestCase):
 
 
 class Test_goto_next_and_goto_previous(unittest.FunctionalTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.set_setting('enable_sneak', True)
 
     @unittest.mock_bell()
     def test_n(self):

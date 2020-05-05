@@ -4,7 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.21.1 - Unreleased
 
-* Fixed [#730](https://github.com/NeoVintageous/NeoVintageous/issues/730): Single char replace with keypad keys
+* Fixed [#731](https://github.com/NeoVintageous/NeoVintageous/issues/731): Disable Sneak plugin by default
+* Fixed [#730](https://github.com/NeoVintageous/NeoVintageous/issues/730): S key starts search rather than correct Vi behaviour
 
 ## 1.21.0 - 2020-04-29
 
