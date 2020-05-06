@@ -9,9 +9,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#733](https://github.com/NeoVintageous/NeoVintageous/issues/733): `[or`, `]or`, `yor`, enable, disable, and toggle `'relativenumber'` (Unimpaired) (ST4)
 * Added [#732](https://github.com/NeoVintageous/NeoVintageous/issues/732): new option `'relativenumber'` `'rnu'` `'norelativenumber'` `'nornu'` (ST4)
 
-## 1.21.1 - Unreleased
+## 1.21.1 - 2020-05-06
 
-* Fixed [#730](https://github.com/NeoVintageous/NeoVintageous/issues/730): Single char replace with keypad keys
+* Fixed [#731](https://github.com/NeoVintageous/NeoVintageous/issues/731): Disable Sneak plugin by default
+* Fixed [#730](https://github.com/NeoVintageous/NeoVintageous/issues/730): S key starts search rather than correct Vi behaviour
 
 ## 1.21.0 - 2020-04-29
 
