@@ -746,6 +746,11 @@ List of available settings:
                         boolean (default on)
         Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
 
+                                                   *'vintageous_enable_sneak'*
+'vintageous_enable_sneak'
+                        boolean (default off)
+        Plugin: A port of https://github.com/justinmk/vim-sneak.
+
                                                 *'vintageous_enable_sublime'*
 'vintageous_enable_sublime'
                         boolean (default on)

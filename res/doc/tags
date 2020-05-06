@@ -946,6 +946,7 @@ $XDG_DATA_HOME	starting.txt	/*$XDG_DATA_HOME*
 'vintageous_enable_abolish'	neovintageous.txt	/*'vintageous_enable_abolish'*
 'vintageous_enable_commentary'	neovintageous.txt	/*'vintageous_enable_commentary'*
 'vintageous_enable_multiple_cursors'	neovintageous.txt	/*'vintageous_enable_multiple_cursors'*
+'vintageous_enable_sneak'	neovintageous.txt	/*'vintageous_enable_sneak'*
 'vintageous_enable_sublime'	neovintageous.txt	/*'vintageous_enable_sublime'*
 'vintageous_enable_surround'	neovintageous.txt	/*'vintageous_enable_surround'*
 'vintageous_enable_unimpaired'	neovintageous.txt	/*'vintageous_enable_unimpaired'*
